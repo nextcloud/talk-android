@@ -87,9 +87,9 @@ import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contacts.ContactsActivity
-import com.nextcloud.talk.contacts.ContactsUiState
+
 import com.nextcloud.talk.contacts.ContactsViewModel
-import com.nextcloud.talk.contacts.RoomUiState
+
 import com.nextcloud.talk.contextchat.ContextChatView
 import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
@@ -259,7 +259,7 @@ class ConversationsListActivity :
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        currentUser = currentUserProvider.currentUser.blockingGet()
+        currentUser = currentUserProviderOld.currentUser.blockingGet()
 
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
         contextChatViewModel = ViewModelProvider(this, viewModelFactory)[ContextChatViewModel::class.java]
@@ -319,7 +319,10 @@ class ConversationsListActivity :
             }
             currentUser?.capabilities?.spreedCapability?.let { spreedCapabilities ->
                 if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.UNIFIED_SEARCH)) {
-                    searchHelper = MessageSearchHelper(unifiedSearchRepository)
+                    searchHelper = MessageSearchHelper(
+                        unifiedSearchRepository = unifiedSearchRepository,
+                        currentUser = currentUser!!
+                    )
                 }
             }
             credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
@@ -495,7 +498,7 @@ class ConversationsListActivity :
         lifecycleScope.launch {
             contactsViewModel.roomViewState.onEach { state ->
                 when (state) {
-                    is RoomUiState.Success -> {
+                    is ContactsViewModel.RoomUiState.Success -> {
                         val conversation = state.conversation
                         val bundle = Bundle()
                         bundle.putString(KEY_ROOM_TOKEN, conversation?.token)
@@ -513,7 +516,7 @@ class ConversationsListActivity :
         lifecycleScope.launch {
             contactsViewModel.contactsViewState.onEach { state ->
                 when (state) {
-                    is ContactsUiState.Success -> {
+                    is ContactsViewModel.ContactsUiState.Success -> {
                         if (state.contacts.isNullOrEmpty()) return@onEach
 
                         val userItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
@@ -1102,7 +1105,7 @@ class ConversationsListActivity :
     }
 
     fun fetchRooms() {
-        conversationsListViewModel.getRooms()
+        conversationsListViewModel.getRooms(currentUser!!)
     }
 
     private fun fetchPendingInvitations() {

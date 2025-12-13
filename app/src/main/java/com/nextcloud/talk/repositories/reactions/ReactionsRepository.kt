@@ -13,7 +13,23 @@ import io.reactivex.Observable
 
 interface ReactionsRepository {
 
-    fun addReaction(roomToken: String, message: ChatMessage, emoji: String): Observable<ReactionAddedModel>
+    @Suppress("LongParameterList")
+    fun addReaction(
+        credentials: String?,
+        userId: Long,
+        url: String,
+        roomToken: String,
+        message: ChatMessage,
+        emoji: String
+    ): Observable<ReactionAddedModel>
 
-    fun deleteReaction(roomToken: String, message: ChatMessage, emoji: String): Observable<ReactionDeletedModel>
+    @Suppress("LongParameterList")
+    fun deleteReaction(
+        credentials: String?,
+        userId: Long,
+        url: String,
+        roomToken: String,
+        message: ChatMessage,
+        emoji: String
+    ): Observable<ReactionDeletedModel>
 }

@@ -370,7 +370,7 @@ class ChatActivity :
     var conversationThreadId: Long? = null
     var openedViaNotification: Boolean = false
     var conversationThreadInfo: ThreadInfo? = null
-    var conversationUser: User? = null
+    lateinit var conversationUser: User
     lateinit var spreedCapabilities: SpreedCapability
     var chatApiVersion: Int = 1
     private var roomPassword: String = ""
@@ -509,34 +509,41 @@ class ChatActivity :
             colorizeNavigationBar()
         }
 
-        conversationUser = currentUserProvider.currentUser.blockingGet()
-        handleIntent(intent)
-
         chatViewModel = ViewModelProvider(this, viewModelFactory)[ChatViewModel::class.java]
 
         conversationInfoViewModel = ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
 
         contextChatViewModel = ViewModelProvider(this, viewModelFactory)[ContextChatViewModel::class.java]
 
-        val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
-        val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
-        chatViewModel.initData(
-            credentials!!,
-            urlForChatting,
-            roomToken,
-            conversationThreadId
-        )
+        lifecycleScope.launch {
+            currentUserProvider.getCurrentUser()
+                .onSuccess { user ->
+                    conversationUser = user
+                    handleIntent(intent)
+                    val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
+                    val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
+                    chatViewModel.initData(
+                        user,
+                        credentials!!,
+                        urlForChatting,
+                        roomToken,
+                        conversationThreadId
+                    )
 
-        conversationThreadId?.let {
-            val threadUrl = ApiUtils.getUrlForThread(
-                version = 1,
-                baseUrl = conversationUser!!.baseUrl,
-                token = roomToken,
-                threadId = it.toInt()
-            )
-            chatViewModel.getThread(credentials, threadUrl)
+                    conversationThreadId?.let {
+                        val threadUrl = ApiUtils.getUrlForThread(
+                            version = 1,
+                            baseUrl = conversationUser!!.baseUrl,
+                            token = roomToken,
+                            threadId = it.toInt()
+                        )
+                        chatViewModel.getThread(credentials, threadUrl)
+                    }
+                }
+                .onFailure {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
         }
-
         messageInputFragment = getMessageInputFragment()
         messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
         messageInputViewModel.setData(chatViewModel.getChatRepository())
@@ -1412,7 +1419,10 @@ class ChatActivity :
 
         cancelNotificationsForCurrentConversation()
 
-        chatViewModel.getRoom(roomToken)
+        chatViewModel.getRoom(
+            conversationUser,
+            roomToken
+        )
 
         actionBar?.show()
 
@@ -1891,7 +1901,10 @@ class ChatActivity :
         }
         getRoomInfoTimerHandler?.postDelayed(
             {
-                chatViewModel.getRoom(roomToken)
+                chatViewModel.getRoom(
+                    conversationUser,
+                    roomToken
+                )
             },
             if (delay > 0) delay else delayForRecursiveCall
         )
@@ -3636,18 +3649,20 @@ class ChatActivity :
     }
 
     private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
-        val chatMessageMap = chatMessageList.associateBy { it.id }.toMutableMap()
-
-        val chatMessageIterator = chatMessageMap.iterator()
-        while (chatMessageIterator.hasNext()) {
-            val currentMessage = chatMessageIterator.next()
-
-            if (isInfoMessageAboutDeletion(currentMessage) ||
+        fun shouldRemoveMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+            isInfoMessageAboutDeletion(currentMessage) ||
                 isReactionsMessage(currentMessage) ||
                 isPollVotedMessage(currentMessage) ||
                 isEditMessage(currentMessage) ||
                 isThreadCreatedMessage(currentMessage)
-            ) {
+
+        val chatMessageMap = chatMessageList.associateBy { it.id }.toMutableMap()
+        val chatMessageIterator = chatMessageMap.iterator()
+
+        while (chatMessageIterator.hasNext()) {
+            val currentMessage = chatMessageIterator.next()
+
+            if (shouldRemoveMessage(currentMessage)) {
                 chatMessageIterator.remove()
             }
         }

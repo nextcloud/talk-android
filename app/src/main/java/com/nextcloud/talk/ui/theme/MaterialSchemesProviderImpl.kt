@@ -11,12 +11,12 @@ import com.nextcloud.android.common.ui.color.ColorUtil
 import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.capabilities.Capabilities
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
 internal class MaterialSchemesProviderImpl @Inject constructor(
-    private val userProvider: CurrentUserProviderNew,
+    private val userProvider: CurrentUserProviderOld,
     private val colorUtil: ColorUtil
 ) : MaterialSchemesProvider {
 

@@ -30,7 +30,6 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -56,11 +55,10 @@ class OfflineFirstChatRepository @Inject constructor(
     private val chatDao: ChatMessagesDao,
     private val chatBlocksDao: ChatBlocksDao,
     private val network: ChatNetworkDataSource,
-    private val networkMonitor: NetworkMonitor,
-    userProvider: CurrentUserProviderNew
+    private val networkMonitor: NetworkMonitor
 ) : ChatMessageRepository {
 
-    val currentUser: User = userProvider.currentUser.blockingGet()
+    lateinit var currentUser: User
 
     override val messageFlow:
         Flow<
@@ -121,7 +119,15 @@ class OfflineFirstChatRepository @Inject constructor(
     private lateinit var urlForChatting: String
     private var threadId: Long? = null
 
-    override fun initData(credentials: String, urlForChatting: String, roomToken: String, threadId: Long?) {
+    override fun initData(
+        currentUser: User,
+        credentials: String,
+        urlForChatting: String,
+        roomToken: String,
+        threadId: Long?
+    ) {
+        this.currentUser = currentUser
+
         internalConversationId = currentUser.id.toString() + "@" + roomToken
         this.credentials = credentials
         this.urlForChatting = urlForChatting

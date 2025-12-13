@@ -42,7 +42,7 @@ import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.RemoteFileUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -62,7 +62,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     lateinit var userManager: UserManager
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderNew
+    lateinit var currentUserProvider: CurrentUserProviderOld
 
     @Inject
     lateinit var appPreferences: AppPreferences

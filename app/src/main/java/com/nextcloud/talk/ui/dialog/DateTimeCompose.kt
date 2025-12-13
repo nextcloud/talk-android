@@ -65,7 +65,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -93,7 +93,7 @@ class DateTimeCompose(val bundle: Bundle) {
     lateinit var chatViewModel: ChatViewModel
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderNew
+    lateinit var currentUserProvider: CurrentUserProviderOld
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils

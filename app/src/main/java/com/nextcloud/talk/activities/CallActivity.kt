@@ -434,7 +434,7 @@ class CallActivity : CallBaseActivity() {
 
         hideNavigationIfNoPipAvailable()
         processExtras(intent.extras!!)
-        conversationUser = currentUserProvider.currentUser.blockingGet()
+        conversationUser = currentUserProviderOld.currentUser.blockingGet()
 
         credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
         if (TextUtils.isEmpty(baseUrl)) {

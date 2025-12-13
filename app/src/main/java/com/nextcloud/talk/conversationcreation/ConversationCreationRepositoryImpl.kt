@@ -14,91 +14,50 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
-import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.ApiUtils.getRetrofitBucketForAddParticipant
-import com.nextcloud.talk.utils.ApiUtils.getRetrofitBucketForAddParticipantWithSource
 import com.nextcloud.talk.utils.Mimetype
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
 
-class ConversationCreationRepositoryImpl @Inject constructor(
-    private val ncApiCoroutines: NcApiCoroutines,
-    currentUserProvider: CurrentUserProviderNew
-) : ConversationCreationRepository {
-    private val _currentUser = currentUserProvider.currentUser.blockingGet()
-    val currentUser: User = _currentUser
-    val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token)
-    val apiVersion = ApiUtils.getConversationApiVersion(_currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+class ConversationCreationRepositoryImpl @Inject constructor(private val ncApiCoroutines: NcApiCoroutines) :
+    ConversationCreationRepository {
 
-    override suspend fun renameConversation(roomToken: String, roomNameNew: String?): GenericOverall =
-        ncApiCoroutines.renameRoom(
-            credentials,
-            ApiUtils.getUrlForRoom(
-                apiVersion,
-                _currentUser.baseUrl,
-                roomToken
-            ),
-            roomNameNew
-        )
-
-    override suspend fun setConversationDescription(roomToken: String, description: String?): GenericOverall =
+    override suspend fun setConversationDescription(
+        credentials: String?,
+        url: String,
+        roomToken: String,
+        description: String?
+    ): GenericOverall =
         ncApiCoroutines.setConversationDescription(
             credentials,
-            ApiUtils.getUrlForConversationDescription(
-                apiVersion,
-                _currentUser.baseUrl,
-                roomToken
-            ),
+            url,
             description
         )
 
-    override suspend fun openConversation(roomToken: String, scope: Int): GenericOverall =
+    override suspend fun openConversation(
+        credentials: String?,
+        url: String,
+        roomToken: String,
+        scope: Int
+    ): GenericOverall =
         ncApiCoroutines.openConversation(
             credentials,
-            ApiUtils.getUrlForOpeningConversations(
-                apiVersion,
-                _currentUser.baseUrl,
-                roomToken
-            ),
+            url,
             scope
         )
 
-    override suspend fun addParticipants(
-        conversationToken: String?,
-        userId: String,
-        sourceType: String
-    ): AddParticipantOverall {
-        val retrofitBucket: RetrofitBucket = if (sourceType == "users") {
-            getRetrofitBucketForAddParticipant(
-                apiVersion,
-                _currentUser.baseUrl,
-                conversationToken,
-                userId
-            )
-        } else {
-            getRetrofitBucketForAddParticipantWithSource(
-                apiVersion,
-                _currentUser.baseUrl,
-                conversationToken,
-                sourceType,
-                userId
-            )
-        }
-        val participants = ncApiCoroutines.addParticipant(credentials, retrofitBucket.url, retrofitBucket.queryMap)
+    override suspend fun addParticipants(credentials: String?, retrofitBucket: RetrofitBucket): AddParticipantOverall {
+        val participants = ncApiCoroutines.addParticipant(
+            credentials,
+            retrofitBucket.url,
+            retrofitBucket.queryMap
+        )
         return participants
     }
 
-    override suspend fun createRoom(roomType: String, conversationName: String?): RoomOverall {
-        val retrofitBucket: RetrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-            version = apiVersion,
-            baseUrl = _currentUser.baseUrl,
-            roomType = roomType,
-            conversationName = conversationName
-        )
+    override suspend fun createRoom(credentials: String?, retrofitBucket: RetrofitBucket): RoomOverall {
         val response = ncApiCoroutines.createRoom(
             credentials,
             retrofitBucket.url,
@@ -107,27 +66,27 @@ class ConversationCreationRepositoryImpl @Inject constructor(
         return response
     }
 
-    override fun getImageUri(avatarId: String, requestBigSize: Boolean): String =
-        ApiUtils.getUrlForAvatar(
-            _currentUser.baseUrl,
-            avatarId,
-            requestBigSize
-        )
-
-    override suspend fun setPassword(roomToken: String, password: String): GenericOverall {
+    override suspend fun setPassword(
+        credentials: String?,
+        url: String,
+        roomToken: String,
+        password: String
+    ): GenericOverall {
         val result = ncApiCoroutines.setPassword(
             credentials,
-            ApiUtils.getUrlForRoomPassword(
-                apiVersion,
-                _currentUser.baseUrl!!,
-                roomToken
-            ),
+            url,
             password
         )
         return result
     }
 
-    override suspend fun uploadConversationAvatar(file: File, roomToken: String): ConversationModel {
+    override suspend fun uploadConversationAvatar(
+        credentials: String?,
+        user: User,
+        url: String,
+        file: File,
+        roomToken: String
+    ): ConversationModel {
         val builder = MultipartBody.Builder()
         builder.setType(MultipartBody.FORM)
         builder.addFormDataPart(
@@ -142,25 +101,13 @@ class ConversationCreationRepositoryImpl @Inject constructor(
         )
         val response = ncApiCoroutines.uploadConversationAvatar(
             credentials!!,
-            ApiUtils.getUrlForConversationAvatar(1, _currentUser.baseUrl!!, roomToken),
+            url,
             filePart
         )
-        return ConversationModel.mapToConversationModel(response.ocs?.data!!, _currentUser)
+        return ConversationModel.mapToConversationModel(response.ocs?.data!!, user)
     }
 
-    override suspend fun deleteConversationAvatar(roomToken: String): ConversationModel {
-        val url = ApiUtils.getUrlForConversationAvatar(1, _currentUser.baseUrl!!, roomToken)
-        val response = ncApiCoroutines.deleteConversationAvatar(credentials!!, url)
-        return ConversationModel.mapToConversationModel(response.ocs?.data!!, _currentUser)
-    }
-
-    override suspend fun allowGuests(token: String, allow: Boolean): GenericOverall {
-        val url = ApiUtils.getUrlForRoomPublic(
-            apiVersion,
-            _currentUser.baseUrl!!,
-            token
-        )
-
+    override suspend fun allowGuests(credentials: String?, url: String, token: String, allow: Boolean): GenericOverall {
         val result: GenericOverall = if (allow) {
             ncApiCoroutines.makeRoomPublic(
                 credentials!!,

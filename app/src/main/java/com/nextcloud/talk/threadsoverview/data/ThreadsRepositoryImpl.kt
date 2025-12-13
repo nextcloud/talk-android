@@ -8,18 +8,11 @@
 package com.nextcloud.talk.threadsoverview.data
 
 import com.nextcloud.talk.api.NcApiCoroutines
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.threads.ThreadOverall
 import com.nextcloud.talk.models.json.threads.ThreadsOverall
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import javax.inject.Inject
 
-class ThreadsRepositoryImpl @Inject constructor(
-    private val ncApiCoroutines: NcApiCoroutines,
-    userProvider: CurrentUserProviderNew
-) : ThreadsRepository {
-
-    val currentUser: User = userProvider.currentUser.blockingGet()
+class ThreadsRepositoryImpl @Inject constructor(private val ncApiCoroutines: NcApiCoroutines) : ThreadsRepository {
 
     override suspend fun getThreads(credentials: String, url: String, limit: Int?): ThreadsOverall =
         ncApiCoroutines.getThreads(credentials, url, limit)

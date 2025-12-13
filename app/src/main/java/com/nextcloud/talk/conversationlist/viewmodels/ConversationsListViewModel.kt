@@ -24,7 +24,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -40,7 +40,7 @@ import javax.inject.Inject
 class ConversationsListViewModel @Inject constructor(
     private val repository: OfflineConversationsRepository,
     private val threadsRepository: ThreadsRepository,
-    private val currentUserProvider: CurrentUserProviderNew,
+    private val currentUserProvider: CurrentUserProviderOld,
     private val openConversationsRepository: OpenConversationsRepository,
     var userManager: UserManager
 ) : ViewModel() {
@@ -120,10 +120,10 @@ class ConversationsListViewModel @Inject constructor(
         }
     }
 
-    fun getRooms() {
+    fun getRooms(user: User) {
         val startNanoTime = System.nanoTime()
         Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
-        repository.getRooms()
+        repository.getRooms(user)
     }
 
     fun checkIfThreadsExist() {
@@ -207,7 +207,22 @@ class ConversationsListViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            openConversationsRepository.fetchConversations("")
+            val apiVersion = ApiUtils.getConversationApiVersion(
+                currentUser,
+                intArrayOf(
+                    ApiUtils.API_V4,
+                    ApiUtils
+                        .API_V3,
+                    1
+                )
+            )
+            val url = ApiUtils.getUrlForOpenConversations(apiVersion, currentUser.baseUrl!!)
+
+            openConversationsRepository.fetchConversations(
+                currentUser,
+                url,
+                ""
+            )
                 .onSuccess { conversations ->
                     if (conversations.isEmpty()) {
                         _openConversationsState.value = OpenConversationsUiState.None

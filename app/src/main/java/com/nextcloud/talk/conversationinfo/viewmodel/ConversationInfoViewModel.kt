@@ -294,10 +294,24 @@ class ConversationInfoViewModel @Inject constructor(
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun setConversationReadOnly(roomToken: String, state: Int) {
+    fun setConversationReadOnly(user: User, roomToken: String, state: Int) {
         viewModelScope.launch {
             try {
-                conversationsRepository.setConversationReadOnly(roomToken, state)
+                val apiVersion = ApiUtils.getConversationApiVersion(
+                    user,
+                    intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
+                )
+                val url = ApiUtils.getUrlForConversationReadOnly(
+                    apiVersion,
+                    user.baseUrl!!,
+                    roomToken
+                )
+
+                conversationsRepository.setConversationReadOnly(
+                    user = user,
+                    url = url,
+                    state = state
+                )
                 _getConversationReadOnlyState.value = SetConversationReadOnlyViewState.Success
             } catch (exception: Exception) {
                 _getConversationReadOnlyState.value = SetConversationReadOnlyViewState.Error(exception)
@@ -337,10 +351,23 @@ class ConversationInfoViewModel @Inject constructor(
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun allowGuests(token: String, allow: Boolean) {
+    fun allowGuests(user: User, token: String, allow: Boolean) {
         viewModelScope.launch {
             try {
-                conversationsRepository.allowGuests(token, allow)
+                val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+
+                val url = ApiUtils.getUrlForRoomPublic(
+                    apiVersion,
+                    user.baseUrl!!,
+                    token
+                )
+
+                conversationsRepository.allowGuests(
+                    user = user,
+                    url = url,
+                    token = token,
+                    allow = allow
+                )
                 _allowGuestsViewState.value = AllowGuestsUIState.Success(allow)
             } catch (exception: Exception) {
                 _allowGuestsViewState.value = AllowGuestsUIState.Error(exception)
@@ -350,10 +377,10 @@ class ConversationInfoViewModel @Inject constructor(
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     @SuppressLint("SuspiciousIndentation")
-    fun setPassword(password: String, token: String) {
+    fun setPassword(user: User, url: String, password: String) {
         viewModelScope.launch {
             try {
-                conversationsRepository.setPassword(password, token)
+                conversationsRepository.setPassword(user, url, password)
                 _passwordViewState.value = PasswordUiState.Success
             } catch (exception: Exception) {
                 _passwordViewState.value = PasswordUiState.Error(exception)
@@ -402,10 +429,13 @@ class ConversationInfoViewModel @Inject constructor(
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun clearChatHistory(apiVersion: Int, roomToken: String) {
+    fun clearChatHistory(user: User, url: String) {
         viewModelScope.launch {
             try {
-                conversationsRepository.clearChatHistory(apiVersion, roomToken)
+                conversationsRepository.clearChatHistory(
+                    user,
+                    url
+                )
                 _clearChatHistoryViewState.value = ClearChatHistoryViewState.Success
             } catch (exception: Exception) {
                 _clearChatHistoryViewState.value = ClearChatHistoryViewState.Error(exception)

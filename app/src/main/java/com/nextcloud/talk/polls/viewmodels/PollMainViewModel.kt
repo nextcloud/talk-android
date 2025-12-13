@@ -14,20 +14,21 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.repositories.PollRepository
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class PollMainViewModel @Inject constructor(private val repository: PollRepository) : ViewModel() {
+class PollMainViewModel @Inject constructor(
+    private val repository: PollRepository,
+    private val currentUserProvider: CurrentUserProviderOld
+) : ViewModel() {
 
     @Inject
     lateinit var userManager: UserManager
-
-    @Inject
-    lateinit var currentUserProvider: CurrentUserProviderNew
 
     lateinit var user: User
     lateinit var roomToken: String
@@ -62,6 +63,9 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
 
     private var disposable: Disposable? = null
 
+    private val currentUser = currentUserProvider.currentUser.blockingGet()
+    private val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+
     fun setData(user: User, roomToken: String, isOwnerOrModerator: Boolean, pollId: String, pollTitle: String) {
         this.user = user
         this.roomToken = roomToken
@@ -87,7 +91,18 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
 
     private fun loadPoll() {
         _viewState.value = LoadingState
-        repository.getPoll(roomToken, pollId)
+
+        val url = ApiUtils.getUrlForPoll(
+            currentUser.baseUrl!!,
+            roomToken,
+            pollId
+        )
+        repository.getPoll(
+            credentials,
+            url,
+            roomToken,
+            pollId
+        )
             .doOnSubscribe { disposable = it }
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -96,7 +111,19 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
 
     fun endPoll() {
         _viewState.value = LoadingState
-        repository.closePoll(roomToken, pollId)
+
+        val url = ApiUtils.getUrlForPoll(
+            currentUser.baseUrl!!,
+            roomToken,
+            pollId
+        )
+
+        repository.closePoll(
+            credentials,
+            url,
+            roomToken,
+            pollId
+        )
             .doOnSubscribe { disposable = it }
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -160,8 +187,7 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
         poll.resultMode == Poll.RESULT_MODE_PUBLIC &&
             poll.votedSelf?.isNotEmpty() == true
 
-    private fun isPollCreatedByCurrentUser(poll: Poll): Boolean =
-        currentUserProvider.currentUser.blockingGet().userId == poll.actorId
+    private fun isPollCreatedByCurrentUser(poll: Poll): Boolean = currentUser.userId == poll.actorId
 
     fun dismissDialog() {
         _viewState.value = DismissDialogState

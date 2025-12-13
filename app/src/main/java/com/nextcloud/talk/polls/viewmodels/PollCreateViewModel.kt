@@ -13,13 +13,18 @@ import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.polls.adapters.PollCreateOptionItem
 import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.repositories.PollRepository
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class PollCreateViewModel @Inject constructor(private val repository: PollRepository) : ViewModel() {
+class PollCreateViewModel @Inject constructor(
+    private val repository: PollRepository,
+    private val currentUserProvider: CurrentUserProviderOld
+) : ViewModel() {
 
     private lateinit var roomToken: String
 
@@ -27,6 +32,8 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
     open class PollCreationState(val enableAddOptionButton: Boolean, val enableCreatePollButton: Boolean) : ViewState
     object PollCreatedState : ViewState
     object PollCreationFailedState : ViewState
+
+    private val currentUser = currentUserProvider.currentUser.blockingGet()
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(
         PollCreationState(
@@ -102,7 +109,15 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
         if (_question.isNotEmpty() && _options.value?.isNotEmpty() == true) {
             _viewState.value = PollCreationState(enableAddOptionButton = false, enableCreatePollButton = false)
 
+            val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+            val url = ApiUtils.getUrlForPoll(
+                currentUser.baseUrl!!,
+                roomToken
+            )
+
             repository.createPoll(
+                credentials,
+                url,
                 roomToken,
                 _question,
                 _options.value!!.map { it.pollOption },

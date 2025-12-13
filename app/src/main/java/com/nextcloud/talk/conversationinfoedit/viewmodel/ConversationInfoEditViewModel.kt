@@ -15,6 +15,8 @@ import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -25,7 +27,8 @@ import javax.inject.Inject
 
 class ConversationInfoEditViewModel @Inject constructor(
     private val repository: ChatNetworkDataSource,
-    private val conversationInfoEditRepository: ConversationInfoEditRepository
+    private val conversationInfoEditRepository: ConversationInfoEditRepository,
+    private val currentUserProvider: CurrentUserProviderOld
 ) : ViewModel() {
 
     sealed interface ViewState
@@ -53,6 +56,10 @@ class ConversationInfoEditViewModel @Inject constructor(
     val setConversationDescriptionUiState: LiveData<SetConversationDescriptionUiState>
         get() = _setConversationDescriptionUiState
 
+    private val currentUser = currentUserProvider.currentUser.blockingGet()
+
+    val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+
     fun getRoom(user: User, token: String) {
         _viewState.value = GetRoomStartState
         repository.getRoom(user, token)
@@ -62,14 +69,29 @@ class ConversationInfoEditViewModel @Inject constructor(
     }
 
     fun uploadConversationAvatar(user: User, file: File, roomToken: String) {
-        conversationInfoEditRepository.uploadConversationAvatar(user, file, roomToken)
+        val url = ApiUtils.getUrlForConversationAvatar(1, user.baseUrl!!, roomToken)
+
+        conversationInfoEditRepository.uploadConversationAvatar(
+            credentials,
+            url,
+            user,
+            file,
+            roomToken
+        )
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(UploadConversationAvatarObserver())
     }
 
     fun deleteConversationAvatar(user: User, roomToken: String) {
-        conversationInfoEditRepository.deleteConversationAvatar(user, roomToken)
+        val url = ApiUtils.getUrlForConversationAvatar(1, user.baseUrl!!, roomToken)
+
+        conversationInfoEditRepository.deleteConversationAvatar(
+            credentials,
+            url,
+            user,
+            roomToken
+        )
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(DeleteConversationAvatarObserver())
@@ -79,7 +101,22 @@ class ConversationInfoEditViewModel @Inject constructor(
     fun renameRoom(roomToken: String, newRoomName: String) {
         viewModelScope.launch {
             try {
-                conversationInfoEditRepository.renameConversation(roomToken, newRoomName)
+                val apiVersion = ApiUtils.getConversationApiVersion(
+                    currentUser,
+                    intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
+                )
+                val url = ApiUtils.getUrlForRoom(
+                    apiVersion,
+                    currentUser.baseUrl!!,
+                    roomToken
+                )
+
+                conversationInfoEditRepository.renameConversation(
+                    credentials,
+                    url,
+                    roomToken,
+                    newRoomName
+                )
                 _renameRoomUiState.value = RenameRoomUiState.Success
             } catch (exception: Exception) {
                 _renameRoomUiState.value = RenameRoomUiState.Error(exception)
@@ -91,7 +128,19 @@ class ConversationInfoEditViewModel @Inject constructor(
     fun setConversationDescription(roomToken: String, conversationDescription: String?) {
         viewModelScope.launch {
             try {
+                val apiVersion = ApiUtils.getConversationApiVersion(
+                    currentUser,
+                    intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
+                )
+                val url = ApiUtils.getUrlForConversationDescription(
+                    apiVersion,
+                    currentUser.baseUrl!!,
+                    roomToken
+                )
+
                 conversationInfoEditRepository.setConversationDescription(
+                    credentials,
+                    url,
                     roomToken,
                     conversationDescription
                 )
