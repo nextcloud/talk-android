@@ -12,8 +12,8 @@ import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
-import kotlinx.coroutines.CancellationException
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -137,6 +137,7 @@ class ContactsViewModel @Inject constructor(
             _contactsViewState.value = ContactsUiState.Loading
             try {
                 val contacts = repository.getContacts(
+                    currentUser,
                     if (query != "") query else searchQuery.value,
                     shareTypeList
                 )
