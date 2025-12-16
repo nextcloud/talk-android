@@ -36,6 +36,7 @@ import coil.memory.MemoryCache
 import coil.util.DebugLogger
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.account.AccountVerificationActivity
+import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.dagger.modules.BusModule
 import com.nextcloud.talk.dagger.modules.ContextModule
 import com.nextcloud.talk.dagger.modules.DaosModule
@@ -133,7 +134,9 @@ class NextcloudTalkApplication :
             activities?.forEach { activityInfo ->
                 try {
                     val activityClass = Class.forName(activityInfo.name)
-                    if (activityClass != AccountVerificationActivity::class.java) {
+                    if (activityClass != AccountVerificationActivity::class.java &&
+                        activityClass != BrowserLoginActivity::class.java
+                    ) {
                         @Suppress("UNCHECKED_CAST")
                         securityKeyConfigBuilder.addExcludedActivityClass(activityClass as Class<out Activity>)
                     }
