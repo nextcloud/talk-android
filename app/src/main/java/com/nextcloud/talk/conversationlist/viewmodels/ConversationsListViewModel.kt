@@ -29,11 +29,13 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -199,14 +201,18 @@ class ConversationsListViewModel @Inject constructor(
         }
     }
 
-    fun fetchOpenConversations() {
-        _openConversationsState.value = OpenConversationsUiState.None
+    suspend fun fetchOpenConversations(searchTerm: String) =
+        withContext(Dispatchers.IO) {
+            _openConversationsState.value = OpenConversationsUiState.None
 
-        if (!hasSpreedFeatureCapability(currentUser.capabilities?.spreedCapability, SpreedFeatures.LISTABLE_ROOMS)) {
-            return
-        }
+            if (!hasSpreedFeatureCapability(
+                    currentUser.capabilities?.spreedCapability,
+                    SpreedFeatures.LISTABLE_ROOMS
+                )
+            ) {
+                return@withContext
+            }
 
-        viewModelScope.launch {
             val apiVersion = ApiUtils.getConversationApiVersion(
                 currentUser,
                 intArrayOf(
@@ -218,11 +224,7 @@ class ConversationsListViewModel @Inject constructor(
             )
             val url = ApiUtils.getUrlForOpenConversations(apiVersion, currentUser.baseUrl!!)
 
-            openConversationsRepository.fetchConversations(
-                currentUser,
-                url,
-                ""
-            )
+            openConversationsRepository.fetchConversations(currentUser, url, searchTerm)
                 .onSuccess { conversations ->
                     if (conversations.isEmpty()) {
                         _openConversationsState.value = OpenConversationsUiState.None
@@ -235,7 +237,6 @@ class ConversationsListViewModel @Inject constructor(
                     _openConversationsState.value = OpenConversationsUiState.Error(exception)
                 }
         }
-    }
 
     inner class FederatedInvitationsObserver : Observer<InvitationsModel> {
         override fun onSubscribe(d: Disposable) {

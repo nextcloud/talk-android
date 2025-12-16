@@ -13,10 +13,13 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ContactsViewModel @Inject constructor(
@@ -71,11 +74,7 @@ class ContactsViewModel @Inject constructor(
     }
 
     fun updateAddButtonState() {
-        if (_selectedContacts.value.isEmpty()) {
-            _enableAddButton.value = false
-        } else {
-            _enableAddButton.value = true
-        }
+        _enableAddButton.value = _selectedContacts.value.isNotEmpty()
     }
 
     fun deselectContact(contact: AutocompleteUser) {
@@ -125,9 +124,40 @@ class ContactsViewModel @Inject constructor(
                 _contactsViewState.value = ContactsUiState.Success(contactsList)
             } catch (exception: Exception) {
                 _contactsViewState.value = ContactsUiState.Error(exception.message ?: "")
+                if (exception is CancellationException) {
+                    throw exception
+                }
             }
         }
     }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    suspend fun getBlockingContactsFromSearchParams(query: String = "") =
+        withContext(Dispatchers.IO) {
+            _contactsViewState.value = ContactsUiState.Loading
+            try {
+                val contacts = repository.getContacts(
+                    currentUser,
+                    if (query != "") query else searchQuery.value,
+                    shareTypeList
+                )
+                val contactsList: MutableList<AutocompleteUser>? = contacts.ocs!!.data?.toMutableList()
+
+                if (hideAlreadyAddedParticipants && !_clickAddButton.value) {
+                    contactsList?.removeAll(selectedParticipants.value)
+                }
+                if (_clickAddButton.value) {
+                    contactsList?.removeAll(selectedParticipants.value)
+                    contactsList?.addAll(_selectedContacts.value)
+                }
+                _contactsViewState.value = ContactsUiState.Success(contactsList)
+            } catch (exception: Exception) {
+                _contactsViewState.value = ContactsUiState.Error(exception.message ?: "")
+                if (exception is CancellationException) {
+                    throw exception
+                }
+            }
+        }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun createRoom(roomType: String, sourceType: String?, userId: String, conversationName: String?) {
