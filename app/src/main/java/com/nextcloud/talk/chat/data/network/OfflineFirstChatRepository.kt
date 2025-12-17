@@ -208,7 +208,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 withNetworkParams.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
 
                 Log.d(TAG, "Starting online request for initial loading")
-                val chatMessageEntities = sync(withNetworkParams)
+                val chatMessageEntities = getMessages(withNetworkParams)
                 if (chatMessageEntities == null) {
                     Log.e(TAG, "initial loading of messages failed")
                 }
@@ -220,7 +220,9 @@ class OfflineFirstChatRepository @Inject constructor(
             handleMessagesFromDb(newestMessageIdFromDb)
 
             if (!hasHighPerformanceBackend) {
-                initMessagePolling(newestMessageIdFromDb)
+                initLongPolling(newestMessageIdFromDb)
+            } else {
+                initRepeatingInsuranceRequest(newestMessageIdFromDb)
             }
         }
 
@@ -314,16 +316,16 @@ class OfflineFirstChatRepository @Inject constructor(
 
             if (loadFromServer) {
                 Log.d(TAG, "Starting online request for loadMoreMessages")
-                sync(withNetworkParams)
+                getMessages(withNetworkParams)
             }
 
             showMessagesBefore(internalConversationId, beforeMessageId, DEFAULT_MESSAGES_LIMIT)
             updateUiForLastCommonRead()
         }
 
-    override fun initMessagePolling(initialMessageId: Long): Job =
+    override fun initLongPolling(initialMessageId: Long): Job =
         scope.launch {
-            Log.d(TAG, "---- initMessagePolling ------------")
+            Log.d(TAG, "---- initLongPolling ------------")
 
             Log.d(TAG, "newestMessage: $initialMessageId")
 
@@ -345,11 +347,11 @@ class OfflineFirstChatRepository @Inject constructor(
                     Thread.sleep(HALF_SECOND)
                 } else {
                     // sync database with server
-                    // (This is a long blocking call because long polling (lookIntoFuture) is set)
+                    // (This is a long blocking call because long polling (lookIntoFuture and timeout) is set)
                     networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
 
                     Log.d(TAG, "Starting online request for long polling")
-                    val resultsFromSync = sync(networkParams)
+                    val resultsFromSync = getMessages(networkParams)
                     if (!resultsFromSync.isNullOrEmpty()) {
                         val chatMessages = resultsFromSync.map(ChatMessageEntity::asModel)
 
@@ -391,6 +393,17 @@ class OfflineFirstChatRepository @Inject constructor(
                 }
             }
         }
+
+    private fun initRepeatingInsuranceRequest(initialMessageId: Long) {
+        scope.launch {
+            Log.d(TAG, "---- initRepeatingInsuranceRequest ------------")
+
+            Log.d(TAG, "newestMessage: $initialMessageId")
+
+
+
+        }
+    }
 
     private suspend fun handleNewAndTempMessages(
         receivedChatMessages: List<ChatMessage>,
@@ -518,7 +531,7 @@ class OfflineFirstChatRepository @Inject constructor(
             bundle.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
 
             Log.d(TAG, "Starting online request for single message (e.g. a reply)")
-            sync(bundle)
+            getMessages(bundle)
         }
         // we cant just expect here that sync succeeded??
         return chatDao.getChatMessageForConversation(
@@ -596,7 +609,7 @@ class OfflineFirstChatRepository @Inject constructor(
         return null
     }
 
-    private suspend fun sync(bundle: Bundle): List<ChatMessageEntity>? {
+    private suspend fun getMessages(bundle: Bundle): List<ChatMessageEntity>? {
         if (!networkMonitor.isOnline.value) {
             Log.d(TAG, "Device is offline, can't load chat messages from server")
             return null

@@ -71,7 +71,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
      * the database with the server and emits the new messages to [messageFlow],
      * else it simply retries after timeout.
      */
-    fun initMessagePolling(initialMessageId: Long): Job
+    fun initLongPolling(initialMessageId: Long): Job
 
     /**
      * Gets a individual message.
