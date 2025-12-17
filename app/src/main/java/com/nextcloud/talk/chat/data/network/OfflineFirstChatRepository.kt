@@ -157,6 +157,8 @@ class OfflineFirstChatRepository @Inject constructor(
             Log.d(TAG, "newestMessageIdFromDb: $newestMessageIdFromDb")
 
             val weAlreadyHaveSomeOfflineMessages = newestMessageIdFromDb > 0
+
+            // do not take the conversationModel.lastReadMessage as it could have been updated
             val weHaveAtLeastTheLastReadMessage = newestMessageIdFromDb >= conversationModel.lastReadMessage.toLong()
             Log.d(TAG, "weAlreadyHaveSomeOfflineMessages:$weAlreadyHaveSomeOfflineMessages")
             Log.d(TAG, "weHaveAtLeastTheLastReadMessage:$weHaveAtLeastTheLastReadMessage")
@@ -187,7 +189,6 @@ class OfflineFirstChatRepository @Inject constructor(
                     lookIntoFuture = false,
                     timeout = 0,
                     includeLastKnown = true,
-                    setReadMarker = true,
                     lastKnown = null
                 )
                 withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
@@ -291,7 +292,6 @@ class OfflineFirstChatRepository @Inject constructor(
                 lookIntoFuture = false,
                 timeout = 0,
                 includeLastKnown = false,
-                setReadMarker = true,
                 lastKnown = beforeMessageId.toInt()
             )
             withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
@@ -319,7 +319,6 @@ class OfflineFirstChatRepository @Inject constructor(
                 // initially no messages but someone writes us in the first 30 seconds.
                 timeout = 0,
                 includeLastKnown = false,
-                setReadMarker = true,
                 lastKnown = initialMessageId.toInt()
             )
 
@@ -371,7 +370,6 @@ class OfflineFirstChatRepository @Inject constructor(
                         lookIntoFuture = true,
                         timeout = 30,
                         includeLastKnown = false,
-                        setReadMarker = true,
                         lastKnown = newestMessage
                     )
 
@@ -462,7 +460,6 @@ class OfflineFirstChatRepository @Inject constructor(
         lookIntoFuture: Boolean,
         timeout: Int,
         includeLastKnown: Boolean,
-        setReadMarker: Boolean,
         lastKnown: Int?,
         limit: Int = DEFAULT_MESSAGES_LIMIT
     ): HashMap<String, Int> {
@@ -484,7 +481,7 @@ class OfflineFirstChatRepository @Inject constructor(
         fieldMap["limit"] = limit
 
         fieldMap["lookIntoFuture"] = if (lookIntoFuture) 1 else 0
-        fieldMap["setReadMarker"] = if (setReadMarker) 1 else 0
+        fieldMap["setReadMarker"] = 0
 
         return fieldMap
     }
@@ -501,7 +498,6 @@ class OfflineFirstChatRepository @Inject constructor(
                 lookIntoFuture = false,
                 timeout = 0,
                 includeLastKnown = true,
-                setReadMarker = false,
                 lastKnown = messageId.toInt(),
                 limit = 1
             )

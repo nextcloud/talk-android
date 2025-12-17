@@ -94,6 +94,10 @@ class ChatViewModel @Inject constructor(
 
     lateinit var currentUser: User
 
+    private var localLastReadMessage: Int = 0
+
+    private lateinit var currentConversation: ConversationModel
+
     private val mediaPlayerManager: MediaPlayerManager = MediaPlayerManager.sharedInstance(appPreferences)
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
@@ -307,7 +311,10 @@ class ChatViewModel @Inject constructor(
     }
 
     fun updateConversation(currentConversation: ConversationModel) {
+        this.currentConversation = currentConversation
         chatRepository.updateConversation(currentConversation)
+
+        advanceLocalLastReadMessageIfNeeded(currentConversation.lastReadMessage)
     }
 
     fun getRoom(user: User, token: String) {
@@ -564,7 +571,25 @@ class ChatViewModel @Inject constructor(
             })
     }
 
-    fun setChatReadMarker(credentials: String, url: String, lastReadMessage: Int) {
+    fun advanceLocalLastReadMessageIfNeeded(messageId: Int) {
+        if (localLastReadMessage < messageId) {
+            localLastReadMessage = messageId
+        }
+    }
+
+    /**
+     * Please use with caution to not spam the server
+     */
+    fun updateRemoteLastReadMessageIfNeeded(credentials: String, url: String) {
+        if (localLastReadMessage > currentConversation.lastReadMessage) {
+            setChatReadMessage(credentials, url, localLastReadMessage)
+        }
+    }
+
+    /**
+     * Please use with caution to not spam the server
+     */
+    fun setChatReadMessage(credentials: String, url: String, lastReadMessage: Int) {
         chatNetworkDataSource.setChatReadMarker(credentials, url, lastReadMessage)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
