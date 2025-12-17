@@ -50,7 +50,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     fun updateConversation(conversationModel: ConversationModel)
 
-    fun initScopeAndLoadInitialMessages(withNetworkParams: Bundle)
+    fun initScopeAndLoadInitialMessages(withNetworkParams: Bundle, hasHighPerformanceBackend: Boolean)
 
     /**
      * Loads messages from local storage. If the messages are not found, then it

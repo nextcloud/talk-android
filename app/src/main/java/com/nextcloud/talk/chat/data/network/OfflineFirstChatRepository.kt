@@ -140,12 +140,15 @@ class OfflineFirstChatRepository @Inject constructor(
         this.conversationModel = conversationModel
     }
 
-    override fun initScopeAndLoadInitialMessages(withNetworkParams: Bundle) {
+    override fun initScopeAndLoadInitialMessages(withNetworkParams: Bundle, hasHighPerformanceBackend: Boolean) {
         scope = CoroutineScope(Dispatchers.IO)
-        loadInitialMessages(withNetworkParams)
+        loadInitialMessages(
+            withNetworkParams,
+            hasHighPerformanceBackend
+        )
     }
 
-    private fun loadInitialMessages(withNetworkParams: Bundle): Job =
+    private fun loadInitialMessages(withNetworkParams: Bundle, hasHighPerformanceBackend: Boolean): Job =
         scope.launch {
             Log.d(TAG, "---- loadInitialMessages ------------")
             newXChatLastCommonRead = conversationModel.lastCommonReadMessage
@@ -161,19 +164,27 @@ class OfflineFirstChatRepository @Inject constructor(
             val weHaveAtLeastTheLastReadMessage = newestMessageIdFromDb >= conversationModel.lastReadMessage.toLong()
             Log.d(TAG, "weAlreadyHaveSomeOfflineMessages:$weAlreadyHaveSomeOfflineMessages")
             Log.d(TAG, "weHaveAtLeastTheLastReadMessage:$weHaveAtLeastTheLastReadMessage")
+            Log.d(TAG, "hasHighPerformanceBackend:$hasHighPerformanceBackend")
 
-            if (weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage) {
+            if (weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage && !hasHighPerformanceBackend) {
                 Log.d(
                     TAG,
                     "Initial online request is skipped because offline messages are up to date" +
                         " until lastReadMessage"
                 )
 
-                // This is a problem! No long polling should be done when we have the HPB. How to initially get the
-                // messages newer than TheLastReadMessage?
-                Log.d(TAG, "For messages newer than lastRead, lookIntoFuture will load them.")
+                // For messages newer than lastRead, lookIntoFuture will load them.
+                // We must only end up here when NO HPB is used!
+                // If a HPB is used, longPolling is not available to handle loading of newer messages.
+                // When a HPB is used the initial request must be made.
             } else {
-                if (!weAlreadyHaveSomeOfflineMessages) {
+                if (hasHighPerformanceBackend) {
+                    Log.d(
+                        TAG,
+                        "An online request for newest 100 messages is made because HPB is used (No long " +
+                            "polling available to catch up with messages newer than last read.)"
+                    )
+                } else if (!weAlreadyHaveSomeOfflineMessages) {
                     Log.d(TAG, "An online request for newest 100 messages is made because offline chat is empty")
                     if (networkMonitor.isOnline.value.not()) {
                         _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
@@ -208,8 +219,9 @@ class OfflineFirstChatRepository @Inject constructor(
 
             handleMessagesFromDb(newestMessageIdFromDb)
 
-            // temp disabled to test only signaling
-            // initMessagePolling(newestMessageIdFromDb)
+            if (!hasHighPerformanceBackend) {
+                initMessagePolling(newestMessageIdFromDb)
+            }
         }
 
     private suspend fun handleMessagesFromDb(newestMessageIdFromDb: Long) {
