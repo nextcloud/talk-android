@@ -230,6 +230,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -250,6 +251,8 @@ import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
 
 @Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -660,6 +663,7 @@ class ChatActivity :
         this.lifecycle.removeObserver(chatViewModel)
     }
 
+    @OptIn(FlowPreview::class)
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n", "ResourceAsColor")
     @Suppress("LongMethod")
     private fun initObservers() {
@@ -939,7 +943,7 @@ class ChatActivity :
 
                     val id = state.msg.ocs!!.data!!.parentMessage!!.id.toString()
                     val index = adapter?.getMessagePositionById(id) ?: 0
-                    val message = adapter?.items?.get(index)?.item as ChatMessage
+                    val message = adapter?.items?.get(index)?.item as? ChatMessage
                     setMessageAsDeleted(message)
                 }
 
@@ -998,43 +1002,46 @@ class ChatActivity :
             }
         }
 
-        this.lifecycleScope.launch {
-            chatViewModel.getMessageFlow
-                .onEach { triple ->
-                    val lookIntoFuture = triple.first
-                    val setUnreadMessagesMarker = triple.second
-                    var chatMessageList = triple.third
+        chatViewModel.getMessageFlow
+            .onEach { triple ->
+                val lookIntoFuture = triple.first
+                val setUnreadMessagesMarker = triple.second
+                var chatMessageList = triple.third
 
-                    chatMessageList = handleSystemMessages(chatMessageList)
-                    chatMessageList = handleThreadMessages(chatMessageList)
-                    if (chatMessageList.isEmpty()) {
-                        return@onEach
-                    }
+                chatMessageList = handleSystemMessages(chatMessageList)
+                chatMessageList = handleThreadMessages(chatMessageList)
+                if (chatMessageList.isEmpty()) {
+                    return@onEach
+                }
 
-                    determinePreviousMessageIds(chatMessageList)
+                determinePreviousMessageIds(chatMessageList)
 
-                    handleExpandableSystemMessages(chatMessageList)
+                handleExpandableSystemMessages(chatMessageList)
 
-                    if (ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType) {
-                        adapter?.clear()
-                        adapter?.notifyDataSetChanged()
-                    }
-
-                    if (lookIntoFuture) {
-                        Log.d(TAG, "chatMessageList.size in getMessageFlow:" + chatMessageList.size)
-                        processMessagesFromTheFuture(chatMessageList, setUnreadMessagesMarker)
-                    } else {
-                        processMessagesNotFromTheFuture(chatMessageList)
-                        collapseSystemMessages()
-                    }
-
-                    processExpiredMessages()
-                    processCallStartedMessages()
-
+                if (ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType) {
+                    adapter?.clear()
                     adapter?.notifyDataSetChanged()
                 }
-                .collect()
-        }
+
+                if (lookIntoFuture) {
+                    Log.d(TAG, "chatMessageList.size in getMessageFlow:" + chatMessageList.size)
+                    processMessagesFromTheFuture(chatMessageList, setUnreadMessagesMarker)
+                } else {
+                    processMessagesNotFromTheFuture(chatMessageList)
+                    collapseSystemMessages()
+                }
+
+                processExpiredMessages()
+                processCallStartedMessages()
+
+                adapter?.notifyDataSetChanged()
+            }
+            .debounce(300)
+            .onEach {
+                advanceLocalLastReadMessageIfNeeded()
+            }
+            .launchIn(lifecycleScope)
+
 
         this.lifecycleScope.launch {
             chatViewModel.getRemoveMessageFlow
@@ -1461,13 +1468,11 @@ class ChatActivity :
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    advanceLocalLastReadMessageIfNeeded()
+                    updateRemoteLastReadMessageIfNeeded()
                     if (isScrolledToBottom()) {
                         binding.unreadMessagesPopup.visibility = View.GONE
                         binding.scrollDownButton.visibility = View.GONE
-
-                        (adapter?.items?.getOrNull(0)?.item as? ChatMessage)?.jsonMessageId?.let {
-                            markAsRead(it)
-                        }
                     } else {
                         if (binding.unreadMessagesPopup.isShown) {
                             binding.scrollDownButton.visibility = View.GONE
@@ -2759,7 +2764,34 @@ class ChatActivity :
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
+        updateRemoteLastReadMessageIfNeeded()
+
         adapter = null
+    }
+
+    private fun advanceLocalLastReadMessageIfNeeded() {
+        val position = layoutManager?.findFirstVisibleItemPosition()
+        position?.let {
+            // Casting could fail if it's not a chatMessage. It should not matter as the function is triggered often
+            // enough. If it's a problem, either improve or wait for migration to Jetpack Compose.
+            val message = adapter?.items?.getOrNull(it)?.item as? ChatMessage
+            message?.jsonMessageId?.let { messageId ->
+                chatViewModel.advanceLocalLastReadMessageIfNeeded(messageId)
+            }
+        }
+    }
+
+    private fun updateRemoteLastReadMessageIfNeeded() {
+        val url = ApiUtils.getUrlForChatReadMarker(
+            ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1)),
+            conversationUser.baseUrl!!,
+            roomToken
+        )
+
+        chatViewModel.updateRemoteLastReadMessageIfNeeded(
+            credentials = credentials!!,
+            url = url
+        )
     }
 
     private fun isActivityNotChangingConfigurations(): Boolean = !isChangingConfigurations
@@ -3198,7 +3230,7 @@ class ChatActivity :
                 it.item is ChatMessage && (it.item as ChatMessage).id == messageId
             }
             if (messagePosition >= 0) {
-                val currentItem = adapter?.items?.get(messagePosition)?.item
+                val currentItem = adapter?.items?.getOrNull(messagePosition)?.item
                 if (currentItem is ChatMessage && currentItem.id == messageId) {
                     return Pair(currentItem, messagePosition)
                 } else {
@@ -3947,25 +3979,13 @@ class ChatActivity :
         }
     }
 
-    private fun markAsRead(messageId: Int) {
-        chatViewModel.setChatReadMarker(
-            credentials!!,
-            ApiUtils.getUrlForChatReadMarker(
-                ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1)),
-                conversationUser?.baseUrl!!,
-                roomToken
-            ),
-            messageId
-        )
-    }
-
     fun markAsUnread(message: IMessage?) {
         val chatMessage = message as ChatMessage?
         if (chatMessage!!.previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
             // previousMessageId is taken to mark chat as unread even when "chat-unread" capability is not available
             // It should be checked if "chat-unread" capability is available and then use
             // https://nextcloud-talk.readthedocs.io/en/latest/chat/#mark-chat-as-unread
-            chatViewModel.setChatReadMarker(
+            chatViewModel.setChatReadMessage(
                 credentials!!,
                 ApiUtils.getUrlForChatReadMarker(
                     ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1)),
