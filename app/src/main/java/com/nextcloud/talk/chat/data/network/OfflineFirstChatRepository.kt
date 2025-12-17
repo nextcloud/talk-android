@@ -13,6 +13,7 @@ import android.util.Log
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.domain.ChatPullResult
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.mappers.asEntity
@@ -25,14 +26,11 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
-import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.message.SendMessageUtils
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -44,9 +42,11 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 import kotlin.collections.any
@@ -540,74 +540,91 @@ class OfflineFirstChatRepository @Inject constructor(
         ).map(ChatMessageEntity::asModel)
     }
 
-    @Suppress("UNCHECKED_CAST", "MagicNumber", "Detekt.TooGenericExceptionCaught")
-    private fun getMessagesFromServer(bundle: Bundle): Pair<Int, List<ChatMessageJson>>? {
+    fun pullMessagesFlow(bundle: Bundle): Flow<ChatPullResult> = flow {
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
-
         var attempts = 1
+
         while (attempts < 5) {
-            Log.d(TAG, "message limit: " + fieldMap["limit"])
-            try {
-                val result = network.pullChatMessages(credentials, urlForChatting, fieldMap)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .map { it ->
-                        when (it.code()) {
-                            HTTP_CODE_OK -> {
-                                Log.d(TAG, "getMessagesFromServer HTTP_CODE_OK")
-                                newXChatLastCommonRead = it.headers()["X-Chat-Last-Common-Read"]?.let {
-                                    Integer.parseInt(it)
-                                }
-
-                                return@map Pair(
-                                    HTTP_CODE_OK,
-                                    (it.body() as ChatOverall).ocs!!.data!!
-                                )
-                            }
-
-                            HTTP_CODE_NOT_MODIFIED -> {
-                                Log.d(TAG, "getMessagesFromServer HTTP_CODE_NOT_MODIFIED")
-
-                                return@map Pair(
-                                    HTTP_CODE_NOT_MODIFIED,
-                                    listOf<ChatMessageJson>()
-                                )
-                            }
-
-                            HTTP_CODE_PRECONDITION_FAILED -> {
-                                Log.d(TAG, "getMessagesFromServer HTTP_CODE_PRECONDITION_FAILED")
-
-                                return@map Pair(
-                                    HTTP_CODE_PRECONDITION_FAILED,
-                                    listOf<ChatMessageJson>()
-                                )
-                            }
-
-                            else -> {
-                                return@map Pair(
-                                    HTTP_CODE_PRECONDITION_FAILED,
-                                    listOf<ChatMessageJson>()
-                                )
-                            }
-                        }
+            runCatching {
+                network.pullChatMessages(credentials, urlForChatting, fieldMap)
+            }.fold(
+                onSuccess = { response ->
+                    val result = when (response.code()) {
+                        HTTP_CODE_OK -> ChatPullResult.Success(
+                            messages = response.body()?.ocs?.data.orEmpty(),
+                            lastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.toInt()
+                        )
+                        HTTP_CODE_NOT_MODIFIED -> ChatPullResult.NotModified
+                        HTTP_CODE_PRECONDITION_FAILED -> ChatPullResult.PreconditionFailed
+                        else -> ChatPullResult.Error(HttpException(response))
                     }
-                    .blockingSingle()
-                return result
-            } catch (e: Exception) {
-                Log.e(TAG, "Something went wrong when pulling chat messages (attempt: $attempts)", e)
-                attempts++
 
-                val newMessageLimit = when (attempts) {
-                    2 -> 50
-                    3 -> 10
-                    else -> 5
+                    emit(result)
+                    return@flow
+                },
+                onFailure = { e ->
+                    Log.e(TAG, "Attempt $attempts failed", e)
+                    attempts++
+                    fieldMap["limit"] = when (attempts) { 2 -> 50; 3 -> 10; else -> 5 }
                 }
-                fieldMap["limit"] = newMessageLimit
-            }
+            )
         }
-        Log.e(TAG, "All attempts to get messages from server failed")
-        return null
-    }
+
+        emit(ChatPullResult.Error(IllegalStateException("All attempts failed")))
+    }.flowOn(Dispatchers.IO)
+
+
+
+    // private suspend fun getMessages(bundle: Bundle): List<ChatMessageEntity>? {
+    //     if (!networkMonitor.isOnline.value) {
+    //         Log.d(TAG, "Device is offline, can't load chat messages from server")
+    //         return null
+    //     }
+    //
+    //     val result = pullMessagesFlow(bundle)
+    //     if (result == null) {
+    //         Log.d(TAG, "No result from server")
+    //         return null
+    //     }
+    //
+    //     var chatMessagesFromSync: List<ChatMessageEntity>? = null
+    //
+    //     val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
+    //     val queriedMessageId = fieldMap["lastKnownMessageId"]
+    //     val lookIntoFuture = fieldMap["lookIntoFuture"] == 1
+    //
+    //     val statusCode = result.first
+    //
+    //     val hasHistory = getHasHistory(statusCode, lookIntoFuture)
+    //
+    //     Log.d(
+    //         TAG,
+    //         "internalConv=$internalConversationId statusCode=$statusCode lookIntoFuture=$lookIntoFuture " +
+    //             "hasHistory=$hasHistory " +
+    //             "queriedMessageId=$queriedMessageId"
+    //     )
+    //
+    //     val blockContainingQueriedMessage: ChatBlockEntity? = getBlockOfMessage(queriedMessageId)
+    //
+    //     if (blockContainingQueriedMessage != null && !hasHistory) {
+    //         blockContainingQueriedMessage.hasHistory = false
+    //         chatBlocksDao.upsertChatBlock(blockContainingQueriedMessage)
+    //         Log.d(TAG, "End of chat was reached so hasHistory=false is set")
+    //     }
+    //
+    //     if (result.second.isNotEmpty()) {
+    //         chatMessagesFromSync = updateMessagesData(
+    //             result.second,
+    //             blockContainingQueriedMessage,
+    //             lookIntoFuture,
+    //             hasHistory
+    //         )
+    //     } else {
+    //         Log.d(TAG, "no data is updated...")
+    //     }
+    //
+    //     return chatMessagesFromSync
+    // }
 
     private suspend fun getMessages(bundle: Bundle): List<ChatMessageEntity>? {
         if (!networkMonitor.isOnline.value) {
@@ -615,49 +632,59 @@ class OfflineFirstChatRepository @Inject constructor(
             return null
         }
 
-        val result = getMessagesFromServer(bundle)
-        if (result == null) {
-            Log.d(TAG, "No result from server")
-            return null
-        }
-
-        var chatMessagesFromSync: List<ChatMessageEntity>? = null
-
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
         val queriedMessageId = fieldMap["lastKnownMessageId"]
         val lookIntoFuture = fieldMap["lookIntoFuture"] == 1
 
-        val statusCode = result.first
+        val result = pullMessagesFlow(bundle).first()
 
-        val hasHistory = getHasHistory(statusCode, lookIntoFuture)
+        return when (result) {
 
-        Log.d(
-            TAG,
-            "internalConv=$internalConversationId statusCode=$statusCode lookIntoFuture=$lookIntoFuture " +
-                "hasHistory=$hasHistory " +
-                "queriedMessageId=$queriedMessageId"
-        )
+            is ChatPullResult.Success -> {
+                val hasHistory = getHasHistory(HTTP_CODE_OK, lookIntoFuture)
 
-        val blockContainingQueriedMessage: ChatBlockEntity? = getBlockOfMessage(queriedMessageId)
+                Log.d(
+                    TAG,
+                    "internalConv=$internalConversationId statusCode=${HTTP_CODE_OK} lookIntoFuture=$lookIntoFuture " +
+                        "hasHistory=$hasHistory queriedMessageId=$queriedMessageId"
+                )
 
-        if (blockContainingQueriedMessage != null && !hasHistory) {
-            blockContainingQueriedMessage.hasHistory = false
-            chatBlocksDao.upsertChatBlock(blockContainingQueriedMessage)
-            Log.d(TAG, "End of chat was reached so hasHistory=false is set")
+                val blockContainingQueriedMessage: ChatBlockEntity? = getBlockOfMessage(queriedMessageId)
+
+                blockContainingQueriedMessage?.takeIf { !hasHistory }?.apply {
+                    this.hasHistory = false
+                    chatBlocksDao.upsertChatBlock(this)
+                    Log.d(TAG, "End of chat reached, set hasHistory=false")
+                }
+
+                if (result.messages.isNotEmpty()) {
+                    updateMessagesData(
+                        result.messages,
+                        blockContainingQueriedMessage,
+                        lookIntoFuture,
+                        hasHistory
+                    )
+                } else {
+                    Log.d(TAG, "No new messages to update")
+                    null
+                }
+            }
+
+            is ChatPullResult.NotModified -> {
+                Log.d(TAG, "Server returned NOT_MODIFIED, nothing to update")
+                null
+            }
+
+            is ChatPullResult.PreconditionFailed -> {
+                Log.d(TAG, "Server returned PRECONDITION_FAILED, nothing to update")
+                null
+            }
+
+            is ChatPullResult.Error -> {
+                Log.e(TAG, "Error pulling messages from server", result.throwable)
+                null
+            }
         }
-
-        if (result.second.isNotEmpty()) {
-            chatMessagesFromSync = updateMessagesData(
-                result.second,
-                blockContainingQueriedMessage,
-                lookIntoFuture,
-                hasHistory
-            )
-        } else {
-            Log.d(TAG, "no data is updated...")
-        }
-
-        return chatMessagesFromSync
     }
 
     private suspend fun OfflineFirstChatRepository.updateMessagesData(
