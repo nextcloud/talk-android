@@ -158,7 +158,6 @@ class OfflineFirstChatRepository @Inject constructor(
 
             val weAlreadyHaveSomeOfflineMessages = newestMessageIdFromDb > 0
 
-            // do not take the conversationModel.lastReadMessage as it could have been updated
             val weHaveAtLeastTheLastReadMessage = newestMessageIdFromDb >= conversationModel.lastReadMessage.toLong()
             Log.d(TAG, "weAlreadyHaveSomeOfflineMessages:$weAlreadyHaveSomeOfflineMessages")
             Log.d(TAG, "weHaveAtLeastTheLastReadMessage:$weHaveAtLeastTheLastReadMessage")
@@ -169,6 +168,9 @@ class OfflineFirstChatRepository @Inject constructor(
                     "Initial online request is skipped because offline messages are up to date" +
                         " until lastReadMessage"
                 )
+
+                // This is a problem! No long polling should be done when we have the HPB. How to initially get the
+                // messages newer than TheLastReadMessage?
                 Log.d(TAG, "For messages newer than lastRead, lookIntoFuture will load them.")
             } else {
                 if (!weAlreadyHaveSomeOfflineMessages) {
