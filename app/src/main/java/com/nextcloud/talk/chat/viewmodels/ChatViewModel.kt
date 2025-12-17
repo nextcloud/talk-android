@@ -508,12 +508,13 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun loadMessages(withCredentials: String, withUrl: String) {
+    fun loadMessages(withCredentials: String, withUrl: String, hasHighPerformanceBackend: Boolean) {
         val bundle = Bundle()
         bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
         bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
         chatRepository.initScopeAndLoadInitialMessages(
-            withNetworkParams = bundle
+            withNetworkParams = bundle,
+            hasHighPerformanceBackend = hasHighPerformanceBackend
         )
     }
 

@@ -830,7 +830,9 @@ class ChatActivity :
 
                         chatViewModel.loadMessages(
                             withCredentials = credentials!!,
-                            withUrl = urlForChatting
+                            withUrl = urlForChatting,
+                            hasHighPerformanceBackend =
+                            WebSocketConnectionHelper.getWebSocketInstanceForUser(conversationUser) != null
                         )
                     } else {
                         Log.w(
@@ -1041,7 +1043,6 @@ class ChatActivity :
                 advanceLocalLastReadMessageIfNeeded()
             }
             .launchIn(lifecycleScope)
-
 
         this.lifecycleScope.launch {
             chatViewModel.getRemoveMessageFlow
@@ -2764,6 +2765,10 @@ class ChatActivity :
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
+
+        // TODO: when updating remote last read message in onPause, there is a race condition with loading conversations
+        // for conversation list. It may or may not include info about the sent last read message...
+        // -> save this field offline in conversation?
         updateRemoteLastReadMessageIfNeeded()
 
         adapter = null
@@ -2920,6 +2925,7 @@ class ChatActivity :
 
     private fun setupWebsocket() {
         if (currentConversation == null || conversationUser == null) {
+            Log.e(TAG, "setupWebsocket: currentConversation or conversationUser is null")
             return
         }
 
