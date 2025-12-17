@@ -10,7 +10,10 @@ package com.nextcloud.talk.contacts.repository
 import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.RoomOverall
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class FakeRepositoryError : ContactsRepository {
     @Suppress("Detekt.TooGenericExceptionThrown")
@@ -28,4 +31,9 @@ class FakeRepositoryError : ContactsRepository {
 
     override fun getImageUri(user: User, avatarId: String, requestBigSize: Boolean) =
         "https://mydoman.com/index.php/avatar/$avatarId/512"
+
+    override fun getContactsFlow(user: User, searchQuery: String?): Flow<List<AutocompleteUser>> =
+        flow {
+            // unused atm
+        }
 }
