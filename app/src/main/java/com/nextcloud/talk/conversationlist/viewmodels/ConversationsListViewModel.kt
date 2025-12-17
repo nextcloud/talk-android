@@ -6,25 +6,36 @@
  */
 package com.nextcloud.talk.conversationlist.viewmodels
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.R
+import com.nextcloud.talk.adapters.items.ContactItem
+import com.nextcloud.talk.adapters.items.ConversationItem
+import com.nextcloud.talk.adapters.items.GenericTextHeaderItem
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
+import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.data.InvitationsModel
 import com.nextcloud.talk.invitation.data.InvitationsRepository
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
+import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -32,7 +43,10 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -44,6 +58,7 @@ class ConversationsListViewModel @Inject constructor(
     private val threadsRepository: ThreadsRepository,
     private val currentUserProvider: CurrentUserProviderOld,
     private val openConversationsRepository: OpenConversationsRepository,
+    private val contactsRepository: ContactsRepository,
     var userManager: UserManager
 ) : ViewModel() {
 
@@ -52,6 +67,9 @@ class ConversationsListViewModel @Inject constructor(
 
     @Inject
     lateinit var arbitraryStorageManager: ArbitraryStorageManager
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private val _currentUser = currentUserProvider.currentUser.blockingGet()
     val currentUser: User = _currentUser
@@ -119,6 +137,53 @@ class ConversationsListViewModel @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(FederatedInvitationsObserver())
+        }
+    }
+
+    private val _searchResultFlow: MutableStateFlow<List<AbstractFlexibleItem<*>>> = MutableStateFlow(listOf())
+    val searchResultFlow = _searchResultFlow.asStateFlow()
+
+    fun getSearchQuery(context: Context, filter: String) {
+        val openConversationsTitle = context.resources!!.getString(R.string.openConversations)
+        val openConversationsHeader = GenericTextHeaderItem(openConversationsTitle, viewThemeUtils)
+        val usersTitle = context.resources!!.getString(R.string.nc_user)
+        val usersHeader = GenericTextHeaderItem(usersTitle, viewThemeUtils)
+        val actorTypeConverter = EnumActorTypeConverter()
+
+        viewModelScope.launch {
+            combine(
+                openConversationsRepository.fetchOpenConversationsFlow(currentUser, filter)
+                    .map { list ->
+                        list.map { conversation ->
+                            ConversationItem(
+                                ConversationModel.mapToConversationModel(conversation, currentUser),
+                                currentUser,
+                                context,
+                                openConversationsHeader,
+                                viewThemeUtils
+                            )
+                        }
+                    },
+                contactsRepository.getContactsFlow(currentUser, filter)
+                    .map { list ->
+                        list.map { autocompleteUser ->
+                            val participant = Participant()
+                            participant.actorId = autocompleteUser.id
+                            participant.actorType = actorTypeConverter.getFromString(autocompleteUser.source)
+                            participant.displayName = autocompleteUser.label
+
+                            ContactItem(
+                                participant,
+                                currentUser,
+                                usersHeader,
+                                viewThemeUtils
+                            )
+                        }
+                    }
+            ) { openConversations, users -> openConversations + users }.collect { searchResults ->
+                _searchResultFlow.emit(searchResults)
+                // TODO can this handle messages too
+            }
         }
     }
 
