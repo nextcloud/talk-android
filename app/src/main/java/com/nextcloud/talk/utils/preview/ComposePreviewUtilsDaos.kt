@@ -212,7 +212,7 @@ class DummyChatBlocksDaoImpl : ChatBlocksDao {
         internalConversationId: String,
         threadId: Long?,
         messageId: Long
-    ): Flow<List<ChatBlockEntity?>> = flowOf()
+    ): Flow<List<ChatBlockEntity>> = flowOf()
 
     override fun getConnectedChatBlocks(
         internalConversationId: String,
