@@ -10,4 +10,10 @@
         android:id="@+id/send_without_notification"
         android:icon="@drawable/ic_baseline_notifications_off_24"
         android:title="@string/send_without_notification" />
+
+    <item
+        android:id="@+id/send_later"
+        android:icon="@drawable/outline_access_time_24"
+        android:title="@string/send_later" />
+
 </menu>
