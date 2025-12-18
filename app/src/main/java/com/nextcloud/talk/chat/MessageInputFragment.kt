@@ -43,6 +43,9 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.widget.EmojiTextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import coil.Coil.imageLoader
@@ -167,9 +170,20 @@ class MessageInputFragment : Fragment() {
         }
     }
 
+    // https://stackoverflow.com/a/54648758/14183836
+    // Would be easier to move the capabilities observability to kotlin flows/suspend
+    fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+        observe(lifecycleOwner, object : Observer<T> {
+            override fun onChanged(value: T) {
+                observer.onChanged(value)
+                removeObserver(this)
+            }
+        })
+    }
+
     private fun initObservers() {
         Log.d(TAG, "LifeCyclerOwner is: ${viewLifecycleOwner.lifecycle}")
-        chatActivity.chatViewModel.getCapabilitiesViewState.observe(viewLifecycleOwner) { state ->
+        chatActivity.chatViewModel.getCapabilitiesViewState.observeOnce(viewLifecycleOwner) { state ->
             when (state) {
                 is ChatViewModel.GetCapabilitiesUpdateState -> {
                     restoreState()
