@@ -1605,7 +1605,7 @@ class ConversationsListActivity :
                 }
 
                 is LoadMoreResultsItem -> {
-                    loadMoreMessages()
+                    conversationsListViewModel.loadMoreMessages(context)
                 }
 
                 is ConversationItem -> {

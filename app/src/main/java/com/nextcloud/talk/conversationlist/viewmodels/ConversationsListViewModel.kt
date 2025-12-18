@@ -16,17 +16,22 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ContactItem
 import com.nextcloud.talk.adapters.items.ConversationItem
 import com.nextcloud.talk.adapters.items.GenericTextHeaderItem
+import com.nextcloud.talk.adapters.items.LoadMoreResultsItem
+import com.nextcloud.talk.adapters.items.MessageResultItem
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.data.InvitationsModel
 import com.nextcloud.talk.invitation.data.InvitationsRepository
+import com.nextcloud.talk.messagesearch.MessageSearchHelper
+import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
+import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
@@ -41,6 +46,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -48,7 +54,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.asFlow
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -59,21 +67,18 @@ class ConversationsListViewModel @Inject constructor(
     private val currentUserProvider: CurrentUserProviderOld,
     private val openConversationsRepository: OpenConversationsRepository,
     private val contactsRepository: ContactsRepository,
+    private val viewThemeUtils: ViewThemeUtils,
+    private val unifiedSearchRepository: UnifiedSearchRepository,
+    private val invitationsRepository: InvitationsRepository,
+    private val arbitraryStorageManager: ArbitraryStorageManager,
     var userManager: UserManager
 ) : ViewModel() {
-
-    @Inject
-    lateinit var invitationsRepository: InvitationsRepository
-
-    @Inject
-    lateinit var arbitraryStorageManager: ArbitraryStorageManager
-
-    @Inject
-    lateinit var viewThemeUtils: ViewThemeUtils
 
     private val _currentUser = currentUserProvider.currentUser.blockingGet()
     val currentUser: User = _currentUser
     val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token) ?: ""
+
+    private val searchHelper = MessageSearchHelper(unifiedSearchRepository, currentUser)
 
     sealed interface ViewState
 
@@ -179,11 +184,62 @@ class ConversationsListViewModel @Inject constructor(
                                 viewThemeUtils
                             )
                         }
+                    },
+                getMessagesFlow(filter)
+                    .map { (messages, hasMore) ->
+                        messages.mapIndexed { index, entry ->
+                            MessageResultItem(
+                                context,
+                                currentUser,
+                                entry,
+                                index == 0,
+                                viewThemeUtils = viewThemeUtils
+                            )
+                        }.let {
+                            if (hasMore) {
+                                it + LoadMoreResultsItem
+                            } else {
+                                it
+                            }
+                        }
                     }
-            ) { openConversations, users -> openConversations + users }.collect { searchResults ->
-                _searchResultFlow.emit(searchResults)
-                // TODO can this handle messages too
-            }
+            ) { openConversations, users, messages -> openConversations + users + messages }
+                .collect { searchResults ->
+                    _searchResultFlow.emit(searchResults)
+                }
+        }
+    }
+
+    private fun getMessagesFlow(search: String): Flow<MessageSearchResults> =
+        searchHelper.startMessageSearch(search).subscribeOn(Schedulers.io()).asFlow()
+
+    fun loadMoreMessages(context: Context) {
+        viewModelScope.launch {
+            searchHelper.loadMore()
+                ?.asFlow()
+                ?.map { (messages, hasMore) ->
+                    messages.map { entry ->
+                        MessageResultItem(
+                            context,
+                            currentUser,
+                            entry,
+                            false,
+                            viewThemeUtils = viewThemeUtils
+                        )
+                    }.let {
+                        if (hasMore) {
+                            it + LoadMoreResultsItem
+                        } else {
+                            it
+                        }
+                    }
+                }?.collect { messages ->
+                    _searchResultFlow.update { // works because messages are always at the bottom of the list
+                        it.filter { item ->
+                            item !is LoadMoreResultsItem
+                        } + messages
+                    }
+                }
         }
     }
 
