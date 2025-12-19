@@ -15,6 +15,7 @@ import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
+import com.nextcloud.talk.data.database.dao.FileUploadsDao
 import com.nextcloud.talk.data.database.mappers.asEntity
 import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
@@ -24,6 +25,7 @@ import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.domain.FileUploadModel
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
@@ -41,10 +43,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -54,6 +58,7 @@ import javax.inject.Inject
 class OfflineFirstChatRepository @Inject constructor(
     private val chatDao: ChatMessagesDao,
     private val chatBlocksDao: ChatBlocksDao,
+    private val fileUploadsDao: FileUploadsDao,
     private val network: ChatNetworkDataSource,
     private val networkMonitor: NetworkMonitor
 ) : ChatMessageRepository {
@@ -108,6 +113,10 @@ class OfflineFirstChatRepository @Inject constructor(
 
     private val _removeMessageFlow:
         MutableSharedFlow<ChatMessage> = MutableSharedFlow()
+
+    override val uploadsFlow: Flow<List<FileUploadModel>>
+        get() = _uploadsFlow
+    private val _uploadsFlow: MutableSharedFlow<List<FileUploadModel>> = MutableSharedFlow()
 
     private var newXChatLastCommonRead: Int? = null
     private var itIsPaused = false
@@ -202,6 +211,7 @@ class OfflineFirstChatRepository @Inject constructor(
             }
 
             handleMessagesFromDb(newestMessageIdFromDb)
+            handleUploadsFromDb()
 
             initMessagePolling(newestMessageIdFromDb)
         }
@@ -232,6 +242,27 @@ class OfflineFirstChatRepository @Inject constructor(
 
             updateUiForLastCommonRead()
             updateUiForLastReadMessage(newestMessageIdFromDb)
+        }
+    }
+
+    private fun handleUploadsFromDb() {
+        scope.launch {
+            fileUploadsDao.getFileUploadsForConversation(internalConversationId)
+                .onEach {
+                    _uploadsFlow.emit(
+                        it.map { item ->
+                            FileUploadModel(
+                                id = item.id,
+                                fileName = item.fileName,
+                                progress = item.progress
+                            )
+                        }
+                    )
+                }
+                .catch {
+                    Log.e(TAG, "Failed reading uploads")
+                }
+                .collect()
         }
     }
 
