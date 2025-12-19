@@ -49,7 +49,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
 import coil.Coil.imageLoader
 import coil.load
@@ -222,6 +221,8 @@ class MessageInputFragment : Fragment() {
             } ?: clearReplyUi()
         }
 
+        chatActivity.messageInputViewModel.getEditChatMessage.observe(viewLifecycleOwner) { message ->
+            message?.let { setEditUI(it as ChatMessage) }
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 messageInputViewModel.getEditChatMessage.collect { message ->
