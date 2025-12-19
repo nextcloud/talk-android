@@ -32,6 +32,7 @@ class MessageInput : MessageInput {
     lateinit var playPauseBtn: MaterialButton
     lateinit var editMessageButton: ImageButton
     lateinit var seekBar: SeekBar
+    lateinit var scheduledMessagesButton: ImageButton
 
     constructor(context: Context?) : super(context) {
         init()
@@ -59,6 +60,7 @@ class MessageInput : MessageInput {
         playPauseBtn = findViewById(R.id.playPauseBtn)
         seekBar = findViewById(R.id.seekbar)
         editMessageButton = findViewById(R.id.editMessageButton)
+        scheduledMessagesButton = findViewById(R.id.scheduledMessagesButton)
     }
 
     var messageInput: EmojiEditText
