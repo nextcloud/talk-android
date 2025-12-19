@@ -74,31 +74,29 @@ class ContactsRepositoryImpl @Inject constructor(private val ncApiCoroutines: Nc
             requestBigSize
         )
 
-    override fun getContactsFlow(
-        user: User,
-        searchQuery: String?
-    ): Flow<List<AutocompleteUser>> = flow {
-        val credentials = ApiUtils.getCredentials(user.username, user.token)
+    override fun getContactsFlow(user: User, searchQuery: String?): Flow<List<AutocompleteUser>> =
+        flow {
+            val credentials = ApiUtils.getCredentials(user.username, user.token)
 
-        val retrofitBucket: RetrofitBucket = ApiUtils.getRetrofitBucketForContactsSearchFor14(
-            user.baseUrl!!,
-            searchQuery
-        )
+            val retrofitBucket: RetrofitBucket = ApiUtils.getRetrofitBucketForContactsSearchFor14(
+                user.baseUrl!!,
+                searchQuery
+            )
 
-        val shareTypes = mutableListOf(ShareType.User.shareType).toList()
+            val shareTypes = mutableListOf(ShareType.User.shareType).toList()
 
-        val modifiedQueryMap: HashMap<String, Any> = HashMap(retrofitBucket.queryMap)
-        modifiedQueryMap["limit"] = ContactUtils.MAX_CONTACT_LIMIT
-        modifiedQueryMap["shareTypes[]"] = shareTypes
-        val response = ncApiCoroutines.getContactsWithSearchParam(
-            credentials,
-            retrofitBucket.url,
-            shareTypes,
-            modifiedQueryMap
-        )
+            val modifiedQueryMap: HashMap<String, Any> = HashMap(retrofitBucket.queryMap)
+            modifiedQueryMap["limit"] = ContactUtils.MAX_CONTACT_LIMIT
+            modifiedQueryMap["shareTypes[]"] = shareTypes
+            val response = ncApiCoroutines.getContactsWithSearchParam(
+                credentials,
+                retrofitBucket.url,
+                shareTypes,
+                modifiedQueryMap
+            )
 
-        emit(response.ocs?.data.orEmpty())
-    }
+            emit(response.ocs?.data.orEmpty())
+        }
 
     companion object {
         private val TAG = ContactsRepositoryImpl::class.simpleName

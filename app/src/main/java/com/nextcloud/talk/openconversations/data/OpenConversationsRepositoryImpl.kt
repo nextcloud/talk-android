@@ -26,28 +26,26 @@ class OpenConversationsRepositoryImpl(private val ncApiCoroutines: NcApiCoroutin
             roomOverall.ocs?.data.orEmpty()
         }
 
-    override fun fetchOpenConversationsFlow(
-        user: User,
-        searchTerm: String
-    ): Flow<List<Conversation>> = flow {
-        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
+    override fun fetchOpenConversationsFlow(user: User, searchTerm: String): Flow<List<Conversation>> =
+        flow {
+            val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
 
-        val apiVersion = ApiUtils.getConversationApiVersion(
-            user,
-            intArrayOf(
-                ApiUtils.API_V4,
-                ApiUtils.API_V3,
-                1
+            val apiVersion = ApiUtils.getConversationApiVersion(
+                user,
+                intArrayOf(
+                    ApiUtils.API_V4,
+                    ApiUtils.API_V3,
+                    1
+                )
             )
-        )
-        val url = ApiUtils.getUrlForOpenConversations(apiVersion, user.baseUrl!!)
+            val url = ApiUtils.getUrlForOpenConversations(apiVersion, user.baseUrl!!)
 
-        val roomOverall = ncApiCoroutines.getOpenConversations(
-            credentials,
-            url,
-            searchTerm
-        )
+            val roomOverall = ncApiCoroutines.getOpenConversations(
+                credentials,
+                url,
+                searchTerm
+            )
 
-        emit(roomOverall.ocs?.data.orEmpty())
-    }
+            emit(roomOverall.ocs?.data.orEmpty())
+        }
 }

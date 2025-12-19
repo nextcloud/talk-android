@@ -254,7 +254,7 @@ class ConversationsListViewModel @Inject constructor(
                         }
                     }
                 }?.collect { messages ->
-                    _searchResultFlow.update { // works because messages are always at the bottom of the list
+                    _searchResultFlow.update {
                         it.filter { item ->
                             item !is LoadMoreResultsItem
                         } + messages
