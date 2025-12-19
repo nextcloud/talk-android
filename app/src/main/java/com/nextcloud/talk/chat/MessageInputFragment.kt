@@ -43,12 +43,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.widget.EmojiTextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
 import coil.Coil.imageLoader
 import coil.load
@@ -69,7 +64,6 @@ import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.FragmentMessageInputBinding
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
@@ -85,7 +79,7 @@ import com.nextcloud.talk.utils.EmojiTextInputEditText
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
@@ -110,7 +104,7 @@ class MessageInputFragment : Fragment() {
     lateinit var userManager: UserManager
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderOld
+    lateinit var currentUserProvider: CurrentUserProviderNew
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
@@ -147,7 +141,12 @@ class MessageInputFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMessageInputBinding.inflate(inflater)
         themeMessageInputView()
-
+        initMessageInputView()
+        initSmileyKeyboardToggler()
+        setupMentionAutocomplete()
+        initVoiceRecordButton()
+        initThreadHandling()
+        restoreState()
         return binding.root
     }
 
@@ -156,6 +155,7 @@ class MessageInputFragment : Fragment() {
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
+        clearEditUI()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -171,41 +171,8 @@ class MessageInputFragment : Fragment() {
         }
     }
 
-    // https://stackoverflow.com/a/54648758/14183836
-    // Would be easier to move the capabilities observability to kotlin flows/suspend
-    fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
-        observe(
-            lifecycleOwner,
-            object : Observer<T> {
-                override fun onChanged(value: T) {
-                    observer.onChanged(value)
-                    removeObserver(this)
-                }
-            }
-        )
-    }
-
     private fun initObservers() {
         Log.d(TAG, "LifeCyclerOwner is: ${viewLifecycleOwner.lifecycle}")
-        chatActivity.chatViewModel.getCapabilitiesViewState.observeOnce(viewLifecycleOwner) { state ->
-            when (state) {
-                is ChatViewModel.GetCapabilitiesUpdateState -> {
-                    restoreState()
-                }
-
-                is ChatViewModel.GetCapabilitiesInitialLoadState -> {
-                    initMessageInputView(state.spreedCapabilities)
-                    initSmileyKeyboardToggler()
-                    setupMentionAutocomplete()
-                    initVoiceRecordButton()
-                    initThreadHandling()
-                    restoreState()
-                }
-
-                else -> {}
-            }
-        }
-
         chatActivity.messageInputViewModel.getReplyChatMessage.observe(viewLifecycleOwner) { message ->
             message?.let {
                 chatActivity.chatViewModel.messageDraft.quotedMessageText = message.text
@@ -220,12 +187,8 @@ class MessageInputFragment : Fragment() {
             } ?: clearReplyUi()
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                chatActivity.messageInputViewModel.getEditChatMessage.collect { message ->
-                    message?.let { setEditUI(it as ChatMessage) } ?: clearEditUI()
-                }
-            }
+        chatActivity.messageInputViewModel.getEditChatMessage.observe(viewLifecycleOwner) { message ->
+            message?.let { setEditUI(it as ChatMessage) }
         }
 
         chatActivity.messageInputViewModel.createThreadViewState.observe(viewLifecycleOwner) { state ->
@@ -382,12 +345,13 @@ class MessageInputFragment : Fragment() {
         }
     }
 
-    private fun initMessageInputView(spreedCapabilities: SpreedCapability) {
+    private fun initMessageInputView() {
         if (!chatActivity.active) return
 
         val filters = arrayOfNulls<InputFilter>(1)
-        val lengthFilter = CapabilitiesUtil.getMessageMaxLength(spreedCapabilities)
+        val lengthFilter = CapabilitiesUtil.getMessageMaxLength(chatActivity.spreedCapabilities)
 
+        binding.fragmentEditView.editMessageView.visibility = View.GONE
         binding.fragmentMessageInputView.setPadding(0, 0, 0, 0)
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)
@@ -487,9 +451,9 @@ class MessageInputFragment : Fragment() {
                         message,
                         inputEditText
                     )
-                    editMessageAPI(message, editedMessage.toString(), spreedCapabilities)
+                    editMessageAPI(message, editedMessage.toString())
                 } else {
-                    editMessageAPI(message, inputEditText, spreedCapabilities)
+                    editMessageAPI(message, inputEditText.toString())
                 }
             }
             clearEditUI()
@@ -501,7 +465,7 @@ class MessageInputFragment : Fragment() {
             cancelCreateThread()
         }
 
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_SEND)) {
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(chatActivity.spreedCapabilities, SpreedFeatures.SILENT_SEND)) {
             binding.fragmentMessageInputView.button?.setOnLongClickListener {
                 showSendButtonMenu()
                 true
@@ -685,7 +649,7 @@ class MessageInputFragment : Fragment() {
                     messageSendButton.setVisible(false)
                     recordAudioButton.setVisible(false)
                     submitThreadButton.setVisible(false)
-                    attachmentButton.setVisible(false)
+                    attachmentButton.setVisible(true)
                 }
 
                 isThreadCreateModeActive -> {
@@ -989,6 +953,7 @@ class MessageInputFragment : Fragment() {
         popupMenu.setOnMenuItemClickListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.send_without_notification -> submitMessage(true)
+                R.id.send_later -> scheduleCurrentMessage()
             }
             true
         }
@@ -999,9 +964,21 @@ class MessageInputFragment : Fragment() {
         popupMenu.show()
     }
 
-    private fun editMessageAPI(message: ChatMessage, editedMessageText: String, spreedCapabilities: SpreedCapability) {
+    private fun scheduleCurrentMessage() {
+        val editable = binding.fragmentMessageInputView.inputEditText?.editableText
+        if (editable.isNullOrBlank()) {
+            return
+        }
+        replaceMentionChipSpans(editable)
+        val messageText = editable.toString()
+        binding.fragmentMessageInputView.inputEditText?.setText("")
+
+    }
+
+
+    private fun editMessageAPI(message: ChatMessage, editedMessageText: String) {
         // FIXME Fix API checking with guests?
-        val apiVersion: Int = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
+        val apiVersion: Int = ApiUtils.getChatApiVersion(chatActivity.spreedCapabilities, intArrayOf(1))
 
         if (message.isTemporary) {
             chatActivity.messageInputViewModel.editTempChatMessage(
@@ -1049,14 +1026,6 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun themeMessageInputView() {
-        binding.messageInputContainer.apply {
-            viewThemeUtils.talk.themeCardView(this)
-        }
-
-        binding.fragmentMessageInputView.findViewById<ImageView>(R.id.microphoneEnabledInfoBackground)?.let {
-            viewThemeUtils.platform.themeViewBackground(it, ColorRole.SURFACE_VARIANT)
-        }
-
         binding.fragmentMessageInputView.button?.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }
 
         binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.let {
