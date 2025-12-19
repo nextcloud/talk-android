@@ -376,7 +376,9 @@ class ConversationsListActivity :
 
         lifecycleScope.launch {
             conversationsListViewModel.searchResultFlow.collect { searchResults ->
-                adapter?.updateDataSet(searchResults)
+                if (adapter?.hasFilter() == true) {
+                    adapter?.updateDataSet(searchResults)
+                }
             }
         }
 
