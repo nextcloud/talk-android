@@ -48,12 +48,14 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
@@ -115,6 +117,10 @@ class ConversationsListViewModel @Inject constructor(
             _getRoomsViewState.value = GetRoomsErrorState
         }
 
+    val getRoomsStateFlow = repository
+        .roomListFlow
+        .stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
+
     object GetFederationInvitationsStartState : ViewState
     object GetFederationInvitationsErrorState : ViewState
 
@@ -149,6 +155,8 @@ class ConversationsListViewModel @Inject constructor(
     val searchResultFlow = _searchResultFlow.asStateFlow()
 
     fun getSearchQuery(context: Context, filter: String) {
+        val conversationsTitle: String = context.resources!!.getString(R.string.conversations)
+        val conversationsHeader = GenericTextHeaderItem(conversationsTitle, viewThemeUtils)
         val openConversationsTitle = context.resources!!.getString(R.string.openConversations)
         val openConversationsHeader = GenericTextHeaderItem(openConversationsTitle, viewThemeUtils)
         val usersTitle = context.resources!!.getString(R.string.nc_user)
@@ -157,6 +165,17 @@ class ConversationsListViewModel @Inject constructor(
 
         viewModelScope.launch {
             combine(
+                getRoomsStateFlow.map { list ->
+                    list.map { conversation ->
+                        ConversationItem(
+                            conversation,
+                            currentUser,
+                            context,
+                            conversationsHeader,
+                            viewThemeUtils
+                        )
+                    }.filter { it.model.displayName.contains(filter, true) }
+                },
                 openConversationsRepository.fetchOpenConversationsFlow(currentUser, filter)
                     .map { list ->
                         list.map { conversation ->
@@ -203,10 +222,11 @@ class ConversationsListViewModel @Inject constructor(
                             }
                         }
                     }
-            ) { openConversations, users, messages -> openConversations + users + messages }
-                .collect { searchResults ->
-                    _searchResultFlow.emit(searchResults)
-                }
+            ) { conversations, openConversations, users, messages ->
+                conversations + openConversations + users + messages
+            }.collect { searchResults ->
+                _searchResultFlow.emit(searchResults)
+            }
         }
     }
 

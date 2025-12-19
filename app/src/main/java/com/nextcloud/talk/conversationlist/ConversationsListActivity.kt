@@ -375,22 +375,8 @@ class ConversationsListActivity :
         }
 
         lifecycleScope.launch {
-            val openConversationsTitle = context.resources!!.getString(R.string.openConversations)
-            val openConversationsHeader = GenericTextHeaderItem(openConversationsTitle, viewThemeUtils)
-
-            fun AbstractFlexibleItem<*>.isRegularConversationItem() =
-                this is ConversationItem && this.header != openConversationsHeader
-
             conversationsListViewModel.searchResultFlow.collect { searchResults ->
-                val dataset = if (hasFilterEnabled()) filterableConversationItems else searchableConversationItems
-
-                val newDataset = dataset
-                    .filter { it.isRegularConversationItem() }
-                    .toMutableList() + searchResults
-
-                adapter?.updateDataSet(newDataset)
-
-                adapter?.filterItems() // TODO - problem here with filtering existing conversations
+                adapter?.updateDataSet(searchResults)
             }
         }
 
@@ -1393,7 +1379,6 @@ class ConversationsListActivity :
     }
 
     private fun resetSearchResults() {
-        clearMessageSearchResults()
         adapter?.updateDataSet(conversationItems)
         adapter?.setFilter("")
         adapter?.filterItems()
