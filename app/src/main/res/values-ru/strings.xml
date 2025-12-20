@@ -684,8 +684,6 @@
     <string name="translation_error_title">Не удалось перевести</string>
     <string name="translation_from">От</string>
     <string name="translation_to">Кому</string>
-    <string name="turn_off_background_blur">Отключить размытие фона</string>
-    <string name="turn_on_background_blur">Включить размытие фона</string>
     <string name="typing_1_other">и ещё 1 собеседник печатают...</string>
     <string name="typing_are_typing">печатают...</string>
     <string name="typing_is_typing">печатает...</string>
