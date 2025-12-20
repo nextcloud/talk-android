@@ -685,8 +685,6 @@
     <string name="translation_error_title">Tõlkimine ei õnnestunud</string>
     <string name="translation_from">Saatja</string>
     <string name="translation_to">Saaja</string>
-    <string name="turn_off_background_blur">Lülita tausta hägustamine välja</string>
-    <string name="turn_on_background_blur">Lülita tausta hägustamine sisse</string>
     <string name="typing_1_other">ja veel 1 osaleja kirjutab…</string>
     <string name="typing_are_typing">kirjutavad…</string>
     <string name="typing_is_typing">kirjutab…</string>

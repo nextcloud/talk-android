@@ -686,8 +686,6 @@
     <string name="translation_error_title">Preklad zlyhal</string>
     <string name="translation_from">Od</string>
     <string name="translation_to">Pre</string>
-    <string name="turn_off_background_blur">Vypnúť rozmazanie pozadia</string>
-    <string name="turn_on_background_blur">Zapnúť rozmazanie pozadia</string>
     <string name="typing_1_other">a jeden ďalší píše…</string>
     <string name="typing_are_typing">píšu…</string>
     <string name="typing_is_typing">píše…</string>

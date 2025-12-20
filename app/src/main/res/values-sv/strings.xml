@@ -683,8 +683,6 @@
     <string name="translation_error_title">Översättning misslyckades</string>
     <string name="translation_from">Från</string>
     <string name="translation_to">Till</string>
-    <string name="turn_off_background_blur">Inaktivera suddig bakgrund</string>
-    <string name="turn_on_background_blur">Aktivera suddig bakgrund</string>
     <string name="typing_1_other">och 1 annan skriver ...</string>
     <string name="typing_are_typing">skriver ...</string>
     <string name="typing_is_typing">skriver ...</string>

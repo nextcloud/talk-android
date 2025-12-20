@@ -685,8 +685,6 @@
     <string name="translation_error_title">Çeviri yapılamadı</string>
     <string name="translation_from">Kaynak dil</string>
     <string name="translation_to">Hedef dil</string>
-    <string name="turn_off_background_blur">Arka plan bulanıklaştırmayı kapat</string>
-    <string name="turn_on_background_blur">Arka plan bulanıklaştırmayı aç</string>
     <string name="typing_1_other">ve 1 diğer kişi yazıyor…</string>
     <string name="typing_are_typing">kişi yazıyor…</string>
     <string name="typing_is_typing">yazıyor…</string>

@@ -685,8 +685,6 @@
     <string name="translation_error_title">تەرجىمە مەغلۇب بولدى</string>
     <string name="translation_from">دىن</string>
     <string name="translation_to">غا</string>
-    <string name="turn_off_background_blur">ئارقا كۆرۈنۈشنى تۇتۇقلاشتۇرۇشنى تاقا</string>
-    <string name="turn_on_background_blur">ئارقا كۆرۈنۈشنى تۇتۇقلاشتۇرۇشنى ئاچ</string>
     <string name="typing_1_other">يەنە 1 بولسا خەت بېسىۋاتىدۇ…</string>
     <string name="typing_are_typing">يېزىۋاتىدۇ…</string>
     <string name="typing_is_typing">يېزىۋاتىدۇ…</string>

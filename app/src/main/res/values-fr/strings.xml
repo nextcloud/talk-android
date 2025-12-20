@@ -685,8 +685,6 @@
     <string name="translation_error_title">Échec de la traduction</string>
     <string name="translation_from">De</string>
     <string name="translation_to">À</string>
-    <string name="turn_off_background_blur">Désactiver le flou d\'arrière-plan</string>
-    <string name="turn_on_background_blur">Activer le flou d\'arrière-plan</string>
     <string name="typing_1_other">et 1 autre sont en train de taper…</string>
     <string name="typing_are_typing">sont en train de taper...</string>
     <string name="typing_is_typing">est en train de taper...</string>
