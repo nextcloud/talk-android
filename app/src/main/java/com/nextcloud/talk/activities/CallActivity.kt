@@ -322,8 +322,8 @@ class CallActivity : CallBaseActivity() {
     private var requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissionMap: Map<String, Boolean> ->
-        // DEBUG: Log permission results
-        Log.d(TAG, "DEBUG: Permission request completed with results: $permissionMap")
+        // Log permission results
+        Log.d(TAG, "Permission request completed with results: $permissionMap")
         
         val rationaleList: MutableList<String> = ArrayList()
         val audioPermission = permissionMap[Manifest.permission.RECORD_AUDIO]
@@ -331,7 +331,7 @@ class CallActivity : CallBaseActivity() {
             if (java.lang.Boolean.TRUE == audioPermission) {
                 Log.d(TAG, "Microphone permission was granted")
             } else {
-                Log.d(TAG, "DEBUG: Microphone permission was denied")
+                Log.d(TAG, "Microphone permission was denied")
                 rationaleList.add(resources.getString(R.string.nc_microphone_permission_hint))
             }
         }
@@ -340,7 +340,7 @@ class CallActivity : CallBaseActivity() {
             if (java.lang.Boolean.TRUE == cameraPermission) {
                 Log.d(TAG, "Camera permission was granted")
             } else {
-                Log.d(TAG, "DEBUG: Camera permission was denied")
+                Log.d(TAG, "Camera permission was denied")
                 rationaleList.add(resources.getString(R.string.nc_camera_permission_hint))
             }
         }
@@ -350,7 +350,7 @@ class CallActivity : CallBaseActivity() {
                 if (java.lang.Boolean.TRUE == bluetoothPermission) {
                     enableBluetoothManager()
                 } else {
-                    Log.d(TAG, "DEBUG: Bluetooth permission was denied")
+                    Log.d(TAG, "Bluetooth permission was denied")
                     // Only ask for bluetooth when already asking to grant microphone or camera access. Asking
                     // for bluetooth solely is not important enough here and would most likely annoy the user.
                     if (rationaleList.isNotEmpty()) {
@@ -365,7 +365,7 @@ class CallActivity : CallBaseActivity() {
                 if (java.lang.Boolean.TRUE == notificationPermission) {
                     Log.d(TAG, "Notification permission was granted")
                 } else {
-                    Log.w(TAG, "DEBUG: Notification permission was denied - this may cause call hang")
+                    Log.w(TAG, "Notification permission was denied - this may cause call hang")
                     rationaleList.add(resources.getString(R.string.nc_notification_permission_hint))
                 }
             }
@@ -374,17 +374,17 @@ class CallActivity : CallBaseActivity() {
             showRationaleDialogForSettings(rationaleList)
         }
 
-        // DEBUG: Check if we should proceed with call despite notification permission
+        // Check if we should proceed with call despite notification permission
         val notificationPermissionGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissionMap[Manifest.permission.POST_NOTIFICATIONS] == true
         } else {
             true // Older Android versions have permission by default
         }
         
-        Log.d(TAG, "DEBUG: Notification permission granted: $notificationPermissionGranted, isConnectionEstablished: $isConnectionEstablished")
+        Log.d(TAG, "DEBUGNotification permission granted: $notificationPermissionGranted, isConnectionEstablished: $isConnectionEstablished")
         
         if (!isConnectionEstablished) {
-            Log.d(TAG, "DEBUG: Proceeding with prepareCall() despite notification permission status")
+            Log.d(TAG, "Proceeding with prepareCall() despite notification permission status")
             prepareCall()
         }
     }
@@ -1091,14 +1091,14 @@ class CallActivity : CallBaseActivity() {
         } else if (!isConnectionEstablished) {
             prepareCall()
         } else {
-            // DEBUG: All permissions granted but connection not established
-            Log.d(TAG, "DEBUG: All permissions granted but connection not established, proceeding with prepareCall()")
+            // All permissions granted but connection not established
+            Log.d(TAG, "All permissions granted but connection not established, proceeding with prepareCall()")
             prepareCall()
         }
     }
 
     private fun prepareCall() {
-        Log.d(TAG, "DEBUG: prepareCall() started")
+        Log.d(TAG, "prepareCall() started")
         basicInitialization()
         initViews()
         // updateSelfVideoViewPosition(true)
@@ -1110,7 +1110,7 @@ class CallActivity : CallBaseActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 // Android 13+ requires explicit notification permission
                 if (permissionUtil!!.isPostNotificationsPermissionGranted()) {
-                    Log.d(TAG, "DEBUG: Starting foreground service with notification permission")
+                    Log.d(TAG, "Starting foreground service with notification permission")
                     CallForegroundService.start(applicationContext, conversationName, intent.extras)
                 } else {
                     Log.w(TAG, "Notification permission not granted - call will work but without persistent notification")
@@ -1123,7 +1123,7 @@ class CallActivity : CallBaseActivity() {
                 }
             } else {
                 // Android 12 and below - notification permission is automatically granted
-                Log.d(TAG, "DEBUG: Starting foreground service (Android 12-)")
+                Log.d(TAG, "Starting foreground service (Android 12-)")
                 CallForegroundService.start(applicationContext, conversationName, intent.extras)
             }
             
@@ -1131,24 +1131,24 @@ class CallActivity : CallBaseActivity() {
                 onMicrophoneClick()
             }
         } else {
-            Log.w(TAG, "DEBUG: Microphone permission not granted - skipping foreground service start")
+            Log.w(TAG, "Microphone permission not granted - skipping foreground service start")
         }
 
         // The call should not hang just because notification permission was denied
         // Always proceed with call setup regardless of notification permission
-        Log.d(TAG, "DEBUG: Ensuring call proceeds even without notification permission")
+        Log.d(TAG, "Ensuring call proceeds even without notification permission")
         
         if (isVoiceOnlyCall) {
             binding!!.selfVideoViewWrapper.visibility = View.GONE
         } else if (permissionUtil!!.isCameraPermissionGranted()) {
-            Log.d(TAG, "DEBUG: Camera permission granted, showing video")
+            Log.d(TAG, "Camera permission granted, showing video")
             binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
             onCameraClick()
             if (cameraEnumerator!!.deviceNames.isEmpty()) {
                 binding!!.cameraButton.visibility = View.GONE
             }
         } else {
-            Log.w(TAG, "DEBUG: Camera permission not granted, hiding video")
+            Log.w(TAG, "Camera permission not granted, hiding video")
         }
     }
 
@@ -1166,27 +1166,27 @@ class CallActivity : CallBaseActivity() {
             rationalesWithLineBreaks.append(rationale).append("\n\n")
         }
         
-        // DEBUG: Log when permission rationale dialog is shown
-        Log.d(TAG, "DEBUG: Showing permission rationale dialog for permissions: $permissionsToRequest")
-        Log.d(TAG, "DEBUG: Rationale includes notification permission: ${permissionsToRequest.contains(Manifest.permission.POST_NOTIFICATIONS)}")
+        // Log when permission rationale dialog is shown
+        Log.d(TAG, "Showing permission rationale dialog for permissions: $permissionsToRequest")
+        Log.d(TAG, "Rationale includes notification permission: ${permissionsToRequest.contains(Manifest.permission.POST_NOTIFICATIONS)}")
         
         val dialogBuilder = MaterialAlertDialogBuilder(this)
             .setTitle(R.string.nc_permissions_rationale_dialog_title)
             .setMessage(rationalesWithLineBreaks)
             .setPositiveButton(R.string.nc_permissions_ask) { _, _ ->
-                Log.d(TAG, "DEBUG: User clicked 'Ask' for permissions")
+                Log.d(TAG, "User clicked 'Ask' for permissions")
                 requestPermissionLauncher.launch(permissionsToRequest.toTypedArray())
             }
             .setNegativeButton(R.string.nc_common_dismiss) { _, _ ->
-                // DEBUG: Log when user dismisses permission request
-                Log.w(TAG, "DEBUG: User dismissed permission request for: $permissionsToRequest")
+                // Log when user dismisses permission request
+                Log.w(TAG, "User dismissed permission request for: $permissionsToRequest")
                 if (permissionsToRequest.contains(Manifest.permission.POST_NOTIFICATIONS)) {
-                    Log.w(TAG, "DEBUG: Notification permission specifically dismissed - proceeding with call anyway")
+                    Log.w(TAG, "Notification permission specifically dismissed - proceeding with call anyway")
                 }
                 
                 // Proceed with call even when notification permission is dismissed
                 if (!isConnectionEstablished) {
-                    Log.d(TAG, "DEBUG: Proceeding with prepareCall() after dismissing notification permission")
+                    Log.d(TAG, "Proceeding with prepareCall() after dismissing notification permission")
                     prepareCall()
                 }
             }
