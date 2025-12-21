@@ -711,6 +711,14 @@
     <string name="userinfo_no_info_text">ئارخىپ بېتىڭىزگە ئىسىم ، رەسىم ۋە ئالاقىلىشىش تەپسىلاتلىرىنى قوشۇڭ.</string>
     <string name="video_call">سىنلىق تېلېفون</string>
     <string name="whats_your_status">ئەھۋالىڭىز نېمە؟</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">%d مۇشۇنىڭغا ئوخشاش ئۇچۇرنى كۆر</item>
+        <item quantity="other">%d مۇشۇنىڭغا ئوخشاش ئۇچۇرلارنى كۆر</item>
+    </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="one">بۇ سۆھبەت %1$d كۈندە پائالىيىتى بولمىغان بارلىق كىشىلەر ئۈچۈن ئاپتوماتىك ئۆچۈرۈلىدۇ.</item>
+        <item quantity="other">بۇ سۆھبەت %1$d كۈندە  پائالىيىتى بولمىغان بارلىق كىشىلەر ئۈچۈن ئاپتوماتىك ئۆچۈرۈلىدۇ.</item>
+    </plurals>
     <plurals name="thread_replies">
         <item quantity="one">%d جاۋاپ</item>
         <item quantity="other">%d جاۋاپلار</item>
