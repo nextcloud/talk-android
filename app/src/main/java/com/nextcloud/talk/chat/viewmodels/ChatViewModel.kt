@@ -304,9 +304,9 @@ class ChatViewModel @Inject constructor(
         chatRepository.updateConversation(currentConversation)
     }
 
-    fun getRoom(user: User, token: String) {
+    fun getRoom(token: String) {
         _getRoomViewState.value = GetRoomStartState
-        conversationRepository.getRoom(user, token)
+        conversationRepository.getRoom(currentUser, token)
     }
 
     fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {

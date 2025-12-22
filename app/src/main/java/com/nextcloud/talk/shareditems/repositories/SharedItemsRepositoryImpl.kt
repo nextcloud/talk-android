@@ -20,6 +20,7 @@ import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.model.SharedItems
 import com.nextcloud.talk.shareditems.model.SharedLocationItem
 import com.nextcloud.talk.shareditems.model.SharedOtherItem
+import com.nextcloud.talk.shareditems.model.SharedPinnedItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
@@ -70,6 +71,18 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
                 val dateTime = dateUtils.getLocalDateTimeStringFromTimestamp(
                     it.value.timestamp * DateConstants.SECOND_DIVIDER
                 )
+
+                if (it.value.messageParameters?.containsKey("pinned") == true) {
+                    val pinnedParameters = it.value.messageParameters!!["pinned"]!!
+                    val metaDataParameters = it.value.messageParameters!!["metaData"]!!
+                    items[it.value.id.toString()] = SharedPinnedItem(
+                        pinnedParameters["id"]!!,
+                        pinnedParameters["message"]!!,
+                        pinnedParameters["actorId"]!!,
+                        metaDataParameters["pinnedActorDisplayName"]!!,
+                        dateTime
+                    )
+                }
 
                 if (it.value.messageParameters?.containsKey("file") == true) {
                     val fileParameters = it.value.messageParameters!!["file"]!!

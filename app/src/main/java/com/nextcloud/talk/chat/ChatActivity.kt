@@ -61,18 +61,22 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -1375,8 +1379,13 @@ class ChatActivity :
     @Composable
     private fun PinnedMessageView(message: ChatMessage) {
         message.incoming = true
+
         val pinnedBy = stringResource(R.string.pinned_by)
-        message.actorDisplayName = "${message.actorDisplayName}\n$pinnedBy ${message.pinnedActorDisplayName}"
+
+        // FIXME this causes some problems with duplicate some times
+        message.actorDisplayName = remember(message.pinnedActorDisplayName) {
+            "${message.actorDisplayName}\n$pinnedBy ${message.pinnedActorDisplayName}"
+        }
         val scrollState = rememberScrollState()
 
         val outgoingBubbleColor = remember {
@@ -1393,7 +1402,7 @@ class ChatActivity :
             Color(colorInt)
         }
 
-        val isAllowed = remember {
+        remember {
             ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
         }
 
@@ -1411,51 +1420,98 @@ class ChatActivity :
                 ComposeChatAdapter().GetComposableForMessage(message)
             }
 
-            Row(
-                modifier = Modifier
-                    .padding(start = 16.dp)
-                    .background(outgoingBubbleColor, RoundedCornerShape(16.dp))
-                    .padding(16.dp)
-            ) {
-                val hiddenEye = painterResource(R.drawable.ic_eye_off)
-                Icon(
-                    hiddenEye,
-                    "Hide pin",
-                    modifier = Modifier
-                        .size(16.dp)
-                        .clickable {
-                            hidePinnedMessage(message)
-                        }
-                )
+            var expanded by remember { mutableStateOf(false) }
 
-                if (isAllowed) {
-                    Spacer(modifier = Modifier.size(16.dp))
-                    val read = painterResource(R.drawable.keep_off_24px)
-                    Icon(
-                        read,
-                        "Unpin",
-                        modifier = Modifier
-                            .size(16.dp)
-                            .clickable {
-                                unPinMessage(message)
-                            }
-                    )
-                }
+            val pinnedText = remember(message.pinnedUntil) {
+                val pinnedUntilStr = context.getString(R.string.pinned_until)
+                val pinnedIndefinitely = context.getString(R.string.pinned_indefinitely)
 
-                val pinnedUntilStr = stringResource(R.string.pinned_until)
-                val pinnedIndefinitely = stringResource(R.string.pinned_indefinitely)
-                val pinnedText = message.pinnedUntil?.let {
+                message.pinnedUntil?.let {
                     val format = if (DateFormat.is24HourFormat(context)) "EEE, HH:mm" else "EEE, hh:mm a"
                     val localDateTime = Instant.ofEpochMilli(it)
                         .atZone(ZoneId.systemDefault())
                         .toLocalDateTime()
-
                     val timeString = localDateTime.format(DateTimeFormatter.ofPattern(format))
-
                     "$pinnedUntilStr $timeString"
                 } ?: pinnedIndefinitely
+            }
 
-                Text(pinnedText, modifier = Modifier.padding(start = 16.dp))
+            Box(
+                modifier = Modifier
+                    .offset(16.dp, 0.dp)
+                    .background(outgoingBubbleColor, RoundedCornerShape(16.dp))
+            ) {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        imageVector = Icons.Default.Menu, // Or use a Pin icon here
+                        contentDescription = "Pinned Message Options"
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.background(outgoingBubbleColor)
+                ) {
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = pinnedText,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        },
+                        onClick = { /* No-op or toggle expansion */ },
+                        enabled = false // Visually distinct as information, not action
+                    )
+
+                    Divider()
+
+                    DropdownMenuItem(
+                        text = { Text("Go to message") },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(R.drawable.baseline_chat_bubble_outline_24),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        },
+                        onClick = {
+                            expanded = false
+                            scrollToMessageWithId(message.id)
+                        }
+                    )
+
+                    DropdownMenuItem(
+                        text = { Text("Dismiss") },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_eye_off),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        },
+                        onClick = {
+                            expanded = false
+                            hidePinnedMessage(message)
+                        }
+                    )
+
+                    DropdownMenuItem(
+                        text = { Text("Unpin") },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(R.drawable.keep_off_24px),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        },
+                        onClick = {
+                            expanded = false
+                            unPinMessage(message)
+                        }
+                    )
+                }
             }
         }
     }
@@ -1559,10 +1615,7 @@ class ChatActivity :
 
         cancelNotificationsForCurrentConversation()
 
-        chatViewModel.getRoom(
-            conversationUser,
-            roomToken
-        )
+        chatViewModel.getRoom(roomToken)
 
         actionBar?.show()
 
@@ -2041,10 +2094,7 @@ class ChatActivity :
         }
         getRoomInfoTimerHandler?.postDelayed(
             {
-                chatViewModel.getRoom(
-                    conversationUser,
-                    roomToken
-                )
+                chatViewModel.getRoom(roomToken)
             },
             if (delay > 0) delay else delayForRecursiveCall
         )
@@ -4072,7 +4122,7 @@ class ChatActivity :
     }
 
     fun hidePinnedMessage(message: ChatMessage) {
-        val url = ApiUtils.getUrlForChatMessagePinning(chatApiVersion, conversationUser?.baseUrl, roomToken, message.id)
+        val url = ApiUtils.getUrlForChatMessageHiding(chatApiVersion, conversationUser?.baseUrl, roomToken, message.id)
         chatViewModel.hidePinnedMessage(credentials!!, url)
     }
 

@@ -188,6 +188,13 @@ class SharedItemsActivity : BaseActivity() {
             binding.sharedItemsTabs.addTab(tabVoice)
         }
 
+        if (sharedItemTypes.contains(SharedItemType.PINNED)) {
+            val tabPinned: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+            tabPinned.tag = SharedItemType.PINNED
+            tabPinned.setText(R.string.pinned)
+            binding.sharedItemsTabs.addTab(tabPinned)
+        }
+
         if (sharedItemTypes.contains(SharedItemType.LOCATION)) {
             val tabLocation: TabLayout.Tab = binding.sharedItemsTabs.newTab()
             tabLocation.tag = SharedItemType.LOCATION

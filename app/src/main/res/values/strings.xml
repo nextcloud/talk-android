@@ -914,4 +914,5 @@ How to translate with transifex:
     <string name="pinned_indefinitely">Pinned indefinitely</string>
     <string name="pinned_until">Pinned until</string>
     <string name="pinned_by">Pinned by</string>
+    <string name="pinned">Pinned</string>
 </resources>

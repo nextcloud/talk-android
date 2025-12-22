@@ -20,6 +20,7 @@ enum class SharedItemType {
     LOCATION,
     DECKCARD,
     OTHER,
+    PINNED,
     POLL;
 
     companion object {
