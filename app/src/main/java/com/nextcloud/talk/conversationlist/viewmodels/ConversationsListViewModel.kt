@@ -154,6 +154,7 @@ class ConversationsListViewModel @Inject constructor(
     private val _searchResultFlow: MutableStateFlow<List<AbstractFlexibleItem<*>>> = MutableStateFlow(listOf())
     val searchResultFlow = _searchResultFlow.asStateFlow()
 
+    @Suppress("LongMethod")
     fun getSearchQuery(context: Context, filter: String) {
         val conversationsTitle: String = context.resources!!.getString(R.string.conversations)
         val conversationsHeader = GenericTextHeaderItem(conversationsTitle, viewThemeUtils)
