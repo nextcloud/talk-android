@@ -22,6 +22,7 @@ import com.google.android.material.tabs.TabLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.shareditems.adapters.SharedItemsAdapter
@@ -36,6 +37,9 @@ class SharedItemsActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var chatViewModel: ChatViewModel
 
     private lateinit var binding: ActivitySharedItemsBinding
     private lateinit var viewModel: SharedItemsViewModel
@@ -113,7 +117,7 @@ class SharedItemsActivity : BaseActivity() {
                     isUserConversationOwnerOrModerator,
                     viewThemeUtils
                 ).apply {
-                    items = sharedMediaItems.items
+                    items = sharedMediaItems.items.toMutableList()
                 }
                 binding.imageRecycler.adapter = adapter
                 binding.imageRecycler.layoutManager = layoutManager

@@ -24,6 +24,8 @@ import com.nextcloud.talk.shareditems.model.SharedOtherItem
 import com.nextcloud.talk.shareditems.model.SharedPinnedItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.ApiUtils
+import java.util.Collections.emptyList
 
 class SharedItemsAdapter(
     private val showGrid: Boolean,
@@ -33,7 +35,7 @@ class SharedItemsAdapter(
     private val viewThemeUtils: ViewThemeUtils
 ) : RecyclerView.Adapter<SharedItemsViewHolder>() {
 
-    var items: List<SharedItem> = emptyList()
+    var items: MutableList<SharedItem> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SharedItemsViewHolder =
         if (showGrid) {
@@ -65,7 +67,7 @@ class SharedItemsAdapter(
             is SharedLocationItem -> holder.onBind(item)
             is SharedOtherItem -> holder.onBind(item)
             is SharedDeckCardItem -> holder.onBind(item)
-            is SharedPinnedItem -> holder.onBind(item)
+            is SharedPinnedItem -> holder.onBind(item, ::unpinMessage)
         }
     }
 
@@ -83,6 +85,17 @@ class SharedItemsAdapter(
             (context as SharedItemsActivity).supportFragmentManager,
             TAG
         )
+    }
+
+    private fun unpinMessage(item: SharedItem, context: Context) {
+        val credentials = ApiUtils.getCredentials(user.username, user.token)
+        val url = ApiUtils.getUrlForChatMessagePinning(1, user.baseUrl, roomToken, item.id)
+
+        credentials?.let {
+            (context as SharedItemsActivity).chatViewModel.unPinMessage(credentials, url)
+            items.remove(item)
+            this.notifyDataSetChanged()
+        }
     }
 
     companion object {

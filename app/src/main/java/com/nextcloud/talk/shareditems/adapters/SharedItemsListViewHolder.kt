@@ -129,8 +129,8 @@ class SharedItemsListViewHolder(
         }
     }
 
-    override fun onBind(item: SharedPinnedItem) {
-        super.onBind(item)
+    override fun onBind(item: SharedPinnedItem, unPinMessage: (item: SharedItem, context: Context) -> Unit) {
+        super.onBind(item, unPinMessage)
         binding.fileName.text = item.name // actually the message of the chat item
         binding.fileSize.visibility = View.GONE
         binding.separator1.visibility = View.GONE
@@ -144,7 +144,7 @@ class SharedItemsListViewHolder(
         )
 
         clickTarget.setOnClickListener {
-            // TODO implement unpin functionality in viewHolder
+            unPinMessage(item, it.context)
         }
 
     }

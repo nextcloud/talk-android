@@ -91,5 +91,5 @@ abstract class SharedItemsViewHolder(
 
     open fun onBind(item: SharedDeckCardItem) {}
 
-    open fun onBind(item: SharedPinnedItem) {}
+    open fun onBind(item: SharedPinnedItem, unPinMessage: (item: SharedItem, context: Context) -> Unit) {}
 }
