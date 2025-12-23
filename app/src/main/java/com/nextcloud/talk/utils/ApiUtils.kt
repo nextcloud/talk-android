@@ -245,6 +245,12 @@ object ApiUtils {
     fun getUrlForChatSharedItemsOverview(version: Int, baseUrl: String?, token: String): String =
         getUrlForChatSharedItems(version, baseUrl, token) + "/overview"
 
+    fun getUrlForChatMessagePinning(version: Int, baseUrl: String?, token: String, messageId: String): String =
+        "${getUrlForChatMessage(version, baseUrl, token, messageId)}/pin"
+
+    fun getUrlForChatMessageHiding(version: Int, baseUrl: String?, token: String, messageId: String): String =
+        "${getUrlForChatMessage(version, baseUrl, token, messageId)}/pin/self"
+
     fun getUrlForSignaling(version: Int, baseUrl: String?): String = getUrlForApi(version, baseUrl) + "/signaling"
 
     fun getUrlForTestPushNotifications(baseUrl: String): String =
