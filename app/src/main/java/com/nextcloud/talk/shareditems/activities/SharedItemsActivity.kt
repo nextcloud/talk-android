@@ -54,6 +54,7 @@ class SharedItemsActivity : BaseActivity() {
         val user = currentUserProviderOld.currentUser.blockingGet()
 
         val isUserConversationOwnerOrModerator = intent.getBooleanExtra(KEY_USER_IS_OWNER_OR_MODERATOR, false)
+        val isOne2One = intent.getBooleanExtra(KEY_IS_ONE_2_ONE, false)
 
         binding = ActivitySharedItemsBinding.inflate(layoutInflater)
         setSupportActionBar(binding.sharedItemsToolbar)
@@ -70,7 +71,7 @@ class SharedItemsActivity : BaseActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory)[SharedItemsViewModel::class.java]
 
         viewModel.viewState.observe(this) { state ->
-            handleModelChange(state, user, roomToken, isUserConversationOwnerOrModerator)
+            handleModelChange(state, user, roomToken, isUserConversationOwnerOrModerator, isOne2One)
         }
 
         binding.imageRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -89,7 +90,8 @@ class SharedItemsActivity : BaseActivity() {
         state: SharedItemsViewModel.ViewState?,
         user: User,
         roomToken: String,
-        isUserConversationOwnerOrModerator: Boolean
+        isUserConversationOwnerOrModerator: Boolean,
+        isOne2One: Boolean
     ) {
         clearEmptyLoading()
         when (state) {
@@ -115,6 +117,7 @@ class SharedItemsActivity : BaseActivity() {
                     user,
                     roomToken,
                     isUserConversationOwnerOrModerator,
+                    isOne2One,
                     viewThemeUtils
                 ).apply {
                     items = sharedMediaItems.items.toMutableList()
@@ -243,5 +246,6 @@ class SharedItemsActivity : BaseActivity() {
         private val TAG = SharedItemsActivity::class.simpleName
         const val SPAN_COUNT: Int = 4
         const val KEY_USER_IS_OWNER_OR_MODERATOR = "userIsOwnerOrModerator"
+        const val KEY_IS_ONE_2_ONE = "KEY_IS_ONE_2_ONE"
     }
 }

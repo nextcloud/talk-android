@@ -32,6 +32,7 @@ class SharedItemsAdapter(
     private val user: User,
     private val roomToken: String,
     private val isUserConversationOwnerOrModerator: Boolean,
+    private val isOne2One: Boolean,
     private val viewThemeUtils: ViewThemeUtils
 ) : RecyclerView.Adapter<SharedItemsViewHolder>() {
 
@@ -91,10 +92,13 @@ class SharedItemsAdapter(
         val credentials = ApiUtils.getCredentials(user.username, user.token)
         val url = ApiUtils.getUrlForChatMessagePinning(1, user.baseUrl, roomToken, item.id)
 
-        credentials?.let {
-            (context as SharedItemsActivity).chatViewModel.unPinMessage(credentials, url)
-            items.remove(item)
-            this.notifyDataSetChanged()
+        val canPin = isOne2One || isUserConversationOwnerOrModerator
+        if (canPin) {
+            credentials?.let {
+                (context as SharedItemsActivity).chatViewModel.unPinMessage(credentials, url)
+                items.remove(item)
+                this.notifyDataSetChanged()
+            }
         }
     }
 

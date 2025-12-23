@@ -1402,8 +1402,9 @@ class ChatActivity :
             Color(colorInt)
         }
 
-        remember {
-            ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
+        val canPin = remember {
+            message.isOneToOneConversation ||
+                ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
         }
 
         Column(
@@ -1497,20 +1498,22 @@ class ChatActivity :
                         }
                     )
 
-                    DropdownMenuItem(
-                        text = { Text("Unpin") },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.keep_off_24px),
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        },
-                        onClick = {
-                            expanded = false
-                            unPinMessage(message)
-                        }
-                    )
+                    if (canPin) {
+                        DropdownMenuItem(
+                            text = { Text("Unpin") },
+                            leadingIcon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.keep_off_24px),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            },
+                            onClick = {
+                                expanded = false
+                                unPinMessage(message)
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -3827,6 +3830,10 @@ class ChatActivity :
         intent.putExtra(
             SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR,
             ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
+        )
+        intent.putExtra(
+            SharedItemsActivity.KEY_IS_ONE_2_ONE,
+            currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         )
         startActivity(intent)
     }

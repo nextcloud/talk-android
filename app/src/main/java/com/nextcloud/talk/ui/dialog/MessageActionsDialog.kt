@@ -99,6 +99,8 @@ class MessageActionsDialog(
         .createdAt
         .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_EDIT_MESSAGE))
 
+    private val canPin = message.isOneToOneConversation ||
+        ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
     private val isUserAllowedToEdit = chatActivity.userAllowedByPrivilages(message)
     private var isNoTimeLimitOnNoteToSelf = hasSpreedFeatureCapability(
         spreedCapabilities,
@@ -173,7 +175,7 @@ class MessageActionsDialog(
                 !message.isDeleted &&
                     hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.PINNED_MESSAGES) &&
                     isOnline &&
-                    isUserAllowedToEdit
+                    canPin
             )
             initMenuMarkAsUnread(
                 message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
