@@ -83,6 +83,7 @@ import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.ShareUtils
+import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -416,6 +417,11 @@ class ConversationsListActivity : BaseActivity() {
                         pendingDirectShareToken = null
                         val conversation = list.firstOrNull { it.token == token }
                         if (conversation != null) handleConversation(conversation)
+                    }
+
+                    // Update dynamic shortcuts for frequent/favorite conversations
+                    currentUser?.let { user ->
+                        ShortcutManagerHelper.updateDynamicShortcuts(context, list, user)
                     }
 
                     if (!scrollPositionRestored) {
