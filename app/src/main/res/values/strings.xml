@@ -39,6 +39,11 @@ How to translate with transifex:
     <string name="nc_common_copy_success">Copied to clipboard</string>
     <string name="nc_common_more_options">More options</string>
 
+    <!-- Shortcuts and Deep Links -->
+    <string name="nc_add_to_home_screen">Add to home screen</string>
+    <string name="nc_shortcut_created">Shortcut created</string>
+    <string name="nc_no_account_for_server">No account found for this server</string>
+
     <!-- Bottom Navigation -->
     <string name="nc_settings">Settings</string>
     <string name="add_participants">Add</string>
