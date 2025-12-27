@@ -9,9 +9,11 @@
  */
 package com.nextcloud.talk.fullscreenfile
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.GestureDetector
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -43,6 +45,7 @@ class FullScreenImageActivity : AppCompatActivity() {
     private lateinit var windowInsetsController: WindowInsetsControllerCompat
     private lateinit var path: String
     private var showFullscreen = false
+    private lateinit var gestureDetector: GestureDetector
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_preview, menu)
@@ -90,6 +93,7 @@ class FullScreenImageActivity : AppCompatActivity() {
             }
         }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -107,8 +111,21 @@ class FullScreenImageActivity : AppCompatActivity() {
         binding.photoView.setOnOutsidePhotoTapListener {
             toggleFullscreen()
         }
+
         binding.gifView.setOnClickListener {
             toggleFullscreen()
+        }
+
+        binding.photoView.setOnTouchListener { _, p1 ->
+            p1?.let {
+                gestureDetector.onTouchEvent(it)
+            } ?: false
+        }
+
+        binding.gifView.setOnTouchListener { _, p1 ->
+            p1?.let {
+                gestureDetector.onTouchEvent(it)
+            } ?: false
         }
 
         // Enable enlarging the image more than default 3x maximumScale.
@@ -133,6 +150,13 @@ class FullScreenImageActivity : AppCompatActivity() {
             binding.photoView.visibility = View.VISIBLE
             displayImage(path)
         }
+
+        gestureDetector = GestureDetector(
+            this,
+            FullScreenGestureListener(this) {
+                onBackPressedDispatcher.onBackPressed()
+            }
+        )
     }
 
     private fun displayImage(path: String) {
