@@ -13,6 +13,7 @@ import android.util.Log
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.domain.ChatPullResult
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.mappers.asEntity
@@ -25,14 +26,11 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
-import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.message.SendMessageUtils
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -44,11 +42,15 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import kotlin.collections.any
+import kotlin.collections.map
 
 @Suppress("LargeClass", "TooManyFunctions")
 class OfflineFirstChatRepository @Inject constructor(
@@ -138,12 +140,15 @@ class OfflineFirstChatRepository @Inject constructor(
         this.conversationModel = conversationModel
     }
 
-    override fun initScopeAndLoadInitialMessages(withNetworkParams: Bundle) {
+    override fun initScopeAndLoadInitialMessages(withNetworkParams: Bundle, hasHighPerformanceBackend: Boolean) {
         scope = CoroutineScope(Dispatchers.IO)
-        loadInitialMessages(withNetworkParams)
+        loadInitialMessages(
+            withNetworkParams,
+            hasHighPerformanceBackend
+        )
     }
 
-    private fun loadInitialMessages(withNetworkParams: Bundle): Job =
+    private fun loadInitialMessages(withNetworkParams: Bundle, hasHighPerformanceBackend: Boolean): Job =
         scope.launch {
             Log.d(TAG, "---- loadInitialMessages ------------")
             newXChatLastCommonRead = conversationModel.lastCommonReadMessage
@@ -155,19 +160,31 @@ class OfflineFirstChatRepository @Inject constructor(
             Log.d(TAG, "newestMessageIdFromDb: $newestMessageIdFromDb")
 
             val weAlreadyHaveSomeOfflineMessages = newestMessageIdFromDb > 0
+
             val weHaveAtLeastTheLastReadMessage = newestMessageIdFromDb >= conversationModel.lastReadMessage.toLong()
             Log.d(TAG, "weAlreadyHaveSomeOfflineMessages:$weAlreadyHaveSomeOfflineMessages")
             Log.d(TAG, "weHaveAtLeastTheLastReadMessage:$weHaveAtLeastTheLastReadMessage")
+            Log.d(TAG, "hasHighPerformanceBackend:$hasHighPerformanceBackend")
 
-            if (weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage) {
+            if (weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage && !hasHighPerformanceBackend) {
                 Log.d(
                     TAG,
                     "Initial online request is skipped because offline messages are up to date" +
                         " until lastReadMessage"
                 )
-                Log.d(TAG, "For messages newer than lastRead, lookIntoFuture will load them.")
+
+                // For messages newer than lastRead, lookIntoFuture will load them.
+                // We must only end up here when NO HPB is used!
+                // If a HPB is used, longPolling is not available to handle loading of newer messages.
+                // When a HPB is used the initial request must be made.
             } else {
-                if (!weAlreadyHaveSomeOfflineMessages) {
+                if (hasHighPerformanceBackend) {
+                    Log.d(
+                        TAG,
+                        "An online request for newest 100 messages is made because HPB is used (No long " +
+                            "polling available to catch up with messages newer than last read.)"
+                    )
+                } else if (!weAlreadyHaveSomeOfflineMessages) {
                     Log.d(TAG, "An online request for newest 100 messages is made because offline chat is empty")
                     if (networkMonitor.isOnline.value.not()) {
                         _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
@@ -185,14 +202,13 @@ class OfflineFirstChatRepository @Inject constructor(
                     lookIntoFuture = false,
                     timeout = 0,
                     includeLastKnown = true,
-                    setReadMarker = true,
                     lastKnown = null
                 )
                 withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
                 withNetworkParams.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
 
                 Log.d(TAG, "Starting online request for initial loading")
-                val chatMessageEntities = sync(withNetworkParams)
+                val chatMessageEntities = getMessages(withNetworkParams)
                 if (chatMessageEntities == null) {
                     Log.e(TAG, "initial loading of messages failed")
                 }
@@ -203,7 +219,11 @@ class OfflineFirstChatRepository @Inject constructor(
 
             handleMessagesFromDb(newestMessageIdFromDb)
 
-            initMessagePolling(newestMessageIdFromDb)
+            if (!hasHighPerformanceBackend) {
+                initLongPolling(newestMessageIdFromDb)
+            } else {
+                initRepeatingInsuranceRequest(newestMessageIdFromDb)
+            }
         }
 
     private suspend fun handleMessagesFromDb(newestMessageIdFromDb: Long) {
@@ -288,7 +308,6 @@ class OfflineFirstChatRepository @Inject constructor(
                 lookIntoFuture = false,
                 timeout = 0,
                 includeLastKnown = false,
-                setReadMarker = true,
                 lastKnown = beforeMessageId.toInt()
             )
             withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
@@ -297,16 +316,16 @@ class OfflineFirstChatRepository @Inject constructor(
 
             if (loadFromServer) {
                 Log.d(TAG, "Starting online request for loadMoreMessages")
-                sync(withNetworkParams)
+                getMessages(withNetworkParams)
             }
 
             showMessagesBefore(internalConversationId, beforeMessageId, DEFAULT_MESSAGES_LIMIT)
             updateUiForLastCommonRead()
         }
 
-    override fun initMessagePolling(initialMessageId: Long): Job =
+    override fun initLongPolling(initialMessageId: Long): Job =
         scope.launch {
-            Log.d(TAG, "---- initMessagePolling ------------")
+            Log.d(TAG, "---- initLongPolling ------------")
 
             Log.d(TAG, "newestMessage: $initialMessageId")
 
@@ -316,7 +335,6 @@ class OfflineFirstChatRepository @Inject constructor(
                 // initially no messages but someone writes us in the first 30 seconds.
                 timeout = 0,
                 includeLastKnown = false,
-                setReadMarker = true,
                 lastKnown = initialMessageId.toInt()
             )
 
@@ -329,11 +347,11 @@ class OfflineFirstChatRepository @Inject constructor(
                     Thread.sleep(HALF_SECOND)
                 } else {
                     // sync database with server
-                    // (This is a long blocking call because long polling (lookIntoFuture) is set)
+                    // (This is a long blocking call because long polling (lookIntoFuture and timeout) is set)
                     networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
 
                     Log.d(TAG, "Starting online request for long polling")
-                    val resultsFromSync = sync(networkParams)
+                    val resultsFromSync = getMessages(networkParams)
                     if (!resultsFromSync.isNullOrEmpty()) {
                         val chatMessages = resultsFromSync.map(ChatMessageEntity::asModel)
 
@@ -355,6 +373,9 @@ class OfflineFirstChatRepository @Inject constructor(
 
                     updateUiForLastCommonRead()
 
+                    // getNewestMessageIdFromChatBlocks wont work for insurance calls. we dont want newest message
+                    // but only the newest message that came from sync (not from signaling)
+                    // -> create new var to save newest message from sync (set for initial and long polling requests)
                     val newestMessage = chatBlocksDao.getNewestMessageIdFromChatBlocks(
                         internalConversationId,
                         threadId
@@ -365,7 +386,6 @@ class OfflineFirstChatRepository @Inject constructor(
                         lookIntoFuture = true,
                         timeout = 30,
                         includeLastKnown = false,
-                        setReadMarker = true,
                         lastKnown = newestMessage
                     )
 
@@ -373,6 +393,17 @@ class OfflineFirstChatRepository @Inject constructor(
                 }
             }
         }
+
+    private fun initRepeatingInsuranceRequest(initialMessageId: Long) {
+        scope.launch {
+            Log.d(TAG, "---- initRepeatingInsuranceRequest ------------")
+
+            Log.d(TAG, "newestMessage: $initialMessageId")
+
+
+
+        }
+    }
 
     private suspend fun handleNewAndTempMessages(
         receivedChatMessages: List<ChatMessage>,
@@ -456,7 +487,6 @@ class OfflineFirstChatRepository @Inject constructor(
         lookIntoFuture: Boolean,
         timeout: Int,
         includeLastKnown: Boolean,
-        setReadMarker: Boolean,
         lastKnown: Int?,
         limit: Int = DEFAULT_MESSAGES_LIMIT
     ): HashMap<String, Int> {
@@ -478,7 +508,7 @@ class OfflineFirstChatRepository @Inject constructor(
         fieldMap["limit"] = limit
 
         fieldMap["lookIntoFuture"] = if (lookIntoFuture) 1 else 0
-        fieldMap["setReadMarker"] = if (setReadMarker) 1 else 0
+        fieldMap["setReadMarker"] = 0
 
         return fieldMap
     }
@@ -495,139 +525,166 @@ class OfflineFirstChatRepository @Inject constructor(
                 lookIntoFuture = false,
                 timeout = 0,
                 includeLastKnown = true,
-                setReadMarker = false,
                 lastKnown = messageId.toInt(),
                 limit = 1
             )
             bundle.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
 
             Log.d(TAG, "Starting online request for single message (e.g. a reply)")
-            sync(bundle)
+            getMessages(bundle)
         }
+        // we cant just expect here that sync succeeded??
         return chatDao.getChatMessageForConversation(
             internalConversationId,
             messageId
         ).map(ChatMessageEntity::asModel)
     }
 
-    @Suppress("UNCHECKED_CAST", "MagicNumber", "Detekt.TooGenericExceptionCaught")
-    private fun getMessagesFromServer(bundle: Bundle): Pair<Int, List<ChatMessageJson>>? {
+    fun pullMessagesFlow(bundle: Bundle): Flow<ChatPullResult> = flow {
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
-
         var attempts = 1
+
         while (attempts < 5) {
-            Log.d(TAG, "message limit: " + fieldMap["limit"])
-            try {
-                val result = network.pullChatMessages(credentials, urlForChatting, fieldMap)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .map { it ->
-                        when (it.code()) {
-                            HTTP_CODE_OK -> {
-                                Log.d(TAG, "getMessagesFromServer HTTP_CODE_OK")
-                                newXChatLastCommonRead = it.headers()["X-Chat-Last-Common-Read"]?.let {
-                                    Integer.parseInt(it)
-                                }
-
-                                return@map Pair(
-                                    HTTP_CODE_OK,
-                                    (it.body() as ChatOverall).ocs!!.data!!
-                                )
-                            }
-
-                            HTTP_CODE_NOT_MODIFIED -> {
-                                Log.d(TAG, "getMessagesFromServer HTTP_CODE_NOT_MODIFIED")
-
-                                return@map Pair(
-                                    HTTP_CODE_NOT_MODIFIED,
-                                    listOf<ChatMessageJson>()
-                                )
-                            }
-
-                            HTTP_CODE_PRECONDITION_FAILED -> {
-                                Log.d(TAG, "getMessagesFromServer HTTP_CODE_PRECONDITION_FAILED")
-
-                                return@map Pair(
-                                    HTTP_CODE_PRECONDITION_FAILED,
-                                    listOf<ChatMessageJson>()
-                                )
-                            }
-
-                            else -> {
-                                return@map Pair(
-                                    HTTP_CODE_PRECONDITION_FAILED,
-                                    listOf<ChatMessageJson>()
-                                )
-                            }
-                        }
+            runCatching {
+                network.pullChatMessages(credentials, urlForChatting, fieldMap)
+            }.fold(
+                onSuccess = { response ->
+                    val result = when (response.code()) {
+                        HTTP_CODE_OK -> ChatPullResult.Success(
+                            messages = response.body()?.ocs?.data.orEmpty(),
+                            lastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.toInt()
+                        )
+                        HTTP_CODE_NOT_MODIFIED -> ChatPullResult.NotModified
+                        HTTP_CODE_PRECONDITION_FAILED -> ChatPullResult.PreconditionFailed
+                        else -> ChatPullResult.Error(HttpException(response))
                     }
-                    .blockingSingle()
-                return result
-            } catch (e: Exception) {
-                Log.e(TAG, "Something went wrong when pulling chat messages (attempt: $attempts)", e)
-                attempts++
 
-                val newMessageLimit = when (attempts) {
-                    2 -> 50
-                    3 -> 10
-                    else -> 5
+                    emit(result)
+                    return@flow
+                },
+                onFailure = { e ->
+                    Log.e(TAG, "Attempt $attempts failed", e)
+                    attempts++
+                    fieldMap["limit"] = when (attempts) { 2 -> 50; 3 -> 10; else -> 5 }
                 }
-                fieldMap["limit"] = newMessageLimit
-            }
+            )
         }
-        Log.e(TAG, "All attempts to get messages from server failed")
-        return null
-    }
 
-    private suspend fun sync(bundle: Bundle): List<ChatMessageEntity>? {
+        emit(ChatPullResult.Error(IllegalStateException("All attempts failed")))
+    }.flowOn(Dispatchers.IO)
+
+
+
+    // private suspend fun getMessages(bundle: Bundle): List<ChatMessageEntity>? {
+    //     if (!networkMonitor.isOnline.value) {
+    //         Log.d(TAG, "Device is offline, can't load chat messages from server")
+    //         return null
+    //     }
+    //
+    //     val result = pullMessagesFlow(bundle)
+    //     if (result == null) {
+    //         Log.d(TAG, "No result from server")
+    //         return null
+    //     }
+    //
+    //     var chatMessagesFromSync: List<ChatMessageEntity>? = null
+    //
+    //     val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
+    //     val queriedMessageId = fieldMap["lastKnownMessageId"]
+    //     val lookIntoFuture = fieldMap["lookIntoFuture"] == 1
+    //
+    //     val statusCode = result.first
+    //
+    //     val hasHistory = getHasHistory(statusCode, lookIntoFuture)
+    //
+    //     Log.d(
+    //         TAG,
+    //         "internalConv=$internalConversationId statusCode=$statusCode lookIntoFuture=$lookIntoFuture " +
+    //             "hasHistory=$hasHistory " +
+    //             "queriedMessageId=$queriedMessageId"
+    //     )
+    //
+    //     val blockContainingQueriedMessage: ChatBlockEntity? = getBlockOfMessage(queriedMessageId)
+    //
+    //     if (blockContainingQueriedMessage != null && !hasHistory) {
+    //         blockContainingQueriedMessage.hasHistory = false
+    //         chatBlocksDao.upsertChatBlock(blockContainingQueriedMessage)
+    //         Log.d(TAG, "End of chat was reached so hasHistory=false is set")
+    //     }
+    //
+    //     if (result.second.isNotEmpty()) {
+    //         chatMessagesFromSync = updateMessagesData(
+    //             result.second,
+    //             blockContainingQueriedMessage,
+    //             lookIntoFuture,
+    //             hasHistory
+    //         )
+    //     } else {
+    //         Log.d(TAG, "no data is updated...")
+    //     }
+    //
+    //     return chatMessagesFromSync
+    // }
+
+    private suspend fun getMessages(bundle: Bundle): List<ChatMessageEntity>? {
         if (!networkMonitor.isOnline.value) {
             Log.d(TAG, "Device is offline, can't load chat messages from server")
             return null
         }
 
-        val result = getMessagesFromServer(bundle)
-        if (result == null) {
-            Log.d(TAG, "No result from server")
-            return null
-        }
-
-        var chatMessagesFromSync: List<ChatMessageEntity>? = null
-
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
         val queriedMessageId = fieldMap["lastKnownMessageId"]
         val lookIntoFuture = fieldMap["lookIntoFuture"] == 1
 
-        val statusCode = result.first
+        val result = pullMessagesFlow(bundle).first()
 
-        val hasHistory = getHasHistory(statusCode, lookIntoFuture)
+        return when (result) {
 
-        Log.d(
-            TAG,
-            "internalConv=$internalConversationId statusCode=$statusCode lookIntoFuture=$lookIntoFuture " +
-                "hasHistory=$hasHistory " +
-                "queriedMessageId=$queriedMessageId"
-        )
+            is ChatPullResult.Success -> {
+                val hasHistory = getHasHistory(HTTP_CODE_OK, lookIntoFuture)
 
-        val blockContainingQueriedMessage: ChatBlockEntity? = getBlockOfMessage(queriedMessageId)
+                Log.d(
+                    TAG,
+                    "internalConv=$internalConversationId statusCode=${HTTP_CODE_OK} lookIntoFuture=$lookIntoFuture " +
+                        "hasHistory=$hasHistory queriedMessageId=$queriedMessageId"
+                )
 
-        if (blockContainingQueriedMessage != null && !hasHistory) {
-            blockContainingQueriedMessage.hasHistory = false
-            chatBlocksDao.upsertChatBlock(blockContainingQueriedMessage)
-            Log.d(TAG, "End of chat was reached so hasHistory=false is set")
+                val blockContainingQueriedMessage: ChatBlockEntity? = getBlockOfMessage(queriedMessageId)
+
+                blockContainingQueriedMessage?.takeIf { !hasHistory }?.apply {
+                    this.hasHistory = false
+                    chatBlocksDao.upsertChatBlock(this)
+                    Log.d(TAG, "End of chat reached, set hasHistory=false")
+                }
+
+                if (result.messages.isNotEmpty()) {
+                    updateMessagesData(
+                        result.messages,
+                        blockContainingQueriedMessage,
+                        lookIntoFuture,
+                        hasHistory
+                    )
+                } else {
+                    Log.d(TAG, "No new messages to update")
+                    null
+                }
+            }
+
+            is ChatPullResult.NotModified -> {
+                Log.d(TAG, "Server returned NOT_MODIFIED, nothing to update")
+                null
+            }
+
+            is ChatPullResult.PreconditionFailed -> {
+                Log.d(TAG, "Server returned PRECONDITION_FAILED, nothing to update")
+                null
+            }
+
+            is ChatPullResult.Error -> {
+                Log.e(TAG, "Error pulling messages from server", result.throwable)
+                null
+            }
         }
-
-        if (result.second.isNotEmpty()) {
-            chatMessagesFromSync = updateMessagesData(
-                result.second,
-                blockContainingQueriedMessage,
-                lookIntoFuture,
-                hasHistory
-            )
-        } else {
-            Log.d(TAG, "no data is updated...")
-        }
-
-        return chatMessagesFromSync
     }
 
     private suspend fun OfflineFirstChatRepository.updateMessagesData(
@@ -676,7 +733,7 @@ class OfflineFirstChatRepository @Inject constructor(
             newestMessageId = newestMessageIdForNewChatBlock,
             hasHistory = hasHistory
         )
-        chatBlocksDao.upsertChatBlock(newChatBlock) // crash when no conversation thread exists!
+        chatBlocksDao.upsertChatBlock(newChatBlock)
 
         updateBlocks(newChatBlock)
         return chatMessagesFromSyncToProcess
@@ -1024,6 +1081,27 @@ class OfflineFirstChatRepository @Inject constructor(
     override suspend fun deleteTempMessage(chatMessage: ChatMessage) {
         chatDao.deleteTempChatMessages(internalConversationId, listOf(chatMessage.referenceId.orEmpty()))
         _removeMessageFlow.emit(chatMessage)
+    }
+
+    override fun onSignalingChatMessageReceived(chatMessage: ChatMessageJson) {
+        scope.launch {
+            val chatMessageEntities = updateMessagesData(
+                chatMessagesJson = listOf(chatMessage),
+                blockContainingQueriedMessage = null,
+                lookIntoFuture = true,
+                hasHistory = true
+            )
+
+            val chatMessages = chatMessageEntities.map(ChatMessageEntity::asModel)
+
+            handleNewAndTempMessages(
+                receivedChatMessages = chatMessages,
+                lookIntoFuture = true,
+                showUnreadMessagesMarker = false
+            )
+
+            updateUiForLastCommonRead()
+        }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
