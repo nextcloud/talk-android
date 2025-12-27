@@ -328,7 +328,11 @@ public class TakePhotoActivity extends AppCompatActivity {
         Bitmap bitmap = BitmapShrinker.shrinkBitmap(photoFile.getAbsolutePath(),
                                                     doubleScreenWidth,
                                                     doubleScreenHeight);
-
+        if (bitmap == null) {
+            Log.e(TAG, "Preview bitmap could not be decoded from path: " + photoFile.getAbsolutePath());
+            Snackbar.make(binding.getRoot(), R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show();
+            return;
+        }
         binding.photoPreview.setImageBitmap(bitmap);
         binding.photoPreview.setTag(savedUri);
         viewModel.disableTorchIfEnabled();
