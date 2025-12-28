@@ -3419,7 +3419,13 @@ open class ChatActivity :
                 val notificationManager = getSystemService(
                     Context.NOTIFICATION_SERVICE
                 ) as android.app.NotificationManager
-                val notificationId = NotificationUtils.calculateCRC32(roomToken).toInt()
+                val existingNotification = NotificationUtils.findNotificationForRoom(
+                    this@ChatActivity,
+                    conversationUser!!,
+                    roomToken
+                )
+                val notificationId = existingNotification?.id
+                    ?: NotificationUtils.calculateCRC32(roomToken).toInt()
 
                 notificationManager.cancel(notificationId)
                 androidx.core.content.pm.ShortcutManagerCompat.removeDynamicShortcuts(
