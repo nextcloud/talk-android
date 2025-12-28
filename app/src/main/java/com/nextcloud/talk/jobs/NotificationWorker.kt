@@ -540,7 +540,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         // Use a consistent ID based on the room token to avoid duplicate bubbles
         val systemNotificationId: Int = activeStatusBarNotification?.id
             ?: NotificationUtils.calculateCRC32(
-                "${signatureVerification.user!!.id}:${pushMessage.id!!}"
+                System.currentTimeMillis().toString()
             ).toInt()
 
         if ((TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) &&
