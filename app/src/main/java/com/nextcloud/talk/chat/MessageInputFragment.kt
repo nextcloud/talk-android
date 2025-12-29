@@ -1045,6 +1045,14 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun themeMessageInputView() {
+        binding.messageInputContainer.apply {
+            viewThemeUtils.talk.themeCardView(this)
+        }
+
+        binding.fragmentMessageInputView.findViewById<ImageView>(R.id.microphoneEnabledInfoBackground)?.let {
+            viewThemeUtils.platform.themeViewBackground(it, ColorRole.SURFACE_VARIANT)
+        }
+
         binding.fragmentMessageInputView.button?.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }
 
         binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.let {

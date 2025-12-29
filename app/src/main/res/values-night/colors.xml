@@ -37,8 +37,6 @@
     <color name="conversation_unread_bubble">#373737</color>
     <color name="conversation_unread_bubble_text">#D8D8D8</color>
 
-    <color name="chat_separator">#484848</color>
-
     <!-- Background for replied messages -->
     <color name="reply_background">#33000000</color>
 
