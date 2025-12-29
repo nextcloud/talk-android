@@ -48,116 +48,127 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:id="@+id/search_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="1dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/standard_quarter_margin"
+            android:orientation="horizontal"
             android:visibility="gone"
-            app:cardCornerRadius="25dp"
-            app:cardElevation="2dp"
-            app:strokeWidth="0dp"
             tools:visibility="visible">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/search_toolbar_container"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/standard_margin"
+                android:layout_marginEnd="7dp"
+                android:layout_marginBottom="1dp"
+                app:cardCornerRadius="25dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/menu_button"
-                    style="@style/Widget.AppTheme.Button.IconButton"
-                    android:layout_width="3dp"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="5dp"
-                    android:contentDescription="@string/nc_action_open_main_menu"
-                    android:visibility="gone"
-                    app:cornerRadius="@dimen/button_corner_radius"
-                    app:icon="@drawable/ic_menu"
-                    app:iconTint="@color/fontAppbar"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/search_text"
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="0dp"
-                    android:ellipsize="end"
-                    android:gravity="start|center_vertical"
-                    android:lines="1"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/fontSecondaryAppbar"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/menu_button"
-                    app:layout_constraintEnd_toStartOf="@id/filter_conversations_button"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Search in Nextcloud" />
-
-                <ImageView
-                    android:id="@+id/filter_conversations_button"
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:contentDescription="@string/nc_filter"
-                    android:src="@drawable/ic_baseline_filter_list_24"
-                    app:layout_constraintBaseline_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/threads_button"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/threads_button"
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    android:contentDescription="@string/threads"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:src="@drawable/outline_forum_24"
-                    android:visibility="gone"
-                    app:layout_constraintBaseline_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/rightContainer"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:visibility="visible"/>
-
-                <FrameLayout
-                    android:id="@+id/rightContainer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:minWidth="48dp"
-                    android:layout_centerVertical="true"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:theme="@style/Theme.MaterialComponents.DayNight.Bridge">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/switch_account_button"
+                        android:id="@+id/menu_button"
                         style="@style/Widget.AppTheme.Button.IconButton"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_gravity="center"
-                        android:contentDescription="@string/nc_settings"
-                        android:scaleType="fitCenter"
-                        android:transitionName="userAvatar.transitionTag"
+                        android:layout_width="3dp"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="5dp"
+                        android:contentDescription="@string/nc_action_open_main_menu"
+                        android:visibility="gone"
                         app:cornerRadius="@dimen/button_corner_radius"
-                        app:iconSize="@dimen/avatar_size_app_bar"
-                        app:iconTint="@null"
-                        tools:icon="@drawable/ic_user" />
+                        app:icon="@drawable/ic_menu"
+                        app:iconTint="@color/fontAppbar"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                </FrameLayout>
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/search_text"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="@dimen/standard_margin"
+                        android:layout_marginEnd="@dimen/zero"
+                        android:ellipsize="end"
+                        android:gravity="start|center_vertical"
+                        android:lines="1"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/fontSecondaryAppbar"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/filter_conversations_button"
+                        app:layout_constraintStart_toEndOf="@id/menu_button"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Search in Nextcloud" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <ImageView
+                        android:id="@+id/filter_conversations_button"
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/nc_filter"
+                        android:paddingStart="@dimen/standard_half_padding"
+                        android:paddingEnd="@dimen/standard_half_padding"
+                        android:src="@drawable/ic_baseline_filter_list_24"
+                        app:layout_constraintBaseline_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/threads_button"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-        </com.google.android.material.card.MaterialCardView>
+                    <ImageView
+                        android:id="@+id/threads_button"
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/zero"
+                        android:layout_marginEnd="@dimen/standard_half_margin"
+                        android:contentDescription="@string/threads"
+                        android:paddingStart="@dimen/standard_half_padding"
+                        android:paddingEnd="@dimen/standard_half_padding"
+                        android:src="@drawable/outline_forum_24"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="visible" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <FrameLayout
+                android:id="@+id/rightContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="7dp"
+                android:layout_marginStart="@dimen/zero"
+                android:minWidth="48dp"
+                android:theme="@style/Theme.MaterialComponents.DayNight.Bridge"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/switch_account_button"
+                    style="@style/Widget.AppTheme.Button.IconButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/nc_settings"
+                    android:scaleType="fitCenter"
+                    android:transitionName="userAvatar.transitionTag"
+                    app:cornerRadius="@dimen/button_corner_radius"
+                    app:iconSize="@dimen/avatar_size_app_bar"
+                    app:iconTint="@null"
+                    tools:icon="@drawable/ic_user"
+                    tools:iconTint="@color/black"/>
+
+            </FrameLayout>
+
+        </LinearLayout>
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/conversation_list_toolbar"
