@@ -275,7 +275,7 @@ class ConversationsListActivity :
         setupActionBar()
         setContentView(binding.root)
         initSystemBars()
-        viewThemeUtils.material.themeSearchCardView(binding.searchToolbar)
+        viewThemeUtils.material.themeSearchCardView(binding.searchToolbarContainer)
         viewThemeUtils.material.colorMaterialButtonContent(binding.menuButton, ColorRole.ON_SURFACE_VARIANT)
         viewThemeUtils.platform.colorTextView(binding.searchText, ColorRole.ON_SURFACE_VARIANT)
 
