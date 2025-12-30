@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.google.android.material.card.MaterialCardView
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -39,9 +40,6 @@ class Reaction {
                 true
             }
 
-            val amountParams = getAmountLayoutParams(context)
-            val wrapperParams = getWrapperLayoutParams(context)
-
             val paddingSide = DisplayUtils.convertDpToPixel(EMOJI_AND_AMOUNT_PADDING_SIDE, context).toInt()
             val paddingTop = DisplayUtils.convertDpToPixel(WRAPPER_PADDING_TOP, context).toInt()
             val paddingBottom = DisplayUtils.convertDpToPixel(WRAPPER_PADDING_BOTTOM, context).toInt()
@@ -57,8 +55,6 @@ class Reaction {
                     amount,
                     EmojiWithAmountWrapperLayoutInfo(
                         textColor,
-                        amountParams,
-                        wrapperParams,
                         paddingSide,
                         paddingTop,
                         paddingBottom,
@@ -90,18 +86,23 @@ class Reaction {
         amount: Int,
         layoutInfo: EmojiWithAmountWrapperLayoutInfo,
         isBubbled: Boolean
-    ): LinearLayout {
+    ): MaterialCardView {
+        val amountParams = getAmountLayoutParams(context)
+        val wrapperParams = getWrapperLayoutParams(context)
+
+        val emojiContainer = MaterialCardView(context)
         val emojiWithAmountWrapper = LinearLayout(context)
         emojiWithAmountWrapper.orientation = LinearLayout.HORIZONTAL
 
-        emojiWithAmountWrapper.addView(getEmojiTextView(context, emoji))
-        emojiWithAmountWrapper.addView(getReactionCount(context, layoutInfo.textColor, amount, layoutInfo.amountParams))
-        emojiWithAmountWrapper.layoutParams = layoutInfo.wrapperParams
+        emojiWithAmountWrapper.addView(getEmojiTextView(context, emoji, amountParams))
+        emojiWithAmountWrapper.addView(getReactionCount(context, layoutInfo.textColor, amount, amountParams))
+        emojiWithAmountWrapper.layoutParams = wrapperParams
 
         layoutInfo.viewThemeUtils.talk.setReactionsBackground(
-            emojiWithAmountWrapper,
+            emojiContainer,
             layoutInfo.isOutgoingMessage,
-            layoutInfo.isSelfReaction
+            layoutInfo.isSelfReaction,
+            isBubbled
         )
 
         emojiWithAmountWrapper.setPaddingRelative(
@@ -111,12 +112,23 @@ class Reaction {
             layoutInfo.paddingBottom
         )
 
-        return emojiWithAmountWrapper
+        emojiContainer.addView(emojiWithAmountWrapper)
+        val containerParams = getWrapperLayoutParams(context, REACTION_END_MARGIN)
+        containerParams.marginStart = 0
+        emojiContainer.layoutParams = containerParams
+        emojiContainer.setStrokeWidth(DisplayUtils.convertDpToPixel(EMOJI_CONTAINER_STROKE_WIDTH, context).toInt())
+
+        return emojiContainer
     }
 
-    private fun getEmojiTextView(context: Context, emoji: String): EmojiTextView {
+    private fun getEmojiTextView(
+        context: Context,
+        emoji: String,
+        layoutParams: LinearLayout.LayoutParams
+    ): EmojiTextView {
         val reactionEmoji = EmojiTextView(context)
         reactionEmoji.text = emoji
+        reactionEmoji.layoutParams = layoutParams
         return reactionEmoji
     }
 
@@ -124,21 +136,25 @@ class Reaction {
         context: Context,
         textColor: Int,
         amount: Int,
-        amountParams: LinearLayout.LayoutParams
+        layoutParams: LinearLayout.LayoutParams
     ): TextView {
         val reactionAmount = TextView(context)
         reactionAmount.setTextColor(textColor)
         reactionAmount.text = amount.toString()
-        reactionAmount.layoutParams = amountParams
+        reactionAmount.layoutParams = layoutParams
         return reactionAmount
     }
 
-    private fun getWrapperLayoutParams(context: Context): LinearLayout.LayoutParams {
+    private fun getWrapperLayoutParams(
+        context: Context,
+        endMarginInDp: Float = EMOJI_END_MARGIN
+    ): LinearLayout
+        .LayoutParams {
         val wrapperParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        wrapperParams.marginEnd = DisplayUtils.convertDpToPixel(EMOJI_END_MARGIN, context).toInt()
+        wrapperParams.marginEnd = DisplayUtils.convertDpToPixel(endMarginInDp, context).toInt()
         return wrapperParams
     }
 
@@ -153,8 +169,6 @@ class Reaction {
 
     private data class EmojiWithAmountWrapperLayoutInfo(
         val textColor: Int,
-        val amountParams: LinearLayout.LayoutParams,
-        val wrapperParams: LinearLayout.LayoutParams,
         val paddingSide: Int,
         val paddingTop: Int,
         val paddingBottom: Int,
@@ -164,10 +178,12 @@ class Reaction {
     )
 
     companion object {
-        const val AMOUNT_START_MARGIN: Float = 2F
-        const val EMOJI_END_MARGIN: Float = 6F
+        const val AMOUNT_START_MARGIN: Float = 4F
+        const val EMOJI_END_MARGIN: Float = 4F
+        const val REACTION_END_MARGIN: Float = 6F
         const val EMOJI_AND_AMOUNT_PADDING_SIDE: Float = 4F
         const val WRAPPER_PADDING_TOP: Float = 2F
         const val WRAPPER_PADDING_BOTTOM: Float = 3F
+        const val EMOJI_CONTAINER_STROKE_WIDTH: Float = 1.5F
     }
 }
