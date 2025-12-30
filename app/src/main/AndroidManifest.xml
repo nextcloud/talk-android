@@ -280,6 +280,7 @@
         <receiver android:name=".receivers.MarkAsReadReceiver" />
         <receiver android:name=".receivers.DismissRecordingAvailableReceiver" />
         <receiver android:name=".receivers.ShareRecordingToChatReceiver" />
+        <receiver android:name=".receivers.EndCallReceiver" />
 
         <service
             android:name=".utils.SyncService"
