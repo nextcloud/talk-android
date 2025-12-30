@@ -86,5 +86,4 @@
     <dimen name="notification_icon_height">24dp</dimen>
     <dimen name="notification_icon_layout_right_end_margin">21dp</dimen>
     <dimen name="sm_text_size">12sp</dimen>
-
 </resources>

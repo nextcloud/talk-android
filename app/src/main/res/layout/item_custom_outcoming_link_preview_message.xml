@@ -12,75 +12,80 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="16dp"
+    android:layout_alignParentEnd="true"
+    android:layout_marginStart="@dimen/message_outcoming_bubble_margin_left"
     android:layout_marginTop="2dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginEnd="@dimen/standard_margin"
     android:layout_marginBottom="2dp">
 
-    <com.google.android.flexbox.FlexboxLayout
-        android:id="@id/bubble"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="@dimen/message_outcoming_bubble_margin_left"
-        app:alignContent="stretch"
-        app:alignItems="stretch"
-        app:flexWrap="wrap"
-        app:justifyContent="flex_end">
-
-        <include
-            android:id="@+id/message_quote"
-            layout="@layout/item_message_quote"
-            android:visibility="gone" />
-
-        <androidx.emoji2.widget.EmojiTextView
-            android:id="@id/messageText"
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@id/bubble"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignWithParentIfMissing="true"
-            android:lineSpacingMultiplier="1.2"
-            android:textAlignment="viewStart"
-            android:textColorHighlight="@color/nc_grey"
-            android:textIsSelectable="false"
-            tools:text="Talk to you later!" />
+            app:alignContent="stretch"
+            app:alignItems="stretch"
+            app:flexWrap="wrap"
+            app:justifyContent="flex_end">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end">
             <include
-                android:id="@+id/referenceInclude"
-                layout="@layout/reference_inside_message" />
-        </LinearLayout>
+                android:id="@+id/message_quote"
+                layout="@layout/item_message_quote"
+                android:visibility="gone" />
 
-        <TextView
-            android:id="@id/messageTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/messageText"
-            android:layout_marginStart="8dp"
-            android:alpha="0.6"
-            android:gravity="end"
-            android:textColor="@color/no_emphasis_text"
-            android:textIsSelectable="false"
-            app:layout_alignSelf="center"
-            app:layout_flexGrow="1"
-            app:layout_wrapBefore="false"
-            tools:text="10:35" />
+            <androidx.emoji2.widget.EmojiTextView
+                android:id="@id/messageText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignWithParentIfMissing="true"
+                android:lineSpacingMultiplier="1.2"
+                android:textAlignment="viewStart"
+                android:textColorHighlight="@color/nc_grey"
+                android:textIsSelectable="false"
+                tools:text="Talk to you later!" />
 
-        <ImageView
-            android:id="@+id/checkMark"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/message_bubble_checkmark_height"
-            android:layout_below="@id/messageTime"
-            android:layout_marginStart="8dp"
-            android:contentDescription="@null"
-            app:layout_alignSelf="center"
-            app:tint="@color/high_emphasis_text" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end">
+
+                <include
+                    android:id="@+id/referenceInclude"
+                    layout="@layout/reference_inside_message" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@id/messageTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/messageText"
+                android:layout_marginStart="8dp"
+                android:alpha="0.6"
+                android:gravity="end"
+                android:textColor="@color/no_emphasis_text"
+                android:textIsSelectable="false"
+                app:layout_alignSelf="center"
+                app:layout_flexGrow="1"
+                app:layout_wrapBefore="false"
+                tools:text="10:35" />
+
+            <ImageView
+                android:id="@+id/checkMark"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/message_bubble_checkmark_height"
+                android:layout_below="@id/messageTime"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@null"
+                app:layout_alignSelf="center"
+                app:tint="@color/high_emphasis_text" />
+
+        </com.google.android.flexbox.FlexboxLayout>
 
         <include
             android:id="@+id/reactions"
-            layout="@layout/reactions_inside_message" />
-
-    </com.google.android.flexbox.FlexboxLayout>
-</RelativeLayout>
+            layout="@layout/reactions_inside_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bubble"
+            android:layout_marginStart="@dimen/message_bubble_corners_horizontal_padding"
+            android:layout_marginTop="-4dp" />
+    </RelativeLayout>
