@@ -155,6 +155,7 @@ import com.nextcloud.talk.messagesearch.MessageSearchActivity
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
@@ -229,6 +230,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -249,6 +251,8 @@ import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
 
 @Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -427,15 +431,15 @@ class ChatActivity :
 
     var callStarted = false
 
-    private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
-        override fun onSwitchTo(token: String?) {
-            if (token != null) {
-                if (CallActivity.active) {
-                    Log.d(TAG, "CallActivity is running. Ignore to switch chat in ChatActivity...")
-                } else {
-                    switchToRoom(token, false, false)
-                }
-            }
+    private val localParticipantMessageListener = SignalingMessageReceiver.LocalParticipantMessageListener { token ->
+        if (CallActivity.active) {
+            Log.d(TAG, "CallActivity is running. Ignore to switch chat in ChatActivity...")
+        } else {
+            switchToRoom(
+                token = token,
+                startCallAfterRoomSwitch = false,
+                isVoiceOnlyCall = false
+            )
         }
     }
 
@@ -474,6 +478,17 @@ class ChatActivity :
                 typingParticipants.remove(userIdOrGuestSession)
                 updateTypingIndicator()
             }
+        }
+
+        override fun onChatMessageReceived(chatMessage: ChatMessageJson) {
+            chatViewModel.onSignalingChatMessageReceived(chatMessage)
+
+            Log.d(
+                TAG,
+                "received message in ChatActivity. This is the chat message received via HPB. It would be " +
+                    "nicer to receive it in the ViewModel or Repository directly. " +
+                    "Otherwise it needs to be passed into it from here..."
+            )
         }
     }
 
@@ -648,6 +663,7 @@ class ChatActivity :
         this.lifecycle.removeObserver(chatViewModel)
     }
 
+    @OptIn(FlowPreview::class)
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n", "ResourceAsColor")
     @Suppress("LongMethod")
     private fun initObservers() {
@@ -814,7 +830,9 @@ class ChatActivity :
 
                         chatViewModel.loadMessages(
                             withCredentials = credentials!!,
-                            withUrl = urlForChatting
+                            withUrl = urlForChatting,
+                            hasHighPerformanceBackend =
+                            WebSocketConnectionHelper.getWebSocketInstanceForUser(conversationUser) != null
                         )
                     } else {
                         Log.w(
@@ -927,7 +945,7 @@ class ChatActivity :
 
                     val id = state.msg.ocs!!.data!!.parentMessage!!.id.toString()
                     val index = adapter?.getMessagePositionById(id) ?: 0
-                    val message = adapter?.items?.get(index)?.item as ChatMessage
+                    val message = adapter?.items?.get(index)?.item as? ChatMessage
                     setMessageAsDeleted(message)
                 }
 
@@ -986,43 +1004,45 @@ class ChatActivity :
             }
         }
 
-        this.lifecycleScope.launch {
-            chatViewModel.getMessageFlow
-                .onEach { triple ->
-                    val lookIntoFuture = triple.first
-                    val setUnreadMessagesMarker = triple.second
-                    var chatMessageList = triple.third
+        chatViewModel.getMessageFlow
+            .onEach { triple ->
+                val lookIntoFuture = triple.first
+                val setUnreadMessagesMarker = triple.second
+                var chatMessageList = triple.third
 
-                    chatMessageList = handleSystemMessages(chatMessageList)
-                    chatMessageList = handleThreadMessages(chatMessageList)
-                    if (chatMessageList.isEmpty()) {
-                        return@onEach
-                    }
+                chatMessageList = handleSystemMessages(chatMessageList)
+                chatMessageList = handleThreadMessages(chatMessageList)
+                if (chatMessageList.isEmpty()) {
+                    return@onEach
+                }
 
-                    determinePreviousMessageIds(chatMessageList)
+                determinePreviousMessageIds(chatMessageList)
 
-                    handleExpandableSystemMessages(chatMessageList)
+                handleExpandableSystemMessages(chatMessageList)
 
-                    if (ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType) {
-                        adapter?.clear()
-                        adapter?.notifyDataSetChanged()
-                    }
-
-                    if (lookIntoFuture) {
-                        Log.d(TAG, "chatMessageList.size in getMessageFlow:" + chatMessageList.size)
-                        processMessagesFromTheFuture(chatMessageList, setUnreadMessagesMarker)
-                    } else {
-                        processMessagesNotFromTheFuture(chatMessageList)
-                        collapseSystemMessages()
-                    }
-
-                    processExpiredMessages()
-                    processCallStartedMessages()
-
+                if (ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType) {
+                    adapter?.clear()
                     adapter?.notifyDataSetChanged()
                 }
-                .collect()
-        }
+
+                if (lookIntoFuture) {
+                    Log.d(TAG, "chatMessageList.size in getMessageFlow:" + chatMessageList.size)
+                    processMessagesFromTheFuture(chatMessageList, setUnreadMessagesMarker)
+                } else {
+                    processMessagesNotFromTheFuture(chatMessageList)
+                    collapseSystemMessages()
+                }
+
+                processExpiredMessages()
+                processCallStartedMessages()
+
+                adapter?.notifyDataSetChanged()
+            }
+            .debounce(300)
+            .onEach {
+                advanceLocalLastReadMessageIfNeeded()
+            }
+            .launchIn(lifecycleScope)
 
         this.lifecycleScope.launch {
             chatViewModel.getRemoveMessageFlow
@@ -1449,6 +1469,8 @@ class ChatActivity :
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    advanceLocalLastReadMessageIfNeeded()
+                    updateRemoteLastReadMessageIfNeeded()
                     if (isScrolledToBottom()) {
                         binding.unreadMessagesPopup.visibility = View.GONE
                         binding.scrollDownButton.visibility = View.GONE
@@ -2743,7 +2765,38 @@ class ChatActivity :
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
+
+        // TODO: when updating remote last read message in onPause, there is a race condition with loading conversations
+        // for conversation list. It may or may not include info about the sent last read message...
+        // -> save this field offline in conversation?
+        updateRemoteLastReadMessageIfNeeded()
+
         adapter = null
+    }
+
+    private fun advanceLocalLastReadMessageIfNeeded() {
+        val position = layoutManager?.findFirstVisibleItemPosition()
+        position?.let {
+            // Casting could fail if it's not a chatMessage. It should not matter as the function is triggered often
+            // enough. If it's a problem, either improve or wait for migration to Jetpack Compose.
+            val message = adapter?.items?.getOrNull(it)?.item as? ChatMessage
+            message?.jsonMessageId?.let { messageId ->
+                chatViewModel.advanceLocalLastReadMessageIfNeeded(messageId)
+            }
+        }
+    }
+
+    private fun updateRemoteLastReadMessageIfNeeded() {
+        val url = ApiUtils.getUrlForChatReadMarker(
+            ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1)),
+            conversationUser.baseUrl!!,
+            roomToken
+        )
+
+        chatViewModel.updateRemoteLastReadMessageIfNeeded(
+            credentials = credentials!!,
+            url = url
+        )
     }
 
     private fun isActivityNotChangingConfigurations(): Boolean = !isChangingConfigurations
@@ -2872,6 +2925,7 @@ class ChatActivity :
 
     private fun setupWebsocket() {
         if (currentConversation == null || conversationUser == null) {
+            Log.e(TAG, "setupWebsocket: currentConversation or conversationUser is null")
             return
         }
 
@@ -3182,7 +3236,7 @@ class ChatActivity :
                 it.item is ChatMessage && (it.item as ChatMessage).id == messageId
             }
             if (messagePosition >= 0) {
-                val currentItem = adapter?.items?.get(messagePosition)?.item
+                val currentItem = adapter?.items?.getOrNull(messagePosition)?.item
                 if (currentItem is ChatMessage && currentItem.id == messageId) {
                     return Pair(currentItem, messagePosition)
                 } else {
@@ -3934,7 +3988,10 @@ class ChatActivity :
     fun markAsUnread(message: IMessage?) {
         val chatMessage = message as ChatMessage?
         if (chatMessage!!.previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
-            chatViewModel.setChatReadMarker(
+            // previousMessageId is taken to mark chat as unread even when "chat-unread" capability is not available
+            // It should be checked if "chat-unread" capability is available and then use
+            // https://nextcloud-talk.readthedocs.io/en/latest/chat/#mark-chat-as-unread
+            chatViewModel.setChatReadMessage(
                 credentials!!,
                 ApiUtils.getUrlForChatReadMarker(
                     ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1)),
