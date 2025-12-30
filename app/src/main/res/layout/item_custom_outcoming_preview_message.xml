@@ -65,6 +65,15 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/video_play_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/play_video_message"
+                android:src="@drawable/outline_play_circle_24"
+                android:visibility="gone" />
         </FrameLayout>
 
         <com.google.android.material.card.MaterialCardView

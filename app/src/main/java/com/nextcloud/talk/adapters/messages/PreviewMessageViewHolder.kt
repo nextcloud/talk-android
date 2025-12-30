@@ -81,6 +81,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     open var progressBar: ProgressBar? = null
     open var reactionsBinding: ReactionsInsideMessageBinding? = null
     open var threadsBinding: ItemThreadTitleBinding? = null
+    open var videoPlayButton: ImageView? = null
     var fileViewerUtils: FileViewerUtils? = null
     var clickView: View? = null
 
@@ -104,6 +105,8 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
         viewThemeUtils!!.platform.colorCircularProgressBar(progressBar!!, ColorRole.PRIMARY)
         clickView = image
         messageText.visibility = View.VISIBLE
+        val isVideoPreview = message.selectedIndividualHashMap?.get(KEY_MIMETYPE)?.startsWith("video/") == true
+        videoPlayButton?.visibility = if (isVideoPreview) View.VISIBLE else View.GONE
         if (message.getCalculateMessageType() === ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
             fileViewerUtils = FileViewerUtils(context!!, message.activeUser!!)
             val fileName = message.selectedIndividualHashMap!![KEY_NAME]
