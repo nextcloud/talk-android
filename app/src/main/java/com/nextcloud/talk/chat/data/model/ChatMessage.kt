@@ -94,6 +94,8 @@ data class ChatMessage(
 
     var lastEditTimestamp: Long? = 0,
 
+    var incoming: Boolean = false,
+
     var isDownloadingVoiceMessage: Boolean = false,
 
     var resetVoiceMessage: Boolean = false,
@@ -130,7 +132,17 @@ data class ChatMessage(
 
     var sendStatus: SendStatus? = null,
 
-    var silent: Boolean = false
+    var silent: Boolean = false,
+
+    var pinnedActorType: String? = null,
+
+    var pinnedActorId: String? = null,
+
+    var pinnedActorDisplayName: String? = null,
+
+    var pinnedAt: Long? = null,
+
+    var pinnedUntil: Long? = null
 
 ) : MessageContentType,
     MessageContentType.Image {
@@ -433,7 +445,9 @@ data class ChatMessage(
         FEDERATED_USER_ADDED,
         FEDERATED_USER_REMOVED,
         PHONE_ADDED,
-        THREAD_CREATED
+        THREAD_CREATED,
+        MESSAGE_PINNED,
+        MESSAGE_UNPINNED
     }
 
     companion object {
