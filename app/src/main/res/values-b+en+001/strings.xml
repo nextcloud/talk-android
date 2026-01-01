@@ -685,8 +685,6 @@
     <string name="translation_error_title">Translation failed</string>
     <string name="translation_from">From</string>
     <string name="translation_to">To</string>
-    <string name="turn_off_background_blur">Turn off background blur</string>
-    <string name="turn_on_background_blur">Turn on background blur</string>
     <string name="typing_1_other">and 1 other is typing …</string>
     <string name="typing_are_typing">are typing …</string>
     <string name="typing_is_typing">is typing …</string>

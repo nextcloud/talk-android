@@ -13,10 +13,9 @@ import com.github.spotbugs.snom.Effort
 import com.github.spotbugs.snom.SpotBugsTask
 
 plugins {
-    id "org.jetbrains.kotlin.plugin.compose" version "2.2.21"
+    id "org.jetbrains.kotlin.plugin.compose" version "2.3.0"
     id "org.jetbrains.kotlin.kapt"
-    id 'com.google.devtools.ksp' version '2.3.3'
-    id "de.undercouch.download" version "5.6.0" // Download task and extension for retrieving files during a build
+    id 'com.google.devtools.ksp' version '2.3.4'
 }
 
 apply plugin: 'com.android.application'
@@ -40,8 +39,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode 230000019
-        versionName "23.0.0 Alpha 19"
+        versionCode 230000022
+        versionName "23.0.0 Alpha 22"
 
         flavorDimensions "default"
         renderscriptTargetApi = 19
@@ -173,7 +172,7 @@ ext {
     workVersion = "2.11.0"
     espressoVersion = "3.7.0"
     androidxTestVersion = "1.5.0"
-    media3_version = "1.8.0"
+    media3_version = "1.9.0"
     coroutines_version = "1.10.2"
     mockitoKotlinVersion = "6.1.0"
 }
@@ -186,6 +185,8 @@ configurations.configureEach {
 }
 
 dependencies {
+    kapt "org.jetbrains.kotlin:kotlin-metadata-jvm:${kotlinVersion}"
+
     implementation "androidx.room:room-testing-android:${roomVersion}"
     implementation 'androidx.compose.foundation:foundation-layout:1.10.0'
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
@@ -201,6 +202,7 @@ dependencies {
     implementation fileTree(include: ['*'], dir: 'libs')
 
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$coroutines_version"
 
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'com.google.android.material:material:1.13.0'
@@ -296,7 +298,7 @@ dependencies {
     implementation "androidx.media3:media3-ui:$media3_version"
 
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.29'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.30'
 
     implementation "io.noties.markwon:core:$markwonVersion"
     implementation "io.noties.markwon:ext-strikethrough:$markwonVersion"
@@ -311,20 +313,23 @@ dependencies {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     })
 
-    implementation 'androidx.core:core-ktx:1.16.0'
-    implementation 'androidx.activity:activity-ktx:1.12.1'
-    implementation 'com.github.nextcloud.android-common:ui:0.28.0'
+    implementation 'androidx.core:core-ktx:1.17.0'
+    implementation 'androidx.activity:activity-ktx:1.12.2'
+    implementation 'com.github.nextcloud.android-common:ui:0.31.0'
     implementation 'com.github.nextcloud-deps:android-talk-webrtc:132.6834.0'
 
     gplayImplementation 'com.google.android.gms:play-services-base:18.9.0'
     gplayImplementation "com.google.firebase:firebase-messaging:25.0.1"
 
     //compose
-    implementation(platform("androidx.compose:compose-bom:2025.09.00"))
+    implementation(platform("androidx.compose:compose-bom:2025.12.01"))
     implementation("androidx.compose.ui:ui")
-    implementation 'androidx.compose.material3:material3:1.3.2'
+    implementation 'androidx.compose.material3:material3:1.4.0'
+    // replace with xml drawables instead of legacy fallback lib, see
+    // https://developer.android.com/jetpack/androidx/releases/compose-material3#1.4.0
+    implementation 'androidx.compose.material:material-icons-core:1.7.8'
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation 'androidx.activity:activity-compose:1.12.1'
+    implementation 'androidx.activity:activity-compose:1.12.2'
     debugImplementation("androidx.compose.ui:ui-tooling")
 
     //tests
@@ -354,7 +359,7 @@ dependencies {
 
     androidTestImplementation('com.android.support.test.espresso:espresso-intents:3.0.2')
 
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.09.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2025.12.01"))
     testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
 
@@ -363,10 +368,6 @@ dependencies {
     testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
     testImplementation("com.google.dagger:hilt-android-testing:2.57.2")
     testImplementation("org.robolectric:robolectric:4.16")
-
-    // Computer Vision - for background effects during video calls
-    implementation 'com.google.mediapipe:tasks-vision:0.10.26'
-    implementation 'org.opencv:opencv:4.12.0'
 }
 
 tasks.register('installGitHooks', Copy) {

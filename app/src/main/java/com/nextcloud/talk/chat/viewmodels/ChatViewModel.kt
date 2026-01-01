@@ -45,10 +45,10 @@ import com.nextcloud.talk.models.json.userAbsence.UserAbsenceData
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.ui.PlaybackSpeed
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -78,8 +78,7 @@ class ChatViewModel @Inject constructor(
     private val conversationRepository: OfflineConversationsRepository,
     private val reactionsRepository: ReactionsRepository,
     private val mediaRecorderManager: MediaRecorderManager,
-    private val audioFocusRequestManager: AudioFocusRequestManager,
-    private val userProvider: CurrentUserProviderNew
+    private val audioFocusRequestManager: AudioFocusRequestManager
 ) : ViewModel(),
     DefaultLifecycleObserver {
 
@@ -91,6 +90,8 @@ class ChatViewModel @Inject constructor(
         RESUMED,
         STOPPED
     }
+
+    lateinit var currentUser: User
 
     private val mediaPlayerManager: MediaPlayerManager = MediaPlayerManager.sharedInstance(appPreferences)
     lateinit var currentLifeCycleFlag: LifeCycleFlag
@@ -287,8 +288,16 @@ class ChatViewModel @Inject constructor(
     val reactionDeletedViewState: LiveData<ViewState>
         get() = _reactionDeletedViewState
 
-    fun initData(credentials: String, urlForChatting: String, roomToken: String, threadId: Long?) {
-        chatRepository.initData(credentials, urlForChatting, roomToken, threadId)
+    fun initData(user: User, credentials: String, urlForChatting: String, roomToken: String, threadId: Long?) {
+        currentUser = user
+
+        chatRepository.initData(
+            user,
+            credentials,
+            urlForChatting,
+            roomToken,
+            threadId
+        )
         chatRoomToken = roomToken
     }
 
@@ -296,9 +305,9 @@ class ChatViewModel @Inject constructor(
         chatRepository.updateConversation(currentConversation)
     }
 
-    fun getRoom(token: String) {
+    fun getRoom(user: User, token: String) {
         _getRoomViewState.value = GetRoomStartState
-        conversationRepository.getRoom(token)
+        conversationRepository.getRoom(user, token)
     }
 
     fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {
@@ -465,7 +474,7 @@ class ChatViewModel @Inject constructor(
         fun updateFollowedThreadsIndicator(notificationLevel: Int?) {
             when (notificationLevel) {
                 1, 2 -> {
-                    val accountId = UserIdUtils.getIdForUser(userProvider.currentUser.blockingGet())
+                    val accountId = UserIdUtils.getIdForUser(currentUser)
                     arbitraryStorageManager.storeStorageSetting(
                         accountId,
                         FOLLOWED_THREADS_EXIST,
@@ -601,7 +610,7 @@ class ChatViewModel @Inject constructor(
         if (response.ocs?.meta?.statusCode == HTTP_CODE_OK) {
             val noteToSelfConversation = ConversationModel.mapToConversationModel(
                 response.ocs?.data!!,
-                userProvider.currentUser.blockingGet()
+                currentUser
             )
             return noteToSelfConversation
         } else {
@@ -633,7 +642,21 @@ class ChatViewModel @Inject constructor(
     }
 
     fun deleteReaction(roomToken: String, chatMessage: ChatMessage, emoji: String) {
-        reactionsRepository.deleteReaction(roomToken, chatMessage, emoji)
+        val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+        val url = ApiUtils.getUrlForMessageReaction(
+            currentUser.baseUrl!!,
+            roomToken,
+            chatMessage.id
+        )
+
+        reactionsRepository.deleteReaction(
+            credentials,
+            currentUser.id!!,
+            url,
+            roomToken,
+            chatMessage,
+            emoji
+        )
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<ReactionDeletedModel> {
@@ -658,7 +681,21 @@ class ChatViewModel @Inject constructor(
     }
 
     fun addReaction(roomToken: String, chatMessage: ChatMessage, emoji: String) {
-        reactionsRepository.addReaction(roomToken, chatMessage, emoji)
+        val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+        val url = ApiUtils.getUrlForMessageReaction(
+            currentUser.baseUrl!!,
+            roomToken,
+            chatMessage.id
+        )
+
+        reactionsRepository.addReaction(
+            credentials,
+            currentUser.id!!,
+            url,
+            roomToken,
+            chatMessage,
+            emoji
+        )
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<ReactionAddedModel> {
@@ -794,7 +831,7 @@ class ChatViewModel @Inject constructor(
             bundle.putString(BundleKeys.KEY_CHAT_URL, url)
             bundle.putString(
                 BundleKeys.KEY_CREDENTIALS,
-                userProvider.currentUser.blockingGet().getCredentials()
+                currentUser.getCredentials()
             )
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
 
@@ -946,7 +983,10 @@ class ChatViewModel @Inject constructor(
     }
 
     suspend fun updateMessageDraft() {
-        val model = conversationRepository.getLocallyStoredConversation(chatRoomToken)
+        val model = conversationRepository.getLocallyStoredConversation(
+            currentUser,
+            chatRoomToken
+        )
         model?.messageDraft?.let {
             messageDraft = it
         }
@@ -954,7 +994,10 @@ class ChatViewModel @Inject constructor(
 
     fun saveMessageDraft() {
         CoroutineScope(Dispatchers.IO).launch {
-            val model = conversationRepository.getLocallyStoredConversation(chatRoomToken)
+            val model = conversationRepository.getLocallyStoredConversation(
+                currentUser,
+                chatRoomToken
+            )
             model?.let {
                 it.messageDraft = messageDraft
                 conversationRepository.updateConversation(it)

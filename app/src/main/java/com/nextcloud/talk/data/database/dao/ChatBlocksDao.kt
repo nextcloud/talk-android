@@ -35,7 +35,7 @@ interface ChatBlocksDao {
         internalConversationId: String,
         threadId: Long?,
         messageId: Long
-    ): Flow<List<ChatBlockEntity?>>
+    ): Flow<List<ChatBlockEntity>>
 
     @Query(
         """

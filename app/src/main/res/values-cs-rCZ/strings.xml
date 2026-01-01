@@ -685,8 +685,6 @@
     <string name="translation_error_title">Překlad se nezdařil</string>
     <string name="translation_from">Od</string>
     <string name="translation_to">Pro</string>
-    <string name="turn_off_background_blur">Vypnout rozmazávání pozadí za vámi</string>
-    <string name="turn_on_background_blur">Zapnout rozmazávání pozadí za vámi</string>
     <string name="typing_1_other">a 1 další píše …</string>
     <string name="typing_are_typing">píší …</string>
     <string name="typing_is_typing">píše …</string>

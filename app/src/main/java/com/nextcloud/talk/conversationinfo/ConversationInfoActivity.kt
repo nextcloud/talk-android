@@ -200,7 +200,7 @@ class ConversationInfoActivity :
         viewModel =
             ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
 
-        conversationUser = currentUserProvider.currentUser.blockingGet()
+        conversationUser = currentUserProviderOld.currentUser.blockingGet()
 
         conversationToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         hasAvatarSpacing = intent.getBooleanExtra(BundleKeys.KEY_ROOM_ONE_TO_ONE, false)
@@ -1054,7 +1054,12 @@ class ConversationInfoActivity :
 
     private fun clearHistory() {
         val apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
-        viewModel.clearChatHistory(apiVersion, conversationToken)
+        val url = ApiUtils.getUrlForChat(apiVersion, conversationUser.baseUrl!!, conversationToken)
+
+        viewModel.clearChatHistory(
+            conversationUser,
+            url
+        )
     }
 
     private fun deleteConversation() {
@@ -1287,7 +1292,11 @@ class ConversationInfoActivity :
     }
 
     private fun makeConversationReadOnly(roomToken: String, state: Int) {
-        viewModel.setConversationReadOnly(roomToken, state)
+        viewModel.setConversationReadOnly(
+            conversationUser,
+            roomToken,
+            state
+        )
     }
 
     private fun initRecordingConsentOption() {

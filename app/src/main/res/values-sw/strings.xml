@@ -686,8 +686,6 @@
     <string name="translation_error_title">Utafsiri umeshindikana</string>
     <string name="translation_from">Tangu/ kutoka</string>
     <string name="translation_to">Mpaka/ hadi</string>
-    <string name="turn_off_background_blur">Zima ukungu wa mandharinyuma</string>
-    <string name="turn_on_background_blur">Washa ukungu wa mandharinyuma</string>
     <string name="typing_1_other">na mwingine 1 anachapisha</string>
     <string name="typing_are_typing">wanachapisha</string>
     <string name="typing_is_typing">anachapisha</string>

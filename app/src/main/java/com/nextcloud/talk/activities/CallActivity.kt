@@ -74,9 +74,6 @@ import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.call.components.ParticipantGrid
 import com.nextcloud.talk.call.components.SelfVideoView
 import com.nextcloud.talk.call.components.screenshare.ScreenShareComponent
-import com.nextcloud.talk.camera.BackgroundBlurFrameProcessor
-import com.nextcloud.talk.camera.BlurBackgroundViewModel
-import com.nextcloud.talk.camera.BlurBackgroundViewModel.BackgroundBlurOn
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallActivityBinding
@@ -219,7 +216,6 @@ class CallActivity : CallBaseActivity() {
     var audioManager: WebRtcAudioManager? = null
     var callRecordingViewModel: CallRecordingViewModel? = null
     var raiseHandViewModel: RaiseHandViewModel? = null
-    val blurBackgroundViewModel: BlurBackgroundViewModel = BlurBackgroundViewModel()
     private var mReceiver: BroadcastReceiver? = null
     private var peerConnectionFactory: PeerConnectionFactory? = null
     private var screenSharePeerConnectionFactory: PeerConnectionFactory? = null
@@ -434,7 +430,7 @@ class CallActivity : CallBaseActivity() {
 
         hideNavigationIfNoPipAvailable()
         processExtras(intent.extras!!)
-        conversationUser = currentUserProvider.currentUser.blockingGet()
+        conversationUser = currentUserProviderOld.currentUser.blockingGet()
 
         credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
         if (TextUtils.isEmpty(baseUrl)) {
@@ -446,7 +442,6 @@ class CallActivity : CallBaseActivity() {
 
         initRaiseHandViewModel()
         initCallRecordingViewModel(intent.extras!!.getInt(KEY_RECORDING_STATE))
-        initBackgroundBlurViewModel()
 
         initClickListeners(isModerator, isOneToOneConversation)
         binding!!.microphoneButton.setOnTouchListener(MicrophoneButtonTouchListener())
@@ -536,26 +531,6 @@ class CallActivity : CallBaseActivity() {
                     peerConnectionWrapper.raiseHand(raised)
                 }
             }
-        }
-    }
-
-    private fun initBackgroundBlurViewModel() {
-        blurBackgroundViewModel.viewState.observe(this) { state ->
-            val frontFacing = isCameraFrontFacing(cameraEnumerator)
-            if (frontFacing == null) {
-                Log.e(TAG, "Camera not found")
-                return@observe
-            }
-
-            val isOn = state == BackgroundBlurOn
-
-            val processor = if (isOn) {
-                BackgroundBlurFrameProcessor(context)
-            } else {
-                null
-            }
-
-            videoSource?.setVideoProcessor(processor)
         }
     }
 
@@ -1214,30 +1189,6 @@ class CallActivity : CallBaseActivity() {
         return null
     }
 
-    private fun isCameraFrontFacing(enumerator: CameraEnumerator?): Boolean? {
-        if (enumerator == null) {
-            return false
-        }
-
-        val deviceNames = enumerator.deviceNames
-
-        // First, try to find front facing camera
-        for (deviceName in deviceNames) {
-            if (enumerator.isFrontFacing(deviceName)) {
-                return true
-            }
-        }
-
-        // Front facing camera not found, try something else
-        for (deviceName in deviceNames) {
-            if (!enumerator.isFrontFacing(deviceName)) {
-                return false
-            }
-        }
-
-        return null
-    }
-
     fun onMicrophoneClick() {
         if (!canPublishAudioStream) {
             microphoneOn = false
@@ -1319,7 +1270,6 @@ class CallActivity : CallBaseActivity() {
                 binding!!.cameraButton.setImageResource(R.drawable.ic_videocam_white_24px)
             } else {
                 binding!!.cameraButton.setImageResource(R.drawable.ic_videocam_off_white_24px)
-                blurBackgroundViewModel.turnOffBlur()
             }
             toggleMedia(videoOn, true)
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
@@ -1394,10 +1344,6 @@ class CallActivity : CallBaseActivity() {
 
     fun clickRaiseOrLowerHandButton() {
         raiseHandViewModel!!.clickHandButton()
-    }
-
-    fun toggleBackgroundBlur() {
-        blurBackgroundViewModel.toggleBackgroundBlur()
     }
 
     public override fun onDestroy() {

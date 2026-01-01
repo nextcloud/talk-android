@@ -317,7 +317,7 @@ class SettingsActivity :
     }
 
     private fun getCurrentUser() {
-        currentUser = currentUserProvider.currentUser.blockingGet()
+        currentUser = currentUserProviderOld.currentUser.blockingGet()
         credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
     }
 
@@ -729,13 +729,14 @@ class SettingsActivity :
 
     private fun setupServerNotificationAppCheck() {
         val serverNotificationAppInstalled =
-            currentUserProvider.currentUser.blockingGet().capabilities?.notificationsCapability?.features?.isNotEmpty()
+            currentUserProviderOld.currentUser.blockingGet()
+                .capabilities?.notificationsCapability?.features?.isNotEmpty()
                 ?: false
         if (!serverNotificationAppInstalled) {
             binding.settingsServerNotificationAppWrapper.visibility = View.VISIBLE
 
             val description = context.getString(R.string.nc_settings_contact_admin_of) + LINEBREAK +
-                currentUserProvider.currentUser.blockingGet().baseUrl!!
+                currentUserProviderOld.currentUser.blockingGet().baseUrl!!
 
             binding.settingsServerNotificationAppDescription.text = description
             if (openedByNotificationWarning) {

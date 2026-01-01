@@ -19,7 +19,6 @@ import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -39,8 +38,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val dao: ConversationsDao,
     private val network: ConversationsNetworkDataSource,
     private val chatNetworkDataSource: ChatNetworkDataSource,
-    private val networkMonitor: NetworkMonitor,
-    private val currentUserProviderNew: CurrentUserProviderNew
+    private val networkMonitor: NetworkMonitor
 ) : OfflineConversationsRepository {
     override val roomListFlow: Flow<List<ConversationModel>>
         get() = _roomListFlow
@@ -51,15 +49,14 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val _conversationFlow: MutableSharedFlow<ConversationModel> = MutableSharedFlow()
 
     private val scope = CoroutineScope(Dispatchers.IO)
-    private var user: User = currentUserProviderNew.currentUser.blockingGet()
 
-    override fun getRooms(): Job =
+    override fun getRooms(user: User): Job =
         scope.launch {
             val initialConversationModels = getListOfConversations(user.id!!)
             _roomListFlow.emit(initialConversationModels)
 
             if (networkMonitor.isOnline.value) {
-                val conversationEntitiesFromSync = getRoomsFromServer()
+                val conversationEntitiesFromSync = getRoomsFromServer(user)
                 if (!conversationEntitiesFromSync.isNullOrEmpty()) {
                     val conversationModelsFromSync = conversationEntitiesFromSync.map(ConversationEntity::asModel)
                     _roomListFlow.emit(conversationModelsFromSync)
@@ -67,7 +64,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
             }
         }
 
-    override fun getRoom(roomToken: String): Job =
+    override fun getRoom(user: User, roomToken: String): Job =
         scope.launch {
             chatNetworkDataSource.getRoom(user, roomToken)
                 .subscribeOn(Schedulers.io())
@@ -109,13 +106,13 @@ class OfflineFirstConversationsRepository @Inject constructor(
         dao.updateConversation(entity)
     }
 
-    override suspend fun getLocallyStoredConversation(roomToken: String): ConversationModel? {
+    override suspend fun getLocallyStoredConversation(user: User, roomToken: String): ConversationModel? {
         val id = user.id!!
         return getConversation(id, roomToken)
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    private suspend fun getRoomsFromServer(): List<ConversationEntity>? {
+    private suspend fun getRoomsFromServer(user: User): List<ConversationEntity>? {
         var conversationsFromSync: List<ConversationEntity>? = null
 
         if (!networkMonitor.isOnline.value) {
@@ -135,7 +132,10 @@ class OfflineFirstConversationsRepository @Inject constructor(
                 it.asEntity(user.id!!)
             }
 
-            deleteLeftConversations(conversationsFromSync)
+            deleteLeftConversations(
+                user,
+                conversationsFromSync
+            )
             dao.upsertConversations(user.id!!, conversationsFromSync)
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong when fetching conversations", e)
@@ -143,7 +143,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
         return conversationsFromSync
     }
 
-    private suspend fun deleteLeftConversations(conversationsFromSync: List<ConversationEntity>) {
+    private suspend fun deleteLeftConversations(user: User, conversationsFromSync: List<ConversationEntity>) {
         val conversationsFromSyncIds = conversationsFromSync.map { it.internalId }.toSet()
         val oldConversationsFromDb = dao.getConversationsForUser(user.id!!).first()
 

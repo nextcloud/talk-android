@@ -685,8 +685,6 @@
     <string name="translation_error_title">تەرجىمە مەغلۇب بولدى</string>
     <string name="translation_from">دىن</string>
     <string name="translation_to">غا</string>
-    <string name="turn_off_background_blur">ئارقا كۆرۈنۈشنى تۇتۇقلاشتۇرۇشنى تاقا</string>
-    <string name="turn_on_background_blur">ئارقا كۆرۈنۈشنى تۇتۇقلاشتۇرۇشنى ئاچ</string>
     <string name="typing_1_other">يەنە 1 بولسا خەت بېسىۋاتىدۇ…</string>
     <string name="typing_are_typing">يېزىۋاتىدۇ…</string>
     <string name="typing_is_typing">يېزىۋاتىدۇ…</string>
@@ -713,6 +711,14 @@
     <string name="userinfo_no_info_text">ئارخىپ بېتىڭىزگە ئىسىم ، رەسىم ۋە ئالاقىلىشىش تەپسىلاتلىرىنى قوشۇڭ.</string>
     <string name="video_call">سىنلىق تېلېفون</string>
     <string name="whats_your_status">ئەھۋالىڭىز نېمە؟</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">%d مۇشۇنىڭغا ئوخشاش ئۇچۇرنى كۆر</item>
+        <item quantity="other">%d مۇشۇنىڭغا ئوخشاش ئۇچۇرلارنى كۆر</item>
+    </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="one">بۇ سۆھبەت %1$d كۈندە پائالىيىتى بولمىغان بارلىق كىشىلەر ئۈچۈن ئاپتوماتىك ئۆچۈرۈلىدۇ.</item>
+        <item quantity="other">بۇ سۆھبەت %1$d كۈندە  پائالىيىتى بولمىغان بارلىق كىشىلەر ئۈچۈن ئاپتوماتىك ئۆچۈرۈلىدۇ.</item>
+    </plurals>
     <plurals name="thread_replies">
         <item quantity="one">%d جاۋاپ</item>
         <item quantity="other">%d جاۋاپلار</item>

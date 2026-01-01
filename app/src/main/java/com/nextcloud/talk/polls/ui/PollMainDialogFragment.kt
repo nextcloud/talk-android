@@ -23,7 +23,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogPollMainBinding
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -35,7 +35,7 @@ class PollMainDialogFragment : DialogFragment() {
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
-    var currentUserProvider: CurrentUserProviderNew? = null
+    var currentUserProvider: CurrentUserProviderOld? = null
         @Inject set
 
     private lateinit var binding: DialogPollMainBinding

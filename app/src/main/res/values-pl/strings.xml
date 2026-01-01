@@ -685,8 +685,6 @@
     <string name="translation_error_title">Tłumaczenie nie powiodło się</string>
     <string name="translation_from">Z</string>
     <string name="translation_to">Na</string>
-    <string name="turn_off_background_blur">Wyłącz rozmycie tła</string>
-    <string name="turn_on_background_blur">Włącz rozmycie tła</string>
     <string name="typing_1_other">i 1 inny pisze…</string>
     <string name="typing_are_typing">piszą…</string>
     <string name="typing_is_typing">pisze…</string>

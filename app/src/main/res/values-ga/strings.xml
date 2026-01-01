@@ -685,8 +685,6 @@
     <string name="translation_error_title">Theip ar an aistriúchán</string>
     <string name="translation_from">Ó</string>
     <string name="translation_to">Chun</string>
-    <string name="turn_off_background_blur">Múch doiléiriú an chúlra</string>
-    <string name="turn_on_background_blur">Cuir doiléiriú cúlra ar siúl</string>
     <string name="typing_1_other">agus tá 1 eile ag clóscríobh …</string>
     <string name="typing_are_typing">ag clóscríobh…</string>
     <string name="typing_is_typing">ag clóscríobh…</string>

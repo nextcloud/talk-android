@@ -17,6 +17,8 @@ class FakeUnifiedSearchRepository : UnifiedSearchRepository {
     var lastRequestedCursor = -1
 
     override fun searchMessages(
+        credentials: String?,
+        url: String,
         searchTerm: String,
         cursor: Int,
         limit: Int
@@ -26,6 +28,8 @@ class FakeUnifiedSearchRepository : UnifiedSearchRepository {
     }
 
     override fun searchInRoom(
+        credentials: String?,
+        url: String,
         roomToken: String,
         searchTerm: String,
         cursor: Int,

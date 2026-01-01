@@ -685,8 +685,6 @@
     <string name="translation_error_title">翻譯失敗</string>
     <string name="translation_from">從</string>
     <string name="translation_to">至</string>
-    <string name="turn_off_background_blur">關閉背景模糊</string>
-    <string name="turn_on_background_blur">啟用背景模糊</string>
     <string name="typing_1_other">以及另外 1 個人正在輸入……</string>
     <string name="typing_are_typing">正在輸入……</string>
     <string name="typing_is_typing">正在輸入……</string>
