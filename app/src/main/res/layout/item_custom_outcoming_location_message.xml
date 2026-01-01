@@ -2,7 +2,7 @@
 <!--
   ~ Nextcloud Talk - Android Client
   ~
-  ~ SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ SPDX-FileCopyrightText: 2021, 2025 Andy Scherzinger <info@andy-scherzinger.de>
   ~ SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
@@ -11,17 +11,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="16dp"
+    android:layout_alignParentEnd="true"
+    android:layout_marginStart="@dimen/message_outcoming_bubble_margin_left"
     android:layout_marginTop="2dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginEnd="@dimen/standard_margin"
     android:layout_marginBottom="2dp">
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@id/bubble"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="@dimen/message_outcoming_bubble_margin_left"
         app:alignContent="stretch"
         app:alignItems="stretch"
         app:flexWrap="wrap"
@@ -71,8 +70,14 @@
             app:layout_alignSelf="center"
             app:tint="@color/high_emphasis_text" />
 
-        <include
-            android:id="@+id/reactions"
-            layout="@layout/reactions_inside_message" />
     </com.google.android.flexbox.FlexboxLayout>
+
+    <include
+        android:id="@+id/reactions"
+        layout="@layout/reactions_inside_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bubble"
+        android:layout_marginStart="@dimen/message_bubble_corners_horizontal_padding"
+        android:layout_marginTop="-4dp" />
 </RelativeLayout>

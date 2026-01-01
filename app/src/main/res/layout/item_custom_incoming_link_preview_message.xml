@@ -12,9 +12,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="16dp"
+    android:layout_marginStart="@dimen/standard_margin"
     android:layout_marginTop="2dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginEnd="@dimen/standard_margin"
     android:layout_marginBottom="2dp">
 
     <ImageView
@@ -38,62 +38,75 @@
         android:textSize="12sp"
         tools:text="Jane Doe" />
 
-    <com.google.android.flexbox.FlexboxLayout
-        android:id="@id/bubble"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/messageAuthor"
         android:layout_marginEnd="@dimen/message_incoming_bubble_margin_right"
         android:layout_toEndOf="@id/messageUserAvatar"
-        android:orientation="vertical"
-        app:alignContent="stretch"
-        app:alignItems="stretch"
-        app:flexWrap="wrap">
+        android:orientation="vertical">
 
-        <include
-            android:id="@+id/message_quote"
-            layout="@layout/item_message_quote"
-            android:visibility="gone" />
-
-        <androidx.emoji2.widget.EmojiTextView
-            android:id="@id/messageText"
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@id/bubble"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:lineSpacingMultiplier="1.2"
-            android:textAlignment="viewStart"
-            android:textIsSelectable="false"
-            app:layout_alignSelf="flex_start"
-            app:layout_flexGrow="1"
-            app:layout_wrapBefore="true"
-            tools:text="Talk to you later!" />
+            android:orientation="vertical"
+            app:alignContent="stretch"
+            app:alignItems="stretch"
+            app:flexWrap="wrap">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start">
             <include
-                android:id="@+id/referenceInclude"
-                layout="@layout/reference_inside_message" />
-        </LinearLayout>
+                android:id="@+id/message_quote"
+                layout="@layout/item_message_quote"
+                android:visibility="gone" />
 
-        <TextView
-            android:id="@id/messageTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/messageText"
-            android:layout_marginStart="8dp"
-            android:alpha="0.6"
-            android:gravity="end"
-            android:textColor="@color/no_emphasis_text"
-            android:textIsSelectable="false"
-            app:layout_alignSelf="center"
-            app:layout_flexGrow="1"
-            app:layout_wrapBefore="false"
-            tools:text="12:38" />
+            <androidx.emoji2.widget.EmojiTextView
+                android:id="@id/messageText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingMultiplier="1.2"
+                android:textAlignment="viewStart"
+                android:textIsSelectable="false"
+                app:layout_alignSelf="flex_start"
+                app:layout_flexGrow="1"
+                app:layout_wrapBefore="true"
+                tools:text="Talk to you later!" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start">
+
+                <include
+                    android:id="@+id/referenceInclude"
+                    layout="@layout/reference_inside_message" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@id/messageTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/messageText"
+                android:layout_marginStart="8dp"
+                android:alpha="0.6"
+                android:gravity="end"
+                android:textColor="@color/no_emphasis_text"
+                android:textIsSelectable="false"
+                app:layout_alignSelf="center"
+                app:layout_flexGrow="1"
+                app:layout_wrapBefore="false"
+                tools:text="12:38" />
+
+        </com.google.android.flexbox.FlexboxLayout>
 
         <include
             android:id="@+id/reactions"
-            layout="@layout/reactions_inside_message" />
+            layout="@layout/reactions_inside_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bubble"
+            android:layout_marginStart="@dimen/message_bubble_corners_horizontal_padding"
+            android:layout_marginTop="-4dp" />
 
-    </com.google.android.flexbox.FlexboxLayout>
+    </RelativeLayout>
 </RelativeLayout>
