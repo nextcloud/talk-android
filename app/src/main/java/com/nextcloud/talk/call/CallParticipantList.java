@@ -128,6 +128,7 @@ public class CallParticipantList {
             copiedParticipant.setInternal(participant.getInternal());
             copiedParticipant.setLastPing(participant.getLastPing());
             copiedParticipant.setSessionId(participant.getSessionId());
+            copiedParticipant.setNextcloudSessionId(participant.getNextcloudSessionId());
             copiedParticipant.setType(participant.getType());
             copiedParticipant.setUserId(participant.getUserId());
 

@@ -2123,11 +2123,12 @@ class CallActivity : CallBaseActivity() {
 
         for (participant in participantsInCall) {
             val inCallFlag = participant.inCall
-            if (participant.sessionId != currentSessionId) {
+            val participantSession = if (hasMCU) participant.sessionId else participant.nextcloudSessionId
+            if (participantSession != callSession) {
                 Log.d(
                     TAG,
                     "   inCallFlag of participant " +
-                        participant.sessionId!!.substring(0, SESSION_ID_PREFFIX_END) +
+                        participantSession!!.substring(0, SESSION_ID_PREFFIX_END) +
                         " : " +
                         inCallFlag
                 )
