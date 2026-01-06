@@ -175,21 +175,6 @@
             tools:ignore="TextContrastCheck"
             tools:text="A simple message" />
 
-        <TextView
-            android:id="@id/messageTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="@dimen/standard_half_padding"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="2dp"
-            android:alpha="0.6"
-            android:gravity="end"
-            android:textColor="@color/no_emphasis_text"
-            app:layout_alignSelf="center"
-            tools:ignore="TextContrastCheck"
-            tools:text="12:38" />
-
         <androidx.emoji2.widget.EmojiTextView
             android:id="@+id/messageCaption"
             android:padding="@dimen/standard_half_padding"
@@ -204,6 +189,35 @@
             tools:visibility="visible"
             tools:ignore="TextContrastCheck"
             tools:text="This is my caption" />
+
+        <TextView
+            android:id="@id/messageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/standard_half_padding"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="2dp"
+            android:alpha="0.6"
+            android:gravity="end"
+            android:textColor="@color/no_emphasis_text"
+            app:layout_alignSelf="flex_end"
+            tools:ignore="TextContrastCheck"
+            tools:text="12:38" />
+
+        <TextView
+            android:id="@+id/messageEditIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="2dp"
+            android:alpha="0.6"
+            android:textColor="@color/no_emphasis_text"
+            android:textIsSelectable="false"
+            android:text="@string/hint_edited_message"
+            android:textSize="12sp"
+            app:layout_alignSelf="flex_end"
+            tools:ignore="TextContrastCheck" />
 
         <include
             android:id="@+id/reactions"
