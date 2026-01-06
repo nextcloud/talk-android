@@ -175,6 +175,34 @@
                 android:textColor="@color/no_emphasis_text"
                 app:layout_alignSelf="center"
                 tools:text="12:34" />
+        <androidx.emoji2.widget.EmojiTextView
+            android:id="@+id/messageCaption"
+            android:padding="@dimen/standard_half_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="4dp"
+            android:textColor="@color/high_emphasis_text"
+            android:textIsSelectable="false"
+            android:textSize="@dimen/chat_text_size"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:ignore="TextContrastCheck"
+            tools:text="This is my caption" />
+
+        <TextView
+            android:id="@id/messageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/standard_half_padding"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="2dp"
+            android:alpha="0.6"
+            android:gravity="end"
+            android:textColor="@color/no_emphasis_text"
+            app:layout_alignSelf="flex_end"
+            tools:text="12:34" />
 
             <androidx.emoji2.widget.EmojiTextView
                 android:id="@+id/messageCaption"
@@ -195,6 +223,28 @@
                 tools:text="This is my caption"
                 tools:visibility="visible" />
         </com.google.android.flexbox.FlexboxLayout>
+        <TextView
+            android:id="@+id/messageEditIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="2dp"
+            android:alpha="0.6"
+            android:textColor="@color/no_emphasis_text"
+            android:textIsSelectable="false"
+            android:text="@string/hint_edited_message"
+            android:textSize="12sp"
+            app:layout_alignSelf="flex_end" />
+
+        <ImageView
+            android:id="@+id/checkMark"
+            android:layout_width="25dp"
+            android:layout_height="@dimen/message_bubble_checkmark_height"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@null"
+            app:layout_alignSelf="flex_end"
+            app:tint="@color/high_emphasis_text"
+            tools:src="@drawable/ic_check_all" />
 
         <include
             android:id="@+id/reactions"

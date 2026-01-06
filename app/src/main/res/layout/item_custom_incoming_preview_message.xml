@@ -222,6 +222,19 @@
                 tools:visibility="visible" />
 
         </com.google.android.flexbox.FlexboxLayout>
+        <TextView
+            android:id="@+id/messageEditIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="2dp"
+            android:alpha="0.6"
+            android:textColor="@color/no_emphasis_text"
+            android:textIsSelectable="false"
+            android:text="@string/hint_edited_message"
+            android:textSize="12sp"
+            app:layout_alignSelf="flex_end"
+            tools:ignore="TextContrastCheck" />
 
         <include
             android:id="@+id/reactions"
