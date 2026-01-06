@@ -113,7 +113,7 @@ class MessageActionsDialog(
             ) &&
         !isOlderThanTwentyFourHours
 
-    private val messageHasCaptions = messageHasFileAttachment && message.message!= "{file}" && !message.isDeleted
+    private val messageHasCaptions = messageHasFileAttachment && message.message != "{file}" && !message.isDeleted
 
     private var messageIsEditable = hasSpreedFeatureCapability(
         spreedCapabilities,
