@@ -181,7 +181,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="4dp"
             android:textColor="@color/high_emphasis_text"
             android:textIsSelectable="false"
             android:textSize="@dimen/chat_text_size"
@@ -194,15 +193,16 @@
             android:id="@id/messageTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="@dimen/standard_half_padding"
-            android:layout_alignParentEnd="true"
+            android:layout_below="@id/messageCaption"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="2dp"
             android:alpha="0.6"
             android:gravity="end"
             android:textColor="@color/no_emphasis_text"
+            android:textIsSelectable="false"
             app:layout_alignSelf="flex_end"
-            tools:text="12:34" />
+            app:layout_flexGrow="1"
+            app:layout_wrapBefore="false"
+            tools:text="10:35" />
 
             <androidx.emoji2.widget.EmojiTextView
                 android:id="@+id/messageCaption"
@@ -227,20 +227,24 @@
             android:id="@+id/messageEditIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/messageCaption"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="2dp"
             android:alpha="0.6"
             android:textColor="@color/no_emphasis_text"
             android:textIsSelectable="false"
-            android:text="@string/hint_edited_message"
-            android:textSize="12sp"
-            app:layout_alignSelf="flex_end" />
+            app:layout_alignSelf="flex_end"
+            android:text = "@string/hint_edited_message"
+            android:textSize="12sp">
+
+        </TextView>
 
         <ImageView
             android:id="@+id/checkMark"
             android:layout_width="25dp"
             android:layout_height="@dimen/message_bubble_checkmark_height"
+            android:layout_below="@id/messageTime"
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:contentDescription="@null"
             app:layout_alignSelf="flex_end"
             app:tint="@color/high_emphasis_text"
