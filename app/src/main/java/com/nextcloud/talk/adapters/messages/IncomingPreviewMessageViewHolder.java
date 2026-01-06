@@ -90,12 +90,22 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
         binding.messageTime.setTextColor(ContextCompat.getColor(binding.messageText.getContext(),
                                                                 R.color.no_emphasis_text));
 
+        binding.messageEditIndicator.setTextColor(ContextCompat.getColor(binding.messageText.getContext(),
+                                                                         R.color.no_emphasis_text));
+
         if(!message.isThread()) {
             binding.threadTitleWrapperContainer.setVisibility(View.GONE);
         } else {
             binding.threadTitleWrapperContainer.setVisibility(View.VISIBLE);
         }
     }
+
+    @NonNull
+    @Override
+    public android.widget.TextView getMessageEditIndicator() {
+        return binding.messageEditIndicator;
+    }
+
 
     @NonNull
     @Override

@@ -12,6 +12,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.nextcloud.talk.R;
@@ -19,7 +20,9 @@ import com.nextcloud.talk.databinding.ItemCustomOutcomingPreviewMessageBinding;
 import com.nextcloud.talk.databinding.ItemThreadTitleBinding;
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
 import com.nextcloud.talk.chat.data.model.ChatMessage;
+import com.nextcloud.talk.models.json.chat.ReadStatus;
 import com.nextcloud.talk.utils.TextMatchers;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -90,6 +93,33 @@ public class OutcomingPreviewMessageViewHolder extends PreviewMessageViewHolder 
         binding.messageTime.setTextColor(ContextCompat.getColor(binding.messageText.getContext(),
                                                                 R.color.no_emphasis_text));
 
+        binding.messageEditIndicator.setTextColor(ContextCompat.getColor(binding.messageText.getContext(),
+                                                                         R.color.no_emphasis_text));
+
+        binding.checkMark.setVisibility(View.GONE);
+        Integer readStatusDrawableInt = null;
+        String readStatusContentDescriptionString = null;
+        if (message.getReadStatus() == ReadStatus.READ) {
+            readStatusDrawableInt = R.drawable.ic_check_all;
+            readStatusContentDescriptionString =
+                binding.checkMark.getContext().getString(R.string.nc_message_read);
+        } else if (message.getReadStatus() == ReadStatus.SENT) {
+            readStatusDrawableInt = R.drawable.ic_check;
+            readStatusContentDescriptionString =
+                binding.checkMark.getContext().getString(R.string.nc_message_sent);
+        }
+
+        if (readStatusDrawableInt != null) {
+            binding.checkMark.setVisibility(View.VISIBLE);
+            binding.checkMark.setImageDrawable(ContextCompat.getDrawable(binding.checkMark.getContext(),
+                                                                         readStatusDrawableInt));
+            if (viewThemeUtils != null) {
+                viewThemeUtils.talk.themeMessageCheckMark(binding.checkMark);
+            }
+        }
+        binding.checkMark.setContentDescription(readStatusContentDescriptionString);
+
+
         if(!message.isThread()) {
             binding.threadTitleWrapperContainer.setVisibility(View.GONE);
         } else {
@@ -146,4 +176,9 @@ public class OutcomingPreviewMessageViewHolder extends PreviewMessageViewHolder 
     @NonNull
     @Override
     public EmojiTextView getMessageCaption() { return binding.messageCaption; }
+
+    @Override
+    public @NotNull TextView getMessageEditIndicator() {
+        return binding.messageEditIndicator;
+    }
 }
