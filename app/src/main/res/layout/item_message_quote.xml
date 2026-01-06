@@ -12,12 +12,12 @@
     android:id="@+id/quotedChatMessageView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
     android:background="@drawable/reply_background"
     android:paddingStart="12dp"
-    android:paddingEnd="12dp"
-    android:paddingBottom="4dp"
     android:paddingTop="4dp"
-    android:layout_marginBottom="8dp">
+    android:paddingEnd="4dp"
+    android:paddingBottom="4dp">
 
     <androidx.emoji2.widget.EmojiTextView
         android:id="@+id/quotedMessageAuthor"
@@ -84,9 +84,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="@dimen/zero"
         android:background="@color/transparent"
         android:contentDescription="@string/nc_message_quote_cancel_reply"
         android:src="@drawable/ic_cancel_black_24dp"
