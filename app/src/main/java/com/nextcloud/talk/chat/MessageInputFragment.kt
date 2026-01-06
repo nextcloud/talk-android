@@ -681,7 +681,7 @@ class MessageInputFragment : Fragment() {
                     messageSendButton.setVisible(false)
                     recordAudioButton.setVisible(false)
                     submitThreadButton.setVisible(false)
-                    attachmentButton.setVisible(true)
+                    attachmentButton.setVisible(false)
                 }
 
                 isThreadCreateModeActive -> {
