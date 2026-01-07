@@ -297,6 +297,9 @@ class ChatActivity :
 
     private var chatMenu: Menu? = null
 
+    private var scheduledMessagesMenuItem: MenuItem? = null
+    private var hasScheduledMessages: Boolean = false
+
     private var overflowMenuHostView: ComposeView? = null
     private var isThreadMenuExpanded by mutableStateOf(false)
 
@@ -939,6 +942,47 @@ class ChatActivity :
 
                 is MessageInputViewModel.SendChatMessageErrorState -> {
                     binding.messagesListView.smoothScrollToPosition(0)
+                }
+
+                else -> {}
+            }
+        }
+
+        messageInputViewModel.scheduleChatMessageViewState.observe(this) { state ->
+            when (state) {
+                is MessageInputViewModel.ScheduleChatMessageSuccessState -> {
+                    val scheduledAt = state.scheduledAt
+                    val scheduledTimeText = dateUtils.getLocalDateTimeStringFromTimestamp(
+                        scheduledAt * DateConstants.SECOND_DIVIDER
+                    )
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.nc_message_scheduled_at, scheduledTimeText),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    refreshScheduledMessages()
+                }
+
+                is MessageInputViewModel.ScheduleChatMessageErrorState -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
+
+                else -> {}
+            }
+        }
+
+        chatViewModel.scheduledMessagesViewState.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.ScheduledMessagesSuccessState -> {
+                    hasScheduledMessages = state.messages.isNotEmpty()
+                    messageInputFragment.updateScheduledMessagesAvailability(hasScheduledMessages)
+                    invalidateOptionsMenu()
+                }
+
+                is ChatViewModel.ScheduledMessagesErrorState -> {
+                    hasScheduledMessages = false
+                    messageInputFragment.updateScheduledMessagesAvailability(false)
+                    invalidateOptionsMenu()
                 }
 
                 else -> {}
@@ -3304,6 +3348,8 @@ class ChatActivity :
         menuInflater.inflate(R.menu.menu_conversation, menu)
         chatMenu = menu
 
+        scheduledMessagesMenuItem = menu.findItem(R.id.conversation_scheduled_messages)
+
         if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT) {
             eventConversationMenuItem = menu.findItem(R.id.conversation_event)
         } else {
@@ -3325,6 +3371,14 @@ class ChatActivity :
         if (this::spreedCapabilities.isInitialized) {
             if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.READ_ONLY_ROOMS)) {
                 checkShowCallButtons()
+            }
+
+            scheduledMessagesMenuItem?.isVisible = networkMonitor.isOnline.value &&
+                hasScheduledMessages &&
+                !isOneToOneConversation()
+
+            if (networkMonitor.isOnline.value) {
+                refreshScheduledMessages()
             }
 
             val searchItem = menu.findItem(R.id.conversation_search)
@@ -3419,6 +3473,11 @@ class ChatActivity :
                 true
             }
 
+            R.id.conversation_scheduled_messages -> {
+                openScheduledMessages()
+                true
+            }
+
             R.id.conversation_event -> {
                 val anchorView = findViewById<View>(R.id.conversation_event)
                 showConversationEventMenu(anchorView)
@@ -3437,6 +3496,60 @@ class ChatActivity :
 
             else -> super.onOptionsItemSelected(item)
         }
+
+    private fun openScheduledMessages() {
+        val intent = Intent(this, ScheduledMessagesActivity::class.java).apply {
+            putExtra(ScheduledMessagesActivity.ROOM_TOKEN, roomToken)
+            putExtra(ScheduledMessagesActivity.CONVERSATION_NAME, currentConversation?.displayName.orEmpty())
+        }
+        startActivity(intent)
+    }
+
+    fun showScheduleMessageDialog(message: String, sendWithoutNotification: Boolean) {
+        val shouldDismiss = mutableStateOf(false)
+        binding.genericComposeView.setContent {
+            ScheduleMessageCompose(
+                initialMessage = message,
+                viewThemeUtils = viewThemeUtils,
+                onDismiss = { shouldDismiss.value = true },
+                onSchedule = { scheduledAt, sendWithoutNotification ->
+                    val sendAt = scheduledAt.toInt()
+                    messageInputViewModel.scheduleChatMessage(
+                        credentials = conversationUser!!.getCredentials(),
+                        url = ApiUtils.getUrlForScheduledMessages(
+                            conversationUser!!.baseUrl!!,
+                            roomToken
+                        ),
+                        message = message,
+                        displayName = conversationUser!!.displayName ?: "",
+                        replyTo = getReplyToMessageId(),
+                        sendWithoutNotification = sendWithoutNotification,
+                        threadTitle = chatViewModel.messageDraft.threadTitle,
+                        threadId = conversationThreadId,
+                        sendAt = sendAt
+                    )
+                },
+                defaultSendWithoutNotification = sendWithoutNotification
+            ).GetScheduleDialog(shouldDismiss, this@ChatActivity)
+        }
+    }
+
+    fun showScheduledMessagesFromInput() {
+        openScheduledMessages()
+    }
+
+    private fun refreshScheduledMessages() {
+        if (!this::spreedCapabilities.isInitialized) {
+            return
+        }
+        chatViewModel.loadScheduledMessages(
+            conversationUser.getCredentials(),
+            ApiUtils.getUrlForScheduledMessages(
+                conversationUser.baseUrl!!,
+                roomToken
+            )
+        )
+    }
 
     @Suppress("Detekt.LongMethod")
     private fun showThreadNotificationMenu() {

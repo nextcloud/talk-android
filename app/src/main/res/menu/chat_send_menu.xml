@@ -13,7 +13,12 @@
 
     <item
         android:id="@+id/send_later"
-        android:icon="@drawable/outline_access_time_24"
-        android:title="@string/send_later" />
+        android:icon="@drawable/outline_schedule_send_24"
+        android:title="@string/nc_send_later" />
+
+    <item
+        android:id="@+id/send_later_without_notification"
+        android:icon="@drawable/outline_schedule_send_24"
+        android:title="@string/nc_schedule_message_without_notification"/>
 
 </menu>
