@@ -48,11 +48,13 @@
                 android:layout_marginVertical="@dimen/standard_margin"
                 android:visibility="gone" />
 
-            <include
-                android:id="@+id/fragment_editView"
-                layout="@layout/edit_message_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+    <include
+        android:id="@+id/fragment_editView"
+        layout="@layout/edit_message_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
             <include
                 android:id="@+id/fragment_create_thread_view"
