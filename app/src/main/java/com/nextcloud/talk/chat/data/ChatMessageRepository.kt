@@ -13,6 +13,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
+import com.nextcloud.talk.models.json.generic.GenericOverall
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 
@@ -124,4 +125,34 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun unPinMessage(credentials: String, url: String): Flow<ChatMessage?>
 
     suspend fun hidePinnedMessage(credentials: String, url: String): Flow<Boolean>
+
+    @Suppress("LongParameterList")
+    suspend fun sendScheduledChatMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        displayName: String,
+        referenceId: String,
+        replyTo: Int?,
+        sendWithoutNotification: Boolean,
+        threadTitle: String?,
+        threadId: Long?,
+        sendAt: Int?
+    ): Flow<Result<ChatOverallSingleMessage>>
+
+    @Suppress("LongParameterList")
+    suspend fun updateScheduledChatMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        sendAt: Int?,
+        replyTo: Int?,
+        sendWithoutNotification: Boolean,
+        threadTitle: String?,
+        threadId: Long?
+    ): Flow<Result<ChatMessage>>
+
+    suspend fun deleteScheduledChatMessage(credentials: String, url: String): Flow<Result<GenericOverall>>
+
+    suspend fun getScheduledChatMessages(credentials: String, url: String): Flow<Result<List<ChatMessage>>>
 }

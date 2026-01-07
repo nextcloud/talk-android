@@ -257,6 +257,15 @@ class ChatViewModel @Inject constructor(
     val chatMessageViewState: LiveData<ViewState>
         get() = _chatMessageViewState
 
+    object ScheduledMessagesIdleState : ViewState
+    object ScheduledMessagesLoadingState : ViewState
+    data class ScheduledMessagesSuccessState(val messages: List<ChatMessage>) : ViewState
+    object ScheduledMessagesErrorState : ViewState
+
+    private val _scheduledMessagesViewState: MutableLiveData<ViewState> = MutableLiveData(ScheduledMessagesIdleState)
+    val scheduledMessagesViewState: LiveData<ViewState>
+        get() = _scheduledMessagesViewState
+
     object DeleteChatMessageStartState : ViewState
     class DeleteChatMessageSuccessState(val msg: ChatOverallSingleMessage) : ViewState
     object DeleteChatMessageErrorState : ViewState
@@ -307,6 +316,20 @@ class ChatViewModel @Inject constructor(
     fun getRoom(token: String) {
         _getRoomViewState.value = GetRoomStartState
         conversationRepository.getRoom(currentUser, token)
+    }
+
+    fun loadScheduledMessages(credentials: String, url: String) {
+        _scheduledMessagesViewState.value = ScheduledMessagesLoadingState
+        viewModelScope.launch {
+            chatRepository.getScheduledChatMessages(credentials, url).collect { result ->
+                if (result.isSuccess) {
+                    _scheduledMessagesViewState.value =
+                        ScheduledMessagesSuccessState(result.getOrNull().orEmpty())
+                } else {
+                    _scheduledMessagesViewState.value = ScheduledMessagesErrorState
+                }
+            }
+        }
     }
 
     fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {

@@ -147,6 +147,10 @@
             android:theme="@style/AppTheme" />
 
         <activity
+            android:name=".chat.ScheduledMessagesActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
             android:name=".conversationlist.ConversationsListActivity"
             android:exported="true"
             android:theme="@style/AppTheme">

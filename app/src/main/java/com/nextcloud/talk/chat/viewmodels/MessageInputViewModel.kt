@@ -22,6 +22,7 @@ import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.AudioRecorderManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.stfalcon.chatkit.commons.models.IMessage
@@ -58,6 +59,7 @@ class MessageInputViewModel :
     lateinit var audioFocusRequestManager: AudioFocusRequestManager
 
     lateinit var chatRepository: ChatMessageRepository
+    lateinit var chatNetworkDataSource: ChatNetworkDataSource
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
 
@@ -140,6 +142,15 @@ class MessageInputViewModel :
     private val _callStartedFlow: MutableLiveData<Pair<ChatMessage, Boolean>> = MutableLiveData()
     val callStartedFlow: LiveData<Pair<ChatMessage, Boolean>>
         get() = _callStartedFlow
+
+    object ScheduleChatMessageStartState : ViewState
+    class ScheduleChatMessageSuccessState(val scheduledAt: Long) : ViewState
+    object ScheduleChatMessageErrorState : ViewState
+
+    private val _scheduleChatMessageViewState: MutableLiveData<ViewState> =
+        MutableLiveData(ScheduleChatMessageStartState)
+    val scheduleChatMessageViewState: LiveData<ViewState>
+        get() = _scheduleChatMessageViewState
 
     @Suppress("LongParameterList")
     fun sendChatMessage(
@@ -287,6 +298,44 @@ class MessageInputViewModel :
 
     fun stopThreadCreation() {
         _createThreadViewState.postValue(CreateThreadStartState)
+    }
+
+    @Suppress("LongParameterList")
+    fun scheduleChatMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        displayName: String,
+        replyTo: Int?,
+        sendWithoutNotification: Boolean,
+        threadTitle: String?,
+        threadId: Long?,
+        sendAt: Int?
+    ) {
+        val referenceId = SendMessageUtils().generateReferenceId()
+        Log.d(TAG, "Random SHA-256 Hash: $referenceId")
+
+        viewModelScope.launch {
+            chatRepository.sendScheduledChatMessage(
+                credentials,
+                url,
+                message,
+                displayName,
+                referenceId,
+                replyTo,
+                sendWithoutNotification,
+                threadTitle,
+                threadId,
+                sendAt
+            ).collect { result ->
+                if (result.isSuccess) {
+                    _scheduleChatMessageViewState.value =
+                        ScheduleChatMessageSuccessState(sendAt?.toLong() ?: 0L)
+                } else {
+                    _scheduleChatMessageViewState.value = ScheduleChatMessageErrorState
+                }
+            }
+        }
     }
 
     companion object {

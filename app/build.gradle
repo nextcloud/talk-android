@@ -185,6 +185,7 @@ configurations.configureEach {
 }
 
 dependencies {
+    implementation 'androidx.emoji2:emoji2-emojipicker:1.6.0'
     kapt "org.jetbrains.kotlin:kotlin-metadata-jvm:${kotlinVersion}"
 
     implementation "androidx.room:room-testing-android:${roomVersion}"
@@ -212,6 +213,7 @@ dependencies {
     implementation "androidx.emoji2:emoji2-bundled:${emojiVersion}"
     implementation "androidx.emoji2:emoji2-views:${emojiVersion}"
     implementation "androidx.emoji2:emoji2-views-helper:${emojiVersion}"
+    implementation "androidx.emoji2:emoji2-emojipicker:${emojiVersion}"
     implementation 'org.michaelevans.colorart:library:0.0.3'
     implementation "androidx.work:work-runtime:${workVersion}"
     implementation "androidx.work:work-rxjava2:${workVersion}"
@@ -328,6 +330,7 @@ dependencies {
     // replace with xml drawables instead of legacy fallback lib, see
     // https://developer.android.com/jetpack/androidx/releases/compose-material3#1.4.0
     implementation 'androidx.compose.material:material-icons-core:1.7.8'
+    implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation 'androidx.activity:activity-compose:1.12.2'
     debugImplementation("androidx.compose.ui:ui-tooling")

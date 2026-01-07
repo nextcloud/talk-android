@@ -62,7 +62,8 @@ enum class SpreedFeatures(val value: String) {
     SENSITIVE_CONVERSATIONS("sensitive-conversations"),
     IMPORTANT_CONVERSATIONS("important-conversations"),
     THREADS("threads"),
-    PINNED_MESSAGES("pinned-messages")
+    PINNED_MESSAGES("pinned-messages"),
+    SCHEDULED_MESSAGES("scheduled-messages")
 }
 
 @Suppress("TooManyFunctions")
