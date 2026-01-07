@@ -155,6 +155,7 @@ import com.nextcloud.talk.messagesearch.MessageSearchActivity
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
@@ -249,6 +250,10 @@ import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import com.nextcloud.talk.ui.dialog.ScheduleMessageCompose
+import com.nextcloud.talk.ui.dialog.ScheduledMessagesCompose
+import com.nextcloud.talk.utils.ApiUtils.getUrlForScheduledChatMessage
+import java.time.LocalDateTime
 
 @Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -4299,6 +4304,79 @@ class ChatActivity :
             else -> true
         }
     }
+
+    fun showScheduleDialog(onTimeSelected: (LocalDateTime) -> Unit) {
+        binding.genericComposeView.apply {
+            val shouldDismiss = mutableStateOf(false)
+            setContent {
+                ScheduleMessageCompose(onTimeSelected).GetScheduleDialog(shouldDismiss, this@ChatActivity)
+            }
+        }
+    }
+
+    fun showScheduledMessagesDialog(messages: List<ChatMessageJson>) {
+        val shouldDismiss = mutableStateOf(false)
+        binding.genericComposeView.apply {
+            setContent {
+                ScheduledMessagesCompose(
+                    messages = messages,
+                    onReschedule = { message ->
+                        shouldDismiss.value = true
+                        showScheduleDialog { time ->
+                            updateScheduledMessage(message, time)
+                        }
+                    },
+                    onSendNow = { message ->
+                        shouldDismiss.value = true
+                        updateScheduledMessage(message, LocalDateTime.now())
+                    },
+                    onEdit = { message ->
+                        shouldDismiss.value = true
+                        messageInputViewModel.editScheduledMessage(message)
+                    },
+                    onDelete = { message ->
+                        shouldDismiss.value = true
+                        deleteScheduledMessage(message)
+                    }
+                ).GetScheduledMessagesDialog(shouldDismiss, this@ChatActivity)
+            }
+        }
+    }
+
+    private fun updateScheduledMessage(message: ChatMessageJson, time: LocalDateTime) {
+        val sendAt = time.atZone(ZoneId.systemDefault()).toEpochSecond().toInt()
+        val url = getUrlForScheduledChatMessage(
+            chatApiVersion,
+            conversationUser?.baseUrl,
+            roomToken,
+            message.id
+        )
+        messageInputViewModel.updateScheduledMessage(
+            credentials = conversationUser?.getCredentials()!!,
+            url = url,
+            message = message.message.orEmpty(),
+            sendAt = sendAt,
+            replyTo = message.parentMessage?.id?.toInt() ?: 0,
+            sendWithoutNotification = message.silent,
+            threadTitle = message.threadTitle.orEmpty(),
+            threadId = message.threadId?.toInt() ?: 0
+        )
+    }
+
+    private fun deleteScheduledMessage(message: ChatMessageJson) {
+        val url = getUrlForScheduledChatMessage(
+            chatApiVersion,
+            conversationUser?.baseUrl,
+            roomToken,
+            message.id
+        )
+        messageInputViewModel.deleteScheduledMessage(
+            credentials = conversationUser?.getCredentials()!!,
+            url = url,
+            messageId = message.id
+        )
+    }
+
 
     fun userAllowedByPrivilages(message: ChatMessage): Boolean {
         if (conversationUser == null) return false

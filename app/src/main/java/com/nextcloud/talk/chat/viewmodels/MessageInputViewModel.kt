@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import javax.inject.Inject
 
 @Suppress("Detekt.TooManyFunctions")
@@ -127,6 +128,25 @@ class MessageInputViewModel @Inject constructor(
     private val _callStartedFlow: MutableLiveData<Pair<ChatMessage, Boolean>> = MutableLiveData()
     val callStartedFlow: LiveData<Pair<ChatMessage, Boolean>>
         get() = _callStartedFlow
+
+    sealed interface ScheduledMessageActionState
+    data class ScheduledMessageSuccessState(val sendAt: Int) : ScheduledMessageActionState
+    data class ScheduledMessageUpdatedState(val sendAt: Int) : ScheduledMessageActionState
+    data class ScheduledMessageDeletedState(val messageId: Long) : ScheduledMessageActionState
+    data class ScheduledMessageErrorState(val message: CharSequence) : ScheduledMessageActionState
+
+    private val _scheduledMessageActionState: MutableLiveData<ScheduledMessageActionState> = MutableLiveData()
+    val scheduledMessageActionState: LiveData<ScheduledMessageActionState>
+        get() = _scheduledMessageActionState
+
+    private val _scheduledMessages: MutableLiveData<List<ChatMessageJson>> = MutableLiveData(emptyList())
+    val scheduledMessages: LiveData<List<ChatMessageJson>>
+        get() = _scheduledMessages
+
+    private val _scheduledMessageToEdit: MutableLiveData<ChatMessageJson?> = MutableLiveData()
+    val scheduledMessageToEdit: LiveData<ChatMessageJson?>
+        get() = _scheduledMessageToEdit
+
 
     @Suppress("LongParameterList")
     fun sendChatMessage(
@@ -275,6 +295,106 @@ class MessageInputViewModel @Inject constructor(
     fun stopThreadCreation() {
         _createThreadViewState.postValue(CreateThreadStartState)
     }
+
+    @Suppress("LongParameterList")
+    fun sendScheduledChatMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        displayName: String,
+        replyTo: Int,
+        sendWithoutNotification: Boolean,
+        threadTitle: String,
+        threadId: Int,
+        sendAt: Int
+    ) {
+        val referenceId = SendMessageUtils().generateReferenceId()
+        viewModelScope.launch {
+            chatRepository.sendScheduledChatMessage(
+                credentials,
+                url,
+                message,
+                displayName,
+                referenceId,
+                replyTo,
+                sendWithoutNotification,
+                threadTitle,
+                threadId,
+                sendAt
+            ).collect { result ->
+                if (result.isSuccess) {
+                    _scheduledMessageActionState.value = ScheduledMessageSuccessState(sendAt)
+                } else {
+                    _scheduledMessageActionState.value =
+                        ScheduledMessageErrorState(result.exceptionOrNull()?.message ?: "")
+                }
+            }
+        }
+    }
+
+    @Suppress("LongParameterList")
+    fun updateScheduledMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        sendAt: Int,
+        replyTo: Int,
+        sendWithoutNotification: Boolean,
+        threadTitle: String,
+        threadId: Int
+    ) {
+        viewModelScope.launch {
+            chatRepository.updateScheduledMessage(
+                credentials,
+                url,
+                message,
+                sendAt,
+                replyTo,
+                sendWithoutNotification,
+                threadTitle,
+                threadId
+            ).collect { result ->
+                if (result.isSuccess) {
+                    _scheduledMessageActionState.value = ScheduledMessageUpdatedState(sendAt)
+                } else {
+                    _scheduledMessageActionState.value =
+                        ScheduledMessageErrorState(result.exceptionOrNull()?.message ?: "")
+                }
+            }
+        }
+    }
+
+    fun deleteScheduledMessage(credentials: String, url: String, messageId: Long) {
+        viewModelScope.launch {
+            chatRepository.deleteScheduledMessage(credentials, url).collect { result ->
+                if (result.isSuccess) {
+                    _scheduledMessageActionState.value = ScheduledMessageDeletedState(messageId)
+                } else {
+                    _scheduledMessageActionState.value =
+                        ScheduledMessageErrorState(result.exceptionOrNull()?.message ?: "")
+                }
+            }
+        }
+    }
+
+    fun fetchScheduledMessages(credentials: String, url: String) {
+        viewModelScope.launch {
+            chatRepository.getScheduledMessages(credentials, url).collect { result ->
+                if (result.isSuccess) {
+                    val data = result.getOrNull()?.ocs?.data.orEmpty()
+                    _scheduledMessages.value = data
+                } else {
+                    _scheduledMessageActionState.value =
+                        ScheduledMessageErrorState(result.exceptionOrNull()?.message ?: "")
+                }
+            }
+        }
+    }
+
+    fun editScheduledMessage(message: ChatMessageJson?) {
+        _scheduledMessageToEdit.postValue(message)
+    }
+
 
     companion object {
         private val TAG = MessageInputViewModel::class.java.simpleName

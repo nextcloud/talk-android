@@ -12,7 +12,9 @@ import com.nextcloud.talk.chat.data.io.LifecycleAwareManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
+import com.nextcloud.talk.models.json.generic.GenericOverall
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 
@@ -117,4 +119,34 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun sendUnsentChatMessages(credentials: String, url: String)
 
     suspend fun deleteTempMessage(chatMessage: ChatMessage)
+
+    suspend fun sendScheduledChatMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        displayName: String,
+        referenceId: String,
+        replyTo: Int,
+        sendWithoutNotification: Boolean,
+        threadTitle: String,
+        threadId: Int,
+        sendAt: Int
+    ): Flow<Result<ChatOverallSingleMessage>>
+
+
+    suspend fun updateScheduledMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        sendAt: Int,
+        replyTo: Int,
+        sendWithoutNotification: Boolean,
+        threadTitle: String,
+        threadId: Int
+    ): Flow<Result<ChatOverallSingleMessage>>
+
+    suspend fun deleteScheduledMessage(credentials: String, url: String): Flow<Result<GenericOverall>>
+
+    suspend fun getScheduledMessages(credentials: String, url: String): Flow<Result<ChatOverall>>
 }
+

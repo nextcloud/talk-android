@@ -225,7 +225,7 @@
             android:src="@drawable/baseline_calendar_today_24"
             android:scaleType="centerCrop"
             app:tint="?attr/colorControlNormal"
-            android:contentDescription="@string/nc_scheduled_messages" />
+            android:contentDescription="@string/scheduled_messages" />
 
         <ImageButton
             android:id="@+id/recordAudioButton"

@@ -17,6 +17,7 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.text.format.DateFormat
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
@@ -92,6 +93,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Objects
 import javax.inject.Inject
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @Suppress("LongParameterList", "TooManyFunctions", "LargeClass", "LongMethod")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -122,6 +128,8 @@ class MessageInputFragment : Fragment() {
     private var xcounter = 0f
     private var ycounter = 0f
     private var collapsed = false
+    private var hasScheduledMessages = false
+    private var pendingScheduledDialog = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -147,6 +155,7 @@ class MessageInputFragment : Fragment() {
         initVoiceRecordButton()
         initThreadHandling()
         restoreState()
+        refreshScheduledMessages()
         return binding.root
     }
 
@@ -191,6 +200,42 @@ class MessageInputFragment : Fragment() {
             message?.let { setEditUI(it as ChatMessage) }
         }
 
+        chatActivity.messageInputViewModel.scheduledMessages.observe(viewLifecycleOwner) { messages ->
+            hasScheduledMessages = messages.isNotEmpty()
+            updateScheduledMessagesButtonVisibility()
+            if (pendingScheduledDialog && messages.isNotEmpty()) {
+                pendingScheduledDialog = false
+                chatActivity.showScheduledMessagesDialog(messages)
+            }
+        }
+
+        chatActivity.messageInputViewModel.scheduledMessageActionState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is MessageInputViewModel.ScheduledMessageSuccessState -> {
+                    showScheduledMessageSnack(state.sendAt, R.string.scheduled_message_scheduled_for)
+                    refreshScheduledMessages()
+                }
+
+                is MessageInputViewModel.ScheduledMessageUpdatedState -> {
+                    showScheduledMessageSnack(state.sendAt, R.string.scheduled_message_updated_for)
+                    refreshScheduledMessages()
+                }
+
+                is MessageInputViewModel.ScheduledMessageDeletedState -> {
+                    refreshScheduledMessages()
+                }
+
+                is MessageInputViewModel.ScheduledMessageErrorState -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        chatActivity.messageInputViewModel.scheduledMessageToEdit.observe(viewLifecycleOwner) { message ->
+            message?.let { setScheduledEditUI(it) }
+        }
+
+
         chatActivity.messageInputViewModel.createThreadViewState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is MessageInputViewModel.CreateThreadStartState ->
@@ -232,6 +277,7 @@ class MessageInputFragment : Fragment() {
                                 chatActivity.roomToken
                             )
                         )
+                        refreshScheduledMessages()
                     }
                     handleUI(isOnline, connectionGained)
                 }.collect()
@@ -442,6 +488,12 @@ class MessageInputFragment : Fragment() {
             val editable = binding.fragmentMessageInputView.inputEditText!!.editableText
             replaceMentionChipSpans(editable)
             val inputEditText = editable.toString()
+                val scheduledMessage = chatActivity.messageInputViewModel.scheduledMessageToEdit.value
+                if (scheduledMessage != null) {
+                    updateScheduledMessageForEdit(scheduledMessage, inputEditText)
+                    clearEditUI()
+                    return@setOnClickListener
+                }
 
             val message = chatActivity.messageInputViewModel.getEditChatMessage.value as ChatMessage
             if (message.message!!.trim() != inputEditText.trim()) {
@@ -650,6 +702,7 @@ class MessageInputFragment : Fragment() {
                     recordAudioButton.setVisible(false)
                     submitThreadButton.setVisible(false)
                     attachmentButton.setVisible(true)
+                    scheduledMessagesButton.setVisible(false)
                 }
 
                 isThreadCreateModeActive -> {
@@ -657,6 +710,7 @@ class MessageInputFragment : Fragment() {
                     recordAudioButton.setVisible(false)
                     attachmentButton.setVisible(false)
                     submitThreadButton.setVisible(true)
+                    scheduledMessagesButton.setVisible(false)
                     if (inputContainsText && threadTitleContainsText) {
                         submitThreadButton.isEnabled = true
                         submitThreadButton.alpha = FULLY_OPAQUE
@@ -671,6 +725,7 @@ class MessageInputFragment : Fragment() {
                     submitThreadButton.setVisible(false)
                     messageSendButton.setVisible(true)
                     attachmentButton.setVisible(true)
+                    scheduledMessagesButton.setVisible(false)
                 }
 
                 else -> {
@@ -678,10 +733,48 @@ class MessageInputFragment : Fragment() {
                     submitThreadButton.setVisible(false)
                     recordAudioButton.setVisible(true)
                     attachmentButton.setVisible(true)
+                    scheduledMessagesButton.setVisible(false)
                 }
             }
         }
+        updateScheduledMessagesButtonVisibility()
     }
+
+    private fun openScheduleDialog(sendWithoutNotification: Boolean) {
+        val editable = binding.fragmentMessageInputView.inputEditText?.editableText ?: return
+        replaceMentionChipSpans(editable)
+        val message = editable.toString()
+        if (message.isBlank()) {
+            return
+        }
+        chatActivity.showScheduleDialog { time ->
+            scheduleMessage(message, sendWithoutNotification, time)
+            binding.fragmentMessageInputView.inputEditText?.setText("")
+            sendStopTypingMessage()
+            cancelReply()
+            cancelCreateThread()
+        }
+    }
+
+    private fun scheduleMessage(message: String, sendWithoutNotification: Boolean, sendAt: LocalDateTime) {
+        val sendAtSeconds = sendAt.atZone(ZoneId.systemDefault()).toEpochSecond().toInt()
+        chatActivity.messageInputViewModel.sendScheduledChatMessage(
+            credentials = chatActivity.conversationUser!!.getCredentials(),
+            url = ApiUtils.getUrlForScheduledChatMessages(
+                chatActivity.chatApiVersion,
+                chatActivity.conversationUser!!.baseUrl!!,
+                chatActivity.roomToken
+            ),
+            message = message,
+            displayName = chatActivity.conversationUser!!.displayName ?: "",
+            replyTo = chatActivity.getReplyToMessageId(),
+            sendWithoutNotification = sendWithoutNotification,
+            threadTitle = chatActivity.chatViewModel.messageDraft.threadTitle?:"",
+            threadId = chatActivity.conversationThreadId?.toInt() ?: 0,
+            sendAt = sendAtSeconds
+        )
+    }
+
 
     private fun resetSlider() {
         binding.fragmentMessageInputView.audioRecordDuration.stop()
@@ -953,7 +1046,7 @@ class MessageInputFragment : Fragment() {
         popupMenu.setOnMenuItemClickListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.send_without_notification -> submitMessage(true)
-                R.id.send_later -> scheduleCurrentMessage()
+                R.id.send_later -> openScheduleDialog(false)
             }
             true
         }
@@ -964,16 +1057,78 @@ class MessageInputFragment : Fragment() {
         popupMenu.show()
     }
 
-    private fun scheduleCurrentMessage() {
-        val editable = binding.fragmentMessageInputView.inputEditText?.editableText
-        if (editable.isNullOrBlank()) {
-            return
-        }
-        replaceMentionChipSpans(editable)
-        val messageText = editable.toString()
-        binding.fragmentMessageInputView.inputEditText?.setText("")
-
+    private fun refreshScheduledMessages() {
+        val user = chatActivity.conversationUser ?: return
+        chatActivity.messageInputViewModel.fetchScheduledMessages(
+            credentials = user.getCredentials(),
+            url = ApiUtils.getUrlForScheduledChatMessages(
+                chatActivity.chatApiVersion,
+                user.baseUrl,
+                chatActivity.roomToken
+            )
+        )
     }
+
+    private fun updateScheduledMessagesButtonVisibility() {
+        val inputContainsText = binding.fragmentMessageInputView.messageInput.text.isNotEmpty()
+        val isEditModeActive = binding.fragmentEditView.editMessageView.isVisible
+        val isThreadCreateModeActive = binding.fragmentCreateThreadView.createThreadView.isVisible
+        binding.fragmentMessageInputView.scheduledMessagesButton.visibility =
+            if (!inputContainsText && !isEditModeActive && !isThreadCreateModeActive && hasScheduledMessages) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+    }
+
+    private fun showScheduledMessageSnack(sendAt: Int, messageRes: Int) {
+        val formatter = DateTimeFormatter.ofPattern(
+            if (DateFormat.is24HourFormat(requireContext())) "dd MMM, HH:mm" else "dd MMM, hh:mm a"
+        )
+        val time = LocalDateTime.ofInstant(Instant.ofEpochSecond(sendAt.toLong()), ZoneId.systemDefault())
+        val displayTime = time.format(formatter)
+        Snackbar.make(binding.root, getString(messageRes, displayTime), Snackbar.LENGTH_LONG).show()
+    }
+
+    private fun setScheduledEditUI(message: ChatMessageJson) {
+        val editedMessage = ChatUtils.getParsedMessage(message.message, message.messageParameters)
+        binding.fragmentEditView.editMessage.text = editedMessage
+        binding.fragmentMessageInputView.inputEditText.setText(editedMessage)
+        if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
+            mentionAutocomplete?.dismissPopup()
+        }
+        val end = binding.fragmentMessageInputView.inputEditText.text.length
+        binding.fragmentMessageInputView.inputEditText.setSelection(end)
+        binding.fragmentMessageInputView.messageSendButton.visibility = View.GONE
+        binding.fragmentMessageInputView.recordAudioButton.visibility = View.GONE
+        binding.fragmentMessageInputView.submitThreadButton.visibility = View.GONE
+        binding.fragmentMessageInputView.editMessageButton.visibility = View.VISIBLE
+        binding.fragmentEditView.editMessageView.visibility = View.VISIBLE
+        binding.fragmentMessageInputView.attachmentButton.visibility = View.GONE
+        binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.GONE
+    }
+
+    private fun updateScheduledMessageForEdit(message: ChatMessageJson, editedMessageText: String) {
+        val url = ApiUtils.getUrlForScheduledChatMessage(
+            chatActivity.chatApiVersion,
+            chatActivity.conversationUser!!.baseUrl,
+            chatActivity.roomToken,
+            message.id
+        )
+        chatActivity.messageInputViewModel.updateScheduledMessage(
+            credentials = chatActivity.conversationUser!!.getCredentials(),
+            url = url,
+            message = editedMessageText,
+            sendAt = message.timestamp.toInt(),
+            replyTo = message.parentMessage?.id?.toInt() ?: 0,
+            sendWithoutNotification = message.silent,
+            threadTitle = message.threadTitle.orEmpty(),
+            threadId = message.threadId?.toInt() ?: 0
+        )
+        chatActivity.messageInputViewModel.editScheduledMessage(null)
+    }
+
+
 
 
     private fun editMessageAPI(message: ChatMessage, editedMessageText: String) {
@@ -1022,6 +1177,7 @@ class MessageInputFragment : Fragment() {
         binding.fragmentEditView.editMessageView.visibility = View.GONE
         binding.fragmentMessageInputView.attachmentButton.visibility = View.VISIBLE
         chatActivity.messageInputViewModel.edit(null)
+        chatActivity.messageInputViewModel.editScheduledMessage(null)
         handleButtonsVisibility()
     }
 

@@ -49,6 +49,8 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
+import com.nextcloud.talk.models.json.generic.GenericOverall
+
 
 @Suppress("LargeClass", "TooManyFunctions")
 class OfflineFirstChatRepository @Inject constructor(
@@ -1057,6 +1059,115 @@ class OfflineFirstChatRepository @Inject constructor(
                 emit(Result.failure(e))
             }
         }
+
+    @Suppress("LongParameterList")
+    override suspend fun sendScheduledChatMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        displayName: String,
+        referenceId: String,
+        replyTo: Int,
+        sendWithoutNotification: Boolean,
+        threadTitle: String,
+        threadId: Int,
+        sendAt: Int
+    ): Flow<Result<ChatOverallSingleMessage>> {
+        if (!networkMonitor.isOnline.value) {
+            return flow {
+                emit(Result.failure(IOException("Skipped to send scheduled message as device is offline")))
+            }
+        }
+
+        return flow {
+            val response = network.sendScheduledChatMessage(
+                credentials,
+                url,
+                message,
+                displayName,
+                referenceId,
+                replyTo,
+                sendWithoutNotification,
+                threadTitle,
+                threadId,
+                sendAt
+            )
+            emit(Result.success(response))
+        }.catch { e ->
+            emit(Result.failure(e))
+        }
+    }
+
+    @Suppress("LongParameterList")
+    override suspend fun updateScheduledMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        sendAt: Int,
+        replyTo: Int,
+        sendWithoutNotification: Boolean,
+        threadTitle: String,
+        threadId: Int
+    ): Flow<Result<ChatOverallSingleMessage>> {
+        if (!networkMonitor.isOnline.value) {
+            return flow {
+                emit(Result.failure(IOException("Skipped to update scheduled message as device is offline")))
+            }
+        }
+
+        return flow {
+            val response = network.updateScheduledMessage(
+                credentials,
+                url,
+                message,
+                sendAt,
+                replyTo,
+                sendWithoutNotification,
+                threadTitle,
+                threadId
+            )
+            emit(Result.success(response))
+        }.catch { e ->
+            emit(Result.failure(e))
+        }
+    }
+
+    override suspend fun deleteScheduledMessage(
+        credentials: String,
+        url: String
+    ): Flow<Result<GenericOverall>> {
+        if (!networkMonitor.isOnline.value) {
+            return flow {
+                emit(Result.failure(IOException("Skip delete scheduled message as dvice is offline")))
+            }
+        }
+
+        return flow {
+            val response = network.deleteScheduledMessage(credentials, url)
+            emit(Result.success(response))
+        }.catch { e ->
+            emit(Result.failure(e))
+        }
+    }
+
+    override suspend fun getScheduledMessages(
+        credentials: String,
+        url: String
+    ): Flow<Result<ChatOverall>> {
+        if (!networkMonitor.isOnline.value) {
+            return flow {
+                emit(Result.failure(IOException("Skip fetch scheduled messages as dvice is offline")))
+            }
+        }
+
+        return flow {
+            val response = network.getScheduledMessages(credentials, url)
+            emit(Result.success(response))
+        }.catch { e ->
+            emit(Result.failure(e))
+        }
+    }
+
 
     private fun createChatMessageEntity(
         internalConversationId: String,

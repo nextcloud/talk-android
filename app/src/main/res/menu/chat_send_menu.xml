@@ -14,6 +14,6 @@
     <item
         android:id="@+id/send_later"
         android:icon="@drawable/outline_access_time_24"
-        android:title="@string/send_later" />
+        android:title="@string/nc_send_later" />
 
 </menu>

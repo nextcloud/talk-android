@@ -22,6 +22,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import io.reactivex.Observable
 import retrofit2.Response
+import com.nextcloud.talk.models.json.chat.ChatOverall
 
 class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines: NcApiCoroutines) :
     ChatNetworkDataSource {
@@ -217,6 +218,60 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
             extractedLinkToPreview
         ).blockingFirst().ocs?.data?.references?.entries?.iterator()?.next()?.value
     }
+
+    override suspend fun updateScheduledMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        sendAt: Int,
+        replyTo: Int,
+        sendWithoutNotification: Boolean,
+        threadTitle: String,
+        threadId: Int
+    ): ChatOverallSingleMessage =
+        ncApiCoroutines.updateScheduledMessage(
+            credentials,
+            url,
+            message,
+            sendAt,
+            replyTo,
+            sendWithoutNotification,
+            threadTitle,
+            threadId
+        )
+
+
+    override suspend fun sendScheduledChatMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        displayName: String,
+        referenceId: String,
+        replyTo: Int,
+        sendWithoutNotification: Boolean,
+        threadTitle: String,
+        threadId: Int,
+        sendAt: Int
+    ): ChatOverallSingleMessage =
+        ncApiCoroutines.sendScheduleChatMessage(
+            credentials,
+            url,
+            message,
+            displayName,
+            referenceId,
+            replyTo,
+            sendWithoutNotification,
+            threadTitle,
+            threadId,
+            sendAt
+        )
+
+
+    override suspend fun deleteScheduledMessage(credentials: String, url: String): GenericOverall =
+        ncApiCoroutines.deleteScheduleMessage(credentials, url)
+
+    override suspend fun getScheduledMessages(credentials: String, url: String): ChatOverall =
+        ncApiCoroutines.getScheduledMessage(credentials, url)
 
     override suspend fun unbindRoom(credentials: String, baseUrl: String, roomToken: String): GenericOverall {
         val url = ApiUtils.getUrlForUnbindingRoom(baseUrl, roomToken)

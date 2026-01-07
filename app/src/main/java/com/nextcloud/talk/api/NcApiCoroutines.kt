@@ -335,7 +335,8 @@ interface NcApiCoroutines {
         @Field("replyTo") replyTo: Int,
         @Field("silent") sendWithoutNotification: Boolean,
         @Field("threadTitle") threadTitle: String,
-        @Field("threadId") threadId: Int
+        @Field("threadId") threadId: Int,
+        @Field("sendAt") sendAt: Int
     ): ChatOverallSingleMessage
 
     @FormUrlEncoded

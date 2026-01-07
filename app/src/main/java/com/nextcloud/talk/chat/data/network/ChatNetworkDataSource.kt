@@ -10,6 +10,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -79,4 +80,29 @@ interface ChatNetworkDataSource {
     ): List<ChatMessageJson>
     suspend fun getOpenGraph(credentials: String, baseUrl: String, extractedLinkToPreview: String): Reference?
     suspend fun unbindRoom(credentials: String, baseUrl: String, roomToken: String): GenericOverall
+
+    suspend fun updateScheduledMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        sendAt: Int,
+        replyTo: Int,
+        sendWithoutNotification: Boolean,
+        threadTitle: String,
+        threadId: Int
+    ): ChatOverallSingleMessage
+    suspend fun deleteScheduledMessage(credentials: String, url: String): GenericOverall
+    suspend fun getScheduledMessages(credentials: String, url: String): ChatOverall
+    suspend fun sendScheduledChatMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        displayName: String,
+        referenceId: String,
+        replyTo: Int,
+        sendWithoutNotification: Boolean,
+        threadTitle: String,
+        threadId: Int,
+        sendAt: Int
+    ): ChatOverallSingleMessage
 }
