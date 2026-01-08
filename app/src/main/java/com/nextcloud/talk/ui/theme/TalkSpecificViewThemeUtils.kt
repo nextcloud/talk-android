@@ -209,6 +209,31 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
+    fun setReactionsBackground(card: MaterialCardView, outgoing: Boolean, isSelfReaction: Boolean, isBubbled: Boolean) {
+        withScheme(card) { scheme ->
+            if (isSelfReaction) {
+                card.setCardBackgroundColor(dynamicColor.primaryContainer().getArgb(scheme))
+                card.strokeColor = dynamicColor.primary().getArgb(scheme)
+            } else {
+                if (isBubbled) {
+                    card.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            card.context,
+                            R.color.bg_message_list_incoming_bubble
+                        )
+                    )
+                    card.strokeColor = dynamicColor.surface().getArgb(scheme)
+                } else {
+                    card.setCardBackgroundColor(dynamicColor.surface().getArgb(scheme))
+                    card.strokeColor = ContextCompat.getColor(
+                        card.context,
+                        R.color.bg_message_list_incoming_bubble
+                    )
+                }
+            }
+        }
+    }
+
     fun getPlaceholderImage(context: Context, mimetype: String?): Drawable? {
         val drawableResourceId = DrawableUtils.getDrawableResourceIdForMimeType(mimetype)
         val drawable = AppCompatResources.getDrawable(

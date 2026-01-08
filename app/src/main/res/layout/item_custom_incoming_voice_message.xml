@@ -13,9 +13,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="16dp"
+    android:layout_marginStart="@dimen/standard_margin"
     android:layout_marginTop="2dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginEnd="@dimen/standard_margin"
     android:layout_marginBottom="2dp">
 
     <ImageView
@@ -36,112 +36,123 @@
         android:textColor="@color/textColorMaxContrast"
         android:textSize="12sp" />
 
-    <com.google.android.flexbox.FlexboxLayout
-        android:id="@id/bubble"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/messageAuthor"
         android:layout_marginEnd="@dimen/message_incoming_bubble_margin_right"
         android:layout_toEndOf="@id/messageUserAvatar"
-        android:orientation="vertical"
-        app:alignContent="stretch"
-        app:alignItems="stretch"
-        app:flexWrap="wrap"
-        app:justifyContent="flex_end">
+        android:orientation="vertical">
 
-        <include
-            android:id="@+id/message_quote"
-            layout="@layout/item_message_quote"
-            android:visibility="gone" />
-
-        <LinearLayout
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@id/bubble"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:alignContent="stretch"
+            app:alignItems="stretch"
+            app:flexWrap="wrap"
+            app:justifyContent="flex_end">
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+            <include
+                android:id="@+id/message_quote"
+                layout="@layout/item_message_quote"
                 android:visibility="gone" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/playPauseBtn"
-                style="@style/Widget.AppTheme.Button.IconButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:contentDescription="@string/play_pause_voice_message"
-                android:visibility="visible"
-                app:cornerRadius="@dimen/button_corner_radius"
-                app:icon="@drawable/ic_baseline_play_arrow_voice_message_24"
-                app:iconSize="40dp"
-                app:iconTint="@color/nc_incoming_text_default" />
-
-            <com.nextcloud.talk.ui.WaveformSeekBar
-                android:id="@+id/seekbar"
-                android:layout_width="0dp"
-                android:layout_height="70dp"
-                android:thumb="@drawable/voice_message_outgoing_seek_bar_slider"
-                tools:progress="50"
-                android:layout_weight="1" />
-
-            <com.nextcloud.talk.ui.PlaybackSpeedControl
-                android:id="@+id/playbackSpeedControlBtn"
-                style="@style/Widget.AppTheme.Button.IconButton"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginEnd="@dimen/standard_margin"
-                android:contentDescription="@string/playback_speed_control"
-                android:textColor="@color/black"
-                app:cornerRadius="@dimen/button_corner_radius"
-                app:rippleColor="#1FFFFFFF" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_below="@id/messageText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/voiceMessageDuration"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/standard_half_margin"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:visibility="invisible"
-                android:textColor="@color/high_emphasis_text"
-                tools:text="02:30"
-                tools:visibility="visible" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@id/messageTime"
-                android:layout_width="wrap_content"
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/playPauseBtn"
+                    style="@style/Widget.AppTheme.Button.IconButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/play_pause_voice_message"
+                    android:visibility="visible"
+                    app:cornerRadius="@dimen/button_corner_radius"
+                    app:icon="@drawable/ic_baseline_play_arrow_voice_message_24"
+                    app:iconSize="40dp"
+                    app:iconTint="@color/nc_incoming_text_default" />
+
+                <com.nextcloud.talk.ui.WaveformSeekBar
+                    android:id="@+id/seekbar"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    android:layout_weight="1"
+                    android:thumb="@drawable/voice_message_outgoing_seek_bar_slider"
+                    tools:progress="50" />
+
+                <com.nextcloud.talk.ui.PlaybackSpeedControl
+                    android:id="@+id/playbackSpeedControlBtn"
+                    style="@style/Widget.AppTheme.Button.IconButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="@dimen/standard_margin"
+                    android:contentDescription="@string/playback_speed_control"
+                    android:textColor="@color/black"
+                    app:cornerRadius="@dimen/button_corner_radius"
+                    app:rippleColor="#1FFFFFFF" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:alpha="0.6"
-                android:textColor="@color/no_emphasis_text"
-                android:layout_gravity="center"
-                tools:text="10:35" />
+                android:layout_below="@id/messageText"
+                android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/checkMark"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/message_bubble_checkmark_height"
-                android:layout_marginStart="8dp"
-                android:contentDescription="@null"
-                android:layout_gravity="center"
-                app:tint="@color/high_emphasis_text" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/voiceMessageDuration"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/standard_half_margin"
+                    android:layout_weight="1"
+                    android:textColor="@color/high_emphasis_text"
+                    android:visibility="invisible"
+                    tools:text="02:30"
+                    tools:visibility="visible" />
 
+                <TextView
+                    android:id="@id/messageTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:alpha="0.6"
+                    android:textColor="@color/no_emphasis_text"
+                    tools:text="10:35" />
+
+                <ImageView
+                    android:id="@+id/checkMark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/message_bubble_checkmark_height"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:contentDescription="@null"
+                    app:tint="@color/high_emphasis_text" />
+            </LinearLayout>
+
+        </com.google.android.flexbox.FlexboxLayout>
 
         <include
             android:id="@+id/reactions"
-            layout="@layout/reactions_inside_message" />
+            layout="@layout/reactions_inside_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bubble"
+            android:layout_marginStart="@dimen/message_bubble_corners_horizontal_padding"
+            android:layout_marginTop="-4dp" />
 
-    </com.google.android.flexbox.FlexboxLayout>
+    </RelativeLayout>
 </RelativeLayout>

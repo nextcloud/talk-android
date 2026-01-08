@@ -19,7 +19,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -43,14 +42,14 @@ fun ThreadButtonComposable(replyAmount: Int = 0, onButtonClick: () -> Unit = {})
     OutlinedButton(
         onClick = onButtonClick,
         modifier = Modifier
-            .padding(8.dp)
+            .padding(0.dp)
             .height(24.dp),
-        shape = RoundedCornerShape(9.dp),
-        border = BorderStroke(1.dp, colorResource(R.color.grey_600)),
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, colorResource(R.color.nc_incoming_text_default)),
         contentPadding = PaddingValues(0.dp),
         colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = Color.Transparent,
-            contentColor = colorResource(R.color.grey_600)
+            containerColor = colorResource(R.color.bg_message_list_incoming_bubble),
+            contentColor = colorResource(R.color.nc_incoming_text_default)
         )
     ) {
         Icon(
@@ -59,12 +58,12 @@ fun ThreadButtonComposable(replyAmount: Int = 0, onButtonClick: () -> Unit = {})
             modifier = Modifier
                 .size(20.dp)
                 .padding(start = 5.dp, end = 2.dp),
-            tint = colorResource(R.color.grey_600)
+            tint = colorResource(R.color.nc_incoming_text_default)
         )
         Text(
             text = replyAmountText,
             modifier = Modifier
-                .padding(end = 5.dp)
+                .padding(end = 6.dp)
         )
     }
 }
