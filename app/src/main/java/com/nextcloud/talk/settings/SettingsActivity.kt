@@ -479,7 +479,7 @@ class SettingsActivity :
             if (!newValue) {
                 NotificationUtils.dismissBubblesWithoutExplicitSettings(
                     this,
-                    currentUserProvider.currentUser.blockingGet()
+                    currentUserProviderOld.currentUser.blockingGet()
                 )
             }
         }
