@@ -2708,8 +2708,9 @@ open class ChatActivity :
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     protected open fun cancelNotificationsForCurrentConversation() {
+        val isBubbleMode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isLaunchedFromBubble
         if (conversationUser != null) {
-            if (!TextUtils.isEmpty(roomToken)) {
+            if (!TextUtils.isEmpty(roomToken) && !isBubbleMode) {
                 try {
                     NotificationUtils.cancelExistingNotificationsForRoom(
                         applicationContext,
@@ -3541,11 +3542,9 @@ open class ChatActivity :
                 val messagingStyle = androidx.core.app.NotificationCompat.MessagingStyle(person)
                     .setConversationTitle(conversationName)
 
-                // Create extras bundle to protect bubble from deletion
                 val notificationExtras = bundleOf(
-                    BundleKeys.KEY_ROOM_TOKEN to roomToken,
-                    BundleKeys.KEY_NOTIFICATION_RESTRICT_DELETION to true,
-                    BundleKeys.KEY_INTERNAL_USER_ID to conversationUser!!.id!!
+                    KEY_ROOM_TOKEN to roomToken,
+                    KEY_INTERNAL_USER_ID to conversationUser!!.id!!
                 )
 
                 val channelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name

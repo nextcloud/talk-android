@@ -657,8 +657,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         notificationInfoBundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
         notificationInfoBundle.putLong(KEY_NOTIFICATION_ID, pushMessage.notificationId!!)
 
-        // Protect bubble notifications from being canceled
-        if (pushMessage.type == TYPE_RECORDING || pushMessage.type == TYPE_CHAT || pushMessage.type == TYPE_REMINDER) {
+        if (pushMessage.type == TYPE_RECORDING) {
             notificationInfoBundle.putBoolean(KEY_NOTIFICATION_RESTRICT_DELETION, true)
         }
 

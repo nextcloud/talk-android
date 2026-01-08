@@ -22,6 +22,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
 import android.net.Uri
+import android.os.Build
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
 import android.util.Log
@@ -241,14 +242,14 @@ object NotificationUtils {
 
     fun cancelNotification(context: Context?, conversationUser: User, notificationId: Long?) {
         scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->
-            if (notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)) {
-                if (notification.extras.getBoolean(BundleKeys.KEY_NOTIFICATION_RESTRICT_DELETION)) {
-                    if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "Skip cancelling protected notification ${statusBarNotification.id}")
-                    }
-                } else {
-                    notificationManager.cancel(statusBarNotification.id)
-                }
+            val matchesId = notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)
+
+            val isBubble =
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+                    (notification.flags and Notification.FLAG_BUBBLE) != 0
+
+            if (matchesId && !isBubble) {
+                notificationManager.cancel(statusBarNotification.id)
             }
         }
     }
