@@ -35,6 +35,7 @@ public class OutcomingPreviewMessageViewHolder extends PreviewMessageViewHolder 
     public OutcomingPreviewMessageViewHolder(View itemView) {
         super(itemView, null);
         binding = ItemCustomOutcomingPreviewMessageBinding.bind(itemView);
+        setVideoPlayButton(binding.videoPlayButton);
     }
 
     @Override
