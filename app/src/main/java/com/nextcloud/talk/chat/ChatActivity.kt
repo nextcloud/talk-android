@@ -3333,6 +3333,8 @@ open class ChatActivity :
                 menu.removeItem(R.id.conversation_voice_call)
             }
 
+            menu.findItem(R.id.create_conversation_bubble)?.isVisible = NotificationUtils.deviceSupportsBubbles
+
             handleThreadNotificationIcon(menu.findItem(R.id.thread_notifications))
         }
         return true
@@ -3402,8 +3404,15 @@ open class ChatActivity :
         }
 
     private fun createConversationBubble() {
+        if (!NotificationUtils.deviceSupportsBubbles) {
+            Log.e(TAG, "createConversationBubble was called but device doesnt support it. It should not be possible " +
+                "to get here via UI!")
+            return
+        }
+
         lifecycleScope.launch {
-            if (!appPreferences.areBubblesEnabled()) {
+            if (!appPreferences.areBubblesEnabled() || !NotificationUtils.areSystemBubblesEnabled(context)) {
+                // Do not replace with snackbar as it needs to survive screen change
                 Toast.makeText(
                     this@ChatActivity,
                     getString(R.string.nc_conversation_notification_bubble_disabled),
@@ -3416,6 +3425,7 @@ open class ChatActivity :
             if (!appPreferences.areBubblesForced()) {
                 val conversationAllowsBubbles = isConversationBubbleEnabled()
                 if (!conversationAllowsBubbles) {
+                    // Do not replace with snackbar as it needs to survive screen change
                     Toast.makeText(
                         this@ChatActivity,
                         getString(R.string.nc_conversation_notification_bubble_enable_conversation),
@@ -3567,7 +3577,7 @@ open class ChatActivity :
                 // Check if notification channel supports bubbles and recreate if needed
                 val channel = notificationManager.getNotificationChannel(channelId)
 
-                if (channel == null || !channel.canBubble()) {
+                if (channel == null || NotificationUtils.deviceSupportsBubbles && !channel.canBubble()) {
                     NotificationUtils.registerNotificationChannels(
                         applicationContext,
                         appPreferences!!

@@ -15,7 +15,6 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.KeyguardManager
-import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.DialogInterface
@@ -442,19 +441,20 @@ class SettingsActivity :
         binding.settingsBubbles.visibility = View.VISIBLE
         binding.settingsBubblesForce.visibility = View.VISIBLE
 
-        val systemAllowsAllConversations = isSystemBubblePreferenceAll()
+        val systemAllowsAllConversations = NotificationUtils.isSystemBubblePreferenceAll(context)
+        val systemBubblesEnabled = NotificationUtils.areSystemBubblesEnabled(context)
         updateBubbleSummary(systemAllowsAllConversations)
 
-        var bubblesEnabled = appPreferences.areBubblesEnabled()
-        if (bubblesEnabled && !systemAllowsAllConversations) {
+        var appBubblesEnabled = appPreferences.areBubblesEnabled()
+        if (appBubblesEnabled && (!systemAllowsAllConversations || !systemBubblesEnabled)) {
             appPreferences.setBubblesEnabled(false)
-            bubblesEnabled = false
+            appBubblesEnabled = false
         }
 
-        setGlobalBubbleSwitchState(bubblesEnabled)
+        setGlobalBubbleSwitchState(appBubblesEnabled)
         binding.settingsBubblesForceSwitch.isChecked = appPreferences.areBubblesForced()
 
-        updateBubbleForceRowState(bubblesEnabled)
+        updateBubbleForceRowState(appBubblesEnabled)
 
         binding.settingsBubblesSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isUpdatingBubbleSwitchState) {
@@ -494,10 +494,10 @@ class SettingsActivity :
     }
 
     private fun handleGlobalBubblePreferenceChange(enabled: Boolean) {
-        val systemAllowsAllConversations = isSystemBubblePreferenceAll()
+        val systemAllowsAllConversations = NotificationUtils.isSystemBubblePreferenceAll(context)
 
         if (enabled) {
-            if (!systemAllowsAllConversations) {
+            if (!systemAllowsAllConversations || !NotificationUtils.areSystemBubblesEnabled(context)) {
                 pendingBubbleEnableAfterSystemChange = true
                 showSystemBubblesDisabledFeedback()
                 updateBubbleSummary(systemAllowsAllConversations)
@@ -554,15 +554,6 @@ class SettingsActivity :
         setGlobalBubbleSwitchState(true)
         updateBubbleForceRowState(true)
         updateBubbleSummary(true)
-    }
-
-    private fun isSystemBubblePreferenceAll(): Boolean {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            return false
-        }
-
-        val notificationManager = getSystemService(NotificationManager::class.java)
-        return notificationManager?.bubblePreference == NotificationManager.BUBBLE_PREFERENCE_ALL
     }
 
     private fun navigateToSystemBubbleSettings() {

@@ -23,6 +23,7 @@ import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
 import android.util.Log
@@ -79,6 +80,34 @@ object NotificationUtils {
     const val KEY_UPLOAD_GROUP = "com.nextcloud.talk.utils.KEY_UPLOAD_GROUP"
     const val GROUP_SUMMARY_NOTIFICATION_ID = -1
 
+    val deviceSupportsBubbles = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+
+    fun areSystemBubblesEnabled(context: Context): Boolean {
+        if (!deviceSupportsBubbles) {
+            return false
+        }
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Settings.Secure.getInt(
+                context.contentResolver,
+                "notification_bubbles",
+                1
+            ) == 1
+        } else {
+            // Android 10 (Q) — bubbles always enabled
+            true
+        }
+    }
+
+    fun isSystemBubblePreferenceAll(context: Context): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            return false
+        }
+
+        val notificationManager = context.getSystemService(NotificationManager::class.java)
+        return notificationManager?.bubblePreference == NotificationManager.BUBBLE_PREFERENCE_ALL
+    }
+
     private fun createNotificationChannel(
         context: Context,
         notificationChannel: Channel,
@@ -87,8 +116,7 @@ object NotificationUtils {
     ) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val isMessagesChannel = notificationChannel.id == NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
-        val shouldSupportBubbles =
-            android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R && isMessagesChannel
+        val shouldSupportBubbles = deviceSupportsBubbles && isMessagesChannel
 
         val existingChannel = notificationManager.getNotificationChannel(notificationChannel.id)
         val needsRecreation = shouldSupportBubbles && existingChannel != null && !existingChannel.canBubble()
