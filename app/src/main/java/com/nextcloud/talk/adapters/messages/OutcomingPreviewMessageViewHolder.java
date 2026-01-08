@@ -44,14 +44,14 @@ public class OutcomingPreviewMessageViewHolder extends PreviewMessageViewHolder 
             && !Objects.equals(message.getMessage(), "{file}")
         ) {
             Spanned processedMessageText = null;
-            binding.outgoingPreviewMessageBubble.setBackgroundResource(R.drawable.shape_grouped_outcoming_message);
+            binding.bubble.setBackgroundResource(R.drawable.shape_grouped_outcoming_message);
             if (viewThemeUtils != null) {
                 processedMessageText = messageUtils.enrichChatMessageText(
                     binding.messageCaption.getContext(),
                     message,
                     false,
                     viewThemeUtils);
-                viewThemeUtils.talk.themeOutgoingMessageBubble(binding.outgoingPreviewMessageBubble, true, false,
+                viewThemeUtils.talk.themeOutgoingMessageBubble(binding.bubble, true, false,
                                                                false);
             }
 
@@ -61,9 +61,9 @@ public class OutcomingPreviewMessageViewHolder extends PreviewMessageViewHolder 
                     viewThemeUtils,
                     processedMessageText,
                     message,
-                    binding.outgoingPreviewMessageBubble);
+                    binding.bubble);
             }
-            binding.outgoingPreviewMessageBubble.setOnClickListener(null);
+            binding.bubble.setOnClickListener(null);
 
             float textSize = 0;
             if (context != null) {
@@ -81,7 +81,7 @@ public class OutcomingPreviewMessageViewHolder extends PreviewMessageViewHolder 
             binding.messageCaption.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
             binding.messageCaption.setText(processedMessageText);
         } else {
-            binding.outgoingPreviewMessageBubble.setBackground(null);
+            binding.bubble.setBackground(null);
             binding.messageCaption.setVisibility(View.GONE);
         }
 

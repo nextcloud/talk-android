@@ -70,6 +70,13 @@ class TalkSpecificViewThemeUtils @Inject constructor(
     private val appcompat: AndroidXViewThemeUtils
 ) : ViewThemeUtilsBase(schemes) {
     private val dynamicColor = MaterialDynamicColors()
+
+    fun themeCardView(cardView: MaterialCardView) {
+        withScheme(cardView) { scheme ->
+            cardView.backgroundTintList = ColorStateList.valueOf(dynamicColor.surfaceVariant().getArgb(scheme))
+        }
+    }
+
     fun themeIncomingMessageBubble(bubble: View, grouped: Boolean, deleted: Boolean, isPlayed: Boolean = false) {
         val resources = bubble.resources
 
@@ -199,6 +206,31 @@ class TalkSpecificViewThemeUtils @Inject constructor(
                 ColorStateList.valueOf(backgroundColor)
             )
             linearLayout.background = drawable
+        }
+    }
+
+    fun setReactionsBackground(card: MaterialCardView, outgoing: Boolean, isSelfReaction: Boolean, isBubbled: Boolean) {
+        withScheme(card) { scheme ->
+            if (isSelfReaction) {
+                card.setCardBackgroundColor(dynamicColor.primaryContainer().getArgb(scheme))
+                card.strokeColor = dynamicColor.primary().getArgb(scheme)
+            } else {
+                if (isBubbled) {
+                    card.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            card.context,
+                            R.color.bg_message_list_incoming_bubble
+                        )
+                    )
+                    card.strokeColor = dynamicColor.surface().getArgb(scheme)
+                } else {
+                    card.setCardBackgroundColor(dynamicColor.surface().getArgb(scheme))
+                    card.strokeColor = ContextCompat.getColor(
+                        card.context,
+                        R.color.bg_message_list_incoming_bubble
+                    )
+                }
+            }
         }
     }
 

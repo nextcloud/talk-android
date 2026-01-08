@@ -43,10 +43,12 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.widget.EmojiTextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
 import coil.Coil.imageLoader
 import coil.load
@@ -154,7 +156,6 @@ class MessageInputFragment : Fragment() {
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
-        clearEditUI()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -219,8 +220,12 @@ class MessageInputFragment : Fragment() {
             } ?: clearReplyUi()
         }
 
-        chatActivity.messageInputViewModel.getEditChatMessage.observe(viewLifecycleOwner) { message ->
-            message?.let { setEditUI(it as ChatMessage) }
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                chatActivity.messageInputViewModel.getEditChatMessage.collect { message ->
+                    message?.let { setEditUI(it as ChatMessage) } ?: clearEditUI()
+                }
+            }
         }
 
         chatActivity.messageInputViewModel.createThreadViewState.observe(viewLifecycleOwner) { state ->
@@ -383,7 +388,6 @@ class MessageInputFragment : Fragment() {
         val filters = arrayOfNulls<InputFilter>(1)
         val lengthFilter = CapabilitiesUtil.getMessageMaxLength(spreedCapabilities)
 
-        binding.fragmentEditView.editMessageView.visibility = View.GONE
         binding.fragmentMessageInputView.setPadding(0, 0, 0, 0)
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)
@@ -681,7 +685,7 @@ class MessageInputFragment : Fragment() {
                     messageSendButton.setVisible(false)
                     recordAudioButton.setVisible(false)
                     submitThreadButton.setVisible(false)
-                    attachmentButton.setVisible(true)
+                    attachmentButton.setVisible(false)
                 }
 
                 isThreadCreateModeActive -> {
@@ -1045,6 +1049,14 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun themeMessageInputView() {
+        binding.messageInputContainer.apply {
+            viewThemeUtils.talk.themeCardView(this)
+        }
+
+        binding.fragmentMessageInputView.findViewById<ImageView>(R.id.microphoneEnabledInfoBackground)?.let {
+            viewThemeUtils.platform.themeViewBackground(it, ColorRole.SURFACE_VARIANT)
+        }
+
         binding.fragmentMessageInputView.button?.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }
 
         binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.let {

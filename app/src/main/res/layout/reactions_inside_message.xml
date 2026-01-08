@@ -8,6 +8,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/standard_eighth_margin"
     android:orientation="horizontal">
 
     <androidx.compose.ui.platform.ComposeView
@@ -28,7 +29,6 @@
             android:id="@+id/reactions_emoji_wrapper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/standard_half_margin"
             android:gravity="center_vertical"
             android:orientation="horizontal" />
     </HorizontalScrollView>
