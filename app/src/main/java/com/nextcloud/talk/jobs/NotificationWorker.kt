@@ -537,7 +537,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         // NOTE - systemNotificationId is an internal ID used on the device only.
         // It is NOT the same as the notification ID used in communication with the server.
-        // Use a consistent ID based on the room token to avoid duplicate bubbles
         val systemNotificationId: Int = activeStatusBarNotification?.id
             ?: NotificationUtils.calculateCRC32(
                 System.currentTimeMillis().toString()
