@@ -8,20 +8,19 @@
 package com.nextcloud.talk.ui.dialog
 
 import android.content.Context
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
@@ -36,16 +35,13 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import java.text.DateFormat
 import java.util.Date
 
-
 class ScheduledMessagesListCompose(private val viewThemeUtils: ViewThemeUtils) {
     @Composable
     fun ScheduledMessagesDialog(
         shouldDismiss: MutableState<Boolean>,
         context: Context,
         messages: List<ChatMessage>,
-        onSendNow: (ChatMessage) -> Unit,
-        onReschedule: (ChatMessage) -> Unit,
-        onDelete: (ChatMessage) -> Unit
+        onMessageActions: (ChatMessage) -> Unit
     ) {
         if (shouldDismiss.value) {
             return
@@ -79,9 +75,7 @@ class ScheduledMessagesListCompose(private val viewThemeUtils: ViewThemeUtils) {
                             }
                             ScheduledMessageRow(
                                 message = message,
-                                onSendNow = onSendNow,
-                                onReschedule = onReschedule,
-                                onDelete = onDelete
+                                onMessageActions = onMessageActions
                             )
                         }
                     }
@@ -93,9 +87,7 @@ class ScheduledMessagesListCompose(private val viewThemeUtils: ViewThemeUtils) {
     @Composable
     private fun ScheduledMessageRow(
         message: ChatMessage,
-        onSendNow: (ChatMessage) -> Unit,
-        onReschedule: (ChatMessage) -> Unit,
-        onDelete: (ChatMessage) -> Unit
+        onMessageActions: (ChatMessage) -> Unit
     ) {
         val formatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
         val scheduledAt = message.sendAt?.toLong() ?: 0L
@@ -105,7 +97,11 @@ class ScheduledMessagesListCompose(private val viewThemeUtils: ViewThemeUtils) {
             stringResource(R.string.nc_message_scheduled)
         }
 
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onMessageActions(message) }
+        ) {
             Text(
                 text = message.text,
                 style = MaterialTheme.typography.bodyLarge
@@ -114,22 +110,12 @@ class ScheduledMessagesListCompose(private val viewThemeUtils: ViewThemeUtils) {
                 text = scheduledText,
                 style = MaterialTheme.typography.bodySmall
             )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                TextButton(onClick = { onSendNow(message) }) {
-                    Text(text = stringResource(R.string.nc_send_now))
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                TextButton(onClick = { onReschedule(message) }) {
-                    Text(text = stringResource(R.string.nc_reschedule_message))
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                TextButton(onClick = { onDelete(message) }) {
-                    Text(text = stringResource(R.string.nc_delete))
-                }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(R.string.nc_message_scheduled_for, scheduledText),
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
         }
     }

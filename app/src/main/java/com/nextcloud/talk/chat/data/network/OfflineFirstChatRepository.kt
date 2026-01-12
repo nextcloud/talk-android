@@ -51,6 +51,7 @@ import java.io.IOException
 import javax.inject.Inject
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DateConstants
 
 @Suppress("LargeClass", "TooManyFunctions")
 class OfflineFirstChatRepository @Inject constructor(
@@ -416,7 +417,8 @@ class OfflineFirstChatRepository @Inject constructor(
         }
 
         // add new messages to UI
-        val tripleChatMessages = Triple(lookIntoFuture, showUnreadMessagesMarker, receivedChatMessages)
+        val filteredNewMessages = filterScheduledMessages(receivedChatMessages)
+        val tripleChatMessages = Triple(lookIntoFuture, showUnreadMessagesMarker, filteredNewMessages)
         _messageFlow.emit(tripleChatMessages)
 
         // remove temp messages from DB that are now found in the new messages
@@ -435,6 +437,8 @@ class OfflineFirstChatRepository @Inject constructor(
             .first()
             .sortedBy { it.internalId }
             .map(ChatMessageEntity::asModel)
+            .let(::filterScheduledMessages)
+
 
         remainingTempMessages.forEach {
             Log.d(TAG, "remainingTempMessage: " + it.message)
@@ -860,7 +864,7 @@ class OfflineFirstChatRepository @Inject constructor(
             messageId,
             internalConversationId,
             limit
-        )
+        ).let(::filterScheduledMessages)
 
         if (list.isNotEmpty()) {
             val triple = Triple(false, false, list)
@@ -1201,8 +1205,12 @@ class OfflineFirstChatRepository @Inject constructor(
 
                 emit(Result.success(tempChatMessageModel))
 
-                val triple = Triple(true, false, listOf(tempChatMessageModel))
-                _messageFlow.emit(triple)
+                val nowSeconds = System.currentTimeMillis() / DateConstants.SECOND_DIVIDER
+                val scheduledAt = tempChatMessageModel.sendAt?.toLong() ?: 0L
+                if (scheduledAt <= nowSeconds) {
+                    val triple = Triple(true, false, listOf(tempChatMessageModel))
+                    _messageFlow.emit(triple)
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "Something went wrong when adding temporary message", e)
                 emit(Result.failure(e))
@@ -1283,6 +1291,12 @@ class OfflineFirstChatRepository @Inject constructor(
         )
         return entity
     }
+
+    private fun filterScheduledMessages(messages: List<ChatMessage>): List<ChatMessage> {
+        val nowSeconds = System.currentTimeMillis() / DateConstants.SECOND_DIVIDER
+        return messages.filter { (it.sendAt?.toLong() ?: 0L) <= nowSeconds }
+    }
+
 
     companion object {
         val TAG = OfflineFirstChatRepository::class.simpleName

@@ -1020,6 +1020,7 @@ class ChatActivity :
                     }
 
                     processExpiredMessages()
+                    hideScheduledMessages()
                     processCallStartedMessages()
 
                     adapter?.notifyDataSetChanged()
@@ -1048,6 +1049,7 @@ class ChatActivity :
                 .onEach {
                     updateReadStatusOfAllMessages(it)
                     processExpiredMessages()
+                    hideScheduledMessages()
                 }
                 .collect()
         }
@@ -3007,6 +3009,26 @@ class ChatActivity :
         }
     }
 
+    fun hideScheduledMessages() {
+        val messagesToDelete: ArrayList<ChatMessage> = ArrayList()
+        val systemTime = System.currentTimeMillis() / ONE_SECOND_IN_MILLIS
+
+        if (adapter?.items != null) {
+            for (itemWrapper in adapter?.items!!) {
+                if (itemWrapper.item is ChatMessage) {
+                    val chatMessage = itemWrapper.item as ChatMessage
+                    chatMessage.sendAt?.toLong()?.let {
+                        if (it > systemTime) {
+                            messagesToDelete.add(chatMessage)
+                        }
+                    }
+                }
+            }
+            adapter!!.delete(messagesToDelete)
+            adapter!!.notifyDataSetChanged()
+        }
+    }
+
     private fun updateReadStatusOfAllMessages(xChatLastCommonRead: Int?) {
         if (adapter != null) {
             for (message in adapter!!.items) {
@@ -4376,20 +4398,24 @@ class ChatActivity :
     }
 
     fun showScheduledMessagesList(messages: List<ChatMessage>) {
+        val nowSeconds = System.currentTimeMillis() / DateConstants.SECOND_DIVIDER
+        val futureMessages = messages.filter { (it.sendAt?.toLong() ?: 0L) > nowSeconds }
+        if (futureMessages.isEmpty()) {
+            return
+        }
         binding.genericComposeView.apply {
             val shouldDismiss = mutableStateOf(false)
             setContent {
                 ScheduledMessagesListCompose(viewThemeUtils).ScheduledMessagesDialog(
                     shouldDismiss = shouldDismiss,
                     context = this@ChatActivity,
-                    messages = messages,
-                    onSendNow = { sendScheduledMessageNow(it) },
-                    onReschedule = { rescheduleScheduledMessage(it) },
-                    onDelete = { deleteScheduledMessage(it) }
+                    messages = futureMessages,
+                    onMessageActions = { onOpenMessageActionsDialog(it) }
                 )
             }
         }
     }
+
     fun userAllowedByPrivilages(message: ChatMessage): Boolean {
         if (conversationUser == null) return false
 

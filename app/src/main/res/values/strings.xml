@@ -916,5 +916,6 @@ How to translate with transifex:
     <string name="nc_send_now">Send now</string>
     <string name="nc_scheduled_for">Scheduled for %1$s</string>
     <string name="nc_message_scheduled">Scheduled</string>
+    <string name="nc_message_scheduled_for">Message scheduled for %1$s</string>
     <string name="nc_scheduled_messages">Scheduled messages</string>
 </resources>
