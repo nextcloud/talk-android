@@ -11,6 +11,7 @@ package com.nextcloud.talk.chat.data.model
 
 import android.text.TextUtils
 import android.util.Log
+import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonIgnore
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -130,7 +131,8 @@ data class ChatMessage(
 
     var sendStatus: SendStatus? = null,
 
-    var silent: Boolean = false
+    var silent: Boolean = false,
+      var sendAt: Int? = 0
 
 ) : MessageContentType,
     MessageContentType.Image {

@@ -219,39 +219,17 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         ).blockingFirst().ocs?.data?.references?.entries?.iterator()?.next()?.value
     }
 
-    override suspend fun updateScheduledMessage(
-        credentials: String,
-        url: String,
-        message: String,
-        sendAt: Int,
-        replyTo: Int,
-        sendWithoutNotification: Boolean,
-        threadTitle: String,
-        threadId: Int
-    ): ChatOverallSingleMessage =
-        ncApiCoroutines.updateScheduledMessage(
-            credentials,
-            url,
-            message,
-            sendAt,
-            replyTo,
-            sendWithoutNotification,
-            threadTitle,
-            threadId
-        )
-
-
     override suspend fun sendScheduledChatMessage(
         credentials: String,
         url: String,
         message: String,
         displayName: String,
         referenceId: String,
-        replyTo: Int,
+        replyTo: Int?,
         sendWithoutNotification: Boolean,
-        threadTitle: String,
-        threadId: Int,
-        sendAt: Int
+        threadTitle: String?,
+        threadId: Long?,
+        sendAt: Int?
     ): ChatOverallSingleMessage =
         ncApiCoroutines.sendScheduleChatMessage(
             credentials,
@@ -266,8 +244,30 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
             sendAt
         )
 
+    override suspend fun updateScheduledMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        sendAt: Int?,
+        replyTo: Int?,
+        sendWithoutNotification: Boolean,
+        threadTitle: String?,
+        threadId: Long?
+    ): ChatOverallSingleMessage =
+      ncApiCoroutines.updateScheduledMessage(
+            credentials,
+            url,
+            message,
+            sendAt,
+            replyTo,
+            sendWithoutNotification,
+            threadTitle,
+            threadId
+        )
 
-    override suspend fun deleteScheduledMessage(credentials: String, url: String): GenericOverall =
+
+
+    override suspend fun deleteScheduleMessage(credentials: String, url: String): GenericOverall =
         ncApiCoroutines.deleteScheduleMessage(credentials, url)
 
     override suspend fun getScheduledMessages(credentials: String, url: String): ChatOverall =

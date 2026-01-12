@@ -184,6 +184,107 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/menu_scheduled_message_info"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/menu_icon_scheduled_message_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:paddingStart="@dimen/standard_padding"
+                    android:paddingEnd="@dimen/standard_padding"
+                    android:src="@drawable/baseline_schedule_24"
+                    app:tint="@color/high_emphasis_menu_icon" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/menu_text_scheduled_message_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:paddingEnd="@dimen/standard_padding"
+                    android:text="@string/nc_scheduled_for"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/high_emphasis_text"
+                    android:textSize="@dimen/bottom_sheet_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/menu_reschedule_message"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/menu_icon_reschedule_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:paddingStart="@dimen/standard_padding"
+                    android:paddingEnd="@dimen/zero"
+                    android:src="@drawable/baseline_schedule_24"
+                    app:tint="@color/high_emphasis_menu_icon" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/menu_text_reschedule_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:paddingStart="@dimen/standard_dialog_padding"
+                    android:paddingEnd="@dimen/standard_padding"
+                    android:text="@string/nc_reschedule_message"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/high_emphasis_text"
+                    android:textSize="@dimen/bottom_sheet_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/menu_send_now_message"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/menu_icon_send_now_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:paddingStart="@dimen/standard_padding"
+                    android:paddingEnd="@dimen/zero"
+                    android:src="@drawable/ic_send"
+                    app:tint="@color/high_emphasis_menu_icon" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/menu_text_send_now_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:paddingStart="@dimen/standard_dialog_padding"
+                    android:paddingEnd="@dimen/standard_padding"
+                    android:text="@string/nc_send_now"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/high_emphasis_text"
+                    android:textSize="@dimen/bottom_sheet_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/menu_reply_to_message"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/bottom_sheet_item_height"

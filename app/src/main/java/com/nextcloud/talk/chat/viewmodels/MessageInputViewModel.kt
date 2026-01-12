@@ -129,24 +129,6 @@ class MessageInputViewModel @Inject constructor(
     val callStartedFlow: LiveData<Pair<ChatMessage, Boolean>>
         get() = _callStartedFlow
 
-    sealed interface ScheduledMessageActionState
-    data class ScheduledMessageSuccessState(val sendAt: Int) : ScheduledMessageActionState
-    data class ScheduledMessageUpdatedState(val sendAt: Int) : ScheduledMessageActionState
-    data class ScheduledMessageDeletedState(val messageId: Long) : ScheduledMessageActionState
-    data class ScheduledMessageErrorState(val message: CharSequence) : ScheduledMessageActionState
-
-    private val _scheduledMessageActionState: MutableLiveData<ScheduledMessageActionState> = MutableLiveData()
-    val scheduledMessageActionState: LiveData<ScheduledMessageActionState>
-        get() = _scheduledMessageActionState
-
-    private val _scheduledMessages: MutableLiveData<List<ChatMessageJson>> = MutableLiveData(emptyList())
-    val scheduledMessages: LiveData<List<ChatMessageJson>>
-        get() = _scheduledMessages
-
-    private val _scheduledMessageToEdit: MutableLiveData<ChatMessageJson?> = MutableLiveData()
-    val scheduledMessageToEdit: LiveData<ChatMessageJson?>
-        get() = _scheduledMessageToEdit
-
 
     @Suppress("LongParameterList")
     fun sendChatMessage(
@@ -167,7 +149,8 @@ class MessageInputViewModel @Inject constructor(
                 displayName,
                 replyTo,
                 sendWithoutNotification,
-                referenceId
+                referenceId,
+                0
             ).collect { result ->
                 if (result.isSuccess) {
                     Log.d(TAG, "temp message ref id: " + (result.getOrNull()?.referenceId ?: "none"))
@@ -297,36 +280,54 @@ class MessageInputViewModel @Inject constructor(
     }
 
     @Suppress("LongParameterList")
-    fun sendScheduledChatMessage(
+    fun scheduleChatMessage(
         credentials: String,
         url: String,
         message: String,
         displayName: String,
         replyTo: Int,
         sendWithoutNotification: Boolean,
-        threadTitle: String,
-        threadId: Int,
+        threadTitle: String?,
+        threadId: Long?,
         sendAt: Int
     ) {
         val referenceId = SendMessageUtils().generateReferenceId()
+        Log.d(TAG, "Scheduled message reference id: $referenceId")
+
+        viewModelScope.launch {
+            chatRepository.addTemporaryMessage(
+                message,
+                displayName,
+                replyTo,
+                sendWithoutNotification,
+                referenceId,
+                sendAt
+            ).collect { result ->
+                if (result.isSuccess) {
+                    _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
+                } else {
+                    _sendChatMessageViewState.value = SendChatMessageErrorState(message)
+                }
+            }
+        }
+
         viewModelScope.launch {
             chatRepository.sendScheduledChatMessage(
                 credentials,
                 url,
                 message,
                 displayName,
-                referenceId,
                 replyTo,
                 sendWithoutNotification,
+                referenceId,
                 threadTitle,
                 threadId,
                 sendAt
             ).collect { result ->
                 if (result.isSuccess) {
-                    _scheduledMessageActionState.value = ScheduledMessageSuccessState(sendAt)
+                    _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
                 } else {
-                    _scheduledMessageActionState.value =
-                        ScheduledMessageErrorState(result.exceptionOrNull()?.message ?: "")
+                    _sendChatMessageViewState.value = SendChatMessageErrorState(message)
                 }
             }
         }
@@ -338,10 +339,10 @@ class MessageInputViewModel @Inject constructor(
         url: String,
         message: String,
         sendAt: Int,
-        replyTo: Int,
+        replyTo: Int?,
         sendWithoutNotification: Boolean,
-        threadTitle: String,
-        threadId: Int
+        threadTitle: String?,
+        threadId: Long?
     ) {
         viewModelScope.launch {
             chatRepository.updateScheduledMessage(
@@ -355,10 +356,9 @@ class MessageInputViewModel @Inject constructor(
                 threadId
             ).collect { result ->
                 if (result.isSuccess) {
-                    _scheduledMessageActionState.value = ScheduledMessageUpdatedState(sendAt)
+                    _editMessageViewState.value = EditMessageSuccessState(result.getOrNull()!!)
                 } else {
-                    _scheduledMessageActionState.value =
-                        ScheduledMessageErrorState(result.exceptionOrNull()?.message ?: "")
+                    _editMessageViewState.value = EditMessageErrorState
                 }
             }
         }
@@ -366,33 +366,12 @@ class MessageInputViewModel @Inject constructor(
 
     fun deleteScheduledMessage(credentials: String, url: String, messageId: Long) {
         viewModelScope.launch {
-            chatRepository.deleteScheduledMessage(credentials, url).collect { result ->
-                if (result.isSuccess) {
-                    _scheduledMessageActionState.value = ScheduledMessageDeletedState(messageId)
-                } else {
-                    _scheduledMessageActionState.value =
-                        ScheduledMessageErrorState(result.exceptionOrNull()?.message ?: "")
+            chatRepository.deleteScheduledMessage(credentials, url, messageId).collect { result ->
+                if (!result.isSuccess) {
+                    Log.e(TAG, "Failed to delete scheduled message")
                 }
             }
         }
-    }
-
-    fun fetchScheduledMessages(credentials: String, url: String) {
-        viewModelScope.launch {
-            chatRepository.getScheduledMessages(credentials, url).collect { result ->
-                if (result.isSuccess) {
-                    val data = result.getOrNull()?.ocs?.data.orEmpty()
-                    _scheduledMessages.value = data
-                } else {
-                    _scheduledMessageActionState.value =
-                        ScheduledMessageErrorState(result.exceptionOrNull()?.message ?: "")
-                }
-            }
-        }
-    }
-
-    fun editScheduledMessage(message: ChatMessageJson?) {
-        _scheduledMessageToEdit.postValue(message)
     }
 
 

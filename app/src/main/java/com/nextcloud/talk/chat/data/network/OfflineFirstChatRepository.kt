@@ -50,7 +50,7 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 import com.nextcloud.talk.models.json.generic.GenericOverall
-
+import com.nextcloud.talk.utils.ApiUtils
 
 @Suppress("LargeClass", "TooManyFunctions")
 class OfflineFirstChatRepository @Inject constructor(
@@ -234,6 +234,27 @@ class OfflineFirstChatRepository @Inject constructor(
 
             updateUiForLastCommonRead()
             updateUiForLastReadMessage(newestMessageIdFromDb)
+        }
+    }
+
+    private suspend fun syncScheduledMessages(): List<ChatMessageEntity>? {
+        return try {
+            val scheduledMessages = network.getScheduledMessages(
+                credentials,
+                ApiUtils.getUrlForScheduledMessagesFromChat(urlForChatting)
+            ).ocs?.data.orEmpty()
+
+            if (scheduledMessages.isEmpty()) {
+                return null
+            }
+
+            handleUpdateMessages(scheduledMessages)
+            val scheduledEntities = scheduledMessages.map { it.asEntity(currentUser.id!!) }
+            chatDao.upsertChatMessages(scheduledEntities)
+            scheduledEntities
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to sync scheduled messages", e)
+            null
         }
     }
 
@@ -629,6 +650,8 @@ class OfflineFirstChatRepository @Inject constructor(
             Log.d(TAG, "no data is updated...")
         }
 
+        syncScheduledMessages()
+
         return chatMessagesFromSync
     }
 
@@ -1004,20 +1027,42 @@ class OfflineFirstChatRepository @Inject constructor(
     override suspend fun sendUnsentChatMessages(credentials: String, url: String) {
         val tempMessages = chatDao.getTempUnsentMessagesForConversation(internalConversationId, threadId).first()
         tempMessages.sortedBy { it.internalId }.onEach {
-            sendChatMessage(
-                credentials,
-                url,
-                it.message,
-                it.actorDisplayName,
-                it.parentMessageId?.toIntOrZero() ?: 0,
-                it.silent,
-                it.referenceId.orEmpty(),
-                null
-            ).collect { result ->
-                if (result.isSuccess) {
-                    Log.d(TAG, "Sent temp message")
-                } else {
-                    Log.e(TAG, "Failed to send temp message")
+            val scheduledAt = it.sendAt ?: 0
+            if (scheduledAt > 0) {
+                sendScheduledChatMessage(
+                    credentials = credentials,
+                    url = ApiUtils.getUrlForScheduledMessagesFromChat(url),
+                    message = it.message,
+                    displayName = it.actorDisplayName,
+                    replyTo = it.parentMessageId?.toIntOrZero(),
+                    sendWithoutNotification = it.silent,
+                    referenceId = it.referenceId.orEmpty(),
+                    threadTitle = it.threadTitle,
+                    threadId = it.threadId,
+                    sendAt = scheduledAt.toInt()
+                ).collect { result ->
+                    if (result.isSuccess) {
+                        Log.d(TAG, "Sent scheduled temp message")
+                    } else {
+                        Log.e(TAG, "Failed to send scheduled temp message")
+                    }
+                }
+            } else {
+                sendChatMessage(
+                    credentials,
+                    url,
+                    it.message,
+                    it.actorDisplayName,
+                    it.parentMessageId?.toIntOrZero() ?: 0,
+                    it.silent,
+                    it.referenceId.orEmpty(),
+                    null
+                ).collect { result ->
+                    if (result.isSuccess) {
+                        Log.d(TAG, "Sent temp message")
+                    } else {
+                        Log.e(TAG, "Failed to send temp message")
+                    }
                 }
             }
         }
@@ -1028,51 +1073,28 @@ class OfflineFirstChatRepository @Inject constructor(
         _removeMessageFlow.emit(chatMessage)
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    override suspend fun addTemporaryMessage(
-        message: CharSequence,
-        displayName: String,
-        replyTo: Int,
-        sendWithoutNotification: Boolean,
-        referenceId: String
-    ): Flow<Result<ChatMessage?>> =
-        flow {
-            try {
-                val tempChatMessageEntity = createChatMessageEntity(
-                    internalConversationId,
-                    message.toString(),
-                    replyTo,
-                    sendWithoutNotification,
-                    referenceId
-                )
-
-                chatDao.upsertChatMessage(tempChatMessageEntity)
-
-                val tempChatMessageModel = tempChatMessageEntity.asModel()
-
-                emit(Result.success(tempChatMessageModel))
-
-                val triple = Triple(true, false, listOf(tempChatMessageModel))
-                _messageFlow.emit(triple)
-            } catch (e: Exception) {
-                Log.e(TAG, "Something went wrong when adding temporary message", e)
-                emit(Result.failure(e))
-            }
+    override fun getScheduledMessages(currentTimeSeconds: Long): Flow<List<ChatMessage>> =
+        chatDao.getScheduledMessagesForConversation(
+            internalConversationId,
+            currentTimeSeconds,
+            threadId
+        ).map { messages ->
+            messages.map(ChatMessageEntity::asModel)
         }
 
-    @Suppress("LongParameterList")
+
     override suspend fun sendScheduledChatMessage(
         credentials: String,
         url: String,
         message: String,
         displayName: String,
-        referenceId: String,
-        replyTo: Int,
+        replyTo: Int?,
         sendWithoutNotification: Boolean,
-        threadTitle: String,
-        threadId: Int,
-        sendAt: Int
-    ): Flow<Result<ChatOverallSingleMessage>> {
+        referenceId: String,
+        threadTitle: String?,
+        threadId: Long?,
+        sendAt: Int?
+    ): Flow<Result<ChatMessage?>> {
         if (!networkMonitor.isOnline.value) {
             return flow {
                 emit(Result.failure(IOException("Skipped to send scheduled message as device is offline")))
@@ -1092,81 +1114,128 @@ class OfflineFirstChatRepository @Inject constructor(
                 threadId,
                 sendAt
             )
-            emit(Result.success(response))
-        }.catch { e ->
-            emit(Result.failure(e))
+
+            val chatMessageModel = response.ocs?.data?.asModel()
+            val chatMessageEntity = response.ocs?.data?.asEntity(currentUser.id!!)
+
+            val scheduledMessage = chatDao.getTempMessageForConversation(
+                internalConversationId,
+                referenceId,
+                threadId
+            ).firstOrNull()
+
+            scheduledMessage?.let {
+                chatDao.deleteTempChatMessages(internalConversationId, listOf(referenceId))
+                _removeMessageFlow.emit(it.asModel())
+            }
+
+            chatMessageEntity?.let { chatDao.upsertChatMessage(it) }
+            chatMessageModel?.let { _updateMessageFlow.emit(it) }
+
+            Log.d(TAG, "scheduled chat message succeeded: $message")
+            emit(Result.success(chatMessageModel))
         }
+            .catch { e ->
+                Log.e(TAG, "Error when sending scheduled message", e)
+                emit(Result.failure(e))
+            }
     }
 
-    @Suppress("LongParameterList")
     override suspend fun updateScheduledMessage(
         credentials: String,
         url: String,
         message: String,
         sendAt: Int,
+        replyTo: Int?,
+        sendWithoutNotification: Boolean,
+        threadTitle: String?,
+        threadId: Long?
+    ): Flow<Result<ChatOverallSingleMessage>> =
+        flow {
+            try {
+                val response = network.updateScheduledMessage(
+                    credentials,
+                    url,
+                    message,
+                    sendAt,
+                    replyTo,
+                    sendWithoutNotification,
+                    threadTitle,
+                    threadId
+                )
+
+                response.ocs?.data?.asEntity(currentUser.id!!)?.let { entity ->
+                    chatDao.upsertChatMessage(entity)
+                    _updateMessageFlow.emit(entity.asModel())
+                }
+                emit(Result.success(response))
+            } catch (e: Exception) {
+                emit(Result.failure(e))
+            }
+        }
+
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    override suspend fun addTemporaryMessage(
+        message: CharSequence,
+        displayName: String,
         replyTo: Int,
         sendWithoutNotification: Boolean,
-        threadTitle: String,
-        threadId: Int
-    ): Flow<Result<ChatOverallSingleMessage>> {
-        if (!networkMonitor.isOnline.value) {
-            return flow {
-                emit(Result.failure(IOException("Skipped to update scheduled message as device is offline")))
+        referenceId: String,
+        sendAt: Int?
+    ): Flow<Result<ChatMessage?>> =
+        flow {
+            try {
+                val tempChatMessageEntity = createChatMessageEntity(
+                    internalConversationId,
+                    message.toString(),
+                    replyTo,
+                    sendWithoutNotification,
+                    referenceId,
+                    sendAt
+                )
+
+                chatDao.upsertChatMessage(tempChatMessageEntity)
+
+                val tempChatMessageModel = tempChatMessageEntity.asModel()
+
+                emit(Result.success(tempChatMessageModel))
+
+                val triple = Triple(true, false, listOf(tempChatMessageModel))
+                _messageFlow.emit(triple)
+            } catch (e: Exception) {
+                Log.e(TAG, "Something went wrong when adding temporary message", e)
+                emit(Result.failure(e))
             }
         }
 
-        return flow {
-            val response = network.updateScheduledMessage(
-                credentials,
-                url,
-                message,
-                sendAt,
-                replyTo,
-                sendWithoutNotification,
-                threadTitle,
-                threadId
-            )
-            emit(Result.success(response))
-        }.catch { e ->
-            emit(Result.failure(e))
-        }
-    }
 
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun deleteScheduledMessage(
         credentials: String,
-        url: String
-    ): Flow<Result<GenericOverall>> {
-        if (!networkMonitor.isOnline.value) {
-            return flow {
-                emit(Result.failure(IOException("Skip delete scheduled message as dvice is offline")))
+        url: String,
+        messageId: Long
+    ): Flow<Result<GenericOverall>> =
+        flow {
+            try {
+                val response = network.deleteScheduleMessage(
+                    credentials,
+                    url
+                )
+
+                chatDao.getChatMessageForConversation(internalConversationId, messageId)
+                    .firstOrNull()
+                    ?.let { messageEntity ->
+                        chatDao.deleteChatMessageById(internalConversationId, messageId)
+                        _removeMessageFlow.emit(messageEntity.asModel())
+                    }
+                emit(Result.success(response))
+            } catch (e: Exception) {
+                emit(Result.failure(e))
             }
         }
 
-        return flow {
-            val response = network.deleteScheduledMessage(credentials, url)
-            emit(Result.success(response))
-        }.catch { e ->
-            emit(Result.failure(e))
-        }
-    }
-
-    override suspend fun getScheduledMessages(
-        credentials: String,
-        url: String
-    ): Flow<Result<ChatOverall>> {
-        if (!networkMonitor.isOnline.value) {
-            return flow {
-                emit(Result.failure(IOException("Skip fetch scheduled messages as dvice is offline")))
-            }
-        }
-
-        return flow {
-            val response = network.getScheduledMessages(credentials, url)
-            emit(Result.success(response))
-        }.catch { e ->
-            emit(Result.failure(e))
-        }
-    }
 
 
     private fun createChatMessageEntity(
@@ -1174,7 +1243,8 @@ class OfflineFirstChatRepository @Inject constructor(
         message: String,
         replyTo: Int,
         sendWithoutNotification: Boolean,
-        referenceId: String
+        referenceId: String,
+        sendAt:Int?
     ): ChatMessageEntity {
         val currentTimeMillies = System.currentTimeMillis()
 
@@ -1208,7 +1278,8 @@ class OfflineFirstChatRepository @Inject constructor(
             referenceId = referenceId,
             isTemporary = true,
             sendStatus = SendStatus.PENDING,
-            silent = sendWithoutNotification
+            silent = sendWithoutNotification,
+            sendAt = sendAt
         )
         return entity
     }

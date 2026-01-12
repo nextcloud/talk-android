@@ -324,6 +324,7 @@ interface NcApiCoroutines {
     @GET
     suspend fun status(@Header("Authorization") authorization: String, @Url url: String): StatusOverall
 
+
     @FormUrlEncoded
     @POST
     suspend fun sendScheduleChatMessage(
@@ -332,12 +333,13 @@ interface NcApiCoroutines {
         @Field("message") message: String,
         @Field("actorDisplayName") actorDisplayName: String,
         @Field("referenceId") referenceId: String,
-        @Field("replyTo") replyTo: Int,
+        @Field("replyTo") replyTo: Int?,
         @Field("silent") sendWithoutNotification: Boolean,
-        @Field("threadTitle") threadTitle: String,
-        @Field("threadId") threadId: Int,
-        @Field("sendAt") sendAt: Int
+        @Field("threadTitle") threadTitle: String?,
+        @Field("threadId") threadId: Long?,
+        @Field("sendAt") sendAt: Int?
     ): ChatOverallSingleMessage
+
 
     @FormUrlEncoded
     @POST
@@ -345,11 +347,11 @@ interface NcApiCoroutines {
         @Header("Authorization") authorization: String,
         @Url url: String,
         @Field("message") message: String,
-        @Field("sendAt") sendAt: Int,
-        @Field("replyTo") replyTo: Int,
+        @Field("sendAt") sendAt: Int?,
+        @Field("replyTo") replyTo: Int?,
         @Field("silent") sendWithoutNotification: Boolean,
-        @Field("threadTitle") threadTitle: String,
-        @Field("threadId") threadId: Int
+        @Field("threadTitle") threadTitle: String?,
+        @Field("threadId") threadId: Long?
     ): ChatOverallSingleMessage
 
     @DELETE

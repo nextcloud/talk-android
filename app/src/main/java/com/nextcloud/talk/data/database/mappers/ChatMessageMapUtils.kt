@@ -44,7 +44,8 @@ fun ChatMessageJson.asEntity(accountId: Long) =
         referenceId = referenceId,
         silent = silent,
         threadTitle = threadTitle,
-        threadReplies = threadReplies
+        threadReplies = threadReplies,
+        sendAt = sendAt,
     )
 
 fun ChatMessageEntity.asModel() =
@@ -78,7 +79,8 @@ fun ChatMessageEntity.asModel() =
         readStatus = ReadStatus.NONE,
         silent = silent,
         threadTitle = threadTitle,
-        threadReplies = threadReplies
+        threadReplies = threadReplies,
+        sendAt = sendAt,
     )
 
 fun ChatMessageJson.asModel() =
@@ -109,5 +111,6 @@ fun ChatMessageJson.asModel() =
         referenceId = referenceId,
         silent = silent,
         threadTitle = threadTitle,
-        threadReplies = threadReplies
+        threadReplies = threadReplies,
+        sendAt = sendAt,
     )

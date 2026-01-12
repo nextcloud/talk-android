@@ -81,28 +81,34 @@ interface ChatNetworkDataSource {
     suspend fun getOpenGraph(credentials: String, baseUrl: String, extractedLinkToPreview: String): Reference?
     suspend fun unbindRoom(credentials: String, baseUrl: String, roomToken: String): GenericOverall
 
-    suspend fun updateScheduledMessage(
-        credentials: String,
-        url: String,
-        message: String,
-        sendAt: Int,
-        replyTo: Int,
-        sendWithoutNotification: Boolean,
-        threadTitle: String,
-        threadId: Int
-    ): ChatOverallSingleMessage
-    suspend fun deleteScheduledMessage(credentials: String, url: String): GenericOverall
-    suspend fun getScheduledMessages(credentials: String, url: String): ChatOverall
+
     suspend fun sendScheduledChatMessage(
         credentials: String,
         url: String,
         message: String,
         displayName: String,
         referenceId: String,
-        replyTo: Int,
+        replyTo: Int?,
         sendWithoutNotification: Boolean,
-        threadTitle: String,
-        threadId: Int,
-        sendAt: Int
+        threadTitle: String?,
+        threadId: Long?,
+        sendAt: Int?
     ): ChatOverallSingleMessage
+
+
+    suspend fun updateScheduledMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        sendAt: Int?,
+        replyTo: Int?,
+        sendWithoutNotification: Boolean,
+        threadTitle: String?,
+        threadId: Long?
+    ): ChatOverallSingleMessage
+
+    suspend fun deleteScheduleMessage(credentials: String, url: String): GenericOverall
+
+    suspend fun getScheduledMessages(credentials: String, url: String): ChatOverall
+
 }

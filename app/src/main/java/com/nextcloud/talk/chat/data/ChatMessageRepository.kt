@@ -109,7 +109,8 @@ interface ChatMessageRepository : LifecycleAwareManager {
         displayName: String,
         replyTo: Int,
         sendWithoutNotification: Boolean,
-        referenceId: String
+        referenceId: String,
+        sendAt: Int?
     ): Flow<Result<ChatMessage?>>
 
     suspend fun editChatMessage(credentials: String, url: String, text: String): Flow<Result<ChatOverallSingleMessage>>
@@ -120,33 +121,39 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     suspend fun deleteTempMessage(chatMessage: ChatMessage)
 
+    @Suppress("LongParameterList")
     suspend fun sendScheduledChatMessage(
         credentials: String,
         url: String,
         message: String,
         displayName: String,
-        referenceId: String,
-        replyTo: Int,
+        replyTo: Int?,
         sendWithoutNotification: Boolean,
-        threadTitle: String,
-        threadId: Int,
-        sendAt: Int
-    ): Flow<Result<ChatOverallSingleMessage>>
+        referenceId: String,
+        threadTitle: String?,
+        threadId: Long?,
+        sendAt: Int?
+    ): Flow<Result<ChatMessage?>>
 
-
+    @Suppress("LongParameterList")
     suspend fun updateScheduledMessage(
         credentials: String,
         url: String,
         message: String,
         sendAt: Int,
-        replyTo: Int,
+        replyTo:Int?,
         sendWithoutNotification: Boolean,
-        threadTitle: String,
-        threadId: Int
+        threadTitle: String?,
+        threadId: Long?
     ): Flow<Result<ChatOverallSingleMessage>>
 
-    suspend fun deleteScheduledMessage(credentials: String, url: String): Flow<Result<GenericOverall>>
+    suspend fun deleteScheduledMessage(
+        credentials: String,
+        url: String,
+        messageId: Long
+    ): Flow<Result<GenericOverall>>
 
-    suspend fun getScheduledMessages(credentials: String, url: String): Flow<Result<ChatOverall>>
+    fun getScheduledMessages(currentTimeSeconds: Long): Flow<List<ChatMessage>>
+
 }
 
