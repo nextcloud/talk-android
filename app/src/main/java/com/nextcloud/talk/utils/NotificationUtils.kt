@@ -536,6 +536,13 @@ object NotificationUtils {
         val credentials: String?
     )
 
+    private data class BubbleNotificationData(
+        val conversationName: String,
+        val shortcutId: String,
+        val icon: IconCompat,
+        val person: androidx.core.app.Person
+    )
+
     suspend fun createConversationBubble(
         context: Context,
         bubbleInfo: BubbleInfo,
@@ -571,15 +578,14 @@ object NotificationUtils {
 
             val person = createBubblePerson(bubbleConversationName, shortcutId, icon)
 
-            pushBubbleShortcut(context, bubbleInfo, bubbleConversationName, shortcutId, icon, person)
+            val bubbleNotificationData = BubbleNotificationData(bubbleConversationName, shortcutId, icon, person)
+
+            pushBubbleShortcut(context, bubbleInfo, bubbleNotificationData)
 
             val notification = createBubbleNotification(
                 context,
                 bubbleInfo,
-                bubbleConversationName,
-                shortcutId,
-                person,
-                icon
+                bubbleNotificationData
             )
 
             // Check if notification channel supports bubbles and recreate if needed
@@ -653,10 +659,7 @@ object NotificationUtils {
     private fun pushBubbleShortcut(
         context: Context,
         bubbleInfo: BubbleInfo,
-        conversationName: String,
-        shortcutId: String,
-        icon: IconCompat,
-        person: androidx.core.app.Person
+        data: BubbleNotificationData
     ) {
         val shortcutIntent = Intent(context, ChatActivity::class.java).apply {
             action = Intent.ACTION_VIEW
@@ -664,15 +667,15 @@ object NotificationUtils {
             bubbleInfo.conversationName?.let { putExtra(BundleKeys.KEY_CONVERSATION_NAME, it) }
         }
 
-        val shortcut = androidx.core.content.pm.ShortcutInfoCompat.Builder(context, shortcutId)
-            .setShortLabel(conversationName)
-            .setLongLabel(conversationName)
-            .setIcon(icon)
+        val shortcut = androidx.core.content.pm.ShortcutInfoCompat.Builder(context, data.shortcutId)
+            .setShortLabel(data.conversationName)
+            .setLongLabel(data.conversationName)
+            .setIcon(data.icon)
             .setIntent(shortcutIntent)
             .setLongLived(true)
-            .setPerson(person)
+            .setPerson(data.person)
             .setCategories(setOf(android.app.Notification.CATEGORY_MESSAGE))
-            .setLocusId(androidx.core.content.LocusIdCompat(shortcutId))
+            .setLocusId(androidx.core.content.LocusIdCompat(data.shortcutId))
             .build()
 
         ShortcutManagerCompat.pushDynamicShortcut(context, shortcut)
@@ -681,10 +684,7 @@ object NotificationUtils {
     private fun createBubbleNotification(
         context: Context,
         bubbleInfo: BubbleInfo,
-        conversationName: String,
-        shortcutId: String,
-        person: androidx.core.app.Person,
-        icon: IconCompat
+        data: BubbleNotificationData
     ): Notification {
         // Use the same request code calculation as NotificationWorker
         val bubbleRequestCode = calculateCRC32("bubble_${bubbleInfo.roomToken}").toInt()
@@ -692,7 +692,7 @@ object NotificationUtils {
         val bubbleIntent = android.app.PendingIntent.getActivity(
             context,
             bubbleRequestCode,
-            BubbleActivity.newIntent(context, bubbleInfo.roomToken, conversationName),
+            BubbleActivity.newIntent(context, bubbleInfo.roomToken, data.conversationName),
             android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_MUTABLE
         )
 
@@ -709,15 +709,15 @@ object NotificationUtils {
 
         val bubbleData = androidx.core.app.NotificationCompat.BubbleMetadata.Builder(
             bubbleIntent,
-            icon
+            data.icon
         )
             .setDesiredHeight(BUBBLE_DESIRED_HEIGHT_PX)
             .setAutoExpandBubble(false)
             .setSuppressNotification(true)
             .build()
 
-        val messagingStyle = androidx.core.app.NotificationCompat.MessagingStyle(person)
-            .setConversationTitle(conversationName)
+        val messagingStyle = androidx.core.app.NotificationCompat.MessagingStyle(data.person)
+            .setConversationTitle(data.conversationName)
 
         val notificationExtras = bundleOf(
             BundleKeys.KEY_ROOM_TOKEN to bubbleInfo.roomToken,
@@ -728,12 +728,12 @@ object NotificationUtils {
             context,
             NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
         )
-            .setContentTitle(conversationName)
+            .setContentTitle(data.conversationName)
             .setSmallIcon(R.drawable.ic_notification)
             .setCategory(androidx.core.app.NotificationCompat.CATEGORY_MESSAGE)
-            .setShortcutId(shortcutId)
-            .setLocusId(androidx.core.content.LocusIdCompat(shortcutId))
-            .addPerson(person)
+            .setShortcutId(data.shortcutId)
+            .setLocusId(androidx.core.content.LocusIdCompat(data.shortcutId))
+            .addPerson(data.person)
             .setStyle(messagingStyle)
             .setBubbleMetadata(bubbleData)
             .setContentIntent(contentIntent)
