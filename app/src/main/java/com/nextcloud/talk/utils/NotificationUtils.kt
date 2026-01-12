@@ -47,8 +47,6 @@ import com.nextcloud.talk.chat.BubbleActivity
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RingtoneSettings
-import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import kotlinx.coroutines.Dispatchers
@@ -529,30 +527,34 @@ object NotificationUtils {
         return resultBitmap
     }
 
+    data class BubbleInfo(
+        val roomToken: String,
+        val conversationRemoteId: String,
+        val conversationName: String?,
+        val conversationUser: User,
+        val isOneToOneConversation: Boolean,
+        val credentials: String?
+    )
+
     suspend fun createConversationBubble(
         context: Context,
-        roomToken: String,
-        conversationRemoteId: String,
-        conversationName: String?,
-        conversationUser: User,
-        isOneToOneConversation: Boolean,
-        credentials: String?,
+        bubbleInfo: BubbleInfo,
         appPreferences: AppPreferences
     ) {
         try {
-            val shortcutId = "conversation_$roomToken"
-            val bubbleConversationName = conversationName ?: context.getString(R.string.nc_app_name)
+            val shortcutId = "conversation_${bubbleInfo.roomToken}"
+            val bubbleConversationName = bubbleInfo.conversationName ?: context.getString(R.string.nc_app_name)
 
             val notificationManager = context.getSystemService(
                 Context.NOTIFICATION_SERVICE
             ) as android.app.NotificationManager
             val existingNotification = findNotificationForRoom(
                 context,
-                conversationUser,
-                roomToken
+                bubbleInfo.conversationUser,
+                bubbleInfo.roomToken
             )
             val notificationId = existingNotification?.id
-                ?: calculateCRC32(roomToken).toInt()
+                ?: calculateCRC32(bubbleInfo.roomToken).toInt()
 
             notificationManager.cancel(notificationId)
             ShortcutManagerCompat.removeDynamicShortcuts(
@@ -561,123 +563,27 @@ object NotificationUtils {
             )
 
             // Load conversation avatar on background thread
-            val avatarIcon = withContext(Dispatchers.IO) {
-                try {
-                    var avatarUrl = if (isOneToOneConversation) {
-                        ApiUtils.getUrlForAvatar(
-                            conversationUser.baseUrl!!,
-                            conversationRemoteId,
-                            true
-                        )
-                    } else {
-                        ApiUtils.getUrlForConversationAvatar(
-                            ApiUtils.API_V1,
-                            conversationUser.baseUrl!!,
-                            roomToken
-                        )
-                    }
-
-                    if (DisplayUtils.isDarkModeOn(context)) {
-                        avatarUrl = "$avatarUrl/dark"
-                    }
-
-                    loadAvatarSyncForBubble(avatarUrl, context, credentials)
-                } catch (e: IOException) {
-                    Log.e(TAG, "Error loading bubble avatar: IO error", e)
-                    null
-                } catch (e: IllegalArgumentException) {
-                    Log.e(TAG, "Error loading bubble avatar: Invalid argument", e)
-                    null
-                }
-            }
-
+            val avatarIcon = loadBubbleAvatar(context, bubbleInfo)
             val icon = avatarIcon ?: androidx.core.graphics.drawable.IconCompat.createWithResource(
                 context,
                 R.drawable.ic_logo
             )
 
-            val person = androidx.core.app.Person.Builder()
-                .setName(bubbleConversationName)
-                .setKey(shortcutId)
-                .setImportant(true)
-                .setIcon(icon)
-                .build()
+            val person = createBubblePerson(bubbleConversationName, shortcutId, icon)
 
-            // Use the same request code calculation as NotificationWorker
-            val bubbleRequestCode = calculateCRC32("bubble_$roomToken").toInt()
+            pushBubbleShortcut(context, bubbleInfo, bubbleConversationName, shortcutId, icon, person)
 
-            val bubbleIntent = android.app.PendingIntent.getActivity(
+            val notification = createBubbleNotification(
                 context,
-                bubbleRequestCode,
-                BubbleActivity.newIntent(context, roomToken, bubbleConversationName),
-                android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_MUTABLE
-            )
-
-            val contentIntent = android.app.PendingIntent.getActivity(
-                context,
-                bubbleRequestCode,
-                Intent(context, ChatActivity::class.java).apply {
-                    putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
-                    conversationName?.let { putExtra(BundleKeys.KEY_CONVERSATION_NAME, it) }
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                },
-                android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
-            )
-
-            val shortcutIntent = Intent(context, ChatActivity::class.java).apply {
-                action = Intent.ACTION_VIEW
-                putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
-                conversationName?.let { putExtra(BundleKeys.KEY_CONVERSATION_NAME, it) }
-            }
-
-            val shortcut = androidx.core.content.pm.ShortcutInfoCompat.Builder(context, shortcutId)
-                .setShortLabel(bubbleConversationName)
-                .setLongLabel(bubbleConversationName)
-                .setIcon(icon)
-                .setIntent(shortcutIntent)
-                .setLongLived(true)
-                .setPerson(person)
-                .setCategories(setOf(android.app.Notification.CATEGORY_MESSAGE))
-                .setLocusId(androidx.core.content.LocusIdCompat(shortcutId))
-                .build()
-
-            ShortcutManagerCompat.pushDynamicShortcut(context, shortcut)
-
-            val bubbleData = androidx.core.app.NotificationCompat.BubbleMetadata.Builder(
-                bubbleIntent,
+                bubbleInfo,
+                bubbleConversationName,
+                shortcutId,
+                person,
                 icon
             )
-                .setDesiredHeight(BUBBLE_DESIRED_HEIGHT_PX)
-                .setAutoExpandBubble(false)
-                .setSuppressNotification(true)
-                .build()
-
-            val messagingStyle = androidx.core.app.NotificationCompat.MessagingStyle(person)
-                .setConversationTitle(bubbleConversationName)
-
-            val notificationExtras = bundleOf(
-                BundleKeys.KEY_ROOM_TOKEN to roomToken,
-                BundleKeys.KEY_INTERNAL_USER_ID to conversationUser.id!!
-            )
-
-            val channelId = NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
-            val notification = androidx.core.app.NotificationCompat.Builder(context, channelId)
-                .setContentTitle(bubbleConversationName)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setCategory(androidx.core.app.NotificationCompat.CATEGORY_MESSAGE)
-                .setShortcutId(shortcutId)
-                .setLocusId(androidx.core.content.LocusIdCompat(shortcutId))
-                .addPerson(person)
-                .setStyle(messagingStyle)
-                .setBubbleMetadata(bubbleData)
-                .setContentIntent(contentIntent)
-                .setAutoCancel(true)
-                .setOngoing(false)
-                .setOnlyAlertOnce(true)
-                .setExtras(notificationExtras)
-                .build()
 
             // Check if notification channel supports bubbles and recreate if needed
+            val channelId = NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
             val channel = notificationManager.getNotificationChannel(channelId)
 
             if (channel == null || deviceSupportsBubbles && !channel.canBubble()) {
@@ -692,11 +598,158 @@ object NotificationUtils {
             notificationManager.notify(notificationId, notification)
         } catch (e: SecurityException) {
             Log.e(TAG, "Error creating bubble: Permission denied", e)
-            android.widget.Toast.makeText(context, R.string.nc_common_error_sorry, android.widget.Toast.LENGTH_SHORT).show()
+            showErrorToast(context)
         } catch (e: IllegalArgumentException) {
             Log.e(TAG, "Error creating bubble: Invalid argument", e)
-            android.widget.Toast.makeText(context, R.string.nc_common_error_sorry, android.widget.Toast.LENGTH_SHORT).show()
+            showErrorToast(context)
         }
+    }
+
+    private suspend fun loadBubbleAvatar(context: Context, bubbleInfo: BubbleInfo): IconCompat? {
+        return withContext(Dispatchers.IO) {
+            try {
+                var avatarUrl = if (bubbleInfo.isOneToOneConversation) {
+                    ApiUtils.getUrlForAvatar(
+                        bubbleInfo.conversationUser.baseUrl!!,
+                        bubbleInfo.conversationRemoteId,
+                        true
+                    )
+                } else {
+                    ApiUtils.getUrlForConversationAvatar(
+                        ApiUtils.API_V1,
+                        bubbleInfo.conversationUser.baseUrl!!,
+                        bubbleInfo.roomToken
+                    )
+                }
+
+                if (DisplayUtils.isDarkModeOn(context)) {
+                    avatarUrl = "$avatarUrl/dark"
+                }
+
+                loadAvatarSyncForBubble(avatarUrl, context, bubbleInfo.credentials)
+            } catch (e: IOException) {
+                Log.e(TAG, "Error loading bubble avatar: IO error", e)
+                null
+            } catch (e: IllegalArgumentException) {
+                Log.e(TAG, "Error loading bubble avatar: Invalid argument", e)
+                null
+            }
+        }
+    }
+
+    private fun createBubblePerson(
+        name: String,
+        key: String,
+        icon: IconCompat
+    ): androidx.core.app.Person {
+        return androidx.core.app.Person.Builder()
+            .setName(name)
+            .setKey(key)
+            .setImportant(true)
+            .setIcon(icon)
+            .build()
+    }
+
+    private fun pushBubbleShortcut(
+        context: Context,
+        bubbleInfo: BubbleInfo,
+        conversationName: String,
+        shortcutId: String,
+        icon: IconCompat,
+        person: androidx.core.app.Person
+    ) {
+        val shortcutIntent = Intent(context, ChatActivity::class.java).apply {
+            action = Intent.ACTION_VIEW
+            putExtra(BundleKeys.KEY_ROOM_TOKEN, bubbleInfo.roomToken)
+            bubbleInfo.conversationName?.let { putExtra(BundleKeys.KEY_CONVERSATION_NAME, it) }
+        }
+
+        val shortcut = androidx.core.content.pm.ShortcutInfoCompat.Builder(context, shortcutId)
+            .setShortLabel(conversationName)
+            .setLongLabel(conversationName)
+            .setIcon(icon)
+            .setIntent(shortcutIntent)
+            .setLongLived(true)
+            .setPerson(person)
+            .setCategories(setOf(android.app.Notification.CATEGORY_MESSAGE))
+            .setLocusId(androidx.core.content.LocusIdCompat(shortcutId))
+            .build()
+
+        ShortcutManagerCompat.pushDynamicShortcut(context, shortcut)
+    }
+
+    private fun createBubbleNotification(
+        context: Context,
+        bubbleInfo: BubbleInfo,
+        conversationName: String,
+        shortcutId: String,
+        person: androidx.core.app.Person,
+        icon: IconCompat
+    ): Notification {
+        // Use the same request code calculation as NotificationWorker
+        val bubbleRequestCode = calculateCRC32("bubble_${bubbleInfo.roomToken}").toInt()
+
+        val bubbleIntent = android.app.PendingIntent.getActivity(
+            context,
+            bubbleRequestCode,
+            BubbleActivity.newIntent(context, bubbleInfo.roomToken, conversationName),
+            android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_MUTABLE
+        )
+
+        val contentIntent = android.app.PendingIntent.getActivity(
+            context,
+            bubbleRequestCode,
+            Intent(context, ChatActivity::class.java).apply {
+                putExtra(BundleKeys.KEY_ROOM_TOKEN, bubbleInfo.roomToken)
+                bubbleInfo.conversationName?.let { putExtra(BundleKeys.KEY_CONVERSATION_NAME, it) }
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            },
+            android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val bubbleData = androidx.core.app.NotificationCompat.BubbleMetadata.Builder(
+            bubbleIntent,
+            icon
+        )
+            .setDesiredHeight(BUBBLE_DESIRED_HEIGHT_PX)
+            .setAutoExpandBubble(false)
+            .setSuppressNotification(true)
+            .build()
+
+        val messagingStyle = androidx.core.app.NotificationCompat.MessagingStyle(person)
+            .setConversationTitle(conversationName)
+
+        val notificationExtras = bundleOf(
+            BundleKeys.KEY_ROOM_TOKEN to bubbleInfo.roomToken,
+            BundleKeys.KEY_INTERNAL_USER_ID to bubbleInfo.conversationUser.id!!
+        )
+
+        return androidx.core.app.NotificationCompat.Builder(
+            context,
+            NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
+        )
+            .setContentTitle(conversationName)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setCategory(androidx.core.app.NotificationCompat.CATEGORY_MESSAGE)
+            .setShortcutId(shortcutId)
+            .setLocusId(androidx.core.content.LocusIdCompat(shortcutId))
+            .addPerson(person)
+            .setStyle(messagingStyle)
+            .setBubbleMetadata(bubbleData)
+            .setContentIntent(contentIntent)
+            .setAutoCancel(true)
+            .setOngoing(false)
+            .setOnlyAlertOnce(true)
+            .setExtras(notificationExtras)
+            .build()
+    }
+
+    private fun showErrorToast(context: Context) {
+        android.widget.Toast.makeText(
+            context,
+            R.string.nc_common_error_sorry,
+            android.widget.Toast.LENGTH_SHORT
+        ).show()
     }
 
     /**

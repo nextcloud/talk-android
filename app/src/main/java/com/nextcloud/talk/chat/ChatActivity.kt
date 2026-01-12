@@ -3440,12 +3440,14 @@ open class ChatActivity :
 
             NotificationUtils.createConversationBubble(
                 context = this@ChatActivity,
-                roomToken = roomToken,
-                conversationRemoteId = currentConversation!!.name,
-                conversationName = conversationName,
-                conversationUser = conversationUser!!,
-                isOneToOneConversation = isOneToOneConversation(),
-                credentials = credentials,
+                bubbleInfo = NotificationUtils.BubbleInfo(
+                    roomToken = roomToken,
+                    conversationRemoteId = currentConversation!!.name,
+                    conversationName = conversationName,
+                    conversationUser = conversationUser!!,
+                    isOneToOneConversation = isOneToOneConversation(),
+                    credentials = credentials
+                ),
                 appPreferences = appPreferences!!
             )
         }
