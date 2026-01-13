@@ -77,4 +77,20 @@
         android:visible="false"
         app:showAsAction="never"
         tools:visible="true" />
+
+    <item
+        android:id="@+id/create_conversation_bubble"
+        android:orderInCategory="7"
+        android:title="@string/nc_create_bubble"
+        android:visible="false"
+        app:showAsAction="never"
+        tools:visible="true" />
+
+    <item
+        android:id="@+id/open_conversation_in_app"
+        android:orderInCategory="8"
+        android:title="@string/nc_open_in_app"
+        android:visible="false"
+        app:showAsAction="never"
+        tools:visible="true" />
 </menu>

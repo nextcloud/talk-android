@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2025 Alexandre Wery <nextcloud-talk-android@alwy.be>
  * SPDX-FileCopyrightText: 2024 Christian Reiner <foss@christian-reiner.info>
  * SPDX-FileCopyrightText: 2024 Parneet Singh <gurayaparneet@gmail.com>
  * SPDX-FileCopyrightText: 2024 Giacomo Pacini <giacomo@paciosoft.com>
@@ -163,6 +164,7 @@ import com.nextcloud.talk.models.json.threads.ThreadInfo
 import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
+import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
@@ -214,6 +216,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
+import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
 import com.nextcloud.talk.webrtc.WebSocketInstance
 import com.otaliastudios.autocomplete.Autocomplete
@@ -252,7 +255,7 @@ import kotlin.math.roundToInt
 
 @Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
-class ChatActivity :
+open class ChatActivity :
     BaseActivity(),
     MessagesListAdapter.OnLoadMoreListener,
     MessagesListAdapter.Formatter<Date>,
@@ -2678,14 +2681,23 @@ class ChatActivity :
         )
     }
 
-    private fun showConversationInfoScreen() {
+    private fun showConversationInfoScreen(focusBubbleSwitch: Boolean = false) {
         val bundle = Bundle()
 
         bundle.putString(KEY_ROOM_TOKEN, roomToken)
         bundle.putBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE, isOneToOneConversation())
+        if (focusBubbleSwitch) {
+            bundle.putBoolean(BundleKeys.KEY_FOCUS_CONVERSATION_BUBBLE, true)
+        }
 
         val intent = Intent(this, ConversationInfoActivity::class.java)
         intent.putExtras(bundle)
+        startActivity(intent)
+    }
+
+    private fun openBubbleSettings() {
+        val intent = Intent(this, SettingsActivity::class.java)
+        intent.putExtra(BundleKeys.KEY_FOCUS_BUBBLE_SETTINGS, true)
         startActivity(intent)
     }
 
@@ -2695,9 +2707,10 @@ class ChatActivity :
             sessionIdAfterRoomJoined != "0"
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    private fun cancelNotificationsForCurrentConversation() {
+    protected open fun cancelNotificationsForCurrentConversation() {
+        val isBubbleMode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isLaunchedFromBubble
         if (conversationUser != null) {
-            if (!TextUtils.isEmpty(roomToken)) {
+            if (!TextUtils.isEmpty(roomToken) && !isBubbleMode) {
                 try {
                     NotificationUtils.cancelExistingNotificationsForRoom(
                         applicationContext,
@@ -3284,6 +3297,10 @@ class ChatActivity :
             showThreadsItem.isVisible = !isChatThread() &&
                 hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.THREADS)
 
+            val createBubbleItem = menu.findItem(R.id.create_conversation_bubble)
+            createBubbleItem.isVisible = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R &&
+                !isChatThread()
+
             if (CapabilitiesUtil.isAbleToCall(spreedCapabilities) && !isChatThread()) {
                 conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
                 conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
@@ -3316,6 +3333,8 @@ class ChatActivity :
                 menu.removeItem(R.id.conversation_voice_call)
             }
 
+            menu.findItem(R.id.create_conversation_bubble)?.isVisible = NotificationUtils.deviceSupportsBubbles
+
             handleThreadNotificationIcon(menu.findItem(R.id.thread_notifications))
         }
         return true
@@ -3326,8 +3345,8 @@ class ChatActivity :
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.THREADS)
 
         val threadNotificationIcon = when (conversationThreadInfo?.attendee?.notificationLevel) {
-            1 -> R.drawable.outline_notifications_active_24
-            3 -> R.drawable.ic_baseline_notifications_off_24
+            NOTIFICATION_LEVEL_DEFAULT -> R.drawable.outline_notifications_active_24
+            NOTIFICATION_LEVEL_NEVER -> R.drawable.ic_baseline_notifications_off_24
             else -> R.drawable.baseline_notifications_24
         }
         threadNotificationItem.icon = ContextCompat.getDrawable(context, threadNotificationIcon)
@@ -3376,8 +3395,78 @@ class ChatActivity :
                 true
             }
 
+            R.id.create_conversation_bubble -> {
+                createConversationBubble()
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
+
+    private fun createConversationBubble() {
+        if (!NotificationUtils.deviceSupportsBubbles) {
+            Log.e(TAG, "createConversationBubble was called but device doesnt support it. It should not be possible " +
+                "to get here via UI!")
+            return
+        }
+
+        lifecycleScope.launch {
+            if (!appPreferences.areBubblesEnabled() || !NotificationUtils.areSystemBubblesEnabled(context)) {
+                // Do not replace with snackbar as it needs to survive screen change
+                Toast.makeText(
+                    this@ChatActivity,
+                    getString(R.string.nc_conversation_notification_bubble_disabled),
+                    Toast.LENGTH_SHORT
+                ).show()
+                openBubbleSettings()
+                return@launch
+            }
+
+            if (!appPreferences.areBubblesForced()) {
+                val conversationAllowsBubbles = isConversationBubbleEnabled()
+                if (!conversationAllowsBubbles) {
+                    // Do not replace with snackbar as it needs to survive screen change
+                    Toast.makeText(
+                        this@ChatActivity,
+                        getString(R.string.nc_conversation_notification_bubble_enable_conversation),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    showConversationInfoScreen(focusBubbleSwitch = true)
+                    return@launch
+                }
+            }
+
+            val conversationName = currentConversation?.displayName ?: getString(R.string.nc_app_name)
+
+            NotificationUtils.createConversationBubble(
+                context = this@ChatActivity,
+                bubbleInfo = NotificationUtils.BubbleInfo(
+                    roomToken = roomToken,
+                    conversationRemoteId = currentConversation!!.name,
+                    conversationName = conversationName,
+                    conversationUser = conversationUser!!,
+                    isOneToOneConversation = isOneToOneConversation(),
+                    credentials = credentials
+                ),
+                appPreferences = appPreferences!!
+            )
+        }
+    }
+
+    private suspend fun isConversationBubbleEnabled(): Boolean {
+        val user = conversationUser ?: return false
+        return withContext(Dispatchers.IO) {
+            try {
+                DatabaseStorageModule(user, roomToken).getBoolean(BUBBLE_SWITCH_KEY, false)
+            } catch (e: IOException) {
+                Log.e(TAG, "Failed to read conversation bubble preference: IO error", e)
+                false
+            } catch (e: IllegalStateException) {
+                Log.e(TAG, "Failed to read conversation bubble preference: Invalid state", e)
+                false
+            }
+        }
+    }
 
     @Suppress("Detekt.LongMethod")
     private fun showThreadNotificationMenu() {
@@ -3433,7 +3522,7 @@ class ChatActivity :
                                 subtitle = null,
                                 icon = R.drawable.ic_baseline_notifications_off_24,
                                 onClick = {
-                                    setThreadNotificationLevel(3)
+                                    setThreadNotificationLevel(NOTIFICATION_LEVEL_NEVER)
                                 }
                             )
                         )
@@ -4106,8 +4195,8 @@ class ChatActivity :
                             displayName = currentConversation?.displayName ?: ""
                         )
                         showSnackBar(roomToken)
-                    } catch (e: Exception) {
-                        Log.w(TAG, "File corresponding to the uri does not exist $shareUri", e)
+                    } catch (e: IOException) {
+                        Log.w(TAG, "File corresponding to the uri does not exist: IO error $shareUri", e)
                         downloadFileToCache(message, false) {
                             uploadFile(
                                 fileUri = shareUri.toString(),
@@ -4593,6 +4682,8 @@ class ChatActivity :
         private const val HTTP_FORBIDDEN = 403
         private const val HTTP_NOT_FOUND = 404
         private const val MESSAGE_PULL_LIMIT = 100
+        private const val NOTIFICATION_LEVEL_DEFAULT = 1
+        private const val NOTIFICATION_LEVEL_NEVER = 3
         private const val INVITE_LENGTH = 6
         private const val ACTOR_LENGTH = 6
         private const val CHUNK_SIZE: Int = 10
@@ -4608,6 +4699,7 @@ class ChatActivity :
         private const val CURRENT_AUDIO_POSITION_KEY = "CURRENT_AUDIO_POSITION"
         private const val CURRENT_AUDIO_WAS_PLAYING_KEY = "CURRENT_AUDIO_PLAYING"
         private const val RESUME_AUDIO_TAG = "RESUME_AUDIO_TAG"
+        private const val BUBBLE_SWITCH_KEY = "bubble_switch"
         private const val FIVE_MINUTES_IN_SECONDS: Long = 300
         private const val ROOM_TYPE_ONE_TO_ONE = "1"
         private const val ACTOR_TYPE = "users"

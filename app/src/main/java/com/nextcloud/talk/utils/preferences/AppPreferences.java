@@ -104,6 +104,14 @@ public interface AppPreferences {
 
     void removeNotificationChannelUpgradeToV3();
 
+    boolean areBubblesEnabled();
+
+    void setBubblesEnabled(boolean value);
+
+    boolean areBubblesForced();
+
+    void setBubblesForced(boolean value);
+
     boolean getIsScreenSecured();
 
     void setScreenSecurity(boolean value);

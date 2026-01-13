@@ -64,10 +64,12 @@ import com.nextcloud.talk.receivers.ShareRecordingToChatReceiver
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.cancelAllNotificationsForAccount
 import com.nextcloud.talk.utils.NotificationUtils.cancelNotification
 import com.nextcloud.talk.utils.NotificationUtils.findNotificationForRoom
+import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.NotificationUtils.loadAvatarSync
 import com.nextcloud.talk.utils.ParticipantPermissions
@@ -102,7 +104,6 @@ import java.security.NoSuchAlgorithmException
 import java.security.PrivateKey
 import java.util.concurrent.TimeUnit
 import java.util.function.Consumer
-import java.util.zip.CRC32
 import javax.crypto.Cipher
 import javax.crypto.NoSuchPaddingException
 import javax.inject.Inject
@@ -509,7 +510,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             contentText = EmojiCompat.get().process(pushMessage.text)
         }
 
-        val autoCancelOnClick = TYPE_RECORDING != pushMessage.type
+        // Bubbles need the notification to stay alive
+        val autoCancelOnClick = TYPE_RECORDING != pushMessage.type &&
+            TYPE_CHAT != pushMessage.type &&
+            TYPE_REMINDER != pushMessage.type
 
         val notificationBuilder =
             createNotificationBuilder(
@@ -533,16 +537,83 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         // NOTE - systemNotificationId is an internal ID used on the device only.
         // It is NOT the same as the notification ID used in communication with the server.
-        val systemNotificationId: Int =
-            activeStatusBarNotification?.id ?: calculateCRC32(System.currentTimeMillis().toString()).toInt()
+        val systemNotificationId: Int = activeStatusBarNotification?.id
+            ?: NotificationUtils.calculateCRC32(
+                System.currentTimeMillis().toString()
+            ).toInt()
 
-        if (TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) {
+        if ((TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) &&
+            pushMessage.notificationUser != null
+        ) {
             notificationBuilder.setOnlyAlertOnce(false)
-            if (pushMessage.notificationUser != null) {
-                styleChatNotification(notificationBuilder, activeStatusBarNotification)
-                addReplyAction(notificationBuilder, systemNotificationId)
-                addMarkAsReadAction(notificationBuilder, systemNotificationId)
+            prepareChatNotification(notificationBuilder, activeStatusBarNotification)
+            val shortcutId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                "conversation_${pushMessage.id}"
+            } else {
+                null
             }
+            val roomToken = pushMessage.id
+            val bubbleAllowed = roomToken?.let { shouldBubble(it) } ?: false
+            var effectiveShortcutId = if (bubbleAllowed) shortcutId else null
+            // Only add bubble metadata if there's no existing notification
+            // If one exists, the bubble metadata will be preserved
+            if (activeStatusBarNotification == null) {
+                if (bubbleAllowed) {
+                    addBubbleMetadata(notificationBuilder, false)
+                }
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (!bubbleAllowed) {
+                    notificationBuilder.setBubbleMetadata(null)
+                } else {
+                    // Preserve existing bubble metadata
+                    val existingBubble = activeStatusBarNotification.notification.bubbleMetadata
+                    if (existingBubble != null) {
+                        val compatBubble = NotificationCompat.BubbleMetadata.fromPlatform(existingBubble)
+                        if (compatBubble != null) {
+                            val preservedBubbleBuilder = when {
+                                !compatBubble.shortcutId.isNullOrEmpty() ->
+                                    NotificationCompat.BubbleMetadata.Builder(compatBubble.shortcutId!!)
+
+                                compatBubble.intent != null && compatBubble.icon != null ->
+                                    NotificationCompat.BubbleMetadata.Builder(
+                                        compatBubble.intent!!,
+                                        compatBubble.icon!!
+                                    )
+
+                                else -> null
+                            }
+                            if (preservedBubbleBuilder == null) {
+                                addBubbleMetadata(notificationBuilder, existingBubble.isNotificationSuppressed)
+                            } else {
+                                compatBubble.deleteIntent?.let { preservedBubbleBuilder.setDeleteIntent(it) }
+                                if (compatBubble.desiredHeight > 0) {
+                                    preservedBubbleBuilder.setDesiredHeight(compatBubble.desiredHeight)
+                                }
+                                if (compatBubble.desiredHeightResId != 0) {
+                                    preservedBubbleBuilder.setDesiredHeightResId(compatBubble.desiredHeightResId)
+                                }
+                                preservedBubbleBuilder
+                                    .setAutoExpandBubble(existingBubble.autoExpandBubble)
+                                    .setSuppressNotification(false)
+                                val preservedMetadata = preservedBubbleBuilder.build()
+                                notificationBuilder.setBubbleMetadata(preservedMetadata)
+
+                                val existingShortcut = compatBubble.shortcutId
+                                if (!existingShortcut.isNullOrEmpty()) {
+                                    effectiveShortcutId = existingShortcut
+                                }
+                            }
+                        } else {
+                            addBubbleMetadata(notificationBuilder, existingBubble.isNotificationSuppressed)
+                        }
+                    } else {
+                        addBubbleMetadata(notificationBuilder, false)
+                    }
+                }
+            }
+            applyShortcutAndLocus(notificationBuilder, effectiveShortcutId)
+            addReplyAction(notificationBuilder, systemNotificationId)
+            addMarkAsReadAction(notificationBuilder, systemNotificationId)
         }
 
         if (TYPE_RECORDING == pushMessage.type && ncNotification != null) {
@@ -560,9 +631,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         pendingIntent: PendingIntent?,
         autoCancelOnClick: Boolean
     ): NotificationCompat.Builder {
-        val notificationBuilder = NotificationCompat.Builder(context!!, "1")
+        val notificationBuilder = NotificationCompat.Builder(
+            context!!,
+            NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
+        )
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(category)
+            .setLargeIcon(getLargeIcon())
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(contentTitle)
             .setContentText(contentText)
@@ -571,6 +646,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setShowWhen(true)
             .setContentIntent(pendingIntent)
             .setAutoCancel(autoCancelOnClick)
+            .setOngoing(!autoCancelOnClick)
+            .setOnlyAlertOnce(true)
             .setColor(context!!.resources.getColor(R.color.colorPrimary, null))
 
         val notificationInfoBundle = Bundle()
@@ -600,8 +677,21 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         notificationBuilder.setContentIntent(pendingIntent)
         val groupName = signatureVerification.user!!.id.toString() + "@" + pushMessage.id
-        notificationBuilder.setGroup(calculateCRC32(groupName).toString())
+        notificationBuilder.setGroup(NotificationUtils.calculateCRC32(groupName).toString())
         return notificationBuilder
+    }
+
+    private fun applyShortcutAndLocus(
+        notificationBuilder: NotificationCompat.Builder,
+        shortcutId: String?
+    ) {
+        if (shortcutId.isNullOrEmpty()) {
+            return
+        }
+        val ensuredShortcutId = shortcutId
+        val locusId = androidx.core.content.LocusIdCompat(ensuredShortcutId)
+        notificationBuilder.setShortcutId(ensuredShortcutId)
+        notificationBuilder.setLocusId(locusId)
     }
 
     private fun getLargeIcon(): Bitmap {
@@ -611,7 +701,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         } else {
             when (conversationType) {
                 "one2one" -> {
-                    pushMessage.subject = ""
                     largeIcon =
                         ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_person_black_24)?.toBitmap()!!
                 }
@@ -636,14 +725,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
         return largeIcon
     }
-
-    private fun calculateCRC32(s: String): Long {
-        val crc32 = CRC32()
-        crc32.update(s.toByteArray())
-        return crc32.value
-    }
-
-    private fun styleChatNotification(
+    private fun prepareChatNotification(
         notificationBuilder: NotificationCompat.Builder,
         activeStatusBarNotification: StatusBarNotification?
     ) {
@@ -659,6 +741,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val person = Person.Builder()
             .setKey(signatureVerification.user!!.id.toString() + "@" + notificationUser.id)
             .setName(EmojiCompat.get().process(notificationUser.name!!))
+            .setImportant(true)
             .setBot("bot" == userType)
 
         if ("user" == userType || "guest" == userType) {
@@ -674,7 +757,139 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             }
             person.setIcon(loadAvatarSync(avatarUrl, context!!))
         }
-        notificationBuilder.setStyle(getStyle(person.build(), style))
+
+        val personBuilt = person.build()
+        notificationBuilder.setStyle(getStyle(personBuilt, style))
+        notificationBuilder.addPerson(personBuilt)
+    }
+
+    private fun addBubbleMetadata(notificationBuilder: NotificationCompat.Builder, suppressNotification: Boolean) {
+        val roomToken = pushMessage.id
+        val shouldAbort = Build.VERSION.SDK_INT < Build.VERSION_CODES.R ||
+            roomToken.isNullOrEmpty() ||
+            roomToken?.let { !shouldBubble(it) } == true
+
+        if (shouldAbort) {
+            return
+        }
+
+        val ensuredRoomToken = roomToken!!
+
+        try {
+            val conversationName = pushMessage.subject?.takeIf { it.isNotBlank() }
+            val shortcutId = "conversation_$ensuredRoomToken"
+            val fallbackConversationLabel = conversationName ?: context!!.getString(R.string.nc_app_name)
+
+            val bubbleIcon = resolveBubbleIcon(ensuredRoomToken) ?: run {
+                val fallbackBitmap = getLargeIcon()
+                androidx.core.graphics.drawable.IconCompat.createWithBitmap(fallbackBitmap)
+            }
+
+            val person = androidx.core.app.Person.Builder()
+                .setName(fallbackConversationLabel)
+                .setKey(shortcutId)
+                .setImportant(true)
+                .setIcon(bubbleIcon)
+                .build()
+
+            val shortcut = androidx.core.content.pm.ShortcutInfoCompat.Builder(context!!, shortcutId)
+                .setShortLabel(fallbackConversationLabel)
+                .setLongLabel(fallbackConversationLabel)
+                .setIcon(bubbleIcon)
+                .setIntent(Intent(Intent.ACTION_DEFAULT))
+                .setLongLived(true)
+                .setPerson(person)
+                .setCategories(setOf(Notification.CATEGORY_MESSAGE))
+                .setLocusId(androidx.core.content.LocusIdCompat(shortcutId))
+                .build()
+
+            androidx.core.content.pm.ShortcutManagerCompat.pushDynamicShortcut(context!!, shortcut)
+
+            val bubbleRequestCode = NotificationUtils.calculateCRC32("bubble_$ensuredRoomToken").toInt()
+            val bubbleIntent = android.app.PendingIntent.getActivity(
+                context,
+                bubbleRequestCode,
+                com.nextcloud.talk.chat.BubbleActivity.newIntent(context!!, ensuredRoomToken, conversationName),
+                android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_MUTABLE
+            )
+
+            val bubbleData = androidx.core.app.NotificationCompat.BubbleMetadata.Builder(
+                bubbleIntent,
+                bubbleIcon
+            )
+                .setDesiredHeight(BUBBLE_DESIRED_HEIGHT_PX)
+                .setAutoExpandBubble(false)
+                .setSuppressNotification(suppressNotification)
+                .build()
+
+            notificationBuilder.setBubbleMetadata(bubbleData)
+            notificationBuilder.setShortcutId(shortcutId)
+            notificationBuilder.setLocusId(androidx.core.content.LocusIdCompat(shortcutId))
+        } catch (e: IllegalArgumentException) {
+            android.util.Log.e(TAG, "Error adding bubble metadata: Invalid argument", e)
+        } catch (e: IllegalStateException) {
+            android.util.Log.e(TAG, "Error adding bubble metadata: Invalid state", e)
+        }
+    }
+
+    private fun shouldBubble(roomToken: String): Boolean {
+        val user = signatureVerification.user
+
+        return when {
+            !appPreferences.areBubblesEnabled() -> false
+            appPreferences.areBubblesForced() -> true
+            user == null -> false
+            else -> {
+                val accountId = UserIdUtils.getIdForUser(user)
+                arbitraryStorageManager
+                    ?.getStorageSetting(accountId, BUBBLE_SWITCH_KEY, roomToken)
+                    ?.map { storage -> storage.value?.toBoolean() ?: false }
+                    ?.blockingGet(false) ?: false
+            }
+        }
+    }
+
+    private fun resolveBubbleIcon(roomToken: String): androidx.core.graphics.drawable.IconCompat? {
+        val ctx = context
+        val baseUrl = signatureVerification.user?.baseUrl
+        if (ctx == null || baseUrl.isNullOrEmpty()) {
+            return null
+        }
+
+        val isDarkMode = DisplayUtils.isDarkModeOn(ctx)
+        var conversationAvatarUrl = ApiUtils.getUrlForConversationAvatar(ApiUtils.API_V1, baseUrl, roomToken)
+        if (isDarkMode) {
+            conversationAvatarUrl += "/dark"
+        }
+
+        val conversationIcon = NotificationUtils.loadAvatarSyncForBubble(conversationAvatarUrl, ctx, credentials)
+        val resolvedIcon = conversationIcon ?: resolveOneToOneBubbleIcon(ctx, baseUrl, isDarkMode)
+
+        return resolvedIcon
+    }
+
+    private fun resolveOneToOneBubbleIcon(
+        ctx: Context,
+        baseUrl: String,
+        isDarkMode: Boolean
+    ): androidx.core.graphics.drawable.IconCompat? {
+        if (!conversationType.equals("one2one", ignoreCase = true)) {
+            return null
+        }
+
+        val notificationUser = pushMessage.notificationUser
+        val userType = notificationUser?.type
+        val userAvatarUrl = when {
+            notificationUser == null || notificationUser.id.isNullOrEmpty() -> null
+            userType.equals("guest", ignoreCase = true) ->
+                ApiUtils.getUrlForGuestAvatar(baseUrl, notificationUser.name, true)
+            isDarkMode -> ApiUtils.getUrlForAvatarDarkTheme(baseUrl, notificationUser.id, true)
+            else -> ApiUtils.getUrlForAvatar(baseUrl, notificationUser.id, true)
+        }
+
+        return userAvatarUrl?.let {
+            NotificationUtils.loadAvatarSyncForBubble(it, ctx, credentials)
+        }
     }
 
     private fun buildIntentForAction(cls: Class<*>, systemNotificationId: Int, messageId: Int): PendingIntent {
@@ -1037,5 +1252,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         private const val TIMER_COUNT = 12
         private const val TIMER_DELAY: Long = 5
         private const val LINEBREAK: String = "\n"
+        private const val BUBBLE_SWITCH_KEY = "bubble_switch"
+        private const val BUBBLE_DESIRED_HEIGHT_PX = 600
     }
 }

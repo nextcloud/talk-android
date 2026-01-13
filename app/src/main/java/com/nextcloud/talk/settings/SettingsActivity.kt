@@ -15,6 +15,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.KeyguardManager
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -83,6 +84,7 @@ import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.NotificationUtils.getMessageRingtoneUri
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FOCUS_BUBBLE_SETTINGS
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_TO_NOTIFICATION_CATEGORY
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
@@ -142,12 +144,17 @@ class SettingsActivity :
     private var profileQueryDisposable: Disposable? = null
     private var dbQueryDisposable: Disposable? = null
     private var openedByNotificationWarning: Boolean = false
+    private var focusBubbleSettings: Boolean = false
+    private var isUpdatingBubbleSwitchState: Boolean = false
+    private var pendingBubbleEnableAfterSystemChange: Boolean = false
     private var isOnline: MutableState<Boolean> = mutableStateOf(false)
 
     @SuppressLint("StringFormatInvalid")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        pendingBubbleEnableAfterSystemChange =
+            savedInstanceState?.getBoolean(STATE_PENDING_ENABLE_BUBBLES) ?: false
         networkMonitor.isOnlineLiveData.observe(this) { online ->
             isOnline.value = online
             handleNetworkChange(isOnline.value)
@@ -196,6 +203,12 @@ class SettingsActivity :
     private fun handleIntent(intent: Intent) {
         val extras: Bundle? = intent.extras
         openedByNotificationWarning = extras?.getBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY) ?: false
+        focusBubbleSettings = extras?.getBoolean(KEY_FOCUS_BUBBLE_SETTINGS) ?: false
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(STATE_PENDING_ENABLE_BUBBLES, pendingBubbleEnableAfterSystemChange)
     }
 
     override fun onResume() {
@@ -247,20 +260,33 @@ class SettingsActivity :
         themeTitles()
         themeSwitchPreferences()
 
-        if (openedByNotificationWarning) {
-            scrollToNotificationCategory()
+        when {
+            focusBubbleSettings -> scrollToBubbleSettings()
+            openedByNotificationWarning -> scrollToNotificationCategory()
         }
     }
 
     @Suppress("MagicNumber")
     private fun scrollToNotificationCategory() {
+        scrollToView(binding.settingsNotificationsCategory)
+    }
+
+    private fun scrollToBubbleSettings() {
+        focusBubbleSettings = false
+        scrollToView(binding.settingsBubbles, blinkBackground = true)
+    }
+
+    private fun scrollToView(targetView: View, blinkBackground: Boolean = false) {
         binding.scrollView.post {
             val scrollViewLocation = IntArray(2)
             val targetLocation = IntArray(2)
             binding.scrollView.getLocationOnScreen(scrollViewLocation)
-            binding.settingsNotificationsCategory.getLocationOnScreen(targetLocation)
+            targetView.getLocationOnScreen(targetLocation)
             val offset = targetLocation[1] - scrollViewLocation[1]
             binding.scrollView.scrollBy(0, offset)
+            if (blinkBackground) {
+                targetView.background?.let { DrawableUtils.blinkDrawable(it) }
+            }
         }
     }
 
@@ -311,6 +337,7 @@ class SettingsActivity :
         setupNotificationSoundsSettings()
         setupNotificationPermissionSettings()
         setupServerNotificationAppCheck()
+        setupBubbleSettings()
     }
 
     @SuppressLint("StringFormatInvalid")
@@ -401,6 +428,194 @@ class SettingsActivity :
         } else {
             binding.settingsGplayOnlyWrapper.visibility = View.GONE
             binding.settingsGplayNotAvailable.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setupBubbleSettings() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            binding.settingsBubbles.visibility = View.GONE
+            binding.settingsBubblesForce.visibility = View.GONE
+            return
+        }
+
+        binding.settingsBubbles.visibility = View.VISIBLE
+        binding.settingsBubblesForce.visibility = View.VISIBLE
+
+        val systemAllowsAllConversations = NotificationUtils.isSystemBubblePreferenceAll(context)
+        val systemBubblesEnabled = NotificationUtils.areSystemBubblesEnabled(context)
+        updateBubbleSummary(systemAllowsAllConversations)
+
+        var appBubblesEnabled = appPreferences.areBubblesEnabled()
+        if (appBubblesEnabled && (!systemAllowsAllConversations || !systemBubblesEnabled)) {
+            appPreferences.setBubblesEnabled(false)
+            appBubblesEnabled = false
+        }
+
+        setGlobalBubbleSwitchState(appBubblesEnabled)
+        binding.settingsBubblesForceSwitch.isChecked = appPreferences.areBubblesForced()
+
+        updateBubbleForceRowState(appBubblesEnabled)
+
+        binding.settingsBubblesSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isUpdatingBubbleSwitchState) {
+                return@setOnCheckedChangeListener
+            }
+            handleGlobalBubblePreferenceChange(isChecked)
+        }
+
+        binding.settingsBubbles.setOnClickListener {
+            binding.settingsBubblesSwitch.performClick()
+        }
+
+        binding.settingsBubblesForce.setOnClickListener {
+            if (!binding.settingsBubblesSwitch.isChecked) {
+                return@setOnClickListener
+            }
+            val newValue = !binding.settingsBubblesForceSwitch.isChecked
+            binding.settingsBubblesForceSwitch.isChecked = newValue
+            appPreferences.setBubblesForced(newValue)
+
+            // When disabling "force all", dismiss bubbles without explicit per-conversation settings
+            if (!newValue) {
+                NotificationUtils.dismissBubblesWithoutExplicitSettings(
+                    this,
+                    currentUserProviderOld.currentUser.blockingGet()
+                )
+            }
+        }
+
+        maybeEnableBubblesAfterSystemChange(systemAllowsAllConversations)
+    }
+
+    private fun updateBubbleForceRowState(globalEnabled: Boolean) {
+        binding.settingsBubblesForce.isEnabled = globalEnabled
+        binding.settingsBubblesForce.alpha = if (globalEnabled) ENABLED_ALPHA else DISABLED_ALPHA
+        binding.settingsBubblesForceSwitch.isEnabled = globalEnabled
+    }
+
+    private fun handleGlobalBubblePreferenceChange(enabled: Boolean) {
+        val systemAllowsAllConversations = NotificationUtils.isSystemBubblePreferenceAll(context)
+
+        if (enabled) {
+            if (!systemAllowsAllConversations || !NotificationUtils.areSystemBubblesEnabled(context)) {
+                pendingBubbleEnableAfterSystemChange = true
+                showSystemBubblesDisabledFeedback()
+                updateBubbleSummary(systemAllowsAllConversations)
+                setGlobalBubbleSwitchState(false)
+                navigateToSystemBubbleSettings()
+                return
+            }
+
+            pendingBubbleEnableAfterSystemChange = false
+            appPreferences.setBubblesEnabled(true)
+            updateBubbleForceRowState(true)
+            updateBubbleSummary(true)
+        } else {
+            pendingBubbleEnableAfterSystemChange = false
+            appPreferences.setBubblesEnabled(false)
+            updateBubbleForceRowState(false)
+            updateBubbleSummary(systemAllowsAllConversations)
+            currentUser?.let { user ->
+                NotificationUtils.dismissAllBubbles(this, user)
+            }
+        }
+    }
+
+    private fun setGlobalBubbleSwitchState(checked: Boolean) {
+        isUpdatingBubbleSwitchState = true
+        binding.settingsBubblesSwitch.isChecked = checked
+        isUpdatingBubbleSwitchState = false
+    }
+
+    private fun updateBubbleSummary(systemAllowsAllConversations: Boolean) {
+        val summaryText = if (systemAllowsAllConversations) {
+            R.string.nc_notification_settings_bubbles_desc
+        } else {
+            R.string.nc_notification_settings_bubbles_system_disabled
+        }
+        binding.settingsBubblesSummary.setText(summaryText)
+    }
+
+    private fun showSystemBubblesDisabledFeedback() {
+        Toast.makeText(
+            this,
+            R.string.nc_notification_settings_bubbles_system_disabled_toast,
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    private fun maybeEnableBubblesAfterSystemChange(systemAllowsAllConversations: Boolean) {
+        if (!pendingBubbleEnableAfterSystemChange || !systemAllowsAllConversations) {
+            return
+        }
+
+        pendingBubbleEnableAfterSystemChange = false
+        appPreferences.setBubblesEnabled(true)
+        setGlobalBubbleSwitchState(true)
+        updateBubbleForceRowState(true)
+        updateBubbleSummary(true)
+    }
+
+    private fun navigateToSystemBubbleSettings() {
+        val targetPackage = packageName
+        val targetUid = applicationInfo?.uid ?: -1
+        val candidateIntents = mutableListOf<Intent>()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            candidateIntents += Intent(Settings.ACTION_APP_NOTIFICATION_BUBBLE_SETTINGS)
+                .withNotificationExtras(targetPackage, targetUid)
+                .apply {
+                    putExtra(
+                        Settings.EXTRA_CHANNEL_ID,
+                        NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
+                    )
+                }
+
+            candidateIntents += Intent("android.settings.APP_NOTIFICATION_BUBBLE_SETTINGS")
+                .withNotificationExtras(targetPackage, targetUid)
+
+            val explicitBubbleComponents = listOf(
+                "com.android.settings.Settings\$AppBubbleNotificationSettingsActivity",
+                "com.android.settings.Settings\$BubbleNotificationSettingsActivity"
+            )
+
+            explicitBubbleComponents.forEach { componentName ->
+                candidateIntents += Intent(Intent.ACTION_MAIN)
+                    .withNotificationExtras(targetPackage, targetUid)
+                    .setClassName("com.android.settings", componentName)
+            }
+        }
+
+        candidateIntents += Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+            .withNotificationExtras(targetPackage, targetUid)
+
+        candidateIntents += Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            .withNotificationExtras(targetPackage, targetUid)
+
+        candidateIntents.firstOrNull { launchIntentSafely(it) } ?: Toast.makeText(
+            this,
+            R.string.nc_notification_settings_bubbles_open_failed,
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    private fun Intent.withNotificationExtras(targetPackage: String, targetUid: Int): Intent {
+        data = Uri.fromParts("package", targetPackage, null)
+        putExtra(Settings.EXTRA_APP_PACKAGE, targetPackage)
+        putExtra("app_uid", targetUid)
+        return this
+    }
+
+    private fun launchIntentSafely(intent: Intent): Boolean {
+        return try {
+            if (intent.resolveActivity(packageManager) != null) {
+                startActivity(intent)
+                true
+            } else {
+                false
+            }
+        } catch (activityNotFoundException: ActivityNotFoundException) {
+            false
         }
     }
 
@@ -778,7 +993,9 @@ class SettingsActivity :
                 settingsPhoneBookIntegrationSwitch,
                 settingsReadPrivacySwitch,
                 settingsTypingStatusSwitch,
-                settingsProxyUseCredentialsSwitch
+                settingsProxyUseCredentialsSwitch,
+                settingsBubblesSwitch,
+                settingsBubblesForceSwitch
             ).forEach(viewThemeUtils.talk::colorSwitch)
         }
     }
@@ -1475,6 +1692,7 @@ class SettingsActivity :
         private const val DISABLED_ALPHA: Float = 0.38f
         private const val ENABLED_ALPHA: Float = 1.0f
         private const val LINEBREAK = "\n"
+        private const val STATE_PENDING_ENABLE_BUBBLES = "statePendingEnableBubbles"
         const val HTTP_CODE_OK: Int = 200
         const val HTTP_ERROR_CODE_BAD_REQUEST: Int = 400
         const val NO_NOTIFICATION_REMINDER_WANTED = 0L
