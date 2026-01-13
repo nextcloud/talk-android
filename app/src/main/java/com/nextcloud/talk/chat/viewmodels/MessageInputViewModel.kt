@@ -25,6 +25,8 @@ import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.stfalcon.chatkit.commons.models.IMessage
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -86,8 +88,8 @@ class MessageInputViewModel @Inject constructor(
     val mediaPlayerSeekbarObserver: Flow<Int>
         get() = mediaPlayerManager.mediaPlayerSeekBarPosition
 
-    private val _getEditChatMessage: MutableLiveData<IMessage?> = MutableLiveData()
-    val getEditChatMessage: LiveData<IMessage?>
+    private val _getEditChatMessage: MutableStateFlow<IMessage?> = MutableStateFlow(null)
+    val getEditChatMessage: StateFlow<IMessage?>
         get() = _getEditChatMessage
 
     private val _getReplyChatMessage: MutableLiveData<ChatMessage?> = MutableLiveData()
@@ -218,7 +220,7 @@ class MessageInputViewModel @Inject constructor(
     }
 
     fun edit(message: IMessage?) {
-        _getEditChatMessage.postValue(message)
+        _getEditChatMessage.value = message
     }
 
     fun startMicInput(context: Context) {
