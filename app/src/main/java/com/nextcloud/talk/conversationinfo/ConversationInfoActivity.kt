@@ -189,18 +189,34 @@ class ConversationInfoActivity :
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         binding = ActivityConversationInfoBinding.inflate(layoutInflater)
-        setupActionBar()
         setContentView(binding.root)
+
+        setupActionBar()
         initSystemBars()
 
-        viewModel =
-            ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
+        conversationToken = requireNotNull(
+            intent.getStringExtra(KEY_ROOM_TOKEN)
+        ) { "Missing room token" }
 
-        conversationUser = currentUserProviderOld.currentUser.blockingGet()
-
-        conversationToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         hasAvatarSpacing = intent.getBooleanExtra(BundleKeys.KEY_ROOM_ONE_TO_ONE, false)
-        credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)!!
+
+        viewModel = ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
+
+        lifecycleScope.launch {
+            currentUserProvider.getCurrentUser()
+                .onSuccess { user ->
+                    conversationUser = user
+                    credentials = ApiUtils.getCredentials(user.username, user.token)!!
+                    databaseStorageModule = DatabaseStorageModule(user, conversationToken)
+                    viewModel.getRoom(user, conversationToken)
+                    initObservers()
+                }
+                .onFailure {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    Log.e(TAG, "Failed to get current user")
+                    finish()
+                }
+        }
     }
 
     override fun onStart() {
@@ -216,10 +232,6 @@ class ConversationInfoActivity :
     override fun onResume() {
         super.onResume()
 
-        if (databaseStorageModule == null) {
-            databaseStorageModule = DatabaseStorageModule(conversationUser, conversationToken)
-        }
-
         binding.deleteConversationAction.setOnClickListener { showDeleteConversationDialog() }
         binding.leaveConversationAction.setOnClickListener { leaveConversation() }
         binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog() }
@@ -233,15 +245,12 @@ class ConversationInfoActivity :
         }
         binding.listBansButton.setOnClickListener { listBans() }
 
-        viewModel.getRoom(conversationUser, conversationToken)
-
         themeTextViews()
         themeSwitchPreferences()
 
         binding.addParticipantsAction.visibility = GONE
 
         binding.progressBar.let { viewThemeUtils.platform.colorCircularProgressBar(it, ColorRole.PRIMARY) }
-        initObservers()
     }
 
     private fun initObservers() {
