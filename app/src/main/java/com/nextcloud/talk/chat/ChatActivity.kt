@@ -539,28 +539,31 @@ class ChatActivity :
                         )
                         chatViewModel.getThread(credentials, threadUrl)
                     }
+
+                    messageInputFragment = getMessageInputFragment()
+                    messageInputViewModel =
+                        ViewModelProvider(this@ChatActivity, viewModelFactory)[
+                            MessageInputViewModel::class
+                                .java
+                        ]
+                    messageInputViewModel.setData(chatViewModel.getChatRepository())
+
+                    initObservers()
+
+                    pickMultipleMedia = registerForActivityResult(
+                        ActivityResultContracts.PickMultipleVisualMedia(MAX_AMOUNT_MEDIA_FILE_PICKER)
+                    ) { uris ->
+                        if (uris.isNotEmpty()) {
+                            onChooseFileResult(uris)
+                        }
+                    }
                 }
                 .onFailure {
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
         }
-        messageInputFragment = getMessageInputFragment()
-        messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
-        messageInputViewModel.setData(chatViewModel.getChatRepository())
-
         binding.progressBar.visibility = View.VISIBLE
-
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-
-        initObservers()
-
-        pickMultipleMedia = registerForActivityResult(
-            ActivityResultContracts.PickMultipleVisualMedia(MAX_AMOUNT_MEDIA_FILE_PICKER)
-        ) { uris ->
-            if (uris.isNotEmpty()) {
-                onChooseFileResult(uris)
-            }
-        }
     }
 
     private fun getMessageInputFragment(): MessageInputFragment {
