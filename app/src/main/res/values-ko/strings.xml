@@ -219,6 +219,7 @@
     <string name="nc_mark_as_unread">읽지 않은 것으로 표시</string>
     <string name="nc_message_failed">실패</string>
     <string name="nc_message_failed_to_send">메시지 전송을 실패하였습니다:</string>
+    <string name="nc_message_offline">오프라인</string>
     <string name="nc_message_quote_cancel_reply">응답 취소</string>
     <string name="nc_message_read">메시지 읽음</string>
     <string name="nc_message_sent">보낸 메시지</string>
@@ -358,6 +359,7 @@
     <string name="nc_share_contact">연락처 공유</string>
     <string name="nc_share_contact_permission">주소록을 읽기 위하여 권한이 필요합니다.</string>
     <string name="nc_share_current_location">현재 위치 공유</string>
+    <string name="nc_share_link">링크 공유</string>
     <string name="nc_share_location">위치 공유</string>
     <string name="nc_share_this_location">이 위치를 공유</string>
     <string name="nc_share_to_choose_account">계정 선택</string>
