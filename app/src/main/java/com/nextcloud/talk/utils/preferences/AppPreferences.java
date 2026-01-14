@@ -68,6 +68,10 @@ public interface AppPreferences {
 
     void removePushToken();
 
+    boolean getUseUnifiedPush();
+
+    void setUseUnifiedPush(boolean value);
+
     String getTemporaryClientCertAlias();
 
     void setTemporaryClientCertAlias(String alias);
