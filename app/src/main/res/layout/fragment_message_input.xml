@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Nextcloud Talk - Android Client
   ~
   ~ SPDX-FileCopyrightText: 2025 Andy Scherzinger <info@andy-scherzinger.de>
@@ -11,6 +12,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+
+    <include
+        android:id="@+id/fragment_call_started"
+        layout="@layout/call_started_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/standard_half_margin"
+        android:layout_marginVertical="@dimen/standard_margin"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/messageInputContainer"
@@ -40,21 +51,12 @@
                 tools:visibility="visible" />
 
             <include
-                android:id="@+id/fragment_call_started"
-                layout="@layout/call_started_message"
+                android:id="@+id/fragment_editView"
+                layout="@layout/edit_message_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/standard_quarter_margin"
-                android:layout_marginVertical="@dimen/standard_margin"
-                android:visibility="gone" />
-
-    <include
-        android:id="@+id/fragment_editView"
-        layout="@layout/edit_message_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible" />
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <include
                 android:id="@+id/fragment_create_thread_view"
