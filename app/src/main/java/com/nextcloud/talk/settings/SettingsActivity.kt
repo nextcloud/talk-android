@@ -315,6 +315,11 @@ class SettingsActivity :
         setupServerNotificationAppCheck()
     }
 
+    private fun showUnifiedPushToggle(): Boolean {
+        return UnifiedPush.getDistributors(this).isNotEmpty() &&
+            userManager.users.blockingGet().all { it.hasWebPushCapability }
+    }
+
     private fun setupUnifiedPushSettings() {
         // If any user doesn't support web push, or there is no UnifiedPush
         // service (distributor) available: hide the feature.
@@ -322,12 +327,7 @@ class SettingsActivity :
         // We could provide the feature as soon as one user supports web push,
         // but for simplicity (UX & dev), and at least in a first step:
         // we require that all the users support webpush
-        if (
-            UnifiedPush.getDistributors(this).isEmpty() ||
-            userManager.users.blockingGet().any {
-                !it.hasWebPushCapability
-            }
-        ) {
+        if (!showUnifiedPushToggle()) {
             binding.settingsUnifiedpushSwitch.visibility = View.GONE
         } else {
             binding.settingsUnifiedpushSwitch.visibility = View.VISIBLE
@@ -335,6 +335,7 @@ class SettingsActivity :
             binding.settingsUnifiedpushSwitch.setOnClickListener {
                 val checked = binding.settingsUnifiedpushSwitch.isChecked
                 appPreferences.useUnifiedPush = checked
+                setupNotificationPermissionSettings()
             }
         }
     }
@@ -342,8 +343,10 @@ class SettingsActivity :
     @SuppressLint("StringFormatInvalid")
     @Suppress("LongMethod")
     private fun setupNotificationPermissionSettings() {
-        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
-            binding.settingsGplayOnlyWrapper.visibility = View.VISIBLE
+        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable || appPreferences.useUnifiedPush) {
+            binding.settingsPushOnlyWrapper.visibility = View.VISIBLE
+            binding.settingsGplayNotAvailable.visibility = View.GONE
+            binding.settingsPushNotAvailable.visibility = View.GONE
 
             setTroubleshootingClickListenersIfNecessary()
 
@@ -425,8 +428,17 @@ class SettingsActivity :
                 binding.settingsNotificationsPermissionWrapper.visibility = View.GONE
             }
         } else {
-            binding.settingsGplayOnlyWrapper.visibility = View.GONE
-            binding.settingsGplayNotAvailable.visibility = View.VISIBLE
+            binding.settingsPushOnlyWrapper.visibility = View.GONE
+            // Shows "UnifiedPush is disabled and Google Play services are not available." if we offer UnifiedPush
+            // Else "Google Play services are not available" (if any account doesn't support webpush yet, or no
+            // distrib are installed)
+            if (showUnifiedPushToggle()) {
+                binding.settingsGplayNotAvailable.visibility = View.GONE
+                binding.settingsPushNotAvailable.visibility = View.VISIBLE
+            } else {
+                binding.settingsGplayNotAvailable.visibility = View.VISIBLE
+                binding.settingsPushNotAvailable.visibility = View.GONE
+            }
         }
     }
 

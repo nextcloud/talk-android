@@ -240,7 +240,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/settings_gplay_only_wrapper"
+                    android:id="@+id/settings_push_only_wrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -325,6 +325,20 @@
                         android:layout_height="wrap_content"
                         android:text="@string/nc_diagnose_gplay_available_no"/>
 
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/settings_push_not_available"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/standard_padding"
+                    android:visibility="gone"
+                    android:orientation="vertical"
+                    tools:visibility="visible">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nc_diagnose_push_available_no"/>
                 </LinearLayout>
 
                 <LinearLayout
