@@ -329,13 +329,14 @@ class SettingsActivity :
         // but for simplicity (UX & dev), and at least in a first step:
         // we require that all the users support webpush
         if (!showUnifiedPushToggle()) {
-            binding.settingsUnifiedpushSwitch.visibility = View.GONE
+            binding.settingsUnifiedpush.visibility = View.GONE
         } else {
-            binding.settingsUnifiedpushSwitch.visibility = View.VISIBLE
+            binding.settingsUnifiedpush.visibility = View.VISIBLE
             binding.settingsUnifiedpushSwitch.isChecked = appPreferences.useUnifiedPush
-            binding.settingsUnifiedpushSwitch.setOnClickListener {
-                val checked = binding.settingsUnifiedpushSwitch.isChecked
+            binding.settingsUnifiedpush.setOnClickListener {
+                val checked = !appPreferences.useUnifiedPush
                 appPreferences.useUnifiedPush = checked
+                binding.settingsUnifiedpushSwitch.isChecked = checked
                 setupNotificationPermissionSettings()
                 if (checked) {
                     UnifiedPushUtils.useDefaultDistributor(this) { distrib ->
@@ -819,6 +820,7 @@ class SettingsActivity :
         binding.run {
             listOf(
                 settingsShowNotificationWarningSwitch,
+                settingsUnifiedpushSwitch,
                 settingsScreenLockSwitch,
                 settingsScreenSecuritySwitch,
                 settingsIncognitoKeyboardSwitch,
