@@ -18,8 +18,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class NotificationsCapability(
     @JsonField(name = ["ocs-endpoints"])
-    var features: List<String>?
+    var features: List<String>?,
+    @JsonField(name = ["push"])
+    var push: List<String>?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null)
+    constructor() : this(null, null)
 }
