@@ -100,6 +100,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.unifiedpush.android.connector.UnifiedPush
 import retrofit2.HttpException
 import java.net.URI
 import java.net.URISyntaxException
@@ -308,9 +309,34 @@ class SettingsActivity :
     }
 
     private fun setupNotificationSettings() {
+        setupUnifiedPushSettings()
         setupNotificationSoundsSettings()
         setupNotificationPermissionSettings()
         setupServerNotificationAppCheck()
+    }
+
+    private fun setupUnifiedPushSettings() {
+        // If any user doesn't support web push, or there is no UnifiedPush
+        // service (distributor) available: hide the feature.
+        //
+        // We could provide the feature as soon as one user supports web push,
+        // but for simplicity (UX & dev), and at least in a first step:
+        // we require that all the users support webpush
+        if (
+            UnifiedPush.getDistributors(this).isEmpty() ||
+            userManager.users.blockingGet().any {
+                !it.hasWebPushCapability
+            }
+        ) {
+            binding.settingsUnifiedpushSwitch.visibility = View.GONE
+        } else {
+            binding.settingsUnifiedpushSwitch.visibility = View.VISIBLE
+            binding.settingsUnifiedpushSwitch.isChecked = appPreferences.useUnifiedPush
+            binding.settingsUnifiedpushSwitch.setOnClickListener {
+                val checked = binding.settingsUnifiedpushSwitch.isChecked
+                appPreferences.useUnifiedPush = checked
+            }
+        }
     }
 
     @SuppressLint("StringFormatInvalid")
