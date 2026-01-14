@@ -225,6 +225,7 @@ How to translate with transifex:
     <string name="nc_diagnosis_gplay_available_title" translatable="false">Google Play services</string>
     <string name="nc_diagnosis_gplay_available_yes" translatable="false">Google Play services are available</string>
     <string name="nc_diagnosis_gplay_available_no" translatable="false">Google Play services are not available. Notifications are not supported</string>
+    <string name="nc_diagnose_push_available_no" translatable="false">UnifiedPush is disabled and Google Play services are not available. Notifications are not supported</string>
     <string name="nc_diagnosis_battery_optimization_title" translatable="false">Battery settings</string>
     <string name="nc_diagnosis_battery_optimization_not_ignored" translatable="false">Battery optimization is enabled which might cause issues. You should disable battery optimization!</string>
     <string name="nc_diagnosis_battery_optimization_ignored" translatable="false">Battery optimization is ignored, all fine</string>
