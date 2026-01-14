@@ -83,6 +83,7 @@ import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.NotificationUtils.getMessageRingtoneUri
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_TO_NOTIFICATION_CATEGORY
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
@@ -336,6 +337,14 @@ class SettingsActivity :
                 val checked = binding.settingsUnifiedpushSwitch.isChecked
                 appPreferences.useUnifiedPush = checked
                 setupNotificationPermissionSettings()
+                if (checked) {
+                    UnifiedPushUtils.useDefaultDistributor(this) { distrib ->
+                        Log.d(TAG, "Registered to $distrib")
+                        // TODO summary for service change
+                    }
+                } else {
+                    UnifiedPushUtils.disableExternalUnifiedPush(this)
+                }
             }
         }
     }
