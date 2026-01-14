@@ -35,6 +35,9 @@ data class User(
     var scheduledForDeletion: Boolean = FALSE
 ) : Parcelable {
 
+    val hasWebPushCapability: Boolean
+        get() = capabilities?.notificationsCapability?.push?.contains("webpush") == true
+
     fun getCredentials(): String = ApiUtils.getCredentials(username, token)!!
 
     fun hasSpreedFeatureCapability(capabilityName: String): Boolean {
