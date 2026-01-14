@@ -305,8 +305,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_limit_hit"> match 
 %stekens limiet bereikt</string>
     <string name="nc_lobby">Lobby</string>
-    <string name="nc_lobby_start_date">Deze vergadering staat gepland voor %1$s</string>
-    <string name="nc_lobby_start_soon">Deze vergadering zal binnenkort starten</string>
+    <string name="nc_lobby_start_date">Deze vergadering is gepland voor %1$s</string>
+    <string name="nc_lobby_start_soon">De vergadering begint zo meteen</string>
     <string name="nc_lobby_waiting">Je wacht nu in de lobby.</string>
     <string name="nc_location_current_position_description">Je huidige locatie</string>
     <string name="nc_location_permission_required">Locatiemachtiging is vereist</string>
