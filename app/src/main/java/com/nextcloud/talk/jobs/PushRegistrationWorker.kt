@@ -182,9 +182,12 @@ class PushRegistrationWorker(
                 Log.w(TAG, "Null userId or baseUrl (userId=${user.userId}, baseUrl=${user.baseUrl}")
                 return@mapNotNull null
             }
-            UnifiedPush.unregister(applicationContext, UnifiedPushUtils.instanceFor(user))
-            // TODO unregisterWebPushForUser
-            Observable.empty<Void>()
+            if (user.hasWebPushCapability) {
+                UnifiedPush.unregister(applicationContext, UnifiedPushUtils.instanceFor(user))
+                unregisterWebPushForAccount(user)
+            } else {
+                Observable.empty()
+            }
         }
         Observable.merge(obs)
             .toList()
@@ -326,6 +329,21 @@ class PushRegistrationWorker(
                 }
             }
         }
+    }
+
+    private fun unregisterWebPushForAccount(
+        user: User
+    ) : Observable<Boolean> {
+        Log.d(TAG, "Unregistering web push for ${user.userId}")
+        if (user.userId == null || user.baseUrl == null) {
+            Log.w(TAG, "Null userId or baseUrl (userId=${user.userId}, baseUrl=${user.baseUrl}")
+            return Observable.empty()
+        }
+        return ncApi.unregisterWebPush(
+            user.getCredentials(),
+            ApiUtils.getUrlForWebPush(user.baseUrl!!)
+        ).map { true }
+
     }
 
     /**
