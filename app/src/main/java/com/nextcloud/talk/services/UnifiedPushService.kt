@@ -11,8 +11,10 @@ import android.util.Log
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import com.nextcloud.talk.jobs.NotificationWorker
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.utils.UnifiedPushUtils.toByteArray
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import org.json.JSONException
 import org.json.JSONObject
 import org.unifiedpush.android.connector.FailedReason
@@ -47,6 +49,14 @@ class UnifiedPushService: PushService() {
         } catch (_: JSONException) {
             // Messages are encrypted following RFC8291, and UnifiedPush lib handle the decryption itself:
             // message.content is the cleartext
+            val messageData = Data.Builder()
+                .putLong(BundleKeys.KEY_NOTIFICATION_USER_ID, instance.toLong())
+                .putString(BundleKeys.KEY_NOTIFICATION_CLEARTEXT_SUBJECT, message.content.toString(Charsets.UTF_8))
+                .build()
+            val notificationWork =
+                OneTimeWorkRequest.Builder(NotificationWorker::class.java).setInputData(messageData)
+                    .build()
+            WorkManager.getInstance(this).enqueue(notificationWork)
         }
     }
 
