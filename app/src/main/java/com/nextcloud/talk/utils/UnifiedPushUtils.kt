@@ -13,6 +13,7 @@ import android.util.Log
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import org.unifiedpush.android.connector.UnifiedPush
 
@@ -93,4 +94,11 @@ object UnifiedPushUtils {
         WorkManager.getInstance(context).enqueue(pushRegistrationWork)
 
     }
+
+    /**
+     * Get UnifiedPush instance for user
+     *
+     * This is simply the [User.id] (long) in String, but it allows defining it in a single place
+     */
+    fun instanceFor(user: User): String = "${user.id}"
 }
