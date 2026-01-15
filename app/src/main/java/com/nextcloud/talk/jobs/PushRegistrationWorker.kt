@@ -38,7 +38,7 @@ import javax.inject.Inject
  * Can be used for 4 different things:
  * - if inputData contains [USER_ID] and [ACTIVATION_TOKEN]: activate web push for user (on server) and unregister
  * for proxy push (on server) (received from [com.nextcloud.talk.services.UnifiedPushService])
- * - if inputData contains [UNIFIEDPUSH_ENDPOINT]: register for web push (on server)
+ * - if inputData contains [USER_ID] and [UNIFIEDPUSH_ENDPOINT]: register for web push (on server)
  * (received from [com.nextcloud.talk.services.UnifiedPushService])
  * - if inputData contains [USE_UNIFIEDPUSH] or if [AppPreferences.getUseUnifiedPush]: get the server VAPID key and
  * register for UnifiedPush to the distributor (on device)
@@ -89,9 +89,9 @@ class PushRegistrationWorker(
         if (userId != -1L && activationToken != null) {
             Log.d(TAG, "PushRegistrationWorker called via $origin (webPushActivationWork)")
             webPushActivationWork(userId, activationToken)
-        } else  if (pushEndpoint != null) {
+        } else  if (userId != -1L && pushEndpoint != null) {
             Log.d(TAG, "PushRegistrationWorker called via $origin (webPushWork)")
-            webPushWork(pushEndpoint)
+            webPushWork(userId, pushEndpoint)
         } else if (useUnifiedPush) {
             Log.d(TAG, "PushRegistrationWorker called via $origin (unifiedPushWork)")
             unifiedPushWork()
@@ -131,11 +131,9 @@ class PushRegistrationWorker(
      * Register for web push (on server)
      */
     @SuppressLint("CheckResult")
-    private fun webPushWork(pushEndpoint: PushEndpoint) {
-        val obs = userManager.users.blockingGet().map { user ->
-            registerWebPushForAccount(user, pushEndpoint)
-        }
-        Observable.merge(obs)
+    private fun webPushWork(id: Long, pushEndpoint: PushEndpoint) {
+        val user = userManager.getUserWithId(id).blockingGet()
+        registerWebPushForAccount(user, pushEndpoint)
             .map { (user, res) ->
                 if (res) {
                     Log.d(TAG, "User ${user.userId} registered for web push.")
