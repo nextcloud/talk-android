@@ -59,7 +59,7 @@ object UnifiedPushUtils {
      * @param accountManager: Used to register all accounts
      * @param callback: run with the push service name if available
      */
-    /*@JvmStatic
+    @JvmStatic
     fun pickDistributor(
         activity: Activity,
         callback: (String?) -> Unit
@@ -67,13 +67,13 @@ object UnifiedPushUtils {
         Log.d(TAG, "Picking another UnifiedPush distributor")
         UnifiedPush.tryPickDistributor(activity as Context) { res ->
             if (res) {
-                enqueuePushWorker(activity, true, "useDefaultDistributor")
+                enqueuePushWorker(activity, true, "pickDistributor")
                 callback(UnifiedPush.getSavedDistributor(activity))
             } else {
                 callback(null)
             }
         }
-    }*/
+    }
 
     /**
      * Disable UnifiedPush and try to register with proxy push again

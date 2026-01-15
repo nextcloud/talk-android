@@ -132,6 +132,7 @@ How to translate with transifex:
     <string name="nc_settings_screen_enable_unifiedpush_title">Enable UnifiedPush</string>
     <string name="nc_settings_screen_enable_unifiedpush_desc">Receive push notifications with an external
         UnifiedPush service</string>
+    <string name="nc_settings_screen_unifiedpush_service_title">UnifiedPush Service</string>
     <string name="nc_settings_screen_lock_title">Screen lock</string>
     <string name="nc_settings_screen_lock_desc">Lock %1$s with Android screen lock or supported biometric method</string>
     <string name="nc_settings_screen_lock_key" translatable="false">screen_lock</string>

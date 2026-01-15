@@ -331,6 +331,7 @@ class SettingsActivity :
         if (!showUnifiedPushToggle()) {
             binding.settingsUnifiedpush.visibility = View.GONE
         } else {
+            val nDistrib = UnifiedPush.getDistributors(context).size
             binding.settingsUnifiedpush.visibility = View.VISIBLE
             binding.settingsUnifiedpushSwitch.isChecked = appPreferences.useUnifiedPush
             binding.settingsUnifiedpush.setOnClickListener {
@@ -338,15 +339,38 @@ class SettingsActivity :
                 appPreferences.useUnifiedPush = checked
                 binding.settingsUnifiedpushSwitch.isChecked = checked
                 setupNotificationPermissionSettings()
+                setupUnifiedPushServiceSelectionVisibility(nDistrib)
                 if (checked) {
                     UnifiedPushUtils.useDefaultDistributor(this) { distrib ->
                         Log.d(TAG, "Registered to $distrib")
-                        // TODO summary for service change
+                        binding.settingsUnifiedpushServiceSummary.text = distrib
                     }
                 } else {
                     UnifiedPushUtils.disableExternalUnifiedPush(this)
                 }
             }
+            // To use non-default service
+            binding.settingsUnifiedpushService.setOnClickListener {
+                UnifiedPushUtils.pickDistributor(this) { distrib ->
+                    Log.d(TAG, "Registered to $distrib")
+                    binding.settingsUnifiedpushServiceSummary.text = distrib
+                }
+            }
+            // For the init only
+            if (binding.settingsUnifiedpushServiceSummary.text.isBlank()) {
+                binding.settingsUnifiedpushServiceSummary.text = UnifiedPush.getAckDistributor(context) ?: ""
+            }
+            setupUnifiedPushServiceSelectionVisibility(nDistrib)
+        }
+    }
+
+    private fun setupUnifiedPushServiceSelectionVisibility(nDistrib: Int) {
+        // We offer the option to use non-default service, only if UnifiedPush
+        // is enabled and there are more than one service
+        if (binding.settingsUnifiedpushSwitch.isChecked && nDistrib > 1) {
+            binding.settingsUnifiedpushService.visibility = View.VISIBLE
+        } else {
+            binding.settingsUnifiedpushService.visibility = View.GONE
         }
     }
 
