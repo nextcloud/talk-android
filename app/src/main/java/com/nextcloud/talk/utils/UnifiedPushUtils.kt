@@ -9,6 +9,7 @@ package com.nextcloud.talk.utils
 
 import android.app.Activity
 import android.content.Context
+import android.os.Parcel
 import android.util.Log
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -16,6 +17,7 @@ import androidx.work.WorkManager
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import org.unifiedpush.android.connector.UnifiedPush
+import org.unifiedpush.android.connector.data.PushEndpoint
 
 object UnifiedPushUtils {
     private val TAG: String = UnifiedPushUtils::class.java.getSimpleName()
@@ -92,7 +94,6 @@ object UnifiedPushUtils {
             .setInputData(data)
             .build()
         WorkManager.getInstance(context).enqueue(pushRegistrationWork)
-
     }
 
     /**
@@ -101,4 +102,29 @@ object UnifiedPushUtils {
      * This is simply the [User.id] (long) in String, but it allows defining it in a single place
      */
     fun instanceFor(user: User): String = "${user.id}"
+
+    fun PushEndpoint.toByteArray(): ByteArray? {
+        val parcel = Parcel.obtain()
+        return try {
+            writeToParcel(parcel, 0)
+            parcel.marshall()
+        } catch (_: Exception) {
+            null
+        } finally {
+            parcel.recycle()
+        }
+    }
+
+    fun ByteArray.toPushEndpoint(): PushEndpoint? {
+        val parcel = Parcel.obtain()
+        return try {
+            parcel.unmarshall(this, 0, size)
+            parcel.setDataPosition(0) // Reset Parcel position to read from the start
+            PushEndpoint.createFromParcel(parcel)
+        } catch (_: Exception) {
+            null
+        } finally {
+            parcel.recycle()
+        }
+    }
 }

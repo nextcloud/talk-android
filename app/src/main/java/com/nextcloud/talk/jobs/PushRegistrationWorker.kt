@@ -22,6 +22,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.PushUtils
 import com.nextcloud.talk.utils.UnifiedPushUtils
+import com.nextcloud.talk.utils.UnifiedPushUtils.toPushEndpoint
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
@@ -83,11 +84,7 @@ class PushRegistrationWorker(
         val origin = inputData.getString(ORIGIN)
         val userId = inputData.getLong(USER_ID, -1)
         val activationToken = inputData.getString(ACTIVATION_TOKEN)
-        //TODO fix dummy
-        //val pushEndpoint = inputData.getByteArray(UNIFIEDPUSH_ENDPOINT)?.toPushEndpoint()
-        val pushEndpoint = inputData.getByteArray(UNIFIEDPUSH_ENDPOINT)?.let {
-            PushEndpoint("http://dummy", null, false)
-        }
+        val pushEndpoint = inputData.getByteArray(UNIFIEDPUSH_ENDPOINT)?.toPushEndpoint()
         val useUnifiedPush = inputData.getBoolean(USE_UNIFIEDPUSH, defaultUseUnifiedPush())
         if (userId != -1L && activationToken != null) {
             Log.d(TAG, "PushRegistrationWorker called via $origin (webPushActivationWork)")
