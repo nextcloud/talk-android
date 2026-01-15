@@ -21,6 +21,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.PushUtils
+import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
@@ -184,7 +185,7 @@ class PushRegistrationWorker(
                 Log.w(TAG, "Null userId or baseUrl (userId=${user.userId}, baseUrl=${user.baseUrl}")
                 return@mapNotNull null
             }
-            UnifiedPush.unregister(applicationContext, user.userId!!)
+            UnifiedPush.unregister(applicationContext, UnifiedPushUtils.instanceFor(user))
             // TODO unregisterWebPushForUser
             Observable.empty<Void>()
         }
@@ -351,7 +352,7 @@ class PushRegistrationWorker(
                     ocs.ocs?.data?.vapid?.let { vapid ->
                         UnifiedPush.register(
                             applicationContext,
-                            instance = user.userId!!,
+                            instance = UnifiedPushUtils.instanceFor(user),
                             messageForDistributor = user.userId,
                             vapid = vapid
                         )
