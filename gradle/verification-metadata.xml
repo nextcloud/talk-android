@@ -147,6 +147,7 @@
             <trusting group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.7.0"/>
             <trusting group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.7.1"/>
             <trusting group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.7.2"/>
+            <trusting group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.7.3"/>
          </trusted-key>
          <trusted-key id="41CD49B4EF5876F9E9F691DABAC30622339994C4" group="org.jspecify" name="jspecify" version="1.0.0"/>
          <trusted-key id="44FBDBBC1A00FE414F1C1873586654072EAD6677" group="org.sonatype.oss" name="oss-parent" version="9"/>
