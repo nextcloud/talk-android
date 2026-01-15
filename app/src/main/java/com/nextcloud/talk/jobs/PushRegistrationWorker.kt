@@ -6,7 +6,7 @@
  * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.jobs;
+package com.nextcloud.talk.jobs
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -75,11 +75,21 @@ class PushRegistrationWorker(
             registerUnifiedPushForAllAccounts(applicationContext, userManager, ncApi)
                 // unregister proxy push for user setting up web push for the first time
                 .flatMap { user ->  unregisterProxyPush(user)}
+                .toList()
+                .subscribe { _, e ->
+                    e?.let {
+                        Log.d(TAG, "An error occurred while registering for UnifiedPush")
+                        e.printStackTrace()
+                    }
+                }
         } else {
             unregisterUnifiedPushForAllAccounts(applicationContext, userManager, ncApi)
                 .toList()
-                .subscribe { _,  _ ->
-                    registerProxyPush()
+                .subscribe { _,  e ->
+                    e?.let {
+                        Log.d(TAG, "An error occurred while unregistering from UnifiedPush")
+                        e.printStackTrace()
+                    } ?: registerProxyPush()
                 }
         }
         return Result.success()
@@ -110,7 +120,7 @@ class PushRegistrationWorker(
         }
     }
 
-    private fun unregisterProxyPush(user: User): Observable<Void>? {
+    private fun unregisterProxyPush(user: User): Observable<Void> {
         return if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
             Log.d(TAG, "Unregistering proxy push for ${user.userId}")
             ncApi.unregisterDeviceForNotificationsWithNextcloud(
@@ -126,7 +136,7 @@ class PushRegistrationWorker(
                 ncApi.unregisterDeviceForNotificationsWithProxy(ApiUtils.getUrlPushProxy(), queryMap)
             }
         } else {
-            null
+            Observable.empty()
         }
     }
 
@@ -165,7 +175,7 @@ class PushRegistrationWorker(
         context: Context,
         userManager: UserManager,
         ncApi: NcApi
-    ): Observable<User?> {
+    ): Observable<User> {
         val obs = userManager.users.blockingGet().map { user ->
             registerUnifiedPushForAccount(context, ncApi, user)
         }
@@ -174,13 +184,13 @@ class PushRegistrationWorker(
             .flatMap { res ->
                 val user = res.first
                 val wasUsingProxyPush = user.usesProxyPush
-                user.usesWebPush = !res.second
+                user.usesProxyPush = !res.second
                 userManager.saveUser(user)
                 Log.d(TAG, "User ${user.userId} updated: wasUsingProxy=$wasUsingProxyPush, now=${user.usesProxyPush}")
                 if (wasUsingProxyPush && !user.usesProxyPush) {
                     Observable.just(user)
                 } else {
-                    Observable.just(null)
+                    Observable.empty()
                 }
             }
     }
@@ -196,12 +206,12 @@ class PushRegistrationWorker(
         context: Context,
         ncApi: NcApi,
         user: User
-    ): Observable<Pair<User, Boolean>>? {
+    ): Observable<Pair<User, Boolean>> {
         if (user.hasWebPushCapability) {
             Log.d(TAG, "Registering web push for ${user.userId}")
             if (user.userId == null || user.baseUrl == null) {
                 Log.w(TAG, "Null userId or baseUrl (userId=${user.userId}, baseUrl=${user.baseUrl}")
-                return null
+                return Observable.empty()
             }
             return ncApi.getVapidKey(user.getCredentials(),ApiUtils.getUrlForVapid(user.baseUrl!!))
                 .flatMap { ocs ->
@@ -213,6 +223,9 @@ class PushRegistrationWorker(
                             vapid = vapid
                         )
                         Observable.just(user to true)
+                    } ?: let {
+                        Log.d(TAG, "No VAPID key found")
+                        Observable.just(user to false)
                     }
                 }
         } else {
