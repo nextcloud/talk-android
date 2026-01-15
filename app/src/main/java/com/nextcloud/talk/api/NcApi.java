@@ -278,7 +278,7 @@ public interface NcApi {
 
     @FormUrlEncoded
     @POST
-    Observable<Status> registerWebPush(
+    Observable<Response<GenericOverall>> registerWebPush(
         @Header("Authorization") String authorization,
         @Url String url,
         @Field("endpoint") String endpoint,
@@ -288,13 +288,13 @@ public interface NcApi {
 
     @FormUrlEncoded
     @POST
-    Observable<Status> activateWebPush(
+    Observable<Response<GenericOverall>> activateWebPush(
         @Header("Authorization") String authorization,
         @Url String url,
         @Field("activationToken") String activationToken);
 
     @DELETE
-    Observable<Status> unregisterWebPush(
+    Observable<GenericOverall> unregisterWebPush(
         @Header("Authorization") String authorization,
         @Url String url);
 
