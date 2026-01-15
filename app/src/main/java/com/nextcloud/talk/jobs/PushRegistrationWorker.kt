@@ -17,20 +17,32 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.PushUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import org.unifiedpush.android.connector.UnifiedPush
+import org.unifiedpush.android.connector.data.PushEndpoint
 import retrofit2.Retrofit
 import java.net.CookieManager
 import javax.inject.Inject
 
+/**
+ * Can be used for 4 different things:
+ * - if inputData contains [USER_ID] and [ACTIVATION_TOKEN]: activate web push for user (on server) and unregister
+ * for proxy push (on server) (received from [com.nextcloud.talk.services.UnifiedPushService])
+ * - if inputData contains [UNIFIEDPUSH_ENDPOINT]: register for web push (on server)
+ * (received from [com.nextcloud.talk.services.UnifiedPushService])
+ * - if inputData contains [USE_UNIFIEDPUSH] or if [AppPreferences.getUseUnifiedPush]: get the server VAPID key and
+ * register for UnifiedPush to the distributor (on device)
+ * - if [AppPreferences.getUseUnifiedPush] is false: unregister UnifiedPush (on device) and unregister for web push
+ * (on server), then register for proxy push (on server)
+ */
 @AutoInjector(NextcloudTalkApplication::class)
 class PushRegistrationWorker(
     context: Context,
@@ -68,31 +80,125 @@ class PushRegistrationWorker(
     override fun doWork(): Result {
         inject()
         val origin = inputData.getString(ORIGIN)
+        val userId = inputData.getLong(USER_ID, -1)
+        val activationToken = inputData.getString(ACTIVATION_TOKEN)
+        //TODO fix dummy
+        //val pushEndpoint = inputData.getByteArray(UNIFIEDPUSH_ENDPOINT)?.toPushEndpoint()
+        val pushEndpoint = inputData.getByteArray(UNIFIEDPUSH_ENDPOINT)?.let {
+            PushEndpoint("http://dummy", null, false)
+        }
         val useUnifiedPush = inputData.getBoolean(USE_UNIFIEDPUSH, defaultUseUnifiedPush())
-        Log.d(TAG, "PushRegistrationWorker called via $origin (up=$useUnifiedPush)")
-
-        if (useUnifiedPush) {
-            registerUnifiedPushForAllAccounts(applicationContext, userManager, ncApi)
-                // unregister proxy push for user setting up web push for the first time
-                .flatMap { user ->  unregisterProxyPush(user)}
-                .toList()
-                .subscribe { _, e ->
-                    e?.let {
-                        Log.d(TAG, "An error occurred while registering for UnifiedPush")
-                        e.printStackTrace()
-                    }
-                }
+        if (userId != -1L && activationToken != null) {
+            Log.d(TAG, "PushRegistrationWorker called via $origin (webPushActivationWork)")
+            webPushActivationWork(userId, activationToken)
+        } else  if (pushEndpoint != null) {
+            Log.d(TAG, "PushRegistrationWorker called via $origin (webPushWork)")
+            webPushWork(pushEndpoint)
+        } else if (useUnifiedPush) {
+            Log.d(TAG, "PushRegistrationWorker called via $origin (unifiedPushWork)")
+            unifiedPushWork()
         } else {
-            unregisterUnifiedPushForAllAccounts(applicationContext, userManager, ncApi)
-                .toList()
-                .subscribe { _,  e ->
-                    e?.let {
-                        Log.d(TAG, "An error occurred while unregistering from UnifiedPush")
-                        e.printStackTrace()
-                    } ?: registerProxyPush()
-                }
+            Log.d(TAG, "PushRegistrationWorker called via $origin (proxyPushWork)")
+            proxyPushWork()
         }
         return Result.success()
+    }
+
+    /**
+     * Activate web push for user (on server) and unregister for proxy push (on server)
+     */
+    @SuppressLint("CheckResult")
+    private fun webPushActivationWork(id: Long, activationToken: String) {
+        val user = userManager.getUserWithId(id).blockingGet()
+        activateWebPushForAccount(user, activationToken)
+            .map { res ->
+                if (res) {
+                    unregisterProxyPush(user)
+                } else {
+                    Log.d(TAG, "Couldn't activate web push for user ${user.userId}")
+                    Observable.empty()
+                }
+            }
+            .toList()
+            .subscribeOn(Schedulers.io())
+            .subscribe { _, e ->
+                e?.let {
+                    Log.d(TAG, "An error occurred while activating web push, or unregistering proxy push")
+                    e.printStackTrace()
+                }
+            }
+    }
+
+    /**
+     * Register for web push (on server)
+     */
+    @SuppressLint("CheckResult")
+    private fun webPushWork(pushEndpoint: PushEndpoint) {
+        val obs = userManager.users.blockingGet().map { user ->
+            registerWebPushForAccount(user, pushEndpoint)
+        }
+        Observable.merge(obs)
+            .map { (user, res) ->
+                if (res) {
+                    Log.d(TAG, "User ${user.userId} registered for web push.")
+                } else {
+                    Log.w(TAG, "Couldn't register ${user.userId} for web push.")
+                }
+            }.toList()
+            .subscribeOn(Schedulers.io())
+            .subscribe { _, e ->
+                e?.let {
+                    Log.d(TAG, "An error occurred while registering for web push")
+                    e.printStackTrace()
+                }
+            }
+    }
+
+    /**
+     * Get VAPID key (on server) and register UnifiedPush to the distributor (on device)
+     */
+    @SuppressLint("CheckResult")
+    private fun unifiedPushWork() {
+        val obs = userManager.users.blockingGet().map { user ->
+            registerUnifiedPushForAccount(user)
+        }
+        Observable.merge(obs)
+            .toList()
+            .subscribeOn(Schedulers.io())
+            .subscribe { _, e ->
+                e?.let {
+                    Log.d(TAG, "An error occurred while registering for UnifiedPush")
+                    e.printStackTrace()
+                }
+            }
+    }
+
+    /**
+     * Unregister for UnifiedPush (on device) and web push (on server), and
+     * register for proxy push (on server)
+     */
+    @SuppressLint("CheckResult")
+    private fun proxyPushWork() {
+        val obs = userManager.users.blockingGet().mapNotNull { user ->
+            if (user.userId == null || user.baseUrl == null) {
+                Log.w(TAG, "Null userId or baseUrl (userId=${user.userId}, baseUrl=${user.baseUrl}")
+                return@mapNotNull null
+            }
+            UnifiedPush.unregister(applicationContext, user.userId!!)
+            // TODO unregisterWebPushForUser
+            Observable.empty<Void>()
+        }
+        Observable.merge(obs)
+            .toList()
+            .subscribeOn(Schedulers.io())
+            .subscribe { _, e ->
+                e?.let {
+                    Log.d(TAG, "An error occurred while unregistering for web push")
+                    e.printStackTrace()
+                }
+                // Register proxy push for all account, no matter the result of the web push unregistration
+                registerProxyPush()
+            }
     }
 
     private fun defaultUseUnifiedPush(): Boolean = preferences.useUnifiedPush &&
@@ -108,8 +214,9 @@ class PushRegistrationWorker(
         } != null
 
     /**
-     * Register proxy push for all accounts with [User.usesProxyPush], set if
-     * the server doesn't support webpush or if UnifiedPush is disabled
+     * Register proxy push for all accounts if the devices support the Play Services
+     *
+     * This must not be called when UnifiedPush is enabled.
      */
     private fun registerProxyPush() {
         if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
@@ -120,6 +227,9 @@ class PushRegistrationWorker(
         }
     }
 
+    /**
+     * Unregister on NC server and NC proxy
+     */
     private fun unregisterProxyPush(user: User): Observable<Void> {
         return if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
             Log.d(TAG, "Unregistering proxy push for ${user.userId}")
@@ -140,59 +250,84 @@ class PushRegistrationWorker(
         }
     }
 
-    fun unregisterUnifiedPushForAllAccounts(
-        context: Context,
-        userManager: UserManager,
-        ncApi: NcApi
-    ): Observable<Status> {
-        val obs = userManager.users.blockingGet().mapNotNull { user ->
+    /**
+     * Register web push with the unifiedpush endpoint, if the server supports web push
+     *
+     * @return `Observable<Pair<User, Boolean>>`, true if registration succeed, false if server doesn't support web push
+     */
+    private fun registerWebPushForAccount(
+        user: User,
+        pushEndpoint: PushEndpoint
+    ): Observable<Pair<User, Boolean>> {
+        if (user.hasWebPushCapability) {
+            Log.d(TAG, "Registering web push for ${user.userId}")
             if (user.userId == null || user.baseUrl == null) {
                 Log.w(TAG, "Null userId or baseUrl (userId=${user.userId}, baseUrl=${user.baseUrl}")
-                return@mapNotNull null
+                return Observable.empty()
             }
-            UnifiedPush.unregister(context, user.userId!!)
-            if (user.usesWebPush) {
-                user.usesWebPush = false
-                userManager.saveUser(user)
-                ncApi.unregisterWebPush(user.getCredentials(), ApiUtils.getUrlForWebPush(user.baseUrl!!))
-            } else {
-                return@mapNotNull null
+            if (pushEndpoint.pubKeySet == null) {
+                // Should not happen with default UnifiedPush KeyManager
+                Log.w(TAG, "Null web push keys for user ${user.userId}, aborting.")
+                return Observable.empty()
             }
-        }
-        return Observable.merge(obs)
-    }
-
-    /**
-     * Register UnifiedPush for all accounts with the server VAPID key if the server supports web push
-     *
-     * Web push is registered on the nc server when the push endpoint is received
-     *
-     * Proxy push is unregistered for accounts on server with web push support, if a server doesn't support web push, proxy push is re-registered
-     *
-     * @return Observable<User?> not null if user was using proxy push and now use web push
-     */
-    fun registerUnifiedPushForAllAccounts(
-        context: Context,
-        userManager: UserManager,
-        ncApi: NcApi
-    ): Observable<User> {
-        val obs = userManager.users.blockingGet().map { user ->
-            registerUnifiedPushForAccount(context, ncApi, user)
-        }
-        return Observable.merge(obs)
-            // We do not update the user push proxy setting on error
-            .flatMap { res ->
-                val user = res.first
-                val wasUsingProxyPush = user.usesProxyPush
-                user.usesProxyPush = !res.second
-                userManager.saveUser(user)
-                Log.d(TAG, "User ${user.userId} updated: wasUsingProxy=$wasUsingProxyPush, now=${user.usesProxyPush}")
-                if (wasUsingProxyPush && !user.usesProxyPush) {
-                    Observable.just(user)
-                } else {
-                    Observable.empty()
+            return ncApi.registerWebPush(
+                user.getCredentials(),
+                ApiUtils.getUrlForWebPush(user.baseUrl!!),
+                pushEndpoint.url,
+                pushEndpoint.pubKeySet!!.pubKey,
+                pushEndpoint.pubKeySet!!.auth,
+                "talk"
+            ).map { r ->
+                return@map when (r.code()) {
+                    200 -> {
+                        Log.d(TAG, "Web push registration for ${user.userId} was already registered and activated\n")
+                        user to true
+                    }
+                    201 -> {
+                        Log.d(TAG, "New web push registration for ${user.userId}")
+                        user to true
+                    }
+                    else -> {
+                        Log.d(TAG, "An error occurred while registering web push for ${user.userId} (status=${r.code()})")
+                        user to false
+                    }
                 }
             }
+        } else {
+            Log.d(TAG, "${user.userId}'s server doesn't support web push")
+            return Observable.just(user to false)
+        }
+    }
+
+    private fun activateWebPushForAccount(
+        user: User,
+        activationToken: String
+    ) : Observable<Boolean> {
+        Log.d(TAG, "Activating web push for ${user.userId}")
+        if (user.userId == null || user.baseUrl == null) {
+            Log.w(TAG, "Null userId or baseUrl (userId=${user.userId}, baseUrl=${user.baseUrl}")
+            return Observable.empty()
+        }
+        return ncApi.activateWebPush(
+            user.getCredentials(),
+            ApiUtils.getUrlForWebPushActivation(user.baseUrl!!),
+            activationToken
+        ).map { r ->
+            return@map when (r.code()) {
+                200 -> {
+                    Log.d(TAG, "Web push registration for ${user.userId} was already activated\n")
+                    true
+                }
+                202 -> {
+                    Log.d(TAG, "Web push registration for ${user.userId} activated")
+                    true
+                }
+                else -> {
+                    Log.d(TAG, "An error occurred while registering web push for ${user.userId} (status=${r.code()})")
+                    false
+                }
+            }
+        }
     }
 
     /**
@@ -200,15 +335,13 @@ class PushRegistrationWorker(
      *
      * Web push is registered on the nc server when the push endpoint is received
      *
-     * @return `Observable<bool>`, true if registration succeed, false if server doesn't support web push
+     * @return `Observable<Pair<User, Boolean>>`, true if registration succeed, false if server doesn't support web push
      */
     private fun registerUnifiedPushForAccount(
-        context: Context,
-        ncApi: NcApi,
         user: User
     ): Observable<Pair<User, Boolean>> {
         if (user.hasWebPushCapability) {
-            Log.d(TAG, "Registering web push for ${user.userId}")
+            Log.d(TAG, "Registering UnifiedPush for ${user.userId}")
             if (user.userId == null || user.baseUrl == null) {
                 Log.w(TAG, "Null userId or baseUrl (userId=${user.userId}, baseUrl=${user.baseUrl}")
                 return Observable.empty()
@@ -217,7 +350,7 @@ class PushRegistrationWorker(
                 .flatMap { ocs ->
                     ocs.ocs?.data?.vapid?.let { vapid ->
                         UnifiedPush.register(
-                            context,
+                            applicationContext,
                             instance = user.userId!!,
                             messageForDistributor = user.userId,
                             vapid = vapid
@@ -237,6 +370,9 @@ class PushRegistrationWorker(
     companion object {
         const val TAG = "PushRegistrationWorker"
         const val ORIGIN = "origin"
+        const val USER_ID = "user_id"
+        const val ACTIVATION_TOKEN = "activation_token"
         const val USE_UNIFIEDPUSH = "use_unifiedpush"
+        const val UNIFIEDPUSH_ENDPOINT = "unifiedpush_endpoint"
     }
 }
