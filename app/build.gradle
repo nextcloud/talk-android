@@ -366,7 +366,7 @@ dependencies {
     testImplementation 'org.junit.vintage:junit-vintage-engine:6.0.2' // DO NOT REMOVE
     testImplementation "androidx.room:room-testing:${roomVersion}"
     testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
-    testImplementation("com.google.dagger:hilt-android-testing:2.57.2")
+    testImplementation("com.google.dagger:hilt-android-testing:2.58")
     testImplementation("org.robolectric:robolectric:4.16")
 }
 
