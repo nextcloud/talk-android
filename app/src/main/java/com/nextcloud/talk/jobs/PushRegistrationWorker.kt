@@ -109,7 +109,7 @@ class PushRegistrationWorker(
     private fun webPushActivationWork(id: Long, activationToken: String) {
         val user = userManager.getUserWithId(id).blockingGet()
         activateWebPushForAccount(user, activationToken)
-            .map { res ->
+            .flatMap { res ->
                 if (res) {
                     unregisterProxyPush(user)
                 } else {
