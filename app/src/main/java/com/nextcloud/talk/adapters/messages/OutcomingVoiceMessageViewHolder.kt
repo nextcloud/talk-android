@@ -173,11 +173,14 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
             else -> null
         }
 
-        readStatusDrawableInt?.let { drawableInt ->
-            AppCompatResources.getDrawable(context!!, drawableInt)?.let {
+        if (readStatusDrawableInt != null) {
+            AppCompatResources.getDrawable(context!!, readStatusDrawableInt)?.let {
                 binding.checkMark.setImageDrawable(it)
                 viewThemeUtils.talk.themeMessageCheckMark(binding.checkMark)
             }
+            binding.checkMark.visibility = View.VISIBLE
+        } else {
+            binding.checkMark.visibility = View.GONE
         }
 
         binding.checkMark.contentDescription = readStatusContentDescriptionString

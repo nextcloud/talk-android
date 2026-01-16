@@ -47,7 +47,7 @@
         <com.google.android.flexbox.FlexboxLayout
             android:id="@id/bubble"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             app:alignContent="stretch"
             app:alignItems="stretch"
@@ -75,8 +75,8 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/playPauseBtn"
                     style="@style/Widget.AppTheme.Button.IconButton"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="@dimen/min_size_clickable_area"
+                    android:layout_height="@dimen/min_size_clickable_area"
                     android:contentDescription="@string/play_pause_voice_message"
                     android:visibility="visible"
                     app:cornerRadius="@dimen/button_corner_radius"
@@ -87,21 +87,25 @@
                 <com.nextcloud.talk.ui.WaveformSeekBar
                     android:id="@+id/seekbar"
                     android:layout_width="0dp"
-                    android:layout_height="70dp"
+                    android:layout_height="@dimen/min_size_clickable_area"
                     android:layout_weight="1"
+                    android:paddingStart="@dimen/standard_half_padding"
+                    android:paddingTop="@dimen/zero"
+                    android:paddingEnd="@dimen/standard_half_padding"
+                    android:paddingBottom="@dimen/zero"
                     android:thumb="@drawable/voice_message_outgoing_seek_bar_slider"
-                    tools:progress="50" />
+                    tools:progress="0" />
 
                 <com.nextcloud.talk.ui.PlaybackSpeedControl
                     android:id="@+id/playbackSpeedControlBtn"
                     style="@style/Widget.AppTheme.Button.IconButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:layout_marginEnd="@dimen/standard_margin"
+                    android:layout_height="@dimen/min_size_clickable_area"
                     android:contentDescription="@string/playback_speed_control"
                     android:textColor="@color/black"
                     app:cornerRadius="@dimen/button_corner_radius"
-                    app:rippleColor="#1FFFFFFF" />
+                    app:rippleColor="#1FFFFFFF"
+                    tools:text="1,5x" />
 
             </LinearLayout>
 
