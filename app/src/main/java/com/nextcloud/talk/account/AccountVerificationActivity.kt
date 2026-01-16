@@ -340,28 +340,11 @@ class AccountVerificationActivity : BaseActivity() {
             return
         }
         // We do: PROFILE_STORED
-        // -> PUSH_REGISTRATION
         // -> CAPABILITIES_FETCH
+        // -> PUSH_REGISTRATION
         // -> SIGNALING_SETTINGS
         when (eventStatus.eventType) {
             EventStatus.EventType.PROFILE_STORED -> {
-                if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
-                    ClosedInterfaceImpl().setUpPushTokenRegistration()
-                } else {
-                    Log.w(TAG, "Skipping push registration.")
-                    eventBus.post(EventStatus(eventStatus.userId, EventStatus.EventType.PUSH_REGISTRATION, false))
-                }
-            }
-            EventStatus.EventType.PUSH_REGISTRATION -> {
-                if (!eventStatus.isAllGood) {
-                    runOnUiThread {
-                        binding.progressText.text =
-                            """
-                            ${binding.progressText.text}
-                            ${resources!!.getString(R.string.nc_push_disabled)}
-                        """.trimIndent()
-                    }
-                }
                 fetchAndStoreCapabilities()
             }
             EventStatus.EventType.CAPABILITIES_FETCH -> {
@@ -375,8 +358,20 @@ class AccountVerificationActivity : BaseActivity() {
                     }
                     abortVerification()
                 } else {
-                    fetchAndStoreExternalSignalingSettings()
+                    setupPushNotifications()
                 }
+            }
+            EventStatus.EventType.PUSH_REGISTRATION -> {
+                if (!eventStatus.isAllGood) {
+                    runOnUiThread {
+                        binding.progressText.text =
+                            """
+                            ${binding.progressText.text}
+                            ${resources!!.getString(R.string.nc_push_disabled)}
+                        """.trimIndent()
+                    }
+                }
+                fetchAndStoreExternalSignalingSettings()
             }
             EventStatus.EventType.SIGNALING_SETTINGS -> {
                 if (!eventStatus.isAllGood) {
@@ -391,6 +386,15 @@ class AccountVerificationActivity : BaseActivity() {
                 proceedWithLogin()
             }
             else -> {}
+        }
+    }
+
+    private fun setupPushNotifications() {
+        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
+            ClosedInterfaceImpl().setUpPushTokenRegistration()
+        } else {
+            Log.w(TAG, "Skipping push registration.")
+            eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, false))
         }
     }
 
