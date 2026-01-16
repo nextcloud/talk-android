@@ -16,7 +16,7 @@ import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
-import okhttp3.JavaNetCookieJar;
+import okhttp3.CookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
@@ -57,7 +57,7 @@ public class PushRegistrationWorker extends Worker {
                 .newBuilder()
                 .client(okHttpClient
                             .newBuilder()
-                            .cookieJar(new JavaNetCookieJar(new CookieManager()))
+                            .cookieJar(CookieJar.NO_COOKIES)
                             .build())
                 .build()
                 .create(NcApi.class);
