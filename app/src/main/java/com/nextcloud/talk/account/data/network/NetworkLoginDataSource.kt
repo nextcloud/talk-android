@@ -58,9 +58,12 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
         val request = Request.Builder() // GET is default
             .url(url)
             .header("Authorization", oneTimeCredentials)
+            .header("OCS-APIRequest", "true")
+            .header("Accept", "application/json")
             .build()
 
-        okHttpClient.newCall(request).execute().use { response ->
+        val newOkHttpClient = OkHttpClient()
+        newOkHttpClient.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw IOException("Unexpected code $response")
             }
