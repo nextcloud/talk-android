@@ -31,7 +31,6 @@ import okhttp3.OkHttpClient
 import org.unifiedpush.android.connector.UnifiedPush
 import org.unifiedpush.android.connector.data.PushEndpoint
 import retrofit2.Retrofit
-import java.net.CookieManager
 import javax.inject.Inject
 
 /**
