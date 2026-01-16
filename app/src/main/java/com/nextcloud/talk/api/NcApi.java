@@ -281,11 +281,12 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + "/apps/notifications/api/v2/push
      */
 
+    @FormUrlEncoded
     @POST
     Observable<PushRegistrationOverall> registerDeviceForNotificationsWithNextcloud(
         @Header("Authorization") String authorization,
         @Url String url,
-        @QueryMap Map<String, String> options);
+        @FieldMap Map<String, String> options);
 
     @DELETE
     Observable<GenericOverall> unregisterDeviceForNotificationsWithNextcloud(
