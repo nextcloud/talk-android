@@ -35,6 +35,7 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -93,6 +94,10 @@ class ChatViewModel @Inject constructor(
 
     lateinit var currentUser: User
 
+    private var localLastReadMessage: Int = 0
+
+    private lateinit var currentConversation: ConversationModel
+
     private val mediaPlayerManager: MediaPlayerManager = MediaPlayerManager.sharedInstance(appPreferences)
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
@@ -130,6 +135,10 @@ class ChatViewModel @Inject constructor(
         mediaRecorderManager.handleOnStop()
         chatRepository.handleOnStop()
         mediaPlayerManager.handleOnStop()
+    }
+
+    fun onSignalingChatMessageReceived(chatMessage: ChatMessageJson) {
+        chatRepository.onSignalingChatMessageReceived(chatMessage)
     }
 
     val backgroundPlayUIFlow = mediaPlayerManager.backgroundPlayUIFlow
@@ -302,7 +311,10 @@ class ChatViewModel @Inject constructor(
     }
 
     fun updateConversation(currentConversation: ConversationModel) {
+        this.currentConversation = currentConversation
         chatRepository.updateConversation(currentConversation)
+
+        advanceLocalLastReadMessageIfNeeded(currentConversation.lastReadMessage)
     }
 
     fun getRoom(user: User, token: String) {
@@ -496,12 +508,13 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun loadMessages(withCredentials: String, withUrl: String) {
+    fun loadMessages(withCredentials: String, withUrl: String, hasHighPerformanceBackend: Boolean) {
         val bundle = Bundle()
         bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
         bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
         chatRepository.initScopeAndLoadInitialMessages(
-            withNetworkParams = bundle
+            withNetworkParams = bundle,
+            hasHighPerformanceBackend = hasHighPerformanceBackend
         )
     }
 
@@ -559,8 +572,26 @@ class ChatViewModel @Inject constructor(
             })
     }
 
-    fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int) {
-        chatNetworkDataSource.setChatReadMarker(credentials, url, previousMessageId)
+    fun advanceLocalLastReadMessageIfNeeded(messageId: Int) {
+        if (localLastReadMessage < messageId) {
+            localLastReadMessage = messageId
+        }
+    }
+
+    /**
+     * Please use with caution to not spam the server
+     */
+    fun updateRemoteLastReadMessageIfNeeded(credentials: String, url: String) {
+        if (localLastReadMessage > currentConversation.lastReadMessage) {
+            setChatReadMessage(credentials, url, localLastReadMessage)
+        }
+    }
+
+    /**
+     * Please use with caution to not spam the server
+     */
+    fun setChatReadMessage(credentials: String, url: String, lastReadMessage: Int) {
+        chatNetworkDataSource.setChatReadMarker(credentials, url, lastReadMessage)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<GenericOverall> {

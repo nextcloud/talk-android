@@ -10,6 +10,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -63,7 +64,12 @@ interface ChatNetworkDataSource {
         threadTitle: String?
     ): ChatOverallSingleMessage
 
-    fun pullChatMessages(credentials: String, url: String, fieldMap: HashMap<String, Int>): Observable<Response<*>>
+    suspend fun pullChatMessages(
+        credentials: String,
+        url: String,
+        fieldMap: HashMap<String, Int>
+    ): Response<ChatOverall>
+
     fun deleteChatMessage(credentials: String, url: String): Observable<ChatOverallSingleMessage>
     fun createRoom(credentials: String, url: String, map: Map<String, String>): Observable<RoomOverall>
     fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int): Observable<GenericOverall>
