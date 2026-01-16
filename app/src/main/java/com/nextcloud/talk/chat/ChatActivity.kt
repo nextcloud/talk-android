@@ -676,6 +676,17 @@ class ChatActivity :
                 }.collect()
         }
 
+        this.lifecycleScope.launch {
+            chatViewModel.getUploadsFlow
+                .onEach {
+                    val builder = StringBuilder()
+                    it.forEach { item ->
+                        builder.append("${item.fileName} ${item.progress}")
+                    }
+                    binding.fileUploadText.text = builder.toString()
+                }.collect()
+        }
+
         chatViewModel.getRoomViewState.observe(this) { state ->
             when (state) {
                 is ChatViewModel.GetRoomSuccessState -> {
@@ -3329,8 +3340,8 @@ class ChatActivity :
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.THREADS)
 
         val threadNotificationIcon = when (conversationThreadInfo?.attendee?.notificationLevel) {
-            1 -> R.drawable.outline_notifications_active_24
-            3 -> R.drawable.ic_baseline_notifications_off_24
+            NOTIFICATION_LEVEL_ALWAYS -> R.drawable.outline_notifications_active_24
+            NOTIFICATION_LEVEL_NEVER -> R.drawable.ic_baseline_notifications_off_24
             else -> R.drawable.baseline_notifications_24
         }
         threadNotificationItem.icon = ContextCompat.getDrawable(context, threadNotificationIcon)
@@ -3436,7 +3447,7 @@ class ChatActivity :
                                 subtitle = null,
                                 icon = R.drawable.ic_baseline_notifications_off_24,
                                 onClick = {
-                                    setThreadNotificationLevel(3)
+                                    setThreadNotificationLevel(NOTIFICATION_LEVEL_NEVER)
                                 }
                             )
                         )
@@ -4109,7 +4120,7 @@ class ChatActivity :
                             displayName = currentConversation?.displayName ?: ""
                         )
                         showSnackBar(roomToken)
-                    } catch (e: Exception) {
+                    } catch (e: IOException) {
                         Log.w(TAG, "File corresponding to the uri does not exist $shareUri", e)
                         downloadFileToCache(message, false) {
                             uploadFile(
@@ -4614,6 +4625,8 @@ class ChatActivity :
         private const val FIVE_MINUTES_IN_SECONDS: Long = 300
         private const val ROOM_TYPE_ONE_TO_ONE = "1"
         private const val ACTOR_TYPE = "users"
+        private const val NOTIFICATION_LEVEL_ALWAYS = 1
+        private const val NOTIFICATION_LEVEL_NEVER = 3
         const val CONVERSATION_INTERNAL_ID = "CONVERSATION_INTERNAL_ID"
         const val NO_OFFLINE_MESSAGES_FOUND = "NO_OFFLINE_MESSAGES_FOUND"
         const val VOICE_MESSAGE_CONTINUOUS_BEFORE = -5

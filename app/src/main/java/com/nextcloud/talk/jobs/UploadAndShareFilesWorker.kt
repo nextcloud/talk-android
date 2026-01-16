@@ -31,6 +31,8 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.data.database.dao.FileUploadsDao
+import com.nextcloud.talk.data.database.model.FileUploadEntity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.upload.chunked.ChunkedFileUploader
 import com.nextcloud.talk.upload.chunked.OnDataTransferProgressListener
@@ -40,6 +42,7 @@ import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.RemoteFileUtils
+import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
@@ -73,6 +76,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     @Inject
     lateinit var platformPermissionUtil: PlatformPermissionUtil
 
+    @Inject
+    lateinit var fileUploadsDao: FileUploadsDao
+
     lateinit var fileName: String
 
     private var mNotifyManager: NotificationManager? = null
@@ -90,7 +96,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     override fun doWork(): Result {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        return try {
+        var uploadFileId: Long? = null
+        try {
             currentUser = currentUserProvider.currentUser.blockingGet()
             val sourceFile = inputData.getString(DEVICE_SOURCE_FILE)
             roomToken = inputData.getString(ROOM_TOKEN)!!
@@ -109,21 +116,35 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
             initNotificationSetup()
             file?.let { isChunkedUploading = it.length() > CHUNK_UPLOAD_THRESHOLD_SIZE }
+
+            var fileUploadEntity = FileUploadEntity(
+                internalConversationId = "${UserIdUtils.getIdForUser(currentUser)}@$roomToken"
+            )
+            uploadFileId = fileUploadsDao.createFileUpload(fileUploadEntity)
+            fileUploadEntity = fileUploadEntity.copy(id = uploadFileId)
+
+            fileUploadsDao.setStarted(fileUploadEntity.id)
             val uploadSuccess: Boolean = uploadFile(sourceFileUri, metaData, remotePath)
 
             if (uploadSuccess) {
+                fileUploadsDao.setCompleted(fileUploadEntity.id)
                 cancelNotification()
                 return Result.success()
             } else if (isStopped) {
                 // since work is cancelled the result would be ignored anyways
+                fileUploadsDao.setFailed(fileUploadEntity.id)
                 return Result.failure()
             }
 
             Log.e(TAG, "Something went wrong when trying to upload file")
+            fileUploadsDao.setFailed(fileUploadEntity.id)
             showFailedToUploadNotification()
             return Result.failure()
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong when trying to upload file", e)
+            if (uploadFileId != null) {
+                fileUploadsDao.setFailed(uploadFileId)
+            }
             showFailedToUploadNotification()
             return Result.failure()
         }

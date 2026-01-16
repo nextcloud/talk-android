@@ -12,6 +12,7 @@ import com.nextcloud.talk.chat.data.io.LifecycleAwareManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.domain.FileUploadModel
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -36,6 +37,11 @@ interface ChatMessageRepository : LifecycleAwareManager {
     val lastCommonReadFlow: Flow<Int>
 
     val lastReadMessageFlow: Flow<Int>
+
+    /**
+     * Stream of uploaded files in the conversation
+     */
+    val uploadsFlow: Flow<List<FileUploadModel>>
 
     /**
      * Used for informing the user of the underlying processing behind offline support, [String] is the key

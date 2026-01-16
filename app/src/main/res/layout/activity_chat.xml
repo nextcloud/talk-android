@@ -153,6 +153,11 @@
             <include layout="@layout/remainder_to_delete_conversation" />
         </com.google.android.material.card.MaterialCardView>
 
+        <TextView
+            android:id="@+id/fileUploadText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <com.stfalcon.chatkit.messages.MessagesList
             android:id="@+id/messagesListView"
             android:layout_width="match_parent"

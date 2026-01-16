@@ -34,6 +34,7 @@ import com.nextcloud.talk.conversationlist.data.network.RetrofitConversationsNet
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
+import com.nextcloud.talk.data.database.dao.FileUploadsDao
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.source.local.TalkDatabase
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository
@@ -140,12 +141,14 @@ class RepositoryModule {
     fun provideOfflineFirstChatRepository(
         chatMessagesDao: ChatMessagesDao,
         chatBlocksDao: ChatBlocksDao,
+        fileUploadsDao: FileUploadsDao,
         dataSource: ChatNetworkDataSource,
         networkMonitor: NetworkMonitor
     ): ChatMessageRepository =
         OfflineFirstChatRepository(
             chatMessagesDao,
             chatBlocksDao,
+            fileUploadsDao,
             dataSource,
             networkMonitor
         )
