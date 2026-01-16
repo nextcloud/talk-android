@@ -340,41 +340,47 @@ class AccountVerificationActivity : BaseActivity() {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onMessageEvent(eventStatus: EventStatus) {
         Log.d(TAG, "caught EventStatus of type " + eventStatus.eventType.toString())
-        if (eventStatus.eventType == EventStatus.EventType.PUSH_REGISTRATION) {
-            if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
-                runOnUiThread {
-                    binding.progressText.text =
-                        """
+        // We do PUSH_REGISTRATION -> CAPABILITIES_FETCH -> SIGNALING_SETTINGS
+        when (eventStatus.eventType) {
+            EventStatus.EventType.PUSH_REGISTRATION -> {
+                if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
+                    runOnUiThread {
+                        binding.progressText.text =
+                            """
                             ${binding.progressText.text}
                             ${resources!!.getString(R.string.nc_push_disabled)}
                         """.trimIndent()
+                    }
                 }
+                fetchAndStoreCapabilities()
             }
-            fetchAndStoreCapabilities()
-        } else if (eventStatus.eventType == EventStatus.EventType.CAPABILITIES_FETCH) {
-            if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
-                runOnUiThread {
-                    binding.progressText.text =
-                        """
+            EventStatus.EventType.CAPABILITIES_FETCH -> {
+                if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
+                    runOnUiThread {
+                        binding.progressText.text =
+                            """
                             ${binding.progressText.text}
                             ${resources!!.getString(R.string.nc_capabilities_failed)}
                         """.trimIndent()
+                    }
+                    abortVerification()
+                } else if (internalAccountId == eventStatus.userId && eventStatus.isAllGood) {
+                    fetchAndStoreExternalSignalingSettings()
                 }
-                abortVerification()
-            } else if (internalAccountId == eventStatus.userId && eventStatus.isAllGood) {
-                fetchAndStoreExternalSignalingSettings()
             }
-        } else if (eventStatus.eventType == EventStatus.EventType.SIGNALING_SETTINGS) {
-            if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
-                runOnUiThread {
-                    binding.progressText.text =
-                        """
+            EventStatus.EventType.SIGNALING_SETTINGS -> {
+                if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
+                    runOnUiThread {
+                        binding.progressText.text =
+                            """
                             ${binding.progressText.text}
                             ${resources!!.getString(R.string.nc_external_server_failed)}
                         """.trimIndent()
+                    }
                 }
+                proceedWithLogin()
             }
-            proceedWithLogin()
+            else -> {}
         }
     }
 
