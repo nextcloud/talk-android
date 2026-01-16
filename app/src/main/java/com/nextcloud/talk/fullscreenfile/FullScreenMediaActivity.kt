@@ -9,8 +9,10 @@
  */
 package com.nextcloud.talk.fullscreenfile
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup.MarginLayoutParams
@@ -53,6 +55,7 @@ class FullScreenMediaActivity : AppCompatActivity() {
     private var playWhenReadyState: Boolean = true
     private var playBackPosition: Long = 0L
     private lateinit var windowInsetsController: WindowInsetsControllerCompat
+    private lateinit var gestureDetector: GestureDetector
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_preview, menu)
@@ -100,6 +103,7 @@ class FullScreenMediaActivity : AppCompatActivity() {
             }
         }
 
+    @SuppressLint("ClickableViewAccessibility")
     @OptIn(UnstableApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,6 +127,12 @@ class FullScreenMediaActivity : AppCompatActivity() {
             binding.playerView.controllerShowTimeoutMs = 0
         }
 
+        binding.playerView.setOnTouchListener { _, p1 ->
+            p1?.let {
+                gestureDetector.onTouchEvent(it)
+            } ?: false
+        }
+
         initWindowInsetsController()
         applyWindowInsets()
 
@@ -133,6 +143,13 @@ class FullScreenMediaActivity : AppCompatActivity() {
                 } else {
                     exitImmersiveMode()
                 }
+            }
+        )
+
+        gestureDetector = GestureDetector(
+            this,
+            FullScreenGestureListener(this) {
+                onBackPressedDispatcher.onBackPressed()
             }
         )
     }
