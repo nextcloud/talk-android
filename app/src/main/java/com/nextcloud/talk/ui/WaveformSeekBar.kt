@@ -17,6 +17,7 @@ import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.core.graphics.toColorInt
 import com.nextcloud.talk.utils.AudioUtils
 import kotlin.math.roundToInt
+import androidx.core.graphics.withSave
 
 class WaveformSeekBar : AppCompatSeekBar {
 
@@ -99,17 +100,16 @@ class WaveformSeekBar : AppCompatSeekBar {
         val barGap: Float = (usableWidth - waveData.size * DEFAULT_BAR_WIDTH) / (waveData.size - 1).toFloat()
 
         canvas?.apply {
-            save()
-            translate(paddingLeft.toFloat(), paddingTop.toFloat())
-            for (i in waveData.indices) {
-                val x: Float = i * (DEFAULT_BAR_WIDTH + barGap) + DEFAULT_BAR_WIDTH / 2f
-                val y: Float = waveData[i] * maxHeight
-                val progress = (x / usableWidth)
-                paint.color = if (progress * max < getProgress()) primary else secondary
-                canvas.drawLine(x, midpoint - y, x, midpoint + y, paint)
+            withSave {
+                translate(paddingLeft.toFloat(), paddingTop.toFloat())
+                for (i in waveData.indices) {
+                    val x: Float = i * (DEFAULT_BAR_WIDTH + barGap) + DEFAULT_BAR_WIDTH / 2f
+                    val y: Float = waveData[i] * maxHeight
+                    val progress = (x / usableWidth)
+                    paint.color = if (progress * max < getProgress()) primary else secondary
+                    canvas.drawLine(x, midpoint - y, x, midpoint + y, paint)
+                }
             }
-
-            restore()
         }
     }
 
