@@ -264,13 +264,7 @@ class AccountVerificationActivity : BaseActivity() {
                         ClosedInterfaceImpl().setUpPushTokenRegistration()
                     } else {
                         Log.w(TAG, "Skipping push registration.")
-                        runOnUiThread {
-                            binding.progressText.text =
-                                """ ${binding.progressText.text}
-                                    ${resources!!.getString(R.string.nc_push_disabled)}
-                                """.trimIndent()
-                        }
-                        fetchAndStoreCapabilities()
+                        eventBus.post(EventStatus(user.id!!, EventStatus.EventType.PUSH_REGISTRATION, false))
                     }
                 }
 
