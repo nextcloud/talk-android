@@ -79,4 +79,9 @@ interface ChatNetworkDataSource {
     ): List<ChatMessageJson>
     suspend fun getOpenGraph(credentials: String, baseUrl: String, extractedLinkToPreview: String): Reference?
     suspend fun unbindRoom(credentials: String, baseUrl: String, roomToken: String): GenericOverall
+    suspend fun pinMessage(credentials: String, url: String, pinUntil: Int): ChatOverallSingleMessage
+
+    suspend fun unPinMessage(credentials: String, url: String): ChatOverallSingleMessage
+
+    suspend fun hidePinnedMessage(credentials: String, url: String): GenericOverall
 }

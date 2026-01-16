@@ -1026,6 +1026,36 @@ class OfflineFirstChatRepository @Inject constructor(
         _removeMessageFlow.emit(chatMessage)
     }
 
+    override suspend fun pinMessage(credentials: String, url: String, pinUntil: Int): Flow<ChatMessage?> =
+        flow {
+            runCatching {
+                val overall = network.pinMessage(credentials, url, pinUntil)
+                emit(overall.ocs?.data?.asModel())
+            }.getOrElse { throwable ->
+                Log.e(TAG, "Error in pinMessage: $throwable")
+            }
+        }
+
+    override suspend fun unPinMessage(credentials: String, url: String): Flow<ChatMessage?> =
+        flow {
+            runCatching {
+                val overall = network.unPinMessage(credentials, url)
+                emit(overall.ocs?.data?.asModel())
+            }.getOrElse { throwable ->
+                Log.e(TAG, "Error in unPinMessage: $throwable")
+            }
+        }
+
+    override suspend fun hidePinnedMessage(credentials: String, url: String): Flow<Boolean> =
+        flow {
+            runCatching {
+                network.hidePinnedMessage(credentials, url)
+                emit(true)
+            }.getOrElse { throwable ->
+                Log.e(TAG, "Error in hidePinnedMessage: $throwable")
+            }
+        }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun addTemporaryMessage(
         message: CharSequence,

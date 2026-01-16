@@ -27,6 +27,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel.Companion.FOLLOWED_THREADS_EXIST
+import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
@@ -54,8 +55,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -305,9 +304,9 @@ class ChatViewModel @Inject constructor(
         chatRepository.updateConversation(currentConversation)
     }
 
-    fun getRoom(user: User, token: String) {
+    fun getRoom(token: String) {
         _getRoomViewState.value = GetRoomStartState
-        conversationRepository.getRoom(user, token)
+        conversationRepository.getRoom(currentUser, token)
     }
 
     fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {
@@ -839,11 +838,35 @@ class ChatViewModel @Inject constructor(
             emit(message.first())
         }
 
+    fun getIndividualMessageFromServer(
+        credentials: String,
+        baseUrl: String,
+        token: String,
+        messageId: String
+    ): Flow<ChatMessage?> =
+        flow {
+            val messages = chatNetworkDataSource.getContextForChatMessage(
+                credentials = credentials,
+                baseUrl = baseUrl,
+                token = token,
+                messageId = messageId,
+                limit = 1,
+                threadId = null
+            )
+
+            if (messages.isNotEmpty()) {
+                val message = messages[0]
+                emit(message.asModel())
+            } else {
+                emit(null)
+            }
+        }
+
     suspend fun getNumberOfThreadReplies(threadId: Long): Int = chatRepository.getNumberOfThreadReplies(threadId)
 
     fun setPlayBack(speed: PlaybackSpeed) {
         mediaPlayerManager.setPlayBackSpeed(speed)
-        CoroutineScope(Dispatchers.Default).launch {
+        viewModelScope.launch {
             _voiceMessagePlayBackUIFlow.emit(speed)
         }
     }
@@ -993,7 +1016,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun saveMessageDraft() {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             val model = conversationRepository.getLocallyStoredConversation(
                 currentUser,
                 chatRoomToken
@@ -1002,6 +1025,39 @@ class ChatViewModel @Inject constructor(
                 it.messageDraft = messageDraft
                 conversationRepository.updateConversation(it)
             }
+        }
+    }
+
+    fun pinMessage(credentials: String, url: String, pinUntil: Int = 0) {
+        viewModelScope.launch {
+            chatRepository.pinMessage(credentials, url, pinUntil).collect {
+                // UI is updated from room change observer
+                getRoom(chatRoomToken)
+            }
+        }
+    }
+
+    fun unPinMessage(credentials: String, url: String) {
+        viewModelScope.launch {
+            chatRepository.unPinMessage(credentials, url).collect {
+                // This updates the room if there are other pinned messages we need to show
+
+                getRoom(chatRoomToken)
+            }
+        }
+    }
+
+    fun hidePinnedMessage(credentials: String, url: String) {
+        viewModelScope.launch {
+            chatRepository.hidePinnedMessage(credentials, url).collect {
+                getRoom(chatRoomToken)
+            }
+        }
+    }
+
+    fun refreshRoom() {
+        viewModelScope.launch {
+            getRoom(chatRoomToken)
         }
     }
 
