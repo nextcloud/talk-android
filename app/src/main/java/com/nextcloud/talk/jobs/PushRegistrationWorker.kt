@@ -121,8 +121,7 @@ class PushRegistrationWorker(
             .subscribeOn(Schedulers.io())
             .subscribe { _, e ->
                 e?.let {
-                    Log.d(TAG, "An error occurred while activating web push, or unregistering proxy push")
-                    e.printStackTrace()
+                    Log.e(TAG, "An error occurred while activating web push, or unregistering proxy push", e)
                 }
             }
     }
@@ -144,8 +143,7 @@ class PushRegistrationWorker(
             .subscribeOn(Schedulers.io())
             .subscribe { _, e ->
                 e?.let {
-                    Log.d(TAG, "An error occurred while registering for web push")
-                    e.printStackTrace()
+                    Log.e(TAG, "An error occurred while registering for web push", e)
                 }
             }
     }
@@ -163,8 +161,7 @@ class PushRegistrationWorker(
             .subscribeOn(Schedulers.io())
             .subscribe { _, e ->
                 e?.let {
-                    Log.d(TAG, "An error occurred while registering for UnifiedPush")
-                    e.printStackTrace()
+                    Log.e(TAG, "An error occurred while registering for UnifiedPush", e)
                 }
             }
     }
@@ -192,8 +189,7 @@ class PushRegistrationWorker(
             .subscribeOn(Schedulers.io())
             .subscribe { _, e ->
                 e?.let {
-                    Log.d(TAG, "An error occurred while unregistering for web push")
-                    e.printStackTrace()
+                    Log.e(TAG, "An error occurred while unregistering for web push", e)
                 }
                 // Register proxy push for all account, no matter the result of the web push unregistration
                 registerProxyPush()
