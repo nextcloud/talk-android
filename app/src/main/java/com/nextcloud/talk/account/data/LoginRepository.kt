@@ -21,6 +21,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USERNAME
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import okhttp3.Credentials
 import java.net.URLDecoder
 
 @Suppress("TooManyFunctions", "ReturnCount")
@@ -34,6 +35,7 @@ class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLogin
         private const val SERVER_KEY = "server:"
         private const val PASS_KEY = "password:"
         private const val PREFIX = "nc://login/"
+        const val ONE_TIME_PREFIX = "nc://onetime-login/"
         private const val MAX_ARGS = 3
     }
 
@@ -102,6 +104,56 @@ class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLogin
             null
         }
     }
+
+    /**
+     * Entry point for a one-time QR code
+     */
+    suspend fun startOTPLoginFlow(dataString: String, reAuth: Boolean = false): LoginCompletion? =
+        withContext(Dispatchers.IO) {
+            shouldReauthorizeUser = reAuth
+
+            if (!dataString.startsWith(ONE_TIME_PREFIX)) {
+                Log.e(TAG, "Invalid login URL detected")
+                return@withContext null
+            }
+
+            val data = dataString.removePrefix(ONE_TIME_PREFIX)
+            val values = data.split('&')
+
+            if (values.size !in 1..MAX_ARGS) {
+                Log.e(TAG, "Illegal number of login URL elements detected: ${values.size}")
+                return@withContext null
+            }
+
+            var server = ""
+            var loginName = ""
+            var appPassword = ""
+            values.forEach { value ->
+                when {
+                    value.startsWith(USER_KEY) -> {
+                        loginName = URLDecoder.decode(value.removePrefix(USER_KEY), "UTF-8")
+                    }
+
+                    value.startsWith(PASS_KEY) -> {
+                        appPassword = URLDecoder.decode(value.removePrefix(PASS_KEY), "UTF-8")
+                    }
+
+                    value.startsWith(SERVER_KEY) -> {
+                        server = URLDecoder.decode(value.removePrefix(SERVER_KEY), "UTF-8")
+                    }
+                }
+            }
+
+            // Need to use the qr code token to create temporary credentials to get access to the actual app password
+            val credentials = Credentials.basic(loginName, appPassword)
+            val oneTimePassword = network.oneTimePasswordRequest(server, credentials)
+
+            return@withContext if (server.isNotEmpty() && loginName.isNotEmpty() && oneTimePassword != null) {
+                LoginCompletion(HTTP_OK, server, loginName, oneTimePassword)
+            } else {
+                null
+            }
+        }
 
     /**
      * Entry point to the login process
