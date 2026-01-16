@@ -402,6 +402,7 @@ class AccountVerificationActivity : BaseActivity() {
             } else {
                 Log.w(TAG, "Warning: disabling UnifiedPush, user server doesn't support web push.")
                 eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, false))
+                appPreferences.useUnifiedPush = false
             }
         // This may or may not be a first account, use Play Services if available
         } else if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
