@@ -340,10 +340,14 @@ class AccountVerificationActivity : BaseActivity() {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onMessageEvent(eventStatus: EventStatus) {
         Log.d(TAG, "caught EventStatus of type " + eventStatus.eventType.toString())
+        if (internalAccountId != eventStatus.userId) {
+            Log.d(TAG, "Event isn't for us. Aborting.")
+            return
+        }
         // We do PUSH_REGISTRATION -> CAPABILITIES_FETCH -> SIGNALING_SETTINGS
         when (eventStatus.eventType) {
             EventStatus.EventType.PUSH_REGISTRATION -> {
-                if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
+                if (!eventStatus.isAllGood) {
                     runOnUiThread {
                         binding.progressText.text =
                             """
@@ -355,7 +359,7 @@ class AccountVerificationActivity : BaseActivity() {
                 fetchAndStoreCapabilities()
             }
             EventStatus.EventType.CAPABILITIES_FETCH -> {
-                if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
+                if (!eventStatus.isAllGood) {
                     runOnUiThread {
                         binding.progressText.text =
                             """
@@ -364,12 +368,12 @@ class AccountVerificationActivity : BaseActivity() {
                         """.trimIndent()
                     }
                     abortVerification()
-                } else if (internalAccountId == eventStatus.userId && eventStatus.isAllGood) {
+                } else {
                     fetchAndStoreExternalSignalingSettings()
                 }
             }
             EventStatus.EventType.SIGNALING_SETTINGS -> {
-                if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
+                if (!eventStatus.isAllGood) {
                     runOnUiThread {
                         binding.progressText.text =
                             """
