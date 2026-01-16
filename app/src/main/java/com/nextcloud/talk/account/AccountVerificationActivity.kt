@@ -260,12 +260,7 @@ class AccountVerificationActivity : BaseActivity() {
                 @SuppressLint("SetTextI18n")
                 override fun onSuccess(user: User) {
                     internalAccountId = user.id!!
-                    if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
-                        ClosedInterfaceImpl().setUpPushTokenRegistration()
-                    } else {
-                        Log.w(TAG, "Skipping push registration.")
-                        eventBus.post(EventStatus(user.id!!, EventStatus.EventType.PUSH_REGISTRATION, false))
-                    }
+                    eventBus.post(EventStatus(user.id!!, EventStatus.EventType.PROFILE_STORED, true))
                 }
 
                 @SuppressLint("SetTextI18n")
@@ -344,8 +339,19 @@ class AccountVerificationActivity : BaseActivity() {
             Log.d(TAG, "Event isn't for us. Aborting.")
             return
         }
-        // We do PUSH_REGISTRATION -> CAPABILITIES_FETCH -> SIGNALING_SETTINGS
+        // We do: PROFILE_STORED
+        // -> PUSH_REGISTRATION
+        // -> CAPABILITIES_FETCH
+        // -> SIGNALING_SETTINGS
         when (eventStatus.eventType) {
+            EventStatus.EventType.PROFILE_STORED -> {
+                if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
+                    ClosedInterfaceImpl().setUpPushTokenRegistration()
+                } else {
+                    Log.w(TAG, "Skipping push registration.")
+                    eventBus.post(EventStatus(eventStatus.userId, EventStatus.EventType.PUSH_REGISTRATION, false))
+                }
+            }
             EventStatus.EventType.PUSH_REGISTRATION -> {
                 if (!eventStatus.isAllGood) {
                     runOnUiThread {
