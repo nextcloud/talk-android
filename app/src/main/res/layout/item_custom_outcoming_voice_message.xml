@@ -13,9 +13,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="16dp"
+    android:layout_marginStart="@dimen/standard_margin"
     android:layout_marginTop="2dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginEnd="@dimen/standard_margin"
     android:layout_marginBottom="2dp">
 
     <RelativeLayout
@@ -56,8 +56,8 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/playPauseBtn"
                     style="@style/Widget.AppTheme.Button.IconButton"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="@dimen/min_size_clickable_area"
+                    android:layout_height="@dimen/min_size_clickable_area"
                     android:contentDescription="@string/play_pause_voice_message"
                     android:visibility="visible"
                     app:cornerRadius="@dimen/button_corner_radius"
@@ -79,8 +79,7 @@
                     android:id="@+id/playbackSpeedControlBtn"
                     style="@style/Widget.AppTheme.Button.IconButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:layout_marginEnd="@dimen/standard_margin"
+                    android:layout_height="@dimen/min_size_clickable_area"
                     android:contentDescription="@string/playback_speed_control"
                     android:textColor="@color/black"
                     app:cornerRadius="@dimen/button_corner_radius"
@@ -111,7 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="@dimen/standard_half_margin"
                     android:alpha="0.6"
                     android:textColor="@color/no_emphasis_text"
                     tools:text="10:35" />
@@ -121,7 +120,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/message_bubble_checkmark_height"
                     android:layout_gravity="center"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="@dimen/standard_half_margin"
                     android:contentDescription="@null"
                     app:tint="@color/high_emphasis_text" />
             </LinearLayout>
