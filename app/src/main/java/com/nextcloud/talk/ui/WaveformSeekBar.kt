@@ -114,9 +114,9 @@ class WaveformSeekBar : AppCompatSeekBar {
     }
 
     companion object {
-        private const val DEFAULT_BAR_WIDTH: Int = 4
+        private const val DEFAULT_BAR_WIDTH: Int = 3
         private const val MAX_HEIGHT_DIVISOR: Float = 4.0f
-        private const val WIDTH_DIVISOR = 20f
+        private const val WIDTH_DIVISOR = 16f
         private const val VALUE_100 = 100
         private const val MINIMUM_WIDTH = 50
         private val Int.dp: Int
