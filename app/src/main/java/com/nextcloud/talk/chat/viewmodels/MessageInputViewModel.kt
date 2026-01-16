@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import javax.inject.Inject
 
 @Suppress("Detekt.TooManyFunctions")
@@ -128,6 +129,7 @@ class MessageInputViewModel @Inject constructor(
     val callStartedFlow: LiveData<Pair<ChatMessage, Boolean>>
         get() = _callStartedFlow
 
+
     @Suppress("LongParameterList")
     fun sendChatMessage(
         credentials: String,
@@ -147,7 +149,8 @@ class MessageInputViewModel @Inject constructor(
                 displayName,
                 replyTo,
                 sendWithoutNotification,
-                referenceId
+                referenceId,
+                0
             ).collect { result ->
                 if (result.isSuccess) {
                     Log.d(TAG, "temp message ref id: " + (result.getOrNull()?.referenceId ?: "none"))
@@ -275,6 +278,102 @@ class MessageInputViewModel @Inject constructor(
     fun stopThreadCreation() {
         _createThreadViewState.postValue(CreateThreadStartState)
     }
+
+    @Suppress("LongParameterList")
+    fun scheduleChatMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        displayName: String,
+        replyTo: Int,
+        sendWithoutNotification: Boolean,
+        threadTitle: String?,
+        threadId: Long?,
+        sendAt: Int
+    ) {
+        val referenceId = SendMessageUtils().generateReferenceId()
+        Log.d(TAG, "Scheduled message reference id: $referenceId")
+
+        viewModelScope.launch {
+            chatRepository.addTemporaryMessage(
+                message,
+                displayName,
+                replyTo,
+                sendWithoutNotification,
+                referenceId,
+                sendAt
+            ).collect { result ->
+                if (result.isSuccess) {
+                    _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
+                } else {
+                    _sendChatMessageViewState.value = SendChatMessageErrorState(message)
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            chatRepository.sendScheduledChatMessage(
+                credentials,
+                url,
+                message,
+                displayName,
+                replyTo,
+                sendWithoutNotification,
+                referenceId,
+                threadTitle,
+                threadId,
+                sendAt
+            ).collect { result ->
+                if (result.isSuccess) {
+                    _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
+                } else {
+                    _sendChatMessageViewState.value = SendChatMessageErrorState(message)
+                }
+            }
+        }
+    }
+
+    @Suppress("LongParameterList")
+    fun updateScheduledMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        sendAt: Int,
+        replyTo: Int?,
+        sendWithoutNotification: Boolean,
+        threadTitle: String?,
+        threadId: Long?
+    ) {
+        viewModelScope.launch {
+            chatRepository.updateScheduledMessage(
+                credentials,
+                url,
+                message,
+                sendAt,
+                replyTo,
+                sendWithoutNotification,
+                threadTitle,
+                threadId
+            ).collect { result ->
+                if (result.isSuccess) {
+                    _editMessageViewState.value = EditMessageSuccessState(result.getOrNull()!!)
+                } else {
+                    _editMessageViewState.value = EditMessageErrorState
+                }
+            }
+        }
+    }
+
+    fun deleteScheduledMessage(credentials: String, url: String, messageId: Long) {
+        viewModelScope.launch {
+            chatRepository.deleteScheduledMessage(credentials, url, messageId).collect { result ->
+                if (!result.isSuccess) {
+                    Log.e(TAG, "Failed to delete scheduled message")
+                }
+            }
+        }
+    }
+
 
     companion object {
         private val TAG = MessageInputViewModel::class.java.simpleName

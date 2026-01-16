@@ -113,6 +113,9 @@ class MessageActionsDialog(
             ) &&
         !isOlderThanTwentyFourHours
 
+    private val isScheduledMessage =
+        (message.sendAt ?: 0) > (System.currentTimeMillis() / DateConstants.SECOND_DIVIDER)
+
     private var messageIsEditable = hasSpreedFeatureCapability(
         spreedCapabilities,
         SpreedFeatures.EDIT_MESSAGES
@@ -156,6 +159,10 @@ class MessageActionsDialog(
                     isOnline
             )
             initMenuOpenThread(message.isThread && chatActivity.conversationThreadId == null)
+
+            initMenuScheduledMessageInfo(isScheduledMessage)
+            initMenuRescheduleMessage(isScheduledMessage && isOnline)
+            initMenuSendNowMessage(isScheduledMessage && isOnline)
             initMenuEditMessage(isMessageEditable)
             initMenuDeleteMessage(showMessageDeletionButton && isOnline)
             initMenuForwardMessage(
@@ -405,8 +412,11 @@ class MessageActionsDialog(
                     .setMessage(areYouSure)
                     .setTitle(deleteMessage)
                     .setPositiveButton(delete) { dialog, which ->
-                        chatActivity.deleteMessage(message)
-                        dismiss()
+                        if (isScheduledMessage) {
+                            chatActivity.deleteScheduledMessage(message)
+                        } else {
+                            chatActivity.deleteMessage(message)
+                        }
                     }
                     .setNegativeButton(cancel) { dialog, which ->
                         // unused atm
@@ -428,6 +438,40 @@ class MessageActionsDialog(
         }
         dialogMessageActionsBinding.menuDeleteMessage.visibility = getVisibility(visible)
     }
+
+    private fun initMenuScheduledMessageInfo(visible: Boolean) {
+        if (visible) {
+            val scheduledTime = dateUtils.getLocalDateTimeStringFromTimestamp(
+                (message.sendAt?.toLong() ?: 0L) * DateConstants.SECOND_DIVIDER
+            )
+            dialogMessageActionsBinding.menuTextScheduledMessageInfo.text =
+                context.getString(R.string.nc_scheduled_for, scheduledTime)
+        }
+        dialogMessageActionsBinding.menuScheduledMessageInfo.visibility = getVisibility(visible)
+    }
+
+    private fun initMenuRescheduleMessage(visible: Boolean) {
+        if (visible) {
+            dialogMessageActionsBinding.menuRescheduleMessage.setOnClickListener {
+                chatActivity.rescheduleScheduledMessage(message)
+                dismiss()
+            }
+        }
+
+        dialogMessageActionsBinding.menuRescheduleMessage.visibility = getVisibility(visible)
+    }
+
+    private fun initMenuSendNowMessage(visible: Boolean) {
+        if (visible) {
+            dialogMessageActionsBinding.menuSendNowMessage.setOnClickListener {
+                chatActivity.sendScheduledMessageNow(message)
+                dismiss()
+            }
+        }
+
+        dialogMessageActionsBinding.menuSendNowMessage.visibility = getVisibility(visible)
+    }
+
 
     private fun initMenuEditMessage(visible: Boolean) {
         dialogMessageActionsBinding.menuEditMessage.setOnClickListener {

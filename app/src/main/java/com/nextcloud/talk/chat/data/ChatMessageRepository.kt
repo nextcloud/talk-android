@@ -12,7 +12,9 @@ import com.nextcloud.talk.chat.data.io.LifecycleAwareManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
+import com.nextcloud.talk.models.json.generic.GenericOverall
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 
@@ -107,7 +109,8 @@ interface ChatMessageRepository : LifecycleAwareManager {
         displayName: String,
         replyTo: Int,
         sendWithoutNotification: Boolean,
-        referenceId: String
+        referenceId: String,
+        sendAt: Int?
     ): Flow<Result<ChatMessage?>>
 
     suspend fun editChatMessage(credentials: String, url: String, text: String): Flow<Result<ChatOverallSingleMessage>>
@@ -117,4 +120,40 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun sendUnsentChatMessages(credentials: String, url: String)
 
     suspend fun deleteTempMessage(chatMessage: ChatMessage)
+
+    @Suppress("LongParameterList")
+    suspend fun sendScheduledChatMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        displayName: String,
+        replyTo: Int?,
+        sendWithoutNotification: Boolean,
+        referenceId: String,
+        threadTitle: String?,
+        threadId: Long?,
+        sendAt: Int?
+    ): Flow<Result<ChatMessage?>>
+
+    @Suppress("LongParameterList")
+    suspend fun updateScheduledMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        sendAt: Int,
+        replyTo:Int?,
+        sendWithoutNotification: Boolean,
+        threadTitle: String?,
+        threadId: Long?
+    ): Flow<Result<ChatOverallSingleMessage>>
+
+    suspend fun deleteScheduledMessage(
+        credentials: String,
+        url: String,
+        messageId: Long
+    ): Flow<Result<GenericOverall>>
+
+    fun getScheduledMessages(currentTimeSeconds: Long): Flow<List<ChatMessage>>
+
 }
+

@@ -91,6 +91,15 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
     override fun deleteMessagesOlderThan(internalConversationId: String, messageId: Long) { /* */ }
 
     override fun getNumberOfThreadReplies(internalConversationId: String, threadId: Long): Int = 0
+    override fun deleteChatMessageById(internalConversationId: String, messageId: Long) {
+
+    }
+
+    override fun getScheduledMessagesForConversation(
+        internalConversationId: String,
+        currentTimeSeconds: Long,
+        threadId: Long?
+    ): Flow<List<ChatMessageEntity>> = flowOf()
 }
 
 class DummyUserDaoImpl : UsersDao() {

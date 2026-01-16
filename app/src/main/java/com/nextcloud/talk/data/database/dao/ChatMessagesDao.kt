@@ -221,4 +221,29 @@ interface ChatMessagesDao {
     """
     )
     fun getNumberOfThreadReplies(internalConversationId: String, threadId: Long): Int
+
+    @Query(
+        value = """
+            DELETE FROM ChatMessages
+            WHERE internalConversationId = :internalConversationId
+            AND id = :messageId
+        """
+    )
+    fun deleteChatMessageById(internalConversationId: String, messageId: Long)
+
+    @Query(
+        """
+        SELECT *
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND sendAt > :currentTimeSeconds
+        AND (:threadId IS NULL OR threadId = :threadId)
+        ORDER BY sendAt ASC, id ASC
+        """
+    )
+    fun getScheduledMessagesForConversation(
+        internalConversationId: String,
+        currentTimeSeconds: Long,
+        threadId: Long?
+    ): Flow<List<ChatMessageEntity>>
 }

@@ -543,4 +543,27 @@ object ApiUtils {
 
     fun getUrlForThreadNotificationLevel(version: Int, baseUrl: String?, token: String, threadId: Int): String =
         getUrlForChat(version, baseUrl, token) + "/threads" + "/$threadId" + "/notify"
+
+    // fun getUrlForScheduledChatMessages(version: Int, baseUrl: String?, token: String): String =
+    //     getUrlForChat(version, baseUrl, token) + "/schedule"
+    //
+    // fun getUrlForScheduledChatMessage(version: Int, baseUrl: String?, token: String, messageId: Long): String =
+    //     getUrlForScheduledChatMessages(version, baseUrl, token) + "/$messageId"
+    //
+    // fun getUrlForScheduledChatMessageSend(
+    //     version: Int,
+    //     baseUrl: String?,
+    //     token: String,
+    //     sendAt: Long
+    // ): String = getUrlForScheduledChatMessages(version, baseUrl, token) + "?sendAt=$sendAt"
+
+
+    fun getUrlForScheduledMessages(version: Int, baseUrl: String?, token: String): String =
+        getUrlForChat(version, baseUrl, token) + "/schedule"
+
+    fun getUrlForScheduledMessage(version: Int, baseUrl: String?, token: String, messageId: String): String =
+        getUrlForScheduledMessages(version, baseUrl, token) + "/" + messageId
+
+    fun getUrlForScheduledMessagesFromChat(chatUrl: String): String = "$chatUrl/scheduled"
+
 }

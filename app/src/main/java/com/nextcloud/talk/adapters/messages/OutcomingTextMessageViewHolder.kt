@@ -38,6 +38,7 @@ import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.TextMatchers
@@ -172,7 +173,13 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             binding.checkboxContainer.visibility = View.VISIBLE
         }
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-        if (message.lastEditTimestamp != 0L && !message.isDeleted) {
+        val currentTimeSeconds = System.currentTimeMillis() / DateConstants.SECOND_DIVIDER
+        val scheduledTime = message.sendAt?.takeIf { it > currentTimeSeconds }
+
+        if (scheduledTime != null) {
+            binding.messageEditIndicator.visibility = View.GONE
+            binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(scheduledTime.toLong())
+        } else if (message.lastEditTimestamp != 0L && !message.isDeleted) {
             binding.messageEditIndicator.visibility = View.VISIBLE
             binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp!!)
         } else {
@@ -203,7 +210,9 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         binding.checkMark.visibility = View.INVISIBLE
         binding.sendingProgress.visibility = View.GONE
 
-        if (message.sendStatus == SendStatus.FAILED) {
+        if (scheduledTime != null) {
+            updateStatus(R.drawable.baseline_schedule_24, context.resources?.getString(R.string.nc_message_scheduled))
+        } else if (message.sendStatus == SendStatus.FAILED) {
             updateStatus(R.drawable.baseline_error_outline_24, context.resources?.getString(R.string.nc_message_failed))
         } else if (message.isTemporary) {
             updateStatus(R.drawable.baseline_schedule_24, context.resources?.getString(R.string.nc_message_sending))
@@ -250,7 +259,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         val checkBoxContainer = binding.checkboxContainer
 
         val isOlderThanTwentyFourHours = chatMessage
-            .createdAt
+            .getCreatedAt()
             .before(
                 Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_EDIT_MESSAGE)
             )
