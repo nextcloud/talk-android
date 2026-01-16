@@ -109,7 +109,6 @@ class WaveformSeekBar : AppCompatSeekBar {
                     paint.color = if (progress * max < getProgress()) primary else secondary
                     canvas.drawLine(x, midpoint - y, x, midpoint + y, paint)
                 }
-
             }
         }
     }
