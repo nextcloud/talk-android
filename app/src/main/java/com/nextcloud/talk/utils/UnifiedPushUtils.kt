@@ -49,6 +49,11 @@ object UnifiedPushUtils {
         }
     }
 
+    @JvmStatic
+    fun registerWithCurrentDistributor(context: Context) {
+        enqueuePushWorker(context, true, "registerWithCurrentDistributor")
+    }
+
     /**
      * Pick another distributor, register all accounts that support webpush
      *

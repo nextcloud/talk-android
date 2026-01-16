@@ -42,6 +42,7 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
+import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
@@ -58,6 +59,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.unifiedpush.android.connector.UnifiedPush
 import java.net.CookieManager
 import javax.inject.Inject
 
@@ -390,8 +392,34 @@ class AccountVerificationActivity : BaseActivity() {
     }
 
     private fun setupPushNotifications() {
-        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
+        // This isn't a first account, and UnifiedPush is enabled.
+        if (appPreferences.useUnifiedPush) {
+            if (userManager.getUserWithId(internalAccountId).blockingGet().hasWebPushCapability) {
+                UnifiedPushUtils.registerWithCurrentDistributor(
+                    context
+                )
+                eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
+            } else {
+                Log.w(TAG, "Warning: disabling UnifiedPush, user server doesn't support web push.")
+                eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, false))
+            }
+        // This may or may not be a first account, use Play Services if available
+        } else if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
             ClosedInterfaceImpl().setUpPushTokenRegistration()
+        // This is a first user, we have a UnifiedPush distributor,
+        // and the server supports web push
+        } else if (userManager.users.blockingGet().size == 1 &&
+            UnifiedPush.getDistributors(context).isNotEmpty() &&
+            userManager.getUserWithId(internalAccountId).blockingGet().hasWebPushCapability) {
+            UnifiedPushUtils.useDefaultDistributor(this) { distrib ->
+                distrib?.let {
+                    Log.d(TAG, "UnifiedPush registered with $distrib")
+                    eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
+                } ?: run {
+                    Log.d(TAG, "No UnifiedPush distrib selected")
+                    eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, false))
+                }
+            }
         } else {
             Log.w(TAG, "Skipping push registration.")
             eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, false))
