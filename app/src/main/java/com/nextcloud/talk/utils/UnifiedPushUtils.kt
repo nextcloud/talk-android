@@ -12,15 +12,20 @@ import android.content.Context
 import android.os.Parcel
 import android.util.Log
 import androidx.work.Data
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequest
+import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import org.unifiedpush.android.connector.UnifiedPush
 import org.unifiedpush.android.connector.data.PushEndpoint
+import java.util.concurrent.TimeUnit
 
 object UnifiedPushUtils {
     private val TAG: String = UnifiedPushUtils::class.java.getSimpleName()
+    const val DAILY: Long = 24
+    const val FLEX_INTERVAL: Long = 10
 
     /**
      * Use default distributor, register all accounts that support webpush
@@ -99,6 +104,33 @@ object UnifiedPushUtils {
             .setInputData(data)
             .build()
         WorkManager.getInstance(context).enqueue(pushRegistrationWork)
+    }
+
+    /**
+     * Call only if [com.nextcloud.talk.utils.preferences.AppPreferences.getUseUnifiedPush],
+     * else [ClosedInterfaceImpl.setUpPushTokenRegistration] is called and does the same as
+     * this function
+     */
+    fun setPeriodicPushRegistrationWorker(context: Context) {
+        val data = Data.Builder()
+            .putString(PushRegistrationWorker.ORIGIN, "UnifiedPushUtils#setPeriodicPushRegistrationWorker")
+            .build()
+        val periodicPushRegistrationWork = PeriodicWorkRequest.Builder(
+            PushRegistrationWorker::class.java,
+            DAILY,
+            TimeUnit.HOURS,
+            FLEX_INTERVAL,
+            TimeUnit.HOURS
+        )
+            .setInputData(data)
+            .build()
+
+        WorkManager.getInstance(context)
+            .enqueueUniquePeriodicWork(
+                "periodicPushRegistrationWorker",
+                ExistingPeriodicWorkPolicy.UPDATE,
+                periodicPushRegistrationWork
+            )
     }
 
     /**

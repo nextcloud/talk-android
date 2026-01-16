@@ -38,6 +38,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.SecurityUtils
+import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import io.reactivex.Observer
@@ -260,7 +261,11 @@ class MainActivity :
 
                 override fun onSuccess(users: List<User>) {
                     if (users.isNotEmpty()) {
-                        ClosedInterfaceImpl().setUpPushTokenRegistration()
+                        if (appPreferences.useUnifiedPush) {
+                            UnifiedPushUtils.setPeriodicPushRegistrationWorker(this@MainActivity)
+                        } else {
+                            ClosedInterfaceImpl().setUpPushTokenRegistration()
+                        }
                         runOnUiThread {
                             openConversationList()
                         }
