@@ -5,12 +5,11 @@
   ~ SPDX-FileCopyrightText: 2024 Julius Linus <juliuslinus1@gmail.com>
   ~ SPDX-License-Identifier: GPL-3.0-or-later
   -->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -18,13 +17,13 @@
         android:id="@+id/voice_preview_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/standard_margin"
-        android:orientation="horizontal"
-        android:gravity="center"
         android:layout_marginHorizontal="@dimen/standard_margin"
+        android:layout_marginTop="@dimen/standard_margin"
         android:background="@drawable/shape_grouped_outcoming_message"
-        tools:backgroundTint="@color/nc_grey"
+        android:gravity="center"
+        android:orientation="horizontal"
         android:visibility="gone"
+        tools:backgroundTint="@color/nc_grey"
         tools:visibility="visible">
 
         <com.google.android.material.button.MaterialButton
@@ -48,8 +47,8 @@
             android:layout_marginEnd="@dimen/standard_margin"
             android:thumb="@drawable/voice_message_outgoing_seek_bar_slider"
             tools:progress="50"
-            tools:progressTint="@color/hwSecurityRed"
-            tools:progressBackgroundTint="@color/blue"/>
+            tools:progressBackgroundTint="@color/blue"
+            tools:progressTint="@color/hwSecurityRed" />
 
     </LinearLayout>
 
@@ -57,57 +56,50 @@
         android:id="@+id/audioRecordDuration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@color/low_emphasis_text"
+        android:background="@color/bg_default"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
-        android:background="@color/bg_default"
-        />
+        android:textColor="@color/low_emphasis_text"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center"
-        android:weightSum="3"
-        >
+        android:orientation="horizontal"
+        android:weightSum="3">
 
         <ImageView
             android:id="@+id/deleteVoiceRecording"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginVertical="@dimen/standard_margin"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_delete"
-            android:contentDescription="@string/delete_voice_recording"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:layout_weight="1"
-            />
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/delete_voice_recording"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_delete" />
 
         <com.nextcloud.talk.ui.MicInputCloud
             android:id="@+id/micInputCloud"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:playIcon="@drawable/ic_refresh"
-            app:pauseIcon="@drawable/baseline_stop_24"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:layout_weight="1"
-            />
-
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            app:pauseIcon="@drawable/baseline_stop_24"
+            app:playIcon="@drawable/ic_refresh" />
 
         <ImageView
             android:id="@+id/sendVoiceRecording"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginVertical="@dimen/standard_margin"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_send"
-            android:contentDescription="@string/nc_send_voice_recording"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:layout_weight="1"
-            />
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/nc_send_voice_recording"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_send" />
     </LinearLayout>
-
 
 </LinearLayout>
