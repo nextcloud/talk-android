@@ -84,6 +84,7 @@ import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT
@@ -305,7 +306,8 @@ class ConversationsListActivity : BaseActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             !platformPermissionUtil.isPostNotificationsPermissionGranted() &&
             (ClosedInterfaceImpl().isGooglePlayServicesAvailable ||
-                appPreferences.useUnifiedPush)
+                appPreferences.useUnifiedPush ||
+                UnifiedPushUtils.hasEmbeddedDistributor(context))
         ) {
             requestPermissions(
                 arrayOf(Manifest.permission.POST_NOTIFICATIONS),
