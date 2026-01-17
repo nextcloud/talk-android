@@ -388,7 +388,10 @@ class SettingsActivity :
     @SuppressLint("StringFormatInvalid")
     @Suppress("LongMethod")
     private fun setupNotificationPermissionSettings() {
-        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable || appPreferences.useUnifiedPush) {
+        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable ||
+            appPreferences.useUnifiedPush ||
+            UnifiedPushUtils.hasEmbeddedDistributor(context)
+        ) {
             binding.settingsPushOnlyWrapper.visibility = View.VISIBLE
             binding.settingsGplayNotAvailable.visibility = View.GONE
             binding.settingsPushNotAvailable.visibility = View.GONE
