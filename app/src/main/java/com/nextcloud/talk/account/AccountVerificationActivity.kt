@@ -416,6 +416,7 @@ class AccountVerificationActivity : BaseActivity() {
             UnifiedPushUtils.useDefaultDistributor(this) { distrib ->
                 distrib?.let {
                     Log.d(TAG, "UnifiedPush registered with $distrib")
+                    appPreferences.useUnifiedPush = true
                     eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
                 } ?: run {
                     Log.d(TAG, "No UnifiedPush distrib selected")
