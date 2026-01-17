@@ -11,6 +11,9 @@ package com.nextcloud.talk.jobs
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
@@ -23,9 +26,11 @@ import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.PushUtils
 import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.UnifiedPushUtils.toPushEndpoint
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.serialization.json.Json
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import org.unifiedpush.android.connector.UnifiedPush
@@ -84,6 +89,7 @@ class PushRegistrationWorker(
         val userId = inputData.getLong(USER_ID, -1)
         val activationToken = inputData.getString(ACTIVATION_TOKEN)
         val pushEndpoint = inputData.getByteArray(UNIFIEDPUSH_ENDPOINT)?.toPushEndpoint()
+        val unregisterWebPush = inputData.getBoolean(UNREGISTER_WEBPUSH, false)
         val useUnifiedPush = inputData.getBoolean(USE_UNIFIEDPUSH, defaultUseUnifiedPush())
         if (userId != -1L && activationToken != null) {
             Log.d(TAG, "PushRegistrationWorker called via $origin (webPushActivationWork)")
@@ -91,6 +97,9 @@ class PushRegistrationWorker(
         } else  if (userId != -1L && pushEndpoint != null) {
             Log.d(TAG, "PushRegistrationWorker called via $origin (webPushWork)")
             webPushWork(userId, pushEndpoint)
+        } else if (userId != -1L && unregisterWebPush) {
+            Log.d(TAG, "PushRegistrationWorker called via $origin (webPushUnregistrationWork)")
+            webPushUnregistrationWork(userId)
         } else if (useUnifiedPush) {
             Log.d(TAG, "PushRegistrationWorker called via $origin (unifiedPushWork)")
             unifiedPushWork()
@@ -146,6 +155,27 @@ class PushRegistrationWorker(
                     Log.e(TAG, "An error occurred while registering for web push", e)
                 }
             }
+    }
+
+    /**
+     * Unregister web push for user
+     *
+     * Disable UnifiedPush if we don't have a distributor anymore
+     */
+    @SuppressLint("CheckResult")
+    private fun webPushUnregistrationWork(id: Long) {
+        userManager.getUserWithId(id).map { user ->
+            unregisterWebPushForAccount(user)
+                .toList()
+                .subscribeOn(Schedulers.io())
+                .subscribe { _, e ->
+                    e?.let {
+                        Log.e(TAG, "An error occurred while unregistering for web push", e)
+                    } ?: {
+                        Log.d(TAG, "${user.userId} unregistered from web push")
+                    }
+                }
+        }
     }
 
     /**
@@ -205,8 +235,29 @@ class PushRegistrationWorker(
             if (it == null) {
                 Log.d(TAG, "No saved distributor found: disabling UnifiedPush")
                 preferences.useUnifiedPush = false
+                if (inputData.keyValueMap.any { (key, _) ->
+                    RESTART_ON_DISTRIB_UNINSTALL.contains(key)
+                }) {
+                    enqueueWorkerWithoutData("defaultUseDistributor")
+                }
             }
         } != null
+
+    /**
+     * Run the default worker, to use FCM if available
+     * when the distributor has been uninstalled
+     */
+    private fun enqueueWorkerWithoutData(origin: String) {
+        // Run the default worker, to use FCM if available
+        val data = Data.Builder()
+            .putString(ORIGIN, "PushRegistrationWorker#$origin")
+            .build()
+        val periodicPushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
+            .setInputData(data)
+            .build()
+        WorkManager.getInstance(applicationContext)
+            .enqueue(periodicPushRegistrationWork)
+    }
 
     /**
      * Register proxy push for all accounts if the devices support the Play Services
@@ -384,5 +435,17 @@ class PushRegistrationWorker(
         const val ACTIVATION_TOKEN = "activation_token"
         const val USE_UNIFIEDPUSH = "use_unifiedpush"
         const val UNIFIEDPUSH_ENDPOINT = "unifiedpush_endpoint"
+        const val UNREGISTER_WEBPUSH = "unregister_webpush"
+
+        /**
+         * If any of these actions are present when we observe the distributor is uninstalled,
+         * we enqueue a worker with default settings, to fallback to FCM if needed
+         */
+        private val RESTART_ON_DISTRIB_UNINSTALL = listOf(
+            ACTIVATION_TOKEN,
+            USE_UNIFIEDPUSH,
+            UNIFIEDPUSH_ENDPOINT,
+            UNREGISTER_WEBPUSH
+        )
     }
 }
