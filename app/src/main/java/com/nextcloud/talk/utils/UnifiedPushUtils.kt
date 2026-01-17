@@ -105,6 +105,26 @@ object UnifiedPushUtils {
         enqueuePushWorker(context, false, "disableExternalUnifiedPush")
     }
 
+    /**
+     * Check if we have a FCM embedded distributor, to get push notifications,
+     * using the Play services, using Web Push
+     *
+     * Available on the generic flavor only
+     */
+    @JvmStatic
+    fun hasEmbeddedDistributor(context: Context) =
+        context.packageName in UnifiedPush.getDistributors(context)
+
+    @JvmStatic
+    fun useEmbeddedDistributor(context: Context) =
+        UnifiedPush.saveDistributor(context, context.packageName)
+
+    @JvmStatic
+    fun getExternalDistributors(context: Context) =
+        UnifiedPush.getDistributors(context).filter {
+            it != context.packageName
+        }
+
     private fun enqueuePushWorker(context: Context, useUnifiedPush: Boolean, origin: String) {
         val data = Data.Builder()
             .putString(PushRegistrationWorker.ORIGIN, "UnifiedPushUtils#$origin")

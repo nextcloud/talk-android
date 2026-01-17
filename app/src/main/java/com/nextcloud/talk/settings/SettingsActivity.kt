@@ -317,7 +317,7 @@ class SettingsActivity :
     }
 
     private fun showUnifiedPushToggle(): Boolean {
-        return UnifiedPush.getDistributors(this).isNotEmpty() &&
+        return UnifiedPushUtils.getExternalDistributors(this).isNotEmpty() &&
             userManager.users.blockingGet().all { it.hasWebPushCapability }
     }
 
@@ -332,7 +332,7 @@ class SettingsActivity :
             binding.settingsUnifiedpush.visibility = View.GONE
             binding.settingsUnifiedpushService.visibility = View.GONE
         } else {
-            val nDistrib = UnifiedPush.getDistributors(context).size
+            val nDistrib = UnifiedPushUtils.getExternalDistributors(context).size
             binding.settingsUnifiedpush.visibility = View.VISIBLE
             binding.settingsUnifiedpushSwitch.isChecked = appPreferences.useUnifiedPush
             binding.settingsUnifiedpush.setOnClickListener {

@@ -50,6 +50,7 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.PushUtils.Companion.LATEST_PUSH_REGISTRATION_AT_PUSH_PROXY
 import com.nextcloud.talk.utils.PushUtils.Companion.LATEST_PUSH_REGISTRATION_AT_SERVER
+import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
@@ -103,7 +104,7 @@ class DiagnoseActivity : BaseActivity() {
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
         isGooglePlayServicesAvailable = ClosedInterfaceImpl().isGooglePlayServicesAvailable
-        nUnifiedPushServices = UnifiedPush.getDistributors(this).size
+        nUnifiedPushServices = UnifiedPushUtils.getExternalDistributors(this).size
         offerUnifiedPush = nUnifiedPushServices > 0 &&
             userManager.users.blockingGet().all { it.hasWebPushCapability }
         useUnifiedPush = appPreferences.useUnifiedPush

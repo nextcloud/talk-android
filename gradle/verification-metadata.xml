@@ -236,7 +236,10 @@
          <trusted-key id="7B121B76A7ED6CE6E60AD51784E913A8E3A748C0" group="org.bouncycastle"/>
          <trusted-key id="7B79ADD11F8A779FE90FD3D0893A028475557671" group="com.gradle" name="develocity-gradle-plugin" version="3.19.2"/>
          <trusted-key id="7E22D50A7EBD9D2CD269B2D4056ACA74D46000BF" group="io.netty"/>
-         <trusted-key id="7F0C6700F82B97092092AFF84DA93C0B57A98B11" group="org.unifiedpush.android" name="connector" version="3.3.1"/>
+         <trusted-key id="7F0C6700F82B97092092AFF84DA93C0B57A98B11">
+            <trusting group="org.unifiedpush.android" name="connector" version="3.3.1"/>
+            <trusting group="org.unifiedpush.android" name="embedded-fcm-distributor" version="3.1.0-rc1"/>
+         </trusted-key>
          <trusted-key id="7F36E793AE3252E5D9E9B98FEE9E7DC9D92FC896" group="com.google.errorprone"/>
          <trusted-key id="8461EFA0E74ABAE010DE66994EB27DB2A3B88B8B">
             <trusting group="androidx.activity"/>
