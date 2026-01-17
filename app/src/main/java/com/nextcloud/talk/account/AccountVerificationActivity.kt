@@ -408,14 +408,19 @@ class AccountVerificationActivity : BaseActivity() {
         // - By default, use the Play Services if available
         // - If this is a first user, and we have an External UnifiedPush distributor,
         //    and the server supports it: we use it
+        // - Else if there is an embedded distributor (so this is a generic flavor, and the
+        //    Play services are installed) => we use it for all accounts that support web push
         // - Else we skip push registrations
         if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
             ClosedInterfaceImpl().setUpPushTokenRegistration()
             eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
         } else if (userManager.users.blockingGet().size == 1 &&
-            UnifiedPush.getDistributors(context).isNotEmpty() &&
+            UnifiedPushUtils.getExternalDistributors(context).isNotEmpty() &&
             userManager.getUserWithId(internalAccountId).blockingGet().hasWebPushCapability) {
             useUnifiedPushIntroduced()
+        } else if (UnifiedPushUtils.hasEmbeddedDistributor(context) &&
+            userManager.users.blockingGet().any { it.hasWebPushCapability }) {
+            useEmbeddedUnifiedPush()
         } else {
             Log.w(TAG, "Skipping push registration.")
             eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, false))
@@ -433,11 +438,31 @@ class AccountVerificationActivity : BaseActivity() {
             dialogForUnifiedPush { res ->
                 if (res) {
                     useUnifiedPush()
+                } else {
+                    fallbackToEmbeddedUnifiedPush()
                 }
             }
         } else {
             useUnifiedPush()
         }
+    }
+
+    /**
+     * Check if there is an embedded distributor, and use it if present,
+     * else, send EventStatus PUSH_REGISTRATION with success=false
+     */
+    private fun fallbackToEmbeddedUnifiedPush() {
+        if (UnifiedPushUtils.hasEmbeddedDistributor(context)) {
+            useEmbeddedUnifiedPush()
+        } else {
+            eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, false))
+        }
+    }
+
+    private fun useEmbeddedUnifiedPush() {
+        UnifiedPushUtils.useEmbeddedDistributor(context)
+        UnifiedPushUtils.registerWithCurrentDistributor(context)
+        eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
     }
 
     private fun useUnifiedPush() {
@@ -448,7 +473,7 @@ class AccountVerificationActivity : BaseActivity() {
                 eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
             } ?: run {
                 Log.d(TAG, "No UnifiedPush distrib selected")
-                eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, false))
+                fallbackToEmbeddedUnifiedPush()
             }
         }
     }
