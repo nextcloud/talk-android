@@ -395,20 +395,21 @@ class AccountVerificationActivity : BaseActivity() {
         // This isn't a first account, and UnifiedPush is enabled.
         if (appPreferences.useUnifiedPush) {
             if (userManager.getUserWithId(internalAccountId).blockingGet().hasWebPushCapability) {
-                UnifiedPushUtils.registerWithCurrentDistributor(
-                    context
-                )
+                UnifiedPushUtils.registerWithCurrentDistributor(context)
                 eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
+                return
             } else {
                 Log.w(TAG, "Warning: disabling UnifiedPush, user server doesn't support web push.")
-                eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, false))
                 appPreferences.useUnifiedPush = false
             }
-        // This may or may not be a first account, use Play Services if available
-        } else if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
+        }
+
+        // - By default, use the Play Services if available
+        // - If this is a first user, and we have an External UnifiedPush distributor,
+        //    and the server supports it: we use it
+        // - Else we skip push registrations
+        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
             ClosedInterfaceImpl().setUpPushTokenRegistration()
-        // This is a first user, we have a UnifiedPush distributor,
-        // and the server supports web push
         } else if (userManager.users.blockingGet().size == 1 &&
             UnifiedPush.getDistributors(context).isNotEmpty() &&
             userManager.getUserWithId(internalAccountId).blockingGet().hasWebPushCapability) {
