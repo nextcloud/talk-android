@@ -239,6 +239,7 @@ class PushRegistrationWorker(
                     RESTART_ON_DISTRIB_UNINSTALL.contains(key)
                 }) {
                     enqueueWorkerWithoutData("defaultUseDistributor")
+                    enqueueNotifUnifiedPushDisabled()
                 }
             }
         } != null
@@ -257,6 +258,29 @@ class PushRegistrationWorker(
             .build()
         WorkManager.getInstance(applicationContext)
             .enqueue(periodicPushRegistrationWork)
+    }
+
+    /**
+     * Show a notification to the user to inform UnifiedPush has been disabled
+     */
+    @SuppressLint("CheckResult")
+    private fun enqueueNotifUnifiedPushDisabled() {
+        val user = userManager.users.blockingGet().first()
+        Log.d(TAG, "Sending warning notification with ${user.userId}")
+        val notif = hashMapOf(
+            "subject" to "UnifiedPush disabled",
+            "text" to "You have been unregistered from the distributor. Re-enable in the settings if needed",
+            "app" to "internal",
+            "type" to "admin_notifications"
+        )
+        val messageData = Data.Builder()
+            .putLong(BundleKeys.KEY_NOTIFICATION_USER_ID, user.id!!)
+            .putString(BundleKeys.KEY_NOTIFICATION_CLEARTEXT_SUBJECT, Json.encodeToString(notif))
+            .build()
+        val notificationWork =
+            OneTimeWorkRequest.Builder(NotificationWorker::class.java).setInputData(messageData)
+                .build()
+        WorkManager.getInstance(applicationContext).enqueue(notificationWork)
     }
 
     /**

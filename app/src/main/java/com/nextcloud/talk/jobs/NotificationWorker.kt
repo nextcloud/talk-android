@@ -174,9 +174,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         } else if (isAdminTalkNotification()) {
             Log.d(TAG, "pushMessage.type: " + pushMessage.type)
             when (pushMessage.type) {
-                TYPE_ADMIN_NOTIFICATIONS -> handleTestPushMessage()
+                TYPE_ADMIN_NOTIFICATIONS -> handleInternalPushMessage()
                 else -> Log.e(TAG, pushMessage.type + " is not handled")
             }
+        } else if (isInternal()) {
+            handleInternalPushMessage()
         } else {
             Log.d(TAG, "a pushMessage that is not for spreed was received.")
         }
@@ -184,7 +186,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return Result.success()
     }
 
-    private fun handleTestPushMessage() {
+    private fun handleInternalPushMessage() {
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = getIntentFlags()
         showNotification(intent, null)
@@ -374,6 +376,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     private fun isTalkNotification() = SPREED_APP == pushMessage.app
+    private fun isInternal() = INTERNAL == pushMessage.app
 
     private fun isAdminTalkNotification() = ADMIN_NOTIFICATION_TALK == pushMessage.app
 
@@ -530,11 +533,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             notificationBuilder.setLargeIcon(getLargeIcon())
         }
 
-        val activeStatusBarNotification = findNotificationForRoom(
-            context,
-            user,
-            pushMessage.id!!
-        )
+        val activeStatusBarNotification = pushMessage.id?.let {
+            findNotificationForRoom(
+                context,
+                user,
+                it
+            )
+        }
 
         // NOTE - systemNotificationId is an internal ID used on the device only.
         // It is NOT the same as the notification ID used in communication with the server.
@@ -1037,6 +1042,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         private const val TYPE_REMINDER = "reminder"
         private const val TYPE_ADMIN_NOTIFICATIONS = "admin_notifications"
         private const val SPREED_APP = "spreed"
+        private const val INTERNAL = "internal"
         private const val ADMIN_NOTIFICATION_TALK = "admin_notification_talk"
         private const val TIMER_START = 1
         private const val TIMER_COUNT = 12
