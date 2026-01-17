@@ -61,7 +61,8 @@ class UnifiedPushService: PushService() {
     }
 
     override fun onRegistrationFailed(reason: FailedReason, instance: String) {
-        Log.d(TAG, "Registration failed for $instance")
+        Log.w(TAG, "Registration failed for $instance, reason=$reason")
+        // Do nothing, we let the periodic worker try to re-register later
     }
 
     override fun onUnregistered(instance: String) {
