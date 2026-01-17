@@ -80,6 +80,7 @@ class DiagnoseActivity : BaseActivity() {
     lateinit var platformPermissionUtil: PlatformPermissionUtil
 
     private var isGooglePlayServicesAvailable: Boolean = false
+    private var useEmbeddedDistrib: Boolean = false
 
     private var nUnifiedPushServices = 0
     private var offerUnifiedPush: Boolean = false
@@ -108,6 +109,7 @@ class DiagnoseActivity : BaseActivity() {
         offerUnifiedPush = nUnifiedPushServices > 0 &&
             userManager.users.blockingGet().all { it.hasWebPushCapability }
         useUnifiedPush = appPreferences.useUnifiedPush
+        useEmbeddedDistrib = UnifiedPushUtils.hasEmbeddedDistributor(context) && !useUnifiedPush
         unifiedPushService = UnifiedPush.getAckDistributor(this) ?: "N/A"
 
         setContent {
@@ -161,7 +163,9 @@ class DiagnoseActivity : BaseActivity() {
                                 viewState = viewState,
                                 onTestPushClick = { diagnoseViewModel.fetchTestPushResult() },
                                 onDismissDialog = { diagnoseViewModel.dismissDialog() },
-                                showTestPushButton = isGooglePlayServicesAvailable || useUnifiedPush,
+                                showTestPushButton = isGooglePlayServicesAvailable ||
+                                    useUnifiedPush ||
+                                    useEmbeddedDistrib,
                                 isOnline = isOnline
                             )
                         }
@@ -255,7 +259,7 @@ class DiagnoseActivity : BaseActivity() {
             value = Build.VERSION.SDK_INT.toString()
         )
 
-        if (isGooglePlayServicesAvailable) {
+        if (isGooglePlayServicesAvailable || useEmbeddedDistrib) {
             addDiagnosisEntry(
                 key = context.resources.getString(R.string.nc_diagnose_gplay_available_title),
                 value = context.resources.getString(R.string.nc_diagnose_gplay_available_yes)
@@ -302,7 +306,7 @@ class DiagnoseActivity : BaseActivity() {
             value = translateBoolean(useUnifiedPush)
         )
 
-        if (useUnifiedPush) {
+        if (useUnifiedPush || useEmbeddedDistrib) {
             setupAppValuesForPush()
             setupAppValuesForUnifiedPush()
         } else if (isGooglePlayServicesAvailable) {
