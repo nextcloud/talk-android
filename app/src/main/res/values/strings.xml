@@ -232,6 +232,7 @@ How to translate with transifex:
     <string name="nc_diagnosis_offer_unifiedpush" translatable="false">Offer UnifiedPush</string>
     <string name="nc_diagnosis_use_unifiedpush" translatable="false">Use UnifiedPush</string>
     <string name="nc_diagnosis_unifiedpush_service" translatable="false">UnifiedPush service</string>
+    <string name="nc_diagnosis_unifiedpush_latest_endpoint" translatable="false">Latest endpoint received</string>
     <string name="nc_diagnosis_server_supports_webpush" translatable="false">Server supports webpush?</string>
     <string name="nc_diagnose_push_available_no" translatable="false">UnifiedPush is disabled and Google Play services are not available. Notifications are not supported</string>
     <string name="nc_diagnosis_battery_optimization_title" translatable="false">Battery settings</string>

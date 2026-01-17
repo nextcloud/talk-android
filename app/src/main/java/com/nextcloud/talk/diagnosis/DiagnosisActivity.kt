@@ -359,6 +359,20 @@ class DiagnosisActivity : BaseActivity() {
             key = getString(R.string.nc_diagnosis_unifiedpush_service),
             value = unifiedPushService
         )
+
+        addDiagnosisEntry(
+            key = context.resources.getString(R.string.nc_diagnosis_unifiedpush_latest_endpoint),
+            value = if (appPreferences.unifiedPushLatestEndpoint != null &&
+                appPreferences.unifiedPushLatestEndpoint != 0L
+            ) {
+                DisplayUtils.unixTimeToHumanReadable(
+                    appPreferences
+                        .unifiedPushLatestEndpoint
+                )
+            } else {
+                context.resources.getString(R.string.nc_common_unknown)
+            }
+        )
     }
 
     @Suppress("Detekt.LongMethod")
