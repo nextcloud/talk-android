@@ -493,6 +493,7 @@ public abstract class SignalingMessageReceiver {
         participant.setInCall(Long.parseLong(participantMap.get("inCall").toString()));
         participant.setLastPing(Long.parseLong(participantMap.get("lastPing").toString()));
         participant.setSessionId(participantMap.get("sessionId").toString());
+        participant.setNextcloudSessionId(participantMap.get("nextcloudSessionId").toString());
 
         if (participantMap.get("userId") != null && !participantMap.get("userId").toString().isEmpty()) {
             participant.setUserId(participantMap.get("userId").toString());
