@@ -130,6 +130,7 @@ class PushRegistrationWorker(
      */
     @SuppressLint("CheckResult")
     private fun webPushWork(id: Long, pushEndpoint: PushEndpoint) {
+        preferences.unifiedPushLatestEndpoint = System.currentTimeMillis()
         val user = userManager.getUserWithId(id).blockingGet()
         registerWebPushForAccount(user, pushEndpoint)
             .map { (user, res) ->
