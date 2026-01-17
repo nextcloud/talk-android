@@ -567,6 +567,8 @@
     <string name="open_in_files_app">在「檔案」應用程式中開啟</string>
     <string name="open_notes">開啟筆記</string>
     <string name="open_thread">到討論串</string>
+    <string name="pin_message">釘選訊息</string>
+    <string name="pinned">已釘選</string>
     <string name="play_pause_voice_message">播放/暫停語音訊息</string>
     <string name="playback_speed_control">播放速度控制</string>
     <string name="please_continue_the_login_process_in_the_browser">請在瀏覽器中繼續登入</string>
@@ -693,7 +695,9 @@
     <string name="unarchive_hint">對話取消存檔後，預設會再次顯示。</string>
     <string name="unarchived_conversation">已解除封存 %1$s</string>
     <string name="unban">取消封鎖</string>
+    <string name="unpin_message">取消釘選訊息</string>
     <string name="unread">未讀</string>
+    <string name="until_unpin">直到取消釘選</string>
     <string name="upload_new_avatar_from_device">從裝置上傳新大頭照</string>
     <string name="user_absence">%1$s 不在辦公室，可能不會回應</string>
     <string name="user_absence_for_one_day">%1$s 今天不在辦公室</string>

@@ -459,6 +459,8 @@
     <string name="openConversations">开启对话</string>
     <string name="open_in_files_app">在 Files 应用中打开</string>
     <string name="open_thread">转到帖子</string>
+    <string name="pin_message">置顶消息</string>
+    <string name="pinned">已置顶</string>
     <string name="play_pause_voice_message">播放/暂停语音消息</string>
     <string name="polls_add_option">添加选项</string>
     <string name="polls_edit_vote">编辑投票</string>
@@ -569,7 +571,9 @@
     <string name="typing_x_others">以及另外 %1$s 个人正在输入...</string>
     <string name="unarchive_conversation">取消归档对话</string>
     <string name="unban">解除封禁</string>
+    <string name="unpin_message">取消置顶消息</string>
     <string name="unread">未读</string>
+    <string name="until_unpin">直到取消置顶</string>
     <string name="upload_new_avatar_from_device">从设备上传新头像</string>
     <string name="user_absence_replacement">接替者：</string>
     <string name="user_avatar">用户头像</string>

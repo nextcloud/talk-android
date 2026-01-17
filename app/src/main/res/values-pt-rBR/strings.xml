@@ -567,6 +567,8 @@
     <string name="open_in_files_app">Abrir no aplicativo Arquivos</string>
     <string name="open_notes">Abrir Notas</string>
     <string name="open_thread">Ir para fio</string>
+    <string name="pin_message">Fixar mensagem</string>
+    <string name="pinned">Fixada</string>
     <string name="play_pause_voice_message">Reproduzir/pausar mensagem de voz</string>
     <string name="playback_speed_control">Controle de velocidade de reprodução</string>
     <string name="please_continue_the_login_process_in_the_browser">Por favor, continue o login no navegador</string>
@@ -693,7 +695,9 @@
     <string name="unarchive_hint">Quando uma conversa for desarquivada, ela será mostrada novamente por padrão.</string>
     <string name="unarchived_conversation">%1$s desarquivado</string>
     <string name="unban">Desbanir</string>
+    <string name="unpin_message">Desfixar mensagem</string>
     <string name="unread">Não lido</string>
+    <string name="until_unpin">Até desfixar</string>
     <string name="upload_new_avatar_from_device">Carregar novo avatar do dispositivo</string>
     <string name="user_absence">%1$s está fora do escritório e pode não responder</string>
     <string name="user_absence_for_one_day">%1$s está fora do escritório hoje</string>
