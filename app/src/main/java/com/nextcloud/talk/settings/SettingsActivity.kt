@@ -330,6 +330,7 @@ class SettingsActivity :
         // we require that all the users support webpush
         if (!showUnifiedPushToggle()) {
             binding.settingsUnifiedpush.visibility = View.GONE
+            binding.settingsUnifiedpushService.visibility = View.GONE
         } else {
             val nDistrib = UnifiedPush.getDistributors(context).size
             binding.settingsUnifiedpush.visibility = View.VISIBLE
