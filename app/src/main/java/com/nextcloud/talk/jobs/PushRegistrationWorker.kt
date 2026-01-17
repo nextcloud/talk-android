@@ -232,6 +232,8 @@ class PushRegistrationWorker(
         // => we can't be acked by the distributor yet, [UnifiedPush.getAckDistributor] == null
         // So we check the SavedDistributor instead
         UnifiedPush.getSavedDistributor(applicationContext).also {
+            // It is null if the distributor has unregistered all the accounts,
+            // or if it has been uninstalled from the system
             if (it == null) {
                 Log.d(TAG, "No saved distributor found: disabling UnifiedPush")
                 preferences.useUnifiedPush = false
