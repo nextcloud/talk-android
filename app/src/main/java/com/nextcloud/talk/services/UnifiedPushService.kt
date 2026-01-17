@@ -67,6 +67,15 @@ class UnifiedPushService: PushService() {
 
     override fun onUnregistered(instance: String) {
         Log.d(TAG, "$instance unregistered")
+        val data = Data.Builder()
+            .putString(PushRegistrationWorker.ORIGIN, "UnifiedPushService#onUnregistered")
+            .putBoolean(PushRegistrationWorker.UNREGISTER_WEBPUSH, true)
+            .putLong(PushRegistrationWorker.USER_ID, instance.toLong())
+            .build()
+        val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
+            .setInputData(data)
+            .build()
+        WorkManager.getInstance(this).enqueue(pushRegistrationWork)
     }
 
     private fun onActivationToken(activationToken: String, instance: String) {
