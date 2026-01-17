@@ -567,6 +567,8 @@
     <string name="open_in_files_app">In Dateien-App öffnen</string>
     <string name="open_notes">Notizen öffnen</string>
     <string name="open_thread">Zu Thema gehen</string>
+    <string name="pin_message">Nachricht anheften</string>
+    <string name="pinned">Angeheftet</string>
     <string name="play_pause_voice_message">Sprachnachricht wiedergeben/pausieren</string>
     <string name="playback_speed_control">Steuerung der Wiedergabegeschwindigkeit</string>
     <string name="please_continue_the_login_process_in_the_browser">Bitte den Anmeldeprozess im Browser fortsetzen</string>
@@ -693,6 +695,7 @@
     <string name="unarchive_hint">Sobald eine Unterhaltung dearchiviert wurde, wird sie standardmäßig wieder angezeigt.</string>
     <string name="unarchived_conversation">%1$s dearchiviert</string>
     <string name="unban">Entsperren</string>
+    <string name="unpin_message">Nachricht ablösen</string>
     <string name="unread">Ungelesen</string>
     <string name="upload_new_avatar_from_device">Neuen Avatar vom Gerät hochladen</string>
     <string name="user_absence">%1$s ist nicht im Büro und antwortet möglicherweise nicht</string>

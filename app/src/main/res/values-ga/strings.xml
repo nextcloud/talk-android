@@ -567,6 +567,8 @@
     <string name="open_in_files_app">Oscail san aip Comhaid</string>
     <string name="open_notes">Nótaí Oscailte</string>
     <string name="open_thread">Téigh go dtí an snáithe</string>
+    <string name="pin_message">Teachtaireacht bioráin</string>
+    <string name="pinned">Bioránta</string>
     <string name="play_pause_voice_message">Seinn/cuir teachtaireacht gutha ar sos</string>
     <string name="playback_speed_control">Rialú luas athsheinm</string>
     <string name="please_continue_the_login_process_in_the_browser">Lean ar aghaidh le logáil isteach sa bhrabhsálaí</string>
@@ -693,7 +695,9 @@
     <string name="unarchive_hint">Nuair a bheidh comhrá gan chartlannú, taispeánfar arís é de réir réamhshocraithe.</string>
     <string name="unarchived_conversation">Gan chartlann %1$s</string>
     <string name="unban">Dícosc</string>
+    <string name="unpin_message">Bain teachtaireacht den bhiorán </string>
     <string name="unread">Neamhléite</string>
+    <string name="until_unpin">Go dtí go ndíphionálfar</string>
     <string name="upload_new_avatar_from_device">Íosluchtaigh avatar nua ar an teileafón</string>
     <string name="user_absence">Tá %1$s as oifig agus seans nach bhfreagróidh sé</string>
     <string name="user_absence_for_one_day">Tá %1$s as oifig inniu</string>

@@ -567,6 +567,8 @@
     <string name="open_in_files_app">Ouvrir dans l\'application Fichiers</string>
     <string name="open_notes">Ouvrir les Notes</string>
     <string name="open_thread">Aller à la conversation</string>
+    <string name="pin_message">Épingler le message</string>
+    <string name="pinned">Épinglé</string>
     <string name="play_pause_voice_message">Jouer / mettre en pause le message vocal</string>
     <string name="playback_speed_control">Contrôle de la vitesse de lecture</string>
     <string name="please_continue_the_login_process_in_the_browser">Veuillez continuer la connexion dans votre navigateur</string>
@@ -693,7 +695,9 @@
     <string name="unarchive_hint">Une fois qu\'une conversation est désarchivée, elle sera à nouveau affichée par défaut.</string>
     <string name="unarchived_conversation">%1$s non archivée</string>
     <string name="unban">Retirer le ban</string>
+    <string name="unpin_message">Désépingler le message</string>
     <string name="unread">Non lu</string>
+    <string name="until_unpin">Jusqu\'au désépinglage</string>
     <string name="upload_new_avatar_from_device">Téléverser un nouvel avatar depuis l\'appareil</string>
     <string name="user_absence">%1$s est absent et pourrait ne pas répondre.</string>
     <string name="user_absence_for_one_day">%1$s est absent aujourd\'hui</string>

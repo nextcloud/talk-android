@@ -567,6 +567,8 @@
     <string name="open_in_files_app">ھۆججەتلەر دېتالىدا ئېچىڭ</string>
     <string name="open_notes">خاتىرىنى ئاچ</string>
     <string name="open_thread">يىپقا بار</string>
+    <string name="pin_message">مىخلاش ئۇچۇرى</string>
+    <string name="pinned">مىخلاندى</string>
     <string name="play_pause_voice_message">ئاۋازلىق ئۇچۇرنى قويۇش / توختىتىش</string>
     <string name="playback_speed_control">قۇيۇش سۈرئىتىنى تىزگىنلەش</string>
     <string name="please_continue_the_login_process_in_the_browser">تور كۆرگۈدە كىرىشنى داۋاملاشتۇرۇڭ</string>
@@ -693,7 +695,9 @@
     <string name="unarchive_hint">سۆھبەت بىر تەرەپ قىلىنمىغاندىن كېيىن ، سۈكۈتتىكى ھالەتتە يەنە كۆرسىتىلىدۇ.</string>
     <string name="unarchived_conversation">%1$s ئارخىپتىن چىقىرىلدى</string>
     <string name="unban">چەكلىمە</string>
+    <string name="unpin_message">مىختىن چىقىرىش ئۇچۇرى</string>
     <string name="unread">ئوقۇمىغان</string>
+    <string name="until_unpin">مىخلاشتىن چىقارغىچە</string>
     <string name="upload_new_avatar_from_device">ئۈسكۈنىدىن يېڭى باش سۈرىتىنى يۈكلەڭ</string>
     <string name="user_absence">%1$s ئىشخانىنىڭ سىرتىدا ، جاۋاب قايتۇرماسلىقى مۇمكىن.</string>
     <string name="user_absence_for_one_day">بۈگۈن %1$s ئىشخانىنىڭ سىرتىدا</string>

@@ -567,6 +567,8 @@
     <string name="open_in_files_app">Open in Files app</string>
     <string name="open_notes">Open Notes</string>
     <string name="open_thread">Go to thread</string>
+    <string name="pin_message">Pin message</string>
+    <string name="pinned">Pinned</string>
     <string name="play_pause_voice_message">Play/pause voice message</string>
     <string name="playback_speed_control">Playback speed control</string>
     <string name="please_continue_the_login_process_in_the_browser">Please continue login in browser</string>
@@ -693,6 +695,7 @@
     <string name="unarchive_hint">Once a conversation is unarchived, it will be shown by default again.</string>
     <string name="unarchived_conversation">Unarchived %1$s</string>
     <string name="unban">Unban</string>
+    <string name="unpin_message">Unpin message</string>
     <string name="unread">Unread</string>
     <string name="upload_new_avatar_from_device">Upload new avatar from device</string>
     <string name="user_absence">%1$s is out of office and might not respond</string>

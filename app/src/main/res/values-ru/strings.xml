@@ -567,6 +567,8 @@
     <string name="open_in_files_app">Открыть в приложении Файлы</string>
     <string name="open_notes">Открыть примечания</string>
     <string name="open_thread">Перейти в тему</string>
+    <string name="pin_message">Закрепить сообщение</string>
+    <string name="pinned">Закреплено</string>
     <string name="play_pause_voice_message">Воспроизведение/пауза голосового сообщения</string>
     <string name="playback_speed_control">Управление скоростью вопроизведения</string>
     <string name="please_continue_the_login_process_in_the_browser">Продолжите вход в браузере</string>
@@ -693,7 +695,9 @@
     <string name="unarchive_hint">После разархивирования обсуждения оно будет видимо по умолчанию</string>
     <string name="unarchived_conversation">Разархивировано %1$s</string>
     <string name="unban">Разбанить</string>
+    <string name="unpin_message">Открепить сообщение</string>
     <string name="unread">Непрочитанное</string>
+    <string name="until_unpin">До открепления</string>
     <string name="upload_new_avatar_from_device">Загрузить новый аватар с устройства</string>
     <string name="user_absence">%1$s находится вне офиса и может не ответить</string>
     <string name="user_absence_for_one_day">%1$s вне офиса сегодня</string>

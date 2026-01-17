@@ -567,6 +567,8 @@
     <string name="open_in_files_app">Ava failirakenduses</string>
     <string name="open_notes">Ava märkmik</string>
     <string name="open_thread">Ava jutulõng</string>
+    <string name="pin_message">Tõsta sõnum esile</string>
+    <string name="pinned">Esiletõstetud</string>
     <string name="play_pause_voice_message">Esita häälsõnumit või peata esitus</string>
     <string name="playback_speed_control">Taasesituse kiiruse juhtimine</string>
     <string name="please_continue_the_login_process_in_the_browser">Palun jätka sisselogimist veebibrauseris</string>
@@ -693,7 +695,9 @@
     <string name="unarchive_hint">Kui vestlus on arhiivist välja võetud, siis on ta jälle vaikimisi näha.</string>
     <string name="unarchived_conversation">%1$s on arhiivist välja võetud</string>
     <string name="unban">Eemalda suhtluskeeld</string>
+    <string name="unpin_message">Lõpeta sõnumi esiletõstmine</string>
     <string name="unread">Lugemata</string>
+    <string name="until_unpin">Kuni esiletõstmise lõpetamiseni</string>
     <string name="upload_new_avatar_from_device">Lisa uus tunnuspilt arvutist või nutiseadmest</string>
     <string name="user_absence">%1$s pole kohal ja ei pruugi vastata</string>
     <string name="user_absence_for_one_day">%1$s pole täna kohal</string>
