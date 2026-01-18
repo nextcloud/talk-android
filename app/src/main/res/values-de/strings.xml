@@ -567,8 +567,15 @@
     <string name="open_in_files_app">In Dateien-App öffnen</string>
     <string name="open_notes">Notizen öffnen</string>
     <string name="open_thread">Zu Thema gehen</string>
+    <string name="pin_24hr">Für 24 Stunden anheften</string>
+    <string name="pin_30_days">Für 30 Tage anheften</string>
+    <string name="pin_7_days">Für 7 Tage anheften</string>
+    <string name="pin_indefinitely">Dauerhaft anheften</string>
     <string name="pin_message">Nachricht anheften</string>
     <string name="pinned">Angeheftet</string>
+    <string name="pinned_by">Angeheftet von</string>
+    <string name="pinned_indefinitely">Dauerhaft angeheftet</string>
+    <string name="pinned_until">Angeheftet bis</string>
     <string name="play_pause_voice_message">Sprachnachricht wiedergeben/pausieren</string>
     <string name="playback_speed_control">Steuerung der Wiedergabegeschwindigkeit</string>
     <string name="please_continue_the_login_process_in_the_browser">Bitte den Anmeldeprozess im Browser fortsetzen</string>

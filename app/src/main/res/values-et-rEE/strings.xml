@@ -567,8 +567,15 @@
     <string name="open_in_files_app">Ava failirakenduses</string>
     <string name="open_notes">Ava märkmik</string>
     <string name="open_thread">Ava jutulõng</string>
+    <string name="pin_24hr">Tõsta esile 24-ks tunniks</string>
+    <string name="pin_30_days">Tõsta esile 30-ks päevaks</string>
+    <string name="pin_7_days">Tõsta esile 7-ks päevaks</string>
+    <string name="pin_indefinitely">Tõsta esile tähtajatult</string>
     <string name="pin_message">Tõsta sõnum esile</string>
     <string name="pinned">Esiletõstetud</string>
+    <string name="pinned_by">Esiletõstja</string>
+    <string name="pinned_indefinitely">Esiletõestetud tähtajatult</string>
+    <string name="pinned_until">Esiletõstetud kuni</string>
     <string name="play_pause_voice_message">Esita häälsõnumit või peata esitus</string>
     <string name="playback_speed_control">Taasesituse kiiruse juhtimine</string>
     <string name="please_continue_the_login_process_in_the_browser">Palun jätka sisselogimist veebibrauseris</string>

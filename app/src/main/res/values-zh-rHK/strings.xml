@@ -567,8 +567,15 @@
     <string name="open_in_files_app">在“檔案”應用程式中打開</string>
     <string name="open_notes">開啟筆記</string>
     <string name="open_thread">前往討論串</string>
+    <string name="pin_24hr">釘選 24 小時</string>
+    <string name="pin_30_days">釘選 30 天</string>
+    <string name="pin_7_days">釘選 7 天</string>
+    <string name="pin_indefinitely">無限期地釘選</string>
     <string name="pin_message">置頂訊息</string>
     <string name="pinned">已置頂</string>
+    <string name="pinned_by">釘選者</string>
+    <string name="pinned_indefinitely">已無限期地釘選</string>
+    <string name="pinned_until">已釘選至</string>
     <string name="play_pause_voice_message">播放﹨暫停話音短訊</string>
     <string name="playback_speed_control">播放速度控制</string>
     <string name="please_continue_the_login_process_in_the_browser">請在瀏覽器中繼續登入</string>
