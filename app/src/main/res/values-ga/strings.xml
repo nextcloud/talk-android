@@ -567,8 +567,15 @@
     <string name="open_in_files_app">Oscail san aip Comhaid</string>
     <string name="open_notes">Nótaí Oscailte</string>
     <string name="open_thread">Téigh go dtí an snáithe</string>
+    <string name="pin_24hr">Bioráin ar feadh 24 uair an chloig</string>
+    <string name="pin_30_days">Bioráin ar feadh 30 lá</string>
+    <string name="pin_7_days">Bioráin ar feadh 7 lá</string>
+    <string name="pin_indefinitely">Bioráin go ceann tréimhse éiginnte</string>
     <string name="pin_message">Teachtaireacht bioráin</string>
     <string name="pinned">Bioránta</string>
+    <string name="pinned_by">Priontáilte ag</string>
+    <string name="pinned_indefinitely">Priontáilte go deo</string>
+    <string name="pinned_until">Priontáilte go dtí</string>
     <string name="play_pause_voice_message">Seinn/cuir teachtaireacht gutha ar sos</string>
     <string name="playback_speed_control">Rialú luas athsheinm</string>
     <string name="please_continue_the_login_process_in_the_browser">Lean ar aghaidh le logáil isteach sa bhrabhsálaí</string>
