@@ -567,8 +567,15 @@
     <string name="open_in_files_app">Dosyalar uygulamasında aç</string>
     <string name="open_notes">Notları aç</string>
     <string name="open_thread">Yazışmaya git</string>
+    <string name="pin_24hr">24 saat sabitle</string>
+    <string name="pin_30_days">30 gün sabitle</string>
+    <string name="pin_7_days">7 gün sabitle</string>
+    <string name="pin_indefinitely">Süresiz sabitle</string>
     <string name="pin_message">İletiyi sabitle</string>
     <string name="pinned">Sabitlenmiş</string>
+    <string name="pinned_by">Sabitleyen</string>
+    <string name="pinned_indefinitely">Süresiz sabitlendi</string>
+    <string name="pinned_until">Şu zamana kadar sabitlendi</string>
     <string name="play_pause_voice_message">Ses iletisini oynat/duraklat</string>
     <string name="playback_speed_control">Oynatma hızı denetimi</string>
     <string name="please_continue_the_login_process_in_the_browser">Lütfen oturum açma işlemini tarayıcınızdan sürdürün</string>
