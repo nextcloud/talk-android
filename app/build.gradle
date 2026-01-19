@@ -190,7 +190,7 @@ dependencies {
     implementation "androidx.room:room-testing-android:${roomVersion}"
     implementation 'androidx.compose.foundation:foundation-layout:1.10.1'
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
-    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.7.3'
+    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.7.4'
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
 
     implementation("androidx.compose.runtime:runtime:1.10.1")
