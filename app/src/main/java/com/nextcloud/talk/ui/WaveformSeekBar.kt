@@ -97,7 +97,7 @@ class WaveformSeekBar : AppCompatSeekBar {
         val usableWidth = width - paddingLeft - paddingRight
         val midpoint = usableHeight / 2f
         val maxHeight: Float = usableHeight / MAX_HEIGHT_DIVISOR
-        val barGap: Float = (usableWidth - waveData.size * DEFAULT_BAR_WIDTH) / (waveData.size - 1).toFloat()
+        val barGap: Float = (usableWidth - waveData.size * DEFAULT_BAR_WIDTH) / (waveData.size - 1).toFloat() + 1
 
         canvas?.apply {
             withSave {
@@ -114,9 +114,9 @@ class WaveformSeekBar : AppCompatSeekBar {
     }
 
     companion object {
-        private const val DEFAULT_BAR_WIDTH: Int = 2
-        private const val MAX_HEIGHT_DIVISOR: Float = 4.0f
-        private const val WIDTH_DIVISOR = 20f
+        private const val DEFAULT_BAR_WIDTH: Int = 3
+        private const val MAX_HEIGHT_DIVISOR: Float = 2.4f
+        private const val WIDTH_DIVISOR = 16f
         private const val VALUE_100 = 100
         private const val MINIMUM_WIDTH = 50
         private val Int.dp: Int
