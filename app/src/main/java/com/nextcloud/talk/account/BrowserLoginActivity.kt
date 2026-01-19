@@ -21,6 +21,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
+import com.nextcloud.talk.account.data.LoginRepository
 import com.nextcloud.talk.account.viewmodels.BrowserLoginActivityViewModel
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.MainActivity
@@ -124,7 +125,12 @@ class BrowserLoginActivity : BaseActivity() {
 
         if (extras.containsKey(BundleKeys.KEY_FROM_QR)) {
             val uri = extras.getString(BundleKeys.KEY_FROM_QR)!!
-            viewModel.loginWithQR(uri, reauthorizeAccount)
+
+            if (uri.startsWith(LoginRepository.ONE_TIME_PREFIX)) {
+                viewModel.loginWithOTPQR(uri, reauthorizeAccount)
+            } else {
+                viewModel.loginWithQR(uri, reauthorizeAccount)
+            }
         } else if (baseUrl != null) {
             viewModel.startWebBrowserLogin(baseUrl, reauthorizeAccount)
         }

@@ -106,5 +106,23 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
         }
     }
 
+    fun loginWithOTPQR(dataString: String, reAuth: Boolean = false) {
+        viewModelScope.launch {
+            val loginCompletionResponse = repository.startOTPLoginFlow(dataString, reAuth)
+            if (loginCompletionResponse == null) {
+                _postLoginState.value = PostLoginViewState.PostLoginError
+                return@launch
+            }
+
+            val bundle = repository.parseAndLogin(loginCompletionResponse)
+            if (bundle == null) {
+                _postLoginState.value = PostLoginViewState.PostLoginRestartApp
+                return@launch
+            }
+
+            _postLoginState.value = PostLoginViewState.PostLoginContinue(bundle)
+        }
+    }
+
     fun cancelLogin() = repository.cancelLoginFlow()
 }
