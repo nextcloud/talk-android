@@ -224,6 +224,7 @@ class ComposeChatAdapter(
     } else {
         Color.Black.toArgb()
     }
+    val highEmphasisColor = Color(highEmphasisColorInt)
 
     fun addMessages(messages: MutableList<ChatMessage>, append: Boolean) {
         if (messages.isEmpty()) return
@@ -307,7 +308,7 @@ class ComposeChatAdapter(
                 } else {
                     val timestamp = items[listState.firstVisibleItemIndex].timestamp
                     val dateString = formatTime(timestamp * LONG_1000)
-                    val color = Color(highEmphasisColorInt)
+                    val color = highEmphasisColor
                     val backgroundColor =
                         LocalResources.current.getColor(R.color.bg_message_list_incoming_bubble, null)
                     Row(
@@ -521,7 +522,11 @@ class ComposeChatAdapter(
                     }
 
                     if (incoming) {
-                        Text(message.actorDisplayName.toString(), fontSize = AUTHOR_TEXT_SIZE)
+                        Text(
+                            message.actorDisplayName.toString(),
+                            fontSize = AUTHOR_TEXT_SIZE,
+                            color = highEmphasisColor
+                        )
                     }
 
                     ThreadTitle(message)
@@ -574,7 +579,8 @@ class ComposeChatAdapter(
         Text(
             timeString,
             fontSize = TIME_TEXT_SIZE,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = highEmphasisColor
         )
     }
 
@@ -587,7 +593,8 @@ class ComposeChatAdapter(
                 "",
                 modifier = Modifier
                     .padding(start = 4.dp)
-                    .size(16.dp)
+                    .size(16.dp),
+                tint = highEmphasisColor
             )
         }
     }
@@ -786,7 +793,7 @@ class ComposeChatAdapter(
             Text(
                 text,
                 fontSize = AUTHOR_TEXT_SIZE,
-                color = Color(highEmphasisColorInt)
+                color = highEmphasisColor
             )
         }
     }
