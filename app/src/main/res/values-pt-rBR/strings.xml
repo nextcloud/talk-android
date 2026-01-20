@@ -567,8 +567,15 @@
     <string name="open_in_files_app">Abrir no aplicativo Arquivos</string>
     <string name="open_notes">Abrir Notas</string>
     <string name="open_thread">Ir para fio</string>
+    <string name="pin_24hr">Fixar por 24 horas</string>
+    <string name="pin_30_days">Fixar por 30 dias</string>
+    <string name="pin_7_days">Fixar por 7 dias</string>
+    <string name="pin_indefinitely">Fixar indefinidamente</string>
     <string name="pin_message">Fixar mensagem</string>
     <string name="pinned">Fixada</string>
+    <string name="pinned_by">Fixada por</string>
+    <string name="pinned_indefinitely">Fixada indefinidamente</string>
+    <string name="pinned_until">Fixada até</string>
     <string name="play_pause_voice_message">Reproduzir/pausar mensagem de voz</string>
     <string name="playback_speed_control">Controle de velocidade de reprodução</string>
     <string name="please_continue_the_login_process_in_the_browser">Por favor, continue o login no navegador</string>
