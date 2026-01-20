@@ -187,50 +187,55 @@
                 tools:ignore="TextContrastCheck"
                 tools:text="A simple message" />
 
-        <androidx.emoji2.widget.EmojiTextView
-            android:id="@+id/messageCaption"
-            android:padding="@dimen/standard_half_padding"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:textColor="@color/high_emphasis_text"
-            android:textIsSelectable="false"
-            android:textSize="@dimen/chat_text_size"
-            android:visibility="gone"
-            tools:visibility="visible"
-            tools:ignore="TextContrastCheck"
-            tools:text="This is my caption" />
+            <androidx.emoji2.widget.EmojiTextView
+                android:id="@+id/messageCaption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:layout_marginStart="2dp"
+                android:layout_marginBottom="4dp"
+                android:paddingStart="@dimen/standard_half_padding"
+                android:paddingEnd="@dimen/standard_half_padding"
+                android:paddingBottom="@dimen/standard_half_padding"
+                android:textColor="@color/high_emphasis_text"
+                android:textIsSelectable="false"
+                android:textSize="@dimen/chat_text_size"
+                android:visibility="gone"
+                tools:ignore="TextContrastCheck"
+                tools:text="This is my caption"
+                tools:visibility="visible" />
 
-        <TextView
-            android:id="@id/messageTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/messageCaption"
-            android:layout_marginStart="8dp"
-            android:alpha="0.6"
-            android:textColor="@color/no_emphasis_text"
-            android:textIsSelectable="false"
-            android:gravity="end"
-            app:layout_alignSelf="flex_end"
-            app:layout_flexGrow="1"
-            app:layout_wrapBefore="false"
-            tools:text="12:38" />
+            <TextView
+                android:id="@id/messageTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:alpha="0.6"
+                android:gravity="end"
+                android:layout_below="@id/messageCaption"
+                android:textColor="@color/no_emphasis_text"
+                app:layout_alignSelf="flex_end"
+                tools:ignore="TextContrastCheck"
+                tools:text="12:38" />
+
+            <TextView
+                android:id="@+id/messageEditIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="8dp"
+                android:alpha="0.6"
+                android:text="@string/hint_edited_message"
+                android:textColor="@color/no_emphasis_text"
+                android:layout_below="@id/messageCaption"
+                android:textIsSelectable="false"
+                android:textSize="12sp"
+                app:layout_alignSelf="flex_end" />
+
+
         </com.google.android.flexbox.FlexboxLayout>
-
-        <TextView
-            android:id="@+id/messageEditIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/messageCaption"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:alpha="0.6"
-            android:textColor="@color/no_emphasis_text"
-            android:textIsSelectable="false"
-            app:layout_alignSelf="flex_end"
-            android:text = "@string/hint_edited_message"
-            android:textSize="12sp">
-        </TextView>
 
         <include
             android:id="@+id/reactions"
