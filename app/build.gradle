@@ -367,7 +367,7 @@ dependencies {
     testImplementation "androidx.room:room-testing:${roomVersion}"
     testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
     testImplementation("com.google.dagger:hilt-android-testing:2.58")
-    testImplementation("org.robolectric:robolectric:4.16")
+    testImplementation("org.robolectric:robolectric:4.16.1")
 }
 
 tasks.register('installGitHooks', Copy) {
