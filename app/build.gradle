@@ -185,9 +185,8 @@ configurations.configureEach {
 }
 
 dependencies {
-    implementation 'androidx.emoji2:emoji2-emojipicker:1.6.0'
-    kapt "org.jetbrains.kotlin:kotlin-metadata-jvm:${kotlinVersion}"
 
+    kapt "org.jetbrains.kotlin:kotlin-metadata-jvm:${kotlinVersion}"
     implementation "androidx.room:room-testing-android:${roomVersion}"
     implementation 'androidx.compose.foundation:foundation-layout:1.10.1'
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
