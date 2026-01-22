@@ -158,6 +158,7 @@ class ScheduleMessageCompose(
     }
 
     @Composable
+    @Suppress("LongMethod")
     private fun Body() {
         val context = LocalContext.current
         val currTime = LocalDateTime.now()

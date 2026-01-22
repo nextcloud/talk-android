@@ -766,6 +766,7 @@ class ChatActivity :
                         ) {
                             binding.chatToolbar.setOnClickListener { _ -> showConversationInfoScreen() }
                         }
+                        refreshScheduledMessages()
 
                         loadAvatarForStatusBar()
                         setupSwipeToReply()
@@ -3376,10 +3377,6 @@ class ChatActivity :
             scheduledMessagesMenuItem?.isVisible = networkMonitor.isOnline.value &&
                 hasScheduledMessages &&
                 !isOneToOneConversation()
-
-            if (networkMonitor.isOnline.value) {
-                refreshScheduledMessages()
-            }
 
             val searchItem = menu.findItem(R.id.conversation_search)
             searchItem.isVisible =
