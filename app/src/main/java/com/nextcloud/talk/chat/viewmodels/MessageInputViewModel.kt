@@ -31,18 +31,22 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @Suppress("Detekt.TooManyFunctions")
-class MessageInputViewModel @Inject constructor(
-    private val audioRecorderManager: AudioRecorderManager,
-    private val mediaPlayerManager: MediaPlayerManager,
-    private val audioFocusRequestManager: AudioFocusRequestManager
-) : ViewModel(),
-    DefaultLifecycleObserver {
+class MessageInputViewModel @Inject constructor() : ViewModel(), DefaultLifecycleObserver {
 
     enum class LifeCycleFlag {
         PAUSED,
         RESUMED,
         STOPPED
     }
+
+    @Inject
+    lateinit var audioRecorderManager: AudioRecorderManager
+
+    @Inject
+    lateinit var mediaPlayerManager: MediaPlayerManager
+
+    @Inject
+    lateinit var audioFocusRequestManager: AudioFocusRequestManager // FIXME why wasn't this instantiated
 
     lateinit var chatRepository: ChatMessageRepository
     lateinit var currentLifeCycleFlag: LifeCycleFlag

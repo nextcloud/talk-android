@@ -43,6 +43,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.widget.EmojiTextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -117,6 +118,8 @@ class MessageInputFragment : Fragment() {
 
     @Inject
     lateinit var messageUtils: MessageUtils
+    
+    private val messageInputViewModel: MessageInputViewModel by activityViewModels()
 
     lateinit var binding: FragmentMessageInputBinding
     private lateinit var conversationInternalId: String
@@ -206,7 +209,7 @@ class MessageInputFragment : Fragment() {
             }
         }
 
-        chatActivity.messageInputViewModel.getReplyChatMessage.observe(viewLifecycleOwner) { message ->
+        messageInputViewModel.getReplyChatMessage.observe(viewLifecycleOwner) { message ->
             message?.let {
                 chatActivity.chatViewModel.messageDraft.quotedMessageText = message.text
                 chatActivity.chatViewModel.messageDraft.quotedDisplayName = message.actorDisplayName
@@ -222,13 +225,13 @@ class MessageInputFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                chatActivity.messageInputViewModel.getEditChatMessage.collect { message ->
+                messageInputViewModel.getEditChatMessage.collect { message ->
                     message?.let { setEditUI(it as ChatMessage) } ?: clearEditUI()
                 }
             }
         }
 
-        chatActivity.messageInputViewModel.createThreadViewState.observe(viewLifecycleOwner) { state ->
+        messageInputViewModel.createThreadViewState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is MessageInputViewModel.CreateThreadStartState ->
                     binding.fragmentCreateThreadView.createThreadView.visibility = View.GONE
@@ -261,7 +264,7 @@ class MessageInputFragment : Fragment() {
                     val connectionGained = (!wasOnline && isOnline)
                     Log.d(TAG, "isOnline: $isOnline\nwasOnline: $wasOnline\nconnectionGained: $connectionGained")
                     if (connectionGained) {
-                        chatActivity.messageInputViewModel.sendUnsentMessages(
+                        messageInputViewModel.sendUnsentMessages(
                             chatActivity.conversationUser!!.getCredentials(),
                             ApiUtils.getUrlForChat(
                                 chatActivity.chatApiVersion,
@@ -274,7 +277,7 @@ class MessageInputFragment : Fragment() {
                 }.collect()
         }
 
-        chatActivity.messageInputViewModel.callStartedFlow.observe(viewLifecycleOwner) {
+        messageInputViewModel.callStartedFlow.observe(viewLifecycleOwner) {
             val (message, show) = it
             if (show) {
                 binding.fragmentCallStarted.callAuthorChip.text = message.actorDisplayName
@@ -364,7 +367,7 @@ class MessageInputFragment : Fragment() {
                 binding.fragmentMessageInputView.messageInput.setSelection(draft.messageCursor)
 
                 if (draft.threadTitle?.isNotEmpty() == true) {
-                    chatActivity.messageInputViewModel.startThreadCreation()
+                    messageInputViewModel.startThreadCreation()
                 }
 
                 if (draft.messageText != "") {
@@ -479,7 +482,7 @@ class MessageInputFragment : Fragment() {
             replaceMentionChipSpans(editable)
             val inputEditText = editable.toString()
 
-            val message = chatActivity.messageInputViewModel.getEditChatMessage.value as ChatMessage
+            val message = messageInputViewModel.getEditChatMessage.value as ChatMessage
             if (message.message!!.trim() != inputEditText.trim()) {
                 if (message.messageParameters != null) {
                     val editedMessage = messageUtils.processEditMessageParameters(
@@ -566,7 +569,7 @@ class MessageInputFragment : Fragment() {
                     val base = SystemClock.elapsedRealtime()
                     voiceRecordStartTime = System.currentTimeMillis()
                     binding.fragmentMessageInputView.audioRecordDuration.base = base
-                    chatActivity.messageInputViewModel.setRecordingTime(base)
+                    messageInputViewModel.setRecordingTime(base)
                     binding.fragmentMessageInputView.audioRecordDuration.start()
                     chatActivity.chatViewModel.startAudioRecording(requireContext(), chatActivity.currentConversation!!)
                     showRecordAudioUi(true)
@@ -938,7 +941,7 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun sendMessage(message: String, sendWithoutNotification: Boolean) {
-        chatActivity.messageInputViewModel.sendChatMessage(
+        messageInputViewModel.sendChatMessage(
             credentials = chatActivity.conversationUser!!.getCredentials(),
             url = ApiUtils.getUrlForChat(
                 chatActivity.chatApiVersion,
@@ -1004,12 +1007,12 @@ class MessageInputFragment : Fragment() {
         val apiVersion: Int = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
 
         if (message.isTemporary) {
-            chatActivity.messageInputViewModel.editTempChatMessage(
+            messageInputViewModel.editTempChatMessage(
                 message,
                 editedMessageText
             )
         } else {
-            chatActivity.messageInputViewModel.editChatMessage(
+            messageInputViewModel.editChatMessage(
                 chatActivity.credentials!!,
                 ApiUtils.getUrlForChatMessage(
                     apiVersion,
@@ -1044,7 +1047,7 @@ class MessageInputFragment : Fragment() {
         binding.fragmentMessageInputView.inputEditText.setText("")
         binding.fragmentEditView.editMessageView.visibility = View.GONE
         binding.fragmentMessageInputView.attachmentButton.visibility = View.VISIBLE
-        chatActivity.messageInputViewModel.edit(null)
+        messageInputViewModel.edit(null)
         handleButtonsVisibility()
     }
 
@@ -1127,7 +1130,7 @@ class MessageInputFragment : Fragment() {
 
     private fun cancelCreateThread() {
         chatActivity.cancelCreateThread()
-        chatActivity.messageInputViewModel.stopThreadCreation()
+        messageInputViewModel.stopThreadCreation()
         binding.fragmentCreateThreadView.createThreadView.visibility = View.GONE
     }
 
