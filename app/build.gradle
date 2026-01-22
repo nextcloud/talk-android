@@ -174,7 +174,7 @@ ext {
     androidxTestVersion = "1.5.0"
     media3_version = "1.9.0"
     coroutines_version = "1.10.2"
-    mockitoKotlinVersion = "6.2.1"
+    mockitoKotlinVersion = "6.2.2"
 }
 
 configurations.configureEach {
@@ -201,7 +201,7 @@ dependencies {
 	
     implementation fileTree(include: ['*'], dir: 'libs')
 
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$coroutines_version"
 
     implementation 'androidx.appcompat:appcompat:1.7.1'

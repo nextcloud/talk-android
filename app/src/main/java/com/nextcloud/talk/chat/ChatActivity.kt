@@ -34,7 +34,6 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.text.SpannableStringBuilder
 import android.text.TextUtils
-import android.text.format.DateFormat
 import android.util.Log
 import android.view.Gravity
 import android.view.Menu
@@ -60,39 +59,11 @@ import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -196,7 +167,7 @@ import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.translate.ui.TranslateActivity
-import com.nextcloud.talk.ui.ComposeChatAdapter
+import com.nextcloud.talk.ui.PinnedMessageView
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.ui.PlaybackSpeedControl
 import com.nextcloud.talk.ui.StatusDrawable
@@ -720,7 +691,14 @@ class ChatActivity :
                                 message?.let {
                                     binding.pinnedMessageContainer.visibility = View.VISIBLE
                                     binding.pinnedMessageComposeView.setContent {
-                                        PinnedMessageView(message)
+                                        PinnedMessageView(
+                                            message,
+                                            viewThemeUtils,
+                                            currentConversation,
+                                            scrollToMessageWithIdWithOffset = ::scrollToMessageWithIdWithOffset,
+                                            hidePinnedMessage = ::hidePinnedMessage,
+                                            unPinMessage = ::unPinMessage
+                                        )
                                     }
                                 }
                             }
@@ -1375,160 +1353,6 @@ class ChatActivity :
                     is ChatViewModel.ThreadRetrieveUiState.Success -> {
                         conversationThreadInfo = uiState.thread
                         invalidateOptionsMenu()
-                    }
-                }
-            }
-        }
-    }
-
-    @Composable
-    private fun PinnedMessageView(message: ChatMessage) {
-        message.incoming = true
-
-        val pinnedBy = stringResource(R.string.pinned_by)
-
-        message.actorDisplayName = remember(message.pinnedActorDisplayName) {
-            "${message.actorDisplayName}\n$pinnedBy ${message.pinnedActorDisplayName}"
-        }
-        val scrollState = rememberScrollState()
-
-        val outgoingBubbleColor = remember {
-            val colorInt = viewThemeUtils.talk
-                .getOutgoingMessageBubbleColor(context, message.isDeleted, false)
-
-            Color(colorInt)
-        }
-
-        val incomingBubbleColor = remember {
-            val colorInt = resources
-                .getColor(R.color.bg_message_list_incoming_bubble, null)
-
-            Color(colorInt)
-        }
-
-        val canPin = remember {
-            message.isOneToOneConversation ||
-                ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
-        }
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy((-16).dp),
-            modifier = Modifier
-        ) {
-            Box(
-                modifier = Modifier
-                    .shadow(4.dp, shape = RoundedCornerShape(16.dp))
-                    .background(incomingBubbleColor, RoundedCornerShape(16.dp))
-                    .padding(16.dp)
-                    .heightIn(max = 100.dp)
-                    .verticalScroll(scrollState)
-                    .clickable {
-                        scrollToMessageWithIdWithOffset(message.id)
-                    }
-
-            ) {
-                ComposeChatAdapter().GetComposableForMessage(message)
-            }
-
-            var expanded by remember { mutableStateOf(false) }
-
-            val pinnedText = remember(message.pinnedUntil) {
-                val pinnedUntilStr = context.getString(R.string.pinned_until)
-                val untilUnpin = context.getString(R.string.until_unpin)
-
-                message.pinnedUntil?.let {
-                    val format = if (DateFormat.is24HourFormat(context)) {
-                        "MMM dd yyyy, HH:mm"
-                    } else {
-                        "MMM dd yyyy, hh:mm a"
-                    }
-
-                    val localDateTime = Instant.ofEpochSecond(it)
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDateTime()
-
-                    val timeString = localDateTime.format(DateTimeFormatter.ofPattern(format))
-
-                    "$pinnedUntilStr $timeString"
-                } ?: untilUnpin
-            }
-
-            Box(
-                modifier = Modifier
-                    .offset(16.dp, 0.dp)
-                    .background(outgoingBubbleColor, RoundedCornerShape(16.dp))
-            ) {
-                IconButton(onClick = { expanded = true }) {
-                    Icon(
-                        imageVector = Icons.Default.Menu, // Or use a Pin icon here
-                        contentDescription = "Pinned Message Options"
-                    )
-                }
-
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier.background(outgoingBubbleColor)
-                ) {
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = pinnedText,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        },
-                        onClick = { /* No-op or toggle expansion */ },
-                        enabled = false // Visually distinct as information, not action
-                    )
-
-                    Divider()
-
-                    DropdownMenuItem(
-                        text = { Text("Go to message") },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.baseline_chat_bubble_outline_24),
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        },
-                        onClick = {
-                            expanded = false
-                            scrollToMessageWithIdWithOffset(message.id)
-                        }
-                    )
-
-                    DropdownMenuItem(
-                        text = { Text("Dismiss") },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_eye_off),
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        },
-                        onClick = {
-                            expanded = false
-                            hidePinnedMessage(message)
-                        }
-                    )
-
-                    if (canPin) {
-                        DropdownMenuItem(
-                            text = { Text("Unpin") },
-                            leadingIcon = {
-                                Icon(
-                                    painter = painterResource(R.drawable.keep_off_24px),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            },
-                            onClick = {
-                                expanded = false
-                                unPinMessage(message)
-                            }
-                        )
                     }
                 }
             }

@@ -530,7 +530,7 @@
     <string name="nc_test_push_button">測試推送通知</string>
     <string name="nc_test_results">測試結果</string>
     <string name="nc_today_meeting">於今日 %1$s</string>
-    <string name="nc_tomorrow_meeting">於明天 %1$s</string>
+    <string name="nc_tomorrow_meeting">明日於 %1$s</string>
     <string name="nc_upload_choose_local_files">選擇檔案</string>
     <string name="nc_upload_confirm_send_multiple">將這些檔案發送到 %1$s？</string>
     <string name="nc_upload_confirm_send_single">將此檔案發送到 %1$s？</string>
