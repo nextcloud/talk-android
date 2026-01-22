@@ -429,6 +429,14 @@ class CallActivity : CallBaseActivity() {
         }
 
         hideNavigationIfNoPipAvailable()
+        val extras = intent.extras
+        if (extras != null) {
+            processExtras(extras)
+        } else {
+            Log.d(TAG, "extras is null")
+            finish()
+            return
+        }
         processExtras(intent.extras!!)
         conversationUser = currentUserProviderOld.currentUser.blockingGet()
 
@@ -441,7 +449,7 @@ class CallActivity : CallBaseActivity() {
         setCallState(CallStatus.CONNECTING)
 
         initRaiseHandViewModel()
-        initCallRecordingViewModel(intent.extras!!.getInt(KEY_RECORDING_STATE))
+        initCallRecordingViewModel(extras.getInt(KEY_RECORDING_STATE, 0))
 
         initClickListeners(isModerator, isOneToOneConversation)
         binding!!.microphoneButton.setOnTouchListener(MicrophoneButtonTouchListener())
