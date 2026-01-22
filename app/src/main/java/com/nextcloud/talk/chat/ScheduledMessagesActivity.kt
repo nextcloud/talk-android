@@ -81,6 +81,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.chat.viewmodels.ScheduledMessagesViewModel
 import com.nextcloud.talk.components.ColoredStatusBar
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.utils.ApiUtils
@@ -94,6 +95,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 @AutoInjector(NextcloudTalkApplication::class)
+@Suppress("LongMethod", "LargeClass")
 class ScheduledMessagesActivity : BaseActivity() {
 
     @Inject
@@ -120,8 +122,10 @@ class ScheduledMessagesActivity : BaseActivity() {
         scheduledMessagesViewModel = ViewModelProvider(this, viewModelFactory)[ScheduledMessagesViewModel::class.java]
 
         messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
+
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
+            val user = currentUserProviderOld.currentUser.blockingGet()
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
                 ScheduledMessagesScreen(
@@ -132,15 +136,15 @@ class ScheduledMessagesActivity : BaseActivity() {
                     onBack = { finish() },
                     onLoadScheduledMessages = { loadScheduledMessages() },
                     onSendNow = { message ->
-                        sendNow(message)
+                        sendNow(message, user)
                     },
                     onReschedule = { message, sendAt ->
-                        reschedule(message, sendAt)
+                        reschedule(message, sendAt, user)
                     },
                     onEdit = { message, sendAt ->
-                        edit(message, sendAt)
+                        edit(message, sendAt, user)
                     },
-                    onDeleteScheduledMessage = { message -> deleteScheduledMessage(message) }
+                    onDeleteScheduledMessage = { message -> deleteScheduledMessage(message, user) }
                 )
             }
         }
@@ -154,8 +158,7 @@ class ScheduledMessagesActivity : BaseActivity() {
         )
     }
 
-    private fun sendNow(message: ChatMessage) {
-        val user = currentUserProviderOld.currentUser.blockingGet()
+    private fun sendNow(message: ChatMessage, user: User) {
         scheduledMessagesViewModel.sendNow(
             credentials = user.getCredentials(),
             sendUrl = ApiUtils.getUrlForChat(
@@ -176,8 +179,7 @@ class ScheduledMessagesActivity : BaseActivity() {
         )
     }
 
-    private fun reschedule(message: ChatMessage, sendAt: Int) {
-        val user = currentUserProviderOld.currentUser.blockingGet()
+    private fun reschedule(message: ChatMessage, sendAt: Int, user: User) {
         scheduledMessagesViewModel.reschedule(
             credentials = user.getCredentials(),
             url = ApiUtils.getUrlForScheduledMessage(
@@ -194,8 +196,7 @@ class ScheduledMessagesActivity : BaseActivity() {
         )
     }
 
-    private fun edit(message: ChatMessage, sendAt: Int) {
-        val user = currentUserProviderOld.currentUser.blockingGet()
+    private fun edit(message: ChatMessage, sendAt: Int, user: User) {
         scheduledMessagesViewModel.edit(
             credentials = user.getCredentials(),
             url = ApiUtils.getUrlForScheduledMessage(
@@ -212,8 +213,7 @@ class ScheduledMessagesActivity : BaseActivity() {
         )
     }
 
-    private fun deleteScheduledMessage(message: ChatMessage) {
-        val user = currentUserProviderOld.currentUser.blockingGet()
+    private fun deleteScheduledMessage(message: ChatMessage, user: User) {
         scheduledMessagesViewModel.deleteScheduledMessage(
             user.getCredentials(),
             ApiUtils.getUrlForScheduledMessage(
@@ -260,8 +260,6 @@ class ScheduledMessagesActivity : BaseActivity() {
         LaunchedEffect(sendNowState) {
             when (val state = sendNowState) {
                 is ScheduledMessagesViewModel.SendNowMessageSuccessState -> {
-                    onLoadScheduledMessages()
-                    state.message?.let { onDeleteScheduledMessage(it) }
                 }
                 is ScheduledMessagesViewModel.SendNowMessageErrorState -> {
                     snackBarHostState.showSnackbar(genericErrorText)
@@ -269,11 +267,10 @@ class ScheduledMessagesActivity : BaseActivity() {
                 else -> Unit
             }
         }
-
         LaunchedEffect(rescheduleState) {
             when (rescheduleState) {
                 is ScheduledMessagesViewModel.ScheduledMessageActionSuccessState -> onLoadScheduledMessages()
-                is ScheduledMessagesViewModel.ScheduledMessageActionErrorState -> snackBarHostState.showSnackbar(
+                is ScheduledMessagesViewModel.ScheduledMessageErrorState -> snackBarHostState.showSnackbar(
                     genericErrorText
                 )
                 else -> Unit
@@ -288,7 +285,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                     editValue = TextFieldValue("")
                     onLoadScheduledMessages()
                 }
-                is ScheduledMessagesViewModel.ScheduledMessageActionErrorState -> snackBarHostState.showSnackbar(
+                is ScheduledMessagesViewModel.ScheduledMessageErrorState -> snackBarHostState.showSnackbar(
                     genericErrorText
                 )
                 else -> Unit
@@ -298,7 +295,7 @@ class ScheduledMessagesActivity : BaseActivity() {
         LaunchedEffect(deleteState) {
             when (deleteState) {
                 is ScheduledMessagesViewModel.ScheduledMessageActionSuccessState -> onLoadScheduledMessages()
-                is ScheduledMessagesViewModel.ScheduledMessageActionErrorState -> snackBarHostState.showSnackbar(
+                is ScheduledMessagesViewModel.ScheduledMessageErrorState -> snackBarHostState.showSnackbar(
                     genericErrorText
                 )
                 else -> Unit
@@ -518,9 +515,9 @@ class ScheduledMessagesActivity : BaseActivity() {
         val format = DateTimeFormatter.ofPattern("d MMMM")
 
         return when (days) {
-            0 -> "Today, ${date.format(format)}"
-            1 -> "Tomorrow, ${date.format(format)}"
-            in 2..6 -> "In $days days, ${date.format(format)}"
+            INT_0 -> "Today, ${date.format(format)}"
+            INT_1 -> "Tomorrow, ${date.format(format)}"
+            in INT_2..INT_6 -> "In $days days, ${date.format(format)}"
             else -> date.format(format)
         }
     }
@@ -571,7 +568,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                                 imageVector = Icons.Outlined.NotificationsOff,
                                 contentDescription = null,
                                 modifier = Modifier.size(
-                                  12.dp
+                                    12.dp
                                 )
                             )
                         }
@@ -781,5 +778,9 @@ class ScheduledMessagesActivity : BaseActivity() {
     companion object {
         const val ROOM_TOKEN = "room_token"
         const val CONVERSATION_NAME = "conversation_name"
+        const val INT_2: Int = 2
+        const val INT_6: Int = 6
+        const val INT_0: Int = 0
+        const val INT_1: Int = 1
     }
 }

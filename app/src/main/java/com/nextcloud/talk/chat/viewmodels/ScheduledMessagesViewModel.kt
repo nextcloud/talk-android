@@ -36,17 +36,17 @@ class ScheduledMessagesViewModel @Inject constructor(private val chatRepository:
     data class ScheduledMessageActionSuccessState(val response: ChatMessage? = null) :
         ScheduledMessageActionState
 
-    data class ScheduledMessageActionErrorState(val error: Throwable? = null) : ScheduledMessageActionState
+    data class ScheduledMessageErrorState(val error: Throwable? = null) : ScheduledMessageActionState
 
-    sealed interface SendNowMessageActionState
-    object SendNowMessageIdleState : SendNowMessageActionState
-    object SendNowMessageLoadingState : SendNowMessageActionState
-    data class SendNowMessageSuccessState(val message: ChatMessage? = null) : SendNowMessageActionState
-    data class SendNowMessageErrorState(val error: Throwable? = null) : SendNowMessageActionState
+    sealed interface SendNowMessageState
+    object SendNowMessageIdleState : SendNowMessageState
+    object SendNowMessageLoadingState : SendNowMessageState
+    data class SendNowMessageSuccessState(val message: ChatMessage? = null) : SendNowMessageState
+    data class SendNowMessageErrorState(val error: Throwable? = null) : SendNowMessageState
 
-    private val _sendNowState: MutableStateFlow<SendNowMessageActionState> =
+    private val _sendNowState: MutableStateFlow<SendNowMessageState> =
         MutableStateFlow(SendNowMessageIdleState)
-    val sendNowState: StateFlow<SendNowMessageActionState>
+    val sendNowState: StateFlow<SendNowMessageState>
         get() = _sendNowState
 
     private val _rescheduleState: MutableStateFlow<ScheduledMessageActionState> =
@@ -140,7 +140,7 @@ class ScheduledMessagesViewModel @Inject constructor(private val chatRepository:
                         ScheduledMessageActionSuccessState(result.getOrNull())
                 } else {
                     _rescheduleState.value =
-                        ScheduledMessageActionErrorState(result.exceptionOrNull())
+                        ScheduledMessageErrorState(result.exceptionOrNull())
                 }
             }
         }
@@ -174,7 +174,7 @@ class ScheduledMessagesViewModel @Inject constructor(private val chatRepository:
                         ScheduledMessageActionSuccessState(result.getOrNull())
                 } else {
                     _editState.value =
-                        ScheduledMessageActionErrorState(result.exceptionOrNull())
+                        ScheduledMessageErrorState(result.exceptionOrNull())
                 }
             }
         }
@@ -189,7 +189,7 @@ class ScheduledMessagesViewModel @Inject constructor(private val chatRepository:
                         ScheduledMessageActionSuccessState()
                 } else {
                     _deleteState.value =
-                        ScheduledMessageActionErrorState(result.exceptionOrNull())
+                        ScheduledMessageErrorState(result.exceptionOrNull())
                 }
             }
         }
