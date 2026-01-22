@@ -214,7 +214,7 @@ class ScheduleMessageCompose(
             setTime(tomorrow)
         }
 
-        if (currTime.dayOfWeek.value <= DayOfWeek.FRIDAY.value) {
+        if (currTime.dayOfWeek < DayOfWeek.FRIDAY) {
             TimeOption(
                 label = stringResource(R.string.this_weekend),
                 timeString = thisWeekendStr,
@@ -225,13 +225,15 @@ class ScheduleMessageCompose(
             }
         }
 
-        TimeOption(
-            label = stringResource(R.string.next_week),
-            timeString = nextWeekStr,
-            selected = selectedOption.value == SelectedOption.NEXT_WEEK
-        ) {
-            selectedOption.value = SelectedOption.NEXT_WEEK
-            setTime(nextWeek)
+        if (currTime.dayOfWeek != DayOfWeek.SUNDAY) {
+            TimeOption(
+                label = stringResource(R.string.next_week),
+                timeString = nextWeekStr,
+                selected = selectedOption.value == SelectedOption.NEXT_WEEK
+            ) {
+                selectedOption.value = SelectedOption.NEXT_WEEK
+                setTime(nextWeek)
+            }
         }
 
         HorizontalDivider()
@@ -310,7 +312,7 @@ class ScheduleMessageCompose(
                 )
                 val date = datePickerState.selectedDateMillis?.let {
                     val instant = Instant.ofEpochMilli(it)
-                    LocalDateTime.ofInstant(instant, ZoneOffset.UTC) // Google sends time in UTC
+                    LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
                 }
                 if (date != null) {
                     val year = date.year
