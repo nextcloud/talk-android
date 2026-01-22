@@ -15,6 +15,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import autodagger.AutoInjector
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.AudioRecorderManager
@@ -31,12 +33,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @Suppress("Detekt.TooManyFunctions")
-class MessageInputViewModel @Inject constructor() : ViewModel(), DefaultLifecycleObserver {
+@AutoInjector(NextcloudTalkApplication::class)
+class MessageInputViewModel: ViewModel(), DefaultLifecycleObserver {
 
     enum class LifeCycleFlag {
         PAUSED,
         RESUMED,
         STOPPED
+    }
+
+    init {
+        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
     }
 
     @Inject
@@ -46,7 +53,7 @@ class MessageInputViewModel @Inject constructor() : ViewModel(), DefaultLifecycl
     lateinit var mediaPlayerManager: MediaPlayerManager
 
     @Inject
-    lateinit var audioFocusRequestManager: AudioFocusRequestManager // FIXME why wasn't this instantiated
+    lateinit var audioFocusRequestManager: AudioFocusRequestManager
 
     lateinit var chatRepository: ChatMessageRepository
     lateinit var currentLifeCycleFlag: LifeCycleFlag
