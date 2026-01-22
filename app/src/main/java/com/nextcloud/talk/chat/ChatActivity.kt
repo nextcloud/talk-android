@@ -4482,7 +4482,7 @@ class ChatActivity :
         messageTemp.message = newString
 
         val index = adapter?.getMessagePositionById(messageTemp.id)!!
-        if (index > 0) {
+        if (index >= 0) {
             val adapterMsg = adapter?.items?.get(index)?.item as ChatMessage
             messageTemp.parentMessageId = adapterMsg.parentMessageId
         }

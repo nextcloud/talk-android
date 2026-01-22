@@ -696,6 +696,14 @@ class OfflineFirstChatRepository @Inject constructor(
                     messageJson.parentMessage?.let { parentMessageJson ->
                         parentMessageJson.message?.let {
                             val parentMessageEntity = parentMessageJson.asEntity(currentUser.id!!)
+
+                            // Preserve parentMessageId if missing in server response but present in local DB
+                            val existingEntity =
+                                chatDao.getChatMessageEntity(internalConversationId, parentMessageJson.id)
+                            if (existingEntity != null && parentMessageEntity.parentMessageId == null) {
+                                parentMessageEntity.parentMessageId = existingEntity.parentMessageId
+                            }
+
                             chatDao.upsertChatMessage(parentMessageEntity)
                             _updateMessageFlow.emit(parentMessageEntity.asModel())
                         }
