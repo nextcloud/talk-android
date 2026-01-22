@@ -22,7 +22,6 @@ import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
 import com.nextcloud.talk.chat.data.model.ChatMessage;
 import com.nextcloud.talk.models.json.chat.ReadStatus;
 import com.nextcloud.talk.utils.TextMatchers;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -177,8 +176,9 @@ public class OutcomingPreviewMessageViewHolder extends PreviewMessageViewHolder 
     @Override
     public EmojiTextView getMessageCaption() { return binding.messageCaption; }
 
+    @NonNull
     @Override
-    public @NotNull TextView getMessageEditIndicator() {
+    public TextView getMessageEditIndicator() {
         return binding.messageEditIndicator;
     }
 }
