@@ -29,14 +29,14 @@ class CallForegroundService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    @Suppress("ForegroundServiceType")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val conversationName = intent?.getStringExtra(EXTRA_CONVERSATION_NAME)
         val callExtras = intent?.getBundleExtra(EXTRA_CALL_INTENT_EXTRAS)
         val notification = buildNotification(conversationName, callExtras)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val foregroundServiceType = resolveForegroundServiceType(callExtras)
+        val foregroundServiceType = resolveForegroundServiceType(callExtras)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && foregroundServiceType != FOREGROUND_SERVICE_TYPE_ZERO) {
             startForeground(NOTIFICATION_ID, notification, foregroundServiceType)
         } else {
             startForeground(NOTIFICATION_ID, notification)
@@ -107,6 +107,7 @@ class CallForegroundService : Service() {
 
     companion object {
         private const val NOTIFICATION_ID = 47001
+        private const val FOREGROUND_SERVICE_TYPE_ZERO = 0
         private const val EXTRA_CONVERSATION_NAME = "extra_conversation_name"
         private const val EXTRA_CALL_INTENT_EXTRAS = "extra_call_intent_extras"
 
