@@ -90,6 +90,16 @@ interface ChatMessagesDao {
     fun getChatMessageForConversation(internalConversationId: String, messageId: Long): Flow<ChatMessageEntity>
 
     @Query(
+        """
+        SELECT * 
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId 
+        AND id = :messageId
+        """
+    )
+    suspend fun getChatMessageEntity(internalConversationId: String, messageId: Long): ChatMessageEntity?
+
+    @Query(
         value = """
             DELETE FROM ChatMessages
             WHERE internalId in (:internalIds)
