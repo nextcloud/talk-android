@@ -34,7 +34,9 @@ import javax.inject.Inject
 
 @Suppress("Detekt.TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
-class MessageInputViewModel: ViewModel(), DefaultLifecycleObserver {
+class MessageInputViewModel :
+    ViewModel(),
+    DefaultLifecycleObserver {
 
     enum class LifeCycleFlag {
         PAUSED,

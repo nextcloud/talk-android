@@ -118,9 +118,8 @@ class MessageInputFragment : Fragment() {
 
     @Inject
     lateinit var messageUtils: MessageUtils
-    
-    private val messageInputViewModel: MessageInputViewModel by activityViewModels()
 
+    private val messageInputViewModel: MessageInputViewModel by activityViewModels()
     lateinit var binding: FragmentMessageInputBinding
     private lateinit var conversationInternalId: String
     private var typedWhileTypingTimerIsRunning: Boolean = false
