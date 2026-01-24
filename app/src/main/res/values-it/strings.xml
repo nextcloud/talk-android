@@ -283,7 +283,7 @@
     <string name="nc_guest">Ospite</string>
     <string name="nc_guest_access">Accesso ospiti</string>
     <string name="nc_guest_access_allow_failed">Impossibile abilitare/disabilitare l\'accesso ospite.</string>
-    <string name="nc_guest_access_allow_summary">Consenti agli ospiti di condividere un link pubblico per partecipare a questa conversazione.</string>
+    <string name="nc_guest_access_allow_summary">Consenti agli ospiti di condividere un collegamento pubblico per partecipare a questa conversazione.</string>
     <string name="nc_guest_access_allow_title">Consenti ospiti</string>
     <string name="nc_guest_access_password_dialog_hint">Digita una password</string>
     <string name="nc_guest_access_password_dialog_title">Password per accesso ospiti</string>
@@ -686,7 +686,7 @@
     <string name="typing_are_typing">stanno scrivendo …</string>
     <string name="typing_is_typing">sta scrivendo …</string>
     <string name="typing_x_others">e %1$s altri stanno scrivendo …</string>
-    <string name="unarchive_conversation">Disarchivia conversazione</string>
+    <string name="unarchive_conversation">Recupera la conversazione dall\'archivio</string>
     <string name="unarchive_hint">Una volta che una conversazione viene rimossa dall\'archivio, verrà nuovamente visualizzata per impostazione predefinita.</string>
     <string name="unarchived_conversation">Non archiviato %1$s</string>
     <string name="unban">Rimuovi ban</string>
