@@ -47,6 +47,51 @@ class ParticipantPermissionsTest : TestCase() {
         assertTrue(attendeePermissions.canPublishVideo())
     }
 
+    @Test
+    fun test_reactPermissionSet() {
+        val spreedCapability = SpreedCapability()
+        spreedCapability.features = listOf("chat-permission")
+        val conversation = createConversation()
+
+        conversation.permissions = ParticipantPermissions.REACT or
+            ParticipantPermissions.CUSTOM
+
+        val user = User()
+        user.id = 1
+
+        val attendeePermissions =
+            ParticipantPermissions(
+                spreedCapability,
+                ConversationModel.mapToConversationModel(conversation, user)
+            )
+
+        assertTrue(attendeePermissions.hasReactPermission())
+        assertFalse(attendeePermissions.hasChatPermission())
+    }
+
+    @Test
+    fun test_reactPermissionFallbackToChat() {
+        val spreedCapability = SpreedCapability()
+        spreedCapability.features = listOf("chat-permission")
+        val conversation = createConversation()
+
+        // Only CHAT permission set, no REACT - should still allow reactions for backward compatibility
+        conversation.permissions = ParticipantPermissions.CHAT or
+            ParticipantPermissions.CUSTOM
+
+        val user = User()
+        user.id = 1
+
+        val attendeePermissions =
+            ParticipantPermissions(
+                spreedCapability,
+                ConversationModel.mapToConversationModel(conversation, user)
+            )
+
+        assertTrue(attendeePermissions.hasReactPermission())
+        assertTrue(attendeePermissions.hasChatPermission())
+    }
+
     private fun createConversation() =
         Conversation(
             token = "test",
