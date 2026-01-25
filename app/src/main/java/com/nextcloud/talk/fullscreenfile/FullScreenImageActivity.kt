@@ -12,6 +12,7 @@ package com.nextcloud.talk.fullscreenfile
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import com.nextcloud.talk.ui.SwipeToCloseLayout
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -133,6 +134,12 @@ class FullScreenImageActivity : AppCompatActivity() {
             binding.photoView.visibility = View.VISIBLE
             displayImage(path)
         }
+
+        binding.swipeToCloseLayout.setOnSwipeToCloseListener(object : SwipeToCloseLayout.OnSwipeToCloseListener {
+            override fun onSwipeToClose() {
+                finish()
+            }
+        })
     }
 
     private fun displayImage(path: String) {
