@@ -567,8 +567,15 @@
     <string name="open_in_files_app">Otevřít v aplikaci Soubory</string>
     <string name="open_notes">Otevřít poznámky</string>
     <string name="open_thread">Přejít na vlákno</string>
+    <string name="pin_24hr">Připnout na 24 hodin</string>
+    <string name="pin_30_days">Připnout na 30 dní</string>
+    <string name="pin_7_days">Připnout na 7 dní</string>
+    <string name="pin_indefinitely">Připnout na neurčito</string>
     <string name="pin_message">Připnout zprávu</string>
     <string name="pinned">Připnuté</string>
+    <string name="pinned_by">Připnuto uživatelem</string>
+    <string name="pinned_indefinitely">Připnuto na neurčito</string>
+    <string name="pinned_until">Připnuto do</string>
     <string name="play_pause_voice_message">Přehrát/pozastavit hlasovou zprávu</string>
     <string name="playback_speed_control">Ovládání rychlosti přehrávání</string>
     <string name="please_continue_the_login_process_in_the_browser">Pokračujte v přihlášení ve webovém prohlížeči</string>
