@@ -72,11 +72,14 @@ class ParticipantPermissions(
     }
 
     fun hasReactPermission(): Boolean {
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REACT_PERMISSION)) {
+            // Server supports separate react permission - check REACT bit
+            return hasReactPermission
+        }
         if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CHAT_PERMISSION)) {
-            // Server supports granular permissions - check REACT bit
-            // Fall back to CHAT permission for backward compatibility with servers
-            // that have chat-permission capability but not yet the REACT permission split
-            return hasReactPermission || hasChatPermission
+            // Older server without react-permission capability - fall back to CHAT permission
+            // as that's what controlled reactions before the split
+            return hasChatPermission
         }
         // if capability is not available then the spreed version doesn't support to restrict this
         return true
