@@ -367,7 +367,7 @@ class ScheduleMessageCompose(
                 .padding(INT_8.dp)
                 .background(
                     if (selected) {
-                        colorResource(R.color.textColorMaxContrast)
+                        MaterialTheme.colorScheme.primary
                     } else {
                         Color
                             .Transparent

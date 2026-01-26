@@ -381,7 +381,7 @@ class ScheduledMessagesActivity : BaseActivity() {
 
                                     items(
                                         items = grouped[date].orEmpty(),
-                                        key = { it.id }
+                                        key = { it.token?: "" }
                                     ) { message ->
                                         ScheduledMessageBubble(
                                             message = message,
