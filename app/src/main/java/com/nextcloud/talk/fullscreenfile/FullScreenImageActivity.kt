@@ -5,6 +5,7 @@
  * SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2021 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2021 Dariusz Olszewski <starypatyk@gmail.com>
+ * SPDX-FileCopyrightText: 2026 Enrique López-Mañas <eenriquelopez@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.fullscreenfile
@@ -12,6 +13,7 @@ package com.nextcloud.talk.fullscreenfile
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import com.nextcloud.talk.ui.SwipeToCloseLayout
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -133,6 +135,12 @@ class FullScreenImageActivity : AppCompatActivity() {
             binding.photoView.visibility = View.VISIBLE
             displayImage(path)
         }
+
+        binding.swipeToCloseLayout.setOnSwipeToCloseListener(object : SwipeToCloseLayout.OnSwipeToCloseListener {
+            override fun onSwipeToClose() {
+                finish()
+            }
+        })
     }
 
     private fun displayImage(path: String) {
