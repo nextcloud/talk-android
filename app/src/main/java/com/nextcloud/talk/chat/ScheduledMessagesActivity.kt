@@ -9,6 +9,7 @@ package com.nextcloud.talk.chat
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -114,7 +115,7 @@ class ScheduledMessagesActivity : BaseActivity() {
 
     private lateinit var scheduledMessagesViewModel: ScheduledMessagesViewModel
 
-    private lateinit var messageInputViewModel: MessageInputViewModel
+    val messageInputViewModel: MessageInputViewModel by viewModels()
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
@@ -131,8 +132,6 @@ class ScheduledMessagesActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         scheduledMessagesViewModel = ViewModelProvider(this, viewModelFactory)[ScheduledMessagesViewModel::class.java]
-
-        messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
 
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
