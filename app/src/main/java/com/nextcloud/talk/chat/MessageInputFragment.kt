@@ -227,8 +227,6 @@ class MessageInputFragment : Fragment() {
             } ?: clearReplyUi()
         }
 
-        chatActivity.messageInputViewModel.getEditChatMessage.observe(viewLifecycleOwner) { message ->
-            message?.let { setEditUI(it as ChatMessage) }
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 messageInputViewModel.getEditChatMessage.collect { message ->
