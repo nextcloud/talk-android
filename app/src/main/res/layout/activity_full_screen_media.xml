@@ -4,11 +4,13 @@
   ~
   ~ SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ SPDX-FileCopyrightText: 2021 Marcel Hibbe <dev@mhibbe.de>
+  ~ SPDX-FileCopyrightText: 2026 Enrique López-Mañas <eenriquelopez@gmail.com>
   ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.nextcloud.talk.ui.SwipeToCloseLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_to_close_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fullscreenfile.FullScreenMediaActivity">
@@ -28,4 +30,4 @@
         app:show_buffering="when_playing"
         app:show_shuffle_button="true" />
 
-</FrameLayout>
+</com.nextcloud.talk.ui.SwipeToCloseLayout>
