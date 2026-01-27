@@ -353,6 +353,11 @@ class MessageInputFragment : Fragment() {
             binding.fragmentMessageInputView.attachmentButton.visibility = View.VISIBLE
             binding.fragmentMessageInputView.recordAudioButton.visibility =
                 if (binding.fragmentMessageInputView.inputEditText.text.isEmpty()) View.VISIBLE else View.GONE
+        if(hasScheduledMessages){
+            binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.VISIBLE
+        }else{
+            binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.GONE
+        }
         } else {
             binding.fragmentMessageInputView.attachmentButton.visibility = View.INVISIBLE
             binding.fragmentMessageInputView.recordAudioButton.visibility = View.INVISIBLE
@@ -360,6 +365,7 @@ class MessageInputFragment : Fragment() {
             binding.fragmentConnectionLost.visibility = View.GONE
             binding.fragmentConnectionLost.setBackgroundColor(resources.getColor(R.color.hwSecurityRed))
             binding.fragmentConnectionLost.visibility = View.VISIBLE
+            binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.GONE
         }
     }
 
