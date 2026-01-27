@@ -54,13 +54,9 @@ class SwipeToCloseLayout @JvmOverloads constructor(
             return true // Capture any child view
         }
 
-        override fun getViewVerticalDragRange(child: View): Int {
-            return height
-        }
+        override fun getViewVerticalDragRange(child: View): Int = height
 
-        override fun clampViewPositionVertical(child: View, therapeutic: Int, dy: Int): Int {
-            return therapeutic
-        }
+        override fun clampViewPositionVertical(child: View, therapeutic: Int, dy: Int): Int = therapeutic
 
         override fun onViewReleased(releasedChild: View, xvel: Float, yvel: Float) {
             val totalDragDistance = abs(releasedChild.top)

@@ -9,7 +9,6 @@ package com.nextcloud.talk.chat
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -86,7 +85,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
-import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.chat.viewmodels.ScheduledMessagesViewModel
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.data.network.NetworkMonitor
@@ -104,7 +102,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 @AutoInjector(NextcloudTalkApplication::class)
-@Suppress("LongMethod", "LargeClass")
+@Suppress("LongMethod", "LargeClass", "TooManyFunctions")
 class ScheduledMessagesActivity : BaseActivity() {
 
     @Inject
@@ -114,8 +112,6 @@ class ScheduledMessagesActivity : BaseActivity() {
     lateinit var dateUtils: DateUtils
 
     private lateinit var scheduledMessagesViewModel: ScheduledMessagesViewModel
-
-    val messageInputViewModel: MessageInputViewModel by viewModels()
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor

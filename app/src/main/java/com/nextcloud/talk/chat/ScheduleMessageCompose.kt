@@ -378,7 +378,6 @@ class ScheduleMessageCompose(
                 )
                 .clickable { onClick() }
         ) {
-            60
             Text(label, modifier = Modifier.weight(HALF_WEIGHT))
             Spacer(modifier = Modifier.width(60.dp))
             Text(timeString, modifier = Modifier.weight(HALF_WEIGHT))

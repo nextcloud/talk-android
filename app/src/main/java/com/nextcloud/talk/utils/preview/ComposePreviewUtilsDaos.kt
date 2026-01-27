@@ -51,10 +51,8 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
         messageId: Long
     ): Flow<ChatMessageEntity> = flowOf()
 
-    override suspend fun getChatMessageEntity(
-        internalConversationId: String,
-        messageId: Long
-    ): ChatMessageEntity? = null
+    override suspend fun getChatMessageEntity(internalConversationId: String, messageId: Long): ChatMessageEntity? =
+        null
 
     override fun deleteChatMessages(internalIds: List<String>) { /* */ }
 

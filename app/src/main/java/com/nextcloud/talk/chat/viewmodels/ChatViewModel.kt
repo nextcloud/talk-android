@@ -266,6 +266,9 @@ class ChatViewModel @Inject constructor(
     val scheduledMessagesViewState: LiveData<ViewState>
         get() = _scheduledMessagesViewState
 
+    private val _scheduledMessagesCount = MutableLiveData<Int>()
+    val scheduledMessagesCount: LiveData<Int> = _scheduledMessagesCount
+
     object DeleteChatMessageStartState : ViewState
     class DeleteChatMessageSuccessState(val msg: ChatOverallSingleMessage) : ViewState
     object DeleteChatMessageErrorState : ViewState
@@ -325,6 +328,7 @@ class ChatViewModel @Inject constructor(
                 if (result.isSuccess) {
                     _scheduledMessagesViewState.value =
                         ScheduledMessagesSuccessState(result.getOrNull().orEmpty())
+                    _scheduledMessagesCount.value = result.getOrNull()?.size ?: 0
                 } else {
                     _scheduledMessagesViewState.value = ScheduledMessagesErrorState
                 }
