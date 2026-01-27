@@ -86,6 +86,7 @@
             <trusting group="org.mockito.kotlin" name="mockito-kotlin" version="6.2.0"/>
             <trusting group="org.mockito.kotlin" name="mockito-kotlin" version="6.2.1"/>
             <trusting group="org.mockito.kotlin" name="mockito-kotlin" version="6.2.2"/>
+            <trusting group="org.mockito.kotlin" name="mockito-kotlin" version="6.2.3"/>
          </trusted-key>
          <trusted-key id="1597AB231B7ADD7E14B1D9C43F00DB67AE236E2E">
             <trusting group="org.conscrypt" name="conscrypt-android" version="2.5.2"/>
