@@ -580,7 +580,7 @@ class ScheduledMessagesActivity : BaseActivity() {
 
     @Composable
     private fun showErrorText() {
-        if (!networkMonitor.isOnline.value) {
+        if (networkMonitor.isOnline.value) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
