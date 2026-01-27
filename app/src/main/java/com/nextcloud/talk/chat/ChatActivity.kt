@@ -56,6 +56,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
@@ -292,7 +293,7 @@ class ChatActivity :
 
     lateinit var conversationInfoViewModel: ConversationInfoViewModel
     lateinit var contextChatViewModel: ContextChatViewModel
-    lateinit var messageInputViewModel: MessageInputViewModel
+    val messageInputViewModel: MessageInputViewModel by viewModels()
 
     private var chatMenu: Menu? = null
 
@@ -543,11 +544,6 @@ class ChatActivity :
                     }
 
                     messageInputFragment = getMessageInputFragment()
-                    messageInputViewModel =
-                        ViewModelProvider(this@ChatActivity, viewModelFactory)[
-                            MessageInputViewModel::class
-                                .java
-                        ]
                     messageInputViewModel.setData(chatViewModel.getChatRepository())
 
                     initObservers()
