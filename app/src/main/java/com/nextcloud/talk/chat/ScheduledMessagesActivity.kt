@@ -393,7 +393,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                                 val datesInOrder = grouped.keys.sorted()
 
                                 datesInOrder.forEach { date ->
-                                    stickyHeader(key = "header_$date") {
+                                    item(key = "header_$date") {
                                         ScheduledDayHeader(
                                             text = buildHeaderText(today = today, date = date)
                                         )
