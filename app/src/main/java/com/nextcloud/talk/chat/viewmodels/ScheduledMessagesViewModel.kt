@@ -11,13 +11,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import com.nextcloud.talk.utils.message.SendMessageUtils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ScheduledMessagesViewModel @Inject constructor(private val chatRepository: ChatMessageRepository) : ViewModel() {
+class ScheduledMessagesViewModel @Inject constructor(
+    private val chatRepository: ChatMessageRepository,
+    private val currentUserProvider: CurrentUserProvider
+) : ViewModel() {
 
     sealed interface GetScheduledMessagesState
     object GetScheduledMessagesIdleState : GetScheduledMessagesState
@@ -37,6 +48,9 @@ class ScheduledMessagesViewModel @Inject constructor(private val chatRepository:
         ScheduledMessageActionState
 
     data class ScheduledMessageErrorState(val error: Throwable? = null) : ScheduledMessageActionState
+
+    private val _currentUserState = MutableStateFlow<User?>(null)
+    val currentUserState: StateFlow<User?> = _currentUserState
 
     sealed interface SendNowMessageState
     object SendNowMessageIdleState : SendNowMessageState
@@ -64,6 +78,12 @@ class ScheduledMessagesViewModel @Inject constructor(private val chatRepository:
     val deleteState: StateFlow<ScheduledMessageActionState>
         get() = _deleteState
 
+    private val _parentMessages =
+        MutableStateFlow<Map<Long, ChatMessage>>(emptyMap())
+
+    val parentMessages: StateFlow<Map<Long, ChatMessage>> =
+        _parentMessages.asStateFlow()
+
     fun loadScheduledMessages(credentials: String, url: String) {
         _getScheduledMessagesState.value = GetScheduledMessagesLoadingState
         viewModelScope.launch {
@@ -75,6 +95,13 @@ class ScheduledMessagesViewModel @Inject constructor(private val chatRepository:
                     _getScheduledMessagesState.value = GetScheduledMessagesErrorState(result.exceptionOrNull())
                 }
             }
+        }
+    }
+
+    fun loadCurrentUser() {
+        viewModelScope.launch {
+            val user = currentUserProvider.getCurrentUser().getOrNull()
+            _currentUserState.value = user
         }
     }
 
@@ -145,6 +172,43 @@ class ScheduledMessagesViewModel @Inject constructor(private val chatRepository:
             }
         }
     }
+
+    fun requestParentMessage(token: String, parentMessageId: Long, threadId: Long?) {
+        if (_parentMessages.value.containsKey(parentMessageId)) return
+        viewModelScope.launch {
+            val parent = getParentMessageById(token, parentMessageId, threadId)
+            parent?.let {
+                _parentMessages.update { old ->
+                    old + (parentMessageId to it)
+                }
+            }
+        }
+    }
+
+    private suspend fun getParentMessageById(token: String, parentMessageId: Long, threadId: Long?): ChatMessage? =
+        withContext(Dispatchers.IO) {
+            val userResult = currentUserProvider.getCurrentUser()
+            val user = userResult.getOrElse { return@withContext null }
+
+            val credentials = user.getCredentials()
+
+            val apiVersion = ApiUtils.getChatApiVersion(
+                user.capabilities?.spreedCapability ?: return@withContext null,
+                intArrayOf(ApiUtils.API_V1)
+            )
+
+            val chatUrl = ApiUtils.getUrlForChat(apiVersion, user.baseUrl, token)
+
+            chatRepository.initData(
+                user,
+                credentials,
+                chatUrl,
+                token,
+                threadId
+            )
+
+            chatRepository.getParentMessageById(parentMessageId).firstOrNull()
+        }
 
     @Suppress("LongParameterList")
     fun edit(

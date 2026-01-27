@@ -155,7 +155,6 @@ class MessageInputFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMessageInputBinding.inflate(inflater)
         themeMessageInputView()
-
         return binding.root
     }
 
@@ -790,8 +789,12 @@ class MessageInputFragment : Fragment() {
             binding.fragmentMessageInputView.inputEditText?.setText("")
             chatActivity.showScheduleMessageDialog(
                 message = message,
-                sendWithoutNotification = sendWithoutNotification
+                sendWithoutNotification = sendWithoutNotification,
+                replyToMessageId = chatActivity.getReplyToMessageId(),
+                threadTitle = chatActivity.chatViewModel.messageDraft.threadTitle
             )
+            cancelReply()
+            cancelCreateThread()
         }
     }
 
@@ -1029,10 +1032,10 @@ class MessageInputFragment : Fragment() {
             CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_SEND)
 
         popupMenu.menu.findItem(R.id.send_later)?.isVisible =
-            networkMonitor.isOnline.value &&
+            //    networkMonitor.isOnline.value &&
             CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SCHEDULED_MESSAGES)
-        popupMenu.menu.findItem(R.id.send_later_without_notification)?.isVisible = networkMonitor.isOnline
-            .value &&
+        popupMenu.menu.findItem(R.id.send_later_without_notification)?.isVisible =
+            //   networkMonitor.isOnline.value &&
             CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_SEND) &&
             CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SCHEDULED_MESSAGES)
 

@@ -79,6 +79,8 @@ interface ChatMessageRepository : LifecycleAwareManager {
      */
     suspend fun getMessage(messageId: Long, bundle: Bundle): Flow<ChatMessage>
 
+    suspend fun getParentMessageById(messageId: Long): Flow<ChatMessage>
+
     suspend fun getNumberOfThreadReplies(threadId: Long): Int
 
     @Suppress("LongParameterList")

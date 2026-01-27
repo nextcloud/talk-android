@@ -3502,7 +3502,12 @@ class ChatActivity :
         startActivity(intent)
     }
 
-    fun showScheduleMessageDialog(message: String, sendWithoutNotification: Boolean) {
+    fun showScheduleMessageDialog(
+        message: String,
+        sendWithoutNotification: Boolean,
+        replyToMessageId: Int,
+        threadTitle: String?
+    ) {
         val shouldDismiss = mutableStateOf(false)
         binding.genericComposeView.setContent {
             ScheduleMessageCompose(
@@ -3519,9 +3524,9 @@ class ChatActivity :
                         ),
                         message = message,
                         displayName = conversationUser!!.displayName ?: "",
-                        replyTo = getReplyToMessageId(),
+                        replyTo = replyToMessageId,
                         sendWithoutNotification = sendWithoutNotification,
-                        threadTitle = chatViewModel.messageDraft.threadTitle,
+                        threadTitle = threadTitle,
                         threadId = conversationThreadId,
                         sendAt = sendAt
                     )

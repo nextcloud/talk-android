@@ -255,6 +255,8 @@ class ScheduleMessageCompose(
 
             val timeText = timeState.value.format(DateTimeFormatter.ofPattern(fullPattern(context)))
 
+            Spacer(modifier = Modifier.width(60.dp))
+
             Text(
                 timeText,
                 modifier = Modifier.weight(HALF_WEIGHT)
@@ -371,11 +373,14 @@ class ScheduleMessageCompose(
                     } else {
                         Color
                             .Transparent
-                    }
+                    },
+                    RoundedCornerShape(4.dp)
                 )
                 .clickable { onClick() }
         ) {
+            60
             Text(label, modifier = Modifier.weight(HALF_WEIGHT))
+            Spacer(modifier = Modifier.width(60.dp))
             Text(timeString, modifier = Modifier.weight(HALF_WEIGHT))
         }
     }
