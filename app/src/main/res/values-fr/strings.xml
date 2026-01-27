@@ -123,9 +123,9 @@
     <string name="nc_call_button_content_description_answer_video_call">Répondre par appel vidéo</string>
     <string name="nc_call_button_content_description_answer_voice_only">Répondre par appel vocal uniquement</string>
     <string name="nc_call_button_content_description_audio_output">Changer de sortie audio</string>
-    <string name="nc_call_button_content_description_camera">Activer / Désactiver la caméra</string>
+    <string name="nc_call_button_content_description_camera">Activer/Désactiver la caméra</string>
     <string name="nc_call_button_content_description_hangup">Raccrocher</string>
-    <string name="nc_call_button_content_description_microphone">Activer / Désactiver le micro</string>
+    <string name="nc_call_button_content_description_microphone">Activer/Désactiver le micro</string>
     <string name="nc_call_button_content_description_pip">Lancer le mode Image dans l\'Image</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Basculer mode selfie</string>
     <string name="nc_call_incoming">ENTRANT</string>
@@ -665,7 +665,7 @@
     <string name="take_photo_switch_camera">Retourner la caméra</string>
     <string name="take_photo_toggle_crop">Rogner la photo</string>
     <string name="take_photo_toggle_lowres">Réduire la taille de l\'image</string>
-    <string name="take_photo_toggle_torch">Allumer / Éteindre la lampe</string>
+    <string name="take_photo_toggle_torch">Allumer/Éteindre la lampe</string>
     <string name="thirtyMinutes">30 minutes</string>
     <string name="thisWeek">Cette semaine</string>
     <string name="this_is_a_test_message">Ceci est un message de test</string>
