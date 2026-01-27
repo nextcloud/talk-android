@@ -1032,10 +1032,9 @@ class MessageInputFragment : Fragment() {
             CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_SEND)
 
         popupMenu.menu.findItem(R.id.send_later)?.isVisible =
-            //    networkMonitor.isOnline.value &&
+            networkMonitor.isOnline.value &&
             CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SCHEDULED_MESSAGES)
-        popupMenu.menu.findItem(R.id.send_later_without_notification)?.isVisible =
-            //   networkMonitor.isOnline.value &&
+        popupMenu.menu.findItem(R.id.send_later_without_notification)?.isVisible = networkMonitor.isOnline.value &&
             CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_SEND) &&
             CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SCHEDULED_MESSAGES)
 
