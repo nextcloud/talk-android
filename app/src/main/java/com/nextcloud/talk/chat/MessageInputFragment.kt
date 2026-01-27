@@ -194,9 +194,14 @@ class MessageInputFragment : Fragment() {
 
     private fun initObservers() {
         Log.d(TAG, "LifeCyclerOwner is: ${viewLifecycleOwner.lifecycle}")
-        chatActivity.chatViewModel.getCapabilitiesViewState.observeOnce(viewLifecycleOwner) { state ->
+        chatActivity.chatViewModel.getCapabilitiesViewState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is ChatViewModel.GetCapabilitiesUpdateState -> {
+                    initMessageInputView(state.spreedCapabilities)
+                    initSmileyKeyboardToggler()
+                    setupMentionAutocomplete()
+                    initVoiceRecordButton()
+                    initThreadHandling()
                     restoreState()
                 }
 
@@ -207,6 +212,7 @@ class MessageInputFragment : Fragment() {
                     initVoiceRecordButton()
                     initThreadHandling()
                     restoreState()
+                    updateScheduledMessagesAvailability(hasScheduledMessages)
                 }
 
                 else -> {}
@@ -225,6 +231,10 @@ class MessageInputFragment : Fragment() {
                     message.imageUrl
                 )
             } ?: clearReplyUi()
+        }
+
+        chatActivity.chatViewModel.scheduledMessagesCount.observe(viewLifecycleOwner) { count ->
+            updateScheduledMessagesAvailability(count > 0)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -351,11 +361,11 @@ class MessageInputFragment : Fragment() {
             binding.fragmentMessageInputView.attachmentButton.visibility = View.VISIBLE
             binding.fragmentMessageInputView.recordAudioButton.visibility =
                 if (binding.fragmentMessageInputView.inputEditText.text.isEmpty()) View.VISIBLE else View.GONE
-        if(hasScheduledMessages){
-            binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.VISIBLE
-        }else{
-            binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.GONE
-        }
+            if (hasScheduledMessages) {
+                binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.VISIBLE
+            } else {
+                binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.GONE
+            }
         } else {
             binding.fragmentMessageInputView.attachmentButton.visibility = View.INVISIBLE
             binding.fragmentMessageInputView.recordAudioButton.visibility = View.INVISIBLE
@@ -819,6 +829,7 @@ class MessageInputFragment : Fragment() {
             binding.fragmentMessageInputView.smileyButton.visibility = View.GONE
             binding.fragmentMessageInputView.messageInput.visibility = View.GONE
             binding.fragmentMessageInputView.messageInput.hint = ""
+            binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.GONE
         } else {
             binding.fragmentMessageInputView.microphoneEnabledInfo.clearAnimation()
 
