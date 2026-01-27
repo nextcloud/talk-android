@@ -511,6 +511,12 @@ class OfflineFirstChatRepository @Inject constructor(
         ).map(ChatMessageEntity::asModel)
     }
 
+    override suspend fun getParentMessageById(messageId: Long): Flow<ChatMessage> =
+        chatDao.getChatMessageForConversation(
+            internalConversationId,
+            messageId
+        ).map(ChatMessageEntity::asModel)
+
     @Suppress("UNCHECKED_CAST", "MagicNumber", "Detekt.TooGenericExceptionCaught")
     private fun getMessagesFromServer(bundle: Bundle): Pair<Int, List<ChatMessageJson>>? {
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
@@ -1187,11 +1193,13 @@ class OfflineFirstChatRepository @Inject constructor(
         flow {
             val response = network.getScheduledMessages(credentials, url)
             val messages = response.ocs?.data.orEmpty().map { messageJson ->
-                messageJson.asModel().copy(
+                val jsonToModel = messageJson.asModel()
+                jsonToModel.copy(
                     token = messageJson.id.toString()
                 )
             }
             emit(Result.success(messages))
+            Log.d("Get Scheduled", "$messages")
         }.catch { e ->
             Log.e(TAG, "Error when fetching scheduled messages", e)
             emit(Result.failure(e))
