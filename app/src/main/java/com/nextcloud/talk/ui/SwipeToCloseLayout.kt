@@ -1,3 +1,9 @@
+/*
+ * Nextcloud Talk - Android Client
+ *
+ * SPDX-FileCopyrightText: 2026 Enrique López-Mañas <eenriquelopez@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 package com.nextcloud.talk.ui
 
 import android.content.Context
