@@ -567,6 +567,8 @@
     <string name="open_in_files_app">Otwórz w aplikacji Pliki</string>
     <string name="open_notes">Otwórz Notatki</string>
     <string name="open_thread">Przejdź do wątku</string>
+    <string name="pin_message">Przypnij wiadomość</string>
+    <string name="pinned">Przypięte</string>
     <string name="play_pause_voice_message">Odtwórz/wstrzymaj wiadomość głosową</string>
     <string name="playback_speed_control">Kontrola prędkości odtwarzania</string>
     <string name="please_continue_the_login_process_in_the_browser">Proszę kontynuować logowanie w przeglądarce</string>
@@ -693,7 +695,9 @@
     <string name="unarchive_hint">Po przywróceniu archiwizacji rozmowa będzie ponownie wyświetlana domyślnie.</string>
     <string name="unarchived_conversation">Niezarchiwizowane %1$s</string>
     <string name="unban">Odblokuj</string>
+    <string name="unpin_message">Odepnij wiadomość</string>
     <string name="unread">Nieprzeczytane</string>
+    <string name="until_unpin">Do odpięcia</string>
     <string name="upload_new_avatar_from_device">Wyślij nowy awatar z urządzenia</string>
     <string name="user_absence">%1$s jest poza biurem i może nie odpowiadać</string>
     <string name="user_absence_for_one_day">%1$s jest dzisiaj nieobecny w biurze</string>
