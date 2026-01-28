@@ -49,7 +49,8 @@ fun ChatMessageJson.asEntity(accountId: Long) =
         pinnedActorId = metaData?.pinnedActorId,
         pinnedActorDisplayName = metaData?.pinnedActorDisplayName,
         pinnedAt = metaData?.pinnedAt,
-        pinnedUntil = metaData?.pinnedUntil
+        pinnedUntil = metaData?.pinnedUntil,
+        sendAt = sendAt
     )
 
 fun ChatMessageEntity.asModel() =
@@ -88,7 +89,8 @@ fun ChatMessageEntity.asModel() =
         pinnedActorId = pinnedActorId,
         pinnedActorDisplayName = pinnedActorDisplayName,
         pinnedAt = pinnedAt,
-        pinnedUntil = pinnedUntil
+        pinnedUntil = pinnedUntil,
+        sendAt = sendAt
     )
 
 fun ChatMessageJson.asModel() =
@@ -124,5 +126,6 @@ fun ChatMessageJson.asModel() =
         pinnedActorId = metaData?.pinnedActorId,
         pinnedActorDisplayName = metaData?.pinnedActorDisplayName,
         pinnedAt = metaData?.pinnedAt,
-        pinnedUntil = metaData?.pinnedUntil
+        pinnedUntil = metaData?.pinnedUntil,
+        sendAt = sendAt
     )

@@ -549,4 +549,10 @@ object ApiUtils {
 
     fun getUrlForThreadNotificationLevel(version: Int, baseUrl: String?, token: String, threadId: Int): String =
         getUrlForChat(version, baseUrl, token) + "/threads" + "/$threadId" + "/notify"
+
+    fun getUrlForScheduledMessages(baseUrl: String?, token: String): String =
+        "$baseUrl$OCS_API_VERSION/apps/spreed/api/v1/chat/$token/schedule"
+
+    fun getUrlForScheduledMessage(baseUrl: String?, token: String, messageId: String?): String =
+        getUrlForScheduledMessages(baseUrl, token) + "/$messageId"
 }

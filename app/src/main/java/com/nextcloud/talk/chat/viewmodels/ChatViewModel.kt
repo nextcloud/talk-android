@@ -67,7 +67,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
-@Suppress("TooManyFunctions", "LongParameterList")
+@Suppress("TooManyFunctions", "LongParameterList", "LargeClass")
 class ChatViewModel @Inject constructor(
     // should be removed here. Use it via RetrofitChatNetwork
     private val appPreferences: AppPreferences,
@@ -257,6 +257,18 @@ class ChatViewModel @Inject constructor(
     val chatMessageViewState: LiveData<ViewState>
         get() = _chatMessageViewState
 
+    object ScheduledMessagesIdleState : ViewState
+    object ScheduledMessagesLoadingState : ViewState
+    data class ScheduledMessagesSuccessState(val messages: List<ChatMessage>) : ViewState
+    object ScheduledMessagesErrorState : ViewState
+
+    private val _scheduledMessagesViewState: MutableLiveData<ViewState> = MutableLiveData(ScheduledMessagesIdleState)
+    val scheduledMessagesViewState: LiveData<ViewState>
+        get() = _scheduledMessagesViewState
+
+    private val _scheduledMessagesCount = MutableLiveData<Int>()
+    val scheduledMessagesCount: LiveData<Int> = _scheduledMessagesCount
+
     object DeleteChatMessageStartState : ViewState
     class DeleteChatMessageSuccessState(val msg: ChatOverallSingleMessage) : ViewState
     object DeleteChatMessageErrorState : ViewState
@@ -307,6 +319,21 @@ class ChatViewModel @Inject constructor(
     fun getRoom(token: String) {
         _getRoomViewState.value = GetRoomStartState
         conversationRepository.getRoom(currentUser, token)
+    }
+
+    fun loadScheduledMessages(credentials: String, url: String) {
+        _scheduledMessagesViewState.value = ScheduledMessagesLoadingState
+        viewModelScope.launch {
+            chatRepository.getScheduledChatMessages(credentials, url).collect { result ->
+                if (result.isSuccess) {
+                    _scheduledMessagesViewState.value =
+                        ScheduledMessagesSuccessState(result.getOrNull().orEmpty())
+                    _scheduledMessagesCount.value = result.getOrNull()?.size ?: 0
+                } else {
+                    _scheduledMessagesViewState.value = ScheduledMessagesErrorState
+                }
+            }
+        }
     }
 
     fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {
