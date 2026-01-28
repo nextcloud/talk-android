@@ -28,6 +28,7 @@ import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel.Companion.FOLLOWED_THREADS_EXIST
 import com.nextcloud.talk.data.database.mappers.asModel
+import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
@@ -36,6 +37,7 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -50,25 +52,36 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
-@Suppress("TooManyFunctions", "LongParameterList", "LargeClass")
-class ChatViewModel @Inject constructor(
+@Suppress("TooManyFunctions", "LongParameterList")
+class ChatViewModel @AssistedInject constructor(
     // should be removed here. Use it via RetrofitChatNetwork
     private val appPreferences: AppPreferences,
     private val chatNetworkDataSource: ChatNetworkDataSource,
@@ -77,7 +90,9 @@ class ChatViewModel @Inject constructor(
     private val conversationRepository: OfflineConversationsRepository,
     private val reactionsRepository: ReactionsRepository,
     private val mediaRecorderManager: MediaRecorderManager,
-    private val audioFocusRequestManager: AudioFocusRequestManager
+    private val audioFocusRequestManager: AudioFocusRequestManager,
+    private val currentUserProvider: CurrentUserProvider,
+    @Assisted private val chatRoomToken: String
 ) : ViewModel(),
     DefaultLifecycleObserver {
 
@@ -92,12 +107,17 @@ class ChatViewModel @Inject constructor(
 
     lateinit var currentUser: User
 
+    private var localLastReadMessage: Int = 0
+
+    private lateinit var currentConversation: ConversationModel
+
     private val mediaPlayerManager: MediaPlayerManager = MediaPlayerManager.sharedInstance(appPreferences)
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
     var mediaPlayerDuration = mediaPlayerManager.mediaPlayerDuration
     val mediaPlayerPosition = mediaPlayerManager.mediaPlayerPosition
-    var chatRoomToken: String = ""
+
+    private val internalConversationId = MutableStateFlow<String?>(null)
     var messageDraft: MessageDraft = MessageDraft()
     lateinit var participantPermissions: ParticipantPermissions
 
@@ -129,6 +149,12 @@ class ChatViewModel @Inject constructor(
         mediaRecorderManager.handleOnStop()
         chatRepository.handleOnStop()
         mediaPlayerManager.handleOnStop()
+    }
+
+    fun onSignalingChatMessageReceived(chatMessage: ChatMessageJson) {
+        viewModelScope.launch {
+            chatRepository.onSignalingChatMessageReceived(chatMessage)
+        }
     }
 
     val backgroundPlayUIFlow = mediaPlayerManager.backgroundPlayUIFlow
@@ -177,18 +203,10 @@ class ChatViewModel @Inject constructor(
         get() = _getOpenGraph
     private val _getOpenGraph: MutableLiveData<Reference> = MutableLiveData()
 
-    val getMessageFlow = chatRepository.messageFlow
-        .onEach {
-            _chatMessageViewState.value = if (_chatMessageViewState.value == ChatMessageInitialState) {
-                ChatMessageStartState
-            } else {
-                ChatMessageUpdateState
-            }
-        }.catch {
-            _chatMessageViewState.value = ChatMessageErrorState
-        }
+    private val _events = MutableSharedFlow<ChatEvent>()
+    val events = _events.asSharedFlow()
 
-    val getRemoveMessageFlow = chatRepository.removeMessageFlow
+    // val getRemoveMessageFlow = chatRepository.removeMessageFlow
 
     val getUpdateMessageFlow = chatRepository.updateMessageFlow
 
@@ -203,7 +221,7 @@ class ChatViewModel @Inject constructor(
             _getRoomViewState.value = GetRoomErrorState
         }
 
-    val getGeneralUIFlow = chatRepository.generalUIFlow
+    // val getGeneralUIFlow = chatRepository.generalUIFlow
 
     sealed interface ViewState
 
@@ -299,21 +317,60 @@ class ChatViewModel @Inject constructor(
     val reactionDeletedViewState: LiveData<ViewState>
         get() = _reactionDeletedViewState
 
-    fun initData(user: User, credentials: String, urlForChatting: String, roomToken: String, threadId: Long?) {
+    init {
+        viewModelScope.launch {
+            currentUserProvider.getCurrentUser()
+                .onSuccess { user ->
+                    internalConversationId.value = currentUser.id.toString() + "@" + chatRoomToken
+                }
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val messages: StateFlow<List<ChatMessage>> =
+        internalConversationId
+            .filterNotNull()
+            .flatMapLatest { conversationId ->
+                chatRepository.observeMessages(conversationId)
+            }
+            .map { entities -> entities.map(ChatMessageEntity::asModel) }
+            .onEach { messages ->
+                messages.forEach { it.avatarUrl = getAvatarUrl(it) }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = emptyList()
+            )
+
+    fun getAvatarUrl(message: ChatMessage): String =
+        if (this::currentUser.isInitialized) {
+            ApiUtils.getUrlForAvatar(
+                currentUser.baseUrl,
+                message.actorId,
+                false
+            )
+        } else {
+            ""
+        }
+
+    fun initData(user: User, credentials: String, urlForChatting: String, threadId: Long?) {
         currentUser = user
 
         chatRepository.initData(
             user,
             credentials,
             urlForChatting,
-            roomToken,
+            chatRoomToken,
             threadId
         )
-        chatRoomToken = roomToken
     }
 
     fun updateConversation(currentConversation: ConversationModel) {
+        this.currentConversation = currentConversation
         chatRepository.updateConversation(currentConversation)
+
+        advanceLocalLastReadMessageIfNeeded(currentConversation.lastReadMessage)
     }
 
     fun getRoom(token: String) {
@@ -522,13 +579,19 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun loadMessages(withCredentials: String, withUrl: String) {
+    suspend fun loadInitialMessages(withCredentials: String, withUrl: String, hasHighPerformanceBackend: Boolean) {
         val bundle = Bundle()
         bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
         bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
-        chatRepository.initScopeAndLoadInitialMessages(
-            withNetworkParams = bundle
+        chatRepository.loadInitialMessages(
+            withNetworkParams = bundle,
+            hasHighPerformanceBackend = hasHighPerformanceBackend
         )
+        _events.emit(ChatEvent.StartRegularPolling)
+    }
+
+    suspend fun startMessagePolling(hasHighPerformanceBackend: Boolean) {
+        chatRepository.startMessagePolling(hasHighPerformanceBackend)
     }
 
     fun loadMoreMessages(
@@ -538,15 +601,17 @@ class ChatViewModel @Inject constructor(
         withCredentials: String,
         withUrl: String
     ) {
-        val bundle = Bundle()
-        bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
-        bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
-        chatRepository.loadMoreMessages(
-            beforeMessageId,
-            roomToken,
-            withMessageLimit,
-            withNetworkParams = bundle
-        )
+        viewModelScope.launch {
+            val bundle = Bundle()
+            bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
+            bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
+            chatRepository.loadMoreMessages(
+                beforeMessageId,
+                roomToken,
+                withMessageLimit,
+                withNetworkParams = bundle
+            )
+        }
     }
 
     // fun initMessagePolling(withCredentials: String, withUrl: String, roomToken: String) {
@@ -585,8 +650,26 @@ class ChatViewModel @Inject constructor(
             })
     }
 
-    fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int) {
-        chatNetworkDataSource.setChatReadMarker(credentials, url, previousMessageId)
+    fun advanceLocalLastReadMessageIfNeeded(messageId: Int) {
+        if (localLastReadMessage < messageId) {
+            localLastReadMessage = messageId
+        }
+    }
+
+    /**
+     * Please use with caution to not spam the server
+     */
+    fun updateRemoteLastReadMessageIfNeeded(credentials: String, url: String) {
+        if (localLastReadMessage > currentConversation.lastReadMessage) {
+            setChatReadMessage(credentials, url, localLastReadMessage)
+        }
+    }
+
+    /**
+     * Please use with caution to not spam the server
+     */
+    fun setChatReadMessage(credentials: String, url: String, lastReadMessage: Int) {
+        chatNetworkDataSource.setChatReadMarker(credentials, url, lastReadMessage)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<GenericOverall> {
@@ -1115,5 +1198,18 @@ class ChatViewModel @Inject constructor(
         data object None : ThreadRetrieveUiState()
         data class Success(val thread: ThreadInfo?) : ThreadRetrieveUiState()
         data class Error(val exception: Exception) : ThreadRetrieveUiState()
+    }
+
+    sealed class ChatEvent {
+        object Initial : ChatEvent()
+        object StartRegularPolling : ChatEvent()
+        object Loading : ChatEvent()
+        object Ready : ChatEvent()
+        data class Error(val throwable: Throwable) : ChatEvent()
+    }
+
+    @AssistedFactory
+    interface ChatViewModelFactory {
+        fun create(roomToken: String): ChatViewModel
     }
 }

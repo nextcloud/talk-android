@@ -23,7 +23,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 class DummyChatMessagesDaoImpl : ChatMessagesDao {
-    override fun getMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>> = flowOf()
+    override fun getMessagesNewerThan(
+        internalConversationId: String,
+        threadId: Long?,
+        oldestMessageId: Long
+    ): Flow<List<ChatMessageEntity>> = flowOf()
+
+    override fun getMessagesForConversation(
+        internalConversationId: String,
+        threadId: Long?
+    ): Flow<List<ChatMessageEntity>> = flowOf()
 
     override fun getTempMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>> =
         flowOf()
@@ -57,6 +66,13 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
 
     override suspend fun getChatMessageEntity(internalConversationId: String, messageId: Long): ChatMessageEntity? =
         null
+
+    override suspend fun getChatMessageOnce(internalConversationId: String, messageId: Long): ChatMessageEntity? = null
+
+    override fun getChatMessageForConversationNullable(
+        internalConversationId: String,
+        messageId: Long
+    ): Flow<ChatMessageEntity?> = flowOf()
 
     override fun deleteChatMessages(internalIds: List<String>) {
         /* */
@@ -259,4 +275,5 @@ class DummyChatBlocksDaoImpl : ChatBlocksDao {
     override fun deleteChatBlocksOlderThan(internalConversationId: String, messageId: Long) {
         /* */
     }
+    override fun getLatestChatBlock(internalConversationId: String, threadId: Long?): Flow<ChatBlockEntity?> = flowOf()
 }

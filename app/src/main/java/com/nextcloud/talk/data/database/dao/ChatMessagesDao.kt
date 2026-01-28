@@ -18,16 +18,44 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 @Suppress("Detekt.TooManyFunctions")
 interface ChatMessagesDao {
+
+    // """
+    //     SELECT *
+    //     FROM ChatMessages
+    //     WHERE internalConversationId = :internalConversationId AND id >= :messageId
+    //     AND isTemporary = 0
+    //     AND (:threadId IS NULL OR threadId = :threadId)
+    //     ORDER BY timestamp ASC, id ASC
+    //     """
+
+    @Query(
+        """
+    SELECT *
+    FROM ChatMessages
+    WHERE internalConversationId = :internalConversationId
+      AND isTemporary = 0
+      AND (:threadId IS NULL OR threadId = :threadId)
+      AND id > :oldestMessageId
+    ORDER BY timestamp DESC, id DESC
+    """
+    )
+    fun getMessagesNewerThan(
+        internalConversationId: String,
+        threadId: Long?,
+        oldestMessageId: Long
+    ): Flow<List<ChatMessageEntity>>
+
     @Query(
         """
         SELECT *
         FROM ChatMessages
         WHERE internalConversationId = :internalConversationId
         AND isTemporary = 0
+        AND (:threadId IS NULL OR threadId = :threadId)
         ORDER BY timestamp DESC, id DESC
         """
     )
-    fun getMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>>
+    fun getMessagesForConversation(internalConversationId: String, threadId: Long?): Flow<List<ChatMessageEntity>>
 
     @Query(
         """
@@ -88,6 +116,26 @@ interface ChatMessagesDao {
         """
     )
     fun getChatMessageForConversation(internalConversationId: String, messageId: Long): Flow<ChatMessageEntity>
+
+    @Query(
+        """
+    SELECT *
+    FROM ChatMessages
+    WHERE internalConversationId = :internalConversationId
+    AND id = :messageId
+    """
+    )
+    suspend fun getChatMessageOnce(internalConversationId: String, messageId: Long): ChatMessageEntity?
+
+    @Query(
+        """
+        SELECT * 
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId 
+        AND id = :messageId
+        """
+    )
+    fun getChatMessageForConversationNullable(internalConversationId: String, messageId: Long): Flow<ChatMessageEntity?>
 
     @Query(
         """

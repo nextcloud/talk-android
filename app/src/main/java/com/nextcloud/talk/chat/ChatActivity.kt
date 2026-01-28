@@ -61,8 +61,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -81,8 +83,11 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.emoji2.text.EmojiCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.commit
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -141,6 +146,7 @@ import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
+import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityChatBinding
@@ -156,6 +162,7 @@ import com.nextcloud.talk.messagesearch.MessageSearchActivity
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
@@ -173,6 +180,7 @@ import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.ui.PlaybackSpeedControl
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
+import com.nextcloud.talk.ui.chat.GetNewChatView
 import com.nextcloud.talk.ui.dialog.DateTimeCompose
 import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.GetPinnedOptionsDialog
@@ -182,6 +190,8 @@ import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.dialog.TempMessageActionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
+import com.nextcloud.talk.ui.theme.LocalMessageUtils
+import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AudioUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
@@ -232,6 +242,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -289,7 +300,12 @@ class ChatActivity :
     @Inject
     lateinit var networkMonitor: NetworkMonitor
 
-    lateinit var chatViewModel: ChatViewModel
+    @Inject
+    lateinit var chatViewModelFactory: ChatViewModel.ChatViewModelFactory
+
+    val chatViewModel: ChatViewModel by viewModels {
+        ViewModelFactoryWithParams(ChatViewModel::class.java) { chatViewModelFactory.create(roomToken) }
+    }
 
     lateinit var conversationInfoViewModel: ConversationInfoViewModel
     lateinit var contextChatViewModel: ContextChatViewModel
@@ -352,7 +368,12 @@ class ChatActivity :
                     messageId = messageId!!,
                     title = currentConversation!!.displayName
                 )
-                ContextChatView(context, contextChatViewModel)
+                ContextChatView(
+                    user = conversationUser,
+                    context = context,
+                    viewThemeUtils = viewThemeUtils,
+                    contextViewModel = contextChatViewModel
+                )
             }
         }
         Log.d(TAG, "Should open something else")
@@ -372,7 +393,12 @@ class ChatActivity :
     val disposables = DisposableSet()
 
     var sessionIdAfterRoomJoined: String? = null
-    lateinit var roomToken: String
+
+    val roomToken: String by lazy {
+        intent.getStringExtra(KEY_ROOM_TOKEN)
+            ?: error("roomToken missing")
+    }
+
     var conversationThreadId: Long? = null
     var openedViaNotification: Boolean = false
     var conversationThreadInfo: ThreadInfo? = null
@@ -433,15 +459,15 @@ class ChatActivity :
 
     var callStarted = false
 
-    private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
-        override fun onSwitchTo(token: String?) {
-            if (token != null) {
-                if (CallActivity.active) {
-                    Log.d(TAG, "CallActivity is running. Ignore to switch chat in ChatActivity...")
-                } else {
-                    switchToRoom(token, false, false)
-                }
-            }
+    private val localParticipantMessageListener = SignalingMessageReceiver.LocalParticipantMessageListener { token ->
+        if (CallActivity.active) {
+            Log.d(TAG, "CallActivity is running. Ignore to switch chat in ChatActivity...")
+        } else {
+            switchToRoom(
+                token = token,
+                startCallAfterRoomSwitch = false,
+                isVoiceOnlyCall = false
+            )
         }
     }
 
@@ -481,6 +507,17 @@ class ChatActivity :
                 updateTypingIndicator()
             }
         }
+
+        override fun onChatMessageReceived(chatMessage: ChatMessageJson) {
+            chatViewModel.onSignalingChatMessageReceived(chatMessage)
+
+            Log.d(
+                TAG,
+                "received message in ChatActivity. This is the chat message received via HPB. It would be " +
+                    "nicer to receive it in the ViewModel or Repository directly. " +
+                    "Otherwise it needs to be passed into it from here..."
+            )
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -490,6 +527,10 @@ class ChatActivity :
         binding = ActivityChatBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
+
+        binding.progressBar.visibility = View.GONE
+        binding.offline.root.visibility = View.GONE
+        binding.messagesListView.visibility = View.VISIBLE
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             ViewCompat.setOnApplyWindowInsetsListener(binding.chatContainer) { view, insets ->
@@ -515,11 +556,11 @@ class ChatActivity :
             colorizeNavigationBar()
         }
 
-        chatViewModel = ViewModelProvider(this, viewModelFactory)[ChatViewModel::class.java]
-
         conversationInfoViewModel = ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
 
         contextChatViewModel = ViewModelProvider(this, viewModelFactory)[ContextChatViewModel::class.java]
+
+        setChatListContent()
 
         lifecycleScope.launch {
             currentUserProvider.getCurrentUser()
@@ -528,11 +569,11 @@ class ChatActivity :
                     handleIntent(intent)
                     val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
                     val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
+                    // TODO init via viewModel parameters, just like it's done for roomToken
                     chatViewModel.initData(
                         user,
                         credentials!!,
                         urlForChatting,
-                        roomToken,
                         conversationThreadId
                     )
 
@@ -563,8 +604,55 @@ class ChatActivity :
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
         }
-        binding.progressBar.visibility = View.VISIBLE
+
+        // binding.progressBar.visibility = View.VISIBLE
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+    }
+
+    private fun setChatListContent() {
+        binding.messagesListViewCompose.setContent {
+            val messages by chatViewModel.messages.collectAsStateWithLifecycle(emptyList())
+
+            // for future: move transformations to viewmodel
+            val chatMessages = remember(messages) {
+                messages
+                    .let(::handleSystemMessages)
+                    .let(::handleThreadMessages)
+                    .let(::determinePreviousMessageIds)
+                    .let(::handleExpandableSystemMessages)
+                    .let(::groupAndEnrichMessages)
+            }
+
+            var useJetpackCompose = true
+            if (useJetpackCompose) {
+                binding.messagesListViewCompose.visibility = View.VISIBLE
+                binding.messagesListView.visibility = View.GONE
+
+                CompositionLocalProvider(
+                    LocalViewThemeUtils provides viewThemeUtils,
+                    LocalMessageUtils provides messageUtils
+                ) {
+                    GetNewChatView(
+                        messages = chatMessages,
+                        conversationThreadId = conversationThreadId
+                    )
+                }
+            } else {
+                binding.messagesListViewCompose.visibility = View.GONE
+                binding.messagesListView.visibility = View.VISIBLE
+
+                // use old ChatKit implementation (production for now)
+                if (adapter != null) {
+                    // Clearing and adding everything is a temporary solution and not ideal.
+                    // It is done to prepare to replace ChatKit and XML with Jetpack Compose.
+                    // As we "only" add the messages from the latest chatblock, the performance is quite okay.
+                    // With Jetpack Compose the flow will be used directly in the UI instead to clear and add everything.
+                    adapter!!.clear()
+                    adapter!!.addToEnd(chatMessages, false)
+                    advanceLocalLastReadMessageIfNeeded()
+                }
+            }
+        }
     }
 
     private fun getMessageInputFragment(): MessageInputFragment {
@@ -598,8 +686,6 @@ class ChatActivity :
 
     private fun handleIntent(intent: Intent) {
         val extras: Bundle? = intent.extras
-
-        roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
 
         conversationThreadId = if (extras?.containsKey(KEY_THREAD_ID) == true) {
             extras.getLong(KEY_THREAD_ID)
@@ -652,15 +738,85 @@ class ChatActivity :
         this.lifecycle.removeObserver(chatViewModel)
     }
 
+    @OptIn(FlowPreview::class)
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n", "ResourceAsColor")
     @Suppress("LongMethod")
     private fun initObservers() {
         Log.d(TAG, "initObservers Called")
 
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    chatViewModel.events.collect { event ->
+                        when (event) {
+                            is ChatViewModel.ChatEvent.Initial -> {
+                                // binding.progressBar.visibility = View.GONE
+                                // binding.offline.root.visibility = View.GONE
+                                // binding.messagesListView.visibility = View.VISIBLE
+                            }
+                            is ChatViewModel.ChatEvent.StartRegularPolling -> {
+                                chatViewModel.startMessagePolling(
+                                    WebSocketConnectionHelper.getWebSocketInstanceForUser(
+                                        conversationUser
+                                    ) != null
+                                )
+                            }
+                            else -> {}
+                        }
+                    }
+                }
+
+                // launch {
+                //     chatViewModel.messages
+                //         .collect { messages ->
+                //             Log.d(
+                //                 "newchat",
+                //                 "messages.size when colleting in ChatActivity:" + messages
+                //                     .size
+                //             )
+                //
+                //             binding.progressBar.visibility = View.GONE
+                //             binding.offline.root.visibility = View.GONE
+                //             binding.messagesListView.visibility = View.VISIBLE
+                //
+                //             val transformedMessages = messages
+                //                 .let(::handleSystemMessages)
+                //                 .let(::handleThreadMessages)
+                //                 .let(::determinePreviousMessageIds)
+                //                 .let(::handleExpandableSystemMessages)
+                //                 .let(::groupAndEnrichMessages)
+                //
+                //             // TODO: pinned message  handling?
+                //             //     val systemMessageType = chatMessage.systemMessageType
+                //             //     if (systemMessageType != null &&
+                //             //         (
+                //             //             systemMessageType == ChatMessage.SystemMessageType.MESSAGE_PINNED ||
+                //             //                 systemMessageType == ChatMessage.SystemMessageType.MESSAGE_UNPINNED
+                //             //             )
+                //             //     ) {
+                //             //         shouldRefreshRoom = true
+                //             //     }
+                //
+                //             if (adapter != null) {
+                //                 // Clearing and adding everything is a temporary solution and not ideal.
+                //                 // It is done to prepare to replace ChatKit and XML with Jetpack Compose.
+                //                 // As we "only" add the messages from the latest chatblock, the performance is quite okay.
+                //                 // With Jetpack Compose the flow will be used directly in the UI instead to clear and add everything.
+                //                 adapter!!.clear()
+                //                 adapter!!.addToEnd(transformedMessages, false)
+                //                 advanceLocalLastReadMessageIfNeeded()
+                //             }
+                //         }
+                // }
+            }
+        }
+
         this.lifecycleScope.launch {
             chatViewModel.getConversationFlow
                 .collect { conversationModel ->
                     currentConversation = conversationModel
+
+                    // this should be updated in viewModel directly!
                     chatViewModel.updateConversation(
                         currentConversation!!
                     )
@@ -847,10 +1003,14 @@ class ChatActivity :
                         val urlForChatting =
                             ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
 
-                        chatViewModel.loadMessages(
-                            withCredentials = credentials!!,
-                            withUrl = urlForChatting
-                        )
+                        lifecycleScope.launch {
+                            chatViewModel.loadInitialMessages(
+                                withCredentials = credentials!!,
+                                withUrl = urlForChatting,
+                                hasHighPerformanceBackend =
+                                WebSocketConnectionHelper.getWebSocketInstanceForUser(conversationUser) != null
+                            )
+                        }
                     } else {
                         Log.w(
                             TAG,
@@ -1003,7 +1163,7 @@ class ChatActivity :
 
                     val id = state.msg.ocs!!.data!!.parentMessage!!.id.toString()
                     val index = adapter?.getMessagePositionById(id) ?: 0
-                    val message = adapter?.items?.get(index)?.item as ChatMessage
+                    val message = adapter?.items?.get(index)?.item as? ChatMessage
                     setMessageAsDeleted(message)
                 }
 
@@ -1037,77 +1197,6 @@ class ChatActivity :
             }
         }
 
-        chatViewModel.chatMessageViewState.observe(this) { state ->
-            when (state) {
-                is ChatViewModel.ChatMessageStartState -> {
-                    // Handle UI on first load
-                    cancelNotificationsForCurrentConversation()
-                    binding.progressBar.visibility = View.GONE
-                    binding.offline.root.visibility = View.GONE
-                    binding.messagesListView.visibility = View.VISIBLE
-                    collapseSystemMessages()
-                }
-
-                is ChatViewModel.ChatMessageUpdateState -> {
-                    binding.progressBar.visibility = View.GONE
-                    binding.offline.root.visibility = View.GONE
-                    binding.messagesListView.visibility = View.VISIBLE
-                }
-
-                is ChatViewModel.ChatMessageErrorState -> {
-                    // unused atm
-                }
-
-                else -> {}
-            }
-        }
-
-        this.lifecycleScope.launch {
-            chatViewModel.getMessageFlow
-                .onEach { triple ->
-                    val lookIntoFuture = triple.first
-                    val setUnreadMessagesMarker = triple.second
-                    var chatMessageList = triple.third
-
-                    chatMessageList = handleSystemMessages(chatMessageList)
-                    chatMessageList = handleThreadMessages(chatMessageList)
-                    if (chatMessageList.isEmpty()) {
-                        return@onEach
-                    }
-
-                    determinePreviousMessageIds(chatMessageList)
-
-                    handleExpandableSystemMessages(chatMessageList)
-
-                    if (ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType) {
-                        adapter?.clear()
-                        adapter?.notifyDataSetChanged()
-                    }
-
-                    if (lookIntoFuture) {
-                        Log.d(TAG, "chatMessageList.size in getMessageFlow:" + chatMessageList.size)
-                        processMessagesFromTheFuture(chatMessageList, setUnreadMessagesMarker)
-                    } else {
-                        processMessagesNotFromTheFuture(chatMessageList)
-                        collapseSystemMessages()
-                    }
-
-                    processExpiredMessages()
-                    processCallStartedMessages()
-
-                    adapter?.notifyDataSetChanged()
-                }
-                .collect()
-        }
-
-        this.lifecycleScope.launch {
-            chatViewModel.getRemoveMessageFlow
-                .onEach {
-                    removeMessageById(it.id)
-                }
-                .collect()
-        }
-
         this.lifecycleScope.launch {
             chatViewModel.getUpdateMessageFlow
                 .onEach {
@@ -1131,20 +1220,6 @@ class ChatActivity :
                     scrollToAndCenterMessageWithId(lastRead.toString())
                 }
                 .collect()
-        }
-
-        this.lifecycleScope.launch {
-            chatViewModel.getGeneralUIFlow.onEach { key ->
-                when (key) {
-                    NO_OFFLINE_MESSAGES_FOUND -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.messagesListView.visibility = View.GONE
-                        binding.offline.root.visibility = View.VISIBLE
-                    }
-
-                    else -> {}
-                }
-            }.collect()
         }
 
         this.lifecycleScope.launch {
@@ -1526,6 +1601,8 @@ class ChatActivity :
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    advanceLocalLastReadMessageIfNeeded()
+                    updateRemoteLastReadMessageIfNeeded()
                     if (isScrolledToBottom()) {
                         binding.unreadMessagesPopup.visibility = View.GONE
                         binding.scrollDownButton.visibility = View.GONE
@@ -2831,7 +2908,38 @@ class ChatActivity :
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
+
+        // TODO: when updating remote last read message in onPause, there is a race condition with loading conversations
+        // for conversation list. It may or may not include info about the sent last read message...
+        // -> save this field offline in conversation?
+        updateRemoteLastReadMessageIfNeeded()
+
         adapter = null
+    }
+
+    private fun advanceLocalLastReadMessageIfNeeded() {
+        val position = layoutManager?.findFirstVisibleItemPosition()
+        position?.let {
+            // Casting could fail if it's not a chatMessage. It should not matter as the function is triggered often
+            // enough. If it's a problem, either improve or wait for migration to Jetpack Compose.
+            val message = adapter?.items?.getOrNull(it)?.item as? ChatMessage
+            message?.jsonMessageId?.let { messageId ->
+                chatViewModel.advanceLocalLastReadMessageIfNeeded(messageId)
+            }
+        }
+    }
+
+    private fun updateRemoteLastReadMessageIfNeeded() {
+        val url = ApiUtils.getUrlForChatReadMarker(
+            ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1)),
+            conversationUser.baseUrl!!,
+            roomToken
+        )
+
+        chatViewModel.updateRemoteLastReadMessageIfNeeded(
+            credentials = credentials!!,
+            url = url
+        )
     }
 
     private fun isActivityNotChangingConfigurations(): Boolean = !isChangingConfigurations
@@ -2960,6 +3068,7 @@ class ChatActivity :
 
     private fun setupWebsocket() {
         if (currentConversation == null || conversationUser == null) {
+            Log.e(TAG, "setupWebsocket: currentConversation or conversationUser is null")
             return
         }
 
@@ -3117,62 +3226,62 @@ class ChatActivity :
         }
     }
 
-    private fun processMessagesFromTheFuture(chatMessageList: List<ChatMessage>, setUnreadMessagesMarker: Boolean) {
-        binding.scrollDownButton.visibility = View.GONE
-
-        val scrollToBottom: Boolean
-
-        if (setUnreadMessagesMarker) {
-            scrollToBottom = false
-            setUnreadMessageMarker(chatMessageList)
-        } else {
-            if (isScrolledToBottom()) {
-                scrollToBottom = true
-            } else {
-                scrollToBottom = false
-                binding.unreadMessagesPopup.visibility = View.VISIBLE
-                // here we have the problem that the chat jumps for every update
-            }
-        }
-
-        var shouldRefreshRoom = false
-
-        for (chatMessage in chatMessageList) {
-            chatMessage.activeUser = conversationUser
-
-            adapter?.let {
-                val previousChatMessage = it.items?.getOrNull(1)?.item
-                if (previousChatMessage != null && previousChatMessage is ChatMessage) {
-                    chatMessage.isGrouped = groupMessages(chatMessage, previousChatMessage)
-                }
-                chatMessage.isOneToOneConversation =
-                    (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
-                chatMessage.isFormerOneToOneConversation =
-                    (currentConversation?.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE)
-                Log.d(TAG, "chatMessage to add:" + chatMessage.message)
-                it.addToStart(chatMessage, scrollToBottom)
-            }
-
-            val systemMessageType = chatMessage.systemMessageType
-            if (systemMessageType != null &&
-                (
-                    systemMessageType == ChatMessage.SystemMessageType.MESSAGE_PINNED ||
-                        systemMessageType == ChatMessage.SystemMessageType.MESSAGE_UNPINNED
-                    )
-            ) {
-                shouldRefreshRoom = true
-            }
-        }
-
-        if (shouldRefreshRoom) {
-            chatViewModel.refreshRoom()
-        }
-
-        // workaround to jump back to unread messages marker
-        if (setUnreadMessagesMarker) {
-            scrollToFirstUnreadMessage()
-        }
-    }
+    // private fun processMessagesFromTheFuture(chatMessageList: List<ChatMessage>, setUnreadMessagesMarker: Boolean) {
+    //     binding.scrollDownButton.visibility = View.GONE
+    //
+    //     val scrollToBottom: Boolean
+    //
+    //     if (setUnreadMessagesMarker) {
+    //         scrollToBottom = false
+    //         setUnreadMessageMarker(chatMessageList)
+    //     } else {
+    //         if (isScrolledToBottom()) {
+    //             scrollToBottom = true
+    //         } else {
+    //             scrollToBottom = false
+    //             binding.unreadMessagesPopup.visibility = View.VISIBLE
+    //             // here we have the problem that the chat jumps for every update
+    //         }
+    //     }
+    //
+    //     var shouldRefreshRoom = false
+    //
+    //     for (chatMessage in chatMessageList) {
+    //         chatMessage.activeUser = conversationUser
+    //
+    //         adapter?.let {
+    //             val previousChatMessage = it.items?.getOrNull(1)?.item
+    //             if (previousChatMessage != null && previousChatMessage is ChatMessage) {
+    //                 chatMessage.isGrouped = groupMessages(chatMessage, previousChatMessage)
+    //             }
+    //             chatMessage.isOneToOneConversation =
+    //                 (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
+    //             chatMessage.isFormerOneToOneConversation =
+    //                 (currentConversation?.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE)
+    //             Log.d(TAG, "chatMessage to add:" + chatMessage.message)
+    //             it.addToStart(chatMessage, scrollToBottom)
+    //         }
+    //
+    //         val systemMessageType = chatMessage.systemMessageType
+    //         if (systemMessageType != null &&
+    //             (
+    //                 systemMessageType == ChatMessage.SystemMessageType.MESSAGE_PINNED ||
+    //                     systemMessageType == ChatMessage.SystemMessageType.MESSAGE_UNPINNED
+    //                 )
+    //         ) {
+    //             shouldRefreshRoom = true
+    //         }
+    //     }
+    //
+    //     if (shouldRefreshRoom) {
+    //         chatViewModel.refreshRoom()
+    //     }
+    //
+    //     // workaround to jump back to unread messages marker
+    //     if (setUnreadMessagesMarker) {
+    //         scrollToFirstUnreadMessage()
+    //     }
+    // }
 
     private fun isScrolledToBottom(): Boolean {
         val position = layoutManager?.findFirstVisibleItemPosition()
@@ -3199,26 +3308,26 @@ class ChatActivity :
         }
     }
 
-    private fun processMessagesNotFromTheFuture(chatMessageList: List<ChatMessage>) {
-        for (i in chatMessageList.indices) {
-            if (chatMessageList.size > i + 1) {
-                chatMessageList[i].isGrouped = groupMessages(chatMessageList[i], chatMessageList[i + 1])
-            }
-
-            val chatMessage = chatMessageList[i]
-            chatMessage.isOneToOneConversation =
-                currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
-            chatMessage.isFormerOneToOneConversation =
-                (currentConversation?.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE)
-            chatMessage.activeUser = conversationUser
-            chatMessage.token = roomToken
-        }
-
-        if (adapter != null) {
-            adapter?.addToEnd(chatMessageList, false)
-        }
-        scrollToRequestedMessageIfNeeded()
-    }
+    // private fun processMessagesNotFromTheFuture(chatMessageList: List<ChatMessage>) {
+    //     for (i in chatMessageList.indices) {
+    //         if (chatMessageList.size > i + 1) {
+    //             chatMessageList[i].isGrouped = groupMessages(chatMessageList[i], chatMessageList[i + 1])
+    //         }
+    //
+    //         val chatMessage = chatMessageList[i]
+    //         chatMessage.isOneToOneConversation =
+    //             currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+    //         chatMessage.isFormerOneToOneConversation =
+    //             (currentConversation?.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE)
+    //         chatMessage.activeUser = conversationUser
+    //         chatMessage.token = roomToken
+    //     }
+    //
+    //     if (adapter != null) {
+    //         adapter?.addToEnd(chatMessageList, false)
+    //     }
+    //     scrollToRequestedMessageIfNeeded()
+    // }
 
     private fun scrollToFirstUnreadMessage() {
         adapter?.let {
@@ -3226,38 +3335,7 @@ class ChatActivity :
         }
     }
 
-    private fun groupMessages(message1: ChatMessage, message2: ChatMessage): Boolean {
-        val message1IsSystem = message1.systemMessage.isNotEmpty()
-        val message2IsSystem = message2.systemMessage.isNotEmpty()
-        if (message1IsSystem != message2IsSystem) {
-            return false
-        }
-
-        if (message1.actorType == "bots" && message1.actorId != "changelog") {
-            return false
-        }
-
-        if (!message1IsSystem &&
-            (
-                (message1.actorType != message2.actorType) ||
-                    (message2.actorId != message1.actorId)
-                )
-        ) {
-            return false
-        }
-
-        val timeDifference = dateUtils.getTimeDifferenceInSeconds(
-            message2.timestamp,
-            message1.timestamp
-        )
-        val isLessThan5Min = timeDifference > FIVE_MINUTES_IN_SECONDS
-        return isSameDayMessages(message2, message1) &&
-            (message2.actorId == message1.actorId) &&
-            (!isLessThan5Min) &&
-            (message2.lastEditTimestamp == 0L || message1.lastEditTimestamp == 0L)
-    }
-
-    private fun determinePreviousMessageIds(chatMessageList: List<ChatMessage>) {
+    private fun determinePreviousMessageIds(chatMessageList: List<ChatMessage>): List<ChatMessage> {
         var previousMessageId = NO_PREVIOUS_MESSAGE_ID
         for (i in chatMessageList.indices.reversed()) {
             val chatMessage = chatMessageList[i]
@@ -3278,6 +3356,7 @@ class ChatActivity :
 
             previousMessageId = chatMessage.jsonMessageId
         }
+        return chatMessageList
     }
 
     private fun getItemFromAdapter(messageId: String): Pair<ChatMessage, Int>? {
@@ -3286,7 +3365,7 @@ class ChatActivity :
                 it.item is ChatMessage && (it.item as ChatMessage).id == messageId
             }
             if (messagePosition >= 0) {
-                val currentItem = adapter?.items?.get(messagePosition)?.item
+                val currentItem = adapter?.items?.getOrNull(messagePosition)?.item
                 if (currentItem is ChatMessage && currentItem.id == messageId) {
                     return Pair(currentItem, messagePosition)
                 } else {
@@ -3321,6 +3400,8 @@ class ChatActivity :
                 ?.lastOrNull { it.item is ChatMessage }
                 ?.item as? ChatMessage
             )?.jsonMessageId
+
+        Log.d("newchat", "onLoadMore with messageId: " + messageId + "  page:$page totalItemsCount:$totalItemsCount")
 
         messageId?.let {
             val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
@@ -3865,6 +3946,55 @@ class ChatActivity :
         return chatMessageMap.values.toList()
     }
 
+    private fun groupAndEnrichMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
+        fun groupMessages(message1: ChatMessage, message2: ChatMessage): Boolean {
+            val message1IsSystem = message1.systemMessage.isNotEmpty()
+            val message2IsSystem = message2.systemMessage.isNotEmpty()
+            if (message1IsSystem != message2IsSystem) {
+                return false
+            }
+
+            if (message1.actorType == "bots" && message1.actorId != "changelog") {
+                return false
+            }
+
+            if (!message1IsSystem &&
+                (
+                    (message1.actorType != message2.actorType) ||
+                        (message2.actorId != message1.actorId)
+                    )
+            ) {
+                return false
+            }
+
+            val timeDifference = dateUtils.getTimeDifferenceInSeconds(
+                message2.timestamp,
+                message1.timestamp
+            )
+            val isLessThan5Min = timeDifference > FIVE_MINUTES_IN_SECONDS
+            return isSameDayMessages(message2, message1) &&
+                (message2.actorId == message1.actorId) &&
+                (!isLessThan5Min) &&
+                (message2.lastEditTimestamp == 0L || message1.lastEditTimestamp == 0L)
+        }
+
+        for (i in chatMessageList.indices) {
+            if (chatMessageList.size > i + 1) {
+                chatMessageList[i].isGrouped = groupMessages(chatMessageList[i], chatMessageList[i + 1])
+            }
+            val chatMessage = chatMessageList[i]
+
+            chatMessage.isOneToOneConversation =
+                currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            chatMessage.isFormerOneToOneConversation =
+                (currentConversation?.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE)
+
+            chatMessage.activeUser = conversationUser
+            chatMessage.token = roomToken
+        }
+        return chatMessageList
+    }
+
     private fun groupSystemMessages(previousMessage: ChatMessage, currentMessage: ChatMessage) {
         previousMessage.expandableParent = true
         currentMessage.expandableParent = false
@@ -4104,7 +4234,10 @@ class ChatActivity :
         binding.genericComposeView.apply {
             val shouldDismiss = mutableStateOf(false)
             setContent {
-                DateTimeCompose(bundle).GetDateTimeDialog(shouldDismiss, this@ChatActivity)
+                DateTimeCompose(
+                    bundle,
+                    chatViewModel
+                ).GetDateTimeDialog(shouldDismiss, this@ChatActivity)
             }
         }
     }
@@ -4135,10 +4268,25 @@ class ChatActivity :
         chatViewModel.unPinMessage(credentials!!, url)
     }
 
+    private fun markAsRead(messageId: Int) {
+        chatViewModel.setChatReadMessage(
+            credentials!!,
+            ApiUtils.getUrlForChatReadMarker(
+                ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1)),
+                conversationUser?.baseUrl!!,
+                roomToken
+            ),
+            messageId
+        )
+    }
+
     fun markAsUnread(message: IMessage?) {
         val chatMessage = message as ChatMessage?
         if (chatMessage!!.previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
-            chatViewModel.setChatReadMarker(
+            // previousMessageId is taken to mark chat as unread even when "chat-unread" capability is not available
+            // It should be checked if "chat-unread" capability is available and then use
+            // https://nextcloud-talk.readthedocs.io/en/latest/chat/#mark-chat-as-unread
+            chatViewModel.setChatReadMessage(
                 credentials!!,
                 ApiUtils.getUrlForChatReadMarker(
                     ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1)),
