@@ -40,6 +40,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
@@ -107,6 +108,7 @@ fun PinnedMessageView(
                 .background(incomingBubbleColor, RoundedCornerShape(CORNER_RADIUS.dp))
                 .padding(SPACE_16.dp)
                 .heightIn(max = MAX_HEIGHT.dp)
+                .customVerticalScrollbar(scrollState, color = outgoingBubbleColor)
                 .verticalScroll(scrollState)
                 .clickable {
                     scrollToMessageWithIdWithOffset(message.id)
@@ -160,7 +162,8 @@ fun PinnedMessageView(
                     text = {
                         Text(
                             text = pinnedText,
-                            color = highEmphasisColor
+                            color = highEmphasisColor,
+                            fontWeight = FontWeight.Bold
                         )
                     },
                     onClick = { /* No-op or toggle expansion */ },
