@@ -22,15 +22,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.min
 
+private const val SCROLL_DUR = 150
+private const val ANIM_DUR_LONG = 500
+private const val FLOAT_100 = 100f
+private const val INT_100 = 100
+
 // Adapted from source - https://stackoverflow.com/a/68056586
 @Composable
-fun Modifier.customVerticalScrollbar(
-    state: ScrollState,
-    width: Dp = 8.dp,
-    color: Color = Color.Red
-): Modifier {
+fun Modifier.customVerticalScrollbar(state: ScrollState, width: Dp = 8.dp, color: Color = Color.Red): Modifier {
     val targetAlpha = if (state.isScrollInProgress) 1f else 0f
-    val duration = if (state.isScrollInProgress) 150 else 500
+    val duration = if (state.isScrollInProgress) SCROLL_DUR else ANIM_DUR_LONG
     val alpha by animateFloatAsState(
         targetValue = targetAlpha,
         animationSpec = tween(durationMillis = duration)
@@ -45,8 +46,8 @@ fun Modifier.customVerticalScrollbar(
         if (needDrawScrollbar) {
             val elementHeight = this.size.height
             val pinnedViewHeight = MAX_HEIGHT
-            val scrollBarHeightPercentage = (pinnedViewHeight * 100f) / elementHeight
-            val scrollBarHeight = (scrollBarHeightPercentage / 100) * pinnedViewHeight
+            val scrollBarHeightPercentage = (pinnedViewHeight * FLOAT_100) / elementHeight
+            val scrollBarHeight = (scrollBarHeightPercentage / INT_100) * pinnedViewHeight
             val offset = state.scrollIndicatorState?.scrollOffset?.toFloat() ?: 0f
 
             drawRoundRect(
