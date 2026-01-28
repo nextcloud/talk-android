@@ -3376,7 +3376,7 @@ class ChatActivity :
 
             scheduledMessagesMenuItem?.isVisible = networkMonitor.isOnline.value &&
                 hasScheduledMessages &&
-                !isOneToOneConversation()
+                !ConversationUtils.isNoteToSelfConversation(currentConversation)
 
             val searchItem = menu.findItem(R.id.conversation_search)
             searchItem.isVisible =
