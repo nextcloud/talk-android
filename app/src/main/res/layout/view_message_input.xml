@@ -216,6 +216,18 @@
                 android:scaleType="centerInside" />
 
             <ImageButton
+                android:id="@+id/scheduledMessagesButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_toStartOf="@id/recordAudioButton"
+                android:background="@color/transparent"
+                android:padding="12dp"
+                android:src="@drawable/outline_schedule_24"
+                android:scaleType="centerCrop"
+                app:tint="?attr/colorControlNormal"
+                android:contentDescription="@string/nc_schedule_message" />
+
+            <ImageButton
                 android:id="@+id/recordAudioButton"
                 android:layout_width="@dimen/min_size_clickable_area"
                 android:layout_height="@dimen/min_size_clickable_area"

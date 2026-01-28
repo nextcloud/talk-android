@@ -142,7 +142,9 @@ data class ChatMessage(
 
     var pinnedAt: Long? = null,
 
-    var pinnedUntil: Long? = null
+    var pinnedUntil: Long? = null,
+
+    var sendAt: Int? = null
 
 ) : MessageContentType,
     MessageContentType.Image {
