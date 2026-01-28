@@ -26,6 +26,7 @@ class ParticipantPermissions(
     private val canPublishVideo = (conversation.permissions and PUBLISH_VIDEO) == PUBLISH_VIDEO
     val canPublishScreen = (conversation.permissions and PUBLISH_SCREEN) == PUBLISH_SCREEN
     private val hasChatPermission = (conversation.permissions and CHAT) == CHAT
+    private val hasReactPermission = (conversation.permissions and REACT) == REACT
 
     private fun hasConversationPermissions(): Boolean =
         CapabilitiesUtil.hasSpreedFeatureCapability(
@@ -70,6 +71,20 @@ class ParticipantPermissions(
         return true
     }
 
+    fun hasReactPermission(): Boolean {
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REACT_PERMISSION)) {
+            // Server supports separate react permission - check REACT bit
+            return hasReactPermission
+        }
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CHAT_PERMISSION)) {
+            // Older server without react-permission capability - fall back to CHAT permission
+            // as that's what controlled reactions before the split
+            return hasChatPermission
+        }
+        // if capability is not available then the spreed version doesn't support to restrict this
+        return true
+    }
+
     companion object {
 
         val TAG = ParticipantPermissions::class.simpleName
@@ -82,5 +97,6 @@ class ParticipantPermissions(
         const val PUBLISH_VIDEO = 32
         const val PUBLISH_SCREEN = 64
         const val CHAT = 128
+        const val REACT = 256
     }
 }

@@ -69,6 +69,7 @@ class MessageActionsDialog(
     private val currentConversation: ConversationModel?,
     private val showMessageDeletionButton: Boolean,
     private val hasChatPermission: Boolean,
+    private val hasReactPermission: Boolean,
     private val spreedCapabilities: SpreedCapability
 ) : BottomSheetDialog(chatActivity) {
 
@@ -138,7 +139,7 @@ class MessageActionsDialog(
 
         viewThemeUtils.material.colorBottomSheetBackground(dialogMessageActionsBinding.root)
         viewThemeUtils.material.colorBottomSheetDragHandle(dialogMessageActionsBinding.bottomSheetDragHandle)
-        initEmojiBar(hasChatPermission)
+        initEmojiBar(hasReactPermission)
         initMenuItemCopy(!message.isDeleted)
         initMenuItems(networkMonitor.isOnline.value)
     }
@@ -264,9 +265,9 @@ class MessageActionsDialog(
         }
     }
 
-    private fun initEmojiBar(hasChatPermission: Boolean) {
+    private fun initEmojiBar(hasReactPermission: Boolean) {
         if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REACTIONS) &&
-            isPermitted(hasChatPermission) &&
+            isPermitted(hasReactPermission) &&
             isReactableMessageType(message)
         ) {
             val recentEmojiManager = RecentEmojiManager(context, MAX_RECENTS)
@@ -353,8 +354,8 @@ class MessageActionsDialog(
         }
     }
 
-    private fun isPermitted(hasChatPermission: Boolean): Boolean =
-        hasChatPermission &&
+    private fun isPermitted(hasPermission: Boolean): Boolean =
+        hasPermission &&
             ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
             currentConversation?.conversationReadOnlyState
 
