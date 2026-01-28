@@ -98,7 +98,7 @@
     <string name="message_copied">Повідомлення скопійовано</string>
     <string name="message_delete_are_you_sure">Ви дійсно хочете видалити це повідомлення?</string>
     <string name="message_deleted_by_you">Ви вилучили повідомлення</string>
-    <string name="message_last_edited_by">За редакцією %1$s</string>
+    <string name="message_last_edited_by">Змінено %1$s</string>
     <string name="message_poll_tap_to_open">Натисніть, щоб відкрити опитування</string>
     <string name="message_search_begin_empty">Нічого не знайдено</string>
     <string name="message_search_begin_typing">Що шукаємо?</string>
@@ -283,7 +283,7 @@
     <string name="nc_guest">Гість</string>
     <string name="nc_guest_access">Гостьовий доступ</string>
     <string name="nc_guest_access_allow_failed">Неможливо ввімкнути/вимкнути гостьовий доступ.</string>
-    <string name="nc_guest_access_allow_summary">Дозвольте гостям ділитися публічним посиланням, щоб приєднатися до цієї розмови.</string>
+    <string name="nc_guest_access_allow_summary">Дозволити гостям ділитися публічним посиланням, щоб приєднатися до цієї розмови.</string>
     <string name="nc_guest_access_allow_title">Дозволити гостей</string>
     <string name="nc_guest_access_password_dialog_hint">Enter a password</string>
     <string name="nc_guest_access_password_dialog_title">Пароль гостьового доступу</string>
