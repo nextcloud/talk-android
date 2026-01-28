@@ -67,7 +67,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
-@Suppress("TooManyFunctions", "LongParameterList")
+@Suppress("TooManyFunctions", "LongParameterList", "LargeClass")
 class ChatViewModel @Inject constructor(
     // should be removed here. Use it via RetrofitChatNetwork
     private val appPreferences: AppPreferences,

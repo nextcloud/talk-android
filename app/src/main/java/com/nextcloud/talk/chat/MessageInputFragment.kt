@@ -82,6 +82,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CharPolicy
+import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.EmojiTextInputEditText
 import com.nextcloud.talk.utils.ImageEmojiEditText
@@ -1048,10 +1049,13 @@ class MessageInputFragment : Fragment() {
 
         popupMenu.menu.findItem(R.id.send_later)?.isVisible =
             networkMonitor.isOnline.value &&
-            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SCHEDULED_MESSAGES)
+            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SCHEDULED_MESSAGES) &&
+            !ConversationUtils.isNoteToSelfConversation(chatActivity.currentConversation)
+
         popupMenu.menu.findItem(R.id.send_later_without_notification)?.isVisible = networkMonitor.isOnline.value &&
             CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_SEND) &&
-            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SCHEDULED_MESSAGES)
+            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SCHEDULED_MESSAGES) &&
+            !ConversationUtils.isNoteToSelfConversation(chatActivity.currentConversation)
 
         popupMenu.setOnMenuItemClickListener { item: MenuItem ->
             when (item.itemId) {

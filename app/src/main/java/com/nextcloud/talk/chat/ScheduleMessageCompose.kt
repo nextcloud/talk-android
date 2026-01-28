@@ -384,7 +384,7 @@ class ScheduleMessageCompose(
         }
     }
 
-    private enum class SelectedOption { LATER_TODAY, TOMORROW, THIS_WEEKEND, NEXT_WEEK, CUSTOM, NONE }
+    private enum class SelectedOption { LATER_TODAY, TOMORROW, THIS_WEEKEND, NEXT_WEEK, NONE }
     private val selectedOption = mutableStateOf(SelectedOption.NONE)
 
     companion object {

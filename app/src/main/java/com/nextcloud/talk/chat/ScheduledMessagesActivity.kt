@@ -35,7 +35,6 @@ import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.NotificationsOff
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -102,7 +101,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 @AutoInjector(NextcloudTalkApplication::class)
-@Suppress("LongMethod", "LargeClass", "TooManyFunctions")
+@Suppress("LongMethod", "LargeClass", "TooManyFunctions", "COMPOSE_APPLIER_CALL_MISMATCH")
 class ScheduledMessagesActivity : BaseActivity() {
 
     @Inject
@@ -256,6 +255,7 @@ class ScheduledMessagesActivity : BaseActivity() {
         val editState by scheduledMessagesViewModel.editState.collectAsStateWithLifecycle()
         val deleteState by scheduledMessagesViewModel.deleteState.collectAsStateWithLifecycle()
         val genericErrorText = stringResource(R.string.nc_common_error_sorry)
+        val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
 
         var selectedMessage by remember { mutableStateOf<ChatMessage?>(null) }
         var showActionsSheet by remember { mutableStateOf(false) }
@@ -268,7 +268,7 @@ class ScheduledMessagesActivity : BaseActivity() {
         LaunchedEffect(Unit) { onLoadScheduledMessages() }
 
         LaunchedEffect(sendNowState) {
-            when (val state = sendNowState) {
+            when (sendNowState) {
                 is ScheduledMessagesViewModel.SendNowMessageSuccessState -> {
                 }
 
@@ -433,12 +433,12 @@ class ScheduledMessagesActivity : BaseActivity() {
                     }
 
                     is ScheduledMessagesViewModel.GetScheduledMessagesErrorState -> {
-                        showErrorText()
+                        ShowErrorText(isOnline)
                     }
                     else -> Spacer(modifier = Modifier.weight(1f))
                 }
 
-                OfflineStatusBanner()
+                OfflineStatusBanner(isOnline)
 
                 if (editingMessage != null) {
                     ScheduledMessageEditRow(
@@ -527,8 +527,8 @@ class ScheduledMessagesActivity : BaseActivity() {
     }
 
     @Composable
-    fun OfflineStatusBanner() {
-        if (!networkMonitor.isOnline.value) {
+    fun OfflineStatusBanner(isOnline: Boolean) {
+        if (!isOnline) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -574,8 +574,8 @@ class ScheduledMessagesActivity : BaseActivity() {
     }
 
     @Composable
-    private fun showErrorText() {
-        if (networkMonitor.isOnline.value) {
+    private fun ShowErrorText(isOnline: Boolean) {
+        if (isOnline) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -801,7 +801,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                 }
 
                 if (showEmojiPicker) {
-                    Divider(modifier = Modifier.padding(vertical = 8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     val latestEditValue by rememberUpdatedState(editValue)
                     AndroidView(
                         modifier = Modifier
