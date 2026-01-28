@@ -29,7 +29,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.automirrored.outlined.ScheduleSend
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Delete
@@ -833,7 +832,23 @@ class ScheduledMessagesActivity : BaseActivity() {
         onDelete: () -> Unit
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            ActionRow(icon = Icons.AutoMirrored.Outlined.ScheduleSend, text = scheduledTime, onClick = {})
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.nc_scheduled_time),
+                    fontSize = 13.sp,
+                    color = colorResource(R.color.no_emphasis_text)
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = scheduledTime,
+                   fontSize = 13.sp,
+                    color = colorResource(R.color.no_emphasis_text)
+                )
+            }
             ActionRow(
                 icon = Icons.Outlined.AccessTime,
                 text = stringResource(R.string.nc_reschedule_message),
