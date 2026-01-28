@@ -37,7 +37,9 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
+import com.nextcloud.talk.utils.DeepLinkHandler
 import com.nextcloud.talk.utils.SecurityUtils
+import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import io.reactivex.Observer
@@ -232,6 +234,11 @@ class MainActivity :
     }
 
     private fun handleIntent(intent: Intent) {
+        // Handle deep links first (nctalk:// scheme and https:// web links)
+        if (handleDeepLink(intent)) {
+            return
+        }
+
         handleActionFromContact(intent)
 
         val internalUserId = intent.extras?.getLong(BundleKeys.KEY_INTERNAL_USER_ID)
@@ -281,6 +288,113 @@ class MainActivity :
                 }
             })
         }
+    }
+
+    /**
+     * Handles deep link URIs for opening conversations.
+     *
+     * Supports:
+     * - nctalk://conversation/{token}?user={userId}
+     * - https://{server}/call/{token}
+     * - https://{server}/index.php/call/{token}
+     *
+     * @param intent The intent to process
+     * @return true if the intent was handled as a deep link, false otherwise
+     */
+    private fun handleDeepLink(intent: Intent): Boolean {
+        val uri = intent.data ?: return false
+        val deepLinkResult = DeepLinkHandler.parseDeepLink(uri) ?: return false
+
+        Log.d(TAG, "Handling deep link: $uri -> token=${deepLinkResult.roomToken}")
+
+        userManager.users.subscribe(object : SingleObserver<List<User>> {
+            override fun onSubscribe(d: Disposable) {
+                // unused atm
+            }
+
+            override fun onSuccess(users: List<User>) {
+                if (users.isEmpty()) {
+                    runOnUiThread {
+                        launchServerSelection()
+                    }
+                    return
+                }
+
+                val targetUser = resolveTargetUser(users, deepLinkResult)
+
+                if (targetUser == null) {
+                    runOnUiThread {
+                        Toast.makeText(
+                            context,
+                            context.resources.getString(R.string.nc_no_account_for_server),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        openConversationList()
+                    }
+                    return
+                }
+
+                if (userManager.setUserAsActive(targetUser).blockingGet()) {
+                    // Report shortcut usage for ranking
+                    ShortcutManagerHelper.reportShortcutUsed(
+                        context,
+                        deepLinkResult.roomToken,
+                        targetUser.id!!
+                    )
+
+                    runOnUiThread {
+                        val chatIntent = Intent(context, ChatActivity::class.java)
+                        chatIntent.putExtra(KEY_ROOM_TOKEN, deepLinkResult.roomToken)
+                        chatIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, targetUser.id)
+                        startActivity(chatIntent)
+                    }
+                }
+            }
+
+            override fun onError(e: Throwable) {
+                Log.e(TAG, "Error loading users for deep link", e)
+                runOnUiThread {
+                    Toast.makeText(
+                        context,
+                        context.resources.getString(R.string.nc_common_error_sorry),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
+
+        return true
+    }
+
+    /**
+     * Resolves which user account to use for a deep link.
+     *
+     * Priority:
+     * 1. User ID specified in deep link (for nctalk:// URIs)
+     * 2. User matching the server URL (for https:// web links)
+     * 3. Current active user as fallback
+     */
+    private fun resolveTargetUser(
+        users: List<User>,
+        deepLinkResult: DeepLinkHandler.DeepLinkResult
+    ): User? {
+        // If user ID is specified, use that user
+        deepLinkResult.internalUserId?.let { userId ->
+            return userManager.getUserWithId(userId).blockingGet()
+        }
+
+        // If server URL is specified, find matching account
+        deepLinkResult.serverUrl?.let { serverUrl ->
+            val matchingUser = users.find { user ->
+                user.baseUrl?.lowercase()?.contains(serverUrl.lowercase()) == true
+            }
+            if (matchingUser != null) {
+                return matchingUser
+            }
+        }
+
+        // Fall back to current user
+        return currentUserProviderOld.currentUser.blockingGet()
     }
 
     companion object {
