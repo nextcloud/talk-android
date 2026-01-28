@@ -540,6 +540,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                     text = stringResource(R.string.no_scheduled_messages_offline),
                     fontSize = 12.sp,
                     textAlign = TextAlign.Center,
+                    color = Color.White,
                     modifier = Modifier.padding(4.dp)
                 )
             }
