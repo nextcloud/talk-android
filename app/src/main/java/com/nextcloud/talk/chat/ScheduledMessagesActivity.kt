@@ -741,7 +741,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                     Icon(
                         imageVector = Icons.Outlined.Edit,
                         contentDescription = null,
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(20.dp)
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
