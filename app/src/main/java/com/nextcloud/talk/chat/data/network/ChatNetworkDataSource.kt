@@ -85,8 +85,6 @@ interface ChatNetworkDataSource {
         credentials: String,
         url: String,
         message: String,
-        displayName: String,
-        referenceId: String,
         replyTo: Int?,
         sendWithoutNotification: Boolean,
         threadTitle: String?,
@@ -99,10 +97,7 @@ interface ChatNetworkDataSource {
         url: String,
         message: String,
         sendAt: Int?,
-        replyTo: Int?,
-        sendWithoutNotification: Boolean,
-        threadTitle: String?,
-        threadId: Long?
+        sendWithoutNotification: Boolean
     ): ChatOverallSingleMessage
 
     suspend fun deleteScheduledMessage(credentials: String, url: String): GenericOverall

@@ -145,10 +145,8 @@ class ScheduledMessagesViewModel @Inject constructor(
         url: String,
         message: String,
         sendAt: Int?,
-        replyTo: Int?,
         sendWithoutNotification: Boolean,
-        threadTitle: String?,
-        threadId: Long?
+        threadTitle: String?
     ) {
         _rescheduleState.value = ScheduledMessageActionLoadingState
         viewModelScope.launch {
@@ -157,10 +155,7 @@ class ScheduledMessagesViewModel @Inject constructor(
                 url,
                 message,
                 sendAt,
-                replyTo,
-                sendWithoutNotification,
-                threadTitle,
-                threadId
+                sendWithoutNotification
             ).collect { result ->
                 if (result.isSuccess) {
                     _rescheduleState.value =
@@ -211,16 +206,7 @@ class ScheduledMessagesViewModel @Inject constructor(
         }
 
     @Suppress("LongParameterList")
-    fun edit(
-        credentials: String,
-        url: String,
-        message: String,
-        sendAt: Int?,
-        replyTo: Int?,
-        sendWithoutNotification: Boolean,
-        threadTitle: String?,
-        threadId: Long?
-    ) {
+    fun edit(credentials: String, url: String, message: String, sendAt: Int?, sendWithoutNotification: Boolean) {
         _editState.value = ScheduledMessageActionLoadingState
         viewModelScope.launch {
             chatRepository.updateScheduledChatMessage(
@@ -228,10 +214,7 @@ class ScheduledMessagesViewModel @Inject constructor(
                 url,
                 message,
                 sendAt,
-                replyTo,
-                sendWithoutNotification,
-                threadTitle,
-                threadId
+                sendWithoutNotification
             ).collect { result ->
                 if (result.isSuccess) {
                     _editState.value =
