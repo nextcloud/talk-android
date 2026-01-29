@@ -1140,7 +1140,6 @@ class OfflineFirstChatRepository @Inject constructor(
             emit(Result.failure(e))
         }
 
-    @Suppress("LongParameterList")
     override suspend fun updateScheduledChatMessage(
         credentials: String,
         url: String,
