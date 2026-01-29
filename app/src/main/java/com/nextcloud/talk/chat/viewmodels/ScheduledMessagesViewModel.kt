@@ -139,7 +139,6 @@ class ScheduledMessagesViewModel @Inject constructor(
         }
     }
 
-    @Suppress("LongParameterList")
     fun reschedule(
         credentials: String,
         url: String,
@@ -205,7 +204,6 @@ class ScheduledMessagesViewModel @Inject constructor(
             chatRepository.getParentMessageById(parentMessageId).firstOrNull()
         }
 
-    @Suppress("LongParameterList")
     fun edit(credentials: String, url: String, message: String, sendAt: Int?, sendWithoutNotification: Boolean) {
         _editState.value = ScheduledMessageActionLoadingState
         viewModelScope.launch {
