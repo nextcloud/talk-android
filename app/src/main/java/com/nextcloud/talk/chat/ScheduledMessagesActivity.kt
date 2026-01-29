@@ -197,10 +197,8 @@ class ScheduledMessagesActivity : BaseActivity() {
             ),
             message = message.message.orEmpty(),
             sendAt = sendAt,
-            replyTo = message.parentMessageId?.toInt(),
             sendWithoutNotification = message.silent,
-            threadTitle = message.threadTitle,
-            threadId = message.threadId
+            threadTitle = message.threadTitle
         )
     }
 
@@ -214,10 +212,7 @@ class ScheduledMessagesActivity : BaseActivity() {
             ),
             message = message.message.orEmpty(),
             sendAt = sendAt,
-            replyTo = message.parentMessageId?.toInt(),
-            sendWithoutNotification = message.silent,
-            threadTitle = message.threadTitle,
-            threadId = message.threadId
+            sendWithoutNotification = message.silent
         )
     }
 
@@ -845,7 +840,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = scheduledTime,
-                   fontSize = 13.sp,
+                    fontSize = 13.sp,
                     color = colorResource(R.color.no_emphasis_text)
                 )
             }

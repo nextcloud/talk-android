@@ -3523,7 +3523,6 @@ class ChatActivity :
                             roomToken
                         ),
                         message = message,
-                        displayName = conversationUser!!.displayName ?: "",
                         replyTo = replyToMessageId,
                         sendWithoutNotification = sendWithoutNotification,
                         threadTitle = threadTitle,

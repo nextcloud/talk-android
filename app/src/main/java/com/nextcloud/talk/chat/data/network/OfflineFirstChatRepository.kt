@@ -1117,8 +1117,6 @@ class OfflineFirstChatRepository @Inject constructor(
         credentials: String,
         url: String,
         message: String,
-        displayName: String,
-        referenceId: String,
         replyTo: Int?,
         sendWithoutNotification: Boolean,
         threadTitle: String?,
@@ -1130,8 +1128,6 @@ class OfflineFirstChatRepository @Inject constructor(
                 credentials,
                 url,
                 message,
-                displayName,
-                referenceId,
                 replyTo,
                 sendWithoutNotification,
                 threadTitle,
@@ -1150,10 +1146,7 @@ class OfflineFirstChatRepository @Inject constructor(
         url: String,
         message: String,
         sendAt: Int?,
-        replyTo: Int?,
-        sendWithoutNotification: Boolean,
-        threadTitle: String?,
-        threadId: Long?
+        sendWithoutNotification: Boolean
     ): Flow<Result<ChatMessage>> =
         flow {
             val response = network.updateScheduledMessage(
@@ -1161,10 +1154,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 url,
                 message,
                 sendAt,
-                replyTo,
-                sendWithoutNotification,
-                threadTitle,
-                threadId
+                sendWithoutNotification
             )
 
             val messageJson = response.ocs?.data
