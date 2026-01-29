@@ -697,6 +697,11 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun handleButtonsVisibility() {
+        if (!this::binding.isInitialized) {
+            Log.w(TAG, "binding not initialized in handleButtonsVisibility")
+            return
+        }
+
         fun View.setVisible(isVisible: Boolean) {
             visibility = if (isVisible) View.VISIBLE else View.GONE
         }
