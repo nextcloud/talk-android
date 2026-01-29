@@ -17,10 +17,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -31,15 +33,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.outlined.AccessTime
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.InsertEmoticon
+import androidx.compose.material.icons.outlined.Keyboard
 import androidx.compose.material.icons.outlined.NotificationsOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -49,21 +54,22 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -71,11 +77,12 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.emoji2.emojipicker.EmojiPickerView
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
@@ -92,12 +99,14 @@ import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
+import com.vanniktech.emoji.EmojiEditText
+import com.vanniktech.emoji.EmojiPopup
 import java.time.Instant
-import javax.inject.Inject
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 @Suppress("LongMethod", "LargeClass", "TooManyFunctions", "COMPOSE_APPLIER_CALL_MISMATCH")
@@ -341,7 +350,8 @@ class ScheduledMessagesActivity : BaseActivity() {
                     }
                 )
             },
-            snackbarHost = { SnackbarHost(snackBarHostState) }
+            snackbarHost = { SnackbarHost(snackBarHostState) },
+            contentWindowInsets = WindowInsets.safeDrawing
         ) { paddingValues ->
             Column(
                 modifier = Modifier.padding(paddingValues)
@@ -698,27 +708,27 @@ class ScheduledMessagesActivity : BaseActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Suppress("LongMethod")
     @Composable
-    private fun ScheduledMessageEditRow(
+    fun ScheduledMessageEditRow(
         editValue: TextFieldValue,
         originalText: String,
         onEditValueChange: (TextFieldValue) -> Unit,
         onCancel: () -> Unit,
         onSend: () -> Unit
     ) {
-        var showEmojiPicker by remember { mutableStateOf(false) }
-        val canSend = editValue.text.isNotBlank() && editValue.text.trim() != originalText.trim()
+        val rootView = LocalView.current
+        val keyboardController = LocalSoftwareKeyboardController.current
 
-        val keyboardController = androidx.compose.ui.platform.LocalSoftwareKeyboardController.current
-        val focusManager = androidx.compose.ui.platform.LocalFocusManager.current
-        val focusRequester = remember { androidx.compose.ui.focus.FocusRequester() }
+        val emojiEditTextRef = remember { mutableStateOf<EmojiEditText?>(null) }
+        var emojiPopup by remember { mutableStateOf<EmojiPopup?>(null) }
+        var isEmojiOpen by remember { mutableStateOf(false) }
 
-        LaunchedEffect(showEmojiPicker) {
-            if (showEmojiPicker) {
-                keyboardController?.hide()
-                focusManager.clearFocus()
-            } else {
-                focusRequester.requestFocus()
-                keyboardController?.show()
+        val canSend =
+            editValue.text.isNotBlank() &&
+                editValue.text.trim() != originalText.trim()
+
+        DisposableEffect(rootView) {
+            onDispose {
+                emojiPopup?.dismiss()
             }
         }
 
@@ -729,25 +739,24 @@ class ScheduledMessagesActivity : BaseActivity() {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_edit),
+                        imageVector = Icons.Outlined.Edit,
                         contentDescription = null,
                         modifier = Modifier.size(20.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(Modifier.width(8.dp))
                     Text(
                         text = stringResource(R.string.nc_edit_message_text),
                         style = MaterialTheme.typography.labelLarge,
                         modifier = Modifier.weight(1f)
                     )
                     IconButton(onClick = {
-                        showEmojiPicker = false
+                        emojiPopup?.dismiss()
+                        keyboardController?.hide()
                         onCancel()
                     }) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_baseline_close_24),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            imageVector = Icons.Outlined.Close,
+                            contentDescription = null
                         )
                     }
                 }
@@ -756,63 +765,93 @@ class ScheduledMessagesActivity : BaseActivity() {
                     text = originalText,
                     modifier = Modifier.padding(top = 4.dp, bottom = 8.dp),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(
-                        onClick = {
-                            showEmojiPicker = !showEmojiPicker
+                    IconButton(onClick = {
+                        val editText = emojiEditTextRef.value ?: return@IconButton
+
+                        if (emojiPopup == null) {
+                            emojiPopup = EmojiPopup(
+                                rootView = rootView,
+                                editText = editText,
+                                onEmojiPopupShownListener = {
+                                    isEmojiOpen = true
+                                },
+                                onEmojiPopupDismissListener = {
+                                    isEmojiOpen = false
+                                    keyboardController?.show()
+                                }
+                            )
                         }
-                    ) {
+
+                        emojiPopup?.toggle()
+                    }) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_insert_emoticon_black_24dp),
-                            contentDescription = null
+                            imageVector = if (isEmojiOpen) {
+                                Icons.Outlined.Keyboard
+                            } else {
+                                Icons.Outlined.InsertEmoticon
+                            },
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
 
-                    OutlinedTextField(
-                        value = editValue,
-                        onValueChange = { onEditValueChange(it) },
+                    AndroidView(
                         modifier = Modifier
                             .weight(1f)
-                            .focusRequester(focusRequester),
-                        placeholder = { Text(stringResource(R.string.nc_hint_enter_a_message)) }
+                            .wrapContentHeight(),
+                        factory = { context ->
+                            EmojiEditText(context).apply {
+                                setText(editValue.text)
+                                setSelection(editValue.text.length)
+                                hint = context.getString(R.string.nc_hint_enter_a_message)
+                                setPadding(INT_24, INT_20, INT_24, INT_20)
+                                emojiEditTextRef.value = this
+                                addTextChangedListener {
+                                    val text = it?.toString().orEmpty()
+                                    if (text != editValue.text) {
+                                        onEditValueChange(
+                                            TextFieldValue(text, TextRange(text.length))
+                                        )
+                                    }
+                                }
+                            }
+                        },
+                        update = {
+                            if (it.text.toString() != editValue.text) {
+                                it.setText(editValue.text)
+                            }
+                            it.setSelection(editValue.text.length)
+                        }
                     )
 
                     IconButton(
-                        onClick = { if (canSend) onSend() },
+                        onClick = {
+                            if (!canSend) return@IconButton
+                            emojiEditTextRef.value?.clearFocus()
+                            emojiPopup?.dismiss()
+                            keyboardController?.hide()
+                            onSend()
+                        },
                         enabled = canSend
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_check_24),
+                            imageVector = Icons.Outlined.Check,
                             contentDescription = null,
-                            tint = if (canSend) MaterialTheme.colorScheme.primary else Color.Gray
+                            tint = if (canSend) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+                            }
                         )
                     }
-                }
-
-                if (showEmojiPicker) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    val latestEditValue by rememberUpdatedState(editValue)
-                    AndroidView(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(320.dp),
-                        factory = { context ->
-                            EmojiPickerView(context).apply {
-                                setOnEmojiPickedListener { picked ->
-                                    val editedEmoji = latestEditValue.text + picked.emoji
-                                    onEditValueChange(
-                                        TextFieldValue(editedEmoji, selection = TextRange(editedEmoji.length))
-                                    )
-                                }
-                            }
-                        }
-                    )
                 }
             }
         }
@@ -915,5 +954,7 @@ class ScheduledMessagesActivity : BaseActivity() {
         const val INT_6: Int = 6
         const val INT_0: Int = 0
         const val INT_1: Int = 1
+        const val INT_24: Int = 24
+        const val INT_20: Int = 20
     }
 }
