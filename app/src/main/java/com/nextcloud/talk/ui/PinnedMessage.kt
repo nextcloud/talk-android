@@ -113,7 +113,8 @@ fun PinnedMessageView(
                 }
 
         ) {
-            ComposeChatAdapter().GetComposableForMessage(message)
+            val text = message.message ?: "here something with sense"
+            Text(text)
         }
 
         var expanded by remember { mutableStateOf(false) }
