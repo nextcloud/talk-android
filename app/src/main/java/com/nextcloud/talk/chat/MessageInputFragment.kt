@@ -45,9 +45,6 @@ import androidx.emoji2.widget.EmojiTextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
@@ -179,20 +176,6 @@ class MessageInputFragment : Fragment() {
         }
     }
 
-    // https://stackoverflow.com/a/54648758/14183836
-    // Would be easier to move the capabilities observability to kotlin flows/suspend
-    fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
-        observe(
-            lifecycleOwner,
-            object : Observer<T> {
-                override fun onChanged(value: T) {
-                    observer.onChanged(value)
-                    removeObserver(this)
-                }
-            }
-        )
-    }
-
     private fun initObservers() {
         Log.d(TAG, "LifeCyclerOwner is: ${viewLifecycleOwner.lifecycle}")
         chatActivity.chatViewModel.getCapabilitiesViewState.observe(viewLifecycleOwner) { state ->
@@ -203,7 +186,7 @@ class MessageInputFragment : Fragment() {
                     setupMentionAutocomplete()
                     initVoiceRecordButton()
                     initThreadHandling()
-                    restoreState()
+                    updateScheduledMessagesAvailability(hasScheduledMessages)
                 }
 
                 is ChatViewModel.GetCapabilitiesInitialLoadState -> {
@@ -212,8 +195,8 @@ class MessageInputFragment : Fragment() {
                     setupMentionAutocomplete()
                     initVoiceRecordButton()
                     initThreadHandling()
-                    restoreState()
                     updateScheduledMessagesAvailability(hasScheduledMessages)
+                    restoreState()
                 }
 
                 else -> {}
