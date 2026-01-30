@@ -42,6 +42,7 @@
             <trusting group="androidx.camera.featurecombinationquery" name="featurecombinationquery" version="1.5.0"/>
             <trusting group="androidx.camera.featurecombinationquery" name="featurecombinationquery" version="1.5.1"/>
             <trusting group="androidx.camera.featurecombinationquery" name="featurecombinationquery" version="1.5.2"/>
+            <trusting group="androidx.camera.featurecombinationquery" name="featurecombinationquery" version="1.5.3"/>
             <trusting group="androidx.collection"/>
             <trusting group="androidx.compose.runtime"/>
             <trusting group="androidx.constraintlayout"/>
