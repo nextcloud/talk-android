@@ -156,7 +156,7 @@ kapt {
 }
 
 ext {
-    androidxCameraVersion = "1.5.2"
+    androidxCameraVersion = "1.5.3"
     coilKtVersion = "2.7.0"
     daggerVersion = "2.59"
     emojiVersion = "1.6.0"
