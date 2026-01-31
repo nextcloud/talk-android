@@ -63,7 +63,7 @@ enum class SpreedFeatures(val value: String) {
     IMPORTANT_CONVERSATIONS("important-conversations"),
     THREADS("threads"),
     PINNED_MESSAGES("pinned-messages"),
-    SCHEDULED_MESSAGES("scheduled-messages")
+    SCHEDULED_MESSAGES("scheduled-messages"),
     REACT_PERMISSION("react-permission")
 }
 
