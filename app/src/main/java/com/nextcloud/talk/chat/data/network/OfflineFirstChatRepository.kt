@@ -694,7 +694,8 @@ class OfflineFirstChatRepository @Inject constructor(
             when (messageJson.systemMessageType) {
                 ChatMessage.SystemMessageType.REACTION,
                 ChatMessage.SystemMessageType.REACTION_REVOKED,
-                ChatMessage.SystemMessageType.REACTION_DELETED,
+                ChatMessage.SystemMessageType.REACTION_DELETED -> {
+                }
                 ChatMessage.SystemMessageType.MESSAGE_DELETED,
                 ChatMessage.SystemMessageType.POLL_VOTED,
                 ChatMessage.SystemMessageType.MESSAGE_EDITED -> {
