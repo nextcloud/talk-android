@@ -76,13 +76,8 @@ class ParticipantPermissions(
             // Server supports separate react permission - check REACT bit
             return hasReactPermission
         }
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CHAT_PERMISSION)) {
-            // Older server without react-permission capability - fall back to CHAT permission
-            // as that's what controlled reactions before the split
-            return hasChatPermission
-        }
-        // if capability is not available then the spreed version doesn't support to restrict this
-        return true
+        // Older server without react-permission capability - fall back to chat permission
+        return hasChatPermission()
     }
 
     companion object {

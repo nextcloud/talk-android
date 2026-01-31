@@ -550,6 +550,7 @@ How to translate with transifex:
     <string name="read_storage_no_permission">Sharing files from storage is not possible without permissions</string>
     <string name="open_in_files_app">Open in Files app</string>
     <string name="send_to_forbidden">You are not allowed to share content to this chat</string>
+    <string name="reaction_forbidden">You are not allowed to add or remove reactions in this conversation</string>
 
     <string name="typing_is_typing">is typing …</string>
     <string name="typing_are_typing">are typing …</string>
