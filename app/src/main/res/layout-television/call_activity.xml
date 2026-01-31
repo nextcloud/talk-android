@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/callLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey950">
@@ -21,6 +22,13 @@
             android:textColor="@color/white"
             android:textSize="20sp"/>
 
+        <ImageView
+            android:id="@+id/call_recording_indicator"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"/>
+
         <TextView
             android:id="@+id/call_duration"
             android:layout_width="wrap_content"
@@ -36,6 +44,15 @@
         android:layout_below="@id/tvTopControls"
         android:layout_above="@id/callControls"/>
 
+    <FrameLayout
+        android:id="@+id/reaction_animation_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tvTopControls"
+        android:layout_above="@id/callControls"
+        android:clickable="false"
+        android:focusable="false"/>
+
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/callControls"
         android:layout_width="match_parent"
@@ -44,6 +61,14 @@
         android:padding="24dp"
         android:gravity="center"
         app:justifyContent="center">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/audioOutputButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            app:fabCustomSize="56dp"
+            app:srcCompat="@drawable/ic_volume_up_white_24dp"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/microphoneButton"
@@ -69,7 +94,47 @@
             app:fabCustomSize="56dp"
             app:backgroundTint="@color/nc_darkRed"
             app:srcCompat="@drawable/ic_call_end_white_24px"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/more_call_actions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:visibility="gone"
+            app:fabCustomSize="56dp"
+            app:srcCompat="@drawable/ic_more_vert_white_24px"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/pictureInPictureButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:visibility="gone"
+            app:fabCustomSize="56dp"
+            app:srcCompat="@drawable/ic_pip_white_24dp"/>
     </com.google.android.flexbox.FlexboxLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/lower_hand_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/callControls"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_hand_back_left_off_white_24dp"/>
+
+    <TextView
+        android:id="@+id/end_call_popup_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/callControls"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        android:padding="12dp"
+        android:textColor="@color/white"
+        android:background="@drawable/shape_outgoing_message"/>
 
     <FrameLayout
         android:id="@+id/selfVideoViewWrapper"
@@ -91,5 +156,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/screenShareFullscreenView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:id="@+id/pipOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/pipCallConversationNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+
+        <org.webrtc.SurfaceViewRenderer
+            android:id="@+id/pipSelfVideoRenderer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+    </RelativeLayout>
 
 </RelativeLayout>
