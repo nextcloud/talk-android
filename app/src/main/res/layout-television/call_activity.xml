@@ -111,7 +111,7 @@
             android:layout_margin="12dp"
             android:visibility="gone"
             app:fabCustomSize="56dp"
-            app:srcCompat="@drawable/ic_pip_white_24dp"/>
+            app:srcCompat="@drawable/ic_baseline_picture_in_picture_alt_24"/>
     </com.google.android.flexbox.FlexboxLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -122,9 +122,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
         android:visibility="gone"
-        app:srcCompat="@drawable/ic_hand_back_left_off_white_24dp"/>
+        app:fabCustomSize="40dp"
+        app:srcCompat="@drawable/ic_baseline_do_not_touch_24"/>
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/end_call_popup_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -132,9 +133,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
         android:visibility="gone"
-        android:padding="12dp"
-        android:textColor="@color/white"
-        android:background="@drawable/shape_outgoing_message"/>
+        android:backgroundTint="@android:color/white"
+        android:textColor="@android:color/holo_red_light"/>
 
     <FrameLayout
         android:id="@+id/selfVideoViewWrapper"
