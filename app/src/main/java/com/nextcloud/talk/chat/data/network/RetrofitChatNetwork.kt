@@ -228,8 +228,6 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         credentials: String,
         url: String,
         message: String,
-        displayName: String,
-        referenceId: String,
         replyTo: Int?,
         sendWithoutNotification: Boolean,
         threadTitle: String?,
@@ -240,8 +238,6 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
             credentials,
             url,
             message,
-            displayName,
-            referenceId,
             replyTo,
             sendWithoutNotification,
             threadTitle,
@@ -254,20 +250,14 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         url: String,
         message: String,
         sendAt: Int?,
-        replyTo: Int?,
-        sendWithoutNotification: Boolean,
-        threadTitle: String?,
-        threadId: Long?
+        sendWithoutNotification: Boolean
     ): ChatOverallSingleMessage =
         ncApiCoroutines.updateScheduledMessage(
             credentials,
             url,
             message,
             sendAt,
-            replyTo,
-            sendWithoutNotification,
-            threadTitle,
-            threadId
+            sendWithoutNotification
         )
 
     override suspend fun deleteScheduledMessage(credentials: String, url: String): GenericOverall =
