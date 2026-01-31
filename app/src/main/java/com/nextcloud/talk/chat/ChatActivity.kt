@@ -3975,6 +3975,10 @@ class ChatActivity :
     }
 
     override fun onClickReaction(chatMessage: ChatMessage, emoji: String) {
+        if (!participantPermissions.hasReactPermission()) {
+            Snackbar.make(binding.root, R.string.reaction_forbidden, Snackbar.LENGTH_LONG).show()
+            return
+        }
         VibrationUtils.vibrateShort(context)
         if (chatMessage.reactionsSelf?.contains(emoji) == true) {
             chatViewModel.deleteReaction(roomToken, chatMessage, emoji)
@@ -3993,7 +3997,7 @@ class ChatActivity :
             roomToken,
             chatMessage,
             conversationUser,
-            participantPermissions.hasChatPermission(),
+            participantPermissions.hasReactPermission(),
             ncApi
         ).show()
     }
@@ -4028,6 +4032,7 @@ class ChatActivity :
                 currentConversation,
                 isShowMessageDeletionButton(message),
                 participantPermissions.hasChatPermission(),
+                participantPermissions.hasReactPermission(),
                 spreedCapabilities
             ).show()
         }
