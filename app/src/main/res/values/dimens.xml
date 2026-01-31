@@ -86,4 +86,15 @@
     <dimen name="notification_icon_height">24dp</dimen>
     <dimen name="notification_icon_layout_right_end_margin">21dp</dimen>
     <dimen name="sm_text_size">12sp</dimen>
+
+    <!-- TV specific dimensions (default values for non-TV devices) -->
+    <dimen name="tv_button_size">40dp</dimen>
+    <dimen name="tv_button_margin">4dp</dimen>
+    <dimen name="tv_control_panel_padding">16dp</dimen>
+    <dimen name="tv_video_corner_radius">8dp</dimen>
+    <dimen name="tv_focus_border_width">2dp</dimen>
+    <dimen name="tv_elevation">4dp</dimen>
+    <dimen name="tv_self_video_width">80dp</dimen>
+    <dimen name="tv_self_video_height">104dp</dimen>
+    <dimen name="tv_top_bar_height">48dp</dimen>
 </resources>

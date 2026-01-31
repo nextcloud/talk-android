@@ -28,6 +28,7 @@ import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ActivityWebViewLoginBinding
+import com.nextcloud.talk.utils.TvUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import kotlinx.coroutines.launch
@@ -42,6 +43,9 @@ class BrowserLoginActivity : BaseActivity() {
     lateinit var viewModel: BrowserLoginActivityViewModel
 
     private var reauthorizeAccount = false
+
+    private var isTvMode = false
+
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             val intent = Intent(context, MainActivity::class.java)
@@ -55,7 +59,15 @@ class BrowserLoginActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
         binding = ActivityWebViewLoginBinding.inflate(layoutInflater)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        
+        // Detect TV mode
+        isTvMode = TvUtils.isTvMode(this)
+        
+        // Don't lock orientation on TV
+        if (!isTvMode) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        
         setContentView(binding.root)
         actionBar?.hide()
         initSystemBars()
@@ -77,6 +89,7 @@ class BrowserLoginActivity : BaseActivity() {
                         BrowserLoginActivityViewModel.InitialLoginViewState.InitialLoginRequestError -> {
                             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
                         }
+
                         is BrowserLoginActivityViewModel.InitialLoginViewState.InitialLoginRequestSuccess -> {
                             if (viewModel.waitingForBrowserState.value) {
                                 viewModel.setWaitingForBrowser(false)
@@ -86,6 +99,7 @@ class BrowserLoginActivity : BaseActivity() {
                                 launchDefaultWebBrowser(state.loginUrl)
                             }
                         }
+
                         BrowserLoginActivityViewModel.InitialLoginViewState.None -> {}
                     }
                 }
@@ -103,9 +117,11 @@ class BrowserLoginActivity : BaseActivity() {
                                 startAccountVerification(state.data)
                             }
                         }
+
                         BrowserLoginActivityViewModel.PostLoginViewState.PostLoginError -> {
                             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
                         }
+
                         BrowserLoginActivityViewModel.PostLoginViewState.PostLoginRestartApp -> {
                             restartApp()
                         }

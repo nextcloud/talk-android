@@ -315,6 +315,7 @@ How to translate with transifex:
     <string name="nc_call_reconnecting">Reconnecting …</string>
     <string name="nc_offline">Currently offline, please check your connectivity</string>
     <string name="nc_leaving_call">Leaving call …</string>
+    <string name="nc_leave_call_confirmation">Are you sure you want to leave this call?</string>
     <string name="nc_call_state_in_call">%1$s in call</string>
     <string name="nc_call_state_with_phone">%1$s with phone</string>
     <string name="nc_call_state_with_video">%1$s with video</string>

@@ -41,6 +41,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.AccountUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.TvUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT
@@ -66,6 +67,7 @@ class ServerSelectionActivity : BaseActivity() {
     lateinit var userManager: UserManager
 
     private var statusQueryDisposable: Disposable? = null
+    private var isTvMode = false
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -82,7 +84,16 @@ class ServerSelectionActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
         binding = ActivityServerSelectionBinding.inflate(layoutInflater)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        
+        // Detect TV mode
+        isTvMode = TvUtils.isTvMode(this)
+        Log.d(TAG, "TV mode: $isTvMode")
+        
+        // Don't lock orientation on TV (TVs are landscape)
+        if (!isTvMode) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        
         setContentView(binding.root)
         actionBar?.hide()
         initSystemBars()
@@ -142,6 +153,62 @@ class ServerSelectionActivity : BaseActivity() {
             ApplicationWideMessageHolder.getInstance().messageType = null
         }
         setCertTextView()
+        
+        // Setup TV navigation
+        if (isTvMode) {
+            setupTvNavigation()
+        }
+    }
+
+    private fun setupTvNavigation() {
+        Log.d(TAG, "Setting up TV navigation for login screen")
+        
+        // Make input field focusable for TV
+        binding.serverEntryTextInputEditText.isFocusable = true
+        binding.serverEntryTextInputEditText.isFocusableInTouchMode = false
+        
+        // Make buttons focusable
+        binding.scanQr.isFocusable = true
+        binding.scanQr.isFocusableInTouchMode = false
+        
+        binding.importOrChooseProviderText.isFocusable = true
+        binding.importOrChooseProviderText.isFocusableInTouchMode = false
+        
+        binding.certTextView.isFocusable = true
+        binding.certTextView.isFocusableInTouchMode = false
+        
+        // Setup focus highlighting using primary color
+        val focusColor = ContextCompat.getColor(this, R.color.colorPrimary)
+        
+        // Build list of focusable views based on visibility
+        val focusableViews = mutableListOf<View>()
+        
+        // Always add server input and scan button
+        binding.serverEntryTextInputEditText.let {
+            TvUtils.applyTvFocusHighlight(it, focusColor)
+            focusableViews.add(it)
+        }
+        
+        binding.scanQr.let {
+            TvUtils.applyTvFocusHighlight(it, focusColor)
+            focusableViews.add(it)
+        }
+        
+        // Only add if visible
+        if (binding.importOrChooseProviderText.visibility == View.VISIBLE) {
+            TvUtils.applyTvFocusHighlight(binding.importOrChooseProviderText, focusColor)
+            focusableViews.add(binding.importOrChooseProviderText)
+        }
+        
+        if (binding.certTextView.visibility == View.VISIBLE) {
+            TvUtils.applyTvFocusHighlight(binding.certTextView, focusColor)
+            focusableViews.add(binding.certTextView)
+        }
+        
+        TvUtils.setupDpadNavigation(focusableViews)
+        
+        // Request initial focus on the server input field
+        binding.serverEntryTextInputEditText.requestFocus()
     }
 
     fun onCertClick() {

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2025 Nextcloud GmbH and Nextcloud contributors
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<resources>
+    <!-- TV specific dimensions -->
+    <dimen name="tv_button_size">56dp</dimen>
+    <dimen name="tv_button_margin">12dp</dimen>
+    <dimen name="tv_control_panel_padding">24dp</dimen>
+    <dimen name="tv_video_corner_radius">8dp</dimen>
+    <dimen name="tv_focus_border_width">4dp</dimen>
+    <dimen name="tv_elevation">8dp</dimen>
+    <dimen name="tv_self_video_width">200dp</dimen>
+    <dimen name="tv_self_video_height">260dp</dimen>
+    <dimen name="tv_top_bar_height">64dp</dimen>
+</resources>

@@ -49,6 +49,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
@@ -61,16 +62,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.call.CallParticipantList
-import com.nextcloud.talk.call.LocalStateBroadcaster
-import com.nextcloud.talk.call.LocalStateBroadcasterMcu
-import com.nextcloud.talk.call.LocalStateBroadcasterNoMcu
-import com.nextcloud.talk.call.MediaConstraintsHelper
-import com.nextcloud.talk.call.MessageSender
-import com.nextcloud.talk.call.MessageSenderMcu
-import com.nextcloud.talk.call.MessageSenderNoMcu
-import com.nextcloud.talk.call.MutableLocalCallParticipantModel
-import com.nextcloud.talk.call.ReactionAnimator
+import com.nextcloud.talk.call.*
 import com.nextcloud.talk.call.components.ParticipantGrid
 import com.nextcloud.talk.call.components.SelfVideoView
 import com.nextcloud.talk.call.components.screenshare.ScreenShareComponent
@@ -97,9 +89,7 @@ import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel.LoweredHandStat
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel.RaisedHandState
 import com.nextcloud.talk.services.CallForegroundService
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
-import com.nextcloud.talk.signaling.SignalingMessageReceiver.CallParticipantMessageListener
-import com.nextcloud.talk.signaling.SignalingMessageReceiver.LocalParticipantMessageListener
-import com.nextcloud.talk.signaling.SignalingMessageReceiver.OfferMessageListener
+import com.nextcloud.talk.signaling.SignalingMessageReceiver.*
 import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.ui.dialog.AudioOutputDialog
 import com.nextcloud.talk.ui.dialog.MoreCallActionsDialog
@@ -112,6 +102,7 @@ import com.nextcloud.talk.utils.NotificationUtils.cancelExistingNotificationsFor
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.ReceiverFlag
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.TvUtils
 import com.nextcloud.talk.utils.VibrationUtils.vibrateShort
 import com.nextcloud.talk.utils.animations.PulseAnimation
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
@@ -135,17 +126,10 @@ import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.registerPermissionHandlerBroadcastReceiver
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
-import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingConfirmStopState
-import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingErrorState
-import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingStartedState
-import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingStartingState
-import com.nextcloud.talk.webrtc.PeerConnectionWrapper
+import com.nextcloud.talk.viewmodels.CallRecordingViewModel.*
+import com.nextcloud.talk.webrtc.*
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper.PeerConnectionObserver
-import com.nextcloud.talk.webrtc.WebRTCUtils
-import com.nextcloud.talk.webrtc.WebRtcAudioManager
 import com.nextcloud.talk.webrtc.WebRtcAudioManager.AudioDevice
-import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
-import com.nextcloud.talk.webrtc.WebSocketInstance
 import com.wooplr.spotlight.SpotlightView
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -187,7 +171,6 @@ import java.util.Objects
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
-import kotlin.String
 import kotlin.math.abs
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -256,6 +239,7 @@ class CallActivity : CallBaseActivity() {
     private var baseUrl: String? = null
     private var roomId: String? = null
     private var spotlightView: SpotlightView? = null
+    private var isTvMode = false
     private val internalSignalingMessageReceiver = InternalSignalingMessageReceiver()
     private var signalingMessageReceiver: SignalingMessageReceiver? = null
     private val internalSignalingMessageSender = InternalSignalingMessageSender()
@@ -385,6 +369,10 @@ class CallActivity : CallBaseActivity() {
         rootEglBase = EglBase.create()
         binding = CallActivityBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
+
+        // Detect TV mode
+        isTvMode = TvUtils.isTvMode(this)
+        Log.d(TAG, "TV mode: $isTvMode")
 
         binding!!.screenShareFullscreenView.setContent {
             MaterialTheme {
@@ -626,8 +614,57 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    override fun onKeyDown(keyCode: Int, event: android.view.KeyEvent?): Boolean {
+        if (isTvMode) {
+            when (keyCode) {
+                android.view.KeyEvent.KEYCODE_DPAD_CENTER,
+                android.view.KeyEvent.KEYCODE_ENTER -> {
+                    // D-pad center is already handled by the focused view's click listener
+                    return super.onKeyDown(keyCode, event)
+                }
+                android.view.KeyEvent.KEYCODE_BACK -> {
+                    // Show confirmation dialog before leaving call on TV
+                    if (isConnectionEstablished) {
+                        showLeaveCallConfirmation()
+                        return true
+                    }
+                }
+                android.view.KeyEvent.KEYCODE_MENU -> {
+                    // Show more call actions on menu button press
+                    if (binding!!.moreCallActions.visibility == View.VISIBLE) {
+                        binding!!.moreCallActions.performClick()
+                        return true
+                    }
+                }
+            }
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+    
+    private fun showLeaveCallConfirmation() {
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.nc_leaving_call)
+            .setMessage(R.string.nc_leave_call_confirmation)
+            .setPositiveButton(R.string.nc_yes) { _, _ ->
+                hangup(shutDownView = true, endCallForAll = false)
+            }
+            .setNegativeButton(R.string.nc_no, null)
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
+    }
+
     override fun onResume() {
         super.onResume()
+        
+        // Restore TV focus if needed
+        if (isTvMode) {
+            restoreTvFocus()
+        }
+        
         if (hasSpreedFeatureCapability(
                 conversationUser.capabilities!!.spreedCapability!!,
                 SpreedFeatures.RECORDING_V1
@@ -636,6 +673,31 @@ class CallActivity : CallBaseActivity() {
             elapsedSeconds.toInt() >= CALL_TIME_ONE_HOUR
         ) {
             showCallRunningSinceOneHourOrMoreInfo()
+        }
+    }
+    
+    private fun restoreTvFocus() {
+        // Try to restore focus to a visible control button
+        binding?.let { binding ->
+            when {
+                binding.microphoneButton.isFocusable && binding.microphoneButton.visibility == View.VISIBLE -> {
+                    binding.microphoneButton.requestFocus()
+                }
+                binding.cameraButton.isFocusable && binding.cameraButton.visibility == View.VISIBLE -> {
+                    binding.cameraButton.requestFocus()
+                }
+                binding.hangupButton.isFocusable && binding.hangupButton.visibility == View.VISIBLE -> {
+                    binding.hangupButton.requestFocus()
+                }
+                else -> {
+                    // Fallback: try to find any focusable view
+                    TvUtils.requestDefaultFocus(
+                        binding.microphoneButton,
+                        binding.cameraButton,
+                        binding.hangupButton
+                    )
+                }
+            }
         }
     }
 
@@ -948,8 +1010,12 @@ class CallActivity : CallBaseActivity() {
         }
         initPipMode()
         binding!!.composeParticipantGrid.z = 0f
+        
+        // Setup TV mode navigation
+        if (isTvMode) {
+            setupTvNavigation()
+        }
     }
-
     @SuppressLint("ClickableViewAccessibility")
     private fun initSelfVideoViewForNormalMode() {
         binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
@@ -972,9 +1038,54 @@ class CallActivity : CallBaseActivity() {
             updateUiForPipMode()
         }
     }
-
-    private fun checkInitialDevicePermissions() {
-        val permissionsToRequest: MutableList<String> = ArrayList()
+    
+    private fun setupTvNavigation() {
+        Log.d(TAG, "Setting up TV navigation")
+        
+        // Get all control buttons (only add visible ones)
+        val controlButtons = mutableListOf<View>()
+        
+        // Microphone button is always visible
+        controlButtons.add(binding!!.microphoneButton)
+        
+        // Camera button only in video calls
+        if (!isVoiceOnlyCall && binding!!.cameraButton.visibility == View.VISIBLE) {
+            controlButtons.add(binding!!.cameraButton)
+        }
+        
+        // Hangup button is always visible
+        controlButtons.add(binding!!.hangupButton)
+        
+        // Apply TV focus highlighting
+        val focusColor = ContextCompat.getColor(this, R.color.colorPrimary)
+        controlButtons.forEach { button ->
+            TvUtils.applyTvFocusHighlight(button, focusColor)
+        }
+        
+        // Setup D-pad navigation between buttons
+        TvUtils.setupDpadNavigation(controlButtons)
+        
+        // Request focus on the first button (microphone)
+        TvUtils.requestDefaultFocus(*controlButtons.toTypedArray())
+        
+        // Adjust video aspect ratio for TV
+        adjustVideoForTv()
+    }
+    
+    private fun adjustVideoForTv() {
+        Log.d(TAG, "Adjusting video for TV aspect ratio")
+        
+        // TV screens typically use 16:9 aspect ratio
+        // Adjust self video view size
+        val tvSelfVideoWidth = resources.getDimensionPixelSize(R.dimen.tv_self_video_width)
+        val tvSelfVideoHeight = resources.getDimensionPixelSize(R.dimen.tv_self_video_height)
+        
+        binding!!.selfVideoViewWrapper.layoutParams.width = tvSelfVideoWidth
+        binding!!.selfVideoViewWrapper.layoutParams.height = tvSelfVideoHeight
+        binding!!.selfVideoViewWrapper.requestLayout()
+    }
+    
+    private fun checkInitialDevicePermissions() {        val permissionsToRequest: MutableList<String> = ArrayList()
         val rationaleList: MutableList<String> = ArrayList()
         if (permissionUtil!!.isMicrophonePermissionGranted()) {
             Log.d(TAG, "Microphone permission already granted")
