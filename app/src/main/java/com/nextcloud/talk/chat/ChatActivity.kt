@@ -3976,7 +3976,7 @@ class ChatActivity :
 
     override fun onClickReaction(chatMessage: ChatMessage, emoji: String) {
         if (!participantPermissions.hasReactPermission()) {
-            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            Snackbar.make(binding.root, R.string.reaction_forbidden, Snackbar.LENGTH_LONG).show()
             return
         }
         VibrationUtils.vibrateShort(context)
@@ -3997,7 +3997,7 @@ class ChatActivity :
             roomToken,
             chatMessage,
             conversationUser,
-            participantPermissions.hasChatPermission(),
+            participantPermissions.hasReactPermission(),
             ncApi
         ).show()
     }
