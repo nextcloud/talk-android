@@ -183,7 +183,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 ncSignalingMessage.from = callWebSocketMessage.senderWebSocketMessage!!.sessionId
             }
 
-            signalingMessageReceiver.process(callWebSocketMessage)
+            signalingMessageReceiver.processChatMessage(callWebSocketMessage)
         }
     }
 
@@ -196,17 +196,17 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 when (target) {
                     Globals.TARGET_ROOM -> {
                         if ("message" == eventOverallWebSocketMessage.eventMap!!["type"]) {
-                            processRoomMessageMessage(eventOverallWebSocketMessage)
+                            processRoomMessageMessage(eventOverallWebSocketMessage, text)
                         } else if ("join" == eventOverallWebSocketMessage.eventMap!!["type"]) {
                             processRoomJoinMessage(eventOverallWebSocketMessage)
                         } else if ("leave" == eventOverallWebSocketMessage.eventMap!!["type"]) {
                             processRoomLeaveMessage(eventOverallWebSocketMessage)
                         }
-                        signalingMessageReceiver.process(eventOverallWebSocketMessage.eventMap)
+                        signalingMessageReceiver.processChatMessage(eventOverallWebSocketMessage.eventMap)
                     }
 
                     Globals.TARGET_PARTICIPANTS ->
-                        signalingMessageReceiver.process(eventOverallWebSocketMessage.eventMap)
+                        signalingMessageReceiver.processChatMessage(eventOverallWebSocketMessage.eventMap)
 
                     else ->
                         Log.i(TAG, "Received unknown/ignored event target: $target")
@@ -217,7 +217,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         }
     }
 
-    private fun processRoomMessageMessage(eventOverallWebSocketMessage: EventOverallWebSocketMessage) {
+    private fun processRoomMessageMessage(eventOverallWebSocketMessage: EventOverallWebSocketMessage, text: String) {
         val messageHashMap = eventOverallWebSocketMessage.eventMap?.get("message") as Map<*, *>?
 
         if (messageHashMap != null && messageHashMap.containsKey("data")) {
@@ -230,6 +230,10 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                     refreshChatHashMap[BundleKeys.KEY_ROOM_TOKEN] = messageHashMap["roomid"] as String?
                     refreshChatHashMap[BundleKeys.KEY_INTERNAL_USER_ID] = (conversationUser.id!!).toString()
                     eventBus!!.post(WebSocketCommunicationEvent("refreshChat", refreshChatHashMap))
+                }
+
+                if (chatMap != null && chatMap.containsKey("comment")) {
+                    signalingMessageReceiver.processChatMessage(text)
                 }
             } else if (dataHashMap != null && dataHashMap.containsKey("recording")) {
                 val recordingMap = dataHashMap["recording"] as Map<*, *>?
@@ -468,11 +472,11 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
      * stays connected, but it may change whenever it is connected again.
      */
     private class ExternalSignalingMessageReceiver : SignalingMessageReceiver() {
-        fun process(eventMap: Map<String, Any?>?) {
+        fun processChatMessage(eventMap: Map<String, Any>?) {
             processEvent(eventMap)
         }
 
-        fun process(message: CallWebSocketMessage?) {
+        fun processChatMessage(message: CallWebSocketMessage?) {
             if (message?.ncSignalingMessage?.type == "startedTyping" ||
                 message?.ncSignalingMessage?.type == "stoppedTyping"
             ) {
@@ -480,6 +484,11 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
             } else {
                 processSignalingMessage(message?.ncSignalingMessage)
             }
+        }
+
+        fun processChatMessage(jsonString: String) {
+            processChatMessageWebSocketMessage(jsonString)
+            Log.d(TAG, "processing Received chat message")
         }
     }
 

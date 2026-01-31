@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.ui.chat.GetComposableForMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import java.time.Instant
@@ -113,7 +114,11 @@ fun PinnedMessageView(
                 }
 
         ) {
-            ComposeChatAdapter().GetComposableForMessage(message)
+            GetComposableForMessage(
+                message,
+                null,
+                isBlinkingState = remember { mutableStateOf(false) }
+            )
         }
 
         var expanded by remember { mutableStateOf(false) }
