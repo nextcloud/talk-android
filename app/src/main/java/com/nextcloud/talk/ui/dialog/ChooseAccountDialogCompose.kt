@@ -50,6 +50,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -78,7 +79,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import java.net.CookieManager
 import javax.inject.Inject
 
@@ -92,7 +93,7 @@ class ChooseAccountDialogCompose {
     lateinit var userManager: UserManager
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderNew
+    lateinit var currentUserProvider: CurrentUserProviderOld
 
     @Inject
     lateinit var cookieManager: CookieManager
@@ -405,7 +406,10 @@ private fun CurrentUserSection(
             )
             statusIndicator(Modifier.align(Alignment.BottomEnd))
         }
-        Column(modifier = Modifier.padding(start = 12.dp)) {
+        Column(
+            modifier = Modifier.padding(start = 12.dp)
+                .weight(1f)
+        ) {
             Text(text = currentUser.displayName ?: currentUser.username ?: "")
             status?.let {
                 Column {
@@ -413,20 +417,24 @@ private fun CurrentUserSection(
                         Text(
                             text = it.message!!,
                             style = MaterialTheme.typography.bodySmall,
-                            color = colorResource(id = R.color.low_emphasis_text)
+                            color = colorResource(id = R.color.low_emphasis_text),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                     Text(
                         currentUser.baseUrl!!.toUri().host ?: "",
                         modifier = Modifier.padding(top = 2.dp),
                         style = MaterialTheme.typography.bodySmall,
-                        color = colorResource(id = R.color.low_emphasis_text)
+                        color = colorResource(id = R.color.low_emphasis_text),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
         }
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.padding(end = 8.dp))
         Icon(
             painterResource(id = R.drawable.ic_check_circle),
             contentDescription = null,

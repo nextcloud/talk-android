@@ -245,6 +245,12 @@ object ApiUtils {
     fun getUrlForChatSharedItemsOverview(version: Int, baseUrl: String?, token: String): String =
         getUrlForChatSharedItems(version, baseUrl, token) + "/overview"
 
+    fun getUrlForChatMessagePinning(version: Int, baseUrl: String?, token: String, messageId: String): String =
+        "${getUrlForChatMessage(version, baseUrl, token, messageId)}/pin"
+
+    fun getUrlForChatMessageHiding(version: Int, baseUrl: String?, token: String, messageId: String): String =
+        "${getUrlForChatMessage(version, baseUrl, token, messageId)}/pin/self"
+
     fun getUrlForSignaling(version: Int, baseUrl: String?): String = getUrlForApi(version, baseUrl) + "/signaling"
 
     fun getUrlForTestPushNotifications(baseUrl: String): String =
@@ -543,4 +549,10 @@ object ApiUtils {
 
     fun getUrlForThreadNotificationLevel(version: Int, baseUrl: String?, token: String, threadId: Int): String =
         getUrlForChat(version, baseUrl, token) + "/threads" + "/$threadId" + "/notify"
+
+    fun getUrlForScheduledMessages(baseUrl: String?, token: String): String =
+        "$baseUrl$OCS_API_VERSION/apps/spreed/api/v1/chat/$token/schedule"
+
+    fun getUrlForScheduledMessage(baseUrl: String?, token: String, messageId: String?): String =
+        getUrlForScheduledMessages(baseUrl, token) + "/$messageId"
 }

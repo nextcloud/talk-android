@@ -685,8 +685,6 @@
     <string name="translation_error_title">Превођење није успело</string>
     <string name="translation_from">Од</string>
     <string name="translation_to">За</string>
-    <string name="turn_off_background_blur">Искључи замућење позадине</string>
-    <string name="turn_on_background_blur">Укључи замућење позадине</string>
     <string name="typing_1_other">and и још 1 куцају…</string>
     <string name="typing_are_typing">куцају...</string>
     <string name="typing_is_typing">куца...</string>

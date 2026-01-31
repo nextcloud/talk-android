@@ -129,19 +129,6 @@
         </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/out_of_office_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="12dp">
-
-        <include layout="@layout/out_of_office_view" />
-    </com.google.android.material.card.MaterialCardView>
-
-
-        <com.google.android.material.card.MaterialCardView
             android:id="@+id/conversation_delete_notice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -160,7 +147,7 @@
             android:clipToPadding="false"
             android:paddingBottom="20dp"
             android:visibility="gone"
-            android:layout_below= "@id/out_of_office_container"
+
             app:dateHeaderTextSize="13sp"
             app:incomingBubblePaddingBottom="@dimen/message_bubble_corners_vertical_padding"
             app:incomingBubblePaddingLeft="@dimen/message_bubble_corners_horizontal_padding"
@@ -189,6 +176,49 @@
             app:outcomingTimeTextSize="12sp"
             app:textAutoLink="all"
             tools:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/pinnedMessageContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/standard_half_padding"
+                android:visibility="gone"
+                android:background="@color/transparent"
+                tools:visibility="visible">
+
+                <androidx.compose.ui.platform.ComposeView
+                    android:id="@+id/pinnedMessageComposeView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="8dp"
+                android:background="@color/bg_default">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/out_of_office_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    app:cardCornerRadius="12dp">
+
+                    <include layout="@layout/out_of_office_view" />
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+        </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/unreadMessagesPopup"
@@ -254,12 +284,6 @@
             android:layout_marginBottom="-19dp"
             android:orientation="vertical">
 
-            <View
-                android:id="@+id/separator_1"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/chat_separator" />
-
             <TextView
                 android:id="@+id/typing_indicator"
                 android:layout_width="match_parent"
@@ -286,6 +310,11 @@
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/generic_compose_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/send_schedule_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </LinearLayout>

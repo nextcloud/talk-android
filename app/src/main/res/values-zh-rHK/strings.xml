@@ -530,7 +530,7 @@
     <string name="nc_test_push_button">測試推送通知</string>
     <string name="nc_test_results">測試結果</string>
     <string name="nc_today_meeting">於今日 %1$s</string>
-    <string name="nc_tomorrow_meeting">於明天 %1$s</string>
+    <string name="nc_tomorrow_meeting">明日於 %1$s</string>
     <string name="nc_upload_choose_local_files">選擇檔案</string>
     <string name="nc_upload_confirm_send_multiple">將這些檔案發送到 %1$s？</string>
     <string name="nc_upload_confirm_send_single">將此檔案發送到 %1$s？</string>
@@ -567,6 +567,15 @@
     <string name="open_in_files_app">在“檔案”應用程式中打開</string>
     <string name="open_notes">開啟筆記</string>
     <string name="open_thread">前往討論串</string>
+    <string name="pin_24hr">釘選 24 小時</string>
+    <string name="pin_30_days">釘選 30 天</string>
+    <string name="pin_7_days">釘選 7 天</string>
+    <string name="pin_indefinitely">無限期地釘選</string>
+    <string name="pin_message">置頂訊息</string>
+    <string name="pinned">已置頂</string>
+    <string name="pinned_by">釘選者</string>
+    <string name="pinned_indefinitely">已無限期地釘選</string>
+    <string name="pinned_until">已釘選至</string>
     <string name="play_pause_voice_message">播放﹨暫停話音短訊</string>
     <string name="playback_speed_control">播放速度控制</string>
     <string name="please_continue_the_login_process_in_the_browser">請在瀏覽器中繼續登入</string>
@@ -685,8 +694,6 @@
     <string name="translation_error_title">翻譯失敗</string>
     <string name="translation_from">從</string>
     <string name="translation_to">至</string>
-    <string name="turn_off_background_blur">關閉背景模糊</string>
-    <string name="turn_on_background_blur">啟用背景模糊</string>
     <string name="typing_1_other">還有 1 個人正在打字 …</string>
     <string name="typing_are_typing">正在打字 …</string>
     <string name="typing_is_typing">正在打字 …</string>
@@ -695,7 +702,9 @@
     <string name="unarchive_hint">對話取消存檔後，默認會再次顯示。</string>
     <string name="unarchived_conversation">已解除封存 %1$s</string>
     <string name="unban">解除封禁</string>
+    <string name="unpin_message">取消置頂訊息</string>
     <string name="unread">未讀</string>
+    <string name="until_unpin">直到取消置頂</string>
     <string name="upload_new_avatar_from_device">從裝置上傳新虛擬化身大頭照</string>
     <string name="user_absence">%1$s 不在辦公室，可能不會回覆。</string>
     <string name="user_absence_for_one_day">%1$s 今日不在辦公室</string>

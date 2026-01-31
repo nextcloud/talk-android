@@ -28,9 +28,9 @@ import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
+import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -56,11 +56,10 @@ class OfflineFirstChatRepository @Inject constructor(
     private val chatDao: ChatMessagesDao,
     private val chatBlocksDao: ChatBlocksDao,
     private val network: ChatNetworkDataSource,
-    private val networkMonitor: NetworkMonitor,
-    userProvider: CurrentUserProviderNew
+    private val networkMonitor: NetworkMonitor
 ) : ChatMessageRepository {
 
-    val currentUser: User = userProvider.currentUser.blockingGet()
+    lateinit var currentUser: User
 
     override val messageFlow:
         Flow<
@@ -121,7 +120,15 @@ class OfflineFirstChatRepository @Inject constructor(
     private lateinit var urlForChatting: String
     private var threadId: Long? = null
 
-    override fun initData(credentials: String, urlForChatting: String, roomToken: String, threadId: Long?) {
+    override fun initData(
+        currentUser: User,
+        credentials: String,
+        urlForChatting: String,
+        roomToken: String,
+        threadId: Long?
+    ) {
+        this.currentUser = currentUser
+
         internalConversationId = currentUser.id.toString() + "@" + roomToken
         this.credentials = credentials
         this.urlForChatting = urlForChatting
@@ -504,6 +511,12 @@ class OfflineFirstChatRepository @Inject constructor(
         ).map(ChatMessageEntity::asModel)
     }
 
+    override suspend fun getParentMessageById(messageId: Long): Flow<ChatMessage> =
+        chatDao.getChatMessageForConversation(
+            internalConversationId,
+            messageId
+        ).map(ChatMessageEntity::asModel)
+
     @Suppress("UNCHECKED_CAST", "MagicNumber", "Detekt.TooGenericExceptionCaught")
     private fun getMessagesFromServer(bundle: Bundle): Pair<Int, List<ChatMessageJson>>? {
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
@@ -690,6 +703,14 @@ class OfflineFirstChatRepository @Inject constructor(
                     messageJson.parentMessage?.let { parentMessageJson ->
                         parentMessageJson.message?.let {
                             val parentMessageEntity = parentMessageJson.asEntity(currentUser.id!!)
+
+                            // Preserve parentMessageId if missing in server response but present in local DB
+                            val existingEntity =
+                                chatDao.getChatMessageEntity(internalConversationId, parentMessageJson.id)
+                            if (existingEntity != null && parentMessageEntity.parentMessageId == null) {
+                                parentMessageEntity.parentMessageId = existingEntity.parentMessageId
+                            }
+
                             chatDao.upsertChatMessage(parentMessageEntity)
                             _updateMessageFlow.emit(parentMessageEntity.asModel())
                         }
@@ -883,11 +904,16 @@ class OfflineFirstChatRepository @Inject constructor(
 
             val chatMessageModel = response.ocs?.data?.asModel()
 
-            val sentMessage = chatDao.getTempMessageForConversation(
-                internalConversationId,
-                referenceId,
-                threadId
-            ).firstOrNull()
+            val sentMessage = if (this@OfflineFirstChatRepository::internalConversationId.isInitialized) {
+                chatDao
+                    .getTempMessageForConversation(
+                        internalConversationId,
+                        referenceId,
+                        threadId
+                    ).firstOrNull()
+            } else {
+                null
+            }
 
             sentMessage?.let {
                 it.sendStatus = SendStatus.SENT_PENDING_ACK
@@ -900,11 +926,15 @@ class OfflineFirstChatRepository @Inject constructor(
             .catch { e ->
                 Log.e(TAG, "Error when sending message", e)
 
-                val failedMessage = chatDao.getTempMessageForConversation(
-                    internalConversationId,
-                    referenceId,
-                    threadId
-                ).firstOrNull()
+                val failedMessage = if (this@OfflineFirstChatRepository::internalConversationId.isInitialized) {
+                    chatDao.getTempMessageForConversation(
+                        internalConversationId,
+                        referenceId,
+                        threadId
+                    ).firstOrNull()
+                } else {
+                    null
+                }
                 failedMessage?.let {
                     it.sendStatus = SendStatus.FAILED
                     chatDao.updateChatMessage(it)
@@ -954,6 +984,38 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
     }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    override suspend fun addTemporaryMessage(
+        message: CharSequence,
+        displayName: String,
+        replyTo: Int,
+        sendWithoutNotification: Boolean,
+        referenceId: String
+    ): Flow<Result<ChatMessage?>> =
+        flow {
+            try {
+                val tempChatMessageEntity = createChatMessageEntity(
+                    internalConversationId,
+                    message.toString(),
+                    replyTo,
+                    sendWithoutNotification,
+                    referenceId
+                )
+
+                chatDao.upsertChatMessage(tempChatMessageEntity)
+
+                val tempChatMessageModel = tempChatMessageEntity.asModel()
+
+                emit(Result.success(tempChatMessageModel))
+
+                val triple = Triple(true, false, listOf(tempChatMessageModel))
+                _messageFlow.emit(triple)
+            } catch (e: Exception) {
+                Log.e(TAG, "Something went wrong when adding temporary message", e)
+                emit(Result.failure(e))
+            }
+        }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun editChatMessage(
@@ -1020,36 +1082,127 @@ class OfflineFirstChatRepository @Inject constructor(
         _removeMessageFlow.emit(chatMessage)
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    override suspend fun addTemporaryMessage(
-        message: CharSequence,
-        displayName: String,
-        replyTo: Int,
-        sendWithoutNotification: Boolean,
-        referenceId: String
-    ): Flow<Result<ChatMessage?>> =
+    override suspend fun pinMessage(credentials: String, url: String, pinUntil: Int): Flow<ChatMessage?> =
         flow {
-            try {
-                val tempChatMessageEntity = createChatMessageEntity(
-                    internalConversationId,
-                    message.toString(),
-                    replyTo,
-                    sendWithoutNotification,
-                    referenceId
-                )
-
-                chatDao.upsertChatMessage(tempChatMessageEntity)
-
-                val tempChatMessageModel = tempChatMessageEntity.asModel()
-
-                emit(Result.success(tempChatMessageModel))
-
-                val triple = Triple(true, false, listOf(tempChatMessageModel))
-                _messageFlow.emit(triple)
-            } catch (e: Exception) {
-                Log.e(TAG, "Something went wrong when adding temporary message", e)
-                emit(Result.failure(e))
+            runCatching {
+                val overall = network.pinMessage(credentials, url, pinUntil)
+                emit(overall.ocs?.data?.asModel())
+            }.getOrElse { throwable ->
+                Log.e(TAG, "Error in pinMessage: $throwable")
             }
+        }
+
+    override suspend fun unPinMessage(credentials: String, url: String): Flow<ChatMessage?> =
+        flow {
+            runCatching {
+                val overall = network.unPinMessage(credentials, url)
+                emit(overall.ocs?.data?.asModel())
+            }.getOrElse { throwable ->
+                Log.e(TAG, "Error in unPinMessage: $throwable")
+            }
+        }
+
+    override suspend fun hidePinnedMessage(credentials: String, url: String): Flow<Boolean> =
+        flow {
+            runCatching {
+                network.hidePinnedMessage(credentials, url)
+                emit(true)
+            }.getOrElse { throwable ->
+                Log.e(TAG, "Error in hidePinnedMessage: $throwable")
+            }
+        }
+
+    @Suppress("LongParameterList")
+    override suspend fun sendScheduledChatMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        displayName: String,
+        referenceId: String,
+        replyTo: Int?,
+        sendWithoutNotification: Boolean,
+        threadTitle: String?,
+        threadId: Long?,
+        sendAt: Int?
+    ): Flow<Result<ChatOverallSingleMessage>> =
+        flow {
+            val response = network.sendScheduledChatMessage(
+                credentials,
+                url,
+                message,
+                displayName,
+                referenceId,
+                replyTo,
+                sendWithoutNotification,
+                threadTitle,
+                threadId,
+                sendAt
+            )
+            emit(Result.success(response))
+        }.catch { e ->
+            Log.e(TAG, "Error when scheduling message", e)
+            emit(Result.failure(e))
+        }
+
+    @Suppress("LongParameterList")
+    override suspend fun updateScheduledChatMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        sendAt: Int?,
+        replyTo: Int?,
+        sendWithoutNotification: Boolean,
+        threadTitle: String?,
+        threadId: Long?
+    ): Flow<Result<ChatMessage>> =
+        flow {
+            val response = network.updateScheduledMessage(
+                credentials,
+                url,
+                message,
+                sendAt,
+                replyTo,
+                sendWithoutNotification,
+                threadTitle,
+                threadId
+            )
+
+            val messageJson = response.ocs?.data
+                ?: error("updateScheduledMessage: response.ocs?.data is null")
+
+            val updatedMessage = messageJson.asModel().copy(
+                token = messageJson.id.toString()
+            )
+
+            emit(Result.success(updatedMessage))
+        }.catch { e ->
+            Log.e(TAG, "Error when updating scheduled message", e)
+            emit(Result.failure(e))
+        }
+
+    override suspend fun deleteScheduledChatMessage(credentials: String, url: String): Flow<Result<GenericOverall>> =
+        flow {
+            val response = network.deleteScheduledMessage(credentials, url)
+            emit(Result.success(response))
+        }.catch { e ->
+            Log.e(TAG, "Error when deleting scheduled message", e)
+            emit(Result.failure(e))
+        }
+
+    override suspend fun getScheduledChatMessages(credentials: String, url: String): Flow<Result<List<ChatMessage>>> =
+        flow {
+            val response = network.getScheduledMessages(credentials, url)
+            val messages = response.ocs?.data.orEmpty().map { messageJson ->
+                val jsonToModel = messageJson.asModel()
+                jsonToModel.copy(
+                    token = messageJson.id.toString()
+                )
+            }
+            emit(Result.success(messages))
+            Log.d("Get Scheduled", "$messages")
+        }.catch { e ->
+            Log.e(TAG, "Error when fetching scheduled messages", e)
+            emit(Result.failure(e))
         }
 
     private fun createChatMessageEntity(

@@ -15,25 +15,28 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import autodagger.AutoInjector
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.AudioRecorderManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.stfalcon.chatkit.commons.models.IMessage
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @Suppress("Detekt.TooManyFunctions")
-class MessageInputViewModel @Inject constructor(
-    private val audioRecorderManager: AudioRecorderManager,
-    private val mediaPlayerManager: MediaPlayerManager,
-    private val audioFocusRequestManager: AudioFocusRequestManager
-) : ViewModel(),
+@AutoInjector(NextcloudTalkApplication::class)
+class MessageInputViewModel :
+    ViewModel(),
     DefaultLifecycleObserver {
 
     enum class LifeCycleFlag {
@@ -42,7 +45,21 @@ class MessageInputViewModel @Inject constructor(
         STOPPED
     }
 
+    init {
+        NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
+    }
+
+    @Inject
+    lateinit var audioRecorderManager: AudioRecorderManager
+
+    @Inject
+    lateinit var mediaPlayerManager: MediaPlayerManager
+
+    @Inject
+    lateinit var audioFocusRequestManager: AudioFocusRequestManager
+
     lateinit var chatRepository: ChatMessageRepository
+    lateinit var chatNetworkDataSource: ChatNetworkDataSource
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
 
@@ -86,8 +103,8 @@ class MessageInputViewModel @Inject constructor(
     val mediaPlayerSeekbarObserver: Flow<Int>
         get() = mediaPlayerManager.mediaPlayerSeekBarPosition
 
-    private val _getEditChatMessage: MutableLiveData<IMessage?> = MutableLiveData()
-    val getEditChatMessage: LiveData<IMessage?>
+    private val _getEditChatMessage: MutableStateFlow<IMessage?> = MutableStateFlow(null)
+    val getEditChatMessage: StateFlow<IMessage?>
         get() = _getEditChatMessage
 
     private val _getReplyChatMessage: MutableLiveData<ChatMessage?> = MutableLiveData()
@@ -125,6 +142,15 @@ class MessageInputViewModel @Inject constructor(
     private val _callStartedFlow: MutableLiveData<Pair<ChatMessage, Boolean>> = MutableLiveData()
     val callStartedFlow: LiveData<Pair<ChatMessage, Boolean>>
         get() = _callStartedFlow
+
+    object ScheduleChatMessageStartState : ViewState
+    class ScheduleChatMessageSuccessState(val scheduledAt: Long) : ViewState
+    object ScheduleChatMessageErrorState : ViewState
+
+    private val _scheduleChatMessageViewState: MutableLiveData<ViewState> =
+        MutableLiveData(ScheduleChatMessageStartState)
+    val scheduleChatMessageViewState: LiveData<ViewState>
+        get() = _scheduleChatMessageViewState
 
     @Suppress("LongParameterList")
     fun sendChatMessage(
@@ -218,7 +244,7 @@ class MessageInputViewModel @Inject constructor(
     }
 
     fun edit(message: IMessage?) {
-        _getEditChatMessage.postValue(message)
+        _getEditChatMessage.value = message
     }
 
     fun startMicInput(context: Context) {
@@ -272,6 +298,44 @@ class MessageInputViewModel @Inject constructor(
 
     fun stopThreadCreation() {
         _createThreadViewState.postValue(CreateThreadStartState)
+    }
+
+    @Suppress("LongParameterList")
+    fun scheduleChatMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        displayName: String,
+        replyTo: Int?,
+        sendWithoutNotification: Boolean,
+        threadTitle: String?,
+        threadId: Long?,
+        sendAt: Int?
+    ) {
+        val referenceId = SendMessageUtils().generateReferenceId()
+        Log.d(TAG, "Random SHA-256 Hash: $referenceId")
+
+        viewModelScope.launch {
+            chatRepository.sendScheduledChatMessage(
+                credentials,
+                url,
+                message,
+                displayName,
+                referenceId,
+                replyTo,
+                sendWithoutNotification,
+                threadTitle,
+                threadId,
+                sendAt
+            ).collect { result ->
+                if (result.isSuccess) {
+                    _scheduleChatMessageViewState.value =
+                        ScheduleChatMessageSuccessState(sendAt?.toLong() ?: 0L)
+                } else {
+                    _scheduleChatMessageViewState.value = ScheduleChatMessageErrorState
+                }
+            }
+        }
     }
 
     companion object {

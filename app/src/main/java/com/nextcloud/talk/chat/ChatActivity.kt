@@ -56,6 +56,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
@@ -167,12 +168,14 @@ import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.translate.ui.TranslateActivity
+import com.nextcloud.talk.ui.PinnedMessageView
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.ui.PlaybackSpeedControl
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.DateTimeCompose
 import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
+import com.nextcloud.talk.ui.dialog.GetPinnedOptionsDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
@@ -250,7 +253,7 @@ import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LargeClass", "LongMethod")
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatActivity :
     BaseActivity(),
@@ -290,9 +293,12 @@ class ChatActivity :
 
     lateinit var conversationInfoViewModel: ConversationInfoViewModel
     lateinit var contextChatViewModel: ContextChatViewModel
-    lateinit var messageInputViewModel: MessageInputViewModel
+    val messageInputViewModel: MessageInputViewModel by viewModels()
 
     private var chatMenu: Menu? = null
+
+    private var scheduledMessagesMenuItem: MenuItem? = null
+    private var hasScheduledMessages: Boolean = false
 
     private var overflowMenuHostView: ComposeView? = null
     private var isThreadMenuExpanded by mutableStateOf(false)
@@ -370,7 +376,7 @@ class ChatActivity :
     var conversationThreadId: Long? = null
     var openedViaNotification: Boolean = false
     var conversationThreadInfo: ThreadInfo? = null
-    var conversationUser: User? = null
+    lateinit var conversationUser: User
     lateinit var spreedCapabilities: SpreedCapability
     var chatApiVersion: Int = 1
     private var roomPassword: String = ""
@@ -509,51 +515,56 @@ class ChatActivity :
             colorizeNavigationBar()
         }
 
-        conversationUser = currentUserProvider.currentUser.blockingGet()
-        handleIntent(intent)
-
         chatViewModel = ViewModelProvider(this, viewModelFactory)[ChatViewModel::class.java]
 
         conversationInfoViewModel = ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
 
         contextChatViewModel = ViewModelProvider(this, viewModelFactory)[ContextChatViewModel::class.java]
 
-        val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
-        val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
-        chatViewModel.initData(
-            credentials!!,
-            urlForChatting,
-            roomToken,
-            conversationThreadId
-        )
+        lifecycleScope.launch {
+            currentUserProvider.getCurrentUser()
+                .onSuccess { user ->
+                    conversationUser = user
+                    handleIntent(intent)
+                    val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
+                    val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
+                    chatViewModel.initData(
+                        user,
+                        credentials!!,
+                        urlForChatting,
+                        roomToken,
+                        conversationThreadId
+                    )
 
-        conversationThreadId?.let {
-            val threadUrl = ApiUtils.getUrlForThread(
-                version = 1,
-                baseUrl = conversationUser!!.baseUrl,
-                token = roomToken,
-                threadId = it.toInt()
-            )
-            chatViewModel.getThread(credentials, threadUrl)
+                    conversationThreadId?.let {
+                        val threadUrl = ApiUtils.getUrlForThread(
+                            version = 1,
+                            baseUrl = conversationUser!!.baseUrl,
+                            token = roomToken,
+                            threadId = it.toInt()
+                        )
+                        chatViewModel.getThread(credentials, threadUrl)
+                    }
+
+                    messageInputFragment = getMessageInputFragment()
+                    messageInputViewModel.setData(chatViewModel.getChatRepository())
+
+                    initObservers()
+
+                    pickMultipleMedia = registerForActivityResult(
+                        ActivityResultContracts.PickMultipleVisualMedia(MAX_AMOUNT_MEDIA_FILE_PICKER)
+                    ) { uris ->
+                        if (uris.isNotEmpty()) {
+                            onChooseFileResult(uris)
+                        }
+                    }
+                }
+                .onFailure {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
         }
-
-        messageInputFragment = getMessageInputFragment()
-        messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
-        messageInputViewModel.setData(chatViewModel.getChatRepository())
-
         binding.progressBar.visibility = View.VISIBLE
-
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-
-        initObservers()
-
-        pickMultipleMedia = registerForActivityResult(
-            ActivityResultContracts.PickMultipleVisualMedia(MAX_AMOUNT_MEDIA_FILE_PICKER)
-        ) { uris ->
-            if (uris.isNotEmpty()) {
-                onChooseFileResult(uris)
-            }
-        }
     }
 
     private fun getMessageInputFragment(): MessageInputFragment {
@@ -648,7 +659,7 @@ class ChatActivity :
 
         this.lifecycleScope.launch {
             chatViewModel.getConversationFlow
-                .onEach { conversationModel ->
+                .collect { conversationModel ->
                     currentConversation = conversationModel
                     chatViewModel.updateConversation(
                         currentConversation!!
@@ -663,7 +674,37 @@ class ChatActivity :
                     }
 
                     chatViewModel.getCapabilities(conversationUser!!, roomToken, currentConversation!!)
-                }.collect()
+
+                    if (conversationModel.lastPinnedId != null &&
+                        conversationModel.lastPinnedId != 0L &&
+                        conversationModel.lastPinnedId != conversationModel.hiddenPinnedId
+                    ) {
+                        chatViewModel
+                            .getIndividualMessageFromServer(
+                                credentials!!,
+                                conversationUser?.baseUrl!!,
+                                roomToken,
+                                conversationModel.lastPinnedId.toString()
+                            )
+                            .collect { message ->
+                                message?.let {
+                                    binding.pinnedMessageContainer.visibility = View.VISIBLE
+                                    binding.pinnedMessageComposeView.setContent {
+                                        PinnedMessageView(
+                                            message,
+                                            viewThemeUtils,
+                                            currentConversation,
+                                            scrollToMessageWithIdWithOffset = ::scrollToMessageWithIdWithOffset,
+                                            hidePinnedMessage = ::hidePinnedMessage,
+                                            unPinMessage = ::unPinMessage
+                                        )
+                                    }
+                                }
+                            }
+                    } else {
+                        binding.pinnedMessageContainer.visibility = View.GONE
+                    }
+                }
         }
 
         chatViewModel.getRoomViewState.observe(this) { state ->
@@ -725,6 +766,7 @@ class ChatActivity :
                         ) {
                             binding.chatToolbar.setOnClickListener { _ -> showConversationInfoScreen() }
                         }
+                        refreshScheduledMessages()
 
                         loadAvatarForStatusBar()
                         setupSwipeToReply()
@@ -901,6 +943,47 @@ class ChatActivity :
 
                 is MessageInputViewModel.SendChatMessageErrorState -> {
                     binding.messagesListView.smoothScrollToPosition(0)
+                }
+
+                else -> {}
+            }
+        }
+
+        messageInputViewModel.scheduleChatMessageViewState.observe(this) { state ->
+            when (state) {
+                is MessageInputViewModel.ScheduleChatMessageSuccessState -> {
+                    val scheduledAt = state.scheduledAt
+                    val scheduledTimeText = dateUtils.getLocalDateTimeStringFromTimestamp(
+                        scheduledAt * DateConstants.SECOND_DIVIDER
+                    )
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.nc_message_scheduled_at, scheduledTimeText),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    refreshScheduledMessages()
+                }
+
+                is MessageInputViewModel.ScheduleChatMessageErrorState -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
+
+                else -> {}
+            }
+        }
+
+        chatViewModel.scheduledMessagesViewState.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.ScheduledMessagesSuccessState -> {
+                    hasScheduledMessages = state.messages.isNotEmpty()
+                    messageInputFragment.updateScheduledMessagesAvailability(hasScheduledMessages)
+                    invalidateOptionsMenu()
+                }
+
+                is ChatViewModel.ScheduledMessagesErrorState -> {
+                    hasScheduledMessages = false
+                    messageInputFragment.updateScheduledMessagesAvailability(false)
+                    invalidateOptionsMenu()
                 }
 
                 else -> {}
@@ -1130,6 +1213,10 @@ class ChatActivity :
                     val item = adapter?.items?.get(index)?.item
                     item?.let {
                         setMessageAsEdited(item as ChatMessage, newString)
+
+                        if (item.jsonMessageId.toLong() == currentConversation?.lastPinnedId) {
+                            chatViewModel.getRoom(roomToken)
+                        }
                     }
                 }
 
@@ -2446,6 +2533,20 @@ class ChatActivity :
         }
     }
 
+    private fun scrollToMessageWithIdWithOffset(messageId: String) {
+        val position = adapter?.items?.indexOfFirst {
+            it.item is ChatMessage && (it.item as ChatMessage).id == messageId
+        }
+        if (position != null && position >= 0) {
+            val layoutManager = binding.messagesListView.layoutManager
+            // FIXME Not a perfect offset, but works to clear the pinned message view, try and find a better solution
+            (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 500)
+        } else {
+            Log.d(TAG, "message $messageId that should be scrolled to was not found (scrollToMessageWithId)")
+            startContextChatWindowForMessage(messageId, conversationThreadId.toString())
+        }
+    }
+
     private fun scrollToAndCenterMessageWithId(messageId: String) {
         adapter?.let {
             val position = it.getMessagePositionByIdInReverse(messageId)
@@ -3034,6 +3135,8 @@ class ChatActivity :
             }
         }
 
+        var shouldRefreshRoom = false
+
         for (chatMessage in chatMessageList) {
             chatMessage.activeUser = conversationUser
 
@@ -3049,6 +3152,20 @@ class ChatActivity :
                 Log.d(TAG, "chatMessage to add:" + chatMessage.message)
                 it.addToStart(chatMessage, scrollToBottom)
             }
+
+            val systemMessageType = chatMessage.systemMessageType
+            if (systemMessageType != null &&
+                (
+                    systemMessageType == ChatMessage.SystemMessageType.MESSAGE_PINNED ||
+                        systemMessageType == ChatMessage.SystemMessageType.MESSAGE_UNPINNED
+                    )
+            ) {
+                shouldRefreshRoom = true
+            }
+        }
+
+        if (shouldRefreshRoom) {
+            chatViewModel.refreshRoom()
         }
 
         // workaround to jump back to unread messages marker
@@ -3232,6 +3349,8 @@ class ChatActivity :
         menuInflater.inflate(R.menu.menu_conversation, menu)
         chatMenu = menu
 
+        scheduledMessagesMenuItem = menu.findItem(R.id.conversation_scheduled_messages)
+
         if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT) {
             eventConversationMenuItem = menu.findItem(R.id.conversation_event)
         } else {
@@ -3254,6 +3373,10 @@ class ChatActivity :
             if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.READ_ONLY_ROOMS)) {
                 checkShowCallButtons()
             }
+
+            scheduledMessagesMenuItem?.isVisible = networkMonitor.isOnline.value &&
+                hasScheduledMessages &&
+                !ConversationUtils.isNoteToSelfConversation(currentConversation)
 
             val searchItem = menu.findItem(R.id.conversation_search)
             searchItem.isVisible =
@@ -3347,6 +3470,11 @@ class ChatActivity :
                 true
             }
 
+            R.id.conversation_scheduled_messages -> {
+                openScheduledMessages()
+                true
+            }
+
             R.id.conversation_event -> {
                 val anchorView = findViewById<View>(R.id.conversation_event)
                 showConversationEventMenu(anchorView)
@@ -3365,6 +3493,65 @@ class ChatActivity :
 
             else -> super.onOptionsItemSelected(item)
         }
+
+    private fun openScheduledMessages() {
+        val intent = Intent(this, ScheduledMessagesActivity::class.java).apply {
+            putExtra(ScheduledMessagesActivity.ROOM_TOKEN, roomToken)
+            putExtra(ScheduledMessagesActivity.CONVERSATION_NAME, currentConversation?.displayName.orEmpty())
+        }
+        startActivity(intent)
+    }
+
+    fun showScheduleMessageDialog(
+        message: String,
+        sendWithoutNotification: Boolean,
+        replyToMessageId: Int,
+        threadTitle: String?
+    ) {
+        val shouldDismiss = mutableStateOf(false)
+        binding.genericComposeView.setContent {
+            ScheduleMessageCompose(
+                initialMessage = message,
+                viewThemeUtils = viewThemeUtils,
+                onDismiss = { shouldDismiss.value = true },
+                onSchedule = { scheduledAt, sendWithoutNotification ->
+                    val sendAt = scheduledAt.toInt()
+                    messageInputViewModel.scheduleChatMessage(
+                        credentials = conversationUser!!.getCredentials(),
+                        url = ApiUtils.getUrlForScheduledMessages(
+                            conversationUser!!.baseUrl!!,
+                            roomToken
+                        ),
+                        message = message,
+                        displayName = conversationUser!!.displayName ?: "",
+                        replyTo = replyToMessageId,
+                        sendWithoutNotification = sendWithoutNotification,
+                        threadTitle = threadTitle,
+                        threadId = conversationThreadId,
+                        sendAt = sendAt
+                    )
+                },
+                defaultSendWithoutNotification = sendWithoutNotification
+            ).GetScheduleDialog(shouldDismiss, this@ChatActivity)
+        }
+    }
+
+    fun showScheduledMessagesFromInput() {
+        openScheduledMessages()
+    }
+
+    private fun refreshScheduledMessages() {
+        if (!this::spreedCapabilities.isInitialized) {
+            return
+        }
+        chatViewModel.loadScheduledMessages(
+            conversationUser.getCredentials(),
+            ApiUtils.getUrlForScheduledMessages(
+                conversationUser.baseUrl!!,
+                roomToken
+            )
+        )
+    }
 
     @Suppress("Detekt.LongMethod")
     private fun showThreadNotificationMenu() {
@@ -3625,6 +3812,10 @@ class ChatActivity :
             SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR,
             ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
         )
+        intent.putExtra(
+            SharedItemsActivity.KEY_IS_ONE_2_ONE,
+            currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+        )
         startActivity(intent)
     }
 
@@ -3636,18 +3827,20 @@ class ChatActivity :
     }
 
     private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
-        val chatMessageMap = chatMessageList.associateBy { it.id }.toMutableMap()
-
-        val chatMessageIterator = chatMessageMap.iterator()
-        while (chatMessageIterator.hasNext()) {
-            val currentMessage = chatMessageIterator.next()
-
-            if (isInfoMessageAboutDeletion(currentMessage) ||
+        fun shouldRemoveMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+            isInfoMessageAboutDeletion(currentMessage) ||
                 isReactionsMessage(currentMessage) ||
                 isPollVotedMessage(currentMessage) ||
                 isEditMessage(currentMessage) ||
                 isThreadCreatedMessage(currentMessage)
-            ) {
+
+        val chatMessageMap = chatMessageList.associateBy { it.id }.toMutableMap()
+        val chatMessageIterator = chatMessageMap.iterator()
+
+        while (chatMessageIterator.hasNext()) {
+            val currentMessage = chatMessageIterator.next()
+
+            if (shouldRemoveMessage(currentMessage)) {
                 chatMessageIterator.remove()
             }
         }
@@ -3914,6 +4107,32 @@ class ChatActivity :
                 DateTimeCompose(bundle).GetDateTimeDialog(shouldDismiss, this@ChatActivity)
             }
         }
+    }
+
+    fun hidePinnedMessage(message: ChatMessage) {
+        val url = ApiUtils.getUrlForChatMessageHiding(chatApiVersion, conversationUser?.baseUrl, roomToken, message.id)
+        chatViewModel.hidePinnedMessage(credentials!!, url)
+    }
+
+    fun pinMessage(message: ChatMessage) {
+        val url = ApiUtils.getUrlForChatMessagePinning(chatApiVersion, conversationUser?.baseUrl, roomToken, message.id)
+        binding.genericComposeView.apply {
+            val shouldDismiss = mutableStateOf(false)
+            setContent {
+                GetPinnedOptionsDialog(shouldDismiss, context, viewThemeUtils) { zonedDateTime ->
+                    zonedDateTime?.let {
+                        chatViewModel.pinMessage(credentials!!, url, pinUntil = zonedDateTime.toEpochSecond().toInt())
+                    } ?: chatViewModel.pinMessage(credentials!!, url)
+
+                    shouldDismiss.value = true
+                }
+            }
+        }
+    }
+
+    fun unPinMessage(message: ChatMessage) {
+        val url = ApiUtils.getUrlForChatMessagePinning(chatApiVersion, conversationUser?.baseUrl, roomToken, message.id)
+        chatViewModel.unPinMessage(credentials!!, url)
     }
 
     fun markAsUnread(message: IMessage?) {
@@ -4198,7 +4417,7 @@ class ChatActivity :
         messageTemp.message = newString
 
         val index = adapter?.getMessagePositionById(messageTemp.id)!!
-        if (index > 0) {
+        if (index >= 0) {
             val adapterMsg = adapter?.items?.get(index)?.item as ChatMessage
             messageTemp.parentMessageId = adapterMsg.parentMessageId
         }

@@ -115,8 +115,8 @@
             android:id="@+id/emojiFire"
             android:layout_width="@dimen/reaction_bottom_sheet_layout_size"
             android:layout_height="@dimen/reaction_bottom_sheet_layout_size"
-            android:layout_marginLeft="@dimen/standard_quarter_margin"
-            android:layout_marginRight="@dimen/standard_half_margin"
+            android:layout_marginStart="@dimen/standard_quarter_margin"
+            android:layout_marginEnd="@dimen/standard_half_margin"
             android:cursorVisible="false"
             android:gravity="center"
             android:text="@string/emoji_fire"
@@ -442,6 +442,39 @@
                     android:paddingStart="@dimen/standard_dialog_padding"
                     android:paddingEnd="@dimen/standard_padding"
                     android:text="@string/nc_remind"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/high_emphasis_text"
+                    android:textSize="@dimen/bottom_sheet_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/menu_pin_message"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/menu_pin_message_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:paddingStart="@dimen/standard_padding"
+                    android:paddingEnd="@dimen/zero"
+                    android:src="@drawable/keep_24px"
+                    app:tint="@color/high_emphasis_menu_icon" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/menu_pin_message_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:paddingStart="@dimen/standard_dialog_padding"
+                    android:paddingEnd="@dimen/standard_padding"
+                    android:text="@string/pin_message"
                     android:textAlignment="viewStart"
                     android:textColor="@color/high_emphasis_text"
                     android:textSize="@dimen/bottom_sheet_text_size" />

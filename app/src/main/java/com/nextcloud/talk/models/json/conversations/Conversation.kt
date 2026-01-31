@@ -171,5 +171,11 @@ data class Conversation(
     var hasSensitive: Boolean = false,
 
     @JsonField(name = ["isImportant"])
-    var hasImportant: Boolean = false
+    var hasImportant: Boolean = false,
+
+    @JsonField(name = ["lastPinnedId"])
+    var lastPinnedId: Long? = null,
+
+    @JsonField(name = ["hiddenPinnedId"])
+    var hiddenPinnedId: Long? = null
 ) : Parcelable

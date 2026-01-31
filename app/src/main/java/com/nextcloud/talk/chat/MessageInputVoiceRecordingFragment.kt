@@ -16,6 +16,7 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
@@ -23,6 +24,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
+import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.databinding.FragmentMessageInputVoiceRecordingBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import kotlinx.coroutines.flow.collect
@@ -43,6 +45,8 @@ class MessageInputVoiceRecordingFragment : Fragment() {
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
+    private val messageInputViewModel: MessageInputViewModel by activityViewModels()
+
     lateinit var binding: FragmentMessageInputVoiceRecordingBinding
     private lateinit var chatActivity: ChatActivity
     private var pause = false
@@ -58,48 +62,48 @@ class MessageInputVoiceRecordingFragment : Fragment() {
         themeVoiceRecordingView()
         initVoiceRecordingView()
         initObservers()
-        this.lifecycle.addObserver(chatActivity.messageInputViewModel)
+        this.lifecycle.addObserver(messageInputViewModel)
         return binding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        chatActivity.messageInputViewModel.stopMediaPlayer() // if it wasn't stopped already
-        this.lifecycle.removeObserver(chatActivity.messageInputViewModel)
+        messageInputViewModel.stopMediaPlayer() // if it wasn't stopped already
+        this.lifecycle.removeObserver(messageInputViewModel)
     }
 
     private fun initObservers() {
-        chatActivity.messageInputViewModel.startMicInput(requireContext())
-        chatActivity.messageInputViewModel.micInputAudioObserver.observe(viewLifecycleOwner) {
+        messageInputViewModel.startMicInput(requireContext())
+        messageInputViewModel.micInputAudioObserver.observe(viewLifecycleOwner) {
             binding.micInputCloud.setRotationSpeed(it.first, it.second)
         }
 
         lifecycleScope.launch {
-            chatActivity.messageInputViewModel.mediaPlayerSeekbarObserver.onEach { progress ->
+            messageInputViewModel.mediaPlayerSeekbarObserver.onEach { progress ->
                 if (progress >= SEEK_LIMIT) {
                     togglePausePlay()
                     binding.seekbar.progress = 0
-                } else if (!pause && chatActivity.messageInputViewModel.isVoicePreviewPlaying.value == true) {
+                } else if (!pause && messageInputViewModel.isVoicePreviewPlaying.value == true) {
                     binding.seekbar.progress = progress
                 }
             }.collect()
         }
 
-        chatActivity.messageInputViewModel.getAudioFocusChange.observe(viewLifecycleOwner) { state ->
+        messageInputViewModel.getAudioFocusChange.observe(viewLifecycleOwner) { state ->
             when (state) {
                 AudioFocusRequestManager.ManagerState.AUDIO_FOCUS_CHANGE_LOSS -> {
-                    if (chatActivity.messageInputViewModel.isVoicePreviewPlaying.value == true) {
-                        chatActivity.messageInputViewModel.stopMediaPlayer()
+                    if (messageInputViewModel.isVoicePreviewPlaying.value == true) {
+                        messageInputViewModel.stopMediaPlayer()
                     }
                 }
                 AudioFocusRequestManager.ManagerState.AUDIO_FOCUS_CHANGE_LOSS_TRANSIENT -> {
-                    if (chatActivity.messageInputViewModel.isVoicePreviewPlaying.value == true) {
-                        chatActivity.messageInputViewModel.pauseMediaPlayer()
+                    if (messageInputViewModel.isVoicePreviewPlaying.value == true) {
+                        messageInputViewModel.pauseMediaPlayer()
                     }
                 }
                 AudioFocusRequestManager.ManagerState.BROADCAST_RECEIVED -> {
-                    if (chatActivity.messageInputViewModel.isVoicePreviewPlaying.value == true) {
-                        chatActivity.messageInputViewModel.pauseMediaPlayer()
+                    if (messageInputViewModel.isVoicePreviewPlaying.value == true) {
+                        messageInputViewModel.pauseMediaPlayer()
                     }
                 }
             }
@@ -129,13 +133,13 @@ class MessageInputVoiceRecordingFragment : Fragment() {
             togglePausePlay()
         }
 
-        binding.audioRecordDuration.base = chatActivity.messageInputViewModel.getRecordingTime.value ?: 0L
+        binding.audioRecordDuration.base = messageInputViewModel.getRecordingTime.value ?: 0L
         binding.audioRecordDuration.start()
 
         binding.seekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekbar: SeekBar, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
-                    chatActivity.messageInputViewModel.seekMediaPlayerTo(progress)
+                    messageInputViewModel.seekMediaPlayerTo(progress)
                 }
             }
 
@@ -151,9 +155,9 @@ class MessageInputVoiceRecordingFragment : Fragment() {
 
     private fun clear() {
         chatActivity.chatViewModel.setVoiceRecordingLocked(false)
-        chatActivity.messageInputViewModel.stopMicInput()
+        messageInputViewModel.stopMicInput()
         chatActivity.chatViewModel.stopAudioRecording()
-        chatActivity.messageInputViewModel.stopMediaPlayer()
+        messageInputViewModel.stopMediaPlayer()
         binding.audioRecordDuration.stop()
         binding.audioRecordDuration.clearAnimation()
     }
@@ -161,13 +165,13 @@ class MessageInputVoiceRecordingFragment : Fragment() {
     private fun togglePreviewVisibility() {
         val visibility = binding.voicePreviewContainer.visibility
         binding.voicePreviewContainer.visibility = if (visibility == View.VISIBLE) {
-            chatActivity.messageInputViewModel.stopMediaPlayer()
+            messageInputViewModel.stopMediaPlayer()
             binding.playPauseBtn.icon = ContextCompat.getDrawable(
                 requireContext(),
                 R.drawable.ic_baseline_play_arrow_voice_message_24
             )
             pause = true
-            chatActivity.messageInputViewModel.startMicInput(requireContext())
+            messageInputViewModel.startMicInput(requireContext())
             chatActivity.chatViewModel.startAudioRecording(requireContext(), chatActivity.currentConversation!!)
             binding.audioRecordDuration.visibility = View.VISIBLE
             binding.audioRecordDuration.base = SystemClock.elapsedRealtime()
@@ -176,7 +180,7 @@ class MessageInputVoiceRecordingFragment : Fragment() {
         } else {
             pause = false
             binding.seekbar.progress = 0
-            chatActivity.messageInputViewModel.stopMicInput()
+            messageInputViewModel.stopMicInput()
             chatActivity.chatViewModel.stopAudioRecording()
             binding.audioRecordDuration.visibility = View.GONE
             binding.audioRecordDuration.stop()
@@ -186,18 +190,18 @@ class MessageInputVoiceRecordingFragment : Fragment() {
 
     private fun togglePausePlay() {
         val path = chatActivity.chatViewModel.getCurrentVoiceRecordFile()
-        if (chatActivity.messageInputViewModel.isVoicePreviewPlaying.value == true) {
+        if (messageInputViewModel.isVoicePreviewPlaying.value == true) {
             binding.playPauseBtn.icon = ContextCompat.getDrawable(
                 requireContext(),
                 R.drawable.ic_baseline_play_arrow_voice_message_24
             )
-            chatActivity.messageInputViewModel.stopMediaPlayer()
+            messageInputViewModel.stopMediaPlayer()
         } else {
             binding.playPauseBtn.icon = ContextCompat.getDrawable(
                 requireContext(),
                 R.drawable.ic_baseline_pause_voice_message_24
             )
-            chatActivity.messageInputViewModel.startMediaPlayer(path)
+            messageInputViewModel.startMediaPlayer(path)
         }
     }
 

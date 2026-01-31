@@ -13,6 +13,8 @@ import io.reactivex.Observable
 interface PollRepository {
 
     fun createPoll(
+        credentials: String?,
+        url: String,
         roomToken: String,
         question: String,
         options: List<String>,
@@ -20,9 +22,9 @@ interface PollRepository {
         maxVotes: Int
     ): Observable<Poll>
 
-    fun getPoll(roomToken: String, pollId: String): Observable<Poll>
+    fun getPoll(credentials: String?, url: String, roomToken: String, pollId: String): Observable<Poll>
 
-    fun vote(roomToken: String, pollId: String, options: List<Int>): Observable<Poll>
+    fun vote(credentials: String?, url: String, roomToken: String, pollId: String, options: List<Int>): Observable<Poll>
 
-    fun closePoll(roomToken: String, pollId: String): Observable<Poll>
+    fun closePoll(credentials: String?, url: String, roomToken: String, pollId: String): Observable<Poll>
 }

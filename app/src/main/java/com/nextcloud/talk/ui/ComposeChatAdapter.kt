@@ -71,6 +71,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -167,7 +168,7 @@ class ComposeChatAdapter(
         }
     }
 
-    inner class ComposeChatAdapterPreviewViewModel(
+    class ComposeChatAdapterPreviewViewModel(
         override val viewThemeUtils: ViewThemeUtils,
         override val messageUtils: MessageUtils,
         override val contactsViewModel: ContactsViewModel,
@@ -223,6 +224,7 @@ class ComposeChatAdapter(
     } else {
         Color.Black.toArgb()
     }
+    val highEmphasisColor = Color(highEmphasisColorInt)
 
     fun addMessages(messages: MutableList<ChatMessage>, append: Boolean) {
         if (messages.isEmpty()) return
@@ -237,6 +239,50 @@ class ComposeChatAdapter(
         }
 
         if (append) items.addAll(processedMessages) else items.addAll(0, processedMessages)
+    }
+
+    @Composable
+    fun GetComposableForMessage(message: ChatMessage, isBlinkingState: MutableState<Boolean> = mutableStateOf(false)) {
+        message.activeUser = currentUser
+        when (val type = message.getCalculateMessageType()) {
+            ChatMessage.MessageType.SYSTEM_MESSAGE -> {
+                if (!message.shouldFilter()) {
+                    SystemMessage(message)
+                }
+            }
+
+            ChatMessage.MessageType.VOICE_MESSAGE -> {
+                VoiceMessage(message, isBlinkingState)
+            }
+
+            ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE -> {
+                ImageMessage(message, isBlinkingState)
+            }
+
+            ChatMessage.MessageType.SINGLE_NC_GEOLOCATION_MESSAGE -> {
+                GeolocationMessage(message, isBlinkingState)
+            }
+
+            ChatMessage.MessageType.POLL_MESSAGE -> {
+                PollMessage(message, isBlinkingState)
+            }
+
+            ChatMessage.MessageType.DECK_CARD -> {
+                DeckMessage(message, isBlinkingState)
+            }
+
+            ChatMessage.MessageType.REGULAR_TEXT_MESSAGE -> {
+                if (message.isLinkPreview()) {
+                    LinkMessage(message, isBlinkingState)
+                } else {
+                    TextMessage(message, isBlinkingState)
+                }
+            }
+
+            else -> {
+                Log.d(TAG, "Unknown message type: $type")
+            }
+        }
     }
 
     @OptIn(ExperimentalFoundationApi::class)
@@ -262,9 +308,9 @@ class ComposeChatAdapter(
                 } else {
                     val timestamp = items[listState.firstVisibleItemIndex].timestamp
                     val dateString = formatTime(timestamp * LONG_1000)
-                    val color = Color(highEmphasisColorInt)
+                    val color = highEmphasisColor
                     val backgroundColor =
-                        LocalContext.current.resources.getColor(R.color.bg_message_list_incoming_bubble, null)
+                        LocalResources.current.getColor(R.color.bg_message_list_incoming_bubble, null)
                     Row(
                         horizontalArrangement = Arrangement.Absolute.Center,
                         verticalAlignment = Alignment.CenterVertically
@@ -290,46 +336,8 @@ class ComposeChatAdapter(
             }
 
             items(items) { message ->
-                message.activeUser = currentUser
-                when (val type = message.getCalculateMessageType()) {
-                    ChatMessage.MessageType.SYSTEM_MESSAGE -> {
-                        if (!message.shouldFilter()) {
-                            SystemMessage(message)
-                        }
-                    }
-
-                    ChatMessage.MessageType.VOICE_MESSAGE -> {
-                        VoiceMessage(message, isBlinkingState)
-                    }
-
-                    ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE -> {
-                        ImageMessage(message, isBlinkingState)
-                    }
-
-                    ChatMessage.MessageType.SINGLE_NC_GEOLOCATION_MESSAGE -> {
-                        GeolocationMessage(message, isBlinkingState)
-                    }
-
-                    ChatMessage.MessageType.POLL_MESSAGE -> {
-                        PollMessage(message, isBlinkingState)
-                    }
-
-                    ChatMessage.MessageType.DECK_CARD -> {
-                        DeckMessage(message, isBlinkingState)
-                    }
-
-                    ChatMessage.MessageType.REGULAR_TEXT_MESSAGE -> {
-                        if (message.isLinkPreview()) {
-                            LinkMessage(message, isBlinkingState)
-                        } else {
-                            TextMessage(message, isBlinkingState)
-                        }
-                    }
-
-                    else -> {
-                        Log.d(TAG, "Unknown message type: $type")
-                    }
-                }
+                message.incoming = message.actorId != currentUser.userId
+                GetComposableForMessage(message, isBlinkingState)
             }
         }
 
@@ -441,7 +449,7 @@ class ComposeChatAdapter(
                 !containsLinebreak
         }
 
-        val incoming = message.actorId != currentUser.userId
+        val incoming = message.incoming
         val color = if (incoming) {
             if (message.isDeleted) {
                 getColorFromTheme(LocalContext.current, R.color.bg_message_list_incoming_bubble_deleted)
@@ -514,7 +522,11 @@ class ComposeChatAdapter(
                     }
 
                     if (incoming) {
-                        Text(message.actorDisplayName.toString(), fontSize = AUTHOR_TEXT_SIZE)
+                        Text(
+                            message.actorDisplayName.toString(),
+                            fontSize = AUTHOR_TEXT_SIZE,
+                            color = highEmphasisColor
+                        )
                     }
 
                     ThreadTitle(message)
@@ -567,7 +579,8 @@ class ComposeChatAdapter(
         Text(
             timeString,
             fontSize = TIME_TEXT_SIZE,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = highEmphasisColor
         )
     }
 
@@ -580,7 +593,8 @@ class ComposeChatAdapter(
                 "",
                 modifier = Modifier
                     .padding(start = 4.dp)
-                    .size(16.dp)
+                    .size(16.dp),
+                tint = highEmphasisColor
             )
         }
     }
@@ -779,7 +793,7 @@ class ComposeChatAdapter(
             Text(
                 text,
                 fontSize = AUTHOR_TEXT_SIZE,
-                color = Color(highEmphasisColorInt)
+                color = highEmphasisColor
             )
         }
     }

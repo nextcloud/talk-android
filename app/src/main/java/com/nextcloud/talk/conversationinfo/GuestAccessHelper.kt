@@ -24,6 +24,7 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -64,7 +65,11 @@ class GuestAccessHelper(
         binding.guestAccessView.guestAccessSettingsAllowGuest.setOnClickListener {
             val isChecked = binding.guestAccessView.allowGuestsSwitch.isChecked
             binding.guestAccessView.allowGuestsSwitch.isChecked = !isChecked
-            viewModel.allowGuests(conversation.token, !isChecked)
+            viewModel.allowGuests(
+                conversationUser,
+                conversation.token,
+                !isChecked
+            )
             viewModel.allowGuestsViewState.observe(lifecycleOwner) { uiState ->
                 when (uiState) {
                     is ConversationInfoViewModel.AllowGuestsUIState.Success -> {
@@ -91,7 +96,20 @@ class GuestAccessHelper(
             val isChecked = binding.guestAccessView.passwordProtectionSwitch.isChecked
             binding.guestAccessView.passwordProtectionSwitch.isChecked = !isChecked
             if (isChecked) {
-                viewModel.setPassword("", conversation.token)
+                val apiVersion = ApiUtils.getConversationApiVersion(
+                    conversationUser,
+                    intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
+                )
+                val url = ApiUtils.getUrlForRoomPassword(
+                    apiVersion,
+                    conversationUser.baseUrl!!,
+                    conversation.token
+                )
+                viewModel.setPassword(
+                    user = conversationUser,
+                    url = url,
+                    password = ""
+                )
                 passwordObserver()
             } else {
                 showPasswordDialog()
@@ -99,7 +117,17 @@ class GuestAccessHelper(
         }
 
         binding.guestAccessView.resendInvitationsButton.setOnClickListener {
-            conversationsRepository.resendInvitations(conversation.token!!).subscribeOn(Schedulers.io())
+            val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4))
+            val url = ApiUtils.getUrlForParticipantsResendInvitations(
+                apiVersion,
+                conversationUser.baseUrl!!,
+                conversation.token
+            )
+
+            conversationsRepository.resendInvitations(
+                user = conversationUser,
+                url = url
+            ).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(ResendInvitationsObserver())
         }
     }
@@ -131,8 +159,21 @@ class GuestAccessHelper(
             setView(dialogPassword.root)
             setTitle(R.string.nc_guest_access_password_dialog_title)
             setPositiveButton(R.string.nc_ok) { _, _ ->
+                val apiVersion = ApiUtils.getConversationApiVersion(
+                    conversationUser,
+                    intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
+                )
+                val url = ApiUtils.getUrlForRoomPassword(
+                    apiVersion,
+                    conversationUser.baseUrl!!,
+                    conversation.token
+                )
                 val password = dialogPassword.password.text.toString()
-                viewModel.setPassword(password, conversation.token)
+                viewModel.setPassword(
+                    user = conversationUser,
+                    url = url,
+                    password = password
+                )
             }
             setNegativeButton(R.string.nc_cancel) { _, _ ->
                 binding.guestAccessView.passwordProtectionSwitch.isChecked = false

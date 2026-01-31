@@ -13,11 +13,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class OpenConversationsViewModel @Inject constructor(private val repository: OpenConversationsRepository) :
-    ViewModel() {
+class OpenConversationsViewModel @Inject constructor(
+    private val repository: OpenConversationsRepository,
+    private val currentUserProvider: CurrentUserProvider
+) : ViewModel() {
 
     sealed interface ViewState
 
@@ -38,17 +42,34 @@ class OpenConversationsViewModel @Inject constructor(private val repository: Ope
         _viewState.value = FetchConversationsStartState
 
         viewModelScope.launch {
-            repository.fetchConversations(_searchTerm.value ?: "")
-                .onSuccess { conversations ->
-                    if (conversations.isEmpty()) {
-                        _viewState.value = FetchConversationsEmptyState
-                    } else {
-                        _viewState.value = FetchConversationsSuccessState(conversations)
-                    }
-                }
-                .onFailure { exception ->
-                    Log.e(TAG, "Failed to fetch conversations", exception)
-                    _viewState.value = FetchConversationsErrorState
+            currentUserProvider.getCurrentUser()
+                .onSuccess {
+                    val apiVersion = ApiUtils.getConversationApiVersion(
+                        it,
+                        intArrayOf(
+                            ApiUtils.API_V4,
+                            ApiUtils.API_V3,
+                            1
+                        )
+                    )
+                    val url = ApiUtils.getUrlForOpenConversations(apiVersion, it.baseUrl!!)
+
+                    repository.fetchConversations(
+                        it,
+                        url,
+                        _searchTerm.value ?: ""
+                    )
+                        .onSuccess { conversations ->
+                            if (conversations.isEmpty()) {
+                                _viewState.value = FetchConversationsEmptyState
+                            } else {
+                                _viewState.value = FetchConversationsSuccessState(conversations)
+                            }
+                        }
+                        .onFailure { exception ->
+                            Log.e(TAG, "Failed to fetch conversations", exception)
+                            _viewState.value = FetchConversationsErrorState
+                        }
                 }
         }
     }

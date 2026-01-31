@@ -8,23 +8,18 @@
 package com.nextcloud.talk.polls.repositories
 
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.model.PollDetails
 import com.nextcloud.talk.polls.repositories.model.PollDetailsResponse
 import com.nextcloud.talk.polls.repositories.model.PollResponse
-import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observable
 import kotlin.collections.forEach as kForEach
 
-class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvider: CurrentUserProviderNew) :
-    PollRepository {
-
-    val currentUser: User = currentUserProvider.currentUser.blockingGet()
-    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
+class PollRepositoryImpl(private val ncApi: NcApi) : PollRepository {
 
     override fun createPoll(
+        credentials: String?,
+        url: String,
         roomToken: String,
         question: String,
         options: List<String>,
@@ -33,45 +28,36 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
     ): Observable<Poll> =
         ncApi.createPoll(
             credentials,
-            ApiUtils.getUrlForPoll(
-                currentUser.baseUrl!!,
-                roomToken
-            ),
+            url,
             question,
             options,
             resultMode,
             maxVotes
         ).map { mapToPoll(it.ocs?.data!!) }
 
-    override fun getPoll(roomToken: String, pollId: String): Observable<Poll> =
+    override fun getPoll(credentials: String?, url: String, roomToken: String, pollId: String): Observable<Poll> =
         ncApi.getPoll(
             credentials,
-            ApiUtils.getUrlForPoll(
-                currentUser.baseUrl!!,
-                roomToken,
-                pollId
-            )
+            url
         ).map { mapToPoll(it.ocs?.data!!) }
 
-    override fun vote(roomToken: String, pollId: String, options: List<Int>): Observable<Poll> =
+    override fun vote(
+        credentials: String?,
+        url: String,
+        roomToken: String,
+        pollId: String,
+        options: List<Int>
+    ): Observable<Poll> =
         ncApi.votePoll(
             credentials,
-            ApiUtils.getUrlForPoll(
-                currentUser.baseUrl!!,
-                roomToken,
-                pollId
-            ),
+            url,
             options
         ).map { mapToPoll(it.ocs?.data!!) }
 
-    override fun closePoll(roomToken: String, pollId: String): Observable<Poll> =
+    override fun closePoll(credentials: String?, url: String, roomToken: String, pollId: String): Observable<Poll> =
         ncApi.closePoll(
             credentials,
-            ApiUtils.getUrlForPoll(
-                currentUser.baseUrl!!,
-                roomToken,
-                pollId
-            )
+            url
         ).map { mapToPoll(it.ocs?.data!!) }
 
     companion object {

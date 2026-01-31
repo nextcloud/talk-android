@@ -49,8 +49,8 @@
     <string name="danger_zone">Zona pericolosa</string>
     <string name="deck_card_description">%1$s in %2$s</string>
     <string name="delete_avatar">Elimina avatar</string>
-    <string name="delete_voice_recording">Cancella registrazione vocale</string>
-    <string name="deleted_conversation">Cancellata conversazione %1$s</string>
+    <string name="delete_voice_recording">Elimina registrazione vocale</string>
+    <string name="deleted_conversation">Eliminata conversazione %1$s</string>
     <string name="dnd">Non disturbare</string>
     <string name="dontClear">Non cancellare</string>
     <string name="edit">Modifica</string>
@@ -131,6 +131,7 @@
     <string name="nc_call_incoming">IN ARRIVO</string>
     <string name="nc_call_name">Nome della conversazione</string>
     <string name="nc_call_notifications">Notifiche di chiamata</string>
+    <string name="nc_call_ongoing_notification_content">Tocca per tornare alla chiamata.</string>
     <string name="nc_call_ongoing_notification_default_title">Chiamata in corso</string>
     <string name="nc_call_raised_hand">%1$s ha alazato la mano</string>
     <string name="nc_call_reconnecting">Riconnessione in corso …</string>
@@ -151,8 +152,8 @@
     <string name="nc_certificate_error">La tua configurazione SSL ha impedito la connessione</string>
     <string name="nc_change_cert_auth">Cambia certificato di autenticazione</string>
     <string name="nc_change_password">Cambia password</string>
-    <string name="nc_clear_edit_button">Cancella modifica</string>
-    <string name="nc_clear_edit_message">Cancella modifica</string>
+    <string name="nc_clear_edit_button">Annulla modifica</string>
+    <string name="nc_clear_edit_message">Annulla modifica</string>
     <string name="nc_clear_history">Elimina tutti i messaggi</string>
     <string name="nc_clear_history_success">Tutti i messaggi sono stati eliminati</string>
     <string name="nc_clear_history_warning">Vuoi davvero eliminare tutti i messaggi in questa conversazione?</string>
@@ -192,7 +193,7 @@
     <string name="nc_delete_conversation_more">Se elimini la conversazione, sarà eliminata anche per tutti i partecipanti.</string>
     <string name="nc_delete_message">Elimina messaggio</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Messaggio eliminato correttamente, ma potrebbe essere stato distribuito ad altri servizi </string>
-    <string name="nc_delete_now">Cancella ora</string>
+    <string name="nc_delete_now">Elimina ora</string>
     <string name="nc_deleted_user">L\'utente %1$s è stato rimosso</string>
     <string name="nc_demote">Declassa da moderatore</string>
     <string name="nc_description_record_voice">Registra messaggio vocale</string>
@@ -283,7 +284,7 @@
     <string name="nc_guest">Ospite</string>
     <string name="nc_guest_access">Accesso ospiti</string>
     <string name="nc_guest_access_allow_failed">Impossibile abilitare/disabilitare l\'accesso ospite.</string>
-    <string name="nc_guest_access_allow_summary">Consenti agli ospiti di condividere un link pubblico per partecipare a questa conversazione.</string>
+    <string name="nc_guest_access_allow_summary">Consenti agli ospiti di condividere un collegamento pubblico per partecipare a questa conversazione.</string>
     <string name="nc_guest_access_allow_title">Consenti ospiti</string>
     <string name="nc_guest_access_password_dialog_hint">Digita una password</string>
     <string name="nc_guest_access_password_dialog_title">Password per accesso ospiti</string>
@@ -565,6 +566,9 @@
     <string name="open_in_files_app">Apri nell\'applicazione File</string>
     <string name="open_notes">Apri note</string>
     <string name="open_thread">Vai all\'argomento</string>
+    <string name="pin_24hr">Appunta per 24 ore</string>
+    <string name="pin_30_days">Appunta per 30 giorni</string>
+    <string name="pin_7_days">Appunta per 7 giorni</string>
     <string name="play_pause_voice_message">Riproduci/ferma messaggio vocale</string>
     <string name="playback_speed_control">Velocità di riproduzione</string>
     <string name="polls_add_option">Aggiungi opzione</string>
@@ -573,7 +577,7 @@
     <string name="polls_end_poll_confirm">Vuoi davvero terminare questo sondaggio? Non è possibile annullare l\'operazione.</string>
     <string name="polls_max_votes_reached">Non puoi votare con più opzioni per questo sondaggio.</string>
     <string name="polls_multiple_answers">Risposta multipla</string>
-    <string name="polls_option_delete">Cancella opzione %1$d</string>
+    <string name="polls_option_delete">Elimina opzione %1$d</string>
     <string name="polls_option_hint">Opzione %1$d</string>
     <string name="polls_options">Opzioni</string>
     <string name="polls_private_poll">Sondaggio privato</string>
@@ -665,7 +669,7 @@
     <string name="thisWeek">Questa settimana</string>
     <string name="this_is_a_test_message">Questo è un messaggio di test</string>
     <string name="this_weekend">Questo fine settimana</string>
-    <string name="thread_cancel">Cancella creazione argomento</string>
+    <string name="thread_cancel">Annulla creazione argomento</string>
     <string name="thread_notifications">Notifiche dagli argomenti</string>
     <string name="thread_reply">Rispondi</string>
     <string name="thread_title">Titolo dell\'argomento</string>
@@ -686,7 +690,7 @@
     <string name="typing_are_typing">stanno scrivendo …</string>
     <string name="typing_is_typing">sta scrivendo …</string>
     <string name="typing_x_others">e %1$s altri stanno scrivendo …</string>
-    <string name="unarchive_conversation">Disarchivia conversazione</string>
+    <string name="unarchive_conversation">Recupera la conversazione dall\'archivio</string>
     <string name="unarchive_hint">Una volta che una conversazione viene rimossa dall\'archivio, verrà nuovamente visualizzata per impostazione predefinita.</string>
     <string name="unarchived_conversation">Non archiviato %1$s</string>
     <string name="unban">Rimuovi ban</string>
@@ -714,9 +718,9 @@
         <item quantity="other">Vedi %d messaggi simili</item>
     </plurals>
     <plurals name="nc_conversation_auto_delete_info">
-        <item quantity="one">Questa conversazione verrà automaticamente cancellata per tutti dopo %1$d giorno di inattività.</item>
-        <item quantity="many">Questa conversazione verrà automaticamente cancellata per tutti dopo %1$d giorni di inattività.</item>
-        <item quantity="other">Questa conversazione verrà automaticamente cancellata per tutti dopo %1$d giorni di inattività.</item>
+        <item quantity="one">Questa conversazione verrà automaticamente eliminata per tutti dopo %1$d giorno di inattività.</item>
+        <item quantity="many">Questa conversazione verrà automaticamente eliminata per tutti dopo %1$d giorni di inattività.</item>
+        <item quantity="other">Questa conversazione verrà automaticamente eliminata per tutti dopo %1$d giorni di inattività.</item>
     </plurals>
     <plurals name="thread_replies">
         <item quantity="one">%d risposta</item>

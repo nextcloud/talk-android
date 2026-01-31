@@ -9,7 +9,9 @@
  */
 package com.nextcloud.talk.application
 
+import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.P
 import android.util.Log
@@ -33,6 +35,8 @@ import coil.decode.SvgDecoder
 import coil.memory.MemoryCache
 import coil.util.DebugLogger
 import com.nextcloud.talk.BuildConfig
+import com.nextcloud.talk.account.AccountVerificationActivity
+import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.dagger.modules.BusModule
 import com.nextcloud.talk.dagger.modules.ContextModule
 import com.nextcloud.talk.dagger.modules.DaosModule
@@ -121,11 +125,30 @@ class NextcloudTalkApplication :
         sharedApplication = this
 
         val securityKeyManager = SecurityKeyManager.getInstance()
-        val securityKeyConfig = SecurityKeyManagerConfig.Builder()
+        val securityKeyConfigBuilder = SecurityKeyManagerConfig.Builder()
             .setEnableDebugLogging(BuildConfig.DEBUG)
-            .build()
-        securityKeyManager.init(this, securityKeyConfig)
 
+        try {
+            val packageManager = packageManager
+            val activities = packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES).activities
+            activities?.forEach { activityInfo ->
+                try {
+                    val activityClass = Class.forName(activityInfo.name)
+                    if (activityClass != AccountVerificationActivity::class.java &&
+                        activityClass != BrowserLoginActivity::class.java
+                    ) {
+                        @Suppress("UNCHECKED_CAST")
+                        securityKeyConfigBuilder.addExcludedActivityClass(activityClass as Class<out Activity>)
+                    }
+                } catch (exception: ClassNotFoundException) {
+                    Log.e(TAG, "Couldn't disable activity for security key listener", exception)
+                }
+            }
+        } catch (exception: PackageManager.NameNotFoundException) {
+            Log.e(TAG, "Couldn't disable activities for security key listener", exception)
+        }
+
+        securityKeyManager.init(this, securityKeyConfigBuilder.build())
         initializeWebRtc()
         buildComponent()
         DavUtils.registerCustomFactories()

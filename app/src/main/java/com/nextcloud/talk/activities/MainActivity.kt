@@ -166,7 +166,7 @@ class MainActivity :
                     val user = userId.substringBeforeLast("@")
                     val baseUrl = userId.substringAfterLast("@")
 
-                    if (currentUserProvider.currentUser.blockingGet()?.baseUrl!!.endsWith(baseUrl) == true) {
+                    if (currentUserProviderOld.currentUser.blockingGet()?.baseUrl!!.endsWith(baseUrl) == true) {
                         startConversation(user)
                     } else {
                         Snackbar.make(
@@ -183,7 +183,7 @@ class MainActivity :
     private fun startConversation(userId: String) {
         val roomType = "1"
 
-        val currentUser = currentUserProvider.currentUser.blockingGet()
+        val currentUser = currentUserProviderOld.currentUser.blockingGet()
 
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, 1))
         val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)

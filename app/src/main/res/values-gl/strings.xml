@@ -567,6 +567,8 @@
     <string name="open_in_files_app">Abrir na aplicación de Ficheiros</string>
     <string name="open_notes">Abrir Notas</string>
     <string name="open_thread">Ir ao fío</string>
+    <string name="pin_message">Fixar a mensaxe</string>
+    <string name="pinned">Fixada</string>
     <string name="play_pause_voice_message">Reproducir/poñer en pausa a mensaxe de voz</string>
     <string name="playback_speed_control">Control da velocidade de reprodución</string>
     <string name="please_continue_the_login_process_in_the_browser">Continúe co acceso no navegador</string>
@@ -685,8 +687,6 @@
     <string name="translation_error_title">Produciuse un fallo na tradución</string>
     <string name="translation_from">Desde:</string>
     <string name="translation_to">Para</string>
-    <string name="turn_off_background_blur">Desactivar o esvaemento do fondo</string>
-    <string name="turn_on_background_blur">Activar o esvaemento do fondo</string>
     <string name="typing_1_other">e 1 máis está a escribir…</string>
     <string name="typing_are_typing">están a escribiren…</string>
     <string name="typing_is_typing">está a escribir…</string>
@@ -695,7 +695,9 @@
     <string name="unarchive_hint">Cando se desarquiva unha conversa, de xeito predeterminado esta volverá ser amosada.</string>
     <string name="unarchived_conversation">%1$s foi desarquivada</string>
     <string name="unban">Retirar a expulsión</string>
+    <string name="unpin_message">Desprender a mensaxe</string>
     <string name="unread">Sen ler</string>
+    <string name="until_unpin">Ata que se desprenda</string>
     <string name="upload_new_avatar_from_device">Enviar un novo avatar desde o dispositivo</string>
     <string name="user_absence">%1$s está fóra da oficina e é posíbel que non responda</string>
     <string name="user_absence_for_one_day">%1$s hoxe está fóra da oficina</string>

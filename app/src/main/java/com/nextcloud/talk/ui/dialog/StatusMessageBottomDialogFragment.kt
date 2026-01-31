@@ -43,7 +43,7 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.isRestoreStatusAvailable
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.installDisableKeyboardInput
 import com.vanniktech.emoji.installForceSingleEmoji
@@ -104,7 +104,7 @@ class StatusMessageBottomDialogFragment :
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
-    var currentUserProvider: CurrentUserProviderNew? = null
+    var currentUserProvider: CurrentUserProviderOld? = null
         @Inject set
 
     lateinit var credentials: String

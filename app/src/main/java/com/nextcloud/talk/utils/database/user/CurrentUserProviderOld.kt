@@ -10,6 +10,7 @@ package com.nextcloud.talk.utils.database.user
 import com.nextcloud.talk.data.user.model.User
 import io.reactivex.Maybe
 
-interface CurrentUserProviderNew {
+@Deprecated("Use CurrentUserProvider instead")
+interface CurrentUserProviderOld {
     val currentUser: Maybe<User>
 }

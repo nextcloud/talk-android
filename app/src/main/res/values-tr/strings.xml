@@ -567,6 +567,15 @@
     <string name="open_in_files_app">Dosyalar uygulamasında aç</string>
     <string name="open_notes">Notları aç</string>
     <string name="open_thread">Yazışmaya git</string>
+    <string name="pin_24hr">24 saat sabitle</string>
+    <string name="pin_30_days">30 gün sabitle</string>
+    <string name="pin_7_days">7 gün sabitle</string>
+    <string name="pin_indefinitely">Süresiz sabitle</string>
+    <string name="pin_message">İletiyi sabitle</string>
+    <string name="pinned">Sabitlenmiş</string>
+    <string name="pinned_by">Sabitleyen</string>
+    <string name="pinned_indefinitely">Süresiz sabitlendi</string>
+    <string name="pinned_until">Şu zamana kadar sabitlendi</string>
     <string name="play_pause_voice_message">Ses iletisini oynat/duraklat</string>
     <string name="playback_speed_control">Oynatma hızı denetimi</string>
     <string name="please_continue_the_login_process_in_the_browser">Lütfen oturum açma işlemini tarayıcınızdan sürdürün</string>
@@ -685,8 +694,6 @@
     <string name="translation_error_title">Çeviri yapılamadı</string>
     <string name="translation_from">Kaynak dil</string>
     <string name="translation_to">Hedef dil</string>
-    <string name="turn_off_background_blur">Arka plan bulanıklaştırmayı kapat</string>
-    <string name="turn_on_background_blur">Arka plan bulanıklaştırmayı aç</string>
     <string name="typing_1_other">ve 1 diğer kişi yazıyor…</string>
     <string name="typing_are_typing">kişi yazıyor…</string>
     <string name="typing_is_typing">yazıyor…</string>
@@ -695,7 +702,9 @@
     <string name="unarchive_hint">Bir görüşme arşivden çıkarıldığında varsayılan olarak yeniden görüntülenir.</string>
     <string name="unarchived_conversation">%1$s arşivden çıkarıldı</string>
     <string name="unban">Yasaklamayı kaldır</string>
+    <string name="unpin_message">İletinin sabitlemesini kaldır</string>
     <string name="unread">Okunmamış</string>
+    <string name="until_unpin">Sabitleme kaldırılana kadar</string>
     <string name="upload_new_avatar_from_device">Aygıttan yeni avatar yükle</string>
     <string name="user_absence">%1$s iş yeri dışında ve yanıt veremeyebilir.</string>
     <string name="user_absence_for_one_day">%1$s bugün iş yeri dışında</string>

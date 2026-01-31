@@ -7,41 +7,32 @@
 package com.nextcloud.talk.repositories.callrecording
 
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.StartCallRecordingModel
 import com.nextcloud.talk.models.domain.StopCallRecordingModel
 import com.nextcloud.talk.models.json.generic.GenericMeta
-import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observable
 
-class CallRecordingRepositoryImpl(private val ncApi: NcApi, currentUserProvider: CurrentUserProviderNew) :
-    CallRecordingRepository {
+class CallRecordingRepositoryImpl(private val ncApi: NcApi) : CallRecordingRepository {
 
-    val currentUser: User = currentUserProvider.currentUser.blockingGet()
-    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
-
-    var apiVersion = 1
-
-    override fun startRecording(roomToken: String): Observable<StartCallRecordingModel> =
+    override fun startRecording(
+        credentials: String?,
+        url: String,
+        roomToken: String
+    ): Observable<StartCallRecordingModel> =
         ncApi.startRecording(
             credentials,
-            ApiUtils.getUrlForRecording(
-                apiVersion,
-                currentUser.baseUrl!!,
-                roomToken
-            ),
+            url,
             1
         ).map { mapToStartCallRecordingModel(it.ocs?.meta!!) }
 
-    override fun stopRecording(roomToken: String): Observable<StopCallRecordingModel> =
+    override fun stopRecording(
+        credentials: String?,
+        url: String,
+        roomToken: String
+    ): Observable<StopCallRecordingModel> =
         ncApi.stopRecording(
             credentials,
-            ApiUtils.getUrlForRecording(
-                apiVersion,
-                currentUser.baseUrl!!,
-                roomToken
-            )
+            url
         ).map { mapToStopCallRecordingModel(it.ocs?.meta!!) }
 
     private fun mapToStartCallRecordingModel(response: GenericMeta): StartCallRecordingModel {

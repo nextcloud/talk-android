@@ -16,6 +16,7 @@ import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepository
 import com.nextcloud.talk.utils.FileSortOrder
 import com.nextcloud.talk.utils.Mimetype.FOLDER
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.preferences.AppPreferencesImpl
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -47,7 +48,8 @@ class RemoteFileBrowserItemsViewModel
 @Inject
 constructor(
     private val repository: RemoteFileBrowserItemsRepository,
-    private val appPreferences: AppPreferencesImpl
+    private val appPreferences: AppPreferencesImpl,
+    private val currentUserProvider: CurrentUserProviderOld
 ) : ViewModel() {
 
     sealed interface ViewState
@@ -56,6 +58,8 @@ constructor(
     object LoadingItemsState : ViewState
     class LoadedState(val items: List<RemoteFileBrowserItem>) : ViewState
     class FinishState(val selectedPaths: Set<String>) : ViewState
+
+    private val currentUser = currentUserProvider.currentUser.blockingGet()
 
     private val initialSortOrder = FileSortOrder.getFileSortOrder(appPreferences.sorting)
 
@@ -94,7 +98,10 @@ constructor(
 
     fun loadItems() {
         _viewState.value = LoadingItemsState
-        repository.listFolder(currentPath.value!!).subscribeOn(Schedulers.io())
+        repository.listFolder(
+            currentUser,
+            currentPath.value!!
+        ).subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(RemoteFileBrowserItemsObserver())
     }

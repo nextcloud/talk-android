@@ -44,14 +44,14 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
             && !Objects.equals(message.getMessage(), "{file}")
         ) {
             Spanned processedMessageText = null;
-            binding.incomingPreviewMessageBubble.setBackgroundResource(R.drawable.shape_grouped_incoming_message);
+            binding.bubble.setBackgroundResource(R.drawable.shape_grouped_incoming_message);
             if (viewThemeUtils != null ) {
                 processedMessageText = messageUtils.enrichChatMessageText(
                     binding.messageCaption.getContext(),
                     message,
                     true,
                     viewThemeUtils);
-                viewThemeUtils.talk.themeIncomingMessageBubble(binding.incomingPreviewMessageBubble, true, false,
+                viewThemeUtils.talk.themeIncomingMessageBubble(binding.bubble, true, false,
                                                                false);
             }
 
@@ -61,9 +61,9 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
                     viewThemeUtils,
                     processedMessageText,
                     message,
-                    binding.incomingPreviewMessageBubble);
+                    binding.bubble);
             }
-            binding.incomingPreviewMessageBubble.setOnClickListener(null);
+            binding.bubble.setOnClickListener(null);
 
             float textSize = 0;
             if (context != null) {
@@ -81,7 +81,7 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
             binding.messageCaption.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
             binding.messageCaption.setText(processedMessageText);
         } else {
-            binding.incomingPreviewMessageBubble.setBackground(null);
+            binding.bubble.setBackground(null);
             binding.messageCaption.setVisibility(View.GONE);
         }
         binding.messageAuthor.setText(message.getActorDisplayName());
@@ -90,12 +90,22 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
         binding.messageTime.setTextColor(ContextCompat.getColor(binding.messageText.getContext(),
                                                                 R.color.no_emphasis_text));
 
+        binding.messageEditIndicator.setTextColor(ContextCompat.getColor(binding.messageText.getContext(),
+                                                                         R.color.no_emphasis_text));
+
         if(!message.isThread()) {
             binding.threadTitleWrapperContainer.setVisibility(View.GONE);
         } else {
             binding.threadTitleWrapperContainer.setVisibility(View.VISIBLE);
         }
     }
+
+    @NonNull
+    @Override
+    public android.widget.TextView getMessageEditIndicator() {
+        return binding.messageEditIndicator;
+    }
+
 
     @NonNull
     @Override

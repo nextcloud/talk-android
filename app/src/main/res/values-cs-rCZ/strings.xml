@@ -567,6 +567,15 @@
     <string name="open_in_files_app">Otevřít v aplikaci Soubory</string>
     <string name="open_notes">Otevřít poznámky</string>
     <string name="open_thread">Přejít na vlákno</string>
+    <string name="pin_24hr">Připnout na 24 hodin</string>
+    <string name="pin_30_days">Připnout na 30 dní</string>
+    <string name="pin_7_days">Připnout na 7 dní</string>
+    <string name="pin_indefinitely">Připnout na neurčito</string>
+    <string name="pin_message">Připnout zprávu</string>
+    <string name="pinned">Připnuté</string>
+    <string name="pinned_by">Připnuto uživatelem</string>
+    <string name="pinned_indefinitely">Připnuto na neurčito</string>
+    <string name="pinned_until">Připnuto do</string>
     <string name="play_pause_voice_message">Přehrát/pozastavit hlasovou zprávu</string>
     <string name="playback_speed_control">Ovládání rychlosti přehrávání</string>
     <string name="please_continue_the_login_process_in_the_browser">Pokračujte v přihlášení ve webovém prohlížeči</string>
@@ -685,8 +694,6 @@
     <string name="translation_error_title">Překlad se nezdařil</string>
     <string name="translation_from">Od</string>
     <string name="translation_to">Pro</string>
-    <string name="turn_off_background_blur">Vypnout rozmazávání pozadí za vámi</string>
-    <string name="turn_on_background_blur">Zapnout rozmazávání pozadí za vámi</string>
     <string name="typing_1_other">a 1 další píše …</string>
     <string name="typing_are_typing">píší …</string>
     <string name="typing_is_typing">píše …</string>
@@ -695,7 +702,9 @@
     <string name="unarchive_hint">Jakmile je zrušeno archivování konverzace, znovu bude zobrazováná už ve výchozí stavu.</string>
     <string name="unarchived_conversation">Zrušena archivace %1$s</string>
     <string name="unban">Zrušit vyloučení</string>
+    <string name="unpin_message">Zrušit připnutí zprávy</string>
     <string name="unread">Nastavit jako nepřečtené</string>
+    <string name="until_unpin">Dokud není připnutí zrušeno</string>
     <string name="upload_new_avatar_from_device">Nahrát nový profilový obrázek ze zařízení</string>
     <string name="user_absence">%1$s je mimo kancelář a může se stát, že neodpoví.</string>
     <string name="user_absence_for_one_day">%1$s je dnes mimo kancelář</string>

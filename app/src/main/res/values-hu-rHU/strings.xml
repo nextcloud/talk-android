@@ -685,8 +685,6 @@
     <string name="translation_error_title">A fordítás sikertelen</string>
     <string name="translation_from">Feladó</string>
     <string name="translation_to">Címzett</string>
-    <string name="turn_off_background_blur">Háttér elmosásának kikapcsolása</string>
-    <string name="turn_on_background_blur">Háttér elmosásának bekapcsolása</string>
     <string name="typing_1_other">és még 1 felhasználó gépel…</string>
     <string name="typing_are_typing">gépelnek…</string>
     <string name="typing_is_typing">gépel…</string>

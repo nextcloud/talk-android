@@ -116,6 +116,7 @@ How to translate with transifex:
     <string name="nc_settings_no_ringtone">No sound</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Server notifications app not installed</string>
     <string name="nc_settings_contact_admin_of">Please contact the administrator of</string>
+    <string name="nc_confirm">Confirm</string>
 
     <string name="nc_settings_appearance">Appearance</string>
     <string name="nc_settings_theme_title">Theme</string>
@@ -904,7 +905,31 @@ How to translate with transifex:
     <string name="location_permission_denied_msg">Please enable it in the app settings</string>
     <string name="location_services_disabled">Location services disabled</string>
     <string name="location_services_disabled_msg">Please enable location services (GPS) to use this feature</string>
-    <string name="turn_on_background_blur">Turn on background blur</string>
-    <string name="turn_off_background_blur">Turn off background blur</string>
     <string name="please_continue_the_login_process_in_the_browser">Please continue login in browser</string>
+    <string name="pin_message">Pin message</string>
+    <string name="unpin_message">Unpin message</string>
+    <string name="pin_24hr">Pin for 24 hours</string>
+    <string name="pin_7_days">Pin for 7 days</string>
+    <string name="pin_30_days">Pin for 30 days</string>
+    <string name="pin_indefinitely">Pin indefinitely</string>
+    <string name="pinned_indefinitely">Pinned indefinitely</string>
+    <string name="pinned_until">Pinned until</string>
+    <string name="pinned_by">Pinned by</string>
+    <string name="pinned">Pinned</string>
+    <string name="until_unpin">Until unpin</string>
+
+    <string name="nc_send_later">Send later</string>
+    <string name="nc_schedule_message">Schedule message</string>
+    <string name="nc_scheduled_messages">Scheduled messages</string>
+    <string name="nc_message_scheduled">Message scheduled</string>
+    <string name="nc_message_scheduled_at">Message scheduled for %1$s</string>
+    <string name="nc_scheduled_time">Scheduled time</string>
+    <string name="nc_reschedule_message">Reschedule</string>
+    <string name="nc_send_now">Send now</string>
+    <string name="nc_schedule_message_title">Schedule message</string>
+    <string name="nc_scheduled_messages_empty">No scheduled messages</string>
+    <string name="nc_schedule_message_without_notification">Send later without notification</string>
+    <string name="nc_in_conversation">In %1$s</string>
+    <string name="no_scheduled_messages_offline">No connection to server - Scheduled messages could not be
+        loaded</string>
 </resources>

@@ -41,7 +41,7 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.TextMatchers
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.message.MessageCheckboxUtils.addCheckboxLine
 import com.nextcloud.talk.utils.message.MessageCheckboxUtils.addPlainTextLine
 import com.nextcloud.talk.utils.message.MessageCheckboxUtils.matchCheckbox
@@ -86,7 +86,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
     lateinit var chatRepository: ChatMessageRepository
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderNew
+    lateinit var currentUserProvider: CurrentUserProviderOld
 
     private var job: Job? = null
 
@@ -183,9 +183,10 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         setBubbleOnChatMessage(message)
 
         // parent message handling
-        val chatActivity = commonMessageInterface as ChatActivity
+        val chatActivity = commonMessageInterface as? ChatActivity
         binding.messageQuote.quotedChatMessageView.visibility =
-            if (!message.isDeleted &&
+            if (chatActivity != null &&
+                !message.isDeleted &&
                 message.parentMessageId != null &&
                 message.parentMessageId != chatActivity.conversationThreadId
             ) {
@@ -213,7 +214,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             updateStatus(R.drawable.ic_check, context.resources?.getString(R.string.nc_message_sent))
         }
 
-        chatActivity.lifecycleScope.launch {
+        chatActivity?.lifecycleScope?.launch {
             if (message.isTemporary && !networkMonitor.isOnline.value) {
                 updateStatus(
                     R.drawable.ic_signal_wifi_off_white_24dp,
@@ -224,13 +225,15 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
 
-        Thread().showThreadPreview(
-            chatActivity,
-            message,
-            threadBinding = binding.threadTitleWrapper,
-            reactionsBinding = binding.reactions,
-            openThread = { openThread(message) }
-        )
+        if (chatActivity != null) {
+            Thread().showThreadPreview(
+                chatActivity,
+                message,
+                threadBinding = binding.threadTitleWrapper,
+                reactionsBinding = binding.reactions,
+                openThread = { openThread(message) }
+            )
+        }
 
         Reaction().showReactions(
             message,

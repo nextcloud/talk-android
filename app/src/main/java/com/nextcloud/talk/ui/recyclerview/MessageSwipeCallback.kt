@@ -178,6 +178,7 @@ class MessageSwipeCallback(private val context: Context, private val messageSwip
                 HapticFeedbackConstants.KEYBOARD_TAP,
                 HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
             )
+
             isVibrate = true
         }
 

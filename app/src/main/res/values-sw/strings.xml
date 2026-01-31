@@ -568,6 +568,15 @@
     <string name="open_in_files_app">Fungua katika faili za programu</string>
     <string name="open_notes">Nukuu za wazi</string>
     <string name="open_thread">Nenda kwenye mjadala</string>
+    <string name="pin_24hr">Bandika kwa masaa 24</string>
+    <string name="pin_30_days">Bandika kwa siku 30</string>
+    <string name="pin_7_days">Bandika kwa siku 7</string>
+    <string name="pin_indefinitely">Bandika kwa muda usiojulikana</string>
+    <string name="pin_message">Bandika ujumbe</string>
+    <string name="pinned">Imebandikwa</string>
+    <string name="pinned_by">Imebandikwa na</string>
+    <string name="pinned_indefinitely">Imebandikwa kwa muda usiojulikana</string>
+    <string name="pinned_until">Imebandikwa hadi</string>
     <string name="play_pause_voice_message">Cheza/simamisha ujumbe wa sauti</string>
     <string name="playback_speed_control">Udhibiti wa kasi ya mshindonyuma</string>
     <string name="please_continue_the_login_process_in_the_browser">Tafadhali endelea kuingia katika kivinjari</string>
@@ -686,8 +695,6 @@
     <string name="translation_error_title">Utafsiri umeshindikana</string>
     <string name="translation_from">Tangu/ kutoka</string>
     <string name="translation_to">Mpaka/ hadi</string>
-    <string name="turn_off_background_blur">Zima ukungu wa mandharinyuma</string>
-    <string name="turn_on_background_blur">Washa ukungu wa mandharinyuma</string>
     <string name="typing_1_other">na mwingine 1 anachapisha</string>
     <string name="typing_are_typing">wanachapisha</string>
     <string name="typing_is_typing">anachapisha</string>
@@ -696,7 +703,9 @@
     <string name="unarchive_hint">Mazungumzo yakishatolewa kwenye kumbukumbu, yataonyeshwa kwa chaguomsingi tena.</string>
     <string name="unarchived_conversation"> Haijahifadhiwa %1$s</string>
     <string name="unban">Batilisha marufuku</string>
+    <string name="unpin_message">Bandua ujumbe</string>
     <string name="unread">Haijasomwa</string>
+    <string name="until_unpin">Hadi ubandue</string>
     <string name="upload_new_avatar_from_device">Pakia avata mpya kutoka kwenye kifaa</string>
     <string name="user_absence">%1$s nje ya ofisi na inaweza isijibu</string>
     <string name="user_absence_for_one_day">%1$s nje ya ofisi leo</string>

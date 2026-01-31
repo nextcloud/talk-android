@@ -5,6 +5,7 @@
  * SPDX-FileCopyrightText: 2023 Parneet Singh <gurayaparneet@gmail.com>
  * SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2021 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2026 Enrique López-Mañas <eenriquelopez@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.fullscreenfile
@@ -39,6 +40,7 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivityFullScreenMediaBinding
+import com.nextcloud.talk.ui.SwipeToCloseLayout
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX_GENERIC
 import java.io.File
@@ -135,6 +137,12 @@ class FullScreenMediaActivity : AppCompatActivity() {
                 }
             }
         )
+
+        binding.swipeToCloseLayout.setOnSwipeToCloseListener(object : SwipeToCloseLayout.OnSwipeToCloseListener {
+            override fun onSwipeToClose() {
+                finish()
+            }
+        })
     }
 
     override fun onStart() {

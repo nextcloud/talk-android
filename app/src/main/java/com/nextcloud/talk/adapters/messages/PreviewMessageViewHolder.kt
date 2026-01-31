@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.emoji2.widget.EmojiTextView
@@ -99,7 +100,13 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
         super.onBind(message)
         image.minimumHeight = DisplayUtils.convertDpToPixel(MIN_IMAGE_HEIGHT, context!!).toInt()
 
-        time.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
+        if (message.lastEditTimestamp != 0L && !message.isDeleted) {
+            time.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp!!)
+            messageEditIndicator.visibility = View.VISIBLE
+        } else {
+            time.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
+            messageEditIndicator.visibility = View.GONE
+        }
 
         viewThemeUtils!!.platform.colorCircularProgressBar(progressBar!!, ColorRole.PRIMARY)
         clickView = image
@@ -342,6 +349,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     abstract val previewContactPhoto: ImageView
     abstract val previewContactName: EmojiTextView
     abstract val previewContactProgressBar: ProgressBar?
+    abstract val messageEditIndicator: TextView
 
     companion object {
         private const val TAG = "PreviewMsgViewHolder"

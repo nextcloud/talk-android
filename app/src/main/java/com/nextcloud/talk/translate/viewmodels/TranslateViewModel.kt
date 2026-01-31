@@ -16,7 +16,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.translate.repositories.TranslateRepository
 import com.nextcloud.talk.translate.repositories.model.Language
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class TranslateViewModel @Inject constructor(
     private val repository: TranslateRepository,
-    private val currentUserProvider: CurrentUserProviderNew
+    private val currentUserProvider: CurrentUserProviderOld
 ) : ViewModel() {
 
     sealed interface ViewState

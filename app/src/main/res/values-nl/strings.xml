@@ -49,6 +49,7 @@
     <string name="danger_zone">Gevarenzone</string>
     <string name="deck_card_description">%1$s in %2$s</string>
     <string name="delete_avatar">Verwijder avatar</string>
+    <string name="delete_voice_recording">Verwijder stemopname</string>
     <string name="deleted_conversation">Gesprek %1$s verwijderd</string>
     <string name="dnd">Niet storen</string>
     <string name="dontClear">Niet opruimen</string>
@@ -57,6 +58,7 @@
     <string name="edit_message_icon_description">Bewerk bericht</string>
     <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Versleuteld</string>
+    <string name="end_call">Beëindig gesprek</string>
     <string name="end_call_for_everyone">Beëindig gesprek voor iedereen</string>
     <string name="error_loading_chats">Het laden van uw gesprekken was problematisch</string>
     <string name="error_unbanning">Fout opgetreden bij deblokkeren deelnemer</string>
@@ -77,6 +79,10 @@
     <string name="left_conversation">Je hebt gesprek %1$s verlaten</string>
     <string name="load_more_results">Laad meer resultaten</string>
     <string name="local_time">Lokale tijd: %1$s</string>
+    <string name="location_permission_denied">Lokatietoestemming geweigerd</string>
+    <string name="location_permission_denied_msg">Schakel dit alstublieft in bij de app instellingen </string>
+    <string name="location_services_disabled">Lokatiediensten uitgeschakeld</string>
+    <string name="location_services_disabled_msg">Schakel alstublieft lokatiediensten (GPS) in om deze optie te gebruiken</string>
     <string name="lock_conversation">Gesprek vergrendelen</string>
     <string name="lock_symbol">Slot symbool</string>
     <string name="lower_hand">Hand omlaag</string>
@@ -90,6 +96,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Grootste eerst</string>
     <string name="menu_item_sort_by_size_smallest_first">Kleinste eerst</string>
     <string name="message_copied">Bericht gekopieerd</string>
+    <string name="message_delete_are_you_sure">Ben je zeker dat je dit bericht wilt verwijderen?</string>
     <string name="message_deleted_by_you">Bericht verwijderd door jou</string>
     <string name="message_last_edited_by">Bewerkt door %1$s</string>
     <string name="message_poll_tap_to_open">Klik om de peiling te openen</string>
@@ -124,6 +131,7 @@
     <string name="nc_call_incoming">INKOMEND</string>
     <string name="nc_call_name">Gespreksnaam</string>
     <string name="nc_call_notifications">Oproepmeldingen</string>
+    <string name="nc_call_ongoing_notification_content">Tik om terug te keren naar het gesprek.</string>
     <string name="nc_call_ongoing_notification_default_title">Oproep is bezig</string>
     <string name="nc_call_raised_hand">%1$s stak een hand op</string>
     <string name="nc_call_reconnecting">Opnieuw verbinden …</string>
@@ -289,6 +297,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_guest_access_resend_invitations_successful">Uitnodigingen werden opnieuw verstuurd.</string>
     <string name="nc_guest_access_share_link">Deel gesprekslink</string>
     <string name="nc_hint_enter_a_message">Voer een bericht in…</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Batterij-optimalisatie is niet genegeerd. Dit zou moeten worden gewijzigd om zeker te zijn dat berichten op de achtergrond werken! Klik alstublief OK en kies \"Alle apps\" -> %1$s en dan \"Niet optimaliseren\" of \"Sta achtergrondgebuik toe -> onbeperkt\".</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Batterijoptimalisatie negeren</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
     <string name="nc_important_conversation_desc">De gebruikersstatus ‘Niet storen’ wordt genegeerd voor belangrijke gesprekken</string>
@@ -305,8 +314,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_limit_hit"> match 
 %stekens limiet bereikt</string>
     <string name="nc_lobby">Lobby</string>
-    <string name="nc_lobby_start_date">Deze vergadering staat gepland voor %1$s</string>
-    <string name="nc_lobby_start_soon">Deze vergadering zal binnenkort starten</string>
+    <string name="nc_lobby_start_date">Deze vergadering is gepland voor %1$s</string>
+    <string name="nc_lobby_start_soon">De vergadering begint zo meteen</string>
     <string name="nc_lobby_waiting">Je wacht nu in de lobby.</string>
     <string name="nc_location_current_position_description">Je huidige locatie</string>
     <string name="nc_location_permission_required">Locatiemachtiging is vereist</string>
@@ -329,6 +338,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_message_read">Bericht gelezen</string>
     <string name="nc_message_sending">Verzenden</string>
     <string name="nc_message_sent">Bericht verstuurd</string>
+    <string name="nc_microphone_enabled_audio_recording">Microfoon is ingeschakeld en audio wordt opgenomen</string>
     <string name="nc_microphone_permission_hint">Om videogesprekken te houden, verleen \"Microfoon\" machtiging.</string>
     <string name="nc_missed_call">Je hebt een gesprek gemist van %s</string>
     <string name="nc_moderator">Moderator</string>
@@ -414,6 +424,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_search_clear">Wis zoekvak</string>
     <string name="nc_select_an_account">Selecteer een account</string>
     <string name="nc_send_edit_message">Bijwerken bericht</string>
+    <string name="nc_send_voice_recording">Stuur voice-opname</string>
     <string name="nc_sensitive_conversation">Gevoelig gesprek</string>
     <string name="nc_sensitive_conversation_hint">Berichtvoorvertoning wordt uitgeschakeld in de gesprekslijst en meldingen</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s verstuurde een GIF.</string>
@@ -546,15 +557,30 @@ Kies er eentje van een provider.</string>
     <string name="no_conversations_archived">Geen gearchiveerde gesprekken</string>
     <string name="no_offline_messages_saved">Geen offline berichten bewaard</string>
     <string name="no_phone_book_integration_due_to_permissions">Geen telefoonnummer-integratie wegens ontbrekende machtigingen</string>
+    <string name="notification_all_messages">Alle berichten</string>
+    <string name="notification_mention_only">Alleen @-benoemingen</string>
+    <string name="notification_off">Uit</string>
     <string name="notifications_default">Standaard</string>
+    <string name="notifications_default_description">Volg conversatie instellingen</string>
     <string name="oneHour">1 uur</string>
     <string name="online">Online</string>
     <string name="online_status">Online status</string>
     <string name="openConversations">Open gesprekken</string>
     <string name="open_in_files_app">Openen in de Bestanden-app</string>
     <string name="open_notes">Open notities</string>
+    <string name="open_thread">Ga naar draad</string>
+    <string name="pin_24hr">Pin voor 24 uur</string>
+    <string name="pin_30_days">Pin voor 30 dagen</string>
+    <string name="pin_7_days">Pin voor 7 dagen</string>
+    <string name="pin_indefinitely">Pin onbeperkt</string>
+    <string name="pin_message">Pin bericht</string>
+    <string name="pinned">Gepind</string>
+    <string name="pinned_by">Gepind door</string>
+    <string name="pinned_indefinitely">Onbeperkt gepind</string>
+    <string name="pinned_until">Gepind tot</string>
     <string name="play_pause_voice_message">Afspelen/pauzeren voicebericht</string>
     <string name="playback_speed_control">Controle afspeelsnelheid</string>
+    <string name="please_continue_the_login_process_in_the_browser">Ga alstublieft verder met inloggen in browser</string>
     <string name="polls_add_option">Voeg een optie toe</string>
     <string name="polls_edit_vote">Bewerk stem</string>
     <string name="polls_end_poll">Peiling beëindigen</string>
@@ -572,9 +598,11 @@ Kies er eentje van een provider.</string>
     <string name="polls_submit_vote">Stemmen</string>
     <string name="polls_voted_hidden_success">Stem verstuurd</string>
     <string name="previously_set">Eerder ingesteld</string>
+    <string name="qr_code_error">QR code kon niet worden gelezen</string>
     <string name="raise_hand">Hand opsteken</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="read_storage_no_permission">Bestanden delen vanuit opslag is niet mogelijk zonder machtiging</string>
+    <string name="recent_threads">Recente lijnen</string>
     <string name="record_active_info">Het gesprek wordt opgenomen</string>
     <string name="record_cancel_start">Annulleer start opname</string>
     <string name="record_failed_info">The opname is mislukt. Neem contact op met je beheerder.</string>
@@ -632,6 +660,7 @@ Kies er eentje van een provider.</string>
     <string name="show_banned_participants">Toon uitgesloten deelnemers</string>
     <string name="starred">Favoriet</string>
     <string name="startCallForbidden">U hebt geen toestemming om een gesprek te starten</string>
+    <string name="start_thread">Creëer een lijn</string>
     <string name="started_a_call">een gesprek gestart</string>
     <string name="status_message">Statusbericht</string>
     <string name="status_reverted">Status omgezet</string>
@@ -650,6 +679,12 @@ Kies er eentje van een provider.</string>
     <string name="thisWeek">Deze week</string>
     <string name="this_is_a_test_message">Dit is een testbericht</string>
     <string name="this_weekend">Dit weekend</string>
+    <string name="thread_cancel">Annuleer lijn-creatie</string>
+    <string name="thread_notifications">Lijn-berichten</string>
+    <string name="thread_reply">Antwoord</string>
+    <string name="thread_title">Lijn-titel</string>
+    <string name="threads">Lijnen</string>
+    <string name="threads_list_empty">Geen lijnen gevonden</string>
     <string name="today">Vandaag</string>
     <string name="tomorrow">Morgen</string>
     <string name="translate">Vertaal</string>
@@ -669,7 +704,9 @@ Kies er eentje van een provider.</string>
     <string name="unarchive_hint">Als een gesprek gedearchiveerd is, wordt het standaard weer getoond.</string>
     <string name="unarchived_conversation">%1$s uit archief gehaald</string>
     <string name="unban">Uitsluiten opheffen</string>
+    <string name="unpin_message">Ontpin bericht</string>
     <string name="unread">Ongelezen</string>
+    <string name="until_unpin">Tot ontpint</string>
     <string name="upload_new_avatar_from_device">Upload nieuwe avatar van apparaat</string>
     <string name="user_absence">%1$s is niet op kantoor en kan mogelijk niet reageren</string>
     <string name="user_absence_for_one_day">%1$s is vandaag niet op kantoor</string>
@@ -694,6 +731,10 @@ Kies er eentje van een provider.</string>
     <plurals name="nc_conversation_auto_delete_info">
         <item quantity="one">Dit gesprek wordt automatisch verwijderd voor iedereen na %1$d dag zonder activiteit</item>
         <item quantity="other">Dit gesprek wordt automatisch verwijderd voor iedereen na %1$d dagen zonder activiteit</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d antwoord</item>
+        <item quantity="other">%d antwoordt</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d stem</item>

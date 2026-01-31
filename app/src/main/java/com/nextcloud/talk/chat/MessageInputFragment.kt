@@ -43,7 +43,10 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.widget.EmojiTextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
 import coil.Coil.imageLoader
 import coil.load
@@ -64,6 +67,7 @@ import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.FragmentMessageInputBinding
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
@@ -75,11 +79,13 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CharPolicy
+import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.EmojiTextInputEditText
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
@@ -104,7 +110,7 @@ class MessageInputFragment : Fragment() {
     lateinit var userManager: UserManager
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderNew
+    lateinit var currentUserProvider: CurrentUserProviderOld
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
@@ -112,6 +118,10 @@ class MessageInputFragment : Fragment() {
     @Inject
     lateinit var messageUtils: MessageUtils
 
+    @Inject
+    lateinit var dateUtils: DateUtils
+
+    private val messageInputViewModel: MessageInputViewModel by activityViewModels()
     lateinit var binding: FragmentMessageInputBinding
     private lateinit var conversationInternalId: String
     private var typedWhileTypingTimerIsRunning: Boolean = false
@@ -122,6 +132,8 @@ class MessageInputFragment : Fragment() {
     private var xcounter = 0f
     private var ycounter = 0f
     private var collapsed = false
+    private var hasScheduledMessages = false
+    private lateinit var spreedCapabilities: SpreedCapability
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,12 +153,6 @@ class MessageInputFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMessageInputBinding.inflate(inflater)
         themeMessageInputView()
-        initMessageInputView()
-        initSmileyKeyboardToggler()
-        setupMentionAutocomplete()
-        initVoiceRecordButton()
-        initThreadHandling()
-        restoreState()
         return binding.root
     }
 
@@ -155,7 +161,6 @@ class MessageInputFragment : Fragment() {
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
-        clearEditUI()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -173,7 +178,32 @@ class MessageInputFragment : Fragment() {
 
     private fun initObservers() {
         Log.d(TAG, "LifeCyclerOwner is: ${viewLifecycleOwner.lifecycle}")
-        chatActivity.messageInputViewModel.getReplyChatMessage.observe(viewLifecycleOwner) { message ->
+        chatActivity.chatViewModel.getCapabilitiesViewState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is ChatViewModel.GetCapabilitiesUpdateState -> {
+                    initMessageInputView(state.spreedCapabilities)
+                    initSmileyKeyboardToggler()
+                    setupMentionAutocomplete()
+                    initVoiceRecordButton()
+                    initThreadHandling()
+                    updateScheduledMessagesAvailability(hasScheduledMessages)
+                }
+
+                is ChatViewModel.GetCapabilitiesInitialLoadState -> {
+                    initMessageInputView(state.spreedCapabilities)
+                    initSmileyKeyboardToggler()
+                    setupMentionAutocomplete()
+                    initVoiceRecordButton()
+                    initThreadHandling()
+                    updateScheduledMessagesAvailability(hasScheduledMessages)
+                    restoreState()
+                }
+
+                else -> {}
+            }
+        }
+
+        messageInputViewModel.getReplyChatMessage.observe(viewLifecycleOwner) { message ->
             message?.let {
                 chatActivity.chatViewModel.messageDraft.quotedMessageText = message.text
                 chatActivity.chatViewModel.messageDraft.quotedDisplayName = message.actorDisplayName
@@ -187,11 +217,19 @@ class MessageInputFragment : Fragment() {
             } ?: clearReplyUi()
         }
 
-        chatActivity.messageInputViewModel.getEditChatMessage.observe(viewLifecycleOwner) { message ->
-            message?.let { setEditUI(it as ChatMessage) }
+        chatActivity.chatViewModel.scheduledMessagesCount.observe(viewLifecycleOwner) { count ->
+            updateScheduledMessagesAvailability(count > 0)
         }
 
-        chatActivity.messageInputViewModel.createThreadViewState.observe(viewLifecycleOwner) { state ->
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                messageInputViewModel.getEditChatMessage.collect { message ->
+                    message?.let { setEditUI(it as ChatMessage) } ?: clearEditUI()
+                }
+            }
+        }
+
+        messageInputViewModel.createThreadViewState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is MessageInputViewModel.CreateThreadStartState ->
                     binding.fragmentCreateThreadView.createThreadView.visibility = View.GONE
@@ -224,7 +262,7 @@ class MessageInputFragment : Fragment() {
                     val connectionGained = (!wasOnline && isOnline)
                     Log.d(TAG, "isOnline: $isOnline\nwasOnline: $wasOnline\nconnectionGained: $connectionGained")
                     if (connectionGained) {
-                        chatActivity.messageInputViewModel.sendUnsentMessages(
+                        messageInputViewModel.sendUnsentMessages(
                             chatActivity.conversationUser!!.getCredentials(),
                             ApiUtils.getUrlForChat(
                                 chatActivity.chatApiVersion,
@@ -237,7 +275,7 @@ class MessageInputFragment : Fragment() {
                 }.collect()
         }
 
-        chatActivity.messageInputViewModel.callStartedFlow.observe(viewLifecycleOwner) {
+        messageInputViewModel.callStartedFlow.observe(viewLifecycleOwner) {
             val (message, show) = it
             if (show) {
                 binding.fragmentCallStarted.callAuthorChip.text = message.actorDisplayName
@@ -307,6 +345,11 @@ class MessageInputFragment : Fragment() {
             binding.fragmentMessageInputView.attachmentButton.visibility = View.VISIBLE
             binding.fragmentMessageInputView.recordAudioButton.visibility =
                 if (binding.fragmentMessageInputView.inputEditText.text.isEmpty()) View.VISIBLE else View.GONE
+            if (hasScheduledMessages) {
+                binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.VISIBLE
+            } else {
+                binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.GONE
+            }
         } else {
             binding.fragmentMessageInputView.attachmentButton.visibility = View.INVISIBLE
             binding.fragmentMessageInputView.recordAudioButton.visibility = View.INVISIBLE
@@ -314,6 +357,7 @@ class MessageInputFragment : Fragment() {
             binding.fragmentConnectionLost.visibility = View.GONE
             binding.fragmentConnectionLost.setBackgroundColor(resources.getColor(R.color.hwSecurityRed))
             binding.fragmentConnectionLost.visibility = View.VISIBLE
+            binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.GONE
         }
     }
 
@@ -327,7 +371,7 @@ class MessageInputFragment : Fragment() {
                 binding.fragmentMessageInputView.messageInput.setSelection(draft.messageCursor)
 
                 if (draft.threadTitle?.isNotEmpty() == true) {
-                    chatActivity.messageInputViewModel.startThreadCreation()
+                    messageInputViewModel.startThreadCreation()
                 }
 
                 if (draft.messageText != "") {
@@ -345,13 +389,13 @@ class MessageInputFragment : Fragment() {
         }
     }
 
-    private fun initMessageInputView() {
+    private fun initMessageInputView(spreedCapabilities: SpreedCapability) {
         if (!chatActivity.active) return
+        this.spreedCapabilities = spreedCapabilities
 
         val filters = arrayOfNulls<InputFilter>(1)
-        val lengthFilter = CapabilitiesUtil.getMessageMaxLength(chatActivity.spreedCapabilities)
+        val lengthFilter = CapabilitiesUtil.getMessageMaxLength(spreedCapabilities)
 
-        binding.fragmentEditView.editMessageView.visibility = View.GONE
         binding.fragmentMessageInputView.setPadding(0, 0, 0, 0)
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)
@@ -434,6 +478,10 @@ class MessageInputFragment : Fragment() {
             true
         }
 
+        binding.fragmentMessageInputView.scheduledMessagesButton.setOnClickListener {
+            chatActivity.showScheduledMessagesFromInput()
+        }
+
         binding.fragmentMessageInputView.button?.setOnClickListener {
             submitMessage(false)
         }
@@ -443,7 +491,7 @@ class MessageInputFragment : Fragment() {
             replaceMentionChipSpans(editable)
             val inputEditText = editable.toString()
 
-            val message = chatActivity.messageInputViewModel.getEditChatMessage.value as ChatMessage
+            val message = messageInputViewModel.getEditChatMessage.value as ChatMessage
             if (message.message!!.trim() != inputEditText.trim()) {
                 if (message.messageParameters != null) {
                     val editedMessage = messageUtils.processEditMessageParameters(
@@ -451,9 +499,9 @@ class MessageInputFragment : Fragment() {
                         message,
                         inputEditText
                     )
-                    editMessageAPI(message, editedMessage.toString())
+                    editMessageAPI(message, editedMessage.toString(), spreedCapabilities)
                 } else {
-                    editMessageAPI(message, inputEditText.toString())
+                    editMessageAPI(message, inputEditText, spreedCapabilities)
                 }
             }
             clearEditUI()
@@ -465,11 +513,9 @@ class MessageInputFragment : Fragment() {
             cancelCreateThread()
         }
 
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(chatActivity.spreedCapabilities, SpreedFeatures.SILENT_SEND)) {
-            binding.fragmentMessageInputView.button?.setOnLongClickListener {
-                showSendButtonMenu()
-                true
-            }
+        binding.fragmentMessageInputView.button?.setOnLongClickListener {
+            showSendButtonMenu()
+            true
         }
 
         binding.fragmentMessageInputView.button?.contentDescription =
@@ -530,7 +576,7 @@ class MessageInputFragment : Fragment() {
                     val base = SystemClock.elapsedRealtime()
                     voiceRecordStartTime = System.currentTimeMillis()
                     binding.fragmentMessageInputView.audioRecordDuration.base = base
-                    chatActivity.messageInputViewModel.setRecordingTime(base)
+                    messageInputViewModel.setRecordingTime(base)
                     binding.fragmentMessageInputView.audioRecordDuration.start()
                     chatActivity.chatViewModel.startAudioRecording(requireContext(), chatActivity.currentConversation!!)
                     showRecordAudioUi(true)
@@ -634,6 +680,11 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun handleButtonsVisibility() {
+        if (!this::binding.isInitialized) {
+            Log.w(TAG, "binding not initialized in handleButtonsVisibility")
+            return
+        }
+
         fun View.setVisible(isVisible: Boolean) {
             visibility = if (isVisible) View.VISIBLE else View.GONE
         }
@@ -642,6 +693,7 @@ class MessageInputFragment : Fragment() {
         val isThreadCreateModeActive = binding.fragmentCreateThreadView.createThreadView.isVisible
         val inputContainsText = binding.fragmentMessageInputView.messageInput.text.isNotEmpty()
         val threadTitleContainsText = binding.fragmentCreateThreadView.createThreadInput.text?.isNotEmpty() ?: false
+        val showScheduleButton = hasScheduledMessages
 
         binding.fragmentMessageInputView.apply {
             when {
@@ -649,7 +701,8 @@ class MessageInputFragment : Fragment() {
                     messageSendButton.setVisible(false)
                     recordAudioButton.setVisible(false)
                     submitThreadButton.setVisible(false)
-                    attachmentButton.setVisible(true)
+                    attachmentButton.setVisible(false)
+                    scheduledMessagesButton.setVisible(false)
                 }
 
                 isThreadCreateModeActive -> {
@@ -657,6 +710,7 @@ class MessageInputFragment : Fragment() {
                     recordAudioButton.setVisible(false)
                     attachmentButton.setVisible(false)
                     submitThreadButton.setVisible(true)
+                    scheduledMessagesButton.setVisible(false)
                     if (inputContainsText && threadTitleContainsText) {
                         submitThreadButton.isEnabled = true
                         submitThreadButton.alpha = FULLY_OPAQUE
@@ -671,6 +725,7 @@ class MessageInputFragment : Fragment() {
                     submitThreadButton.setVisible(false)
                     messageSendButton.setVisible(true)
                     attachmentButton.setVisible(true)
+                    scheduledMessagesButton.setVisible(false)
                 }
 
                 else -> {
@@ -678,9 +733,15 @@ class MessageInputFragment : Fragment() {
                     submitThreadButton.setVisible(false)
                     recordAudioButton.setVisible(true)
                     attachmentButton.setVisible(true)
+                    scheduledMessagesButton.setVisible(showScheduleButton)
                 }
             }
         }
+    }
+
+    fun updateScheduledMessagesAvailability(hasMessages: Boolean) {
+        hasScheduledMessages = hasMessages
+        handleButtonsVisibility()
     }
 
     private fun resetSlider() {
@@ -721,6 +782,25 @@ class MessageInputFragment : Fragment() {
         }
     }
 
+    private fun scheduleMessage(sendWithoutNotification: Boolean) {
+        if (binding.fragmentMessageInputView.inputEditText != null) {
+            val editable = binding.fragmentMessageInputView.inputEditText!!.editableText
+            val message = editable.toString()
+            if (message.isBlank()) {
+                return
+            }
+            binding.fragmentMessageInputView.inputEditText?.setText("")
+            chatActivity.showScheduleMessageDialog(
+                message = message,
+                sendWithoutNotification = sendWithoutNotification,
+                replyToMessageId = chatActivity.getReplyToMessageId(),
+                threadTitle = chatActivity.chatViewModel.messageDraft.threadTitle
+            )
+            cancelReply()
+            cancelCreateThread()
+        }
+    }
+
     private fun showRecordAudioUi(show: Boolean) {
         if (show) {
             val animation: Animation = AlphaAnimation(FULLY_OPAQUE, FULLY_TRANSPARENT)
@@ -738,6 +818,7 @@ class MessageInputFragment : Fragment() {
             binding.fragmentMessageInputView.smileyButton.visibility = View.GONE
             binding.fragmentMessageInputView.messageInput.visibility = View.GONE
             binding.fragmentMessageInputView.messageInput.hint = ""
+            binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.GONE
         } else {
             binding.fragmentMessageInputView.microphoneEnabledInfo.clearAnimation()
 
@@ -902,7 +983,7 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun sendMessage(message: String, sendWithoutNotification: Boolean) {
-        chatActivity.messageInputViewModel.sendChatMessage(
+        messageInputViewModel.sendChatMessage(
             credentials = chatActivity.conversationUser!!.getCredentials(),
             url = ApiUtils.getUrlForChat(
                 chatActivity.chatApiVersion,
@@ -950,9 +1031,29 @@ class MessageInputFragment : Fragment() {
         )
         popupMenu.inflate(R.menu.chat_send_menu)
 
+        popupMenu.menu.findItem(R.id.send_later_without_notification)?.isVisible = networkMonitor.isOnline
+            .value &&
+            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_SEND)
+
+        popupMenu.menu.findItem(R.id.send_later)?.isVisible =
+            networkMonitor.isOnline.value &&
+            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SCHEDULED_MESSAGES) &&
+            !ConversationUtils.isNoteToSelfConversation(chatActivity.currentConversation)
+
+        popupMenu.menu.findItem(R.id.send_later_without_notification)?.isVisible = networkMonitor.isOnline.value &&
+            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_SEND) &&
+            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SCHEDULED_MESSAGES) &&
+            !ConversationUtils.isNoteToSelfConversation(chatActivity.currentConversation)
+
         popupMenu.setOnMenuItemClickListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.send_without_notification -> submitMessage(true)
+                R.id.send_later -> {
+                    scheduleMessage(sendWithoutNotification = false)
+                }
+                R.id.send_later_without_notification -> {
+                    scheduleMessage(sendWithoutNotification = true)
+                }
             }
             true
         }
@@ -963,17 +1064,17 @@ class MessageInputFragment : Fragment() {
         popupMenu.show()
     }
 
-    private fun editMessageAPI(message: ChatMessage, editedMessageText: String) {
+    private fun editMessageAPI(message: ChatMessage, editedMessageText: String, spreedCapabilities: SpreedCapability) {
         // FIXME Fix API checking with guests?
-        val apiVersion: Int = ApiUtils.getChatApiVersion(chatActivity.spreedCapabilities, intArrayOf(1))
+        val apiVersion: Int = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
 
         if (message.isTemporary) {
-            chatActivity.messageInputViewModel.editTempChatMessage(
+            messageInputViewModel.editTempChatMessage(
                 message,
                 editedMessageText
             )
         } else {
-            chatActivity.messageInputViewModel.editChatMessage(
+            messageInputViewModel.editChatMessage(
                 chatActivity.credentials!!,
                 ApiUtils.getUrlForChatMessage(
                     apiVersion,
@@ -1001,6 +1102,7 @@ class MessageInputFragment : Fragment() {
         binding.fragmentMessageInputView.editMessageButton.visibility = View.VISIBLE
         binding.fragmentEditView.editMessageView.visibility = View.VISIBLE
         binding.fragmentMessageInputView.attachmentButton.visibility = View.GONE
+        binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.GONE
     }
 
     private fun clearEditUI() {
@@ -1008,11 +1110,19 @@ class MessageInputFragment : Fragment() {
         binding.fragmentMessageInputView.inputEditText.setText("")
         binding.fragmentEditView.editMessageView.visibility = View.GONE
         binding.fragmentMessageInputView.attachmentButton.visibility = View.VISIBLE
-        chatActivity.messageInputViewModel.edit(null)
+        messageInputViewModel.edit(null)
         handleButtonsVisibility()
     }
 
     private fun themeMessageInputView() {
+        binding.messageInputContainer.apply {
+            viewThemeUtils.talk.themeCardView(this)
+        }
+
+        binding.fragmentMessageInputView.findViewById<ImageView>(R.id.microphoneEnabledInfoBackground)?.let {
+            viewThemeUtils.platform.themeViewBackground(it, ColorRole.SURFACE_VARIANT)
+        }
+
         binding.fragmentMessageInputView.button?.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }
 
         binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.let {
@@ -1083,7 +1193,7 @@ class MessageInputFragment : Fragment() {
 
     private fun cancelCreateThread() {
         chatActivity.cancelCreateThread()
-        chatActivity.messageInputViewModel.stopThreadCreation()
+        messageInputViewModel.stopThreadCreation()
         binding.fragmentCreateThreadView.createThreadView.visibility = View.GONE
     }
 

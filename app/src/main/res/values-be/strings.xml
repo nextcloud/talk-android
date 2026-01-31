@@ -567,6 +567,15 @@
     <string name="open_in_files_app">Адкрыць у Файлах</string>
     <string name="open_notes">Адкрыць Нататкі</string>
     <string name="open_thread">Перайсці да гутаркі</string>
+    <string name="pin_24hr">Замацаваць на 24 гадзіны</string>
+    <string name="pin_30_days">Замацаваць на 30 дзён</string>
+    <string name="pin_7_days">Замацаваць на 7 дзён</string>
+    <string name="pin_indefinitely">Замацаваць на нявызначаны тэрмін</string>
+    <string name="pin_message">Замацаваць паведамленне</string>
+    <string name="pinned">Замацавана</string>
+    <string name="pinned_by">Замацаваў(-ла)</string>
+    <string name="pinned_indefinitely">Замацавана на нявызначаны тэрмін</string>
+    <string name="pinned_until">Замацавана да</string>
     <string name="play_pause_voice_message">Прайграць/прыпыніць галасавое паведамленне</string>
     <string name="playback_speed_control">Кіраванне хуткасцю прайгравання</string>
     <string name="please_continue_the_login_process_in_the_browser">Працягніце ўваход у браўзеры</string>
@@ -685,8 +694,6 @@
     <string name="translation_error_title">Не ўдалося перакласці</string>
     <string name="translation_from">З</string>
     <string name="translation_to">На</string>
-    <string name="turn_off_background_blur">Выключыць размытасць фону</string>
-    <string name="turn_on_background_blur">Уключыць размытасць фону</string>
     <string name="typing_1_other">і яшчэ 1 пішуць …</string>
     <string name="typing_are_typing">пішуць …</string>
     <string name="typing_is_typing">піша …</string>
@@ -695,7 +702,9 @@
     <string name="unarchive_hint">Пасля таго, як размова будзе разархівавана, яна зноў будзе прадвызначана паказвацца.</string>
     <string name="unarchived_conversation">Разархівавана %1$s</string>
     <string name="unban">Разблакіраваць</string>
+    <string name="unpin_message">Адмацаваць паведамленне</string>
     <string name="unread">Непрачытанае</string>
+    <string name="until_unpin">Пакуль не адмацуецца</string>
     <string name="upload_new_avatar_from_device">Запампаваць новы аватар з прылады</string>
     <string name="user_absence">%1$s не на працы і можа не адказаць</string>
     <string name="user_absence_for_one_day">%1$s сёння не на працы</string>

@@ -568,6 +568,8 @@
     <string name="open_in_files_app">Otvoriť v aplikácii Súbory</string>
     <string name="open_notes">Otvoriť Poznámky</string>
     <string name="open_thread">Prejsť na vlákno</string>
+    <string name="pin_message">Pripnúť správu</string>
+    <string name="pinned">Pripnuté</string>
     <string name="play_pause_voice_message">Prehrať/pozastaviť hlasovú správu</string>
     <string name="playback_speed_control">Ovládanie rýchlosti prehrávania</string>
     <string name="please_continue_the_login_process_in_the_browser">Pokračujte v prihlásení v prehliadači</string>
@@ -686,8 +688,6 @@
     <string name="translation_error_title">Preklad zlyhal</string>
     <string name="translation_from">Od</string>
     <string name="translation_to">Pre</string>
-    <string name="turn_off_background_blur">Vypnúť rozmazanie pozadia</string>
-    <string name="turn_on_background_blur">Zapnúť rozmazanie pozadia</string>
     <string name="typing_1_other">a jeden ďalší píše…</string>
     <string name="typing_are_typing">píšu…</string>
     <string name="typing_is_typing">píše…</string>
@@ -696,7 +696,9 @@
     <string name="unarchive_hint">Keď bude zrušená archivácia konverzácie, bude predvolene znova zobrazená.</string>
     <string name="unarchived_conversation">Zrušená archivácia %1$s</string>
     <string name="unban">Zrušiť zákaz</string>
+    <string name="unpin_message">Odopnúť správu</string>
     <string name="unread">Neprečítané</string>
+    <string name="until_unpin">Až do odopnutia</string>
     <string name="upload_new_avatar_from_device">Nahrať nového avatara zo zariadenia</string>
     <string name="user_absence">%1$s nie je v práci a nemusí odpovedať</string>
     <string name="user_absence_for_one_day">%1$s dnes nie je v práci</string>

@@ -24,23 +24,25 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ConversationsListViewModel @Inject constructor(
     private val repository: OfflineConversationsRepository,
     private val threadsRepository: ThreadsRepository,
-    private val currentUserProvider: CurrentUserProviderNew,
+    private val currentUserProvider: CurrentUserProviderOld,
     private val openConversationsRepository: OpenConversationsRepository,
     var userManager: UserManager
 ) : ViewModel() {
@@ -120,10 +122,10 @@ class ConversationsListViewModel @Inject constructor(
         }
     }
 
-    fun getRooms() {
+    fun getRooms(user: User) {
         val startNanoTime = System.nanoTime()
         Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
-        repository.getRooms()
+        repository.getRooms(user)
     }
 
     fun checkIfThreadsExist() {
@@ -199,15 +201,30 @@ class ConversationsListViewModel @Inject constructor(
         }
     }
 
-    fun fetchOpenConversations() {
-        _openConversationsState.value = OpenConversationsUiState.None
+    suspend fun fetchOpenConversations(searchTerm: String) =
+        withContext(Dispatchers.IO) {
+            _openConversationsState.value = OpenConversationsUiState.None
 
-        if (!hasSpreedFeatureCapability(currentUser.capabilities?.spreedCapability, SpreedFeatures.LISTABLE_ROOMS)) {
-            return
-        }
+            if (!hasSpreedFeatureCapability(
+                    currentUser.capabilities?.spreedCapability,
+                    SpreedFeatures.LISTABLE_ROOMS
+                )
+            ) {
+                return@withContext
+            }
 
-        viewModelScope.launch {
-            openConversationsRepository.fetchConversations("")
+            val apiVersion = ApiUtils.getConversationApiVersion(
+                currentUser,
+                intArrayOf(
+                    ApiUtils.API_V4,
+                    ApiUtils
+                        .API_V3,
+                    1
+                )
+            )
+            val url = ApiUtils.getUrlForOpenConversations(apiVersion, currentUser.baseUrl!!)
+
+            openConversationsRepository.fetchConversations(currentUser, url, searchTerm)
                 .onSuccess { conversations ->
                     if (conversations.isEmpty()) {
                         _openConversationsState.value = OpenConversationsUiState.None
@@ -220,7 +237,6 @@ class ConversationsListViewModel @Inject constructor(
                     _openConversationsState.value = OpenConversationsUiState.Error(exception)
                 }
         }
-    }
 
     inner class FederatedInvitationsObserver : Observer<InvitationsModel> {
         override fun onSubscribe(d: Disposable) {

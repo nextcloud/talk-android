@@ -123,9 +123,9 @@
     <string name="nc_call_button_content_description_answer_video_call">Répondre par appel vidéo</string>
     <string name="nc_call_button_content_description_answer_voice_only">Répondre par appel vocal uniquement</string>
     <string name="nc_call_button_content_description_audio_output">Changer de sortie audio</string>
-    <string name="nc_call_button_content_description_camera">Activer / Désactiver la caméra</string>
+    <string name="nc_call_button_content_description_camera">Activer/Désactiver la caméra</string>
     <string name="nc_call_button_content_description_hangup">Raccrocher</string>
-    <string name="nc_call_button_content_description_microphone">Activer / Désactiver le micro</string>
+    <string name="nc_call_button_content_description_microphone">Activer/Désactiver le micro</string>
     <string name="nc_call_button_content_description_pip">Lancer le mode Image dans l\'Image</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Basculer mode selfie</string>
     <string name="nc_call_incoming">ENTRANT</string>
@@ -567,6 +567,8 @@
     <string name="open_in_files_app">Ouvrir dans l\'application Fichiers</string>
     <string name="open_notes">Ouvrir les Notes</string>
     <string name="open_thread">Aller à la conversation</string>
+    <string name="pin_message">Épingler le message</string>
+    <string name="pinned">Épinglé</string>
     <string name="play_pause_voice_message">Jouer / mettre en pause le message vocal</string>
     <string name="playback_speed_control">Contrôle de la vitesse de lecture</string>
     <string name="please_continue_the_login_process_in_the_browser">Veuillez continuer la connexion dans votre navigateur</string>
@@ -663,7 +665,7 @@
     <string name="take_photo_switch_camera">Retourner la caméra</string>
     <string name="take_photo_toggle_crop">Rogner la photo</string>
     <string name="take_photo_toggle_lowres">Réduire la taille de l\'image</string>
-    <string name="take_photo_toggle_torch">Allumer / Éteindre la lampe</string>
+    <string name="take_photo_toggle_torch">Allumer/Éteindre la lampe</string>
     <string name="thirtyMinutes">30 minutes</string>
     <string name="thisWeek">Cette semaine</string>
     <string name="this_is_a_test_message">Ceci est un message de test</string>
@@ -685,8 +687,6 @@
     <string name="translation_error_title">Échec de la traduction</string>
     <string name="translation_from">De</string>
     <string name="translation_to">À</string>
-    <string name="turn_off_background_blur">Désactiver le flou d\'arrière-plan</string>
-    <string name="turn_on_background_blur">Activer le flou d\'arrière-plan</string>
     <string name="typing_1_other">et 1 autre sont en train de taper…</string>
     <string name="typing_are_typing">sont en train de taper...</string>
     <string name="typing_is_typing">est en train de taper...</string>
@@ -695,7 +695,9 @@
     <string name="unarchive_hint">Une fois qu\'une conversation est désarchivée, elle sera à nouveau affichée par défaut.</string>
     <string name="unarchived_conversation">%1$s non archivée</string>
     <string name="unban">Retirer le ban</string>
+    <string name="unpin_message">Désépingler le message</string>
     <string name="unread">Non lu</string>
+    <string name="until_unpin">Jusqu\'au désépinglage</string>
     <string name="upload_new_avatar_from_device">Téléverser un nouvel avatar depuis l\'appareil</string>
     <string name="user_absence">%1$s est absent et pourrait ne pas répondre.</string>
     <string name="user_absence_for_one_day">%1$s est absent aujourd\'hui</string>

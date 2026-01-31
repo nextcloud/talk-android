@@ -27,6 +27,50 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
         val TAG: String = NetworkLoginDataSource::class.java.simpleName
     }
 
+    fun oneTimePasswordRequest(baseUrl: String, oneTimeCredentials: String): String? {
+        val url = "$baseUrl/ocs/v2.php/core/getapppassword-onetime"
+        var result: String? = null
+        runCatching {
+            val response = getResponseOfOTPRequest(url, oneTimeCredentials)
+            val jsonObject: JsonObject = JsonParser.parseString(response).asJsonObject
+            val appPassword = jsonObject
+                .getAsJsonObject("ocs")
+                .getAsJsonObject("data")
+                .get("apppassword").asString
+
+            result = appPassword
+        }.getOrElse { e ->
+            when (e) {
+                is SSLHandshakeException,
+                is NullPointerException,
+                is IOException -> {
+                    Log.e(TAG, "Error caught at oneTimePasswordRequest: $e")
+                }
+
+                else -> throw e
+            }
+        }
+
+        return result
+    }
+
+    private fun getResponseOfOTPRequest(url: String, oneTimeCredentials: String): String? {
+        val request = Request.Builder() // GET is default
+            .url(url)
+            .header("Authorization", oneTimeCredentials)
+            .header("OCS-APIRequest", "true")
+            .header("Accept", "application/json")
+            .build()
+
+        val newOkHttpClient = OkHttpClient()
+        newOkHttpClient.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) {
+                throw IOException("Unexpected code $response")
+            }
+            return response.body?.string()
+        }
+    }
+
     fun anonymouslyPostLoginRequest(baseUrl: String): LoginResponse? {
         val url = "$baseUrl/index.php/login/v2"
         var result: LoginResponse? = null
