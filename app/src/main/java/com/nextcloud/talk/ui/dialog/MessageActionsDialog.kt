@@ -267,7 +267,8 @@ class MessageActionsDialog(
 
     private fun initEmojiBar(hasReactPermission: Boolean) {
         if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REACTIONS) &&
-            isPermitted(hasReactPermission) &&
+            hasReactPermission &&
+            isConversationWritable() &&
             isReactableMessageType(message)
         ) {
             val recentEmojiManager = RecentEmojiManager(context, MAX_RECENTS)
@@ -354,9 +355,8 @@ class MessageActionsDialog(
         }
     }
 
-    private fun isPermitted(hasPermission: Boolean): Boolean =
-        hasPermission &&
-            ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
+    private fun isConversationWritable(): Boolean =
+        ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
             currentConversation?.conversationReadOnlyState
 
     private fun isReactableMessageType(message: ChatMessage): Boolean =
