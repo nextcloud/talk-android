@@ -50,7 +50,8 @@ class ParticipantPermissionsTest : TestCase() {
     @Test
     fun test_reactPermissionWithReactCapability() {
         val spreedCapability = SpreedCapability()
-        spreedCapability.features = listOf("react-permission")
+        // Server with react-permission also supports chat-permission
+        spreedCapability.features = listOf("chat-permission", "react-permission")
         val conversation = createConversation()
 
         // With react-permission capability, only REACT bit matters
@@ -73,7 +74,8 @@ class ParticipantPermissionsTest : TestCase() {
     @Test
     fun test_reactPermissionDeniedWithReactCapability() {
         val spreedCapability = SpreedCapability()
-        spreedCapability.features = listOf("react-permission")
+        // Server with react-permission also supports chat-permission
+        spreedCapability.features = listOf("chat-permission", "react-permission")
         val conversation = createConversation()
 
         // With react-permission capability, only CHAT but no REACT - should NOT allow reactions
