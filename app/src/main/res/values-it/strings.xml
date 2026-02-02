@@ -171,6 +171,7 @@
     <string name="nc_common_skip">Salta</string>
     <string name="nc_common_unknown">Sconosciuto</string>
     <string name="nc_configure_cert_auth">Seleziona certificato di autenticazione</string>
+    <string name="nc_confirm">Conferma</string>
     <string name="nc_connecting_call">Connessione in corso…</string>
     <string name="nc_contacts_done">Fine</string>
     <string name="nc_conversation_description">Descrizione della conversazione</string>
@@ -408,6 +409,7 @@
     <string name="nc_room_retention">La camera è stata prenotata con successo.</string>
     <string name="nc_save_message">Salva</string>
     <string name="nc_save_success">Salvato correttamente</string>
+    <string name="nc_scheduled_time">Orario programmato</string>
     <string name="nc_screen_lock_timeout_30">30 secondi</string>
     <string name="nc_screen_lock_timeout_300">5 minuti</string>
     <string name="nc_screen_lock_timeout_60">1 minuto</string>
@@ -421,6 +423,8 @@
     <string name="nc_search_clear">Svuota ricerca</string>
     <string name="nc_select_an_account">Seleziona account</string>
     <string name="nc_send_edit_message">Aggiorna messaggio</string>
+    <string name="nc_send_later">Invia più tardi</string>
+    <string name="nc_send_now">Spedisci ora</string>
     <string name="nc_send_voice_recording">Invia registrazione vocale</string>
     <string name="nc_sensitive_conversation">Conversazione delicata</string>
     <string name="nc_sensitive_conversation_hint">L\'anteprima dei messaggi sarà disabilitata nell\'elenco delle conversazioni e nelle notifiche.</string>

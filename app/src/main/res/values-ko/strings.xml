@@ -287,6 +287,8 @@
     <string name="nc_search">검색</string>
     <string name="nc_search_clear">찾기 초기화</string>
     <string name="nc_select_an_account">계정 선택</string>
+    <string name="nc_send_later">나중에 보내기</string>
+    <string name="nc_send_now">지금 보내기</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s님이 GIF를 보냈습니다.</string>
     <string name="nc_sent_a_gif_you">GIF를 보냈습니다.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s님이 영상 파일을 보냈습니다.</string>

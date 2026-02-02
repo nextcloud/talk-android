@@ -170,6 +170,7 @@
     <string name="nc_common_skip">Saltar</string>
     <string name="nc_common_unknown">Desconocido</string>
     <string name="nc_configure_cert_auth">Seleccionar certificado de autenticación</string>
+    <string name="nc_confirm">Confirmar</string>
     <string name="nc_connecting_call">Conectando …</string>
     <string name="nc_contacts_done">Hecho</string>
     <string name="nc_conversation_description">Descripción de la conversación</string>
@@ -407,6 +408,7 @@
     <string name="nc_room_retention">Se retuvo la sala de manera exitosa</string>
     <string name="nc_save_message">Guardar</string>
     <string name="nc_save_success">Guardado correctamente</string>
+    <string name="nc_scheduled_time">Hora programada</string>
     <string name="nc_screen_lock_timeout_30">30 segundos</string>
     <string name="nc_screen_lock_timeout_300">5 minutos</string>
     <string name="nc_screen_lock_timeout_60">1 minuto</string>
@@ -420,6 +422,8 @@
     <string name="nc_search_clear">Limpiar búsqueda</string>
     <string name="nc_select_an_account">Selecciona una cuenta</string>
     <string name="nc_send_edit_message">Actualizar mensaje</string>
+    <string name="nc_send_later">Enviar más tarde</string>
+    <string name="nc_send_now">Enviar ahora</string>
     <string name="nc_send_voice_recording">Enviar grabación de voz</string>
     <string name="nc_sensitive_conversation">Conversación sensible</string>
     <string name="nc_sensitive_conversation_hint">La vista previa de los mensajes será deshabilitada en la lista de conversaciones y en las notificaciones</string>

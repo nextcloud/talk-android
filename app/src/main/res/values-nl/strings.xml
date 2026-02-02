@@ -171,6 +171,7 @@
     <string name="nc_common_skip">Overslaan</string>
     <string name="nc_common_unknown">Onbekend</string>
     <string name="nc_configure_cert_auth">Selecteer authenticatiecertificaat</string>
+    <string name="nc_confirm">Bevestigen</string>
     <string name="nc_connecting_call">Verbinden …</string>
     <string name="nc_contacts_done">Gereed</string>
     <string name="nc_conversation_description">Gespreksbeschrijving</string>

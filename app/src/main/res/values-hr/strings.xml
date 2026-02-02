@@ -3,9 +3,11 @@
     <string name= "nc_edit">Uredi</string>
     <string name="add_participants">Dodaj</string>
     <string name="appbar_search_in">Traži u %s</string>
+    <string name="appear_offline">Prikaži se kao izvan mreže</string>
     <string name="archived">Arhivirano</string>
     <string name="audio_output_phone">Telefon</string>
     <string name="audio_output_speaker">Zvučnik</string>
+    <string name="automatic_status_set">Vaš status je postavljen automatski</string>
     <string name="avatar">Avatar</string>
     <string name="away">Odsutan</string>
     <string name="busy">Zauzeto</string>
@@ -32,8 +34,10 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 sata</string>
     <string name="invisible">Nevidljiva</string>
+    <string name="later_today">Kanije danas</string>
     <string name="leave_call">Napusti poziv</string>
     <string name="load_more_results">Učitaj više rezultata</string>
+    <string name="local_time">Lokalno vrijeme: %1$s</string>
     <string name="lock_conversation">Zaključaj razgovor</string>
     <string name="lock_symbol">Simbol zaključavanja</string>
     <string name="lower_hand">Spusti ruku</string>
@@ -48,6 +52,7 @@
     <string name="message_search_begin_typing">Počnite unositi tekst za pretraživanje …</string>
     <string name="message_search_hint">Traži …</string>
     <string name="messages">Poruke</string>
+    <string name="mute_all_notifications">Utišaj sve obavijesti</string>
     <string name="nc_Server_account_imported">Odabrani račun sad je uvezen i dostupan</string>
     <string name="nc_about">Informacije</string>
     <string name="nc_account_chooser_active_user">Aktivni korisnik</string>
@@ -98,6 +103,7 @@
     <string name="nc_common_skip">Preskoči</string>
     <string name="nc_common_unknown">Nepoznata pogreška</string>
     <string name="nc_configure_cert_auth">Odaberi vjerodajnicu za autentifikaciju</string>
+    <string name="nc_confirm">Potvrdi</string>
     <string name="nc_connecting_call">Povezivanje…</string>
     <string name="nc_contacts_done">Gotovo</string>
     <string name="nc_conversation_menu_conversation_info">Informacije o razgovoru</string>
@@ -187,6 +193,7 @@
     <string name="nc_message_sent">Poruka poslana</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_new_conversation">Novi razgovor</string>
+    <string name="nc_new_conversation_visibility">Vidljivost</string>
     <string name="nc_new_mention">Nepročitana spominjanja</string>
     <string name="nc_new_messages">Nove poruke</string>
     <string name="nc_nick_guest">Gost</string>
@@ -239,6 +246,7 @@
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Traži</string>
+    <string name="nc_search_clear">Izbriši pretragu</string>
     <string name="nc_select_an_account">Odaberi račun</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s je poslao GIF.</string>
     <string name="nc_sent_a_gif_you">Poslali ste GIF.</string>
@@ -320,6 +328,7 @@
     <string name="nc_sort_by">Razvrstaj prema</string>
     <string name="nc_start_time">Vrijeme početka</string>
     <string name="nc_switch_account">Zamijeni račun</string>
+    <string name="nc_team">Tim</string>
     <string name="nc_upload_choose_local_files">Odaberi datoteke</string>
     <string name="nc_upload_confirm_send_multiple">Poslati ove datoteke na %1$s?</string>
     <string name="nc_upload_confirm_send_single">Poslati ovu datoteku na %1$s?</string>
@@ -345,12 +354,15 @@
     <string name="play_pause_voice_message">Reproduciraj/pauziraj glasovnu poruku</string>
     <string name="polls_add_option">Dodaj mogućnost</string>
     <string name="polls_options">Mogućnosti</string>
+    <string name="polls_question">Pitanje</string>
     <string name="polls_results_subtitle">Rezultati</string>
     <string name="polls_settings">Postavke</string>
+    <string name="previously_set">Prethodno postavljeno</string>
     <string name="raise_hand">Podigni ruku</string>
     <string name="reactions_tab_all">Sve</string>
     <string name="read_storage_no_permission">Dijeljenje datoteka iz pohrane nije moguće bez dopuštenja</string>
     <string name="recording_settings_title">Snimanje</string>
+    <string name="reset_status">Poništi status</string>
     <string name="save">Spremi</string>
     <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Sinkroniziraj samo s pouzdanim poslužiteljima</string>
@@ -386,10 +398,12 @@
     <string name="take_photo_toggle_torch">Uključi/isključi svjetlo</string>
     <string name="thirtyMinutes">30 minuta</string>
     <string name="thisWeek">Ovaj tjedan</string>
+    <string name="this_weekend">Ovaj vikend</string>
     <string name="today">Danas</string>
     <string name="tomorrow">Sutra</string>
     <string name="translate">Prevedi</string>
     <string name="translation_device_settings">Postavke uređaja</string>
+    <string name="translation_error_message">Prepoznavanje jezika nije moguće</string>
     <string name="translation_from">Od</string>
     <string name="translation_to">Do</string>
     <string name="upload_new_avatar_from_device">Otpremi novi avatar s uređaja</string>

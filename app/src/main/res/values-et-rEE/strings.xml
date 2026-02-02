@@ -171,6 +171,7 @@
     <string name="nc_common_skip">Jäta vahele</string>
     <string name="nc_common_unknown">Teadmata</string>
     <string name="nc_configure_cert_auth">Vali autentimise sertifikaat</string>
+    <string name="nc_confirm">Kinnita</string>
     <string name="nc_connecting_call">Ühendan…</string>
     <string name="nc_contacts_done">Valmis</string>
     <string name="nc_conversation_description">Vestluse kirjeldus</string>
@@ -406,9 +407,14 @@
     <string name="nc_rename_confirm">Muuda nime</string>
     <string name="nc_reply">Vasta</string>
     <string name="nc_reply_privately">Vasta privaatselt</string>
+    <string name="nc_reschedule_message">Muuda ajastamist</string>
     <string name="nc_room_retention">Jututoa allesjätmine õnnestus</string>
     <string name="nc_save_message">Salvesta</string>
     <string name="nc_save_success">Salvestamine õnnestus</string>
+    <string name="nc_schedule_message">Ajasta sõnum</string>
+    <string name="nc_schedule_message_title">Ajasta sõnum</string>
+    <string name="nc_scheduled_messages">Ajastatud sõnumid</string>
+    <string name="nc_scheduled_time">Plaanitud aeg</string>
     <string name="nc_screen_lock_timeout_30">30 sekundit</string>
     <string name="nc_screen_lock_timeout_300">5 minutit</string>
     <string name="nc_screen_lock_timeout_60">1 minut</string>
@@ -422,6 +428,8 @@
     <string name="nc_search_clear">Tühjenda otsing</string>
     <string name="nc_select_an_account">Otsi kasutajakontot</string>
     <string name="nc_send_edit_message">Uuenda sõnumit</string>
+    <string name="nc_send_later">Saada hiljem</string>
+    <string name="nc_send_now">Saada kohe</string>
     <string name="nc_send_voice_recording">Saada helisalvestis</string>
     <string name="nc_sensitive_conversation">Vestlus tundlikul teemal</string>
     <string name="nc_sensitive_conversation_hint">Sõnumite eelvaated saava vestluste loendis ja teavitustes olema peidetud</string>

@@ -171,6 +171,7 @@
     <string name="nc_common_skip">Přeskočit</string>
     <string name="nc_common_unknown">Neznámé</string>
     <string name="nc_configure_cert_auth">Vyberte certifikát pro ověřování se</string>
+    <string name="nc_confirm">Potvrdit</string>
     <string name="nc_connecting_call">Připojování …</string>
     <string name="nc_contacts_done">Hotovo</string>
     <string name="nc_conversation_description">Popis konverzace</string>
@@ -406,9 +407,14 @@
     <string name="nc_rename_confirm">Přejmenovat</string>
     <string name="nc_reply">Odpovědět</string>
     <string name="nc_reply_privately">Odpovědět soukromě</string>
+    <string name="nc_reschedule_message">Přeplánovat</string>
     <string name="nc_room_retention">Místnost je úspěšně ponechána</string>
     <string name="nc_save_message">Uložit</string>
     <string name="nc_save_success">Úspěšně uloženo</string>
+    <string name="nc_schedule_message">Naplánovat zprávu</string>
+    <string name="nc_schedule_message_title">Naplánovat zprávu</string>
+    <string name="nc_scheduled_messages">Naplánované zprávy</string>
+    <string name="nc_scheduled_time">Naplánovaný čas</string>
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
     <string name="nc_screen_lock_timeout_300">5 minut</string>
     <string name="nc_screen_lock_timeout_60">1 minuta</string>
@@ -422,6 +428,8 @@
     <string name="nc_search_clear">Vyčistit hledání</string>
     <string name="nc_select_an_account">Vyberte účet</string>
     <string name="nc_send_edit_message">Aktualizovat zprávu</string>
+    <string name="nc_send_later">Odeslat později</string>
+    <string name="nc_send_now">Odeslat nyní</string>
     <string name="nc_send_voice_recording">Odeslat hlasovou nahrávku</string>
     <string name="nc_sensitive_conversation">Citlivá konverzace</string>
     <string name="nc_sensitive_conversation_hint">Náhled zprávy bude vypnut pro seznam konverzací a notifikace</string>

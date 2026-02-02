@@ -153,6 +153,7 @@
     <string name="nc_common_skip">Hopp over</string>
     <string name="nc_common_unknown">Ukjent</string>
     <string name="nc_configure_cert_auth">Velg sertifikat for autentisering</string>
+    <string name="nc_confirm">Bekreft</string>
     <string name="nc_connecting_call">Kobler til...</string>
     <string name="nc_contacts_done">Ferdig</string>
     <string name="nc_conversation_description">Samtalebeskrivelse</string>
@@ -378,6 +379,8 @@
     <string name="nc_search">Søk</string>
     <string name="nc_search_clear">Tøm søk</string>
     <string name="nc_select_an_account">Velg en konto</string>
+    <string name="nc_send_later">Send senere</string>
+    <string name="nc_send_now">Send nå</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s sendte en GIF.</string>
     <string name="nc_sent_a_gif_you">Du sendte en GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s sendte en video.</string>

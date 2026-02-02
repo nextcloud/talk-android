@@ -171,6 +171,7 @@
     <string name="nc_common_skip">跳過</string>
     <string name="nc_common_unknown">未知</string>
     <string name="nc_configure_cert_auth">選擇驗證憑證</string>
+    <string name="nc_confirm">確認</string>
     <string name="nc_connecting_call">連線中 …</string>
     <string name="nc_contacts_done">完成</string>
     <string name="nc_conversation_description">對話描述</string>
@@ -406,9 +407,14 @@
     <string name="nc_rename_confirm">重新命名</string>
     <string name="nc_reply">回覆</string>
     <string name="nc_reply_privately">私下回覆</string>
+    <string name="nc_reschedule_message">重新安排</string>
     <string name="nc_room_retention">聊天室已成功保留</string>
     <string name="nc_save_message">儲存</string>
     <string name="nc_save_success">已成功儲存</string>
+    <string name="nc_schedule_message">安排訊息</string>
+    <string name="nc_schedule_message_title">安排訊息</string>
+    <string name="nc_scheduled_messages">已排定的訊息</string>
+    <string name="nc_scheduled_time">排定時間</string>
     <string name="nc_screen_lock_timeout_30">30秒</string>
     <string name="nc_screen_lock_timeout_300">5分鐘</string>
     <string name="nc_screen_lock_timeout_60">一分鐘</string>
@@ -422,6 +428,8 @@
     <string name="nc_search_clear">清除搜尋</string>
     <string name="nc_select_an_account">選擇一個帳號</string>
     <string name="nc_send_edit_message">更新訊息</string>
+    <string name="nc_send_later">稍後傳送</string>
+    <string name="nc_send_now">立刻傳送</string>
     <string name="nc_send_voice_recording">傳送語音錄音</string>
     <string name="nc_sensitive_conversation">敏感對話</string>
     <string name="nc_sensitive_conversation_hint">對話清單與通知中的訊息預覽將停用</string>

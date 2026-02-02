@@ -171,6 +171,7 @@
     <string name="nc_common_skip">Пропустить</string>
     <string name="nc_common_unknown">Неизвестно</string>
     <string name="nc_configure_cert_auth">Выбрать сертификат для аутентификации</string>
+    <string name="nc_confirm">Подтвердить</string>
     <string name="nc_connecting_call">Соединение…</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_description">Описание обсуждения</string>
@@ -406,9 +407,14 @@
     <string name="nc_rename_confirm">Переименовать</string>
     <string name="nc_reply">Ответить</string>
     <string name="nc_reply_privately">Ответить личным сообщением</string>
+    <string name="nc_reschedule_message">Перенести</string>
     <string name="nc_room_retention">Комната сохранена успешно</string>
     <string name="nc_save_message">Сохранить</string>
     <string name="nc_save_success">Сохранено успешно</string>
+    <string name="nc_schedule_message">Запланировать сообщение</string>
+    <string name="nc_schedule_message_title">Запланировать сообщение</string>
+    <string name="nc_scheduled_messages">Запланированные сообщения</string>
+    <string name="nc_scheduled_time">Запланированное время</string>
     <string name="nc_screen_lock_timeout_30">30 секунд</string>
     <string name="nc_screen_lock_timeout_300">5 минут</string>
     <string name="nc_screen_lock_timeout_60">1 минута</string>
@@ -422,6 +428,8 @@
     <string name="nc_search_clear">Очистить поиск</string>
     <string name="nc_select_an_account">Выберите учётную запись</string>
     <string name="nc_send_edit_message">Обновить сообщение</string>
+    <string name="nc_send_later">Отправить позже</string>
+    <string name="nc_send_now">Отправить сейчас</string>
     <string name="nc_send_voice_recording">Послать голосовую запись</string>
     <string name="nc_sensitive_conversation">Конфиденциальное обсуждение</string>
     <string name="nc_sensitive_conversation_hint">Предварительный просмотр сообщений будет отключен в списке обсуждений и уведомлениях</string>
