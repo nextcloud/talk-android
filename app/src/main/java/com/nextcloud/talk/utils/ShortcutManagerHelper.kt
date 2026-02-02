@@ -9,6 +9,7 @@ package com.nextcloud.talk.utils
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
@@ -26,62 +27,31 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
  */
 object ShortcutManagerHelper {
 
+    private const val TAG = "ShortcutManagerHelper"
     private const val MAX_DYNAMIC_SHORTCUTS = 4
     private const val CONVERSATION_SHORTCUT_PREFIX = "conversation_"
 
     /**
-     * Creates a shortcut for a conversation.
-     *
-     * @param context Application context
-     * @param conversation The conversation to create a shortcut for
-     * @param user The user account associated with the conversation
-     * @return ShortcutInfoCompat ready to be added via ShortcutManagerCompat
-     */
-    fun createConversationShortcut(
-        context: Context,
-        conversation: ConversationModel,
-        user: User
-    ): ShortcutInfoCompat {
-        val shortcutId = getShortcutId(conversation.token, user.id!!)
-        val displayName = conversation.displayName.ifBlank { conversation.name }
-
-        // Use custom URI scheme for the intent
-        val uri = DeepLinkHandler.createConversationUri(conversation.token, user.id)
-        val intent = Intent(Intent.ACTION_VIEW, uri).apply {
-            setPackage(context.packageName)
-        }
-
-        // Use the app icon as the shortcut icon - avatar loading would require async operations
-        val icon = IconCompat.createWithResource(context, R.drawable.baseline_chat_bubble_outline_24)
-
-        return ShortcutInfoCompat.Builder(context, shortcutId)
-            .setShortLabel(displayName)
-            .setLongLabel(displayName)
-            .setIcon(icon)
-            .setIntent(intent)
-            .build()
-    }
-
-    /**
-     * Creates a shortcut using bundle extras (alternative to URI scheme).
+     * Creates a shortcut for a conversation using bundle extras.
      * This matches the existing Note To Self shortcut pattern.
      *
      * @param context Application context
      * @param conversation The conversation to create a shortcut for
      * @param user The user account associated with the conversation
-     * @return ShortcutInfoCompat ready to be added via ShortcutManagerCompat
+     * @return ShortcutInfoCompat ready to be added, or null if user ID is invalid
      */
-    fun createConversationShortcutWithBundle(
-        context: Context,
-        conversation: ConversationModel,
-        user: User
-    ): ShortcutInfoCompat {
-        val shortcutId = getShortcutId(conversation.token, user.id!!)
+    fun createConversationShortcut(context: Context, conversation: ConversationModel, user: User): ShortcutInfoCompat? {
+        val userId = user.id ?: run {
+            Log.w(TAG, "Cannot create shortcut: user ID is null")
+            return null
+        }
+
+        val shortcutId = getShortcutId(conversation.token, userId)
         val displayName = conversation.displayName.ifBlank { conversation.name }
 
         val bundle = Bundle().apply {
             putString(BundleKeys.KEY_ROOM_TOKEN, conversation.token)
-            putLong(BundleKeys.KEY_INTERNAL_USER_ID, user.id!!)
+            putLong(BundleKeys.KEY_INTERNAL_USER_ID, userId)
         }
 
         val intent = Intent(context, MainActivity::class.java).apply {
@@ -107,11 +77,12 @@ object ShortcutManagerHelper {
      * @param conversations List of all conversations
      * @param user The current user
      */
-    fun updateDynamicShortcuts(
-        context: Context,
-        conversations: List<ConversationModel>,
-        user: User
-    ) {
+    fun updateDynamicShortcuts(context: Context, conversations: List<ConversationModel>, user: User) {
+        val userId = user.id ?: run {
+            Log.w(TAG, "Cannot update shortcuts: user ID is null")
+            return
+        }
+
         // Remove existing conversation shortcuts (keep Note To Self shortcut)
         val existingShortcuts = ShortcutManagerCompat.getDynamicShortcuts(context)
         val conversationShortcutIds = existingShortcuts
@@ -131,8 +102,9 @@ object ShortcutManagerHelper {
 
         // Create and push shortcuts
         topConversations.forEach { conversation ->
-            val shortcut = createConversationShortcutWithBundle(context, conversation, user)
-            ShortcutManagerCompat.pushDynamicShortcut(context, shortcut)
+            createConversationShortcut(context, conversation, user)?.let { shortcut ->
+                ShortcutManagerCompat.pushDynamicShortcut(context, shortcut)
+            }
         }
     }
 
@@ -144,18 +116,13 @@ object ShortcutManagerHelper {
      * @param user The user account associated with the conversation
      * @return true if the pin request was successfully sent, false otherwise
      */
-    fun requestPinShortcut(
-        context: Context,
-        conversation: ConversationModel,
-        user: User
-    ): Boolean {
+    fun requestPinShortcut(context: Context, conversation: ConversationModel, user: User): Boolean {
         if (!ShortcutManagerCompat.isRequestPinShortcutSupported(context)) {
-            // Fall back to legacy shortcut broadcast
             return createLegacyShortcut(context, conversation, user)
         }
 
-        val shortcut = createConversationShortcutWithBundle(context, conversation, user)
-        return ShortcutManagerCompat.requestPinShortcut(context, shortcut, null)
+        val shortcut = createConversationShortcut(context, conversation, user)
+        return shortcut != null && ShortcutManagerCompat.requestPinShortcut(context, shortcut, null)
     }
 
     /**
@@ -167,16 +134,17 @@ object ShortcutManagerHelper {
      * @return true if the broadcast was sent successfully
      */
     @Suppress("DEPRECATION")
-    private fun createLegacyShortcut(
-        context: Context,
-        conversation: ConversationModel,
-        user: User
-    ): Boolean {
+    private fun createLegacyShortcut(context: Context, conversation: ConversationModel, user: User): Boolean {
+        val userId = user.id ?: run {
+            Log.w(TAG, "Cannot create legacy shortcut: user ID is null")
+            return false
+        }
+
         val displayName = conversation.displayName.ifBlank { conversation.name }
 
         val bundle = Bundle().apply {
             putString(BundleKeys.KEY_ROOM_TOKEN, conversation.token)
-            putLong(BundleKeys.KEY_INTERNAL_USER_ID, user.id!!)
+            putLong(BundleKeys.KEY_INTERNAL_USER_ID, userId)
         }
 
         val launchIntent = Intent(context, MainActivity::class.java).apply {
@@ -196,7 +164,11 @@ object ShortcutManagerHelper {
         return try {
             context.sendBroadcast(shortcutIntent)
             true
-        } catch (e: Exception) {
+        } catch (e: SecurityException) {
+            Log.e(TAG, "Failed to create legacy shortcut: permission denied", e)
+            false
+        } catch (e: IllegalArgumentException) {
+            Log.e(TAG, "Failed to create legacy shortcut: invalid arguments", e)
             false
         }
     }
@@ -228,7 +200,6 @@ object ShortcutManagerHelper {
     /**
      * Generates a unique shortcut ID for a conversation.
      */
-    private fun getShortcutId(roomToken: String, userId: Long): String {
-        return "${CONVERSATION_SHORTCUT_PREFIX}${userId}_$roomToken"
-    }
+    private fun getShortcutId(roomToken: String, userId: Long): String =
+        "${CONVERSATION_SHORTCUT_PREFIX}${userId}_$roomToken"
 }
