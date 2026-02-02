@@ -20,14 +20,15 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="start|center_vertical"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
+        android:paddingBottom="@dimen/standard_padding"
         android:text="@string/audio_output_dialog_headline"
-        android:textColor="@color/medium_emphasis_text_dark_background"
-        android:textSize="@dimen/bottom_sheet_text_size" />
+        android:textColor="@color/high_emphasis_text_dark_background"
+        android:textSize="@dimen/bottom_sheet_title_size" />
 
     <LinearLayout
         android:id="@+id/audio_output_bluetooth"
@@ -36,8 +37,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -53,7 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingStart="@dimen/standard_dialog_padding"
             android:paddingEnd="@dimen/zero"
             android:text="@string/audio_output_bluetooth"
             android:textAlignment="viewStart"
@@ -69,8 +70,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -86,7 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingStart="@dimen/standard_dialog_padding"
             android:paddingEnd="@dimen/zero"
             android:text="@string/audio_output_speaker"
             android:textAlignment="viewStart"
@@ -102,8 +103,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -119,7 +120,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingStart="@dimen/standard_dialog_padding"
             android:paddingEnd="@dimen/zero"
             android:text="@string/audio_output_phone"
             android:textAlignment="viewStart"
@@ -135,8 +136,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -152,7 +153,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingStart="@dimen/standard_dialog_padding"
             android:paddingEnd="@dimen/zero"
             android:text="@string/audio_output_wired_headset"
             android:textAlignment="viewStart"

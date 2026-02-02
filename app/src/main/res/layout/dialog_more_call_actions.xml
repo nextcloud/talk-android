@@ -22,8 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fadingEdgeLength="30dp"
-        android:layout_marginStart="@dimen/standard_margin"
-        android:layout_marginEnd="@dimen/standard_margin"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         android:requiresFadingEdge="horizontal"
         android:scrollbars="none">
 
@@ -41,14 +41,15 @@
 
     <TextView
         android:id="@+id/advanced_call_options_title"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="start|center_vertical"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
+        android:paddingBottom="@dimen/standard_padding"
         android:text="@string/call_more_actions_dialog_headline"
-        android:textColor="@color/medium_emphasis_text_dark_background"
-        android:textSize="@dimen/bottom_sheet_text_size" />
+        android:textColor="@color/high_emphasis_text_dark_background"
+        android:textSize="@dimen/bottom_sheet_title_size" />
 
     <LinearLayout
         android:id="@+id/raise_hand"
@@ -57,8 +58,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -74,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingStart="@dimen/standard_dialog_padding"
             android:paddingEnd="@dimen/zero"
             android:text="@string/raise_hand"
             android:textAlignment="viewStart"
@@ -90,8 +91,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -107,7 +108,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingStart="@dimen/standard_dialog_padding"
             android:paddingEnd="@dimen/zero"
             android:text="@string/record_start_description"
             android:textAlignment="viewStart"
