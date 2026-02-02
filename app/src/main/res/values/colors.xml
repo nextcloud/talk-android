@@ -27,11 +27,10 @@
 
     <!-- general text colors for dark background -->
     <color name="high_emphasis_text_dark_background">#deffffff</color>
-    <color name="medium_emphasis_text_dark_background">#99ffffff</color>
 
     <!-- bottom sheet specific icon default color -->
-    <color name="high_emphasis_menu_icon_inverse">#8Affffff</color>
-    <color name="high_emphasis_menu_icon">#8A000000</color>
+    <color name="high_emphasis_menu_icon_inverse">@color/high_emphasis_text_dark_background</color>
+    <color name="high_emphasis_menu_icon">@color/high_emphasis_text</color>
 
     <!-- Text color of sent messages -->
     <color name="nc_outcoming_text_default">#FFFFFF</color>

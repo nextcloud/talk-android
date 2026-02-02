@@ -21,15 +21,16 @@
 
     <TextView
         android:id="@+id/upload"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="start|center_vertical"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
+        android:paddingBottom="@dimen/standard_padding"
         android:text="@string/nc_add_file"
         android:textAlignment="viewStart"
-        android:textColor="@color/medium_emphasis_text"
-        android:textSize="@dimen/bottom_sheet_text_size" />
+        android:textColor="@color/high_emphasis_text"
+        android:textSize="@dimen/bottom_sheet_title_size" />
 
     <LinearLayout
         android:id="@+id/menu_attach_picture_from_cam"
@@ -38,8 +39,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -55,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingStart="@dimen/standard_dialog_padding"
             android:paddingEnd="@dimen/zero"
             android:text="@string/nc_upload_picture_from_cam"
             android:textAlignment="viewStart"
@@ -71,8 +72,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -88,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingStart="@dimen/standard_dialog_padding"
             android:paddingEnd="@dimen/zero"
             android:text="@string/nc_upload_video_from_cam"
             android:textAlignment="viewStart"
@@ -104,8 +105,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -121,7 +122,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingStart="@dimen/standard_dialog_padding"
             android:paddingEnd="@dimen/zero"
             android:text="@string/nc_gallery"
             android:textAlignment="viewStart"
@@ -137,8 +138,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -154,7 +155,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingStart="@dimen/standard_dialog_padding"
             android:paddingEnd="@dimen/zero"
             android:text="@string/nc_upload_from_device"
             android:textAlignment="viewStart"
@@ -170,8 +171,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -187,7 +188,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingStart="@dimen/standard_dialog_padding"
             android:paddingEnd="@dimen/zero"
             android:textAlignment="viewStart"
             android:textColor="@color/high_emphasis_text"
@@ -199,8 +200,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginEnd="@dimen/zero"
         android:background="@color/low_emphasis_text"/>
 
     <LinearLayout
@@ -210,8 +211,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -227,7 +228,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingStart="@dimen/standard_dialog_padding"
             android:paddingEnd="@dimen/zero"
             android:text="@string/start_thread"
             android:textAlignment="viewStart"
@@ -243,8 +244,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -260,7 +261,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingStart="@dimen/standard_dialog_padding"
             android:paddingEnd="@dimen/zero"
             android:text="@string/nc_create_poll"
             android:textAlignment="viewStart"
@@ -276,8 +277,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -293,7 +294,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingStart="@dimen/standard_dialog_padding"
             android:paddingEnd="@dimen/zero"
             android:text="@string/nc_share_location"
             android:textAlignment="viewStart"
@@ -309,8 +310,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -326,7 +327,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingStart="@dimen/standard_dialog_padding"
             android:paddingEnd="@dimen/zero"
             android:text="@string/nc_share_contact"
             android:textAlignment="viewStart"
