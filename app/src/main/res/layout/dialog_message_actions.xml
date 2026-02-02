@@ -398,7 +398,7 @@
                     android:contentDescription="@null"
                     android:paddingStart="@dimen/standard_padding"
                     android:paddingEnd="@dimen/zero"
-                    android:src="@drawable/ic_eye_off"
+                    android:src="@drawable/ic_mark_chat_unread_24px"
                     app:tint="@color/high_emphasis_menu_icon" />
 
                 <androidx.appcompat.widget.AppCompatTextView
