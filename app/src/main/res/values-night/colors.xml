@@ -24,7 +24,7 @@
     <color name="low_emphasis_text">#61ffffff</color>
 
     <!-- bottom sheet specific icon default color -->
-    <color name="high_emphasis_menu_icon">#8Affffff</color>
+    <color name="high_emphasis_menu_icon">@color/high_emphasis_text</color>
 
     <color name="bg_default">#121212</color>
     <color name="bg_default_semitransparent">#99121212</color>
