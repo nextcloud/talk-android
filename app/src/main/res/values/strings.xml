@@ -930,6 +930,5 @@ How to translate with transifex:
     <string name="nc_scheduled_messages_empty">No scheduled messages</string>
     <string name="nc_schedule_message_without_notification">Send later without notification</string>
     <string name="nc_in_conversation">In %1$s</string>
-    <string name="no_scheduled_messages_offline">No connection to server - Scheduled messages could not be
-        loaded</string>
+    <string name="no_scheduled_messages_offline">No connection to server - Scheduled messages could not be loaded</string>
 </resources>
