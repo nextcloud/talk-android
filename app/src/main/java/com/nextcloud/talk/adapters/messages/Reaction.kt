@@ -17,6 +17,7 @@ import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.vanniktech.emoji.EmojiTextView
+import java.util.Locale
 
 class Reaction {
 
@@ -140,7 +141,7 @@ class Reaction {
     ): TextView {
         val reactionAmount = TextView(context)
         reactionAmount.setTextColor(textColor)
-        reactionAmount.text = amount.toString()
+        reactionAmount.text = String.format(Locale.getDefault(), "%d", amount)
         reactionAmount.layoutParams = layoutParams
         return reactionAmount
     }
