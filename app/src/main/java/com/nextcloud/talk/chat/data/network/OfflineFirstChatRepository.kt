@@ -253,7 +253,7 @@ class OfflineFirstChatRepository @Inject constructor(
             } else {
                 amountBetween
             }
-            Log.d(TAG, "limit of messages to load for UI (max 100 to ensure performance is okay):$limit")
+            Log.d(TAG, "limit of messages to load for UI (max 200 to ensure performance is okay):$limit")
             return limit
         } else {
             Log.e(TAG, "No chat block found. Returning 0 as limit.")
@@ -1256,7 +1256,7 @@ class OfflineFirstChatRepository @Inject constructor(
         private const val HTTP_CODE_PRECONDITION_FAILED = 412
         private const val HALF_SECOND = 500L
         private const val DELAY_TO_ENSURE_MESSAGES_ARE_ADDED: Long = 100
-        private const val DEFAULT_MESSAGES_LIMIT = 100
+        private const val DEFAULT_MESSAGES_LIMIT = 200
         private const val MILLIES = 1000
     }
 }
