@@ -129,26 +129,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="nctalk" />
-            </intent-filter>
-
-            <!-- HTTP/HTTPS deep links for opening Talk conversation links -->
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" />
-                <data android:host="*" />
-                <data android:pathPrefix="/call/" />
-            </intent-filter>
-
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" />
-                <data android:host="*" />
-                <data android:pathPrefix="/index.php/call/" />
+                <data android:scheme="nextcloudtalk" />
             </intent-filter>
         </activity>
 
