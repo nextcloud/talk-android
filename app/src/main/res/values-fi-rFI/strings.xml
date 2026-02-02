@@ -259,6 +259,7 @@
     <string name="nc_search">Etsi</string>
     <string name="nc_search_clear">Tyhjennä haku</string>
     <string name="nc_select_an_account">Valitse tili</string>
+    <string name="nc_send_later">Lähetä myöhemmin</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s lähetti GIF-kuvan.</string>
     <string name="nc_sent_a_gif_you">Lähetit GIF-kuvan.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s lähetti videon.</string>
@@ -409,6 +410,7 @@
     <string name="thirtyMinutes">30 minuuttia</string>
     <string name="thisWeek">Tämä viikko</string>
     <string name="this_weekend">Tämä viikonloppu</string>
+    <string name="thread_reply">Vastaa</string>
     <string name="today">Tänään</string>
     <string name="tomorrow">Huomenna</string>
     <string name="translate">Käännä</string>

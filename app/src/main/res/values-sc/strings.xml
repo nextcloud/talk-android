@@ -96,6 +96,7 @@
     <string name="nc_common_skip">Brinca</string>
     <string name="nc_common_unknown">Disconnotu</string>
     <string name="nc_configure_cert_auth">Seletziona tzertificadu autenticatzione</string>
+    <string name="nc_confirm">Cunfirma</string>
     <string name="nc_connecting_call">Connetende …</string>
     <string name="nc_contacts_done">Fatu</string>
     <string name="nc_conversation_menu_conversation_info">Informatziones de resonada</string>

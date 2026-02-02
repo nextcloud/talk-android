@@ -170,6 +170,7 @@
     <string name="nc_common_skip">Пропустити</string>
     <string name="nc_common_unknown">Невідомо</string>
     <string name="nc_configure_cert_auth">Вибрати сертифікат авторизації</string>
+    <string name="nc_confirm">Підтвердити</string>
     <string name="nc_connecting_call">Підключення ...</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_description">Опис розмови</string>
@@ -407,6 +408,7 @@
     <string name="nc_room_retention">Приміщення успішно утримується</string>
     <string name="nc_save_message">Зберегти</string>
     <string name="nc_save_success">Збережено успішно</string>
+    <string name="nc_scheduled_time">Запланований час</string>
     <string name="nc_screen_lock_timeout_30">30 секунд</string>
     <string name="nc_screen_lock_timeout_300">5 хвилин</string>
     <string name="nc_screen_lock_timeout_60">Одна хвилина</string>
@@ -420,6 +422,8 @@
     <string name="nc_search_clear">Очистити пошук</string>
     <string name="nc_select_an_account">Оберіть обліковий запис</string>
     <string name="nc_send_edit_message">Повідомлення про оновлення</string>
+    <string name="nc_send_later">Надішліть пізніше</string>
+    <string name="nc_send_now">Надіслати зараз</string>
     <string name="nc_send_voice_recording">Надіслати запис голосу</string>
     <string name="nc_sensitive_conversation">Делікатна розмова</string>
     <string name="nc_sensitive_conversation_hint">Попередній перегляд повідомлень буде вимкнено у списку розмов та сповіщеннях</string>

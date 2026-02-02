@@ -171,6 +171,7 @@
     <string name="nc_common_skip">Ruka</string>
     <string name="nc_common_unknown">Haijulikani</string>
     <string name="nc_configure_cert_auth">Chagua cheti cha uthibitishaji</string>
+    <string name="nc_confirm">Thibitisha</string>
     <string name="nc_connecting_call">Inaunganisha...</string>
     <string name="nc_contacts_done">Imefanyika</string>
     <string name="nc_conversation_description">Maelezo ya mazungumzo</string>
@@ -410,6 +411,7 @@
     <string name="nc_room_retention">Chumba kimehifadhiwa kikamilifu</string>
     <string name="nc_save_message">Hifadhi</string>
     <string name="nc_save_success">Imehifadhiwa kikamilifu</string>
+    <string name="nc_scheduled_time">Muda uliopangwa</string>
     <string name="nc_screen_lock_timeout_30">Sekunde 30</string>
     <string name="nc_screen_lock_timeout_300">Dakika 5</string>
     <string name="nc_screen_lock_timeout_60">Dakika 1</string>

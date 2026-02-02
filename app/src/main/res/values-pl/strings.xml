@@ -171,6 +171,7 @@
     <string name="nc_common_skip">Pomiń</string>
     <string name="nc_common_unknown">Nieznany</string>
     <string name="nc_configure_cert_auth">Wybierz certyfikat uwierzytelnienia</string>
+    <string name="nc_confirm">Potwierdź</string>
     <string name="nc_connecting_call">Łączę…</string>
     <string name="nc_contacts_done">Gotowe</string>
     <string name="nc_conversation_description">Opis rozmowy</string>
@@ -406,9 +407,14 @@
     <string name="nc_rename_confirm">Zmień nazwę</string>
     <string name="nc_reply">Odpowiedz</string>
     <string name="nc_reply_privately">Odpowiedz prywatnie</string>
+    <string name="nc_reschedule_message">Zmień harmonogram</string>
     <string name="nc_room_retention">Pokój został pomyślnie zachowany</string>
     <string name="nc_save_message">Zapisz</string>
     <string name="nc_save_success">Zapisano pomyślnie</string>
+    <string name="nc_schedule_message">Zaplanuj wiadomość</string>
+    <string name="nc_schedule_message_title">Zaplanuj wiadomość</string>
+    <string name="nc_scheduled_messages">Zaplanowane wiadomości</string>
+    <string name="nc_scheduled_time">Zaplanowany czas</string>
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
     <string name="nc_screen_lock_timeout_300">5 minut</string>
     <string name="nc_screen_lock_timeout_60">1 minuta</string>
@@ -422,6 +428,8 @@
     <string name="nc_search_clear">Wyczyść wyszukiwanie</string>
     <string name="nc_select_an_account">Wybierz konto</string>
     <string name="nc_send_edit_message">Zaktualizuj wiadomość</string>
+    <string name="nc_send_later">Wyślij później</string>
+    <string name="nc_send_now">Wyślij teraz</string>
     <string name="nc_send_voice_recording">Wyślij nagranie głosowe</string>
     <string name="nc_sensitive_conversation">Rozmowa poufna</string>
     <string name="nc_sensitive_conversation_hint">Podgląd wiadomości zostanie wyłączony na liście rozmów i w powiadomieniach.</string>
@@ -567,8 +575,15 @@
     <string name="open_in_files_app">Otwórz w aplikacji Pliki</string>
     <string name="open_notes">Otwórz Notatki</string>
     <string name="open_thread">Przejdź do wątku</string>
+    <string name="pin_24hr">Przypnij na 24 godziny</string>
+    <string name="pin_30_days">Przypnij na 30 dni</string>
+    <string name="pin_7_days">Przypnij na 7 dni</string>
+    <string name="pin_indefinitely">Przypnij na czas nieokreślony</string>
     <string name="pin_message">Przypnij wiadomość</string>
     <string name="pinned">Przypięte</string>
+    <string name="pinned_by">Przypięte przez</string>
+    <string name="pinned_indefinitely">Przypięte na czas nieokreślony</string>
+    <string name="pinned_until">Przypięte do</string>
     <string name="play_pause_voice_message">Odtwórz/wstrzymaj wiadomość głosową</string>
     <string name="playback_speed_control">Kontrola prędkości odtwarzania</string>
     <string name="please_continue_the_login_process_in_the_browser">Proszę kontynuować logowanie w przeglądarce</string>

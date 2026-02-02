@@ -409,6 +409,10 @@
     <string name="nc_room_retention">Coinníodh an seomra go rathúil</string>
     <string name="nc_save_message">Sábháil</string>
     <string name="nc_save_success">Sábháilte go rathúil</string>
+    <string name="nc_schedule_message">Teachtaireacht sceidealaithe</string>
+    <string name="nc_schedule_message_title">Teachtaireacht sceidealaithe</string>
+    <string name="nc_scheduled_messages">Teachtaireachtaí sceidealaithe</string>
+    <string name="nc_scheduled_time">Am sceidealta</string>
     <string name="nc_screen_lock_timeout_30">30 soicind</string>
     <string name="nc_screen_lock_timeout_300">5 nóiméad</string>
     <string name="nc_screen_lock_timeout_60">1 nóiméad</string>
@@ -422,6 +426,7 @@
     <string name="nc_search_clear">Glan cuardach</string>
     <string name="nc_select_an_account">Roghnaigh cuntas</string>
     <string name="nc_send_edit_message">Nuashonraigh teachtaireacht</string>
+    <string name="nc_send_later">Seol níos déanaí</string>
     <string name="nc_send_voice_recording">Seol taifeadadh gutha</string>
     <string name="nc_sensitive_conversation">Comhrá íogair</string>
     <string name="nc_sensitive_conversation_hint">Díchumasófar réamhamharc teachtaireachta sa liosta comhráite agus sna fógraí</string>
