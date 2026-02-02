@@ -152,12 +152,7 @@ public abstract class CallBaseActivity extends BaseActivity {
             return true;
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            return powerManager.isInteractive();
-        } else {
-            //noinspection deprecation
-            return powerManager.isScreenOn();
-        }
+        return powerManager.isInteractive();
     }
 
     public abstract void updateUiForPipMode();

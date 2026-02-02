@@ -48,6 +48,7 @@ import eu.davidea.flexibleadapter.items.IFilterable
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.flexibleadapter.items.ISectionable
 import eu.davidea.viewholders.FlexibleViewHolder
+import java.util.Locale
 import java.util.regex.Pattern
 
 class ConversationItem(
@@ -306,7 +307,7 @@ class ConversationItem(
         holder.binding.dialogLastMessage.setTypeface(holder.binding.dialogLastMessage.typeface, Typeface.BOLD)
         holder.binding.dialogUnreadBubble.visibility = View.VISIBLE
         if (model.unreadMessages < UNREAD_MESSAGES_TRESHOLD) {
-            holder.binding.dialogUnreadBubble.text = model.unreadMessages.toLong().toString()
+            holder.binding.dialogUnreadBubble.text = String.format(Locale.getDefault(), "%d", model.unreadMessages)
         } else {
             holder.binding.dialogUnreadBubble.setText(R.string.tooManyUnreadMessages)
         }

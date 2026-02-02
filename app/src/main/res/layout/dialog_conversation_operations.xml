@@ -120,7 +120,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@null"
-                    android:src="@drawable/ic_eye"
+                    android:src="@drawable/ic_mark_chat_read_24px"
                     app:tint="@color/high_emphasis_menu_icon" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -150,7 +150,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@null"
-                    android:src="@drawable/ic_eye_off"
+                    android:src="@drawable/ic_mark_chat_unread_24px"
                     app:tint="@color/high_emphasis_menu_icon" />
 
                 <androidx.appcompat.widget.AppCompatTextView
