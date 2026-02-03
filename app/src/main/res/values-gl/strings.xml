@@ -171,6 +171,7 @@
     <string name="nc_common_skip">Omitir</string>
     <string name="nc_common_unknown">Descoñecido</string>
     <string name="nc_configure_cert_auth">Seleccionar o certificado de autenticación</string>
+    <string name="nc_confirm">Confirmar</string>
     <string name="nc_connecting_call">Conectando…</string>
     <string name="nc_contacts_done">Feito</string>
     <string name="nc_conversation_description">Descrición da conversa</string>
@@ -300,6 +301,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorar a optimización da batería</string>
     <string name="nc_important_conversation">Conversa importante</string>
     <string name="nc_important_conversation_desc">Nas conversas importantes, ignorarase o estado «Non molestar»</string>
+    <string name="nc_in_conversation">En %1$s</string>
     <string name="nc_invalid_time">Hora incorrecta</string>
     <string name="nc_invitations">Convites</string>
     <string name="nc_join_open_conversations">Unirse a conversas abertas</string>
@@ -334,6 +336,8 @@
     <string name="nc_message_offline">Sen conexión</string>
     <string name="nc_message_quote_cancel_reply">Cancelar a resposta</string>
     <string name="nc_message_read">Mensaxe lida</string>
+    <string name="nc_message_scheduled">Mensaxe programada</string>
+    <string name="nc_message_scheduled_at">Mensaxe programada para %1$s</string>
     <string name="nc_message_sending">Enviando</string>
     <string name="nc_message_sent">Mensaxe enviada</string>
     <string name="nc_microphone_enabled_audio_recording">O micrófono está activado e estase a gravar o son</string>
@@ -406,12 +410,15 @@
     <string name="nc_rename_confirm">Cambiar o nome</string>
     <string name="nc_reply">Responder</string>
     <string name="nc_reply_privately">Responder en privado</string>
+    <string name="nc_reschedule_message">Reprogramar</string>
     <string name="nc_room_retention">A sala foi reservada satisfactoriamente</string>
     <string name="nc_save_message">Gardar</string>
     <string name="nc_save_success">Gardadao satisfactoriamente</string>
     <string name="nc_schedule_message">Mensaxe programada</string>
     <string name="nc_schedule_message_title">Mensaxe programada</string>
+    <string name="nc_schedule_message_without_notification">Enviar máis tarde sen notificación</string>
     <string name="nc_scheduled_messages">Mensaxes programadas</string>
+    <string name="nc_scheduled_messages_empty">Non hai ningunha mensaxe programada</string>
     <string name="nc_scheduled_time">Hora programada</string>
     <string name="nc_screen_lock_timeout_30">30 segundos</string>
     <string name="nc_screen_lock_timeout_300">5 minutos</string>
@@ -427,6 +434,7 @@
     <string name="nc_select_an_account">Seleccione unha conta</string>
     <string name="nc_send_edit_message">Actualizar a mensaxe</string>
     <string name="nc_send_later">Enviar máis tarde</string>
+    <string name="nc_send_now">Enviar agora</string>
     <string name="nc_send_voice_recording">Enviar a gravación de voz</string>
     <string name="nc_sensitive_conversation">Conversa sensíbel</string>
     <string name="nc_sensitive_conversation_hint">A vista previa da mensaxe estará desactivada na lista de conversas e nas notificacións</string>
@@ -560,6 +568,7 @@
     <string name="no_conversations_archived">Non hai conversas arquivadas</string>
     <string name="no_offline_messages_saved">Non se gardou ningunha mensaxe sen conexión</string>
     <string name="no_phone_book_integration_due_to_permissions">Non hai integración do número de teléfono por mor da falta de permisos</string>
+    <string name="no_scheduled_messages_offline">No hai conexión co servidor: non foi posíbel cargar as mensaxes programadas.</string>
     <string name="notification_all_messages">Todas as mensaxes</string>
     <string name="notification_mention_only">Só as mencións con \@</string>
     <string name="notification_off">Apagado</string>

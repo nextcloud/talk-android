@@ -171,6 +171,7 @@
     <string name="nc_common_skip">Ignorer</string>
     <string name="nc_common_unknown">Inconnu</string>
     <string name="nc_configure_cert_auth">Sélectionner le certificat d\'authentification</string>
+    <string name="nc_confirm">Confirmer</string>
     <string name="nc_connecting_call">Connexion…</string>
     <string name="nc_contacts_done">Terminé</string>
     <string name="nc_conversation_description">Description de conversation</string>
@@ -406,6 +407,7 @@
     <string name="nc_rename_confirm">Renommer</string>
     <string name="nc_reply">Répondre</string>
     <string name="nc_reply_privately">Répondre en privé</string>
+    <string name="nc_reschedule_message">Reprogrammer</string>
     <string name="nc_room_retention">Salle réservée avec succès</string>
     <string name="nc_save_message">Enregistrer</string>
     <string name="nc_save_success">Enregistré avec succès</string>
@@ -427,6 +429,7 @@
     <string name="nc_select_an_account">Choisissez un compte</string>
     <string name="nc_send_edit_message">Message de mise à jour</string>
     <string name="nc_send_later">Envoyer ultérieurement</string>
+    <string name="nc_send_now">Envoyer immédiatement</string>
     <string name="nc_send_voice_recording">Envoyer l\'enregistrement vocal</string>
     <string name="nc_sensitive_conversation">Conversation sensible</string>
     <string name="nc_sensitive_conversation_hint">La prévisualisation des messages sera désactivée dans la liste des conversations et les notifiactions</string>

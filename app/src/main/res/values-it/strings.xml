@@ -171,6 +171,7 @@
     <string name="nc_common_skip">Salta</string>
     <string name="nc_common_unknown">Sconosciuto</string>
     <string name="nc_configure_cert_auth">Seleziona certificato di autenticazione</string>
+    <string name="nc_confirm">Conferma</string>
     <string name="nc_connecting_call">Connessione in corso…</string>
     <string name="nc_contacts_done">Fine</string>
     <string name="nc_conversation_description">Descrizione della conversazione</string>

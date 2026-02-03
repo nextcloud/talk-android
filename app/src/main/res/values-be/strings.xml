@@ -171,6 +171,7 @@
     <string name="nc_common_skip">Прапусціць</string>
     <string name="nc_common_unknown">Невядомы</string>
     <string name="nc_configure_cert_auth">Выберыце сертыфікат аўтэнтыфікацыі</string>
+    <string name="nc_confirm">Пацвердзіць</string>
     <string name="nc_connecting_call">Злучэнне …</string>
     <string name="nc_contacts_done">Гатова</string>
     <string name="nc_conversation_description">Апісанне размовы</string>
@@ -409,6 +410,10 @@
     <string name="nc_room_retention">Пакой паспяхова захаваны</string>
     <string name="nc_save_message">Захаваць</string>
     <string name="nc_save_success">Паспяхова захавана</string>
+    <string name="nc_schedule_message">Запланаваць паведамленне</string>
+    <string name="nc_schedule_message_title">Запланаваць паведамленне</string>
+    <string name="nc_scheduled_messages">Запланаваныя паведамленні</string>
+    <string name="nc_scheduled_time">Запланаваны час</string>
     <string name="nc_screen_lock_timeout_30">30 секунд</string>
     <string name="nc_screen_lock_timeout_300">5 хвілін</string>
     <string name="nc_screen_lock_timeout_60">1 хвіліна</string>
@@ -422,6 +427,8 @@
     <string name="nc_search_clear">Ачысціць пошук</string>
     <string name="nc_select_an_account">Выберыце ўліковы запіс</string>
     <string name="nc_send_edit_message">Абнавіць паведамленне</string>
+    <string name="nc_send_later">Адправіць пазней</string>
+    <string name="nc_send_now">Адправіць зараз</string>
     <string name="nc_send_voice_recording">Адправіць галасавы запіс</string>
     <string name="nc_sensitive_conversation">Сакрэтная размова</string>
     <string name="nc_sensitive_conversation_hint">Перадпрагляд паведамленняў будзе адключаны ў спісе размоў і апавяшчэннях</string>

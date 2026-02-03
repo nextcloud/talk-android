@@ -103,6 +103,7 @@
     <string name="nc_common_skip">Preskoči</string>
     <string name="nc_common_unknown">Nepoznata pogreška</string>
     <string name="nc_configure_cert_auth">Odaberi vjerodajnicu za autentifikaciju</string>
+    <string name="nc_confirm">Potvrdi</string>
     <string name="nc_connecting_call">Povezivanje…</string>
     <string name="nc_contacts_done">Gotovo</string>
     <string name="nc_conversation_menu_conversation_info">Informacije o razgovoru</string>

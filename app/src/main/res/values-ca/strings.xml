@@ -161,6 +161,7 @@
     <string name="nc_common_skip">Omet</string>
     <string name="nc_common_unknown">Desconegut</string>
     <string name="nc_configure_cert_auth">Selecciona el certificat d’autenticació</string>
+    <string name="nc_confirm">Confirma</string>
     <string name="nc_connecting_call">S\'està connectant …</string>
     <string name="nc_contacts_done">Fet</string>
     <string name="nc_conversation_description">Descripció de la conversa</string>
@@ -383,6 +384,8 @@
     <string name="nc_search">Cerca</string>
     <string name="nc_search_clear">Neteja la cerca</string>
     <string name="nc_select_an_account">Selecciona un compte</string>
+    <string name="nc_send_later">Envia més tard</string>
+    <string name="nc_send_now">Envia ara</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s ha enviat un GIF.</string>
     <string name="nc_sent_a_gif_you">Heu enviat un GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s ha enviat un vídeo.</string>
