@@ -257,7 +257,7 @@ class ConversationsListViewModel @Inject constructor(
                 }?.collect { messages ->
                     _searchResultFlow.update {
                         it.filter { item ->
-                            item !is LoadMoreResultsItem
+                            item !is LoadMoreResultsItem && item !is MessageResultItem
                         } + messages
                     }
                 }
