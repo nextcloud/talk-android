@@ -139,14 +139,7 @@ class ScheduledMessagesViewModel @Inject constructor(
         }
     }
 
-    fun reschedule(
-        credentials: String,
-        url: String,
-        message: String,
-        sendAt: Int?,
-        sendWithoutNotification: Boolean,
-        threadTitle: String?
-    ) {
+    fun reschedule(credentials: String, url: String, message: String, sendAt: Int?, sendWithoutNotification: Boolean) {
         _rescheduleState.value = ScheduledMessageActionLoadingState
         viewModelScope.launch {
             chatRepository.updateScheduledChatMessage(
