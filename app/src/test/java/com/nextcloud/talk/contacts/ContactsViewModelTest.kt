@@ -76,6 +76,7 @@ class ContactsViewModelTest {
     fun `test error contacts state`() =
         runTest {
             viewModel = ContactsViewModel(FakeRepositoryError(), userProvider)
+            viewModel.getContactsFromSearchParams()
             assert(viewModel.contactsViewState.value is ContactsViewModel.ContactsUiState.Error)
             val errorState = viewModel.contactsViewState.value as ContactsViewModel.ContactsUiState.Error
             assert(errorState.message == "unable to fetch contacts")

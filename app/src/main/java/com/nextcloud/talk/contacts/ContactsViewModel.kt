@@ -55,10 +55,6 @@ class ContactsViewModel @Inject constructor(
 
     private var currentUser: User = currentUserProvider.currentUser.blockingGet()
 
-    init {
-        getContactsFromSearchParams()
-    }
-
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
     }
