@@ -2543,7 +2543,7 @@ class ChatActivity :
             (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 500)
         } else {
             Log.d(TAG, "message $messageId that should be scrolled to was not found (scrollToMessageWithId)")
-            startContextChatWindowForMessage(messageId, conversationThreadId.toString())
+            startContextChatWindowForMessage(messageId, conversationThreadId?.toString())
         }
     }
 

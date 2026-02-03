@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.requiredSizeIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -246,19 +247,35 @@ class ScheduleMessageCompose(
         val context = LocalContext.current
         Row(
             modifier = Modifier
-                .padding(start = 16.dp, end = 6.dp, top = 6.dp, bottom = 8.dp)
+                .padding(start = 8.dp, end = 8.dp, top = 6.dp, bottom = 8.dp)
                 .fillMaxWidth()
         ) {
             Text(stringResource(R.string.nc_schedule_message_title), modifier = Modifier.weight(HALF_WEIGHT))
 
-            val timeText = timeState.value.format(DateTimeFormatter.ofPattern(fullPattern(context)))
-
-            Spacer(modifier = Modifier.width(72.dp))
-
-            Text(
-                timeText,
-                modifier = Modifier.weight(HALF_WEIGHT)
+            val dateText = timeState.value.format(
+                DateTimeFormatter.ofPattern("EEE, dd MMM")
             )
+
+            val timeText = timeState.value.format(
+                DateTimeFormatter.ofPattern(
+                    if (DateFormat.is24HourFormat(context)) {
+                        "HH:mm"
+                    } else {
+                        "hh:mm a"
+                    }
+                )
+            )
+
+            Spacer(modifier = Modifier.width(44.dp))
+
+            Column(modifier = Modifier.weight(HALF_WEIGHT)) {
+                Text(
+                    text = dateText
+                )
+                Text(
+                    text = timeText
+                )
+            }
         }
         HorizontalDivider()
     }
@@ -364,7 +381,7 @@ class ScheduleMessageCompose(
         Surface(
             onClick = onClick,
             modifier = Modifier
-                .fillMaxWidth(),
+                .wrapContentWidth(),
             color = if (selected) {
                 MaterialTheme.colorScheme.inversePrimary
             } else {
@@ -375,12 +392,12 @@ class ScheduleMessageCompose(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, end = 6.dp, top = 6.dp, bottom = 8.dp),
+                    .padding(start = 8.dp, end = 6.dp, top = 6.dp, bottom = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = label, modifier = Modifier.weight(HALF_WEIGHT))
-                Spacer(modifier = Modifier.width(72.dp))
+                Spacer(modifier = Modifier.width(44.dp))
                 Text(text = timeString, modifier = Modifier.weight(HALF_WEIGHT))
             }
         }

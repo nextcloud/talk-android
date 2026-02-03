@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.chat
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -99,6 +100,9 @@ import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import com.vanniktech.emoji.EmojiEditText
 import com.vanniktech.emoji.EmojiPopup
 import java.time.Instant
@@ -161,7 +165,10 @@ class ScheduledMessagesActivity : BaseActivity() {
                         onEdit = { message, sendAt ->
                             edit(message, sendAt, user)
                         },
-                        onDeleteScheduledMessage = { message -> deleteScheduledMessage(message, user) }
+                        onDeleteScheduledMessage = { message -> deleteScheduledMessage(message, user) },
+                        onOpenParentMessage = { messageId, threadId ->
+                            openParentMessage(messageId, threadId)
+                        }
                     )
                 }
             }
@@ -206,8 +213,7 @@ class ScheduledMessagesActivity : BaseActivity() {
             ),
             message = message.message.orEmpty(),
             sendAt = sendAt,
-            sendWithoutNotification = message.silent,
-            threadTitle = message.threadTitle
+            sendWithoutNotification = message.silent
         )
     }
 
@@ -249,7 +255,8 @@ class ScheduledMessagesActivity : BaseActivity() {
         onSendNow: (ChatMessage) -> Unit,
         onReschedule: (ChatMessage, Int) -> Unit,
         onEdit: (ChatMessage, Int) -> Unit,
-        onDeleteScheduledMessage: (ChatMessage) -> Unit
+        onDeleteScheduledMessage: (ChatMessage) -> Unit,
+        onOpenParentMessage: (Long?, Long?) -> Unit
     ) {
         val snackBarHostState = remember { SnackbarHostState() }
         val scheduledState by scheduledMessagesViewModel.getScheduledMessagesState.collectAsStateWithLifecycle()
@@ -425,6 +432,14 @@ class ScheduledMessagesActivity : BaseActivity() {
                                             parentMessage = parentMessage,
                                             dateUtils = dateUtils,
                                             viewThemeUtils = viewThemeUtils,
+                                            onClick = {
+                                                val parentId = message.parentMessageId
+                                                if (message.threadId != null) {
+                                                    onOpenParentMessage(parentId, message.threadId)
+                                                } else if (parentId != null) {
+                                                    onOpenParentMessage(parentId, message.threadId)
+                                                }
+                                            },
                                             onLongPress = {
                                                 selectedMessage = message
                                                 showActionsSheet = true
@@ -595,11 +610,13 @@ class ScheduledMessagesActivity : BaseActivity() {
     }
 
     @Composable
+    @Suppress("LongMethod", "LongParameterList")
     private fun ScheduledMessageBubble(
         message: ChatMessage,
         parentMessage: ChatMessage?,
         dateUtils: DateUtils,
         viewThemeUtils: com.nextcloud.talk.ui.theme.ViewThemeUtils,
+        onClick: () -> Unit,
         onLongPress: () -> Unit
     ) {
         val context = LocalContext.current
@@ -611,6 +628,9 @@ class ScheduledMessagesActivity : BaseActivity() {
             Color(viewThemeUtils.talk.getOutgoingMessageBubbleColor(context, message.isDeleted, false))
         }
 
+        val isClickable = remember(message.threadTitle, parentMessage) {
+            !message.threadTitle.isNullOrBlank() || parentMessage != null
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -623,7 +643,19 @@ class ScheduledMessagesActivity : BaseActivity() {
                 tonalElevation = 1.dp,
                 modifier = Modifier
                     .width(IntrinsicSize.Max)
-                    .combinedClickable(onClick = {}, onLongClick = onLongPress)
+                    .then(
+                        if (isClickable) {
+                            Modifier.combinedClickable(
+                                onClick = onClick,
+                                onLongClick = onLongPress
+                            )
+                        } else {
+                            Modifier.combinedClickable(
+                                onClick = {},
+                                onLongClick = onLongPress
+                            )
+                        }
+                    )
             ) {
                 val strokeColor = MaterialTheme.colorScheme.primary
                 Column(modifier = Modifier.padding(8.dp)) {
@@ -896,6 +928,18 @@ class ScheduledMessagesActivity : BaseActivity() {
             ActionRow(icon = Icons.Outlined.Edit, text = stringResource(R.string.nc_edit), onClick = onEdit)
             ActionRow(icon = Icons.Outlined.Delete, text = stringResource(R.string.nc_delete), onClick = onDelete)
         }
+    }
+
+    private fun openParentMessage(messageId: Long?, threadId: Long?) {
+        val intent = Intent(this, ChatActivity::class.java).apply {
+            putExtra(KEY_ROOM_TOKEN, roomToken)
+            if (threadId != null && threadId > 0) {
+                putExtra(KEY_THREAD_ID, threadId)
+            } else {
+                messageId?.let { putExtra(BundleKeys.KEY_MESSAGE_ID, it.toString()) }
+            }
+        }
+        startActivity(intent)
     }
 
     @Composable
