@@ -73,6 +73,9 @@ import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.call.components.ParticipantGrid
 import com.nextcloud.talk.call.components.SelfVideoView
 import com.nextcloud.talk.call.components.screenshare.ScreenShareComponent
+import com.nextcloud.talk.camera.BackgroundBlurFrameProcessor
+import com.nextcloud.talk.camera.BlurBackgroundViewModel
+import com.nextcloud.talk.camera.BlurBackgroundViewModel.BackgroundBlurOn
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallActivityBinding
@@ -185,7 +188,6 @@ import java.util.Objects
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
-import kotlin.String
 import kotlin.math.abs
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -214,6 +216,7 @@ class CallActivity : CallBaseActivity() {
     var audioManager: WebRtcAudioManager? = null
     var callRecordingViewModel: CallRecordingViewModel? = null
     var raiseHandViewModel: RaiseHandViewModel? = null
+    val blurBackgroundViewModel: BlurBackgroundViewModel = BlurBackgroundViewModel()
     private var mReceiver: BroadcastReceiver? = null
     private var peerConnectionFactory: PeerConnectionFactory? = null
     private var screenSharePeerConnectionFactory: PeerConnectionFactory? = null
@@ -539,6 +542,20 @@ class CallActivity : CallBaseActivity() {
                     peerConnectionWrapper.raiseHand(raised)
                 }
             }
+        }
+    }
+
+    private fun initBackgroundBlurViewModel(surfaceTextureHelper: SurfaceTextureHelper) {
+        blurBackgroundViewModel.viewState.observe(this) { state ->
+            val isOn = state == BackgroundBlurOn
+
+            val processor = if (isOn) {
+                BackgroundBlurFrameProcessor(context, surfaceTextureHelper)
+            } else {
+                null
+            }
+
+            videoSource?.setVideoProcessor(processor)
         }
     }
 
@@ -1119,6 +1136,7 @@ class CallActivity : CallBaseActivity() {
             videoSource = peerConnectionFactory!!.createVideoSource(false)
 
             videoCapturer!!.initialize(surfaceTextureHelper, applicationContext, videoSource!!.capturerObserver)
+            initBackgroundBlurViewModel(surfaceTextureHelper)
         }
         localVideoTrack = peerConnectionFactory!!.createVideoTrack("NCv0", videoSource)
         localStream!!.addTrack(localVideoTrack)
@@ -1253,6 +1271,7 @@ class CallActivity : CallBaseActivity() {
                 binding!!.cameraButton.setImageResource(R.drawable.ic_videocam_white_24px)
             } else {
                 binding!!.cameraButton.setImageResource(R.drawable.ic_videocam_off_white_24px)
+                blurBackgroundViewModel.turnOffBlur()
             }
             toggleMedia(videoOn, true)
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
@@ -1327,6 +1346,10 @@ class CallActivity : CallBaseActivity() {
 
     fun clickRaiseOrLowerHandButton() {
         raiseHandViewModel!!.clickHandButton()
+    }
+
+    fun toggleBackgroundBlur() {
+        blurBackgroundViewModel.toggleBackgroundBlur()
     }
 
     public override fun onDestroy() {
