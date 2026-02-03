@@ -301,6 +301,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorar otimização da bateria</string>
     <string name="nc_important_conversation">Conversa importante</string>
     <string name="nc_important_conversation_desc">O status de usuário \"Não perturbe\" é ignorado em conversas importantes</string>
+    <string name="nc_in_conversation">Em %1$s</string>
     <string name="nc_invalid_time">Horário inválido</string>
     <string name="nc_invitations">Convites</string>
     <string name="nc_join_open_conversations">Entrar em conversas abertas</string>
@@ -335,6 +336,8 @@
     <string name="nc_message_offline">Off-line</string>
     <string name="nc_message_quote_cancel_reply">Cancelar resposta</string>
     <string name="nc_message_read">Mensagem lida</string>
+    <string name="nc_message_scheduled">Mensagem agendada</string>
+    <string name="nc_message_scheduled_at">Mensagem agendada para %1$s</string>
     <string name="nc_message_sending">Enviando</string>
     <string name="nc_message_sent">Mensagem enviada</string>
     <string name="nc_microphone_enabled_audio_recording">O microfone está ativado e o áudio está sendo gravado</string>
@@ -413,7 +416,9 @@
     <string name="nc_save_success">Salvo com sucesso</string>
     <string name="nc_schedule_message">Agendar mensagem</string>
     <string name="nc_schedule_message_title">Agendar mensagem</string>
+    <string name="nc_schedule_message_without_notification">Enviar mais tarde sem notificação</string>
     <string name="nc_scheduled_messages">Mensagens agendadas</string>
+    <string name="nc_scheduled_messages_empty">Nenhuma mensagem agendada</string>
     <string name="nc_scheduled_time">Horário agendado</string>
     <string name="nc_screen_lock_timeout_30">30 segundos</string>
     <string name="nc_screen_lock_timeout_300">5 minutos</string>
@@ -563,6 +568,7 @@
     <string name="no_conversations_archived">Nenhuma conversa arquivada</string>
     <string name="no_offline_messages_saved">Nenhuma mensagem off-line foi salva</string>
     <string name="no_phone_book_integration_due_to_permissions">Sem integração de número de telefone devido à falta de permissões</string>
+    <string name="no_scheduled_messages_offline">Sem conexão com o servidor - Não foi possível carregar as mensagens agendadas</string>
     <string name="notification_all_messages">Todas as mensagens</string>
     <string name="notification_mention_only">Apenas menções de @</string>
     <string name="notification_off">Desativadas</string>
