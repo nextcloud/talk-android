@@ -13,6 +13,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -71,7 +73,7 @@ fun PinnedMessageView(
     val pinnedBy = stringResource(R.string.pinned_by)
 
     message.actorDisplayName = remember(message.pinnedActorDisplayName) {
-        "${message.actorDisplayName}\n$pinnedBy ${message.pinnedActorDisplayName}"
+        "$pinnedBy ${message.pinnedActorDisplayName}"
     }
     val scrollState = rememberScrollState()
 
@@ -97,10 +99,6 @@ fun PinnedMessageView(
             ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
     }
 
-    val adapter = remember {
-        ComposeChatAdapter()
-    }
-
     Column(
         verticalArrangement = Arrangement.spacedBy((-SPACE_16).dp),
         modifier = Modifier
@@ -117,7 +115,14 @@ fun PinnedMessageView(
                 }
 
         ) {
-            adapter.GetComposableForMessage(message)
+            Column {
+                message.actorDisplayName?.let {
+                    Text(it)
+                }
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+                    Text(message.text)
+                }
+            }
         }
 
         var expanded by remember { mutableStateOf(false) }
