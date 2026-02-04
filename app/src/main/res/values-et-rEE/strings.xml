@@ -301,6 +301,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Eira akukasutuse optimeerimist</string>
     <string name="nc_important_conversation">Oluline vestlus</string>
     <string name="nc_important_conversation_desc">„Ära sega“ olek on oluliste vestluste puhul eiratud</string>
+    <string name="nc_in_conversation">Vestluses %1$s</string>
     <string name="nc_invalid_time">Vigane aeg</string>
     <string name="nc_invitations">Kutsed</string>
     <string name="nc_join_open_conversations">Liitu avalike vestlustega</string>
@@ -335,6 +336,8 @@
     <string name="nc_message_offline">Pole võrgus</string>
     <string name="nc_message_quote_cancel_reply">Katkesta vastamine</string>
     <string name="nc_message_read">Sõnum on loetud</string>
+    <string name="nc_message_scheduled">Sõnum on ajastatud</string>
+    <string name="nc_message_scheduled_at">Sõnumi saatmine on ajastatud: %1$s</string>
     <string name="nc_message_sending">Saatmisel</string>
     <string name="nc_message_sent">Sõnum on saadetud</string>
     <string name="nc_microphone_enabled_audio_recording">Mikrofon on lülitatud sisse ja heli on salvestamisel</string>
@@ -413,7 +416,9 @@
     <string name="nc_save_success">Salvestamine õnnestus</string>
     <string name="nc_schedule_message">Ajasta sõnum</string>
     <string name="nc_schedule_message_title">Ajasta sõnum</string>
+    <string name="nc_schedule_message_without_notification">Saada hiljem ilma teavituseta</string>
     <string name="nc_scheduled_messages">Ajastatud sõnumid</string>
+    <string name="nc_scheduled_messages_empty">Ajastatud sõnumeid pole</string>
     <string name="nc_scheduled_time">Plaanitud aeg</string>
     <string name="nc_screen_lock_timeout_30">30 sekundit</string>
     <string name="nc_screen_lock_timeout_300">5 minutit</string>
@@ -563,6 +568,7 @@
     <string name="no_conversations_archived">Arhiveeritud vestlusi pole</string>
     <string name="no_offline_messages_saved">Ühtegi vallasrežiimis salvestatud sõnumit ei leidu</string>
     <string name="no_phone_book_integration_due_to_permissions">Telefoninumbrite lõiming ei toimi puuduvate õiguste tõttu</string>
+    <string name="no_scheduled_messages_offline">Puudub ühendus serveriga. Ajastatud sõnumite andmete laadimine pole võimalik</string>
     <string name="notification_all_messages">Kõik sõnumid</string>
     <string name="notification_mention_only">Vaid @-mainimised</string>
     <string name="notification_off">Pole kasutusel</string>

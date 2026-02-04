@@ -301,6 +301,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">不用理會電池優化</string>
     <string name="nc_important_conversation">重要對話</string>
     <string name="nc_important_conversation_desc">「勿擾」用戶狀態將在重要對話中略過。</string>
+    <string name="nc_in_conversation">在 %1$s</string>
     <string name="nc_invalid_time">時間無效</string>
     <string name="nc_invitations">邀請</string>
     <string name="nc_join_open_conversations">加入公開對話</string>
@@ -335,6 +336,8 @@
     <string name="nc_message_offline">離線</string>
     <string name="nc_message_quote_cancel_reply">取消回覆</string>
     <string name="nc_message_read">訊息已讀</string>
+    <string name="nc_message_scheduled">訊息已安排好傳送時間</string>
+    <string name="nc_message_scheduled_at">訊息已安排於 %1$s 傳送</string>
     <string name="nc_message_sending">正在發送</string>
     <string name="nc_message_sent">訊息已傳送</string>
     <string name="nc_microphone_enabled_audio_recording">麥克風已啟用，音頻正在錄音</string>
@@ -413,7 +416,9 @@
     <string name="nc_save_success">保存成功</string>
     <string name="nc_schedule_message">預先安排訊息</string>
     <string name="nc_schedule_message_title">預先安排訊息</string>
+    <string name="nc_schedule_message_without_notification">稍後傳送（不發送通知）</string>
     <string name="nc_scheduled_messages">預先安排好的訊息</string>
+    <string name="nc_scheduled_messages_empty">沒有已安排傳送的訊息</string>
     <string name="nc_scheduled_time">排定時間</string>
     <string name="nc_screen_lock_timeout_30">30秒</string>
     <string name="nc_screen_lock_timeout_300">5分鐘</string>
@@ -563,6 +568,7 @@
     <string name="no_conversations_archived">沒有已封存的對話</string>
     <string name="no_offline_messages_saved">未儲存離線訊息</string>
     <string name="no_phone_book_integration_due_to_permissions">由於缺少權限而無法集成電話號碼</string>
+    <string name="no_scheduled_messages_offline">未能連線至伺服器，無法載入已安排訊息</string>
     <string name="notification_all_messages">全部消息</string>
     <string name="notification_mention_only">僅被 @提及的消息</string>
     <string name="notification_off">關閉</string>

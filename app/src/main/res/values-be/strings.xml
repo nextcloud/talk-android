@@ -301,6 +301,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Ігнараваць аптымізацыю батарэі</string>
     <string name="nc_important_conversation">Важная размова</string>
     <string name="nc_important_conversation_desc">Статус карыстальніка \"Не турбаваць\" ігнаруецца падчас важных размоў</string>
+    <string name="nc_in_conversation">У %1$s</string>
     <string name="nc_invalid_time">Памылковы час</string>
     <string name="nc_invitations">Запрашэнні</string>
     <string name="nc_join_open_conversations">Далучыцца да адкрытых размоў</string>
@@ -335,6 +336,8 @@
     <string name="nc_message_offline">Па-за сеткай</string>
     <string name="nc_message_quote_cancel_reply">Скасаваць адказ</string>
     <string name="nc_message_read">Паведамленне прачытана</string>
+    <string name="nc_message_scheduled">Паведамленне запланавана</string>
+    <string name="nc_message_scheduled_at">Паведамленне запланавана на %1$s</string>
     <string name="nc_message_sending">Адпраўка</string>
     <string name="nc_message_sent">Паведамленне адпраўлена</string>
     <string name="nc_microphone_enabled_audio_recording">Мікрафон уключаны, і гук запісваецца</string>
@@ -407,12 +410,15 @@
     <string name="nc_rename_confirm">Перайменаваць</string>
     <string name="nc_reply">Адказаць</string>
     <string name="nc_reply_privately">Адказаць прыватна</string>
+    <string name="nc_reschedule_message">Запланаваць паўторна</string>
     <string name="nc_room_retention">Пакой паспяхова захаваны</string>
     <string name="nc_save_message">Захаваць</string>
     <string name="nc_save_success">Паспяхова захавана</string>
     <string name="nc_schedule_message">Запланаваць паведамленне</string>
     <string name="nc_schedule_message_title">Запланаваць паведамленне</string>
+    <string name="nc_schedule_message_without_notification">Адправіць пазней без апавяшчэння</string>
     <string name="nc_scheduled_messages">Запланаваныя паведамленні</string>
+    <string name="nc_scheduled_messages_empty">Няма запланаваных апавяшчэнняў</string>
     <string name="nc_scheduled_time">Запланаваны час</string>
     <string name="nc_screen_lock_timeout_30">30 секунд</string>
     <string name="nc_screen_lock_timeout_300">5 хвілін</string>
@@ -562,6 +568,7 @@
     <string name="no_conversations_archived">Няма архіваваных размоў</string>
     <string name="no_offline_messages_saved">Няма захаваных пазасеткавых паведамленняў</string>
     <string name="no_phone_book_integration_due_to_permissions">Няма інтэграцыі нумара тэлефона з-за адсутнасці дазволаў</string>
+    <string name="no_scheduled_messages_offline">Няма злучэння з серверам — не ўдалося загрузіць запланаваныя паведамленні</string>
     <string name="notification_all_messages">Усе паведамленні</string>
     <string name="notification_mention_only">Толькі згадкі з @</string>
     <string name="notification_off">Выкл.</string>
