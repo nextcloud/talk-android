@@ -97,6 +97,10 @@ fun PinnedMessageView(
             ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
     }
 
+    val adapter = remember {
+        ComposeChatAdapter()
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy((-SPACE_16).dp),
         modifier = Modifier
@@ -113,7 +117,7 @@ fun PinnedMessageView(
                 }
 
         ) {
-            ComposeChatAdapter().GetComposableForMessage(message)
+            adapter.GetComposableForMessage(message)
         }
 
         var expanded by remember { mutableStateOf(false) }
