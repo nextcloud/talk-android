@@ -224,7 +224,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
 
     private fun openImageView(filename: String, mimetype: String) {
         val fullScreenImageIntent = Intent(context, FullScreenImageActivity::class.java)
-        fullScreenImageIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         fullScreenImageIntent.putExtra("FILE_NAME", filename)
         fullScreenImageIntent.putExtra("IS_GIF", isGif(mimetype))
         context.startActivity(fullScreenImageIntent)
@@ -232,7 +231,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
 
     private fun openMediaView(filename: String, mimetype: String) {
         val fullScreenMediaIntent = Intent(context, FullScreenMediaActivity::class.java)
-        fullScreenMediaIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         fullScreenMediaIntent.putExtra("FILE_NAME", filename)
         fullScreenMediaIntent.putExtra("AUDIO_ONLY", isAudioOnly(mimetype))
         context.startActivity(fullScreenMediaIntent)
@@ -240,7 +238,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
 
     private fun openTextView(filename: String, mimetype: String) {
         val fullScreenTextViewerIntent = Intent(context, FullScreenTextViewerActivity::class.java)
-        fullScreenTextViewerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         fullScreenTextViewerIntent.putExtra("FILE_NAME", filename)
         fullScreenTextViewerIntent.putExtra("IS_MARKDOWN", isMarkdown(mimetype))
         context.startActivity(fullScreenTextViewerIntent)
