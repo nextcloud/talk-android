@@ -301,6 +301,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Ignore battery optimization</string>
     <string name="nc_important_conversation">Important conversation</string>
     <string name="nc_important_conversation_desc">\"Do not disturb\" user status is ignored for important conversations</string>
+    <string name="nc_in_conversation">In %1$s</string>
     <string name="nc_invalid_time">Invalid time</string>
     <string name="nc_invitations">Invitations</string>
     <string name="nc_join_open_conversations">Join open conversations</string>
@@ -335,6 +336,8 @@
     <string name="nc_message_offline">Offline</string>
     <string name="nc_message_quote_cancel_reply">Cancel reply</string>
     <string name="nc_message_read">Message read</string>
+    <string name="nc_message_scheduled">Message scheduled</string>
+    <string name="nc_message_scheduled_at">Message scheduled for %1$s</string>
     <string name="nc_message_sending">Sending</string>
     <string name="nc_message_sent">Message sent</string>
     <string name="nc_microphone_enabled_audio_recording">Microphone is enabled and audio is recording</string>
@@ -413,7 +416,9 @@
     <string name="nc_save_success">Saved successfully</string>
     <string name="nc_schedule_message">Schedule message</string>
     <string name="nc_schedule_message_title">Schedule message</string>
+    <string name="nc_schedule_message_without_notification">Send later without notification</string>
     <string name="nc_scheduled_messages">Scheduled messages</string>
+    <string name="nc_scheduled_messages_empty">No scheduled messages</string>
     <string name="nc_scheduled_time">Scheduled time</string>
     <string name="nc_screen_lock_timeout_30">30 seconds</string>
     <string name="nc_screen_lock_timeout_300">5 minutes</string>
@@ -563,6 +568,7 @@
     <string name="no_conversations_archived">No archived conversations</string>
     <string name="no_offline_messages_saved">No offline messages saved</string>
     <string name="no_phone_book_integration_due_to_permissions">No phone number integration due to missing permissions</string>
+    <string name="no_scheduled_messages_offline">No connection to server - Scheduled messages could not be loaded</string>
     <string name="notification_all_messages">All messages</string>
     <string name="notification_mention_only">\@-mentions only</string>
     <string name="notification_off">Off</string>

@@ -149,7 +149,7 @@
     <string name="nc_certificate_dialog_text">Чи довіряєте ви невідомому сертифікату, виданому %1$s для %2$s, що дійсний з %3$s до %4$s?</string>
     <string name="nc_certificate_dialog_title">Перевірка сертифікату</string>
     <string name="nc_certificate_error">Ваші налаштування SSL завадили з’єднанню</string>
-    <string name="nc_change_cert_auth">Змінити сертифікат авторизації</string>
+    <string name="nc_change_cert_auth">Змінити сертифікат автентифікації</string>
     <string name="nc_change_password">Змінити Пароль</string>
     <string name="nc_clear_edit_button">Скасувати редагування</string>
     <string name="nc_clear_edit_message">Скасувати редагування</string>
@@ -169,7 +169,7 @@
     <string name="nc_common_set">Встановити</string>
     <string name="nc_common_skip">Пропустити</string>
     <string name="nc_common_unknown">Невідомо</string>
-    <string name="nc_configure_cert_auth">Вибрати сертифікат авторизації</string>
+    <string name="nc_configure_cert_auth">Вибрати сертифікат автентифікації</string>
     <string name="nc_confirm">Підтвердити</string>
     <string name="nc_connecting_call">Підключення ...</string>
     <string name="nc_contacts_done">Готово</string>
