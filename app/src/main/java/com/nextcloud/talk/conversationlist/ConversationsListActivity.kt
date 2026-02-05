@@ -993,6 +993,7 @@ class ConversationsListActivity :
             searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(p0: String?): Boolean {
                     initSearchDisposable()
+                    searchView!!.clearFocus()
                     return true
                 }
 
