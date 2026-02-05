@@ -232,7 +232,11 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -652,55 +656,54 @@ class ChatActivity :
         this.lifecycle.removeObserver(chatViewModel)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n", "ResourceAsColor")
     @Suppress("LongMethod")
     private fun initObservers() {
         Log.d(TAG, "initObservers Called")
-
-        this.lifecycleScope.launch {
+        lifecycleScope.launch {
             chatViewModel.getConversationFlow
-                .collect { conversationModel ->
+                .onEach { conversationModel ->
                     currentConversation = conversationModel
-                    chatViewModel.updateConversation(
-                        currentConversation!!
-                    )
-
+                    chatViewModel.updateConversation(conversationModel)
                     logConversationInfos("GetRoomSuccessState")
 
                     if (adapter == null) {
                         initAdapter()
                         binding.messagesListView.setAdapter(adapter)
-                        layoutManager = binding.messagesListView.layoutManager as LinearLayoutManager?
+                        layoutManager = binding.messagesListView.layoutManager as? LinearLayoutManager
                     }
 
-                    chatViewModel.getCapabilities(conversationUser!!, roomToken, currentConversation!!)
-
+                    chatViewModel.getCapabilities(conversationUser!!, roomToken, conversationModel)
+                }
+                .flatMapLatest { conversationModel ->
                     if (conversationModel.lastPinnedId != null &&
                         conversationModel.lastPinnedId != 0L &&
                         conversationModel.lastPinnedId != conversationModel.hiddenPinnedId
                     ) {
-                        chatViewModel
-                            .getIndividualMessageFromServer(
-                                credentials!!,
-                                conversationUser?.baseUrl!!,
-                                roomToken,
-                                conversationModel.lastPinnedId.toString()
+                        chatViewModel.getIndividualMessageFromServer(
+                            credentials!!,
+                            conversationUser?.baseUrl!!,
+                            roomToken,
+                            conversationModel.lastPinnedId.toString()
+                        )
+                    } else {
+                        flowOf(null)
+                    }
+                }
+                .collectLatest { message ->
+                    if (message != null) {
+                        binding.pinnedMessageContainer.visibility = View.VISIBLE
+                        binding.pinnedMessageComposeView.setContent {
+                            PinnedMessageView(
+                                message,
+                                viewThemeUtils,
+                                currentConversation,
+                                scrollToMessageWithIdWithOffset = ::scrollToMessageWithIdWithOffset,
+                                hidePinnedMessage = ::hidePinnedMessage,
+                                unPinMessage = ::unPinMessage
                             )
-                            .collect { message ->
-                                message?.let {
-                                    binding.pinnedMessageContainer.visibility = View.VISIBLE
-                                    binding.pinnedMessageComposeView.setContent {
-                                        PinnedMessageView(
-                                            message,
-                                            viewThemeUtils,
-                                            currentConversation,
-                                            scrollToMessageWithIdWithOffset = ::scrollToMessageWithIdWithOffset,
-                                            hidePinnedMessage = ::hidePinnedMessage,
-                                            unPinMessage = ::unPinMessage
-                                        )
-                                    }
-                                }
-                            }
+                        }
                     } else {
                         binding.pinnedMessageContainer.visibility = View.GONE
                     }
