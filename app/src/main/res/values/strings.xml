@@ -914,9 +914,12 @@ How to translate with transifex:
     <string name="pin_indefinitely">Pin indefinitely</string>
     <string name="pinned_indefinitely">Pinned indefinitely</string>
     <string name="pinned_until">Pinned until</string>
-    <string name="pinned_by">Pinned by</string>
+    <string name="pinned_by">pinned by</string>
     <string name="pinned">Pinned</string>
     <string name="until_unpin">Until unpin</string>
+    <string name="pinned_go_to_message">Go to message</string>
+    <string name="pinned_dismiss">Dismiss</string>
+    <string name="pinned_message_options">Message options</string>
 
     <string name="nc_send_later">Send later</string>
     <string name="nc_schedule_message">Schedule message</string>
