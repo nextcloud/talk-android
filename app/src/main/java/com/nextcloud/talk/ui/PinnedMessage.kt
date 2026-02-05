@@ -164,7 +164,7 @@ fun PinnedMessageView(
             IconButton(onClick = { expanded = true }) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
-                    contentDescription = "Message options",
+                    contentDescription = stringResource(R.string.pinned_message_options),
                     tint = highEmphasisColor
                 )
             }
@@ -188,7 +188,7 @@ fun PinnedMessageView(
                 HorizontalDivider()
 
                 DropdownMenuItem(
-                    text = { Text("Go to message", color = highEmphasisColor) },
+                    text = { Text(stringResource(R.string.pinned_go_to_message), color = highEmphasisColor) },
                     onClick = {
                         expanded = false
                         scrollToMessageWithIdWithOffset(message.id)
@@ -196,7 +196,7 @@ fun PinnedMessageView(
                 )
 
                 DropdownMenuItem(
-                    text = { Text("Dismiss", color = highEmphasisColor) },
+                    text = { Text(stringResource(R.string.pinned_dismiss), color = highEmphasisColor) },
                     onClick = {
                         expanded = false
                         hidePinnedMessage(message)
@@ -205,7 +205,7 @@ fun PinnedMessageView(
 
                 if (canPin) {
                     DropdownMenuItem(
-                        text = { Text("Unpin", color = highEmphasisColor) },
+                        text = { Text(stringResource(R.string.unpin_message), color = highEmphasisColor) },
                         onClick = {
                             expanded = false
                             unPinMessage(message)
