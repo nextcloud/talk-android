@@ -2,6 +2,7 @@
  * Nextcloud Talk - Android Client
  *
  * SPDX-FileCopyrightText: 2026 Julius Linus <juliuslinus1@gmail.com>
+ * SPDX-FileCopyrightText: 2026 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -27,6 +28,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,12 +43,19 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -65,7 +74,8 @@ fun PinnedMessageView(
     currentConversation: ConversationModel?,
     scrollToMessageWithIdWithOffset: (String) -> Unit,
     hidePinnedMessage: (ChatMessage) -> Unit,
-    unPinMessage: (ChatMessage) -> Unit
+    unPinMessage: (ChatMessage) -> Unit,
+    composePreviewUtils: ComposePreviewUtils? = null
 ) {
     message.incoming = true
 
@@ -77,6 +87,11 @@ fun PinnedMessageView(
     val scrollState = rememberScrollState()
 
     val context = LocalContext.current
+    val testingPreviewUtils = composePreviewUtils ?: if (NextcloudTalkApplication.sharedApplication == null) {
+        remember { ComposePreviewUtils.getInstance(context) }
+    } else {
+        null
+    }
 
     val outgoingBubbleColor = remember {
         val colorInt = viewThemeUtils.talk
@@ -90,12 +105,15 @@ fun PinnedMessageView(
     }
 
     val highEmphasisColor = colorScheme.onSurfaceVariant
-
     val incomingBubbleColor = colorResource(R.color.bg_message_list_incoming_bubble)
 
     val canPin = remember {
         message.isOneToOneConversation ||
             ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
+    }
+
+    val adapter = remember(testingPreviewUtils) {
+        ComposeChatAdapter(utils = testingPreviewUtils)
     }
 
     Column(
@@ -115,7 +133,7 @@ fun PinnedMessageView(
                 }
 
         ) {
-            ComposeChatAdapter().GetComposableForMessage(message)
+            adapter.GetComposableForMessage(message)
         }
 
         var expanded by remember { mutableStateOf(false) }
@@ -222,6 +240,65 @@ fun PinnedMessageView(
                     )
                 }
             }
+        }
+    }
+}
+
+@Preview(name = "Long Content")
+@Composable
+fun PinnedMessageLongContentPreview() {
+    PinnedMessagePreview(
+        messageContent = "This is a **very long** _pinned_ ??\ncontent that should demonstrate how the " +
+            "scrollable box behaves when there is more text than what can fit in the maximum height of the pinned " +
+            "message view. It should show a scrollbar or at least allow vertical scrolling to see the rest of " +
+            "the message. Adding even more text here to ensure it exceeds 100dp."
+    )
+}
+
+@Preview(name = "Dark Mode", uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PinnedMessagePreviewDark() {
+    PinnedMessagePreview()
+}
+
+@Preview(name = "Light Mode and generic")
+@Composable
+fun PinnedMessagePreview(
+    messageContent: String = "This is a **pinned** message _content_"
+) {
+    val context = LocalContext.current
+    val previewUtils = ComposePreviewUtils.getInstance(context)
+    val viewThemeUtils = previewUtils.viewThemeUtils
+    val colorScheme = viewThemeUtils.getColorScheme(context)
+
+    val user = User(id = 1L, userId = "user_id")
+    val conversation = Conversation(
+        token = "token",
+        participantType = Participant.ParticipantType.OWNER,
+        type = ConversationEnums.ConversationType.ROOM_GROUP_CALL
+    )
+    val currentConversation = ConversationModel.mapToConversationModel(conversation, user)
+
+    val message = ChatMessage().apply {
+        jsonMessageId = 1
+        actorDisplayName = "Author One"
+        pinnedActorDisplayName = "User Two"
+        message = messageContent
+        timestamp = System.currentTimeMillis() / 1000
+        pinnedAt = System.currentTimeMillis() / 1000
+    }
+
+    MaterialTheme(colorScheme = colorScheme) {
+        Box(modifier = Modifier.padding(16.dp)) {
+            PinnedMessageView(
+                message = message,
+                viewThemeUtils = viewThemeUtils,
+                currentConversation = currentConversation,
+                scrollToMessageWithIdWithOffset = {},
+                hidePinnedMessage = {},
+                unPinMessage = {},
+                composePreviewUtils = previewUtils
+            )
         }
     }
 }
