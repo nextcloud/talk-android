@@ -133,8 +133,6 @@ interface ChatMessageRepository : LifecycleAwareManager {
         credentials: String,
         url: String,
         message: String,
-        displayName: String,
-        referenceId: String,
         replyTo: Int?,
         sendWithoutNotification: Boolean,
         threadTitle: String?,
@@ -148,10 +146,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
         url: String,
         message: String,
         sendAt: Int?,
-        replyTo: Int?,
-        sendWithoutNotification: Boolean,
-        threadTitle: String?,
-        threadId: Long?
+        sendWithoutNotification: Boolean
     ): Flow<Result<ChatMessage>>
 
     suspend fun deleteScheduledChatMessage(credentials: String, url: String): Flow<Result<GenericOverall>>
