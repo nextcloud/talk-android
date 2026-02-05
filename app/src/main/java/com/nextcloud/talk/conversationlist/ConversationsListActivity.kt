@@ -87,9 +87,7 @@ import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contacts.ContactsActivity
-
 import com.nextcloud.talk.contacts.ContactsViewModel
-
 import com.nextcloud.talk.contextchat.ContextChatView
 import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
@@ -107,8 +105,6 @@ import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
-import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
@@ -154,15 +150,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.builder.CompareToBuilder
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -383,6 +374,14 @@ class ConversationsListActivity :
             }.collect()
         }
 
+        lifecycleScope.launch {
+            conversationsListViewModel.searchResultFlow.collect { searchResults ->
+                if (adapter?.hasFilter() == true) {
+                    adapter?.updateDataSet(searchResults)
+                }
+            }
+        }
+
         conversationsListViewModel.getFederationInvitationsViewState.observe(this) { state ->
             when (state) {
                 is ConversationsListViewModel.GetFederationInvitationsStartState -> {
@@ -457,46 +456,6 @@ class ConversationsListActivity :
         }
 
         lifecycleScope.launch {
-            conversationsListViewModel.openConversationsState.collect { state ->
-                when (state) {
-                    is ConversationsListViewModel.OpenConversationsUiState.Success -> {
-                        val openConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-                        val headerTitle = resources!!.getString(R.string.openConversations)
-                        for (conversation in state.conversations) {
-                            var genericTextHeaderItem: GenericTextHeaderItem
-                            if (!callHeaderItems.containsKey(headerTitle)) {
-                                genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
-                                callHeaderItems[headerTitle] = genericTextHeaderItem
-                            }
-                            val conversationItem = ConversationItem(
-                                ConversationModel.mapToConversationModel(conversation, currentUser!!),
-                                currentUser!!,
-                                this@ConversationsListActivity,
-                                callHeaderItems[headerTitle],
-                                viewThemeUtils
-                            )
-                            openConversationItems.add(conversationItem)
-                        }
-
-                        mutex.withLock {
-                            // Filters out all old open conversation items from the previous query
-                            searchableConversationItems = searchableConversationItems.filter {
-                                !(it is ConversationItem && it.header == callHeaderItems[headerTitle])
-                            }.toMutableList()
-
-                            searchableConversationItems.addAll(openConversationItems)
-                        }
-                    }
-                    is ConversationsListViewModel.OpenConversationsUiState.Error -> {
-                        handleHttpExceptions(state.exception)
-                    }
-
-                    else -> {}
-                }
-            }
-        }
-
-        lifecycleScope.launch {
             conversationsListViewModel.getRoomsFlow
                 .onEach { list ->
                     setConversationList(list)
@@ -521,52 +480,6 @@ class ConversationsListActivity :
                         chatIntent.putExtras(bundle)
                         chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         startActivity(chatIntent)
-                    }
-
-                    else -> {}
-                }
-            }.collect()
-        }
-
-        lifecycleScope.launch {
-            contactsViewModel.contactsViewState.onEach { state ->
-                when (state) {
-                    is ContactsViewModel.ContactsUiState.Success -> {
-                        if (state.contacts.isNullOrEmpty()) return@onEach
-
-                        val userItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-                        val actorTypeConverter = EnumActorTypeConverter()
-                        var genericTextHeaderItem: GenericTextHeaderItem
-                        for (autocompleteUser in state.contacts) {
-                            val headerTitle = resources!!.getString(R.string.nc_user)
-                            if (!callHeaderItems.containsKey(headerTitle)) {
-                                genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
-                                callHeaderItems[headerTitle] = genericTextHeaderItem
-                            }
-
-                            val participant = Participant()
-                            participant.actorId = autocompleteUser.id
-                            participant.actorType = actorTypeConverter.getFromString(autocompleteUser.source)
-                            participant.displayName = autocompleteUser.label
-
-                            val contactItem = ContactItem(
-                                participant,
-                                currentUser!!,
-                                callHeaderItems[headerTitle],
-                                viewThemeUtils
-                            )
-
-                            userItems.add(contactItem)
-                        }
-
-                        mutex.withLock {
-                            // Filters out all old user items from the previous query
-                            searchableConversationItems = searchableConversationItems.filter {
-                                it !is ContactItem
-                            }.toMutableList()
-
-                            searchableConversationItems.addAll(userItems)
-                        }
                     }
 
                     else -> {}
@@ -1008,8 +921,8 @@ class ConversationsListActivity :
                     initSearchDisposable()
                     adapter?.setHeadersShown(true)
                     adapter!!.showAllHeaders()
+                    searchableConversationItems.addAll(conversationItemsWithHeader)
                     if (!hasFilterEnabled()) filterableConversationItems = searchableConversationItems
-                    // adapter!!.updateDataSet(filterableConversationItems, false)
                     binding.swipeRefreshLayoutView.isEnabled = false
                     searchBehaviorSubject.onNext(true)
                     return true
@@ -1460,74 +1373,15 @@ class ConversationsListActivity :
 
     private fun performFilterAndSearch(filter: String?) {
         if (filter!!.length >= SEARCH_MIN_CHARS) {
-            clearMessageSearchResults()
             binding.noArchivedConversationLayout.visibility = View.GONE
-            binding.swipeRefreshLayoutView.isRefreshing = true
-
-            lifecycleScope.launch {
-                // gets users, updates collector async, which adds them to searchableConversationItems
-                val deferred1 = async {
-                    fetchUsers(filter)
-                }
-
-                // gets open conversations, updates collector async, which adds them to searchableConversationItems
-                val deferred2 = async {
-                    fetchOpenConversations(filter)
-                }
-
-                awaitAll(deferred1, deferred2)
-
-                // Waits until both work in collectors is over, to avoid data races
-                mutex.withLock {
-                    if (hasFilterEnabled()) {
-                        val headerTitle = resources!!.getString(R.string.openConversations)
-
-                        fun AbstractFlexibleItem<*>.isRegularConversationItem() =
-                            this is ConversationItem && this.header != callHeaderItems[headerTitle]
-
-                        // Only keeps the Open Conversations, Users
-                        val list = searchableConversationItems.filter {
-                            !it.isRegularConversationItem()
-                        }.toMutableList()
-
-                        // Only keeps the conversation items with the applied Nextcloud filter [mention/archive/unread]
-                        filterableConversationItems = filterableConversationItems.filter {
-                            it.isRegularConversationItem()
-                        }.toMutableList()
-
-                        filterableConversationItems.addAll(list)
-                        adapter?.updateDataSet(filterableConversationItems)
-
-                        adapter?.setFilter(filter)
-                        adapter?.filterItems()
-                    } else {
-                        // Conversation Items without Nextcloud filter + Open conversations/users
-                        adapter?.updateDataSet(searchableConversationItems)
-                        adapter?.setFilter(filter)
-                        adapter?.filterItems()
-                    }
-                }
-
-                if (hasSpreedFeatureCapability(
-                        currentUser?.capabilities?.spreedCapability,
-                        SpreedFeatures.UNIFIED_SEARCH
-                    )
-                ) {
-                    // gets messages async, adds them to the adapter, but NOT the searchableConversationItems
-                    startMessageSearch(filter)
-                }
-
-                withContext(Dispatchers.Main) {
-                    binding.swipeRefreshLayoutView.isRefreshing = false
-                }
-            }
+            adapter?.setFilter(filter)
+            conversationsListViewModel.getSearchQuery(context, filter)
         } else {
             resetSearchResults()
         }
     }
 
     private fun resetSearchResults() {
-        clearMessageSearchResults()
         adapter?.updateDataSet(conversationItems)
         adapter?.setFilter("")
         adapter?.filterItems()
@@ -1606,7 +1460,7 @@ class ConversationsListActivity :
                 }
 
                 is LoadMoreResultsItem -> {
-                    loadMoreMessages()
+                    conversationsListViewModel.loadMoreMessages(context)
                 }
 
                 is ConversationItem -> {
