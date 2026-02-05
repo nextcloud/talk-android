@@ -10,23 +10,20 @@ package com.nextcloud.talk.ui
 import android.text.format.DateFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Divider
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -35,12 +32,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
@@ -72,8 +69,8 @@ fun PinnedMessageView(
 
     val pinnedBy = stringResource(R.string.pinned_by)
 
-    message.actorDisplayName = remember(message.pinnedActorDisplayName) {
-        "$pinnedBy ${message.pinnedActorDisplayName}"
+    val pinnedHeadline = remember(message.pinnedActorDisplayName) {
+        "${message.actorDisplayName} ($pinnedBy ${message.pinnedActorDisplayName})"
     }
     val scrollState = rememberScrollState()
 
@@ -99,34 +96,31 @@ fun PinnedMessageView(
             ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
     }
 
-    Column(
-        verticalArrangement = Arrangement.spacedBy((-SPACE_16).dp),
+    val interactionSource = remember { MutableInteractionSource() }
+
+    Box(
         modifier = Modifier
-    ) {
-        Box(
-            modifier = Modifier
-                .shadow(ELEVATION.dp, shape = RoundedCornerShape(CORNER_RADIUS.dp))
-                .background(incomingBubbleColor, RoundedCornerShape(CORNER_RADIUS.dp))
-                .padding(SPACE_16.dp)
-                .heightIn(max = MAX_HEIGHT.dp)
-                .verticalScroll(scrollState)
-                .clickable {
-                    scrollToMessageWithIdWithOffset(message.id)
-                }
-
-        ) {
-            Column {
-                message.actorDisplayName?.let {
-                    Text(it)
-                }
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-                    Text(message.text)
-                }
+            .fillMaxWidth()
+            .padding(4.dp)
+            .shadow(
+                elevation = 2.dp,
+                shape = RoundedCornerShape(CORNER_RADIUS.dp),
+                clip = false
+            )
+            .background(
+                incomingBubbleColor,
+                RoundedCornerShape(CORNER_RADIUS.dp)
+            )
+            .padding(SPACE_16.dp)
+            .heightIn(max = MAX_HEIGHT.dp)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null
+            ) {
+                scrollToMessageWithIdWithOffset(message.id)
             }
-        }
-
+    ) {
         var expanded by remember { mutableStateOf(false) }
-
         val pinnedUntilStr = stringResource(R.string.pinned_until)
         val untilUnpin = stringResource(R.string.until_unpin)
         val pinnedText = remember(message.pinnedUntil) {
@@ -147,15 +141,23 @@ fun PinnedMessageView(
             } ?: untilUnpin
         }
 
+        Column(
+            modifier = Modifier
+                .verticalScroll(scrollState)
+                .padding(end = 40.dp)
+        ) {
+            Text(pinnedHeadline)
+            Text(message.text)
+        }
+
         Box(
             modifier = Modifier
-                .offset(SPACE_16.dp, 0.dp)
-                .background(outgoingBubbleColor, RoundedCornerShape(CORNER_RADIUS.dp))
+                .align(Alignment.TopEnd)
         ) {
             IconButton(onClick = { expanded = true }) {
                 Icon(
-                    imageVector = Icons.Default.Menu, // Or use a Pin icon here
-                    contentDescription = "Pinned Message Options",
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "Message options",
                     tint = highEmphasisColor
                 )
             }
@@ -172,22 +174,14 @@ fun PinnedMessageView(
                             color = highEmphasisColor
                         )
                     },
-                    onClick = { /* No-op or toggle expansion */ },
-                    enabled = false // Visually distinct as information, not action
+                    onClick = {},
+                    enabled = false
                 )
 
-                Divider()
+                HorizontalDivider()
 
                 DropdownMenuItem(
                     text = { Text("Go to message", color = highEmphasisColor) },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(R.drawable.baseline_chat_bubble_outline_24),
-                            contentDescription = null,
-                            modifier = Modifier.size(ICON_SIZE.dp),
-                            tint = highEmphasisColor
-                        )
-                    },
                     onClick = {
                         expanded = false
                         scrollToMessageWithIdWithOffset(message.id)
@@ -196,14 +190,6 @@ fun PinnedMessageView(
 
                 DropdownMenuItem(
                     text = { Text("Dismiss", color = highEmphasisColor) },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_eye_off),
-                            contentDescription = null,
-                            modifier = Modifier.size(ICON_SIZE.dp),
-                            tint = highEmphasisColor
-                        )
-                    },
                     onClick = {
                         expanded = false
                         hidePinnedMessage(message)
@@ -213,14 +199,6 @@ fun PinnedMessageView(
                 if (canPin) {
                     DropdownMenuItem(
                         text = { Text("Unpin", color = highEmphasisColor) },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.keep_off_24px),
-                                contentDescription = null,
-                                modifier = Modifier.size(ICON_SIZE.dp),
-                                tint = highEmphasisColor
-                            )
-                        },
                         onClick = {
                             expanded = false
                             unPinMessage(message)
