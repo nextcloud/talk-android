@@ -255,11 +255,10 @@ fun PinnedMessageLongContentPreview() {
     )
 }
 
+@Suppress("MagicNumber")
 @Preview(name = "Light Mode")
 @Composable
-fun PinnedMessagePreview(
-    messageContent: String = "This is a **pinned** message _content_"
-) {
+fun PinnedMessagePreview(messageContent: String = "This is a **pinned** message _content_") {
     val context = LocalContext.current
     val previewUtils = ComposePreviewUtils.getInstance(context)
     val viewThemeUtils = previewUtils.viewThemeUtils
