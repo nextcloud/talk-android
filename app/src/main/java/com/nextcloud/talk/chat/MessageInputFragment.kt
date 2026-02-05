@@ -134,6 +134,7 @@ class MessageInputFragment : Fragment() {
     private var collapsed = false
     private var hasScheduledMessages = false
     private lateinit var spreedCapabilities: SpreedCapability
+    private var hasSharedText = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -142,6 +143,7 @@ class MessageInputFragment : Fragment() {
         chatActivity = requireActivity() as ChatActivity
         val sharedText = arguments?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty()
         if (sharedText.isNotEmpty()) {
+            hasSharedText = true
             chatActivity.chatViewModel.messageDraft.messageText = sharedText
             chatActivity.chatViewModel.saveMessageDraft()
         }
@@ -363,7 +365,9 @@ class MessageInputFragment : Fragment() {
 
     private fun restoreState() {
         CoroutineScope(Dispatchers.IO).launch {
-            chatActivity.chatViewModel.updateMessageDraft()
+            if (!hasSharedText) {
+                chatActivity.chatViewModel.updateMessageDraft()
+            }
 
             withContext(Dispatchers.Main) {
                 val draft = chatActivity.chatViewModel.messageDraft
