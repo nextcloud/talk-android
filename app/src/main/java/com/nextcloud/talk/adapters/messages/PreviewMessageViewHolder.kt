@@ -112,7 +112,8 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
         clickView = image
         messageText.visibility = View.VISIBLE
         if (message.getCalculateMessageType() === ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
-            fileViewerUtils = FileViewerUtils(context!!, message.activeUser!!)
+            val chatActivity = commonMessageInterface as ChatActivity
+            fileViewerUtils = FileViewerUtils(chatActivity, message.activeUser!!)
             val fileName = message.selectedIndividualHashMap!![KEY_NAME]
 
             messageText.text = fileName
