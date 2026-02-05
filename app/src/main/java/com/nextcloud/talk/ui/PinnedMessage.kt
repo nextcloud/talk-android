@@ -59,6 +59,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 const val SPACE_16 = 16
+const val SPACE_0 = 0
 const val CORNER_RADIUS = 16
 val ELEVATION = 2.dp
 const val MAX_HEIGHT = 100
@@ -131,7 +132,7 @@ fun PinnedMessageView(
                 incomingBubbleColor,
                 RoundedCornerShape(CORNER_RADIUS.dp)
             )
-            .padding(SPACE_16.dp)
+            .padding(SPACE_16.dp, SPACE_0.dp, SPACE_0.dp, SPACE_16.dp)
             .heightIn(max = MAX_HEIGHT.dp)
             .clickable(
                 interactionSource = interactionSource,
@@ -164,23 +165,24 @@ fun PinnedMessageView(
         Column(
             modifier = Modifier
                 .verticalScroll(scrollState)
-                .padding(end = 40.dp)
+                .padding(top = SPACE_16.dp, end = 40.dp)
         ) {
             Text(
                 text = pinnedHeadline,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.labelMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = message.text,
-                color = MaterialTheme.colorScheme.onSurface
+                color = colorScheme.onSurface
             )
         }
 
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)
+                .padding(top = 2.dp)
         ) {
             IconButton(onClick = { expanded = true }) {
                 Icon(
@@ -238,12 +240,6 @@ fun PinnedMessageView(
     }
 }
 
-@Preview(name = "Dark Mode", uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun PinnedMessagePreviewDark() {
-    PinnedMessagePreview()
-}
-
 @Preview(name = "Long Content")
 @Composable
 fun PinnedMessageLongContentPreview() {
@@ -253,6 +249,16 @@ fun PinnedMessageLongContentPreview() {
             "message view. It should show a scrollbar or at least allow vertical scrolling to see the rest of " +
             "the message. Adding even more text here to ensure it exceeds 100dp."
     )
+}
+
+@Preview(
+    name = "Dark Mode / R-t-L",
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
+    locale = "ar"
+)
+@Composable
+fun PinnedMessagePreviewDarkRtl() {
+    PinnedMessagePreview()
 }
 
 @Suppress("MagicNumber")
