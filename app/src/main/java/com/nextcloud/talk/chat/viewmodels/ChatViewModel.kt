@@ -1328,6 +1328,7 @@ class ChatViewModel @AssistedInject constructor(
 
     sealed interface ChatItem {
         fun messageOrNull(): ChatMessage? = (this as? MessageItem)?.message
+        fun dateOrNull(): LocalDate? = (this as? DateHeaderItem)?.date
 
         fun stableKey(): Any =
             when (this) {
