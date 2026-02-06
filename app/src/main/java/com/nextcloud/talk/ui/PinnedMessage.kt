@@ -76,7 +76,22 @@ fun PinnedMessageView(
 ) {
     message.incoming = true
 
-    val pinnedBy = stringResource(R.string.pinned_by)
+    val pinnedHeadline = if (message.pinnedActorId != message.actorId) {
+        if (message.pinnedActorId == currentConversation?.actorId) {
+            stringResource(
+                R.string.pinned_by_you,
+                message.actorDisplayName.orEmpty()
+            )
+        } else {
+            stringResource(
+                R.string.pinned_by_author,
+                message.actorDisplayName.orEmpty(),
+                message.pinnedActorDisplayName.orEmpty()
+            )
+        }
+    } else {
+        "${message.actorDisplayName}"
+    }
 
     val scrollState = rememberScrollState()
 
