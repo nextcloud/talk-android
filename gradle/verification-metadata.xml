@@ -55,6 +55,7 @@
             <trusting group="androidx.exifinterface" name="exifinterface" version="1.4.1"/>
             <trusting group="androidx.exifinterface" name="exifinterface" version="1.4.2"/>
             <trusting group="androidx.lifecycle"/>
+            <trusting group="androidx.media3"/>
             <trusting group="androidx.navigationevent"/>
             <trusting group="androidx.room"/>
             <trusting group="androidx.savedstate"/>
