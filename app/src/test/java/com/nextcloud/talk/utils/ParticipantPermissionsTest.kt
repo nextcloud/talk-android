@@ -47,6 +47,101 @@ class ParticipantPermissionsTest : TestCase() {
         assertTrue(attendeePermissions.canPublishVideo())
     }
 
+    @Test
+    fun test_reactPermissionWithReactCapability() {
+        val spreedCapability = SpreedCapability()
+        // Server with react-permission also supports chat-permission
+        spreedCapability.features = listOf("chat-permission", "react-permission")
+        val conversation = createConversation()
+
+        // With react-permission capability, only REACT bit matters
+        conversation.permissions = ParticipantPermissions.REACT or
+            ParticipantPermissions.CUSTOM
+
+        val user = User()
+        user.id = 1
+
+        val attendeePermissions =
+            ParticipantPermissions(
+                spreedCapability,
+                ConversationModel.mapToConversationModel(conversation, user)
+            )
+
+        assertTrue(attendeePermissions.hasReactPermission())
+        assertFalse(attendeePermissions.hasChatPermission())
+    }
+
+    @Test
+    fun test_reactPermissionDeniedWithReactCapability() {
+        val spreedCapability = SpreedCapability()
+        // Server with react-permission also supports chat-permission
+        spreedCapability.features = listOf("chat-permission", "react-permission")
+        val conversation = createConversation()
+
+        // With react-permission capability, only CHAT but no REACT - should NOT allow reactions
+        conversation.permissions = ParticipantPermissions.CHAT or
+            ParticipantPermissions.CUSTOM
+
+        val user = User()
+        user.id = 1
+
+        val attendeePermissions =
+            ParticipantPermissions(
+                spreedCapability,
+                ConversationModel.mapToConversationModel(conversation, user)
+            )
+
+        assertFalse(attendeePermissions.hasReactPermission())
+        assertTrue(attendeePermissions.hasChatPermission())
+    }
+
+    @Test
+    fun test_reactPermissionFallbackToChatOnOlderServer() {
+        val spreedCapability = SpreedCapability()
+        // Older server without react-permission capability but with chat-permission
+        spreedCapability.features = listOf("chat-permission")
+        val conversation = createConversation()
+
+        // Only CHAT permission set - should allow reactions as fallback for older servers
+        conversation.permissions = ParticipantPermissions.CHAT or
+            ParticipantPermissions.CUSTOM
+
+        val user = User()
+        user.id = 1
+
+        val attendeePermissions =
+            ParticipantPermissions(
+                spreedCapability,
+                ConversationModel.mapToConversationModel(conversation, user)
+            )
+
+        assertTrue(attendeePermissions.hasReactPermission())
+        assertTrue(attendeePermissions.hasChatPermission())
+    }
+
+    @Test
+    fun test_reactPermissionDeniedOnOlderServerWithoutChatPermission() {
+        val spreedCapability = SpreedCapability()
+        // Older server without react-permission capability but with chat-permission
+        spreedCapability.features = listOf("chat-permission")
+        val conversation = createConversation()
+
+        // No CHAT permission - should deny reactions on older servers
+        conversation.permissions = ParticipantPermissions.CUSTOM
+
+        val user = User()
+        user.id = 1
+
+        val attendeePermissions =
+            ParticipantPermissions(
+                spreedCapability,
+                ConversationModel.mapToConversationModel(conversation, user)
+            )
+
+        assertFalse(attendeePermissions.hasReactPermission())
+        assertFalse(attendeePermissions.hasChatPermission())
+    }
+
     private fun createConversation() =
         Conversation(
             token = "test",
