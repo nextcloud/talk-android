@@ -469,6 +469,8 @@
     <string name="open_thread">转到帖子</string>
     <string name="pin_message">置顶消息</string>
     <string name="pinned">已置顶</string>
+    <string name="pinned_dismiss">关闭</string>
+    <string name="pinned_message_options">消息选项</string>
     <string name="play_pause_voice_message">播放/暂停语音消息</string>
     <string name="polls_add_option">添加选项</string>
     <string name="polls_edit_vote">编辑投票</string>

@@ -271,6 +271,7 @@
     <string name="nc_server_unsupported">Na poslužitelju nije instalirana podržana aplikacija Talk</string>
     <string name="nc_server_url">Adresa poslužitelja https://…</string>
     <string name="nc_server_version">%1$s radi samo s %2$s 13 i novijom inačicom</string>
+    <string name="nc_set_new_password">Postavi novu lozinku</string>
     <string name="nc_settings">Postavke</string>
     <string name="nc_settings_account_updated">Vaš postojeći račun je ažuriran, umjesto dodavanja novog</string>
     <string name="nc_settings_advanced_title">Napredno</string>
@@ -405,6 +406,7 @@
     <string name="translate">Prevedi</string>
     <string name="translation_device_settings">Postavke uređaja</string>
     <string name="translation_error_message">Prepoznavanje jezika nije moguće</string>
+    <string name="translation_error_title">Prevođenje nije uspjelo</string>
     <string name="translation_from">Od</string>
     <string name="translation_to">Do</string>
     <string name="upload_new_avatar_from_device">Otpremi novi avatar s uređaja</string>

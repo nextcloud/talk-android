@@ -587,7 +587,6 @@
     <string name="pin_indefinitely">Tõsta esile tähtajatult</string>
     <string name="pin_message">Tõsta sõnum esile</string>
     <string name="pinned">Esiletõstetud</string>
-    <string name="pinned_by">Esiletõstja</string>
     <string name="pinned_indefinitely">Esiletõestetud tähtajatult</string>
     <string name="pinned_until">Esiletõstetud kuni</string>
     <string name="play_pause_voice_message">Esita häälsõnumit või peata esitus</string>

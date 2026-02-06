@@ -587,7 +587,7 @@
     <string name="pin_indefinitely">無限期地釘選</string>
     <string name="pin_message">置頂訊息</string>
     <string name="pinned">已置頂</string>
-    <string name="pinned_by">釘選者</string>
+    <string name="pinned_dismiss">忽略</string>
     <string name="pinned_indefinitely">已無限期地釘選</string>
     <string name="pinned_until">已釘選至</string>
     <string name="play_pause_voice_message">播放﹨暫停話音短訊</string>

@@ -171,6 +171,7 @@
     <string name="nc_common_skip">Kihagyás</string>
     <string name="nc_common_unknown">Ismeretlen</string>
     <string name="nc_configure_cert_auth">Hitelesítési tanúsítvány kiválasztása</string>
+    <string name="nc_confirm">Megerősítés</string>
     <string name="nc_connecting_call">Csatlakozás…</string>
     <string name="nc_contacts_done">Kész</string>
     <string name="nc_conversation_description">Beszélgetés leírása</string>
