@@ -13,6 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,6 +37,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -78,11 +80,13 @@ fun GetNewChatView(
     val coroutineScope = rememberCoroutineScope()
 
     val lastNewestIdRef = remember {
-        object {
-            var value: String? = null
-        }
+        object { var value: String? = null }
     }
 
+    // Track unread messages count
+    var unreadCount by remember { mutableIntStateOf(0) }
+
+    // Determine if user is at newest message
     val isAtNewest by remember(listState) {
         derivedStateOf {
             listState.firstVisibleItemIndex == 0 &&
@@ -90,26 +94,25 @@ fun GetNewChatView(
         }
     }
 
-    val showScrollToNewest by remember {
-        derivedStateOf { !isAtNewest }
-    }
+    // Show floating scroll-to-newest button when not at newest
+    val showScrollToNewest by remember { derivedStateOf { !isAtNewest } }
 
+    // Track newest message and show unread popup
     LaunchedEffect(chatItems) {
         if (chatItems.isEmpty()) return@LaunchedEffect
 
-        val newestId =
-            chatItems.firstNotNullOfOrNull { it.messageOrNull()?.id }
-
+        val newestId = chatItems.firstNotNullOfOrNull { it.messageOrNull()?.id }
         val previousNewestId = lastNewestIdRef.value
 
         val isNearBottom = listState.firstVisibleItemIndex <= 2
-        val hasNewMessage =
-            previousNewestId != null && newestId != previousNewestId
+        val hasNewMessage = previousNewestId != null && newestId != previousNewestId
 
         if (hasNewMessage) {
             if (isNearBottom) {
                 listState.animateScrollToItem(0)
+                unreadCount = 0
             } else {
+                unreadCount++
                 showUnreadPopup.value = true
             }
         }
@@ -117,15 +120,20 @@ fun GetNewChatView(
         lastNewestIdRef.value = newestId
     }
 
+    // Hide unread popup when user scrolls to newest
     LaunchedEffect(listState) {
         snapshotFlow { listState.firstVisibleItemIndex }
             .map { it <= 2 }
             .distinctUntilChanged()
             .collect { nearBottom ->
-                if (nearBottom) showUnreadPopup.value = false
+                if (nearBottom) {
+                    showUnreadPopup.value = false
+                    unreadCount = 0
+                }
             }
     }
 
+    // Load more when near end
     LaunchedEffect(listState, chatItems.size) {
         snapshotFlow {
             val layoutInfo = listState.layoutInfo
@@ -146,12 +154,12 @@ fun GetNewChatView(
             }
     }
 
+    // Sticky date header
     val stickyDateHeaderText by remember(listState, chatItems) {
         derivedStateOf {
             chatItems.getOrNull(
                 listState.layoutInfo.visibleItemsInfo
-                    .lastOrNull()
-                    ?.index ?: 0
+                    .lastOrNull()?.index ?: 0
             )?.let { item ->
                 when (item) {
                     is ChatViewModel.ChatItem.MessageItem ->
@@ -180,9 +188,7 @@ fun GetNewChatView(
 
     val stickyDateHeaderAlpha by animateFloatAsState(
         targetValue = if (stickyDateHeader && stickyDateHeaderText.isNotEmpty()) 1f else 0f,
-        animationSpec = tween(
-            durationMillis = if (stickyDateHeader) 500 else 1000
-        ),
+        animationSpec = tween(durationMillis = if (stickyDateHeader) 500 else 1000),
         label = ""
     )
 
@@ -191,23 +197,15 @@ fun GetNewChatView(
             state = listState,
             reverseLayout = true,
             verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(bottom = 20.dp),
             modifier = Modifier
-                .padding(
-                    start = 12.dp,
-                    end = 12.dp
-                )
+                .padding(start = 12.dp, end = 12.dp)
                 .fillMaxSize()
         ) {
-            items(
-                chatItems,
-                key = { it.stableKey() }
-            ) { chatItem ->
-
+            items(chatItems, key = { it.stableKey() }) { chatItem ->
                 when (chatItem) {
                     is ChatViewModel.ChatItem.MessageItem -> {
-                        val isBlinkingState =
-                            remember { mutableStateOf(false) }
-
+                        val isBlinkingState = remember { mutableStateOf(false) }
                         GetComposableForMessage(
                             message = chatItem.message,
                             conversationThreadId = conversationThreadId,
@@ -222,6 +220,7 @@ fun GetNewChatView(
             }
         }
 
+        // Sticky date header
         Surface(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -232,19 +231,17 @@ fun GetNewChatView(
         ) {
             Text(
                 stickyDateHeaderText,
-                modifier = Modifier.padding(
-                    horizontal = 12.dp,
-                    vertical = 6.dp
-                )
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
             )
         }
 
+        // Unread messages popup
         if (showUnreadPopup.value) {
             UnreadMessagesPopup(
+                unreadCount = unreadCount,
                 onClick = {
-                    coroutineScope.launch {
-                        listState.scrollToItem(0)
-                    }
+                    coroutineScope.launch { listState.scrollToItem(0) }
+                    unreadCount = 0
                     showUnreadPopup.value = false
                 },
                 modifier = Modifier
@@ -253,6 +250,7 @@ fun GetNewChatView(
             )
         }
 
+        // Floating scroll-to-newest button
         AnimatedVisibility(
             visible = showScrollToNewest,
             modifier = Modifier
@@ -263,9 +261,8 @@ fun GetNewChatView(
         ) {
             Surface(
                 onClick = {
-                    coroutineScope.launch {
-                        listState.scrollToItem(0)
-                    }
+                    coroutineScope.launch { listState.scrollToItem(0) }
+                    unreadCount = 0
                 },
                 shape = CircleShape,
                 color = colorScheme.surface.copy(alpha = 0.9f),
@@ -281,6 +278,25 @@ fun GetNewChatView(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun UnreadMessagesPopup(
+    unreadCount: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(20.dp),
+        tonalElevation = 3.dp,
+        modifier = modifier
+    ) {
+        Text(
+            text = "$unreadCount new message${if (unreadCount > 1) "s" else ""}",
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+        )
     }
 }
 
