@@ -1,6 +1,13 @@
 package com.nextcloud.talk.ui.chat
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,21 +18,32 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalResources
@@ -36,7 +54,6 @@ import com.nextcloud.talk.chat.UnreadMessagesPopup
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.data.user.model.User
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -47,8 +64,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 private const val LONG_1000 = 1000L
-private const val SCROLL_DELAY = 20L
-private const val ANIMATION_DURATION = 2500L
 private val AUTHOR_TEXT_SIZE = 12.sp
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -59,7 +74,6 @@ fun GetNewChatView(
     onLoadMore: (() -> Unit?)?
 ) {
     val listState = rememberLazyListState()
-    val displayedChatItems = remember(chatItems) { chatItems }
     val showUnreadPopup = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -69,15 +83,28 @@ fun GetNewChatView(
         }
     }
 
+    val isAtNewest by remember(listState) {
+        derivedStateOf {
+            listState.firstVisibleItemIndex == 0 &&
+                listState.firstVisibleItemScrollOffset == 0
+        }
+    }
+
+    val showScrollToNewest by remember {
+        derivedStateOf { !isAtNewest }
+    }
+
     LaunchedEffect(chatItems) {
         if (chatItems.isEmpty()) return@LaunchedEffect
 
-        val newestId = chatItems.firstNotNullOfOrNull { it.messageOrNull()?.id }
+        val newestId =
+            chatItems.firstNotNullOfOrNull { it.messageOrNull()?.id }
 
         val previousNewestId = lastNewestIdRef.value
 
         val isNearBottom = listState.firstVisibleItemIndex <= 2
-        val hasNewMessage = previousNewestId != null && newestId != previousNewestId
+        val hasNewMessage =
+            previousNewestId != null && newestId != previousNewestId
 
         if (hasNewMessage) {
             if (isNearBottom) {
@@ -94,10 +121,8 @@ fun GetNewChatView(
         snapshotFlow { listState.firstVisibleItemIndex }
             .map { it <= 2 }
             .distinctUntilChanged()
-            .collect { isNearBottom ->
-                if (isNearBottom) {
-                    showUnreadPopup.value = false
-                }
+            .collect { nearBottom ->
+                if (nearBottom) showUnreadPopup.value = false
             }
     }
 
@@ -105,9 +130,7 @@ fun GetNewChatView(
         snapshotFlow {
             val layoutInfo = listState.layoutInfo
             val total = layoutInfo.totalItemsCount
-            val lastVisible =
-                layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-
+            val lastVisible = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             lastVisible to total
         }
             .distinctUntilChanged()
@@ -115,8 +138,7 @@ fun GetNewChatView(
                 if (total == 0) return@collect
 
                 val buffer = 5
-                val shouldLoadMore =
-                    lastVisible >= (total - 1 - buffer)
+                val shouldLoadMore = lastVisible >= (total - 1 - buffer)
 
                 if (shouldLoadMore) {
                     onLoadMore?.invoke()
@@ -124,24 +146,67 @@ fun GetNewChatView(
             }
     }
 
+    val stickyDateHeaderText by remember(listState, chatItems) {
+        derivedStateOf {
+            chatItems.getOrNull(
+                listState.layoutInfo.visibleItemsInfo
+                    .lastOrNull()
+                    ?.index ?: 0
+            )?.let { item ->
+                when (item) {
+                    is ChatViewModel.ChatItem.MessageItem ->
+                        formatTime(item.message.timestamp * LONG_1000)
+
+                    is ChatViewModel.ChatItem.DateHeaderItem ->
+                        formatTime(item.date)
+                }
+            } ?: ""
+        }
+    }
+
+    var stickyDateHeader by remember { mutableStateOf(false) }
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.isScrollInProgress }
+            .collect { scrolling ->
+                if (scrolling) {
+                    stickyDateHeader = true
+                } else {
+                    delay(1200)
+                    stickyDateHeader = false
+                }
+            }
+    }
+
+    val stickyDateHeaderAlpha by animateFloatAsState(
+        targetValue = if (stickyDateHeader && stickyDateHeaderText.isNotEmpty()) 1f else 0f,
+        animationSpec = tween(
+            durationMillis = if (stickyDateHeader) 500 else 1000
+        ),
+        label = ""
+    )
+
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             state = listState,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
             reverseLayout = true,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
-                .padding(16.dp)
+                .padding(
+                    start = 12.dp,
+                    end = 12.dp
+                )
                 .fillMaxSize()
         ) {
             items(
-                displayedChatItems,
-                key = {
-                    it.stableKey()
-                }
+                chatItems,
+                key = { it.stableKey() }
             ) { chatItem ->
+
                 when (chatItem) {
                     is ChatViewModel.ChatItem.MessageItem -> {
-                        val isBlinkingState = remember { mutableStateOf(false) }
+                        val isBlinkingState =
+                            remember { mutableStateOf(false) }
 
                         GetComposableForMessage(
                             message = chatItem.message,
@@ -157,11 +222,28 @@ fun GetNewChatView(
             }
         }
 
+        Surface(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 12.dp)
+                .alpha(stickyDateHeaderAlpha),
+            shape = RoundedCornerShape(16.dp),
+            tonalElevation = 2.dp
+        ) {
+            Text(
+                stickyDateHeaderText,
+                modifier = Modifier.padding(
+                    horizontal = 12.dp,
+                    vertical = 6.dp
+                )
+            )
+        }
+
         if (showUnreadPopup.value) {
             UnreadMessagesPopup(
                 onClick = {
                     coroutineScope.launch {
-                        listState.animateScrollToItem(0)
+                        listState.scrollToItem(0)
                     }
                     showUnreadPopup.value = false
                 },
@@ -169,6 +251,35 @@ fun GetNewChatView(
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 20.dp)
             )
+        }
+
+        AnimatedVisibility(
+            visible = showScrollToNewest,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp, bottom = 24.dp),
+            enter = fadeIn() + scaleIn(),
+            exit = fadeOut() + scaleOut()
+        ) {
+            Surface(
+                onClick = {
+                    coroutineScope.launch {
+                        listState.scrollToItem(0)
+                    }
+                },
+                shape = CircleShape,
+                color = colorScheme.surface.copy(alpha = 0.9f),
+                tonalElevation = 2.dp
+            ) {
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    contentDescription = "Scroll to newest",
+                    modifier = Modifier
+                        .size(36.dp)
+                        .padding(8.dp),
+                    tint = colorScheme.onSurface.copy(alpha = 0.9f)
+                )
+            }
         }
     }
 }
@@ -199,6 +310,7 @@ fun DateHeader(date: LocalDate) {
     }
 }
 
+@Deprecated("do not use Compose Chat Adapter")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GetView(messages: List<ChatMessage>, messageIdToBlink: String, user: User?) {
@@ -256,21 +368,6 @@ fun GetView(messages: List<ChatMessage>, messageIdToBlink: String, user: User?) 
                 message = message,
                 isBlinkingState = isBlinkingState
             )
-        }
-    }
-
-    if (messages.isNotEmpty()) {
-        LaunchedEffect(Dispatchers.Main) {
-            delay(SCROLL_DELAY)
-            val pos = searchMessages(
-                messages,
-                messageIdToBlink
-            )
-            if (pos > 0) {
-                listState.scrollToItem(pos)
-            }
-            delay(ANIMATION_DURATION)
-            isBlinkingState.value = false
         }
     }
 }
@@ -364,13 +461,15 @@ private fun ChatMessage.shouldFilter(): Boolean =
 fun formatTime(timestampMillis: Long): String {
     val instant = Instant.ofEpochMilli(timestampMillis)
     val dateTime = instant.atZone(ZoneId.systemDefault()).toLocalDate()
-    val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
-    return dateTime.format(formatter)
+    return formatTime(dateTime)
 }
 
-fun searchMessages(messages: List<ChatMessage>, searchId: String): Int {
-    messages.forEachIndexed { index, message ->
-        if (message.id == searchId) return index
+fun formatTime(localDate: LocalDate): String {
+    val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
+    val text = when (localDate) {
+        LocalDate.now() -> "Today"
+        LocalDate.now().minusDays(1) -> "Yesterday"
+        else -> localDate.format(formatter)
     }
-    return -1
+    return text
 }
