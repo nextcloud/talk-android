@@ -506,6 +506,7 @@
     <string name="online_status">Online-status</string>
     <string name="openConversations">Åpne samtaler</string>
     <string name="open_in_files_app">Åpne i Filer-appen</string>
+    <string name="pinned_dismiss">Avvis</string>
     <string name="play_pause_voice_message">Spill/pause talemelding</string>
     <string name="polls_add_option">Legg til alternativ</string>
     <string name="polls_edit_vote">Rediger stemme</string>

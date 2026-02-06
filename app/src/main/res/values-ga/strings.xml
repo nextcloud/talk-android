@@ -581,7 +581,7 @@
     <string name="pin_indefinitely">Bioráin go ceann tréimhse éiginnte</string>
     <string name="pin_message">Teachtaireacht bioráin</string>
     <string name="pinned">Bioránta</string>
-    <string name="pinned_by">Priontáilte ag</string>
+    <string name="pinned_dismiss">Díbhe</string>
     <string name="pinned_indefinitely">Priontáilte go deo</string>
     <string name="pinned_until">Priontáilte go dtí</string>
     <string name="play_pause_voice_message">Seinn/cuir teachtaireacht gutha ar sos</string>

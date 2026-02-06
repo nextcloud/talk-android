@@ -323,6 +323,7 @@
     <string name="online">Prisijungęs</string>
     <string name="online_status">Prisijungimo būsena</string>
     <string name="openConversations">Atverti pokalbius</string>
+    <string name="pinned_dismiss">Atmesti</string>
     <string name="play_pause_voice_message">Atkurti/pristabdyti balso žinutę</string>
     <string name="polls_add_option">Pridėti variantą</string>
     <string name="polls_options">Parinktys</string>

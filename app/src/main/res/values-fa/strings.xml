@@ -363,6 +363,7 @@
     <string name="online">برخط</string>
     <string name="online_status">وضعیت برخط</string>
     <string name="openConversations">گفتگوی جدید</string>
+    <string name="pinned_dismiss">رد کردن</string>
     <string name="play_pause_voice_message">پخش/مکث پیام شنیداری</string>
     <string name="polls_add_option">افزودن گزینه</string>
     <string name="polls_options">گزینه‌ها</string>

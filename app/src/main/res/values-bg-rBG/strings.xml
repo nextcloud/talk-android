@@ -412,6 +412,7 @@
     <string name="online_status">Състояние</string>
     <string name="openConversations">Отворени разговори</string>
     <string name="open_in_files_app">Отворяне в приложението Файлове</string>
+    <string name="pinned_dismiss">Затвори</string>
     <string name="play_pause_voice_message">Възпроизвеждане/пауза на гласово съобщение</string>
     <string name="polls_add_option">Добавяне на опция</string>
     <string name="polls_edit_vote">Редактиране на гласуване</string>

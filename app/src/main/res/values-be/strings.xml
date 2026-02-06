@@ -587,7 +587,7 @@
     <string name="pin_indefinitely">Замацаваць на нявызначаны тэрмін</string>
     <string name="pin_message">Замацаваць паведамленне</string>
     <string name="pinned">Замацавана</string>
-    <string name="pinned_by">Замацаваў(-ла)</string>
+    <string name="pinned_dismiss">Адхіліць</string>
     <string name="pinned_indefinitely">Замацавана на нявызначаны тэрмін</string>
     <string name="pinned_until">Замацавана да</string>
     <string name="play_pause_voice_message">Прайграць/прыпыніць галасавое паведамленне</string>

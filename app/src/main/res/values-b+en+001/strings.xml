@@ -587,7 +587,7 @@
     <string name="pin_indefinitely">Pin indefinitely</string>
     <string name="pin_message">Pin message</string>
     <string name="pinned">Pinned</string>
-    <string name="pinned_by">Pinned by</string>
+    <string name="pinned_dismiss">Dismiss</string>
     <string name="pinned_indefinitely">Pinned indefinitely</string>
     <string name="pinned_until">Pinned until</string>
     <string name="play_pause_voice_message">Play/pause voice message</string>

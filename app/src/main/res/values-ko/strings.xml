@@ -117,6 +117,7 @@
     <string name="nc_common_skip">건너뛰기</string>
     <string name="nc_common_unknown">알 수 없음</string>
     <string name="nc_configure_cert_auth">인증서 선택</string>
+    <string name="nc_confirm">확인</string>
     <string name="nc_connecting_call">연결 중 …</string>
     <string name="nc_contacts_done">완료</string>
     <string name="nc_conversation_menu_conversation_info">대화 정보</string>
@@ -402,6 +403,7 @@
     <string name="online_status">접속 상태</string>
     <string name="openConversations">대화 열기</string>
     <string name="open_in_files_app">파일 앱에서 열다</string>
+    <string name="pinned_dismiss">끄기</string>
     <string name="play_pause_voice_message">음성 메시지를 재생/중단</string>
     <string name="polls_add_option">옵션을 추가하다</string>
     <string name="polls_edit_vote">투표를 편집하다</string>

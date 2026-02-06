@@ -414,6 +414,7 @@
     <string name="online_status">Estado en línea</string>
     <string name="openConversations">Conversaciones abiertas</string>
     <string name="open_in_files_app">Abrir en la aplicación de archivos</string>
+    <string name="pinned_dismiss">Descartar</string>
     <string name="play_pause_voice_message">Reproducir/pausar mensaje de voz</string>
     <string name="polls_add_option">Agregar opción</string>
     <string name="polls_edit_vote">Editar votación</string>

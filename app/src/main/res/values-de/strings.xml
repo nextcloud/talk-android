@@ -587,8 +587,9 @@
     <string name="pin_indefinitely">Dauerhaft anheften</string>
     <string name="pin_message">Nachricht anheften</string>
     <string name="pinned">Angeheftet</string>
-    <string name="pinned_by">Angeheftet von</string>
+    <string name="pinned_dismiss">Verwerfen</string>
     <string name="pinned_indefinitely">Dauerhaft angeheftet</string>
+    <string name="pinned_message_options">Nachrichtenoptionen</string>
     <string name="pinned_until">Angeheftet bis</string>
     <string name="play_pause_voice_message">Sprachnachricht wiedergeben/pausieren</string>
     <string name="playback_speed_control">Steuerung der Wiedergabegeschwindigkeit</string>

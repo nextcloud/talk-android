@@ -581,8 +581,8 @@
     <string name="pin_indefinitely">Süresiz sabitle</string>
     <string name="pin_message">İletiyi sabitle</string>
     <string name="pinned">Sabitlenmiş</string>
-    <string name="pinned_by">Sabitleyen</string>
     <string name="pinned_indefinitely">Süresiz sabitlendi</string>
+    <string name="pinned_message_options">İleti seçenekleri</string>
     <string name="pinned_until">Şu zamana kadar sabitlendi</string>
     <string name="play_pause_voice_message">Ses iletisini oynat/duraklat</string>
     <string name="playback_speed_control">Oynatma hızı denetimi</string>

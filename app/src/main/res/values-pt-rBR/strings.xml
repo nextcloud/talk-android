@@ -587,8 +587,9 @@
     <string name="pin_indefinitely">Fixar indefinidamente</string>
     <string name="pin_message">Fixar mensagem</string>
     <string name="pinned">Fixada</string>
-    <string name="pinned_by">Fixada por</string>
+    <string name="pinned_dismiss">Descartar</string>
     <string name="pinned_indefinitely">Fixada indefinidamente</string>
+    <string name="pinned_message_options">Opções de mensagem</string>
     <string name="pinned_until">Fixada até</string>
     <string name="play_pause_voice_message">Reproduzir/pausar mensagem de voz</string>
     <string name="playback_speed_control">Controle de velocidade de reprodução</string>

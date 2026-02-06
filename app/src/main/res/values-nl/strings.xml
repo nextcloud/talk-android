@@ -576,8 +576,9 @@ Kies er eentje van een provider.</string>
     <string name="pin_indefinitely">Pin onbeperkt</string>
     <string name="pin_message">Pin bericht</string>
     <string name="pinned">Gepind</string>
-    <string name="pinned_by">Gepind door</string>
+    <string name="pinned_dismiss">Wijs af</string>
     <string name="pinned_indefinitely">Onbeperkt gepind</string>
+    <string name="pinned_message_options">Berichtopties</string>
     <string name="pinned_until">Gepind tot</string>
     <string name="play_pause_voice_message">Afspelen/pauzeren voicebericht</string>
     <string name="playback_speed_control">Controle afspeelsnelheid</string>

@@ -467,6 +467,7 @@
     <string name="online_status">Lineako egoera</string>
     <string name="openConversations">Ireki elkarrizketak</string>
     <string name="open_in_files_app">Ireki Fitxategiak aplikazioan</string>
+    <string name="pinned_dismiss">Ezikusi</string>
     <string name="play_pause_voice_message">Erreproduzitu/pausatu ahots mezua</string>
     <string name="polls_add_option">Gehitu aukera</string>
     <string name="polls_edit_vote">Editatu botoa</string>

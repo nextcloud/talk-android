@@ -524,6 +524,7 @@
     <string name="online_status">حالة الاتصال</string>
     <string name="openConversations">فتح المحادثات</string>
     <string name="open_in_files_app">فتح في تطبيق الملفات Files</string>
+    <string name="pinned_dismiss">الغاء</string>
     <string name="play_pause_voice_message">تشغيل/تجميد رسالة صوتية</string>
     <string name="playback_speed_control">التحكم في سرعة التشغيل</string>
     <string name="polls_add_option">إضِف خِياراً</string>

@@ -515,6 +515,8 @@
     <string name="online_status">Estat en línia</string>
     <string name="openConversations">Obre les converses</string>
     <string name="open_in_files_app">Obre a l\'aplicació Fitxers</string>
+    <string name="pinned_dismiss">Descarta</string>
+    <string name="pinned_message_options">Opcions del missatge</string>
     <string name="play_pause_voice_message">Reprodueix/pausa el missatge de veu</string>
     <string name="playback_speed_control">Control de velocitat de reproducció</string>
     <string name="polls_add_option">Afegeix una opció</string>

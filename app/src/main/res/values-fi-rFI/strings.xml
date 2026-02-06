@@ -354,6 +354,7 @@
     <string name="online">Paikalla</string>
     <string name="online_status">Online-tila</string>
     <string name="openConversations">Avaa keskustelut</string>
+    <string name="pinned_dismiss">Hylkää</string>
     <string name="play_pause_voice_message">Toista/keskeytä ääniviesti</string>
     <string name="polls_add_option">Lisää valinta</string>
     <string name="polls_edit_vote">Muokkaa ääntä</string>

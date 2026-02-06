@@ -569,6 +569,7 @@
     <string name="open_in_files_app">Відкрити у застосунку \"Файли\"</string>
     <string name="open_notes">Відкриті нотатки</string>
     <string name="open_thread">Перейти до теми</string>
+    <string name="pinned_dismiss">Сховати</string>
     <string name="play_pause_voice_message">Відтворення/пауза голосового повідомлення</string>
     <string name="playback_speed_control">Регулювання швидкості відтворення</string>
     <string name="polls_add_option">Додати варіант</string>

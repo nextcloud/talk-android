@@ -146,6 +146,7 @@
     <string name="nc_common_skip">スキップ</string>
     <string name="nc_common_unknown">不明</string>
     <string name="nc_configure_cert_auth">認証証明書を選択</string>
+    <string name="nc_confirm">承認</string>
     <string name="nc_connecting_call">接続中 …</string>
     <string name="nc_contacts_done">完了</string>
     <string name="nc_conversation_description">会話概要</string>
@@ -498,6 +499,7 @@
     <string name="online_status">オンラインステータス</string>
     <string name="openConversations">オープンな会話</string>
     <string name="open_in_files_app">アプリでファイルを開く</string>
+    <string name="pinned_dismiss">閉じる</string>
     <string name="play_pause_voice_message">音声メッセージを再生／一時停止</string>
     <string name="polls_add_option">オプションを追加</string>
     <string name="polls_edit_vote">投票を修正する</string>
