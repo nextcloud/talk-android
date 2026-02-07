@@ -571,6 +571,7 @@
     <string name="open_in_files_app">Отвори у апликацији Фајлови</string>
     <string name="open_notes">Отвори Белешке</string>
     <string name="open_thread">Иди на нит</string>
+    <string name="pinned_dismiss">Одбаци</string>
     <string name="play_pause_voice_message">Пусти/паузирај гласовну поруку</string>
     <string name="playback_speed_control">Контрола брзине репродукције</string>
     <string name="please_continue_the_login_process_in_the_browser">Молимо вас да пријављивање настивете у прегледачу</string>

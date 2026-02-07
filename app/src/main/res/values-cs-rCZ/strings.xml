@@ -587,8 +587,12 @@
     <string name="pin_indefinitely">Připnout na neurčito</string>
     <string name="pin_message">Připnout zprávu</string>
     <string name="pinned">Připnuté</string>
+    <string name="pinned_by_author">%1$s (připonul/a %2$s)</string>
+    <string name="pinned_by_you">%1$s (připnuli jste)</string>
     <string name="pinned_dismiss">Zahodit</string>
+    <string name="pinned_go_to_message">Přejít na zprávu</string>
     <string name="pinned_indefinitely">Připnuto na neurčito</string>
+    <string name="pinned_message_options">Předvolby zprávy</string>
     <string name="pinned_until">Připnuto do</string>
     <string name="play_pause_voice_message">Přehrát/pozastavit hlasovou zprávu</string>
     <string name="playback_speed_control">Ovládání rychlosti přehrávání</string>

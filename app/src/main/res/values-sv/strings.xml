@@ -570,6 +570,7 @@
     <string name="open_in_files_app">Öppna i appen Filer</string>
     <string name="open_notes">Öppna anteckningar</string>
     <string name="open_thread">Gå till tråd</string>
+    <string name="pinned_dismiss">Avfärda</string>
     <string name="pinned_message_options">Meddelandeinställningar</string>
     <string name="play_pause_voice_message">Spela/pausa röstmeddelande</string>
     <string name="playback_speed_control">Kontroll av uppspelningshastighet</string>
