@@ -57,6 +57,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.data.user.model.User
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -91,6 +92,12 @@ fun GetNewChatView(
         derivedStateOf {
             listState.firstVisibleItemIndex == 0 &&
                 listState.firstVisibleItemScrollOffset == 0
+        }
+    }
+
+    val isNearNewest by remember(listState) {
+        derivedStateOf {
+            listState.firstVisibleItemIndex <= 2
         }
     }
 
@@ -174,16 +181,22 @@ fun GetNewChatView(
 
     var stickyDateHeader by remember { mutableStateOf(false) }
 
-    LaunchedEffect(listState) {
-        snapshotFlow { listState.isScrollInProgress }
-            .collect { scrolling ->
-                if (scrolling) {
-                    stickyDateHeader = true
-                } else {
-                    delay(1200)
-                    stickyDateHeader = false
+    LaunchedEffect(listState, isNearNewest) {
+        // Only listen to scroll if user is away from newest messages. This ensures the stickyHeader is not shown on
+        // every new received message when being at the bottom of the list (because this triggers a scroll).
+        if (!isNearNewest) {
+            snapshotFlow { listState.isScrollInProgress }
+                .collectLatest { scrolling ->
+                    if (scrolling) {
+                        stickyDateHeader = true
+                    } else {
+                        delay(1200)
+                        stickyDateHeader = false
+                    }
                 }
-            }
+        } else {
+            stickyDateHeader = false
+        }
     }
 
     val stickyDateHeaderAlpha by animateFloatAsState(
