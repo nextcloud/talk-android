@@ -392,6 +392,7 @@
     <string name="openConversations">Άνοιγμα συνομιλιών</string>
     <string name="open_in_files_app">Άνοιγμα την εφαρμογή Αρχεία</string>
     <string name="open_thread">Μετάβαση στη συζήτηση</string>
+    <string name="pinned_dismiss">Αποδέσμευση</string>
     <string name="play_pause_voice_message">Αναπαραγωγή/παύση ηχητικού μηνύματος</string>
     <string name="polls_add_option">Προσθήκη επιλογής</string>
     <string name="polls_end_poll">Τερματισμός δημοσκόπησης</string>

@@ -425,6 +425,7 @@
     <string name="online_status">Povezano stanje</string>
     <string name="openConversations">Odprti pogovori</string>
     <string name="open_in_files_app">Odpri v programu Datoteke</string>
+    <string name="pinned_dismiss">Prekliči</string>
     <string name="pinned_message_options">Možnosti sporočila</string>
     <string name="play_pause_voice_message">Predvajaj/Ustavi zvočni posnetek</string>
     <string name="polls_add_option">Dodaj možnost</string>

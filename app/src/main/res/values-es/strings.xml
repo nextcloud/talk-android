@@ -570,6 +570,7 @@
     <string name="open_in_files_app">Abrir en app Archivos</string>
     <string name="open_notes">Abrir Notas</string>
     <string name="open_thread">Ir al hilo</string>
+    <string name="pinned_dismiss">Descartar</string>
     <string name="pinned_message_options">Opciones de mensjes</string>
     <string name="play_pause_voice_message">Reproducir/pausar mensaje de voz</string>
     <string name="playback_speed_control">Control de velocidad de reproducción</string>

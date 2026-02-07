@@ -573,6 +573,7 @@
     <string name="pin_24hr">Appunta per 24 ore</string>
     <string name="pin_30_days">Appunta per 30 giorni</string>
     <string name="pin_7_days">Appunta per 7 giorni</string>
+    <string name="pinned_dismiss">Rifiuta</string>
     <string name="pinned_message_options">Opzioni messaggi</string>
     <string name="play_pause_voice_message">Riproduci/ferma messaggio vocale</string>
     <string name="playback_speed_control">Velocità di riproduzione</string>

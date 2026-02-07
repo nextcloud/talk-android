@@ -17,7 +17,7 @@
     <string name="audio_output_speaker">Cainteoir</string>
     <string name="audio_output_wired_headset">Cluasán sreangaithe</string>
     <string name="automatic_status_set">Socraíodh do stádas go huathoibríoch</string>
-    <string name="avatar">Avatar</string>
+    <string name="avatar">Abhatár</string>
     <string name="away">Amach</string>
     <string name="back_button">Cnaipe ar ais</string>
     <string name="ban">Bac</string>
@@ -301,6 +301,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Déan neamhaird de bharrfheabhsú ceallraí</string>
     <string name="nc_important_conversation">Comhrá tábhachtach</string>
     <string name="nc_important_conversation_desc">Déantar neamhaird ar stádas an úsáideora \"Ná cuir isteach\" i gcás comhráite tábhachtacha</string>
+    <string name="nc_in_conversation">I %1$s</string>
     <string name="nc_invalid_time">Am neamhbhailí</string>
     <string name="nc_invitations">cuirí</string>
     <string name="nc_join_open_conversations">Glac páirt i gcomhráite oscailte</string>
@@ -335,6 +336,8 @@
     <string name="nc_message_offline">As líne</string>
     <string name="nc_message_quote_cancel_reply">Cealaigh freagra</string>
     <string name="nc_message_read">Léadh an teachtaireacht</string>
+    <string name="nc_message_scheduled">Teachtaireacht sceidealaithe</string>
+    <string name="nc_message_scheduled_at">Teachtaireacht sceidealaithe do %1$s</string>
     <string name="nc_message_sending">Ag seoladh</string>
     <string name="nc_message_sent">Teachtaireacht seolta</string>
     <string name="nc_microphone_enabled_audio_recording">Tá an micreafón cumasaithe agus tá fuaim á taifeadadh</string>
@@ -413,7 +416,9 @@
     <string name="nc_save_success">Sábháilte go rathúil</string>
     <string name="nc_schedule_message">Teachtaireacht sceidealaithe</string>
     <string name="nc_schedule_message_title">Teachtaireacht sceidealaithe</string>
+    <string name="nc_schedule_message_without_notification">Seol níos déanaí gan fógra</string>
     <string name="nc_scheduled_messages">Teachtaireachtaí sceidealaithe</string>
+    <string name="nc_scheduled_messages_empty">Gan aon teachtaireachtaí sceidealaithe</string>
     <string name="nc_scheduled_time">Am sceidealta</string>
     <string name="nc_screen_lock_timeout_30">30 soicind</string>
     <string name="nc_screen_lock_timeout_300">5 nóiméad</string>
@@ -563,6 +568,7 @@
     <string name="no_conversations_archived">Níl aon chomhráite sa chartlann</string>
     <string name="no_offline_messages_saved">Níor sábháladh aon teachtaireacht as líne</string>
     <string name="no_phone_book_integration_due_to_permissions">Níl aon chomhtháthú uimhir theileafóin mar gheall ar cheadanna in easnamh</string>
+    <string name="no_scheduled_messages_offline">Gan nasc leis an bhfreastalaí - Níorbh fhéidir teachtaireachtaí sceidealaithe a luchtú</string>
     <string name="notification_all_messages">Gach teachtaireacht</string>
     <string name="notification_mention_only">\@-luaite amháin</string>
     <string name="notification_off">as</string>
@@ -581,7 +587,12 @@
     <string name="pin_indefinitely">Bioráin go ceann tréimhse éiginnte</string>
     <string name="pin_message">Teachtaireacht bioráin</string>
     <string name="pinned">Bioránta</string>
+    <string name="pinned_by_author">%1$s (priontáilte ag %2$s)</string>
+    <string name="pinned_by_you">%1$s (pionnáilte agatsa)</string>
+    <string name="pinned_dismiss">Díbhe</string>
+    <string name="pinned_go_to_message">Téigh chuig an teachtaireacht</string>
     <string name="pinned_indefinitely">Priontáilte go deo</string>
+    <string name="pinned_message_options">Roghanna teachtaireachta</string>
     <string name="pinned_until">Priontáilte go dtí</string>
     <string name="play_pause_voice_message">Seinn/cuir teachtaireacht gutha ar sos</string>
     <string name="playback_speed_control">Rialú luas athsheinm</string>
@@ -628,7 +639,7 @@
     <string name="reset_status">Stádas a athshocrú</string>
     <string name="restrict_join_other_room_while_call">Ní féidir dul isteach i seomraí eile agus tú ar ghlao</string>
     <string name="save">Sábháil</string>
-    <string name="scan_qr_code">Scan QR Code</string>
+    <string name="scan_qr_code">Scanáil Cód QR</string>
     <string name="scope_federated_description">Sioncrónaigh le freastalaithe iontaofa amháin</string>
     <string name="scope_federated_title">Cónaidhme</string>
     <string name="scope_local_description">Infheicthe ag daoine sa chás seo agus ag aíonna amháin</string>

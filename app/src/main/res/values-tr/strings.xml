@@ -581,6 +581,7 @@
     <string name="pin_indefinitely">Süresiz sabitle</string>
     <string name="pin_message">İletiyi sabitle</string>
     <string name="pinned">Sabitlenmiş</string>
+    <string name="pinned_dismiss">Yok say</string>
     <string name="pinned_indefinitely">Süresiz sabitlendi</string>
     <string name="pinned_message_options">İleti seçenekleri</string>
     <string name="pinned_until">Şu zamana kadar sabitlendi</string>

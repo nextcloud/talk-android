@@ -499,6 +499,7 @@
     <string name="online_status">オンラインステータス</string>
     <string name="openConversations">オープンな会話</string>
     <string name="open_in_files_app">アプリでファイルを開く</string>
+    <string name="pinned_dismiss">閉じる</string>
     <string name="play_pause_voice_message">音声メッセージを再生／一時停止</string>
     <string name="polls_add_option">オプションを追加</string>
     <string name="polls_edit_vote">投票を修正する</string>

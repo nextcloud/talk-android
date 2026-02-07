@@ -403,6 +403,7 @@
     <string name="online_status">접속 상태</string>
     <string name="openConversations">대화 열기</string>
     <string name="open_in_files_app">파일 앱에서 열다</string>
+    <string name="pinned_dismiss">끄기</string>
     <string name="play_pause_voice_message">음성 메시지를 재생/중단</string>
     <string name="polls_add_option">옵션을 추가하다</string>
     <string name="polls_edit_vote">투표를 편집하다</string>

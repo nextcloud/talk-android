@@ -581,6 +581,7 @@
     <string name="pin_indefinitely">Przypnij na czas nieokreślony</string>
     <string name="pin_message">Przypnij wiadomość</string>
     <string name="pinned">Przypięte</string>
+    <string name="pinned_dismiss">Odrzuć</string>
     <string name="pinned_indefinitely">Przypięte na czas nieokreślony</string>
     <string name="pinned_message_options">Opcje wiadomości</string>
     <string name="pinned_until">Przypięte do</string>

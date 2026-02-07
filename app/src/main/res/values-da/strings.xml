@@ -568,6 +568,7 @@
     <string name="open_in_files_app">Åben i appe\'en filer</string>
     <string name="open_notes">Åben noter</string>
     <string name="open_thread">Gå til tråd</string>
+    <string name="pinned_dismiss">Afvis</string>
     <string name="play_pause_voice_message">Afspil/pauser stemmebesked</string>
     <string name="playback_speed_control">Afspilningshastighedskontrol</string>
     <string name="polls_add_option">Tilføj valg</string>

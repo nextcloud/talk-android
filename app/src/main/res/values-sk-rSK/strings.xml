@@ -578,6 +578,7 @@
     <string name="open_thread">Prejsť na vlákno</string>
     <string name="pin_message">Pripnúť správu</string>
     <string name="pinned">Pripnuté</string>
+    <string name="pinned_dismiss">Odmietnuť</string>
     <string name="play_pause_voice_message">Prehrať/pozastaviť hlasovú správu</string>
     <string name="playback_speed_control">Ovládanie rýchlosti prehrávania</string>
     <string name="please_continue_the_login_process_in_the_browser">Pokračujte v prihlásení v prehliadači</string>

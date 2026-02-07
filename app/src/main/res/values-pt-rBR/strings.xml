@@ -587,6 +587,10 @@
     <string name="pin_indefinitely">Fixar indefinidamente</string>
     <string name="pin_message">Fixar mensagem</string>
     <string name="pinned">Fixada</string>
+    <string name="pinned_by_author">%1$s (fixada por %2$s)</string>
+    <string name="pinned_by_you">%1$s (fixada por você)</string>
+    <string name="pinned_dismiss">Descartar</string>
+    <string name="pinned_go_to_message">Ir para mensagem</string>
     <string name="pinned_indefinitely">Fixada indefinidamente</string>
     <string name="pinned_message_options">Opções de mensagem</string>
     <string name="pinned_until">Fixada até</string>

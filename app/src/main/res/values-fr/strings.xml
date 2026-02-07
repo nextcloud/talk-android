@@ -577,6 +577,7 @@
     <string name="open_thread">Aller à la conversation</string>
     <string name="pin_message">Épingler le message</string>
     <string name="pinned">Épinglé</string>
+    <string name="pinned_dismiss">Rejeter</string>
     <string name="pinned_message_options">Options du message</string>
     <string name="play_pause_voice_message">Jouer / mettre en pause le message vocal</string>
     <string name="playback_speed_control">Contrôle de la vitesse de lecture</string>
