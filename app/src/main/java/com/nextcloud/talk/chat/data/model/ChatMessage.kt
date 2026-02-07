@@ -144,7 +144,9 @@ data class ChatMessage(
 
     var pinnedUntil: Long? = null,
 
-    var sendAt: Int? = null
+    var sendAt: Int? = null,
+
+    var avatarUrl: String? = null
 
 ) : MessageContentType,
     MessageContentType.Image {
@@ -211,28 +213,33 @@ data class ChatMessage(
 
     @Suppress("ReturnCount")
     fun isLinkPreview(): Boolean {
-        if (CapabilitiesUtil.isLinkPreviewAvailable(activeUser!!)) {
-            val regexStringFromServer = activeUser?.capabilities?.coreCapability?.referenceRegex
+        activeUser?.let {
+            if (CapabilitiesUtil.isLinkPreviewAvailable(it)) {
+                val regexStringFromServer = activeUser?.capabilities?.coreCapability?.referenceRegex
 
-            val regexFromServer = regexStringFromServer?.toRegex(setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
-            val regexDefault = REGEX_STRING_DEFAULT.toRegex(setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
+                val regexFromServer = regexStringFromServer?.toRegex(
+                    setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE)
+                )
+                val regexDefault = REGEX_STRING_DEFAULT.toRegex(setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
 
-            val messageCharSequence: CharSequence = StringBuffer(message!!)
+                val messageCharSequence: CharSequence = StringBuffer(message!!)
 
-            if (regexFromServer != null) {
-                val foundLinkInServerRegex = regexFromServer.containsMatchIn(messageCharSequence)
-                if (foundLinkInServerRegex) {
-                    extractedUrlToPreview = regexFromServer.find(messageCharSequence)?.groups?.get(0)?.value?.trim()
+                if (regexFromServer != null) {
+                    val foundLinkInServerRegex = regexFromServer.containsMatchIn(messageCharSequence)
+                    if (foundLinkInServerRegex) {
+                        extractedUrlToPreview = regexFromServer.find(messageCharSequence)?.groups?.get(0)?.value?.trim()
+                        return true
+                    }
+                }
+
+                val foundLinkInDefaultRegex = regexDefault.containsMatchIn(messageCharSequence)
+                if (foundLinkInDefaultRegex) {
+                    extractedUrlToPreview = regexDefault.find(messageCharSequence)?.groups?.get(0)?.value?.trim()
                     return true
                 }
             }
-
-            val foundLinkInDefaultRegex = regexDefault.containsMatchIn(messageCharSequence)
-            if (foundLinkInDefaultRegex) {
-                extractedUrlToPreview = regexDefault.find(messageCharSequence)?.groups?.get(0)?.value?.trim()
-                return true
-            }
         }
+
         return false
     }
 

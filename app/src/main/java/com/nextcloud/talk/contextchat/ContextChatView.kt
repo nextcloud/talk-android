@@ -33,7 +33,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,18 +49,27 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.database.mappers.asModel
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
-import com.nextcloud.talk.ui.ComposeChatAdapter
+import com.nextcloud.talk.ui.chat.GetNewChatView
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 
 @Composable
-fun ContextChatView(context: Context, contextViewModel: ContextChatViewModel) {
+fun ContextChatView(
+    user: User,
+    context: Context,
+    viewThemeUtils: ViewThemeUtils,
+    contextViewModel: ContextChatViewModel
+) {
     val contextChatMessagesState = contextViewModel.getContextChatMessagesState.collectAsState().value
 
     when (contextChatMessagesState) {
         ContextChatViewModel.ContextChatRetrieveUiState.None -> {}
         is ContextChatViewModel.ContextChatRetrieveUiState.Success -> {
             ContextChatSuccessView(
+                user = user,
+                viewThemeUtils = viewThemeUtils,
                 visible = true,
                 context = context,
                 contextChatRetrieveUiStateSuccess = contextChatMessagesState,
@@ -96,6 +104,8 @@ fun ContextChatErrorView() {
 
 @Composable
 fun ContextChatSuccessView(
+    user: User,
+    viewThemeUtils: ViewThemeUtils,
     visible: Boolean,
     context: Context,
     contextChatRetrieveUiStateSuccess: ContextChatViewModel.ContextChatRetrieveUiState.Success,
@@ -171,15 +181,13 @@ fun ContextChatSuccessView(
                         val messages = contextChatRetrieveUiStateSuccess.messages.map(ChatMessageJson::asModel)
                         val messageId = contextChatRetrieveUiStateSuccess.messageId
                         val threadId = contextChatRetrieveUiStateSuccess.threadId
-                        val adapter = ComposeChatAdapter(
-                            messagesJson = contextChatRetrieveUiStateSuccess.messages,
-                            messageId = messageId,
-                            threadId = threadId
-                        )
-                        SideEffect {
-                            adapter.addMessages(messages.toMutableList(), true)
-                        }
-                        adapter.GetView()
+
+                        // TODO refactor context chat
+                        // GetNewChatView(
+                        //     chatItems = messages,
+                        //     conversationThreadId = threadId?.toLong(),
+                        //     null
+                        // )
                     }
                 }
             }
