@@ -616,6 +616,7 @@
     <string name="previously_set">Estabelecido previamente</string>
     <string name="qr_code_error">Non foi posíbel ler o código QR.</string>
     <string name="raise_hand">Erguer a man</string>
+    <string name="reaction_forbidden">Non está permitido engadir nin eliminar reaccións nesta conversa</string>
     <string name="reactions_tab_all">Todo</string>
     <string name="read_storage_no_permission">Non é posíbel compartir ficheiros desde o almacenamento sen permisos</string>
     <string name="recent_threads">Fíos recentes</string>

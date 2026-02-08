@@ -587,8 +587,12 @@
     <string name="pin_indefinitely">Tõsta esile tähtajatult</string>
     <string name="pin_message">Tõsta sõnum esile</string>
     <string name="pinned">Esiletõstetud</string>
+    <string name="pinned_by_author">%1$s (%2$s tõstis esile)</string>
+    <string name="pinned_by_you">%1$s (sina tõstsid esile)</string>
     <string name="pinned_dismiss">Loobu</string>
+    <string name="pinned_go_to_message">Mine sõnumi juurde</string>
     <string name="pinned_indefinitely">Esiletõestetud tähtajatult</string>
+    <string name="pinned_message_options">Sõnumi valikud</string>
     <string name="pinned_until">Esiletõstetud kuni</string>
     <string name="play_pause_voice_message">Esita häälsõnumit või peata esitus</string>
     <string name="playback_speed_control">Taasesituse kiiruse juhtimine</string>
@@ -612,6 +616,7 @@
     <string name="previously_set">Varasemalt seatud</string>
     <string name="qr_code_error">QR-koodi lugemine pole võimalik</string>
     <string name="raise_hand">Anna käega märku</string>
+    <string name="reaction_forbidden">Pole õigust selles vestluses reageerida või reageerimise eemaldada</string>
     <string name="reactions_tab_all">Kõik</string>
     <string name="read_storage_no_permission">Andmeruumist failide jagamine pole võimalik ilma vastavate õigusteta</string>
     <string name="recent_threads">Hiljutised jutulõngad</string>
