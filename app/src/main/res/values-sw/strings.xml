@@ -302,6 +302,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Puuza uboreshaji wa betri</string>
     <string name="nc_important_conversation">Mazungumzo muhimu</string>
     <string name="nc_important_conversation_desc">\"Usisumbue\" hali ya mtumiaji inapuuzwa kwa mazungumzo muhimu</string>
+    <string name="nc_in_conversation">Katika %1$s</string>
     <string name="nc_invalid_time">Wakati batili</string>
     <string name="nc_invitations">Mialiko</string>
     <string name="nc_join_open_conversations">Jiunge mazungumzo ya wazi</string>
@@ -336,6 +337,8 @@
     <string name="nc_message_offline">Nje ya mtandao</string>
     <string name="nc_message_quote_cancel_reply">Ghairi jibu</string>
     <string name="nc_message_read">Usomaji wa ujumbe</string>
+    <string name="nc_message_scheduled">Ujumbe umeratibiwa</string>
+    <string name="nc_message_scheduled_at">Ujumbe umeratibiwa kwa %1$s</string>
     <string name="nc_message_sending">Inatuma</string>
     <string name="nc_message_sent">Ujumbe umetumwa</string>
     <string name="nc_microphone_enabled_audio_recording">Maikrofoni imewashwa na sauti inarekodiwa</string>
@@ -408,9 +411,15 @@
     <string name="nc_rename_confirm">Badili jina</string>
     <string name="nc_reply">Jibu</string>
     <string name="nc_reply_privately">Jibu kwa faragha</string>
+    <string name="nc_reschedule_message">Ratibu upya</string>
     <string name="nc_room_retention">Chumba kimehifadhiwa kikamilifu</string>
     <string name="nc_save_message">Hifadhi</string>
     <string name="nc_save_success">Imehifadhiwa kikamilifu</string>
+    <string name="nc_schedule_message">Panga ujumbe</string>
+    <string name="nc_schedule_message_title">Panga ujumbe</string>
+    <string name="nc_schedule_message_without_notification">Tuma baadaye bila arifa</string>
+    <string name="nc_scheduled_messages">Panga ujumbe</string>
+    <string name="nc_scheduled_messages_empty">Hakuna jumbe zilizoratibiwa</string>
     <string name="nc_scheduled_time">Muda uliopangwa</string>
     <string name="nc_screen_lock_timeout_30">Sekunde 30</string>
     <string name="nc_screen_lock_timeout_300">Dakika 5</string>
@@ -425,6 +434,8 @@
     <string name="nc_search_clear">Futa utafutaji</string>
     <string name="nc_select_an_account">Chagua akaunti</string>
     <string name="nc_send_edit_message">Sasisha ujumbe </string>
+    <string name="nc_send_later">Tuma baadaye</string>
+    <string name="nc_send_now">Tuma sasa</string>
     <string name="nc_send_voice_recording">Tuma rekodi ya sauti</string>
     <string name="nc_sensitive_conversation">Mazungumzo nyeti</string>
     <string name="nc_sensitive_conversation_hint">Onyesho la kuchungulia la ujumbe litazimwa katika orodha ya mazungumzo na arifa</string>
@@ -558,6 +569,7 @@
     <string name="no_conversations_archived">Hakuna mazungumzo yaliyohifadhiwa kwenye kumbukumbu</string>
     <string name="no_offline_messages_saved">Hakuna jumbe za nje ya mtandao zilizohifadhiwa</string>
     <string name="no_phone_book_integration_due_to_permissions">Hakuna muunganisho wa nambari ya simu kwa sababu ya kukosa ruhusa</string>
+    <string name="no_scheduled_messages_offline">Hakuna muunganisho kwa seva - Ujumbe ulioratibiwa haukuweza kupakiwa</string>
     <string name="notification_all_messages">Jumbe zote</string>
     <string name="notification_mention_only">\@-mitajo pekee</string>
     <string name="notification_off">Imezimwa</string>
@@ -576,8 +588,12 @@
     <string name="pin_indefinitely">Bandika kwa muda usiojulikana</string>
     <string name="pin_message">Bandika ujumbe</string>
     <string name="pinned">Imebandikwa</string>
+    <string name="pinned_by_author">%1$s (imebandikwa na %2$s)</string>
+    <string name="pinned_by_you">%1$s (imebandikwa na wewe)</string>
     <string name="pinned_dismiss">Tawanya</string>
+    <string name="pinned_go_to_message">Nenda kwenye ujumbe</string>
     <string name="pinned_indefinitely">Imebandikwa kwa muda usiojulikana</string>
+    <string name="pinned_message_options">Chaguo za ujumbe</string>
     <string name="pinned_until">Imebandikwa hadi</string>
     <string name="play_pause_voice_message">Cheza/simamisha ujumbe wa sauti</string>
     <string name="playback_speed_control">Udhibiti wa kasi ya mshindonyuma</string>
@@ -601,6 +617,7 @@
     <string name="previously_set">Imepangiliwa mwanzo</string>
     <string name="qr_code_error">Msimbo wa QR haukuweza kusomeka</string>
     <string name="raise_hand">Inua mkono</string>
+    <string name="reaction_forbidden">Huruhusiwi kuongeza au kuondoa maoni katika mazungumzo haya</string>
     <string name="reactions_tab_all">Zote</string>
     <string name="read_storage_no_permission">Kushiriki faili kutoka kwa hifadhi hakuwezekani bila ruhusa</string>
     <string name="recent_threads">Mijadala ya hivi karibuni</string>
