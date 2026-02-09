@@ -28,7 +28,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -41,6 +40,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -52,7 +52,6 @@ import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nextcloud.talk.R
-import com.nextcloud.talk.chat.UnreadMessagesPopup
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.data.user.model.User
@@ -74,7 +73,9 @@ private val AUTHOR_TEXT_SIZE = 12.sp
 fun GetNewChatView(
     chatItems: List<ChatViewModel.ChatItem>,
     conversationThreadId: Long? = null,
-    onLoadMore: (() -> Unit?)?
+    onLoadMore: (() -> Unit?)?,
+    advanceLocalLastReadMessageIfNeeded: ((Int) -> Unit?)?,
+    updateRemoteLastReadMessageIfNeeded: (() -> Unit?)?
 ) {
     val listState = rememberLazyListState()
     val showUnreadPopup = remember { mutableStateOf(false) }
@@ -103,6 +104,8 @@ fun GetNewChatView(
 
     // Show floating scroll-to-newest button when not at newest
     val showScrollToNewest by remember { derivedStateOf { !isAtNewest } }
+
+    val latestChatItems by rememberUpdatedState(chatItems)
 
     // Track newest message and show unread popup
     LaunchedEffect(chatItems) {
@@ -165,8 +168,7 @@ fun GetNewChatView(
     val stickyDateHeaderText by remember(listState, chatItems) {
         derivedStateOf {
             chatItems.getOrNull(
-                listState.layoutInfo.visibleItemsInfo
-                    .lastOrNull()?.index ?: 0
+                listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             )?.let { item ->
                 when (item) {
                     is ChatViewModel.ChatItem.MessageItem ->
@@ -185,6 +187,7 @@ fun GetNewChatView(
         // Only listen to scroll if user is away from newest messages. This ensures the stickyHeader is not shown on
         // every new received message when being at the bottom of the list (because this triggers a scroll).
         if (!isNearNewest) {
+            updateRemoteLastReadMessageIfNeeded?.invoke()
             snapshotFlow { listState.isScrollInProgress }
                 .collectLatest { scrolling ->
                     if (scrolling) {
@@ -197,6 +200,20 @@ fun GetNewChatView(
         } else {
             stickyDateHeader = false
         }
+    }
+
+    LaunchedEffect(isAtNewest) {
+        if (!isAtNewest) return@LaunchedEffect
+
+        latestChatItems
+            .getOrNull(listState.firstVisibleItemIndex)
+            ?.let { item ->
+                // It might not always be a chat message. Not calling advanceLocalLastReadMessageIfNeeded should not
+                // matter. This should be triggered often enough so it's okay when it's true the next times.
+                if (item is ChatViewModel.ChatItem.MessageItem) {
+                    advanceLocalLastReadMessageIfNeeded?.invoke(item.message.jsonMessageId)
+                }
+            }
     }
 
     val stickyDateHeaderAlpha by animateFloatAsState(
