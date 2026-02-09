@@ -640,7 +640,9 @@ class ChatActivity :
                 GetNewChatView(
                     chatItems = chatItems,
                     conversationThreadId = conversationThreadId,
-                    onLoadMore = { loadMoreMessagesCompose() }
+                    onLoadMore = { loadMoreMessagesCompose() },
+                    advanceLocalLastReadMessageIfNeeded = { advanceLocalLastReadMessageIfNeeded(it) },
+                    updateRemoteLastReadMessageIfNeeded = { updateRemoteLastReadMessageIfNeeded() }
                 )
             }
         }
@@ -670,7 +672,7 @@ class ChatActivity :
                 // With Jetpack Compose the flow will be used directly in the UI instead to clear and add everything.
                 adapter!!.clear()
                 adapter!!.addToEnd(chatMessages, false)
-                advanceLocalLastReadMessageIfNeeded()
+                advanceLocalLastReadMessageIfNeededChatKit()
             } else {
                 Log.e(TAG, "adapter was null")
             }
@@ -1577,7 +1579,7 @@ class ChatActivity :
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    advanceLocalLastReadMessageIfNeeded()
+                    advanceLocalLastReadMessageIfNeededChatKit()
                     updateRemoteLastReadMessageIfNeeded()
                     if (isScrolledToBottom()) {
                         binding.unreadMessagesPopup.visibility = View.GONE
@@ -2895,16 +2897,21 @@ class ChatActivity :
         adapter = null
     }
 
-    private fun advanceLocalLastReadMessageIfNeeded() {
+    @Deprecated("old implementation for ChatKit")
+    private fun advanceLocalLastReadMessageIfNeededChatKit() {
         val position = layoutManager?.findFirstVisibleItemPosition()
         position?.let {
             // Casting could fail if it's not a chatMessage. It should not matter as the function is triggered often
             // enough. If it's a problem, either improve or wait for migration to Jetpack Compose.
             val message = adapter?.items?.getOrNull(it)?.item as? ChatMessage
             message?.jsonMessageId?.let { messageId ->
-                chatViewModel.advanceLocalLastReadMessageIfNeeded(messageId)
+                advanceLocalLastReadMessageIfNeeded(messageId)
             }
         }
+    }
+
+    private fun advanceLocalLastReadMessageIfNeeded(messageId: Int) {
+        chatViewModel.advanceLocalLastReadMessageIfNeeded(messageId)
     }
 
     private fun updateRemoteLastReadMessageIfNeeded() {
