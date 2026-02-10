@@ -9,6 +9,9 @@ package com.nextcloud.talk.chat
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
+import android.text.util.Linkify
+import android.widget.TextView
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -38,12 +41,14 @@ import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.InsertEmoticon
 import androidx.compose.material.icons.outlined.Keyboard
 import androidx.compose.material.icons.outlined.NotificationsOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -67,6 +72,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -103,6 +109,7 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
+import com.nextcloud.talk.utils.message.MessageUtils
 import com.vanniktech.emoji.EmojiEditText
 import com.vanniktech.emoji.EmojiPopup
 import java.time.Instant
@@ -166,13 +173,24 @@ class ScheduledMessagesActivity : BaseActivity() {
                             edit(message, sendAt, user)
                         },
                         onDeleteScheduledMessage = { message -> deleteScheduledMessage(message, user) },
-                        onOpenParentMessage = { messageId, threadId ->
-                            openParentMessage(messageId, threadId)
+                        onOpenParentMessage = { messageId ->
+                            openParentMessage(messageId)
+                        },
+                        onOpenThread = { threadId ->
+                            openThread(threadId)
                         }
                     )
                 }
             }
         }
+    }
+
+    private fun openThread(threadId: Long) {
+        val intent = Intent(this, ChatActivity::class.java).apply {
+            putExtra(KEY_ROOM_TOKEN, roomToken)
+            putExtra(KEY_THREAD_ID, threadId)
+        }
+        startActivity(intent)
     }
 
     private fun loadScheduledMessages(user: User) {
@@ -256,7 +274,8 @@ class ScheduledMessagesActivity : BaseActivity() {
         onReschedule: (ChatMessage, Int) -> Unit,
         onEdit: (ChatMessage, Int) -> Unit,
         onDeleteScheduledMessage: (ChatMessage) -> Unit,
-        onOpenParentMessage: (Long?, Long?) -> Unit
+        onOpenParentMessage: (Long?) -> Unit,
+        onOpenThread: (Long) -> Unit
     ) {
         val snackBarHostState = remember { SnackbarHostState() }
         val scheduledState by scheduledMessagesViewModel.getScheduledMessagesState.collectAsStateWithLifecycle()
@@ -424,9 +443,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                                                 )
                                             }
                                         }
-
                                         val parentMessage = parentId?.let { parentMessages[it] }
-
                                         ScheduledMessageBubble(
                                             message = message,
                                             parentMessage = parentMessage,
@@ -434,10 +451,8 @@ class ScheduledMessagesActivity : BaseActivity() {
                                             viewThemeUtils = viewThemeUtils,
                                             onClick = {
                                                 val parentId = message.parentMessageId
-                                                if (message.threadId != null) {
-                                                    onOpenParentMessage(parentId, message.threadId)
-                                                } else if (parentId != null) {
-                                                    onOpenParentMessage(parentId, message.threadId)
+                                                if (parentId != null) {
+                                                    onOpenParentMessage(parentId)
                                                 }
                                             },
                                             onLongPress = {
@@ -519,6 +534,12 @@ class ScheduledMessagesActivity : BaseActivity() {
                     onDelete = {
                         val message = selectedMessage ?: return@ScheduledMessageActionsSheet
                         onDeleteScheduledMessage(message)
+                        showActionsSheet = false
+                    },
+                    showOpenThreadAction = selectedMessage?.threadId != null && selectedMessage?.threadId!! > 0,
+                    onOpenThread = {
+                        val threadId = selectedMessage?.threadId ?: return@ScheduledMessageActionsSheet
+                        onOpenThread(threadId)
                         showActionsSheet = false
                     }
                 )
@@ -622,15 +643,16 @@ class ScheduledMessagesActivity : BaseActivity() {
         val context = LocalContext.current
         val scheduledAt = message.sendAt?.toLong() ?: message.timestamp
         val timeText = dateUtils.getLocalTimeStringFromTimestamp(scheduledAt)
-        val text = ChatUtils.getParsedMessage(message.message, message.messageParameters).orEmpty()
+        val messageTextColor = LocalContentColor.current.toArgb()
 
         val bubbleColor = remember(context, message.isDeleted, viewThemeUtils) {
             Color(viewThemeUtils.talk.getOutgoingMessageBubbleColor(context, message.isDeleted, false))
         }
 
-        val isClickable = remember(message.threadTitle, parentMessage) {
-            !message.threadTitle.isNullOrBlank() || parentMessage != null
+        val isClickable = remember(parentMessage) {
+            parentMessage != null
         }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -646,11 +668,13 @@ class ScheduledMessagesActivity : BaseActivity() {
                     .then(
                         if (isClickable) {
                             Modifier.combinedClickable(
+                                enabled = true,
                                 onClick = onClick,
                                 onLongClick = onLongPress
                             )
                         } else {
                             Modifier.combinedClickable(
+                                enabled = true,
                                 onClick = {},
                                 onLongClick = onLongPress
                             )
@@ -660,7 +684,6 @@ class ScheduledMessagesActivity : BaseActivity() {
                 val strokeColor = MaterialTheme.colorScheme.primary
                 Column(modifier = Modifier.padding(8.dp)) {
                     parentMessage?.let { parent ->
-
                         if (!message.threadTitle.isNullOrBlank()) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -677,44 +700,79 @@ class ScheduledMessagesActivity : BaseActivity() {
                                     style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                                 )
                             }
-                        } else {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 4.dp)
-                                    .clip(RoundedCornerShape(4.dp))
-                                    .background(MaterialTheme.colorScheme.background, MaterialTheme.shapes.small)
-                                    .drawBehind {
-                                        val strokeWidth = 3.dp.toPx()
-                                        drawLine(
-                                            color = strokeColor,
-                                            start = Offset(strokeWidth / 2, 0f),
-                                            end = Offset(strokeWidth / 2, size.height),
-                                            strokeWidth = strokeWidth
-                                        )
-                                    }
-                                    .padding(start = 12.dp, top = 4.dp, bottom = 4.dp, end = 8.dp)
-                            ) {
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(
-                                        text = parent.actorDisplayName ?: "Unknown",
-                                        style = MaterialTheme.typography.labelSmall.copy(
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    )
-                                    Text(
-                                        text = ChatUtils.getParsedMessage(
-                                            parent.message,
-                                            parent.messageParameters
-                                        ).orEmpty(),
-                                        style = MaterialTheme.typography.bodySmall
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 4.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(MaterialTheme.colorScheme.background, MaterialTheme.shapes.small)
+                                .drawBehind {
+                                    val strokeWidth = 3.dp.toPx()
+                                    drawLine(
+                                        color = strokeColor,
+                                        start = Offset(strokeWidth / 2, 0f),
+                                        end = Offset(strokeWidth / 2, size.height),
+                                        strokeWidth = strokeWidth
                                     )
                                 }
+                                .padding(start = 12.dp, top = 4.dp, bottom = 4.dp, end = 8.dp)
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = parent.actorDisplayName ?: "Unknown",
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                )
+                                val parentMessage = ChatUtils.getParsedMessage(
+                                    parent.message,
+                                    parent.messageParameters
+                                ).orEmpty()
+
+                                AndroidView(
+                                    factory = { androidContext ->
+                                        TextView(androidContext).apply {
+                                            movementMethod = LinkMovementMethod.getInstance()
+                                            linksClickable = true
+                                        }
+                                    },
+                                    update = { textView ->
+                                        textView.setTextColor(messageTextColor)
+                                        textView.text = MessageUtils(context).getRenderedMarkdownText(
+                                            context,
+                                            parentMessage,
+                                            messageTextColor
+                                        )
+                                        Linkify.addLinks(textView, 0)
+                                    }
+                                )
                             }
                         }
                     }
+                    val messageTextColor = LocalContentColor.current.toArgb()
+                    val chatMessage = ChatUtils.getParsedMessage(
+                        message.message,
+                        message.messageParameters
+                    ).orEmpty()
 
-                    Text(text = text, style = MaterialTheme.typography.bodyMedium)
+                    AndroidView(
+                        factory = { androidContext ->
+                            TextView(androidContext).apply {
+                                movementMethod = LinkMovementMethod.getInstance()
+                                linksClickable = true
+                            }
+                        },
+                        update = { textView ->
+                            textView.setTextColor(messageTextColor)
+                            textView.text = MessageUtils(context).getRenderedMarkdownText(
+                                context,
+                                chatMessage,
+                                messageTextColor
+                            )
+                            Linkify.addLinks(textView, Linkify.ALL)
+                        }
+                    )
                     Spacer(Modifier.height(4.dp))
 
                     Row(
@@ -860,7 +918,6 @@ class ScheduledMessagesActivity : BaseActivity() {
                             if (it.text.toString() != editValue.text) {
                                 it.setText(editValue.text)
                             }
-                            it.setSelection(editValue.text.length)
                         }
                     )
 
@@ -889,13 +946,16 @@ class ScheduledMessagesActivity : BaseActivity() {
         }
     }
 
+    @Suppress("LongParameterList")
     @Composable
     private fun ScheduledMessageActionsSheet(
         scheduledTime: String,
         onReschedule: () -> Unit,
         onSendNow: () -> Unit,
         onEdit: () -> Unit,
-        onDelete: () -> Unit
+        onDelete: () -> Unit,
+        showOpenThreadAction: Boolean,
+        onOpenThread: () -> Unit
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Column(
@@ -925,19 +985,23 @@ class ScheduledMessagesActivity : BaseActivity() {
                 text = stringResource(R.string.nc_send_now),
                 onClick = onSendNow
             )
+            if (showOpenThreadAction) {
+                ActionRow(
+                    icon = Icons.Outlined.Forum,
+                    text = stringResource(R.string.open_thread),
+                    onClick = onOpenThread
+                )
+            }
             ActionRow(icon = Icons.Outlined.Edit, text = stringResource(R.string.nc_edit), onClick = onEdit)
             ActionRow(icon = Icons.Outlined.Delete, text = stringResource(R.string.nc_delete), onClick = onDelete)
         }
     }
 
-    private fun openParentMessage(messageId: Long?, threadId: Long?) {
+    private fun openParentMessage(messageId: Long?) {
         val intent = Intent(this, ChatActivity::class.java).apply {
             putExtra(KEY_ROOM_TOKEN, roomToken)
-            if (threadId != null && threadId > 0) {
-                putExtra(KEY_THREAD_ID, threadId)
-            } else {
-                messageId?.let { putExtra(BundleKeys.KEY_MESSAGE_ID, it.toString()) }
-            }
+
+            messageId?.let { putExtra(BundleKeys.KEY_MESSAGE_ID, it.toString()) }
         }
         startActivity(intent)
     }
