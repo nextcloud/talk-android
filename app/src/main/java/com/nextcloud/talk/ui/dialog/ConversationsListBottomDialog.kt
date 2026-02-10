@@ -194,10 +194,12 @@ class ConversationsListBottomDialog(
             dismiss()
         }
 
-        binding.conversationArchiveText.text = if (conversation.hasArchived) {
-            this.activity.resources.getString(R.string.unarchive_conversation)
+        if (conversation.hasArchived) {
+            binding.conversationArchiveText.setText(R.string.unarchive_conversation)
+            binding.conversationArchiveIcon.setImageResource(R.drawable.ic_unarchive_24px)
         } else {
-            this.activity.resources.getString(R.string.archive_conversation)
+            binding.conversationArchiveText.setText(R.string.archive_conversation)
+            binding.conversationArchiveIcon.setImageResource(R.drawable.outline_archive_24)
         }
 
         binding.conversationArchive.setOnClickListener {
