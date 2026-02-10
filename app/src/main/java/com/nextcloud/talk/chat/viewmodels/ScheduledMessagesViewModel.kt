@@ -7,11 +7,14 @@
 
 package com.nextcloud.talk.chat.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import com.nextcloud.talk.utils.message.SendMessageUtils
@@ -27,7 +30,8 @@ import javax.inject.Inject
 
 class ScheduledMessagesViewModel @Inject constructor(
     private val chatRepository: ChatMessageRepository,
-    private val currentUserProvider: CurrentUserProvider
+    private val currentUserProvider: CurrentUserProvider,
+    private val chatNetworkDataSource: ChatNetworkDataSource
 ) : ViewModel() {
 
     sealed interface GetScheduledMessagesState
@@ -84,6 +88,9 @@ class ScheduledMessagesViewModel @Inject constructor(
     val parentMessages: StateFlow<Map<Long, ChatMessage>> =
         _parentMessages.asStateFlow()
 
+    private val _linkPreviews = MutableStateFlow<Map<String, Reference>>(emptyMap())
+    val linkPreviews: StateFlow<Map<String, Reference>> = _linkPreviews.asStateFlow()
+
     fun loadScheduledMessages(credentials: String, url: String) {
         _getScheduledMessagesState.value = GetScheduledMessagesLoadingState
         viewModelScope.launch {
@@ -94,6 +101,44 @@ class ScheduledMessagesViewModel @Inject constructor(
                 } else {
                     _getScheduledMessagesState.value = GetScheduledMessagesErrorState(result.exceptionOrNull())
                 }
+            }
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    fun requestLinkPreview(messageToken: String?, extractedLink: String?) {
+        if (messageToken.isNullOrBlank() || extractedLink.isNullOrBlank()) {
+            return
+        }
+
+        if (_linkPreviews.value.containsKey(messageToken)) {
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                val user = _currentUserState.value ?: currentUserProvider.getCurrentUser().getOrNull() ?: return@launch
+                if (user.baseUrl.isNullOrBlank()) {
+                    return@launch
+                }
+
+                val preview = withContext(Dispatchers.IO) {
+                    runCatching {
+                        chatNetworkDataSource.getOpenGraph(
+                            credentials = user.getCredentials(),
+                            baseUrl = user.baseUrl!!,
+                            extractedLinkToPreview = extractedLink
+                        )
+                    }.getOrNull()
+                }
+
+                preview?.let {
+                    _linkPreviews.update { current ->
+                        current + (messageToken to it)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error loading link preview for scheduled message", e)
             }
         }
     }
@@ -231,5 +276,9 @@ class ScheduledMessagesViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    companion object {
+        private val TAG = ScheduledMessagesViewModel::class.java.simpleName
     }
 }
