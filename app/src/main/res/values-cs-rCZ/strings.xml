@@ -616,6 +616,7 @@
     <string name="previously_set">Dříve nastavené</string>
     <string name="qr_code_error">QR kód se nepodařilo načíst</string>
     <string name="raise_hand">Hlásit se</string>
+    <string name="reaction_forbidden">Nemáte oprávnění přidávat nebo odebírat reakce v této konverzaci</string>
     <string name="reactions_tab_all">Vše</string>
     <string name="read_storage_no_permission">Sdílení souborů z úložiště není možné bez oprávnění</string>
     <string name="recent_threads">Nedávná vlákna</string>

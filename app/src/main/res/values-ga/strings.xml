@@ -616,6 +616,7 @@
     <string name="previously_set">Socraíodh roimhe seo</string>
     <string name="qr_code_error">Níorbh fhéidir an cód QR a léamh</string>
     <string name="raise_hand">Ardaigh lámh</string>
+    <string name="reaction_forbidden">Ní cheadaítear duit imoibrithe a chur leis ná a bhaint sa chomhrá seo</string>
     <string name="reactions_tab_all">Gach</string>
     <string name="read_storage_no_permission">Ní féidir comhaid a roinnt ón stóras gan ceadanna</string>
     <string name="recent_threads">Snáitheanna le déanaí</string>
