@@ -74,12 +74,6 @@ public interface AppPreferences {
 
     void removeTemporaryClientCertAlias();
 
-    boolean getPushToTalkIntroShown();
-
-    void setPushToTalkIntroShown(boolean shown);
-
-    void removePushToTalkIntroShown();
-
     String getCallRingtoneUri();
 
     void setCallRingtoneUri(String value);
