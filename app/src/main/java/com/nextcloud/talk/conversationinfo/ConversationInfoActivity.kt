@@ -1161,7 +1161,7 @@ class ConversationInfoActivity :
                 } else {
                     viewModel.archiveConversation(conversationUser, conversationToken)
                     binding.archiveConversationIcon
-                        .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_eye, null))
+                        .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_unarchive_24px, null))
                     binding.archiveConversationText.text = resources.getString(R.string.unarchive_conversation)
                     binding.archiveConversationTextHint.text = resources.getString(R.string.unarchive_hint)
                 }
@@ -1171,7 +1171,7 @@ class ConversationInfoActivity :
 
         if (conversation!!.hasArchived) {
             binding.archiveConversationIcon
-                .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_eye, null))
+                .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_unarchive_24px, null))
             binding.archiveConversationText.text = resources.getString(R.string.unarchive_conversation)
             binding.archiveConversationTextHint.text = resources.getString(R.string.unarchive_hint)
         } else {

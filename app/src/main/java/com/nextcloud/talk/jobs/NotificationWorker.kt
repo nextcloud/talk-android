@@ -710,7 +710,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 messageId
             )
             val markAsReadAction = NotificationCompat.Action.Builder(
-                R.drawable.ic_eye,
+                R.drawable.ic_mark_chat_read_24px,
                 context!!.resources.getString(R.string.nc_mark_as_read),
                 pendingIntent
             )
