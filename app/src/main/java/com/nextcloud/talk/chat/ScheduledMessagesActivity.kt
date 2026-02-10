@@ -11,6 +11,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
+import android.util.Patterns
 import android.widget.TextView
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -103,6 +104,7 @@ import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.models.json.chat.ChatUtils
+import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
@@ -389,6 +391,10 @@ class ScheduledMessagesActivity : BaseActivity() {
                             .parentMessages
                             .collectAsStateWithLifecycle()
 
+                        val linkPreviews by scheduledMessagesViewModel
+                            .linkPreviews
+                            .collectAsStateWithLifecycle()
+
                         if (state.messages.isEmpty()) {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
@@ -433,6 +439,17 @@ class ScheduledMessagesActivity : BaseActivity() {
                                         items = grouped[date].orEmpty(),
                                         key = { it.token ?: "" }
                                     ) { message ->
+
+                                        LaunchedEffect(message.token, message.message) {
+                                            val extractedLink = extractUrlForPreview(message)
+                                            if (extractedLink != null) {
+                                                scheduledMessagesViewModel.requestLinkPreview(
+                                                    messageToken = message.token,
+                                                    extractedLink = extractedLink
+                                                )
+                                            }
+                                        }
+
                                         val parentId = message.parentMessageId
                                         LaunchedEffect(parentId) {
                                             if (parentId != null) {
@@ -444,9 +461,11 @@ class ScheduledMessagesActivity : BaseActivity() {
                                             }
                                         }
                                         val parentMessage = parentId?.let { parentMessages[it] }
+                                        val linkPreview = message.token?.let { linkPreviews[it] }
                                         ScheduledMessageBubble(
                                             message = message,
                                             parentMessage = parentMessage,
+                                            linkPreview = linkPreview,
                                             dateUtils = dateUtils,
                                             viewThemeUtils = viewThemeUtils,
                                             onClick = {
@@ -630,11 +649,30 @@ class ScheduledMessagesActivity : BaseActivity() {
         }
     }
 
+    @Suppress("ReturnCount")
+    private fun extractUrlForPreview(message: ChatMessage): String? {
+        val existingExtractedUrl = message.extractedUrlToPreview?.trim()
+        if (!existingExtractedUrl.isNullOrBlank()) {
+            return existingExtractedUrl
+        }
+
+        val messageText = ChatUtils.getParsedMessage(message.message, message.messageParameters).orEmpty()
+        val matcher = Patterns.WEB_URL.matcher(messageText)
+        while (matcher.find()) {
+            val link = matcher.group()?.trim().orEmpty()
+            if (link.startsWith("http://") || link.startsWith("https://")) {
+                return link
+            }
+        }
+        return null
+    }
+
     @Composable
     @Suppress("LongMethod", "LongParameterList")
     private fun ScheduledMessageBubble(
         message: ChatMessage,
         parentMessage: ChatMessage?,
+        linkPreview: Reference?,
         dateUtils: DateUtils,
         viewThemeUtils: com.nextcloud.talk.ui.theme.ViewThemeUtils,
         onClick: () -> Unit,
@@ -773,6 +811,8 @@ class ScheduledMessagesActivity : BaseActivity() {
                             Linkify.addLinks(textView, Linkify.ALL)
                         }
                     )
+                    LinkPreview(linkPreview)
+
                     Spacer(Modifier.height(4.dp))
 
                     Row(
@@ -790,6 +830,41 @@ class ScheduledMessagesActivity : BaseActivity() {
                             )
                         }
                     }
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun LinkPreview(linkPreview: Reference?) {
+        val openGraphObject = linkPreview?.openGraphObject ?: return
+
+        Surface(
+            shape = MaterialTheme.shapes.small,
+            tonalElevation = 1.dp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+        ) {
+            Column(modifier = Modifier.padding(8.dp)) {
+                Text(
+                    text = openGraphObject.name,
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                openGraphObject.description?.takeIf { it.isNotBlank() }?.let { description ->
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                openGraphObject.link?.takeIf { it.isNotBlank() }?.let { link ->
+                    Text(
+                        text = link,
+                        style = MaterialTheme.typography.labelSmall
+                    )
                 }
             }
         }
