@@ -497,7 +497,11 @@ class MessageActionsDialog(
     private fun initMenuReplyToMessage(visible: Boolean) {
         if (visible) {
             dialogMessageActionsBinding.menuReplyToMessage.setOnClickListener {
-                chatActivity.messageInputViewModel.reply(message)
+                if (message.isThread && chatActivity.conversationThreadId == null) {
+                    chatActivity.openThread(message)
+                } else {
+                    chatActivity.messageInputViewModel.reply(message)
+                }
                 dismiss()
             }
         }
