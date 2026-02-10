@@ -146,6 +146,22 @@ class ScheduledMessagesActivity : BaseActivity() {
         intent.getStringExtra(CONVERSATION_NAME).orEmpty()
     }
 
+    private val threadId: Long? by lazy {
+        if (intent.hasExtra(THREAD_ID)) {
+            intent.getLongExtra(THREAD_ID, 0L)
+        } else {
+            null
+        }
+    }
+
+    private val threadTitle: String by lazy {
+        intent.getStringExtra(THREAD_TITLE).orEmpty()
+    }
+
+    private val isThreadView: Boolean by lazy {
+        (threadId ?: 0L) > 0
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -183,6 +199,9 @@ class ScheduledMessagesActivity : BaseActivity() {
                         onOpenThread = { threadId ->
                             openThread(threadId)
                         },
+                        threadTitle = threadTitle,
+                        isThreadView = isThreadView
+                        },
                         onCopyScheduledMessage = { message ->
                             copyScheduledMessage(message)
                         }
@@ -201,9 +220,14 @@ class ScheduledMessagesActivity : BaseActivity() {
     }
 
     private fun loadScheduledMessages(user: User) {
+        val scheduledMessagesUrl = if (isThreadView) {
+            ApiUtils.getUrlForScheduledMessages(user.baseUrl, roomToken) + "?threadId=${threadId ?: 0L}"
+        } else {
+            ApiUtils.getUrlForScheduledMessages(user.baseUrl, roomToken)
+        }
         scheduledMessagesViewModel.loadScheduledMessages(
             user.getCredentials(),
-            ApiUtils.getUrlForScheduledMessages(user.baseUrl, roomToken)
+            scheduledMessagesUrl
         )
     }
 
@@ -294,6 +318,8 @@ class ScheduledMessagesActivity : BaseActivity() {
         onDeleteScheduledMessage: (ChatMessage) -> Unit,
         onOpenParentMessage: (Long?) -> Unit,
         onOpenThread: (Long) -> Unit,
+        threadTitle: String,
+        isThreadView: Boolean,
         onCopyScheduledMessage: (ChatMessage) -> Unit
     ) {
         val snackBarHostState = remember { SnackbarHostState() }
@@ -378,10 +404,11 @@ class ScheduledMessagesActivity : BaseActivity() {
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
+                            val title = if (isThreadView) threadTitle else conversationName
                             Text(
                                 text = stringResource(
                                     R.string.nc_in_conversation,
-                                    conversationName
+                                    title
                                 ),
                                 style = MaterialTheme.typography.titleMedium
                             )
@@ -415,6 +442,19 @@ class ScheduledMessagesActivity : BaseActivity() {
                             .linkPreviews
                             .collectAsStateWithLifecycle()
 
+                        val visibleMessages = remember(state.messages, isThreadView, threadId) {
+                            if (isThreadView) {
+                                state.messages.filter { it.threadId == threadId }
+                            } else {
+                                state.messages
+                            }
+                        }
+
+                        if (visibleMessages.isEmpty()) {
+                        val linkPreviews by scheduledMessagesViewModel
+                            .linkPreviews
+                            .collectAsStateWithLifecycle()
+
                         if (state.messages.isEmpty()) {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
@@ -429,8 +469,8 @@ class ScheduledMessagesActivity : BaseActivity() {
                             val zone = remember { ZoneId.systemDefault() }
                             val today = remember { LocalDate.now(zone) }
 
-                            val sortedMessages = remember(state.messages) {
-                                state.messages
+                            val sortedMessages = remember(visibleMessages) {
+                                visibleMessages
                                     .sortedBy { it.sendAt?.toLong() ?: Long.MAX_VALUE }
                             }
 
@@ -471,14 +511,21 @@ class ScheduledMessagesActivity : BaseActivity() {
                                         }
 
                                         val parentId = message.parentMessageId
-                                        LaunchedEffect(parentId) {
-                                            if (parentId != null) {
+                                        val shouldShowParentPreview = !isThreadView ||
+                                            (parentId != null && parentId != message.threadId)
+                                        LaunchedEffect(parentId, shouldShowParentPreview) {
+                                            if (parentId != null && shouldShowParentPreview) {
                                                 scheduledMessagesViewModel.requestParentMessage(
                                                     token = roomToken,
                                                     parentMessageId = parentId,
                                                     threadId = message.threadId
                                                 )
                                             }
+                                        }
+                                        val parentMessage = if (shouldShowParentPreview) {
+                                            parentId?.let { parentMessages[it] }
+                                        } else {
+                                            null
                                         }
 
                                         val parentMessage = parentId?.let { parentMessages[it] }
@@ -491,6 +538,9 @@ class ScheduledMessagesActivity : BaseActivity() {
                                             dateUtils = dateUtils,
                                             viewThemeUtils = viewThemeUtils,
                                             onClick = {
+                                                if (isThreadView) {
+                                                    return@ScheduledMessageBubble
+                                                }
                                                 val parentId = message.parentMessageId
                                                 if (parentId != null) {
                                                     onOpenParentMessage(parentId)
@@ -499,7 +549,8 @@ class ScheduledMessagesActivity : BaseActivity() {
                                             onLongPress = {
                                                 selectedMessage = message
                                                 showActionsSheet = true
-                                            }
+                                            },
+                                            isThreadView = isThreadView
                                         )
                                     }
                                 }
@@ -586,6 +637,9 @@ class ScheduledMessagesActivity : BaseActivity() {
                     showOpenThreadAction = selectedMessage?.threadId != null && selectedMessage?.threadId!! > 0,
                     onOpenThread = {
                         val threadId = selectedMessage?.threadId ?: return@ScheduledMessageActionsSheet
+                        if (isThreadView) {
+                            return@ScheduledMessageActionsSheet
+                        }
                         onOpenThread(threadId)
                         showActionsSheet = false
                     },
@@ -709,7 +763,8 @@ class ScheduledMessagesActivity : BaseActivity() {
         dateUtils: DateUtils,
         viewThemeUtils: com.nextcloud.talk.ui.theme.ViewThemeUtils,
         onClick: () -> Unit,
-        onLongPress: () -> Unit
+        onLongPress: () -> Unit,
+        isThreadView: Boolean
     ) {
         val context = LocalContext.current
         val scheduledAt = message.sendAt?.toLong() ?: message.timestamp
@@ -717,12 +772,18 @@ class ScheduledMessagesActivity : BaseActivity() {
         val text = ChatUtils.getParsedMessage(message.message, message.messageParameters).orEmpty()
 
         val messageTextColor = LocalContentColor.current.toArgb()
+
         val bubbleColor = remember(context, message.isDeleted, viewThemeUtils) {
             Color(viewThemeUtils.talk.getOutgoingMessageBubbleColor(context, message.isDeleted, false))
         }
 
-        val isClickable = remember(parentMessage) {
-            parentMessage != null
+        val isClickable = remember(message.threadTitle, parentMessage, message.threadId, isThreadView) {
+            val isThreadMessage = (message.threadId ?: 0L) > 0
+            if (isThreadMessage) {
+                false
+            } else {
+                (!isThreadView && !message.threadTitle.isNullOrBlank()) || parentMessage != null
+            }
         }
 
         Row(
@@ -754,8 +815,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                 val strokeColor = MaterialTheme.colorScheme.primary
                 Column(modifier = Modifier.padding(8.dp)) {
                     parentMessage?.let { parent ->
-
-                        if (!message.threadTitle.isNullOrBlank()) {
+                        if (!isThreadView && !message.threadTitle.isNullOrBlank()) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(bottom = 4.dp)
@@ -1112,7 +1172,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                 text = stringResource(R.string.nc_send_now),
                 onClick = onSendNow
             )
-            if (showOpenThreadAction) {
+            if (showOpenThreadAction && !isThreadView) {
                 ActionRow(
                     icon = Icons.Outlined.Forum,
                     text = stringResource(R.string.open_thread),
@@ -1185,6 +1245,8 @@ class ScheduledMessagesActivity : BaseActivity() {
     companion object {
         const val ROOM_TOKEN = "room_token"
         const val CONVERSATION_NAME = "conversation_name"
+        const val THREAD_ID = "thread_id"
+        const val THREAD_TITLE = "thread_title"
         const val INT_2: Int = 2
         const val INT_6: Int = 6
         const val INT_0: Int = 0
