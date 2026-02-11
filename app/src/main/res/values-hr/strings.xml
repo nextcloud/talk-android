@@ -386,6 +386,7 @@
     <string name="nc_yes">Da</string>
     <string name="next_week">Sljedeći tjedan</string>
     <string name="no_phone_book_integration_due_to_permissions">Integracija broja telefona nije moguća jer nedostaje dopuštenje</string>
+    <string name="notification_off">Isključeno</string>
     <string name="notifications_default">Zadani</string>
     <string name="notifications_default_description">Slijedi postavke razgovora</string>
     <string name="oneHour">1 sat</string>
