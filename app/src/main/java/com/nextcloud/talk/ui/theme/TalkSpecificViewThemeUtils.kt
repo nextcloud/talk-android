@@ -53,7 +53,6 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.vanniktech.emoji.EmojiTextView
-import com.wooplr.spotlight.SpotlightView
 import dynamiccolor.DynamicScheme
 import dynamiccolor.MaterialDynamicColors
 import eu.davidea.flexibleadapter.utils.FlexibleUtils
@@ -329,13 +328,6 @@ class TalkSpecificViewThemeUtils @Inject constructor(
     fun themeForegroundColorSpan(context: Context): ForegroundColorSpan {
         return withScheme(context) { scheme ->
             return@withScheme ForegroundColorSpan(dynamicColor.primary().getArgb(scheme))
-        }
-    }
-
-    fun themeSpotlightView(context: Context, builder: SpotlightView.Builder): SpotlightView.Builder {
-        return withScheme(context) { scheme ->
-            return@withScheme builder.headingTvColor(dynamicColor.primary().getArgb(scheme))
-                .lineAndArcColor(dynamicColor.primary().getArgb(scheme))
         }
     }
 
