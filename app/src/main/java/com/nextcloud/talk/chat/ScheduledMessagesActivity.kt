@@ -538,11 +538,18 @@ class ScheduledMessagesActivity : BaseActivity() {
                                             dateUtils = dateUtils,
                                             viewThemeUtils = viewThemeUtils,
                                             onClick = {
-                                                if (isThreadView) {
+                                                val parentId = message.parentMessageId
+                                                val isThreadMessage = (message.threadId ?: 0L) > 0
+
+                                                if (isThreadMessage && !isThreadView) {
                                                     return@ScheduledMessageBubble
                                                 }
-                                                val parentId = message.parentMessageId
-                                                if (parentId != null) {
+
+                                                if (isThreadView && parentId != null) {
+                                                    openThreadParentMessage(parentId, message.threadId)
+                                                }
+
+                                                if (parentId != null && !isThreadView) {
                                                     onOpenParentMessage(parentId)
                                                 }
                                             },
@@ -779,10 +786,9 @@ class ScheduledMessagesActivity : BaseActivity() {
 
         val isClickable = remember(message.threadTitle, parentMessage, message.threadId, isThreadView) {
             val isThreadMessage = (message.threadId ?: 0L) > 0
-            if (isThreadMessage) {
-                false
-            } else {
-                (!isThreadView && !message.threadTitle.isNullOrBlank()) || parentMessage != null
+            when {
+                isThreadMessage -> isThreadView
+                else -> !message.threadTitle.isNullOrBlank() || parentMessage != null
             }
         }
 
@@ -1188,6 +1194,15 @@ class ScheduledMessagesActivity : BaseActivity() {
         val intent = Intent(this, ChatActivity::class.java).apply {
             putExtra(KEY_ROOM_TOKEN, roomToken)
 
+            messageId?.let { putExtra(BundleKeys.KEY_MESSAGE_ID, it.toString()) }
+        }
+        startActivity(intent)
+    }
+
+    private fun openThreadParentMessage(messageId: Long?, threadId: Long?) {
+        val intent = Intent(this, ChatActivity::class.java).apply {
+            putExtra(KEY_ROOM_TOKEN, roomToken)
+            threadId?.let { putExtra(BundleKeys.KEY_THREAD_ID, it) }
             messageId?.let { putExtra(BundleKeys.KEY_MESSAGE_ID, it.toString()) }
         }
         startActivity(intent)
