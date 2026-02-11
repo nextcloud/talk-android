@@ -50,7 +50,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
@@ -146,7 +145,6 @@ import com.nextcloud.talk.webrtc.WebRtcAudioManager
 import com.nextcloud.talk.webrtc.WebRtcAudioManager.AudioDevice
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
 import com.nextcloud.talk.webrtc.WebSocketInstance
-import com.wooplr.spotlight.SpotlightView
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -255,7 +253,6 @@ class CallActivity : CallBaseActivity() {
     private var pulseAnimation: PulseAnimation? = null
     private var baseUrl: String? = null
     private var roomId: String? = null
-    private var spotlightView: SpotlightView? = null
     private val internalSignalingMessageReceiver = InternalSignalingMessageReceiver()
     private var signalingMessageReceiver: SignalingMessageReceiver? = null
     private val internalSignalingMessageSender = InternalSignalingMessageSender()
@@ -1208,10 +1205,6 @@ class CallActivity : CallBaseActivity() {
             return
         }
         if (permissionUtil!!.isMicrophonePermissionGranted()) {
-            if (!appPreferences.pushToTalkIntroShown) {
-                spotlightView = getSpotlightView()
-                appPreferences.pushToTalkIntroShown = true
-            }
             if (!isPushToTalkActive) {
                 microphoneOn = !microphoneOn
                 if (microphoneOn) {
@@ -1243,27 +1236,6 @@ class CallActivity : CallBaseActivity() {
         } else {
             requestPermissionLauncher.launch(PERMISSIONS_MICROPHONE)
         }
-    }
-
-    private fun getSpotlightView(): SpotlightView? {
-        val builder = SpotlightView.Builder(this)
-            .introAnimationDuration(INTRO_ANIMATION_DURATION)
-            .enableRevealAnimation(true)
-            .performClick(false)
-            .fadeinTextDuration(FADE_IN_ANIMATION_DURATION)
-            .headingTvSize(SPOTLIGHT_HEADING_SIZE)
-            .headingTvText(resources.getString(R.string.nc_push_to_talk))
-            .subHeadingTvColor(resources.getColor(R.color.bg_default, null))
-            .subHeadingTvSize(SPOTLIGHT_SUBHEADING_SIZE)
-            .subHeadingTvText(resources.getString(R.string.nc_push_to_talk_desc))
-            .maskColor("#dc000000".toColorInt())
-            .target(binding!!.microphoneButton)
-            .lineAnimDuration(FADE_IN_ANIMATION_DURATION)
-            .enableDismissAfterShown(true)
-            .dismissOnBackPress(true)
-            .usageId("pushToTalk")
-
-        return viewThemeUtils.talk.themeSpotlightView(context, builder).show()
     }
 
     private fun onCameraClick() {
@@ -3106,12 +3078,7 @@ class CallActivity : CallBaseActivity() {
         private const val ANGLE_LANDSCAPE_LEFT_THRESHOLD_MAX = 280
 
         private const val CALLING_TIMEOUT: Long = 45000
-        private const val INTRO_ANIMATION_DURATION: Long = 300
-        private const val FADE_IN_ANIMATION_DURATION: Long = 400
         private const val PULSE_ANIMATION_DURATION: Int = 310
-
-        private const val SPOTLIGHT_HEADING_SIZE: Int = 20
-        private const val SPOTLIGHT_SUBHEADING_SIZE: Int = 16
 
         private const val DELAY_ON_ERROR_STOP_THRESHOLD: Int = 16
 
