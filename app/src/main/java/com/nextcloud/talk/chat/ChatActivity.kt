@@ -3503,6 +3503,10 @@ class ChatActivity :
         val intent = Intent(this, ScheduledMessagesActivity::class.java).apply {
             putExtra(ScheduledMessagesActivity.ROOM_TOKEN, roomToken)
             putExtra(ScheduledMessagesActivity.CONVERSATION_NAME, currentConversation?.displayName.orEmpty())
+            if (conversationThreadId != null && conversationThreadId!! > 0) {
+                putExtra(ScheduledMessagesActivity.THREAD_ID, conversationThreadId)
+                putExtra(ScheduledMessagesActivity.THREAD_TITLE, conversationThreadInfo?.thread?.title.orEmpty())
+            }
         }
         startActivity(intent)
     }
@@ -3548,12 +3552,20 @@ class ChatActivity :
         if (!this::spreedCapabilities.isInitialized) {
             return
         }
-        chatViewModel.loadScheduledMessages(
-            conversationUser.getCredentials(),
+        val scheduledMessagesUrl = if (isChatThread()) {
+            ApiUtils.getUrlForScheduledMessages(
+                conversationUser.baseUrl!!,
+                roomToken
+            ) + "?threadId=${conversationThreadId ?: 0L}"
+        } else {
             ApiUtils.getUrlForScheduledMessages(
                 conversationUser.baseUrl!!,
                 roomToken
             )
+        }
+        chatViewModel.loadScheduledMessages(
+            conversationUser.getCredentials(),
+            scheduledMessagesUrl
         )
     }
 
