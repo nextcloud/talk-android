@@ -412,7 +412,9 @@ class ChatActivity :
     val conversationThreadId: Long? by lazy {
         if (intent.hasExtra(KEY_THREAD_ID)) {
             intent.getLongExtra(KEY_THREAD_ID, 0L)
-        } else null
+        } else {
+            null
+        }
     }
 
     var openedViaNotification: Boolean = false
@@ -3378,7 +3380,6 @@ class ChatActivity :
 
     private fun isSameDayMessages(message1: ChatMessage, message2: ChatMessage): Boolean =
         DateFormatter.isSameDay(message1.createdAt, message2.createdAt)
-
 
     private fun loadMoreMessagesCompose() {
         val currentItems = chatViewModel.chatItems.value
