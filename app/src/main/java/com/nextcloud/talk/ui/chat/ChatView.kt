@@ -178,6 +178,9 @@ fun GetNewChatView(
 
                     is ChatViewModel.ChatItem.DateHeaderItem ->
                         formatTime(item.date)
+
+                    is ChatViewModel.ChatItem.UnreadMessagesMarkerItem ->
+                        formatTime(item.date)
                 }
             } ?: ""
         }
@@ -247,6 +250,10 @@ fun GetNewChatView(
 
                     is ChatViewModel.ChatItem.DateHeaderItem -> {
                         DateHeader(chatItem.date)
+                    }
+
+                    is ChatViewModel.ChatItem.UnreadMessagesMarkerItem -> {
+                        UnreadMessagesMarker(chatItem.date)
                     }
                 }
             }
@@ -343,6 +350,26 @@ fun DateHeader(date: LocalDate) {
     ) {
         Text(
             text = text,
+            modifier = Modifier
+                .background(
+                    Color.Gray.copy(alpha = 0.2f),
+                    RoundedCornerShape(12.dp)
+                )
+                .padding(horizontal = 12.dp, vertical = 6.dp),
+            fontSize = 12.sp
+        )
+    }
+}
+
+@Composable
+fun UnreadMessagesMarker(date: LocalDate) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Unread messages",
             modifier = Modifier
                 .background(
                     Color.Gray.copy(alpha = 0.2f),
