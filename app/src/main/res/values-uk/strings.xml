@@ -393,8 +393,6 @@
     <string name="nc_push_notification_error">Вибачте, щось пішло не так, помилка %1$s</string>
     <string name="nc_push_notification_fetch_error">Вибачте, щось пішло не так, не вдається отримати тестове push-повідомлення</string>
     <string name="nc_push_notification_message">Push-повідомлення успішно надіслано. Ви повинні отримати на цьому пристрої повідомлення з назвою «Тестування push-повідомлень».</string>
-    <string name="nc_push_to_talk">Тисни-та-кажи</string>
-    <string name="nc_push_to_talk_desc">Натисніть і утримуйте &amp; для використання PTT при вимкненому мікрофоні</string>
     <string name="nc_remind">Нагадати пізніше</string>
     <string name="nc_remove_from_favorites">Прибрати зірочку</string>
     <string name="nc_remove_group_and_members">Вилучити групи та учасників</string>

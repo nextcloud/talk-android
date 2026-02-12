@@ -398,8 +398,6 @@
     <string name="nc_push_notification_error">Vabandust, midagi läks valesti, veateade on: %1$s</string>
     <string name="nc_push_notification_fetch_error">Vabandust, midagi läks valesti, tõuketeavituse testsõnumit ei õnnestu laadida</string>
     <string name="nc_push_notification_message">Tõuketeavituse saatmine õnnestus. Peaksid selles seadmes nüüd saama tõuketeavituse pealkirjaga „Tõuketeavituse test“</string>
-    <string name="nc_push_to_talk">Raadiosaatja režiim</string>
-    <string name="nc_push_to_talk_desc">Raadiosaatja režiimi kasutamine: kui mikrofon on lülitatud välja, siis vajuta seda nuppu</string>
     <string name="nc_remind">Tuleta mulle hiljem meelde</string>
     <string name="nc_remove_from_favorites">Eemalda lemmikutest</string>
     <string name="nc_remove_group_and_members">Eemalda gruppe ja liikmeid</string>

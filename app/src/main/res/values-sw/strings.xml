@@ -399,8 +399,6 @@
     <string name="nc_push_notification_error"> Samahani hitilafu imetokea %1$s</string>
     <string name="nc_push_notification_fetch_error">Samahani, hitilafu fulani imetokea, haiwezi kuleta ujumbe wa jaribio</string>
     <string name="nc_push_notification_message">Arifa kutoka kwa programu imetumwa kwa mafanikio. Sasa unapaswa kupokea arifa kwenye kifaa hiki yenye kichwa \'Kujaribu arifa zinazotumwa na programu hata wakati huitumii\'.</string>
-    <string name="nc_push_to_talk">Sukuma-kuzungumza</string>
-    <string name="nc_push_to_talk_desc">Huku maikrofoni ikiwa imezimwa, bofya&amp; shikilia ili kutumia Push-to-talk</string>
     <string name="nc_remind">Nikumbushe baadaye</string>
     <string name="nc_remove_from_favorites">Ondoa kutoka katika pendwa</string>
     <string name="nc_remove_group_and_members">Ndoa kundi na wanachama</string>

@@ -355,8 +355,6 @@
     <string name="nc_promote">Gi moderatorstatus</string>
     <string name="nc_public_call_status">Offentlig samtale</string>
     <string name="nc_push_disabled">Push notifisering deaktivert</string>
-    <string name="nc_push_to_talk">Trykk-for-å-snakke</string>
-    <string name="nc_push_to_talk_desc">Med mikrofonen avslått, klikk &amp; hold for å bruke klikk-for-å-snakke</string>
     <string name="nc_remind">Påminnn meg senere</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
     <string name="nc_remove_group_and_members">Fjern gruppe og medlemmer</string>

@@ -284,8 +284,6 @@
     <string name="nc_promote">Povišaj v vlogo moderatorja</string>
     <string name="nc_public_call_status">Javni pogovor</string>
     <string name="nc_push_disabled">Potisno obveščanje je onemogočeno</string>
-    <string name="nc_push_to_talk">Možnost »push-to-talk«</string>
-    <string name="nc_push_to_talk_desc">Pri onemogočenem mikrofonu lahko za začetek govora kliknete in zadržite gumb</string>
     <string name="nc_remind">Opomni me kasneje</string>
     <string name="nc_remove_from_favorites">Odstrani iz priljubljenih</string>
     <string name="nc_remove_group_and_members">Odstrani skupino in člane</string>

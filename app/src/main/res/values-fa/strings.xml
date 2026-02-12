@@ -245,8 +245,6 @@
     <string name="nc_profile_personal_info_title">مشخصات شخصی</string>
     <string name="nc_promote">ترفیع به مدیر</string>
     <string name="nc_push_disabled">دریافت اعلانات غیرفعال است</string>
-    <string name="nc_push_to_talk">برای صحبت کردن فشار دهید</string>
-    <string name="nc_push_to_talk_desc">با غیر فعال کردن میکروفن، برای استفاده از Push-to-talk کلیک &amp; نگه‌داشتن را انجام دهید</string>
     <string name="nc_remind">بعدا به من یادآوری کن</string>
     <string name="nc_remove_from_favorites">حذف کردن از مورد علاقه‌ها</string>
     <string name="nc_remove_group_and_members">حذف گروه و اعضا</string>

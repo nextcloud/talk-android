@@ -397,8 +397,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_push_notification_error">Er is iets misgegaan, fout is %1$s</string>
     <string name="nc_push_notification_fetch_error">Sorry, er is iets misgegaan, het testbericht kan niet worden opgehaald.</string>
     <string name="nc_push_notification_message">De pushmelding is succesvol verzonden. Je zou nu een melding moeten ontvangen op dit apparaat met de titel ‘Pushmeldingen testen’.</string>
-    <string name="nc_push_to_talk">Druk-om-te-praten</string>
-    <string name="nc_push_to_talk_desc">Met uitgeschakelde microfoon, klik&amp;indrukken om Druk-om-te-praten te gebruiken</string>
     <string name="nc_remind">Herinner me later</string>
     <string name="nc_remove_from_favorites">Verwijderen uit favorieten</string>
     <string name="nc_remove_group_and_members">Verwijderen groep en leden</string>

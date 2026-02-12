@@ -393,8 +393,6 @@
     <string name="nc_push_notification_error">Lo sentimos, algo salió mal, el error es %1$s</string>
     <string name="nc_push_notification_fetch_error">Lo sentimos, algo salió mal, no se pudo obtener el mensaje push de prueba</string>
     <string name="nc_push_notification_message">La notificación push se envió exitosamente, Debería recibir una notificación en este dispositivo con el título \"Probando notificaciones push\"</string>
-    <string name="nc_push_to_talk">Push-to-talk</string>
-    <string name="nc_push_to_talk_desc">Con el micrófono deshabilitado, mantén pulsado &amp; para usar Push-to-talk</string>
     <string name="nc_remind">Recuérdamelo más tarde</string>
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>
     <string name="nc_remove_group_and_members">Eliminar grupo y miembros</string>

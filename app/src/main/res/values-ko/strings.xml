@@ -266,8 +266,6 @@
     <string name="nc_profile_personal_info_title">개인 정보</string>
     <string name="nc_promote">중재자 권한 부여</string>
     <string name="nc_push_disabled">푸시 알림이 비활성화됨</string>
-    <string name="nc_push_to_talk">눌러 말하기</string>
-    <string name="nc_push_to_talk_desc">마이크가 비활성화된 상태에서 &amp;를 누르고 있으면 눌러 말하기 사용</string>
     <string name="nc_remind">나중에 다시 알림</string>
     <string name="nc_remove_from_favorites">즐겨찾기에서 제거</string>
     <string name="nc_remove_group_and_members">Remove group and members</string>

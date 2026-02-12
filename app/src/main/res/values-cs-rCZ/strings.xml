@@ -398,8 +398,6 @@
     <string name="nc_push_notification_error">Omlouváme se, něco se pokazilo – chyba je %1$s</string>
     <string name="nc_push_notification_fetch_error">Omlouváme se, něco se pokazilo – nebylo možné stáhnout si testovací push zprávu</string>
     <string name="nc_push_notification_message">Push upozornění úspěšně odesláno. Nyní byste měli obdržet upozornění na tomto zařízení s nadpisem „Testování push upozorňování“</string>
-    <string name="nc_push_to_talk">Vysílačka</string>
-    <string name="nc_push_to_talk_desc">Při vypnutém mikrofonu, klikněte a dokud držíte, můžete mluvit – jako u vysílačky</string>
     <string name="nc_remind">Připomenout později</string>
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>
     <string name="nc_remove_group_and_members">Odebrat skupinu a její členy</string>

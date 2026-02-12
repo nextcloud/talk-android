@@ -398,8 +398,6 @@
     <string name="nc_push_notification_error">Tá brón orm gur tharla fadhb, is é %1$s an earráid</string>
     <string name="nc_push_notification_fetch_error">Tá brón orm gur tharla rud éigin mícheart, ní féidir teachtaireacht tástála a fháil</string>
     <string name="nc_push_notification_message">Tá fógra brú seolta go rathúil. Ba chóir duit fógra a fháil anois ar an ngléas seo leis an teideal \'Fógraí brú á dtástáil\'.</string>
-    <string name="nc_push_to_talk">Brú-chun-caint</string>
-    <string name="nc_push_to_talk_desc">Agus an micreafón díchumasaithe, cliceáil agus coinneáil chun Brúigh chun Caint a úsáid</string>
     <string name="nc_remind">Agus an micreafón díchumasaithe, cliceáil agus coinneáil chun Brúigh chun Caint a úsáid</string>
     <string name="nc_remove_from_favorites">Bain ó cheanáin</string>
     <string name="nc_remove_group_and_members">Bain grúpa agus baill</string>

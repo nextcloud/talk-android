@@ -394,8 +394,6 @@
     <string name="nc_push_notification_error">Qualcosa è andato storto, l\'errore è %1$s</string>
     <string name="nc_push_notification_fetch_error">Ci dispiace, si è verificato un errore, impossibile recuperare il messaggio di prova.</string>
     <string name="nc_push_notification_message">La notifica push è stata inviata con successo. Ora dovresti ricevere una notifica su questo dispositivo con il titolo “Test delle notifiche push”.</string>
-    <string name="nc_push_to_talk">Premi per parlare</string>
-    <string name="nc_push_to_talk_desc">Con il microfono disabilitato, fai clic e mantieni per utilizzare Premi per parlare</string>
     <string name="nc_remind">Ricordamelo più tardi</string>
     <string name="nc_remove_from_favorites">Rimuovi dai preferiti</string>
     <string name="nc_remove_group_and_members">Rimuovi gruppo e membri</string>
