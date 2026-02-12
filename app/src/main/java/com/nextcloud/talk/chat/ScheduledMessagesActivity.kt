@@ -184,8 +184,8 @@ class ScheduledMessagesActivity : BaseActivity() {
                         onOpenThread = { threadId ->
                             openThread(threadId)
                         },
-                        onCopyScheduledMessage = {
-                            message -> copyScheduledMessage(message)
+                        onCopyScheduledMessage = { message ->
+                            copyScheduledMessage(message)
                         }
                     )
                 }
@@ -400,7 +400,8 @@ class ScheduledMessagesActivity : BaseActivity() {
             contentWindowInsets = WindowInsets.safeDrawing
         ) { paddingValues ->
             Column(
-                modifier = Modifier.padding(paddingValues)
+                modifier = Modifier
+                    .padding(paddingValues)
                     .background(colorResource(R.color.bg_bottom_sheet))
             ) {
                 when (val state = scheduledState) {
@@ -704,8 +705,9 @@ class ScheduledMessagesActivity : BaseActivity() {
         val context = LocalContext.current
         val scheduledAt = message.sendAt?.toLong() ?: message.timestamp
         val timeText = dateUtils.getLocalTimeStringFromTimestamp(scheduledAt)
-        val messageTextColor = LocalContentColor.current.toArgb()
+        val text = ChatUtils.getParsedMessage(message.message, message.messageParameters).orEmpty()
 
+        val messageTextColor = LocalContentColor.current.toArgb()
         val bubbleColor = remember(context, message.isDeleted, viewThemeUtils) {
             Color(viewThemeUtils.talk.getOutgoingMessageBubbleColor(context, message.isDeleted, false))
         }
@@ -729,13 +731,11 @@ class ScheduledMessagesActivity : BaseActivity() {
                     .then(
                         if (isClickable) {
                             Modifier.combinedClickable(
-                                enabled = true,
                                 onClick = onClick,
                                 onLongClick = onLongPress
                             )
                         } else {
                             Modifier.combinedClickable(
-                                enabled = true,
                                 onClick = {},
                                 onLongClick = onLongPress
                             )
@@ -745,6 +745,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                 val strokeColor = MaterialTheme.colorScheme.primary
                 Column(modifier = Modifier.padding(8.dp)) {
                     parentMessage?.let { parent ->
+
                         if (!message.threadTitle.isNullOrBlank()) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -796,6 +797,10 @@ class ScheduledMessagesActivity : BaseActivity() {
                                         TextView(androidContext).apply {
                                             movementMethod = LinkMovementMethod.getInstance()
                                             linksClickable = true
+                                            setOnLongClickListener {
+                                                onLongPress()
+                                                true
+                                            }
                                         }
                                     },
                                     update = { textView ->
@@ -822,6 +827,10 @@ class ScheduledMessagesActivity : BaseActivity() {
                             TextView(androidContext).apply {
                                 movementMethod = LinkMovementMethod.getInstance()
                                 linksClickable = true
+                                setOnLongClickListener {
+                                    onLongPress()
+                                    true
+                                }
                             }
                         },
                         update = { textView ->
