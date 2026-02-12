@@ -11,7 +11,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.util.Patterns
 import android.widget.TextView
@@ -795,8 +794,6 @@ class ScheduledMessagesActivity : BaseActivity() {
                                 AndroidView(
                                     factory = { androidContext ->
                                         TextView(androidContext).apply {
-                                            movementMethod = LinkMovementMethod.getInstance()
-                                            linksClickable = true
                                             setOnLongClickListener {
                                                 onLongPress()
                                                 true
@@ -810,7 +807,6 @@ class ScheduledMessagesActivity : BaseActivity() {
                                             parentMessage,
                                             messageTextColor
                                         )
-                                        Linkify.addLinks(textView, 0)
                                     }
                                 )
                             }
@@ -825,7 +821,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                     AndroidView(
                         factory = { androidContext ->
                             TextView(androidContext).apply {
-                                movementMethod = LinkMovementMethod.getInstance()
+                                movementMethod = NoLongClickMovementMethod.instance
                                 linksClickable = true
                                 setOnLongClickListener {
                                     onLongPress()
