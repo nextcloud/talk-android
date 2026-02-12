@@ -51,7 +51,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
-import com.nextcloud.talk.ui.chat.GetNewChatView
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 

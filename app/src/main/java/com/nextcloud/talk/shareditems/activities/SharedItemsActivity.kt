@@ -55,7 +55,9 @@ class SharedItemsActivity : BaseActivity() {
     val conversationThreadId: Long? by lazy {
         if (intent.hasExtra(KEY_THREAD_ID)) {
             intent.getLongExtra(KEY_THREAD_ID, 0L)
-        } else null
+        } else {
+            null
+        }
     }
 
     val chatViewModel: ChatViewModel by viewModels {

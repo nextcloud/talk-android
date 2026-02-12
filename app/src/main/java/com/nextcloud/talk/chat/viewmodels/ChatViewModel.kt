@@ -416,7 +416,7 @@ class ChatViewModel @AssistedInject constructor(
     private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
             currentMessage.value.systemMessageType == ChatMessage
-            .SystemMessageType.MESSAGE_DELETED
+                .SystemMessageType.MESSAGE_DELETED
 
     private fun isReactionsMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
@@ -429,7 +429,7 @@ class ChatViewModel @AssistedInject constructor(
     private fun isEditMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
             currentMessage.value.systemMessageType == ChatMessage
-            .SystemMessageType.MESSAGE_EDITED
+                .SystemMessageType.MESSAGE_EDITED
 
     private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
@@ -455,11 +455,10 @@ class ChatViewModel @AssistedInject constructor(
         return chatMessageMap.values.toList()
     }
 
-    fun ChatMessage.dateKey(): LocalDate {
-        return Instant.ofEpochMilli(timestamp * 1000L)
+    fun ChatMessage.dateKey(): LocalDate =
+        Instant.ofEpochMilli(timestamp * 1000L)
             .atZone(ZoneId.systemDefault())
             .toLocalDate()
-    }
 
     fun getAvatarUrl(message: ChatMessage): String =
         if (this::currentUser.isInitialized) {
@@ -1342,9 +1341,6 @@ class ChatViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface ChatViewModelFactory {
-        fun create(
-            roomToken: String,
-            conversationThreadId: Long?
-        ): ChatViewModel
+        fun create(roomToken: String, conversationThreadId: Long?): ChatViewModel
     }
 }

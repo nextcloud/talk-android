@@ -82,10 +82,12 @@ fun GetNewChatView(
     val coroutineScope = rememberCoroutineScope()
 
     val lastNewestIdRef = remember {
-        object { var value: String? = null }
+        object {
+            var value: String? = null
+        }
     }
 
-    // Track unread messages count
+    // Track unread messages count.
     var unreadCount by remember { mutableIntStateOf(0) }
 
     // Determine if user is at newest message
@@ -312,11 +314,7 @@ fun GetNewChatView(
 }
 
 @Composable
-fun UnreadMessagesPopup(
-    unreadCount: Int,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun UnreadMessagesPopup(unreadCount: Int, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(20.dp),

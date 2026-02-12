@@ -25,10 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
 
 @Composable
-fun UnreadMessagesPopup(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun UnreadMessagesPopup(onClick: () -> Unit, modifier: Modifier = Modifier) {
     Button(
         onClick = onClick,
         modifier = modifier,
