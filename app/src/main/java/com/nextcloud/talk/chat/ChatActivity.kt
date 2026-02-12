@@ -1867,8 +1867,10 @@ class ChatActivity :
                 this,
                 object : MessageSwipeActions {
                     override fun showReplyUI(position: Int) {
-                        val chatMessage = adapter?.items?.getOrNull(position)?.item as ChatMessage?
-                        if (chatMessage != null) {
+                        val chatMessage = adapter?.items?.getOrNull(position)?.item as ChatMessage? ?: return
+                        if (chatMessage.isThread && conversationThreadId == null) {
+                            openThread(chatMessage)
+                        } else {
                             messageInputViewModel.reply(chatMessage)
                         }
                     }
