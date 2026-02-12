@@ -832,6 +832,10 @@ class ScheduledMessagesActivity : BaseActivity() {
                                         TextView(androidContext).apply {
                                             movementMethod = LinkMovementMethod.getInstance()
                                             linksClickable = true
+                                            setOnLongClickListener {
+                                                onLongPress()
+                                                true
+                                            }
                                         }
                                     },
                                     update = { textView ->
@@ -858,6 +862,10 @@ class ScheduledMessagesActivity : BaseActivity() {
                             TextView(androidContext).apply {
                                 movementMethod = LinkMovementMethod.getInstance()
                                 linksClickable = true
+                                setOnLongClickListener {
+                                    onLongPress()
+                                    true
+                                }
                             }
                         },
                         update = { textView ->
