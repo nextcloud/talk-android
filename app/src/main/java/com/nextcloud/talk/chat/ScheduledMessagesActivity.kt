@@ -7,9 +7,10 @@
 
 package com.nextcloud.talk.chat
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.util.Patterns
 import android.widget.TextView
@@ -40,6 +41,7 @@ import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Forum
@@ -180,6 +182,9 @@ class ScheduledMessagesActivity : BaseActivity() {
                         },
                         onOpenThread = { threadId ->
                             openThread(threadId)
+                        },
+                        onCopyScheduledMessage = { message ->
+                            copyScheduledMessage(message)
                         }
                     )
                 }
@@ -262,6 +267,17 @@ class ScheduledMessagesActivity : BaseActivity() {
         )
     }
 
+    private fun copyScheduledMessage(message: ChatMessage) {
+        val parsedMessage = ChatUtils.getParsedMessage(message.message, message.messageParameters)
+            .orEmpty()
+        val clipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val clipData = ClipData.newPlainText(
+            resources.getString(R.string.nc_app_product_name),
+            parsedMessage
+        )
+        clipboardManager.setPrimaryClip(clipData)
+    }
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Suppress("LongParameterList", "LongMethod")
     @Composable
@@ -277,7 +293,8 @@ class ScheduledMessagesActivity : BaseActivity() {
         onEdit: (ChatMessage, Int) -> Unit,
         onDeleteScheduledMessage: (ChatMessage) -> Unit,
         onOpenParentMessage: (Long?) -> Unit,
-        onOpenThread: (Long) -> Unit
+        onOpenThread: (Long) -> Unit,
+        onCopyScheduledMessage: (ChatMessage) -> Unit
     ) {
         val snackBarHostState = remember { SnackbarHostState() }
         val scheduledState by scheduledMessagesViewModel.getScheduledMessagesState.collectAsStateWithLifecycle()
@@ -382,7 +399,8 @@ class ScheduledMessagesActivity : BaseActivity() {
             contentWindowInsets = WindowInsets.safeDrawing
         ) { paddingValues ->
             Column(
-                modifier = Modifier.padding(paddingValues)
+                modifier = Modifier
+                    .padding(paddingValues)
                     .background(colorResource(R.color.bg_bottom_sheet))
             ) {
                 when (val state = scheduledState) {
@@ -560,6 +578,11 @@ class ScheduledMessagesActivity : BaseActivity() {
                         val threadId = selectedMessage?.threadId ?: return@ScheduledMessageActionsSheet
                         onOpenThread(threadId)
                         showActionsSheet = false
+                    },
+                    onCopy = {
+                        val message = selectedMessage ?: return@ScheduledMessageActionsSheet
+                        onCopyScheduledMessage(message)
+                        showActionsSheet = false
                     }
                 )
             }
@@ -681,8 +704,9 @@ class ScheduledMessagesActivity : BaseActivity() {
         val context = LocalContext.current
         val scheduledAt = message.sendAt?.toLong() ?: message.timestamp
         val timeText = dateUtils.getLocalTimeStringFromTimestamp(scheduledAt)
-        val messageTextColor = LocalContentColor.current.toArgb()
+        val text = ChatUtils.getParsedMessage(message.message, message.messageParameters).orEmpty()
 
+        val messageTextColor = LocalContentColor.current.toArgb()
         val bubbleColor = remember(context, message.isDeleted, viewThemeUtils) {
             Color(viewThemeUtils.talk.getOutgoingMessageBubbleColor(context, message.isDeleted, false))
         }
@@ -706,13 +730,11 @@ class ScheduledMessagesActivity : BaseActivity() {
                     .then(
                         if (isClickable) {
                             Modifier.combinedClickable(
-                                enabled = true,
                                 onClick = onClick,
                                 onLongClick = onLongPress
                             )
                         } else {
                             Modifier.combinedClickable(
-                                enabled = true,
                                 onClick = {},
                                 onLongClick = onLongPress
                             )
@@ -722,6 +744,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                 val strokeColor = MaterialTheme.colorScheme.primary
                 Column(modifier = Modifier.padding(8.dp)) {
                     parentMessage?.let { parent ->
+
                         if (!message.threadTitle.isNullOrBlank()) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -771,8 +794,10 @@ class ScheduledMessagesActivity : BaseActivity() {
                                 AndroidView(
                                     factory = { androidContext ->
                                         TextView(androidContext).apply {
-                                            movementMethod = LinkMovementMethod.getInstance()
-                                            linksClickable = true
+                                            setOnLongClickListener {
+                                                onLongPress()
+                                                true
+                                            }
                                         }
                                     },
                                     update = { textView ->
@@ -782,7 +807,6 @@ class ScheduledMessagesActivity : BaseActivity() {
                                             parentMessage,
                                             messageTextColor
                                         )
-                                        Linkify.addLinks(textView, 0)
                                     }
                                 )
                             }
@@ -797,8 +821,12 @@ class ScheduledMessagesActivity : BaseActivity() {
                     AndroidView(
                         factory = { androidContext ->
                             TextView(androidContext).apply {
-                                movementMethod = LinkMovementMethod.getInstance()
+                                movementMethod = NoLongClickMovementMethod.instance
                                 linksClickable = true
+                                setOnLongClickListener {
+                                    onLongPress()
+                                    true
+                                }
                             }
                         },
                         update = { textView ->
@@ -1030,7 +1058,8 @@ class ScheduledMessagesActivity : BaseActivity() {
         onEdit: () -> Unit,
         onDelete: () -> Unit,
         showOpenThreadAction: Boolean,
-        onOpenThread: () -> Unit
+        onOpenThread: () -> Unit,
+        onCopy: () -> Unit
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Column(
@@ -1050,6 +1079,12 @@ class ScheduledMessagesActivity : BaseActivity() {
                     color = colorResource(R.color.no_emphasis_text)
                 )
             }
+
+            ActionRow(
+                icon = Icons.Outlined.ContentCopy,
+                text = stringResource(R.string.nc_copy_message),
+                onClick = onCopy
+            )
             ActionRow(
                 icon = Icons.Outlined.AccessTime,
                 text = stringResource(R.string.nc_reschedule_message),
