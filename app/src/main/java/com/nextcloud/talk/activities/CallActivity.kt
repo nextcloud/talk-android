@@ -1672,6 +1672,7 @@ class CallActivity : CallBaseActivity() {
             )
         ) {
             binding!!.callDuration.visibility = View.VISIBLE
+            callTimeHandler.removeCallbacksAndMessages(null)
             val currentTimeInSec = System.currentTimeMillis() / SECOND_IN_MILLIS
             elapsedSeconds = currentTimeInSec - callStartTime
 
