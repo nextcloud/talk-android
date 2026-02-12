@@ -321,8 +321,6 @@
     <string name="nc_promote">Moderatzaile bihurtu zara</string>
     <string name="nc_public_call_status">Elkarrizketa publikoa</string>
     <string name="nc_push_disabled">Push jakinarazpenak desgaiturik</string>
-    <string name="nc_push_to_talk">Sakatu-hitz-egiteko</string>
-    <string name="nc_push_to_talk_desc">Mikrofonoa desgaituta daukazunean, egin klik &amp;mantendu sakatzerakoan hitz egiteko</string>
     <string name="nc_remind">Gogoratu geroago</string>
     <string name="nc_remove_from_favorites">Kendu gogokoetatik</string>
     <string name="nc_remove_group_and_members">Kendu taldea eta kideak</string>

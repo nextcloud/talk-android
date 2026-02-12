@@ -398,8 +398,6 @@
     <string name="nc_push_notification_error"> 抱歉，發生了一點問題，錯誤為 %1$s</string>
     <string name="nc_push_notification_fetch_error">抱歉，發生了一點問題，無法擷取測試推播訊息</string>
     <string name="nc_push_notification_message">已成功傳送推播通知。現在您應該會在此裝置上收到標題為「測試推播通知」的通知。</string>
-    <string name="nc_push_to_talk">按住以說話</string>
-    <string name="nc_push_to_talk_desc">在停用麥克風的情況下，點擊並按住即可使用按住以說話</string>
     <string name="nc_remind">稍後提醒我</string>
     <string name="nc_remove_from_favorites">取消我的最愛</string>
     <string name="nc_remove_group_and_members">移除群組與成員</string>

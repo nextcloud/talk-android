@@ -395,8 +395,6 @@
     <string name="nc_push_notification_error">Что-то пошло не так, ошибка %1$s</string>
     <string name="nc_push_notification_fetch_error">Что-то пошло не так, не могу получить тестовое пуш-сообщение</string>
     <string name="nc_push_notification_message">Пуш-сообщение отправлено успешно. Вы теперь должны получить сообщение на этом устройстве с заголовком \"Тестирование пуш-сообщений\"</string>
-    <string name="nc_push_to_talk"> PTT (нажми чтобы говорить)</string>
-    <string name="nc_push_to_talk_desc">Нажмите и удерживайте для использования PTT при отключённом микрофоне</string>
     <string name="nc_remind">Напомнить позже</string>
     <string name="nc_remove_from_favorites">Удалить из избранного</string>
     <string name="nc_remove_group_and_members">Удалить группу и её участников</string>

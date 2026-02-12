@@ -348,8 +348,6 @@
     <string name="nc_promote">モデレータに昇格</string>
     <string name="nc_public_call_status">公開会話</string>
     <string name="nc_push_disabled">プッシュ通知が無効になっています</string>
-    <string name="nc_push_to_talk">プッシュトゥートーク</string>
-    <string name="nc_push_to_talk_desc">マイクを無効にして、プッシュツートークを使用する場合は &amp; ホールド</string>
     <string name="nc_remind">後で通知する</string>
     <string name="nc_remove_from_favorites">お気に入りから削除</string>
     <string name="nc_remove_group_and_members">メンバーとグループを削除</string>

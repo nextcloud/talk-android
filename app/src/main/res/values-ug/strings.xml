@@ -395,8 +395,6 @@
     <string name="nc_push_notification_error">كەچۈرۈڭ خاتالىق كۆرۈلدى، خاتالىق بولسا %1$s</string>
     <string name="nc_push_notification_fetch_error">كەچۈرۈڭ خاتالىق كۆرۈلدى، سىناق ئۇچۇرنى چۈشۈرەلمىدى</string>
     <string name="nc_push_notification_message">Push ئۇقتۇرۇش مۇۋەپپەقىيەتلىك ئەۋەتىلدى. سىز ھازىر بۇ ئۈسكۈنىدە «Push ئۇقتۇرۇشلىرىنى سىناق قىلىۋاتىدۇ» دېگەن ماۋزۇدىكى ئۇقتۇرۇشنى تاپشۇرۇۋېلىشىڭىز كېرەك.</string>
-    <string name="nc_push_to_talk">پاراڭلىشىش</string>
-    <string name="nc_push_to_talk_desc">مىكروفون چەكلەنگەندىن كېيىن «&amp;» نى چېكىش ئارقىلىق «Push-to-talk» نى ئىشلىتىڭ</string>
     <string name="nc_remind">كېيىن ماڭا ئەسكەرتىڭ</string>
     <string name="nc_remove_from_favorites">ياقتۇرىدىغانلاردىن ئۆچۈرۈڭ</string>
     <string name="nc_remove_group_and_members">گۇرۇپپا ۋە ئەزالارنى چىقىرىۋېتىڭ</string>

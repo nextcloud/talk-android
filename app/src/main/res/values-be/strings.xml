@@ -398,8 +398,6 @@
     <string name="nc_push_notification_error">Нешта пайшло не так, памылка: %1$s</string>
     <string name="nc_push_notification_fetch_error">Нешта пайшло не так, не ўдалося атрымаць тэставае push-паведамленне</string>
     <string name="nc_push_notification_message">Push-апавяшчэнне паспяхова адпраўлена. Цяпер вы павінны атрымацьна гэтай прыладзе  апавяшчэнне з назвай \"Тэставае push-апавяшчэнне\".</string>
-    <string name="nc_push_to_talk">Націсні і гавары</string>
-    <string name="nc_push_to_talk_desc">Калі мікрафон адключаны, націсніце і ўтрымлівайце, каб выкарыстоўваць функцыю «Націсні і гавары»</string>
     <string name="nc_remind">Нагадаць пазней</string>
     <string name="nc_remove_from_favorites">Выдаліць з абранага</string>
     <string name="nc_remove_group_and_members">Выдаліць групу і ўдзельнікаў</string>

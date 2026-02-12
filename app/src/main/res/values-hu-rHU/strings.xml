@@ -395,8 +395,6 @@
     <string name="nc_push_notification_error">Sajnos valamilyen hiba történt, a hiba: %1$s</string>
     <string name="nc_push_notification_fetch_error">Sajnos valamilyen hiba történt, a leküldéses tesztüzenet nem kérhető le</string>
     <string name="nc_push_notification_message">A leküldéses értesítés sikeresen elküldve. Kapnia kellene egy „Leküldéses értesítések tesztelése” című üzenetet ezen az eszközön.</string>
-    <string name="nc_push_to_talk">Lenyomás a beszédhez</string>
-    <string name="nc_push_to_talk_desc">A mikrofon le lesz tiltva, a beszédhez tartsa lenyomva</string>
     <string name="nc_remind">Emlékeztessen később</string>
     <string name="nc_remove_from_favorites">Eltávolítás a kedvencekből</string>
     <string name="nc_remove_group_and_members">Csoport és tagok eltávolítása</string>

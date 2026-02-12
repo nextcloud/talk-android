@@ -359,8 +359,6 @@
     <string name="nc_promote">Promou a moderador</string>
     <string name="nc_public_call_status">Conversa pública</string>
     <string name="nc_push_disabled">Servei de notificacions desactivat</string>
-    <string name="nc_push_to_talk">Prem-i-parla</string>
-    <string name="nc_push_to_talk_desc">Amb el micròfon desactivat, feu clic a &amp; i mantingueu-lo pressionat per fer servir el Prem-i-parla</string>
     <string name="nc_remind">Recorda-m\'ho més tard</string>
     <string name="nc_remove_from_favorites">Suprimeix de favorits</string>
     <string name="nc_remove_group_and_members">Suprimeix el grup i els membres</string>

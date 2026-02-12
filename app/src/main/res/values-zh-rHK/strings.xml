@@ -398,8 +398,6 @@
     <string name="nc_push_notification_error">抱歉，出現問題，錯誤是 %1$s</string>
     <string name="nc_push_notification_fetch_error">抱歉，出現問題，無法獲取測試推送訊息</string>
     <string name="nc_push_notification_message">推送通知已成功發送。您現在應該在此設備上收到標題為「測試推送通知」的通知</string>
-    <string name="nc_push_to_talk">一鍵通</string>
-    <string name="nc_push_to_talk_desc">在停用米高風的情況下，單擊並按住即可使用一鍵通</string>
     <string name="nc_remind">稍後提醒我</string>
     <string name="nc_remove_from_favorites">取消我的最愛</string>
     <string name="nc_remove_group_and_members">移除群組及組員</string>

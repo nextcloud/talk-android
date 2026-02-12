@@ -301,6 +301,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Zignoruj optymalizację baterii</string>
     <string name="nc_important_conversation">Ważna rozmowa</string>
     <string name="nc_important_conversation_desc">Status użytkownika „Nie przeszkadzać” jest ignorowany dla ważnych rozmów.</string>
+    <string name="nc_in_conversation">W %1$s</string>
     <string name="nc_invalid_time">Nieprawidłowy czas</string>
     <string name="nc_invitations">Zaproszenia</string>
     <string name="nc_join_open_conversations">Dołącz do otwartych rozmów</string>
@@ -335,6 +336,8 @@
     <string name="nc_message_offline">Niedostępny</string>
     <string name="nc_message_quote_cancel_reply">Anuluj odpowiedź</string>
     <string name="nc_message_read">Wiadomość przeczytana</string>
+    <string name="nc_message_scheduled">Wiadomość zaplanowana</string>
+    <string name="nc_message_scheduled_at">Wiadomość zaplanowana na %1$s</string>
     <string name="nc_message_sending">Wysyłanie</string>
     <string name="nc_message_sent">Wiadomość wysłana</string>
     <string name="nc_microphone_enabled_audio_recording">Mikrofon jest włączony i trwa nagrywanie dźwięku</string>
@@ -395,8 +398,6 @@
     <string name="nc_push_notification_error">Przepraszamy, wystąpił błąd: %1$s</string>
     <string name="nc_push_notification_fetch_error">Przepraszamy, wystąpił błąd — nie można pobrać testowej wiadomości push.</string>
     <string name="nc_push_notification_message">Powiadomienie push zostało pomyślnie wysłane. Powinieneś teraz otrzymać powiadomienie na tym urządzeniu z tytułem „Testowanie powiadomień push”.</string>
-    <string name="nc_push_to_talk">Naciśnij i mów</string>
-    <string name="nc_push_to_talk_desc">Gdy mikrofon jest wyłączony, kliknij i przytrzymaj, aby użyć funkcji \"Naciśnij i mów\"</string>
     <string name="nc_remind">Przypomnij mi później</string>
     <string name="nc_remove_from_favorites">Usuń z ulubionych</string>
     <string name="nc_remove_group_and_members">Usuń grupę i członków</string>
@@ -413,7 +414,9 @@
     <string name="nc_save_success">Zapisano pomyślnie</string>
     <string name="nc_schedule_message">Zaplanuj wiadomość</string>
     <string name="nc_schedule_message_title">Zaplanuj wiadomość</string>
+    <string name="nc_schedule_message_without_notification">Wyślij później bez powiadomienia</string>
     <string name="nc_scheduled_messages">Zaplanowane wiadomości</string>
+    <string name="nc_scheduled_messages_empty">Brak zaplanowanych wiadomości</string>
     <string name="nc_scheduled_time">Zaplanowany czas</string>
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
     <string name="nc_screen_lock_timeout_300">5 minut</string>
@@ -563,6 +566,7 @@
     <string name="no_conversations_archived">Brak zarchiwizowanych rozmów</string>
     <string name="no_offline_messages_saved">Nie zapisano żadnych wiadomości offline</string>
     <string name="no_phone_book_integration_due_to_permissions">Brak integracji numeru telefonu z powodu braku uprawnień</string>
+    <string name="no_scheduled_messages_offline">Brak połączenia z serwerem — nie można wczytać zaplanowanych wiadomości</string>
     <string name="notification_all_messages">Wszystkie wiadomości</string>
     <string name="notification_mention_only">Tylko, gdy @-wspomniano</string>
     <string name="notification_off">Wyłączone</string>
@@ -581,7 +585,10 @@
     <string name="pin_indefinitely">Przypnij na czas nieokreślony</string>
     <string name="pin_message">Przypnij wiadomość</string>
     <string name="pinned">Przypięte</string>
+    <string name="pinned_by_author">%1$s (przypięty przez %2$s)</string>
+    <string name="pinned_by_you">%1$s (przypięte przez Ciebie)</string>
     <string name="pinned_dismiss">Odrzuć</string>
+    <string name="pinned_go_to_message">Przejdź do wiadomości</string>
     <string name="pinned_indefinitely">Przypięte na czas nieokreślony</string>
     <string name="pinned_message_options">Opcje wiadomości</string>
     <string name="pinned_until">Przypięte do</string>
@@ -607,6 +614,7 @@
     <string name="previously_set">Ustawione wcześniej</string>
     <string name="qr_code_error">Nie można odczytać kodu QR</string>
     <string name="raise_hand">Podnieść rękę</string>
+    <string name="reaction_forbidden">Nie masz uprawnień do dodawania ani usuwania reakcji w tej rozmowie</string>
     <string name="reactions_tab_all">Wszystkie</string>
     <string name="read_storage_no_permission">Udostępnianie plików z magazynu nie jest możliwe bez uprawnień</string>
     <string name="recent_threads">Ostatnie wątki</string>

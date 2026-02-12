@@ -395,8 +395,6 @@
     <string name="nc_push_notification_error">Désolé, quelque chose s\'est mal passé, l\'erreur est %1$s</string>
     <string name="nc_push_notification_fetch_error">Désolé, quelque chose s\'est mal passé, impossible de récupérer le message de test push</string>
     <string name="nc_push_notification_message">La notification push a été envoyée avec succès. Vous devriez maintenant recevoir une notification sur cet appareil intitulée « Test des notifications push ».</string>
-    <string name="nc_push_to_talk">Talkie-walkie</string>
-    <string name="nc_push_to_talk_desc">Avec le micro désactivé, cliquez &amp; maintenez pour utiliser la fonction Talkie-walkie.</string>
     <string name="nc_remind">Rappelez-moi plus tard</string>
     <string name="nc_remove_from_favorites">Retirer des favoris</string>
     <string name="nc_remove_group_and_members">Supprimer un groupe et ses membres</string>

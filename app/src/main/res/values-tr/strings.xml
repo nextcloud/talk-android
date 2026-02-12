@@ -395,8 +395,6 @@
     <string name="nc_push_notification_error">Ne yazık ki bir sorun çıktı. Hata: %1$s</string>
     <string name="nc_push_notification_fetch_error">Ne yazık ki bir sorun çıktı. Deneme anında bildirimi alınamadı</string>
     <string name="nc_push_notification_message">Anında bildirim gönderildi. Bu aygıtta \'Anlık bildirimler denemesi\' konulu bir bildirim almalısınız</string>
-    <string name="nc_push_to_talk">Bas konuş</string>
-    <string name="nc_push_to_talk_desc">Mikrofon kapalıyken, Bas-konuş üzerine tıklayıp basılı tutun</string>
     <string name="nc_remind">Sonra hatırlat</string>
     <string name="nc_remove_from_favorites">Sık kullanılanlardan kaldır</string>
     <string name="nc_remove_group_and_members">Grup ve üyelerini sil</string>

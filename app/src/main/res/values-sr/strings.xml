@@ -395,8 +395,6 @@
     <string name="nc_push_notification_error">Жао нам је, нешто је пошло наопако. Грешка је %1$s</string>
     <string name="nc_push_notification_fetch_error">Жао нам је, нешто је пошло наопако, тест брзо обавештење не може да се преузме</string>
     <string name="nc_push_notification_message">Брзо обавештење је успешно послато. Сада би требало да примите обавештење на овај уређај под називом ’Тестирање брзих обавештења’</string>
-    <string name="nc_push_to_talk">Притисни за разговор</string>
-    <string name="nc_push_to_talk_desc">Са онемогућеним микрофоном, кликните &amp; држите да користите притисак за разговор</string>
     <string name="nc_remind">Подсети ме касније</string>
     <string name="nc_remove_from_favorites">Уклони из омиљених</string>
     <string name="nc_remove_group_and_members">Уклони групу и чланове</string>

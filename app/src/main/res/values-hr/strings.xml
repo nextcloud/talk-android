@@ -15,6 +15,7 @@
     <string name="calendar">Kalendar</string>
     <string name="call_running_since_one_hour">Poziv traje već jedan sat.</string>
     <string name="call_without_notification">Poziv bez obavijesti</string>
+    <string name="cancel_login">Odustani od prijave</string>
     <string name="choose_avatar_from_cloud">Odaberi avatar iz oblaka</string>
     <string name="clear_status_message">Izbriši poruku statusa</string>
     <string name="clear_status_message_after">Izbriši poruku statusa nakon</string>
@@ -251,8 +252,6 @@
     <string name="nc_promote">Unaprijedi u moderatora</string>
     <string name="nc_public_call_status">Javni razgovor</string>
     <string name="nc_push_disabled">Push obavijesti su onemogućene</string>
-    <string name="nc_push_to_talk">Pritisni za govor</string>
-    <string name="nc_push_to_talk_desc">Kada je mikrofon onemogućen, kliknite i držite za uporabu značajke Pritisni za govor</string>
     <string name="nc_remind">Podsjeti me kasnije</string>
     <string name="nc_remove_from_favorites">Ukloni iz favorita</string>
     <string name="nc_remove_group_and_members">Ukloni grupu i članove</string>
