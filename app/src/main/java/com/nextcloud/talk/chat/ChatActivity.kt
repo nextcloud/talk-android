@@ -140,6 +140,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
+import com.nextcloud.talk.chat.viewmodels.ChatViewModel.ConversationUiState
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.contextchat.ContextChatView
 import com.nextcloud.talk.contextchat.ContextChatViewModel
@@ -175,7 +176,6 @@ import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.translate.ui.TranslateActivity
-import com.nextcloud.talk.ui.PinnedMessageView
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.ui.PlaybackSpeedControl
 import com.nextcloud.talk.ui.StatusDrawable
@@ -244,9 +244,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -630,7 +627,16 @@ class ChatActivity :
 
     private fun setChatListContent() {
         binding.messagesListViewCompose.setContent {
-            val chatItems by chatViewModel.chatItems.collectAsStateWithLifecycle(emptyList())
+            val chatItems by chatViewModel.chatItemsState.collectAsStateWithLifecycle(emptyList())
+            val conversationUiState by chatViewModel.conversationUiState.collectAsStateWithLifecycle()
+
+            when (conversationUiState) {
+                ConversationUiState.Loading -> {}
+                ConversationUiState.Empty -> {}
+                is ConversationUiState.Success -> {
+                    currentConversation = (conversationUiState as ConversationUiState.Success).data
+                }
+            }
 
             binding.messagesListViewCompose.visibility = View.VISIBLE
             binding.messagesListView.visibility = View.GONE
@@ -649,6 +655,60 @@ class ChatActivity :
             }
         }
     }
+
+    // lifecycleScope.launch {
+    //     chatViewModel.getConversationFlow
+    //         .onEach { conversationModel ->
+    //             currentConversation = conversationModel
+    //
+    //             // this should be updated in viewModel directly!
+    //             // chatViewModel.updateConversation(conversationModel)
+    //
+    //             logConversationInfos("GetRoomSuccessState")
+    //
+    //             if (adapter == null && !useJetpackCompose) {
+    //                 initAdapter()
+    //                 binding.messagesListView.setAdapter(adapter)
+    //                 layoutManager = binding.messagesListView.layoutManager as? LinearLayoutManager
+    //
+    //                 setChatListContentForChatKit()
+    //             }
+    //
+    //             chatViewModel.getCapabilities(conversationUser!!, roomToken, conversationModel)
+    //         }
+    //         .flatMapLatest { conversationModel ->
+    //             if (conversationModel.lastPinnedId != null &&
+    //                 conversationModel.lastPinnedId != 0L &&
+    //                 conversationModel.lastPinnedId != conversationModel.hiddenPinnedId
+    //             ) {
+    //                 chatViewModel.getIndividualMessageFromServer(
+    //                     credentials!!,
+    //                     conversationUser?.baseUrl!!,
+    //                     roomToken,
+    //                     conversationModel.lastPinnedId.toString()
+    //                 )
+    //             } else {
+    //                 flowOf(null)
+    //             }
+    //         }
+    //         .collectLatest { message ->
+    //             if (message != null) {
+    //                 binding.pinnedMessageContainer.visibility = View.VISIBLE
+    //                 binding.pinnedMessageComposeView.setContent {
+    //                     PinnedMessageView(
+    //                         message,
+    //                         viewThemeUtils,
+    //                         currentConversation,
+    //                         scrollToMessageWithIdWithOffset = ::scrollToMessageWithIdWithOffset,
+    //                         hidePinnedMessage = ::hidePinnedMessage,
+    //                         unPinMessage = ::unPinMessage
+    //                     )
+    //                 }
+    //             } else {
+    //                 binding.pinnedMessageContainer.visibility = View.GONE
+    //             }
+    //         }
+    // }
 
     private fun setChatListContentForChatKit() {
         binding.messagesListViewCompose.setContent {
@@ -788,74 +848,6 @@ class ChatActivity :
             }
         }
 
-        lifecycleScope.launch {
-            chatViewModel.getConversationFlow
-                .onEach { conversationModel ->
-                    currentConversation = conversationModel
-
-                    // this should be updated in viewModel directly!
-                    chatViewModel.updateConversation(conversationModel)
-
-                    logConversationInfos("GetRoomSuccessState")
-
-                    if (adapter == null && !useJetpackCompose) {
-                        initAdapter()
-                        binding.messagesListView.setAdapter(adapter)
-                        layoutManager = binding.messagesListView.layoutManager as? LinearLayoutManager
-
-                        setChatListContentForChatKit()
-                    }
-
-                    chatViewModel.getCapabilities(conversationUser!!, roomToken, conversationModel)
-                }
-                .flatMapLatest { conversationModel ->
-                    if (conversationModel.lastPinnedId != null &&
-                        conversationModel.lastPinnedId != 0L &&
-                        conversationModel.lastPinnedId != conversationModel.hiddenPinnedId
-                    ) {
-                        chatViewModel.getIndividualMessageFromServer(
-                            credentials!!,
-                            conversationUser?.baseUrl!!,
-                            roomToken,
-                            conversationModel.lastPinnedId.toString()
-                        )
-                    } else {
-                        flowOf(null)
-                    }
-                }
-                .collectLatest { message ->
-                    if (message != null) {
-                        binding.pinnedMessageContainer.visibility = View.VISIBLE
-                        binding.pinnedMessageComposeView.setContent {
-                            PinnedMessageView(
-                                message,
-                                viewThemeUtils,
-                                currentConversation,
-                                scrollToMessageWithIdWithOffset = ::scrollToMessageWithIdWithOffset,
-                                hidePinnedMessage = ::hidePinnedMessage,
-                                unPinMessage = ::unPinMessage
-                            )
-                        }
-                    } else {
-                        binding.pinnedMessageContainer.visibility = View.GONE
-                    }
-                }
-        }
-
-        chatViewModel.getRoomViewState.observe(this) { state ->
-            when (state) {
-                is ChatViewModel.GetRoomSuccessState -> {
-                    // unused atm
-                }
-
-                is ChatViewModel.GetRoomErrorState -> {
-                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                }
-
-                else -> {}
-            }
-        }
-
         chatViewModel.getCapabilitiesViewState.observe(this) { state ->
             when (state) {
                 is ChatViewModel.GetCapabilitiesUpdateState -> {
@@ -878,124 +870,106 @@ class ChatActivity :
                 }
 
                 is ChatViewModel.GetCapabilitiesInitialLoadState -> {
-                    if (currentConversation != null) {
-                        spreedCapabilities = state.spreedCapabilities
-                        chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
-                        participantPermissions = ParticipantPermissions(spreedCapabilities, currentConversation!!)
+                    spreedCapabilities = state.spreedCapabilities
+                    currentConversation = state.conversationModel
+                    chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
+                    participantPermissions = ParticipantPermissions(spreedCapabilities, state.conversationModel!!)
 
-                        supportFragmentManager.commit {
-                            setReorderingAllowed(true) // optimizes out redundant replace operations
-                            replace(R.id.fragment_container_activity_chat, messageInputFragment)
-                            runOnCommit {
-                                if (focusInput) {
-                                    messageInputFragment.binding.fragmentMessageInputView.requestFocus()
-                                }
+                    supportFragmentManager.commit {
+                        setReorderingAllowed(true) // optimizes out redundant replace operations
+                        replace(R.id.fragment_container_activity_chat, messageInputFragment)
+                        runOnCommit {
+                            if (focusInput) {
+                                messageInputFragment.binding.fragmentMessageInputView.requestFocus()
                             }
                         }
-
-                        joinRoomWithPassword()
-
-                        if (conversationUser?.userId != "?" &&
-                            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG) &&
-                            !isChatThread()
-                        ) {
-                            binding.chatToolbar.setOnClickListener { _ -> showConversationInfoScreen() }
-                        }
-                        refreshScheduledMessages()
-
-                        loadAvatarForStatusBar()
-                        setupSwipeToReply()
-                        setActionBarTitle()
-                        isEventConversation()
-                        checkShowCallButtons()
-                        checkLobbyState()
-                        if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
-                            currentConversation?.status == "dnd"
-                        ) {
-                            conversationUser?.let { user ->
-                                val credentials = ApiUtils.getCredentials(user.username, user.token)
-                                chatViewModel.outOfOfficeStatusOfUser(
-                                    credentials!!,
-                                    user.baseUrl!!,
-                                    currentConversation!!.name
-                                )
-                            }
-                        }
-
-                        if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT &&
-                            hasSpreedFeatureCapability(
-                                conversationUser?.capabilities!!.spreedCapability!!,
-                                SpreedFeatures.UNBIND_CONVERSATION
-                            )
-                        ) {
-                            val eventEndTimeStamp =
-                                currentConversation?.objectId
-                                    ?.split("#")
-                                    ?.getOrNull(1)
-                                    ?.toLongOrNull()
-                            val currentTimeStamp = (System.currentTimeMillis() / ONE_SECOND_IN_MILLIS).toLong()
-                            val retentionPeriod = retentionOfEventRooms(spreedCapabilities)
-                            val isPastEvent = eventEndTimeStamp?.let { it < currentTimeStamp }
-                            if (isPastEvent == true && retentionPeriod != 0) {
-                                showConversationDeletionWarning(retentionPeriod)
-                            }
-                        }
-
-                        if (currentConversation?.objectType == ConversationEnums.ObjectType.PHONE_TEMPORARY &&
-                            hasSpreedFeatureCapability(
-                                conversationUser?.capabilities!!.spreedCapability!!,
-                                SpreedFeatures.UNBIND_CONVERSATION
-                            )
-                        ) {
-                            val retentionPeriod = retentionOfSIPRoom(spreedCapabilities)
-                            val systemMessage = currentConversation?.lastMessage?.systemMessageType
-                            if (retentionPeriod != 0 &&
-                                (
-                                    systemMessage == ChatMessage.SystemMessageType.CALL_ENDED ||
-                                        systemMessage == ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
-                                    )
-                            ) {
-                                showConversationDeletionWarning(retentionPeriod)
-                            }
-                        }
-
-                        if (currentConversation?.objectType == ConversationEnums.ObjectType.INSTANT_MEETING &&
-                            hasSpreedFeatureCapability(
-                                conversationUser?.capabilities!!.spreedCapability!!,
-                                SpreedFeatures.UNBIND_CONVERSATION
-                            )
-                        ) {
-                            val retentionPeriod = retentionOfInstantMeetingRoom(spreedCapabilities)
-                            val systemMessage = currentConversation?.lastMessage?.systemMessageType
-                            if (retentionPeriod != 0 &&
-                                (
-                                    systemMessage == ChatMessage.SystemMessageType.CALL_ENDED ||
-                                        systemMessage == ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
-                                    )
-                            ) {
-                                showConversationDeletionWarning(retentionPeriod)
-                            }
-                        }
-
-                        updateRoomTimerHandler(MILLIS_250)
-
-                        val urlForChatting =
-                            ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
-
-                        lifecycleScope.launch {
-                            chatViewModel.loadInitialMessages(
-                                withCredentials = credentials!!,
-                                withUrl = urlForChatting,
-                                hasHighPerformanceBackend =
-                                WebSocketConnectionHelper.getWebSocketInstanceForUser(conversationUser) != null
-                            )
-                        }
-                    } else {
-                        Log.w(
-                            TAG,
-                            "currentConversation was null in observer ChatViewModel.GetCapabilitiesInitialLoadState"
-                        )
                     }
+
+                    joinRoomWithPassword()
+
+                    if (conversationUser?.userId != "?" &&
+                        hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG) &&
+                        !isChatThread()
+                    ) {
+                        binding.chatToolbar.setOnClickListener { _ -> showConversationInfoScreen() }
+                    }
+                    refreshScheduledMessages()
+
+                    loadAvatarForStatusBar()
+                    setupSwipeToReply()
+                    setActionBarTitle()
+                    isEventConversation()
+                    checkShowCallButtons()
+                    checkLobbyState()
+                    if (state.conversationModel.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
+                        state.conversationModel.status == "dnd"
+                    ) {
+                        conversationUser.let { user ->
+                            val credentials = ApiUtils.getCredentials(user.username, user.token)
+                            chatViewModel.outOfOfficeStatusOfUser(
+                                credentials!!,
+                                user.baseUrl!!,
+                                state.conversationModel!!.name
+                            )
+                        }
+                    }
+
+                    if (state.conversationModel.objectType == ConversationEnums.ObjectType.EVENT &&
+                        hasSpreedFeatureCapability(
+                            conversationUser?.capabilities!!.spreedCapability!!,
+                            SpreedFeatures.UNBIND_CONVERSATION
+                        )
+                    ) {
+                        val eventEndTimeStamp =
+                            state.conversationModel?.objectId
+                                ?.split("#")
+                                ?.getOrNull(1)
+                                ?.toLongOrNull()
+                        val currentTimeStamp = (System.currentTimeMillis() / ONE_SECOND_IN_MILLIS).toLong()
+                        val retentionPeriod = retentionOfEventRooms(spreedCapabilities)
+                        val isPastEvent = eventEndTimeStamp?.let { it < currentTimeStamp }
+                        if (isPastEvent == true && retentionPeriod != 0) {
+                            showConversationDeletionWarning(retentionPeriod)
+                        }
+                    }
+
+                    if (state.conversationModel.objectType == ConversationEnums.ObjectType.PHONE_TEMPORARY &&
+                        hasSpreedFeatureCapability(
+                            conversationUser?.capabilities!!.spreedCapability!!,
+                            SpreedFeatures.UNBIND_CONVERSATION
+                        )
+                    ) {
+                        val retentionPeriod = retentionOfSIPRoom(spreedCapabilities)
+                        val systemMessage = currentConversation?.lastMessage?.systemMessageType
+                        if (retentionPeriod != 0 &&
+                            (
+                                systemMessage == ChatMessage.SystemMessageType.CALL_ENDED ||
+                                    systemMessage == ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
+                                )
+                        ) {
+                            showConversationDeletionWarning(retentionPeriod)
+                        }
+                    }
+
+                    if (state.conversationModel.objectType == ConversationEnums.ObjectType.INSTANT_MEETING &&
+                        hasSpreedFeatureCapability(
+                            conversationUser?.capabilities!!.spreedCapability!!,
+                            SpreedFeatures.UNBIND_CONVERSATION
+                        )
+                    ) {
+                        val retentionPeriod = retentionOfInstantMeetingRoom(spreedCapabilities)
+                        val systemMessage = state.conversationModel.lastMessage?.systemMessageType
+                        if (retentionPeriod != 0 &&
+                            (
+                                systemMessage == ChatMessage.SystemMessageType.CALL_ENDED ||
+                                    systemMessage == ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
+                                )
+                        ) {
+                            showConversationDeletionWarning(retentionPeriod)
+                        }
+                    }
+
+                    updateRoomTimerHandler(MILLIS_250)
                 }
 
                 is ChatViewModel.GetCapabilitiesErrorState -> {
@@ -1456,11 +1430,14 @@ class ChatActivity :
     }
 
     private fun removeUnreadMessagesMarker() {
+        chatViewModel.setUnreadMessagesMarker(false)
+
         removeMessageById(UNREAD_MESSAGES_MARKER_ID.toString())
     }
 
     // do not use adapter.deleteById() as it seems to contain a bug! Use this method instead!
     @Suppress("MagicNumber")
+    @Deprecated("old chatkit handling")
     private fun removeMessageById(idToDelete: String) {
         val indexToDelete = adapter?.getMessagePositionById(idToDelete)
         if (indexToDelete != null && indexToDelete != UNREAD_MESSAGES_MARKER_ID) {
@@ -2894,7 +2871,7 @@ class ChatActivity :
         // TODO: when updating remote last read message in onPause, there is a race condition with loading conversations
         // for conversation list. It may or may not include info about the sent last read message...
         // -> save this field offline in conversation?
-        updateRemoteLastReadMessageIfNeeded()
+        // updateRemoteLastReadMessageIfNeeded()
 
         adapter = null
     }
@@ -2917,16 +2894,20 @@ class ChatActivity :
     }
 
     private fun updateRemoteLastReadMessageIfNeeded() {
-        val url = ApiUtils.getUrlForChatReadMarker(
-            ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1)),
-            conversationUser.baseUrl!!,
-            roomToken
-        )
+        if (this::spreedCapabilities.isInitialized) {
+            spreedCapabilities?.let {
+                val url = ApiUtils.getUrlForChatReadMarker(
+                    ApiUtils.getChatApiVersion(it, intArrayOf(ApiUtils.API_V1)),
+                    conversationUser.baseUrl!!,
+                    roomToken
+                )
 
-        chatViewModel.updateRemoteLastReadMessageIfNeeded(
-            credentials = credentials!!,
-            url = url
-        )
+                chatViewModel.updateRemoteLastReadMessageIfNeeded(
+                    credentials = credentials!!,
+                    url = url
+                )
+            }
+        }
     }
 
     private fun isActivityNotChangingConfigurations(): Boolean = !isChangingConfigurations
@@ -3382,7 +3363,7 @@ class ChatActivity :
         DateFormatter.isSameDay(message1.createdAt, message2.createdAt)
 
     private fun loadMoreMessagesCompose() {
-        val currentItems = chatViewModel.chatItems.value
+        val currentItems = chatViewModel.chatItemsState.value
 
         val messageId = currentItems
             .asReversed()
