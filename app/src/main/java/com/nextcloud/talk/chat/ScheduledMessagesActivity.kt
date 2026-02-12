@@ -200,8 +200,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                             openThread(threadId)
                         },
                         threadTitle = threadTitle,
-                        isThreadView = isThreadView
-                        },
+                        isThreadView = isThreadView,
                         onCopyScheduledMessage = { message ->
                             copyScheduledMessage(message)
                         }
@@ -451,11 +450,6 @@ class ScheduledMessagesActivity : BaseActivity() {
                         }
 
                         if (visibleMessages.isEmpty()) {
-                        val linkPreviews by scheduledMessagesViewModel
-                            .linkPreviews
-                            .collectAsStateWithLifecycle()
-
-                        if (state.messages.isEmpty()) {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.Center
@@ -527,8 +521,6 @@ class ScheduledMessagesActivity : BaseActivity() {
                                         } else {
                                             null
                                         }
-
-                                        val parentMessage = parentId?.let { parentMessages[it] }
 
                                         val linkPreview = message.token?.let { linkPreviews[it] }
                                         ScheduledMessageBubble(
@@ -870,6 +862,11 @@ class ScheduledMessagesActivity : BaseActivity() {
                                 AndroidView(
                                     factory = { androidContext ->
                                         TextView(androidContext).apply {
+                                            setOnClickListener {
+                                                if (isClickable) {
+                                                    onClick()
+                                                }
+                                            }
                                             setOnLongClickListener {
                                                 onLongPress()
                                                 true
