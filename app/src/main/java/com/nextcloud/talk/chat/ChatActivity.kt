@@ -2870,8 +2870,9 @@ class ChatActivity :
 
         // TODO: when updating remote last read message in onPause, there is a race condition with loading conversations
         // for conversation list. It may or may not include info about the sent last read message...
-        // -> save this field offline in conversation?
-        // updateRemoteLastReadMessageIfNeeded()
+        // -> save this field offline in conversation. when getting new conversations, do not overwrite
+        // lastReadMessage if offline has higher value
+        updateRemoteLastReadMessageIfNeeded()
 
         adapter = null
     }

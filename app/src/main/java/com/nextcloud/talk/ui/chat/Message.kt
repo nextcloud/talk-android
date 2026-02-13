@@ -337,7 +337,10 @@ fun EnrichedText(message: ChatMessage) {
                 )
             setLineSpacing(0F, LINE_SPACING)
             textAlignment = View.TEXT_ALIGNMENT_VIEW_START
-            text = processedMessageText
+            // text = processedMessageText
+            // added messageId just for debugging
+            text = "" + processedMessageText + " (" + message.jsonMessageId + ")"
+
             setPadding(0, INT_8, 0, 0)
         }
     }, modifier = Modifier)
