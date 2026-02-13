@@ -71,6 +71,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -348,6 +350,15 @@ class ChatViewModel @AssistedInject constructor(
     val reactionDeletedViewState: LiveData<ViewState>
         get() = _reactionDeletedViewState
 
+    init {
+        println("ChatVM created ${hashCode()}")
+    }
+
+    override fun onCleared() {
+        println("ChatVM cleared ${hashCode()}")
+    }
+
+
     private val currentUserFlow: StateFlow<User?> =
         currentUserProvider.currentUserFlow
             .stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -381,7 +392,7 @@ class ChatViewModel @AssistedInject constructor(
     val conversationFlow: Flow<ConversationModel> =
         conversationUiState.mapNotNull {
             (it as? ConversationUiState.Success)?.data
-        }
+        }.distinctUntilChanged()
 
     private val conversationAndUserFlow =
         combine(conversationFlow, nonNullUserFlow) { c, u -> c to u }
@@ -403,13 +414,28 @@ class ChatViewModel @AssistedInject constructor(
             .flatMapLatest { (conversation, user) ->
                 chatRepository
                     .observeMessages(conversation.internalId)
+                    .distinctUntilChanged()
                     .mapToChatMessages(user.userId!!)
+            }
+            .map { messages -> messages
+                    .let(::handleSystemMessages)
+                    .let(::handleThreadMessages)
+            }
+            .distinctUntilChangedBy { messages ->
+                messages.map { it.jsonMessageId }
             }
 
     val chatItemsState: StateFlow<List<ChatItem>> =
         combine(messagesFlow, conversationFlow) { messages, conversation ->
+            if (messages.isEmpty()) emptyList<ChatItem>()
             buildChatItems(messages, conversation)
-        }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+        }
+            .distinctUntilChanged()
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5_000),
+                emptyList()
+            )
 
     private fun buildChatItems(
         messages: List<ChatMessage>,
@@ -418,7 +444,13 @@ class ChatViewModel @AssistedInject constructor(
         var lastDate: LocalDate? = null
 
         return buildList {
-            for (msg in messages.asReversed()) {
+            val reversedMessages = messages.asReversed()
+            val firstUnreadMessage = reversedMessages.firstOrNull { it.jsonMessageId > conversation.lastReadMessage }
+            if (reversedMessages.firstOrNull()?.jsonMessageId == conversation.lastReadMessage) {
+                showUnreadMessagesMarker = false
+            }
+
+            for (msg in reversedMessages) {
                 val date = msg.dateKey()
 
                 if (date != lastDate) {
@@ -426,14 +458,14 @@ class ChatViewModel @AssistedInject constructor(
                     lastDate = date
                 }
 
-                add(ChatItem.MessageItem(msg))
-
-                if (showUnreadMessagesMarker &&
-                    msg.jsonMessageId == conversation.lastReadMessage
-                ) {
+                if (showUnreadMessagesMarker && msg.jsonMessageId == firstUnreadMessage?.jsonMessageId) {
                     add(ChatItem.UnreadMessagesMarkerItem(date))
                 }
+
+                add(ChatItem.MessageItem(msg))
             }
+            showUnreadMessagesMarker = false
+
         }.asReversed()
     }
 
