@@ -37,8 +37,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ScheduleSend
 import androidx.compose.material.icons.automirrored.outlined.Send
-import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.ContentCopy
@@ -170,8 +170,8 @@ class ScheduledMessagesActivity : BaseActivity() {
                         onSendNow = { message ->
                             sendNow(message, user)
                         },
-                        onReschedule = { message, sendAt ->
-                            reschedule(message, sendAt, user)
+                        onReschedule = { message, sendAt, sendWithoutNotification ->
+                            reschedule(message, sendAt, sendWithoutNotification, user)
                         },
                         onEdit = { message, sendAt ->
                             edit(message, sendAt, user)
@@ -228,7 +228,7 @@ class ScheduledMessagesActivity : BaseActivity() {
         )
     }
 
-    private fun reschedule(message: ChatMessage, sendAt: Int, user: User) {
+    private fun reschedule(message: ChatMessage, sendAt: Int, sendWithoutNotification: Boolean, user: User) {
         scheduledMessagesViewModel.reschedule(
             credentials = user.getCredentials(),
             url = ApiUtils.getUrlForScheduledMessage(
@@ -238,7 +238,7 @@ class ScheduledMessagesActivity : BaseActivity() {
             ),
             message = message.message.orEmpty(),
             sendAt = sendAt,
-            sendWithoutNotification = message.silent
+            sendWithoutNotification = sendWithoutNotification
         )
     }
 
@@ -289,7 +289,7 @@ class ScheduledMessagesActivity : BaseActivity() {
         onBack: () -> Unit,
         onLoadScheduledMessages: () -> Unit,
         onSendNow: (ChatMessage) -> Unit,
-        onReschedule: (ChatMessage, Int) -> Unit,
+        onReschedule: (ChatMessage, Int, Boolean) -> Unit,
         onEdit: (ChatMessage, Int) -> Unit,
         onDeleteScheduledMessage: (ChatMessage) -> Unit,
         onOpenParentMessage: (Long?) -> Unit,
@@ -312,6 +312,8 @@ class ScheduledMessagesActivity : BaseActivity() {
         var editingMessage by remember { mutableStateOf<ChatMessage?>(null) }
         var originalEditText by remember { mutableStateOf("") }
         var editValue by remember { mutableStateOf(TextFieldValue("")) }
+
+        var rescheduleWithoutNotification by remember { mutableStateOf(false) }
 
         LaunchedEffect(Unit) { onLoadScheduledMessages() }
 
@@ -478,7 +480,9 @@ class ScheduledMessagesActivity : BaseActivity() {
                                                 )
                                             }
                                         }
+
                                         val parentMessage = parentId?.let { parentMessages[it] }
+
                                         val linkPreview = message.token?.let { linkPreviews[it] }
                                         ScheduledMessageBubble(
                                             message = message,
@@ -550,7 +554,13 @@ class ScheduledMessagesActivity : BaseActivity() {
             ) {
                 ScheduledMessageActionsSheet(
                     scheduledTime = selectedTime,
-                    onReschedule = {
+                    onRescheduleWithNotification = {
+                        rescheduleWithoutNotification = false
+                        showScheduleDialogFor = selectedMessage
+                        showActionsSheet = false
+                    },
+                    onRescheduleWithoutNotification = {
+                        rescheduleWithoutNotification = true
                         showScheduleDialogFor = selectedMessage
                         showActionsSheet = false
                     },
@@ -598,12 +608,12 @@ class ScheduledMessagesActivity : BaseActivity() {
                     shouldDismiss.value = true
                     showScheduleDialogFor = null
                 },
-                onSchedule = { scheduledTime, _ ->
-                    onReschedule(message, scheduledTime.toInt())
+                onSchedule = { scheduledTime, sendWithoutNotification ->
+                    onReschedule(message, scheduledTime.toInt(), sendWithoutNotification)
                     shouldDismiss.value = true
                     showScheduleDialogFor = null
                 },
-                defaultSendWithoutNotification = message.silent
+                defaultSendWithoutNotification = rescheduleWithoutNotification
             ).GetScheduleDialog(shouldDismiss, LocalContext.current)
         }
     }
@@ -1053,7 +1063,8 @@ class ScheduledMessagesActivity : BaseActivity() {
     @Composable
     private fun ScheduledMessageActionsSheet(
         scheduledTime: String,
-        onReschedule: () -> Unit,
+        onRescheduleWithNotification: () -> Unit,
+        onRescheduleWithoutNotification: () -> Unit,
         onSendNow: () -> Unit,
         onEdit: () -> Unit,
         onDelete: () -> Unit,
@@ -1085,10 +1096,16 @@ class ScheduledMessagesActivity : BaseActivity() {
                 text = stringResource(R.string.nc_copy_message),
                 onClick = onCopy
             )
+
             ActionRow(
-                icon = Icons.Outlined.AccessTime,
-                text = stringResource(R.string.nc_reschedule_message),
-                onClick = onReschedule
+                icon = Icons.AutoMirrored.Outlined.ScheduleSend,
+                text = stringResource(R.string.nc_reschedule_message_with_notification),
+                onClick = onRescheduleWithNotification
+            )
+            ActionRow(
+                icon = Icons.AutoMirrored.Outlined.ScheduleSend,
+                text = stringResource(R.string.nc_reschedule_message_without_notification),
+                onClick = onRescheduleWithoutNotification
             )
             ActionRow(
                 icon = Icons.AutoMirrored.Outlined.Send,
