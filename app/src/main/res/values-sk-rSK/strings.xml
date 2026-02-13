@@ -302,6 +302,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorovať optimalizáciu batérie</string>
     <string name="nc_important_conversation">Dôležitá konverzácia</string>
     <string name="nc_important_conversation_desc">Stav používateľa „Nerušiť“ sa pri dôležitých konverzáciách ignoruje.</string>
+    <string name="nc_in_conversation">o %1$s</string>
     <string name="nc_invalid_time">Neplatný čas</string>
     <string name="nc_invitations">Pozvánky</string>
     <string name="nc_join_open_conversations">Pripojiť sa k prebiehajúcim konverzáciam</string>
