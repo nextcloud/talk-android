@@ -925,7 +925,8 @@ How to translate with transifex:
     <string name="nc_message_scheduled">Message scheduled</string>
     <string name="nc_message_scheduled_at">Message scheduled for %1$s</string>
     <string name="nc_scheduled_time">Scheduled time</string>
-    <string name="nc_reschedule_message">Reschedule</string>
+    <string name="nc_reschedule_message_with_notification">Reschedule with notification</string>
+    <string name="nc_reschedule_message_without_notification">Reschedule without notification</string>
     <string name="nc_send_now">Send now</string>
     <string name="nc_schedule_message_title">Schedule message</string>
     <string name="nc_scheduled_messages_empty">No scheduled messages</string>
