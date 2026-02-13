@@ -220,7 +220,18 @@ class MessageInputFragment : Fragment() {
         }
 
         chatActivity.chatViewModel.scheduledMessagesCount.observe(viewLifecycleOwner) { count ->
-            updateScheduledMessagesAvailability(count > 0)
+            if (chatActivity.conversationThreadId != null && chatActivity.conversationThreadId!! > 0) {
+                val threadId = chatActivity.conversationThreadId
+                val scheduledState = chatActivity.chatViewModel.scheduledMessagesViewState.value
+                val threadCount = if (scheduledState is ChatViewModel.ScheduledMessagesSuccessState) {
+                    scheduledState.messages.count { it.threadId == threadId }
+                } else {
+                    0
+                }
+                updateScheduledMessagesAvailability(threadCount > 0)
+            } else {
+                updateScheduledMessagesAvailability(count > 0)
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
