@@ -17,6 +17,7 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
+import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEventsOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.message.SendMessageUtils
@@ -192,6 +193,16 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         ncApiCoroutines.getOutOfOfficeStatusForUser(
             credentials,
             ApiUtils.getUrlForOutOfOffice(baseUrl, userId)
+        )
+
+    override suspend fun getUpcomingEvents(
+        credentials: String,
+        baseUrl: String,
+        roomToken: String
+    ): UpcomingEventsOverall =
+        ncApiCoroutines.getUpcomingEvents(
+            credentials,
+            ApiUtils.getUrlForUpcomingEvents(baseUrl, roomToken)
         )
 
     override suspend fun getContextForChatMessage(
