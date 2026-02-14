@@ -81,4 +81,16 @@ interface ChatBlocksDao {
         """
     )
     fun deleteChatBlocksOlderThan(internalConversationId: String, messageId: Long)
+
+    @Query(
+        """
+    SELECT *
+    FROM ChatBlocks
+    WHERE internalConversationId = :internalConversationId
+      AND (threadId = :threadId OR (threadId IS NULL AND :threadId IS NULL))
+    ORDER BY newestMessageId DESC
+    LIMIT 1
+    """
+    )
+    fun getLatestChatBlock(internalConversationId: String, threadId: Long?): Flow<ChatBlockEntity?>
 }

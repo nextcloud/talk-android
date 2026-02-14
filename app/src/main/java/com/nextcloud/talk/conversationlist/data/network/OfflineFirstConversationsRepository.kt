@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
+import kotlin.collections.map
 
 class OfflineFirstConversationsRepository @Inject constructor(
     private val dao: ConversationsDao,
@@ -49,6 +50,24 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val _conversationFlow: MutableSharedFlow<ConversationModel> = MutableSharedFlow()
 
     private val scope = CoroutineScope(Dispatchers.IO)
+
+    sealed interface ConversationResult {
+        data class Found(val conversation: ConversationModel) : ConversationResult
+        object NotFound : ConversationResult
+    }
+
+    override fun observeConversation(accountId: Long, roomToken: String): Flow<ConversationResult> =
+        dao.getConversationForUser(
+            accountId,
+            roomToken
+        )
+            .map { entity ->
+                if (entity == null) {
+                    ConversationResult.NotFound
+                } else {
+                    ConversationResult.Found(entity.asModel())
+                }
+            }
 
     override fun getRooms(user: User): Job =
         scope.launch {
