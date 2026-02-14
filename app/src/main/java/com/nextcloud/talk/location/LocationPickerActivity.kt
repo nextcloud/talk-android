@@ -1,8 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
- * SPDX-FileCopyrightText: 2021 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2021-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.location
@@ -229,6 +228,7 @@ class LocationPickerActivity :
     override fun onQueryTextSubmit(query: String?): Boolean {
         if (!query.isNullOrEmpty()) {
             val intent = Intent(this, GeocodingActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             intent.putExtra(BundleKeys.KEY_GEOCODING_QUERY, query)
             intent.putExtra(KEY_ROOM_TOKEN, roomToken)
             intent.putExtra(KEY_CHAT_API_VERSION, chatApiVersion)
