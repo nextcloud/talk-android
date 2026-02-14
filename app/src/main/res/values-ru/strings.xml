@@ -405,7 +405,6 @@
     <string name="nc_rename_confirm">Переименовать</string>
     <string name="nc_reply">Ответить</string>
     <string name="nc_reply_privately">Ответить личным сообщением</string>
-    <string name="nc_reschedule_message">Перенести</string>
     <string name="nc_room_retention">Комната сохранена успешно</string>
     <string name="nc_save_message">Сохранить</string>
     <string name="nc_save_success">Сохранено успешно</string>
