@@ -408,7 +408,6 @@
     <string name="nc_rename_confirm">Muuda nime</string>
     <string name="nc_reply">Vasta</string>
     <string name="nc_reply_privately">Vasta privaatselt</string>
-    <string name="nc_reschedule_message">Muuda ajastamist</string>
     <string name="nc_room_retention">Jututoa allesjätmine õnnestus</string>
     <string name="nc_save_message">Salvesta</string>
     <string name="nc_save_success">Salvestamine õnnestus</string>
