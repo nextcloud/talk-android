@@ -374,6 +374,12 @@ class MessageInputFragment : Fragment() {
         }
     }
 
+    fun onScheduledMessageSent() {
+        binding.fragmentMessageInputView.inputEditText?.setText("")
+        cancelReply()
+        cancelCreateThread()
+    }
+
     private fun restoreState() {
         CoroutineScope(Dispatchers.IO).launch {
             if (!hasSharedText) {
@@ -804,15 +810,12 @@ class MessageInputFragment : Fragment() {
             if (message.isBlank()) {
                 return
             }
-            binding.fragmentMessageInputView.inputEditText?.setText("")
             chatActivity.showScheduleMessageDialog(
                 message = message,
                 sendWithoutNotification = sendWithoutNotification,
                 replyToMessageId = chatActivity.getReplyToMessageId(),
                 threadTitle = chatActivity.chatViewModel.messageDraft.threadTitle
             )
-            cancelReply()
-            cancelCreateThread()
         }
     }
 

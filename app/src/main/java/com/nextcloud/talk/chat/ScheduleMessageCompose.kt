@@ -66,6 +66,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters.nextOrSame
 
 class ScheduleMessageCompose(
@@ -79,7 +80,8 @@ class ScheduleMessageCompose(
     private val timeState = mutableStateOf(initialTime())
 
     private fun initialTime(): LocalDateTime {
-        val scheduled = initialScheduledAt ?: return LocalDateTime.now()
+        val scheduled = initialScheduledAt
+            ?: return LocalDateTime.now().truncatedTo(ChronoUnit.HOURS).plusHours(1)
         return LocalDateTime.ofInstant(Instant.ofEpochSecond(scheduled), ZoneId.systemDefault())
     }
 
