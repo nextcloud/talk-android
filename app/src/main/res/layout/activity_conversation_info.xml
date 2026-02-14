@@ -152,6 +152,21 @@
                     tools:text="Hello world!" />
             </LinearLayout>
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/upcoming_event_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/standard_margin"
+                android:layout_marginVertical="@dimen/standard_half_margin"
+                android:visibility="gone"
+                app:cardCornerRadius="@dimen/status_corner_radius"
+                tools:visibility="visible">
+
+                <include
+                    android:id="@+id/upcoming_event_container"
+                    layout="@layout/upcoming_event_view_multi_line" />
+            </com.google.android.material.card.MaterialCardView>
+
             <LinearLayout
                 android:id="@+id/settings"
                 android:layout_width="match_parent"

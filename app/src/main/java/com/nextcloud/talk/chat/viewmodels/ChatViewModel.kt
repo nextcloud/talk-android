@@ -42,6 +42,7 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.models.json.threads.ThreadInfo
+import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEvent
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceData
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
@@ -163,6 +164,10 @@ class ChatViewModel @Inject constructor(
     private val _outOfOfficeViewState = MutableLiveData<OutOfOfficeUIState>(OutOfOfficeUIState.None)
     val outOfOfficeViewState: LiveData<OutOfOfficeUIState>
         get() = _outOfOfficeViewState
+
+    private val _upcomingEventViewState = MutableLiveData<UpcomingEventUIState>(UpcomingEventUIState.None)
+    val upcomingEventViewState: LiveData<UpcomingEventUIState>
+        get() = _upcomingEventViewState
 
     private val _unbindRoomResult = MutableLiveData<UnbindRoomUiState>(UnbindRoomUiState.None)
     val unbindRoomResult: LiveData<UnbindRoomUiState>
@@ -990,6 +995,23 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun fetchUpcomingEvent(credentials: String, baseUrl: String, roomToken: String) {
+        viewModelScope.launch {
+            try {
+                val response = chatNetworkDataSource.getUpcomingEvents(credentials, baseUrl, roomToken)
+                val firstEvent = response.ocs?.data?.events?.firstOrNull()
+                if (firstEvent != null) {
+                    _upcomingEventViewState.value = UpcomingEventUIState.Success(firstEvent)
+                } else {
+                    _upcomingEventViewState.value = UpcomingEventUIState.None
+                }
+            } catch (exception: Exception) {
+                _upcomingEventViewState.value = UpcomingEventUIState.Error(exception)
+            }
+        }
+    }
+
     fun deleteTempMessage(chatMessage: ChatMessage) {
         viewModelScope.launch {
             chatRepository.deleteTempMessage(chatMessage)
@@ -1117,5 +1139,11 @@ class ChatViewModel @Inject constructor(
         data object None : ThreadRetrieveUiState()
         data class Success(val thread: ThreadInfo?) : ThreadRetrieveUiState()
         data class Error(val exception: Exception) : ThreadRetrieveUiState()
+    }
+
+    sealed class UpcomingEventUIState {
+        data object None : UpcomingEventUIState()
+        data class Success(val event: UpcomingEvent) : UpcomingEventUIState()
+        data class Error(val exception: Exception) : UpcomingEventUIState()
     }
 }
