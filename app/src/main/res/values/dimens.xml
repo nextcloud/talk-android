@@ -37,8 +37,6 @@
     <dimen name="link_preview_height">120dp</dimen>
     <dimen name="link_preview_width">220dp</dimen>
 
-    <dimen name="geocoding_result_text_size">18sp</dimen>
-
     <dimen name="maximum_file_preview_size">192dp</dimen>
 
     <dimen name="corner_radius">16dp</dimen>
