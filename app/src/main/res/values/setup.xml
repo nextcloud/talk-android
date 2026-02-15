@@ -23,6 +23,8 @@
     <bool name="hide_auth_cert">false</bool>
     <bool name="multiaccount_support">true</bool>
     <string name="weblogin_url" translatable="false"></string>
+    <!-- Flags to auto enable/disable some features -->
+    <bool name="is_branded_client">false</bool>
 
     <!-- Will not be shown if empty -->
     <string name="nc_privacy_url" translatable="false">https://nextcloud.com/privacy/</string>
