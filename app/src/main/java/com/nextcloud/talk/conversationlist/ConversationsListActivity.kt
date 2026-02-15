@@ -756,10 +756,15 @@ class ConversationsListActivity :
     }
 
     private fun showChooseAccountDialog() {
+        val brandedClient = getResources().getBoolean(R.bool.is_branded_client)
         binding.genericComposeView.apply {
             val shouldDismiss = mutableStateOf(false)
             setContent {
-                ChooseAccountDialogCompose().GetChooseAccountDialog(shouldDismiss, this@ConversationsListActivity)
+                ChooseAccountDialogCompose().GetChooseAccountDialog(
+                    shouldDismiss,
+                    this@ConversationsListActivity,
+                    appPreferences.isShowEcosystem && !brandedClient
+                )
             }
         }
     }

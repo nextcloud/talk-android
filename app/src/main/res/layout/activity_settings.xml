@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk - Android Client
   ~
   ~ SPDX-FileCopyrightText: 2024 Parneet Singh <gurayaparneet@gmail.com>
@@ -13,9 +12,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_container"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/settings_appbar"
@@ -51,26 +50,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/this_is_a_test_message"/>
+                android:text="@string/this_is_a_test_message" />
 
             <RelativeLayout
                 android:id="@+id/settings_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/standard_quarter_margin"
-                android:animateLayoutChanges="true"
-                android:visibility="gone"
-                tools:visibility="visible"
                 android:layout_marginStart="@dimen/standard_margin"
+                android:layout_marginTop="@dimen/standard_quarter_margin"
                 android:layout_marginEnd="@dimen/standard_margin"
-                android:background="?android:attr/selectableItemBackground">
+                android:animateLayoutChanges="true"
+                android:background="?android:attr/selectableItemBackground"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <ImageView
                     android:id="@+id/avatar_image"
                     android:layout_width="@dimen/avatar_size_big"
                     android:layout_height="@dimen/avatar_size_big"
-                    android:layout_marginTop="@dimen/standard_margin"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/standard_margin"
                     android:contentDescription="@string/avatar"
                     tools:src="@drawable/account_circle_48dp" />
 
@@ -114,10 +113,10 @@
                         android:id="@+id/server_age_warning_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_warning_white"
                         android:layout_centerVertical="true"
-                        app:tint="@color/nc_darkRed"
-                        android:contentDescription="@string/nc_settings_warning" />
+                        android:contentDescription="@string/nc_settings_warning"
+                        android:src="@drawable/ic_warning_white"
+                        app:tint="@color/nc_darkRed" />
 
                     <TextView
                         android:id="@+id/server_age_warning_text"
@@ -138,16 +137,16 @@
                 android:id="@+id/settings_remove_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="?android:attr/selectableItemBackground">
+                android:background="?android:attr/selectableItemBackground"
+                android:orientation="horizontal">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/standard_margin"
                     android:text="@string/nc_settings_remove_account"
-                    android:textSize="@dimen/headline_text_size"
-                    android:textColor="@color/design_default_color_error"/>
+                    android:textColor="@color/design_default_color_error"
+                    android:textSize="@dimen/headline_text_size" />
 
             </LinearLayout>
 
@@ -164,15 +163,16 @@
                     android:layout_margin="@dimen/standard_margin"
                     android:text="@string/nc_settings_appearance"
                     android:textSize="@dimen/headline_text_size"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/theme_settings_input_layout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/standard_half_margin"
                     android:layout_marginHorizontal="@dimen/standard_margin"
+                    android:layout_marginTop="@dimen/standard_half_margin"
+                    android:layout_marginBottom="@dimen/standard_half_margin"
                     android:hint="@string/nc_settings_theme_title">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -186,6 +186,41 @@
                         tools:ignore="SpeakableTextPresentCheck" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:id="@+id/settings_show_ecosystem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/standard_padding">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nc_show_ecosystem_title"
+                            android:textSize="@dimen/headline_text_size" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/settings_show_ecosystem_summary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nc_show_ecosystem_description" />
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/settings_show_ecosystem_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:gravity="center_vertical" />
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -202,7 +237,7 @@
                     android:layout_margin="@dimen/standard_margin"
                     android:text="@string/nc_settings_notification_sounds_post_oreo"
                     android:textSize="@dimen/headline_text_size"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:id="@+id/settings_gplay_only_wrapper"
@@ -222,7 +257,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/nc_settings_server_notification_app_not_installed_title"
-                            android:textSize="@dimen/headline_text_size"/>
+                            android:textSize="@dimen/headline_text_size" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/settings_server_notification_app_description"
@@ -230,7 +265,7 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/nc_darkRed"
                             android:textSize="@dimen/supporting_text_text_size"
-                            tools:text="Please contact the admin of www.example.com"/>
+                            tools:text="Please contact the admin of www.example.com" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -271,7 +306,7 @@
                             android:id="@+id/battery_optimization_ignored"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="@string/nc_diagnose_battery_optimization_ignored"/>
+                            tools:text="@string/nc_diagnose_battery_optimization_ignored" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -280,15 +315,15 @@
                     android:id="@+id/settings_gplay_not_available"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     android:padding="@dimen/standard_padding"
                     android:visibility="gone"
-                    android:orientation="vertical"
                     tools:visibility="visible">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/nc_diagnose_gplay_available_no"/>
+                        android:text="@string/nc_diagnose_gplay_available_no" />
 
                 </LinearLayout>
 
@@ -304,14 +339,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/nc_settings_call_ringtone"
-                        android:textSize="@dimen/headline_text_size"/>
+                        android:textSize="@dimen/headline_text_size" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/calls_ringtone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/nc_settings_default_ringtone"
-                        android:textSize="@dimen/supporting_text_text_size"/>
+                        android:textSize="@dimen/supporting_text_text_size" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -326,14 +361,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/nc_settings_other_notifications_ringtone"
-                        android:textSize="@dimen/headline_text_size"/>
+                        android:textSize="@dimen/headline_text_size" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/messages_ringtone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/nc_settings_default_ringtone"
-                        android:textSize="@dimen/supporting_text_text_size"/>
+                        android:textSize="@dimen/supporting_text_text_size" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -354,13 +389,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/nc_show_notification_warning_title"
-                            android:textSize="@dimen/headline_text_size"/>
+                            android:textSize="@dimen/headline_text_size" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/settings_show_notification_warning_summary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/nc_show_notification_warning_description"/>
+                            android:text="@string/nc_show_notification_warning_description" />
                     </LinearLayout>
 
                     <com.google.android.material.materialswitch.MaterialSwitch
@@ -368,7 +403,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:clickable="false"
-                        android:gravity="center_vertical"/>
+                        android:gravity="center_vertical" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -384,15 +419,15 @@
                     android:layout_margin="@dimen/standard_margin"
                     android:text="@string/nc_settings_privacy"
                     android:textSize="@dimen/headline_text_size"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:id="@+id/settings_screen_lock"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:orientation="horizontal"
-                    android:padding="@dimen/standard_padding"
-                    android:background="?android:attr/selectableItemBackground">
+                    android:padding="@dimen/standard_padding">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -403,22 +438,22 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/headline_text_size"
-                            android:text="@string/nc_settings_screen_lock_title"/>
+                            android:text="@string/nc_settings_screen_lock_title"
+                            android:textSize="@dimen/headline_text_size" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/settings_screen_lock_summary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/nc_settings_screen_lock_desc"/>
+                            android:text="@string/nc_settings_screen_lock_desc" />
                     </LinearLayout>
 
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/settings_screen_lock_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:clickable="false"/>
+                        android:clickable="false"
+                        android:gravity="center_vertical" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -432,8 +467,8 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/standard_half_margin"
                         android:layout_marginHorizontal="@dimen/standard_margin"
+                        android:layout_marginTop="@dimen/standard_half_margin"
                         android:hint="@string/nc_settings_screen_lock_timeout_title">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -454,9 +489,9 @@
                     android:id="@+id/settings_screen_security"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:orientation="horizontal"
-                    android:padding="@dimen/standard_padding"
-                    android:background="?android:attr/selectableItemBackground">
+                    android:padding="@dimen/standard_padding">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -467,30 +502,30 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/headline_text_size"
-                            android:text="@string/nc_settings_screen_security_title"/>
+                            android:text="@string/nc_settings_screen_security_title"
+                            android:textSize="@dimen/headline_text_size" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/nc_settings_screen_security_desc"/>
+                            android:text="@string/nc_settings_screen_security_desc" />
                     </LinearLayout>
 
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/settings_screen_security_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:clickable="false"/>
+                        android:clickable="false"
+                        android:gravity="center_vertical" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/settings_incognito_keyboard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:orientation="horizontal"
-                    android:padding="@dimen/standard_padding"
-                    android:background="?android:attr/selectableItemBackground">
+                    android:padding="@dimen/standard_padding">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -501,30 +536,30 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/headline_text_size"
-                            android:text="@string/nc_settings_incognito_keyboard_title"/>
+                            android:text="@string/nc_settings_incognito_keyboard_title"
+                            android:textSize="@dimen/headline_text_size" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/nc_settings_incognito_keyboard_desc"/>
+                            android:text="@string/nc_settings_incognito_keyboard_desc" />
                     </LinearLayout>
 
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/settings_incognito_keyboard_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:clickable="false"/>
+                        android:clickable="false"
+                        android:gravity="center_vertical" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/settings_phone_book_integration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:orientation="horizontal"
-                    android:padding="@dimen/standard_padding"
-                    android:background="?android:attr/selectableItemBackground">
+                    android:padding="@dimen/standard_padding">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -535,30 +570,30 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/headline_text_size"
-                            android:text="@string/nc_settings_phone_book_integration_title"/>
+                            android:text="@string/nc_settings_phone_book_integration_title"
+                            android:textSize="@dimen/headline_text_size" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/nc_settings_phone_book_integration_desc"/>
+                            android:text="@string/nc_settings_phone_book_integration_desc" />
                     </LinearLayout>
 
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/settings_phone_book_integration_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:clickable="false"/>
+                        android:clickable="false"
+                        android:gravity="center_vertical" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/settings_read_privacy"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:orientation="horizontal"
-                    android:padding="@dimen/standard_padding"
-                    android:background="?android:attr/selectableItemBackground">
+                    android:padding="@dimen/standard_padding">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -569,30 +604,30 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/headline_text_size"
-                            android:text="@string/nc_settings_read_privacy_title"/>
+                            android:text="@string/nc_settings_read_privacy_title"
+                            android:textSize="@dimen/headline_text_size" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/nc_settings_read_privacy_desc"/>
+                            android:text="@string/nc_settings_read_privacy_desc" />
                     </LinearLayout>
 
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/settings_read_privacy_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:clickable="false"/>
+                        android:clickable="false"
+                        android:gravity="center_vertical" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/settings_typing_status"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:orientation="horizontal"
-                    android:padding="@dimen/standard_padding"
-                    android:background="?android:attr/selectableItemBackground">
+                    android:padding="@dimen/standard_padding">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -603,28 +638,28 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/headline_text_size"
-                            android:text="@string/nc_settings_typing_status_title"/>
+                            android:text="@string/nc_settings_typing_status_title"
+                            android:textSize="@dimen/headline_text_size" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/nc_settings_typing_status_desc"/>
+                            android:text="@string/nc_settings_typing_status_desc" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/settings_typing_status_only_with_hpb"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/standard_half_margin"
-                            android:text="@string/nc_settings_typing_status_hpb_description"/>
+                            android:text="@string/nc_settings_typing_status_hpb_description" />
                     </LinearLayout>
 
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/settings_typing_status_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:clickable="false"/>
+                        android:clickable="false"
+                        android:gravity="center_vertical" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -641,36 +676,36 @@
                     android:layout_margin="@dimen/standard_margin"
                     android:text="@string/nc_settings_advanced_title"
                     android:textSize="@dimen/headline_text_size"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:id="@+id/diagnose_wrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:orientation="vertical"
-                    android:padding="@dimen/standard_padding"
-                    android:background="?android:attr/selectableItemBackground">
+                    android:padding="@dimen/standard_padding">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/diagnose_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/headline_text_size"
-                        android:text="@string/nc_settings_diagnose_title"/>
+                        android:text="@string/nc_settings_diagnose_title"
+                        android:textSize="@dimen/headline_text_size" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/diagnose_subtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/nc_settings_diagnose_subtitle"/>
+                        android:text="@string/nc_settings_diagnose_subtitle" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/settings_client_cert"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="?android:attr/selectableItemBackground">
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/settings_client_cert_title"
@@ -678,7 +713,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/standard_margin"
                         android:text="@string/nc_client_cert_setup"
-                        android:textSize="@dimen/headline_text_size"/>
+                        android:textSize="@dimen/headline_text_size" />
 
                 </LinearLayout>
 
@@ -688,121 +723,114 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/standard_margin"
-                    android:hint="@string/nc_settings_proxy_type_title">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/settings_proxy_choice"
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:lines="1"
-                        android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu"
-                        android:text="" />
+                        android:layout_marginHorizontal="@dimen/standard_margin"
+                        android:hint="@string/nc_settings_proxy_type_title">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/settings_proxy_choice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:lines="1"
+                            android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu"
+                            android:text="" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/settings_proxy_host_layout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/standard_margin"
-                    >
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/settings_proxy_host_edit"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/settings_proxy_host_layout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/nc_settings_proxy_host_title"
-                        android:inputType="text"
-                        />
+                        android:layout_marginHorizontal="@dimen/standard_margin">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/settings_proxy_host_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/nc_settings_proxy_host_title"
+                            android:inputType="text" />
 
 
-                </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/settings_proxy_port_layout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/standard_margin"
-                    >
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/settings_proxy_port_edit"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/settings_proxy_port_layout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/nc_settings_proxy_port_title"
-                        android:inputType="number"/>
+                        android:layout_marginHorizontal="@dimen/standard_margin">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/settings_proxy_port_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/nc_settings_proxy_port_title"
+                            android:inputType="number" />
 
 
-                </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/settings_proxy_username_layout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/standard_margin"
-                    >
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/settings_proxy_username_edit"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/settings_proxy_username_layout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/nc_settings_proxy_username_title"
-                        android:inputType="text"
-                        />
+                        android:layout_marginHorizontal="@dimen/standard_margin">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/settings_proxy_username_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/nc_settings_proxy_username_title"
+                            android:inputType="text" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/settings_proxy_password_layout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/standard_margin"
-                    >
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/settings_proxy_password_edit"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/settings_proxy_password_layout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/nc_settings_proxy_password_title"
-                        android:inputType="textPassword"
-                        />
+                        android:layout_marginHorizontal="@dimen/standard_margin">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/settings_proxy_password_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/nc_settings_proxy_password_title"
+                            android:inputType="textPassword" />
 
-                <LinearLayout
-                    android:id="@+id/settings_proxy_use_credentials"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/standard_half_padding"
-                    android:orientation="horizontal"
-                    android:background="?android:attr/selectableItemBackground">
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <LinearLayout
+                        android:id="@+id/settings_proxy_use_credentials"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/standard_half_padding">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/standard_half_margin"
                             android:layout_weight="1"
-                            android:textSize="@dimen/headline_text_size"
-                            android:text="@string/nc_settings_use_credentials_title"/>
+                            android:text="@string/nc_settings_use_credentials_title"
+                            android:textSize="@dimen/headline_text_size" />
 
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/settings_proxy_use_credentials_switch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:clickable="false"/>
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/settings_proxy_use_credentials_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:gravity="center_vertical" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -818,21 +846,21 @@
                     android:layout_margin="@dimen/standard_margin"
                     android:text="@string/nc_about"
                     android:textSize="@dimen/headline_text_size"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:id="@+id/settings_privacy"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="?android:attr/selectableItemBackground">
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/standard_margin"
                         android:text="@string/nc_settings_privacy"
-                        android:textSize="@dimen/headline_text_size"/>
+                        android:textSize="@dimen/headline_text_size" />
 
                 </LinearLayout>
 
@@ -840,15 +868,15 @@
                     android:id="@+id/settings_source_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="?android:attr/selectableItemBackground">
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/standard_margin"
                         android:text="@string/nc_get_source_code"
-                        android:textSize="@dimen/headline_text_size"/>
+                        android:textSize="@dimen/headline_text_size" />
 
                 </LinearLayout>
 
@@ -856,8 +884,8 @@
                     android:id="@+id/settings_licence"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="?android:attr/selectableItemBackground">
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -870,14 +898,14 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/standard_margin"
                             android:text="@string/nc_license_title"
-                            android:textSize="@dimen/headline_text_size"/>
+                            android:textSize="@dimen/headline_text_size" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/standard_margin"
                             android:hint="@string/nc_license_summary"
-                            android:textSize="@dimen/supporting_text_text_size"/>
+                            android:textSize="@dimen/supporting_text_text_size" />
 
                     </LinearLayout>
                 </LinearLayout>
@@ -886,9 +914,9 @@
                     android:id="@+id/settings_version"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/standard_double_padding"
+                    android:background="?android:attr/selectableItemBackground"
                     android:orientation="horizontal"
-                    android:background="?android:attr/selectableItemBackground">
+                    android:paddingBottom="@dimen/standard_double_padding">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -901,18 +929,19 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/standard_margin"
                             android:text="@string/nc_app_product_name"
-                            android:textSize="@dimen/headline_text_size"/>
+                            android:textSize="@dimen/headline_text_size" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/settings_version_summary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/standard_margin"
-                            android:textSize="@dimen/supporting_text_text_size"/>
+                            android:textSize="@dimen/supporting_text_text_size" />
 
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
+
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="50dp" />
