@@ -959,6 +959,7 @@ class ChatActivity :
                     val scheduledTimeText = dateUtils.getLocalDateTimeStringFromTimestamp(
                         scheduledAt * DateConstants.SECOND_DIVIDER
                     )
+                    messageInputFragment.onScheduledMessageSent()
                     Snackbar.make(
                         binding.root,
                         getString(R.string.nc_message_scheduled_at, scheduledTimeText),
