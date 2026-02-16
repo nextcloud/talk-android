@@ -56,8 +56,17 @@
         tools:visible="true" />
 
     <item
-        android:id="@+id/conversation_info"
+        android:id="@+id/conversation_go_to_file"
+        android:icon="@drawable/ic_file_24px"
         android:orderInCategory="4"
+        android:title="@string/nc_conversation_menu_conversation_go_to_file"
+        android:visible="false"
+        app:showAsAction="ifRoom"
+        tools:visible="true" />
+
+    <item
+        android:id="@+id/conversation_info"
+        android:orderInCategory="5"
         android:title="@string/nc_conversation_menu_conversation_info"
         android:visible="false"
         app:showAsAction="never"
@@ -65,8 +74,16 @@
 
     <item
         android:id="@+id/shared_items"
-        android:orderInCategory="5"
+        android:orderInCategory="6"
         android:title="@string/nc_shared_items"
+        android:visible="false"
+        app:showAsAction="never"
+        tools:visible="true" />
+
+    <item
+        android:id="@+id/show_threads"
+        android:orderInCategory="7"
+        android:title="@string/recent_threads"
         android:visible="false"
         app:showAsAction="never"
         tools:visible="true" />
@@ -74,17 +91,8 @@
     <item
         android:id="@+id/conversation_scheduled_messages"
         android:icon="@drawable/baseline_schedule_24"
-        android:orderInCategory="7"
+        android:orderInCategory="8"
         android:title="@string/nc_scheduled_messages"
-        android:visible="false"
-        app:showAsAction="never"
-        tools:visible="true" />
-
-
-    <item
-        android:id="@+id/show_threads"
-        android:orderInCategory="6"
-        android:title="@string/recent_threads"
         android:visible="false"
         app:showAsAction="never"
         tools:visible="true" />
