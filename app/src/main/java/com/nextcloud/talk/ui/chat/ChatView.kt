@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,6 +54,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -76,6 +78,9 @@ fun GetNewChatView(
     advanceLocalLastReadMessageIfNeeded: ((Int) -> Unit?)?,
     updateRemoteLastReadMessageIfNeeded: (() -> Unit?)?
 ) {
+    val viewThemeUtils = LocalViewThemeUtils.current
+    val colorScheme = viewThemeUtils.getColorScheme(LocalContext.current)
+
     val listState = rememberLazyListState()
     val showUnreadPopup = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -266,11 +271,13 @@ fun GetNewChatView(
                 .padding(top = 12.dp)
                 .alpha(stickyDateHeaderAlpha),
             shape = RoundedCornerShape(16.dp),
+            color = colorScheme.secondaryContainer,
             tonalElevation = 2.dp
         ) {
             Text(
                 stickyDateHeaderText,
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                color = colorScheme.onSecondaryContainer
             )
         }
 
@@ -322,21 +329,29 @@ fun GetNewChatView(
 
 @Composable
 fun UnreadMessagesPopup(unreadCount: Int, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val viewThemeUtils = LocalViewThemeUtils.current
+    val colorScheme = viewThemeUtils.getColorScheme(LocalContext.current)
+
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(20.dp),
+        color = colorScheme.secondaryContainer,
         tonalElevation = 3.dp,
         modifier = modifier
     ) {
         Text(
             text = "$unreadCount new message${if (unreadCount > 1) "s" else ""}",
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+            color = colorScheme.onSecondaryContainer,
         )
     }
 }
 
 @Composable
 fun DateHeader(date: LocalDate) {
+    val viewThemeUtils = LocalViewThemeUtils.current
+    val colorScheme = viewThemeUtils.getColorScheme(LocalContext.current)
+
     val text = when (date) {
         LocalDate.now() -> "Today"
         LocalDate.now().minusDays(1) -> "Yesterday"
@@ -352,17 +367,21 @@ fun DateHeader(date: LocalDate) {
             text = text,
             modifier = Modifier
                 .background(
-                    Color.Gray.copy(alpha = 0.2f),
+                    colorScheme.secondaryContainer,
                     RoundedCornerShape(12.dp)
                 )
                 .padding(horizontal = 12.dp, vertical = 6.dp),
-            fontSize = 12.sp
+            fontSize = 12.sp,
+            color = colorScheme.onSecondaryContainer
         )
     }
 }
 
 @Composable
 fun UnreadMessagesMarker(date: LocalDate) {
+    val viewThemeUtils = LocalViewThemeUtils.current
+    val colorScheme = viewThemeUtils.getColorScheme(LocalContext.current)
+
     Box(
         modifier = Modifier
             .fillMaxWidth(),
@@ -372,11 +391,12 @@ fun UnreadMessagesMarker(date: LocalDate) {
             text = "Unread messages",
             modifier = Modifier
                 .background(
-                    Color.Gray.copy(alpha = 0.2f),
+                    colorScheme.secondaryContainer,
                     RoundedCornerShape(12.dp)
                 )
                 .padding(horizontal = 12.dp, vertical = 6.dp),
-            fontSize = 12.sp
+            fontSize = 12.sp,
+            color = colorScheme.onSecondaryContainer
         )
     }
 }
