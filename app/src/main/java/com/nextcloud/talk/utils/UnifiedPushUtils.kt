@@ -20,6 +20,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import org.unifiedpush.android.connector.UnifiedPush
 import org.unifiedpush.android.connector.data.PushEndpoint
+import org.unifiedpush.android.connector.data.ResolvedDistributor
 import java.util.concurrent.TimeUnit
 
 object UnifiedPushUtils {
@@ -44,7 +45,7 @@ object UnifiedPushUtils {
         callback: (String?) -> Unit
     ) {
         Log.d(TAG, "Using default UnifiedPush distributor")
-        UnifiedPush.tryUseCurrentOrDefaultDistributor(activity as Context) { res ->
+        UnifiedPush.tryUseDefaultDistributor(activity) { res ->
             if (res) {
                 enqueuePushWorker(activity, true, "useDefaultDistributor")
                 callback(UnifiedPush.getSavedDistributor(activity))
@@ -53,6 +54,14 @@ object UnifiedPushUtils {
             }
         }
     }
+
+    /**
+     * Does [useDefaultDistributor] show an OS screen to ask the user
+     * to pick a distributor ?
+     */
+    @JvmStatic
+    fun usingDefaultDistributorNeedsIntro(context: Context): Boolean =
+        UnifiedPush.resolveDefaultDistributor(context) == ResolvedDistributor.ToSelect
 
     @JvmStatic
     fun registerWithCurrentDistributor(context: Context) {
