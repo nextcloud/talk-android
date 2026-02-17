@@ -408,6 +408,8 @@
     <string name="nc_rename_confirm">Rename</string>
     <string name="nc_reply">Reply</string>
     <string name="nc_reply_privately">Reply privately</string>
+    <string name="nc_reschedule_message_with_notification">Reschedule with notification</string>
+    <string name="nc_reschedule_message_without_notification">Reschedule without notification</string>
     <string name="nc_room_retention">Room is retained successfully</string>
     <string name="nc_save_message">Save</string>
     <string name="nc_save_success">Saved successfully</string>
