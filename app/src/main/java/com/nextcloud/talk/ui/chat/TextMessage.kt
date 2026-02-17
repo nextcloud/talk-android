@@ -20,8 +20,8 @@ fun TextMessage(
     CommonMessageBody(
         message = message,
         conversationThreadId = conversationThreadId,
+        showAvatar = showAvatar,
         playAnimation = state.value,
-        showAvatar = true,
         content = {
             EnrichedText(
                 message

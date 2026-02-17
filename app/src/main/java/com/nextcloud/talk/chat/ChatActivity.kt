@@ -646,7 +646,7 @@ class ChatActivity :
                 LocalViewThemeUtils provides viewThemeUtils,
                 LocalMessageUtils provides messageUtils
             ) {
-                val showAvatar = !isOneToOneConversation()
+                val showAvatar = uiState.showChatAvatars
                 Log.d(TAG,"showAvatar="+ showAvatar)
 
                 GetNewChatView(

@@ -40,6 +40,7 @@ import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.opengraph.Reference
@@ -337,7 +338,7 @@ class ChatViewModel @AssistedInject constructor(
     // ------------------------------
     data class ChatUiState(
         val items: List<ChatItem> = emptyList(),
-        val showChatAvatars: Boolean = true,
+        val showChatAvatars: Boolean = false,
 
         // Adding the whole conversation is just an intermediate solution as it is used in the activity.
         // For the future, only necessary vars from conversation should be in the ui state
@@ -429,7 +430,8 @@ class ChatViewModel @AssistedInject constructor(
 
                 _uiState.update { current ->
                     current.copy(
-                        conversation = conversation
+                        conversation = conversation,
+                        showChatAvatars = !conversation.isOneToOneConversation()
                     )
                 }
             }
@@ -636,6 +638,11 @@ class ChatViewModel @AssistedInject constructor(
 
         observeConversationAndUserFirstTime()
         observeConversationAndUserEveryTime()
+    }
+
+    fun ConversationModel?.isOneToOneConversation(): Boolean {
+        return this?.type ==
+            ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
     }
 
     @Deprecated("use observeConversation")
