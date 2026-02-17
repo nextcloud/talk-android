@@ -7,32 +7,29 @@
 package com.nextcloud.talk.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import fr.dudie.nominatim.client.TalkJsonNominatimClient
 import fr.dudie.nominatim.model.Address
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import java.io.IOException
 
 class GeoCodingViewModel : ViewModel() {
-    private val geocodingResultsLiveData = MutableLiveData<List<Address>>()
+    private val _geocodingResults = MutableStateFlow<List<Address>>(emptyList())
+    val geocodingResults: StateFlow<List<Address>> = _geocodingResults
     private val nominatimClient: TalkJsonNominatimClient
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder().build()
-    private var geocodingResults: List<Address> = ArrayList()
     private var query: String = ""
-    fun getGeocodingResultsLiveData(): LiveData<List<Address>> = geocodingResultsLiveData
 
     fun getQuery(): String = query
 
     fun setQuery(query: String) {
         this.query = query
     }
-
-    fun getGeocodingResults(): List<Address> = geocodingResults
 
     init {
         nominatimClient = TalkJsonNominatimClient(
@@ -47,8 +44,7 @@ class GeoCodingViewModel : ViewModel() {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val results = nominatimClient.search(query) as ArrayList<Address>
-                    geocodingResults = results
-                    geocodingResultsLiveData.postValue(results)
+                    _geocodingResults.value = results
                 } catch (e: IOException) {
                     Log.e(TAG, "Failed to get geocoded addresses", e)
                 }
