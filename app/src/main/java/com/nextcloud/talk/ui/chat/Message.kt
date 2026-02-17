@@ -71,6 +71,7 @@ fun CommonMessageBody(
     message: ChatMessage,
     conversationThreadId: Long? = null,
     includePadding: Boolean = true,
+    showAvatar: Boolean = true,
     playAnimation: Boolean = false,
     content: @Composable () -> Unit
 ) {
@@ -126,7 +127,7 @@ fun CommonMessageBody(
         modifier = rowModifier.fillMaxWidth(),
         horizontalArrangement = if (incoming) Arrangement.Start else Arrangement.End
     ) {
-        if (incoming) {
+        if (incoming && showAvatar) {
             val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
             val loadedImage = loadImage(message.avatarUrl, LocalContext.current, errorPlaceholderImage)
             AsyncImage(

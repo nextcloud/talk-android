@@ -12,11 +12,16 @@ import androidx.compose.runtime.MutableState
 import com.nextcloud.talk.chat.data.model.ChatMessage
 
 @Composable
-fun TextMessage(message: ChatMessage, conversationThreadId: Long? = null, state: MutableState<Boolean>) {
+fun TextMessage(
+    message: ChatMessage,
+    showAvatar: Boolean,
+    conversationThreadId: Long? = null, state: MutableState<Boolean>
+) {
     CommonMessageBody(
         message = message,
         conversationThreadId = conversationThreadId,
         playAnimation = state.value,
+        showAvatar = true,
         content = {
             EnrichedText(
                 message

@@ -140,7 +140,6 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
-import com.nextcloud.talk.chat.viewmodels.ChatViewModel.ConversationUiState
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.contextchat.ContextChatView
 import com.nextcloud.talk.contextchat.ContextChatViewModel
@@ -627,16 +626,18 @@ class ChatActivity :
 
     private fun setChatListContent() {
         binding.messagesListViewCompose.setContent {
-            val chatItems by chatViewModel.chatItemsState.collectAsStateWithLifecycle(emptyList())
-            val conversationUiState by chatViewModel.conversationUiState.collectAsStateWithLifecycle()
+            val uiState by chatViewModel.uiState.collectAsStateWithLifecycle()
+            // val conversationUiState by chatViewModel.conversationUiState.collectAsStateWithLifecycle()
 
-            when (conversationUiState) {
-                ConversationUiState.Loading -> {}
-                ConversationUiState.Empty -> {}
-                is ConversationUiState.Success -> {
-                    currentConversation = (conversationUiState as ConversationUiState.Success).data
-                }
-            }
+            currentConversation = uiState.conversation
+
+            // when (conversationUiState) {
+            //     ConversationUiState.Loading -> {}
+            //     ConversationUiState.Empty -> {}
+            //     is ConversationUiState.Success -> {
+            //         currentConversation = (conversationUiState as ConversationUiState.Success).data
+            //     }
+            // }
 
             binding.messagesListViewCompose.visibility = View.VISIBLE
             binding.messagesListView.visibility = View.GONE
@@ -645,8 +646,12 @@ class ChatActivity :
                 LocalViewThemeUtils provides viewThemeUtils,
                 LocalMessageUtils provides messageUtils
             ) {
+                val showAvatar = !isOneToOneConversation()
+                Log.d(TAG,"showAvatar="+ showAvatar)
+
                 GetNewChatView(
-                    chatItems = chatItems,
+                    chatItems = uiState.items,
+                    showAvatar = showAvatar,
                     conversationThreadId = conversationThreadId,
                     onLoadMore = { loadMoreMessagesCompose() },
                     advanceLocalLastReadMessageIfNeeded = { advanceLocalLastReadMessageIfNeeded(it) },
@@ -3364,33 +3369,7 @@ class ChatActivity :
         DateFormatter.isSameDay(message1.createdAt, message2.createdAt)
 
     private fun loadMoreMessagesCompose() {
-        val currentItems = chatViewModel.chatItemsState.value
-
-        val messageId = currentItems
-            .asReversed()
-            .firstNotNullOfOrNull { item ->
-                (item as? ChatViewModel.ChatItem.MessageItem)
-                    ?.message
-                    ?.jsonMessageId
-            }
-
-        Log.d("newchat", "Compose load more, messageId: $messageId")
-
-        messageId?.let {
-            val urlForChatting = ApiUtils.getUrlForChat(
-                chatApiVersion,
-                conversationUser?.baseUrl,
-                roomToken
-            )
-
-            chatViewModel.loadMoreMessages(
-                beforeMessageId = it.toLong(),
-                withUrl = urlForChatting,
-                withCredentials = credentials!!,
-                withMessageLimit = MESSAGE_PULL_LIMIT,
-                roomToken = currentConversation!!.token
-            )
-        }
+        chatViewModel.loadMoreMessagesCompose()
     }
 
     // private fun loadMoreMessagesCompose() {
