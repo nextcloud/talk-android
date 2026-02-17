@@ -430,7 +430,7 @@ class PushRegistrationWorker(
         user: User
     ): Observable<Pair<User, Boolean>> {
         if (user.hasWebPushCapability) {
-            Log.d(TAG, "Registering UnifiedPush for ${user.userId}")
+            Log.d(TAG, "Registering UnifiedPush for ${user.userId} (${user.id})")
             if (user.userId == null || user.baseUrl == null) {
                 Log.w(TAG, "Null userId or baseUrl (userId=${user.userId}, baseUrl=${user.baseUrl}")
                 return Observable.empty()
