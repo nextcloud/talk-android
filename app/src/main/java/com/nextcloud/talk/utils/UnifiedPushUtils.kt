@@ -101,6 +101,7 @@ object UnifiedPushUtils {
     fun disableExternalUnifiedPush(
         context: Context
     ) {
+        UnifiedPush.unregister(context)
         enqueuePushWorker(context, false, "disableExternalUnifiedPush")
     }
 
