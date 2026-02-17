@@ -71,6 +71,8 @@ How to translate with transifex:
     <string name="nc_display_name_not_stored">Could not store display name, aborting</string>
     <string name="nc_push_notification_error"> Sorry something went wrong, error is %1$s</string>
     <string name="nc_push_notification_fetch_error">Sorry something went wrong, cannot fetch test push message</string>
+    <string name="nc_dialog_introduce_unifiedpush_selection">You are about to select your default push service</string>
+    <string name="unifiedpush">UnifiedPush</string>
 
     <string name="nc_search">Search</string>
     <string name="nc_search_clear">Clear search</string>
