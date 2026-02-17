@@ -39,6 +39,7 @@ import com.nextcloud.talk.jobs.WebsocketConnectionsWorker
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
+import com.nextcloud.talk.ui.dialog.IntroduceUnifiedPushDialog
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -410,22 +411,55 @@ class AccountVerificationActivity : BaseActivity() {
         // - Else we skip push registrations
         if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
             ClosedInterfaceImpl().setUpPushTokenRegistration()
+            eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
         } else if (userManager.users.blockingGet().size == 1 &&
             UnifiedPush.getDistributors(context).isNotEmpty() &&
             userManager.getUserWithId(internalAccountId).blockingGet().hasWebPushCapability) {
-            UnifiedPushUtils.useDefaultDistributor(this) { distrib ->
-                distrib?.let {
-                    Log.d(TAG, "UnifiedPush registered with $distrib")
-                    appPreferences.useUnifiedPush = true
-                    eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
-                } ?: run {
-                    Log.d(TAG, "No UnifiedPush distrib selected")
-                    eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, false))
-                }
-            }
+            useUnifiedPushIntroduced()
         } else {
             Log.w(TAG, "Skipping push registration.")
             eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, false))
+        }
+    }
+
+    /**
+     * Show a dialog if the user has to select their distributor
+     *
+     * Most of the time, nothing will be shown, as most users have
+     * a single distributor, or already selected their default one
+     */
+    private fun useUnifiedPushIntroduced() {
+        if (UnifiedPushUtils.usingDefaultDistributorNeedsIntro(context)) {
+            dialogForUnifiedPush { res ->
+                if (res) {
+                    useUnifiedPush()
+                }
+            }
+        } else {
+            useUnifiedPush()
+        }
+    }
+
+    private fun useUnifiedPush() {
+        UnifiedPushUtils.useDefaultDistributor(this) { distrib ->
+            distrib?.let {
+                Log.d(TAG, "UnifiedPush registered with $distrib")
+                appPreferences.useUnifiedPush = true
+                eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
+            } ?: run {
+                Log.d(TAG, "No UnifiedPush distrib selected")
+                eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, false))
+            }
+        }
+    }
+
+    private fun dialogForUnifiedPush(onResponse: (Boolean) -> Unit) {
+        binding.genericComposeView.apply {
+            setContent {
+                IntroduceUnifiedPushDialog { res ->
+                    onResponse(res)
+                }
+            }
         }
     }
 
