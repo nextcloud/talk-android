@@ -90,6 +90,8 @@ class PushRegistrationWorker(
         val activationToken = inputData.getString(ACTIVATION_TOKEN)
         val pushEndpoint = inputData.getByteArray(UNIFIEDPUSH_ENDPOINT)?.toPushEndpoint()
         val unregisterWebPush = inputData.getBoolean(UNREGISTER_WEBPUSH, false)
+        // We always check current status of unifiedpush with defaultUseUnifiedPush here
+        // If the current distributor is removed, a notification to inform the user is shown
         val useUnifiedPush = inputData.getBoolean(USE_UNIFIEDPUSH, defaultUseUnifiedPush())
         if (userId != -1L && activationToken != null) {
             Log.d(TAG, "PushRegistrationWorker called via $origin (webPushActivationWork)")
