@@ -408,6 +408,8 @@
     <string name="nc_rename_confirm">Přejmenovat</string>
     <string name="nc_reply">Odpovědět</string>
     <string name="nc_reply_privately">Odpovědět soukromě</string>
+    <string name="nc_reschedule_message_with_notification">Přeplánovat s odesláním notifikace</string>
+    <string name="nc_reschedule_message_without_notification">Přeplánovat bez odeslání notifikace</string>
     <string name="nc_room_retention">Místnost je úspěšně ponechána</string>
     <string name="nc_save_message">Uložit</string>
     <string name="nc_save_success">Úspěšně uloženo</string>
