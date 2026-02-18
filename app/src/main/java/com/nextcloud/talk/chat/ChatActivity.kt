@@ -3369,6 +3369,7 @@ class ChatActivity :
             loadAvatarForStatusBar()
             setActionBarTitle()
         }
+
         return true
     }
 
@@ -3392,6 +3393,9 @@ class ChatActivity :
 
             val sharedItemsItem = menu.findItem(R.id.shared_items)
             sharedItemsItem.isVisible = !isChatThread()
+
+            val conversationFileItem = menu.findItem(R.id.conversation_go_to_file)
+            conversationFileItem.isVisible = currentConversation?.objectType == ConversationEnums.ObjectType.FILE
 
             val conversationInfoItem = menu.findItem(R.id.conversation_info)
             conversationInfoItem.isVisible = !isChatThread()
@@ -3461,6 +3465,11 @@ class ChatActivity :
                 true
             }
 
+            R.id.conversation_go_to_file -> {
+                launchFileShareLink()
+                true
+            }
+
             R.id.conversation_info -> {
                 showConversationInfoScreen()
                 true
@@ -3499,6 +3508,13 @@ class ChatActivity :
 
             else -> super.onOptionsItemSelected(item)
         }
+
+    private fun launchFileShareLink() {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setData((conversationUser.baseUrl + "/f/" + currentConversation?.objectId).toUri())
+        }
+        startActivity(intent)
+    }
 
     private fun openScheduledMessages() {
         val intent = Intent(this, ScheduledMessagesActivity::class.java).apply {
