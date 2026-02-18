@@ -462,18 +462,17 @@ class ChatViewModel @AssistedInject constructor(
         var lastDate: LocalDate? = null
 
         return buildList {
-            val reversedMessages = messages.asReversed()
             if (firstUnreadMessageId == null) {
                 firstUnreadMessageId =
-                    reversedMessages.firstOrNull {
+                    messages.firstOrNull {
                         it.jsonMessageId > lastReadMessage
                     }?.jsonMessageId
-                Log.d(TAG, "reversedMessages.size = ${reversedMessages.size}")
+                Log.d(TAG, "reversedMessages.size = ${messages.size}")
                 Log.d(TAG, "firstUnreadMessageId = $firstUnreadMessageId")
-                Log.d(TAG, "conversation.lastReadMessage = ${lastReadMessage}")
+                Log.d(TAG, "conversation.lastReadMessage = $lastReadMessage")
             }
 
-            for (msg in reversedMessages) {
+            for (msg in messages) {
                 val date = msg.dateKey()
 
                 if (date != lastDate) {

@@ -36,7 +36,7 @@ interface ChatMessagesDao {
       AND isTemporary = 0
       AND (:threadId IS NULL OR threadId = :threadId)
       AND id > :oldestMessageId
-    ORDER BY timestamp DESC, id DESC
+    ORDER BY timestamp ASC, id ASC
     """
     )
     fun getMessagesNewerThan(
