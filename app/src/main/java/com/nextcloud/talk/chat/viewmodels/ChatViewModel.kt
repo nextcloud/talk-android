@@ -512,14 +512,17 @@ class ChatViewModel @AssistedInject constructor(
                 loadInitialMessages(
                     withCredentials = credentials,
                     withUrl = url,
-                    hasHighPerformanceBackend =
-                    WebSocketConnectionHelper
-                        .getWebSocketInstanceForUser(user) != null
+                    isChatRelaySupported = isChatRelaySupported(user)
                 )
 
                 getCapabilities(user, chatRoomToken, conversation)
             }
             .launchIn(viewModelScope)
+    }
+
+    fun isChatRelaySupported(user: User): Boolean {
+        val websocketInstance = WebSocketConnectionHelper.getWebSocketInstanceForUser(user)
+        return websocketInstance?.supportsChatRelay() == true
     }
 
     fun observeConversationAndUserEveryTime() {
@@ -844,13 +847,13 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
-    suspend fun loadInitialMessages(withCredentials: String, withUrl: String, hasHighPerformanceBackend: Boolean) {
+    suspend fun loadInitialMessages(withCredentials: String, withUrl: String, isChatRelaySupported: Boolean) {
         val bundle = Bundle()
         bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
         bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
         chatRepository.loadInitialMessages(
             withNetworkParams = bundle,
-            hasHighPerformanceBackend = hasHighPerformanceBackend
+            isChatRelaySupported = isChatRelaySupported
         )
         _events.emit(ChatEvent.StartRegularPolling)
     }

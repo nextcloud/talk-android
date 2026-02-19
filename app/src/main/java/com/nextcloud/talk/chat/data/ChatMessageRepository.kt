@@ -52,7 +52,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     fun updateConversation(conversationModel: ConversationModel)
 
-    suspend fun loadInitialMessages(withNetworkParams: Bundle, hasHighPerformanceBackend: Boolean)
+    suspend fun loadInitialMessages(withNetworkParams: Bundle, isChatRelaySupported: Boolean)
 
     suspend fun startMessagePolling(hasHighPerformanceBackend: Boolean)
 

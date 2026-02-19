@@ -66,6 +66,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     var sessionId: String? = null
         private set
     private var hasMCU = false
+    private var supportsChatRelay = false
     var isConnected: Boolean
         private set
     private val webSocketConnectionHelper: WebSocketConnectionHelper
@@ -322,6 +323,15 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
             resumeId = helloResponseWebSocketMessage1.resumeId
             sessionId = helloResponseWebSocketMessage1.sessionId
             hasMCU = helloResponseWebSocketMessage1.serverHasMCUSupport()
+
+            val features =
+                helloResponseWebSocketMessage1.serverHelloResponseFeaturesWebSocketMessage?.features ?: emptyList()
+            supportsChatRelay = features.contains("chat-relay")
+            if (supportsChatRelay) {
+                Log.d(TAG, "chat-relay is supported")
+            } else {
+                Log.d(TAG, "chat-relay is NOT supported")
+            }
         }
         for (i in messagesQueue.indices) {
             webSocket.send(messagesQueue[i])
@@ -365,6 +375,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     }
 
     fun hasMCU(): Boolean = hasMCU
+    fun supportsChatRelay(): Boolean = supportsChatRelay
 
     @Suppress("Detekt.ComplexMethod")
     fun joinRoomWithRoomTokenAndSession(

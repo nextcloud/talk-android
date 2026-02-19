@@ -142,7 +142,7 @@ class OfflineFirstChatRepository @Inject constructor(
         this.conversationModel = conversationModel
     }
 
-    override suspend fun loadInitialMessages(withNetworkParams: Bundle, hasHighPerformanceBackend: Boolean) {
+    override suspend fun loadInitialMessages(withNetworkParams: Bundle, isChatRelaySupported: Boolean) {
         Log.d(TAG, "---- loadInitialMessages ------------")
         newXChatLastCommonRead = conversationModel.lastCommonReadMessage
 
@@ -157,9 +157,9 @@ class OfflineFirstChatRepository @Inject constructor(
         val weHaveAtLeastTheLastReadMessage = newestMessageIdFromDb >= conversationModel.lastReadMessage.toLong()
         Log.d(TAG, "weAlreadyHaveSomeOfflineMessages:$weAlreadyHaveSomeOfflineMessages")
         Log.d(TAG, "weHaveAtLeastTheLastReadMessage:$weHaveAtLeastTheLastReadMessage")
-        Log.d(TAG, "hasHighPerformanceBackend:$hasHighPerformanceBackend")
+        Log.d(TAG, "isChatRelaySupported:$isChatRelaySupported")
 
-        if (weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage && !hasHighPerformanceBackend) {
+        if (weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage && !isChatRelaySupported) {
             Log.d(
                 TAG,
                 "Initial online request is skipped because offline messages are up to date" +
@@ -171,10 +171,10 @@ class OfflineFirstChatRepository @Inject constructor(
             // If a HPB is used, longPolling is not available to handle loading of newer messages.
             // When a HPB is used the initial request must be made.
         } else {
-            if (hasHighPerformanceBackend) {
+            if (isChatRelaySupported) {
                 Log.d(
                     TAG,
-                    "An online request for newest 100 messages is made because HPB is used (No long " +
+                    "An online request for newest 100 messages is made because chatRelay is supported (No long " +
                         "polling available to catch up with messages newer than last read.)"
                 )
             } else if (!weAlreadyHaveSomeOfflineMessages) {
