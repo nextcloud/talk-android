@@ -102,6 +102,7 @@ class ChatViewModel @Inject constructor(
     val mediaPlayerPosition = mediaPlayerManager.mediaPlayerPosition
     var chatRoomToken: String = ""
     var messageDraft: MessageDraft = MessageDraft()
+    var hiddenUpcomingEvent: String? = null
     lateinit var participantPermissions: ParticipantPermissions
 
     fun getChatRepository(): ChatMessageRepository = chatRepository
@@ -998,6 +999,7 @@ class ChatViewModel @Inject constructor(
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun fetchUpcomingEvent(credentials: String, baseUrl: String, roomToken: String) {
         viewModelScope.launch {
+            updateHiddenUpcomingEvent()
             try {
                 val response = chatNetworkDataSource.getUpcomingEvents(credentials, baseUrl, roomToken)
                 val firstEvent = response.ocs?.data?.events?.firstOrNull()
@@ -1074,6 +1076,30 @@ class ChatViewModel @Inject constructor(
             )
             model?.let {
                 it.messageDraft = messageDraft
+                conversationRepository.updateConversation(it)
+            }
+        }
+    }
+
+    suspend fun updateHiddenUpcomingEvent() {
+        val model = conversationRepository.getLocallyStoredConversation(
+            currentUser,
+            chatRoomToken
+        )
+        model?.hiddenUpcomingEvent?.let {
+            hiddenUpcomingEvent = it
+        }
+    }
+
+    fun saveHiddenUpcomingEvent(value: String) {
+        hiddenUpcomingEvent = value
+        viewModelScope.launch {
+            val model = conversationRepository.getLocallyStoredConversation(
+                currentUser,
+                chatRoomToken
+            )
+            model?.let {
+                it.hiddenUpcomingEvent = value
                 conversationRepository.updateConversation(it)
             }
         }
