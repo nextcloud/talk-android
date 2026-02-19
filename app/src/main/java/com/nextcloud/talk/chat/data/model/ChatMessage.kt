@@ -148,7 +148,7 @@ data class ChatMessage(
 
     var avatarUrl: String? = null,
 
-    var isUnread: Boolean = false,
+    var isUnread: Boolean = false
 
 ) : MessageContentType,
     MessageContentType.Image {

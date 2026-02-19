@@ -15,7 +15,8 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 fun TextMessage(
     message: ChatMessage,
     showAvatar: Boolean,
-    conversationThreadId: Long? = null, state: MutableState<Boolean>
+    conversationThreadId: Long? = null,
+    state: MutableState<Boolean>
 ) {
     CommonMessageBody(
         message = message,

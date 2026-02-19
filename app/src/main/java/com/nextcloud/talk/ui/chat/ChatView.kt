@@ -342,7 +342,7 @@ fun UnreadMessagesPopup(unreadCount: Int, onClick: () -> Unit, modifier: Modifie
         Text(
             text = "$unreadCount new message${if (unreadCount > 1) "s" else ""}",
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
-            color = colorScheme.onSecondaryContainer,
+            color = colorScheme.onSecondaryContainer
         )
     }
 }

@@ -237,7 +237,6 @@ class ChatViewModel @AssistedInject constructor(
 
     val getLastReadMessageFlow = chatRepository.lastReadMessageFlow
 
-
     sealed interface ViewState
 
     object GetReminderStartState : ViewState
@@ -329,9 +328,7 @@ class ChatViewModel @AssistedInject constructor(
 
     private var firstUnreadMessageId: Int? = null
 
-
     private var oneOrMoreMessagesWereSent = false
-
 
     // ------------------------------
     // UI State. This should be the only UI state. Add more val here and update via copy whenever necessary.
@@ -455,10 +452,7 @@ class ChatViewModel @AssistedInject constructor(
     // ------------------------------
     // Build chat items (pure)
     // ------------------------------
-    private fun buildChatItems(
-        messages: List<ChatMessage>,
-        lastReadMessage: Int
-    ): List<ChatItem> {
+    private fun buildChatItems(messages: List<ChatMessage>, lastReadMessage: Int): List<ChatItem> {
         var lastDate: LocalDate? = null
 
         return buildList {
@@ -486,7 +480,6 @@ class ChatViewModel @AssistedInject constructor(
 
                 add(ChatItem.MessageItem(msg))
             }
-
         }.asReversed()
     }
 
@@ -520,8 +513,8 @@ class ChatViewModel @AssistedInject constructor(
                     withCredentials = credentials,
                     withUrl = url,
                     hasHighPerformanceBackend =
-                        WebSocketConnectionHelper
-                            .getWebSocketInstanceForUser(user) != null
+                    WebSocketConnectionHelper
+                        .getWebSocketInstanceForUser(user) != null
                 )
 
                 getCapabilities(user, chatRoomToken, conversation)
@@ -542,8 +535,6 @@ class ChatViewModel @AssistedInject constructor(
             }
             .launchIn(viewModelScope)
     }
-
-
 
     private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
         fun shouldRemoveMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
@@ -639,10 +630,9 @@ class ChatViewModel @AssistedInject constructor(
         observeConversationAndUserEveryTime()
     }
 
-    fun ConversationModel?.isOneToOneConversation(): Boolean {
-        return this?.type ==
+    fun ConversationModel?.isOneToOneConversation(): Boolean =
+        this?.type ==
             ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
-    }
 
     @Deprecated("use observeConversation")
     fun getRoom(token: String) {

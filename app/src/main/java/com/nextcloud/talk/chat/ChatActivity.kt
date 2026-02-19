@@ -647,7 +647,7 @@ class ChatActivity :
                 LocalMessageUtils provides messageUtils
             ) {
                 val showAvatar = uiState.showChatAvatars
-                Log.d(TAG,"showAvatar="+ showAvatar)
+                Log.d(TAG, "showAvatar=" + showAvatar)
 
                 GetNewChatView(
                     chatItems = uiState.items,
