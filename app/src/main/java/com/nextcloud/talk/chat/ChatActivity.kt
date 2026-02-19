@@ -250,8 +250,6 @@ import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutionException
@@ -1397,20 +1395,26 @@ class ChatActivity :
         chatViewModel.upcomingEventViewState.observe(this) { uiState ->
             when (uiState) {
                 is ChatViewModel.UpcomingEventUIState.Success -> {
-                    binding.upcomingEventCard.visibility = View.VISIBLE
-                    viewThemeUtils.material.themeCardView(binding.upcomingEventCard)
-
-                    binding.upcomingEventContainer.upcomingEventSummary.text = uiState.event.summary
-
-                    uiState.event.start?.let { start ->
-                        val startDateTime = Instant.ofEpochSecond(start).atZone(ZoneId.systemDefault())
-                        val currentTime = ZonedDateTime.now(ZoneId.systemDefault())
-                        binding.upcomingEventContainer.upcomingEventTime.text =
-                            DateUtils(context).getStringForMeetingStartDateTime(startDateTime, currentTime)
-                    }
-
-                    binding.upcomingEventContainer.upcomingEventDismiss.setOnClickListener {
+                    val hiddenEventKey = "${uiState.event.uri}${uiState.event.start}${uiState.event.summary}"
+                    if (hiddenEventKey == chatViewModel.hiddenUpcomingEvent) {
                         binding.upcomingEventCard.visibility = View.GONE
+                    } else {
+                        binding.upcomingEventCard.visibility = View.VISIBLE
+                        viewThemeUtils.material.themeCardView(binding.upcomingEventCard)
+
+                        binding.upcomingEventContainer.upcomingEventSummary.text = uiState.event.summary
+
+                        uiState.event.start?.let { start ->
+                            val startDateTime = Instant.ofEpochSecond(start).atZone(ZoneId.systemDefault())
+                            val currentTime = ZonedDateTime.now(ZoneId.systemDefault())
+                            binding.upcomingEventContainer.upcomingEventTime.text =
+                                DateUtils(context).getStringForMeetingStartDateTime(startDateTime, currentTime)
+                        }
+
+                        binding.upcomingEventContainer.upcomingEventDismiss.setOnClickListener {
+                            binding.upcomingEventCard.visibility = View.GONE
+                            chatViewModel.saveHiddenUpcomingEvent(hiddenEventKey)
+                        }
                     }
                 }
 
