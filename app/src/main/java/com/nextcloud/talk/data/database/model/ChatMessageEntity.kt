@@ -27,7 +27,8 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
     ],
     indices = [
         Index(value = ["internalId"], unique = true),
-        Index(value = ["internalConversationId"])
+        Index(value = ["internalConversationId"]),
+        Index(value = ["referenceId"], unique = true)
     ]
 )
 data class ChatMessageEntity(

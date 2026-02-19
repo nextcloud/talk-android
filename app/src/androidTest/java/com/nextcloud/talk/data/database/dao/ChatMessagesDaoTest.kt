@@ -123,16 +123,16 @@ class ChatMessagesDaoTest {
                 )
             )
 
-            chatMessagesDao.getMessagesForConversation(conversation1.internalId).first().forEach {
+            chatMessagesDao.getMessagesForConversation(conversation1.internalId, null).first().forEach {
                 Log.d(tag, "- next Message for conversation1 (account1)-")
                 Log.d(tag, "id (PK): " + it.id)
                 Log.d(tag, "message: " + it.message)
             }
 
-            val chatMessagesConv1 = chatMessagesDao.getMessagesForConversation(conversation1.internalId)
+            val chatMessagesConv1 = chatMessagesDao.getMessagesForConversation(conversation1.internalId, null)
             assertEquals(5, chatMessagesConv1.first().size)
 
-            val chatMessagesConv2 = chatMessagesDao.getMessagesForConversation(conversation2.internalId)
+            val chatMessagesConv2 = chatMessagesDao.getMessagesForConversation(conversation2.internalId, null)
             assertEquals(1, chatMessagesConv2.first().size)
 
             assertEquals("some", chatMessagesConv1.first()[1].message)

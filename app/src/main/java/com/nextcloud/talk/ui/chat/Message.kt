@@ -50,6 +50,7 @@ import coil.compose.AsyncImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.contacts.loadImage
+import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.ui.theme.LocalMessageUtils
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
@@ -274,17 +275,26 @@ fun TimeDisplay(message: ChatMessage) {
 
 @Composable
 fun ReadStatus(message: ChatMessage) {
-    if (message.readStatus == ReadStatus.NONE) {
-        val read = painterResource(R.drawable.ic_check_all)
-        Icon(
-            read,
-            "",
-            modifier = Modifier
-                .padding(start = 4.dp)
-                .size(16.dp),
-            tint = colorScheme.onSurfaceVariant
-        )
-    }
+    val icon = if (message.sendStatus == SendStatus.FAILED) {
+        painterResource(R.drawable.baseline_error_outline_24)
+    } else if (message.isTemporary) {
+        painterResource(R.drawable.baseline_schedule_24)
+    } else if (message.readStatus == ReadStatus.READ) {
+        painterResource(R.drawable.ic_check_all)
+    } else if (message.readStatus == ReadStatus.SENT) {
+        painterResource(R.drawable.ic_check)
+    } else {
+        painterResource(R.drawable.ic_check)
+    } // why is readStatus NONE ? because readStatus must be set by newXChatLastCommonRead. do this in viewmodel.
+
+    Icon(
+        icon,
+        "",
+        modifier = Modifier
+            .padding(start = 4.dp)
+            .size(16.dp),
+        tint = colorScheme.onSurfaceVariant
+    )
 }
 
 @Composable

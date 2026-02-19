@@ -7,12 +7,15 @@
 
 package com.nextcloud.talk.data.database.migrations
 
-import androidx.room.Room
+import android.database.sqlite.SQLiteConstraintException
 import androidx.room.testing.MigrationTestHelper
+import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.nextcloud.talk.data.source.local.Migrations
 import com.nextcloud.talk.data.source.local.TalkDatabase
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,10 +23,9 @@ import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class MigrationsTest {
+
     companion object {
         private const val TEST_DB = "migration-test"
-        private const val INIT_VERSION = 10 // last version before update to offline first
-        private val TAG = MigrationsTest::class.java.simpleName
     }
 
     @get:Rule
@@ -32,21 +34,94 @@ class MigrationsTest {
         TalkDatabase::class.java
     )
 
-    @Test
-    @Throws(IOException::class)
-    @Suppress("SpreadOperator")
-    fun migrateAll() {
-        helper.createDatabase(TEST_DB, INIT_VERSION).apply {
-            close()
-        }
-
-        Room.databaseBuilder(
-            InstrumentationRegistry.getInstrumentation().targetContext,
-            TalkDatabase::class.java,
-            TEST_DB
-        ).addMigrations(*TalkDatabase.MIGRATIONS).build().apply {
-            openHelper.writableDatabase.close()
-        }
+    private fun insertMessage(
+        db: SupportSQLiteDatabase,
+        internalId: String,
+        referenceId: String?,
+        isTemporary: Int,
+        timestamp: Long
+    ) {
+        db.execSQL("""
+            INSERT INTO ChatMessages (
+                internalId,
+                accountId,
+                token,
+                id,
+                internalConversationId,
+                threadId,
+                isThread,
+                actorDisplayName,
+                message,
+                actorId,
+                actorType,
+                deleted,
+                expirationTimestamp,
+                isReplyable,
+                isTemporary,
+                lastEditActorDisplayName,
+                lastEditActorId,
+                lastEditActorType,
+                lastEditTimestamp,
+                markdown,
+                messageParameters,
+                messageType,
+                parent,
+                reactions,
+                reactionsSelf,
+                referenceId,
+                sendStatus,
+                silent,
+                systemMessage,
+                threadTitle,
+                threadReplies,
+                timestamp,
+                pinnedActorType,
+                pinnedActorId,
+                pinnedActorDisplayName,
+                pinnedAt,
+                pinnedUntil,
+                sendAt
+            ) VALUES (
+                '$internalId',
+                1,
+                'token',
+                1,
+                'conv',
+                NULL,
+                0,
+                'User',
+                'Hello',
+                'actor1',
+                'USER',
+                0,
+                0,
+                0,
+                $isTemporary,
+                NULL,
+                NULL,
+                NULL,
+                0,
+                0,
+                NULL,
+                'comment',
+                NULL,
+                NULL,
+                NULL,
+                ${if (referenceId != null) "'$referenceId'" else "NULL"},
+                NULL,
+                0,
+                0,
+                NULL,
+                0,
+                $timestamp,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                0
+            )
+        """)
     }
 
     @Test
@@ -110,5 +185,119 @@ class MigrationsTest {
             close()
         }
         helper.runMigrationsAndValidate(TEST_DB, 19, true, Migrations.MIGRATION_17_19)
+    }
+
+    @Test
+    fun migrate23To24_prefersNonTemporary() {
+        var db = helper.createDatabase(TEST_DB, 23)
+
+        insertMessage(db, "1", "ref1", 1, 1000)
+        insertMessage(db, "2", "ref1", 0, 2000)
+
+        db.close()
+
+        db = helper.runMigrationsAndValidate(
+            TEST_DB,
+            24,
+            true,
+            Migrations.MIGRATION_23_24
+        )
+
+        val cursor = db.query("""
+            SELECT internalId, isTemporary, timestamp 
+            FROM ChatMessages 
+            WHERE referenceId = 'ref1'
+        """)
+
+        assertEquals(1, cursor.count)
+        assertTrue(cursor.moveToFirst())
+
+        val internalId = cursor.getString(0)
+        val isTemporary = cursor.getInt(1)
+        val timestamp = cursor.getLong(2)
+
+        cursor.close()
+
+        assertEquals("2", internalId)
+        assertEquals(0, isTemporary)
+        assertEquals(2000L, timestamp)
+    }
+
+    @Test
+    fun migrate23To24_keepsNewestWhenAllTemporary() {
+        var db = helper.createDatabase(TEST_DB, 23)
+
+        insertMessage(db, "1", "ref2", 1, 1000)
+        insertMessage(db, "2", "ref2", 1, 2000)
+
+        db.close()
+
+        db = helper.runMigrationsAndValidate(
+            TEST_DB,
+            24,
+            true,
+            Migrations.MIGRATION_23_24
+        )
+
+        val cursor = db.query("""
+            SELECT internalId, timestamp 
+            FROM ChatMessages 
+            WHERE referenceId = 'ref2'
+        """)
+
+        assertEquals(1, cursor.count)
+        assertTrue(cursor.moveToFirst())
+
+        val internalId = cursor.getString(0)
+        val timestamp = cursor.getLong(1)
+
+        cursor.close()
+
+        assertEquals("2", internalId)
+        assertEquals(2000L, timestamp)
+    }
+
+    @Test
+    fun migrate23To24_allowsMultipleNullReferenceIds() {
+        var db = helper.createDatabase(TEST_DB, 23)
+
+        insertMessage(db, "1", null, 0, 1000)
+        insertMessage(db, "2", null, 0, 2000)
+
+        db.close()
+
+        db = helper.runMigrationsAndValidate(
+            TEST_DB,
+            24,
+            true,
+            Migrations.MIGRATION_23_24
+        )
+
+        val cursor = db.query("""
+            SELECT COUNT(*) FROM ChatMessages WHERE referenceId IS NULL
+        """)
+
+        assertTrue(cursor.moveToFirst())
+        val count = cursor.getInt(0)
+
+        cursor.close()
+
+        assertEquals(2, count)
+    }
+
+    @Test(expected = SQLiteConstraintException::class)
+    fun migrate23To24_enforcesUniqueIndex() {
+        var db = helper.createDatabase(TEST_DB, 23)
+        db.close()
+
+        db = helper.runMigrationsAndValidate(
+            TEST_DB,
+            24,
+            true,
+            Migrations.MIGRATION_23_24
+        )
+
+        insertMessage(db, "1", "dup", 0, 1000)
+        insertMessage(db, "2", "dup", 0, 2000)
     }
 }

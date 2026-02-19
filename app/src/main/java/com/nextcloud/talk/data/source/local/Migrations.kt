@@ -100,6 +100,13 @@ object Migrations {
         }
     }
 
+    val MIGRATION_23_24 = object : Migration(23, 24) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            Log.i("Migrations", "Migrating 23 to 24")
+            migrateToUniqueReferenceIds(db)
+        }
+    }
+
     //endregion
 
     fun migrateToRoom(db: SupportSQLiteDatabase) {
@@ -417,5 +424,32 @@ object Migrations {
         } catch (e: SQLException) {
             Log.i("Migrations", "Something went wrong when adding column silent to table ChatMessages", e)
         }
+    }
+
+    fun migrateToUniqueReferenceIds(db: SupportSQLiteDatabase) {
+        // referenceId could exist multiple times (they should not, but just in case..). Before migrating to unique
+        // index, make sure to delete all duplicates.
+        db.execSQL("""
+                DELETE FROM ChatMessages
+                WHERE rowid NOT IN (
+                    -- Keep the latest non-temporary per referenceId
+                    SELECT MAX(rowid) 
+                    FROM ChatMessages
+                    WHERE referenceId IS NOT NULL
+                    GROUP BY referenceId
+                    UNION
+                    -- Keep all messages without referenceId
+                    SELECT rowid
+                    FROM ChatMessages
+                    WHERE referenceId IS NULL
+                )
+            """)
+
+        // Now it's safe to create the unique index
+        db.execSQL("""
+                CREATE UNIQUE INDEX IF NOT EXISTS 
+                index_ChatMessages_referenceId 
+                ON ChatMessages(referenceId)
+            """)
     }
 }

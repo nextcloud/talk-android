@@ -586,6 +586,9 @@ class OfflineFirstChatRepository @Inject constructor(
 
         when (result) {
             is ChatPullResult.Success -> {
+                newXChatLastCommonRead = result.lastCommonRead  // expose newXChatLastCommonRead to viewmodel for
+                // calculation
+
                 val hasHistory = getHasHistory(HTTP_CODE_OK, lookIntoFuture)
 
                 Log.d(
@@ -983,12 +986,12 @@ class OfflineFirstChatRepository @Inject constructor(
 
                 chatDao.upsertChatMessage(tempChatMessageEntity)
 
-                val tempChatMessageModel = tempChatMessageEntity.asModel()
-
-                emit(Result.success(tempChatMessageModel))
-
-                val triple = Triple(true, false, listOf(tempChatMessageModel))
-                _messageFlow.emit(triple)
+                // val tempChatMessageModel = tempChatMessageEntity.asModel()
+                //
+                // emit(Result.success(tempChatMessageModel))
+                //
+                // val triple = Triple(true, false, listOf(tempChatMessageModel))
+                // _messageFlow.emit(triple)
             } catch (e: Exception) {
                 Log.e(TAG, "Something went wrong when adding temporary message", e)
                 emit(Result.failure(e))
@@ -1110,6 +1113,9 @@ class OfflineFirstChatRepository @Inject constructor(
         val chatMessageEntities = chatMessages.map {
             it.asEntity(currentUser.id!!)
         }
+
+        // This may overwrite message with the same referenceId, which is expected (temp messages will be overwritten
+        // by received ones)
         chatDao.upsertChatMessages(chatMessageEntities)
 
         return chatMessageEntities
