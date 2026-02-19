@@ -116,6 +116,12 @@ public interface AppPreferences {
 
     void removeIncognitoKeyboard();
 
+    boolean getIsShowEcosystem();
+
+    void setShowEcosystem(boolean value);
+
+    void removeShowEcosystem();
+
     boolean isPhoneBookIntegrationEnabled();
 
     void setPhoneBookIntegration(boolean value);

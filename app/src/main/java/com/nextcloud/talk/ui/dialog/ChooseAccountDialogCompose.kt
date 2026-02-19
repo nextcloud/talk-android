@@ -10,10 +10,13 @@ package com.nextcloud.talk.ui.dialog
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.util.Log
 import android.widget.ImageView
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,12 +24,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -45,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -59,6 +67,9 @@ import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
 import autodagger.AutoInjector
 import coil.compose.AsyncImage
+import com.nextcloud.android.common.core.utils.ecosystem.EcosystemApp
+import com.nextcloud.android.common.core.utils.ecosystem.EcosystemManager
+import com.nextcloud.android.common.core.utils.ecosystem.LinkHelper
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.account.data.model.AccountItem
@@ -110,11 +121,13 @@ class ChooseAccountDialogCompose {
     @Inject
     lateinit var networkMonitor: NetworkMonitor
 
+    lateinit var ecosystemManager: EcosystemManager
+
     private val userItems = mutableStateListOf<AccountItem>()
 
     @Composable
     @Suppress("LongMethod")
-    fun GetChooseAccountDialog(shouldDismiss: MutableState<Boolean>, activity: Activity) {
+    fun GetChooseAccountDialog(shouldDismiss: MutableState<Boolean>, activity: Activity, showEcosystem: Boolean) {
         if (shouldDismiss.value) return
         val colorScheme = viewThemeUtils.getColorScheme(activity)
         val status = remember { mutableStateOf<Status?>(null) }
@@ -124,6 +137,7 @@ class ChooseAccountDialogCompose {
         val isOnline by networkMonitor.isOnline.collectAsState()
         val currentUser = currentUserProvider.currentUser.blockingGet()!!
         val isStatusAvailable = CapabilitiesUtil.isUserStatusAvailable(currentUser)
+        ecosystemManager = EcosystemManager(activity)
 
         LaunchedEffect(currentUser) {
             val users = userManager.users.blockingGet()
@@ -167,12 +181,25 @@ class ChooseAccountDialogCompose {
                     shouldDismiss.value = true
                     openSettings(activity)
                 },
+                onEcosystemFilesClick = {
+                    shouldDismiss.value = true
+                    openEcosystemFiles(currentUser)
+                },
+                onEcosystemNotesClick = {
+                    shouldDismiss.value = true
+                    openEcosystemNotes(currentUser)
+                },
+                onEcosystemMoreClick = {
+                    shouldDismiss.value = true
+                    openEcosystemMore(activity)
+                },
                 accountRowContent = { user ->
                     AccountRow(user, activity) { shouldDismiss.value = true }
                 },
                 statusIndicator = { modifier ->
                     StatusIndicator(modifier = modifier, status = status.value, context = context)
                 },
+                showEcosystem = showEcosystem,
                 context = context
             )
         }
@@ -229,6 +256,20 @@ class ChooseAccountDialogCompose {
         activity.startActivity(intent)
     }
 
+    private fun openEcosystemFiles(currentUser: User) {
+        ecosystemManager.openApp(EcosystemApp.FILES, getAccountHandle(currentUser))
+    }
+
+    private fun openEcosystemNotes(currentUser: User) {
+        ecosystemManager.openApp(EcosystemApp.NOTES, getAccountHandle(currentUser))
+    }
+
+    private fun getAccountHandle(user: User): String = user.username + "@" + user.baseUrl?.toUri()?.host
+
+    private fun openEcosystemMore(activity: Activity) {
+        LinkHelper.openAppStore("Nextcloud", true, activity)
+    }
+
     @Composable
     private fun AccountRow(userItem: AccountItem, activity: Activity, onSelected: () -> Unit) {
         Row(
@@ -258,7 +299,11 @@ class ChooseAccountDialogCompose {
                     .size(40.dp)
                     .clip(CircleShape)
             )
-            Column(modifier = Modifier.padding(start = 12.dp).weight(1f)) {
+            Column(
+                modifier = Modifier
+                    .padding(start = 12.dp)
+                    .weight(1f)
+            ) {
                 Text(
                     text = userItem.user.displayName ?: userItem.user.username ?: ""
                 )
@@ -306,6 +351,7 @@ class ChooseAccountDialogCompose {
             }
         }
     }
+
     companion object {
         private const val STATUS_SIZE_DP = 9f
         private val TAG = ChooseAccountDialogCompose::class.simpleName
@@ -331,8 +377,12 @@ private fun ChooseAccountDialogContent(
     onSetStatusMessageClick: () -> Unit,
     onAddAccountClick: () -> Unit,
     onOpenSettingsClick: () -> Unit,
+    onEcosystemFilesClick: () -> Unit,
+    onEcosystemNotesClick: () -> Unit,
+    onEcosystemMoreClick: () -> Unit,
     accountRowContent: @Composable (AccountItem) -> Unit,
     statusIndicator: @Composable (Modifier) -> Unit,
+    showEcosystem: Boolean = true,
     context: Context
 ) {
     Dialog(onDismissRequest = { shouldDismiss.value = true }) {
@@ -358,7 +408,21 @@ private fun ChooseAccountDialogContent(
                 HorizontalDivider(
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
-                LazyColumn(modifier = Modifier.padding(start = 8.dp).weight(1f, fill = false)) {
+                if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT && showEcosystem) {
+                    EcosystemAppsSection(
+                        onFilesClick = onEcosystemFilesClick,
+                        onNotesClick = onEcosystemNotesClick,
+                        onMoreClick = onEcosystemMoreClick
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .weight(1f, fill = false)
+                ) {
                     items(accountItems) { account ->
                         if (account.user.userId + account.user.baseUrl != currentUser.userId + currentUser.baseUrl) {
                             accountRowContent(account)
@@ -407,7 +471,8 @@ private fun CurrentUserSection(
             statusIndicator(Modifier.align(Alignment.BottomEnd))
         }
         Column(
-            modifier = Modifier.padding(start = 12.dp)
+            modifier = Modifier
+                .padding(start = 12.dp)
                 .weight(1f)
         ) {
             Text(text = currentUser.displayName ?: currentUser.username ?: "")
@@ -440,6 +505,69 @@ private fun CurrentUserSection(
             contentDescription = null,
             modifier = Modifier.size(32.dp),
             tint = colorScheme.primary
+        )
+    }
+}
+
+@Composable
+private fun EcosystemAppsSection(onFilesClick: () -> Unit, onNotesClick: () -> Unit, onMoreClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        EcosystemAppItem(
+            iconRes = R.drawable.ic_mimetype_folder,
+            label = stringResource(R.string.ecosystem_apps_files),
+            contentDescription = stringResource(R.string.ecosystem_apps_files),
+            onClick = onFilesClick
+        )
+        EcosystemAppItem(
+            iconRes = R.drawable.ic_notes,
+            label = stringResource(R.string.ecosystem_apps_notes),
+            contentDescription = stringResource(R.string.ecosystem_apps_notes),
+            onClick = onNotesClick
+        )
+        EcosystemAppItem(
+            iconRes = R.drawable.ic_more_apps,
+            label = stringResource(R.string.ecosystem_apps_more),
+            contentDescription = stringResource(R.string.ecosystem_apps_more),
+            onClick = onMoreClick
+        )
+    }
+}
+
+@Composable
+private fun EcosystemAppItem(iconRes: Int, label: String, contentDescription: String, onClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .widthIn(max = 80.dp)
+            .clickable(onClick = onClick)
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = contentDescription,
+            modifier = Modifier
+                .size(40.dp)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline,
+                    shape = CircleShape
+                )
+                .padding(8.dp),
+            tint = MaterialTheme.colorScheme.onSurface
+        )
+        Text(
+            text = label,
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier.padding(top = 4.dp),
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }
@@ -482,7 +610,9 @@ private fun OnlineActions(onAddAccountClick: () -> Unit, onOpenSettingsClick: ()
     if (isOnline) {
         TextButton(onClick = onAddAccountClick, modifier = Modifier.fillMaxWidth()) {
             Row(
-                modifier = Modifier.padding(start = 16.dp, top = 8.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 8.dp)
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -502,7 +632,9 @@ private fun OnlineActions(onAddAccountClick: () -> Unit, onOpenSettingsClick: ()
 
     TextButton(onClick = onOpenSettingsClick, modifier = Modifier.fillMaxWidth()) {
         Row(
-            modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 16.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(start = 16.dp, top = 8.dp, bottom = 16.dp)
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -520,7 +652,17 @@ private fun OnlineActions(onAddAccountClick: () -> Unit, onOpenSettingsClick: ()
     }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "Light Mode", showBackground = true)
+@Preview(
+    name = "Dark Mode",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
+)
+@Preview(
+    name = "R-t-L",
+    showBackground = true,
+    locale = "ar"
+)
 @Composable
 private fun ChooseAccountDialogContentPreview() {
     val shouldDismiss = remember { mutableStateOf(false) }
@@ -540,11 +682,13 @@ private fun ChooseAccountDialogContentPreview() {
         status = "online",
         statusIsUserDefined = true
     )
-    MaterialTheme {
+    val isDark = isSystemInDarkTheme()
+    val colorScheme = if (isDark) darkColorScheme() else lightColorScheme()
+    MaterialTheme(colorScheme = colorScheme) {
         val context = LocalContext.current
         ChooseAccountDialogContent(
             shouldDismiss = shouldDismiss,
-            colorScheme = MaterialTheme.colorScheme,
+            colorScheme = colorScheme,
             currentUser = sampleUser,
             status = sampleStatus,
             isStatusAvailable = true,
@@ -555,6 +699,9 @@ private fun ChooseAccountDialogContentPreview() {
             onSetStatusMessageClick = {},
             onAddAccountClick = {},
             onOpenSettingsClick = {},
+            onEcosystemFilesClick = {},
+            onEcosystemNotesClick = {},
+            onEcosystemMoreClick = {},
             accountRowContent = {},
             statusIndicator = { modifier -> SampleStatusIndicator(modifier) },
             context = context

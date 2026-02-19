@@ -4313,6 +4313,7 @@ class ChatActivity :
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun shareToNotes(
         shareUri: Uri?,
         roomToken: String,

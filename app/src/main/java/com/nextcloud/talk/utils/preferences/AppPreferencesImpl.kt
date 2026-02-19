@@ -301,6 +301,22 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         setIncognitoKeyboard(false)
     }
 
+    override fun getIsShowEcosystem(): Boolean {
+        val read = runBlocking { async { readBoolean(SHOW_ECOSYSTEM, true).first() } }.getCompleted()
+        return read
+    }
+
+    override fun setShowEcosystem(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(SHOW_ECOSYSTEM, value)
+            }
+        }
+
+    override fun removeShowEcosystem() {
+        setShowEcosystem(false)
+    }
+
     override fun isPhoneBookIntegrationEnabled(): Boolean =
         runBlocking {
             async { readBoolean(PHONE_BOOK_INTEGRATION).first() }
@@ -607,6 +623,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val SCREEN_SECURITY = "screen_security"
         const val SCREEN_LOCK = "screen_lock"
         const val INCOGNITO_KEYBOARD = "incognito_keyboard"
+        const val SHOW_ECOSYSTEM = "SHOW_ECOSYSTEM"
         const val PHONE_BOOK_INTEGRATION = "phone_book_integration"
         const val LINK_PREVIEWS = "link_previews"
         const val SCREEN_LOCK_TIMEOUT = "screen_lock_timeout"

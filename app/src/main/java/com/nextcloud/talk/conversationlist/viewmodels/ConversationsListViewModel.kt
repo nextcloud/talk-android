@@ -281,6 +281,7 @@ class ConversationsListViewModel @Inject constructor(
             return differenceMillis > checkIntervalInMillies
         }
 
+        @Suppress("Detekt.TooGenericExceptionCaught")
         fun checkIfFollowedThreadsExist() {
             val threadsUrl = ApiUtils.getUrlForSubscribedThreads(
                 version = 1,
