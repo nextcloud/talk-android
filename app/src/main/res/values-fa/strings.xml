@@ -119,6 +119,7 @@
     <string name="nc_confirm">تأیید</string>
     <string name="nc_connecting_call">Connecting …</string>
     <string name="nc_contacts_done">انجام شد</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Go to file</string>
     <string name="nc_conversation_menu_conversation_info">اطلاعات مکالمه</string>
     <string name="nc_conversation_menu_video_call">تماس تصویری</string>
     <string name="nc_conversation_menu_voice_call">تماس صوتی</string>

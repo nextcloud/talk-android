@@ -175,6 +175,7 @@
     <string name="nc_connecting_call">Повезивање ..</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_description">Опис разговора</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Иди на фајл</string>
     <string name="nc_conversation_menu_conversation_info">Информације о разговору</string>
     <string name="nc_conversation_menu_video_call">Видео позив</string>
     <string name="nc_conversation_menu_voice_call">Аудио позив</string>

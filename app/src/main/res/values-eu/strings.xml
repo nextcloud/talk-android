@@ -150,6 +150,7 @@
     <string name="nc_connecting_call">Konektatzen …</string>
     <string name="nc_contacts_done">Egina</string>
     <string name="nc_conversation_description">Elkarrizketaren deskribapena</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Joan fitxategira</string>
     <string name="nc_conversation_menu_conversation_info">Elkarrizketen informazioa</string>
     <string name="nc_conversation_menu_video_call">Bideo-deia</string>
     <string name="nc_conversation_menu_voice_call">Ahots-deia</string>

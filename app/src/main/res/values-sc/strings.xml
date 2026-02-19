@@ -99,6 +99,7 @@
     <string name="nc_confirm">Cunfirma</string>
     <string name="nc_connecting_call">Connetende …</string>
     <string name="nc_contacts_done">Fatu</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Bae a s\'archìviu</string>
     <string name="nc_conversation_menu_conversation_info">Informatziones de resonada</string>
     <string name="nc_conversation_menu_video_call">Mutida de vìdeu</string>
     <string name="nc_conversation_menu_voice_call">Mutida de boghe</string>

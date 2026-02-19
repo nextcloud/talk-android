@@ -129,6 +129,7 @@
     <string name="nc_connecting_call">Conectando...</string>
     <string name="nc_contacts_done">Terminado</string>
     <string name="nc_conversation_description">Descripción de la conversación</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Ir al archivo</string>
     <string name="nc_conversation_menu_conversation_info">Información de la conversación</string>
     <string name="nc_conversation_menu_video_call">Video llamada</string>
     <string name="nc_conversation_menu_voice_call">Llamada de voz</string>

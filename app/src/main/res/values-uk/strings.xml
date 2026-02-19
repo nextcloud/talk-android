@@ -80,7 +80,7 @@
     <string name="load_more_results">Завантажити більше результатів</string>
     <string name="local_time">Місцевий час: %1$s</string>
     <string name="location_permission_denied">Відмовлено в дозволі на розміщення</string>
-    <string name="location_permission_denied_msg">Будь ласка, увімкніть її в налаштуваннях програми</string>
+    <string name="location_permission_denied_msg">Будь ласка, увімкніть її в налаштуваннях застосунку.</string>
     <string name="location_services_disabled">Служби визначення місцезнаходження відключені</string>
     <string name="location_services_disabled_msg">Щоб скористатися цією функцією, увімкніть службу визначення місцезнаходження (GPS)</string>
     <string name="lock_conversation">Заблокувати розмову</string>
@@ -174,6 +174,7 @@
     <string name="nc_connecting_call">Підключення ...</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_description">Опис розмови</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Перейти до файлу</string>
     <string name="nc_conversation_menu_conversation_info">Інформація про розмову</string>
     <string name="nc_conversation_menu_video_call">Відеодзвінок</string>
     <string name="nc_conversation_menu_voice_call">Голосовий дзвінок</string>
@@ -514,7 +515,7 @@
     <string name="nc_share_location">Поділітися місцем розташування</string>
     <string name="nc_share_this_location">Поділітися цим розташуванням</string>
     <string name="nc_share_to_choose_account">Оберіть обліковий запис</string>
-    <string name="nc_shared_items">Спільні елементи</string>
+    <string name="nc_shared_items">Спільні ресурси</string>
     <string name="nc_shared_items_deck_card">Картка</string>
     <string name="nc_shared_items_description">Зображення, файли, голосові повідомлення ...</string>
     <string name="nc_shared_items_empty">Немає спільних елементів</string>
@@ -672,7 +673,7 @@
     <string name="thread_notifications">Сповіщення про потоки</string>
     <string name="thread_reply">Відповісти</string>
     <string name="thread_title">Назва гілки</string>
-    <string name="threads">Нитки</string>
+    <string name="threads">Гілки</string>
     <string name="threads_list_empty">Ниток не знайдено</string>
     <string name="today">Сьогодні</string>
     <string name="tomorrow">Завтра</string>

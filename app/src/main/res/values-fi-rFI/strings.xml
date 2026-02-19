@@ -107,6 +107,7 @@
     <string name="nc_confirm">Vahvista</string>
     <string name="nc_connecting_call">Yhdistetään…</string>
     <string name="nc_contacts_done">Valmis</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Siirry tiedostoon</string>
     <string name="nc_conversation_menu_conversation_info">Keskustelun tiedot</string>
     <string name="nc_conversation_menu_video_call">Videopuhelu</string>
     <string name="nc_conversation_menu_voice_call">Äänipuhelu</string>

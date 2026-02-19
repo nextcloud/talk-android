@@ -157,6 +157,7 @@
     <string name="nc_connecting_call">Kobler til...</string>
     <string name="nc_contacts_done">Ferdig</string>
     <string name="nc_conversation_description">Samtalebeskrivelse</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Gå til fil</string>
     <string name="nc_conversation_menu_conversation_info">Samtale informasjon</string>
     <string name="nc_conversation_menu_video_call">Videosamtale</string>
     <string name="nc_conversation_menu_voice_call">Samtale</string>

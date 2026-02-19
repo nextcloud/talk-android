@@ -120,6 +120,7 @@
     <string name="nc_confirm">확인</string>
     <string name="nc_connecting_call">연결 중 …</string>
     <string name="nc_contacts_done">완료</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">파일로 이동</string>
     <string name="nc_conversation_menu_conversation_info">대화 정보</string>
     <string name="nc_conversation_menu_video_call">영상 통화</string>
     <string name="nc_conversation_menu_voice_call">음성 통화</string>

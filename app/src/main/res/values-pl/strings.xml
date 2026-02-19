@@ -175,6 +175,7 @@
     <string name="nc_connecting_call">Łączę…</string>
     <string name="nc_contacts_done">Gotowe</string>
     <string name="nc_conversation_description">Opis rozmowy</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Przejdź do pliku</string>
     <string name="nc_conversation_menu_conversation_info">Informacje o rozmowie</string>
     <string name="nc_conversation_menu_video_call">Rozmowa wideo</string>
     <string name="nc_conversation_menu_voice_call">Rozmowa głosowa</string>
