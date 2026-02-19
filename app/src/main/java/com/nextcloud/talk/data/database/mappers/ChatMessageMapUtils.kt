@@ -53,7 +53,7 @@ fun ChatMessageJson.asEntity(accountId: Long) =
         sendAt = sendAt
     )
 
-fun ChatMessageEntity.asModel() =
+fun ChatMessageEntity.toDomainModel() =
     ChatMessage(
         jsonMessageId = id.toInt(),
         message = message,
@@ -81,7 +81,7 @@ fun ChatMessageEntity.asModel() =
         referenceId = referenceId,
         isTemporary = isTemporary,
         sendStatus = sendStatus,
-        readStatus = ReadStatus.NONE,
+        // readStatus = ReadStatus.NONE,
         silent = silent,
         threadTitle = threadTitle,
         threadReplies = threadReplies,
@@ -93,7 +93,7 @@ fun ChatMessageEntity.asModel() =
         sendAt = sendAt
     )
 
-fun ChatMessageJson.asModel() =
+fun ChatMessageJson.toDomainModel() =
     ChatMessage(
         jsonMessageId = id.toInt(),
         message = message,

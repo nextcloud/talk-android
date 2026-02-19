@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.nextcloud.talk.R
-import com.nextcloud.talk.data.database.mappers.asModel
+import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -177,7 +177,7 @@ fun ContextChatSuccessView(
                             // ComposeChatMenu(colorScheme.background, false)
                         }
 
-                        val messages = contextChatRetrieveUiStateSuccess.messages.map(ChatMessageJson::asModel)
+                        val messages = contextChatRetrieveUiStateSuccess.messages.map(ChatMessageJson::toDomainModel)
                         val messageId = contextChatRetrieveUiStateSuccess.messageId
                         val threadId = contextChatRetrieveUiStateSuccess.threadId
 

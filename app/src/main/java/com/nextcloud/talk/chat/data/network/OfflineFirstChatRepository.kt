@@ -16,7 +16,7 @@ import com.nextcloud.talk.chat.domain.ChatPullResult
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.mappers.asEntity
-import com.nextcloud.talk.data.database.mappers.asModel
+import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.SendStatus
@@ -88,8 +88,7 @@ class OfflineFirstChatRepository @Inject constructor(
     private val _updateMessageFlow:
         MutableSharedFlow<ChatMessage> = MutableSharedFlow()
 
-    override val lastCommonReadFlow:
-        Flow<Int>
+    override val lastCommonReadFlow: Flow<Int>
         get() = _lastCommonReadFlow
 
     private val _lastCommonReadFlow:
@@ -276,13 +275,11 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
-    // private fun updateUiForLastCommonRead() {
-    //     scope.launch {
-    //         newXChatLastCommonRead?.let {
-    //             _lastCommonReadFlow.emit(it)
-    //         }
-    //     }
-    // }
+    private suspend fun updateUiForLastCommonRead() {
+        newXChatLastCommonRead?.let {
+            _lastCommonReadFlow.emit(it)
+        }
+    }
 
     suspend fun initLongPolling() {
         Log.d(TAG, "---- initLongPolling ------------")
@@ -523,7 +520,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
         return chatDao
             .getChatMessageForConversationNullable(internalConversationId, messageId)
-            .mapNotNull { it?.asModel() }
+            .mapNotNull { it?.toDomainModel() }
             .take(1)
             .timeout(5_000.microseconds)
             .catch { /* timeout -> emit nothing */ }
@@ -533,7 +530,7 @@ class OfflineFirstChatRepository @Inject constructor(
         chatDao.getChatMessageForConversation(
             internalConversationId,
             messageId
-        ).map(ChatMessageEntity::asModel)
+        ).map(ChatMessageEntity::toDomainModel)
 
     fun pullMessagesFlow(bundle: Bundle): Flow<ChatPullResult> =
         flow {
@@ -586,8 +583,8 @@ class OfflineFirstChatRepository @Inject constructor(
 
         when (result) {
             is ChatPullResult.Success -> {
-                newXChatLastCommonRead = result.lastCommonRead  // expose newXChatLastCommonRead to viewmodel for
-                // calculation
+                newXChatLastCommonRead = result.lastCommonRead
+                updateUiForLastCommonRead()
 
                 val hasHistory = getHasHistory(HTTP_CODE_OK, lookIntoFuture)
 
@@ -812,7 +809,7 @@ class OfflineFirstChatRepository @Inject constructor(
             messageLimit,
             threadId
         ).map {
-            it.map(ChatMessageEntity::asModel)
+            it.map(ChatMessageEntity::toDomainModel)
         }.first()
 
     private suspend fun showMessagesBefore(internalConversationId: String, messageId: Long, limit: Int) {
@@ -827,7 +824,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 messageLimit,
                 threadId
             ).map {
-                it.map(ChatMessageEntity::asModel)
+                it.map(ChatMessageEntity::toDomainModel)
             }.first()
 
         val list = getMessagesBefore(
@@ -883,7 +880,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 threadTitle
             )
 
-            val chatMessageModel = response.ocs?.data?.asModel()
+            val chatMessageModel = response.ocs?.data?.toDomainModel()
 
             val sentMessage = if (this@OfflineFirstChatRepository::internalConversationId.isInitialized) {
                 chatDao
@@ -920,7 +917,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     it.sendStatus = SendStatus.FAILED
                     chatDao.updateChatMessage(it)
 
-                    val failedMessageModel = it.asModel()
+                    val failedMessageModel = it.toDomainModel()
                     _updateMessageFlow.emit(failedMessageModel)
                 }
                 emit(Result.failure(e))
@@ -946,7 +943,7 @@ class OfflineFirstChatRepository @Inject constructor(
             messageToResend.sendStatus = SendStatus.PENDING
             chatDao.updateChatMessage(messageToResend)
 
-            val messageToResendModel = messageToResend.asModel()
+            val messageToResendModel = messageToResend.toDomainModel()
             _updateMessageFlow.emit(messageToResendModel)
 
             sendChatMessage(
@@ -1028,7 +1025,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 messageToEdit.message = editedMessageText
                 chatDao.upsertChatMessage(messageToEdit)
 
-                val editedMessageModel = messageToEdit.asModel()
+                val editedMessageModel = messageToEdit.toDomainModel()
                 _updateMessageFlow.emit(editedMessageModel)
                 emit(true)
             } catch (e: Exception) {
@@ -1066,7 +1063,7 @@ class OfflineFirstChatRepository @Inject constructor(
         flow {
             runCatching {
                 val overall = network.pinMessage(credentials, url, pinUntil)
-                emit(overall.ocs?.data?.asModel())
+                emit(overall.ocs?.data?.toDomainModel())
             }.getOrElse { throwable ->
                 Log.e(TAG, "Error in pinMessage: $throwable")
             }
@@ -1076,7 +1073,7 @@ class OfflineFirstChatRepository @Inject constructor(
         flow {
             runCatching {
                 val overall = network.unPinMessage(credentials, url)
-                emit(overall.ocs?.data?.asModel())
+                emit(overall.ocs?.data?.toDomainModel())
             }.getOrElse { throwable ->
                 Log.e(TAG, "Error in unPinMessage: $throwable")
             }
@@ -1185,7 +1182,7 @@ class OfflineFirstChatRepository @Inject constructor(
             val messageJson = response.ocs?.data
                 ?: error("updateScheduledMessage: response.ocs?.data is null")
 
-            val updatedMessage = messageJson.asModel().copy(
+            val updatedMessage = messageJson.toDomainModel().copy(
                 token = messageJson.id.toString()
             )
 
@@ -1208,7 +1205,7 @@ class OfflineFirstChatRepository @Inject constructor(
         flow {
             val response = network.getScheduledMessages(credentials, url)
             val messages = response.ocs?.data.orEmpty().map { messageJson ->
-                val jsonToModel = messageJson.asModel()
+                val jsonToModel = messageJson.toDomainModel()
                 jsonToModel.copy(
                     token = messageJson.id.toString()
                 )

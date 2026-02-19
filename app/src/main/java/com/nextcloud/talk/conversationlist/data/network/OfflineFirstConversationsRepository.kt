@@ -13,7 +13,7 @@ import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.mappers.asEntity
-import com.nextcloud.talk.data.database.mappers.asModel
+import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
@@ -65,7 +65,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
                 if (entity == null) {
                     ConversationResult.NotFound
                 } else {
-                    ConversationResult.Found(entity.asModel())
+                    ConversationResult.Found(entity.toDomainModel())
                 }
             }
 
@@ -77,7 +77,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
             if (networkMonitor.isOnline.value) {
                 val conversationEntitiesFromSync = getRoomsFromServer(user)
                 if (!conversationEntitiesFromSync.isNullOrEmpty()) {
-                    val conversationModelsFromSync = conversationEntitiesFromSync.map(ConversationEntity::asModel)
+                    val conversationModelsFromSync = conversationEntitiesFromSync.map(ConversationEntity::toDomainModel)
                     _roomListFlow.emit(conversationModelsFromSync)
                 }
             }
@@ -175,12 +175,12 @@ class OfflineFirstConversationsRepository @Inject constructor(
 
     private suspend fun getListOfConversations(accountId: Long): List<ConversationModel> =
         dao.getConversationsForUser(accountId).map {
-            it.map(ConversationEntity::asModel)
+            it.map(ConversationEntity::toDomainModel)
         }.first()
 
     private suspend fun getConversation(accountId: Long, token: String): ConversationModel? {
         val entity = dao.getConversationForUser(accountId, token).first()
-        return entity?.asModel()
+        return entity?.toDomainModel()
     }
 
     companion object {

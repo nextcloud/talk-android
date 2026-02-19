@@ -30,50 +30,50 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
-import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.contacts.load
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DrawableUtils
 
 @Composable
-fun ImageMessage(message: ChatMessage, conversationThreadId: Long? = null, state: MutableState<Boolean>) {
+fun ImageMessage(message: ChatMessageUi, conversationThreadId: Long? = null, state: MutableState<Boolean>) {
     val hasCaption = (message.message != "{file}")
 
     val timeString = DateUtils(LocalContext.current).getLocalTimeStringFromTimestamp(message.timestamp)
-    CommonMessageBody(
-        message = message,
-        conversationThreadId = conversationThreadId,
-        includePadding = false,
-        playAnimation = state.value,
-        content = {
-            Column {
-                // message.activeUser = adapter.currentUser
-                val imageUri = message.imageUrl
-                val mimetype = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_MIMETYPE]
-                val drawableResourceId = DrawableUtils.getDrawableResourceIdForMimeType(mimetype)
-                val loadedImage = load(imageUri, LocalContext.current, drawableResourceId)
-
-                AsyncImage(
-                    model = loadedImage,
-                    contentDescription = stringResource(R.string.nc_sent_an_image),
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    contentScale = ContentScale.FillWidth
-                )
-
-                if (hasCaption) {
-                    Text(
-                        message.text,
-                        fontSize = 12.sp,
-                        modifier = Modifier
-                            .widthIn(20.dp, 140.dp)
-                            .padding(8.dp)
-                    )
-                }
-            }
-        }
-    )
+    // MessageScaffold(
+    //     uiMessage = message,
+    //     conversationThreadId = conversationThreadId,
+    //     includePadding = false,
+    //     playAnimation = state.value,
+    //     content = {
+    //         Column {
+    //             // message.activeUser = adapter.currentUser
+    //             val imageUri = message.imageUrl
+    //             val mimetype = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_MIMETYPE]
+    //             val drawableResourceId = DrawableUtils.getDrawableResourceIdForMimeType(mimetype)
+    //             val loadedImage = load(imageUri, LocalContext.current, drawableResourceId)
+    //
+    //             AsyncImage(
+    //                 model = loadedImage,
+    //                 contentDescription = stringResource(R.string.nc_sent_an_image),
+    //                 modifier = Modifier
+    //                     .fillMaxWidth(),
+    //                 contentScale = ContentScale.FillWidth
+    //             )
+    //
+    //             if (hasCaption) {
+    //                 Text(
+    //                     message.text,
+    //                     fontSize = 12.sp,
+    //                     modifier = Modifier
+    //                         .widthIn(20.dp, 140.dp)
+    //                         .padding(8.dp)
+    //                 )
+    //             }
+    //         }
+    //     }
+    // )
 
     if (!hasCaption) {
         Row(modifier = Modifier.padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -92,17 +92,17 @@ fun ImageMessage(message: ChatMessage, conversationThreadId: Long? = null, state
                     .padding()
                     .padding(start = 4.dp)
             )
-            if (message.readStatus == ReadStatus.NONE) {
-                val read = painterResource(R.drawable.ic_check_all)
-                Icon(
-                    read,
-                    "",
-                    modifier = Modifier
-                        .padding(start = 4.dp)
-                        .size(16.dp)
-                        .align(Alignment.CenterVertically)
-                )
-            }
+            // if (message.readStatus == ReadStatus.NONE) {
+            //     val read = painterResource(R.drawable.ic_check_all)
+            //     Icon(
+            //         read,
+            //         "",
+            //         modifier = Modifier
+            //             .padding(start = 4.dp)
+            //             .size(16.dp)
+            //             .align(Alignment.CenterVertically)
+            //     )
+            // }
         }
     }
 }

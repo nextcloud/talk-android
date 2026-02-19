@@ -14,6 +14,7 @@ import android.util.Log
 import com.bluelinelabs.logansquare.annotation.JsonIgnore
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
@@ -24,8 +25,12 @@ import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.stfalcon.chatkit.commons.models.IUser
 import com.stfalcon.chatkit.commons.models.MessageContentType
 import java.security.MessageDigest
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Date
 
+// Domain model for chat message. No entries here that are only necessary for the database layer, nor only for UI layer
 data class ChatMessage(
     var isGrouped: Boolean = false,
 
@@ -74,6 +79,7 @@ data class ChatMessage(
 
     var parentMessageId: Long? = null,
 
+    @Deprecated("delete with chatkit")
     var readStatus: Enum<ReadStatus> = ReadStatus.NONE,
 
     var messageType: String? = null,
@@ -371,6 +377,11 @@ data class ChatMessage(
         get() = "command" == messageType
     val isDeletedCommentMessage: Boolean
         get() = "comment_deleted" == messageType
+
+    fun ChatMessage.dateKey(): LocalDate =
+        Instant.ofEpochMilli(timestamp * 1000L)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate()
 
     enum class MessageType {
         REGULAR_TEXT_MESSAGE,

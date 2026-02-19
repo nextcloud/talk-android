@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -24,31 +24,31 @@ import org.osmdroid.views.overlay.Marker
 private const val MAP_ZOOM = 15.0
 
 @Composable
-fun GeolocationMessage(message: ChatMessage, conversationThreadId: Long? = null, state: MutableState<Boolean>) {
-    CommonMessageBody(
-        message = message,
-        conversationThreadId = conversationThreadId,
-        playAnimation = state.value,
-        content = {
-            Column {
-                if (message.messageParameters != null && message.messageParameters!!.isNotEmpty()) {
-                    for (key in message.messageParameters!!.keys) {
-                        val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
-                        if (individualHashMap["type"] == "geo-location") {
-                            val lat = individualHashMap["latitude"]
-                            val lng = individualHashMap["longitude"]
-
-                            if (lat != null && lng != null) {
-                                val latitude = lat.toDouble()
-                                val longitude = lng.toDouble()
-                                OpenStreetMap(latitude, longitude)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    )
+fun GeolocationMessage(message: ChatMessageUi, conversationThreadId: Long? = null, state: MutableState<Boolean>) {
+    // MessageScaffold(
+    //     uiMessage = message,
+    //     conversationThreadId = conversationThreadId,
+    //     playAnimation = state.value,
+    //     content = {
+    //         Column {
+    //             if (message.messageParameters != null && message.messageParameters!!.isNotEmpty()) {
+    //                 for (key in message.messageParameters!!.keys) {
+    //                     val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
+    //                     if (individualHashMap["type"] == "geo-location") {
+    //                         val lat = individualHashMap["latitude"]
+    //                         val lng = individualHashMap["longitude"]
+    //
+    //                         if (lat != null && lng != null) {
+    //                             val latitude = lat.toDouble()
+    //                             val longitude = lng.toDouble()
+    //                             OpenStreetMap(latitude, longitude)
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // )
 }
 
 @Composable

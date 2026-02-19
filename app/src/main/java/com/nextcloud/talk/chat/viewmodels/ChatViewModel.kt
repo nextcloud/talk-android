@@ -25,10 +25,12 @@ import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.chat.ui.model.ChatMessageUi
+import com.nextcloud.talk.chat.ui.model.toUiModel
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel.Companion.FOLLOWED_THREADS_EXIST
-import com.nextcloud.talk.data.database.mappers.asModel
+import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
@@ -89,9 +91,7 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
-import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions", "LongParameterList")
@@ -381,13 +381,16 @@ class ChatViewModel @AssistedInject constructor(
     // ------------------------------
     // Messages
     // ------------------------------
-    private fun Flow<List<ChatMessageEntity>>.mapToChatMessages(userId: String): Flow<List<ChatMessage>> =
+    private fun Flow<List<ChatMessageEntity>>.mapToChatMessages(
+        userId: String
+    ): Flow<List<ChatMessage>> =
         map { entities ->
-            entities.map(ChatMessageEntity::asModel)
-                .onEach { msg ->
-                    msg.avatarUrl = getAvatarUrl(msg)
-                    msg.incoming = msg.actorId != userId
+            entities.map { entity ->
+                entity.toDomainModel().apply {
+                    avatarUrl = getAvatarUrl(this)
+                    incoming = actorId != userId
                 }
+            }
         }
 
     private val messagesFlow: Flow<List<ChatMessage>> =
@@ -435,11 +438,15 @@ class ChatViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
+    // val lastCommonReadMessageId = getLastCommonReadFlow.first()
+
     // ------------------------------
     // Observe messages
     // ------------------------------
     private fun observeMessages() {
-        messagesFlow
+        combine(messagesFlow, getLastCommonReadFlow) { messages, lastRead ->
+            messages.map { it.toUiModel(lastRead) }
+        }
             .onEach { messages ->
                 val items = buildChatItems(messages, lastReadMessage)
                 _uiState.update { current ->
@@ -447,38 +454,57 @@ class ChatViewModel @AssistedInject constructor(
                 }
             }
             .launchIn(viewModelScope)
+
+        // messagesFlow
+        //     .map { messages ->
+        //         messages.map {
+        //             it.toUiModel(
+        //                 getLastCommonReadFlow.first()
+        //             )
+        //         }
+        //     }
+        //     .onEach { messages ->
+        //         val items = buildChatItems(messages, lastReadMessage)
+        //         _uiState.update { current ->
+        //             current.copy(items = items)
+        //         }
+        //     }
+        //     .launchIn(viewModelScope)
     }
 
     // ------------------------------
     // Build chat items (pure)
     // ------------------------------
-    private fun buildChatItems(messages: List<ChatMessage>, lastReadMessage: Int): List<ChatItem> {
+    private fun buildChatItems(
+        uiMessages: List<ChatMessageUi>,
+        lastReadMessage: Int
+    ): List<ChatItem> {
         var lastDate: LocalDate? = null
 
         return buildList {
             if (firstUnreadMessageId == null) {
                 firstUnreadMessageId =
-                    messages.firstOrNull {
-                        it.jsonMessageId > lastReadMessage
-                    }?.jsonMessageId
-                Log.d(TAG, "reversedMessages.size = ${messages.size}")
+                    uiMessages.firstOrNull {
+                        it.id > lastReadMessage
+                    }?.id
+                Log.d(TAG, "reversedMessages.size = ${uiMessages.size}")
                 Log.d(TAG, "firstUnreadMessageId = $firstUnreadMessageId")
                 Log.d(TAG, "conversation.lastReadMessage = $lastReadMessage")
             }
 
-            for (msg in messages) {
-                val date = msg.dateKey()
+            for (uiMessage in uiMessages) {
+                val date = uiMessage.date
 
                 if (date != lastDate) {
                     add(ChatItem.DateHeaderItem(date))
                     lastDate = date
                 }
 
-                if (!oneOrMoreMessagesWereSent && msg.jsonMessageId == firstUnreadMessageId) {
+                if (!oneOrMoreMessagesWereSent && uiMessage.id == firstUnreadMessageId) {
                     add(ChatItem.UnreadMessagesMarkerItem(date))
                 }
 
-                add(ChatItem.MessageItem(msg))
+                add(ChatItem.MessageItem(uiMessage))
             }
         }.asReversed()
     }
@@ -602,10 +628,9 @@ class ChatViewModel @AssistedInject constructor(
         return chatMessageMap.values.toList()
     }
 
-    fun ChatMessage.dateKey(): LocalDate =
-        Instant.ofEpochMilli(timestamp * 1000L)
-            .atZone(ZoneId.systemDefault())
-            .toLocalDate()
+
+
+    // val timeString = DateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
     fun getAvatarUrl(message: ChatMessage): String =
         if (this::currentUser.isInitialized) {
@@ -867,10 +892,7 @@ class ChatViewModel @AssistedInject constructor(
 
         val messageId = currentItems
             .asReversed()
-            .firstNotNullOfOrNull { item ->
-                (item as? ChatItem.MessageItem)
-                    ?.message
-                    ?.jsonMessageId
+            .firstNotNullOfOrNull { item -> (item as? ChatItem.MessageItem)?.uiMessage?.id
             }
 
         Log.d(TAG, "Compose load more, messageId: $messageId")
@@ -1268,7 +1290,7 @@ class ChatViewModel @AssistedInject constructor(
 
             if (messages.isNotEmpty()) {
                 val message = messages[0]
-                emit(message.asModel())
+                emit(message.toDomainModel())
             } else {
                 emit(null)
             }
@@ -1510,18 +1532,27 @@ class ChatViewModel @AssistedInject constructor(
         data class Error(val throwable: Throwable) : ChatEvent()
     }
 
+
+
+
+
     sealed interface ChatItem {
-        fun messageOrNull(): ChatMessage? = (this as? MessageItem)?.message
+        fun messageOrNull(): ChatMessageUi? = (this as? MessageItem)?.uiMessage
         fun dateOrNull(): LocalDate? = (this as? DateHeaderItem)?.date
 
         fun stableKey(): Any =
             when (this) {
-                is MessageItem -> "msg_${message.id}"
+                is MessageItem -> "msg_${uiMessage.id}"
                 is DateHeaderItem -> "header_$date"
                 is UnreadMessagesMarkerItem -> "last_read_$date"
             }
 
-        data class MessageItem(val message: ChatMessage) : ChatItem
+        // TODO do not include whole ChatMessage here. Extract the things that are needed in UI to ChatMessageUi and
+        //  then delete ChatMessage!
+        data class MessageItem(
+            // val message: ChatMessage,
+            val uiMessage: ChatMessageUi
+        ) : ChatItem
         data class DateHeaderItem(val date: LocalDate) : ChatItem
         data class UnreadMessagesMarkerItem(val date: LocalDate) : ChatItem
     }

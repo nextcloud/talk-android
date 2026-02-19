@@ -48,10 +48,9 @@ import androidx.core.graphics.ColorUtils
 import androidx.emoji2.widget.EmojiTextView
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
-import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.ui.model.ChatMessageUi
+import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.contacts.loadImage
-import com.nextcloud.talk.data.database.model.SendStatus
-import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.ui.theme.LocalMessageUtils
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
 import com.nextcloud.talk.utils.DateUtils
@@ -68,27 +67,27 @@ private const val MESSAGE_LENGTH_THRESHOLD = 25
 private const val ANIMATED_BLINK = 500
 
 @Composable
-fun CommonMessageBody(
-    message: ChatMessage,
+fun MessageScaffold(
+    uiMessage: ChatMessageUi,
     conversationThreadId: Long? = null,
     includePadding: Boolean = true,
     showAvatar: Boolean = true,
     playAnimation: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    fun shouldShowTimeNextToContent(message: ChatMessage): Boolean {
-        val containsLinebreak = message.message?.contains("\n") ?: false ||
-            message.message?.contains("\r") ?: false
+    fun shouldShowTimeNextToContent(message: ChatMessageUi): Boolean {
+        val containsLinebreak = message.message.contains("\n") ?: false ||
+            message.message.contains("\r") ?: false
 
-        return ((message.message?.length ?: 0) < MESSAGE_LENGTH_THRESHOLD) &&
+        return ((message.message.length ?: 0) < MESSAGE_LENGTH_THRESHOLD) &&
             !isFirstMessageOfThreadInNormalChat(message, conversationThreadId) &&
-            message.messageParameters.isNullOrEmpty() &&
+            // message.messageParameters.isNullOrEmpty() &&
             !containsLinebreak
     }
 
-    val incoming = message.incoming
+    val incoming = uiMessage.incoming
     val color = if (incoming) {
-        if (message.isDeleted) {
+        if (uiMessage.isDeleted) {
             getColorFromTheme(LocalContext.current, R.color.bg_message_list_incoming_bubble_deleted)
         } else {
             getColorFromTheme(LocalContext.current, R.color.bg_message_list_incoming_bubble)
@@ -97,9 +96,9 @@ fun CommonMessageBody(
         val viewThemeUtils = LocalViewThemeUtils.current
 
         val outgoingBubbleColor = viewThemeUtils.talk
-            .getOutgoingMessageBubbleColor(LocalContext.current, message.isDeleted, false)
+            .getOutgoingMessageBubbleColor(LocalContext.current, uiMessage.isDeleted, false)
 
-        if (message.isDeleted) {
+        if (uiMessage.isDeleted) {
             ColorUtils.setAlphaComponent(outgoingBubbleColor, HALF_OPACITY)
         } else {
             outgoingBubbleColor
@@ -130,7 +129,7 @@ fun CommonMessageBody(
     ) {
         if (incoming && showAvatar) {
             val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
-            val loadedImage = loadImage(message.avatarUrl, LocalContext.current, errorPlaceholderImage)
+            val loadedImage = loadImage(uiMessage.avatarUrl, LocalContext.current, errorPlaceholderImage)
             AsyncImage(
                 model = loadedImage,
                 contentDescription = stringResource(R.string.user_avatar),
@@ -171,15 +170,15 @@ fun CommonMessageBody(
 
                 if (incoming) {
                     Text(
-                        message.actorDisplayName.toString(),
+                        uiMessage.actorDisplayName,
                         fontSize = AUTHOR_TEXT_SIZE,
                         color = colorScheme.onSurfaceVariant
                     )
                 }
 
-                ThreadTitle(message)
+                ThreadTitle(uiMessage)
 
-                if (shouldShowTimeNextToContent(message)) {
+                if (shouldShowTimeNextToContent(uiMessage)) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -188,8 +187,8 @@ fun CommonMessageBody(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(top = 6.dp, start = 8.dp)
                         ) {
-                            TimeDisplay(message)
-                            ReadStatus(message)
+                            TimeDisplay(uiMessage)
+                            ReadStatus(uiMessage)
                         }
                     }
                 } else {
@@ -198,8 +197,8 @@ fun CommonMessageBody(
                         modifier = Modifier.align(Alignment.End),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        TimeDisplay(message)
-                        ReadStatus(message)
+                        TimeDisplay(uiMessage)
+                        ReadStatus(uiMessage)
                     }
                 }
             }
@@ -208,7 +207,7 @@ fun CommonMessageBody(
 }
 
 @Composable
-fun CommonMessageQuote(context: Context, message: ChatMessage, incoming: Boolean) {
+fun CommonMessageQuote(context: Context, message: ChatMessageUi, incoming: Boolean) {
     val color = colorResource(R.color.high_emphasis_text)
     Row(
         modifier = Modifier
@@ -262,7 +261,7 @@ private fun getColorFromTheme(context: Context, resourceId: Int): Int {
 }
 
 @Composable
-fun TimeDisplay(message: ChatMessage) {
+fun TimeDisplay(message: ChatMessageUi) {
     val timeString = DateUtils(LocalContext.current)
         .getLocalTimeStringFromTimestamp(message.timestamp)
     Text(
@@ -274,22 +273,17 @@ fun TimeDisplay(message: ChatMessage) {
 }
 
 @Composable
-fun ReadStatus(message: ChatMessage) {
-    val icon = if (message.sendStatus == SendStatus.FAILED) {
-        painterResource(R.drawable.baseline_error_outline_24)
-    } else if (message.isTemporary) {
-        painterResource(R.drawable.baseline_schedule_24)
-    } else if (message.readStatus == ReadStatus.READ) {
-        painterResource(R.drawable.ic_check_all)
-    } else if (message.readStatus == ReadStatus.SENT) {
-        painterResource(R.drawable.ic_check)
-    } else {
-        painterResource(R.drawable.ic_check)
-    } // why is readStatus NONE ? because readStatus must be set by newXChatLastCommonRead. do this in viewmodel.
+fun ReadStatus(message: ChatMessageUi) {
+    val icon = when (message.statusIcon) {
+        MessageStatusIcon.FAILED -> painterResource(R.drawable.baseline_error_outline_24)
+        MessageStatusIcon.SENDING -> painterResource(R.drawable.baseline_schedule_24)
+        MessageStatusIcon.READ -> painterResource(R.drawable.ic_check_all)
+        MessageStatusIcon.SENT -> painterResource(R.drawable.ic_check)
+    }
 
     Icon(
-        icon,
-        "",
+        painter = icon,
+        contentDescription = "",
         modifier = Modifier
             .padding(start = 4.dp)
             .size(16.dp),
@@ -298,7 +292,7 @@ fun ReadStatus(message: ChatMessage) {
 }
 
 @Composable
-fun ThreadTitle(message: ChatMessage) {
+fun ThreadTitle(message: ChatMessageUi) {
     if (isFirstMessageOfThreadInNormalChat(message)) {
         Row {
             val read = painterResource(R.drawable.outline_forum_24)
@@ -320,25 +314,28 @@ fun ThreadTitle(message: ChatMessage) {
 }
 
 @Composable
-fun EnrichedText(message: ChatMessage) {
+fun EnrichedText(message: ChatMessageUi) {
     val viewThemeUtils = LocalViewThemeUtils.current
     val messageUtils = LocalMessageUtils.current
 
     AndroidView(factory = { ctx ->
-        var processedMessageText = messageUtils.enrichChatMessageText(
+        var processedMessageText = messageUtils.enrichChatMessageUiText(
             context = ctx,
             message = message,
             incoming = message.incoming,
             viewThemeUtils = viewThemeUtils
         )
 
-        processedMessageText = messageUtils.processMessageParameters(
-            themingContext = ctx,
-            viewThemeUtils = viewThemeUtils,
-            spannedText = processedMessageText!!,
-            message = message,
-            itemView = null
-        )
+        // Here it gets difficult! we need to change the handling of messageParameters!
+        // for now, processMessageParameters is commented out and processedMessageText is not further processed
+
+        // processedMessageText = messageUtils.processMessageParameters(
+        //     themingContext = ctx,
+        //     viewThemeUtils = viewThemeUtils,
+        //     spannedText = processedMessageText!!,
+        //     message = message,
+        //     itemView = null
+        // )
 
         EmojiTextView(ctx).apply {
             layoutParams =
@@ -350,14 +347,14 @@ fun EnrichedText(message: ChatMessage) {
             textAlignment = View.TEXT_ALIGNMENT_VIEW_START
             // text = processedMessageText
             // added messageId just for debugging
-            text = "" + processedMessageText + " (" + message.jsonMessageId + ")"
+            text = "" + processedMessageText + " (" + message.id + ")"
 
             setPadding(0, INT_8, 0, 0)
         }
     }, modifier = Modifier)
 }
 
-fun isFirstMessageOfThreadInNormalChat(message: ChatMessage, conversationThreadId: Long? = null): Boolean =
+fun isFirstMessageOfThreadInNormalChat(message: ChatMessageUi, conversationThreadId: Long? = null): Boolean =
     conversationThreadId == null && message.isThread
 
 @Composable

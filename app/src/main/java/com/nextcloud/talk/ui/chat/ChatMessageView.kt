@@ -12,17 +12,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 
 @Composable
-fun ChatMessage(
-    message: ChatMessage,
+fun ChatMessageView(
+    message: ChatMessageUi,
     showAvatar: Boolean,
     conversationThreadId: Long? = null,
     isBlinkingState: MutableState<Boolean> = mutableStateOf(false)
 ) {
-    when (message.getCalculateMessageType()) {
+    when (message.type) {
         ChatMessage.MessageType.REGULAR_TEXT_MESSAGE -> {
-            if (message.isLinkPreview()) {
+            if (message.isLinkPreview) {
                 LinkMessage(
                     message = message,
                     conversationThreadId = conversationThreadId,
@@ -30,7 +31,7 @@ fun ChatMessage(
                 )
             } else {
                 TextMessage(
-                    message = message,
+                    uiMessage = message,
                     showAvatar = showAvatar,
                     conversationThreadId = conversationThreadId,
                     state = isBlinkingState
@@ -39,9 +40,9 @@ fun ChatMessage(
         }
 
         ChatMessage.MessageType.SYSTEM_MESSAGE -> {
-            if (!message.shouldFilter()) {
+            // if (!message.shouldFilter()) {
                 SystemMessage(message)
-            }
+            // }
         }
 
         ChatMessage.MessageType.VOICE_MESSAGE -> {
@@ -90,13 +91,13 @@ fun ChatMessage(
     }
 }
 
-private fun ChatMessage.shouldFilter(): Boolean =
-    systemMessageType in setOf(
-        ChatMessage.SystemMessageType.REACTION,
-        ChatMessage.SystemMessageType.REACTION_DELETED,
-        ChatMessage.SystemMessageType.REACTION_REVOKED,
-        ChatMessage.SystemMessageType.POLL_VOTED,
-        ChatMessage.SystemMessageType.MESSAGE_EDITED,
-        ChatMessage.SystemMessageType.THREAD_CREATED
-    ) ||
-        (parentMessageId != null && systemMessageType == ChatMessage.SystemMessageType.MESSAGE_DELETED)
+// private fun ChatMessage.shouldFilter(): Boolean =
+//     systemMessageType in setOf(
+//         ChatMessage.SystemMessageType.REACTION,
+//         ChatMessage.SystemMessageType.REACTION_DELETED,
+//         ChatMessage.SystemMessageType.REACTION_REVOKED,
+//         ChatMessage.SystemMessageType.POLL_VOTED,
+//         ChatMessage.SystemMessageType.MESSAGE_EDITED,
+//         ChatMessage.SystemMessageType.THREAD_CREATED
+//     ) ||
+//         (parentMessageId != null && systemMessageType == ChatMessage.SystemMessageType.MESSAGE_DELETED)

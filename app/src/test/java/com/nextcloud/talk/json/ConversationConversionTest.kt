@@ -9,7 +9,7 @@ package com.nextcloud.talk.json
 
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.data.database.mappers.asEntity
-import com.nextcloud.talk.data.database.mappers.asModel
+import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -54,7 +54,7 @@ class ConversationConversionTest(private val jsonFileName: String) {
 
         checkConversationEntity(conversationEntity, apiVersion)
 
-        val conversationModel = conversationEntity.asModel()
+        val conversationModel = conversationEntity.toDomainModel()
         val conversationEntityConvertedBack = conversationModel.asEntity()
 
         checkConversationEntity(conversationEntityConvertedBack, apiVersion)

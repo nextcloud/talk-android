@@ -11,10 +11,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,7 +24,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,16 +40,10 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.nextcloud.talk.R
-import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -87,7 +77,7 @@ fun GetNewChatView(
 
     val lastNewestIdRef = remember {
         object {
-            var value: String? = null
+            var value: Int? = null
         }
     }
 
@@ -178,7 +168,7 @@ fun GetNewChatView(
             )?.let { item ->
                 when (item) {
                     is ChatViewModel.ChatItem.MessageItem ->
-                        formatTime(item.message.timestamp * LONG_1000)
+                        formatTime(item.uiMessage.timestamp * LONG_1000)
 
                     is ChatViewModel.ChatItem.DateHeaderItem ->
                         formatTime(item.date)
@@ -220,7 +210,7 @@ fun GetNewChatView(
                 // It might not always be a chat message. Not calling advanceLocalLastReadMessageIfNeeded should not
                 // matter. This should be triggered often enough so it's okay when it's true the next times.
                 if (item is ChatViewModel.ChatItem.MessageItem) {
-                    advanceLocalLastReadMessageIfNeeded?.invoke(item.message.jsonMessageId)
+                    advanceLocalLastReadMessageIfNeeded?.invoke(item.uiMessage.id)
                 }
             }
     }
@@ -245,8 +235,8 @@ fun GetNewChatView(
                 when (chatItem) {
                     is ChatViewModel.ChatItem.MessageItem -> {
                         val isBlinkingState = remember { mutableStateOf(false) }
-                        ChatMessage(
-                            message = chatItem.message,
+                        ChatMessageView(
+                            message = chatItem.uiMessage,
                             showAvatar = showAvatar,
                             conversationThreadId = conversationThreadId,
                             isBlinkingState = isBlinkingState
@@ -258,7 +248,7 @@ fun GetNewChatView(
                     }
 
                     is ChatViewModel.ChatItem.UnreadMessagesMarkerItem -> {
-                        UnreadMessagesMarker(chatItem.date)
+                        UnreadMessagesMarker()
                     }
                 }
             }
@@ -378,7 +368,7 @@ fun DateHeader(date: LocalDate) {
 }
 
 @Composable
-fun UnreadMessagesMarker(date: LocalDate) {
+fun UnreadMessagesMarker() {
     val viewThemeUtils = LocalViewThemeUtils.current
     val colorScheme = viewThemeUtils.getColorScheme(LocalContext.current)
 
@@ -398,69 +388,6 @@ fun UnreadMessagesMarker(date: LocalDate) {
             fontSize = 12.sp,
             color = colorScheme.onSecondaryContainer
         )
-    }
-}
-
-@Deprecated("do not use Compose Chat Adapter")
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun GetView(messages: List<ChatMessage>, messageIdToBlink: String, user: User?) {
-    val listState = rememberLazyListState()
-    val isBlinkingState = remember { mutableStateOf(true) }
-
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        state = listState,
-        modifier = Modifier.padding(16.dp)
-    ) {
-        stickyHeader {
-            if (messages.isEmpty()) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    ShimmerGroup()
-                }
-            } else {
-                val timestamp = messages[listState.firstVisibleItemIndex].timestamp
-                val dateString = formatTime(timestamp * LONG_1000)
-                val color = colorScheme.onSurfaceVariant
-                val backgroundColor =
-                    LocalResources.current.getColor(R.color.bg_message_list_incoming_bubble, null)
-                Row(
-                    horizontalArrangement = Arrangement.Absolute.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    Text(
-                        dateString,
-                        fontSize = AUTHOR_TEXT_SIZE,
-                        color = color,
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .shadow(
-                                16.dp,
-                                spotColor = colorScheme.primary,
-                                ambientColor = colorScheme.primary
-                            )
-                            .background(color = Color(backgroundColor), shape = RoundedCornerShape(8.dp))
-                            .padding(8.dp)
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-            }
-        }
-
-        items(messages) { message ->
-            val incoming = message.actorId != user?.userId
-
-            ChatMessage(
-                message = message,
-                showAvatar = true,
-                isBlinkingState = isBlinkingState
-            )
-        }
     }
 }
 
