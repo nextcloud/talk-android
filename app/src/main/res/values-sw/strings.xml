@@ -175,6 +175,7 @@
     <string name="nc_connecting_call">Inaunganisha...</string>
     <string name="nc_contacts_done">Imefanyika</string>
     <string name="nc_conversation_description">Maelezo ya mazungumzo</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Nenda kwenye faili</string>
     <string name="nc_conversation_menu_conversation_info">Taarifa za mazungumzo</string>
     <string name="nc_conversation_menu_video_call">Simu ya video</string>
     <string name="nc_conversation_menu_voice_call">Simu ya sauti</string>

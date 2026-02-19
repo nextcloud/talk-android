@@ -150,6 +150,7 @@
     <string name="nc_connecting_call">接続中 …</string>
     <string name="nc_contacts_done">完了</string>
     <string name="nc_conversation_description">会話概要</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">ファイルへ移動</string>
     <string name="nc_conversation_menu_conversation_info">会話情報</string>
     <string name="nc_conversation_menu_video_call">ビデオ通話</string>
     <string name="nc_conversation_menu_voice_call">音声通話</string>

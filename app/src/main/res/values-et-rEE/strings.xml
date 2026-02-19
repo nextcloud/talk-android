@@ -175,6 +175,7 @@
     <string name="nc_connecting_call">Ühendan…</string>
     <string name="nc_contacts_done">Valmis</string>
     <string name="nc_conversation_description">Vestluse kirjeldus</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Mine faili juurde</string>
     <string name="nc_conversation_menu_conversation_info">Vestluse teave</string>
     <string name="nc_conversation_menu_video_call">Videokõne</string>
     <string name="nc_conversation_menu_voice_call">Häälkõne</string>

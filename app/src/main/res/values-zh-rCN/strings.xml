@@ -144,6 +144,7 @@
     <string name="nc_connecting_call">连接中……</string>
     <string name="nc_contacts_done">完成</string>
     <string name="nc_conversation_description">对话描述</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">前往文件</string>
     <string name="nc_conversation_menu_conversation_info">对话信息</string>
     <string name="nc_conversation_menu_video_call">视频通话</string>
     <string name="nc_conversation_menu_voice_call">语音通话</string>

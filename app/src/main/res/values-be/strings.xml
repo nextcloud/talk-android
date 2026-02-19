@@ -533,7 +533,7 @@
     <string name="nc_show_notification_warning_description">Калі апавяшчэнні наладжаны няправільна, паказваць звычайнае папярэджанне</string>
     <string name="nc_show_notification_warning_title">Паказваць звычайнае папярэджанне аб апавяшчэннях</string>
     <string name="nc_sort_by">Сартаваць па</string>
-    <string name="nc_start_group_chat">Пачаць супольны чат</string>
+    <string name="nc_start_group_chat">Пачаць групавы чат</string>
     <string name="nc_start_time">Час пачатку</string>
     <string name="nc_switch_account">Змяніць уліковы запіс</string>
     <string name="nc_team">Каманда</string>

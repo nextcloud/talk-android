@@ -176,6 +176,7 @@
     <string name="nc_connecting_call">Pripájam sa …</string>
     <string name="nc_contacts_done">Hotovo</string>
     <string name="nc_conversation_description">Popis konverzácie</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Prejsť na súbor</string>
     <string name="nc_conversation_menu_conversation_info">Informácia o konverzácii</string>
     <string name="nc_conversation_menu_video_call">Videohovor</string>
     <string name="nc_conversation_menu_voice_call">Hlasový hovor</string>

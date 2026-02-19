@@ -175,6 +175,7 @@
     <string name="nc_connecting_call">連線中 …</string>
     <string name="nc_contacts_done">完成</string>
     <string name="nc_conversation_description">對話描述</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">前往檔案</string>
     <string name="nc_conversation_menu_conversation_info">對話資訊</string>
     <string name="nc_conversation_menu_video_call">視訊通話</string>
     <string name="nc_conversation_menu_voice_call">語音通話</string>
