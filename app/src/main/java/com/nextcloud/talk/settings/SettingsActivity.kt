@@ -216,6 +216,7 @@ class SettingsActivity :
         }
 
         setupCheckables(isOnline.value)
+        setupEcosystemSetting()
         setupScreenLockSetting()
         setupNotificationSettings()
         setupProxyTypeSettings()
@@ -249,6 +250,14 @@ class SettingsActivity :
 
         if (openedByNotificationWarning) {
             scrollToNotificationCategory()
+        }
+    }
+
+    private fun setupEcosystemSetting() {
+        if (getResources().getBoolean(R.bool.is_branded_client)) {
+            binding.settingsShowEcosystem.visibility = View.GONE
+        } else {
+            binding.settingsShowEcosystem.visibility = View.VISIBLE
         }
     }
 
@@ -771,6 +780,7 @@ class SettingsActivity :
     private fun themeSwitchPreferences() {
         binding.run {
             listOf(
+                settingsShowEcosystemSwitch,
                 settingsShowNotificationWarningSwitch,
                 settingsScreenLockSwitch,
                 settingsScreenSecuritySwitch,
@@ -967,6 +977,8 @@ class SettingsActivity :
     }
 
     private fun setupCheckables(isOnline: Boolean) {
+        setupShowEcosystemCheckable()
+
         binding.settingsShowNotificationWarningSwitch.isChecked =
             appPreferences.showRegularNotificationWarning
 
@@ -1028,6 +1040,15 @@ class SettingsActivity :
             val isChecked = binding.settingsTypingStatusSwitch.isChecked
             binding.settingsTypingStatusSwitch.isChecked = !isChecked
             appPreferences.setTypingStatus(!isChecked)
+        }
+    }
+
+    private fun setupShowEcosystemCheckable() {
+        binding.settingsShowEcosystemSwitch.isChecked = appPreferences.isShowEcosystem
+        binding.settingsShowEcosystem.setOnClickListener {
+            val isChecked = binding.settingsShowEcosystemSwitch.isChecked
+            binding.settingsShowEcosystemSwitch.isChecked = !isChecked
+            appPreferences.setShowEcosystem(!isChecked)
         }
     }
 
