@@ -53,6 +53,9 @@
     <string name="deleted_conversation">已刪除對話 %1$s</string>
     <string name="dnd">請勿打擾</string>
     <string name="dontClear">不要清空</string>
+    <string name="ecosystem_apps_files">檔案</string>
+    <string name="ecosystem_apps_more">更多</string>
+    <string name="ecosystem_apps_notes">Notes</string>
     <string name="edit">編輯</string>
     <string name="edit_error_24_hours_old_message">無法編輯超過24小時的訊息</string>
     <string name="edit_message_icon_description">編輯訊息</string>
@@ -531,6 +534,7 @@
     <string name="nc_shared_items_empty">無已分享項目</string>
     <string name="nc_shared_items_location">路徑</string>
     <string name="nc_shared_location">共享的位置</string>
+    <string name="nc_show_ecosystem_title">顯示應用程式切換器</string>
     <string name="nc_show_notification_warning_description">通知未正確設定時，顯示一般警告</string>
     <string name="nc_show_notification_warning_title">顯示一般通知警告</string>
     <string name="nc_sort_by">排序</string>

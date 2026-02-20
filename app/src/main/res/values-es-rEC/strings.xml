@@ -31,6 +31,7 @@
     <string name="delete_avatar">Borrar avatar</string>
     <string name="dnd">No molestar</string>
     <string name="dontClear">No borrar</string>
+    <string name="ecosystem_apps_files">Archivo</string>
     <string name="edit">Editar</string>
     <string name="edit_message_icon_description">Editar mensaje</string>
     <string name="emoji_category_recent">Reciente</string>

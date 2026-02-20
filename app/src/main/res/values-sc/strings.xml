@@ -22,6 +22,9 @@
     <string name="danger_zone">Zona de perìgulu</string>
     <string name="delete_avatar">Cantzella s\'avatar</string>
     <string name="dnd">No istorbes</string>
+    <string name="ecosystem_apps_files">Archìvios</string>
+    <string name="ecosystem_apps_more">Prus</string>
+    <string name="ecosystem_apps_notes">Notas</string>
     <string name="edit">Modìfica</string>
     <string name="emoji_category_recent">Reghente</string>
     <string name="encrypted">Tzifradu</string>
@@ -309,6 +312,7 @@
     <string name="nc_shared_items_deck_card">Ischeda in Deck</string>
     <string name="nc_shared_items_location">Positzione</string>
     <string name="nc_shared_location">Positzione cumpartzida</string>
+    <string name="nc_show_ecosystem_title">Mustra su cuncambiadore de aplicatziones</string>
     <string name="nc_sort_by">Assenta segundu</string>
     <string name="nc_start_time">Ora de cumintzu</string>
     <string name="nc_switch_account">Passa a àteru contu</string>

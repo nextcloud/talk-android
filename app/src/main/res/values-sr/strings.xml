@@ -53,6 +53,9 @@
     <string name="deleted_conversation">Разговор %1$s је обрисан</string>
     <string name="dnd">Не узнемиравај</string>
     <string name="dontClear">Не бриши</string>
+    <string name="ecosystem_apps_files">Фајлови</string>
+    <string name="ecosystem_apps_more">Више</string>
+    <string name="ecosystem_apps_notes">Белешке</string>
     <string name="edit">Измени</string>
     <string name="edit_error_24_hours_old_message">Поруке старије од 24 часова не могу да се уређују</string>
     <string name="edit_message_icon_description">Уреди поруку</string>
@@ -523,6 +526,7 @@
     <string name="nc_shared_items_empty">Нема дељених ставки</string>
     <string name="nc_shared_items_location">Локација</string>
     <string name="nc_shared_location">Дељена локација</string>
+    <string name="nc_show_ecosystem_title">Прикажи мењач апликација</string>
     <string name="nc_show_notification_warning_description">Када обавештења нису исправно подешена, прикажи уобичајено упозорење</string>
     <string name="nc_show_notification_warning_title">Прикажи уобичајено упозорење о обавештењу</string>
     <string name="nc_sort_by">Разврстај</string>

@@ -40,6 +40,8 @@
     <string name="deleted_conversation"> %1$s elkarrizketa ezabatu da</string>
     <string name="dnd">Ez molestatu</string>
     <string name="dontClear">Ez garbitu</string>
+    <string name="ecosystem_apps_files">Fitxategiak</string>
+    <string name="ecosystem_apps_notes">Oharrak</string>
     <string name="edit">Editatu</string>
     <string name="edit_message_icon_description">Editatu mezua</string>
     <string name="emoji_category_recent">Azkenak</string>
@@ -433,6 +435,7 @@
     <string name="nc_shared_items_empty">Ez dago partekatutako elementurik</string>
     <string name="nc_shared_items_location">Kokapena</string>
     <string name="nc_shared_location">Partekatutako kokalekua</string>
+    <string name="nc_show_ecosystem_title">Erakutsi aplikazioen aldatzailea</string>
     <string name="nc_sort_by">Ordenatu honen arabera</string>
     <string name="nc_start_time">Hasiera-ordua</string>
     <string name="nc_switch_account">Aldatu kontua</string>

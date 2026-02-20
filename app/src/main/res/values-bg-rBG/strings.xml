@@ -124,6 +124,7 @@
     <string name="nc_confirm">Потвърдете</string>
     <string name="nc_connecting_call">Свързване …</string>
     <string name="nc_contacts_done">Готово</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Отидете до файла</string>
     <string name="nc_conversation_menu_conversation_info">Информация за разговор</string>
     <string name="nc_conversation_menu_video_call">Видео разговор</string>
     <string name="nc_conversation_menu_voice_call">Гласово обаждане</string>

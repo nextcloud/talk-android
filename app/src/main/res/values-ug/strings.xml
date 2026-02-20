@@ -53,6 +53,9 @@
     <string name="deleted_conversation">ئۆچۈرۈلگەن سۆھبەت%1$s</string>
     <string name="dnd">ئاۋارە قىلماڭ</string>
     <string name="dontClear">ئېنىق ئەمەس</string>
+    <string name="ecosystem_apps_files">ھۆججەتلەر</string>
+    <string name="ecosystem_apps_more">تېخىمۇ كۆپ</string>
+    <string name="ecosystem_apps_notes">ئىزاھات</string>
     <string name="edit">تەھرىر</string>
     <string name="edit_error_24_hours_old_message">24 سائەتتىن كونا ئۇچۇرلارنى تەھرىرلىگىلى بولمايدۇ</string>
     <string name="edit_message_icon_description">ئۇچۇرنى تەھرىرلەش</string>
@@ -523,6 +526,7 @@
     <string name="nc_shared_items_empty">ئورتاق بەھرىلىنىدىغان تۈر يوق</string>
     <string name="nc_shared_items_location">ئورنى</string>
     <string name="nc_shared_location">ئورتاق ئورۇن</string>
+    <string name="nc_show_ecosystem_title">ئەپ ئالماشتۇرغۇچنى كۆرسەت</string>
     <string name="nc_show_notification_warning_description">ئۇختۇرۇش توغرا تەڭشەلمىگەندە، ئادەتتىكى ئاگاھلاندۇرۇش كۆرسەت</string>
     <string name="nc_show_notification_warning_title">ئادەتتىكى ئاگاھلاندۇرۇش ئۇقتۇرۇشى كۆرسەت</string>
     <string name="nc_sort_by">تەرتىپلەش</string>

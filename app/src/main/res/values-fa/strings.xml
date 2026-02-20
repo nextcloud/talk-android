@@ -33,6 +33,8 @@
     <string name="delete_avatar">آواتار را پاک کن</string>
     <string name="dnd">مزاحم نشوید</string>
     <string name="dontClear">پاک نکن</string>
+    <string name="ecosystem_apps_files">پرونده‌ها</string>
+    <string name="ecosystem_apps_notes">یادداشت‌ها</string>
     <string name="edit">ویرایش</string>
     <string name="edit_message_icon_description">Edit message</string>
     <string name="emoji_category_recent">اخیر</string>
@@ -336,6 +338,7 @@
     <string name="nc_shared_items_deck_card">کارت deck</string>
     <string name="nc_shared_items_location">مکان</string>
     <string name="nc_shared_location">مکان هم‌رسانی‌شده</string>
+    <string name="nc_show_ecosystem_title">نمایش تغییردهنده برنامه</string>
     <string name="nc_sort_by">مرتب‌سازی بر اساس</string>
     <string name="nc_start_time">زمان شروع</string>
     <string name="nc_switch_account">تعویض حساب</string>

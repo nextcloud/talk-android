@@ -26,6 +26,9 @@
     <string name="danger_zone">Pavojinga zona</string>
     <string name="dnd">Netrukdyti</string>
     <string name="dontClear">Neišvalyti</string>
+    <string name="ecosystem_apps_files">Failai</string>
+    <string name="ecosystem_apps_more">Daugiau</string>
+    <string name="ecosystem_apps_notes">Užrašai</string>
     <string name="edit">Taisyti</string>
     <string name="edit_message_icon_description">Taisyti laišką</string>
     <string name="emoji_category_recent">Paskiausi</string>

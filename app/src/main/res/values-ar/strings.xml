@@ -162,6 +162,7 @@
     <string name="nc_connecting_call">الاتصال جارٍ …</string>
     <string name="nc_contacts_done">تم</string>
     <string name="nc_conversation_description">وصف المحادثة</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">الذهاب إلى ملف</string>
     <string name="nc_conversation_menu_conversation_info">بيانات المحادثة</string>
     <string name="nc_conversation_menu_video_call">اتصال فيديو</string>
     <string name="nc_conversation_menu_voice_call">اتصال فيديو</string>

@@ -33,6 +33,9 @@
     <string name="delete_avatar">Izbriši podobo</string>
     <string name="dnd">Ne moti</string>
     <string name="dontClear">Ne počisti</string>
+    <string name="ecosystem_apps_files">Datoteke</string>
+    <string name="ecosystem_apps_more">Več</string>
+    <string name="ecosystem_apps_notes">Beležke</string>
     <string name="edit">Uredi</string>
     <string name="edit_message_icon_description">Uredi sporočilo</string>
     <string name="emoji_category_recent">Nedavno</string>
@@ -393,6 +396,7 @@
     <string name="nc_shared_items_empty">Ni predmetov v souporabi</string>
     <string name="nc_shared_items_location">Trenutno mesto</string>
     <string name="nc_shared_location">Objavljeno trenutno mesto</string>
+    <string name="nc_show_ecosystem_title">Pokaži preklopnika programov</string>
     <string name="nc_sort_by">Razvrsti po</string>
     <string name="nc_start_time">Čas začetka</string>
     <string name="nc_switch_account">Preklopi račun</string>

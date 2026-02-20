@@ -37,6 +37,9 @@
     <string name="deleted_conversation">对话%1$s已删除</string>
     <string name="dnd">不要打扰</string>
     <string name="dontClear">不要清除</string>
+    <string name="ecosystem_apps_files">文件</string>
+    <string name="ecosystem_apps_more">更多</string>
+    <string name="ecosystem_apps_notes">附注</string>
     <string name="edit">编辑</string>
     <string name="edit_message_icon_description">编辑消息</string>
     <string name="emoji_category_recent">最近</string>
@@ -429,6 +432,7 @@
     <string name="nc_shared_items_empty">沒有已分享的项目</string>
     <string name="nc_shared_items_location">位置</string>
     <string name="nc_shared_location">分享的位置</string>
+    <string name="nc_show_ecosystem_title">显示应用切换器</string>
     <string name="nc_sort_by">排序依据</string>
     <string name="nc_start_time">开始时间</string>
     <string name="nc_switch_account">切换账号</string>

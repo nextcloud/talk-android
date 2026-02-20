@@ -30,6 +30,9 @@
     <string name="delete_avatar">아바타 삭제</string>
     <string name="dnd">방해 없음</string>
     <string name="dontClear">지우지 않음</string>
+    <string name="ecosystem_apps_files">파일</string>
+    <string name="ecosystem_apps_more">더 보기</string>
+    <string name="ecosystem_apps_notes">메모</string>
     <string name="edit">편집</string>
     <string name="edit_message_icon_description">메시지 편집</string>
     <string name="emoji_category_recent">최근 항목</string>
@@ -371,6 +374,7 @@
     <string name="nc_shared_items_empty">공유된 항목이 없습니다.</string>
     <string name="nc_shared_items_location">위치</string>
     <string name="nc_shared_location">공유된 위치</string>
+    <string name="nc_show_ecosystem_title">앱 스위치 도구 보이기</string>
     <string name="nc_sort_by">정렬</string>
     <string name="nc_start_time">시작 시간</string>
     <string name="nc_switch_account">계정 전환</string>
