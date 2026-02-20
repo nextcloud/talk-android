@@ -1414,6 +1414,11 @@ class ChatActivity :
                         binding.upcomingEventContainer.upcomingEventDismiss.setOnClickListener {
                             binding.upcomingEventCard.visibility = View.GONE
                             chatViewModel.saveHiddenUpcomingEvent(hiddenEventKey)
+                            Snackbar.make(
+                                binding.root,
+                                R.string.nc_upcoming_event_dismissed,
+                                Snackbar.LENGTH_LONG
+                            ).show()
                         }
                     }
                 }
