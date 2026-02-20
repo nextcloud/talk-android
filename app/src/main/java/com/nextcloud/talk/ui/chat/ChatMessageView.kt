@@ -9,79 +9,72 @@ package com.nextcloud.talk.ui.chat
 
 import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
+import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 
 @Composable
 fun ChatMessageView(
     message: ChatMessageUi,
     showAvatar: Boolean,
-    conversationThreadId: Long? = null,
-    isBlinkingState: MutableState<Boolean> = mutableStateOf(false)
+    conversationThreadId: Long? = null
 ) {
-    when (message.type) {
-        ChatMessage.MessageType.REGULAR_TEXT_MESSAGE -> {
-            if (message.isLinkPreview) {
-                LinkMessage(
-                    message = message,
-                    conversationThreadId = conversationThreadId,
-                    state = isBlinkingState
-                )
-            } else {
-                TextMessage(
-                    uiMessage = message,
-                    showAvatar = showAvatar,
-                    conversationThreadId = conversationThreadId,
-                    state = isBlinkingState
-                )
-            }
-        }
-
-        ChatMessage.MessageType.SYSTEM_MESSAGE -> {
-            // if (!message.shouldFilter()) {
-                SystemMessage(message)
-            // }
-        }
-
-        ChatMessage.MessageType.VOICE_MESSAGE -> {
-            VoiceMessage(
-                message = message,
-                conversationThreadId = conversationThreadId,
-                state = isBlinkingState
+    when (val content = message.content) {
+        MessageTypeContent.RegularText -> {
+            TextMessage(
+                uiMessage = message,
+                showAvatar = showAvatar,
+                conversationThreadId = conversationThreadId
             )
         }
 
-        ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE -> {
+        MessageTypeContent.SystemMessage -> {
+            SystemMessage(message)
+        }
+
+        is MessageTypeContent.Image -> {
             ImageMessage(
+                typeContent = content,
                 message = message,
-                conversationThreadId = conversationThreadId,
-                state = isBlinkingState
+                conversationThreadId = conversationThreadId
             )
         }
 
-        ChatMessage.MessageType.SINGLE_NC_GEOLOCATION_MESSAGE -> {
+        is MessageTypeContent.LinkPreview -> {
+            LinkMessage(
+                typeContent = content,
+                message = message,
+                conversationThreadId = conversationThreadId
+            )
+        }
+
+        is MessageTypeContent.Geolocation -> {
             GeolocationMessage(
-                message = message,
-                conversationThreadId = conversationThreadId,
-                state = isBlinkingState
+                typeContent = content,
+                message = message
             )
         }
 
-        ChatMessage.MessageType.POLL_MESSAGE -> {
+        is MessageTypeContent.Voice -> {
+            VoiceMessage(
+                typeContent = content,
+                message = message,
+                conversationThreadId = conversationThreadId
+            )
+        }
+
+        is MessageTypeContent.Poll -> {
             PollMessage(
+                typeContent = content,
                 message = message,
-                conversationThreadId = conversationThreadId,
-                state = isBlinkingState
+                conversationThreadId = conversationThreadId
             )
         }
 
-        ChatMessage.MessageType.DECK_CARD -> {
+        is MessageTypeContent.Deck -> {
             DeckMessage(
+                typeContent = content,
                 message = message,
-                conversationThreadId = conversationThreadId,
-                state = isBlinkingState
+                conversationThreadId = conversationThreadId
             )
         }
 
@@ -90,14 +83,3 @@ fun ChatMessageView(
         }
     }
 }
-
-// private fun ChatMessage.shouldFilter(): Boolean =
-//     systemMessageType in setOf(
-//         ChatMessage.SystemMessageType.REACTION,
-//         ChatMessage.SystemMessageType.REACTION_DELETED,
-//         ChatMessage.SystemMessageType.REACTION_REVOKED,
-//         ChatMessage.SystemMessageType.POLL_VOTED,
-//         ChatMessage.SystemMessageType.MESSAGE_EDITED,
-//         ChatMessage.SystemMessageType.THREAD_CREATED
-//     ) ||
-//         (parentMessageId != null && systemMessageType == ChatMessage.SystemMessageType.MESSAGE_DELETED)

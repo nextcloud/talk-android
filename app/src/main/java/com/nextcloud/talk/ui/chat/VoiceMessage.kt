@@ -16,24 +16,27 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
+import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.ui.WaveformSeekBar
 import kotlin.random.Random
 
 private const val DEFAULT_WAVE_SIZE = 50
 
 @Composable
-fun VoiceMessage(message: ChatMessageUi, conversationThreadId: Long? = null, state: MutableState<Boolean>) {
+fun VoiceMessage(
+    typeContent: MessageTypeContent.Voice,
+    message: ChatMessageUi,
+    conversationThreadId: Long? = null
+) {
     MessageScaffold(
         uiMessage = message,
         conversationThreadId = conversationThreadId,
-        playAnimation = state.value,
         content = {
             val inversePrimary = colorScheme.inversePrimary.toArgb()
             val onPrimaryContainer = colorScheme.onPrimaryContainer.toArgb()

@@ -381,9 +381,7 @@ class ChatViewModel @AssistedInject constructor(
     // ------------------------------
     // Messages
     // ------------------------------
-    private fun Flow<List<ChatMessageEntity>>.mapToChatMessages(
-        userId: String
-    ): Flow<List<ChatMessage>> =
+    private fun Flow<List<ChatMessageEntity>>.mapToChatMessages(userId: String): Flow<List<ChatMessage>> =
         map { entities ->
             entities.map { entity ->
                 entity.toDomainModel().apply {
@@ -445,7 +443,12 @@ class ChatViewModel @AssistedInject constructor(
     // ------------------------------
     private fun observeMessages() {
         combine(messagesFlow, getLastCommonReadFlow) { messages, lastRead ->
-            messages.map { it.toUiModel(lastRead) }
+            messages.map {
+                it.toUiModel(
+                    it,
+                    lastRead
+                )
+            }
         }
             .onEach { messages ->
                 val items = buildChatItems(messages, lastReadMessage)
@@ -475,10 +478,7 @@ class ChatViewModel @AssistedInject constructor(
     // ------------------------------
     // Build chat items (pure)
     // ------------------------------
-    private fun buildChatItems(
-        uiMessages: List<ChatMessageUi>,
-        lastReadMessage: Int
-    ): List<ChatItem> {
+    private fun buildChatItems(uiMessages: List<ChatMessageUi>, lastReadMessage: Int): List<ChatItem> {
         var lastDate: LocalDate? = null
 
         return buildList {
@@ -627,8 +627,6 @@ class ChatViewModel @AssistedInject constructor(
 
         return chatMessageMap.values.toList()
     }
-
-
 
     // val timeString = DateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
@@ -892,7 +890,8 @@ class ChatViewModel @AssistedInject constructor(
 
         val messageId = currentItems
             .asReversed()
-            .firstNotNullOfOrNull { item -> (item as? ChatItem.MessageItem)?.uiMessage?.id
+            .firstNotNullOfOrNull { item ->
+                (item as? ChatItem.MessageItem)?.uiMessage?.id
             }
 
         Log.d(TAG, "Compose load more, messageId: $messageId")
@@ -1531,10 +1530,6 @@ class ChatViewModel @AssistedInject constructor(
         object Ready : ChatEvent()
         data class Error(val throwable: Throwable) : ChatEvent()
     }
-
-
-
-
 
     sealed interface ChatItem {
         fun messageOrNull(): ChatMessageUi? = (this as? MessageItem)?.uiMessage

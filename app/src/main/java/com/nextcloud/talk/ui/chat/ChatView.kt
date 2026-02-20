@@ -234,12 +234,10 @@ fun GetNewChatView(
             items(chatItems, key = { it.stableKey() }) { chatItem ->
                 when (chatItem) {
                     is ChatViewModel.ChatItem.MessageItem -> {
-                        val isBlinkingState = remember { mutableStateOf(false) }
                         ChatMessageView(
                             message = chatItem.uiMessage,
                             showAvatar = showAvatar,
-                            conversationThreadId = conversationThreadId,
-                            isBlinkingState = isBlinkingState
+                            conversationThreadId = conversationThreadId
                         )
                     }
 

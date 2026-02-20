@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -31,12 +30,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -206,46 +201,46 @@ fun MessageScaffold(
     }
 }
 
-@Composable
-fun CommonMessageQuote(context: Context, message: ChatMessageUi, incoming: Boolean) {
-    val color = colorResource(R.color.high_emphasis_text)
-    Row(
-        modifier = Modifier
-            .drawWithCache {
-                onDrawWithContent {
-                    drawLine(
-                        color = color,
-                        start = Offset(0f, this.size.height / QUOTE_SHAPE_OFFSET),
-                        end = Offset(0f, this.size.height - (this.size.height / QUOTE_SHAPE_OFFSET)),
-                        strokeWidth = 4f,
-                        cap = StrokeCap.Round
-                    )
-
-                    drawContent()
-                }
-            }
-            .padding(8.dp)
-    ) {
-        Column {
-            Text(message.actorDisplayName!!, fontSize = AUTHOR_TEXT_SIZE)
-            val imageUri = message.imageUrl
-            if (imageUri != null) {
-                val errorPlaceholderImage: Int = R.drawable.ic_mimetype_image
-                val loadedImage = loadImage(imageUri, context, errorPlaceholderImage)
-                AsyncImage(
-                    model = loadedImage,
-                    contentDescription = stringResource(R.string.nc_sent_an_image),
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxHeight()
-                )
-            }
-            EnrichedText(
-                message
-            )
-        }
-    }
-}
+// @Composable
+// fun CommonMessageQuote(context: Context, message: ChatMessageUi, incoming: Boolean) {
+//     val color = colorResource(R.color.high_emphasis_text)
+//     Row(
+//         modifier = Modifier
+//             .drawWithCache {
+//                 onDrawWithContent {
+//                     drawLine(
+//                         color = color,
+//                         start = Offset(0f, this.size.height / QUOTE_SHAPE_OFFSET),
+//                         end = Offset(0f, this.size.height - (this.size.height / QUOTE_SHAPE_OFFSET)),
+//                         strokeWidth = 4f,
+//                         cap = StrokeCap.Round
+//                     )
+//
+//                     drawContent()
+//                 }
+//             }
+//             .padding(8.dp)
+//     ) {
+//         Column {
+//             Text(message.actorDisplayName!!, fontSize = AUTHOR_TEXT_SIZE)
+//             val imageUri = message.imageUrl
+//             if (imageUri != null) {
+//                 val errorPlaceholderImage: Int = R.drawable.ic_mimetype_image
+//                 val loadedImage = loadImage(imageUri, context, errorPlaceholderImage)
+//                 AsyncImage(
+//                     model = loadedImage,
+//                     contentDescription = stringResource(R.string.nc_sent_an_image),
+//                     modifier = Modifier
+//                         .padding(8.dp)
+//                         .fillMaxHeight()
+//                 )
+//             }
+//             EnrichedText(
+//                 message
+//             )
+//         }
+//     }
+// }
 
 private fun getColorFromTheme(context: Context, resourceId: Int): Int {
     val isDarkMode = DisplayUtils.isAppThemeDarkMode(context)

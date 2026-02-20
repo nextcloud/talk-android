@@ -41,7 +41,8 @@ class MigrationsTest {
         isTemporary: Int,
         timestamp: Long
     ) {
-        db.execSQL("""
+        db.execSQL(
+            """
             INSERT INTO ChatMessages (
                 internalId,
                 accountId,
@@ -121,7 +122,8 @@ class MigrationsTest {
                 NULL,
                 0
             )
-        """)
+        """
+        )
     }
 
     @Test
@@ -203,11 +205,13 @@ class MigrationsTest {
             Migrations.MIGRATION_23_24
         )
 
-        val cursor = db.query("""
+        val cursor = db.query(
+            """
             SELECT internalId, isTemporary, timestamp 
             FROM ChatMessages 
             WHERE referenceId = 'ref1'
-        """)
+        """
+        )
 
         assertEquals(1, cursor.count)
         assertTrue(cursor.moveToFirst())
@@ -239,11 +243,13 @@ class MigrationsTest {
             Migrations.MIGRATION_23_24
         )
 
-        val cursor = db.query("""
+        val cursor = db.query(
+            """
             SELECT internalId, timestamp 
             FROM ChatMessages 
             WHERE referenceId = 'ref2'
-        """)
+        """
+        )
 
         assertEquals(1, cursor.count)
         assertTrue(cursor.moveToFirst())
@@ -273,9 +279,11 @@ class MigrationsTest {
             Migrations.MIGRATION_23_24
         )
 
-        val cursor = db.query("""
+        val cursor = db.query(
+            """
             SELECT COUNT(*) FROM ChatMessages WHERE referenceId IS NULL
-        """)
+        """
+        )
 
         assertTrue(cursor.moveToFirst())
         val count = cursor.getInt(0)

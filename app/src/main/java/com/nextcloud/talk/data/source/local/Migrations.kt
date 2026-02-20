@@ -429,7 +429,8 @@ object Migrations {
     fun migrateToUniqueReferenceIds(db: SupportSQLiteDatabase) {
         // referenceId could exist multiple times (they should not, but just in case..). Before migrating to unique
         // index, make sure to delete all duplicates.
-        db.execSQL("""
+        db.execSQL(
+            """
                 DELETE FROM ChatMessages
                 WHERE rowid NOT IN (
                     -- Keep the latest non-temporary per referenceId
@@ -443,13 +444,16 @@ object Migrations {
                     FROM ChatMessages
                     WHERE referenceId IS NULL
                 )
-            """)
+            """
+        )
 
         // Now it's safe to create the unique index
-        db.execSQL("""
+        db.execSQL(
+            """
                 CREATE UNIQUE INDEX IF NOT EXISTS 
                 index_ChatMessages_referenceId 
                 ON ChatMessages(referenceId)
-            """)
+            """
+        )
     }
 }

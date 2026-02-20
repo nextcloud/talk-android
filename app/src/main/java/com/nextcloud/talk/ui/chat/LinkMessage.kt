@@ -8,17 +8,19 @@
 package com.nextcloud.talk.ui.chat
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
-import com.nextcloud.talk.chat.viewmodels.ChatViewModel
+import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 
 private const val REGULAR_TEXT_SIZE = 16
 private const val AUTHOR_TEXT_SIZE = 12
 private const val TIME_TEXT_SIZE = 12
 
 @Composable
-fun LinkMessage(message: ChatMessageUi, conversationThreadId: Long? = null, state: MutableState<Boolean>) {
+fun LinkMessage(
+    typeContent: MessageTypeContent.LinkPreview,
+    message: ChatMessageUi,
+    conversationThreadId: Long? = null
+) {
     // val color = colorResource(R.color.high_emphasis_text)
     // adapter.viewModel.chatViewModel.getOpenGraph(
     //     adapter.currentUser.getCredentials(),

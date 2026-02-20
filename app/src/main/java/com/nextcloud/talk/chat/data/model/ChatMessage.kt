@@ -14,7 +14,6 @@ import android.util.Log
 import com.bluelinelabs.logansquare.annotation.JsonIgnore
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage

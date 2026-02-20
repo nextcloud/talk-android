@@ -7,14 +7,13 @@
 
 package com.nextcloud.talk.ui.chat
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
+import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -24,7 +23,13 @@ import org.osmdroid.views.overlay.Marker
 private const val MAP_ZOOM = 15.0
 
 @Composable
-fun GeolocationMessage(message: ChatMessageUi, conversationThreadId: Long? = null, state: MutableState<Boolean>) {
+fun GeolocationMessage(
+    typeContent: MessageTypeContent.Geolocation,
+    message: ChatMessageUi
+) {
+    typeContent.lat
+    typeContent.lon
+
     // MessageScaffold(
     //     uiMessage = message,
     //     conversationThreadId = conversationThreadId,

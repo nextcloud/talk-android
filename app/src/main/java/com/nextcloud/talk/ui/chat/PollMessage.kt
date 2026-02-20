@@ -14,7 +14,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -24,37 +23,36 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
+import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 
 private const val AUTHOR_TEXT_SIZE = 12
 
 @Composable
-fun PollMessage(message: ChatMessageUi, conversationThreadId: Long? = null, state: MutableState<Boolean>) {
-    // MessageScaffold(
-    //     uiMessage = message,
-    //     conversationThreadId = conversationThreadId,
-    //     playAnimation = state.value,
-    //     content = {
-    //         Column {
-    //             if (message.messageParameters != null && message.messageParameters!!.size > 0) {
-    //                 for (key in message.messageParameters!!.keys) {
-    //                     val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
-    //                     if (individualHashMap["type"] == "talk-poll") {
-    //                         // val pollId = individualHashMap["id"]
-    //                         val pollName = individualHashMap["name"].toString()
-    //                         Row(modifier = Modifier.padding(start = 8.dp)) {
-    //                             Icon(painterResource(R.drawable.ic_baseline_bar_chart_24), "")
-    //                             Text(pollName, fontSize = AUTHOR_TEXT_SIZE.sp, fontWeight = FontWeight.Bold)
-    //                         }
-    //
-    //                         TextButtonNoStyling(stringResource(R.string.message_poll_tap_to_open)) {
-    //                             // NOTE: read only for now
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // )
+fun PollMessage(
+    typeContent: MessageTypeContent.Poll,
+    message: ChatMessageUi,
+    conversationThreadId: Long? = null
+) {
+    MessageScaffold(
+        uiMessage = message,
+        conversationThreadId = conversationThreadId,
+        content = {
+            Column {
+                Row(modifier = Modifier.padding(start = 8.dp)) {
+                    Icon(painterResource(R.drawable.ic_baseline_bar_chart_24), "")
+                    Text(
+                        typeContent.pollName,
+                        fontSize = AUTHOR_TEXT_SIZE.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                TextButtonNoStyling(stringResource(R.string.message_poll_tap_to_open)) {
+                    // NOTE: read only for now
+                }
+            }
+        }
+    )
 }
 
 @Composable
