@@ -53,6 +53,9 @@
     <string name="deleted_conversation">Slettede samtale %1$s</string>
     <string name="dnd">Forstyr ikke</string>
     <string name="dontClear">Ryd ikke</string>
+    <string name="ecosystem_apps_files">Filer</string>
+    <string name="ecosystem_apps_more">Mere</string>
+    <string name="ecosystem_apps_notes">Noter</string>
     <string name="edit">Redigér</string>
     <string name="edit_error_24_hours_old_message">Beskeder der er ældre end 24 timer kan ikke redigeres</string>
     <string name="edit_message_icon_description">Redigér besked</string>
@@ -520,6 +523,7 @@
     <string name="nc_shared_items_empty">Ingen delte elementer</string>
     <string name="nc_shared_items_location">Sted</string>
     <string name="nc_shared_location">Delt placering</string>
+    <string name="nc_show_ecosystem_title">Vis app skifter</string>
     <string name="nc_show_notification_warning_description">Når notifikationer ikke er opsat korrekt, så vis en regulær advarsel</string>
     <string name="nc_show_notification_warning_title">Vis regulær notifikationsadvarsel</string>
     <string name="nc_sort_by">Sorter efter</string>

@@ -53,6 +53,9 @@
     <string name="deleted_conversation">Odstránená konverzácia %1$s</string>
     <string name="dnd">Nerušiť</string>
     <string name="dontClear">Nemazať</string>
+    <string name="ecosystem_apps_files">Súbory</string>
+    <string name="ecosystem_apps_more">Viac</string>
+    <string name="ecosystem_apps_notes">Poznámky</string>
     <string name="edit">Upraviť</string>
     <string name="edit_error_24_hours_old_message">Správy staršie ako 24 hodín nie je možné upravovať</string>
     <string name="edit_message_icon_description">Upraviť správu</string>
@@ -528,6 +531,7 @@
     <string name="nc_shared_items_empty">Žiadne zdieľané položky</string>
     <string name="nc_shared_items_location">Umiestnenie</string>
     <string name="nc_shared_location">Zdieľaná poloha</string>
+    <string name="nc_show_ecosystem_title">Zobraziť prepínač aplikácií</string>
     <string name="nc_show_notification_warning_description">V príprade nesprávne nastavených upozornení, zobraziť štandardné upozornenie</string>
     <string name="nc_show_notification_warning_title">Zobraziť štandardné upozornenie</string>
     <string name="nc_sort_by">Zoradiť podľa</string>

@@ -53,6 +53,9 @@
     <string name="deleted_conversation">Conversa %1$s excluída</string>
     <string name="dnd">Não perturbe</string>
     <string name="dontClear">Não limpe</string>
+    <string name="ecosystem_apps_files">Arquivos</string>
+    <string name="ecosystem_apps_more">Mais</string>
+    <string name="ecosystem_apps_notes">Notas</string>
     <string name="edit">Editar</string>
     <string name="edit_error_24_hours_old_message">Mensagens mais antigas do que 24 horas não podem ser editadas</string>
     <string name="edit_message_icon_description">Editar mensagem</string>
@@ -409,6 +412,8 @@
     <string name="nc_rename_confirm">Renomear</string>
     <string name="nc_reply">Responder</string>
     <string name="nc_reply_privately">Responder privadamente</string>
+    <string name="nc_reschedule_message_with_notification">Reagendar com notificação</string>
+    <string name="nc_reschedule_message_without_notification">Reagendar sem notificação</string>
     <string name="nc_room_retention">A sala é mantida com sucesso</string>
     <string name="nc_save_message">Salvar</string>
     <string name="nc_save_success">Salvo com sucesso</string>
@@ -531,6 +536,7 @@
     <string name="nc_shared_items_empty">Nenhum item compartilhado</string>
     <string name="nc_shared_items_location">Localização</string>
     <string name="nc_shared_location">Localização compartilhada</string>
+    <string name="nc_show_ecosystem_title">Mostrar alternador de aplicativos</string>
     <string name="nc_show_notification_warning_description">Quando as notificações não estiverem configuradas corretamente, mostre um aviso regular</string>
     <string name="nc_show_notification_warning_title">Mostrar aviso de notificação regular</string>
     <string name="nc_sort_by">Ordenar por</string>

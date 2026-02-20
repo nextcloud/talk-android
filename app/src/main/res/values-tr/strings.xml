@@ -53,6 +53,9 @@
     <string name="deleted_conversation">%1$s görüşmesi silindi</string>
     <string name="dnd">Rahatsız etmeyin</string>
     <string name="dontClear">Kaldırılmasın</string>
+    <string name="ecosystem_apps_files">Dosyalar</string>
+    <string name="ecosystem_apps_more">Diğer</string>
+    <string name="ecosystem_apps_notes">Notlar</string>
     <string name="edit">Düzenle</string>
     <string name="edit_error_24_hours_old_message">24 saatten eski iletiler düzenlenemez</string>
     <string name="edit_message_icon_description">İletiyi düzenle</string>
@@ -525,6 +528,7 @@
     <string name="nc_shared_items_empty">Paylaşılmış bir öge yok</string>
     <string name="nc_shared_items_location">Konum</string>
     <string name="nc_shared_location">Paylaşılan konum</string>
+    <string name="nc_show_ecosystem_title">Uygulama değiştiriciyi görüntüle</string>
     <string name="nc_show_notification_warning_description">Bildirimler doğru olarak ayarlanmamışsa standart uyarı görüntülensin</string>
     <string name="nc_show_notification_warning_title">Standart uyarı bildirimi görüntülensin</string>
     <string name="nc_sort_by">Sıralama</string>

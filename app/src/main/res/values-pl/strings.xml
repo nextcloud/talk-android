@@ -53,6 +53,9 @@
     <string name="deleted_conversation">Usunięto rozmowę %1$s</string>
     <string name="dnd">Nie przeszkadzać</string>
     <string name="dontClear">Nie czyść</string>
+    <string name="ecosystem_apps_files">Pliki</string>
+    <string name="ecosystem_apps_more">Więcej</string>
+    <string name="ecosystem_apps_notes">Notatki</string>
     <string name="edit">Edytuj</string>
     <string name="edit_error_24_hours_old_message">Wiadomości starsze niż 24 godziny nie mogą być edytowane.</string>
     <string name="edit_message_icon_description">Edytuj wiadomość</string>
@@ -409,6 +412,8 @@
     <string name="nc_rename_confirm">Zmień nazwę</string>
     <string name="nc_reply">Odpowiedz</string>
     <string name="nc_reply_privately">Odpowiedz prywatnie</string>
+    <string name="nc_reschedule_message_with_notification">Zmień harmonogram z powiadomieniem</string>
+    <string name="nc_reschedule_message_without_notification">Zmień harmonogram bez powiadomienia</string>
     <string name="nc_room_retention">Pokój został pomyślnie zachowany</string>
     <string name="nc_save_message">Zapisz</string>
     <string name="nc_save_success">Zapisano pomyślnie</string>
@@ -531,6 +536,7 @@
     <string name="nc_shared_items_empty">Brak udostępnionych elementów</string>
     <string name="nc_shared_items_location">Lokalizacja</string>
     <string name="nc_shared_location">Udostępniona lokalizacja</string>
+    <string name="nc_show_ecosystem_title">Pokaż przełącznik aplikacji</string>
     <string name="nc_show_notification_warning_description">Gdy powiadomienia nie są poprawnie skonfigurowane, wyświetlaj regularne ostrzeżenie</string>
     <string name="nc_show_notification_warning_title">Pokaż regularne ostrzeżenie o powiadomieniu</string>
     <string name="nc_sort_by">Sortuj według</string>

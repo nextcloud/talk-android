@@ -52,6 +52,9 @@
     <string name="deleted_conversation">Raderade konversationen %1$s</string>
     <string name="dnd">Stör ej</string>
     <string name="dontClear">Rensa inte</string>
+    <string name="ecosystem_apps_files">Filer</string>
+    <string name="ecosystem_apps_more">Mer</string>
+    <string name="ecosystem_apps_notes">Anteckning</string>
     <string name="edit">Ändra</string>
     <string name="edit_error_24_hours_old_message">Meddelanden som är äldre än 24 timmar kan inte redigeras</string>
     <string name="edit_message_icon_description">Redigera meddelande</string>
@@ -522,6 +525,7 @@
     <string name="nc_shared_items_empty">Inga delade objekt</string>
     <string name="nc_shared_items_location">Plats</string>
     <string name="nc_shared_location">Delad plats</string>
+    <string name="nc_show_ecosystem_title">Visa appväxlare</string>
     <string name="nc_show_notification_warning_description">När aviseringar inte är korrekt inställda, visa en vanlig varning</string>
     <string name="nc_show_notification_warning_title">Visa vanlig varning för avisering</string>
     <string name="nc_sort_by">Sortera efter</string>

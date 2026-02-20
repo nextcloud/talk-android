@@ -29,6 +29,9 @@
     <string name="danger_zone">Vaaravyöhyke</string>
     <string name="dnd">Älä häiritse</string>
     <string name="dontClear">Älä tyhjennä</string>
+    <string name="ecosystem_apps_files">Tiedostot</string>
+    <string name="ecosystem_apps_more">Lisää</string>
+    <string name="ecosystem_apps_notes">Muistiinpanot</string>
     <string name="edit">Muokkaa</string>
     <string name="edit_message_icon_description">Muokkaa viestiä</string>
     <string name="emoji_category_recent">Viimeaikaiset</string>
@@ -334,6 +337,7 @@
     <string name="nc_shared_items_empty">Ei jaettuja kohteita</string>
     <string name="nc_shared_items_location">Sijainti</string>
     <string name="nc_shared_location">Jaettu sijainti</string>
+    <string name="nc_show_ecosystem_title">Näytä sovellusvaihdin</string>
     <string name="nc_sort_by">Lajittelujärjestys</string>
     <string name="nc_start_time">Aloitusaika</string>
     <string name="nc_switch_account">Vaihda tiliä</string>

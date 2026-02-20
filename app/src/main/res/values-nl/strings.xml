@@ -53,6 +53,9 @@
     <string name="deleted_conversation">Gesprek %1$s verwijderd</string>
     <string name="dnd">Niet storen</string>
     <string name="dontClear">Niet opruimen</string>
+    <string name="ecosystem_apps_files">Bestanden</string>
+    <string name="ecosystem_apps_more">Meer</string>
+    <string name="ecosystem_apps_notes">Notities</string>
     <string name="edit">Bewerken</string>
     <string name="edit_error_24_hours_old_message">Berichten ouder dan 24 uur kunnen niet worden bewerkt</string>
     <string name="edit_message_icon_description">Bewerk bericht</string>
@@ -521,6 +524,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_shared_items_empty">Geen gedeelde objecten</string>
     <string name="nc_shared_items_location">Locatie</string>
     <string name="nc_shared_location">Gedeelde locatie</string>
+    <string name="nc_show_ecosystem_title">Toon app switcher</string>
     <string name="nc_show_notification_warning_description">Als meldingen niet goed ingesteld zijn, toon dan een terugkerende waarschuwing</string>
     <string name="nc_show_notification_warning_title">Toon terugkerende meldingswaarschuwing</string>
     <string name="nc_sort_by">Sorteren op</string>

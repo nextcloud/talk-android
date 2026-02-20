@@ -53,6 +53,9 @@
     <string name="deleted_conversation">Scriosadh comhrá %1$s</string>
     <string name="dnd">Ná cur as</string>
     <string name="dontClear">Ná soiléir</string>
+    <string name="ecosystem_apps_files">Comhaid</string>
+    <string name="ecosystem_apps_more">Tuilleadh</string>
+    <string name="ecosystem_apps_notes">Nótaí</string>
     <string name="edit">Cuir in eagar</string>
     <string name="edit_error_24_hours_old_message">Ní féidir teachtaireachtaí atá níos sine ná 24 uair an chloig a chur in eagar</string>
     <string name="edit_message_icon_description">Cuir teachtaireacht in eagar</string>
@@ -533,6 +536,7 @@
     <string name="nc_shared_items_empty">Níl aon mhír roinnte</string>
     <string name="nc_shared_items_location">Suíomh</string>
     <string name="nc_shared_location">Suíomh roinnte</string>
+    <string name="nc_show_ecosystem_title">Taispeáin athróir aip</string>
     <string name="nc_show_notification_warning_description">Nuair nach bhfuil fógraí socraithe i gceart, taispeáin rabhadh rialta</string>
     <string name="nc_show_notification_warning_title">Taispeáin rabhadh fógra rialta</string>
     <string name="nc_sort_by">Sórtáil de réir</string>

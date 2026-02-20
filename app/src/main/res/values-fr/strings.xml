@@ -53,6 +53,9 @@
     <string name="deleted_conversation">La conversation %1$s a été supprimée</string>
     <string name="dnd">Ne pas déranger</string>
     <string name="dontClear">Ne pas effacer</string>
+    <string name="ecosystem_apps_files">Fichiers</string>
+    <string name="ecosystem_apps_more">Plus</string>
+    <string name="ecosystem_apps_notes">Notes</string>
     <string name="edit">Modifier</string>
     <string name="edit_error_24_hours_old_message">Les messages datant de plus de 24 heures ne peuvent pas être modifiés</string>
     <string name="edit_message_icon_description">Modifier le message</string>
@@ -526,6 +529,7 @@
     <string name="nc_shared_items_empty">Pas d\'éléments partagés</string>
     <string name="nc_shared_items_location">Position</string>
     <string name="nc_shared_location">Position partagée</string>
+    <string name="nc_show_ecosystem_title">Afficher le sélecteur d\'applications</string>
     <string name="nc_show_notification_warning_description">Quand les notifications ne sont pas correctement configurées, afficher un avertissement régulier</string>
     <string name="nc_show_notification_warning_title">Afficher un avertissement régulier à propos des notifications</string>
     <string name="nc_sort_by">Trier par</string>

@@ -53,6 +53,9 @@
     <string name="deleted_conversation">Konverzace %1$s smazána</string>
     <string name="dnd">Nerušit</string>
     <string name="dontClear">Nečistit</string>
+    <string name="ecosystem_apps_files">Soubory</string>
+    <string name="ecosystem_apps_more">Další</string>
+    <string name="ecosystem_apps_notes">Poznámky</string>
     <string name="edit">Upravit</string>
     <string name="edit_error_24_hours_old_message">Zprávy starší než 24 hodin není možné upravovat</string>
     <string name="edit_message_icon_description">Upravit zprávu</string>
@@ -175,6 +178,7 @@
     <string name="nc_connecting_call">Připojování …</string>
     <string name="nc_contacts_done">Hotovo</string>
     <string name="nc_conversation_description">Popis konverzace</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Přejít k souboru</string>
     <string name="nc_conversation_menu_conversation_info">Informace o konverzaci</string>
     <string name="nc_conversation_menu_video_call">Videohovor</string>
     <string name="nc_conversation_menu_voice_call">Hlasový hovor</string>
@@ -532,6 +536,7 @@
     <string name="nc_shared_items_empty">Žádné sdílené položky</string>
     <string name="nc_shared_items_location">Poloha</string>
     <string name="nc_shared_location">Sdílené umístění</string>
+    <string name="nc_show_ecosystem_title">Zobrazit přepínač aplikací</string>
     <string name="nc_show_notification_warning_description">Pokud notifikace nejsou správně nastavené, zobrazit pravidelné varování</string>
     <string name="nc_show_notification_warning_title">Zobrazovat pravidelné varování ohledně notifikací</string>
     <string name="nc_sort_by">Řadit podle</string>

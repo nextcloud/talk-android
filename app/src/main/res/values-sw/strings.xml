@@ -53,6 +53,9 @@
     <string name="deleted_conversation">Mazungumzo yaliyofutwa %1$s</string>
     <string name="dnd">Acha kusumbua</string>
     <string name="dontClear">Usifute</string>
+    <string name="ecosystem_apps_files">Faili</string>
+    <string name="ecosystem_apps_more">Zaidi</string>
+    <string name="ecosystem_apps_notes">Madokezo</string>
     <string name="edit">Hariri</string>
     <string name="edit_error_24_hours_old_message">Jumbe zenye zaidi ya masaa 24 haziwezi kuhaririwa</string>
     <string name="edit_message_icon_description">Hariri ujumbe</string>
@@ -532,6 +535,7 @@
     <string name="nc_shared_items_empty">Hakuna vipengele vilivyoshirikiwa</string>
     <string name="nc_shared_items_location">Mahali/eneo</string>
     <string name="nc_shared_location">Eneo lililoshirikishwa</string>
+    <string name="nc_show_ecosystem_title">Onesha kibadilisha programu</string>
     <string name="nc_show_notification_warning_description">Wakati arifa hazijawekwa vizuri, onyesha onyo la kawaida</string>
     <string name="nc_show_notification_warning_title">Onyesha onyo la arifa za kawaida</string>
     <string name="nc_sort_by">Panga kwa </string>

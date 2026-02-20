@@ -53,6 +53,9 @@
     <string name="deleted_conversation">Видалено розмову %1$s</string>
     <string name="dnd">Не турбувати</string>
     <string name="dontClear">Не очищати</string>
+    <string name="ecosystem_apps_files">Файли</string>
+    <string name="ecosystem_apps_more">Більше</string>
+    <string name="ecosystem_apps_notes">Нотатки</string>
     <string name="edit">Редагувати</string>
     <string name="edit_error_24_hours_old_message">Повідомлення старше 24 годин не можуть бути відредаговані</string>
     <string name="edit_message_icon_description">Редагувати повідомлення</string>
@@ -521,6 +524,7 @@
     <string name="nc_shared_items_empty">Немає спільних елементів</string>
     <string name="nc_shared_items_location">Місце</string>
     <string name="nc_shared_location">Місце у спільному доступі</string>
+    <string name="nc_show_ecosystem_title">Показувати перемикач застосунків</string>
     <string name="nc_show_notification_warning_description">Якщо сповіщення налаштовані неправильно, показувати звичайне попередження</string>
     <string name="nc_show_notification_warning_title">Показувати регулярні сповіщення про попередження</string>
     <string name="nc_sort_by">Впорядкувати за</string>

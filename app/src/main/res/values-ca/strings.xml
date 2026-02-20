@@ -51,6 +51,9 @@
     <string name="deleted_conversation">Conversa suprimida %1$s</string>
     <string name="dnd">No molesteu</string>
     <string name="dontClear">No l\'esborris</string>
+    <string name="ecosystem_apps_files">Fitxers</string>
+    <string name="ecosystem_apps_more">Més</string>
+    <string name="ecosystem_apps_notes">Notes</string>
     <string name="edit">Editar</string>
     <string name="edit_error_24_hours_old_message">Els missatges mes antics de 24 hores no es poden editar</string>
     <string name="edit_message_icon_description">Edició del missatge</string>
@@ -165,6 +168,7 @@
     <string name="nc_connecting_call">S\'està connectant …</string>
     <string name="nc_contacts_done">Fet</string>
     <string name="nc_conversation_description">Descripció de la conversa</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Vés al fitxer</string>
     <string name="nc_conversation_menu_conversation_info">Informació de la conversa</string>
     <string name="nc_conversation_menu_video_call">Trucada de vídeo </string>
     <string name="nc_conversation_menu_voice_call">Trucada de veu</string>
@@ -477,6 +481,7 @@
     <string name="nc_shared_items_empty">No hi ha elements compartits</string>
     <string name="nc_shared_items_location">Ubicació</string>
     <string name="nc_shared_location">Ubicació compartida</string>
+    <string name="nc_show_ecosystem_title">Mostra el selector d\'aplicacions</string>
     <string name="nc_show_notification_warning_description">Quan les notificacions no estan configurades correctament, mostra un avís regular</string>
     <string name="nc_show_notification_warning_title">Mostra un avís regular de notificacions</string>
     <string name="nc_sort_by">Ordena per</string>
