@@ -536,6 +536,7 @@
     <string name="nc_shared_items_empty">Keine geteilten Elemente</string>
     <string name="nc_shared_items_location">Ort</string>
     <string name="nc_shared_location">Geteilter Ort</string>
+    <string name="nc_show_ecosystem_description">Nextcloud-App-Vorschläge im Konten-Auswahldialog</string>
     <string name="nc_show_ecosystem_title">App-Umschalter anzeigen</string>
     <string name="nc_show_notification_warning_description">Wenn Benachrichtigungen nicht korrekt konfiguriert sind, zeige regelmäßig eine Warnung</string>
     <string name="nc_show_notification_warning_title">Zeige regelmäßige Benachrichtigungswarnung</string>

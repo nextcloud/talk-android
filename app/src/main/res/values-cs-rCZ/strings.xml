@@ -536,6 +536,7 @@
     <string name="nc_shared_items_empty">Žádné sdílené položky</string>
     <string name="nc_shared_items_location">Poloha</string>
     <string name="nc_shared_location">Sdílené umístění</string>
+    <string name="nc_show_ecosystem_description">Doporučování Nextcloud aplikací v dialogu volby účtu</string>
     <string name="nc_show_ecosystem_title">Zobrazit přepínač aplikací</string>
     <string name="nc_show_notification_warning_description">Pokud notifikace nejsou správně nastavené, zobrazit pravidelné varování</string>
     <string name="nc_show_notification_warning_title">Zobrazovat pravidelné varování ohledně notifikací</string>

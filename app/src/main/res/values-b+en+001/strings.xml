@@ -536,6 +536,7 @@
     <string name="nc_shared_items_empty">No shared items</string>
     <string name="nc_shared_items_location">Location</string>
     <string name="nc_shared_location">Shared location</string>
+    <string name="nc_show_ecosystem_description">Nextcloud app suggestions in account chooser dialog</string>
     <string name="nc_show_ecosystem_title">Show app switcher</string>
     <string name="nc_show_notification_warning_description">When notifications are not set up correctly, show a regular warning</string>
     <string name="nc_show_notification_warning_title">Show regular notification warning</string>
