@@ -49,6 +49,9 @@
     <string name="deleted_conversation">محادثة محذوفة %1$s</string>
     <string name="dnd">الرجاء عدم الإزعاج</string>
     <string name="dontClear">لا تمحُ</string>
+    <string name="ecosystem_apps_files">الملفّات</string>
+    <string name="ecosystem_apps_more">المزيد</string>
+    <string name="ecosystem_apps_notes">الملاحظات</string>
     <string name="edit">تعديل</string>
     <string name="edit_message_icon_description">تحرير رسالة</string>
     <string name="emoji_category_recent">مؤخّراً recednt</string>
@@ -485,6 +488,7 @@
     <string name="nc_shared_items_empty">لا توجد عناصر مُشارَكة</string>
     <string name="nc_shared_items_location">الموقع</string>
     <string name="nc_shared_location">موقع مُشارَك</string>
+    <string name="nc_show_ecosystem_title">إظهار مُبدِّل التطبيقات app switcher</string>
     <string name="nc_show_notification_warning_description">عندما لا تكون الإشعارات مهيأة بالصورة الصحيحة، أظهِر التحذيرات الاعتيادية.</string>
     <string name="nc_show_notification_warning_title">أظِهر تحذيراً بالإشعارات الاعتيادية</string>
     <string name="nc_sort_by">رتِّب حسب</string>

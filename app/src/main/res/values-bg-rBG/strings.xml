@@ -29,6 +29,9 @@
     <string name="delete_avatar">Изтриване на аватар</string>
     <string name="dnd">Не безпокойте</string>
     <string name="dontClear">Да не се изчиства</string>
+    <string name="ecosystem_apps_files">Файлове</string>
+    <string name="ecosystem_apps_more">Повече </string>
+    <string name="ecosystem_apps_notes">Бележки</string>
     <string name="edit">Променяне</string>
     <string name="edit_message_icon_description">Редактиране на съобщение</string>
     <string name="emoji_category_recent">Скорошни</string>

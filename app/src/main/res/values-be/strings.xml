@@ -53,6 +53,9 @@
     <string name="deleted_conversation">Выдалена размова %1$s</string>
     <string name="dnd">Не турбаваць</string>
     <string name="dontClear">Не ачышчаць</string>
+    <string name="ecosystem_apps_files">Файлы</string>
+    <string name="ecosystem_apps_more">Яшчэ</string>
+    <string name="ecosystem_apps_notes">Нататкі</string>
     <string name="edit">Рэдагаваць</string>
     <string name="edit_error_24_hours_old_message">Паведамленні, старэйшыя за 24 гадзіны, немагчыма рэдагаваць</string>
     <string name="edit_message_icon_description">Рэдагаваць паведамленне</string>

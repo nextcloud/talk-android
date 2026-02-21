@@ -28,6 +28,9 @@
     <string name="delete_avatar">Διαγραφή εικόνας προφίλ</string>
     <string name="dnd">Μην ενοχλείτε</string>
     <string name="dontClear">Να μη γίνεται εκκαθάριση</string>
+    <string name="ecosystem_apps_files">Αρχεία</string>
+    <string name="ecosystem_apps_more">Περισσότερα</string>
+    <string name="ecosystem_apps_notes">Σημειώσεις</string>
     <string name="edit">Επεξεργασία</string>
     <string name="edit_message_icon_description">Επεξεργασία μηνύματος</string>
     <string name="emoji_category_recent">Πρόσφατα</string>

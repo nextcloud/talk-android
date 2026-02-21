@@ -53,6 +53,9 @@
     <string name="deleted_conversation">Unterhaltung %1$s gelöscht</string>
     <string name="dnd">Nicht stören</string>
     <string name="dontClear">Nicht löschen</string>
+    <string name="ecosystem_apps_files">Dateien</string>
+    <string name="ecosystem_apps_more">Mehr</string>
+    <string name="ecosystem_apps_notes">Notizen</string>
     <string name="edit">Bearbeiten</string>
     <string name="edit_error_24_hours_old_message">Nachrichten, die älter als 24 Stunden sind, können nicht bearbeitet werden</string>
     <string name="edit_message_icon_description">Nachricht bearbeiten</string>
@@ -533,6 +536,8 @@
     <string name="nc_shared_items_empty">Keine geteilten Elemente</string>
     <string name="nc_shared_items_location">Ort</string>
     <string name="nc_shared_location">Geteilter Ort</string>
+    <string name="nc_show_ecosystem_description">Nextcloud-App-Vorschläge im Konten-Auswahldialog</string>
+    <string name="nc_show_ecosystem_title">App-Umschalter anzeigen</string>
     <string name="nc_show_notification_warning_description">Wenn Benachrichtigungen nicht korrekt konfiguriert sind, zeige regelmäßig eine Warnung</string>
     <string name="nc_show_notification_warning_title">Zeige regelmäßige Benachrichtigungswarnung</string>
     <string name="nc_sort_by">Sortieren nach</string>
