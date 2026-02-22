@@ -35,6 +35,7 @@ import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
 import com.nextcloud.talk.translate.viewmodels.TranslateViewModel
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
+import com.nextcloud.talk.viewmodels.LocationPickerViewModel
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
@@ -100,6 +101,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(CallRecordingViewModel::class)
     abstract fun callRecordingViewModel(viewModel: CallRecordingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LocationPickerViewModel::class)
+    abstract fun locationPickerViewModel(viewModel: LocationPickerViewModel): ViewModel
 
     @Binds
     @IntoMap

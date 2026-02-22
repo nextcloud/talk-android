@@ -76,12 +76,8 @@ class GeocodingActivity : BaseActivity() {
 
     private fun navigateToLocationPicker(address: Address) {
         val geocodingResult = GeocodingResult(address.latitude, address.longitude, address.displayName)
-        val intent = Intent(this, LocationPickerActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
-        intent.putExtra(BundleKeys.KEY_CHAT_API_VERSION, chatApiVersion)
-        intent.putExtra(BundleKeys.KEY_GEOCODING_RESULT, geocodingResult)
-        startActivity(intent)
+        val result = Intent().putExtra(BundleKeys.KEY_GEOCODING_RESULT, geocodingResult)
+        setResult(RESULT_OK, result)
         finish()
     }
 
