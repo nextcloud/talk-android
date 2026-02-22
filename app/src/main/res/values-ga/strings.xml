@@ -536,6 +536,7 @@
     <string name="nc_shared_items_empty">Níl aon mhír roinnte</string>
     <string name="nc_shared_items_location">Suíomh</string>
     <string name="nc_shared_location">Suíomh roinnte</string>
+    <string name="nc_show_ecosystem_description">Moltaí aip Nextcloud i ndialóg roghnóra cuntais</string>
     <string name="nc_show_ecosystem_title">Taispeáin athróir aip</string>
     <string name="nc_show_notification_warning_description">Nuair nach bhfuil fógraí socraithe i gceart, taispeáin rabhadh rialta</string>
     <string name="nc_show_notification_warning_title">Taispeáin rabhadh fógra rialta</string>
