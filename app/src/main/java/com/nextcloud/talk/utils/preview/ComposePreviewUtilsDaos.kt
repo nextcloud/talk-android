@@ -67,6 +67,11 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
     override suspend fun getChatMessageEntity(internalConversationId: String, messageId: Long): ChatMessageEntity? =
         null
 
+    override fun observeMessage(
+        internalConversationId: String,
+        messageId: Long
+    ): Flow<ChatMessageEntity?> = flowOf()
+
     override suspend fun getChatMessageOnce(internalConversationId: String, messageId: Long): ChatMessageEntity? = null
 
     override fun getChatMessageForConversationNullable(

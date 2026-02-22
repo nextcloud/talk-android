@@ -441,38 +441,69 @@ class ChatViewModel @AssistedInject constructor(
     // ------------------------------
     // Observe messages
     // ------------------------------
+    // private fun observeMessages() {
+    //     combine(messagesFlow, getLastCommonReadFlow) { messages, lastRead ->
+    //         messages.map {
+    //             it.toUiModel(
+    //                 it,
+    //                 lastRead,
+    //                 getParentMessage(it.parentMessageId)
+    //             )
+    //         }
+    //     }
+    //         .onEach { messages ->
+    //             val items = buildChatItems(messages, lastReadMessage)
+    //             _uiState.update { current ->
+    //                 current.copy(items = items)
+    //             }
+    //         }
+    //         .launchIn(viewModelScope)
+    // }
+
     private fun observeMessages() {
         combine(messagesFlow, getLastCommonReadFlow) { messages, lastRead ->
-            messages.map {
-                it.toUiModel(
-                    it,
-                    lastRead
-                )
-            }
+            messages to lastRead
         }
-            .onEach { messages ->
-                val items = buildChatItems(messages, lastReadMessage)
+            .onEach { (messages, lastRead) ->
+
+                // Explicitly specify types for the map
+                val messageMap: Map<Long, ChatMessage> = messages.associateBy { it.jsonMessageId.toLong() }
+
+                // Parent IDs
+                val parentIds: List<Long> = messages.mapNotNull { it.parentMessageId }
+                val missingParentIds: List<Long> =
+                    parentIds.filterNot { parentId -> messageMap.containsKey(parentId) }
+                        .distinct()
+
+                // 3. Fetch missing parents in background (non-blocking)
+                if (missingParentIds.isNotEmpty()) {
+                    viewModelScope.launch {
+                        // chatRepository.fetchMissingParents(  // not yet implemented
+                        //     internalConversationId,
+                        //     missingParentIds
+                        // )
+                    }
+                }
+
+                // 4. Build UI models using available data
+                val uiMessages = messages.map { message ->
+                    val parent: ChatMessage? = messageMap[message.parentMessageId]
+
+                    message.toUiModel(
+                        message,
+                        lastRead,
+                        parent
+                    )
+                }
+
+                // 5. Build UI items
+                val items = buildChatItems(uiMessages, lastRead)
+
                 _uiState.update { current ->
                     current.copy(items = items)
                 }
             }
             .launchIn(viewModelScope)
-
-        // messagesFlow
-        //     .map { messages ->
-        //         messages.map {
-        //             it.toUiModel(
-        //                 getLastCommonReadFlow.first()
-        //             )
-        //         }
-        //     }
-        //     .onEach { messages ->
-        //         val items = buildChatItems(messages, lastReadMessage)
-        //         _uiState.update { current ->
-        //             current.copy(items = items)
-        //         }
-        //     }
-        //     .launchIn(viewModelScope)
     }
 
     // ------------------------------
@@ -1257,43 +1288,77 @@ class ChatViewModel @AssistedInject constructor(
         _getCapabilitiesViewState.value = GetCapabilitiesStartState
     }
 
-    fun getMessageById(url: String, conversationModel: ConversationModel, messageId: Long): Flow<ChatMessage> =
-        flow {
-            val bundle = Bundle()
-            bundle.putString(BundleKeys.KEY_CHAT_URL, url)
-            bundle.putString(
-                BundleKeys.KEY_CREDENTIALS,
-                currentUser.getCredentials()
-            )
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
+    // fun getMessageById(url: String, conversationModel: ConversationModel, messageId: Long): Flow<ChatMessage> =
+    //     flow {
+    //         val bundle = Bundle()
+    //         bundle.putString(BundleKeys.KEY_CHAT_URL, url)
+    //         bundle.putString(
+    //             BundleKeys.KEY_CREDENTIALS,
+    //             currentUser.getCredentials()
+    //         )
+    //         bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
+    //
+    //         val message = chatRepository.getMessage(messageId, bundle)
+    //         emit(message.first())
+    //     }
 
-            val message = chatRepository.getMessage(messageId, bundle)
-            emit(message.first())
+    @Deprecated("use getMessageById(messageId: Long)")
+    fun getMessageById(
+        url: String,
+        conversationModel: ConversationModel,
+        messageId: Long
+    ): Flow<ChatMessage> {
+        val bundle = Bundle().apply {
+            putString(BundleKeys.KEY_CHAT_URL, url)
+            putString(BundleKeys.KEY_CREDENTIALS, currentUser.getCredentials())
+            putString(BundleKeys.KEY_ROOM_TOKEN, chatRoomToken)
         }
 
-    fun getIndividualMessageFromServer(
-        credentials: String,
-        baseUrl: String,
-        token: String,
-        messageId: String
-    ): Flow<ChatMessage?> =
-        flow {
-            val messages = chatNetworkDataSource.getContextForChatMessage(
-                credentials = credentials,
-                baseUrl = baseUrl,
-                token = token,
-                messageId = messageId,
-                limit = 1,
-                threadId = null
-            )
+        return chatRepository.getMessage(messageId, bundle)
+    }
 
-            if (messages.isNotEmpty()) {
-                val message = messages[0]
-                emit(message.toDomainModel())
-            } else {
-                emit(null)
-            }
-        }.flowOn(Dispatchers.IO)
+    fun getMessageById(
+        messageId: Long
+    ): Flow<ChatMessage> {
+        val urlForChatting = ApiUtils.getUrlForChat(
+            1, // TODO: remove hardcoded value
+            currentUser?.baseUrl,
+            chatRoomToken
+        )
+
+        val bundle = Bundle().apply {
+            putString(BundleKeys.KEY_CHAT_URL, urlForChatting)
+            putString(BundleKeys.KEY_CREDENTIALS, currentUser.getCredentials())
+            putString(BundleKeys.KEY_ROOM_TOKEN, chatRoomToken)
+        }
+
+        return chatRepository.getMessage(messageId, bundle)
+    }
+
+
+    // fun getIndividualMessageFromServer(
+    //     credentials: String,
+    //     baseUrl: String,
+    //     token: String,
+    //     messageId: String
+    // ): Flow<ChatMessage?> =
+    //     flow {
+    //         val messages = chatNetworkDataSource.getContextForChatMessage(
+    //             credentials = credentials,
+    //             baseUrl = baseUrl,
+    //             token = token,
+    //             messageId = messageId,
+    //             limit = 1,
+    //             threadId = null
+    //         )
+    //
+    //         if (messages.isNotEmpty()) {
+    //             val message = messages[0]
+    //             emit(message.toDomainModel())
+    //         } else {
+    //             emit(null)
+    //         }
+    //     }.flowOn(Dispatchers.IO)
 
     suspend fun getNumberOfThreadReplies(threadId: Long): Int = chatRepository.getNumberOfThreadReplies(threadId)
 

@@ -37,6 +37,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -121,6 +123,8 @@ class OfflineFirstChatRepository @Inject constructor(
     private var threadId: Long? = null
 
     private var latestKnownMessageIdFromSync: Long = 0
+
+    private val requestedParentIds = mutableSetOf<Long>()
 
     override fun initData(
         currentUser: User,
@@ -496,41 +500,95 @@ class OfflineFirstChatRepository @Inject constructor(
     override suspend fun getNumberOfThreadReplies(threadId: Long): Int =
         chatDao.getNumberOfThreadReplies(internalConversationId, threadId)
 
-    override suspend fun getMessage(messageId: Long, bundle: Bundle): Flow<ChatMessage> {
-        Log.d(TAG, "Get message with id $messageId")
+    // override suspend fun getMessage(messageId: Long, bundle: Bundle): Flow<ChatMessage> {
+    //     Log.d(TAG, "Get message with id $messageId")
+    //
+    //     val localMessage = chatDao.getChatMessageOnce(
+    //         internalConversationId,
+    //         messageId
+    //     )
+    //
+    //     if (localMessage == null) {
+    //         val fieldMap = getFieldMap(
+    //             lookIntoFuture = false,
+    //             timeout = 0,
+    //             includeLastKnown = true,
+    //             lastKnown = messageId.toInt(),
+    //             limit = 1
+    //         )
+    //         bundle.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+    //
+    //         Log.d(TAG, "Starting online request for single message")
+    //         getAndPersistMessages(bundle)
+    //     }
+    //
+    //     return chatDao
+    //         .getChatMessageForConversationNullable(internalConversationId, messageId)
+    //         .mapNotNull { it?.toDomainModel() }
+    //         .take(1)
+    //         .timeout(5_000.microseconds)
+    //         .catch { /* timeout -> emit nothing */ }
+    // }
 
-        val localMessage = chatDao.getChatMessageOnce(
-            internalConversationId,
-            messageId
-        )
+    override fun getMessage(
+        messageId: Long,
+        bundle: Bundle
+    ): Flow<ChatMessage> = flow {
 
-        if (localMessage == null) {
-            val fieldMap = getFieldMap(
-                lookIntoFuture = false,
-                timeout = 0,
-                includeLastKnown = true,
-                lastKnown = messageId.toInt(),
-                limit = 1
-            )
-            bundle.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+        val local = chatDao.getChatMessageEntity(internalConversationId, messageId)
 
-            Log.d(TAG, "Starting online request for single message")
-            getAndPersistMessages(bundle)
+        if (local != null) {
+            emit(local.toDomainModel())
+            return@flow
         }
 
-        return chatDao
-            .getChatMessageForConversationNullable(internalConversationId, messageId)
-            .mapNotNull { it?.toDomainModel() }
-            .take(1)
-            .timeout(5_000.microseconds)
-            .catch { /* timeout -> emit nothing */ }
+        getAndPersistMessages(bundle)
+
+        emitAll(
+            observeMessageNonNull(internalConversationId, messageId)
+                .map { it.toDomainModel() }
+                .take(1)
+        )
     }
+
+    fun observeMessageNonNull(
+        internalConversationId: String,
+        messageId: Long
+    ): Flow<ChatMessageEntity> =
+        chatDao.observeMessage(internalConversationId, messageId)
+            .filterNotNull()
 
     override suspend fun getParentMessageById(messageId: Long): Flow<ChatMessage> =
         chatDao.getChatMessageForConversation(
             internalConversationId,
             messageId
         ).map(ChatMessageEntity::toDomainModel)
+
+    override suspend fun fetchMissingParents(
+        conversationId: String,
+        parentIds: List<Long>
+    ) {
+        // TODO fetch parent messages from server
+        // val newIds = parentIds
+        //     .filterNot { it in requestedParentIds }
+        //
+        // if (newIds.isEmpty()) return
+        //
+        // requestedParentIds.addAll(newIds)
+        //
+        // try {
+        //     val response = api.getMessagesByIds(newIds)
+        //
+        //     val entities = response.map {
+        //         it.toEntity(conversationId)
+        //     }
+        //
+        //     chatDao.insertMessages(entities)
+        //
+        // } catch (e: Exception) {
+        //     // log if needed
+        // }
+    }
 
     fun pullMessagesFlow(bundle: Bundle): Flow<ChatPullResult> =
         flow {

@@ -73,9 +73,15 @@ interface ChatMessageRepository : LifecycleAwareManager {
     /**
      * Gets a individual message.
      */
-    suspend fun getMessage(messageId: Long, bundle: Bundle): Flow<ChatMessage>
+    fun getMessage(messageId: Long, bundle: Bundle): Flow<ChatMessage>
 
+    @Deprecated("getMessage(messageId: Long, bundle: Bundle)")
     suspend fun getParentMessageById(messageId: Long): Flow<ChatMessage>
+
+    suspend fun fetchMissingParents(
+        conversationId: String,
+        parentIds: List<Long>
+    )
 
     suspend fun getNumberOfThreadReplies(threadId: Long): Int
 

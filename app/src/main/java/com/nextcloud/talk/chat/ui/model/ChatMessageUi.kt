@@ -30,7 +30,8 @@ data class ChatMessageUi(
     val statusIcon: MessageStatusIcon,
     val timestamp: Long,
     val date: LocalDate,
-    val content: MessageTypeContent?
+    val content: MessageTypeContent?,
+    val parentMessage: ChatMessageUi? = null
 )
 
 sealed interface MessageTypeContent {
@@ -65,7 +66,11 @@ enum class MessageStatusIcon {
 }
 
 // Domain model (ChatMessage) to UI model (ChatMessageUi)
-fun ChatMessage.toUiModel(chatMessage: ChatMessage, lastCommonReadMessageId: Int): ChatMessageUi =
+fun ChatMessage.toUiModel(
+    chatMessage: ChatMessage,
+    lastCommonReadMessageId: Int,
+    parentMessage: ChatMessage?
+): ChatMessageUi =
     ChatMessageUi(
         id = jsonMessageId,
         text = text,
@@ -85,7 +90,8 @@ fun ChatMessage.toUiModel(chatMessage: ChatMessage, lastCommonReadMessageId: Int
         ),
         timestamp = timestamp,
         date = dateKey(),
-        content = getMessageTypeContent(chatMessage)
+        content = getMessageTypeContent(chatMessage),
+        parentMessage = parentMessage?.toUiModel(parentMessage, 0, null)
     )
 
 fun resolveStatusIcon(

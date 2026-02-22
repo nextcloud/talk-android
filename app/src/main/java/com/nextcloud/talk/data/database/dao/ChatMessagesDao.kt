@@ -106,6 +106,7 @@ interface ChatMessagesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatMessage(chatMessage: ChatMessageEntity)
 
+    @Deprecated("use getChatMessageEntity")
     @Query(
         """
         SELECT * 
@@ -116,6 +117,7 @@ interface ChatMessagesDao {
     )
     fun getChatMessageForConversation(internalConversationId: String, messageId: Long): Flow<ChatMessageEntity>
 
+    @Deprecated("use getChatMessageEntity")
     @Query(
         """
     SELECT *
@@ -126,6 +128,7 @@ interface ChatMessagesDao {
     )
     suspend fun getChatMessageOnce(internalConversationId: String, messageId: Long): ChatMessageEntity?
 
+    @Deprecated("use getChatMessageEntity")
     @Query(
         """
         SELECT * 
@@ -142,9 +145,24 @@ interface ChatMessagesDao {
         FROM ChatMessages
         WHERE internalConversationId = :internalConversationId 
         AND id = :messageId
+        LIMIT 1
         """
     )
     suspend fun getChatMessageEntity(internalConversationId: String, messageId: Long): ChatMessageEntity?
+
+    @Query(
+        """
+        SELECT * 
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND id = :messageId
+        LIMIT 1
+        """
+    )
+    fun observeMessage(
+        internalConversationId: String,
+        messageId: Long
+    ): Flow<ChatMessageEntity?>
 
     @Query(
         value = """
