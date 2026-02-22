@@ -617,12 +617,15 @@ How to translate with transifex:
 
     <!-- location sharing -->
     <string name="nc_share_location">Share location</string>
+    <string name="nc_search_location">Search location</string>
     <string name="nc_location_permission_required">location permission is required</string>
     <string name="nc_share_current_location">Share current location</string>
     <string name="nc_share_this_location">Share this location</string>
     <string name="nc_shared_location">Shared location</string>
     <string name="nc_location_current_position_description">Your current location</string>
     <string name="nc_location_unknown">Position unknown</string>
+    <string name="nc_zoom_in">Zoom in</string>
+    <string name="nc_zoom_out">Zoom out</string>
 
     <!-- share contact -->
     <string name="nc_share_contact">Share contact</string>
