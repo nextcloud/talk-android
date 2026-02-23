@@ -54,6 +54,7 @@
     <string name="dnd">Ära sega</string>
     <string name="dontClear">Ära tühjenda</string>
     <string name="ecosystem_apps_files">Failid</string>
+    <string name="ecosystem_apps_more">Veel</string>
     <string name="ecosystem_apps_notes">Märkmed</string>
     <string name="edit">Muuda</string>
     <string name="edit_error_24_hours_old_message">Ööpäevast vanemaid sõnumeid ei saa muuta</string>
@@ -535,6 +536,7 @@
     <string name="nc_shared_items_empty">Jaosmeediat ei leidu</string>
     <string name="nc_shared_items_location">Asukoht</string>
     <string name="nc_shared_location">Jagatud asukoht</string>
+    <string name="nc_show_ecosystem_description">Nextcloudi rakenduste soovitused kasutajakonto valimisvaates</string>
     <string name="nc_show_ecosystem_title">Näita rakenduste vahetajat</string>
     <string name="nc_show_notification_warning_description">Näita tavalist hoiatust, kui teavitused pole korrektselt seadistatud</string>
     <string name="nc_show_notification_warning_title">Näita tavalist teavituse hoiatust</string>
