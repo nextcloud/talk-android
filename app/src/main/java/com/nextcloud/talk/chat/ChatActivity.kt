@@ -2545,11 +2545,10 @@ class ChatActivity :
         }
         if (position != null && position >= 0) {
             val layoutManager = binding.messagesListView.layoutManager
-            // FIXME Not a perfect offset, but works to clear the pinned message view, try and find a better solution
             (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 500)
         } else {
             Log.d(TAG, "message $messageId that should be scrolled to was not found (scrollToMessageWithId)")
-            startContextChatWindowForMessage(messageId, conversationThreadId?.toString())
+            startContextChatWindowForMessage(messageId, currentConversation?.internalId)
         }
     }
 
@@ -3511,7 +3510,7 @@ class ChatActivity :
 
     private fun launchFileShareLink() {
         val intent = Intent(Intent.ACTION_VIEW).apply {
-            setData((conversationUser.baseUrl + "/f/" + currentConversation?.objectId).toUri())
+            data = (conversationUser.baseUrl + "/f/" + currentConversation?.objectId).toUri()
         }
         startActivity(intent)
     }
