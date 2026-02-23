@@ -3404,7 +3404,10 @@ class ChatActivity :
             showThreadsItem.isVisible = !isChatThread() &&
                 hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.THREADS)
 
-            if (CapabilitiesUtil.isAbleToCall(spreedCapabilities) && !isChatThread()) {
+            if (CapabilitiesUtil.isAbleToCall(spreedCapabilities) &&
+                !isChatThread() &&
+                !ConversationUtils.isNoteToSelfConversation(currentConversation)
+            ) {
                 conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
                 conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
 
