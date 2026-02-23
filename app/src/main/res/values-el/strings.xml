@@ -3,6 +3,7 @@
     <string name= "nc_edit">Επεξεργασία</string>
     <string name="add_participants">Προσθήκη</string>
     <string name="appbar_search_in">Αναζήτηση στο %s</string>
+    <string name="appear_offline">Εμφάνιση ως αποσυνδεδεμένος/η</string>
     <string name="archive_conversation">Αρχειοθέτηση συνομιλίας</string>
     <string name="archived">Αρχειοθετήθηκε</string>
     <string name="archived_conversation">Αρχειοθετήθηκε %1$s</string>
@@ -62,6 +63,7 @@
     <string name="message_search_begin_empty">Κανένα αποτέλεσμα</string>
     <string name="message_search_hint">Αναζήτηση …</string>
     <string name="messages">Μηνύματα</string>
+    <string name="mute_all_notifications">Σίγαση όλων των ειδοποιήσεων</string>
     <string name="nc_Server_account_imported">Ο επιλεγμένος λογαριασμός έχει εισαχθεί και είναι τώρα διαθέσιμος</string>
     <string name="nc_about">Περί</string>
     <string name="nc_account_chooser_active_user">Ενεργός χρήστης</string>
@@ -459,6 +461,7 @@
     <string name="thisWeek">Αυτή την εβδομάδα</string>
     <string name="this_weekend">Αυτό το Σαββατοκύριακο</string>
     <string name="thread_notifications">Ειδοποιήσεις συζήτησης</string>
+    <string name="thread_reply">Απάντηση</string>
     <string name="thread_title">Τίτλος συζήτησης</string>
     <string name="threads">Συζητήσεις</string>
     <string name="today">Σήμερα</string>
