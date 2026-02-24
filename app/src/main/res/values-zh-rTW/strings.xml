@@ -412,6 +412,8 @@
     <string name="nc_rename_confirm">重新命名</string>
     <string name="nc_reply">回覆</string>
     <string name="nc_reply_privately">私下回覆</string>
+    <string name="nc_reschedule_message_with_notification">重新安排並通知</string>
+    <string name="nc_reschedule_message_without_notification">重新安排而不另行通知</string>
     <string name="nc_room_retention">聊天室已成功保留</string>
     <string name="nc_save_message">儲存</string>
     <string name="nc_save_success">已成功儲存</string>
@@ -534,6 +536,7 @@
     <string name="nc_shared_items_empty">無已分享項目</string>
     <string name="nc_shared_items_location">路徑</string>
     <string name="nc_shared_location">共享的位置</string>
+    <string name="nc_show_ecosystem_description">帳號選擇器對話方塊中的 Nextcloud 應用程式建議</string>
     <string name="nc_show_ecosystem_title">顯示應用程式切換器</string>
     <string name="nc_show_notification_warning_description">通知未正確設定時，顯示一般警告</string>
     <string name="nc_show_notification_warning_title">顯示一般通知警告</string>
