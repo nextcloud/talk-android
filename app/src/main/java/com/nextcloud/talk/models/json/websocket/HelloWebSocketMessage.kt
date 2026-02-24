@@ -20,7 +20,9 @@ data class HelloWebSocketMessage(
     @JsonField(name = ["resumeid"])
     var resumeid: String? = null,
     @JsonField(name = ["auth"])
-    var authWebSocketMessage: AuthWebSocketMessage? = null
+    var authWebSocketMessage: AuthWebSocketMessage? = null,
+    @JsonField(name = ["features"])
+    var features: List<String>? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null, null)

@@ -39,7 +39,6 @@ import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
@@ -85,7 +84,6 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
-import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contextchat.ContextChatView
@@ -108,7 +106,6 @@ import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
-import com.nextcloud.talk.ui.BackgroundVoiceMessageCard
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogCompose
 import com.nextcloud.talk.ui.dialog.ChooseAccountShareToDialogFragment
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
@@ -158,7 +155,6 @@ import org.apache.commons.lang3.builder.CompareToBuilder
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
-import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -191,9 +187,6 @@ class ConversationsListActivity :
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
-
-    @Inject
-    lateinit var chatViewModel: ChatViewModel
 
     @Inject
     lateinit var contactsViewModel: ContactsViewModel
@@ -487,54 +480,57 @@ class ConversationsListActivity :
             }.collect()
         }
 
-        lifecycleScope.launch {
-            chatViewModel.backgroundPlayUIFlow.onEach { msg ->
-                binding.composeViewForBackgroundPlay.apply {
-                    // Dispose of the Composition when the view's LifecycleOwner is destroyed
-                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                    setContent {
-                        msg?.let {
-                            val duration = chatViewModel.mediaPlayerDuration
-                            val position = chatViewModel.mediaPlayerPosition
-                            val offset = position.toFloat() / duration
-                            val imageURI = ApiUtils.getUrlForAvatar(
-                                currentUser?.baseUrl,
-                                msg.actorId,
-                                true
-                            )
-                            val conversationImageURI = ApiUtils.getUrlForConversationAvatar(
-                                ApiUtils.API_V1,
-                                currentUser?.baseUrl,
-                                msg.token
-                            )
+        // TODO: playback of background voice messages must be reimplemented. It's not okay to use the chatViewModel
+        //  in conversation list. Instead, reimplement playback with a foreground service?!
 
-                            if (duration > 0) {
-                                BackgroundVoiceMessageCard(
-                                    msg.actorDisplayName!!,
-                                    duration - position,
-                                    offset,
-                                    imageURI,
-                                    conversationImageURI,
-                                    viewThemeUtils,
-                                    context
-                                )
-                                    .GetView({ isPaused ->
-                                        if (isPaused) {
-                                            chatViewModel.pauseMediaPlayer(false)
-                                        } else {
-                                            val filename = msg.selectedIndividualHashMap!!["name"]
-                                            val file = File(context.cacheDir, filename!!)
-                                            chatViewModel.startMediaPlayer(file.canonicalPath)
-                                        }
-                                    }) {
-                                        chatViewModel.stopMediaPlayer()
-                                    }
-                            }
-                        }
-                    }
-                }
-            }.collect()
-        }
+        // lifecycleScope.launch {
+        //     chatViewModel.backgroundPlayUIFlow.onEach { msg ->
+        //         binding.composeViewForBackgroundPlay.apply {
+        //             // Dispose of the Composition when the view's LifecycleOwner is destroyed
+        //             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        //             setContent {
+        //                 msg?.let {
+        //                     val duration = chatViewModel.mediaPlayerDuration
+        //                     val position = chatViewModel.mediaPlayerPosition
+        //                     val offset = position.toFloat() / duration
+        //                     val imageURI = ApiUtils.getUrlForAvatar(
+        //                         currentUser?.baseUrl,
+        //                         msg.actorId,
+        //                         true
+        //                     )
+        //                     val conversationImageURI = ApiUtils.getUrlForConversationAvatar(
+        //                         ApiUtils.API_V1,
+        //                         currentUser?.baseUrl,
+        //                         msg.token
+        //                     )
+        //
+        //                     if (duration > 0) {
+        //                         BackgroundVoiceMessageCard(
+        //                             msg.actorDisplayName!!,
+        //                             duration - position,
+        //                             offset,
+        //                             imageURI,
+        //                             conversationImageURI,
+        //                             viewThemeUtils,
+        //                             context
+        //                         )
+        //                             .GetView({ isPaused ->
+        //                                 if (isPaused) {
+        //                                     chatViewModel.pauseMediaPlayer(false)
+        //                                 } else {
+        //                                     val filename = msg.selectedIndividualHashMap!!["name"]
+        //                                     val file = File(context.cacheDir, filename!!)
+        //                                     chatViewModel.startMediaPlayer(file.canonicalPath)
+        //                                 }
+        //                             }) {
+        //                                 chatViewModel.stopMediaPlayer()
+        //                             }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }.collect()
+        // }
     }
 
     private fun handleNoteToSelfShortcut(noteToSelfAvailable: Boolean, noteToSelfToken: String) {
@@ -1459,7 +1455,12 @@ class ConversationsListActivity :
                                 messageId = item.messageEntry.messageId!!,
                                 title = item.messageEntry.title
                             )
-                            ContextChatView(context, contextChatViewModel)
+                            ContextChatView(
+                                user = currentUser!!,
+                                context = context,
+                                viewThemeUtils = viewThemeUtils,
+                                contextViewModel = contextChatViewModel
+                            )
                         }
                     }
                 }

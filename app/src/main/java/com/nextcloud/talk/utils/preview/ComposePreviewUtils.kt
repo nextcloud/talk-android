@@ -47,6 +47,7 @@ import com.nextcloud.talk.ui.theme.MaterialSchemesProviderImpl
 import com.nextcloud.talk.ui.theme.TalkSpecificViewThemeUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderImpl
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOldImpl
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.message.MessageUtils
@@ -171,16 +172,22 @@ class ComposePreviewUtils private constructor(context: Context) {
     val audioFocusRequestManager: AudioFocusRequestManager
         get() = AudioFocusRequestManager(mContext)
 
+    val currentUserProvider: CurrentUserProviderImpl
+        get() = CurrentUserProviderImpl(userManager)
+
     val chatViewModel: ChatViewModel
         get() = ChatViewModel(
-            appPreferences,
-            chatNetworkDataSource,
-            chatRepository,
-            threadsRepository,
-            conversationRepository,
-            reactionsRepository,
-            mediaRecorderManager,
-            audioFocusRequestManager
+            appPreferences = appPreferences,
+            chatNetworkDataSource = chatNetworkDataSource,
+            chatRepository = chatRepository,
+            threadsRepository = threadsRepository,
+            conversationRepository = conversationRepository,
+            reactionsRepository = reactionsRepository,
+            mediaRecorderManager = mediaRecorderManager,
+            audioFocusRequestManager = audioFocusRequestManager,
+            currentUserProvider = currentUserProvider,
+            chatRoomToken = "",
+            conversationThreadId = null
         )
 
     val contactsRepository: ContactsRepository

@@ -24,8 +24,12 @@ import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.stfalcon.chatkit.commons.models.IUser
 import com.stfalcon.chatkit.commons.models.MessageContentType
 import java.security.MessageDigest
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Date
 
+// Domain model for chat message. No entries here that are only necessary for the database layer, nor only for UI layer
 data class ChatMessage(
     var isGrouped: Boolean = false,
 
@@ -74,6 +78,7 @@ data class ChatMessage(
 
     var parentMessageId: Long? = null,
 
+    @Deprecated("delete with chatkit")
     var readStatus: Enum<ReadStatus> = ReadStatus.NONE,
 
     var messageType: String? = null,
@@ -144,7 +149,11 @@ data class ChatMessage(
 
     var pinnedUntil: Long? = null,
 
-    var sendAt: Int? = null
+    var sendAt: Int? = null,
+
+    var avatarUrl: String? = null,
+
+    var isUnread: Boolean = false
 
 ) : MessageContentType,
     MessageContentType.Image {
@@ -211,28 +220,33 @@ data class ChatMessage(
 
     @Suppress("ReturnCount")
     fun isLinkPreview(): Boolean {
-        if (CapabilitiesUtil.isLinkPreviewAvailable(activeUser!!)) {
-            val regexStringFromServer = activeUser?.capabilities?.coreCapability?.referenceRegex
+        activeUser?.let {
+            if (CapabilitiesUtil.isLinkPreviewAvailable(it)) {
+                val regexStringFromServer = activeUser?.capabilities?.coreCapability?.referenceRegex
 
-            val regexFromServer = regexStringFromServer?.toRegex(setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
-            val regexDefault = REGEX_STRING_DEFAULT.toRegex(setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
+                val regexFromServer = regexStringFromServer?.toRegex(
+                    setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE)
+                )
+                val regexDefault = REGEX_STRING_DEFAULT.toRegex(setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
 
-            val messageCharSequence: CharSequence = StringBuffer(message!!)
+                val messageCharSequence: CharSequence = StringBuffer(message!!)
 
-            if (regexFromServer != null) {
-                val foundLinkInServerRegex = regexFromServer.containsMatchIn(messageCharSequence)
-                if (foundLinkInServerRegex) {
-                    extractedUrlToPreview = regexFromServer.find(messageCharSequence)?.groups?.get(0)?.value?.trim()
+                if (regexFromServer != null) {
+                    val foundLinkInServerRegex = regexFromServer.containsMatchIn(messageCharSequence)
+                    if (foundLinkInServerRegex) {
+                        extractedUrlToPreview = regexFromServer.find(messageCharSequence)?.groups?.get(0)?.value?.trim()
+                        return true
+                    }
+                }
+
+                val foundLinkInDefaultRegex = regexDefault.containsMatchIn(messageCharSequence)
+                if (foundLinkInDefaultRegex) {
+                    extractedUrlToPreview = regexDefault.find(messageCharSequence)?.groups?.get(0)?.value?.trim()
                     return true
                 }
             }
-
-            val foundLinkInDefaultRegex = regexDefault.containsMatchIn(messageCharSequence)
-            if (foundLinkInDefaultRegex) {
-                extractedUrlToPreview = regexDefault.find(messageCharSequence)?.groups?.get(0)?.value?.trim()
-                return true
-            }
         }
+
         return false
     }
 
@@ -362,6 +376,11 @@ data class ChatMessage(
         get() = "command" == messageType
     val isDeletedCommentMessage: Boolean
         get() = "comment_deleted" == messageType
+
+    fun ChatMessage.dateKey(): LocalDate =
+        Instant.ofEpochMilli(timestamp * 1000L)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate()
 
     enum class MessageType {
         REGULAR_TEXT_MESSAGE,

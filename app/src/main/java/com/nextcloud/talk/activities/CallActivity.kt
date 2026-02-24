@@ -284,7 +284,10 @@ class CallActivity : CallBaseActivity() {
     private var isBreakoutRoom = false
     private val localParticipantMessageListener = LocalParticipantMessageListener { token ->
         switchToRoomToken = token
-        hangup(true, false)
+        hangup(
+            shutDownView = true,
+            endCallForAll = false
+        )
     }
     private val offerMessageListener = OfferMessageListener { sessionId, roomType, sdp, nick ->
         getOrCreatePeerConnectionWrapperForSessionIdAndType(
@@ -1900,7 +1903,7 @@ class CallActivity : CallBaseActivity() {
 
         when (messageType) {
             "usersInRoom" ->
-                internalSignalingMessageReceiver.process(signaling.messageWrapper as List<Map<String?, Any?>?>?)
+                internalSignalingMessageReceiver.process(signaling.messageWrapper as List<Map<String?, Any?>>)
 
             "message" -> {
                 val ncSignalingMessage = LoganSquare.parse(
@@ -2716,11 +2719,11 @@ class CallActivity : CallBaseActivity() {
      * All listeners are called in the main thread.
      */
     private class InternalSignalingMessageReceiver : SignalingMessageReceiver() {
-        fun process(users: List<Map<String?, Any?>?>?) {
+        fun process(users: List<Map<String?, Any?>>) {
             processUsersInRoom(users)
         }
 
-        fun process(message: NCSignalingMessage?) {
+        fun process(message: NCSignalingMessage) {
             processSignalingMessage(message)
         }
     }

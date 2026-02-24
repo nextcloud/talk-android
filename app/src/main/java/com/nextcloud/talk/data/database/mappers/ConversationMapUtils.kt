@@ -69,7 +69,7 @@ fun ConversationModel.asEntity() =
         lastPinnedId = lastPinnedId
     )
 
-fun ConversationEntity.asModel() =
+fun ConversationEntity.toDomainModel() =
     ConversationModel(
         internalId = internalId,
         accountId = accountId,

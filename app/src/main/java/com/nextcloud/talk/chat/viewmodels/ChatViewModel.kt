@@ -25,9 +25,13 @@ import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.chat.ui.model.ChatMessageUi
+import com.nextcloud.talk.chat.ui.model.toUiModel
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
+import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel.Companion.FOLLOWED_THREADS_EXIST
-import com.nextcloud.talk.data.database.mappers.asModel
+import com.nextcloud.talk.data.database.mappers.toDomainModel
+import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
@@ -36,7 +40,9 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.opengraph.Reference
@@ -50,7 +56,12 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -59,18 +70,32 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
+import java.time.LocalDate
 import javax.inject.Inject
 
-@Suppress("TooManyFunctions", "LongParameterList", "LargeClass")
-class ChatViewModel @Inject constructor(
+@Suppress("TooManyFunctions", "LongParameterList")
+class ChatViewModel @AssistedInject constructor(
     // should be removed here. Use it via RetrofitChatNetwork
     private val appPreferences: AppPreferences,
     private val chatNetworkDataSource: ChatNetworkDataSource,
@@ -79,7 +104,10 @@ class ChatViewModel @Inject constructor(
     private val conversationRepository: OfflineConversationsRepository,
     private val reactionsRepository: ReactionsRepository,
     private val mediaRecorderManager: MediaRecorderManager,
-    private val audioFocusRequestManager: AudioFocusRequestManager
+    private val audioFocusRequestManager: AudioFocusRequestManager,
+    private val currentUserProvider: CurrentUserProvider,
+    @Assisted private val chatRoomToken: String,
+    @Assisted private val conversationThreadId: Long?
 ) : ViewModel(),
     DefaultLifecycleObserver {
 
@@ -92,14 +120,25 @@ class ChatViewModel @Inject constructor(
         STOPPED
     }
 
+    @Deprecated("use currentUserFlow")
     lateinit var currentUser: User
+
+    private var localLastReadMessage: Int = 0
+
+    private var showUnreadMessagesMarker: Boolean = true
 
     private val mediaPlayerManager: MediaPlayerManager = MediaPlayerManager.sharedInstance(appPreferences)
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
     var mediaPlayerDuration = mediaPlayerManager.mediaPlayerDuration
     val mediaPlayerPosition = mediaPlayerManager.mediaPlayerPosition
-    var chatRoomToken: String = ""
+
+    @Deprecated("chatkit...")
+    private val internalConversationId: Flow<String> =
+        currentUserProvider.currentUserFlow.map { user ->
+            "${user.id}@$chatRoomToken"
+        }
+
     var messageDraft: MessageDraft = MessageDraft()
     lateinit var participantPermissions: ParticipantPermissions
 
@@ -131,6 +170,16 @@ class ChatViewModel @Inject constructor(
         mediaRecorderManager.handleOnStop()
         chatRepository.handleOnStop()
         mediaPlayerManager.handleOnStop()
+    }
+
+    fun onSignalingChatMessageReceived(chatMessage: ChatMessageJson) {
+        viewModelScope.launch {
+            chatRepository.onSignalingChatMessageReceived(chatMessage)
+        }
+    }
+
+    fun setUnreadMessagesMarker(shouldShow: Boolean) {
+        showUnreadMessagesMarker = shouldShow
     }
 
     val backgroundPlayUIFlow = mediaPlayerManager.backgroundPlayUIFlow
@@ -179,33 +228,14 @@ class ChatViewModel @Inject constructor(
         get() = _getOpenGraph
     private val _getOpenGraph: MutableLiveData<Reference> = MutableLiveData()
 
-    val getMessageFlow = chatRepository.messageFlow
-        .onEach {
-            _chatMessageViewState.value = if (_chatMessageViewState.value == ChatMessageInitialState) {
-                ChatMessageStartState
-            } else {
-                ChatMessageUpdateState
-            }
-        }.catch {
-            _chatMessageViewState.value = ChatMessageErrorState
-        }
-
-    val getRemoveMessageFlow = chatRepository.removeMessageFlow
+    private val _events = MutableSharedFlow<ChatEvent>()
+    val events = _events.asSharedFlow()
 
     val getUpdateMessageFlow = chatRepository.updateMessageFlow
 
     val getLastCommonReadFlow = chatRepository.lastCommonReadFlow
 
     val getLastReadMessageFlow = chatRepository.lastReadMessageFlow
-
-    val getConversationFlow = conversationRepository.conversationFlow
-        .onEach {
-            _getRoomViewState.value = GetRoomSuccessState
-        }.catch {
-            _getRoomViewState.value = GetRoomErrorState
-        }
-
-    val getGeneralUIFlow = chatRepository.generalUIFlow
 
     sealed interface ViewState
 
@@ -218,17 +248,12 @@ class ChatViewModel @Inject constructor(
     val getReminderExistState: LiveData<ViewState>
         get() = _getReminderExistState
 
-    object GetRoomStartState : ViewState
-    object GetRoomErrorState : ViewState
-    object GetRoomSuccessState : ViewState
-
-    private val _getRoomViewState: MutableLiveData<ViewState> = MutableLiveData(GetRoomStartState)
-    val getRoomViewState: LiveData<ViewState>
-        get() = _getRoomViewState
-
     object GetCapabilitiesStartState : ViewState
     object GetCapabilitiesErrorState : ViewState
-    open class GetCapabilitiesInitialLoadState(val spreedCapabilities: SpreedCapability) : ViewState
+    open class GetCapabilitiesInitialLoadState(
+        val spreedCapabilities: SpreedCapability,
+        val conversationModel: ConversationModel
+    ) : ViewState
     open class GetCapabilitiesUpdateState(val spreedCapabilities: SpreedCapability) : ViewState
 
     private val _getCapabilitiesViewState: MutableLiveData<ViewState> = MutableLiveData(GetCapabilitiesStartState)
@@ -301,25 +326,374 @@ class ChatViewModel @Inject constructor(
     val reactionDeletedViewState: LiveData<ViewState>
         get() = _reactionDeletedViewState
 
-    fun initData(user: User, credentials: String, urlForChatting: String, roomToken: String, threadId: Long?) {
+    private var firstUnreadMessageId: Int? = null
+
+    private var oneOrMoreMessagesWereSent = false
+
+    // ------------------------------
+    // UI State. This should be the only UI state. Add more val here and update via copy whenever necessary.
+    // ------------------------------
+    data class ChatUiState(
+        val items: List<ChatItem> = emptyList(),
+        val showChatAvatars: Boolean = false,
+
+        // Adding the whole conversation is just an intermediate solution as it is used in the activity.
+        // For the future, only necessary vars from conversation should be in the ui state
+        val conversation: ConversationModel? = null
+    )
+
+    private val _uiState = MutableStateFlow(ChatUiState())
+    val uiState: StateFlow<ChatUiState> = _uiState
+
+    // ------------------------------
+    // Current user flows
+    // ------------------------------
+    private val currentUserFlow: StateFlow<User?> =
+        currentUserProvider.currentUserFlow
+            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private val nonNullUserFlow = currentUserFlow.filterNotNull()
+
+    private val conversationFlow: Flow<ConversationModel> =
+        nonNullUserFlow
+            .flatMapLatest { user ->
+                val userId = requireNotNull(user.id)
+                conversationRepository.observeConversation(userId, chatRoomToken)
+            }
+            .mapNotNull { result ->
+                when (result) {
+                    is OfflineFirstConversationsRepository.ConversationResult.Found ->
+                        result.conversation
+
+                    OfflineFirstConversationsRepository.ConversationResult.NotFound ->
+                        null
+                }
+            }
+            .distinctUntilChangedBy { it.lastReadMessage }
+            .onEach {
+                println("Conversation changed: lastRead=${it.lastReadMessage}")
+            }
+
+    private val conversationAndUserFlow =
+        combine(conversationFlow, nonNullUserFlow) { c, u -> c to u }
+            .shareIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), replay = 1)
+
+    // ------------------------------
+    // Messages
+    // ------------------------------
+    private fun Flow<List<ChatMessageEntity>>.mapToChatMessages(userId: String): Flow<List<ChatMessage>> =
+        map { entities ->
+            entities.map { entity ->
+                entity.toDomainModel().apply {
+                    avatarUrl = getAvatarUrl(this)
+                    incoming = actorId != userId
+                }
+            }
+        }
+
+    private val messagesFlow: Flow<List<ChatMessage>> =
+        conversationAndUserFlow
+            .flatMapLatest { (conversation, user) ->
+                chatRepository
+                    .observeMessages(conversation.internalId)
+                    .distinctUntilChanged()
+                    .mapToChatMessages(user.userId!!)
+            }
+            .map { messages ->
+                messages.let(::handleSystemMessages)
+                    .let(::handleThreadMessages)
+            }
+            .distinctUntilChangedBy { it.map { msg -> msg.jsonMessageId } }
+
+    // ------------------------------
+    // Last read message cache
+    // ------------------------------
+    private var lastReadMessage: Int = 0
+
+    // ------------------------------
+    // Initialization
+    // ------------------------------
+    init {
+        observeConversation()
+        observeMessages()
+    }
+
+    // ------------------------------
+    // Observe conversation
+    // ------------------------------
+    private fun observeConversation() {
+        conversationFlow
+            .onEach { conversation ->
+                lastReadMessage = conversation.lastReadMessage
+
+                _uiState.update { current ->
+                    current.copy(
+                        conversation = conversation,
+                        showChatAvatars = !conversation.isOneToOneConversation()
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    // val lastCommonReadMessageId = getLastCommonReadFlow.first()
+
+    // ------------------------------
+    // Observe messages
+    // ------------------------------
+    // private fun observeMessages() {
+    //     combine(messagesFlow, getLastCommonReadFlow) { messages, lastRead ->
+    //         messages.map {
+    //             it.toUiModel(
+    //                 it,
+    //                 lastRead,
+    //                 getParentMessage(it.parentMessageId)
+    //             )
+    //         }
+    //     }
+    //         .onEach { messages ->
+    //             val items = buildChatItems(messages, lastReadMessage)
+    //             _uiState.update { current ->
+    //                 current.copy(items = items)
+    //             }
+    //         }
+    //         .launchIn(viewModelScope)
+    // }
+
+    private fun observeMessages() {
+        combine(messagesFlow, getLastCommonReadFlow) { messages, lastRead ->
+            messages to lastRead
+        }
+            .onEach { (messages, lastRead) ->
+
+                // Explicitly specify types for the map
+                val messageMap: Map<Long, ChatMessage> = messages.associateBy { it.jsonMessageId.toLong() }
+
+                // Parent IDs
+                val parentIds: List<Long> = messages.mapNotNull { it.parentMessageId }
+                val missingParentIds: List<Long> =
+                    parentIds.filterNot { parentId -> messageMap.containsKey(parentId) }
+                        .distinct()
+
+                // 3. Fetch missing parents in background (non-blocking)
+                if (missingParentIds.isNotEmpty()) {
+                    viewModelScope.launch {
+                        // chatRepository.fetchMissingParents(  // not yet implemented
+                        //     internalConversationId,
+                        //     missingParentIds
+                        // )
+                    }
+                }
+
+                // 4. Build UI models using available data
+                val uiMessages = messages.map { message ->
+                    val parent: ChatMessage? = messageMap[message.parentMessageId]
+
+                    message.toUiModel(
+                        message,
+                        lastRead,
+                        parent
+                    )
+                }
+
+                // 5. Build UI items
+                val items = buildChatItems(uiMessages, lastRead)
+
+                _uiState.update { current ->
+                    current.copy(items = items)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    // ------------------------------
+    // Build chat items (pure)
+    // ------------------------------
+    private fun buildChatItems(uiMessages: List<ChatMessageUi>, lastReadMessage: Int): List<ChatItem> {
+        var lastDate: LocalDate? = null
+
+        return buildList {
+            if (firstUnreadMessageId == null) {
+                firstUnreadMessageId =
+                    uiMessages.firstOrNull {
+                        it.id > lastReadMessage
+                    }?.id
+                Log.d(TAG, "reversedMessages.size = ${uiMessages.size}")
+                Log.d(TAG, "firstUnreadMessageId = $firstUnreadMessageId")
+                Log.d(TAG, "conversation.lastReadMessage = $lastReadMessage")
+            }
+
+            for (uiMessage in uiMessages) {
+                val date = uiMessage.date
+
+                if (date != lastDate) {
+                    add(ChatItem.DateHeaderItem(date))
+                    lastDate = date
+                }
+
+                if (!oneOrMoreMessagesWereSent && uiMessage.id == firstUnreadMessageId) {
+                    add(ChatItem.UnreadMessagesMarkerItem(date))
+                }
+
+                add(ChatItem.MessageItem(uiMessage))
+            }
+        }.asReversed()
+    }
+
+    fun onMessageSent() {
+        oneOrMoreMessagesWereSent = true
+    }
+
+    @Deprecated("use messagesFlow")
+    val messagesForChatKit: StateFlow<List<ChatMessage>> =
+        conversationAndUserFlow
+            .flatMapLatest { (conversation, user) ->
+                chatRepository
+                    .observeMessages(conversation.internalId)
+                    .mapToChatMessages(user.userId!!)
+            }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    fun observeConversationAndUserFirstTime() {
+        conversationAndUserFlow
+            .take(1)
+            .onEach { (conversation, user) ->
+                val credentials =
+                    ApiUtils.getCredentials(user.username, user.token) ?: return@onEach
+
+                val url =
+                    ApiUtils.getUrlForChat(1, user.baseUrl, chatRoomToken)
+
+                chatRepository.updateConversation(conversation)
+
+                loadInitialMessages(
+                    withCredentials = credentials,
+                    withUrl = url,
+                    isChatRelaySupported = isChatRelaySupported(user)
+                )
+
+                getCapabilities(user, chatRoomToken, conversation)
+            }
+            .launchIn(viewModelScope)
+    }
+
+    fun isChatRelaySupported(user: User): Boolean {
+        val websocketInstance = WebSocketConnectionHelper.getWebSocketInstanceForUser(user)
+        return websocketInstance?.supportsChatRelay() == true
+    }
+
+    fun observeConversationAndUserEveryTime() {
+        conversationAndUserFlow
+            .onEach { (conversation, user) ->
+                chatRepository.updateConversation(conversation)
+
+                getCapabilities(user, chatRoomToken, conversation)
+
+                advanceLocalLastReadMessageIfNeeded(
+                    conversation.lastReadMessage
+                )
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
+        fun shouldRemoveMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+            isInfoMessageAboutDeletion(currentMessage) ||
+                isReactionsMessage(currentMessage) ||
+                isPollVotedMessage(currentMessage) ||
+                isEditMessage(currentMessage) ||
+                isThreadCreatedMessage(currentMessage)
+
+        val chatMessageMap = chatMessageList.associateBy { it.id }.toMutableMap()
+        val chatMessageIterator = chatMessageMap.iterator()
+
+        while (chatMessageIterator.hasNext()) {
+            val currentMessage = chatMessageIterator.next()
+
+            if (shouldRemoveMessage(currentMessage)) {
+                chatMessageIterator.remove()
+            }
+        }
+        return chatMessageMap.values.toList()
+    }
+
+    private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+        currentMessage.value.parentMessageId != null &&
+            currentMessage.value.systemMessageType == ChatMessage
+                .SystemMessageType.MESSAGE_DELETED
+
+    private fun isReactionsMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+        currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
+            currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_DELETED ||
+            currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_REVOKED
+
+    private fun isThreadCreatedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+        currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.THREAD_CREATED
+
+    private fun isEditMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+        currentMessage.value.parentMessageId != null &&
+            currentMessage.value.systemMessageType == ChatMessage
+                .SystemMessageType.MESSAGE_EDITED
+
+    private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+        currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
+
+    private fun handleThreadMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
+        fun isThreadChildMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+            currentMessage.value.isThread &&
+                currentMessage.value.threadId?.toInt() != currentMessage.value.jsonMessageId
+
+        val chatMessageMap = chatMessageList.associateBy { it.id }.toMutableMap()
+
+        if (conversationThreadId == null) {
+            val chatMessageIterator = chatMessageMap.iterator()
+            while (chatMessageIterator.hasNext()) {
+                val currentMessage = chatMessageIterator.next()
+
+                if (isThreadChildMessage(currentMessage)) {
+                    chatMessageIterator.remove()
+                }
+            }
+        }
+
+        return chatMessageMap.values.toList()
+    }
+
+    // val timeString = DateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
+
+    fun getAvatarUrl(message: ChatMessage): String =
+        if (this::currentUser.isInitialized) {
+            ApiUtils.getUrlForAvatar(
+                currentUser.baseUrl,
+                message.actorId,
+                false
+            )
+        } else {
+            ""
+        }
+
+    fun initData(user: User, credentials: String, urlForChatting: String, threadId: Long?) {
         currentUser = user
 
         chatRepository.initData(
             user,
             credentials,
             urlForChatting,
-            roomToken,
+            chatRoomToken,
             threadId
         )
-        chatRoomToken = roomToken
+
+        observeConversationAndUserFirstTime()
+        observeConversationAndUserEveryTime()
     }
 
-    fun updateConversation(currentConversation: ConversationModel) {
-        chatRepository.updateConversation(currentConversation)
-    }
+    fun ConversationModel?.isOneToOneConversation(): Boolean =
+        this?.type ==
+            ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
+    @Deprecated("use observeConversation")
     fun getRoom(token: String) {
-        _getRoomViewState.value = GetRoomStartState
+        // _getRoomViewState.value = GetRoomStartState
         conversationRepository.getRoom(currentUser, token)
     }
 
@@ -343,7 +717,8 @@ class ChatViewModel @Inject constructor(
         if (conversationModel.remoteServer.isNullOrEmpty()) {
             if (_getCapabilitiesViewState.value == GetCapabilitiesStartState) {
                 _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(
-                    user.capabilities!!.spreedCapability!!
+                    user.capabilities!!.spreedCapability!!,
+                    conversationModel
                 )
             } else {
                 _getCapabilitiesViewState.value = GetCapabilitiesUpdateState(user.capabilities!!.spreedCapability!!)
@@ -363,7 +738,10 @@ class ChatViewModel @Inject constructor(
 
                     override fun onNext(spreedCapabilities: SpreedCapability) {
                         if (_getCapabilitiesViewState.value == GetCapabilitiesStartState) {
-                            _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(spreedCapabilities)
+                            _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(
+                                spreedCapabilities,
+                                conversationModel
+                            )
                         } else {
                             _getCapabilitiesViewState.value = GetCapabilitiesUpdateState(spreedCapabilities)
                         }
@@ -456,7 +834,6 @@ class ChatViewModel @Inject constructor(
                 override fun onNext(t: GenericOverall) {
                     _leaveRoomViewState.value = LeaveRoomSuccessState(funToCallWhenLeaveSuccessful)
                     _getCapabilitiesViewState.value = GetCapabilitiesStartState
-                    _getRoomViewState.value = GetRoomStartState
                 }
             })
     }
@@ -524,13 +901,51 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun loadMessages(withCredentials: String, withUrl: String) {
+    suspend fun loadInitialMessages(withCredentials: String, withUrl: String, isChatRelaySupported: Boolean) {
         val bundle = Bundle()
         bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
         bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
-        chatRepository.initScopeAndLoadInitialMessages(
-            withNetworkParams = bundle
+        chatRepository.loadInitialMessages(
+            withNetworkParams = bundle,
+            isChatRelaySupported = isChatRelaySupported
         )
+        _events.emit(ChatEvent.StartRegularPolling)
+    }
+
+    suspend fun startMessagePolling(hasHighPerformanceBackend: Boolean) {
+        chatRepository.startMessagePolling(hasHighPerformanceBackend)
+    }
+
+    fun loadMoreMessagesCompose() {
+        val currentItems = _uiState.value.items
+
+        val messageId = currentItems
+            .asReversed()
+            .firstNotNullOfOrNull { item ->
+                (item as? ChatItem.MessageItem)?.uiMessage?.id
+            }
+
+        Log.d(TAG, "Compose load more, messageId: $messageId")
+
+        messageId?.let {
+            val user = currentUserFlow.value
+
+            val urlForChatting = ApiUtils.getUrlForChat(
+                1,
+                user?.baseUrl,
+                chatRoomToken
+            )
+
+            val credentials = ApiUtils.getCredentials(user?.username, user?.token)
+
+            loadMoreMessages(
+                beforeMessageId = it.toLong(),
+                withUrl = urlForChatting,
+                withCredentials = credentials!!,
+                withMessageLimit = 100,
+                roomToken = uiState.value.conversation!!.token
+            )
+        }
     }
 
     fun loadMoreMessages(
@@ -540,15 +955,17 @@ class ChatViewModel @Inject constructor(
         withCredentials: String,
         withUrl: String
     ) {
-        val bundle = Bundle()
-        bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
-        bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
-        chatRepository.loadMoreMessages(
-            beforeMessageId,
-            roomToken,
-            withMessageLimit,
-            withNetworkParams = bundle
-        )
+        viewModelScope.launch {
+            val bundle = Bundle()
+            bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
+            bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
+            chatRepository.loadMoreMessages(
+                beforeMessageId,
+                roomToken,
+                withMessageLimit,
+                withNetworkParams = bundle
+            )
+        }
     }
 
     // fun initMessagePolling(withCredentials: String, withUrl: String, roomToken: String) {
@@ -587,8 +1004,26 @@ class ChatViewModel @Inject constructor(
             })
     }
 
-    fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int) {
-        chatNetworkDataSource.setChatReadMarker(credentials, url, previousMessageId)
+    fun advanceLocalLastReadMessageIfNeeded(messageId: Int) {
+        if (localLastReadMessage < messageId) {
+            localLastReadMessage = messageId
+        }
+    }
+
+    /**
+     * Please use with caution to not spam the server
+     */
+    fun updateRemoteLastReadMessageIfNeeded(credentials: String, url: String) {
+        if (localLastReadMessage > _uiState.value.conversation!!.lastReadMessage) {
+            setChatReadMessage(credentials, url, localLastReadMessage)
+        }
+    }
+
+    /**
+     * Please use with caution to not spam the server
+     */
+    fun setChatReadMessage(credentials: String, url: String, lastReadMessage: Int) {
+        chatNetworkDataSource.setChatReadMarker(credentials, url, lastReadMessage)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<GenericOverall> {
@@ -853,43 +1288,77 @@ class ChatViewModel @Inject constructor(
         _getCapabilitiesViewState.value = GetCapabilitiesStartState
     }
 
-    fun getMessageById(url: String, conversationModel: ConversationModel, messageId: Long): Flow<ChatMessage> =
-        flow {
-            val bundle = Bundle()
-            bundle.putString(BundleKeys.KEY_CHAT_URL, url)
-            bundle.putString(
-                BundleKeys.KEY_CREDENTIALS,
-                currentUser.getCredentials()
-            )
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
+    // fun getMessageById(url: String, conversationModel: ConversationModel, messageId: Long): Flow<ChatMessage> =
+    //     flow {
+    //         val bundle = Bundle()
+    //         bundle.putString(BundleKeys.KEY_CHAT_URL, url)
+    //         bundle.putString(
+    //             BundleKeys.KEY_CREDENTIALS,
+    //             currentUser.getCredentials()
+    //         )
+    //         bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
+    //
+    //         val message = chatRepository.getMessage(messageId, bundle)
+    //         emit(message.first())
+    //     }
 
-            val message = chatRepository.getMessage(messageId, bundle)
-            emit(message.first())
+    @Deprecated("use getMessageById(messageId: Long)")
+    fun getMessageById(
+        url: String,
+        conversationModel: ConversationModel,
+        messageId: Long
+    ): Flow<ChatMessage> {
+        val bundle = Bundle().apply {
+            putString(BundleKeys.KEY_CHAT_URL, url)
+            putString(BundleKeys.KEY_CREDENTIALS, currentUser.getCredentials())
+            putString(BundleKeys.KEY_ROOM_TOKEN, chatRoomToken)
         }
 
-    fun getIndividualMessageFromServer(
-        credentials: String,
-        baseUrl: String,
-        token: String,
-        messageId: String
-    ): Flow<ChatMessage?> =
-        flow {
-            val messages = chatNetworkDataSource.getContextForChatMessage(
-                credentials = credentials,
-                baseUrl = baseUrl,
-                token = token,
-                messageId = messageId,
-                limit = 1,
-                threadId = null
-            )
+        return chatRepository.getMessage(messageId, bundle)
+    }
 
-            if (messages.isNotEmpty()) {
-                val message = messages[0]
-                emit(message.asModel())
-            } else {
-                emit(null)
-            }
-        }.flowOn(Dispatchers.IO)
+    fun getMessageById(
+        messageId: Long
+    ): Flow<ChatMessage> {
+        val urlForChatting = ApiUtils.getUrlForChat(
+            1, // TODO: remove hardcoded value
+            currentUser?.baseUrl,
+            chatRoomToken
+        )
+
+        val bundle = Bundle().apply {
+            putString(BundleKeys.KEY_CHAT_URL, urlForChatting)
+            putString(BundleKeys.KEY_CREDENTIALS, currentUser.getCredentials())
+            putString(BundleKeys.KEY_ROOM_TOKEN, chatRoomToken)
+        }
+
+        return chatRepository.getMessage(messageId, bundle)
+    }
+
+
+    // fun getIndividualMessageFromServer(
+    //     credentials: String,
+    //     baseUrl: String,
+    //     token: String,
+    //     messageId: String
+    // ): Flow<ChatMessage?> =
+    //     flow {
+    //         val messages = chatNetworkDataSource.getContextForChatMessage(
+    //             credentials = credentials,
+    //             baseUrl = baseUrl,
+    //             token = token,
+    //             messageId = messageId,
+    //             limit = 1,
+    //             threadId = null
+    //         )
+    //
+    //         if (messages.isNotEmpty()) {
+    //             val message = messages[0]
+    //             emit(message.toDomainModel())
+    //         } else {
+    //             emit(null)
+    //         }
+    //     }.flowOn(Dispatchers.IO)
 
     suspend fun getNumberOfThreadReplies(threadId: Long): Int = chatRepository.getNumberOfThreadReplies(threadId)
 
@@ -1117,5 +1586,39 @@ class ChatViewModel @Inject constructor(
         data object None : ThreadRetrieveUiState()
         data class Success(val thread: ThreadInfo?) : ThreadRetrieveUiState()
         data class Error(val exception: Exception) : ThreadRetrieveUiState()
+    }
+
+    sealed class ChatEvent {
+        object Initial : ChatEvent()
+        object StartRegularPolling : ChatEvent()
+        object Loading : ChatEvent()
+        object Ready : ChatEvent()
+        data class Error(val throwable: Throwable) : ChatEvent()
+    }
+
+    sealed interface ChatItem {
+        fun messageOrNull(): ChatMessageUi? = (this as? MessageItem)?.uiMessage
+        fun dateOrNull(): LocalDate? = (this as? DateHeaderItem)?.date
+
+        fun stableKey(): Any =
+            when (this) {
+                is MessageItem -> "msg_${uiMessage.id}"
+                is DateHeaderItem -> "header_$date"
+                is UnreadMessagesMarkerItem -> "last_read_$date"
+            }
+
+        // TODO do not include whole ChatMessage here. Extract the things that are needed in UI to ChatMessageUi and
+        //  then delete ChatMessage!
+        data class MessageItem(
+            // val message: ChatMessage,
+            val uiMessage: ChatMessageUi
+        ) : ChatItem
+        data class DateHeaderItem(val date: LocalDate) : ChatItem
+        data class UnreadMessagesMarkerItem(val date: LocalDate) : ChatItem
+    }
+
+    @AssistedFactory
+    interface ChatViewModelFactory {
+        fun create(roomToken: String, conversationThreadId: Long?): ChatViewModel
     }
 }

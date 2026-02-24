@@ -112,36 +112,37 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
         clickView = image
         messageText.visibility = View.VISIBLE
         if (message.getCalculateMessageType() === ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
-            val chatActivity = commonMessageInterface as ChatActivity
-            fileViewerUtils = FileViewerUtils(chatActivity, message.activeUser!!)
-            val fileName = message.selectedIndividualHashMap!![KEY_NAME]
-
-            messageText.text = fileName
-
-            if (message.activeUser != null &&
-                message.activeUser!!.username != null &&
-                message.activeUser!!.baseUrl != null
-            ) {
-                clickView!!.setOnClickListener { v: View? ->
-                    fileViewerUtils!!.openFile(
-                        message,
-                        ProgressUi(progressBar, messageText, image)
-                    )
+            message.activeUser?.let {
+                val chatActivity = commonMessageInterface as ChatActivity
+                fileViewerUtils = FileViewerUtils(chatActivity, it)
+                val fileName = message.selectedIndividualHashMap!![KEY_NAME]
+                messageText.text = fileName
+                if (
+                    it.username != null &&
+                    it.baseUrl != null
+                ) {
+                    clickView!!.setOnClickListener { v: View? ->
+                        fileViewerUtils!!.openFile(
+                            message,
+                            ProgressUi(progressBar, messageText, image)
+                        )
+                    }
+                    clickView!!.setOnLongClickListener {
+                        previewMessageInterface!!.onPreviewMessageLongClick(message)
+                        true
+                    }
                 }
-                clickView!!.setOnLongClickListener {
-                    previewMessageInterface!!.onPreviewMessageLongClick(message)
-                    true
-                }
-            } else {
+
+                fileViewerUtils?.resumeToUpdateViewsByProgress(
+                    message.selectedIndividualHashMap!![KEY_NAME]!!,
+                    message.selectedIndividualHashMap!![KEY_ID]!!,
+                    message.selectedIndividualHashMap!![KEY_MIMETYPE],
+                    message.openWhenDownloaded,
+                    ProgressUi(progressBar, messageText, image)
+                )
+            } ?: {
                 Log.e(TAG, "failed to set click listener because activeUser, username or baseUrl were null")
             }
-            fileViewerUtils!!.resumeToUpdateViewsByProgress(
-                message.selectedIndividualHashMap!![KEY_NAME]!!,
-                message.selectedIndividualHashMap!![KEY_ID]!!,
-                message.selectedIndividualHashMap!![KEY_MIMETYPE],
-                message.openWhenDownloaded,
-                ProgressUi(progressBar, messageText, image)
-            )
         } else if (message.getCalculateMessageType() === ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE) {
             messageText.text = "GIPHY"
             DisplayUtils.setClickableString("GIPHY", "https://giphy.com", messageText)

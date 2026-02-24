@@ -18,16 +18,43 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 @Suppress("Detekt.TooManyFunctions")
 interface ChatMessagesDao {
+
+    // """
+    //     SELECT *
+    //     FROM ChatMessages
+    //     WHERE internalConversationId = :internalConversationId AND id >= :messageId
+    //     AND isTemporary = 0
+    //     AND (:threadId IS NULL OR threadId = :threadId)
+    //     ORDER BY timestamp ASC, id ASC
+    //     """
+
+    @Query(
+        """
+    SELECT *
+    FROM ChatMessages
+    WHERE internalConversationId = :internalConversationId
+      AND (:threadId IS NULL OR threadId = :threadId)
+      AND id > :oldestMessageId
+    ORDER BY timestamp ASC, id ASC
+    """
+    )
+    fun getMessagesNewerThan(
+        internalConversationId: String,
+        threadId: Long?,
+        oldestMessageId: Long
+    ): Flow<List<ChatMessageEntity>>
+
     @Query(
         """
         SELECT *
         FROM ChatMessages
         WHERE internalConversationId = :internalConversationId
         AND isTemporary = 0
+        AND (:threadId IS NULL OR threadId = :threadId)
         ORDER BY timestamp DESC, id DESC
         """
     )
-    fun getMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>>
+    fun getMessagesForConversation(internalConversationId: String, threadId: Long?): Flow<List<ChatMessageEntity>>
 
     @Query(
         """
@@ -79,6 +106,7 @@ interface ChatMessagesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatMessage(chatMessage: ChatMessageEntity)
 
+    @Deprecated("use getChatMessageEntity")
     @Query(
         """
         SELECT * 
@@ -89,6 +117,18 @@ interface ChatMessagesDao {
     )
     fun getChatMessageForConversation(internalConversationId: String, messageId: Long): Flow<ChatMessageEntity>
 
+    @Deprecated("use getChatMessageEntity")
+    @Query(
+        """
+    SELECT *
+    FROM ChatMessages
+    WHERE internalConversationId = :internalConversationId
+    AND id = :messageId
+    """
+    )
+    suspend fun getChatMessageOnce(internalConversationId: String, messageId: Long): ChatMessageEntity?
+
+    @Deprecated("use getChatMessageEntity")
     @Query(
         """
         SELECT * 
@@ -97,7 +137,32 @@ interface ChatMessagesDao {
         AND id = :messageId
         """
     )
+    fun getChatMessageForConversationNullable(internalConversationId: String, messageId: Long): Flow<ChatMessageEntity?>
+
+    @Query(
+        """
+        SELECT * 
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId 
+        AND id = :messageId
+        LIMIT 1
+        """
+    )
     suspend fun getChatMessageEntity(internalConversationId: String, messageId: Long): ChatMessageEntity?
+
+    @Query(
+        """
+        SELECT * 
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND id = :messageId
+        LIMIT 1
+        """
+    )
+    fun observeMessage(
+        internalConversationId: String,
+        messageId: Long
+    ): Flow<ChatMessageEntity?>
 
     @Query(
         value = """

@@ -139,7 +139,7 @@ class ParticipantHandler(
             _uiState.update { it.copy(raisedHand = state) }
         }
 
-        override fun onReaction(reaction: String?) {
+        override fun onReaction(reaction: String) {
             Log.d(TAG, "onReaction")
         }
 
