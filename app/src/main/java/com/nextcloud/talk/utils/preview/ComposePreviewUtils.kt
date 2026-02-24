@@ -27,6 +27,8 @@ import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.contacts.ContactsRepositoryImpl
 import com.nextcloud.talk.contacts.ContactsViewModel
+import com.nextcloud.talk.conversationcreation.ConversationCreationRepositoryImpl
+import com.nextcloud.talk.conversationcreation.ConversationCreationViewModel
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.ConversationsNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
@@ -188,4 +190,10 @@ class ComposePreviewUtils private constructor(context: Context) {
 
     val contactsViewModel: ContactsViewModel
         get() = ContactsViewModel(contactsRepository, userProvider)
+
+    val conversationCreationViewModel: ConversationCreationViewModel
+        get() = ConversationCreationViewModel(
+            ConversationCreationRepositoryImpl(ncApiCoroutines),
+            userProvider
+        )
 }

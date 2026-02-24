@@ -42,8 +42,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -69,13 +67,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -94,6 +95,7 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -124,12 +126,13 @@ class ConversationCreationActivity : BaseActivity() {
     }
 }
 
+@Suppress("LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConversationCreationScreen(
     conversationCreationViewModel: ConversationCreationViewModel,
     context: Context,
-    pickImage: PickImage
+    pickImage: PickImage? = null
 ) {
     val selectedImageUri = conversationCreationViewModel.selectedImageUri.collectAsState().value
 
@@ -137,7 +140,7 @@ fun ConversationCreationScreen(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            pickImage.onImagePickerResult(result.data) { uri ->
+            pickImage?.onImagePickerResult(result.data) { uri ->
                 conversationCreationViewModel.updateSelectedImageUri(uri)
             }
         }
@@ -147,7 +150,7 @@ fun ConversationCreationScreen(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            pickImage.onSelectRemoteFilesResult(imagePickerLauncher, result.data)
+            pickImage?.onSelectRemoteFilesResult(imagePickerLauncher, result.data)
         }
     }
 
@@ -155,7 +158,7 @@ fun ConversationCreationScreen(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            pickImage.onTakePictureResult(imagePickerLauncher, result.data)
+            pickImage?.onTakePictureResult(imagePickerLauncher, result.data)
         }
     }
 
@@ -186,7 +189,7 @@ fun ConversationCreationScreen(
                         (context as? Activity)?.finish()
                     }) {
                         Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
+                            ImageVector.vectorResource(R.drawable.ic_arrow_back_black_24dp),
                             contentDescription = stringResource(id = R.string.back_button)
                         )
                     }
@@ -202,15 +205,17 @@ fun ConversationCreationScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 DefaultUserAvatar(selectedImageUri)
-                UploadAvatar(
-                    pickImage = pickImage,
-                    onImageSelected = { uri -> conversationCreationViewModel.updateSelectedImageUri(uri) },
-                    imagePickerLauncher = imagePickerLauncher,
-                    remoteFilePickerLauncher = remoteFilePickerLauncher,
-                    cameraLauncher = cameraLauncher,
-                    onDeleteImage = { conversationCreationViewModel.updateSelectedImageUri(null) },
-                    selectedImageUri = selectedImageUri
-                )
+                if (pickImage != null) {
+                    UploadAvatar(
+                        pickImage = pickImage,
+                        onImageSelected = { uri -> conversationCreationViewModel.updateSelectedImageUri(uri) },
+                        imagePickerLauncher = imagePickerLauncher,
+                        remoteFilePickerLauncher = remoteFilePickerLauncher,
+                        cameraLauncher = cameraLauncher,
+                        onDeleteImage = { conversationCreationViewModel.updateSelectedImageUri(null) },
+                        selectedImageUri = selectedImageUri
+                    )
+                }
 
                 ConversationNameAndDescription(conversationCreationViewModel)
                 AddParticipants(launcher, context, conversationCreationViewModel)
@@ -356,6 +361,7 @@ fun ConversationNameAndDescription(conversationCreationViewModel: ConversationCr
     )
 }
 
+@Suppress("LongMethod")
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun AddParticipants(
@@ -443,6 +449,7 @@ fun AddParticipants(
     }
 }
 
+@Suppress("LongMethod")
 @Composable
 fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewModel) {
     val isGuestsAllowed = conversationCreationViewModel.isGuestsAllowed.value
@@ -580,6 +587,7 @@ fun ConversationOptions(
     }
 }
 
+@Suppress("LongMethod")
 @Composable
 fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: ConversationCreationViewModel) {
     var changedPassword by rememberSaveable { mutableStateOf("") }
@@ -728,4 +736,33 @@ class CompanionClass {
         internal val TAG = ConversationCreationActivity::class.simpleName
         internal const val ROOM_TYPE_GROUP = "2"
     }
+}
+
+@Preview(name = "Light Mode")
+@Composable
+fun ConversationCreationScreenPreview() {
+    val context = LocalContext.current
+    val previewUtils = ComposePreviewUtils.getInstance(context)
+    val colorScheme = previewUtils.viewThemeUtils.getColorScheme(context)
+    MaterialTheme(colorScheme = colorScheme) {
+        ConversationCreationScreen(
+            conversationCreationViewModel = previewUtils.conversationCreationViewModel,
+            context = context
+        )
+    }
+}
+
+@Preview(
+    name = "Dark Mode",
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun ConversationCreationScreenDarkPreview() {
+    ConversationCreationScreenPreview()
+}
+
+@Preview(name = "RTL / Arabic", locale = "ar")
+@Composable
+fun ConversationCreationScreenRtlPreview() {
+    ConversationCreationScreenPreview()
 }

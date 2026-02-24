@@ -27,8 +27,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -54,11 +52,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.nextcloud.talk.R
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -286,7 +287,10 @@ class ScheduleMessageCompose(
     @Suppress("LongMethod")
     @Composable
     private fun CollapsableDateTime(shouldDismiss: MutableState<Boolean>, isCollapsed: MutableState<Boolean>) {
-        GeneralIconButton(icon = Icons.Filled.DateRange, label = stringResource(R.string.custom)) {
+        GeneralIconButton(
+            icon = ImageVector.vectorResource(R.drawable.ic_date_range_24px),
+            label = stringResource(R.string.custom)
+        ) {
             selectedOption.value = SelectedOption.NONE
             isCollapsed.value = !isCollapsed.value
         }
@@ -416,4 +420,28 @@ class ScheduleMessageCompose(
         private const val INT_24 = 24
         private const val CUBED_PADDING = 0.33f
     }
+}
+
+@Preview(name = "Light Mode")
+@Preview(
+    name = "Dark Mode",
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Preview(name = "RTL / Arabic", locale = "ar")
+@Composable
+fun GetScheduleDialogPreview() {
+    val context = LocalContext.current
+    val previewUtils = ComposePreviewUtils.getInstance(context)
+    val scheduleCompose = ScheduleMessageCompose(
+        initialMessage = "Hello Alice",
+        initialScheduledAt = null,
+        onDismiss = {},
+        onSchedule = { _, _ -> },
+        defaultSendWithoutNotification = false,
+        viewThemeUtils = previewUtils.viewThemeUtils
+    )
+    scheduleCompose.GetScheduleDialog(
+        shouldDismiss = remember { mutableStateOf(false) },
+        context = context
+    )
 }
