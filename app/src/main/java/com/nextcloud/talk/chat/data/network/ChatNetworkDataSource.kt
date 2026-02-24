@@ -16,6 +16,7 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
+import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEventsOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import io.reactivex.Observable
 import retrofit2.Response
@@ -70,6 +71,7 @@ interface ChatNetworkDataSource {
     fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int): Observable<GenericOverall>
     suspend fun editChatMessage(credentials: String, url: String, text: String): ChatOverallSingleMessage
     suspend fun getOutOfOfficeStatusForUser(credentials: String, baseUrl: String, userId: String): UserAbsenceOverall
+    suspend fun getUpcomingEvents(credentials: String, baseUrl: String, roomToken: String): UpcomingEventsOverall
     suspend fun getContextForChatMessage(
         credentials: String,
         baseUrl: String,

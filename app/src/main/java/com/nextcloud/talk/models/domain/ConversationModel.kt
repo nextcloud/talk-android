@@ -69,7 +69,8 @@ data class ConversationModel(
 
     // attributes that don't come from API. This should be changed?!
     var password: String? = null,
-    var messageDraft: MessageDraft? = MessageDraft()
+    var messageDraft: MessageDraft? = MessageDraft(),
+    var hiddenUpcomingEvent: String? = null
 ) {
 
     companion object {
