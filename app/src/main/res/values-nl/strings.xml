@@ -426,6 +426,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_search_clear">Wis zoekvak</string>
     <string name="nc_select_an_account">Selecteer een account</string>
     <string name="nc_send_edit_message">Bijwerken bericht</string>
+    <string name="nc_send_later">Verstuur later</string>
+    <string name="nc_send_now">Nu versturen</string>
     <string name="nc_send_voice_recording">Stuur voice-opname</string>
     <string name="nc_sensitive_conversation">Gevoelig gesprek</string>
     <string name="nc_sensitive_conversation_hint">Berichtvoorvertoning wordt uitgeschakeld in de gesprekslijst en meldingen</string>
