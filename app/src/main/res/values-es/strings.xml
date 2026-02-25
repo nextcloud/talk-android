@@ -54,6 +54,7 @@
     <string name="dnd">No molestar</string>
     <string name="dontClear">No borrar</string>
     <string name="ecosystem_apps_files">Archivos</string>
+    <string name="ecosystem_apps_more">Más</string>
     <string name="ecosystem_apps_notes">Notas</string>
     <string name="edit">Editar</string>
     <string name="edit_error_24_hours_old_message">Los mensajes con una antigüedad mayor a 24 horas no pueden ser editados</string>
