@@ -188,7 +188,7 @@ How to translate with transifex:
 
     <string name="nc_settings_notifications_granted">Notifications are granted</string>
     <string name="nc_settings_notifications_declined">Notifications are declined</string>
-    <string name="play_available_no">Google Play services are not available.Notifications are not supported</string>
+    <string name="gplay_available_no">Google Play services are not available.Notifications are not supported</string>
 
     <!-- Diagnose -->
     <string name="nc_notifications_troubleshooting_dialog_title">Notification troubleshooting</string>

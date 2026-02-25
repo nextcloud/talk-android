@@ -324,7 +324,7 @@
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/nc_diagnose_gplay_available_no" />
+                        android:text="@string/gplay_available_no" />
 
                 </LinearLayout>
 
