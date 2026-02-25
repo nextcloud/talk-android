@@ -95,7 +95,6 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         setAvatarAndAuthorOnMessageItem(message)
-
         colorizeMessageBubble(message)
 
         itemView.isSelected = false

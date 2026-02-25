@@ -1649,7 +1649,7 @@ class ChatActivity :
         adapter?.setLoadMoreListener(this)
         adapter?.setDateHeadersFormatter { format(it) }
         adapter?.setOnMessageViewLongClickListener { view, message -> onMessageViewLongClick(view, message) }
-        adapter?.setOnMessageClickListener{ message -> onMessageClick(message) }
+        adapter?.setOnMessageClickListener { message -> onMessageClick(message) }
 
         adapter?.registerViewClickListener(
             R.id.playPauseBtn
