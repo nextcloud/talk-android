@@ -50,9 +50,11 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.PushUtils.Companion.LATEST_PUSH_REGISTRATION_AT_PUSH_PROXY
 import com.nextcloud.talk.utils.PushUtils.Companion.LATEST_PUSH_REGISTRATION_AT_SERVER
+import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
+import org.unifiedpush.android.connector.UnifiedPush
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -78,6 +80,12 @@ class DiagnoseActivity : BaseActivity() {
     lateinit var platformPermissionUtil: PlatformPermissionUtil
 
     private var isGooglePlayServicesAvailable: Boolean = false
+    private var useEmbeddedDistrib: Boolean = false
+
+    private var nUnifiedPushServices = 0
+    private var offerUnifiedPush: Boolean = false
+    private var useUnifiedPush: Boolean = false
+    private var unifiedPushService: String = ""
 
     sealed class DiagnoseElement {
         data class DiagnoseHeadline(val headline: String) : DiagnoseElement()
@@ -97,6 +105,12 @@ class DiagnoseActivity : BaseActivity() {
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
         isGooglePlayServicesAvailable = ClosedInterfaceImpl().isGooglePlayServicesAvailable
+        nUnifiedPushServices = UnifiedPushUtils.getExternalDistributors(this).size
+        offerUnifiedPush = nUnifiedPushServices > 0 &&
+            userManager.users.blockingGet().all { it.hasWebPushCapability }
+        useUnifiedPush = appPreferences.useUnifiedPush
+        useEmbeddedDistrib = UnifiedPushUtils.hasEmbeddedDistributor(context) && !useUnifiedPush
+        unifiedPushService = UnifiedPush.getAckDistributor(this) ?: "N/A"
 
         setContent {
             val backgroundColor = colorResource(id = R.color.bg_default)
@@ -149,7 +163,9 @@ class DiagnoseActivity : BaseActivity() {
                                 viewState = viewState,
                                 onTestPushClick = { diagnoseViewModel.fetchTestPushResult() },
                                 onDismissDialog = { diagnoseViewModel.dismissDialog() },
-                                isGooglePlayServicesAvailable = isGooglePlayServicesAvailable,
+                                showTestPushButton = isGooglePlayServicesAvailable ||
+                                    useUnifiedPush ||
+                                    useEmbeddedDistrib,
                                 isOnline = isOnline
                             )
                         }
@@ -243,7 +259,7 @@ class DiagnoseActivity : BaseActivity() {
             value = Build.VERSION.SDK_INT.toString()
         )
 
-        if (isGooglePlayServicesAvailable) {
+        if (isGooglePlayServicesAvailable || useEmbeddedDistrib) {
             addDiagnosisEntry(
                 key = context.resources.getString(R.string.nc_diagnose_gplay_available_title),
                 value = context.resources.getString(R.string.nc_diagnose_gplay_available_yes)
@@ -251,9 +267,13 @@ class DiagnoseActivity : BaseActivity() {
         } else {
             addDiagnosisEntry(
                 key = context.resources.getString(R.string.nc_diagnose_gplay_available_title),
-                value = context.resources.getString(R.string.nc_diagnose_gplay_available_no)
+                value = context.resources.getString(R.string.nc_diagnose_gplay_available_no_short)
             )
         }
+        addDiagnosisEntry(
+            key = getString(R.string.nc_diagnose_unifiedpush_available_title),
+            value = getString(R.string.nc_diagnose_unifiedpush_available_n).format(nUnifiedPushServices)
+        )
     }
 
     @SuppressLint("SetTextI18n")
@@ -276,7 +296,21 @@ class DiagnoseActivity : BaseActivity() {
             value = BuildConfig.FLAVOR
         )
 
-        if (isGooglePlayServicesAvailable) {
+        addDiagnosisEntry(
+            key = getString(R.string.nc_diagnose_offer_unifiedpush),
+            value = translateBoolean(offerUnifiedPush)
+        )
+
+        addDiagnosisEntry(
+            key = getString(R.string.nc_diagnose_use_unifiedpush),
+            value = translateBoolean(useUnifiedPush)
+        )
+
+        if (useUnifiedPush || useEmbeddedDistrib) {
+            setupAppValuesForPush()
+            setupAppValuesForUnifiedPush()
+        } else if (isGooglePlayServicesAvailable) {
+            setupAppValuesForPush()
             setupAppValuesForGooglePlayServices()
         }
 
@@ -286,8 +320,7 @@ class DiagnoseActivity : BaseActivity() {
         )
     }
 
-    @Suppress("Detekt.LongMethod")
-    private fun setupAppValuesForGooglePlayServices() {
+    private fun setupAppValuesForPush() {
         addDiagnosisEntry(
             key = context.resources.getString(R.string.nc_diagnose_battery_optimization_title),
             value = if (PowerManagerUtils().isIgnoringBatteryOptimizations()) {
@@ -324,7 +357,31 @@ class DiagnoseActivity : BaseActivity() {
                 NotificationUtils.isMessagesNotificationChannelEnabled(this)
             )
         )
+    }
 
+    private fun setupAppValuesForUnifiedPush() {
+        addDiagnosisEntry(
+            key = getString(R.string.nc_diagnose_unifiedpush_service),
+            value = unifiedPushService
+        )
+
+        addDiagnosisEntry(
+            key = context.resources.getString(R.string.nc_diagnose_unifiedpush_latest_endpoint),
+            value = if (appPreferences.unifiedPushLatestEndpoint != null &&
+                appPreferences.unifiedPushLatestEndpoint != 0L
+            ) {
+                DisplayUtils.unixTimeToHumanReadable(
+                    appPreferences
+                        .unifiedPushLatestEndpoint
+                )
+            } else {
+                context.resources.getString(R.string.nc_common_unknown)
+            }
+        )
+    }
+
+    @Suppress("Detekt.LongMethod")
+    private fun setupAppValuesForGooglePlayServices() {
         addDiagnosisEntry(
             key = context.resources.getString(R.string.nc_diagnose_firebase_push_token_title),
             value = if (appPreferences.pushToken.isNullOrEmpty()) {
@@ -387,6 +444,11 @@ class DiagnoseActivity : BaseActivity() {
             key = context.resources.getString(R.string.nc_diagnose_account_server_notification_app),
             value =
             translateBoolean(currentUser.capabilities?.notificationsCapability?.features?.isNotEmpty())
+        )
+
+        addDiagnosisEntry(
+            key = getString(R.string.nc_diagnose_server_supports_webpush),
+            value = translateBoolean(currentUser.hasWebPushCapability)
         )
 
         if (isGooglePlayServicesAvailable) {

@@ -143,6 +143,30 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         pushToken = ""
     }
 
+    override fun getUseUnifiedPush(): Boolean =
+        runBlocking {
+            async { readBoolean(USE_UNIFIEDPUSH).first() }
+        }.getCompleted()
+
+    override fun setUseUnifiedPush(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(USE_UNIFIEDPUSH, value)
+            }
+        }
+
+    override fun getUnifiedPushLatestEndpoint(): Long =
+        runBlocking {
+            async { readLong(UNIFIEDPUSH_LATEST_ENDPOINT).first() }
+        }.getCompleted()
+
+    override fun setUnifiedPushLatestEndpoint(date: Long) =
+        runBlocking<Unit> {
+            async {
+                writeLong(UNIFIEDPUSH_LATEST_ENDPOINT, date)
+            }
+        }
+
     override fun getPushTokenLatestGeneration(): Long =
         runBlocking {
             async { readLong(PUSH_TOKEN_LATEST_GENERATION).first() }
@@ -615,6 +639,8 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val PUSH_TOKEN = "push_token"
         const val PUSH_TOKEN_LATEST_GENERATION = "push_token_latest_generation"
         const val PUSH_TOKEN_LATEST_FETCH = "push_token_latest_fetch"
+        const val USE_UNIFIEDPUSH = "use_unifiedpush"
+        const val UNIFIEDPUSH_LATEST_ENDPOINT = "unifiedpush_latest_endpoint"
         const val TEMP_CLIENT_CERT_ALIAS = "tempClientCertAlias"
         const val CALL_RINGTONE = "call_ringtone"
         const val MESSAGE_RINGTONE = "message_ringtone"
