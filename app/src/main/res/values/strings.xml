@@ -71,6 +71,8 @@ How to translate with transifex:
     <string name="nc_display_name_not_stored">Could not store display name, aborting</string>
     <string name="nc_push_notification_error"> Sorry something went wrong, error is %1$s</string>
     <string name="nc_push_notification_fetch_error">Sorry something went wrong, cannot fetch test push message</string>
+    <string name="nc_dialog_introduce_unifiedpush_selection">You are about to select your default push service</string>
+    <string name="unifiedpush">UnifiedPush</string>
 
     <string name="nc_search">Search</string>
     <string name="nc_search_clear">Clear search</string>
@@ -129,6 +131,10 @@ How to translate with transifex:
     <string name="nc_settings_theme_light">Light</string>
     <string name="nc_settings_theme_dark">Dark</string>
     <string name="nc_settings_privacy">Privacy</string>
+    <string name="nc_settings_screen_enable_unifiedpush_title">Enable UnifiedPush</string>
+    <string name="nc_settings_screen_enable_unifiedpush_desc">Receive push notifications with an external
+        UnifiedPush service</string>
+    <string name="nc_settings_screen_unifiedpush_service_title">UnifiedPush Service</string>
     <string name="nc_settings_screen_lock_title">Screen lock</string>
     <string name="nc_settings_screen_lock_desc">Lock %1$s with Android screen lock or supported biometric method</string>
     <string name="nc_settings_screen_lock_key" translatable="false">screen_lock</string>
@@ -209,7 +215,16 @@ How to translate with transifex:
     <string name="nc_diagnose_app_users_amount">Registered users</string>
     <string name="nc_diagnose_gplay_available_title">Google Play services</string>
     <string name="nc_diagnose_gplay_available_yes">Google Play services are available</string>
+    <string name="nc_diagnose_gplay_available_no_short">Google Play services are not available.</string>
+    <string name="nc_diagnose_unifiedpush_available_title">UnifiedPush services</string>
+    <string name="nc_diagnose_unifiedpush_available_n">%d service(s) available</string>
+    <string name="nc_diagnose_offer_unifiedpush">Offer UnifiedPush</string>
+    <string name="nc_diagnose_use_unifiedpush">Use UnifiedPush</string>
+    <string name="nc_diagnose_unifiedpush_service">UnifiedPush service</string>
+    <string name="nc_diagnose_unifiedpush_latest_endpoint">Latest endpoint received</string>
+    <string name="nc_diagnose_server_supports_webpush">Server supports webpush?</string>
     <string name="nc_diagnose_gplay_available_no">Google Play services are not available. Notifications are not supported</string>
+    <string name="nc_diagnose_push_available_no">UnifiedPush is disabled and Google Play services are not available. Notifications are not supported</string>
     <string name="nc_diagnose_battery_optimization_title">Battery settings</string>
     <string name="nc_diagnose_battery_optimization_not_ignored">Battery optimization is enabled which might cause issues. You should disable battery optimization!</string>
     <string name="nc_diagnose_battery_optimization_ignored">Battery optimization is ignored, all fine</string>

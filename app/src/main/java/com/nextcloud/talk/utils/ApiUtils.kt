@@ -394,6 +394,13 @@ object ApiUtils {
         }
 
     @JvmStatic
+    fun getUrlForVapid(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/apps/notifications/api/v2/webpush/vapid"
+    @JvmStatic
+    fun getUrlForWebPush(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/apps/notifications/api/v2/webpush"
+    @JvmStatic
+    fun getUrlForWebPushActivation(baseUrl: String): String =
+        "$baseUrl$OCS_API_VERSION/apps/notifications/api/v2/webpush/activate"
+    @JvmStatic
     fun getUrlNextcloudPush(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/apps/notifications/api/v2/push"
 
     @JvmStatic
