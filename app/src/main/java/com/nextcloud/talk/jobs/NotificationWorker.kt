@@ -38,10 +38,10 @@ import androidx.emoji2.text.EmojiCompat
 import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import autodagger.AutoInjector
 import coil.executeBlocking
 import coil.imageLoader
 import coil.request.ImageRequest
-import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
@@ -84,13 +84,13 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MESSAGE_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_RESTRICT_DELETION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_TIMESTAMP
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPENED_VIA_NOTIFICATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_REMOTE_TALK_SHARE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARE_RECORDING_TO_CHAT_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPENED_VIA_NOTIFICATION
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -484,24 +484,35 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             pushMessage.subject = ncNotification.subject.orEmpty()
         }
 
+        checkAndProcessImagePreviewData(ncNotification)
+    }
+
+    private fun checkAndProcessImagePreviewData(
+        notification: com.nextcloud.talk.models.json.notifications.Notification
+    ) {
         imagePreviewUrl = null
         imageMimeType = null
-        val msgParams = ncNotification.messageRichParameters
+        val msgParams = notification.messageRichParameters
         if (msgParams != null) {
             for ((_, param) in msgParams) {
-                if (param["type"] == "file") {
-                    val mimetype = param["mimetype"].orEmpty()
-                    val fileId = param["id"]
-                    if (mimetype.startsWith("image/") && fileId != null) {
-                        val baseUrl = signatureVerification.user!!.baseUrl!!
-                        val px = context!!.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size)
-                        imagePreviewUrl = ApiUtils.getUrlForFilePreviewWithFileId(baseUrl, fileId, px)
-                        imageMimeType = mimetype
-                        break
-                    }
-                }
+                if (processMessageParameter(param)) break
             }
         }
+    }
+
+    private fun processMessageParameter(param: HashMap<String?, String?>): Boolean {
+        if (param["type"] == "file") {
+            val mimetype = param["mimetype"].orEmpty()
+            val fileId = param["id"]
+            if (mimetype.startsWith("image/") && fileId != null) {
+                val baseUrl = signatureVerification.user!!.baseUrl!!
+                val px = context!!.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size)
+                imagePreviewUrl = ApiUtils.getUrlForFilePreviewWithFileId(baseUrl, fileId, px)
+                imageMimeType = mimetype
+                return true
+            }
+        }
+        return false
     }
 
     @Suppress("MagicNumber")
