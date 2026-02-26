@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-package com.nextcloud.talk.diagnose
+package com.nextcloud.talk.diagnosis
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @Suppress("TooGenericExceptionCaught")
-class DiagnoseViewModel @Inject constructor(
+class DiagnosisViewModel @Inject constructor(
     private val ncApiCoroutines: NcApiCoroutines,
     private val currentUserProvider: CurrentUserProviderOld
 ) : ViewModel() {

@@ -4,7 +4,7 @@
  * SPDX-FileCopyrightText: 2023 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.diagnose
+package com.nextcloud.talk.diagnosis
 
 import android.annotation.SuppressLint
 import android.content.ClipData
@@ -57,7 +57,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 @Suppress("TooManyFunctions")
-class DiagnoseActivity : BaseActivity() {
+class DiagnosisActivity : BaseActivity() {
 
     @Inject
     lateinit var arbitraryStorageManager: ArbitraryStorageManager
@@ -79,21 +79,21 @@ class DiagnoseActivity : BaseActivity() {
 
     private var isGooglePlayServicesAvailable: Boolean = false
 
-    sealed class DiagnoseElement {
-        data class DiagnoseHeadline(val headline: String) : DiagnoseElement()
-        data class DiagnoseEntry(val key: String, val value: String) : DiagnoseElement()
+    sealed class DiagnosisElement {
+        data class DiagnosisHeadline(val headline: String) : DiagnosisElement()
+        data class DiagnosisEntry(val key: String, val value: String) : DiagnosisElement()
     }
 
-    private val diagnoseData = mutableListOf<DiagnoseElement>()
-    private val diagnoseDataState = mutableStateOf(emptyList<DiagnoseElement>())
+    private val diagnosisData = mutableListOf<DiagnosisElement>()
+    private val diagnosisDataState = mutableStateOf(emptyList<DiagnosisElement>())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        val diagnoseViewModel = ViewModelProvider(
+        val diagnosisViewModel = ViewModelProvider(
             this,
             viewModelFactory
-        )[DiagnoseViewModel::class.java]
+        )[DiagnosisViewModel::class.java]
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
         isGooglePlayServicesAvailable = ClosedInterfaceImpl().isGooglePlayServicesAvailable
@@ -102,14 +102,14 @@ class DiagnoseActivity : BaseActivity() {
             val backgroundColor = colorResource(id = R.color.bg_default)
 
             val menuItems = mutableListOf(
-                stringResource(R.string.nc_common_copy) to { copyToClipboard(diagnoseData.toMarkdownString()) },
-                stringResource(R.string.share) to { shareToOtherApps(diagnoseData.toMarkdownString()) },
-                stringResource(R.string.send_email) to { composeEmail(diagnoseData.toMarkdownString()) }
+                stringResource(R.string.nc_common_copy) to { copyToClipboard(diagnosisData.toMarkdownString()) },
+                stringResource(R.string.share) to { shareToOtherApps(diagnosisData.toMarkdownString()) },
+                stringResource(R.string.send_email) to { composeEmail(diagnosisData.toMarkdownString()) }
             )
 
             if (BrandingUtils.isOriginalNextcloudClient(applicationContext)) {
                 menuItems.add(
-                    stringResource(R.string.create_issue) to { createGithubIssue(diagnoseData.toMarkdownString()) }
+                    stringResource(R.string.create_issue) to { createGithubIssue(diagnosisData.toMarkdownString()) }
                 )
             }
 
@@ -124,12 +124,12 @@ class DiagnoseActivity : BaseActivity() {
                         .displayCutoutPadding(),
                     topBar = {
                         StandardAppBar(
-                            title = stringResource(R.string.nc_settings_diagnose_title),
+                            title = stringResource(R.string.nc_settings_diagnosis_title),
                             menuItems
                         )
                     },
                     content = { paddingValues ->
-                        val viewState = diagnoseViewModel.notificationViewState.collectAsState().value
+                        val viewState = diagnosisViewModel.notificationViewState.collectAsState().value
 
                         Column(
                             Modifier
@@ -142,13 +142,13 @@ class DiagnoseActivity : BaseActivity() {
                                 )
                                 .fillMaxSize()
                         ) {
-                            DiagnoseContentComposable(
-                                diagnoseDataState,
-                                isLoading = diagnoseViewModel.isLoading.value,
-                                showDialog = diagnoseViewModel.showDialog.value,
+                            DiagnosisContentComposable(
+                                diagnosisDataState,
+                                isLoading = diagnosisViewModel.isLoading.value,
+                                showDialog = diagnosisViewModel.showDialog.value,
                                 viewState = viewState,
-                                onTestPushClick = { diagnoseViewModel.fetchTestPushResult() },
-                                onDismissDialog = { diagnoseViewModel.dismissDialog() },
+                                onTestPushClick = { diagnosisViewModel.fetchTestPushResult() },
+                                onDismissDialog = { diagnosisViewModel.dismissDialog() },
                                 isGooglePlayServicesAvailable = isGooglePlayServicesAvailable,
                                 isOnline = isOnline
                             )
@@ -163,13 +163,13 @@ class DiagnoseActivity : BaseActivity() {
         super.onResume()
         supportActionBar?.show()
 
-        diagnoseData.clear()
+        diagnosisData.clear()
         setupMetaValues()
         setupPhoneValues()
         setupAppValues()
         setupAccountValues()
 
-        diagnoseDataState.value = diagnoseData.toList()
+        diagnosisDataState.value = diagnosisData.toList()
     }
 
     private fun shareToOtherApps(message: String) {
@@ -223,35 +223,35 @@ class DiagnoseActivity : BaseActivity() {
     }
 
     private fun setupMetaValues() {
-        addHeadline(context.resources.getString(R.string.nc_diagnose_meta_category_title))
+        addHeadline(context.resources.getString(R.string.nc_diagnosis_meta_category_title))
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_meta_system_report_date),
+            key = context.resources.getString(R.string.nc_diagnosis_meta_system_report_date),
             value = DisplayUtils.unixTimeToHumanReadable(System.currentTimeMillis())
         )
     }
 
     private fun setupPhoneValues() {
-        addHeadline(context.resources.getString(R.string.nc_diagnose_phone_category_title))
+        addHeadline(context.resources.getString(R.string.nc_diagnosis_phone_category_title))
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_device_name_title),
+            key = context.resources.getString(R.string.nc_diagnosis_device_name_title),
             value = getDeviceName()
         )
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_android_version_title),
+            key = context.resources.getString(R.string.nc_diagnosis_android_version_title),
             value = Build.VERSION.SDK_INT.toString()
         )
 
         if (isGooglePlayServicesAvailable) {
             addDiagnosisEntry(
-                key = context.resources.getString(R.string.nc_diagnose_gplay_available_title),
-                value = context.resources.getString(R.string.nc_diagnose_gplay_available_yes)
+                key = context.resources.getString(R.string.nc_diagnosis_gplay_available_title),
+                value = context.resources.getString(R.string.nc_diagnosis_gplay_available_yes)
             )
         } else {
             addDiagnosisEntry(
-                key = context.resources.getString(R.string.nc_diagnose_gplay_available_title),
-                value = context.resources.getString(R.string.nc_diagnose_gplay_available_no)
+                key = context.resources.getString(R.string.nc_diagnosis_gplay_available_title),
+                value = context.resources.getString(R.string.nc_diagnosis_gplay_available_no)
             )
         }
     }
@@ -259,20 +259,20 @@ class DiagnoseActivity : BaseActivity() {
     @SuppressLint("SetTextI18n")
     @Suppress("MagicNumber")
     private fun setupAppValues() {
-        addHeadline(context.resources.getString(R.string.nc_diagnose_app_category_title))
+        addHeadline(context.resources.getString(R.string.nc_diagnosis_app_category_title))
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_app_name_title),
+            key = context.resources.getString(R.string.nc_diagnosis_app_name_title),
             value = context.resources.getString(R.string.nc_app_product_name)
         )
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_app_version_title),
+            key = context.resources.getString(R.string.nc_diagnosis_app_version_title),
             value = String.format("v" + BuildConfig.VERSION_NAME)
         )
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_flavor),
+            key = context.resources.getString(R.string.nc_diagnosis_flavor),
             value = BuildConfig.FLAVOR
         )
 
@@ -281,7 +281,7 @@ class DiagnoseActivity : BaseActivity() {
         }
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_app_users_amount),
+            key = context.resources.getString(R.string.nc_diagnosis_app_users_amount),
             value = userManager.users.blockingGet().size.toString()
         )
     }
@@ -289,28 +289,28 @@ class DiagnoseActivity : BaseActivity() {
     @Suppress("Detekt.LongMethod")
     private fun setupAppValuesForGooglePlayServices() {
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_battery_optimization_title),
+            key = context.resources.getString(R.string.nc_diagnosis_battery_optimization_title),
             value = if (PowerManagerUtils().isIgnoringBatteryOptimizations()) {
-                context.resources.getString(R.string.nc_diagnose_battery_optimization_ignored)
+                context.resources.getString(R.string.nc_diagnosis_battery_optimization_ignored)
             } else {
-                context.resources.getString(R.string.nc_diagnose_battery_optimization_not_ignored)
+                context.resources.getString(R.string.nc_diagnosis_battery_optimization_not_ignored)
             }
         )
 
         // handle notification permission on API level >= 33
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             addDiagnosisEntry(
-                key = context.resources.getString(R.string.nc_diagnose_notification_permission),
+                key = context.resources.getString(R.string.nc_diagnosis_notification_permission),
                 value = if (platformPermissionUtil.isPostNotificationsPermissionGranted()) {
-                    context.resources.getString(R.string.nc_diagnose_notifications_granted)
+                    context.resources.getString(R.string.nc_diagnosis_notifications_granted)
                 } else {
-                    context.resources.getString(R.string.nc_diagnose_notifications_declined)
+                    context.resources.getString(R.string.nc_diagnosis_notifications_declined)
                 }
             )
         }
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_notification_calls_channel_permission),
+            key = context.resources.getString(R.string.nc_diagnosis_notification_calls_channel_permission),
             value =
             getStringForBoolean(
                 NotificationUtils.isCallsNotificationChannelEnabled(this)
@@ -318,7 +318,7 @@ class DiagnoseActivity : BaseActivity() {
         )
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_notification_messages_channel_permission),
+            key = context.resources.getString(R.string.nc_diagnosis_notification_messages_channel_permission),
             value =
             getStringForBoolean(
                 NotificationUtils.isMessagesNotificationChannelEnabled(this)
@@ -326,16 +326,16 @@ class DiagnoseActivity : BaseActivity() {
         )
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_firebase_push_token_title),
+            key = context.resources.getString(R.string.nc_diagnosis_firebase_push_token_title),
             value = if (appPreferences.pushToken.isNullOrEmpty()) {
-                context.resources.getString(R.string.nc_diagnose_firebase_push_token_missing)
+                context.resources.getString(R.string.nc_diagnosis_firebase_push_token_missing)
             } else {
                 "${appPreferences.pushToken.substring(0, PUSH_TOKEN_PREFIX_END)}..."
             }
         )
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_firebase_push_token_latest_generated),
+            key = context.resources.getString(R.string.nc_diagnosis_firebase_push_token_latest_generated),
             value = if (appPreferences.pushTokenLatestGeneration != null &&
                 appPreferences.pushTokenLatestGeneration != 0L
             ) {
@@ -349,7 +349,7 @@ class DiagnoseActivity : BaseActivity() {
         )
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_firebase_push_token_latest_fetch),
+            key = context.resources.getString(R.string.nc_diagnosis_firebase_push_token_latest_fetch),
             value = if (appPreferences.pushTokenLatestFetch != null && appPreferences.pushTokenLatestFetch != 0L) {
                 DisplayUtils.unixTimeToHumanReadable(appPreferences.pushTokenLatestFetch)
             } else {
@@ -361,22 +361,22 @@ class DiagnoseActivity : BaseActivity() {
     private fun setupAccountValues() {
         val currentUser = currentUserProviderOld.currentUser.blockingGet()
 
-        addHeadline(context.resources.getString(R.string.nc_diagnose_account_category_title))
+        addHeadline(context.resources.getString(R.string.nc_diagnosis_account_category_title))
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_account_server),
+            key = context.resources.getString(R.string.nc_diagnosis_account_server),
             value =
             currentUser.baseUrl!!
         )
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_account_user_name),
+            key = context.resources.getString(R.string.nc_diagnosis_account_user_name),
             value =
             currentUser.displayName!!
         )
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_account_user_status_enabled),
+            key = context.resources.getString(R.string.nc_diagnosis_account_user_status_enabled),
             value =
             getStringForBoolean(
                 (currentUser.capabilities?.userStatusCapability?.enabled)
@@ -384,39 +384,39 @@ class DiagnoseActivity : BaseActivity() {
         )
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_account_server_notification_app),
+            key = context.resources.getString(R.string.nc_diagnosis_account_server_notification_app),
             value =
             getStringForBoolean(currentUser.capabilities?.notificationsCapability?.features?.isNotEmpty())
         )
 
         if (isGooglePlayServicesAvailable) {
-            setupPushRegistrationDiagnose()
+            setupPushRegistrationDiagnosis()
         }
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_server_version),
+            key = context.resources.getString(R.string.nc_diagnosis_server_version),
             value =
             currentUser.serverVersion?.versionString!!
         )
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_server_talk_version),
+            key = context.resources.getString(R.string.nc_diagnosis_server_talk_version),
             value =
             currentUser.capabilities?.spreedCapability?.version!!
         )
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_signaling_mode_title),
+            key = context.resources.getString(R.string.nc_diagnosis_signaling_mode_title),
             value =
             if (currentUser.externalSignalingServer?.externalSignalingServer?.isNotEmpty() == true) {
-                context.resources.getString(R.string.nc_diagnose_signaling_mode_extern)
+                context.resources.getString(R.string.nc_diagnosis_signaling_mode_extern)
             } else {
-                context.resources.getString(R.string.nc_diagnose_signaling_mode_intern)
+                context.resources.getString(R.string.nc_diagnosis_signaling_mode_intern)
             }
         )
     }
 
-    private fun setupPushRegistrationDiagnose() {
+    private fun setupPushRegistrationDiagnosis() {
         val accountId = UserIdUtils.getIdForUser(currentUserProviderOld.currentUser.blockingGet())
 
         val latestPushRegistrationAtServer = arbitraryStorageManager.getStorageSetting(
@@ -426,9 +426,9 @@ class DiagnoseActivity : BaseActivity() {
         ).blockingGet()?.value
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_latest_push_registration_at_server),
+            key = context.resources.getString(R.string.nc_diagnosis_latest_push_registration_at_server),
             if (latestPushRegistrationAtServer.isNullOrEmpty()) {
-                context.resources.getString(R.string.nc_diagnose_latest_push_registration_at_server_fail)
+                context.resources.getString(R.string.nc_diagnosis_latest_push_registration_at_server_fail)
             } else {
                 DisplayUtils.unixTimeToHumanReadable(latestPushRegistrationAtServer.toLong())
             }
@@ -441,9 +441,9 @@ class DiagnoseActivity : BaseActivity() {
         ).blockingGet()?.value
 
         addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnose_latest_push_registration_at_push_proxy),
+            key = context.resources.getString(R.string.nc_diagnosis_latest_push_registration_at_push_proxy),
             value = if (latestPushRegistrationAtPushProxy.isNullOrEmpty()) {
-                context.resources.getString(R.string.nc_diagnose_latest_push_registration_at_push_proxy_fail)
+                context.resources.getString(R.string.nc_diagnosis_latest_push_registration_at_push_proxy_fail)
             } else {
                 DisplayUtils.unixTimeToHumanReadable(latestPushRegistrationAtPushProxy.toLong())
             }
@@ -459,22 +459,22 @@ class DiagnoseActivity : BaseActivity() {
 
     private fun getStringForBoolean(answer: Boolean?): String =
         when (answer) {
-            null -> context.getString(R.string.nc_diagnose_unknown)
-            true -> context.getString(R.string.nc_diagnose_yes)
-            else -> context.getString(R.string.nc_diagnose_no)
+            null -> context.getString(R.string.nc_diagnosis_unknown)
+            true -> context.getString(R.string.nc_diagnosis_yes)
+            else -> context.getString(R.string.nc_diagnosis_no)
         }
 
-    private fun List<DiagnoseElement>.toMarkdownString(): String {
+    private fun List<DiagnosisElement>.toMarkdownString(): String {
         val markdownText = SpannableStringBuilder()
 
         this.forEach {
             when (it) {
-                is DiagnoseElement.DiagnoseHeadline -> {
+                is DiagnosisElement.DiagnosisHeadline -> {
                     markdownText.append("$MARKDOWN_HEADLINE ${it.headline}")
                     markdownText.append("\n\n")
                 }
 
-                is DiagnoseElement.DiagnoseEntry -> {
+                is DiagnosisElement.DiagnosisEntry -> {
                     markdownText.append("$MARKDOWN_BOLD${it.key}$MARKDOWN_BOLD")
                     markdownText.append("\n\n")
                     markdownText.append(it.value)
@@ -486,15 +486,15 @@ class DiagnoseActivity : BaseActivity() {
     }
 
     private fun addHeadline(text: String) {
-        diagnoseData.add(DiagnoseElement.DiagnoseHeadline(text))
+        diagnosisData.add(DiagnosisElement.DiagnosisHeadline(text))
     }
 
     private fun addDiagnosisEntry(key: String, value: String) {
-        diagnoseData.add(DiagnoseElement.DiagnoseEntry(key, value))
+        diagnosisData.add(DiagnosisElement.DiagnosisEntry(key, value))
     }
 
     companion object {
-        val TAG = DiagnoseActivity::class.java.simpleName
+        val TAG = DiagnosisActivity::class.java.simpleName
         private const val MARKDOWN_HEADLINE = "###"
         private const val MARKDOWN_BOLD = "**"
         private const val PUSH_TOKEN_PREFIX_END: Int = 5

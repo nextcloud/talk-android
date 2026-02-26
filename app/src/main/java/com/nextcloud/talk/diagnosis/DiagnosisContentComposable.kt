@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-package com.nextcloud.talk.diagnose
+package com.nextcloud.talk.diagnosis
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -52,8 +52,8 @@ import com.nextcloud.talk.R
 
 @Suppress("LongParameterList")
 @Composable
-fun DiagnoseContentComposable(
-    data: State<List<DiagnoseActivity.DiagnoseElement>>,
+fun DiagnosisContentComposable(
+    data: State<List<DiagnosisActivity.DiagnosisElement>>,
     isLoading: Boolean,
     showDialog: Boolean,
     viewState: NotificationUiState,
@@ -76,7 +76,7 @@ fun DiagnoseContentComposable(
     ) {
         data.value.forEach { element ->
             when (element) {
-                is DiagnoseActivity.DiagnoseElement.DiagnoseHeadline -> {
+                is DiagnosisActivity.DiagnosisElement.DiagnosisHeadline -> {
                     Text(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
                         text = element.headline,
@@ -88,7 +88,7 @@ fun DiagnoseContentComposable(
                     )
                 }
 
-                is DiagnoseActivity.DiagnoseElement.DiagnoseEntry -> {
+                is DiagnosisActivity.DiagnosisElement.DiagnosisEntry -> {
                     Text(
                         text = element.key,
                         color = colorResource(R.color.high_emphasis_text),
@@ -244,16 +244,16 @@ fun getMessage(context: Context, viewState: NotificationUiState): String =
 
 @Preview(showBackground = true)
 @Composable
-fun DiagnoseContentPreview() {
+fun DiagnosisContentPreview() {
     val state = remember {
         mutableStateOf(
             listOf(
-                DiagnoseActivity.DiagnoseElement.DiagnoseHeadline("Headline"),
-                DiagnoseActivity.DiagnoseElement.DiagnoseEntry("Key", "Value")
+                DiagnosisActivity.DiagnosisElement.DiagnosisHeadline("Headline"),
+                DiagnosisActivity.DiagnosisElement.DiagnosisEntry("Key", "Value")
             )
         )
     }
-    DiagnoseContentComposable(
+    DiagnosisContentComposable(
         state,
         false,
         true,

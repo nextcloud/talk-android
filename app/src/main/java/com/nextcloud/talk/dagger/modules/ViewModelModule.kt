@@ -20,7 +20,7 @@ import com.nextcloud.talk.conversationcreation.ConversationCreationViewModel
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
-import com.nextcloud.talk.diagnose.DiagnoseViewModel
+import com.nextcloud.talk.diagnosis.DiagnosisViewModel
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
 import com.nextcloud.talk.messagesearch.MessageSearchViewModel
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
@@ -152,8 +152,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(DiagnoseViewModel::class)
-    abstract fun diagnoseViewModel(viewModel: DiagnoseViewModel): ViewModel
+    @ViewModelKey(DiagnosisViewModel::class)
+    abstract fun diagnosisViewModel(viewModel: DiagnosisViewModel): ViewModel
 
     @Binds
     @IntoMap

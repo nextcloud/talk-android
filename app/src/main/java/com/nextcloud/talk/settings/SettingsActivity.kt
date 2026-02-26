@@ -61,7 +61,7 @@ import com.nextcloud.talk.conversationlist.ConversationsListActivity.Companion.N
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySettingsBinding
-import com.nextcloud.talk.diagnose.DiagnoseActivity
+import com.nextcloud.talk.diagnosis.DiagnosisActivity
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker
@@ -171,7 +171,7 @@ class SettingsActivity :
             resources!!.getString(R.string.nc_app_product_name)
         )
 
-        setupDiagnose()
+        setupDiagnosis()
 
         setupPrivacyUrl(isOnline.value)
         setupSourceCodeUrl(isOnline.value)
@@ -372,9 +372,9 @@ class SettingsActivity :
             // handle notification permission on API level >= 33
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 if (platformPermissionUtil.isPostNotificationsPermissionGranted()) {
-                    binding.ncDiagnoseNotificationPermissionSubtitle.text =
+                    binding.ncDiagnosisNotificationPermissionSubtitle.text =
                         resources.getString(R.string.nc_settings_notifications_granted)
-                    binding.ncDiagnoseNotificationPermissionSubtitle.setTextColor(
+                    binding.ncDiagnosisNotificationPermissionSubtitle.setTextColor(
                         resources.getColor(R.color.high_emphasis_text, null)
                     )
                     binding.settingsCallSound.isEnabled = true
@@ -382,9 +382,9 @@ class SettingsActivity :
                     binding.settingsMessageSound.isEnabled = true
                     binding.settingsMessageSound.alpha = ENABLED_ALPHA
                 } else {
-                    binding.ncDiagnoseNotificationPermissionSubtitle.text =
+                    binding.ncDiagnosisNotificationPermissionSubtitle.text =
                         resources.getString(R.string.nc_settings_notifications_declined)
-                    binding.ncDiagnoseNotificationPermissionSubtitle.setTextColor(
+                    binding.ncDiagnosisNotificationPermissionSubtitle.setTextColor(
                         resources.getColor(R.color.nc_darkRed, null)
                     )
 
@@ -471,7 +471,7 @@ class SettingsActivity :
             val dialogBuilder = MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.nc_notifications_troubleshooting_dialog_title)
                 .setMessage(R.string.nc_notifications_troubleshooting_dialog_text)
-                .setNegativeButton(R.string.nc_diagnose_dialog_open_checklist) { _, _ ->
+                .setNegativeButton(R.string.nc_diagnosis_dialog_open_checklist) { _, _ ->
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
@@ -479,7 +479,7 @@ class SettingsActivity :
                         )
                     )
                 }
-                .setPositiveButton(R.string.nc_diagnose_dialog_open_dontkillmyapp_website) { _, _ ->
+                .setPositiveButton(R.string.nc_diagnosis_dialog_open_dontkillmyapp_website) { _, _ ->
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
@@ -487,8 +487,8 @@ class SettingsActivity :
                         )
                     )
                 }
-                .setNeutralButton(R.string.nc_diagnose_dialog_open_diagnose) { _, _ ->
-                    val intent = Intent(context, DiagnoseActivity::class.java)
+                .setNeutralButton(R.string.nc_diagnosis_dialog_open_diagnosis) { _, _ ->
+                    val intent = Intent(context, DiagnosisActivity::class.java)
                     startActivity(intent)
                 }
             viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
@@ -548,9 +548,9 @@ class SettingsActivity :
         }
     }
 
-    private fun setupDiagnose() {
-        binding.diagnoseWrapper.setOnClickListener {
-            val intent = Intent(context, DiagnoseActivity::class.java)
+    private fun setupDiagnosis() {
+        binding.diagnosisWrapper.setOnClickListener {
+            val intent = Intent(context, DiagnosisActivity::class.java)
             startActivity(intent)
         }
     }

@@ -246,7 +246,7 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".diagnose.DiagnoseActivity"
+            android:name=".diagnosis.DiagnosisActivity"
             android:theme="@style/AppTheme" />
 
         <activity
