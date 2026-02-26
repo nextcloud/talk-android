@@ -13,21 +13,14 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.View
+import android.widget.TextView
 import androidx.core.net.toUri
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
-import io.noties.markwon.AbstractMarkwonPlugin
-import io.noties.markwon.Markwon
-import io.noties.markwon.MarkwonConfiguration
-import io.noties.markwon.core.MarkwonTheme
-import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
-import io.noties.markwon.ext.tables.TablePlugin
-import io.noties.markwon.ext.tasklist.TaskListDrawable
-import io.noties.markwon.ext.tasklist.TaskListPlugin
+import com.nextcloud.talk.utils.MarkdownUtils
 
 class MessageUtils(val context: Context) {
     fun enrichChatReplyMessageText(
@@ -203,26 +196,27 @@ class MessageUtils(val context: Context) {
     }
 
     fun getRenderedMarkdownText(context: Context, markdown: String, textColor: Int): Spanned {
-        val drawable = TaskListDrawable(textColor, textColor, context.getColor(R.color.bg_default))
-        val markwon = Markwon.builder(context).usePlugin(object : AbstractMarkwonPlugin() {
-            override fun configureTheme(builder: MarkwonTheme.Builder) {
-                builder.isLinkUnderlined(true).headingBreakHeight(0)
-            }
-
-            override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
-                builder.linkResolver { view: View?, link: String? ->
-                    Log.i(TAG, "Link action not implemented $view / $link")
-                }
-            }
-        })
-            .usePlugin(TaskListPlugin.create(drawable))
-            .usePlugin(TablePlugin.create { _ -> })
-            .usePlugin(StrikethroughPlugin.create()).build()
+        val markwon = MarkdownUtils.build(context, textColor)
         return markwon.toMarkdown(markdown)
     }
 
+    fun isMarkdownInlineLink(text: String): Boolean {
+        val markdownLinkRegex = Regex("""\[([^\]]+?)]\((.*?)(?:\s+"[^"]*")?\)""")
+        return markdownLinkRegex.containsMatchIn(text)
+    }
+
+    fun hyperLinks(view: TextView, text: String) {
+        val isMarkdownLink = isMarkdownInlineLink(text)
+        if (isMarkdownLink) {
+            view.autoLinkMask = AUTO_LINK_NONE
+        } else {
+            view.autoLinkMask = AUTO_LINK_ALL
+        }
+    }
     companion object {
         private const val TAG = "MessageUtils"
         const val MAX_REPLY_LENGTH = 250
+        const val AUTO_LINK_NONE = 0
+        const val AUTO_LINK_ALL = 15
     }
 }

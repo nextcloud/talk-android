@@ -121,6 +121,10 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 viewThemeUtils
             )
 
+            message.message?.let {
+                messageUtils.hyperLinks(binding.messageText, message.message!!)
+            }
+
             val spansFromString: Array<Any> = processedMessageText!!.getSpans(
                 0,
                 processedMessageText.length,
