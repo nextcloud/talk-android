@@ -22,6 +22,9 @@
     <string name="ban">حظر</string>
     <string name="ban_participant">حظر مشارك</string>
     <string name="bans_list">قائمة المحظورين</string>
+    <string name="battery_optimization_ignored">تمّ تجاهل توفير البطارية، و كل شيء على ما يرُام</string>
+    <string name="battery_optimization_not_ignored">تحسين البطارية تمّ تمكينه؛ الأمر الذي قد يتسبب في مشكلات. يجب عليك تعطيل تحسين البطارية!</string>
+    <string name="battery_optimization_title">إعدادات البطارية</string>
     <string name="busy">مشغول</string>
     <string name="calendar">التقويم Calendar</string>
     <string name="call_more_actions_dialog_headline">خيارات الاتصال المتقدمة</string>
@@ -227,6 +230,9 @@
     <string name="nc_diagnose_signaling_mode_extern">خارجي</string>
     <string name="nc_diagnose_signaling_mode_intern">داخلي</string>
     <string name="nc_diagnose_signaling_mode_title">وضعية إرسال الإشارات</string>
+    <string name="nc_diagnosis_dialog_open_checklist">فتح قائمة التحقق لاكتشاف الأعطال و إصلاحها</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">فتح شاشة الفحص</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">فتح dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">كلمة المرور غير صحيحة</string>
     <string name="nc_dialog_maintenance_mode_description">الخادم حالياً في وضع الصيانة</string>
     <string name="nc_dialog_outdated_client">التطبيق غير مُحدَّث</string>
@@ -427,6 +433,8 @@
     <string name="nc_settings_contact_admin_of">رجاءً، تواصل مع المشرف</string>
     <string name="nc_settings_diagnose_subtitle">فتح شاشة فحص الأعطال لاختبار الإعدادات أو تكوين تقرير بالعطل</string>
     <string name="nc_settings_diagnose_title">فحوصات</string>
+    <string name="nc_settings_diagnosis_subtitle">فتح شاشة فحص الأعطال لاختبار الإعدادات أو تكوين تقرير بالعطل</string>
+    <string name="nc_settings_diagnosis_title">فحوصات</string>
     <string name="nc_settings_incognito_keyboard_desc">توجيه لوحة المفاتيح لتعطيل التعلم المخصص (بدون ضمانات)</string>
     <string name="nc_settings_incognito_keyboard_title">لوحة المفاتيح في وضع المجهول</string>
     <string name="nc_settings_no_ringtone">بدون صوت</string>
@@ -521,6 +529,7 @@
     <string name="no_phone_book_integration_due_to_permissions">لا ارتباط لرقم الهاتف بسبب أذونات ناقصة</string>
     <string name="notification_mention_only">\@-إشارة فقط</string>
     <string name="notification_off">معطل</string>
+    <string name="notification_permission">إذونات الإشعارات</string>
     <string name="notifications_default">التلقائي</string>
     <string name="oneHour">1 ساعة</string>
     <string name="online">مُتّصلٌ</string>

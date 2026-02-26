@@ -23,6 +23,9 @@
     <string name="ban">Vyloučit</string>
     <string name="ban_participant">Vyloučit účastníka</string>
     <string name="bans_list">Seznam vyloučení</string>
+    <string name="battery_optimization_ignored">Optimalizace pro nízkou spotřebu energie z akumulátoru je ignorována, všechno v pořádku</string>
+    <string name="battery_optimization_not_ignored">Šetření energií z akumulátoru může způsobovat problémy. Měli byste ho vypnout!</string>
+    <string name="battery_optimization_title">Nastavení správy napájení</string>
     <string name="busy">Zaneprázdněn(a)</string>
     <string name="calendar">Kalendář</string>
     <string name="call_more_actions_dialog_headline">Pokročilé předvolby pro hovor</string>
@@ -242,6 +245,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Externí</string>
     <string name="nc_diagnose_signaling_mode_intern">Vnitřní</string>
     <string name="nc_diagnose_signaling_mode_title">Režim signalizování</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Otevřít kontrolní seznam řešení problémů</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Otevřít diagnostickou obrazovku</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Otevřít dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Neplatné heslo</string>
     <string name="nc_dialog_maintenance_mode_description">Server se nachází v režimu údržby.</string>
     <string name="nc_dialog_outdated_client">Aplikace je zastaralá</string>
@@ -474,6 +480,8 @@
     <string name="nc_settings_contact_admin_of">Obraťte se na správce</string>
     <string name="nc_settings_diagnose_subtitle">Otevřít diagnostickou obrazovku pro kontrolu nastavení nebo vytvoření hlášení chyby</string>
     <string name="nc_settings_diagnose_title">Diagnostika</string>
+    <string name="nc_settings_diagnosis_subtitle">Otevřít diagnostickou obrazovku pro kontrolu nastavení nebo vytvoření hlášení chyby</string>
+    <string name="nc_settings_diagnosis_title">Diagnostika</string>
     <string name="nc_settings_incognito_keyboard_desc">Dát klávesnici pokyn, že má vypnout přizpůsobené učení se (bez záruky)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klávesnice</string>
     <string name="nc_settings_no_ringtone">Žádný zvuk</string>
@@ -577,6 +585,7 @@
     <string name="notification_all_messages">Všechny zprávy</string>
     <string name="notification_mention_only">Pouze zmínky ve stylu @jméno</string>
     <string name="notification_off">Vypnuto</string>
+    <string name="notification_permission">Oprávnění upozornění</string>
     <string name="notifications_default">Výchozí</string>
     <string name="notifications_default_description">Nastavení následování konverzace</string>
     <string name="oneHour">1 hodina</string>

@@ -12,6 +12,7 @@
     <string name="automatic_status_set">Състоянието ви беше зададено автоматично</string>
     <string name="avatar">Аватар</string>
     <string name="away">Винаги</string>
+    <string name="battery_optimization_title">Настройки на батерията</string>
     <string name="busy">Зает</string>
     <string name="calendar">Kалендар</string>
     <string name="call_more_actions_dialog_headline">Разширени опции за повикване</string>

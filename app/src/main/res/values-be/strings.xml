@@ -23,6 +23,9 @@
     <string name="ban">Заблакіраваць</string>
     <string name="ban_participant">Заблакіраваць удзельніка</string>
     <string name="bans_list">Спіс блакіровак</string>
+    <string name="battery_optimization_ignored">Аптымізацыя батарэі ігнаруецца, усё добра</string>
+    <string name="battery_optimization_not_ignored">Аптымізацыя батарэі ўключана, што можа выклікаць праблемы. Вам варта адключыць аптымізацыю батарэі!</string>
+    <string name="battery_optimization_title">Налады батарэі</string>
     <string name="busy">Заняты</string>
     <string name="calendar">Каляндар</string>
     <string name="call_more_actions_dialog_headline">Дадатковыя опцыі выкліку</string>
@@ -242,6 +245,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Знешні</string>
     <string name="nc_diagnose_signaling_mode_intern">Унутраны</string>
     <string name="nc_diagnose_signaling_mode_title">Рэжым сігналізацыі</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Адкрыць спіс вырашэння праблем</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Адкрыць экран дыягностыкі</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Адкрыць dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Няправільны пароль</string>
     <string name="nc_dialog_maintenance_mode_description">Сервер знаходзіцца ў рэжыме тэхнічнага абслугоўвання.</string>
     <string name="nc_dialog_outdated_client">Праграма састарэла</string>
@@ -472,6 +478,8 @@
     <string name="nc_settings_contact_admin_of">Звярніцеся да адміністратара</string>
     <string name="nc_settings_diagnose_subtitle">Адкрыйце экран дыягностыкі, каб праверыць налады або стварыць справаздачу пра памылку</string>
     <string name="nc_settings_diagnose_title">Дыягностыка</string>
+    <string name="nc_settings_diagnosis_subtitle">Адкрыйце экран дыягностыкі, каб праверыць налады або стварыць справаздачу пра памылку</string>
+    <string name="nc_settings_diagnosis_title">Дыягностыка</string>
     <string name="nc_settings_incognito_keyboard_desc">Дае каманду клавіятуры адключыць персаналізаванае навучанне (без гарантый)</string>
     <string name="nc_settings_incognito_keyboard_title">Клавіятура інкогніта</string>
     <string name="nc_settings_no_ringtone">Няма гуку</string>
@@ -573,6 +581,7 @@
     <string name="notification_all_messages">Усе паведамленні</string>
     <string name="notification_mention_only">Толькі згадкі з @</string>
     <string name="notification_off">Выкл.</string>
+    <string name="notification_permission">Дазволы на апавяшчэнні</string>
     <string name="notifications_default">Прадвызначаныя</string>
     <string name="notifications_default_description">Прытрымлівацца налад размовы</string>
     <string name="oneHour">1 гадзіну</string>
