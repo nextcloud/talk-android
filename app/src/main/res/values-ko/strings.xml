@@ -12,6 +12,7 @@
     <string name="audio_output_wired_headset">유선 헤드셋</string>
     <string name="avatar">아바타</string>
     <string name="away">자리비움</string>
+    <string name="battery_optimization_title">배터리 설정</string>
     <string name="busy">바쁨</string>
     <string name="calendar">일정</string>
     <string name="call_running_since_one_hour">통화가 한 시간동안 진행되었습니다.</string>
@@ -144,6 +145,17 @@
     <string name="nc_demote">중재자 권한 제거</string>
     <string name="nc_description_record_voice">음성 메시지 녹음</string>
     <string name="nc_description_send_message_button">메시지 보내기</string>
+    <string name="nc_diagnose_account_category_title">현재 계정</string>
+    <string name="nc_diagnose_account_server">서버</string>
+    <string name="nc_diagnose_account_user_name">사용자</string>
+    <string name="nc_diagnose_android_version_title">안드로이드 버전</string>
+    <string name="nc_diagnose_app_category_title">앱</string>
+    <string name="nc_diagnose_app_name_title">앱 이름</string>
+    <string name="nc_diagnose_app_users_amount">등록된 사용자</string>
+    <string name="nc_diagnose_battery_optimization_title">배터리 설정</string>
+    <string name="nc_diagnose_device_name_title">장치</string>
+    <string name="nc_diagnose_signaling_mode_extern">외부</string>
+    <string name="nc_diagnose_signaling_mode_intern">내부</string>
     <string name="nc_dialog_invalid_password">잘못된 암호</string>
     <string name="nc_dialog_outdated_client_option_update">업데이트</string>
     <string name="nc_dialog_reauth_or_delete">이 계정을 재인증하거나 삭제하시겠습니까?</string>

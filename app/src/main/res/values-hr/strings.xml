@@ -11,6 +11,7 @@
     <string name="automatic_status_set">Vaš status je postavljen automatski</string>
     <string name="avatar">Avatar</string>
     <string name="away">Odsutan</string>
+    <string name="battery_optimization_title">Postavke baterije</string>
     <string name="busy">Zauzeto</string>
     <string name="calendar">Kalendar</string>
     <string name="call_running_since_one_hour">Poziv traje već jedan sat.</string>
@@ -143,6 +144,17 @@
     <string name="nc_demote">Ukloni moderatora</string>
     <string name="nc_description_record_voice">Snimi glasovnu poruku</string>
     <string name="nc_description_send_message_button">Pošalji poruku</string>
+    <string name="nc_diagnose_account_category_title">Trenutni račun</string>
+    <string name="nc_diagnose_account_server">Poslužitelj</string>
+    <string name="nc_diagnose_account_user_name">Korisnik</string>
+    <string name="nc_diagnose_android_version_title">Inačica Androida</string>
+    <string name="nc_diagnose_app_category_title">Aplikacija</string>
+    <string name="nc_diagnose_app_name_title">Naziv aplikacije</string>
+    <string name="nc_diagnose_battery_optimization_title">Postavke baterije</string>
+    <string name="nc_diagnose_device_name_title">Uređaj</string>
+    <string name="nc_diagnose_phone_category_title">Telefon</string>
+    <string name="nc_diagnose_signaling_mode_extern">Vanjsko</string>
+    <string name="nc_diagnose_signaling_mode_intern">Interno</string>
     <string name="nc_dialog_invalid_password">Netočna zaporka</string>
     <string name="nc_dialog_outdated_client_option_update">Ažuriraj</string>
     <string name="nc_dialog_reauth_or_delete">Želite li ponovno autorizirati ili izbrisati ovaj račun?</string>

@@ -19,6 +19,7 @@
     <string name="ban">انسداد</string>
     <string name="ban_participant">مسدود کردن شرکت‌کننده</string>
     <string name="bans_list">فهرست مسدودی‌ها</string>
+    <string name="battery_optimization_title">تنظیمات باتری</string>
     <string name="busy">مشغول</string>
     <string name="calendar">تقویم</string>
     <string name="call_more_actions_dialog_headline">گزینه‌های پیشرفتهٔ تماس</string>
@@ -140,6 +141,18 @@
     <string name="nc_demote">تنزل مقام از مدیر</string>
     <string name="nc_description_record_voice">ضبط پیام صوتی</string>
     <string name="nc_description_send_message_button">فرستادن پیام</string>
+    <string name="nc_diagnose_account_category_title">حساب جاری</string>
+    <string name="nc_diagnose_account_server">سرور</string>
+    <string name="nc_diagnose_account_user_name">کاربر</string>
+    <string name="nc_diagnose_android_version_title">نسخه اندروید</string>
+    <string name="nc_diagnose_app_category_title">کاره</string>
+    <string name="nc_diagnose_app_name_title">نام کاره</string>
+    <string name="nc_diagnose_app_users_amount">Registered users</string>
+    <string name="nc_diagnose_battery_optimization_title">تنظیمات باتری</string>
+    <string name="nc_diagnose_device_name_title">افزاره</string>
+    <string name="nc_diagnose_phone_category_title">تلفن</string>
+    <string name="nc_diagnose_signaling_mode_extern">خارجی</string>
+    <string name="nc_diagnose_signaling_mode_intern">داخلی</string>
     <string name="nc_dialog_invalid_password">گذرواژه نادرست</string>
     <string name="nc_dialog_outdated_client">برنامه، قدیمی شده است</string>
     <string name="nc_dialog_outdated_client_option_update">به‌روز رسانی</string>
