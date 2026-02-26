@@ -23,6 +23,9 @@
     <string name="ban">Blockera</string>
     <string name="ban_participant">Blockera deltagare</string>
     <string name="bans_list">Blockeringslista</string>
+    <string name="battery_optimization_ignored">Batterioptimering ignoreras, allt är bra</string>
+    <string name="battery_optimization_not_ignored">Batterioptimering är aktiverad vilket kan orsaka problem. Du bör inaktivera batterioptimering!</string>
+    <string name="battery_optimization_title">Batteriinställningar</string>
     <string name="busy">Upptagen</string>
     <string name="calendar">Kalender</string>
     <string name="call_more_actions_dialog_headline">Avancerade samtalsalternativ</string>
@@ -241,6 +244,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Extern</string>
     <string name="nc_diagnose_signaling_mode_intern">Intern</string>
     <string name="nc_diagnose_signaling_mode_title">Signaleringsläge</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Öppna checklista för felsökning</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Öppna diagnosskärmen</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Öppna dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Felaktigt lösenord</string>
     <string name="nc_dialog_maintenance_mode_description">Servern är för närvarande i underhållsläge.</string>
     <string name="nc_dialog_outdated_client">Appen är föråldrad</string>
@@ -463,6 +469,8 @@
     <string name="nc_settings_contact_admin_of">Kontakta administratören av</string>
     <string name="nc_settings_diagnose_subtitle">Öppna diagnosskärmen för att kontrollera inställningarna eller skapa en felrapport</string>
     <string name="nc_settings_diagnose_title">Diagnos</string>
+    <string name="nc_settings_diagnosis_subtitle">Öppna diagnosskärmen för att kontrollera inställningarna eller skapa en felrapport</string>
+    <string name="nc_settings_diagnosis_title">Diagnos</string>
     <string name="nc_settings_incognito_keyboard_desc">Instruerar tangentbordet att inaktivera personlig inlärning (utan garantier)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito-tangentbord</string>
     <string name="nc_settings_no_ringtone">Inget ljud</string>
@@ -564,6 +572,7 @@
     <string name="notification_all_messages">Alla meddelanden</string>
     <string name="notification_mention_only">Endast @-omnämnanden</string>
     <string name="notification_off">Av</string>
+    <string name="notification_permission">Aviseringsbehörigheter</string>
     <string name="notifications_default">Förvald</string>
     <string name="notifications_default_description">Följ konversationsinställningar</string>
     <string name="oneHour">1 timme</string>

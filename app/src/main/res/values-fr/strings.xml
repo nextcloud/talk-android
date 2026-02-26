@@ -23,6 +23,9 @@
     <string name="ban">Bannir</string>
     <string name="ban_participant">Bannir le participant</string>
     <string name="bans_list">Liste des bannis</string>
+    <string name="battery_optimization_ignored">Optimisation de la batterie ignorée, tout va bien</string>
+    <string name="battery_optimization_not_ignored">L\'optimisation de la batterie est activée ce qui peut causer des problèmes. Vous devriez désactiver l\'optimisation de la batterie !</string>
+    <string name="battery_optimization_title">Paramètres pour la batterie</string>
     <string name="busy">Occupé</string>
     <string name="calendar">Agenda</string>
     <string name="call_more_actions_dialog_headline">Options d\'appel avancées</string>
@@ -242,6 +245,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Externe</string>
     <string name="nc_diagnose_signaling_mode_intern">Interne</string>
     <string name="nc_diagnose_signaling_mode_title">Mode de signalement</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Ouvrir la liste de vérifications des erreurs communes</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Ouvrir l\'écran de diagnostic</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Ouvrir dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Mot de passe incorrect</string>
     <string name="nc_dialog_maintenance_mode_description">Le serveur est actuellement en mode maintenance.</string>
     <string name="nc_dialog_outdated_client">L\'application est obsolète</string>
@@ -467,6 +473,8 @@
     <string name="nc_settings_contact_admin_of">Merci de contacter l\'administrateur de</string>
     <string name="nc_settings_diagnose_subtitle">Ouvrir l\'écran de diagnostic pour vérifier les réglages ou créer un rapport de bug</string>
     <string name="nc_settings_diagnose_title">Diagnostic</string>
+    <string name="nc_settings_diagnosis_subtitle">Ouvrir l\'écran de diagnostic pour vérifier les réglages ou créer un rapport de bug</string>
+    <string name="nc_settings_diagnosis_title">Diagnostic</string>
     <string name="nc_settings_incognito_keyboard_desc">Indique au clavier de désactiver l\'apprentissage personnalisé (sans garantie)</string>
     <string name="nc_settings_incognito_keyboard_title">Clavier incognito</string>
     <string name="nc_settings_no_ringtone">Aucun son</string>
@@ -568,6 +576,7 @@
     <string name="notification_all_messages">Tous les messages</string>
     <string name="notification_mention_only">Seulement les mentions @</string>
     <string name="notification_off">Désactiver</string>
+    <string name="notification_permission">Permissions de notification</string>
     <string name="notifications_default">Défaut</string>
     <string name="notifications_default_description">Utiliser les paramètres de la conversation</string>
     <string name="oneHour">1 heure</string>

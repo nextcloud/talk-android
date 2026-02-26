@@ -23,6 +23,9 @@
     <string name="ban">Piga marufuku</string>
     <string name="ban_participant">Mshiriki aliyepigwa marufuku</string>
     <string name="bans_list">Orodha iliyopigwa marufuku</string>
+    <string name="battery_optimization_ignored">Uboreshaji wa betri umepuuzwa, yote sawa</string>
+    <string name="battery_optimization_not_ignored">Uboreshaji wa betri umewezeshwa ambayo inaweza kusababisha matatizo. Unapaswa kuzima uboreshaji wa betri!</string>
+    <string name="battery_optimization_title">Mipangilio ya betri</string>
     <string name="busy">Bize</string>
     <string name="calendar">Kalenda</string>
     <string name="call_more_actions_dialog_headline">Chaguzi za simu za hali ya juu</string>
@@ -242,6 +245,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Nje</string>
     <string name="nc_diagnose_signaling_mode_intern">Ndani</string>
     <string name="nc_diagnose_signaling_mode_title">Namna ya kuashiria</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Fungua orodha hakiki ya utatuzi</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Fungua skrini ya utambuzi</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Fungua dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Nenosiri batili</string>
     <string name="nc_dialog_maintenance_mode_description">Seva iko katika hali ya matengenezo</string>
     <string name="nc_dialog_outdated_client">Programu imepitwa na wakati</string>
@@ -473,6 +479,8 @@
     <string name="nc_settings_contact_admin_of">Tafadhali wasiliana na msimamizi wa</string>
     <string name="nc_settings_diagnose_subtitle">Fungua skrini ya utambuzi ili kuangalia mipangilio au kuunda ripoti ya hitilafu</string>
     <string name="nc_settings_diagnose_title">Uchunguzi</string>
+    <string name="nc_settings_diagnosis_subtitle">Fungua skrini ya utambuzi ili kuangalia mipangilio au kuunda ripoti ya hitilafu</string>
+    <string name="nc_settings_diagnosis_title">Uchunguzi</string>
     <string name="nc_settings_incognito_keyboard_desc">Huagiza kibodi kuzima ujifunzaji wa kibinafsi (bila dhamana)</string>
     <string name="nc_settings_incognito_keyboard_title">Kibodi fiche</string>
     <string name="nc_settings_no_ringtone">Hakuna sauti</string>
@@ -575,6 +583,7 @@
     <string name="notification_all_messages">Jumbe zote</string>
     <string name="notification_mention_only">\@-mitajo pekee</string>
     <string name="notification_off">Imezimwa</string>
+    <string name="notification_permission">Ruhusa ya arifu</string>
     <string name="notifications_default">Chaguo msingi</string>
     <string name="notifications_default_description">Fuata mipangilio ya mazungumzo</string>
     <string name="oneHour">Saa 1</string>

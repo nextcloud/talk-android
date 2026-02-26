@@ -23,6 +23,9 @@
     <string name="ban">Забрана</string>
     <string name="ban_participant">Забрани учесника</string>
     <string name="bans_list">Листа забрањених</string>
+    <string name="battery_optimization_ignored">Игнорише се оптимизација батерије, све је у реду</string>
+    <string name="battery_optimization_not_ignored">Укључена је оптимизација батерије и то може да буде узрок проблема. Требало би да искључите оптимизацију батерије.</string>
+    <string name="battery_optimization_title">Подешавања батерије</string>
     <string name="busy">Заузет</string>
     <string name="calendar">Календар</string>
     <string name="call_more_actions_dialog_headline">Напредне опције позива</string>
@@ -242,6 +245,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Спољно</string>
     <string name="nc_diagnose_signaling_mode_intern">Интерни</string>
     <string name="nc_diagnose_signaling_mode_title">Режим сигнализирања</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Отвори контролну листу за отклањање проблема</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Отвори дијагностички екран</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Отвори dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Неисправна лозинка</string>
     <string name="nc_dialog_maintenance_mode_description">Сервер је тренутно у режиму одржавања.</string>
     <string name="nc_dialog_outdated_client">Апликација је застарела</string>
@@ -464,6 +470,8 @@
     <string name="nc_settings_contact_admin_of">Молимо вас да контактирате администратора</string>
     <string name="nc_settings_diagnose_subtitle">Отвара дијагностички екран да проверите поставке или да креирате извештај о багу</string>
     <string name="nc_settings_diagnose_title">Дијагностика</string>
+    <string name="nc_settings_diagnosis_subtitle">Отвара дијагностички екран да проверите поставке или да креирате извештај о багу</string>
+    <string name="nc_settings_diagnosis_title">Дијагностика</string>
     <string name="nc_settings_incognito_keyboard_desc">Наложи тастатури да искључи персонализовано учење (без гаранција)</string>
     <string name="nc_settings_incognito_keyboard_title">Инкогнито тастатура</string>
     <string name="nc_settings_no_ringtone">Нема звука</string>
@@ -565,6 +573,7 @@
     <string name="notification_all_messages">Све поруке</string>
     <string name="notification_mention_only">Само @-помињања</string>
     <string name="notification_off">Искључено</string>
+    <string name="notification_permission">Дозволе за обавештења</string>
     <string name="notifications_default">Подразумевано</string>
     <string name="notifications_default_description">Прати подешавања разговора</string>
     <string name="oneHour">1 сат</string>

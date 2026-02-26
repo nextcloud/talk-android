@@ -11,6 +11,7 @@
     <string name="automatic_status_set">Vaš status je postavljen automatski</string>
     <string name="avatar">Avatar</string>
     <string name="away">Odsutan</string>
+    <string name="battery_optimization_title">Postavke baterije</string>
     <string name="busy">Zauzeto</string>
     <string name="calendar">Kalendar</string>
     <string name="call_running_since_one_hour">Poziv traje već jedan sat.</string>

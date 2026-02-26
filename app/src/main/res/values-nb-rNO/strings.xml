@@ -19,6 +19,8 @@
     <string name="ban">Utesteng</string>
     <string name="ban_participant">Utesteng deltaker</string>
     <string name="bans_list">Liste over utestengelser</string>
+    <string name="battery_optimization_ignored">Batterioptimalisering ignoreres, alt er bra</string>
+    <string name="battery_optimization_title">Batteri innstillinger</string>
     <string name="busy">Opptatt</string>
     <string name="calendar">Kalender</string>
     <string name="call_more_actions_dialog_headline">Avanserte samtalealternativer</string>
@@ -221,6 +223,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Ekstern</string>
     <string name="nc_diagnose_signaling_mode_intern">Innvendig</string>
     <string name="nc_diagnose_signaling_mode_title">Signaleringsmodus</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Åpne sjekkliste for feilsøking</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Åpne diagnoseskjermen</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Åpne dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Ugyldig passord</string>
     <string name="nc_dialog_maintenance_mode_description">Server er for øyeblikket i vedlikeholdsmodus.</string>
     <string name="nc_dialog_outdated_client">App er utdatert</string>
@@ -413,6 +418,8 @@
     <string name="nc_settings_call_ringtone">Samtaler</string>
     <string name="nc_settings_diagnose_subtitle">Åpne diagnoseskjermen for å sjekke innstillinger eller opprette feilrapport</string>
     <string name="nc_settings_diagnose_title">Diagnose</string>
+    <string name="nc_settings_diagnosis_subtitle">Åpne diagnoseskjermen for å sjekke innstillinger eller opprette feilrapport</string>
+    <string name="nc_settings_diagnosis_title">Diagnose</string>
     <string name="nc_settings_incognito_keyboard_desc">Instruerer tastaturet om å deaktivere personlig læring (uten garantier)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito-tastatur</string>
     <string name="nc_settings_no_ringtone">Ingen lyd</string>
@@ -503,6 +510,7 @@
     <string name="notification_all_messages">Alle meldinger</string>
     <string name="notification_mention_only">kun @-nevner</string>
     <string name="notification_off">Av</string>
+    <string name="notification_permission">Varslingstillatelser</string>
     <string name="notifications_default">Forvalg</string>
     <string name="oneHour">1 time</string>
     <string name="online">Pålogget</string>

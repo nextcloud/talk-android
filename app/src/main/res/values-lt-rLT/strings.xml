@@ -11,6 +11,7 @@
     <string name="automatic_status_set">Jūsų būsena buvo nustatyta automatiškai</string>
     <string name="avatar">Avataras</string>
     <string name="away">Atsitraukęs</string>
+    <string name="battery_optimization_title">Akumuliatoriaus nustatymai</string>
     <string name="busy">Užimtas laikas</string>
     <string name="calendar">Kalendorius</string>
     <string name="call_more_actions_dialog_headline">Išplėstinės skambučio parinktys</string>

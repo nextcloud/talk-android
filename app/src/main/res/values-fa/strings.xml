@@ -19,6 +19,7 @@
     <string name="ban">انسداد</string>
     <string name="ban_participant">مسدود کردن شرکت‌کننده</string>
     <string name="bans_list">فهرست مسدودی‌ها</string>
+    <string name="battery_optimization_title">تنظیمات باتری</string>
     <string name="busy">مشغول</string>
     <string name="calendar">تقویم</string>
     <string name="call_more_actions_dialog_headline">گزینه‌های پیشرفتهٔ تماس</string>

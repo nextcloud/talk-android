@@ -16,6 +16,8 @@
     <string name="automatic_status_set">あなたのステータスは自動的に設定されました</string>
     <string name="avatar">アバター</string>
     <string name="away">離席中</string>
+    <string name="battery_optimization_ignored">バッテリーの最適化は無視されますが、全ては問題ありません</string>
+    <string name="battery_optimization_title">バッテリー設定</string>
     <string name="busy">ビジー</string>
     <string name="calendar">カレンダー</string>
     <string name="call_more_actions_dialog_headline">高度なコールオプション</string>
@@ -215,6 +217,9 @@
     <string name="nc_diagnose_signaling_mode_extern">外部</string>
     <string name="nc_diagnose_signaling_mode_intern">非公開</string>
     <string name="nc_diagnose_signaling_mode_title">シグナリングモード</string>
+    <string name="nc_diagnosis_dialog_open_checklist">トラブルシューティングのチェックリストを開く</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">診断画面を開く</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">dontkillmyapp.comを開く</string>
     <string name="nc_dialog_invalid_password">無効なパスワード</string>
     <string name="nc_dialog_maintenance_mode_description">サーバーは現在メンテナンスモードです。</string>
     <string name="nc_dialog_outdated_client">アプリが古いです</string>
@@ -408,6 +413,8 @@
     <string name="nc_settings_call_ringtone">呼び出し</string>
     <string name="nc_settings_diagnose_subtitle">診断画面を開く設定を確認したり、不具合の報告を作成したりします</string>
     <string name="nc_settings_diagnose_title">診断</string>
+    <string name="nc_settings_diagnosis_subtitle">診断画面を開く設定を確認したり、不具合の報告を作成したりします</string>
+    <string name="nc_settings_diagnosis_title">診断</string>
     <string name="nc_settings_incognito_keyboard_desc">カスタマイズされた入力が認識されないようにする（保証なし）</string>
     <string name="nc_settings_incognito_keyboard_title">シークレットモードキーボード</string>
     <string name="nc_settings_no_ringtone">音無し</string>
@@ -496,6 +503,7 @@
     <string name="next_week">来週</string>
     <string name="no_phone_book_integration_due_to_permissions">利用権限がないため、電話番号統合ができません。</string>
     <string name="notification_mention_only">\@で直接会話</string>
+    <string name="notification_permission">通知権限</string>
     <string name="notifications_default">デフォルト</string>
     <string name="oneHour">1時間</string>
     <string name="online">オンライン</string>

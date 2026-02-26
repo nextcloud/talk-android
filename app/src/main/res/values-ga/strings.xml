@@ -23,6 +23,9 @@
     <string name="ban">Bac</string>
     <string name="ban_participant">Cosc ar rannpháirtí</string>
     <string name="bans_list">Liosta toirmisc</string>
+    <string name="battery_optimization_ignored">Déantar neamhaird de bharrfheabhsú ceallraí, go breá</string>
+    <string name="battery_optimization_not_ignored">Tá optamú ceallraí cumasaithe rud a d\'fhéadfadh fadhbanna a chruthú. Ba cheart duit leas iomlán a bhaint as ceallraí a dhíchumasú!</string>
+    <string name="battery_optimization_title">Socruithe ceallraí</string>
     <string name="busy">Gnóthach</string>
     <string name="calendar">Féilire</string>
     <string name="call_more_actions_dialog_headline">Ardroghanna glaonna</string>
@@ -242,6 +245,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Seachtrach</string>
     <string name="nc_diagnose_signaling_mode_intern">Inmheánach</string>
     <string name="nc_diagnose_signaling_mode_title">Mód Comharthaíochta</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Oscail seicliosta fabhtcheartaithe</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Oscail scáileán diagnóis</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Oscail dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Pasfhocal neamhbhailí</string>
     <string name="nc_dialog_maintenance_mode_description">Tá an freastalaí i mód cothabhála faoi láthair.</string>
     <string name="nc_dialog_outdated_client">Tá an feidhmchlár as dáta</string>
@@ -474,6 +480,8 @@
     <string name="nc_settings_contact_admin_of">Déan teagmháil le riarthóir na</string>
     <string name="nc_settings_diagnose_subtitle">Oscail scáileán diagnóis chun socruithe a sheiceáil nó chun tuairisc fhabht a chruthú</string>
     <string name="nc_settings_diagnose_title">Diagnóis</string>
+    <string name="nc_settings_diagnosis_subtitle">Oscail scáileán diagnóis chun socruithe a sheiceáil nó chun tuairisc fhabht a chruthú</string>
+    <string name="nc_settings_diagnosis_title">Diagnóis</string>
     <string name="nc_settings_incognito_keyboard_desc">Tugann sé treoir don mhéarchlár foghlaim phearsantaithe a dhíchumasú (gan ráthaíochtaí)</string>
     <string name="nc_settings_incognito_keyboard_title">Méarchlár incognito</string>
     <string name="nc_settings_no_ringtone">Gan fuaim</string>
@@ -577,6 +585,7 @@
     <string name="notification_all_messages">Gach teachtaireacht</string>
     <string name="notification_mention_only">\@-luaite amháin</string>
     <string name="notification_off">as</string>
+    <string name="notification_permission">Ceadanna fógraí</string>
     <string name="notifications_default">Réamhshocrú</string>
     <string name="notifications_default_description">Lean socruithe comhrá</string>
     <string name="oneHour">1 uair</string>

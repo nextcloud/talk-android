@@ -13,6 +13,7 @@
     <string name="automatic_status_set">Tu estado se estableció automáticamente</string>
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
+    <string name="battery_optimization_title">Configuración de la batería</string>
     <string name="busy">Ocupado</string>
     <string name="calendar">Calendario</string>
     <string name="call_more_actions_dialog_headline">Opciones avanzadas de llamada</string>

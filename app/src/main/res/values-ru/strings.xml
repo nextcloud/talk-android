@@ -23,6 +23,9 @@
     <string name="ban">Заблокировать</string>
     <string name="ban_participant">Заблокировать участника</string>
     <string name="bans_list">Список заблокированных</string>
+    <string name="battery_optimization_ignored">Оптимизация батареи игнорируется, все в порядке</string>
+    <string name="battery_optimization_not_ignored">Включена оптимизация батареи, что может вызвать проблемы. Вам нужно отключить оптимизацию батареи!</string>
+    <string name="battery_optimization_title">Настройки батареи</string>
     <string name="busy">Занят</string>
     <string name="calendar">Календарь</string>
     <string name="call_more_actions_dialog_headline">Дополнительные настройки звонка</string>
@@ -242,6 +245,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Внешний</string>
     <string name="nc_diagnose_signaling_mode_intern">Внутренние</string>
     <string name="nc_diagnose_signaling_mode_title">Режим сигнализации</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Открыть контрольный список устранения неполадок</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Открыть экран диагностики</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Открыть dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Неверный пароль</string>
     <string name="nc_dialog_maintenance_mode_description">В настоящее время сервер находится в режиме технического обслуживания.</string>
     <string name="nc_dialog_outdated_client">Приложение устарело</string>
@@ -467,6 +473,8 @@
     <string name="nc_settings_contact_admin_of">Свяжитесь с администратором </string>
     <string name="nc_settings_diagnose_subtitle">Откройте экран диагностики, чтобы проверить настройки или создать отчёт об ошибке.</string>
     <string name="nc_settings_diagnose_title">Диагностика</string>
+    <string name="nc_settings_diagnosis_subtitle">Откройте экран диагностики, чтобы проверить настройки или создать отчёт об ошибке.</string>
+    <string name="nc_settings_diagnosis_title">Диагностика</string>
     <string name="nc_settings_incognito_keyboard_desc">Указывает клавиатуре отключить персонализированное обучение (без гарантий)</string>
     <string name="nc_settings_incognito_keyboard_title">Клавиатура инкогнито</string>
     <string name="nc_settings_no_ringtone">Без звука</string>
@@ -568,6 +576,7 @@
     <string name="notification_all_messages">Все сообщения</string>
     <string name="notification_mention_only">\@-только упоминания</string>
     <string name="notification_off">Отключить</string>
+    <string name="notification_permission">Разрешения на уведомления</string>
     <string name="notifications_default">По умолчанию</string>
     <string name="notifications_default_description">Следовать настройкам обсуждения</string>
     <string name="oneHour">1 час</string>

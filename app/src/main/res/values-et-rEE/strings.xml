@@ -23,6 +23,9 @@
     <string name="ban">Sea suhtluskeeld</string>
     <string name="ban_participant">Sea osalejale suhtluskeeld</string>
     <string name="bans_list">Suhtluskeelu saanute loend</string>
+    <string name="battery_optimization_ignored">Akukasutuse optimeerimine on eiratud, kõik on korras</string>
+    <string name="battery_optimization_not_ignored">Akukasutuse optimeerimine on sisse lülitatud. Võimalike probleemide vältimiseks lülita ta selle rakenduse jaoks välja!</string>
+    <string name="battery_optimization_title">Akuseadistused</string>
     <string name="busy">Hõivatud</string>
     <string name="calendar">Kalender</string>
     <string name="call_more_actions_dialog_headline">Kõne lisavalikud</string>
@@ -242,6 +245,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Väline</string>
     <string name="nc_diagnose_signaling_mode_intern">Sisene</string>
     <string name="nc_diagnose_signaling_mode_title">Signaliseerimisrežiim</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Ava veaotsingu kontrollnimekiri</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Ava diagnostikavaade</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Ava dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Vale salasõna</string>
     <string name="nc_dialog_maintenance_mode_description">Server on hetkel hooldusrežiimis.</string>
     <string name="nc_dialog_outdated_client">Rakendus on aegunud</string>
@@ -474,6 +480,8 @@
     <string name="nc_settings_contact_admin_of">Palun võta ühendust serveri administraatoriga - </string>
     <string name="nc_settings_diagnose_subtitle">Seadistuste kontrollimiseks või veateate koostamiseks ava veaotsingu vaade</string>
     <string name="nc_settings_diagnose_title">Veaotsing</string>
+    <string name="nc_settings_diagnosis_subtitle">Seadistuste kontrollimiseks või veateate koostamiseks ava veaotsingu vaade</string>
+    <string name="nc_settings_diagnosis_title">Veaotsing</string>
     <string name="nc_settings_incognito_keyboard_desc">Sellega annad klahvistikul käsu mitte kasutada isikustatud sisestuste õpet (aga puudub garantii toimivuse osas)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klahvistik</string>
     <string name="nc_settings_no_ringtone">Heli puudub</string>
@@ -577,6 +585,7 @@
     <string name="notification_all_messages">Kõik sõnumid</string>
     <string name="notification_mention_only">Vaid @-mainimised</string>
     <string name="notification_off">Pole kasutusel</string>
+    <string name="notification_permission">Teavituste õigused</string>
     <string name="notifications_default">Vaikimisi</string>
     <string name="notifications_default_description">Järgi vestluse seadistusi</string>
     <string name="oneHour">1 tund</string>

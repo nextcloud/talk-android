@@ -23,6 +23,9 @@
     <string name="ban">Blokowanie</string>
     <string name="ban_participant">Zablokuj uczestnika</string>
     <string name="bans_list">Lista zablokowanych</string>
+    <string name="battery_optimization_ignored">Optymalizacja baterii jest ignorowana, wszystko w porządku</string>
+    <string name="battery_optimization_not_ignored">Optymalizacja baterii jest włączona, co może powodować problemy. Powinieneś wyłączyć optymalizację baterii!</string>
+    <string name="battery_optimization_title">Ustawienia baterii</string>
     <string name="busy">Brak dostępności</string>
     <string name="calendar">Kalendarz</string>
     <string name="call_more_actions_dialog_headline">Zaawansowane opcje połączeń</string>
@@ -242,6 +245,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Zewnętrzny</string>
     <string name="nc_diagnose_signaling_mode_intern">Wewnętrzny</string>
     <string name="nc_diagnose_signaling_mode_title">Tryb sygnalizacji</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Otwórz listę kontrolną rozwiązywania problemów</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Otwórz ekran diagnostyczny</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Otwórz stronę dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Nieprawidłowe hasło</string>
     <string name="nc_dialog_maintenance_mode_description">Serwer jest obecnie w trybie konserwacji.</string>
     <string name="nc_dialog_outdated_client">Aplikacja jest przestarzała</string>
@@ -474,6 +480,8 @@
     <string name="nc_settings_contact_admin_of">Proszę o kontakt z administratorem</string>
     <string name="nc_settings_diagnose_subtitle">Otwórz ekran diagnostyczny, aby sprawdzić ustawienia lub utworzyć raport o błędzie</string>
     <string name="nc_settings_diagnose_title">Diagnoza</string>
+    <string name="nc_settings_diagnosis_subtitle">Otwórz ekran diagnostyczny, aby sprawdzić ustawienia lub utworzyć raport o błędzie</string>
+    <string name="nc_settings_diagnosis_title">Diagnoza</string>
     <string name="nc_settings_incognito_keyboard_desc">Wskaż klawiaturze, aby wyłączyła spersonalizowane uczenie (bez gwarancji)</string>
     <string name="nc_settings_incognito_keyboard_title">Klawiatura incognito</string>
     <string name="nc_settings_no_ringtone">Bez dźwięku</string>
@@ -576,6 +584,7 @@
     <string name="notification_all_messages">Wszystkie wiadomości</string>
     <string name="notification_mention_only">Tylko, gdy @-wspomniano</string>
     <string name="notification_off">Wyłączone</string>
+    <string name="notification_permission">Uprawnienia do powiadomień</string>
     <string name="notifications_default">Domyślny</string>
     <string name="notifications_default_description">Śledź ustawienia rozmowy</string>
     <string name="oneHour">1 godzina</string>

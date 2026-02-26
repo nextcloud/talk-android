@@ -23,6 +23,9 @@
     <string name="ban">Yasakla</string>
     <string name="ban_participant">Katılımcıyı yasakla</string>
     <string name="bans_list">Yasaklama listesi</string>
+    <string name="battery_optimization_ignored">Pil iyileştirmesi yok sayılmış. Her şey yolunda</string>
+    <string name="battery_optimization_not_ignored">Pil iyileştirmesi açık ve bu sorunlara neden olabilir. Pil iyileştirmesini kapatmalısınız!</string>
+    <string name="battery_optimization_title">Pil ayarları</string>
     <string name="busy">Meşgul</string>
     <string name="calendar">Takvim</string>
     <string name="call_more_actions_dialog_headline">Gelişmiş çağrı seçenekleri</string>
@@ -178,6 +181,7 @@
     <string name="nc_connecting_call">Bağlantı kuruluyor …</string>
     <string name="nc_contacts_done">Tamam</string>
     <string name="nc_conversation_description">Görüşme açıklaması</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Dosyaya git</string>
     <string name="nc_conversation_menu_conversation_info">Görüşme bilgileri</string>
     <string name="nc_conversation_menu_video_call">Görüntülü çağrı</string>
     <string name="nc_conversation_menu_voice_call">Sesli çağrı</string>
@@ -241,6 +245,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Dış</string>
     <string name="nc_diagnose_signaling_mode_intern">İç</string>
     <string name="nc_diagnose_signaling_mode_title">Signaling kipi</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Sorun çözme kontrol listesini aç</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Tanılama ekranını aç</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">dontkillmyapp.com sitesini aç</string>
     <string name="nc_dialog_invalid_password">Parola geçersiz</string>
     <string name="nc_dialog_maintenance_mode_description">Şu anda sunucuda bakım yapılıyor.</string>
     <string name="nc_dialog_outdated_client">Uygulama sürümü çok eski</string>
@@ -304,6 +311,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Pil iyileştirmesi yok sayılsın</string>
     <string name="nc_important_conversation">Önemli görüşme</string>
     <string name="nc_important_conversation_desc">Önemli görüşmeler için \"Rahatsız etmeyin\" kullanıcı durumu yok sayılır</string>
+    <string name="nc_in_conversation">%1$s zamanında</string>
     <string name="nc_invalid_time">Zaman geçersiz</string>
     <string name="nc_invitations">Davetler</string>
     <string name="nc_join_open_conversations">Açık görüşmelere katıl</string>
@@ -338,6 +346,8 @@
     <string name="nc_message_offline">Çevrim dışı</string>
     <string name="nc_message_quote_cancel_reply">Yanıtı iptal et</string>
     <string name="nc_message_read">İleti okundu</string>
+    <string name="nc_message_scheduled">İleti zamanlandı</string>
+    <string name="nc_message_scheduled_at">İleti %1$s için zamanlandı</string>
     <string name="nc_message_sending">Gönderiliyor</string>
     <string name="nc_message_sent">İleti gönderildi</string>
     <string name="nc_microphone_enabled_audio_recording">Mikrofon açık ve ses kaydediliyor</string>
@@ -408,13 +418,17 @@
     <string name="nc_rename_confirm">Yeniden adlandır</string>
     <string name="nc_reply">Yanıtla</string>
     <string name="nc_reply_privately">Kişisel yanıt gönder</string>
+    <string name="nc_reschedule_message_with_notification">Bildirim ile yeniden zamanla</string>
+    <string name="nc_reschedule_message_without_notification">Bildirim olmadan yeniden zamanla</string>
     <string name="nc_room_retention">Oda tutuldu</string>
     <string name="nc_save_message">Kaydet</string>
     <string name="nc_save_success">Kaydedildi</string>
     <string name="nc_schedule_message">İletiyi zamanla</string>
     <string name="nc_schedule_message_title">İletiyi zamanla</string>
+    <string name="nc_schedule_message_without_notification">Bildirim olmadan daha sonra gönder</string>
     <string name="nc_scheduled_messages">Zamanlanmış iletiler</string>
-    <string name="nc_scheduled_time">Planmış zaman</string>
+    <string name="nc_scheduled_messages_empty">Zamanlanmış bir ileti yok</string>
+    <string name="nc_scheduled_time">Zamanlama</string>
     <string name="nc_screen_lock_timeout_30">30 saniye</string>
     <string name="nc_screen_lock_timeout_300">5 dakika</string>
     <string name="nc_screen_lock_timeout_60">1 dakika</string>
@@ -466,6 +480,8 @@
     <string name="nc_settings_contact_admin_of">Lütfen şuranın yöneticisi ile görüşün</string>
     <string name="nc_settings_diagnose_subtitle">Ayarları denetlemek için tanılama ekranını açın ya da bir hata bildirimi oluşturun</string>
     <string name="nc_settings_diagnose_title">Tanılama</string>
+    <string name="nc_settings_diagnosis_subtitle">Ayarları denetlemek için tanılama ekranını açın ya da bir hata bildirimi oluşturun</string>
+    <string name="nc_settings_diagnosis_title">Tanılama</string>
     <string name="nc_settings_incognito_keyboard_desc">Klavyede kişisel öğrenmeyi kapatır (garanti edilmez)</string>
     <string name="nc_settings_incognito_keyboard_title">Tuş takımı gizliliği</string>
     <string name="nc_settings_no_ringtone">Ses yok</string>
@@ -528,6 +544,7 @@
     <string name="nc_shared_items_empty">Paylaşılmış bir öge yok</string>
     <string name="nc_shared_items_location">Konum</string>
     <string name="nc_shared_location">Paylaşılan konum</string>
+    <string name="nc_show_ecosystem_description">Hesap seçme penceresinde Nextcloud uygulamaları önerileri</string>
     <string name="nc_show_ecosystem_title">Uygulama değiştiriciyi görüntüle</string>
     <string name="nc_show_notification_warning_description">Bildirimler doğru olarak ayarlanmamışsa standart uyarı görüntülensin</string>
     <string name="nc_show_notification_warning_title">Standart uyarı bildirimi görüntülensin</string>
@@ -540,6 +557,7 @@
     <string name="nc_test_results">Deneme sonuçları</string>
     <string name="nc_today_meeting">Bugün %1$s zamanında</string>
     <string name="nc_tomorrow_meeting">Yarın %1$s zamanında</string>
+    <string name="nc_upcoming_event_dismissed">Yaklaşan çağrı görüşme bilgilerinde görülebilir</string>
     <string name="nc_upload_choose_local_files">Dosyaları seçin</string>
     <string name="nc_upload_confirm_send_multiple">Bu dosyalar %1$s alıcısına gönderilsin mi?</string>
     <string name="nc_upload_confirm_send_single">Bu dosya %1$s alıcısına gönderilsin mi?</string>
@@ -564,9 +582,11 @@
     <string name="no_conversations_archived">Arşivlenmiş bir görüşme yok</string>
     <string name="no_offline_messages_saved">Herhangi bir çevrim dışı iletisi kaydedilmemiş</string>
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon numarası bütünleştirmesi yok</string>
+    <string name="no_scheduled_messages_offline">Sunucu ile bağlantı yok. Zamanlanmış iletiler yüklenemedi</string>
     <string name="notification_all_messages">Tüm iletiler</string>
     <string name="notification_mention_only">Yalnızca @-anmaları</string>
     <string name="notification_off">Kapalı</string>
+    <string name="notification_permission">Bildirim izinleri</string>
     <string name="notifications_default">Varsayılan</string>
     <string name="notifications_default_description">Görüşme ayarları kullanılsın</string>
     <string name="oneHour">1 saat</string>
@@ -582,7 +602,10 @@
     <string name="pin_indefinitely">Süresiz sabitle</string>
     <string name="pin_message">İletiyi sabitle</string>
     <string name="pinned">Sabitlenmiş</string>
+    <string name="pinned_by_author">%1$s (%2$s tarafından sabitlenmiş)</string>
+    <string name="pinned_by_you">%1$s (siz sabitlemişsiniz)</string>
     <string name="pinned_dismiss">Yok say</string>
+    <string name="pinned_go_to_message">İletiye git</string>
     <string name="pinned_indefinitely">Süresiz sabitlendi</string>
     <string name="pinned_message_options">İleti seçenekleri</string>
     <string name="pinned_until">Şu zamana kadar sabitlendi</string>
@@ -608,6 +631,7 @@
     <string name="previously_set">Önceden ayarlanmış</string>
     <string name="qr_code_error">Kare kod okunamadı</string>
     <string name="raise_hand">El kaldır</string>
+    <string name="reaction_forbidden">Bu görüşmede tepki ekleme veya kaldırma izniniz yok</string>
     <string name="reactions_tab_all">Tümü</string>
     <string name="read_storage_no_permission">İzin verilmeden depolamadaki dosyalar paylaşılamaz</string>
     <string name="recent_threads">Son yazışmalar</string>

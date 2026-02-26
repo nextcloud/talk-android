@@ -23,6 +23,9 @@
     <string name="ban">Bandisci</string>
     <string name="ban_participant">Bandisci partecipante</string>
     <string name="bans_list">Lista dei bandi</string>
+    <string name="battery_optimization_ignored">L\'ottimizzazione della batteria viene ignorata, tutto bene</string>
+    <string name="battery_optimization_not_ignored">L\'ottimizzazione della batteria è abilitata e potrebbe causare problemi. È necessario disabilitare l\'ottimizzazione della batteria!</string>
+    <string name="battery_optimization_title">Impostazioni batteria</string>
     <string name="busy">Occupato</string>
     <string name="calendar">Calendario</string>
     <string name="call_more_actions_dialog_headline">Opzioni avanzate per le chiamate</string>
@@ -241,6 +244,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Esterno</string>
     <string name="nc_diagnose_signaling_mode_intern">Interni</string>
     <string name="nc_diagnose_signaling_mode_title">Modalità di segnalazione</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Apri la lista di controllo per la risoluzione dei problemi</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Apri schermata diagnosi</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Apri dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Password non valida</string>
     <string name="nc_dialog_maintenance_mode_description">Il server è attualmente in modalità di manutenzione.</string>
     <string name="nc_dialog_outdated_client">L\'app non è aggiornata</string>
@@ -462,6 +468,8 @@
     <string name="nc_settings_contact_admin_of">Per favore, contatta l\'amministratore di</string>
     <string name="nc_settings_diagnose_subtitle">Apri la schermata di diagnosi per controllare le impostazioni o creare un rapporto sui bug</string>
     <string name="nc_settings_diagnose_title">Diagnosi</string>
+    <string name="nc_settings_diagnosis_subtitle">Apri la schermata di diagnosi per controllare le impostazioni o creare un rapporto sui bug</string>
+    <string name="nc_settings_diagnosis_title">Diagnosi</string>
     <string name="nc_settings_incognito_keyboard_desc">Ordina alla tastiera di disattivare l\'apprendimento personalizzato (senza garanzie)</string>
     <string name="nc_settings_incognito_keyboard_title">Tastiera incognito</string>
     <string name="nc_settings_no_ringtone">Nessun suono</string>
@@ -563,6 +571,7 @@
     <string name="notification_all_messages">Tutti i messaggi</string>
     <string name="notification_mention_only">\@-solo menzioni</string>
     <string name="notification_off">Spento</string>
+    <string name="notification_permission">Permessi di notifica</string>
     <string name="notifications_default">Predefinito</string>
     <string name="notifications_default_description">Segui le impostazioni della conversazione</string>
     <string name="oneHour">1 ora</string>

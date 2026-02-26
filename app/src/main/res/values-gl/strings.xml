@@ -23,6 +23,9 @@
     <string name="ban">Expulsión</string>
     <string name="ban_participant">Expulsar o participante</string>
     <string name="bans_list">Lista de expulsións</string>
+    <string name="battery_optimization_ignored">Ignorase a optimización da batería, todo ben</string>
+    <string name="battery_optimization_not_ignored">A optimización da batería está activada, o que pode causar problemas. Debería desactivar a optimización da batería!</string>
+    <string name="battery_optimization_title">Axustes da batería</string>
     <string name="busy">Ocupado</string>
     <string name="calendar">Calendario</string>
     <string name="call_more_actions_dialog_headline"> Opcións avanzadas de chamada</string>
@@ -242,6 +245,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Externo</string>
     <string name="nc_diagnose_signaling_mode_intern">Interna</string>
     <string name="nc_diagnose_signaling_mode_title">Modo de sinalización</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Abrir a lista de comprobación de solución de problemas</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Abrir a pantalla de diagnóstico</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Abrir dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Contrasinal incorrecto </string>
     <string name="nc_dialog_maintenance_mode_description">O servidor neste momento está en modo de mantemento.</string>
     <string name="nc_dialog_outdated_client">A aplicación está desactualizada</string>
@@ -474,6 +480,8 @@
     <string name="nc_settings_contact_admin_of">Póñase en contacto coa administración de</string>
     <string name="nc_settings_diagnose_subtitle">Abrir a pantalla de diagnóstico para comprobar os axustes ou crear un informe de fallos</string>
     <string name="nc_settings_diagnose_title">Diagnóstico</string>
+    <string name="nc_settings_diagnosis_subtitle">Abrir a pantalla de diagnóstico para comprobar os axustes ou crear un informe de fallos</string>
+    <string name="nc_settings_diagnosis_title">Diagnóstico</string>
     <string name="nc_settings_incognito_keyboard_desc">Indícalle ao teclado que desactive a aprendizaxe personalizada (sen garantías)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado de incógnito</string>
     <string name="nc_settings_no_ringtone">Sen son</string>
@@ -578,6 +586,7 @@
     <string name="notification_all_messages">Todas as mensaxes</string>
     <string name="notification_mention_only">Só as mencións con \@</string>
     <string name="notification_off">Apagado</string>
+    <string name="notification_permission">Permisos de notificación</string>
     <string name="notifications_default">Predeterminado</string>
     <string name="notifications_default_description">Seguir os axustes da conversa</string>
     <string name="oneHour">1 hora</string>

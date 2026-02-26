@@ -23,6 +23,9 @@
     <string name="ban">چەكلە</string>
     <string name="ban_participant">قاتناشقۇچىنى چەكلەش</string>
     <string name="bans_list">چەكلەش تىزىملىكى</string>
+    <string name="battery_optimization_ignored">باتارېيەنى ئەلالاشتۇرۇشقا سەل قارىلىدۇ ، ھەممىسى ياخشى</string>
+    <string name="battery_optimization_not_ignored">باتارېيە ئەلالاشتۇرۇش ئىقتىدارى قوزغىتىلغان بولۇپ، مەسىلە پەيدا قىلىشى مۇمكىن. باتارېيە ئەلالاشتۇرۇش ئىقتىدارىدىن ۋاز كېچىشىڭىز كېرەك!</string>
+    <string name="battery_optimization_title">باتارېيە تەڭشىكى</string>
     <string name="busy">ئالدىراش</string>
     <string name="calendar">كالېندار</string>
     <string name="call_more_actions_dialog_headline">ئىلغار چاقىرىش تاللانمىلىرى</string>
@@ -242,6 +245,9 @@
     <string name="nc_diagnose_signaling_mode_extern">سىرتقى</string>
     <string name="nc_diagnose_signaling_mode_intern">ئىچكى</string>
     <string name="nc_diagnose_signaling_mode_title">سىگنال ھالىتى</string>
+    <string name="nc_diagnosis_dialog_open_checklist">چاتاقنى تەكشۈرۈش تىزىملىكىنى ئېچىڭ</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">دىئاگنوز قويۇش ئېكرانىنى ئېچىڭ</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Dontkillmyapp.com نى ئېچىڭ</string>
     <string name="nc_dialog_invalid_password">پارول ئىناۋەتسىز</string>
     <string name="nc_dialog_maintenance_mode_description">مۇلازىمېتىر ھازىر ئاسراش ھالىتىدە.</string>
     <string name="nc_dialog_outdated_client">ئەپنىڭ ۋاقتى ئۆتتى</string>
@@ -464,6 +470,8 @@
     <string name="nc_settings_contact_admin_of">باشقۇرغۇچى بىلەن ئالاقىلىشىڭ</string>
     <string name="nc_settings_diagnose_subtitle">تەڭشەكلەرنى تەكشۈرۈش ياكى خاتالىق دوكلاتىنى تەكشۈرۈش ئۈچۈن دىئاگنوز ئېكرانىنى ئېچىڭ</string>
     <string name="nc_settings_diagnose_title">دىئاگنوز</string>
+    <string name="nc_settings_diagnosis_subtitle">تەڭشەكلەرنى تەكشۈرۈش ياكى خاتالىق دوكلاتىنى تەكشۈرۈش ئۈچۈن دىئاگنوز ئېكرانىنى ئېچىڭ</string>
+    <string name="nc_settings_diagnosis_title">دىئاگنوز</string>
     <string name="nc_settings_incognito_keyboard_desc">خاسلاشتۇرۇلغان ئۆگىنىشنى چەكلەش ئۈچۈن كۇنۇپكا تاختىسىغا بۇيرۇق بېرىدۇ (كاپالەتسىز)</string>
     <string name="nc_settings_incognito_keyboard_title">Incognito كۇنۇپكا تاختىسى</string>
     <string name="nc_settings_no_ringtone">ئاۋاز يوق</string>
@@ -565,6 +573,7 @@
     <string name="notification_all_messages">بارلىق ئۇچۇرلار</string>
     <string name="notification_mention_only">\@-mentions پەقەتلا</string>
     <string name="notification_off">ئىتىك</string>
+    <string name="notification_permission">ئۇقتۇرۇش ئىجازىتى</string>
     <string name="notifications_default">كۆڭۈلدىكى</string>
     <string name="notifications_default_description">سۆھبەت تەڭشەكلىرىگە ئەگەش</string>
     <string name="oneHour">1 سائەت</string>

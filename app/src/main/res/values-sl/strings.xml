@@ -14,6 +14,7 @@
     <string name="automatic_status_set">Stanje je določeno samodejno</string>
     <string name="avatar">Podoba</string>
     <string name="away">Ne spremljam</string>
+    <string name="battery_optimization_title">Nastavitve baterije</string>
     <string name="busy">Zasedeno</string>
     <string name="calendar">Koledar</string>
     <string name="call_more_actions_dialog_headline">Napredne možnosti klica</string>

@@ -23,6 +23,9 @@
     <string name="ban">Bloquear</string>
     <string name="ban_participant">Bloquear participante</string>
     <string name="bans_list">Lista de bloqueados</string>
+    <string name="battery_optimization_ignored">La optimización de batería se está ignorando, todo bien</string>
+    <string name="battery_optimization_not_ignored">La optimización de batería está activada, lo que podría causar problemas. ¡Debería deshabilitar la optimización de batería!</string>
+    <string name="battery_optimization_title">Ajustes de la batería</string>
     <string name="busy">Ocupado</string>
     <string name="calendar">Calendario</string>
     <string name="call_more_actions_dialog_headline">Opciones avanzadas de llamada</string>
@@ -240,6 +243,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Externo</string>
     <string name="nc_diagnose_signaling_mode_intern">Interno</string>
     <string name="nc_diagnose_signaling_mode_title">Modo de señalización</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Abrir la lista de verificación de solución de problemas</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Abrir pantalla de diagnóstico</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Abrir dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Contraseña no válida</string>
     <string name="nc_dialog_maintenance_mode_description">El servidor se encuentra actualmente en modo de mantenimiento.</string>
     <string name="nc_dialog_outdated_client">La app está desactualizada</string>
@@ -461,6 +467,8 @@
     <string name="nc_settings_contact_admin_of">Por favor contacte al administrador de</string>
     <string name="nc_settings_diagnose_subtitle">Abrir la pantalla de diagnóstico para verificar los ajustes o para crear un informe de fallos</string>
     <string name="nc_settings_diagnose_title">Diagnóstico</string>
+    <string name="nc_settings_diagnosis_subtitle">Abrir la pantalla de diagnóstico para verificar los ajustes o para crear un informe de fallos</string>
+    <string name="nc_settings_diagnosis_title">Diagnóstico</string>
     <string name="nc_settings_incognito_keyboard_desc">Indica que el teclado tendrá desactivado el aprendizaje personalizado (no hay garantías)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado de incógnito</string>
     <string name="nc_settings_no_ringtone">Sin sonido</string>
@@ -563,6 +571,7 @@
     <string name="notification_all_messages">Todos los mensajes</string>
     <string name="notification_mention_only">Solo las menciones con @</string>
     <string name="notification_off">Apagado</string>
+    <string name="notification_permission">Permisos de notificaciones</string>
     <string name="notifications_default">Predeterminado</string>
     <string name="notifications_default_description">Seguir los ajustes de la conversación</string>
     <string name="oneHour">1 hora</string>

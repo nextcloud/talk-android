@@ -23,6 +23,9 @@
     <string name="ban">Blokkeer</string>
     <string name="ban_participant">Blokkeer deelnemer</string>
     <string name="bans_list">Blokkeerlijst</string>
+    <string name="battery_optimization_ignored">Batterijoptimalisatie is uitgeschakeld, prima</string>
+    <string name="battery_optimization_not_ignored">Batterijoptimalisatie is ingeschakeld, dit kan problemen veroorzaken. Je zou  batterijoptimalisatie moeten uitschakelen!</string>
+    <string name="battery_optimization_title">Batterij instellingen</string>
     <string name="busy">Bezet</string>
     <string name="calendar">Agenda</string>
     <string name="call_more_actions_dialog_headline">Geavanceerde oproepopties</string>
@@ -241,6 +244,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Extern</string>
     <string name="nc_diagnose_signaling_mode_intern">Intern</string>
     <string name="nc_diagnose_signaling_mode_title">Signaling modus</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Open de probleemoplossingschecklist</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Open diagnosevenster</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Open dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Ongeldig wachtwoord</string>
     <string name="nc_dialog_maintenance_mode_description">Server bevindt zich momenteel in onderhoudsmodus</string>
     <string name="nc_dialog_outdated_client">App is verouderd</string>
@@ -464,6 +470,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_contact_admin_of">Neem contact op met de beheerder van</string>
     <string name="nc_settings_diagnose_subtitle">Open het diagnosevenster om de instellingen te controleren of een bug report te maken</string>
     <string name="nc_settings_diagnose_title">Diagnose</string>
+    <string name="nc_settings_diagnosis_subtitle">Open het diagnosevenster om de instellingen te controleren of een bug report te maken</string>
+    <string name="nc_settings_diagnosis_title">Diagnose</string>
     <string name="nc_settings_incognito_keyboard_desc">Instrueert het toetsenbord gepersonaliseerd leren uit te schakelen (geen garanties)</string>
     <string name="nc_settings_incognito_keyboard_title">Incognito keyboard</string>
     <string name="nc_settings_no_ringtone">Geen geluid</string>
@@ -565,6 +573,7 @@ Kies er eentje van een provider.</string>
     <string name="notification_all_messages">Alle berichten</string>
     <string name="notification_mention_only">Alleen @-benoemingen</string>
     <string name="notification_off">Uit</string>
+    <string name="notification_permission">Meldingsrechten</string>
     <string name="notifications_default">Standaard</string>
     <string name="notifications_default_description">Volg conversatie instellingen</string>
     <string name="oneHour">1 uur</string>

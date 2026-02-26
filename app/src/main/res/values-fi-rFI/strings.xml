@@ -13,6 +13,7 @@
     <string name="automatic_status_set">Tilatietosi asetettiin automaattisesti</string>
     <string name="avatar">Profiilikuva</string>
     <string name="away">Poissa</string>
+    <string name="battery_optimization_title">Akkuasetukset</string>
     <string name="busy">Varattu</string>
     <string name="calendar">Kalenteri</string>
     <string name="call_running_since_one_hour">Tämä puhelu on kestänyt yhden tunnin.</string>

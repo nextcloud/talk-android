@@ -23,6 +23,9 @@
     <string name="ban">封禁</string>
     <string name="ban_participant">封禁參與者</string>
     <string name="bans_list">封禁清單</string>
+    <string name="battery_optimization_ignored">略過電池優化，所有都好</string>
+    <string name="battery_optimization_not_ignored">電池最佳化已啟用，這可能會造成問題。您應該停用電池最佳化！</string>
+    <string name="battery_optimization_title">電池設定</string>
     <string name="busy">忙碌</string>
     <string name="calendar">日曆</string>
     <string name="call_more_actions_dialog_headline">進階通話選項</string>
@@ -242,6 +245,9 @@
     <string name="nc_diagnose_signaling_mode_extern">外部</string>
     <string name="nc_diagnose_signaling_mode_intern">內部</string>
     <string name="nc_diagnose_signaling_mode_title">Signaling 模式</string>
+    <string name="nc_diagnosis_dialog_open_checklist">打開排憂解難清單：</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">打開診斷螢幕</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">打開 dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">無效的密碼</string>
     <string name="nc_dialog_maintenance_mode_description">伺服器現正處於維護模式。</string>
     <string name="nc_dialog_outdated_client">應用程式已過時</string>
@@ -474,6 +480,8 @@
     <string name="nc_settings_contact_admin_of">請聯絡以下服務的管理員：</string>
     <string name="nc_settings_diagnose_subtitle">打開診斷畫面以檢查設定或建立錯誤報告</string>
     <string name="nc_settings_diagnose_title">診斷</string>
+    <string name="nc_settings_diagnosis_subtitle">打開診斷畫面以檢查設定或建立錯誤報告</string>
+    <string name="nc_settings_diagnosis_title">診斷</string>
     <string name="nc_settings_incognito_keyboard_desc">指示鍵盤禁用個性化學習（無保證）</string>
     <string name="nc_settings_incognito_keyboard_title">隱身鍵盤</string>
     <string name="nc_settings_no_ringtone">無聲</string>
@@ -577,6 +585,7 @@
     <string name="notification_all_messages">全部消息</string>
     <string name="notification_mention_only">僅被 @提及的消息</string>
     <string name="notification_off">關閉</string>
+    <string name="notification_permission">通知權限</string>
     <string name="notifications_default">默認</string>
     <string name="notifications_default_description">跟隨對話設定</string>
     <string name="oneHour">1 小時</string>

@@ -23,6 +23,9 @@
     <string name="ban">Tiltás</string>
     <string name="ban_participant">Résztvevő letiltása</string>
     <string name="bans_list">Tiltólista</string>
+    <string name="battery_optimization_ignored">Az akkumulátoroptimalizálás figyelmen kívül hagyva, minden rendben</string>
+    <string name="battery_optimization_not_ignored">Az akkumulátoroptimalizálás engedélyezve van, amely problémákat okozhat. Ajánlatos letiltani az akkumulátoroptimalizálást.</string>
+    <string name="battery_optimization_title">Akkumulátorbeállítások</string>
     <string name="busy">Foglalt</string>
     <string name="calendar">Naptár</string>
     <string name="call_more_actions_dialog_headline">Speciális hívásbeállítások</string>
@@ -242,6 +245,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Külső</string>
     <string name="nc_diagnose_signaling_mode_intern">Belső</string>
     <string name="nc_diagnose_signaling_mode_title">Jelzőkiszolgáló módja</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Hibaelhárítási ellenőrzőlista megnyitása</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Diagnosztikai képernyő megnyitása</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">A dontkillmyapp.com megnyitása</string>
     <string name="nc_dialog_invalid_password">Érvénytelen jelszó</string>
     <string name="nc_dialog_maintenance_mode_description">A kiszolgáló jelenleg karbantartási módban van.</string>
     <string name="nc_dialog_outdated_client">Az alkalmazás elavult</string>
@@ -464,6 +470,8 @@
     <string name="nc_settings_contact_admin_of">Lépjen kapcsolatba a következő rendszergazdájával:</string>
     <string name="nc_settings_diagnose_subtitle">Nyissa meg a diagnosztikai képernyőt a beállítások ellenőrzéséhez vagy a hiba jelentéséhez</string>
     <string name="nc_settings_diagnose_title">Diagnózis</string>
+    <string name="nc_settings_diagnosis_subtitle">Nyissa meg a diagnosztikai képernyőt a beállítások ellenőrzéséhez vagy a hiba jelentéséhez</string>
+    <string name="nc_settings_diagnosis_title">Diagnózis</string>
     <string name="nc_settings_incognito_keyboard_desc">Arra utasítja a billentyűzetet, hogy kapcsolja ki a személyre szabott tanulást (nem garantált)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognító billentyűzet</string>
     <string name="nc_settings_no_ringtone">Nincs hang</string>
@@ -565,6 +573,7 @@
     <string name="notification_all_messages">Összes üzenet</string>
     <string name="notification_mention_only">csak @-megemlítések</string>
     <string name="notification_off">Ki</string>
+    <string name="notification_permission">Értesítési engedély</string>
     <string name="notifications_default">Alapértelmezett</string>
     <string name="notifications_default_description">Beszélgetésbeállítások követése</string>
     <string name="oneHour">1 óra</string>

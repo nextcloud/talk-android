@@ -23,6 +23,8 @@
     <string name="ban">Sperren</string>
     <string name="ban_participant">Teilnehmer sperren</string>
     <string name="bans_list">Sperrliste</string>
+    <string name="battery_optimization_ignored">Batterieoptimierung wird ignoriert, alles in Ordnung</string>
+    <string name="battery_optimization_not_ignored">Die Batterieoptimierung ist aktiviert und könnte Probleme verursachen. Dies sollte geändert werden!</string>
     <string name="busy">Beschäftigt</string>
     <string name="calendar">Kalender</string>
     <string name="call_more_actions_dialog_headline">Erweiterte Anrufoptionen</string>
@@ -242,6 +244,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Extern</string>
     <string name="nc_diagnose_signaling_mode_intern">Intern</string>
     <string name="nc_diagnose_signaling_mode_title">Signalisierungsmodus</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Checkliste zur Fehlerbehebung öffnen</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Diagnoseseite öffnen</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">dontkillmyapp.com öffnen</string>
     <string name="nc_dialog_invalid_password">Ungültiges Passwort</string>
     <string name="nc_dialog_maintenance_mode_description">Server befindet sich im Wartungsmodus.</string>
     <string name="nc_dialog_outdated_client">App ist veraltet</string>
@@ -474,6 +479,8 @@
     <string name="nc_settings_contact_admin_of">Bitte kontaktieren Sie die Administration von</string>
     <string name="nc_settings_diagnose_subtitle">Die Diagnoseseite öffnen, um die Einstellungen zu überprüfen oder einen Fehlerbericht zu erstellen</string>
     <string name="nc_settings_diagnose_title">Diagnose</string>
+    <string name="nc_settings_diagnosis_subtitle">Die Diagnoseseite öffnen, um die Einstellungen zu überprüfen oder einen Fehlerbericht zu erstellen</string>
+    <string name="nc_settings_diagnosis_title">Diagnose</string>
     <string name="nc_settings_incognito_keyboard_desc">Weist die Tastatur an, das personalisierte Lernen zu deaktivieren (ohne Garantien)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito-Tastatur</string>
     <string name="nc_settings_no_ringtone">Kein Ton</string>
@@ -578,6 +585,7 @@
     <string name="notification_all_messages">Alle Nachrichten</string>
     <string name="notification_mention_only">Nur @-Erwähnungen</string>
     <string name="notification_off">Aus</string>
+    <string name="notification_permission">Benachrichtigungsberechtigungen</string>
     <string name="notifications_default">Standard</string>
     <string name="notifications_default_description">Unterhaltungseinstellungen folgen</string>
     <string name="oneHour">1 Stunde</string>
