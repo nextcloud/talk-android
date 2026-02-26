@@ -284,7 +284,7 @@
                             android:textSize="@dimen/headline_text_size" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/nc_diagnose_notification_permission_subtitle"
+                            android:id="@+id/nc_diagnosis_notification_permission_subtitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
@@ -680,7 +680,7 @@
                     android:textStyle="bold" />
 
                 <LinearLayout
-                    android:id="@+id/diagnose_wrapper"
+                    android:id="@+id/diagnosis_wrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?android:attr/selectableItemBackground"
@@ -688,17 +688,17 @@
                     android:padding="@dimen/standard_padding">
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/diagnose_title"
+                        android:id="@+id/diagnosis_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/nc_settings_diagnose_title"
+                        android:text="@string/nc_settings_diagnosis_title"
                         android:textSize="@dimen/headline_text_size" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/diagnose_subtitle"
+                        android:id="@+id/diagnosis_subtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/nc_settings_diagnose_subtitle" />
+                        android:text="@string/nc_settings_diagnosis_subtitle" />
                 </LinearLayout>
 
                 <LinearLayout
