@@ -549,6 +549,7 @@
     <string name="nc_test_results">Testergebnisse</string>
     <string name="nc_today_meeting">Heute um %1$s</string>
     <string name="nc_tomorrow_meeting">Morgen um %1$s</string>
+    <string name="nc_upcoming_event_dismissed">Kommender Anruf kann in den Unterhaltungsinformationen eingesehen werden</string>
     <string name="nc_upload_choose_local_files">Dateien auswählen</string>
     <string name="nc_upload_confirm_send_multiple">Diese Dateien an %1$s senden?</string>
     <string name="nc_upload_confirm_send_single">Diese Datei an %1$s senden?</string>
