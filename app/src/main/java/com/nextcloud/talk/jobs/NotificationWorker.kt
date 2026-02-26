@@ -15,6 +15,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -37,6 +38,9 @@ import androidx.emoji2.text.EmojiCompat
 import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import coil.executeBlocking
+import coil.imageLoader
+import coil.request.ImageRequest
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.BuildConfig
@@ -137,6 +141,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private var context: Context? = null
     private var conversationType: String? = "one2one"
     private lateinit var notificationManager: NotificationManagerCompat
+    private var imagePreviewUrl: String? = null
+    private var imageMimeType: String? = null
 
     override fun doWork(): Result {
         sharedApplication!!.componentApplication.inject(this)
@@ -477,6 +483,25 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         } else {
             pushMessage.subject = ncNotification.subject.orEmpty()
         }
+
+        imagePreviewUrl = null
+        imageMimeType = null
+        val msgParams = ncNotification.messageRichParameters
+        if (msgParams != null) {
+            for ((_, param) in msgParams) {
+                if (param["type"] == "file") {
+                    val mimetype = param["mimetype"].orEmpty()
+                    val fileId = param["id"]
+                    if (mimetype.startsWith("image/") && fileId != null) {
+                        val baseUrl = signatureVerification.user!!.baseUrl!!
+                        val px = context!!.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size)
+                        imagePreviewUrl = ApiUtils.getUrlForFilePreviewWithFileId(baseUrl, fileId, px)
+                        imageMimeType = mimetype
+                        break
+                    }
+                }
+            }
+        }
     }
 
     @Suppress("MagicNumber")
@@ -539,7 +564,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         if (TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) {
             notificationBuilder.setOnlyAlertOnce(false)
             if (pushMessage.notificationUser != null) {
-                styleChatNotification(notificationBuilder, activeStatusBarNotification)
+                if (imagePreviewUrl != null) {
+                    styleImageNotification(notificationBuilder)
+                } else {
+                    styleChatNotification(notificationBuilder, activeStatusBarNotification)
+                }
                 addReplyAction(notificationBuilder, systemNotificationId)
                 addMarkAsReadAction(notificationBuilder, systemNotificationId)
             }
@@ -641,6 +670,32 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val crc32 = CRC32()
         crc32.update(s.toByteArray())
         return crc32.value
+    }
+
+    private fun styleImageNotification(notificationBuilder: NotificationCompat.Builder) {
+        val bitmap = loadImageBitmapSync(imagePreviewUrl!!)
+        if (bitmap != null) {
+            notificationBuilder.setStyle(
+                NotificationCompat.BigPictureStyle()
+                    .bigPicture(bitmap)
+                    .bigLargeIcon(null as Bitmap?)
+            )
+        }
+    }
+
+    private fun loadImageBitmapSync(imageUrl: String): Bitmap? {
+        var bitmap: Bitmap? = null
+        val request = ImageRequest.Builder(context!!)
+            .data(imageUrl)
+            .allowHardware(false)
+            .addHeader("Authorization", credentials)
+            .target(
+                onSuccess = { result -> bitmap = (result as BitmapDrawable).bitmap },
+                onError = { Log.w(TAG, "Failed to load notification image: $imageUrl") }
+            )
+            .build()
+        context!!.imageLoader.executeBlocking(request)
+        return bitmap
     }
 
     private fun styleChatNotification(
