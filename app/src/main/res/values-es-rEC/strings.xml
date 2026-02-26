@@ -151,17 +151,6 @@
     <string name="nc_demote">Degradar de moderador</string>
     <string name="nc_description_record_voice">Grabar mensaje de voz</string>
     <string name="nc_description_send_message_button">Enviar mensaje</string>
-    <string name="nc_diagnose_account_category_title">Cuenta actual</string>
-    <string name="nc_diagnose_account_server">Servidor</string>
-    <string name="nc_diagnose_account_user_name">Usuario</string>
-    <string name="nc_diagnose_android_version_title">Versión de Android</string>
-    <string name="nc_diagnose_app_category_title">Aplicación</string>
-    <string name="nc_diagnose_app_name_title">Nombre de la aplicación</string>
-    <string name="nc_diagnose_app_users_amount">Usuarios registrados</string>
-    <string name="nc_diagnose_battery_optimization_title">Configuración de la batería</string>
-    <string name="nc_diagnose_device_name_title">Dispositivo</string>
-    <string name="nc_diagnose_signaling_mode_extern">Externo</string>
-    <string name="nc_diagnose_signaling_mode_intern">Interna</string>
     <string name="nc_dialog_invalid_password">Contraseña inválida</string>
     <string name="nc_dialog_maintenance_mode_description">El servidor está actualmente en modo de mantenimiento.</string>
     <string name="nc_dialog_outdated_client">La aplicación está desactualizada</string>

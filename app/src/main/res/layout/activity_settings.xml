@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Nextcloud Talk - Android Client
   ~
   ~ SPDX-FileCopyrightText: 2024 Parneet Singh <gurayaparneet@gmail.com>
@@ -279,7 +280,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/nc_diagnose_notification_permission"
+                            android:text="@string/notification_permission"
                             android:textSize="@dimen/headline_text_size" />
 
                         <com.google.android.material.textview.MaterialTextView
@@ -299,14 +300,14 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/nc_diagnose_battery_optimization_title"
+                            android:text="@string/battery_optimization_title"
                             android:textSize="@dimen/headline_text_size" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/battery_optimization_ignored"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="@string/nc_diagnose_battery_optimization_ignored" />
+                            tools:text="@string/battery_optimization_ignored"/>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -323,7 +324,7 @@
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/nc_diagnose_gplay_available_no" />
+                        android:text="@string/gplay_available_no" />
 
                 </LinearLayout>
 

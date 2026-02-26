@@ -302,9 +302,9 @@ class DiagnoseActivity : BaseActivity() {
             addDiagnosisEntry(
                 key = context.resources.getString(R.string.nc_diagnose_notification_permission),
                 value = if (platformPermissionUtil.isPostNotificationsPermissionGranted()) {
-                    context.resources.getString(R.string.nc_settings_notifications_granted)
+                    context.resources.getString(R.string.nc_diagnose_notifications_granted)
                 } else {
-                    context.resources.getString(R.string.nc_settings_notifications_declined)
+                    context.resources.getString(R.string.nc_diagnose_notifications_declined)
                 }
             )
         }
@@ -312,7 +312,7 @@ class DiagnoseActivity : BaseActivity() {
         addDiagnosisEntry(
             key = context.resources.getString(R.string.nc_diagnose_notification_calls_channel_permission),
             value =
-            translateBoolean(
+            getStringForBoolean(
                 NotificationUtils.isCallsNotificationChannelEnabled(this)
             )
         )
@@ -320,7 +320,7 @@ class DiagnoseActivity : BaseActivity() {
         addDiagnosisEntry(
             key = context.resources.getString(R.string.nc_diagnose_notification_messages_channel_permission),
             value =
-            translateBoolean(
+            getStringForBoolean(
                 NotificationUtils.isMessagesNotificationChannelEnabled(this)
             )
         )
@@ -344,7 +344,7 @@ class DiagnoseActivity : BaseActivity() {
                         .pushTokenLatestGeneration
                 )
             } else {
-                context.resources.getString(R.string.nc_common_unknown)
+                "Unknown"
             }
         )
 
@@ -378,7 +378,7 @@ class DiagnoseActivity : BaseActivity() {
         addDiagnosisEntry(
             key = context.resources.getString(R.string.nc_diagnose_account_user_status_enabled),
             value =
-            translateBoolean(
+            getStringForBoolean(
                 (currentUser.capabilities?.userStatusCapability?.enabled)
             )
         )
@@ -386,7 +386,7 @@ class DiagnoseActivity : BaseActivity() {
         addDiagnosisEntry(
             key = context.resources.getString(R.string.nc_diagnose_account_server_notification_app),
             value =
-            translateBoolean(currentUser.capabilities?.notificationsCapability?.features?.isNotEmpty())
+            getStringForBoolean(currentUser.capabilities?.notificationsCapability?.features?.isNotEmpty())
         )
 
         if (isGooglePlayServicesAvailable) {
@@ -457,11 +457,11 @@ class DiagnoseActivity : BaseActivity() {
             "$MANUFACTURER $MODEL"
         }
 
-    private fun translateBoolean(answer: Boolean?): String =
+    private fun getStringForBoolean(answer: Boolean?): String =
         when (answer) {
-            null -> context.resources.getString(R.string.nc_common_unknown)
-            true -> context.resources.getString(R.string.nc_yes)
-            else -> context.resources.getString(R.string.nc_no)
+            null -> context.getString(R.string.nc_diagnose_unknown)
+            true -> context.getString(R.string.nc_diagnose_yes)
+            else -> context.getString(R.string.nc_diagnose_no)
         }
 
     private fun List<DiagnoseElement>.toMarkdownString(): String {

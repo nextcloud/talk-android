@@ -332,13 +332,13 @@ class SettingsActivity :
 
             if (PowerManagerUtils().isIgnoringBatteryOptimizations()) {
                 binding.batteryOptimizationIgnored.text =
-                    resources!!.getString(R.string.nc_diagnose_battery_optimization_ignored)
+                    resources!!.getString(R.string.battery_optimization_ignored)
                 binding.batteryOptimizationIgnored.setTextColor(
                     resources.getColor(R.color.high_emphasis_text, null)
                 )
             } else {
                 binding.batteryOptimizationIgnored.text =
-                    resources!!.getString(R.string.nc_diagnose_battery_optimization_not_ignored)
+                    resources!!.getString(R.string.battery_optimization_not_ignored)
                 binding.batteryOptimizationIgnored.setTextColor(resources.getColor(R.color.nc_darkRed, null))
 
                 if (openedByNotificationWarning) {

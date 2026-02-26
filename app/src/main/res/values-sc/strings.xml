@@ -123,17 +123,6 @@
     <string name="nc_demote">Lea·ssi su permissu de moderare</string>
     <string name="nc_description_record_voice">Registra messàgiu de boghe</string>
     <string name="nc_description_send_message_button">Imbia messàgiu</string>
-    <string name="nc_diagnose_account_category_title">Contu atuale</string>
-    <string name="nc_diagnose_account_server">Serbidore</string>
-    <string name="nc_diagnose_account_user_name">Utente</string>
-    <string name="nc_diagnose_android_version_title">Versione Android</string>
-    <string name="nc_diagnose_app_category_title">Aplicatzione</string>
-    <string name="nc_diagnose_app_name_title">Nùmene de s\'aplicatzione</string>
-    <string name="nc_diagnose_battery_optimization_title">Cunfiguratzione de sa bateria</string>
-    <string name="nc_diagnose_device_name_title">Dispositivu</string>
-    <string name="nc_diagnose_phone_category_title">Telèfonu</string>
-    <string name="nc_diagnose_signaling_mode_extern">De foras</string>
-    <string name="nc_diagnose_signaling_mode_intern">Internu</string>
     <string name="nc_dialog_invalid_password">Crae non bàlida</string>
     <string name="nc_dialog_outdated_client_option_update">Agiorna</string>
     <string name="nc_dialog_reauth_or_delete">Boles torrare a autorizare o cantzellare custu contu?</string>
