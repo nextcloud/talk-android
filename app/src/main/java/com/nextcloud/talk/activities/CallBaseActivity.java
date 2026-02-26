@@ -39,6 +39,9 @@ public abstract class CallBaseActivity extends BaseActivity {
         public void handleOnBackPressed() {
             if (isPipModePossible()) {
                 enterPipMode();
+            } else {
+                // Move the task to background instead of finishing
+                moveTaskToBack(true);
             }
         }
     };
@@ -98,8 +101,13 @@ public abstract class CallBaseActivity extends BaseActivity {
     @Override
     public void onStop() {
         super.onStop();
-        if (shouldFinishOnStop()) {
-            finish();
+        // Don't automatically finish when going to background
+        // Only finish if explicitly leaving the call
+        if (shouldFinishOnStop() && !isChangingConfigurations()) {
+            // Check if we're really leaving the call or just backgrounding
+            if (isFinishing()) {
+                finish();
+            }
         }
     }
 
@@ -124,10 +132,9 @@ public abstract class CallBaseActivity extends BaseActivity {
             mPictureInPictureParamsBuilder.setAspectRatio(pipRatio);
             enterPictureInPictureMode(mPictureInPictureParamsBuilder.build());
         } else {
-            // we don't support other solutions than PIP to have a call in the background.
-            // If PIP is not available the call is ended when user presses the home button.
-            Log.d(TAG, "Activity was finished because PIP is not available.");
-            finish();
+            // If PIP is not available, move to background instead of finishing
+            Log.d(TAG, "PIP is not available, moving call to background.");
+            moveTaskToBack(true);
         }
     }
 
