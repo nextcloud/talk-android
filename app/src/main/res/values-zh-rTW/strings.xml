@@ -549,6 +549,7 @@
     <string name="nc_test_results">測試結果</string>
     <string name="nc_today_meeting">於今日的 %1$s</string>
     <string name="nc_tomorrow_meeting">於明天的 %1$s</string>
+    <string name="nc_upcoming_event_dismissed">即將進行的通話可於對話資訊中查看</string>
     <string name="nc_upload_choose_local_files">選擇檔案</string>
     <string name="nc_upload_confirm_send_multiple">傳送這些檔案給 %1$s？</string>
     <string name="nc_upload_confirm_send_single">傳送檔案給 %1$s？</string>

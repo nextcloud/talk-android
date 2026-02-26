@@ -549,6 +549,7 @@
     <string name="nc_test_results">Resultados da proba</string>
     <string name="nc_today_meeting">Hoxe ás %1$s</string>
     <string name="nc_tomorrow_meeting">Mañá ás %1$s</string>
+    <string name="nc_upcoming_event_dismissed">As próximas chamadas poderanse ver na información da conversa</string>
     <string name="nc_upload_choose_local_files">Escoller os ficheiros</string>
     <string name="nc_upload_confirm_send_multiple">Quere enviar estes ficheiros a %1$s?</string>
     <string name="nc_upload_confirm_send_single">Quere enviar este ficheiro a %1$s?</string>
