@@ -97,6 +97,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             openOrDownloadFile(
                 fileInfo,
                 path,
+                link,
                 mimetype,
                 progressUi,
                 openWhenDownloaded
@@ -125,17 +126,19 @@ class FileViewerUtils(private val context: Context, private val user: User) {
     private fun openOrDownloadFile(
         fileInfo: FileInfo,
         path: String,
+        link: String?,
         mimetype: String?,
         progressUi: ProgressUi,
         openWhenDownloaded: Boolean
     ) {
         val file = File(context.cacheDir, fileInfo.fileName)
         if (file.exists()) {
-            openFileByMimetype(fileInfo.fileName, mimetype)
+            openFileByMimetype(fileInfo.fileName, mimetype, link, fileInfo.fileId)
         } else {
             downloadFileToCache(
                 fileInfo,
                 path,
+                link,
                 mimetype,
                 progressUi,
                 openWhenDownloaded
@@ -143,7 +146,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         }
     }
 
-    private fun openFileByMimetype(filename: String, mimetype: String?) {
+    private fun openFileByMimetype(filename: String, mimetype: String?, link: String? = null, fileId: String = "") {
         if (mimetype != null) {
             when (mimetype) {
                 AUDIO_MPEG,
@@ -161,7 +164,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
                 -> openImageView(filename, mimetype)
                 TEXT_MARKDOWN,
                 TEXT_PLAIN
-                -> openTextView(filename, mimetype)
+                -> openTextView(filename, mimetype, link, fileId)
                 else
                 -> openFileByExternalApp(filename, mimetype)
             }
@@ -236,10 +239,14 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         context.startActivity(fullScreenMediaIntent)
     }
 
-    private fun openTextView(filename: String, mimetype: String) {
+    private fun openTextView(filename: String, mimetype: String, link: String?, fileId: String) {
         val fullScreenTextViewerIntent = Intent(context, FullScreenTextViewerActivity::class.java)
         fullScreenTextViewerIntent.putExtra("FILE_NAME", filename)
         fullScreenTextViewerIntent.putExtra("IS_MARKDOWN", isMarkdown(mimetype))
+        fullScreenTextViewerIntent.putExtra("FILE_ID", fileId)
+        fullScreenTextViewerIntent.putExtra("LINK", link)
+        fullScreenTextViewerIntent.putExtra("USERNAME", user.username)
+        fullScreenTextViewerIntent.putExtra("BASE_URL", user.baseUrl)
         context.startActivity(fullScreenTextViewerIntent)
     }
 
@@ -265,6 +272,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
     private fun downloadFileToCache(
         fileInfo: FileInfo,
         path: String,
+        link: String?,
         mimetype: String?,
         progressUi: ProgressUi,
         openWhenDownloaded: Boolean
@@ -316,7 +324,9 @@ class FileViewerUtils(private val context: Context, private val user: User) {
                     mimetype,
                     workInfo!!,
                     progressUi,
-                    openWhenDownloaded
+                    openWhenDownloaded,
+                    link,
+                    fileInfo.fileId
                 )
             }
     }
@@ -326,7 +336,9 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         mimetype: String?,
         workInfo: WorkInfo,
         progressUi: ProgressUi,
-        openWhenDownloaded: Boolean
+        openWhenDownloaded: Boolean,
+        link: String? = null,
+        fileId: String = ""
     ) {
         when (workInfo.state) {
             WorkInfo.State.RUNNING -> {
@@ -341,7 +353,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             }
             WorkInfo.State.SUCCEEDED -> {
                 if (progressUi.previewImage.isShown && openWhenDownloaded) {
-                    openFileByMimetype(fileName, mimetype)
+                    openFileByMimetype(fileName, mimetype, link, fileId)
                 } else {
                     Log.d(
                         TAG,

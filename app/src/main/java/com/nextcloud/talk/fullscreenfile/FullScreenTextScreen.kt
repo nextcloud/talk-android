@@ -34,11 +34,21 @@ import com.nextcloud.talk.components.StandardAppBar
 import io.noties.markwon.Markwon
 
 @Composable
-fun FullScreenTextScreen(title: String, text: String, isMarkdown: Boolean, onShare: () -> Unit, onSave: () -> Unit) {
-    val menuItems = listOf(
-        stringResource(R.string.share) to onShare,
-        stringResource(R.string.nc_save_message) to onSave
-    )
+fun FullScreenTextScreen(
+    title: String,
+    text: String,
+    isMarkdown: Boolean,
+    onShare: () -> Unit,
+    onSave: () -> Unit,
+    onOpenInFilesApp: (() -> Unit)? = null
+) {
+    val menuItems = buildList {
+        add(stringResource(R.string.share) to onShare)
+        add(stringResource(R.string.nc_save_message) to onSave)
+        if (onOpenInFilesApp != null) {
+            add(stringResource(R.string.open_in_files_app) to onOpenInFilesApp)
+        }
+    }
 
     Scaffold(
         topBar = { StandardAppBar(title = title, menuItems = menuItems) },
