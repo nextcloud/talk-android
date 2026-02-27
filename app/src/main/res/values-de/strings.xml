@@ -25,6 +25,7 @@
     <string name="bans_list">Sperrliste</string>
     <string name="battery_optimization_ignored">Batterieoptimierung wird ignoriert, alles in Ordnung</string>
     <string name="battery_optimization_not_ignored">Die Batterieoptimierung ist aktiviert und könnte Probleme verursachen. Dies sollte geändert werden!</string>
+    <string name="battery_optimization_title">Batterie-Einstellungen</string>
     <string name="busy">Beschäftigt</string>
     <string name="calendar">Kalender</string>
     <string name="call_more_actions_dialog_headline">Erweiterte Anrufoptionen</string>
@@ -74,6 +75,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 Stunden</string>
     <string name="get_invitations_error">Ausstehende Einladungen konnten nicht abgerufen werden</string>
+    <string name="gplay_available_no">Google Play-Dienste sind nicht verfügbar. Benachrichtigungen werden nicht unterstützt</string>
     <string name="hint_edited_message">(Bearbeitet)</string>
     <string name="internal_note">Interne Notiz</string>
     <string name="invisible">Unsichtbar</string>

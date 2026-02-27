@@ -75,6 +75,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hodiny</string>
     <string name="get_invitations_error">Nepodařilo se získat čekající pozvání</string>
+    <string name="gplay_available_no">Služby Google Play nejsou k dispozici. Upozorňování proto nejsou podporována</string>
     <string name="hint_edited_message">(upraveno)</string>
     <string name="internal_note">Interní poznámka</string>
     <string name="invisible">Není vidět</string>
