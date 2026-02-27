@@ -61,13 +61,15 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
                     title = fileName,
                     text = text,
                     isMarkdown = isMarkdown,
-                    onShare = { shareFile(path) },
-                    onSave = { showSaveDialog(fileName) },
-                    onOpenInFilesApp = if (fileId.isNotEmpty()) {
-                        { openInFilesApp(link, fileId, username, baseUrl) }
-                    } else {
-                        null
-                    }
+                    actions = FullScreenTextActions(
+                        onShare = { shareFile(path) },
+                        onSave = { showSaveDialog(fileName) },
+                        onOpenInFilesApp = if (fileId.isNotEmpty()) {
+                            { openInFilesApp(link, fileId, username, baseUrl) }
+                        } else {
+                            null
+                        }
+                    )
                 )
             }
         }
