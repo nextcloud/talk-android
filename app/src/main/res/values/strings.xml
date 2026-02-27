@@ -263,6 +263,7 @@ How to translate with transifex:
     <string name="nc_invalid_time">Invalid time</string>
     <string name="nc_today_meeting">Today at %1$s</string>
     <string name="nc_tomorrow_meeting">Tomorrow at %1$s</string>
+    <string name="nc_upcoming_event_dismissed">Upcoming call can be viewed in conversation info</string>
     <string name="nc_delete_conversation_more">If you delete the conversation, it will also be deleted for all other participants.</string>
 
     <string name="nc_new_conversation">New conversation</string>

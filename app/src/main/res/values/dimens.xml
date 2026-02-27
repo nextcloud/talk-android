@@ -44,6 +44,7 @@
     <dimen name="corner_radius">16dp</dimen>
     <dimen name="button_corner_radius">24dp</dimen>
     <dimen name="status_corner_radius">12dp</dimen>
+    <dimen name="meta_info_corner_radius">4dp</dimen>
     <dimen name="standard_margin">16dp</dimen>
     <dimen name="two_line_primary_text_size">16sp</dimen>
     <dimen name="headline_text_size">16sp</dimen>

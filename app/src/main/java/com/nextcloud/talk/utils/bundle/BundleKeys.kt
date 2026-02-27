@@ -85,4 +85,5 @@ object BundleKeys {
     const val KEY_THREAD_ID = "KEY_THREAD_ID"
     const val KEY_FROM_QR: String = "KEY_FROM_QR"
     const val KEY_OPENED_VIA_NOTIFICATION: String = "KEY_OPENED_VIA_NOTIFICATION"
+    const val KEY_UPCOMING_EVENT: String = "KEY_UPCOMING_EVENT"
 }

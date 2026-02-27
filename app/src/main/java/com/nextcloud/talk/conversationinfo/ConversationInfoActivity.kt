@@ -61,6 +61,7 @@ import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
 import com.nextcloud.talk.databinding.DialogBanParticipantBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
+import com.nextcloud.talk.extensions.getParcelableExtraProvider
 import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.extensions.loadNoteToSelfAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
@@ -73,6 +74,7 @@ import com.nextcloud.talk.models.domain.converters.DomainEnumNotificationLevelCo
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEvent
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
@@ -105,6 +107,7 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.time.Instant
+import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -199,6 +202,19 @@ class ConversationInfoActivity :
         ) { "Missing room token" }
 
         hasAvatarSpacing = intent.getBooleanExtra(BundleKeys.KEY_ROOM_ONE_TO_ONE, false)
+
+        val upcomingEvent = intent.getParcelableExtraProvider<UpcomingEvent>(BundleKeys.KEY_UPCOMING_EVENT)
+        if (upcomingEvent != null && (upcomingEvent.summary != null || upcomingEvent.start != null)) {
+            binding.upcomingEventCard.visibility = VISIBLE
+            viewThemeUtils.material.themeCardView(binding.upcomingEventCard)
+            binding.upcomingEventContainer.upcomingEventSummary.text = upcomingEvent.summary
+            upcomingEvent.start?.let { start ->
+                val startDateTime = Instant.ofEpochSecond(start).atZone(ZoneId.systemDefault())
+                val currentTime = ZonedDateTime.now(ZoneId.systemDefault())
+                binding.upcomingEventContainer.upcomingEventTime.text =
+                    DateUtils(this).getStringForMeetingStartDateTime(startDateTime, currentTime)
+            }
+        }
 
         viewModel = ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
 

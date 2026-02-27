@@ -1,0 +1,62 @@
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/upcoming_event_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_half_margin"
+        android:layout_marginTop="@dimen/standard_half_margin"
+        android:layout_marginEnd="@dimen/standard_half_margin"
+        android:layout_marginBottom="@dimen/standard_half_margin"
+        android:contentDescription="@null"
+        app:srcCompat="@drawable/ic_event_24px"
+        app:tint="@color/high_emphasis_text" />
+
+    <TextView
+        android:id="@+id/upcoming_event_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_half_margin"
+        android:layout_marginEnd="@dimen/standard_half_margin"
+        android:layout_marginBottom="@dimen/standard_half_margin"
+        android:maxLines="1"
+        android:textColor="@color/high_emphasis_text"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="Feb 18, 2026 3:00 PM" />
+
+    <TextView
+        android:id="@+id/upcoming_event_summary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_half_margin"
+        android:layout_marginBottom="@dimen/standard_half_margin"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/high_emphasis_text"
+        android:textSize="14sp"
+        tools:text="Mgmt Coordination Call" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/upcoming_event_dismiss"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/nc_common_dismiss"
+        app:icon="@drawable/ic_baseline_close_24"
+        app:iconTint="@color/high_emphasis_text" />
+
+</LinearLayout>

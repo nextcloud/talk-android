@@ -24,6 +24,7 @@ import com.nextcloud.talk.models.json.status.StatusOverall
 import com.nextcloud.talk.models.json.testNotification.TestNotificationOverall
 import com.nextcloud.talk.models.json.threads.ThreadOverall
 import com.nextcloud.talk.models.json.threads.ThreadsOverall
+import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEventsOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -269,6 +270,12 @@ interface NcApiCoroutines {
         @Header("Authorization") authorization: String,
         @Url url: String
     ): UserAbsenceOverall
+
+    @GET
+    suspend fun getUpcomingEvents(
+        @Header("Authorization") authorization: String,
+        @Url url: String
+    ): UpcomingEventsOverall
 
     @POST
     suspend fun testPushNotifications(
