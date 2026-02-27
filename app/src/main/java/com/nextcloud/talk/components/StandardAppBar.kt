@@ -17,6 +17,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,13 +34,18 @@ import com.nextcloud.talk.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StandardAppBar(title: String, menuItems: List<Pair<String, () -> Unit>>?) {
+fun StandardAppBar(
+    title: String,
+    menuItems: List<Pair<String, () -> Unit>>?,
+    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors()
+) {
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
     var expanded by remember { mutableStateOf(false) }
 
     TopAppBar(
         title = { Text(text = title) },
+        colors = colors,
         navigationIcon = {
             IconButton(
                 onClick = { backDispatcher?.onBackPressed() }
