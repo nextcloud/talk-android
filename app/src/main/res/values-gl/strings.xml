@@ -75,6 +75,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 horas</string>
     <string name="get_invitations_error">Produciuse un fallo ao recuperar os convites pendentes</string>
+    <string name="gplay_available_no">Non están dispoñíbeis os servizos de Google Play. Non se admiten notificacións</string>
     <string name="hint_edited_message">(editado)</string>
     <string name="internal_note">Nota interna</string>
     <string name="invisible">Invisíbel</string>
