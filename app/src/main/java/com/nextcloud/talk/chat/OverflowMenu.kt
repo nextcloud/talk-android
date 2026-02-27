@@ -35,8 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.nextcloud.talk.R
 
-data class MenuItemData(val title: String, val subtitle: String? = null, val icon: Int? = null, val onClick: () -> Unit)
-
 @Composable
 fun OverflowMenu(anchor: View?, expanded: Boolean, items: List<MenuItemData>, onDismiss: () -> Unit) {
     if (!expanded) return
@@ -109,6 +107,8 @@ fun DynamicMenuItem(item: MenuItemData) {
         }
     }
 }
+
+data class MenuItemData(val title: String, val subtitle: String? = null, val icon: Int? = null, val onClick: () -> Unit)
 
 private fun View.boundsInWindow(): android.graphics.Rect {
     val location = IntArray(2)

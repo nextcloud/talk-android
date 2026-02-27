@@ -34,19 +34,12 @@ import com.nextcloud.talk.components.StandardAppBar
 import io.noties.markwon.Markwon
 
 @Composable
-fun FullScreenTextScreen(
-    title: String,
-    text: String,
-    isMarkdown: Boolean,
-    onShare: () -> Unit,
-    onSave: () -> Unit,
-    onOpenInFilesApp: (() -> Unit)? = null
-) {
+fun FullScreenTextScreen(title: String, text: String, isMarkdown: Boolean, actions: FullScreenTextActions) {
     val menuItems = buildList {
-        add(stringResource(R.string.share) to onShare)
-        add(stringResource(R.string.nc_save_message) to onSave)
-        if (onOpenInFilesApp != null) {
-            add(stringResource(R.string.open_in_files_app) to onOpenInFilesApp)
+        add(stringResource(R.string.share) to actions.onShare)
+        add(stringResource(R.string.nc_save_message) to actions.onSave)
+        if (actions.onOpenInFilesApp != null) {
+            add(stringResource(R.string.open_in_files_app) to actions.onOpenInFilesApp)
         }
     }
 
@@ -86,6 +79,12 @@ fun FullScreenTextScreen(
     }
 }
 
+data class FullScreenTextActions(
+    val onShare: () -> Unit,
+    val onSave: () -> Unit,
+    val onOpenInFilesApp: (() -> Unit)? = null
+)
+
 private const val PREVIEW_TEXT = """
 # Heading
 
@@ -104,8 +103,7 @@ private fun PreviewFullScreenTextScreenLight() {
             title = "notes.md",
             text = PREVIEW_TEXT,
             isMarkdown = false,
-            onShare = {},
-            onSave = {}
+            actions = FullScreenTextActions(onShare = {}, onSave = {})
         )
     }
 }
@@ -118,8 +116,7 @@ private fun PreviewFullScreenTextScreenDark() {
             title = "notes.md",
             text = PREVIEW_TEXT,
             isMarkdown = false,
-            onShare = {},
-            onSave = {}
+            actions = FullScreenTextActions(onShare = {}, onSave = {})
         )
     }
 }
@@ -132,8 +129,7 @@ private fun PreviewFullScreenTextScreenRtl() {
             title = "ملاحظات.md",
             text = "هذا نص تجريبي باللغة العربية لاختبار تخطيط الواجهة من اليمين إلى اليسار.",
             isMarkdown = false,
-            onShare = {},
-            onSave = {}
+            actions = FullScreenTextActions(onShare = {}, onSave = {})
         )
     }
 }
