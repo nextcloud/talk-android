@@ -17,6 +17,7 @@ import android.widget.TextView
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,19 +36,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.automirrored.outlined.ScheduleSend
-import androidx.compose.material.icons.automirrored.outlined.Send
-import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.ContentCopy
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Forum
-import androidx.compose.material.icons.outlined.InsertEmoticon
-import androidx.compose.material.icons.outlined.Keyboard
-import androidx.compose.material.icons.outlined.NotificationsOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -61,6 +49,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -83,6 +73,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -106,6 +97,7 @@ import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.models.json.chat.ChatUtils
+import com.nextcloud.talk.models.json.opengraph.OpenGraphObject
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
@@ -416,8 +408,8 @@ class ScheduledMessagesActivity : BaseActivity() {
                     navigationIcon = {
                         IconButton(onClick = onBack) {
                             Icon(
-                                Icons.AutoMirrored.Outlined.ArrowBack,
-                                contentDescription = null
+                                ImageVector.vectorResource(R.drawable.ic_arrow_back_black_24dp),
+                                contentDescription = stringResource(R.string.back_button)
                             )
                         }
                     }
@@ -925,7 +917,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                         if (message.silent) {
                             Spacer(modifier = Modifier.width(4.dp))
                             Icon(
-                                imageVector = Icons.Outlined.NotificationsOff,
+                                imageVector = ImageVector.vectorResource(R.drawable.ic_baseline_notifications_off_24),
                                 contentDescription = null,
                                 modifier = Modifier.size(12.dp)
                             )
@@ -1005,7 +997,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.Edit,
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_edit),
                         contentDescription = null,
                         modifier = Modifier.size(20.dp)
                     )
@@ -1021,7 +1013,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                         onCancel()
                     }) {
                         Icon(
-                            imageVector = Icons.Outlined.Close,
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_baseline_close_24),
                             contentDescription = null
                         )
                     }
@@ -1060,9 +1052,9 @@ class ScheduledMessagesActivity : BaseActivity() {
                     }) {
                         Icon(
                             imageVector = if (isEmojiOpen) {
-                                Icons.Outlined.Keyboard
+                                ImageVector.vectorResource(R.drawable.ic_baseline_keyboard_24)
                             } else {
-                                Icons.Outlined.InsertEmoticon
+                                ImageVector.vectorResource(R.drawable.ic_insert_emoticon_black_24dp)
                             },
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -1108,7 +1100,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                         enabled = canSend
                     ) {
                         Icon(
-                            imageVector = Icons.Outlined.Check,
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_check),
                             contentDescription = null,
                             tint = if (canSend) {
                                 MaterialTheme.colorScheme.primary
@@ -1153,37 +1145,43 @@ class ScheduledMessagesActivity : BaseActivity() {
                     color = colorResource(R.color.no_emphasis_text)
                 )
             }
-
             ActionRow(
-                icon = Icons.Outlined.ContentCopy,
+                icon = ImageVector.vectorResource(R.drawable.ic_content_copy),
                 text = stringResource(R.string.nc_copy_message),
                 onClick = onCopy
             )
-
             ActionRow(
-                icon = Icons.AutoMirrored.Outlined.ScheduleSend,
+                icon = ImageVector.vectorResource(R.drawable.outline_schedule_send_24),
                 text = stringResource(R.string.nc_reschedule_message_with_notification),
                 onClick = onRescheduleWithNotification
             )
             ActionRow(
-                icon = Icons.AutoMirrored.Outlined.ScheduleSend,
+                icon = ImageVector.vectorResource(R.drawable.outline_schedule_send_24),
                 text = stringResource(R.string.nc_reschedule_message_without_notification),
                 onClick = onRescheduleWithoutNotification
             )
             ActionRow(
-                icon = Icons.AutoMirrored.Outlined.Send,
+                icon = ImageVector.vectorResource(R.drawable.ic_send_24px),
                 text = stringResource(R.string.nc_send_now),
                 onClick = onSendNow
             )
             if (showOpenThreadAction && !isThreadView) {
                 ActionRow(
-                    icon = Icons.Outlined.Forum,
+                    icon = ImageVector.vectorResource(R.drawable.outline_forum_24),
                     text = stringResource(R.string.open_thread),
                     onClick = onOpenThread
                 )
             }
-            ActionRow(icon = Icons.Outlined.Edit, text = stringResource(R.string.nc_edit), onClick = onEdit)
-            ActionRow(icon = Icons.Outlined.Delete, text = stringResource(R.string.nc_delete), onClick = onDelete)
+            ActionRow(
+                icon = ImageVector.vectorResource(R.drawable.ic_edit),
+                text = stringResource(R.string.nc_edit),
+                onClick = onEdit
+            )
+            ActionRow(
+                icon = ImageVector.vectorResource(R.drawable.trashbin),
+                text = stringResource(R.string.nc_delete),
+                onClick = onDelete
+            )
         }
     }
 
@@ -1231,25 +1229,119 @@ class ScheduledMessagesActivity : BaseActivity() {
         }
     }
 
-    @Preview(showBackground = true)
+    @Preview(name = "Light Mode", showBackground = true)
+    @Preview(
+        name = "Dark Mode",
+        uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+    )
+    @Preview(name = "RTL / Arabic", locale = "ar")
     @Composable
     private fun PreviewActionRow() {
-        MaterialTheme {
-            ActionRow(icon = Icons.Outlined.Edit, text = "Edit", onClick = {})
+        val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+        MaterialTheme(colorScheme = colorScheme) {
+            ActionRow(icon = ImageVector.vectorResource(R.drawable.ic_edit), text = "Edit", onClick = {})
         }
     }
 
-    @Preview(showBackground = true)
+    @Preview(name = "Light Mode")
+    @Preview(
+        name = "Dark Mode",
+        uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+    )
+    @Preview(name = "RTL / Arabic", locale = "ar")
     @Composable
     private fun PreviewEditRow() {
         var value by remember { mutableStateOf(TextFieldValue("Hello")) }
-        MaterialTheme {
+        val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+        MaterialTheme(colorScheme = colorScheme) {
             ScheduledMessageEditRow(
                 editValue = value,
                 originalText = "Original message",
                 onEditValueChange = { value = it },
                 onCancel = {},
                 onSend = {}
+            )
+        }
+    }
+
+    @Preview()
+    @Composable
+    private fun OfflineStatusBannerPreview() {
+        val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+        MaterialTheme(colorScheme = colorScheme) {
+            OfflineStatusBanner(isOnline = false)
+        }
+    }
+
+    @Preview(name = "LTR", showBackground = true)
+    @Preview(name = "RTL / Arabic", locale = "ar", showBackground = true)
+    @Composable
+    private fun ScheduledDayHeaderPreview() {
+        val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+        MaterialTheme(colorScheme = colorScheme) {
+            ScheduledDayHeader(text = "Tomorrow, 25 Feb")
+        }
+    }
+
+    @Preview(name = "Light Mode", showBackground = true)
+    @Preview(
+        name = "Dark Mode",
+        showBackground = true,
+        uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+    )
+    @Preview(name = "RTL / Arabic", showBackground = true, locale = "ar")
+    @Composable
+    private fun ShowErrorTextPreview() {
+        val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+        MaterialTheme(colorScheme = colorScheme) {
+            ShowErrorText(isOnline = true)
+        }
+    }
+
+    @Preview(name = "Light Mode")
+    @Preview(
+        name = "Dark Mode",
+        uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+    )
+    @Preview(name = "RTL / Arabic", locale = "ar")
+    @Composable
+    private fun LinkPreviewPreview() {
+        val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+        MaterialTheme(colorScheme = colorScheme) {
+            LinkPreview(
+                linkPreview = Reference(
+                    openGraphObject = OpenGraphObject(
+                        id = "1",
+                        name = "Nextcloud Talk",
+                        description = "Open source, self-hosted team collaboration",
+                        link = "https://nextcloud.com/talk"
+                    ),
+                    accessible = true
+                )
+            )
+        }
+    }
+
+    @Preview(name = "Light Mode")
+    @Preview(
+        name = "Dark Mode",
+        uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+    )
+    @Preview(name = "RTL / Arabic", locale = "ar")
+    @Composable
+    private fun ScheduledMessageActionsSheetPreview() {
+        val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+        MaterialTheme(colorScheme = colorScheme) {
+            ScheduledMessageActionsSheet(
+                scheduledTime = "Thu, 27 Feb 2025 at 18:00",
+                onRescheduleWithNotification = {},
+                onRescheduleWithoutNotification = {},
+                onSendNow = {},
+                onEdit = {},
+                onDelete = {},
+                showOpenThreadAction = false,
+                onOpenThread = {},
+                onCopy = {}
             )
         }
     }

@@ -27,8 +27,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,6 +53,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -66,6 +66,7 @@ import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -307,7 +308,10 @@ class DateTimeCompose(val bundle: Bundle) {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun CollapsableDateTime(shouldDismiss: MutableState<Boolean>, isCollapsed: MutableState<Boolean>) {
-        GeneralIconButton(icon = Icons.Filled.DateRange, label = "Custom") { isCollapsed.value = !isCollapsed.value }
+        GeneralIconButton(
+            icon = ImageVector.vectorResource(R.drawable.ic_date_range_24px),
+            label = stringResource(R.string.custom)
+        ) { isCollapsed.value = !isCollapsed.value }
         val scrollState = rememberScrollState()
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -375,26 +379,6 @@ class DateTimeCompose(val bundle: Bundle) {
         }
     }
 
-    @Composable
-    fun GeneralIconButton(icon: ImageVector, label: String, onClick: () -> Unit) {
-        TextButton(
-            onClick = onClick
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    modifier = Modifier.size(INT_24.dp)
-                )
-                Spacer(modifier = Modifier.width(INT_8.dp))
-                Text(text = label)
-            }
-        }
-    }
-
     private fun timePattern(context: Context): String = if (DateFormat.is24HourFormat(context)) "HH:mm" else "hh:mm a"
 
     private fun dayTimePattern(context: Context): String =
@@ -403,25 +387,104 @@ class DateTimeCompose(val bundle: Bundle) {
     private fun fullPattern(context: Context): String =
         if (DateFormat.is24HourFormat(context)) "dd MMM, HH:mm" else "dd MMM, hh:mm a"
 
-    @Composable
-    private fun TimeOption(label: String, timeString: String, onClick: () -> Unit) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(INT_8.dp)
-                .clickable { onClick() }
-        ) {
-            Text(label, modifier = Modifier.weight(HALF_WEIGHT))
-            Text(timeString, modifier = Modifier.weight(HALF_WEIGHT))
-        }
-    }
-
     companion object {
         private const val HALF_WEIGHT = 0.5f
         private const val INT_8 = 8
         private const val INT_16 = 16
         private const val INT_18 = 18
-        private const val INT_24 = 24
         private const val CUBED_PADDING = 0.33f
     }
+}
+
+@Composable
+fun GeneralIconButton(icon: ImageVector, label: String, onClick: () -> Unit) {
+    TextButton(onClick = onClick) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = label)
+        }
+    }
+}
+
+@Composable
+private fun TimeOption(label: String, timeString: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable { onClick() }
+    ) {
+        Text(label, modifier = Modifier.weight(0.5f))
+        Text(timeString, modifier = Modifier.weight(0.5f))
+    }
+}
+
+@Preview(name = "Light Mode")
+@Composable
+fun GeneralIconButtonPreview(label: String = "Custom") {
+    val context = LocalContext.current
+    val colorScheme = ComposePreviewUtils.getInstance(context).viewThemeUtils.getColorScheme(context)
+    MaterialTheme(colorScheme = colorScheme) {
+        Surface {
+            GeneralIconButton(
+                icon = ImageVector.vectorResource(R.drawable.ic_date_range_24px),
+                label = label
+            ) {}
+        }
+    }
+}
+
+@Preview(
+    name = "Dark Mode",
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun GeneralIconButtonDarkPreview() {
+    GeneralIconButtonPreview()
+}
+
+@Preview(name = "RTL / Arabic", locale = "ar")
+@Composable
+fun GeneralIconButtonRtlPreview() {
+    GeneralIconButtonPreview(label = "مخصص")
+}
+
+@Preview(name = "Light Mode")
+@Composable
+fun TimeOptionPreview() {
+    val context = LocalContext.current
+    val colorScheme = ComposePreviewUtils.getInstance(context).viewThemeUtils.getColorScheme(context)
+    MaterialTheme(colorScheme = colorScheme) {
+        Surface {
+            Column {
+                TimeOption(label = "Later Today", timeString = "18:00") {}
+                TimeOption(label = "Tomorrow", timeString = "Mon, 08:00") {}
+                TimeOption(label = "This Weekend", timeString = "Sat, 08:00") {}
+                TimeOption(label = "Next Week", timeString = "Mon, 08:00") {}
+            }
+        }
+    }
+}
+
+@Preview(
+    name = "Dark Mode",
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun TimeOptionDarkPreview() {
+    TimeOptionPreview()
+}
+
+@Preview(name = "RTL / Arabic", locale = "ar")
+@Composable
+fun TimeOptionRtlPreview() {
+    TimeOptionPreview()
 }

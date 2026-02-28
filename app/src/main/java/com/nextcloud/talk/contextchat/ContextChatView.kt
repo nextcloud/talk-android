@@ -20,10 +20,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -42,8 +38,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -84,8 +84,8 @@ fun ContextChatErrorView() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            Icons.Filled.Info,
-            contentDescription = "Info Icon"
+            ImageVector.vectorResource(R.drawable.ic_info_24px),
+            contentDescription = null
         )
 
         Text(
@@ -127,7 +127,7 @@ fun ContextChatSuccessView(
                         ) {
                             IconButton(onClick = onDismiss) {
                                 Icon(
-                                    Icons.Filled.Close,
+                                    ImageVector.vectorResource(R.drawable.ic_baseline_close_24),
                                     stringResource(R.string.close),
                                     modifier = Modifier.Companion
                                         .size(24.dp)
@@ -171,10 +171,12 @@ fun ContextChatSuccessView(
                         val messages = contextChatRetrieveUiStateSuccess.messages.map(ChatMessageJson::asModel)
                         val messageId = contextChatRetrieveUiStateSuccess.messageId
                         val threadId = contextChatRetrieveUiStateSuccess.threadId
+                        val isInspection = LocalInspectionMode.current
                         val adapter = ComposeChatAdapter(
                             messagesJson = contextChatRetrieveUiStateSuccess.messages,
                             messageId = messageId,
-                            threadId = threadId
+                            threadId = threadId,
+                            utils = if (isInspection) previewUtils else null
                         )
                         SideEffect {
                             adapter.addMessages(messages.toMutableList(), true)
@@ -185,6 +187,65 @@ fun ContextChatSuccessView(
             }
         }
     }
+}
+
+@Preview(name = "Light Mode")
+@Composable
+fun ContextChatSuccessViewPreview(title: String = "Alice") {
+    ContextChatSuccessView(
+        visible = true,
+        context = LocalContext.current,
+        contextChatRetrieveUiStateSuccess = ContextChatViewModel.ContextChatRetrieveUiState.Success(
+            messageId = "123",
+            threadId = null,
+            messages = emptyList(),
+            title = title,
+            subTitle = null
+        ),
+        onDismiss = {}
+    )
+}
+
+@Preview(
+    name = "Dark Mode",
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun ContextChatSuccessViewDarkPreview() {
+    ContextChatSuccessViewPreview()
+}
+
+@Preview(name = "RTL / Arabic", locale = "ar")
+@Composable
+fun ContextChatSuccessViewRtlPreview() {
+    ContextChatSuccessViewPreview(title = "أليس")
+}
+
+@Preview(name = "Light Mode")
+@Composable
+fun ContextChatErrorViewPreview() {
+    val context = LocalContext.current
+    val colorScheme = ComposePreviewUtils.getInstance(context).viewThemeUtils.getColorScheme(context)
+    MaterialTheme(colorScheme = colorScheme) {
+        Surface {
+            ContextChatErrorView()
+        }
+    }
+}
+
+@Preview(
+    name = "Dark Mode",
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun ContextChatErrorViewDarkPreview() {
+    ContextChatErrorViewPreview()
+}
+
+@Preview(name = "RTL / Arabic", locale = "ar")
+@Composable
+fun ContextChatErrorViewRtlPreview() {
+    ContextChatErrorViewPreview()
 }
 
 // This code was written back then but not needed yet, but it's not deleted yet
@@ -198,8 +259,8 @@ private fun ComposeChatMenu(backgroundColor: Color, enabled: Boolean = true) {
     ) {
         IconButton(onClick = { expanded = true }) {
             Icon(
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = "More options"
+                imageVector = ImageVector.vectorResource(R.drawable.ic_more_vert_24px),
+                contentDescription = stringResource(R.string.nc_common_more_options)
             )
         }
 
