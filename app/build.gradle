@@ -366,6 +366,10 @@ dependencies {
     testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
     testImplementation("com.google.dagger:hilt-android-testing:2.59.2")
     testImplementation("org.robolectric:robolectric:4.16.1")
+
+    // Computer Vision - for background effects during video calls
+    implementation 'com.google.mediapipe:tasks-vision:0.10.26'
+    implementation "io.github.crow-misia.libyuv:libyuv-android:0.43.2"
 }
 
 tasks.register('installGitHooks', Copy) {

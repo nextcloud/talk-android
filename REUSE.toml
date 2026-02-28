@@ -34,3 +34,9 @@ path = "app/src/main/res/raw/next_voice_message_doodle.ogg"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2024 Paciosoft"
 SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "app/src/main/assets/selfie_segmenter.tflite"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Apache License Version 2.0, January 2004 http://www.apache.org/licenses/"
+SPDX-License-Identifier = "Apache-2.0"
