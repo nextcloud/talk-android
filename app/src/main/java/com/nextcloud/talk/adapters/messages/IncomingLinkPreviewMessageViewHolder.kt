@@ -9,7 +9,10 @@ package com.nextcloud.talk.adapters.messages
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.text.Spanned
 import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import autodagger.AutoInjector
@@ -64,27 +67,14 @@ class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) :
 
     lateinit var commonMessageInterface: CommonMessageInterface
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         this.message = message
         sharedApplication!!.componentApplication.inject(this)
         binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
-        var processedMessageText = messageUtils.enrichChatMessageText(
-            binding.messageText.context,
-            message,
-            true,
-            viewThemeUtils
-        )
-
-        processedMessageText = messageUtils.processMessageParameters(
-            binding.messageText.context,
-            viewThemeUtils,
-            processedMessageText!!,
-            message,
-            itemView
-        )
+        val processedMessageText = processMessageText(message)
 
         binding.messageText.text = processedMessageText
 
@@ -103,9 +93,22 @@ class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) :
             binding.referenceInclude,
             itemView.context
         )
-        binding.referenceInclude.referenceWrapper.setOnLongClickListener { l: View? ->
-            commonMessageInterface.onOpenMessageActionsDialog(message)
-            true
+        binding.referenceInclude.referenceWrapper.isLongClickable = true
+        val referenceWrapperGestureDetector = GestureDetector(
+            context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onLongPress(e: MotionEvent) {
+                    commonMessageInterface.onOpenMessageActionsDialog(message)
+                }
+                override fun onDoubleTap(e: MotionEvent): Boolean {
+                    commonMessageInterface.onOpenMessageActionsDialog(message)
+                    return true
+                }
+            }
+        )
+        binding.referenceInclude.referenceWrapper.setOnTouchListener { _, event ->
+            referenceWrapperGestureDetector.onTouchEvent(event)
+            false
         }
 
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
@@ -132,6 +135,24 @@ class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) :
             false,
             viewThemeUtils
         )
+    }
+
+    private fun processMessageText(message: ChatMessage): Spanned? {
+        var processedMessageText = messageUtils.enrichChatMessageText(
+            binding.messageText.context,
+            message,
+            true,
+            viewThemeUtils
+        )
+
+        processedMessageText = messageUtils.processMessageParameters(
+            binding.messageText.context,
+            viewThemeUtils,
+            processedMessageText!!,
+            message,
+            itemView
+        )
+        return processedMessageText
     }
 
     private fun longClickOnReaction(chatMessage: ChatMessage) {

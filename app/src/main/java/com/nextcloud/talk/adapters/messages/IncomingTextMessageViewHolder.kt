@@ -9,9 +9,12 @@
  */
 package com.nextcloud.talk.adapters.messages
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.util.TypedValue
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
@@ -98,6 +101,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         processMessage(message, hasCheckboxes)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Suppress("LongMethod")
     private fun processMessage(message: ChatMessage, hasCheckboxes: Boolean) {
         var textSize = context.resources!!.getDimension(R.dimen.chat_text_size)
@@ -181,9 +185,22 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 View.GONE
             }
 
-        binding.messageQuote.quotedChatMessageView.setOnLongClickListener { l: View? ->
-            commonMessageInterface.onOpenMessageActionsDialog(message)
-            true
+        binding.messageQuote.quotedChatMessageView.isLongClickable = true
+        val quotedChatMessageViewGestureDetector = GestureDetector(
+            context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onLongPress(e: MotionEvent) {
+                    commonMessageInterface.onOpenMessageActionsDialog(message)
+                }
+                override fun onDoubleTap(e: MotionEvent): Boolean {
+                    commonMessageInterface.onOpenMessageActionsDialog(message)
+                    return true
+                }
+            }
+        )
+        binding.messageQuote.quotedChatMessageView.setOnTouchListener { _, event ->
+            quotedChatMessageViewGestureDetector.onTouchEvent(event)
+            false
         }
 
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
