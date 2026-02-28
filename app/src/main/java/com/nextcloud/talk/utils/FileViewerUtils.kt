@@ -76,33 +76,23 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         val fileSize = size.toLong()
 
         openFile(
-            FileInfo(fileId, fileName, fileSize),
-            path,
-            link,
-            mimetype,
+            FileInfo(fileId, fileName, fileSize, path, link, mimetype),
             progressUi,
             message.openWhenDownloaded
         )
     }
 
-    fun openFile(
-        fileInfo: FileInfo,
-        path: String,
-        link: String?,
-        mimetype: String?,
-        progressUi: ProgressUi,
-        openWhenDownloaded: Boolean
-    ) {
-        if (isSupportedForInternalViewer(mimetype) || canBeHandledByExternalApp(mimetype, fileInfo.fileName)) {
+    fun openFile(fileInfo: FileInfo, progressUi: ProgressUi, openWhenDownloaded: Boolean) {
+        if (isSupportedForInternalViewer(fileInfo.mimetype) ||
+            canBeHandledByExternalApp(fileInfo.mimetype, fileInfo.fileName)
+        ) {
             openOrDownloadFile(
                 fileInfo,
-                path,
-                mimetype,
                 progressUi,
                 openWhenDownloaded
             )
-        } else if (!link.isNullOrEmpty()) {
-            openFileInFilesApp(link, fileInfo.fileId)
+        } else if (!fileInfo.link.isNullOrEmpty()) {
+            openFileInFilesApp(fileInfo.link, fileInfo.fileId)
         } else {
             Log.e(
                 TAG,
@@ -122,28 +112,20 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         return intent.resolveActivity(context.packageManager) != null
     }
 
-    private fun openOrDownloadFile(
-        fileInfo: FileInfo,
-        path: String,
-        mimetype: String?,
-        progressUi: ProgressUi,
-        openWhenDownloaded: Boolean
-    ) {
+    private fun openOrDownloadFile(fileInfo: FileInfo, progressUi: ProgressUi, openWhenDownloaded: Boolean) {
         val file = File(context.cacheDir, fileInfo.fileName)
         if (file.exists()) {
-            openFileByMimetype(fileInfo.fileName, mimetype)
+            openFileByMimetype(fileInfo.fileName, fileInfo.mimetype, fileInfo.link, fileInfo.fileId)
         } else {
             downloadFileToCache(
                 fileInfo,
-                path,
-                mimetype,
                 progressUi,
                 openWhenDownloaded
             )
         }
     }
 
-    private fun openFileByMimetype(filename: String, mimetype: String?) {
+    private fun openFileByMimetype(filename: String, mimetype: String?, link: String? = null, fileId: String = "") {
         if (mimetype != null) {
             when (mimetype) {
                 AUDIO_MPEG,
@@ -161,7 +143,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
                 -> openImageView(filename, mimetype)
                 TEXT_MARKDOWN,
                 TEXT_PLAIN
-                -> openTextView(filename, mimetype)
+                -> openTextView(filename, mimetype, link, fileId)
                 else
                 -> openFileByExternalApp(filename, mimetype)
             }
@@ -236,10 +218,14 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         context.startActivity(fullScreenMediaIntent)
     }
 
-    private fun openTextView(filename: String, mimetype: String) {
+    private fun openTextView(filename: String, mimetype: String, link: String?, fileId: String) {
         val fullScreenTextViewerIntent = Intent(context, FullScreenTextViewerActivity::class.java)
         fullScreenTextViewerIntent.putExtra("FILE_NAME", filename)
         fullScreenTextViewerIntent.putExtra("IS_MARKDOWN", isMarkdown(mimetype))
+        fullScreenTextViewerIntent.putExtra("FILE_ID", fileId)
+        fullScreenTextViewerIntent.putExtra("LINK", link)
+        fullScreenTextViewerIntent.putExtra("USERNAME", user.username)
+        fullScreenTextViewerIntent.putExtra("BASE_URL", user.baseUrl)
         context.startActivity(fullScreenTextViewerIntent)
     }
 
@@ -262,13 +248,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         }
 
     @SuppressLint("LongLogTag")
-    private fun downloadFileToCache(
-        fileInfo: FileInfo,
-        path: String,
-        mimetype: String?,
-        progressUi: ProgressUi,
-        openWhenDownloaded: Boolean
-    ) {
+    private fun downloadFileToCache(fileInfo: FileInfo, progressUi: ProgressUi, openWhenDownloaded: Boolean) {
         // check if download worker is already running
         val workers = WorkManager.getInstance(context).getWorkInfosByTag(fileInfo.fileId)
         try {
@@ -299,7 +279,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
                 CapabilitiesUtil.getAttachmentFolder(user.capabilities!!.spreedCapability!!)
             )
             .putString(DownloadFileToCacheWorker.KEY_FILE_NAME, fileInfo.fileName)
-            .putString(DownloadFileToCacheWorker.KEY_FILE_PATH, path)
+            .putString(DownloadFileToCacheWorker.KEY_FILE_PATH, fileInfo.path)
             .putLong(DownloadFileToCacheWorker.KEY_FILE_SIZE, size)
             .build()
 
@@ -313,10 +293,12 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             .observeForever { workInfo: WorkInfo? ->
                 updateViewsByProgress(
                     fileInfo.fileName,
-                    mimetype,
+                    fileInfo.mimetype,
                     workInfo!!,
                     progressUi,
-                    openWhenDownloaded
+                    openWhenDownloaded,
+                    fileInfo.link,
+                    fileInfo.fileId
                 )
             }
     }
@@ -326,7 +308,9 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         mimetype: String?,
         workInfo: WorkInfo,
         progressUi: ProgressUi,
-        openWhenDownloaded: Boolean
+        openWhenDownloaded: Boolean,
+        link: String? = null,
+        fileId: String = ""
     ) {
         when (workInfo.state) {
             WorkInfo.State.RUNNING -> {
@@ -341,7 +325,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             }
             WorkInfo.State.SUCCEEDED -> {
                 if (progressUi.previewImage.isShown && openWhenDownloaded) {
-                    openFileByMimetype(fileName, mimetype)
+                    openFileByMimetype(fileName, mimetype, link, fileId)
                 } else {
                     Log.d(
                         TAG,
@@ -400,7 +384,14 @@ class FileViewerUtils(private val context: Context, private val user: User) {
 
     data class ProgressUi(val progressBar: ProgressBar?, val messageText: EmojiTextView?, val previewImage: ImageView)
 
-    data class FileInfo(val fileId: String, val fileName: String, var fileSize: Long?)
+    data class FileInfo(
+        val fileId: String,
+        val fileName: String,
+        var fileSize: Long?,
+        val path: String,
+        val link: String?,
+        val mimetype: String?
+    )
 
     companion object {
         private val TAG = FileViewerUtils::class.simpleName

@@ -8,116 +8,106 @@
  */
 package com.nextcloud.talk.fullscreenfile
 
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.MaterialTheme
 import androidx.core.content.FileProvider
-import androidx.core.content.res.ResourcesCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
 import autodagger.AutoInjector
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.databinding.ActivityFullScreenTextBinding
+import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
 import com.nextcloud.talk.utils.Mimetype.TEXT_PREFIX_GENERIC
-import io.noties.markwon.Markwon
+import com.nextcloud.talk.utils.adjustUIForAPILevel35
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
 import java.io.File
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class FullScreenTextViewerActivity : AppCompatActivity() {
-    lateinit var binding: ActivityFullScreenTextBinding
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
-
-    private lateinit var path: String
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_preview, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean =
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressedDispatcher.onBackPressed()
-                true
-            }
-
-            R.id.share -> {
-                val shareUri = FileProvider.getUriForFile(
-                    this,
-                    BuildConfig.APPLICATION_ID,
-                    File(path)
-                )
-
-                val shareIntent: Intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_STREAM, shareUri)
-                    type = TEXT_PREFIX_GENERIC
-                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                }
-                startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.send_to)))
-
-                true
-            }
-
-            R.id.save -> {
-                val saveFragment: DialogFragment = SaveToStorageDialogFragment.newInstance(
-                    intent.getStringExtra("FILE_NAME").toString()
-                )
-                saveFragment.show(
-                    supportFragmentManager,
-                    SaveToStorageDialogFragment.TAG
-                )
-                true
-            }
-
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        binding = ActivityFullScreenTextBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        setSupportActionBar(binding.textviewToolbar)
-
-        val fileName = intent.getStringExtra("FILE_NAME")
+        val fileName = intent.getStringExtra("FILE_NAME").orEmpty()
         val isMarkdown = intent.getBooleanExtra("IS_MARKDOWN", false)
-        path = applicationContext.cacheDir.absolutePath + "/" + fileName
+        val fileId = intent.getStringExtra("FILE_ID").orEmpty()
+        val link = intent.getStringExtra("LINK")
+        val username = intent.getStringExtra("USERNAME").orEmpty()
+        val baseUrl = intent.getStringExtra("BASE_URL").orEmpty()
+        val path = applicationContext.cacheDir.absolutePath + "/" + fileName
         val text = readFile(path)
 
-        if (isMarkdown) {
-            val markwon = Markwon.create(applicationContext)
-            markwon.setMarkdown(binding.textView, text)
-        } else {
-            binding.textView.text = text
+        adjustUIForAPILevel35()
+
+        setContent {
+            val colorScheme = viewThemeUtils.getColorScheme(this)
+            MaterialTheme(colorScheme = colorScheme) {
+                ColoredStatusBar()
+                FullScreenTextScreen(
+                    title = fileName,
+                    text = text,
+                    isMarkdown = isMarkdown,
+                    actions = FullScreenTextActions(
+                        onShare = { shareFile(path) },
+                        onSave = { showSaveDialog(fileName) },
+                        onOpenInFilesApp = if (fileId.isNotEmpty()) {
+                            { openInFilesApp(link, fileId, username, baseUrl) }
+                        } else {
+                            null
+                        }
+                    )
+                )
+            }
         }
+    }
 
-        supportActionBar?.title = fileName
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        viewThemeUtils.platform.themeStatusBar(this)
-        viewThemeUtils.material.themeToolbar(binding.textviewToolbar)
-        viewThemeUtils.material.colorToolbarOverflowIcon(binding.textviewToolbar)
-
-        if (resources != null) {
-            DisplayUtils.applyColorToNavigationBar(
-                this.window,
-                ResourcesCompat.getColor(resources, R.color.bg_default, null)
+    private fun openInFilesApp(link: String?, fileId: String, username: String, baseUrl: String) {
+        val accountString = "$username@${baseUrl.replace("https://", "").replace("http://", "")}"
+        if (canWeOpenFilesApp(this, accountString)) {
+            val filesAppIntent = Intent(Intent.ACTION_VIEW, null)
+            val componentName = ComponentName(
+                getString(R.string.nc_import_accounts_from),
+                "com.owncloud.android.ui.activity.FileDisplayActivity"
             )
+            filesAppIntent.component = componentName
+            filesAppIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            filesAppIntent.setPackage(getString(R.string.nc_import_accounts_from))
+            filesAppIntent.putExtra(KEY_ACCOUNT, accountString)
+            filesAppIntent.putExtra(KEY_FILE_ID, fileId)
+            startActivity(filesAppIntent)
+        } else if (!link.isNullOrEmpty()) {
+            startActivity(Intent(Intent.ACTION_VIEW, link.toUri()))
         }
+    }
+
+    private fun shareFile(path: String) {
+        val shareUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, File(path))
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_STREAM, shareUri)
+            type = TEXT_PREFIX_GENERIC
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.send_to)))
+    }
+
+    private fun showSaveDialog(fileName: String) {
+        val saveFragment: DialogFragment = SaveToStorageDialogFragment.newInstance(fileName)
+        saveFragment.show(supportFragmentManager, SaveToStorageDialogFragment.TAG)
     }
 
     private fun readFile(fileName: String) = File(fileName).inputStream().readBytes().toString(Charsets.UTF_8)

@@ -61,10 +61,14 @@ abstract class SharedItemsViewHolder(
 
         clickTarget.setOnClickListener {
             fileViewerUtils.openFile(
-                FileViewerUtils.FileInfo(item.id, item.name, item.fileSize),
-                item.path,
-                item.link,
-                item.mimeType,
+                FileViewerUtils.FileInfo(
+                    item.id,
+                    item.name,
+                    item.fileSize,
+                    item.path,
+                    item.link,
+                    item.mimeType
+                ),
                 FileViewerUtils.ProgressUi(
                     progressBar,
                     null,
