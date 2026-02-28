@@ -75,6 +75,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 saat</string>
     <string name="get_invitations_error">Bekleyen davetler alınamadı</string>
+    <string name="gplay_available_no">Google Play hizmetleri kullanılamıyor. Bildirimler desteklenmiyor</string>
     <string name="hint_edited_message">(düzenlendi)</string>
     <string name="internal_note">İç not</string>
     <string name="invisible">Görünmez</string>
