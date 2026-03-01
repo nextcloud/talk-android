@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.only
@@ -232,7 +233,7 @@ private fun ConversationsBody(
     onConversationClick: (Conversation) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier) {
+    Box(modifier = modifier.imePadding()) {
         when (viewState) {
             is OpenConversationsViewModel.FetchConversationsStartState -> {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
