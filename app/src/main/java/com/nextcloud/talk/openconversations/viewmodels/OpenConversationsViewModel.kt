@@ -7,14 +7,14 @@
 package com.nextcloud.talk.openconversations.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,12 +30,12 @@ class OpenConversationsViewModel @Inject constructor(
     object FetchConversationsErrorState : ViewState
     open class FetchConversationsSuccessState(val conversations: List<Conversation>) : ViewState
 
-    private val _viewState: MutableLiveData<ViewState> = MutableLiveData(FetchConversationsStartState)
-    val viewState: LiveData<ViewState>
+    private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(FetchConversationsStartState)
+    val viewState: StateFlow<ViewState>
         get() = _viewState
 
-    private val _searchTerm: MutableLiveData<String> = MutableLiveData("")
-    val searchTerm: LiveData<String>
+    private val _searchTerm: MutableStateFlow<String> = MutableStateFlow("")
+    val searchTerm: StateFlow<String>
         get() = _searchTerm
 
     fun fetchConversations() {
@@ -57,7 +57,7 @@ class OpenConversationsViewModel @Inject constructor(
                     repository.fetchConversations(
                         it,
                         url,
-                        _searchTerm.value ?: ""
+                        _searchTerm.value
                     )
                         .onSuccess { conversations ->
                             if (conversations.isEmpty()) {
