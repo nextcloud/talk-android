@@ -59,9 +59,13 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -140,6 +144,7 @@ private fun OpenConversationsScreenContent(
         ConversationsBody(
             viewState = viewState,
             userBaseUrl = userBaseUrl,
+            searchTerm = searchTerm,
             onConversationClick = listenerInput.onConversationClick,
             modifier = Modifier
                 .fillMaxSize()
@@ -193,7 +198,9 @@ private fun OpenConversationsTopBar(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent
                     ),
-                    modifier = Modifier.fillMaxWidth().focusRequester(focusRequester)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester)
                 )
             } else {
                 Text(text = stringResource(R.string.openConversations))
@@ -216,6 +223,7 @@ private fun OpenConversationsTopBar(
 private fun ConversationsBody(
     viewState: OpenConversationsViewModel.ViewState,
     userBaseUrl: String?,
+    searchTerm: String,
     onConversationClick: (Conversation) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -230,6 +238,7 @@ private fun ConversationsBody(
                         OpenConversationItem(
                             conversation = conversation,
                             userBaseUrl = userBaseUrl,
+                            searchTerm = searchTerm,
                             onClick = { onConversationClick(conversation) }
                         )
                     }
@@ -246,7 +255,12 @@ private fun ConversationsBody(
 }
 
 @Composable
-private fun OpenConversationItem(conversation: Conversation, userBaseUrl: String?, onClick: () -> Unit) {
+private fun OpenConversationItem(
+    conversation: Conversation,
+    userBaseUrl: String?,
+    searchTerm: String,
+    onClick: () -> Unit
+) {
     val context = LocalContext.current
     val isDark = DisplayUtils.isDarkModeOn(context)
     val avatarUrl = ApiUtils.getUrlForConversationAvatarWithVersion(
@@ -283,7 +297,7 @@ private fun OpenConversationItem(conversation: Conversation, userBaseUrl: String
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = conversation.displayName,
+                text = highlightSearchTerm(conversation.displayName, searchTerm, MaterialTheme.colorScheme.primary),
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -300,6 +314,20 @@ private fun OpenConversationItem(conversation: Conversation, userBaseUrl: String
         }
     }
 }
+
+private fun highlightSearchTerm(name: String, searchTerm: String, highlightColor: Color) =
+    buildAnnotatedString {
+        val matchStart = if (searchTerm.isNotBlank()) name.indexOf(searchTerm, ignoreCase = true) else -1
+        if (matchStart < 0) {
+            append(name)
+        } else {
+            append(name.substring(0, matchStart))
+            withStyle(SpanStyle(color = highlightColor, fontWeight = FontWeight.Bold)) {
+                append(name.substring(matchStart, matchStart + searchTerm.length))
+            }
+            append(name.substring(matchStart + searchTerm.length))
+        }
+    }
 
 @Composable
 private fun EmptyConversationsView(modifier: Modifier = Modifier) {
