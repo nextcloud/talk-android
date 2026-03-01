@@ -9,13 +9,15 @@
 package com.nextcloud.talk.ui.dialog.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.users.UserManager
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 class ChooseAccountShareToViewModel @Inject constructor(private val userManager: UserManager) : ViewModel() {
@@ -29,35 +31,45 @@ class ChooseAccountShareToViewModel @Inject constructor(private val userManager:
     object SwitchUserSuccessState : ViewState
     object SwitchUserErrorState : ViewState
 
-    private val _viewState: MutableLiveData<ViewState> = MutableLiveData(LoadUsersStartState)
-    val viewState: LiveData<ViewState>
-        get() = _viewState
+    private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(LoadUsersStartState)
+    val viewState: StateFlow<ViewState> = _viewState.asStateFlow()
+
+    private val disposables = CompositeDisposable()
 
     fun loadUsers() {
         _viewState.value = LoadUsersStartState
-        userManager.users
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { users -> _viewState.value = LoadUsersSuccessState(users.filter { !it.current }) },
-                { e ->
-                    Log.e(TAG, "Error loading users", e)
-                    _viewState.value = LoadUsersSuccessState(emptyList())
-                }
-            )
+        disposables.add(
+            userManager.users
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { users -> _viewState.value = LoadUsersSuccessState(users.filter { !it.current }) },
+                    { e ->
+                        Log.e(TAG, "Error loading users", e)
+                        _viewState.value = LoadUsersSuccessState(emptyList())
+                    }
+                )
+        )
     }
 
     fun switchToUser(user: User) {
-        userManager.setUserAsActive(user)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { success -> _viewState.value = if (success) SwitchUserSuccessState else SwitchUserErrorState },
-                { e ->
-                    Log.e(TAG, "Error switching user", e)
-                    _viewState.value = SwitchUserErrorState
-                }
-            )
+        disposables.add(
+            userManager.setUserAsActive(user)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { success -> _viewState.value = if (success) SwitchUserSuccessState else SwitchUserErrorState },
+                    { e ->
+                        Log.e(TAG, "Error switching user", e)
+                        _viewState.value = SwitchUserErrorState
+                    }
+                )
+        )
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disposables.dispose()
     }
 
     companion object {

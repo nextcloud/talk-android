@@ -1,8 +1,8 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2021-2026 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2022 Marcel Hibbe <dev@mhibbe.de>
- * SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -14,16 +14,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.net.toUri
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.nextcloud.android.common.ui.theme.utils.ColorRole
+import kotlinx.coroutines.launch
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.databinding.DialogChooseAccountShareToBinding
-import com.nextcloud.talk.extensions.loadUserAvatar
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.ui.dialog.viewmodels.ChooseAccountShareToViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import java.net.CookieManager
@@ -41,18 +46,17 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
     @Inject
     lateinit var cookieManager: CookieManager
 
-    private var binding: DialogChooseAccountShareToBinding? = null
-    private var dialogView: View? = null
-
+    private var composeView: ComposeView? = null
     private lateinit var viewModel: ChooseAccountShareToViewModel
-    private lateinit var adapter: ChooseAccountShareToAdapter
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        binding = DialogChooseAccountShareToBinding.inflate(layoutInflater)
-        dialogView = binding!!.root
-        return MaterialAlertDialogBuilder(requireContext()).setView(dialogView).create()
+        composeView = ComposeView(requireContext())
+        return MaterialAlertDialogBuilder(requireContext()).setView(composeView).create()
     }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+        composeView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -60,65 +64,48 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
 
         viewModel = ViewModelProvider(this, viewModelFactory)[ChooseAccountShareToViewModel::class.java]
 
-        themeViews()
-        setupAdapter()
-        initObservers()
+        val otherUsers = mutableStateOf<List<User>>(emptyList())
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.viewState.collect { state ->
+                    when (state) {
+                        is ChooseAccountShareToViewModel.LoadUsersSuccessState -> {
+                            otherUsers.value = state.users
+                        }
+                        is ChooseAccountShareToViewModel.SwitchUserSuccessState -> {
+                            cookieManager.cookieStore.removeAll()
+                            activity?.recreate()
+                            dismiss()
+                        }
+                        else -> {}
+                    }
+                }
+            }
+        }
+
+        val colorScheme = viewThemeUtils.getColorScheme(requireActivity())
+
+        composeView?.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme(colorScheme = colorScheme) {
+                    ChooseAccountShareToContent(
+                        currentUser = viewModel.currentUser,
+                        otherUsers = otherUsers.value,
+                        onCurrentUserClick = { dismiss() },
+                        onOtherUserClick = { user -> viewModel.switchToUser(user) }
+                    )
+                }
+            }
+        }
 
         viewModel.loadUsers()
     }
 
-    private fun setupAdapter() {
-        adapter = ChooseAccountShareToAdapter { user -> viewModel.switchToUser(user) }
-        binding!!.accountsList.adapter = adapter
-    }
-
-    private fun initObservers() {
-        viewModel.viewState.observe(this) { state ->
-            when (state) {
-                is ChooseAccountShareToViewModel.LoadUsersSuccessState -> {
-                    setupCurrentUser()
-                    adapter.submitList(state.users)
-                }
-                is ChooseAccountShareToViewModel.SwitchUserSuccessState -> {
-                    cookieManager.cookieStore.removeAll()
-                    activity?.recreate()
-                    dismiss()
-                }
-                else -> {}
-            }
-        }
-    }
-
-    private fun setupCurrentUser() {
-        val currentAccount = binding!!.currentAccount
-        val user = viewModel.currentUser
-        if (user != null) {
-            currentAccount.userIcon.tag = ""
-            currentAccount.userName.text = user.displayName
-            currentAccount.ticker.visibility = View.GONE
-            currentAccount.account.text = user.baseUrl!!.toUri().host
-            viewThemeUtils.platform.colorImageView(currentAccount.accountMenu, ColorRole.PRIMARY)
-            if (user.baseUrl != null &&
-                (user.baseUrl!!.startsWith("http://") || user.baseUrl!!.startsWith("https://"))
-            ) {
-                currentAccount.userIcon.loadUserAvatar(user, user.userId!!, true, false)
-            } else {
-                currentAccount.userIcon.visibility = View.INVISIBLE
-            }
-        }
-        currentAccount.root.setOnClickListener { dismiss() }
-    }
-
-    private fun themeViews() {
-        viewThemeUtils.platform.themeDialog(binding!!.root)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        dialogView
-
     override fun onDestroyView() {
         super.onDestroyView()
-        binding = null
+        composeView = null
     }
 
     companion object {
