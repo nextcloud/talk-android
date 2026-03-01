@@ -20,6 +20,7 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
+import com.nextcloud.talk.utils.adjustUIForAPILevel35
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
 
@@ -32,6 +33,7 @@ class ListOpenConversationsActivity : BaseActivity() {
     private lateinit var openConversationsViewModel: OpenConversationsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        adjustUIForAPILevel35()
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
