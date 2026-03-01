@@ -2,7 +2,7 @@
  * Nextcloud Talk - Android Client
  *
  * SPDX-FileCopyrightText: 2022 Marcel Hibbe <dev@mhibbe.de>
- + SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
+ * SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -16,44 +16,36 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
-import com.nextcloud.talk.adapters.items.AdvancedUserItem
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogChooseAccountShareToBinding
 import com.nextcloud.talk.extensions.loadUserAvatar
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.ui.dialog.viewmodels.ChooseAccountShareToViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
-import eu.davidea.flexibleadapter.FlexibleAdapter
-import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import java.net.CookieManager
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ChooseAccountShareToDialogFragment : DialogFragment() {
-    @JvmField
-    @Inject
-    var userManager: UserManager? = null
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderOld
-
-    @JvmField
-    @Inject
-    var cookieManager: CookieManager? = null
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var cookieManager: CookieManager
+
     private var binding: DialogChooseAccountShareToBinding? = null
     private var dialogView: View? = null
-    private var adapter: FlexibleAdapter<AdvancedUserItem>? = null
-    private val userItems: MutableList<AdvancedUserItem> = ArrayList()
+
+    private lateinit var viewModel: ChooseAccountShareToViewModel
+    private lateinit var adapter: ChooseAccountShareToAdapter
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -65,73 +57,60 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
-        val user = currentUserProvider.currentUser.blockingGet()
+
+        viewModel = ViewModelProvider(this, viewModelFactory)[ChooseAccountShareToViewModel::class.java]
+
         themeViews()
-        setupCurrentUser(user)
-        setupListeners(user)
         setupAdapter()
-        prepareViews()
+        initObservers()
+
+        viewModel.loadUsers()
     }
 
-    private fun setupCurrentUser(user: User?) {
-        binding!!.currentAccount.userIcon.tag = ""
+    private fun setupAdapter() {
+        adapter = ChooseAccountShareToAdapter { user -> viewModel.switchToUser(user) }
+        binding!!.accountsList.adapter = adapter
+    }
+
+    private fun initObservers() {
+        viewModel.viewState.observe(this) { state ->
+            when (state) {
+                is ChooseAccountShareToViewModel.LoadUsersSuccessState -> {
+                    setupCurrentUser()
+                    adapter.submitList(state.users)
+                }
+                is ChooseAccountShareToViewModel.SwitchUserSuccessState -> {
+                    cookieManager.cookieStore.removeAll()
+                    activity?.recreate()
+                    dismiss()
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun setupCurrentUser() {
+        val currentAccount = binding!!.currentAccount
+        val user = viewModel.currentUser
         if (user != null) {
-            binding!!.currentAccount.userName.text = user.displayName
-            binding!!.currentAccount.ticker.visibility = View.GONE
-            binding!!.currentAccount.account.text = user.baseUrl!!.toUri().host
-            viewThemeUtils!!.platform.colorImageView(binding!!.currentAccount.accountMenu, ColorRole.PRIMARY)
+            currentAccount.userIcon.tag = ""
+            currentAccount.userName.text = user.displayName
+            currentAccount.ticker.visibility = View.GONE
+            currentAccount.account.text = user.baseUrl!!.toUri().host
+            viewThemeUtils.platform.colorImageView(currentAccount.accountMenu, ColorRole.PRIMARY)
             if (user.baseUrl != null &&
                 (user.baseUrl!!.startsWith("http://") || user.baseUrl!!.startsWith("https://"))
             ) {
-                binding!!.currentAccount.userIcon.loadUserAvatar(user, user.userId!!, true, false)
+                currentAccount.userIcon.loadUserAvatar(user, user.userId!!, true, false)
             } else {
-                binding!!.currentAccount.userIcon.visibility = View.INVISIBLE
+                currentAccount.userIcon.visibility = View.INVISIBLE
             }
         }
-    }
-
-    @Suppress("Detekt.NestedBlockDepth")
-    private fun setupAdapter() {
-        if (adapter == null) {
-            adapter = FlexibleAdapter(userItems, activity, false)
-            var userEntity: User
-            var participant: Participant
-            for (userItem in userManager!!.users.blockingGet()) {
-                userEntity = userItem
-                if (!userEntity.current) {
-                    var userId: String?
-                    userId = if (userEntity.userId != null) {
-                        userEntity.userId
-                    } else {
-                        userEntity.username
-                    }
-                    participant = Participant()
-                    participant.actorType = Participant.ActorType.USERS
-                    participant.actorId = userId
-                    participant.displayName = userEntity.displayName
-                    userItems.add(AdvancedUserItem(participant, userEntity, null, viewThemeUtils, 0))
-                }
-            }
-            adapter!!.addListener(onSwitchItemClickListener)
-            adapter!!.updateDataSet(userItems, false)
-        }
-    }
-
-    private fun setupListeners(user: User) {
-        binding!!.currentAccount.root.setOnClickListener { v: View? -> dismiss() }
+        currentAccount.root.setOnClickListener { dismiss() }
     }
 
     private fun themeViews() {
-        viewThemeUtils!!.platform.themeDialog(binding!!.root)
-    }
-
-    private fun prepareViews() {
-        if (activity != null) {
-            val layoutManager: LinearLayoutManager = SmoothScrollLinearLayoutManager(activity)
-            binding!!.accountsList.layoutManager = layoutManager
-        }
-        binding!!.accountsList.setHasFixedSize(true)
-        binding!!.accountsList.adapter = adapter
+        viewThemeUtils.platform.themeDialog(binding!!.root)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -140,18 +119,6 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
-    }
-
-    private val onSwitchItemClickListener = FlexibleAdapter.OnItemClickListener { view, position ->
-        if (userItems.size > position) {
-            val user = userItems[position].user
-            if (userManager!!.setUserAsActive(user!!).blockingGet()) {
-                cookieManager!!.cookieStore.removeAll()
-                activity?.recreate()
-                dismiss()
-            }
-        }
-        true
     }
 
     companion object {
