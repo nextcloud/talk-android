@@ -11,6 +11,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
@@ -74,7 +76,7 @@ class IncomingDeckCardViewHolder(incomingView: View, payload: Any) :
     var boardName: String? = null
     var cardLink: String? = null
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         this.message = message
@@ -95,9 +97,22 @@ class IncomingDeckCardViewHolder(incomingView: View, payload: Any) :
         // parent message handling
         setParentMessageDataOnMessageItem(message)
 
-        binding.cardView.setOnLongClickListener { l: View? ->
-            commonMessageInterface.onOpenMessageActionsDialog(message)
-            true
+        binding.cardView.isLongClickable = true
+        val cardViewGestureDetector = GestureDetector(
+            context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onLongPress(e: MotionEvent) {
+                    commonMessageInterface.onOpenMessageActionsDialog(message)
+                }
+                override fun onDoubleTap(e: MotionEvent): Boolean {
+                    commonMessageInterface.onOpenMessageActionsDialog(message)
+                    return true
+                }
+            }
+        )
+        binding.cardView.setOnTouchListener { _, event ->
+            cardViewGestureDetector.onTouchEvent(event)
+            false
         }
 
         binding.cardView.setOnClickListener {

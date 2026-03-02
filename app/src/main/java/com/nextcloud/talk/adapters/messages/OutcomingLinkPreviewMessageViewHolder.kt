@@ -11,6 +11,8 @@ package com.nextcloud.talk.adapters.messages
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import autodagger.AutoInjector
@@ -67,7 +69,7 @@ class OutcomingLinkPreviewMessageViewHolder(outcomingView: View, payload: Any) :
 
     lateinit var commonMessageInterface: CommonMessageInterface
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         this.message = message
@@ -87,7 +89,6 @@ class OutcomingLinkPreviewMessageViewHolder(outcomingView: View, payload: Any) :
         )
 
         binding.messageText.text = processedMessageText
-
         itemView.isSelected = false
 
         // parent message handling
@@ -114,15 +115,23 @@ class OutcomingLinkPreviewMessageViewHolder(outcomingView: View, payload: Any) :
 
         binding.checkMark.contentDescription = readStatusContentDescriptionString
 
-        LinkPreview().showLink(
-            message,
-            ncApi,
-            binding.referenceInclude,
-            itemView.context
+        LinkPreview().showLink(message, ncApi, binding.referenceInclude, itemView.context)
+        binding.referenceInclude.referenceWrapper.isLongClickable = true
+        val referenceWrapperGestureDetector = GestureDetector(
+            context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onLongPress(e: MotionEvent) {
+                    commonMessageInterface.onOpenMessageActionsDialog(message)
+                }
+                override fun onDoubleTap(e: MotionEvent): Boolean {
+                    commonMessageInterface.onOpenMessageActionsDialog(message)
+                    return true
+                }
+            }
         )
-        binding.referenceInclude.referenceWrapper.setOnLongClickListener { l: View? ->
-            commonMessageInterface.onOpenMessageActionsDialog(message)
-            true
+        binding.referenceInclude.referenceWrapper.setOnTouchListener { _, event ->
+            referenceWrapperGestureDetector.onTouchEvent(event)
+            false
         }
 
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)

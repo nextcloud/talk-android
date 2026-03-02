@@ -29,6 +29,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.SystemClock
 import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.provider.Settings
@@ -39,6 +40,7 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -263,6 +265,7 @@ class ChatActivity :
     MessagesListAdapter.OnLoadMoreListener,
     MessagesListAdapter.Formatter<Date>,
     MessagesListAdapter.OnMessageViewLongClickListener<IMessage>,
+    MessagesListAdapter.OnMessageClickListener<IMessage>,
     ContentChecker<ChatMessage>,
     VoiceMessageInterface,
     CommonMessageInterface,
@@ -386,6 +389,8 @@ class ChatActivity :
     var credentials: String? = null
     var currentConversation: ConversationModel? = null
     var adapter: TalkMessagesListAdapter<ChatMessage>? = null
+    private var lastMessageClickTime = 0L
+    private var lastMessageId = ""
     var mentionAutocomplete: Autocomplete<*>? = null
     var layoutManager: LinearLayoutManager? = null
     var pullChatMessagesPending = false
@@ -1644,6 +1649,7 @@ class ChatActivity :
         adapter?.setLoadMoreListener(this)
         adapter?.setDateHeadersFormatter { format(it) }
         adapter?.setOnMessageViewLongClickListener { view, message -> onMessageViewLongClick(view, message) }
+        adapter?.setOnMessageClickListener { message -> onMessageClick(message) }
 
         adapter?.registerViewClickListener(
             R.id.playPauseBtn
@@ -4085,6 +4091,20 @@ class ChatActivity :
 
     override fun onMessageViewLongClick(view: View?, message: IMessage?) {
         openMessageActionsDialog(message)
+    }
+
+    override fun onMessageClick(message: IMessage) {
+        val now = SystemClock.elapsedRealtime()
+        if (now - lastMessageClickTime < ViewConfiguration.getDoubleTapTimeout() &&
+            message.id?.equals(lastMessageId) == true
+        ) {
+            openMessageActionsDialog(message)
+            lastMessageClickTime = 0L
+            lastMessageId = ""
+        } else {
+            lastMessageClickTime = now
+            lastMessageId = message.id
+        }
     }
 
     override fun onPreviewMessageLongClick(chatMessage: ChatMessage) {

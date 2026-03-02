@@ -9,9 +9,12 @@
  */
 package com.nextcloud.talk.adapters.messages
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.util.TypedValue
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
@@ -102,6 +105,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         processMessage(message, hasCheckboxes)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Suppress("Detekt.LongMethod")
     private fun processMessage(message: ChatMessage, hasCheckboxes: Boolean) {
         var isBubbled = true
@@ -196,9 +200,22 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 View.GONE
             }
 
-        binding.messageQuote.quotedChatMessageView.setOnLongClickListener { l: View? ->
-            commonMessageInterface.onOpenMessageActionsDialog(message)
-            true
+        binding.messageQuote.quotedChatMessageView.isLongClickable = true
+        val quotedChatMessageViewGestureDetector = GestureDetector(
+            context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onLongPress(e: MotionEvent) {
+                    commonMessageInterface.onOpenMessageActionsDialog(message)
+                }
+                override fun onDoubleTap(e: MotionEvent): Boolean {
+                    commonMessageInterface.onOpenMessageActionsDialog(message)
+                    return true
+                }
+            }
+        )
+        binding.messageQuote.quotedChatMessageView.setOnTouchListener { _, event ->
+            quotedChatMessageViewGestureDetector.onTouchEvent(event)
+            false
         }
 
         binding.checkMark.visibility = View.INVISIBLE
