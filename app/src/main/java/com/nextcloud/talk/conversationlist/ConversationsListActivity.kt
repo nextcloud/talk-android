@@ -284,6 +284,11 @@ class ConversationsListActivity :
         initObservers()
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleEcoSystemIntent(intent)
+    }
+
     private fun handleEcoSystemIntent(intent: Intent) {
         ecosystemManager.receiveAccount(
             intent,
@@ -300,6 +305,8 @@ class ConversationsListActivity :
                         userManager.setUserAsActive(user)
                         val intent = Intent(context, ConversationsListActivity::class.java)
                         startActivity(intent)
+                    } else {
+                        Snackbar.make(binding.root, R.string.nc_no_account_found, Snackbar.LENGTH_LONG).show()
                     }
                     Log.d(TAG, accountName)
                 }
