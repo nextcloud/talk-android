@@ -204,6 +204,11 @@ class ConversationsListActivity : BaseActivity() {
         initObservers()
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleEcoSystemIntent(intent)
+    }
+
     private fun buildScreenState() =
         ConversationsListScreenState(
             currentUser = currentUser,
@@ -310,6 +315,8 @@ class ConversationsListActivity : BaseActivity() {
                         userManager.setUserAsActive(user)
                         val intent = Intent(context, ConversationsListActivity::class.java)
                         startActivity(intent)
+                    } else {
+                        Snackbar.make(binding.root, R.string.nc_no_account_found, Snackbar.LENGTH_LONG).show()
                     }
                     Log.d(TAG, accountName)
                 }
