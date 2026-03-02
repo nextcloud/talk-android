@@ -33,6 +33,10 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
+import com.nextcloud.android.common.core.utils.ecosystem.AccountReceiverCallback
+import com.nextcloud.android.common.core.utils.ecosystem.EcosystemManager
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.account.ServerSelectionActivity
@@ -158,6 +162,8 @@ class ConversationsListActivity : BaseActivity() {
     private var selectedMessageId: String? = null
     private var conversationsListBottomDialog: ConversationsListBottomDialog? = null
 
+    lateinit var ecosystemManager: EcosystemManager
+
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (forwardMessage) {
@@ -171,6 +177,7 @@ class ConversationsListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        ecosystemManager = EcosystemManager(this@ConversationsListActivity)
 
         currentUser = currentUserProviderOld.currentUser.blockingGet()
 
@@ -191,6 +198,9 @@ class ConversationsListActivity : BaseActivity() {
             )
         }
 
+        intent?.let {
+            handleEcoSystemIntent(it)
+        }
         initObservers()
     }
 
@@ -283,6 +293,33 @@ class ConversationsListActivity : BaseActivity() {
             onNewConversation = { showNewConversationsScreen() },
             onAccountDialogDismiss = { showAccountDialogState.value = false }
         )
+
+    private fun handleEcoSystemIntent(intent: Intent) {
+        ecosystemManager.receiveAccount(
+            intent,
+            object : AccountReceiverCallback {
+                @SuppressLint("UseKtx")
+                override fun onAccountReceived(accountName: String) {
+                    val users = userManager.users.blockingGet()
+                    val baseUrl = accountName.substringAfterLast("@")
+                    val accountName = accountName.substringBeforeLast("@")
+                    val user = users.firstOrNull { user ->
+                        user.username == accountName && baseUrl == user.baseUrl?.toUri()?.host
+                    }
+                    if (user != null) {
+                        userManager.setUserAsActive(user)
+                        val intent = Intent(context, ConversationsListActivity::class.java)
+                        startActivity(intent)
+                    }
+                    Log.d(TAG, accountName)
+                }
+
+                override fun onAccountError(reason: String) {
+                    Log.d(TAG, "handleEcosystemIntent: $reason")
+                }
+            }
+        )
+    }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
