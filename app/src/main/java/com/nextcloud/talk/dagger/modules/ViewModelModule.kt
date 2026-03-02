@@ -24,7 +24,7 @@ import com.nextcloud.talk.diagnosis.DiagnosisViewModel
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
 import com.nextcloud.talk.messagesearch.MessageSearchViewModel
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
-import com.nextcloud.talk.ui.dialog.viewmodels.ChooseAccountShareToViewModel
+import com.nextcloud.talk.ui.chooseaccount.ChooseAccountShareToViewModel
 import com.nextcloud.talk.polls.viewmodels.PollCreateViewModel
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.polls.viewmodels.PollResultsViewModel

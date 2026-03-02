@@ -1,12 +1,11 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2021-2026 Andy Scherzinger <info@andy-scherzinger.de>
- * SPDX-FileCopyrightText: 2022 Marcel Hibbe <dev@mhibbe.de>
- * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
+ * SPDX-FileCopyrightText: 2017-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.ui.dialog
+
+package com.nextcloud.talk.ui.chooseaccount
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -25,12 +24,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.launch
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.ui.dialog.viewmodels.ChooseAccountShareToViewModel
+import com.nextcloud.talk.ui.chooseaccount.model.LoadUsersSuccessStateChooseAccountShareTo
+import com.nextcloud.talk.ui.chooseaccount.model.SwitchUserSuccessStateChooseAccountShareTo
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.net.CookieManager
 import javax.inject.Inject
 
@@ -60,7 +60,7 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedApplication!!.componentApplication.inject(this)
+        NextcloudTalkApplication.Companion.sharedApplication!!.componentApplication.inject(this)
 
         viewModel = ViewModelProvider(this, viewModelFactory)[ChooseAccountShareToViewModel::class.java]
 
@@ -68,12 +68,12 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.viewState.collect { state ->
+                viewModel.chooseAccountShareToViewState.collectLatest { state ->
                     when (state) {
-                        is ChooseAccountShareToViewModel.LoadUsersSuccessState -> {
+                        is LoadUsersSuccessStateChooseAccountShareTo -> {
                             otherUsers.value = state.users
                         }
-                        is ChooseAccountShareToViewModel.SwitchUserSuccessState -> {
+                        is SwitchUserSuccessStateChooseAccountShareTo -> {
                             cookieManager.cookieStore.removeAll()
                             activity?.recreate()
                             dismiss()
@@ -109,7 +109,7 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
     }
 
     companion object {
-        val TAG = ChooseAccountShareToDialogFragment::class.java.simpleName
+        const val TAG = "ChooseAccountShareToDialogFragment"
         fun newInstance(): ChooseAccountShareToDialogFragment = ChooseAccountShareToDialogFragment()
     }
 }
