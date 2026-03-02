@@ -558,6 +558,7 @@
     <string name="nc_test_results">Torthaí tástála</string>
     <string name="nc_today_meeting">Inniu ag %1$s</string>
     <string name="nc_tomorrow_meeting">Amárach ag %1$s</string>
+    <string name="nc_upcoming_event_dismissed">Is féidir an glao atá le teacht a fheiceáil i bhfaisnéis an chomhrá</string>
     <string name="nc_upload_choose_local_files">Roghnaigh comhaid</string>
     <string name="nc_upload_confirm_send_multiple">An bhfuil fonn ort na comhaid seo a sheoladh chuig %1$s?</string>
     <string name="nc_upload_confirm_send_single">An bhfuil fonn ort an comhad seo a sheoladh chuig %1$s?</string>
