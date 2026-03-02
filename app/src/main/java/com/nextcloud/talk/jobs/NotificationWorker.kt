@@ -506,7 +506,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             val fileId = param["id"]
             if (mimetype.startsWith("image/") && fileId != null) {
                 val baseUrl = signatureVerification.user!!.baseUrl!!
-                val px = context!!.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size)
+                val px = context!!.resources.displayMetrics.widthPixels
                 imagePreviewUrl = ApiUtils.getUrlForFilePreviewWithFileId(baseUrl, fileId, px)
                 imageMimeType = mimetype
                 return true
