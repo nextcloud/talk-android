@@ -484,10 +484,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             pushMessage.subject = ncNotification.subject.orEmpty()
         }
 
-        checkAndProcessImagePreviewData(ncNotification)
+        checkAndExtractImagePreviewData (ncNotification)
     }
 
-    private fun checkAndProcessImagePreviewData(
+    private fun checkAndExtractImagePreviewData(
         notification: com.nextcloud.talk.models.json.notifications.Notification
     ) {
         imagePreviewUrl = null
@@ -495,12 +495,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val msgParams = notification.messageRichParameters
         if (msgParams != null) {
             for ((_, param) in msgParams) {
-                if (processMessageParameter(param)) break
+                if (extractImagePreviewData(param)) break
             }
         }
     }
 
-    private fun processMessageParameter(param: HashMap<String?, String?>): Boolean {
+    private fun extractImagePreviewData(param: HashMap<String?, String?>): Boolean {
         if (param["type"] == "file") {
             val mimetype = param["mimetype"].orEmpty()
             val fileId = param["id"]
