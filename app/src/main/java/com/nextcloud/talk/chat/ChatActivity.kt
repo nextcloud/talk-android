@@ -691,7 +691,7 @@ class ChatActivity :
                     }
                 }
                 .collectLatest { message ->
-                    if (message != null) {
+                    if (message != null && message.systemMessageType != ChatMessage.SystemMessageType.CLEARED_CHAT) {
                         binding.pinnedMessageContainer.visibility = View.VISIBLE
                         binding.pinnedMessageComposeView.setContent {
                             PinnedMessageView(
@@ -3569,7 +3569,7 @@ class ChatActivity :
 
     private fun launchFileShareLink() {
         val intent = Intent(Intent.ACTION_VIEW).apply {
-            setData((conversationUser.baseUrl + "/f/" + currentConversation?.objectId).toUri())
+            data = (conversationUser.baseUrl + "/f/" + currentConversation?.objectId).toUri()
         }
         startActivity(intent)
     }
