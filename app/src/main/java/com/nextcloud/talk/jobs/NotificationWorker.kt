@@ -484,7 +484,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             pushMessage.subject = ncNotification.subject.orEmpty()
         }
 
-        checkAndExtractImagePreviewData (ncNotification)
+        checkAndExtractImagePreviewData(ncNotification)
     }
 
     private fun checkAndExtractImagePreviewData(
@@ -686,11 +686,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private fun styleImageNotification(notificationBuilder: NotificationCompat.Builder) {
         val bitmap = loadImageBitmapSync(imagePreviewUrl!!)
         if (bitmap != null) {
-            notificationBuilder.setStyle(
-                NotificationCompat.BigPictureStyle()
-                    .bigPicture(bitmap)
-                    .bigLargeIcon(null as Bitmap?)
-            )
+            notificationBuilder
+                .setLargeIcon(bitmap)
+                .setStyle(
+                    NotificationCompat.BigPictureStyle()
+                        .bigPicture(bitmap)
+                        .bigLargeIcon(null as Bitmap?)
+                )
         }
     }
 
