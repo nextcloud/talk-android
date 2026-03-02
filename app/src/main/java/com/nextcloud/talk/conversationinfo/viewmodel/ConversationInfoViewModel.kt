@@ -40,6 +40,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@Suppress("TooManyFunctions")
 class ConversationInfoViewModel @Inject constructor(
     private val chatNetworkDataSource: ChatNetworkDataSource,
     private val conversationsRepository: ConversationsRepository
