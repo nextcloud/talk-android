@@ -6,6 +6,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+@file:Suppress("TooManyFunctions")
+
 package com.nextcloud.talk.openconversations
 
 import android.content.res.Configuration
@@ -19,11 +21,11 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -39,17 +41,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.SearchBarState
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarDefaults
-import androidx.compose.material3.SearchBarState
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -262,7 +264,9 @@ private fun OpenConversationsSearchBar(
                 modifier = Modifier.focusRequester(focusRequester)
             )
         },
-        modifier = Modifier.fillMaxWidth().padding(end = 16.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(end = 16.dp)
     )
 }
 
@@ -280,11 +284,16 @@ private fun ConversationsBody(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
             is OpenConversationsViewModel.FetchConversationsSuccessState -> {
+                val filtered = if (searchTerm.isBlank()) {
+                    viewState.conversations
+                } else {
+                    viewState.conversations.filter { it.displayName.contains(searchTerm, ignoreCase = true) }
+                }
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = WindowInsets.navigationBars.asPaddingValues()
                 ) {
-                    items(viewState.conversations) { conversation ->
+                    items(filtered) { conversation ->
                         OpenConversationItem(
                             conversation = conversation,
                             userBaseUrl = userBaseUrl,
@@ -295,7 +304,19 @@ private fun ConversationsBody(
                 }
             }
             is OpenConversationsViewModel.FetchConversationsEmptyState -> {
-                EmptyConversationsView(modifier = Modifier.align(Alignment.Center))
+                if (searchTerm.isNotBlank()) {
+                    EmptyConversationsView(
+                        headline = stringResource(R.string.nc_no_search_results_headline),
+                        body = stringResource(R.string.nc_no_search_results_text),
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                } else {
+                    EmptyConversationsView(
+                        headline = stringResource(R.string.nc_no_open_conversations_headline),
+                        body = stringResource(R.string.nc_no_open_conversations_text),
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
             }
             is OpenConversationsViewModel.FetchConversationsErrorState -> {
                 // Error shown via Snackbar; no additional UI needed here
@@ -380,7 +401,7 @@ private fun highlightSearchTerm(name: String, searchTerm: String, highlightColor
     }
 
 @Composable
-private fun EmptyConversationsView(modifier: Modifier = Modifier) {
+private fun EmptyConversationsView(headline: String, body: String, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -393,13 +414,13 @@ private fun EmptyConversationsView(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.size(16.dp))
         Text(
-            text = stringResource(R.string.nc_no_open_conversations_headline),
+            text = headline,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.size(8.dp))
         Text(
-            text = stringResource(R.string.nc_no_open_conversations_text),
+            text = body,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -537,6 +558,37 @@ private fun PreviewOpenConversationsEmpty() {
             OpenConversationsScreenContent(
                 viewState = OpenConversationsViewModel.FetchConversationsEmptyState,
                 searchTerm = "",
+                userBaseUrl = null,
+                snackbarHostState = remember { SnackbarHostState() },
+                listenerInput = OpenConversationsScreenListenerInput(
+                    onSearchTermChange = {},
+                    onConversationClick = {},
+                    onBackClick = {}
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Light – No search results", showBackground = true)
+@Preview(name = "Dark – No search results", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewOpenConversationsNoSearchResults() {
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    MaterialTheme(colorScheme = colorScheme) {
+        Surface {
+            OpenConversationsScreenContent(
+                viewState = OpenConversationsViewModel.FetchConversationsSuccessState(
+                    conversations = listOf(
+                        Conversation(
+                            token = "abc1",
+                            displayName = "Design Team",
+                            description = "All design discussions",
+                            type = ConversationEnums.ConversationType.ROOM_GROUP_CALL
+                        )
+                    )
+                ),
+                searchTerm = "xyz",
                 userBaseUrl = null,
                 snackbarHostState = remember { SnackbarHostState() },
                 listenerInput = OpenConversationsScreenListenerInput(

@@ -303,6 +303,8 @@ How to translate with transifex:
     <!-- Open conversations -->
     <string name="nc_no_open_conversations_headline">No open conversations</string>
     <string name="nc_no_open_conversations_text">No open conversations that you can join.\nEither there are no open conversations or you already joined all of them.</string>
+    <string name="nc_no_search_results_headline">No results for your search</string>
+    <string name="nc_no_search_results_text">Please check your search term or try using a different one.</string>
 
     <!-- Contacts -->
     <string name="nc_add_participants">Add participants</string>
