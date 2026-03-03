@@ -481,7 +481,7 @@
     <string name="nc_settings_contact_admin_of">Por favor, entre em contato com o administrador de</string>
     <string name="nc_settings_diagnose_subtitle">Abrir tela de diagnóstico para verificar as configurações ou criar um relatório de bug</string>
     <string name="nc_settings_diagnose_title">Diagnóstico</string>
-    <string name="nc_settings_diagnosis_subtitle">Abrir tela de diagnóstico para verificar as configurações ou criar um relatório de bug</string>
+    <string name="nc_settings_diagnosis_subtitle">Abra a tela de diagnóstico para verificar as configurações ou crie um relatório de bug</string>
     <string name="nc_settings_diagnosis_title">Diagnóstico</string>
     <string name="nc_settings_incognito_keyboard_desc">Instrui o teclado para desativar o aprendizado personalizado (sem garantias)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado incógnito</string>
@@ -558,6 +558,7 @@
     <string name="nc_test_results">Resultados do teste</string>
     <string name="nc_today_meeting">Hoje às %1$s</string>
     <string name="nc_tomorrow_meeting">Amanhã às %1$s</string>
+    <string name="nc_upcoming_event_dismissed">A próxima chamada pode ser visualizada nas informações da conversa</string>
     <string name="nc_upload_choose_local_files">Escolher arquivos</string>
     <string name="nc_upload_confirm_send_multiple">Enviar estes arquivos para %1$s?</string>
     <string name="nc_upload_confirm_send_single">Enviar este arquivo para %1$s?</string>
