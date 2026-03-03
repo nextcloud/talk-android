@@ -13,6 +13,7 @@ import com.github.filosganga.geogson.jts.JtsAdapterFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.nextcloud.talk.utils.ApiUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -147,6 +148,7 @@ public final class TalkJsonNominatimClient implements NominatimClient {
 
         Request requesthttp = new Request.Builder()
                 .addHeader("accept", "application/json")
+                .addHeader("User-Agent", ApiUtils.getUserAgent())
                 .url(apiCall)
                 .build();
 
