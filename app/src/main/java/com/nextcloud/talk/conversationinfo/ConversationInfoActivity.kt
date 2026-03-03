@@ -831,7 +831,19 @@ class ConversationInfoActivity : BaseActivity() {
             }
         }
 
-        Collections.sort(uiItems, ParticipantItemComparator())
+        // sort by group/circle, online-status, moderator-status and display name
+        uiItems.sortWith(
+            compareBy(
+                { it.participant.actorType == GROUPS || it.participant.actorType == CIRCLES },
+                { !it.isOnline },
+                { it.participant.type !in listOf(
+                    Participant.ParticipantType.MODERATOR,
+                    Participant.ParticipantType.OWNER,
+                    Participant.ParticipantType.GUEST_MODERATOR
+                )},
+                { it.participant.displayName!!.lowercase(Locale.ROOT) }
+            )
+        )
 
         if (ownUiItem != null) {
             uiItems.add(0, ownUiItem)
@@ -1920,46 +1932,5 @@ class ConversationInfoActivity : BaseActivity() {
         private const val DEMOTE_OR_PROMOTE = 1
         private const val REMOVE_FROM_CONVERSATION = 2
         private const val BAN_FROM_CONVERSATION = 3
-    }
-
-    /**
-     * Comparator for participants, sorts by online-status, moderator-status and display name.
-     */
-    class ParticipantItemComparator : Comparator<ParticipantModel> {
-        override fun compare(left: ParticipantModel, right: ParticipantModel): Int {
-            val leftIsGroup = left.participant.actorType == GROUPS || left.participant.actorType == CIRCLES
-            val rightIsGroup = right.participant.actorType == GROUPS || right.participant.actorType == CIRCLES
-            if (leftIsGroup != rightIsGroup) {
-                // Groups below participants
-                return if (rightIsGroup) {
-                    -1
-                } else {
-                    1
-                }
-            }
-
-            if (left.isOnline && !right.isOnline) {
-                return -1
-            } else if (!left.isOnline && right.isOnline) {
-                return 1
-            }
-
-            val moderatorTypes = ArrayList<Participant.ParticipantType>()
-            moderatorTypes.add(Participant.ParticipantType.MODERATOR)
-            moderatorTypes.add(Participant.ParticipantType.OWNER)
-            moderatorTypes.add(Participant.ParticipantType.GUEST_MODERATOR)
-
-            if (moderatorTypes.contains(left.participant.type) && !moderatorTypes.contains(right.participant.type)) {
-                return -1
-            } else if (!moderatorTypes.contains(left.participant.type) &&
-                moderatorTypes.contains(right.participant.type)
-            ) {
-                return 1
-            }
-
-            return left.participant.displayName!!.lowercase(Locale.ROOT).compareTo(
-                right.participant.displayName!!.lowercase(Locale.ROOT)
-            )
-        }
     }
 }
