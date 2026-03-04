@@ -182,6 +182,20 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/upcoming_event_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/standard_quarter_margin"
+                android:visibility="gone"
+                app:cardCornerRadius="@dimen/meta_info_corner_radius"
+                tools:visibility="visible">
+
+                <include
+                    android:id="@+id/upcoming_event_container"
+                    layout="@layout/upcoming_event_view" />
+            </com.google.android.material.card.MaterialCardView>
+
             <LinearLayout
                 android:id="@+id/pinnedMessageContainer"
                 android:layout_width="match_parent"

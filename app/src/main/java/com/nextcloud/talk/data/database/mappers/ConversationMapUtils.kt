@@ -66,7 +66,8 @@ fun ConversationModel.asEntity() =
         hasImportant = hasImportant,
         messageDraft = messageDraft,
         hiddenPinnedId = hiddenPinnedId,
-        lastPinnedId = lastPinnedId
+        lastPinnedId = lastPinnedId,
+        hiddenUpcomingEvent = hiddenUpcomingEvent
     )
 
 fun ConversationEntity.asModel() =
@@ -123,7 +124,8 @@ fun ConversationEntity.asModel() =
         hasImportant = hasImportant,
         messageDraft = messageDraft,
         hiddenPinnedId = hiddenPinnedId,
-        lastPinnedId = lastPinnedId
+        lastPinnedId = lastPinnedId,
+        hiddenUpcomingEvent = hiddenUpcomingEvent
     )
 
 fun Conversation.asEntity(accountId: Long) =

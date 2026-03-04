@@ -19,6 +19,7 @@ import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import okhttp3.Credentials.basic
+import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Suppress("TooManyFunctions")
@@ -532,6 +533,10 @@ object ApiUtils {
 
     fun getUrlForOutOfOffice(baseUrl: String, userId: String): String =
         "$baseUrl$OCS_API_VERSION/apps/dav/api/v1/outOfOffice/$userId/now"
+
+    fun getUrlForUpcomingEvents(baseUrl: String, roomToken: String): String =
+        "$baseUrl$OCS_API_VERSION/apps/dav/api/v1/events/upcoming" +
+            "?location=${URLEncoder.encode("$baseUrl/call/$roomToken", "UTF-8")}"
 
     fun getUrlForChatMessageContext(baseUrl: String, token: String, messageId: String): String =
         "$baseUrl$OCS_API_VERSION$SPREED_API_VERSION/chat/$token/$messageId/context"

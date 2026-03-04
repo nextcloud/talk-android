@@ -250,7 +250,6 @@ import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutionException
@@ -788,6 +787,15 @@ class ChatActivity :
                                     currentConversation!!.name
                                 )
                             }
+                        }
+
+                        conversationUser?.let { user ->
+                            val credentials = ApiUtils.getCredentials(user.username, user.token)
+                            chatViewModel.fetchUpcomingEvent(
+                                credentials!!,
+                                user.baseUrl!!,
+                                roomToken
+                            )
                         }
 
                         if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT &&
@@ -1380,6 +1388,47 @@ class ChatActivity :
                     binding.outOfOfficeContainer.findViewById<CardView>(R.id.avatar_chip).setOnClickListener {
                         joinOneToOneConversation(uiState.userAbsence.replacementUserId!!)
                     }
+                }
+            }
+        }
+
+        chatViewModel.upcomingEventViewState.observe(this) { uiState ->
+            when (uiState) {
+                is ChatViewModel.UpcomingEventUIState.Success -> {
+                    val hiddenEventKey = "${uiState.event.uri}${uiState.event.start}${uiState.event.summary}"
+                    if (hiddenEventKey == chatViewModel.hiddenUpcomingEvent) {
+                        binding.upcomingEventCard.visibility = View.GONE
+                    } else {
+                        binding.upcomingEventCard.visibility = View.VISIBLE
+                        viewThemeUtils.material.themeCardView(binding.upcomingEventCard)
+
+                        binding.upcomingEventContainer.upcomingEventSummary.text = uiState.event.summary
+
+                        uiState.event.start?.let { start ->
+                            val startDateTime = Instant.ofEpochSecond(start).atZone(ZoneId.systemDefault())
+                            val currentTime = ZonedDateTime.now(ZoneId.systemDefault())
+                            binding.upcomingEventContainer.upcomingEventTime.text =
+                                DateUtils(context).getStringForMeetingStartDateTime(startDateTime, currentTime)
+                        }
+
+                        binding.upcomingEventContainer.upcomingEventDismiss.setOnClickListener {
+                            binding.upcomingEventCard.visibility = View.GONE
+                            chatViewModel.saveHiddenUpcomingEvent(hiddenEventKey)
+                            Snackbar.make(
+                                binding.root,
+                                R.string.nc_upcoming_event_dismissed,
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                }
+
+                is ChatViewModel.UpcomingEventUIState.Error -> {
+                    Log.e(TAG, "Error fetching upcoming events", uiState.exception)
+                }
+
+                ChatViewModel.UpcomingEventUIState.None -> {
+                    binding.upcomingEventCard.visibility = View.GONE
                 }
             }
         }
@@ -2778,6 +2827,12 @@ class ChatActivity :
         bundle.putString(KEY_ROOM_TOKEN, roomToken)
         bundle.putBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE, isOneToOneConversation())
 
+        val upcomingEvent =
+            (chatViewModel.upcomingEventViewState.value as? ChatViewModel.UpcomingEventUIState.Success)?.event
+        if (upcomingEvent != null) {
+            bundle.putParcelable(BundleKeys.KEY_UPCOMING_EVENT, upcomingEvent)
+        }
+
         val intent = Intent(this, ConversationInfoActivity::class.java)
         intent.putExtras(bundle)
         startActivity(intent)
@@ -3799,21 +3854,7 @@ class ChatActivity :
 
         return when {
             currentTime.isBefore(startDateTime) -> {
-                val isToday = startDateTime.toLocalDate().isEqual(currentTime.toLocalDate())
-                val isTomorrow = startDateTime.toLocalDate().isEqual(currentTime.toLocalDate().plusDays(1))
-                when {
-                    isToday -> String.format(
-                        context.resources.getString(R.string.nc_today_meeting),
-                        startDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-                    )
-
-                    isTomorrow -> String.format(
-                        context.resources.getString(R.string.nc_tomorrow_meeting),
-                        startDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-                    )
-
-                    else -> startDateTime.format(DateTimeFormatter.ofPattern("MMM d, yyyy, HH:mm"))
-                }
+                DateUtils(context).getStringForMeetingStartDateTime(startDateTime, currentTime)
             }
 
             currentTime.isAfter(endDateTime) -> context.resources.getString(R.string.nc_meeting_ended)

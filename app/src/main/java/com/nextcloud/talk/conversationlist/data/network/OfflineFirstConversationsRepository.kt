@@ -93,6 +93,8 @@ class OfflineFirstConversationsRepository @Inject constructor(
 
                     override fun onNext(model: ConversationModel) {
                         runBlocking {
+                            val existingEntity = dao.getConversationForUser(user.id!!, model.token).first()
+                            model.hiddenUpcomingEvent = existingEntity?.hiddenUpcomingEvent
                             _conversationFlow.emit(model)
                             val entityList = listOf(model.asEntity())
                             dao.upsertConversations(user.id!!, entityList)
