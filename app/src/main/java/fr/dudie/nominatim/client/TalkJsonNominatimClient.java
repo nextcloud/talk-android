@@ -159,6 +159,8 @@ public final class TalkJsonNominatimClient implements NominatimClient {
                 return gson.fromJson(responseBody.string(), new TypeToken<List<Address>>() {
                 }.getType());
             }
+        } else {
+            Log.w(TAG, "search failed with HTTP-code: " + response.code());
         }
 
         return new ArrayList<>();
