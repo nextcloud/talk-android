@@ -7,6 +7,7 @@
 package com.nextcloud.talk.location.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,9 +51,11 @@ fun GeocodingScreen(viewModel: GeoCodingViewModel, onBack: () -> Unit, onAddress
         mutableStateOf(TextFieldValue(initialQuery, TextRange(initialQuery.length)))
     }
     val keyboardController = LocalSoftwareKeyboardController.current
+    var autoSearchDone by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        if (viewModel.getQuery().isNotEmpty() && results.isEmpty()) {
+        if (!autoSearchDone && viewModel.getQuery().isNotEmpty() && results.isEmpty()) {
+            autoSearchDone = true
             viewModel.searchLocation()
         }
     }
@@ -129,7 +134,8 @@ private fun GeocodingScreenContent(
 @Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewGeocodingScreen() {
-    MaterialTheme {
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    MaterialTheme(colorScheme = colorScheme) {
         GeocodingScreenContent(
             query = TextFieldValue("Berlin", TextRange("Berlin".length)),
             results = listOf(
