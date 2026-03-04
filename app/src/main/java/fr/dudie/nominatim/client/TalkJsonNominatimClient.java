@@ -153,13 +153,16 @@ public final class TalkJsonNominatimClient implements NominatimClient {
                 .build();
 
         Response response = httpClient.newCall(requesthttp).execute();
+        ResponseBody responseBody = response.body();
         if (response.isSuccessful()) {
-            ResponseBody responseBody = response.body();
             if (responseBody != null) {
                 return gson.fromJson(responseBody.string(), new TypeToken<List<Address>>() {
                 }.getType());
             }
         } else {
+            if (responseBody != null) {
+                Log.w(TAG, "search failed: " + response.code() + " " + responseBody);
+            }
             Log.w(TAG, "search failed with HTTP-code: " + response.code());
         }
 
@@ -178,16 +181,22 @@ public final class TalkJsonNominatimClient implements NominatimClient {
         Log.d(TAG, "reverse geocoding url: " + apiCall);
 
         Request requesthttp = new Request.Builder()
-                .addHeader("accept", "application/json")
-                .url(apiCall)
-                .build();
+            .addHeader("accept", "application/json")
+            .addHeader("User-Agent", ApiUtils.getUserAgent())
+            .url(apiCall)
+            .build();
 
         Response response = httpClient.newCall(requesthttp).execute();
+        ResponseBody responseBody = response.body();
         if (response.isSuccessful()) {
-            ResponseBody responseBody = response.body();
             if (responseBody != null) {
                 return gson.fromJson(responseBody.string(), Address.class);
             }
+        } else {
+            if (responseBody != null) {
+                Log.w(TAG, "get address failed: " + response.code() + " " + responseBody);
+            }
+            Log.w(TAG, "get address failed with HTTP-code: " + response.code());
         }
 
         return null;
@@ -203,18 +212,25 @@ public final class TalkJsonNominatimClient implements NominatimClient {
 
         final String apiCall = String.format("%s&%s", lookupUrl, lookup.getQueryString());
         Log.d(TAG, "lookup url: " + apiCall);
+
         Request requesthttp = new Request.Builder()
                 .addHeader("accept", "application/json")
+                .addHeader("User-Agent", ApiUtils.getUserAgent())
                 .url(apiCall)
                 .build();
 
         Response response = httpClient.newCall(requesthttp).execute();
+        ResponseBody responseBody = response.body();
         if (response.isSuccessful()) {
-            ResponseBody responseBody = response.body();
             if (responseBody != null) {
                 return gson.fromJson(responseBody.string(), new TypeToken<List<Address>>() {
                 }.getType());
             }
+        } else {
+            if (responseBody != null) {
+                Log.w(TAG, "address lookup failed: " + response.code() + " " + responseBody);
+            }
+            Log.w(TAG, "address lookup failed with HTTP-code: " + response.code());
         }
 
         return new ArrayList<>();
