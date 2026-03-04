@@ -108,7 +108,6 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Calendar
-import java.util.Collections
 import java.util.Locale
 import javax.inject.Inject
 
@@ -836,11 +835,13 @@ class ConversationInfoActivity : BaseActivity() {
             compareBy(
                 { it.participant.actorType == GROUPS || it.participant.actorType == CIRCLES },
                 { !it.isOnline },
-                { it.participant.type !in listOf(
-                    Participant.ParticipantType.MODERATOR,
-                    Participant.ParticipantType.OWNER,
-                    Participant.ParticipantType.GUEST_MODERATOR
-                )},
+                {
+                    it.participant.type !in listOf(
+                        Participant.ParticipantType.MODERATOR,
+                        Participant.ParticipantType.OWNER,
+                        Participant.ParticipantType.GUEST_MODERATOR
+                    )
+                },
                 { it.participant.displayName!!.lowercase(Locale.ROOT) }
             )
         )

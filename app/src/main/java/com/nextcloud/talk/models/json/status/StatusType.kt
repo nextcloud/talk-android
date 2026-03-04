@@ -18,13 +18,12 @@ enum class StatusType(val string: String) {
     INVISIBLE("invisible");
 
     companion object {
-        fun getDescription(value: String?, context: Context): String {
-            return when (value) {
+        fun getDescription(value: String?, context: Context): String =
+            when (value) {
                 DND.string -> context.getString(R.string.dnd)
                 BUSY.string -> context.getString(R.string.busy)
                 AWAY.string -> context.getString(R.string.away)
                 else -> ""
             }
-        }
     }
 }

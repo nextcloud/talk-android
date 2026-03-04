@@ -105,37 +105,25 @@ class MentionAutocompleteAdapter(
     }
 
     private fun setAvatar(holder: ViewHolder, item: MentionAutocompleteItem) {
+        val avatarView = holder.binding.avatarView
         when (item.source) {
             SOURCE_CALLS -> {
-                if (isPhoneNumber(item.displayName)) {
-                    holder.binding.avatarView.loadUserAvatar(
-                        viewThemeUtils.talk.themePlaceholderAvatar(
-                            holder.binding.avatarView,
-                            R.drawable.ic_phone_small
-                        )
-                    )
+                val placeholder = if (isPhoneNumber(item.displayName)) {
+                    R.drawable.ic_phone_small
                 } else {
-                    holder.binding.avatarView.loadUserAvatar(
-                        viewThemeUtils.talk.themePlaceholderAvatar(
-                            holder.binding.avatarView,
-                            R.drawable.ic_avatar_group_small
-                        )
-                    )
+                    R.drawable.ic_avatar_group_small
                 }
+                avatarView.loadUserAvatar(viewThemeUtils.talk.themePlaceholderAvatar(avatarView, placeholder))
             }
 
-            SOURCE_GROUPS -> {
-                holder.binding.avatarView.loadUserAvatar(
-                    viewThemeUtils.talk.themePlaceholderAvatar(
-                        holder.binding.avatarView,
-                        R.drawable.ic_avatar_group_small
-                    )
+            SOURCE_GROUPS ->
+                avatarView.loadUserAvatar(
+                    viewThemeUtils.talk.themePlaceholderAvatar(avatarView, R.drawable.ic_avatar_group_small)
                 )
-            }
 
             SOURCE_FEDERATION -> {
                 val darkTheme = if (DisplayUtils.isDarkModeOn(context)) 1 else 0
-                holder.binding.avatarView.loadFederatedUserAvatar(
+                avatarView.loadFederatedUserAvatar(
                     currentUser,
                     currentUser.baseUrl!!,
                     roomToken,
@@ -148,29 +136,18 @@ class MentionAutocompleteAdapter(
 
             SOURCE_GUESTS, SOURCE_EMAILS -> {
                 if (item.displayName.equals(context.resources.getString(R.string.nc_guest))) {
-                    holder.binding.avatarView.loadDefaultAvatar(viewThemeUtils)
+                    avatarView.loadDefaultAvatar(viewThemeUtils)
                 } else {
-                    holder.binding.avatarView.loadGuestAvatar(currentUser, item.displayName!!, false)
+                    avatarView.loadGuestAvatar(currentUser, item.displayName!!, false)
                 }
             }
 
-            SOURCE_TEAMS -> {
-                holder.binding.avatarView.loadUserAvatar(
-                    viewThemeUtils.talk.themePlaceholderAvatar(
-                        holder.binding.avatarView,
-                        R.drawable.ic_avatar_team_small
-                    )
+            SOURCE_TEAMS ->
+                avatarView.loadUserAvatar(
+                    viewThemeUtils.talk.themePlaceholderAvatar(avatarView, R.drawable.ic_avatar_team_small)
                 )
-            }
 
-            else -> {
-                holder.binding.avatarView.loadUserAvatar(
-                    currentUser,
-                    item.objectId!!,
-                    requestBigSize = true,
-                    ignoreCache = false
-                )
-            }
+            else -> avatarView.loadUserAvatar(currentUser, item.objectId!!, requestBigSize = true, ignoreCache = false)
         }
     }
 
