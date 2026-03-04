@@ -1,24 +1,26 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2022 Marcel Hibbe <dev@mhibbe.de>
- * SPDX-FileCopyrightText: 2021 Andy Scherzinger <infoi@andy-scherzinger.de>
- * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
+ * SPDX-FileCopyrightText: 2017-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.adapters.items
+package com.nextcloud.talk.conversationinfo
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.R
-import com.nextcloud.talk.adapters.items.ParticipantItem.ParticipantItemViewHolder
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.conversationinfo.model.ParticipantModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemConversationInfoParticipantBinding
 import com.nextcloud.talk.extensions.loadDefaultAvatar
@@ -37,77 +39,71 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DisplayUtils.convertDpToPixel
-import eu.davidea.flexibleadapter.FlexibleAdapter
-import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
-import eu.davidea.flexibleadapter.items.IFilterable
-import eu.davidea.flexibleadapter.items.IFlexible
-import eu.davidea.viewholders.FlexibleViewHolder
-import java.util.regex.Pattern
 
-class ParticipantItem(
+class ParticipantItemAdapter(
     private val context: Context,
-    val model: Participant,
     private val user: User,
     private val viewThemeUtils: ViewThemeUtils,
-    private val conversation: ConversationModel
-) : AbstractFlexibleItem<ParticipantItemViewHolder>(),
-    IFilterable<String?> {
-    var isOnline = true
-    override fun equals(o: Any?): Boolean =
-        if (o is ParticipantItem) {
-            model.calculatedActorType == o.model.calculatedActorType &&
-                model.calculatedActorId == o.model.calculatedActorId
-        } else {
-            false
+    private val conversation: ConversationModel,
+    private val onItemClick: (ParticipantModel) -> Unit
+) : ListAdapter<ParticipantModel, ParticipantItemAdapter.ViewHolder>(DiffCallback) {
+
+    var filterQuery: String? = null
+        set(value) {
+            field = value
+            notifyDataSetChanged()
         }
 
-    override fun hashCode(): Int = model.hashCode()
+    inner class ViewHolder(val binding: RvItemConversationInfoParticipantBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-    override fun getLayoutRes(): Int = R.layout.rv_item_conversation_info_participant
+        fun bind(item: ParticipantModel) {
+            itemView.setOnClickListener { onItemClick(item) }
+            val model = item.participant
+            drawStatus(binding, model)
+            setOnlineStateColor(binding, item.isOnline)
+            binding.nameText.text = model.displayName
 
-    override fun createViewHolder(
-        view: View?,
-        adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>?
-    ): ParticipantItemViewHolder = ParticipantItemViewHolder(view, adapter)
+            if (model.type == Participant.ParticipantType.GUEST && model.displayName.isNullOrBlank()) {
+                binding.nameText.text = sharedApplication!!.getString(R.string.nc_guest)
+            }
 
-    @SuppressLint("SetTextI18n")
-    override fun bindViewHolder(
-        adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>?,
-        holder: ParticipantItemViewHolder?,
-        position: Int,
-        payloads: List<*>?
-    ) {
-        drawStatus(holder!!)
-        setOnlineStateColor(holder)
-        holder.binding.nameText.text = model.displayName
+            if (filterQuery != null) {
+                viewThemeUtils.talk.themeAndHighlightText(
+                    binding.nameText,
+                    model.displayName,
+                    filterQuery!!
+                )
+            }
 
-        if (model.type == Participant.ParticipantType.GUEST && model.displayName.isNullOrBlank()) {
-            holder.binding.nameText.text = sharedApplication!!.getString(R.string.nc_guest)
+            loadAvatars(binding, model)
+            showCallIcons(binding, model)
+            setParticipantInfo(binding, model)
         }
+    }
 
-        if (adapter!!.hasFilter()) {
-            viewThemeUtils.talk.themeAndHighlightText(
-                holder.binding.nameText,
-                model.displayName,
-                adapter.getFilter(
-                    String::class.java
-                ).toString()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+        ViewHolder(
+            RvItemConversationInfoParticipantBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
             )
-        }
-        loadAvatars(holder)
-        showCallIcons(holder)
-        setParticipantInfo(holder)
+        )
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setParticipantInfo(holder: ParticipantItemViewHolder) {
+    private fun setParticipantInfo(binding: RvItemConversationInfoParticipantBinding, model: Participant) {
         if (TextUtils.isEmpty(model.displayName) &&
             (
                 model.type == Participant.ParticipantType.GUEST ||
                     model.type == Participant.ParticipantType.USER_FOLLOWING_LINK
                 )
         ) {
-            holder.binding.nameText.text = sharedApplication!!.getString(R.string.nc_guest)
+            binding.nameText.text = sharedApplication!!.getString(R.string.nc_guest)
         }
 
         var userType = ""
@@ -137,8 +133,8 @@ class ParticipantItem(
                 if (model.invitedActorId?.isNotEmpty() == true &&
                     ConversationUtils.isParticipantOwnerOrModerator(conversation)
                 ) {
-                    holder.binding.conversationInfoStatusMessage.text = model.invitedActorId
-                    alignUsernameVertical(holder, 0f)
+                    binding.conversationInfoStatusMessage.text = model.invitedActorId
+                    alignUsernameVertical(binding, 0f)
                 }
             }
 
@@ -149,85 +145,82 @@ class ParticipantItem(
             else -> {}
         }
         if (userType != sharedApplication!!.getString(R.string.nc_user)) {
-            holder.binding.secondaryText.text = "($userType)"
+            binding.secondaryText.text = "($userType)"
         }
     }
 
-    private fun setOnlineStateColor(holder: ParticipantItemViewHolder) {
+    private fun setOnlineStateColor(binding: RvItemConversationInfoParticipantBinding, isOnline: Boolean) {
         if (!isOnline) {
-            holder.binding.nameText.setTextColor(
+            binding.nameText.setTextColor(
                 ResourcesCompat.getColor(
-                    holder.binding.nameText.context.resources,
+                    binding.nameText.context.resources,
                     R.color.medium_emphasis_text,
                     null
                 )
             )
-            holder.binding.avatarView.setAlpha(NOT_ONLINE_ALPHA)
+            binding.avatarView.alpha = NOT_ONLINE_ALPHA
         } else {
-            holder.binding.nameText.setTextColor(
+            binding.nameText.setTextColor(
                 ResourcesCompat.getColor(
-                    holder.binding.nameText.context.resources,
+                    binding.nameText.context.resources,
                     R.color.high_emphasis_text,
                     null
                 )
             )
-            holder.binding.avatarView.setAlpha(1.0f)
+            binding.avatarView.alpha = 1.0f
         }
     }
 
     @SuppressLint("StringFormatInvalid")
-    private fun showCallIcons(holder: ParticipantItemViewHolder) {
+    private fun showCallIcons(binding: RvItemConversationInfoParticipantBinding, model: Participant) {
         val resources = sharedApplication!!.resources
         val inCallFlag = model.inCall
         if (inCallFlag and InCallFlags.WITH_PHONE.toLong() > 0) {
-            holder.binding.videoCallIcon.setImageResource(R.drawable.ic_call_grey_600_24dp)
-            holder.binding.videoCallIcon.setVisibility(View.VISIBLE)
-            holder.binding.videoCallIcon.setContentDescription(
+            binding.videoCallIcon.setImageResource(R.drawable.ic_call_grey_600_24dp)
+            binding.videoCallIcon.visibility = View.VISIBLE
+            binding.videoCallIcon.contentDescription =
                 resources.getString(R.string.nc_call_state_with_phone, model.displayName)
-            )
         } else if (inCallFlag and InCallFlags.WITH_VIDEO.toLong() > 0) {
-            holder.binding.videoCallIcon.setImageResource(R.drawable.ic_videocam_grey_600_24dp)
-            holder.binding.videoCallIcon.setVisibility(View.VISIBLE)
-            holder.binding.videoCallIcon.setContentDescription(
+            binding.videoCallIcon.setImageResource(R.drawable.ic_videocam_grey_600_24dp)
+            binding.videoCallIcon.visibility = View.VISIBLE
+            binding.videoCallIcon.contentDescription =
                 resources.getString(R.string.nc_call_state_with_video, model.displayName)
-            )
         } else if (inCallFlag > InCallFlags.DISCONNECTED) {
-            holder.binding.videoCallIcon.setImageResource(R.drawable.ic_mic_grey_600_24dp)
-            holder.binding.videoCallIcon.setVisibility(View.VISIBLE)
-            holder.binding.videoCallIcon.setContentDescription(
+            binding.videoCallIcon.setImageResource(R.drawable.ic_mic_grey_600_24dp)
+            binding.videoCallIcon.visibility = View.VISIBLE
+            binding.videoCallIcon.contentDescription =
                 resources.getString(R.string.nc_call_state_in_call, model.displayName)
-            )
         } else {
-            holder.binding.videoCallIcon.setVisibility(View.GONE)
+            binding.videoCallIcon.visibility = View.GONE
         }
     }
 
-    private fun loadAvatars(holder: ParticipantItemViewHolder) {
+    private fun loadAvatars(binding: RvItemConversationInfoParticipantBinding, model: Participant) {
         when (model.calculatedActorType) {
             Participant.ActorType.GROUPS -> {
-                holder.binding.avatarView.loadDefaultGroupCallAvatar(viewThemeUtils)
+                binding.avatarView.loadDefaultGroupCallAvatar(viewThemeUtils)
             }
 
             Participant.ActorType.CIRCLES -> {
-                holder.binding.avatarView.loadTeamAvatar(viewThemeUtils)
+                binding.avatarView.loadTeamAvatar(viewThemeUtils)
             }
 
             Participant.ActorType.USERS -> {
-                holder.binding.avatarView.loadUserAvatar(user, model.calculatedActorId!!, true, false)
+                binding.avatarView.loadUserAvatar(user, model.calculatedActorId!!, true, false)
             }
 
             Participant.ActorType.GUESTS, Participant.ActorType.EMAILS -> {
                 val actorName = model.displayName
                 if (!actorName.isNullOrBlank()) {
-                    holder.binding.avatarView.loadFirstLetterAvatar(actorName)
+                    binding.avatarView.loadFirstLetterAvatar(actorName)
                 } else {
-                    holder.binding.avatarView.loadDefaultAvatar(viewThemeUtils)
+                    binding.avatarView.loadDefaultAvatar(viewThemeUtils)
                 }
             }
 
             Participant.ActorType.FEDERATED -> {
                 val darkTheme = if (DisplayUtils.isDarkModeOn(context)) 1 else 0
-                holder.binding.avatarView.loadFederatedUserAvatar(
+                binding.avatarView.loadFederatedUserAvatar(
                     user,
                     user.baseUrl!!,
                     conversation.token,
@@ -239,7 +232,7 @@ class ParticipantItem(
             }
 
             Participant.ActorType.PHONES -> {
-                holder.binding.avatarView.loadPhoneAvatar(viewThemeUtils)
+                binding.avatarView.loadPhoneAvatar(viewThemeUtils)
             }
 
             else -> {
@@ -249,9 +242,9 @@ class ParticipantItem(
     }
 
     @Suppress("MagicNumber")
-    private fun drawStatus(holder: ParticipantItemViewHolder) {
+    private fun drawStatus(binding: RvItemConversationInfoParticipantBinding, model: Participant) {
         val size = convertDpToPixel(STATUS_SIZE_IN_DP, context)
-        holder.binding.userStatusImage.setImageDrawable(
+        binding.userStatusImage.setImageDrawable(
             StatusDrawable(
                 model.status,
                 NO_ICON,
@@ -261,60 +254,51 @@ class ParticipantItem(
             )
         )
         if (model.statusMessage != null) {
-            holder.binding.conversationInfoStatusMessage.text = model.statusMessage
-            alignUsernameVertical(holder, 0f)
+            binding.conversationInfoStatusMessage.text = model.statusMessage
+            alignUsernameVertical(binding, 0f)
         } else {
-            holder.binding.conversationInfoStatusMessage.text = ""
-            alignUsernameVertical(holder, 10f)
+            binding.conversationInfoStatusMessage.text = ""
+            alignUsernameVertical(binding, 10f)
         }
         if (model.statusIcon != null && model.statusIcon!!.isNotEmpty()) {
-            holder.binding.participantStatusEmoji.setText(model.statusIcon)
+            binding.participantStatusEmoji.setText(model.statusIcon)
         } else {
-            holder.binding.participantStatusEmoji.visibility = View.GONE
+            binding.participantStatusEmoji.visibility = View.GONE
         }
         if (model.status != null && model.status == StatusType.DND.string) {
             if (model.statusMessage == null || model.statusMessage!!.isEmpty()) {
-                holder.binding.conversationInfoStatusMessage.setText(R.string.dnd)
+                binding.conversationInfoStatusMessage.setText(R.string.dnd)
             }
         } else if (model.status != null && model.status == StatusType.BUSY.string) {
             if (model.statusMessage == null || model.statusMessage!!.isEmpty()) {
-                holder.binding.conversationInfoStatusMessage.setText(R.string.busy)
+                binding.conversationInfoStatusMessage.setText(R.string.busy)
             }
         } else if (model.status != null && model.status == StatusType.AWAY.string) {
             if (model.statusMessage == null || model.statusMessage!!.isEmpty()) {
-                holder.binding.conversationInfoStatusMessage.setText(R.string.away)
+                binding.conversationInfoStatusMessage.setText(R.string.away)
             }
         }
     }
 
-    private fun alignUsernameVertical(holder: ParticipantItemViewHolder, densityPixelsFromTop: Float) {
-        val layoutParams = holder.binding.nameText.layoutParams as ConstraintLayout.LayoutParams
+    private fun alignUsernameVertical(binding: RvItemConversationInfoParticipantBinding, densityPixelsFromTop: Float) {
+        val layoutParams = binding.nameText.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.topMargin = convertDpToPixel(densityPixelsFromTop, context).toInt()
-        holder.binding.nameText.setLayoutParams(layoutParams)
-    }
-
-    override fun filter(constraint: String?): Boolean =
-        model.displayName != null &&
-            (
-                Pattern.compile(constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
-                    .matcher(model.displayName!!.trim()).find() ||
-                    Pattern.compile(constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
-                        .matcher(model.calculatedActorId!!.trim()).find()
-                )
-
-    class ParticipantItemViewHolder internal constructor(view: View?, adapter: FlexibleAdapter<*>?) :
-        FlexibleViewHolder(view, adapter) {
-        var binding: RvItemConversationInfoParticipantBinding
-
-        init {
-            binding = RvItemConversationInfoParticipantBinding.bind(view!!)
-        }
+        binding.nameText.layoutParams = layoutParams
     }
 
     companion object {
-        private val TAG = ParticipantItem::class.simpleName
+        private val TAG = ParticipantItemAdapter::class.simpleName
         private const val STATUS_SIZE_IN_DP = 9f
         private const val NO_ICON = ""
         private const val NOT_ONLINE_ALPHA = 0.38f
+
+        val DiffCallback = object : DiffUtil.ItemCallback<ParticipantModel>() {
+            override fun areItemsTheSame(oldItem: ParticipantModel, newItem: ParticipantModel): Boolean =
+                oldItem.participant.calculatedActorType == newItem.participant.calculatedActorType &&
+                    oldItem.participant.calculatedActorId == newItem.participant.calculatedActorId
+
+            override fun areContentsTheSame(oldItem: ParticipantModel, newItem: ParticipantModel): Boolean =
+                oldItem == newItem
+        }
     }
 }
