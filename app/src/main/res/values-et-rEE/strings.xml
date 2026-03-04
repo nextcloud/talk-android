@@ -75,6 +75,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 tundi</string>
     <string name="get_invitations_error">Ootel kutsete laadimine ei õnnestunud</string>
+    <string name="gplay_available_no">Google Play teenused pole saadaval. Teavitused pole toetatud</string>
     <string name="hint_edited_message">(muudetud)</string>
     <string name="internal_note">Sisemine märge</string>
     <string name="invisible">Nähtamatu</string>
@@ -557,6 +558,7 @@
     <string name="nc_test_results">Testi tulemused</string>
     <string name="nc_today_meeting">Täna kell %1$s</string>
     <string name="nc_tomorrow_meeting">Homme kell %1$s</string>
+    <string name="nc_upcoming_event_dismissed">Hetkel helisev kõne on nähtav vestluse teabes</string>
     <string name="nc_upload_choose_local_files">Vali failid</string>
     <string name="nc_upload_confirm_send_multiple">Kas saadame need failid kasutajale „%1$s“?</string>
     <string name="nc_upload_confirm_send_single">Kas saadame selle faili kasutajale „%1$s“?</string>
@@ -627,10 +629,10 @@
     <string name="polls_settings">Seadistused</string>
     <string name="polls_submit_vote">Hääleta</string>
     <string name="polls_voted_hidden_success">Hääletatud</string>
-    <string name="previously_set">Varasemalt seatud</string>
+    <string name="previously_set">Määratud varasemalt</string>
     <string name="qr_code_error">QR-koodi lugemine pole võimalik</string>
     <string name="raise_hand">Anna käega märku</string>
-    <string name="reaction_forbidden">Pole õigust selles vestluses reageerida või reageerimise eemaldada</string>
+    <string name="reaction_forbidden">Pole õigust selles vestluses reageerida või reageerimisi eemaldada</string>
     <string name="reactions_tab_all">Kõik</string>
     <string name="read_storage_no_permission">Andmeruumist failide jagamine pole võimalik ilma vastavate õigusteta</string>
     <string name="recent_threads">Hiljutised jutulõngad</string>
