@@ -545,17 +545,20 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         if ((TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) &&
             pushMessage.notificationUser != null
         ) {
-            val shortcut = addBubble(
-                notificationBuilder,
-                activeStatusBarNotification,
-                pushMessage.id
-            )
 
-            shortcut?.let {
-                applyShortcutAndLocus(notificationBuilder, it)
-                addReplyAction(notificationBuilder, systemNotificationId)
-                addMarkAsReadAction(notificationBuilder, systemNotificationId)
-            }
+            val shortcutId = "conversation_${id}"
+            val roomToken = pushMessage.id
+            val bubbleAllowed = roomToken?.let { shouldBubble(it) } ?: false
+            val effectiveShortcutId = if (bubbleAllowed) shortcutId else null
+
+            notificationBuilder
+                .addReplyAction(systemNotificationId)
+                .addMarkAsReadAction(systemNotificationId)
+                .addBubble(
+                    activeStatusBarNotification,
+                    effectiveShortcutId,
+                    bubbleAllowed
+                )
         }
 
         if (TYPE_RECORDING == pushMessage.type && ncNotification != null) {
@@ -566,33 +569,31 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     @Suppress("ReturnCount")
-    private fun addBubble(
-        notificationBuilder: NotificationCompat.Builder,
+    private fun NotificationCompat.Builder.addBubble(
         activeStatusBarNotification: StatusBarNotification?,
-        id: String?
-    ): String? {
-        val shortcutId = "conversation_${id}"
-        val roomToken = id
-        val bubbleAllowed = roomToken?.let { shouldBubble(it) } ?: false
-        var effectiveShortcutId = if (bubbleAllowed) shortcutId else null
+        effectiveShortcutId: String?,
+        bubbleAllowed: Boolean
+    ):  NotificationCompat.Builder {
         val previousBubbleExists = (activeStatusBarNotification != null)
         val versionCheck = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
 
         if (!versionCheck || !bubbleAllowed) {
-            notificationBuilder.setBubbleMetadata(null)
             Log.e(TAG, "Error occurred in addBubble, check app version and if bubbling is allowed")
-            return null
+            return this
+                .setBubbleMetadata(null)
         }
 
-        notificationBuilder.setOnlyAlertOnce(false)
-        prepareChatNotification(notificationBuilder, activeStatusBarNotification)
+        this
+            .setOnlyAlertOnce(false)
+            .prepareChatNotification(activeStatusBarNotification)
 
         // Only add bubble metadata if there's no existing notification
         // If one exists, the bubble metadata will be preserved
 
         if (!previousBubbleExists) {
-            addBubbleMetadata(notificationBuilder, false)
-            return effectiveShortcutId
+            return this
+                .addBubbleMetadata(false)
+                .applyShortcutAndLocus(effectiveShortcutId)
         }
 
         // Preserve existing bubble metadata
@@ -600,7 +601,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val compatBubble = NotificationCompat.BubbleMetadata.fromPlatform(existingBubble)
         if (compatBubble == null) {
             Log.e(TAG, "NotificationCompact returns null bubble meta data from non-null active status bar notification")
-            return null
+            return this
         }
 
         val preservedBubbleBuilder = when {
@@ -613,9 +614,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     compatBubble.icon!!
                 )
 
-            else -> {
-                addBubbleMetadata(notificationBuilder, compatBubble.isNotificationSuppressed)
-                return effectiveShortcutId
+            else -> { // edge case
+                return this
+                    .addBubbleMetadata(compatBubble.isNotificationSuppressed)
+                    .applyShortcutAndLocus(effectiveShortcutId)
             }
         }
 
@@ -634,14 +636,15 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setSuppressNotification(false)
 
         val preservedMetadata = preservedBubbleBuilder.build()
-        notificationBuilder.setBubbleMetadata(preservedMetadata)
 
-        val existingShortcut = compatBubble.shortcutId
-        if (!existingShortcut.isNullOrEmpty()) {
-            effectiveShortcutId = existingShortcut
-        }
-
-        return effectiveShortcutId
+        return this
+            .setBubbleMetadata(preservedMetadata)
+            .apply {
+                val existingShortcut = compatBubble.shortcutId
+                if (!existingShortcut.isNullOrEmpty()) {
+                    applyShortcutAndLocus( existingShortcut)
+                }
+            }
     }
 
     private fun createNotificationBuilder(
@@ -702,17 +705,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return notificationBuilder
     }
 
-    private fun applyShortcutAndLocus(
-        notificationBuilder: NotificationCompat.Builder,
-        shortcutId: String?
-    ) {
-        if (shortcutId.isNullOrEmpty()) {
-            return
+    private fun NotificationCompat.Builder.applyShortcutAndLocus(shortcutId: String?): NotificationCompat.Builder {
+        return if (shortcutId.isNullOrEmpty()) this else {
+            val locusId = androidx.core.content.LocusIdCompat(shortcutId)
+            this.setShortcutId(shortcutId)
+                .setLocusId(locusId)
         }
-        val ensuredShortcutId = shortcutId
-        val locusId = androidx.core.content.LocusIdCompat(ensuredShortcutId)
-        notificationBuilder.setShortcutId(ensuredShortcutId)
-        notificationBuilder.setLocusId(locusId)
     }
 
     private fun getLargeIcon(): Bitmap {
@@ -746,11 +744,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
         return largeIcon
     }
-    private fun prepareChatNotification(
-        notificationBuilder: NotificationCompat.Builder,
+
+    private fun NotificationCompat.Builder.prepareChatNotification(
         activeStatusBarNotification: StatusBarNotification?
-    ) {
-        val notificationUser = pushMessage.notificationUser ?: return
+    ): NotificationCompat.Builder {
+        val notificationUser = pushMessage.notificationUser ?: return this
 
         val userType = notificationUser.type
         var style: NotificationCompat.MessagingStyle? = null
@@ -759,7 +757,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 activeStatusBarNotification.notification
             )
         }
-        val person = Person.Builder()
+        val personBuilder = Person.Builder()
             .setKey(signatureVerification.user!!.id.toString() + "@" + notificationUser.id)
             .setName(EmojiCompat.get().process(notificationUser.name!!))
             .setImportant(true)
@@ -776,32 +774,31 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             } else {
                 ApiUtils.getUrlForGuestAvatar(baseUrl!!, notificationUser.name, false)
             }
-            person.setIcon(loadAvatarSync(avatarUrl, context!!))
+            personBuilder.setIcon(loadAvatarSync(avatarUrl, context!!))
         }
 
-        val personBuilt = person.build()
-        notificationBuilder.setStyle(getStyle(personBuilt, style))
-        notificationBuilder.addPerson(personBuilt)
+        val person = personBuilder.build()
+
+        return this
+            .setStyle(getStyle(person, style))
+            .addPerson(person)
     }
 
-    private fun addBubbleMetadata(notificationBuilder: NotificationCompat.Builder, suppressNotification: Boolean) {
-        val roomToken = pushMessage.id
-        val shouldAbort = Build.VERSION.SDK_INT < Build.VERSION_CODES.R ||
-            roomToken.isNullOrEmpty() ||
-            roomToken?.let { !shouldBubble(it) } == true
+    private fun NotificationCompat.Builder.addBubbleMetadata(suppressNotification: Boolean): NotificationCompat.Builder
+         = runCatching {
+            val roomToken = pushMessage.id
+            val shouldAbort = Build.VERSION.SDK_INT < Build.VERSION_CODES.R ||
+                roomToken.isNullOrEmpty() || roomToken.let { !shouldBubble(it) }
 
-        if (shouldAbort) {
-            return
-        }
+            if (shouldAbort) {
+                return@runCatching this
+            }
 
-        val ensuredRoomToken = roomToken!!
-
-        try {
-            val conversationName = pushMessage.subject?.takeIf { it.isNotBlank() }
-            val shortcutId = "conversation_$ensuredRoomToken"
+            val conversationName = pushMessage.subject.takeIf { it.isNotBlank() }
+            val shortcutId = "conversation_$roomToken"
             val fallbackConversationLabel = conversationName ?: context!!.getString(R.string.nc_app_name)
 
-            val bubbleIcon = resolveBubbleIcon(ensuredRoomToken) ?: run {
+            val bubbleIcon = resolveBubbleIcon(roomToken) ?: run {
                 val fallbackBitmap = getLargeIcon()
                 androidx.core.graphics.drawable.IconCompat.createWithBitmap(fallbackBitmap)
             }
@@ -826,11 +823,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
             androidx.core.content.pm.ShortcutManagerCompat.pushDynamicShortcut(context!!, shortcut)
 
-            val bubbleRequestCode = NotificationUtils.calculateCRC32("bubble_$ensuredRoomToken").toInt()
+            val bubbleRequestCode = NotificationUtils.calculateCRC32("bubble_$roomToken").toInt()
             val bubbleIntent = PendingIntent.getActivity(
                 context,
                 bubbleRequestCode,
-                com.nextcloud.talk.chat.BubbleActivity.newIntent(context!!, ensuredRoomToken, conversationName),
+                com.nextcloud.talk.chat.BubbleActivity.newIntent(context!!, roomToken, conversationName),
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
             )
 
@@ -843,15 +840,17 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 .setSuppressNotification(suppressNotification)
                 .build()
 
-            notificationBuilder.setBubbleMetadata(bubbleData)
-            notificationBuilder.setShortcutId(shortcutId)
-            notificationBuilder.setLocusId(androidx.core.content.LocusIdCompat(shortcutId))
-        } catch (e: IllegalArgumentException) {
-            Log.e(TAG, "Error adding bubble metadata: Invalid argument", e)
-        } catch (e: IllegalStateException) {
-            Log.e(TAG, "Error adding bubble metadata: Invalid state", e)
+            this.setBubbleMetadata(bubbleData)
+                .setShortcutId(shortcutId)
+                .setLocusId(androidx.core.content.LocusIdCompat(shortcutId))
+        }.getOrElse { error ->
+            when(error) {
+                is IllegalArgumentException -> Log.e(TAG, "Error adding bubble metadata: Invalid argument", error)
+                is IllegalStateException -> Log.e(TAG, "Error adding bubble metadata: Invalid state", error)
+            }
+
+            this
         }
-    }
 
     private fun shouldBubble(roomToken: String): Boolean {
         val user = signatureVerification.user
@@ -931,20 +930,20 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return PendingIntent.getBroadcast(context, systemNotificationId, actualIntent, intentFlag)
     }
 
-    private fun addMarkAsReadAction(notificationBuilder: NotificationCompat.Builder, systemNotificationId: Int) {
-        if (pushMessage.objectId != null) {
-            val messageId: Int = try {
-                parseMessageId(pushMessage.objectId!!)
-            } catch (nfe: NumberFormatException) {
-                Log.e(TAG, "Failed to parse messageId from objectId, skip adding mark-as-read action.", nfe)
-                return
+    private fun NotificationCompat.Builder.addMarkAsReadAction(systemNotificationId: Int): NotificationCompat.Builder
+        = runCatching {
+            if (pushMessage.objectId == null) {
+                return@runCatching this
             }
+
+            val messageId: Int = parseMessageId(pushMessage.objectId!!)
 
             val pendingIntent = buildIntentForAction(
                 MarkAsReadReceiver::class.java,
                 systemNotificationId,
                 messageId
             )
+
             val markAsReadAction = NotificationCompat.Action.Builder(
                 R.drawable.ic_mark_chat_read_24px,
                 context!!.resources.getString(R.string.nc_mark_as_read),
@@ -953,11 +952,19 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ)
                 .setShowsUserInterface(false)
                 .build()
-            notificationBuilder.addAction(markAsReadAction)
-        }
-    }
 
-    private fun addReplyAction(notificationBuilder: NotificationCompat.Builder, systemNotificationId: Int) {
+            this.addAction(markAsReadAction)
+        }.getOrElse { error ->
+            when(error) {
+                is NumberFormatException -> {
+                    Log.e(TAG, "Failed to parse messageId from objectId, skip adding mark-as-read action.", error)
+                }
+            }
+
+            this
+        }
+
+    private fun NotificationCompat.Builder.addReplyAction(systemNotificationId: Int): NotificationCompat.Builder {
         val replyLabel = context!!.resources.getString(R.string.nc_reply)
         val remoteInput = RemoteInput.Builder(NotificationUtils.KEY_DIRECT_REPLY)
             .setLabel(replyLabel)
@@ -974,7 +981,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setAllowGeneratedReplies(true)
             .addRemoteInput(remoteInput)
             .build()
-        notificationBuilder.addAction(replyAction)
+
+        return this.addAction(replyAction)
     }
 
     private fun addDismissRecordingAvailableAction(
