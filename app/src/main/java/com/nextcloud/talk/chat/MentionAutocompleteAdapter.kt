@@ -176,6 +176,7 @@ class MentionAutocompleteAdapter(
 
     private fun drawStatus(holder: ViewHolder, item: MentionAutocompleteItem) {
         val size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, context)
+
         holder.binding.userStatusImage.setImageDrawable(
             StatusDrawable(
                 item.status,
@@ -185,29 +186,17 @@ class MentionAutocompleteAdapter(
                 context
             )
         )
-        if (item.statusMessage != null) {
-            holder.binding.conversationInfoStatusMessage.text = item.statusMessage
-            alignUsernameVertical(holder, 0f)
-        } else {
-            holder.binding.conversationInfoStatusMessage.text = ""
-            alignUsernameVertical(holder, NO_USER_STATUS_DP_FROM_TOP)
-        }
-        if (!item.statusIcon.isNullOrEmpty()) {
-            holder.binding.participantStatusEmoji.setText(item.statusIcon)
-        } else {
-            holder.binding.participantStatusEmoji.visibility = View.GONE
-        }
-        if (item.status != null && item.status == StatusType.DND.string) {
-            if (item.statusMessage.isNullOrEmpty()) {
-                holder.binding.conversationInfoStatusMessage.setText(R.string.dnd)
-            }
-        } else if (item.status != null && item.status == StatusType.BUSY.string) {
-            if (item.statusMessage.isNullOrEmpty()) {
-                holder.binding.conversationInfoStatusMessage.setText(R.string.busy)
-            }
-        } else if (item.status != null && item.status == StatusType.AWAY.string) {
-            if (item.statusMessage.isNullOrEmpty()) {
-                holder.binding.conversationInfoStatusMessage.setText(R.string.away)
+
+        val statusMessage = StatusType.getDescription(item.statusMessage, context)
+        holder.binding.conversationInfoStatusMessage.text = statusMessage
+        alignUsernameVertical(holder, if (statusMessage.isEmpty()) NO_USER_STATUS_DP_FROM_TOP else 0f)
+
+        holder.binding.participantStatusEmoji.run {
+            if (!item.statusIcon.isNullOrEmpty()) {
+                setText(item.statusIcon)
+                visibility = View.VISIBLE
+            } else {
+                visibility = View.GONE
             }
         }
     }
