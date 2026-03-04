@@ -2600,11 +2600,10 @@ class ChatActivity :
         }
         if (position != null && position >= 0) {
             val layoutManager = binding.messagesListView.layoutManager
-            // FIXME Not a perfect offset, but works to clear the pinned message view, try and find a better solution
             (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 500)
         } else {
             Log.d(TAG, "message $messageId that should be scrolled to was not found (scrollToMessageWithId)")
-            startContextChatWindowForMessage(messageId, conversationThreadId?.toString())
+            startContextChatWindowForMessage(messageId, currentConversation?.internalId)
         }
     }
 
