@@ -144,11 +144,13 @@ class ReactionsRepositoryImpl @Inject constructor(private val ncApi: NcApi, priv
                 message.reactionsSelf = ArrayList()
             }
 
-            var amount = message.reactions!![emoji]
-            if (amount == null) {
-                amount = 0
+            val currentEmojiCount = message.reactions!![emoji] ?: 0
+            val newEmojiCount = currentEmojiCount - 1
+            if (newEmojiCount <= 0) {
+                message.reactions!!.remove(emoji)
+            } else {
+                message.reactions!![emoji] = newEmojiCount
             }
-            message.reactions!![emoji] = amount - 1
             message.reactionsSelf!!.remove(emoji)
 
             // 3. Call DAO again, to update the singular ChatMessageEntity with params
