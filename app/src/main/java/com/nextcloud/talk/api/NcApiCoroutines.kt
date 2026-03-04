@@ -25,6 +25,7 @@ import com.nextcloud.talk.models.json.invitation.InvitationOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.participants.TalkBanOverall
+import com.nextcloud.talk.models.json.passwordResult.PasswordResultOverall
 import com.nextcloud.talk.models.json.profile.ProfileOverall
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.models.json.status.StatusOverall
@@ -577,4 +578,12 @@ interface NcApiCoroutines {
     @FormUrlEncoded
     @POST
     suspend fun reportRemoteWipeSuccess(@Url url: String, @Field("token") token: String): Response<Unit>
+
+    @FormUrlEncoded
+    @POST
+    suspend fun validatePassword(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("password") password: String
+    ): PasswordResultOverall
 }
