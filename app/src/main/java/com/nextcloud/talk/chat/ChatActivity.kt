@@ -692,7 +692,7 @@ class ChatActivity :
                     }
                 }
                 .collectLatest { message ->
-                    if (message != null) {
+                    if (message != null && message.systemMessageType != ChatMessage.SystemMessageType.CLEARED_CHAT) {
                         binding.pinnedMessageContainer.visibility = View.VISIBLE
                         binding.pinnedMessageComposeView.setContent {
                             PinnedMessageView(
