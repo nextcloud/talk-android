@@ -132,7 +132,6 @@ import com.nextcloud.talk.adapters.messages.OutcomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingVoiceMessageViewHolder
 import com.nextcloud.talk.adapters.messages.PreviewMessageInterface
-import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.SystemMessageInterface
 import com.nextcloud.talk.adapters.messages.SystemMessageViewHolder
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
@@ -245,6 +244,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -263,7 +263,6 @@ import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
-import kotlinx.coroutines.flow.first
 
 @Suppress("TooManyFunctions", "LargeClass", "LongMethod")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -672,10 +671,6 @@ class ChatActivity :
     fun downloadAndOpenFile(messageId: Int) {
         lifecycleScope.launch {
             val chatMessage = chatViewModel.getMessageById(messageId.toLong()).first()
-
-            // dirty hack to fill selectedIndividualHashMap
-            val dirtyHack = chatMessage.imageUrl
-
             FileViewerUtils(this@ChatActivity, conversationUser).openFile(chatMessage)
         }
     }
@@ -1704,7 +1699,7 @@ class ChatActivity :
         adapter?.registerViewClickListener(
             R.id.playPauseBtn
         ) { _, message ->
-            val filename = message.selectedIndividualHashMap!!["name"]
+            val filename = message.fileParameters.name
             val file = File(context.cacheDir, filename!!)
             if (file.exists()) {
                 if (message.isPlayingVoiceMessage) {
@@ -1735,7 +1730,7 @@ class ChatActivity :
     }
 
     private fun setUpWaveform(message: ChatMessage, thenPlay: Boolean = true, backgroundPlayAllowed: Boolean = false) {
-        val filename = message.selectedIndividualHashMap!!["name"]
+        val filename = message.fileParameters.name
         val file = File(context.cacheDir, filename!!)
         if (file.exists() && message.voiceMessageFloatArray == null) {
             message.isDownloadingVoiceMessage = true
@@ -1768,7 +1763,7 @@ class ChatActivity :
             if (!nextMessage.isVoiceMessage) break
 
             downloadFileToCache(nextMessage, false) {
-                nextMessage.selectedIndividualHashMap?.get("name")?.let { newFileName ->
+                nextMessage.fileParameters.name?.let { newFileName ->
                     val newFile = File(context.cacheDir, newFileName)
                     chatViewModel.queueInMediaPlayer(newFile.canonicalPath, nextMessage)
                 }
@@ -2228,14 +2223,11 @@ class ChatActivity :
             message.activeUser!!.capabilities!!
                 .spreedCapability!!
         )
-        val fileName = message.selectedIndividualHashMap!!["name"]
-        var size = message.selectedIndividualHashMap!!["size"]
-        if (size == null) {
-            size = "-1"
-        }
-        val fileSize = size.toLong()
-        val fileId = message.selectedIndividualHashMap!!["id"]
-        val path = message.selectedIndividualHashMap!!["path"]
+        val fileName = message.fileParameters.name
+        var fileSize = message.fileParameters.size
+
+        val fileId = message.fileParameters.id
+        val path = message.fileParameters.path
 
         // check if download worker is already running
         val workers = WorkManager.getInstance(
@@ -3346,17 +3338,6 @@ class ChatActivity :
         return layoutManager?.findFirstVisibleItemPosition() == 0
     }
 
-    private fun setUnreadMessageMarker(chatMessageList: List<ChatMessage>) {
-        if (chatMessageList.isNotEmpty()) {
-            val unreadChatMessage = ChatMessage()
-            unreadChatMessage.jsonMessageId = UNREAD_MESSAGES_MARKER_ID
-            unreadChatMessage.actorId = "-1"
-            unreadChatMessage.timestamp = chatMessageList[0].timestamp
-            unreadChatMessage.message = context.getString(R.string.nc_new_messages)
-            adapter?.addToStart(unreadChatMessage, false)
-        }
-    }
-
     // private fun processMessagesNotFromTheFuture(chatMessageList: List<ChatMessage>) {
     //     for (i in chatMessageList.indices) {
     //         if (chatMessageList.size > i + 1) {
@@ -4439,7 +4420,7 @@ class ChatActivity :
     }
 
     fun share(message: ChatMessage) {
-        val filename = message.selectedIndividualHashMap!!["name"]
+        val filename = message.fileParameters.name
         path = applicationContext.cacheDir.absolutePath + "/" + filename
         val shareUri = FileProvider.getUriForFile(
             this,
@@ -4457,7 +4438,7 @@ class ChatActivity :
     }
 
     fun checkIfSharable(message: ChatMessage) {
-        val filename = message.selectedIndividualHashMap!!["name"]
+        val filename = message.fileParameters.name
         path = applicationContext.cacheDir.absolutePath + "/" + filename
         val file = File(context.cacheDir, filename!!)
         if (file.exists()) {
@@ -4471,7 +4452,7 @@ class ChatActivity :
 
     private fun showSaveToStorageWarning(message: ChatMessage) {
         val saveFragment: DialogFragment = SaveToStorageDialogFragment.newInstance(
-            message.selectedIndividualHashMap!!["name"]!!
+            message.fileParameters.name
         )
         saveFragment.show(
             supportFragmentManager,
@@ -4480,7 +4461,7 @@ class ChatActivity :
     }
 
     fun checkIfSaveable(message: ChatMessage) {
-        val filename = message.selectedIndividualHashMap!!["name"]
+        val filename = message.fileParameters.name
         path = applicationContext.cacheDir.absolutePath + "/" + filename
         val file = File(context.cacheDir, filename!!)
         if (file.exists()) {
@@ -4509,11 +4490,11 @@ class ChatActivity :
 
             if (noteToSelfConversation != null) {
                 var shareUri: Uri? = null
-                val data: HashMap<String?, String?>?
+                val data: HashMap<String, String>?
                 var metaData = ""
                 var objectId = ""
-                if (message.hasFileAttachment()) {
-                    val filename = message.selectedIndividualHashMap!!["name"]
+                if (message.hasFileAttachment) {
+                    val filename = message.fileParameters.name
                     path = applicationContext.cacheDir.absolutePath + "/" + filename
                     shareUri = FileProvider.getUriForFile(
                         context,
@@ -4526,12 +4507,11 @@ class ChatActivity :
                         shareUri,
                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
                     )
-                } else if (message.hasGeoLocation()) {
-                    data = message.messageParameters?.get("object")
-                    objectId = data?.get("id")!!
-                    val name = data["name"]!!
-                    val lat = data["latitude"]!!
-                    val lon = data["longitude"]!!
+                } else if (message.hasGeoLocation) {
+                    objectId = message.geoLocationParameters.id!!
+                    val name = message.geoLocationParameters.name
+                    val lat = message.geoLocationParameters.latitude
+                    val lon = message.geoLocationParameters.longitude
                     metaData =
                         "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
                         "\"longitude\":\"$lon\",\"name\":\"$name\"}"
@@ -4642,8 +4622,8 @@ class ChatActivity :
     }
 
     fun openInFilesApp(message: ChatMessage) {
-        val keyID = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_ID]
-        val link = message.selectedIndividualHashMap!!["link"]
+        val keyID = message.fileParameters.id
+        val link = message.fileParameters.link
         val fileViewerUtils = FileViewerUtils(this, message.activeUser!!)
         fileViewerUtils.openFileInFilesApp(link!!, keyID!!)
     }
@@ -4785,16 +4765,17 @@ class ChatActivity :
         return isUserAllowedByPrivileges
     }
 
+    @Deprecated("chatkit")
     override fun hasContentFor(message: ChatMessage, type: Byte): Boolean =
         when (type) {
-            CONTENT_TYPE_LOCATION -> message.hasGeoLocation()
+            CONTENT_TYPE_LOCATION -> message.hasGeoLocation
             CONTENT_TYPE_VOICE_MESSAGE -> message.isVoiceMessage
-            CONTENT_TYPE_POLL -> message.isPoll()
+            CONTENT_TYPE_POLL -> message.hasPoll
             CONTENT_TYPE_LINK_PREVIEW -> message.isLinkPreview()
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == UNREAD_MESSAGES_MARKER_ID.toString()
             CONTENT_TYPE_CALL_STARTED -> message.id == "-2"
-            CONTENT_TYPE_DECK_CARD -> message.isDeckCard()
+            CONTENT_TYPE_DECK_CARD -> message.hasDeckCard
 
             else -> false
         }

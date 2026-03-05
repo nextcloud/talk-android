@@ -518,7 +518,7 @@ class ConversationsListActivity :
         //                                 if (isPaused) {
         //                                     chatViewModel.pauseMediaPlayer(false)
         //                                 } else {
-        //                                     val filename = msg.selectedIndividualHashMap!!["name"]
+        //                                     val filename = msg.fileParameters.name
         //                                     val file = File(context.cacheDir, filename!!)
         //                                     chatViewModel.startMediaPlayer(file.canonicalPath)
         //                                 }

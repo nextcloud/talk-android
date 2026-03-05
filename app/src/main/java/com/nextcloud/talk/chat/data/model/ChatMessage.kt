@@ -39,6 +39,7 @@ data class ChatMessage(
 
     var activeUser: User? = null,
 
+    @Deprecated("delete with chatkit?")
     var selectedIndividualHashMap: Map<String?, String?>? = null,
 
     var isDeleted: Boolean = false,
@@ -70,7 +71,8 @@ data class ChatMessage(
     // send when crafting a message, max 1000 lines
     var message: String? = null,
 
-    var messageParameters: HashMap<String?, HashMap<String?, String?>>? = null,
+    // var messageParameters: HashMap<String?, HashMap<String?, String?>>? = null,
+    val messageParameters: Map<String, Map<String, String>>?,
 
     var systemMessageType: SystemMessageType? = null,
 
@@ -158,6 +160,30 @@ data class ChatMessage(
 ) : MessageContentType,
     MessageContentType.Image {
 
+    val fileParameters by lazy { FileParameters(messageParameters) }
+    val geoLocationParameters by lazy { GeoLocationParameters(messageParameters) }
+    val pollParameters by lazy { PollParameters(messageParameters) }
+    val deckCardParameters by lazy { DeckCardParameters(messageParameters) }
+
+    val hasFileAttachment get() = messageParameters?.containsKey("file") == true
+    val hasGeoLocation get() = messageParameters?.containsKey("geo-location") == true
+    val hasPoll get() = messageParameters?.containsKey("talk-poll") == true
+    val hasDeckCard get() = messageParameters?.containsKey("deck-card") == true
+
+    fun getCalculateMessageType(): MessageType {
+        if (!systemMessage.isNullOrBlank()) return MessageType.SYSTEM_MESSAGE
+        if (isVoiceMessage) return MessageType.VOICE_MESSAGE
+
+        return when {
+            hasFileAttachment -> MessageType.SINGLE_NC_ATTACHMENT_MESSAGE
+            hasGeoLocation -> MessageType.SINGLE_NC_GEOLOCATION_MESSAGE
+            hasPoll -> MessageType.POLL_MESSAGE
+            hasDeckCard -> MessageType.DECK_CARD
+            else -> MessageType.REGULAR_TEXT_MESSAGE
+        }
+    }
+
+
     var extractedUrlToPreview: String? = null
 
     // messageTypesToIgnore is weird. must be deleted by refactoring!!!
@@ -173,50 +199,6 @@ data class ChatMessage(
         MessageType.POLL_MESSAGE,
         MessageType.DECK_CARD
     )
-
-    fun isDeckCard(): Boolean {
-        if (messageParameters != null && messageParameters!!.size > 0) {
-            for ((_, individualHashMap) in messageParameters!!) {
-                if (isHashMapEntryEqualTo(individualHashMap, "type", "deck-card")) {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-
-    fun hasFileAttachment(): Boolean {
-        if (messageParameters != null && messageParameters!!.size > 0) {
-            for ((_, individualHashMap) in messageParameters!!) {
-                if (isHashMapEntryEqualTo(individualHashMap, "type", "file")) {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-
-    fun hasGeoLocation(): Boolean {
-        if (messageParameters != null && messageParameters!!.size > 0) {
-            for ((_, individualHashMap) in messageParameters!!) {
-                if (isHashMapEntryEqualTo(individualHashMap, "type", "geo-location")) {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-
-    fun isPoll(): Boolean {
-        if (messageParameters != null && messageParameters!!.size > 0) {
-            for ((_, individualHashMap) in messageParameters!!) {
-                if (isHashMapEntryEqualTo(individualHashMap, "type", "talk-poll")) {
-                    return true
-                }
-            }
-        }
-        return false
-    }
 
     @Suppress("ReturnCount")
     fun isLinkPreview(): Boolean {
@@ -251,31 +233,25 @@ data class ChatMessage(
     }
 
     @Suppress("Detekt.NestedBlockDepth")
-    @Deprecated("delete with chatkit?")
     override fun getImageUrl(): String? {
-        if (messageParameters != null && messageParameters!!.size > 0) {
-            for ((_, individualHashMap) in messageParameters!!) {
-                if (isHashMapEntryEqualTo(individualHashMap, "type", "file")) {
-                    // FIX-ME: this selectedIndividualHashMap stuff needs to be analyzed and most likely be refactored!
-                    //  it just feels wrong to fill this here inside getImageUrl()
-                    selectedIndividualHashMap = individualHashMap
-                    if (!isVoiceMessage) {
-                        if (activeUser != null && activeUser!!.baseUrl != null) {
-                            return ApiUtils.getUrlForFilePreviewWithFileId(
-                                activeUser!!.baseUrl!!,
-                                individualHashMap["id"]!!,
-                                sharedApplication!!.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size)
-                            )
-                        } else {
-                            Log.e(
-                                TAG,
-                                "activeUser or activeUser.getBaseUrl() were null when trying to getImageUrl()"
-                            )
-                        }
-                    }
+        if (hasFileAttachment) {
+            if (!isVoiceMessage) {
+                if (activeUser != null && activeUser!!.baseUrl != null) {
+                    return ApiUtils.getUrlForFilePreviewWithFileId(
+                        activeUser!!.baseUrl!!,
+                        fileParameters.id,
+                        sharedApplication!!.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size)
+                    )
+                } else {
+                    Log.e(
+                        TAG,
+                        "activeUser or activeUser.getBaseUrl() were null when trying to getImageUrl()"
+                    )
                 }
             }
         }
+
+        // TODO not yet sure what this is
         return if (!messageTypesToIgnore.contains(getCalculateMessageType())) {
             message!!.trim()
         } else {
@@ -283,22 +259,24 @@ data class ChatMessage(
         }
     }
 
-    fun getCalculateMessageType(): MessageType =
-        if (!TextUtils.isEmpty(systemMessage)) {
-            MessageType.SYSTEM_MESSAGE
-        } else if (isVoiceMessage) {
-            MessageType.VOICE_MESSAGE
-        } else if (hasFileAttachment()) {
-            MessageType.SINGLE_NC_ATTACHMENT_MESSAGE
-        } else if (hasGeoLocation()) {
-            MessageType.SINGLE_NC_GEOLOCATION_MESSAGE
-        } else if (isPoll()) {
-            MessageType.POLL_MESSAGE
-        } else if (isDeckCard()) {
-            MessageType.DECK_CARD
-        } else {
-            MessageType.REGULAR_TEXT_MESSAGE
-        }
+
+
+    // fun getCalculateMessageType(): MessageType =
+    //     if (!TextUtils.isEmpty(systemMessage)) {
+    //         MessageType.SYSTEM_MESSAGE
+    //     } else if (isVoiceMessage) {
+    //         MessageType.VOICE_MESSAGE
+    //     } else if (hasFileAttachment()) {
+    //         MessageType.SINGLE_NC_ATTACHMENT_MESSAGE
+    //     } else if (hasGeoLocation()) {
+    //         MessageType.SINGLE_NC_GEOLOCATION_MESSAGE
+    //     } else if (isPoll()) {
+    //         MessageType.POLL_MESSAGE
+    //     } else if (isDeckCard()) {
+    //         MessageType.DECK_CARD
+    //     } else {
+    //         MessageType.REGULAR_TEXT_MESSAGE
+    //     }
 
     override fun getId(): String = jsonMessageId.toString()
 

@@ -24,7 +24,6 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
-import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.fullscreenfile.FullScreenImageActivity
@@ -62,18 +61,14 @@ import java.util.concurrent.ExecutionException
 class FileViewerUtils(private val context: Context, private val user: User) {
 
     fun openFile(message: ChatMessage) {
-        val fileName = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_NAME]!!
-        val mimetype = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_MIMETYPE]!!
-        val link = message.selectedIndividualHashMap!!["link"]!!
+        val fileName = message.fileParameters.name
+        val mimetype = message.fileParameters.mimetype
+        val link = message.fileParameters.link
 
-        val fileId = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_ID]!!
-        val path = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_PATH]!!
+        val fileId = message.fileParameters.id
+        val path = message.fileParameters.path
 
-        var size = message.selectedIndividualHashMap!!["size"]
-        if (size == null) {
-            size = "-1"
-        }
-        val fileSize = size.toLong()
+        val fileSize = message.fileParameters.size
 
         openFile(
             FileInfo(fileId, fileName, fileSize),

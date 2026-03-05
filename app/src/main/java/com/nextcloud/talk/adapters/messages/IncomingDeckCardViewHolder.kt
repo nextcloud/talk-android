@@ -138,7 +138,7 @@ class IncomingDeckCardViewHolder(incomingView: View, payload: Any) :
     private fun showDeckCard(message: ChatMessage) {
         if (message.messageParameters != null && message.messageParameters!!.size > 0) {
             for (key in message.messageParameters!!.keys) {
-                val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
+                val individualHashMap: Map<String, String> = message.messageParameters!![key]!!
                 if (individualHashMap["type"] == "deck-card") {
                     cardName = individualHashMap["name"]
                     stackName = individualHashMap["stackname"]
