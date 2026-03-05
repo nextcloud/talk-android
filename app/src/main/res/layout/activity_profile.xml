@@ -143,12 +143,12 @@
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:itemCount="3"
-        tools:listitem="@layout/user_info_details_table_item"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <include
         android:id="@+id/emptyList"
-        layout="@layout/empty_list" />
+        layout="@layout/empty_list"
+        tools:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/loading_content"

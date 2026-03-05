@@ -12,11 +12,8 @@ package com.nextcloud.talk.profile
 import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -24,6 +21,9 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toFile
@@ -34,14 +34,12 @@ import autodagger.AutoInjector
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.ImagePicker.Companion.getError
 import com.google.android.material.snackbar.Snackbar
-import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityProfileBinding
-import com.nextcloud.talk.databinding.UserInfoDetailsTableItemBinding
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.userprofile.Scope
 import com.nextcloud.talk.models.json.userprofile.UserProfileData
@@ -433,7 +431,7 @@ class ProfileActivity : BaseActivity() {
             result.add(
                 UserInfoDetailsItem(
                     R.drawable.ic_web,
-                    DisplayUtils.beautifyURL(userInfo.website),
+                    userInfo.website,
                     resources!!.getString(R.string.user_info_website),
                     Field.WEBSITE,
                     userInfo.websiteScope
@@ -442,7 +440,7 @@ class ProfileActivity : BaseActivity() {
             result.add(
                 UserInfoDetailsItem(
                     R.drawable.ic_twitter,
-                    DisplayUtils.beautifyTwitterHandle(userInfo.twitter),
+                    userInfo.twitter,
                     resources!!.getString(R.string.user_info_twitter),
                     Field.TWITTER,
                     userInfo.twitterScope
@@ -587,7 +585,7 @@ class ProfileActivity : BaseActivity() {
             credentials,
             ApiUtils.getUrlForUserData(currentUser!!.baseUrl!!, currentUser!!.userId!!),
             item.field.scopeName,
-            item.scope!!.name
+            item.scope!!.id
         )
             .retry(DEFAULT_RETRIES)
             .subscribeOn(Schedulers.io())
@@ -598,12 +596,12 @@ class ProfileActivity : BaseActivity() {
                 }
 
                 override fun onNext(userProfileOverall: GenericOverall) {
-                    Log.d(TAG, "Successfully saved: " + item.scope + " as " + item.field)
+                    Log.d(TAG, "Successfully saved: " + item.scope!!.id + " as " + item.field.scopeName)
                 }
 
                 override fun onError(e: Throwable) {
                     item.scope = userInfo?.getScopeByField(item.field)
-                    Log.e(TAG, "Failed to saved: " + item.scope + " as " + item.field, e)
+                    Log.e(TAG, "Failed to saved: " + item.scope!!.id + " as " + item.field.scopeName, e)
                 }
 
                 override fun onComplete() {
@@ -629,7 +627,7 @@ class ProfileActivity : BaseActivity() {
         var displayList: List<UserInfoDetailsItem>?
         var filteredDisplayList: MutableList<UserInfoDetailsItem> = LinkedList()
 
-        class ViewHolder(val binding: UserInfoDetailsTableItemBinding) : RecyclerView.ViewHolder(binding.root)
+        class ViewHolder(val composeView: ComposeView) : RecyclerView.ViewHolder(composeView)
 
         init {
             this.displayList = displayList ?: LinkedList()
@@ -653,9 +651,12 @@ class ProfileActivity : BaseActivity() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val itemBinding =
-                UserInfoDetailsTableItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return ViewHolder(itemBinding)
+            val composeView = ComposeView(parent.context).apply {
+                layoutParams =
+                    ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindowOrReleasedFromPool)
+            }
+            return ViewHolder(composeView)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -664,87 +665,60 @@ class ProfileActivity : BaseActivity() {
             } else {
                 filteredDisplayList[position]
             }
-
-            initScopeElements(item, holder)
-
-            holder.binding.icon.setImageResource(item.icon)
-            initUserInfoEditText(holder, item)
-
-            holder.binding.icon.contentDescription = item.hint
-            viewThemeUtils.platform.colorImageView(holder.binding.icon, ColorRole.PRIMARY)
-            if (!TextUtils.isEmpty(item.text) || profileActivity.edit) {
-                holder.binding.userInfoDetailContainer.visibility = View.VISIBLE
-                profileActivity.viewThemeUtils.material.colorTextInputLayout(holder.binding.userInfoInputLayout)
-                if (profileActivity.edit &&
-                    profileActivity.editableFields.contains(item.field.toString().lowercase())
-                ) {
-                    holder.binding.userInfoEditTextEdit.isEnabled = true
-                    holder.binding.userInfoEditTextEdit.isFocusableInTouchMode = true
-                    holder.binding.userInfoEditTextEdit.isEnabled = true
-                    holder.binding.userInfoEditTextEdit.isCursorVisible = true
-                    holder.binding.scope.setOnClickListener {
-                        ScopeDialog(
-                            holder.binding.scope.context,
-                            this,
-                            item.field,
-                            holder.adapterPosition
-                        ).show()
-                    }
-                    holder.binding.scope.alpha = HIGH_EMPHASIS_ALPHA
-                } else {
-                    holder.binding.userInfoEditTextEdit.isEnabled = false
-                    holder.binding.userInfoEditTextEdit.isFocusableInTouchMode = false
-                    holder.binding.userInfoEditTextEdit.isEnabled = false
-                    holder.binding.userInfoEditTextEdit.isCursorVisible = false
-                    holder.binding.scope.setOnClickListener(null)
-                    holder.binding.scope.alpha = MEDIUM_EMPHASIS_ALPHA
-                }
-            } else {
-                holder.binding.userInfoDetailContainer.visibility = View.GONE
+            val colorScheme = viewThemeUtils.getColorScheme(profileActivity)
+            val itemPosition = when (position) {
+                0 -> UserInfoDetailItemPosition.FIRST
+                filteredDisplayList.size - 1 -> UserInfoDetailItemPosition.LAST
+                else -> UserInfoDetailItemPosition.MIDDLE
             }
-        }
 
-        private fun initUserInfoEditText(holder: ViewHolder, item: UserInfoDetailsItem) {
-            holder.binding.userInfoEditTextEdit.setText(item.text)
-            holder.binding.userInfoInputLayout.hint = item.hint
-            holder.binding.userInfoEditTextEdit.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                    // unused atm
-                }
-
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    if (profileActivity.edit) {
-                        displayList!![holder.adapterPosition].text = holder.binding.userInfoEditTextEdit.text.toString()
-                    } else {
-                        filteredDisplayList[holder.adapterPosition].text =
-                            holder.binding.userInfoEditTextEdit.text.toString()
-                    }
-                }
-
-                override fun afterTextChanged(s: Editable) {
-                    // unused atm
-                }
-            })
-        }
-
-        private fun initScopeElements(item: UserInfoDetailsItem, holder: ViewHolder) {
-            if (item.scope == null) {
-                holder.binding.scope.visibility = View.GONE
-            } else {
-                holder.binding.scope.visibility = View.VISIBLE
-                when (item.scope) {
-                    Scope.PRIVATE -> holder.binding.scope.setImageResource(R.drawable.ic_cellphone)
-                    Scope.LOCAL -> holder.binding.scope.setImageResource(R.drawable.ic_password)
-                    Scope.FEDERATED -> holder.binding.scope.setImageResource(R.drawable.ic_contacts)
-                    Scope.PUBLISHED -> holder.binding.scope.setImageResource(R.drawable.ic_link)
-                    null -> {
-                        // nothing
-                    }
-                }
-                holder.binding.scope.contentDescription = holder.binding.scope.context.getString(
-                    R.string.scope_toggle_description,
-                    item.hint
+            if (profileActivity.edit) {
+                val itemData = UserInfoDetailItemData(
+                    icon = item.icon,
+                    text = item.text.orEmpty(),
+                    hint = item.hint,
+                    scope = item.scope
                 )
+                val listeners = UserInfoDetailListeners(
+                    onTextChange = { newText ->
+                        if (profileActivity.edit) {
+                            displayList!![position].text = newText
+                        } else {
+                            filteredDisplayList[position].text = newText
+                        }
+                    },
+                    onScopeClick = { ScopeDialog(profileActivity, this, item.field, position).show() }
+                )
+                holder.composeView.setContent {
+                    MaterialTheme(colorScheme = colorScheme) {
+                        UserInfoDetailItemEditable(
+                            data = itemData,
+                            listeners = listeners,
+                            position = itemPosition,
+                            enabled = profileActivity.editableFields.contains(item.field.toString().lowercase())
+                        )
+                    }
+                }
+            } else {
+                val displayText = when (item.field) {
+                    Field.WEBSITE -> DisplayUtils.beautifyURL(item.text)
+                    Field.TWITTER -> DisplayUtils.beautifyTwitterHandle(item.text)
+                    else -> item.text.orEmpty()
+                }
+                holder.composeView.setContent {
+                    MaterialTheme(colorScheme = colorScheme) {
+                        UserInfoDetailItemViewOnly(
+                            userInfo = UserInfoDetailItemData(
+                                icon = item.icon,
+                                text = displayText,
+                                hint = item.hint,
+                                scope = item.scope
+                            ),
+                            position = itemPosition,
+                            ellipsize = Field.EMAIL == item.field
+                        )
+                    }
+                }
             }
         }
 
@@ -774,7 +748,5 @@ class ProfileActivity : BaseActivity() {
         private val TAG = ProfileActivity::class.java.simpleName
         private const val DEFAULT_CACHE_SIZE: Int = 20
         private const val DEFAULT_RETRIES: Long = 3
-        private const val HIGH_EMPHASIS_ALPHA: Float = 0.87f
-        private const val MEDIUM_EMPHASIS_ALPHA: Float = 0.6f
     }
 }
