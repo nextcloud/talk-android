@@ -13,6 +13,7 @@
     <string name="automatic_status_set">Η κατάστασή σας ορίστηκε αυτόματα</string>
     <string name="avatar">Εικόνα προφίλ</string>
     <string name="away">Λείπω</string>
+    <string name="battery_optimization_title">Ρυθμίσεις μπαταρίας</string>
     <string name="busy">Απασχολημένος</string>
     <string name="calendar">Ημερολόγιο</string>
     <string name="call_running_since_one_hour">Η κλήση εκτελείται για μία ώρα.</string>
