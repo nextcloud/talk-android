@@ -24,7 +24,6 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
-import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.fullscreenfile.FullScreenImageActivity
@@ -61,26 +60,21 @@ import java.util.concurrent.ExecutionException
  */
 class FileViewerUtils(private val context: Context, private val user: User) {
 
-    fun openFile(message: ChatMessage, progressUi: ProgressUi) {
-        val fileName = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_NAME]!!
-        val mimetype = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_MIMETYPE]!!
-        val link = message.selectedIndividualHashMap!!["link"]!!
+    fun openFile(message: ChatMessage) {
+        val fileName = message.fileParameters.name
+        val mimetype = message.fileParameters.mimetype
+        val link = message.fileParameters.link
 
-        val fileId = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_ID]!!
-        val path = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_PATH]!!
+        val fileId = message.fileParameters.id
+        val path = message.fileParameters.path
 
-        var size = message.selectedIndividualHashMap!!["size"]
-        if (size == null) {
-            size = "-1"
-        }
-        val fileSize = size.toLong()
+        val fileSize = message.fileParameters.size
 
         openFile(
             FileInfo(fileId, fileName, fileSize),
             path,
             link,
             mimetype,
-            progressUi,
             message.openWhenDownloaded
         )
     }
@@ -90,7 +84,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         path: String,
         link: String?,
         mimetype: String?,
-        progressUi: ProgressUi,
         openWhenDownloaded: Boolean
     ) {
         if (isSupportedForInternalViewer(mimetype) || canBeHandledByExternalApp(mimetype, fileInfo.fileName)) {
@@ -98,7 +91,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
                 fileInfo,
                 path,
                 mimetype,
-                progressUi,
                 openWhenDownloaded
             )
         } else if (!link.isNullOrEmpty()) {
@@ -126,7 +118,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         fileInfo: FileInfo,
         path: String,
         mimetype: String?,
-        progressUi: ProgressUi,
         openWhenDownloaded: Boolean
     ) {
         val file = File(context.cacheDir, fileInfo.fileName)
@@ -137,13 +128,12 @@ class FileViewerUtils(private val context: Context, private val user: User) {
                 fileInfo,
                 path,
                 mimetype,
-                progressUi,
                 openWhenDownloaded
             )
         }
     }
 
-    private fun openFileByMimetype(filename: String, mimetype: String?) {
+    fun openFileByMimetype(filename: String, mimetype: String?) {
         if (mimetype != null) {
             when (mimetype) {
                 AUDIO_MPEG,
@@ -266,7 +256,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         fileInfo: FileInfo,
         path: String,
         mimetype: String?,
-        progressUi: ProgressUi,
         openWhenDownloaded: Boolean
     ) {
         // check if download worker is already running
@@ -308,14 +297,12 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             .addTag(fileInfo.fileId)
             .build()
         WorkManager.getInstance().enqueue(downloadWorker)
-        progressUi.progressBar?.visibility = View.VISIBLE
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadWorker.id)
             .observeForever { workInfo: WorkInfo? ->
                 updateViewsByProgress(
                     fileInfo.fileName,
                     mimetype,
                     workInfo!!,
-                    progressUi,
                     openWhenDownloaded
                 )
             }
@@ -325,22 +312,21 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         fileName: String,
         mimetype: String?,
         workInfo: WorkInfo,
-        progressUi: ProgressUi,
         openWhenDownloaded: Boolean
     ) {
         when (workInfo.state) {
             WorkInfo.State.RUNNING -> {
                 val progress = workInfo.progress.getInt(DownloadFileToCacheWorker.PROGRESS, -1)
                 if (progress > -1) {
-                    progressUi.messageText?.text = String.format(
-                        context.resources.getString(R.string.filename_progress),
-                        fileName,
-                        progress
-                    )
+                    // progressUi.messageText?.text = String.format(
+                    //     context.resources.getString(R.string.filename_progress),
+                    //     fileName,
+                    //     progress
+                    // )
                 }
             }
             WorkInfo.State.SUCCEEDED -> {
-                if (progressUi.previewImage.isShown && openWhenDownloaded) {
+                if (openWhenDownloaded) {
                     openFileByMimetype(fileName, mimetype)
                 } else {
                     Log.d(
@@ -350,12 +336,12 @@ class FileViewerUtils(private val context: Context, private val user: User) {
                             "openWhenDownloaded is false"
                     )
                 }
-                progressUi.messageText?.text = fileName
-                progressUi.progressBar?.visibility = View.GONE
+                // progressUi.messageText?.text = fileName
+                // progressUi.progressBar?.visibility = View.GONE
             }
             WorkInfo.State.FAILED -> {
-                progressUi.messageText?.text = fileName
-                progressUi.progressBar?.visibility = View.GONE
+                // progressUi.messageText?.text = fileName
+                // progressUi.progressBar?.visibility = View.GONE
             }
             else -> {
             }
@@ -385,7 +371,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
                                 fileName,
                                 mimeType,
                                 info!!,
-                                progressUi,
                                 openWhenDownloaded
                             )
                         }

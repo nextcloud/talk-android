@@ -1001,6 +1001,8 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun sendMessage(message: String, sendWithoutNotification: Boolean) {
+        chatActivity.chatViewModel.onMessageSent()
+
         messageInputViewModel.sendChatMessage(
             credentials = chatActivity.conversationUser!!.getCredentials(),
             url = ApiUtils.getUrlForChat(

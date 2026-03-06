@@ -78,7 +78,7 @@ import java.time.temporal.TemporalAdjusters.nextOrSame
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class DateTimeCompose(val bundle: Bundle) {
+class DateTimeCompose(val bundle: Bundle, val chatViewModel: ChatViewModel) {
     private var timeState = mutableStateOf(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.MIN))
 
     init {
@@ -89,9 +89,6 @@ class DateTimeCompose(val bundle: Bundle) {
         val apiVersion = bundle.getInt(BundleKeys.KEY_CHAT_API_VERSION)
         chatViewModel.getReminder(user, roomToken, messageId, apiVersion)
     }
-
-    @Inject
-    lateinit var chatViewModel: ChatViewModel
 
     @Inject
     lateinit var currentUserProvider: CurrentUserProviderOld

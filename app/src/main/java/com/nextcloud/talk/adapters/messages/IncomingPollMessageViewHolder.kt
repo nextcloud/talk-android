@@ -119,7 +119,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) :
 
         if (message.messageParameters != null && message.messageParameters!!.size > 0) {
             for (key in message.messageParameters!!.keys) {
-                val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
+                val individualHashMap: Map<String, String> = message.messageParameters!![key]!!
                 if (individualHashMap["type"] == "talk-poll") {
                     pollId = individualHashMap["id"]
                     pollName = individualHashMap["name"].toString()

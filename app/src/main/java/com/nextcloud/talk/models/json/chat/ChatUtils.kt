@@ -13,7 +13,7 @@ class ChatUtils {
     companion object {
         fun getParsedMessage(
             message: String?,
-            messageParameters: HashMap<String?, HashMap<String?, String?>>?
+            messageParameters: Map<String, Map<String, String>>?
         ): String? {
             if (messageParameters != null && messageParameters.size > 0) {
                 return parse(messageParameters, message)
@@ -22,7 +22,7 @@ class ChatUtils {
         }
 
         @Suppress("Detekt.ComplexMethod", "Detekt.ComplexCondition")
-        private fun parse(messageParameters: HashMap<String?, HashMap<String?, String?>>, message: String?): String? {
+        private fun parse(messageParameters: Map<String, Map<String, String>>, message: String?): String? {
             var resultMessage = message
             for (key in messageParameters.keys) {
                 val individualHashMap = messageParameters[key]
