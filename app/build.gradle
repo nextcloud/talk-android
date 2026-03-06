@@ -14,13 +14,12 @@ import com.github.spotbugs.snom.SpotBugsTask
 
 plugins {
     id "org.jetbrains.kotlin.plugin.compose" version "2.3.10"
-    id "org.jetbrains.kotlin.kapt"
+    id 'com.android.built-in-kotlin'
+    id "com.android.legacy-kapt"
     id 'com.google.devtools.ksp' version '2.3.6'
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.github.spotbugs'
 apply plugin: 'io.gitlab.arturbosch.detekt'
@@ -33,6 +32,8 @@ android {
     namespace = 'com.nextcloud.talk'
 
     defaultConfig {
+        manifestPlaceholders
+        testInstrumentationRunnerArguments TEST_SERVER_URL: "$NC_TEST_SERVER_BASEURL", TEST_SERVER_USERNAME: "$NC_TEST_SERVER_USERNAME", TEST_SERVER_PASSWORD: "$NC_TEST_SERVER_PASSWORD"
         minSdkVersion 26
         targetSdkVersion 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -87,10 +88,6 @@ android {
             getByName("androidTest").assets.srcDir("$projectDir/schemas")
         }
 
-        testInstrumentationRunnerArgument "TEST_SERVER_URL", "${NC_TEST_SERVER_BASEURL}"
-        testInstrumentationRunnerArgument "TEST_SERVER_USERNAME", "${NC_TEST_SERVER_USERNAME}"
-        testInstrumentationRunnerArgument "TEST_SERVER_PASSWORD", "${NC_TEST_SERVER_PASSWORD}"
-
         def localBroadcastPermission = "PRIVATE_BROADCAST"
         manifestPlaceholders.broadcastPermission = localBroadcastPermission
         buildConfigField "String", "PERMISSION_LOCAL_BROADCAST", "\"${localBroadcastPermission}\""
@@ -106,7 +103,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -130,10 +127,6 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = '17'
-    }
-
     buildFeatures {
         viewBinding = true
         buildConfig = true
@@ -149,6 +142,7 @@ android {
         disable 'MissingTranslation','PrivateResource'
         htmlOutput = layout.buildDirectory.file("reports/lint/lint.html").get().asFile
         htmlReport = true
+        targetSdk 36
     }
 }
 kapt {
@@ -261,6 +255,7 @@ dependencies {
     implementation 'com.github.lukaspili.autodagger2:autodagger2:1.1'
     kapt 'com.github.lukaspili.autodagger2:autodagger2-compiler:1.1'
     compileOnly 'javax.annotation:javax.annotation-api:1.3.2'
+    kapt 'javax.annotation:javax.annotation-api:1.3.2'
 
     implementation 'org.greenrobot:eventbus:3.3.1'
     implementation 'net.zetetic:sqlcipher-android:4.13.0'
