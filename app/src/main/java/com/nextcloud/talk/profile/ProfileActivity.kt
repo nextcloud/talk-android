@@ -22,6 +22,9 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
@@ -83,6 +86,7 @@ class ProfileActivity : BaseActivity() {
     private var adapter: UserInfoAdapter? = null
     private var userInfo: UserProfileData? = null
     private var editableFields = ArrayList<String>()
+    private var isProfileEnabled by mutableStateOf(false)
 
     private lateinit var pickImage: PickImage
 
@@ -118,6 +122,18 @@ class ProfileActivity : BaseActivity() {
         setupActionBar()
         setContentView(binding.root)
         initSystemBars()
+        val colorScheme = viewThemeUtils.getColorScheme(this)
+        binding.profileSettingEnabledProfile.apply {
+            this!!.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme(colorScheme = colorScheme) {
+                    ProfileEnabledCard(
+                        isEnabled = isProfileEnabled,
+                        onCheckedChange = { isProfileEnabled = it }
+                    )
+                }
+            }
+        }
     }
 
     override fun onResume() {
@@ -169,6 +185,43 @@ class ProfileActivity : BaseActivity() {
                 })
         }
         binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
+
+        if (CapabilitiesUtil.canEditScopes(currentUser!!)) {
+            ncApi.getEditableUserProfileFields(
+                credentials,
+                ApiUtils.getUrlForUserFields(currentUser!!.baseUrl!!)
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<UserProfileFieldsOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
+
+                    override fun onNext(userProfileFieldsOverall: UserProfileFieldsOverall) {
+                        editableFields = userProfileFieldsOverall.ocs!!.data!!
+                        invalidateOptionsMenu()
+                        fetchUserProfile(credentials)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "Error loading editable user profile from server", e)
+                        edit = false
+                        fetchUserProfile(credentials)
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
+        } else {
+            fetchUserProfile(credentials)
+        }
+
+        colorIcons()
+    }
+
+    private fun fetchUserProfile(credentials: String?) {
         ncApi.getUserProfile(credentials, ApiUtils.getUrlForUserProfile(currentUser!!.baseUrl!!))
             .retry(DEFAULT_RETRIES)
             .subscribeOn(Schedulers.io())
@@ -195,8 +248,6 @@ class ProfileActivity : BaseActivity() {
                     // unused atm
                 }
             })
-
-        colorIcons()
     }
 
     private fun setupActionBar() {
@@ -241,6 +292,7 @@ class ProfileActivity : BaseActivity() {
                 item.icon = ContextCompat.getDrawable(this, R.drawable.ic_check)
                 binding.emptyList.root.visibility = View.GONE
                 binding.userinfoList.visibility = View.VISIBLE
+                binding.profileSettingEnabledProfile?.visibility = View.VISIBLE
                 if (CapabilitiesUtil.hasSpreedFeatureCapability(
                         currentUser?.capabilities?.spreedCapability,
                         SpreedFeatures.TEMP_USER_AVATAR_API
@@ -278,7 +330,8 @@ class ProfileActivity : BaseActivity() {
                 item.setTitle(R.string.edit)
                 item.icon = ContextCompat.getDrawable(this, R.drawable.ic_edit)
 
-                binding.avatarButtons.visibility = View.INVISIBLE
+                binding.avatarButtons.visibility = View.GONE
+                binding.profileSettingEnabledProfile?.visibility = View.GONE
                 if (adapter!!.filteredDisplayList.isEmpty()) {
                     binding.emptyList.root.visibility = View.VISIBLE
                     binding.userinfoList.visibility = View.GONE
@@ -318,6 +371,9 @@ class ProfileActivity : BaseActivity() {
             binding.userinfoFullName.text = userInfo?.displayName
         }
         binding.loadingContent.visibility = View.VISIBLE
+
+        isProfileEnabled = "1" == userInfo?.profileEnabled
+
         adapter!!.setData(createUserInfoDetails(userInfo))
         if (
             isAllEmpty(
@@ -327,11 +383,19 @@ class ProfileActivity : BaseActivity() {
                     userInfo?.email,
                     userInfo?.address,
                     userInfo?.twitter,
-                    userInfo?.website
+                    userInfo?.website,
+                    userInfo?.biography,
+                    userInfo?.bluesky,
+                    userInfo?.fediverse,
+                    userInfo?.headline,
+                    userInfo?.organisation,
+                    userInfo?.pronouns,
+                    userInfo?.role
                 )
             )
         ) {
             binding.userinfoList.visibility = View.GONE
+            binding.profileSettingEnabledProfile?.visibility = View.GONE
             binding.loadingContent.visibility = View.GONE
             binding.emptyList.root.visibility = View.VISIBLE
             setErrorMessageForMultiList(
@@ -342,37 +406,8 @@ class ProfileActivity : BaseActivity() {
         } else {
             binding.emptyList.root.visibility = View.GONE
             binding.loadingContent.visibility = View.GONE
+            binding.profileSettingEnabledProfile?.visibility = View.GONE
             binding.userinfoList.visibility = View.VISIBLE
-        }
-
-        // show edit button
-        if (CapabilitiesUtil.canEditScopes(currentUser!!)) {
-            ncApi.getEditableUserProfileFields(
-                ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-                ApiUtils.getUrlForUserFields(currentUser!!.baseUrl!!)
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<UserProfileFieldsOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-
-                    override fun onNext(userProfileFieldsOverall: UserProfileFieldsOverall) {
-                        editableFields = userProfileFieldsOverall.ocs!!.data!!
-                        invalidateOptionsMenu()
-                        adapter!!.notifyDataSetChanged()
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, "Error loading editable user profile from server", e)
-                        edit = false
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
         }
     }
 
@@ -383,11 +418,11 @@ class ProfileActivity : BaseActivity() {
         binding.emptyList.emptyListIcon.setImageResource(errorResource)
         binding.emptyList.emptyListIcon.visibility = View.VISIBLE
         binding.emptyList.emptyListViewText.visibility = View.VISIBLE
+        binding.profileSettingEnabledProfile?.visibility = View.GONE
         binding.userinfoList.visibility = View.GONE
         binding.loadingContent.visibility = View.GONE
     }
 
-    @Suppress("Detekt.LongMethod")
     private fun createUserInfoDetails(userInfo: UserProfileData?): List<UserInfoDetailsItem> {
         val result: MutableList<UserInfoDetailsItem> = LinkedList()
 
@@ -403,11 +438,11 @@ class ProfileActivity : BaseActivity() {
             )
             result.add(
                 UserInfoDetailsItem(
-                    R.drawable.ic_phone,
-                    userInfo.phone,
-                    resources!!.getString(R.string.user_info_phone),
-                    Field.PHONE,
-                    userInfo.phoneScope
+                    R.drawable.ic_record_voice_over_24px,
+                    userInfo.pronouns,
+                    resources!!.getString(R.string.user_info_pronouns),
+                    Field.PRONOUNS,
+                    userInfo.pronounsScope
                 )
             )
             result.add(
@@ -417,6 +452,15 @@ class ProfileActivity : BaseActivity() {
                     resources!!.getString(R.string.user_info_email),
                     Field.EMAIL,
                     userInfo.emailScope
+                )
+            )
+            result.add(
+                UserInfoDetailsItem(
+                    R.drawable.ic_phone,
+                    userInfo.phone,
+                    resources!!.getString(R.string.user_info_phone),
+                    Field.PHONE,
+                    userInfo.phoneScope
                 )
             )
             result.add(
@@ -444,6 +488,60 @@ class ProfileActivity : BaseActivity() {
                     resources!!.getString(R.string.user_info_twitter),
                     Field.TWITTER,
                     userInfo.twitterScope
+                )
+            )
+            result.add(
+                UserInfoDetailsItem(
+                    R.drawable.ic_cloud_24px,
+                    userInfo.bluesky,
+                    resources!!.getString(R.string.user_info_bluesky),
+                    Field.BLUESKY,
+                    userInfo.blueskyScope
+                )
+            )
+            result.add(
+                UserInfoDetailsItem(
+                    R.drawable.ic_fediverse_24px,
+                    userInfo.fediverse,
+                    resources!!.getString(R.string.user_info_fediverse),
+                    Field.FEDIVERSE,
+                    userInfo.fediverseScope
+                )
+            )
+            result.add(
+                UserInfoDetailsItem(
+                    R.drawable.ic_home_work_24px,
+                    userInfo.organisation,
+                    resources!!.getString(R.string.user_info_organisation),
+                    Field.ORGANISATION,
+                    userInfo.organisationScope
+                )
+            )
+            result.add(
+                UserInfoDetailsItem(
+                    R.drawable.ic_work_24px,
+                    userInfo.role,
+                    resources!!.getString(R.string.user_info_role),
+                    Field.ROLE,
+                    userInfo.roleScope
+                )
+            )
+            result.add(
+                UserInfoDetailsItem(
+                    R.drawable.ic_info_24px,
+                    userInfo.headline,
+                    resources!!.getString(R.string.user_info_headline),
+                    Field.HEADLINE,
+                    userInfo.headlineScope
+                )
+            )
+            result.add(
+                UserInfoDetailsItem(
+                    R.drawable.ic_article_24px,
+                    userInfo.biography,
+                    resources!!.getString(R.string.user_info_biography),
+                    Field.BIOGRAPHY,
+                    userInfo.biographyScope
                 )
             )
         }
@@ -488,7 +586,7 @@ class ProfileActivity : BaseActivity() {
                             ).show()
                             adapter!!.updateFilteredList()
                             adapter!!.notifyDataSetChanged()
-                            Log.e(TAG, "Failed to saved: " + item.text + " as " + item.field, e)
+                            Log.e(TAG, "Failed to save: " + item.text + " as " + item.field, e)
                         }
 
                         override fun onComplete() {
@@ -502,6 +600,49 @@ class ProfileActivity : BaseActivity() {
                 saveScope(item, userInfo)
             }
             adapter!!.updateFilteredList()
+        }
+
+        // Profile enabled
+        val originalProfileEnabled = "1" == userInfo?.profileEnabled
+        if (isProfileEnabled != originalProfileEnabled) {
+            val newValue = if (isProfileEnabled) "1" else "0"
+            val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+            ncApi.setUserData(
+                credentials,
+                ApiUtils.getUrlForUserData(currentUser!!.baseUrl!!, currentUser!!.userId!!),
+                Field.PROFILE_ENABLED.fieldName,
+                newValue
+            )
+                .retry(DEFAULT_RETRIES)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<GenericOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
+
+                    override fun onNext(genericOverall: GenericOverall) {
+                        Log.d(TAG, "Successfully saved: $newValue as ${Field.PROFILE_ENABLED.fieldName}")
+                        userInfo?.profileEnabled = newValue
+                    }
+
+                    override fun onError(e: Throwable) {
+                        isProfileEnabled = originalProfileEnabled
+                        Snackbar.make(
+                            binding.root,
+                            String.format(
+                                resources!!.getString(R.string.failed_to_save),
+                                Field.PROFILE_ENABLED.fieldName
+                            ),
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                        Log.e(TAG, "Failed to save: $newValue as ${Field.PROFILE_ENABLED.fieldName}", e)
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
         }
     }
 
@@ -741,7 +882,15 @@ class ProfileActivity : BaseActivity() {
         PHONE("phone", "phoneScope"),
         ADDRESS("address", "addressScope"),
         WEBSITE("website", "websiteScope"),
-        TWITTER("twitter", "twitterScope")
+        TWITTER("twitter", "twitterScope"),
+        BIOGRAPHY("biography", "biographyScope"),
+        FEDIVERSE("fediverse", "fediverseScope"),
+        HEADLINE("headline", "headlineScope"),
+        ORGANISATION("organisation", "organisationScope"),
+        PROFILE_ENABLED("profile_enabled", "profile_enabledScope"),
+        PRONOUNS("pronouns", "pronounsScope"),
+        ROLE("role", "roleScope"),
+        BLUESKY("bluesky", "blueskyScope")
     }
 
     companion object {

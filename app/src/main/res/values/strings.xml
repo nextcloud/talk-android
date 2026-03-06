@@ -682,6 +682,15 @@ How to translate with transifex:
     <string name="user_info_website">Website</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_displayname">Full name</string>
+    <string name="user_info_biography">Biography</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Headline</string>
+    <string name="user_info_organisation">Organisation</string>
+    <string name="user_info_profile_enable">Enable profile</string>
+    <string name="user_info_profile_disable">Disable profile</string>
+    <string name="user_info_pronouns">Pronouns</string>
+    <string name="user_info_role">Role</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="file_list_folder">folder</string>
     <string name="file_list_loading">Loading …</string>
     <string name="edit">Edit</string>
