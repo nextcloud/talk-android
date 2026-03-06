@@ -698,7 +698,6 @@ How to translate with transifex:
     <string name="scope_federated_description">Only synchronize to trusted servers</string>
     <string name="scope_published_title">Published</string>
     <string name="scope_published_description">Synchronize to trusted servers and the global and public address book</string>
-    <string name="scope_toggle">Scope toggle</string>
     <string name="scope_toggle_description">Change privacy level of %1$s</string>
 
     <!-- App Bar -->
