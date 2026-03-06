@@ -19,7 +19,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -41,11 +40,16 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.ui.SwipeToCloseLayout
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX_GENERIC
 import java.io.File
+import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class FullScreenMediaActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
 
     private lateinit var path: String
     private lateinit var fileName: String
@@ -56,6 +60,7 @@ class FullScreenMediaActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         fileName = intent.getStringExtra("FILE_NAME").orEmpty()
         val isAudioOnly = intent.getBooleanExtra("AUDIO_ONLY", false)
@@ -77,7 +82,8 @@ class FullScreenMediaActivity : AppCompatActivity() {
         val composeView = ComposeView(this).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                MaterialTheme(colorScheme = darkColorScheme()) {
+                val colorScheme = viewThemeUtils.getColorScheme(this@FullScreenMediaActivity)
+                MaterialTheme(colorScheme = colorScheme) {
                     FullScreenMediaScreen(
                         title = fileName,
                         player = player,
