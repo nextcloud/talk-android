@@ -365,6 +365,8 @@
     <string name="nc_no_open_conversations_headline">Nenhuma conversa aberta</string>
     <string name="nc_no_open_conversations_text">Não há conversas abertas nas quais você possa entrar.\nOu não há conversas abertas ou você já entrou em todas elas.</string>
     <string name="nc_no_proxy">Sem proxy</string>
+    <string name="nc_no_search_results_headline">Nenhum resultado para sua pesquisa</string>
+    <string name="nc_no_search_results_text">Verifique o termo de pesquisa ou tente usar outro.</string>
     <string name="nc_not_allowed_to_activate_audio">Você não tem permissão para ativar o áudio!</string>
     <string name="nc_not_allowed_to_activate_video">Você não tem permissão para ativar o vídeo!</string>
     <string name="nc_not_now">Agora não</string>
