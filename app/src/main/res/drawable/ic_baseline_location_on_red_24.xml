@@ -1,15 +1,21 @@
 <!--
   ~ Nextcloud Talk - Android Client
   ~
-  ~ SPDX-FileCopyrightText: 2021-2024 Google LLC
+  ~ SPDX-FileCopyrightText: 2021-2026 Google LLC
   ~ SPDX-License-Identifier: Apache-2.0
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="960"
-    android:viewportHeight="960">
+    android:viewportWidth="24"
+    android:viewportHeight="24">
     <path
-        android:fillColor="#FF0000"
-        android:pathData="M480,480Q513,480 536.5,456.5Q560,433 560,400Q560,367 536.5,343.5Q513,320 480,320Q447,320 423.5,343.5Q400,367 400,400Q400,433 423.5,456.5Q447,480 480,480ZM480,880Q319,743 239.5,625.5Q160,508 160,408Q160,258 256.5,169Q353,80 480,80Q607,80 703.5,169Q800,258 800,408Q800,508 720.5,625.5Q641,743 480,880Z" />
+        android:fillColor="#FFDF3F2F"
+        android:fillType="nonZero"
+        android:pathData="M12,22C9.317,19.717 7.313,17.596 5.988,15.637C4.662,13.679 4,11.867 4,10.2C4,7.7 4.804,5.708 6.412,4.225C8.021,2.742 9.883,2 12,2C14.117,2 15.979,2.742 17.587,4.225C19.196,5.708 20,7.7 20,10.2C20,11.867 19.337,13.679 18.013,15.637C16.688,17.596 14.683,19.717 12,22Z"
+        android:strokeWidth="0.5"
+        android:strokeColor="#000000" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M13.413,11.413C13.021,11.804 12.55,12 12,12C11.45,12 10.979,11.804 10.588,11.413C10.196,11.021 10,10.55 10,10C10,9.45 10.196,8.979 10.588,8.587C10.979,8.196 11.45,8 12,8C12.55,8 13.021,8.196 13.413,8.587C13.804,8.979 14,9.45 14,10C14,10.55 13.804,11.021 13.413,11.413Z" />
 </vector>
