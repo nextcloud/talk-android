@@ -365,6 +365,8 @@
     <string name="nc_no_open_conversations_headline">Keine offenen Unterhaltungen</string>
     <string name="nc_no_open_conversations_text">Keine offenen Unterhaltungen, denen Sie beitreten können.\nEntweder existieren keine offenen Unterhaltungen oder Sie sind bereits allen offenen Unterhaltungen beigetreten.</string>
     <string name="nc_no_proxy">Kein Proxy</string>
+    <string name="nc_no_search_results_headline">Keine Ergebnisse für Ihre Suche</string>
+    <string name="nc_no_search_results_text">Bitte den Suchbegriff überprüfen oder es mit einem anderen versuchen.</string>
     <string name="nc_not_allowed_to_activate_audio">Sie dürfen Audio nicht aktivieren!</string>
     <string name="nc_not_allowed_to_activate_video">Sie dürfen Video nicht aktivieren!</string>
     <string name="nc_not_now">Nicht jetzt</string>
