@@ -39,6 +39,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.ShareUtils
+import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
@@ -192,6 +193,10 @@ class ConversationsListBottomDialog(
                 canGeneratePrettyURL
             )
             dismiss()
+        }
+
+        binding.conversationAddToHomeScreen.setOnClickListener {
+            addConversationToHomeScreen()
         }
 
         if (conversation.hasArchived) {
@@ -447,6 +452,16 @@ class ConversationsListBottomDialog(
             activity.showDeleteConversationDialog(conversation)
         }
 
+        dismiss()
+    }
+
+    private fun addConversationToHomeScreen() {
+        val success = ShortcutManagerHelper.requestPinShortcut(context, conversation, currentUser)
+        if (success) {
+            activity.showSnackbar(context.resources.getString(R.string.nc_shortcut_created))
+        } else {
+            activity.showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
+        }
         dismiss()
     }
 
