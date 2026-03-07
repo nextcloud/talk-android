@@ -566,6 +566,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Csúsztassa a megszakításhoz</string>
     <string name="nc_webinar">Webinár</string>
     <string name="nc_yes">Igen</string>
+    <string name="nc_zoom_in">Nagyítás</string>
+    <string name="nc_zoom_out">Kicsinyítés</string>
     <string name="next_week">Következő hét</string>
     <string name="no_conversations_archived">Nincs archivált beszélgetés</string>
     <string name="no_offline_messages_saved">Nincs mentett offline üzenet</string>

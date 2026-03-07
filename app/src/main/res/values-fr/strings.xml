@@ -570,6 +570,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Balayer pour annuler</string>
     <string name="nc_webinar">Webinaire</string>
     <string name="nc_yes">Oui</string>
+    <string name="nc_zoom_in">Zoomer</string>
+    <string name="nc_zoom_out">Dézoomer</string>
     <string name="next_week">Semaine suivante</string>
     <string name="no_conversations_archived">Aucune conversation archivée</string>
     <string name="no_offline_messages_saved">Aucun message hors-ligne trouvé</string>

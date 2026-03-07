@@ -566,6 +566,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_voice_message_slide_to_cancel">« Schuiven om te annuleren</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Ja</string>
+    <string name="nc_zoom_in">Inzoomen</string>
+    <string name="nc_zoom_out">Uitzoomen</string>
     <string name="next_week">Volgende week</string>
     <string name="no_conversations_archived">Geen gearchiveerde gesprekken</string>
     <string name="no_offline_messages_saved">Geen offline berichten bewaard</string>

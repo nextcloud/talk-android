@@ -581,6 +581,8 @@
     <string name="nc_voice_message_slide_to_cancel">« 滑動取消</string>
     <string name="nc_webinar">網路研討會</string>
     <string name="nc_yes">是</string>
+    <string name="nc_zoom_in">放大</string>
+    <string name="nc_zoom_out">縮小</string>
     <string name="next_week">下週</string>
     <string name="no_conversations_archived">無封存的對話</string>
     <string name="no_offline_messages_saved">未儲存離線訊息</string>

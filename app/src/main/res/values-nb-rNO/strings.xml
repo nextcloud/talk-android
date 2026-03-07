@@ -505,6 +505,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Skyv for å avbryte</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Ja</string>
+    <string name="nc_zoom_in">Zoom inn</string>
+    <string name="nc_zoom_out">Zoom ut</string>
     <string name="next_week">Neste uke</string>
     <string name="no_phone_book_integration_due_to_permissions">Ingen telefonnummerintegrasjon på grunn av manglende rettigheter</string>
     <string name="notification_all_messages">Alle meldinger</string>

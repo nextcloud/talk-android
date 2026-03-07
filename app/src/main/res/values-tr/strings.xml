@@ -579,6 +579,8 @@
     <string name="nc_voice_message_slide_to_cancel">« İptal etmek için kaydırın</string>
     <string name="nc_webinar">İnternet sunumu</string>
     <string name="nc_yes">Evet</string>
+    <string name="nc_zoom_in">Yakınlaştır</string>
+    <string name="nc_zoom_out">Uzaklaştır</string>
     <string name="next_week">Sonraki hafta</string>
     <string name="no_conversations_archived">Arşivlenmiş bir görüşme yok</string>
     <string name="no_offline_messages_saved">Herhangi bir çevrim dışı iletisi kaydedilmemiş</string>

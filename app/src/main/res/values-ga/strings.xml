@@ -579,6 +579,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Sleamhnán le cur ar ceal</string>
     <string name="nc_webinar">webinar</string>
     <string name="nc_yes">Tá</string>
+    <string name="nc_zoom_in">Zúmáil isteach</string>
+    <string name="nc_zoom_out">Súmáil amach</string>
     <string name="next_week">An tseachtain seo chugainn</string>
     <string name="no_conversations_archived">Níl aon chomhráite sa chartlann</string>
     <string name="no_offline_messages_saved">Níor sábháladh aon teachtaireacht as líne</string>

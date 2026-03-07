@@ -353,6 +353,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Liu\'uta peruuttaaksesi</string>
     <string name="nc_webinar">Webinaari</string>
     <string name="nc_yes">Kyllä</string>
+    <string name="nc_zoom_in">Lähennä</string>
+    <string name="nc_zoom_out">Loitonna</string>
     <string name="next_week">Seuraava viikko</string>
     <string name="notifications_default">Oletus</string>
     <string name="oneHour">1 tunti</string>

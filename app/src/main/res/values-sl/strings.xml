@@ -421,6 +421,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Potegnite za preklic</string>
     <string name="nc_webinar">Spletinar</string>
     <string name="nc_yes">Da</string>
+    <string name="nc_zoom_in">Približaj</string>
+    <string name="nc_zoom_out">Oddalji</string>
     <string name="next_week">Naslednji teden</string>
     <string name="no_phone_book_integration_due_to_permissions">Povezava s telefonskim imenikom ni na voljo zaradi neustreznih dovoljenj.</string>
     <string name="notifications_default">Privzeto</string>

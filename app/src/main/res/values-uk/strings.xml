@@ -564,6 +564,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Зсунути для скасування</string>
     <string name="nc_webinar">Вебінар</string>
     <string name="nc_yes">Так</string>
+    <string name="nc_zoom_in">Наблизити</string>
+    <string name="nc_zoom_out">Зменшення</string>
     <string name="next_week">Наступний тиждень</string>
     <string name="no_conversations_archived">Розмови не архівуються</string>
     <string name="no_offline_messages_saved">Не збережено жодного офлайн-повідомлення</string>

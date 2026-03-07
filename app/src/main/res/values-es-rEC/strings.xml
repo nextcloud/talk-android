@@ -405,6 +405,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Deslizar para cancelar</string>
     <string name="nc_webinar">Seminario web</string>
     <string name="nc_yes">Sí</string>
+    <string name="nc_zoom_in">Acerca</string>
+    <string name="nc_zoom_out">Alejar</string>
     <string name="next_week">Semana siguiente</string>
     <string name="no_phone_book_integration_due_to_permissions">No hay integración de número de teléfono debido a permisos faltantes</string>
     <string name="notification_all_messages">Todos los mensajes</string>

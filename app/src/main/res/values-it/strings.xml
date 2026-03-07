@@ -564,6 +564,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Scorri per annullare</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Sì</string>
+    <string name="nc_zoom_in">Ingrandisci</string>
+    <string name="nc_zoom_out">Rimpicciolisci</string>
     <string name="next_week">Settimana successiva</string>
     <string name="no_conversations_archived">Nessuna conversazione archiviato</string>
     <string name="no_offline_messages_saved">Nessun messaggio offline salvato</string>
