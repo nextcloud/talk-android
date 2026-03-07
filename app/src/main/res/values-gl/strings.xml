@@ -579,6 +579,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Esvare para cancelar</string>
     <string name="nc_webinar">Seminario web</string>
     <string name="nc_yes">Si</string>
+    <string name="nc_zoom_in">Achegar</string>
+    <string name="nc_zoom_out">Afastar</string>
     <string name="next_week">Semana seguinte</string>
     <string name="no_conversations_archived">Non hai conversas arquivadas</string>
     <string name="no_offline_messages_saved">Non se gardou ningunha mensaxe sen conexión</string>

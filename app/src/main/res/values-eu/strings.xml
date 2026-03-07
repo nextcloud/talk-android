@@ -464,6 +464,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Irristatu bertan behera uzteko</string>
     <string name="nc_webinar">Web-mintegia</string>
     <string name="nc_yes">Bai</string>
+    <string name="nc_zoom_in">Hurbildu</string>
+    <string name="nc_zoom_out">Txikiagotu</string>
     <string name="next_week">Hurrengo astea</string>
     <string name="no_phone_book_integration_due_to_permissions">Ezin izan da telefono zenbakia integratu, baimen falta dela eta</string>
     <string name="notification_off">Off</string>

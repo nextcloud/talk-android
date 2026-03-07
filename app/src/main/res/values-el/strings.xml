@@ -386,6 +386,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Σύρετε για ακύρωση</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Ναι</string>
+    <string name="nc_zoom_in">Μεγέθυνση</string>
+    <string name="nc_zoom_out">Σμίκρυνση</string>
     <string name="next_week">Επόμενη εβδομάδα</string>
     <string name="no_phone_book_integration_due_to_permissions">Δεν υπάρχει ενσωμάτωση αριθμού τηλεφώνου λόγω έλλειψης δικαιωμάτων</string>
     <string name="notification_off">Απενεργοποιημένο</string>

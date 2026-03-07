@@ -579,6 +579,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Katkestamiseks viipa</string>
     <string name="nc_webinar">Veebiseminar</string>
     <string name="nc_yes">Jah</string>
+    <string name="nc_zoom_in">Suumi sisse</string>
+    <string name="nc_zoom_out">Suumi välja</string>
     <string name="next_week">Järgmine nädal</string>
     <string name="no_conversations_archived">Arhiveeritud vestlusi pole</string>
     <string name="no_offline_messages_saved">Ühtegi vallasrežiimis salvestatud sõnumit ei leidu</string>

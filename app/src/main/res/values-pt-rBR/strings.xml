@@ -581,6 +581,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Deslize para cancelar</string>
     <string name="nc_webinar">Webinarário</string>
     <string name="nc_yes">Sim</string>
+    <string name="nc_zoom_in">Aumentar zoom</string>
+    <string name="nc_zoom_out">Diminuir zoom</string>
     <string name="next_week">Próxima semana</string>
     <string name="no_conversations_archived">Nenhuma conversa arquivada</string>
     <string name="no_offline_messages_saved">Nenhuma mensagem off-line foi salva</string>

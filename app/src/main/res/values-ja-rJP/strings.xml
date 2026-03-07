@@ -500,6 +500,8 @@
     <string name="nc_voice_message_slide_to_cancel">« スライドしてキャンセル</string>
     <string name="nc_webinar">ウェビナー</string>
     <string name="nc_yes">はい</string>
+    <string name="nc_zoom_in">拡大</string>
+    <string name="nc_zoom_out">縮小</string>
     <string name="next_week">来週</string>
     <string name="no_phone_book_integration_due_to_permissions">利用権限がないため、電話番号統合ができません。</string>
     <string name="notification_mention_only">\@で直接会話</string>

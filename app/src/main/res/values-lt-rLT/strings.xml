@@ -321,6 +321,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Perbraukite norėdami atsisakyti</string>
     <string name="nc_webinar">Internetinis seminaras</string>
     <string name="nc_yes">Taip</string>
+    <string name="nc_zoom_in">Didinti</string>
+    <string name="nc_zoom_out">Mažinti</string>
     <string name="next_week">Kita savaitė</string>
     <string name="notifications_default">Numatytasis</string>
     <string name="oneHour">1 valanda</string>

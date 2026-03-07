@@ -398,6 +398,8 @@
     <string name="nc_voice_message_slide_to_cancel">« 취소하려면 슬라이드하세요.</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">예</string>
+    <string name="nc_zoom_in">확대</string>
+    <string name="nc_zoom_out">줌 아웃</string>
     <string name="next_week">다음주</string>
     <string name="no_phone_book_integration_due_to_permissions">권한 없음으로 인하여 전화 번호를 통합하지 않습니다.</string>
     <string name="notification_mention_only">\@-언급만</string>

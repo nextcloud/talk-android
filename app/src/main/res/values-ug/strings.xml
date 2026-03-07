@@ -566,6 +566,8 @@
     <string name="nc_voice_message_slide_to_cancel">«ئەمەلدىن قالدۇرۇش</string>
     <string name="nc_webinar">تور سۆھبىتى</string>
     <string name="nc_yes">ھەئە</string>
+    <string name="nc_zoom_in">چوڭايتىش</string>
+    <string name="nc_zoom_out">چوڭايتىڭ</string>
     <string name="next_week">كېلەر ھەپتە</string>
     <string name="no_conversations_archived">ئارخىپلانغان سۆھبەت يوق</string>
     <string name="no_offline_messages_saved">ساقلانغان تورسىز ئۇچۇر يوق</string>

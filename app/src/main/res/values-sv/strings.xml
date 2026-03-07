@@ -565,6 +565,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Dra för att avbryta</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Ja</string>
+    <string name="nc_zoom_in">Zooma in</string>
+    <string name="nc_zoom_out">Zooma ut</string>
     <string name="next_week">Nästa vecka</string>
     <string name="no_conversations_archived">Inga arkiverade konversationer</string>
     <string name="no_offline_messages_saved">Inga offlinemeddelanden sparade</string>

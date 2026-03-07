@@ -566,6 +566,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Превуците да откажете</string>
     <string name="nc_webinar">Вебинар</string>
     <string name="nc_yes">Да</string>
+    <string name="nc_zoom_in">Увеличај</string>
+    <string name="nc_zoom_out">Умањи приказ</string>
     <string name="next_week">Наредне недеље</string>
     <string name="no_conversations_archived">Нема архивираних разговора</string>
     <string name="no_offline_messages_saved">Није сачувана ниједна порука за ван мреже</string>

@@ -365,6 +365,8 @@
     <string name="nc_no_open_conversations_headline">沒有公開的對話</string>
     <string name="nc_no_open_conversations_text">沒有您可以加入的公開對話。\n可能是沒有公開的對話，或是您已經加入全部的公開對話。</string>
     <string name="nc_no_proxy">無proxy代理</string>
+    <string name="nc_no_search_results_headline">您的搜尋沒有結果</string>
+    <string name="nc_no_search_results_text">請檢查您的搜尋詞彙，或嘗試使用其他關鍵字。</string>
     <string name="nc_not_allowed_to_activate_audio">你無權啟動音頻！</string>
     <string name="nc_not_allowed_to_activate_video">你無權啟動視像！</string>
     <string name="nc_not_now">現在不了</string>
@@ -579,6 +581,8 @@
     <string name="nc_voice_message_slide_to_cancel">« 滑動取消</string>
     <string name="nc_webinar">網絡研討會</string>
     <string name="nc_yes">是</string>
+    <string name="nc_zoom_in">放大</string>
+    <string name="nc_zoom_out">縮小</string>
     <string name="next_week">下星期</string>
     <string name="no_conversations_archived">沒有已封存的對話</string>
     <string name="no_offline_messages_saved">未儲存離線訊息</string>
