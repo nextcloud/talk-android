@@ -80,7 +80,6 @@ fun UserInfoDetailItemEditable(
             },
             modifier = Modifier.weight(1f),
             label = { Text(data.hint) },
-            singleLine = true,
             enabled = enabled,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             colors = OutlinedTextFieldDefaults.colors(
