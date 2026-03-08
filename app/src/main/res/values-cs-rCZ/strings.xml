@@ -578,6 +578,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Zrušíte přejetím prstem</string>
     <string name="nc_webinar">Webinář</string>
     <string name="nc_yes">Ano</string>
+    <string name="nc_zoom_in">Přiblížit</string>
+    <string name="nc_zoom_out">Oddálit</string>
     <string name="next_week">Příští týden</string>
     <string name="no_conversations_archived">Žádné archivované konverzace</string>
     <string name="no_offline_messages_saved">Neuloženy žádné zprávy pro režim bez připojení</string>

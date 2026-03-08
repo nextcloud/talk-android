@@ -404,6 +404,8 @@
     <string name="nc_voice_message_slide_to_cancel">«Плъзнете, за да отмените</string>
     <string name="nc_webinar">Уебинар</string>
     <string name="nc_yes">Да</string>
+    <string name="nc_zoom_in">Увеличаване на мащаба</string>
+    <string name="nc_zoom_out">Намаляване на мащаба</string>
     <string name="next_week">Следваща седмица</string>
     <string name="no_phone_book_integration_due_to_permissions">Няма интеграция на телефонен номер поради липсващи права</string>
     <string name="notification_all_messages">Всички съобщения</string>
