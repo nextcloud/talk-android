@@ -67,6 +67,7 @@ import com.nextcloud.talk.receivers.MarkAsReadReceiver
 import com.nextcloud.talk.receivers.ShareRecordingToChatReceiver
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.cancelAllNotificationsForAccount
@@ -735,7 +736,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 ApiUtils.getUrlForAvatar(
                     baseUrl!!,
                     notificationUser.id,
-                    false
+                    false,
+                    darkMode = DisplayUtils.isDarkModeOn(context!!)
                 )
             } else {
                 ApiUtils.getUrlForGuestAvatar(baseUrl!!, notificationUser.name, false)

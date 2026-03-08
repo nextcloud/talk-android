@@ -480,7 +480,9 @@ class ComposeChatAdapter(
             horizontalArrangement = if (incoming) Arrangement.Start else Arrangement.End
         ) {
             if (incoming) {
-                val imageUri = message.actorId?.let { viewModel.contactsViewModel.getImageUri(it, true) }
+                val imageUri = message.actorId?.let {
+                    viewModel.contactsViewModel.getImageUri(it, true, DisplayUtils.isDarkModeOn(LocalContext.current))
+                }
                 val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
                 val loadedImage = loadImage(imageUri, LocalContext.current, errorPlaceholderImage)
                 AsyncImage(

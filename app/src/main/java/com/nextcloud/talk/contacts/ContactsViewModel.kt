@@ -175,11 +175,12 @@ class ContactsViewModel @Inject constructor(
         }
     }
 
-    fun getImageUri(avatarId: String, requestBigSize: Boolean): String =
+    fun getImageUri(avatarId: String, requestBigSize: Boolean, isDarkMode: Boolean): String =
         repository.getImageUri(
             currentUser,
             avatarId,
-            requestBigSize
+            requestBigSize,
+            isDarkMode
         )
 
     sealed class ContactsUiState {

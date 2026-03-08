@@ -334,15 +334,10 @@ object ApiUtils {
     fun getUrlPostfixForStatus(): String = "/status.php"
 
     @JvmStatic
-    fun getUrlForAvatar(baseUrl: String?, name: String?, requestBigSize: Boolean): String {
+    fun getUrlForAvatar(baseUrl: String?, name: String?, requestBigSize: Boolean, darkMode: Boolean = false): String {
         val avatarSize = if (requestBigSize) AVATAR_SIZE_BIG else AVATAR_SIZE_SMALL
-        return baseUrl + "/index.php/avatar/" + Uri.encode(name) + "/" + avatarSize
-    }
-
-    @JvmStatic
-    fun getUrlForAvatarDarkTheme(baseUrl: String?, name: String?, requestBigSize: Boolean): String {
-        val avatarSize = if (requestBigSize) AVATAR_SIZE_BIG else AVATAR_SIZE_SMALL
-        return baseUrl + "/index.php/avatar/" + Uri.encode(name) + "/" + avatarSize + "/dark"
+        val darkPath = if (darkMode) "/dark" else ""
+        return baseUrl + "/index.php/avatar/" + Uri.encode(name) + "/" + avatarSize + darkPath
     }
 
     @JvmStatic

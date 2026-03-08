@@ -232,12 +232,8 @@ class ConversationCreationViewModel @Inject constructor(
         }
     }
 
-    fun getImageUri(avatarId: String, requestBigSize: Boolean): String =
-        ApiUtils.getUrlForAvatar(
-            _currentUser.baseUrl,
-            avatarId,
-            requestBigSize
-        )
+    fun getImageUri(avatarId: String, requestBigSize: Boolean, isDarkMode: Boolean): String =
+        ApiUtils.getUrlForAvatar(_currentUser.baseUrl, avatarId, requestBigSize, darkMode = isDarkMode)
 }
 
 sealed class AllowGuestsUiState {
