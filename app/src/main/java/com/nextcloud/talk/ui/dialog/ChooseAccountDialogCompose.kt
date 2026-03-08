@@ -291,7 +291,8 @@ class ChooseAccountDialogCompose {
                 model = ApiUtils.getUrlForAvatar(
                     userItem.user.baseUrl,
                     userItem.user.userId,
-                    true
+                    true,
+                    darkMode = DisplayUtils.isDarkModeOn(LocalContext.current)
                 ),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
@@ -457,7 +458,12 @@ private fun CurrentUserSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box {
-            val avatarUrl = ApiUtils.getUrlForAvatar(currentUser.baseUrl, currentUser.userId, true)
+            val avatarUrl = ApiUtils.getUrlForAvatar(
+                currentUser.baseUrl,
+                currentUser.userId,
+                true,
+                darkMode = DisplayUtils.isDarkModeOn(context)
+            )
             val request = loadImage(
                 avatarUrl,
                 context,

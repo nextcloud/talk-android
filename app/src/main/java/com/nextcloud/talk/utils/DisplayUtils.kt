@@ -201,7 +201,7 @@ object DisplayUtils {
         }
         chip.setBounds(0, 0, chip.intrinsicWidth, chip.intrinsicHeight)
         if (!isGroup) {
-            var url = getUrlForAvatar(conversationUser.baseUrl, id, false)
+            var url = getUrlForAvatar(conversationUser.baseUrl, id, false, isDarkModeOn(context))
             if ("guests" == type || "guest" == type || "email" == type) {
                 url = getUrlForGuestAvatar(
                     conversationUser.baseUrl,
