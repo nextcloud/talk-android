@@ -115,16 +115,21 @@ class ProfileActivity : BaseActivity() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(KEY_EDIT_MODE, edit)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         binding = ActivityProfileBinding.inflate(layoutInflater)
+        edit = savedInstanceState?.getBoolean(KEY_EDIT_MODE) ?: false
         setupActionBar()
         setContentView(binding.root)
         initSystemBars()
         val colorScheme = viewThemeUtils.getColorScheme(this)
         binding.profileSettingEnabledProfile.apply {
-            this!!.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialTheme(colorScheme = colorScheme) {
                     ProfileEnabledCard(
@@ -292,7 +297,7 @@ class ProfileActivity : BaseActivity() {
                 item.icon = ContextCompat.getDrawable(this, R.drawable.ic_check)
                 binding.emptyList.root.visibility = View.GONE
                 binding.userinfoList.visibility = View.VISIBLE
-                binding.profileSettingEnabledProfile?.visibility = View.VISIBLE
+                binding.profileSettingEnabledProfile.visibility = View.VISIBLE
                 if (CapabilitiesUtil.hasSpreedFeatureCapability(
                         currentUser?.capabilities?.spreedCapability,
                         SpreedFeatures.TEMP_USER_AVATAR_API
@@ -331,7 +336,7 @@ class ProfileActivity : BaseActivity() {
                 item.icon = ContextCompat.getDrawable(this, R.drawable.ic_edit)
 
                 binding.avatarButtons.visibility = View.GONE
-                binding.profileSettingEnabledProfile?.visibility = View.GONE
+                binding.profileSettingEnabledProfile.visibility = View.GONE
                 if (adapter!!.filteredDisplayList.isEmpty()) {
                     binding.emptyList.root.visibility = View.VISIBLE
                     binding.userinfoList.visibility = View.GONE
@@ -395,7 +400,7 @@ class ProfileActivity : BaseActivity() {
             )
         ) {
             binding.userinfoList.visibility = View.GONE
-            binding.profileSettingEnabledProfile?.visibility = View.GONE
+            binding.profileSettingEnabledProfile.visibility = if (edit) View.VISIBLE else View.GONE
             binding.loadingContent.visibility = View.GONE
             binding.emptyList.root.visibility = View.VISIBLE
             setErrorMessageForMultiList(
@@ -406,8 +411,22 @@ class ProfileActivity : BaseActivity() {
         } else {
             binding.emptyList.root.visibility = View.GONE
             binding.loadingContent.visibility = View.GONE
-            binding.profileSettingEnabledProfile?.visibility = View.GONE
+            binding.profileSettingEnabledProfile.visibility = if (edit) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
             binding.userinfoList.visibility = View.VISIBLE
+        }
+        binding.avatarButtons.visibility = if (edit &&
+            CapabilitiesUtil.hasSpreedFeatureCapability(
+                currentUser?.capabilities?.spreedCapability,
+                SpreedFeatures.TEMP_USER_AVATAR_API
+            )
+        ) {
+            View.VISIBLE
+        } else {
+            View.GONE
         }
     }
 
@@ -418,7 +437,7 @@ class ProfileActivity : BaseActivity() {
         binding.emptyList.emptyListIcon.setImageResource(errorResource)
         binding.emptyList.emptyListIcon.visibility = View.VISIBLE
         binding.emptyList.emptyListViewText.visibility = View.VISIBLE
-        binding.profileSettingEnabledProfile?.visibility = View.GONE
+        binding.profileSettingEnabledProfile.visibility = View.GONE
         binding.userinfoList.visibility = View.GONE
         binding.loadingContent.visibility = View.GONE
     }
@@ -898,5 +917,6 @@ class ProfileActivity : BaseActivity() {
         private val TAG = ProfileActivity::class.java.simpleName
         private const val DEFAULT_CACHE_SIZE: Int = 20
         private const val DEFAULT_RETRIES: Long = 3
+        private const val KEY_EDIT_MODE = "edit_mode"
     }
 }
