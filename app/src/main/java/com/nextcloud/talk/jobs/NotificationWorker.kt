@@ -108,7 +108,6 @@ import java.security.NoSuchAlgorithmException
 import java.security.PrivateKey
 import java.util.concurrent.TimeUnit
 import java.util.function.Consumer
-import java.util.zip.CRC32
 import javax.crypto.Cipher
 import javax.crypto.NoSuchPaddingException
 import javax.inject.Inject
@@ -591,18 +590,18 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 .addReplyAction(systemNotificationId)
                 .addMarkAsReadAction(systemNotificationId)
                 .setOnlyAlertOnce(false)
-                .prepareChatNotification(activeStatusBarNotification)
+                .apply {
+                    imagePreviewUrl?.let {
+                        styleImageNotification(it)
+                    } ?: {
+                        prepareChatNotification(activeStatusBarNotification)
+                    }
+                }
                 .addBubble(
                     activeStatusBarNotification,
                     effectiveShortcutId,
                     bubbleAllowed
                 )
-
-            if (imagePreviewUrl != null) {
-                styleImageNotification(notificationBuilder)
-            } else {
-                notificationBuilder.prepareChatNotification(activeStatusBarNotification)
-            }
         }
 
         if (TYPE_RECORDING == pushMessage.type && ncNotification != null) {
@@ -785,22 +784,20 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return largeIcon
     }
 
-    private fun calculateCRC32(s: String): Long {
-        val crc32 = CRC32()
-        crc32.update(s.toByteArray())
-        return crc32.value
-    }
-
-    private fun styleImageNotification(notificationBuilder: NotificationCompat.Builder) {
-        val bitmap = loadImageBitmapSync(imagePreviewUrl!!)
-        if (bitmap != null) {
-            notificationBuilder
-                .setLargeIcon(bitmap)
-                .setStyle(
+    /**
+     * This only adds a style and a large icon if the bitmap for the given image url is not null
+     */
+    private fun NotificationCompat.Builder.styleImageNotification(url: String): NotificationCompat.Builder {
+        val bitmap = loadImageBitmapSync(url)
+        return this.apply {
+            if (bitmap != null) {
+                setLargeIcon(bitmap)
+                setStyle(
                     NotificationCompat.BigPictureStyle()
                         .bigPicture(bitmap)
                         .bigLargeIcon(null as Bitmap?)
                 )
+            }
         }
     }
 
