@@ -24,7 +24,6 @@ object DeepLinkHandler {
 
     private const val SCHEME_NEXTCLOUD_TALK = "nextcloudtalk"
     private const val PATH_CALL = "call"
-    private const val PATH_INDEX_PHP = "index.php"
 
     // Token validation: alphanumeric characters, reasonable length
     private val TOKEN_PATTERN = Regex("^[a-zA-Z0-9]{4,32}$")
