@@ -44,6 +44,12 @@
         <item name="iconTint">@color/fontAppbar</item>
     </style>
 
+
+    <style name="ImagePickerTheme.NonFullScreen" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
     <style name="ChatSendButtonMenu" parent="@style/Widget.Material3.PopupMenu">
         <item name="android:dropDownVerticalOffset">-90dp</item>
         <item name="android:colorPrimary">@color/fg_inverse</item>
