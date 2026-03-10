@@ -76,7 +76,7 @@
             android:layout_below="@id/userinfo_baseurl"
             android:layout_centerInParent="true"
             android:orientation="horizontal"
-            android:visibility="invisible"
+            android:visibility="gone"
             tools:visibility="visible">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -132,6 +132,16 @@
                 app:srcCompat="@drawable/trashbin" />
 
         </LinearLayout>
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/profile_setting_enabled_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/avatar_buttons"
+            android:layout_marginHorizontal="@dimen/standard_margin"
+            android:layout_marginBottom="@dimen/standard_margin"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
     </RelativeLayout>
 

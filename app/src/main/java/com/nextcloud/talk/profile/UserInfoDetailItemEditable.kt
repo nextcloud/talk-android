@@ -50,7 +50,8 @@ fun UserInfoDetailItemEditable(
     data: UserInfoDetailItemData,
     listeners: UserInfoDetailListeners,
     position: UserInfoDetailItemPosition,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    multiLine: Boolean = false
 ) {
     val topPadding = if (position == UserInfoDetailItemPosition.FIRST) 0.dp else 8.dp
     val bottomPadding = if (position == UserInfoDetailItemPosition.LAST) 16.dp else 8.dp
@@ -80,9 +81,9 @@ fun UserInfoDetailItemEditable(
             },
             modifier = Modifier.weight(1f),
             label = { Text(data.hint) },
-            singleLine = true,
             enabled = enabled,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            singleLine = !multiLine,
+            keyboardOptions = KeyboardOptions(imeAction = if (multiLine) ImeAction.Default else ImeAction.Next),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                 focusedLabelColor = MaterialTheme.colorScheme.primary,

@@ -47,8 +47,8 @@
 
             <ImageView
                 android:id="@+id/avatar_image"
-                android:layout_width="@dimen/avatar_size_big"
-                android:layout_height="@dimen/avatar_size_big"
+                android:layout_width="@dimen/avatar_size_big_landscape_profile"
+                android:layout_height="@dimen/avatar_size_big_landscape_profile"
                 android:layout_marginStart="@dimen/standard_margin"
                 android:layout_marginTop="@dimen/standard_margin"
                 android:layout_marginEnd="@dimen/standard_margin"
@@ -89,7 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/avatar_image"
-                android:layout_marginStart="23dp"
+                android:layout_marginStart="@dimen/standard_margin"
                 android:orientation="horizontal"
                 android:visibility="invisible"
                 tools:visibility="visible">
@@ -148,6 +148,16 @@
 
             </LinearLayout>
 
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/profile_setting_enabled_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/avatar_buttons"
+                android:layout_marginHorizontal="@dimen/standard_margin"
+                android:layout_marginBottom="@dimen/standard_margin"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
         </RelativeLayout>
 
         <LinearLayout
@@ -162,10 +172,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:itemCount="3"
-                tools:listitem="@layout/user_info_details_table_item"
-                tools:visibility="gone" />
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             <include
                 android:id="@+id/emptyList"
