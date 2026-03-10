@@ -25,7 +25,6 @@
     <dimen name="avatar_size">40dp</dimen>
     <dimen name="avatar_size_app_bar">30dp</dimen>
     <dimen name="avatar_size_big">96dp</dimen>
-    <dimen name="avatar_size_big_landscape_profile">72dp</dimen>
     <dimen name="avatar_size_open_conversation_list">52dp</dimen>
 
     <dimen name="chat_text_size">16sp</dimen>
@@ -48,7 +47,6 @@
     <dimen name="two_line_primary_text_size">16sp</dimen>
     <dimen name="headline_text_size">16sp</dimen>
     <dimen name="supporting_text_text_size">14sp</dimen>
-    <dimen name="iconized_single_line_item_layout_height">56dp</dimen>
     <dimen name="iconized_single_line_item_icon_size">24dp</dimen>
     <dimen name="standard_double_margin">32dp</dimen>
     <dimen name="empty_list_icon_layout_width">72dp</dimen>
