@@ -365,6 +365,8 @@
     <string name="nc_no_open_conversations_headline">Non hai conversas abertas</string>
     <string name="nc_no_open_conversations_text">Non hai conversas abertas ás que poida unirse.\nNon hai conversas abertas ou xa se uníu a todas.</string>
     <string name="nc_no_proxy">Sen proxy</string>
+    <string name="nc_no_search_results_headline">Non hai resultados para a súa busca</string>
+    <string name="nc_no_search_results_text">Revise o termo que busca ou tente empregar outro.</string>
     <string name="nc_not_allowed_to_activate_audio">Vde. non ten permiso para activar o son!</string>
     <string name="nc_not_allowed_to_activate_video">Vde. non ten permiso para activar o vídeo!</string>
     <string name="nc_not_now">Agora non</string>
@@ -441,6 +443,7 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Buscar</string>
     <string name="nc_search_clear">Limpar a busca</string>
+    <string name="nc_search_location">Localización da busca</string>
     <string name="nc_select_an_account">Seleccione unha conta</string>
     <string name="nc_send_edit_message">Actualizar a mensaxe</string>
     <string name="nc_send_later">Enviar máis tarde</string>
