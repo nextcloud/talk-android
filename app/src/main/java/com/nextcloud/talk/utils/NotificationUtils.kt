@@ -697,7 +697,7 @@ object NotificationUtils {
             context,
             bubbleRequestCode,
             BubbleActivity.newIntent(context, bubbleInfo.roomToken, data.conversationName),
-            android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_MUTABLE
+            android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
         )
 
         val contentIntent = android.app.PendingIntent.getActivity(
