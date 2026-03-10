@@ -75,6 +75,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 гадзіны</string>
     <string name="get_invitations_error">Не ўдалося атрымаць запрашэнні, якія чакаюць разгляду</string>
+    <string name="gplay_available_no">Сэрвісы Google Play недаступныя. Апавяшчэнні не падтрымліваюцца.</string>
     <string name="hint_edited_message">(адрэдагавана)</string>
     <string name="internal_note">Унутраная заўвага</string>
     <string name="invisible">Нябачны</string>
@@ -364,6 +365,7 @@
     <string name="nc_no_open_conversations_headline">Няма адкрытых размоў</string>
     <string name="nc_no_open_conversations_text">Няма адкрытых размоў, да якіх вы можаце далучыцца.\nАбо адкрытых размоў няма, або вы ўжо далучыліся да ўсіх з іх.</string>
     <string name="nc_no_proxy">Няма проксі</string>
+    <string name="nc_no_search_results_headline">Няма вынікаў па вашым запыце</string>
     <string name="nc_not_allowed_to_activate_audio">Вам не дазволена ўключаць гук!</string>
     <string name="nc_not_allowed_to_activate_video">Вам не дазволена ўключаць відэа!</string>
     <string name="nc_not_now">Не цяпер</string>
@@ -599,8 +601,12 @@
     <string name="pin_indefinitely">Замацаваць на нявызначаны тэрмін</string>
     <string name="pin_message">Замацаваць паведамленне</string>
     <string name="pinned">Замацавана</string>
+    <string name="pinned_by_author">%1$s (замацаваў(-ла) %2$s)</string>
+    <string name="pinned_by_you">%1$s (замацавана вамі)</string>
     <string name="pinned_dismiss">Адхіліць</string>
+    <string name="pinned_go_to_message">Перайсці да паведамлення</string>
     <string name="pinned_indefinitely">Замацавана на нявызначаны тэрмін</string>
+    <string name="pinned_message_options">Параметры паведамлення</string>
     <string name="pinned_until">Замацавана да</string>
     <string name="play_pause_voice_message">Прайграць/прыпыніць галасавое паведамленне</string>
     <string name="playback_speed_control">Кіраванне хуткасцю прайгравання</string>
@@ -624,6 +630,7 @@
     <string name="previously_set">Зададзены раней</string>
     <string name="qr_code_error">Не ўдалося прачытаць QR-код</string>
     <string name="raise_hand">Падняць руку</string>
+    <string name="reaction_forbidden">У вас няма дазволу дадаваць або выдаляць рэакцыі ў гэтай размове</string>
     <string name="reactions_tab_all">Усе</string>
     <string name="read_storage_no_permission">Абагульванне файлаў са сховішча немагчыма без дазволаў</string>
     <string name="recent_threads">Нядаўнія гутаркі</string>

@@ -443,6 +443,7 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">搜尋</string>
     <string name="nc_search_clear">清除搜尋</string>
+    <string name="nc_search_location">搜尋位置</string>
     <string name="nc_select_an_account">選擇一個帳號</string>
     <string name="nc_send_edit_message">更新訊息</string>
     <string name="nc_send_later">稍後傳送</string>
