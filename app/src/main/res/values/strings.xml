@@ -42,6 +42,7 @@ How to translate with transifex:
     <!-- Shortcuts and Deep Links -->
     <string name="nc_add_to_home_screen">Add to home screen</string>
     <string name="nc_shortcut_created">Shortcut created</string>
+    <string name="nc_shortcut_conversation_deleted">This conversation no longer exists</string>
     <string name="nc_no_account_for_server">No account found for this server</string>
 
     <!-- Bottom Navigation -->
