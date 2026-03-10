@@ -1254,6 +1254,14 @@ class ConversationsListActivity : BaseActivity() {
                 if (workInfo != null) {
                     when (workInfo.state) {
                         WorkInfo.State.SUCCEEDED -> {
+                            currentUser?.id?.let { userId ->
+                                ShortcutManagerHelper.disableConversationShortcut(
+                                    context,
+                                    conversation.token,
+                                    userId,
+                                    context.resources.getString(R.string.nc_shortcut_conversation_deleted)
+                                )
+                            }
                             showSnackbar(
                                 String.format(
                                     context.resources.getString(R.string.deleted_conversation),

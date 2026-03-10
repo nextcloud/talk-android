@@ -8,7 +8,7 @@ package com.nextcloud.talk.utils
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
+import android.net.Uri
 import android.util.Log
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -17,7 +17,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.utils.bundle.BundleKeys
 
 /**
  * Helper class for managing Android shortcuts for conversations.
@@ -32,8 +31,8 @@ object ShortcutManagerHelper {
     private const val CONVERSATION_SHORTCUT_PREFIX = "conversation_"
 
     /**
-     * Creates a shortcut for a conversation using bundle extras.
-     * This matches the existing Note To Self shortcut pattern.
+     * Creates a shortcut for a conversation using a nextcloudtalk:// deep link URI.
+     * This ensures proper multi-account user resolution when the shortcut is opened.
      *
      * @param context Application context
      * @param conversation The conversation to create a shortcut for
@@ -41,30 +40,24 @@ object ShortcutManagerHelper {
      * @return ShortcutInfoCompat ready to be added, or null if user ID is invalid
      */
     fun createConversationShortcut(context: Context, conversation: ConversationModel, user: User): ShortcutInfoCompat? {
-        val userId = user.id ?: run {
-            Log.w(TAG, "Cannot create shortcut: user ID is null")
-            return null
+        val userId = user.id
+        val baseUrl = user.baseUrl
+        val uri = baseUrl?.let {
+            DeepLinkHandler.createConversationUri(conversation.token, it, user.username)
+                .takeIf { built -> built != Uri.EMPTY }
         }
+        if (userId == null || uri == null) return null
 
-        val shortcutId = getShortcutId(conversation.token, userId)
         val displayName = conversation.displayName.ifBlank { conversation.name }
-
-        val bundle = Bundle().apply {
-            putString(BundleKeys.KEY_ROOM_TOKEN, conversation.token)
-            putLong(BundleKeys.KEY_INTERNAL_USER_ID, userId)
-        }
-
         val intent = Intent(context, MainActivity::class.java).apply {
             action = Intent.ACTION_VIEW
-            putExtras(bundle)
+            data = uri
         }
 
-        val icon = IconCompat.createWithResource(context, R.drawable.baseline_chat_bubble_outline_24)
-
-        return ShortcutInfoCompat.Builder(context, shortcutId)
+        return ShortcutInfoCompat.Builder(context, getShortcutId(conversation.token, userId))
             .setShortLabel(displayName)
             .setLongLabel(displayName)
-            .setIcon(icon)
+            .setIcon(IconCompat.createWithResource(context, R.drawable.baseline_chat_bubble_outline_24))
             .setIntent(intent)
             .build()
     }
@@ -135,21 +128,22 @@ object ShortcutManagerHelper {
      */
     @Suppress("DEPRECATION")
     private fun createLegacyShortcut(context: Context, conversation: ConversationModel, user: User): Boolean {
-        val userId = user.id ?: run {
-            Log.w(TAG, "Cannot create legacy shortcut: user ID is null")
+        if (user.id == null || user.baseUrl == null) {
+            Log.w(TAG, "Cannot create legacy shortcut: user ID or base URL is null")
             return false
         }
 
         val displayName = conversation.displayName.ifBlank { conversation.name }
 
-        val bundle = Bundle().apply {
-            putString(BundleKeys.KEY_ROOM_TOKEN, conversation.token)
-            putLong(BundleKeys.KEY_INTERNAL_USER_ID, userId)
-        }
+        val uri = DeepLinkHandler.createConversationUri(
+            roomToken = conversation.token,
+            serverUrl = user.baseUrl!!,
+            username = user.username
+        )
 
         val launchIntent = Intent(context, MainActivity::class.java).apply {
             action = Intent.ACTION_VIEW
-            putExtras(bundle)
+            data = uri
         }
 
         val shortcutIntent = Intent("com.android.launcher.action.INSTALL_SHORTCUT").apply {
@@ -195,6 +189,21 @@ object ShortcutManagerHelper {
     fun removeConversationShortcut(context: Context, roomToken: String, userId: Long) {
         val shortcutId = getShortcutId(roomToken, userId)
         ShortcutManagerCompat.removeDynamicShortcuts(context, listOf(shortcutId))
+    }
+
+    /**
+     * Disables all shortcuts (dynamic and pinned) for a deleted conversation.
+     * Dynamic shortcuts are removed; pinned shortcuts are disabled with a message.
+     *
+     * @param context Application context
+     * @param roomToken The conversation token
+     * @param userId The user ID
+     * @param disabledMessage Message shown when a disabled pinned shortcut is tapped
+     */
+    fun disableConversationShortcut(context: Context, roomToken: String, userId: Long, disabledMessage: String) {
+        val shortcutId = getShortcutId(roomToken, userId)
+        ShortcutManagerCompat.removeDynamicShortcuts(context, listOf(shortcutId))
+        ShortcutManagerCompat.disableShortcuts(context, listOf(shortcutId), disabledMessage)
     }
 
     /**
