@@ -3735,7 +3735,7 @@ open class ChatActivity :
                     e
                 )
             }
-        }.isSuccess
+        }.getOrDefault(false)
 
     @Suppress("Detekt.LongMethod")
     private fun showThreadNotificationMenu() {

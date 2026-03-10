@@ -612,18 +612,19 @@ class SettingsActivity :
         return this
     }
 
-    // todo refactor this
     private fun launchIntentSafely(intent: Intent): Boolean =
-        try {
-            if (intent.resolveActivity(packageManager) != null) {
-                startActivity(intent)
-                true
-            } else {
-                false
+        runCatching {
+            if (intent.resolveActivity(packageManager) == null) {
+                throw NullPointerException("Intent to resolveActivity was Null!!!") // should not happen
             }
-        } catch (_: ActivityNotFoundException) {
-            false
-        }
+
+            startActivity(intent)
+        }.onFailure { error ->
+            when (error) {
+                is ActivityNotFoundException -> Log.e(TAG, "LaunchIntentSafely failed, is this activity real?: $error")
+                else -> Log.e(TAG, "LaunchIntentSafely failed: $error")
+            }
+        }.isSuccess
 
     private fun setupNotificationSoundsSettings() {
         if (NotificationUtils.isCallsNotificationChannelEnabled(this)) {

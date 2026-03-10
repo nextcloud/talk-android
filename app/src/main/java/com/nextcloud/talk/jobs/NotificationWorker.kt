@@ -858,6 +858,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .addPerson(person)
     }
 
+    /**
+     * This only adds bubble metadata, locus id, and a shortcut if allowed and valid
+     */
     private fun NotificationCompat.Builder.addBubbleMetadata(suppress: Boolean): NotificationCompat.Builder =
         runCatching {
             val roomToken = pushMessage.id
@@ -918,14 +921,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             this.setBubbleMetadata(bubbleData)
                 .setShortcutId(shortcutId)
                 .setLocusId(androidx.core.content.LocusIdCompat(shortcutId))
-        }.getOrElse { error ->
+        }.onFailure { error ->
             when (error) {
                 is IllegalArgumentException -> Log.e(TAG, "Error adding bubble metadata: Invalid argument", error)
                 is IllegalStateException -> Log.e(TAG, "Error adding bubble metadata: Invalid state", error)
+                else -> Log.e(TAG, "Error adding bubble metadata: $error")
             }
-
-            this
-        }
+        }.getOrDefault(this)
 
     private fun shouldBubble(roomToken: String): Boolean {
         val user = signatureVerification.user
@@ -1033,15 +1035,14 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 .build()
 
             this.addAction(markAsReadAction)
-        }.getOrElse { error ->
+        }.onFailure { error ->
             when (error) {
                 is NumberFormatException -> {
                     Log.e(TAG, "Failed to parse messageId from objectId, skip adding mark-as-read action.", error)
                 }
+                else -> Log.e(TAG, "Error adding mark as read action: $error")
             }
-
-            this
-        }
+        }.getOrDefault(this)
 
     private fun NotificationCompat.Builder.addReplyAction(systemNotificationId: Int): NotificationCompat.Builder {
         val replyLabel = context!!.resources.getString(R.string.nc_reply)

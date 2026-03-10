@@ -618,6 +618,7 @@ object NotificationUtils {
                 is SecurityException -> Log.e(TAG, "Error creating bubble: Permission denied", error)
                 is IllegalArgumentException -> Log.e(TAG, "Error creating bubble: Invalid argument", error)
                 is CancellationException -> throw error
+                else -> Log.e(TAG, "Error creating bubble: $error")
             }
 
             showErrorToast(context)
@@ -651,6 +652,7 @@ object NotificationUtils {
                 is IOException -> Log.e(TAG, "Error loading bubble avatar: IO error", error)
                 is IllegalArgumentException -> Log.e(TAG, "Error loading bubble avatar: Invalid argument", error)
                 is CancellationException -> throw error
+                else -> Log.e(TAG, "Error loading bubble avatar: $error")
             }
 
             emit(null)
