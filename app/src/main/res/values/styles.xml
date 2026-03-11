@@ -44,11 +44,28 @@
         <item name="iconTint">@color/fontAppbar</item>
     </style>
 
-
     <style name="ImagePickerTheme.NonFullScreen" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="android:fitsSystemWindows">true</item>
     </style>
+
+    <style name="Theme.UCrop" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Status bar: dark background, white (light) icons -->
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
+        <!-- Navigation bar: dark to match -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+        <!-- Force a light (white) toolbar surface even in dark mode -->
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorOnSurface">#000000</item>
+
+        <!-- Primary used as toolbar tint fallback -->
+        <item name="colorPrimary">#FFFFFF</item>
+        <item name="colorOnPrimary">#000000</item>
+    </style>
+
 
     <style name="ChatSendButtonMenu" parent="@style/Widget.Material3.PopupMenu">
         <item name="android:dropDownVerticalOffset">-90dp</item>

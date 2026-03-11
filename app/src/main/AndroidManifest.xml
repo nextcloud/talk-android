@@ -260,7 +260,7 @@
 
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
-            android:theme="@style/ImagePickerTheme.NonFullScreen"
+            android:theme="@style/Theme.UCrop"
             tools:replace="android:theme" />
 
         <activity
