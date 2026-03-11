@@ -752,9 +752,13 @@
     <string name="user_absence_replacement">Reemplazo:</string>
     <string name="user_avatar">Avatar del usuario</string>
     <string name="user_info_address">Dirección</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Nombre completo</string>
     <string name="user_info_email">Email</string>
+    <string name="user_info_fediverse">Fediverso</string>
+    <string name="user_info_organisation">Organización</string>
     <string name="user_info_phone">Número de teléfono</string>
+    <string name="user_info_role">Cargo</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Página web</string>
     <string name="user_status">Estado</string>

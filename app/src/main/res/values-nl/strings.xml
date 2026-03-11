@@ -339,7 +339,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_mark_conversation_as_insensitive">Gesprek niet gemarkeerd als gevoelig</string>
     <string name="nc_mark_conversation_as_sensitive">Gesprek gemarkeerd als gevoelig</string>
     <string name="nc_mark_conversation_as_unimportant">Gesprek niet gemarkeerd als belangrijk</string>
-    <string name="nc_meeting_ended">Bespreking is beëindigd</string>
+    <string name="nc_meeting_ended">Vergadering is beëindigd</string>
     <string name="nc_message_added_to_notes">Bericht toegevoegd aan notities</string>
     <string name="nc_message_failed">Mislukt</string>
     <string name="nc_message_failed_to_send">Fout bij versturen bericht:</string>
@@ -381,7 +381,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_notify_me_never">Nooit waarschuwen</string>
     <string name="nc_offline">Op dit moment offline, controleer je verbinding</string>
     <string name="nc_ok">OK</string>
-    <string name="nc_ongoing_meeting">Lopende bespreking</string>
+    <string name="nc_ongoing_meeting">Lopende vergadering</string>
     <string name="nc_open_conversation_to_registered_users">Open gesprek voor geregistreerde gebruikers</string>
     <string name="nc_open_to_guest_app_users">Ook open voor gastgebruikers van de app</string>
     <string name="nc_owner">Eigenaar</string>
@@ -731,9 +731,16 @@ Kies er eentje van een provider.</string>
     <string name="user_absence_replacement">Vervanging:</string>
     <string name="user_avatar">Gebruik avatar</string>
     <string name="user_info_address">Adres</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Volledige naam</string>
     <string name="user_info_email">E-mailadres</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Hoofdlijn</string>
+    <string name="user_info_organisation">Organisatie</string>
     <string name="user_info_phone">Telefoonnummer</string>
+    <string name="user_info_profile_enable">Schakel profiel in</string>
+    <string name="user_info_pronouns">Persoonlijke voornaamwoorden</string>
+    <string name="user_info_role">Rol</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Website</string>
     <string name="user_status">Status</string>

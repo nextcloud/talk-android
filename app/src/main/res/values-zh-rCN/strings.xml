@@ -594,9 +594,16 @@
     <string name="user_absence_replacement">接替者：</string>
     <string name="user_avatar">用户头像</string>
     <string name="user_info_address">地址</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">全名</string>
     <string name="user_info_email">电子邮件</string>
+    <string name="user_info_fediverse">联邦宇宙</string>
+    <string name="user_info_headline">标题</string>
+    <string name="user_info_organisation">组织</string>
     <string name="user_info_phone">电话号码  </string>
+    <string name="user_info_profile_enable">启用简介</string>
+    <string name="user_info_pronouns">称号</string>
+    <string name="user_info_role">角色</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">网站</string>
     <string name="user_status">状态</string>

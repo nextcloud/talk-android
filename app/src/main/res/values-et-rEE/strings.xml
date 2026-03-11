@@ -748,9 +748,14 @@
     <string name="user_absence_replacement">Asendus:</string>
     <string name="user_avatar">Kasutaja tunnuspilt</string>
     <string name="user_info_address">Aadress</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Täisnimi</string>
     <string name="user_info_email">Epost</string>
+    <string name="user_info_fediverse">Födiversum</string>
+    <string name="user_info_headline">Alapealkiri</string>
+    <string name="user_info_organisation">Organisatsioon</string>
     <string name="user_info_phone">Telefoninumber</string>
+    <string name="user_info_role">Roll</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Veebileht</string>
     <string name="user_status">Staatus</string>

@@ -736,9 +736,16 @@
     <string name="user_absence_replacement">Sostituzione:</string>
     <string name="user_avatar">Avatar dell\'utente</string>
     <string name="user_info_address">Indirizzo</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Nome completo</string>
     <string name="user_info_email">Posta elettronica</string>
+    <string name="user_info_fediverse">Fediverso</string>
+    <string name="user_info_headline">Titolo</string>
+    <string name="user_info_organisation">Organizzazione</string>
     <string name="user_info_phone">Numero di telefono</string>
+    <string name="user_info_profile_enable">Abilita profilo</string>
+    <string name="user_info_pronouns">Pronomi</string>
+    <string name="user_info_role">Ruolo</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Sito web</string>
     <string name="user_status">Stato</string>

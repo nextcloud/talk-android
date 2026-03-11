@@ -520,7 +520,11 @@
     <string name="user_info_address">Dirección</string>
     <string name="user_info_displayname">Nombre completo</string>
     <string name="user_info_email">Correo electrónico</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Título</string>
+    <string name="user_info_organisation">Organización</string>
     <string name="user_info_phone">Número telefónico</string>
+    <string name="user_info_role">Rol</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Sitio web</string>
     <string name="user_status">Estatus</string>

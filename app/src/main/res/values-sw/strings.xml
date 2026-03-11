@@ -744,9 +744,15 @@
     <string name="user_absence_replacement">Mbadala</string>
     <string name="user_avatar">Tumia avata</string>
     <string name="user_info_address">Anwani</string>
+    <string name="user_info_bluesky">Angabluu</string>
     <string name="user_info_displayname">Jina kamili</string>
     <string name="user_info_email">Barua pepe</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Kichwa cha habari</string>
+    <string name="user_info_organisation">Organization</string>
     <string name="user_info_phone">Namba ya simu</string>
+    <string name="user_info_pronouns">Pronouns</string>
+    <string name="user_info_role">Role</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Wavuti</string>
     <string name="user_status">Wadhifa</string>

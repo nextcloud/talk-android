@@ -624,9 +624,16 @@
     <string name="upload_new_avatar_from_device">デバイスから新しいアバターをアップロード</string>
     <string name="user_avatar">ユーザーのアバター</string>
     <string name="user_info_address">住所</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">フルネーム</string>
     <string name="user_info_email">メールアドレス</string>
+    <string name="user_info_fediverse">フェディバース</string>
+    <string name="user_info_headline">見出し</string>
+    <string name="user_info_organisation">共同作業</string>
     <string name="user_info_phone">電話番号</string>
+    <string name="user_info_profile_enable">プロフィールを有効化</string>
+    <string name="user_info_pronouns">代名詞</string>
+    <string name="user_info_role">ロール</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">ウェブサイト</string>
     <string name="user_status">ステータス</string>

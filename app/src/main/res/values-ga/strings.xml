@@ -751,9 +751,15 @@
     <string name="user_absence_replacement">Athsholáthar:</string>
     <string name="user_avatar">Avatar úsáideoir</string>
     <string name="user_info_address">Seoladh</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Ainm iomlán</string>
     <string name="user_info_email">Ríomhphost</string>
+    <string name="user_info_fediverse">Feidearálach</string>
+    <string name="user_info_headline">Ceannlíne</string>
+    <string name="user_info_organisation">Eagraíocht</string>
     <string name="user_info_phone">Uimhir teileafón</string>
+    <string name="user_info_pronouns">Forainmneacha</string>
+    <string name="user_info_role">Ról</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Suíomh Gréasáin</string>
     <string name="user_status">Stádas</string>
