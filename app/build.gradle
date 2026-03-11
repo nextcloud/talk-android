@@ -304,7 +304,11 @@ dependencies {
     implementation "io.noties.markwon:ext-tasklist:$markwonVersion"
     implementation "io.noties.markwon:ext-tables:$markwonVersion"
 
+    // Avatar picker
     implementation 'com.github.nextcloud-deps:ImagePicker:2.1.0.2'
+    // Override avatar picker's internal crop lib for better dge-to-edge support
+    implementation 'com.github.yalantis:ucrop:2.2.11'
+
     implementation 'io.github.elye:loaderviewlibrary:3.0.0'
     implementation 'org.osmdroid:osmdroid-android:6.1.20'
     implementation ('fr.dudie:nominatim-api:3.4', {
@@ -317,7 +321,6 @@ dependencies {
     implementation 'com.github.nextcloud.android-common:ui:0.33.1'
     implementation 'com.github.nextcloud.android-common:core:0.33.1'
     implementation 'com.github.nextcloud-deps:android-talk-webrtc:132.6834.0'
-    implementation 'com.github.yalantis:ucrop:2.2.11'
 
     gplayImplementation 'com.google.android.gms:play-services-base:18.10.0'
     gplayImplementation "com.google.firebase:firebase-messaging:25.0.1"
