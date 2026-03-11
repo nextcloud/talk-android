@@ -15,6 +15,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.conversationcreation.ConversationCreationRepository
 import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.conversationinfo.Participants
 import com.nextcloud.talk.data.user.model.User
@@ -28,6 +29,7 @@ import com.nextcloud.talk.models.json.participants.Participant.ActorType.EMAILS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.FEDERATED
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.participants.TalkBan
+import com.nextcloud.talk.models.json.passwordResult.PasswordResult
 import com.nextcloud.talk.models.json.profile.Profile
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.utils.ApiUtils
@@ -43,7 +45,8 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class ConversationInfoViewModel @Inject constructor(
     private val chatNetworkDataSource: ChatNetworkDataSource,
-    private val conversationsRepository: ConversationsRepository
+    private val conversationsRepository: ConversationsRepository,
+    private val conversationCreationRepository: ConversationCreationRepository
 ) : ViewModel() {
 
     object LifeCycleObserver : DefaultLifecycleObserver {
@@ -111,6 +114,9 @@ class ConversationInfoViewModel @Inject constructor(
     val passwordViewState: LiveData<PasswordUiState>
         get() = _passwordViewState
 
+    private val _securePasswordViewState = MutableLiveData<SecurePasswordViewState>(SecurePasswordViewState.None)
+    val securePasswordViewState: LiveData<SecurePasswordViewState> = _securePasswordViewState
+
     private val _getCapabilitiesViewState: MutableLiveData<ViewState> = MutableLiveData(GetCapabilitiesStartState)
     val getCapabilitiesViewState: LiveData<ViewState>
         get() = _getCapabilitiesViewState
@@ -167,6 +173,10 @@ class ConversationInfoViewModel @Inject constructor(
             ?.subscribe(GetRoomObserver())
     }
 
+    fun resetSecurePasswordViewState() {
+        _securePasswordViewState.value = SecurePasswordViewState.None
+    }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun createRoomFromOneToOne(
         user: User,
@@ -209,6 +219,23 @@ class ConversationInfoViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to create room", e)
                 _createRoomViewState.value = CreateRoomUIState.Error(e)
+            }
+        }
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun securePassword(credentials: String, url: String, password: String) {
+        viewModelScope.launch {
+            try {
+                val passwordResult = conversationCreationRepository.validatePassword(
+                    credentials,
+                    url,
+                    password
+                )
+
+                _securePasswordViewState.value = SecurePasswordViewState.Success(passwordResult.ocs?.data!!)
+            } catch (exception: Exception) {
+                _securePasswordViewState.value = SecurePasswordViewState.Error(exception.message ?: "")
             }
         }
     }
@@ -567,5 +594,11 @@ class ConversationInfoViewModel @Inject constructor(
         data object None : MarkConversationAsUnimportantViewState()
         data class Success(val statusCode: Int) : MarkConversationAsUnimportantViewState()
         data class Error(val exception: Exception) : MarkConversationAsUnimportantViewState()
+    }
+
+    sealed class SecurePasswordViewState {
+        data object None : SecurePasswordViewState()
+        data class Success(val result: PasswordResult) : SecurePasswordViewState()
+        data class Error(val message: String) : SecurePasswordViewState()
     }
 }

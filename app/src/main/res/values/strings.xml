@@ -1002,4 +1002,5 @@ How to translate with transifex:
     <string name="turn_on_background_blur">Turn on background blur</string>
     <string name="turn_off_background_blur">Turn off background blur</string>
     <string name="nc_password_secure">Password is secure</string>
+    <string name="nc_copy_password">Copy password</string>
 </resources>
