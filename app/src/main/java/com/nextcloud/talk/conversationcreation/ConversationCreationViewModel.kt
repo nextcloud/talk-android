@@ -84,6 +84,10 @@ class ConversationCreationViewModel @Inject constructor(
         _conversationDescription.value = conversationDescription
     }
 
+    fun resetPasswordViewState() {
+        _validPasswordViewState.value = ValidPasswordUiState.None
+    }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun validatePassword(url: String, password: String) {
         val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token) ?: ""
