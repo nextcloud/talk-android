@@ -960,4 +960,5 @@ How to translate with transifex:
     <string name="nc_show_ecosystem_title">Show app switcher</string>
     <string name="nc_show_ecosystem_description">Nextcloud app suggestions in account chooser dialog</string>
     <string name="nc_password_secure">Password is secure</string>
+    <string name="nc_copy_password">Copy password</string>
 </resources>
