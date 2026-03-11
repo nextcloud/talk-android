@@ -591,6 +591,7 @@ fun ConversationOptions(
 @Composable
 fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: ConversationCreationViewModel) {
     var changedPassword by rememberSaveable { mutableStateOf("") }
+    val passwordValidationState by conversationCreationViewModel.validPasswordViewState.collectAsState()
     Dialog(onDismissRequest = {
         onDismiss()
     }) {
@@ -609,17 +610,42 @@ fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: Con
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                val validatePasswordUrl = conversationCreationViewModel.currentUser.capabilities?.passwordCapability?.api?.validatePasswordApi
                 Text(text = stringResource(id = R.string.nc_set_new_password), fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
                     value = changedPassword,
                     onValueChange = {
                         changedPassword = it
+                        if (validatePasswordUrl != null) {
+                            conversationCreationViewModel.validatePassword(validatePasswordUrl, it)
+                        }
                     },
                     label = { Text(text = stringResource(id = R.string.nc_password)) },
                     singleLine = true
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
+                when (passwordValidationState) {
+                    is ValidPasswordUiState.Success -> Text(
+                        text = (passwordValidationState as ValidPasswordUiState.Success).result.reason!!,
+                        color = if ((passwordValidationState as ValidPasswordUiState.Success).result.passed == false) {
+                            colorResource(
+                                id = R.color
+                                    .nc_darkRed
+                            )
+                        } else {
+                            colorResource(id = R.color.nc_darkGreen)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    is ValidPasswordUiState.Error -> {
+                        Text(text = (passwordValidationState as ValidPasswordUiState.Error).message)
+                    }
+
+                    else -> {
+                    }
+                }
 
                 Column(
                     modifier = Modifier
@@ -634,7 +660,9 @@ fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: Con
                             conversationCreationViewModel.isPasswordEnabled.value = true
                             onDismiss()
                         },
-                        enabled = changedPassword.isNotEmpty() && changedPassword.isNotBlank(),
+                        enabled = changedPassword.isNotEmpty() &&
+                            changedPassword.isNotBlank() &&
+                            (passwordValidationState as ValidPasswordUiState.Success).result.passed == true,
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                     ) {
                         Text(text = stringResource(id = R.string.nc_change_password))
@@ -668,18 +696,48 @@ fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: Con
 @Composable
 fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: ConversationCreationViewModel) {
     var password by rememberSaveable { mutableStateOf("") }
+    val passwordValidationState by conversationCreationViewModel.validPasswordViewState.collectAsState()
+    val validatePasswordUrl = conversationCreationViewModel.currentUser.capabilities?.passwordCapability?.api?.validatePasswordApi
     AlertDialog(
         containerColor = colorResource(id = R.color.dialog_background),
         onDismissRequest = onDismiss,
         title = { Text(text = stringResource(id = R.string.nc_set_password)) },
         text = {
-            TextField(
-                value = password,
-                onValueChange = {
-                    password = it
-                },
-                label = { Text(text = stringResource(id = R.string.nc_guest_access_password_dialog_hint)) }
-            )
+            Row {
+                TextField(
+                    value = password,
+                    onValueChange = {
+                        password = it
+                        if (validatePasswordUrl != null) {
+                            conversationCreationViewModel.validatePassword(validatePasswordUrl, it)
+                        }
+                    },
+                    label = { Text(text = stringResource(id = R.string.nc_guest_access_password_dialog_hint)) }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                when (passwordValidationState) {
+                    is ValidPasswordUiState.Success -> Text(
+                        text = (passwordValidationState as ValidPasswordUiState.Success).result.reason!!,
+                        color = if ((passwordValidationState as ValidPasswordUiState.Success).result.passed == false) {
+                            colorResource(
+                                id = R.color
+                                    .nc_darkRed
+                            )
+                        } else {
+                            colorResource(id = R.color.nc_darkGreen)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    is ValidPasswordUiState.Error -> {
+                        Text(text = (passwordValidationState as ValidPasswordUiState.Error).message)
+                    }
+
+                    else -> {
+                    }
+                }
+            }
         },
         confirmButton = {
             TextButton(
