@@ -726,9 +726,16 @@
     <string name="user_absence_replacement">Замена:</string>
     <string name="user_avatar">Изображение профиля</string>
     <string name="user_info_address">Адрес</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Полное имя</string>
     <string name="user_info_email">Эл. почта</string>
+    <string name="user_info_fediverse">Федиверс</string>
+    <string name="user_info_headline">Заголовок</string>
+    <string name="user_info_organisation">Организация</string>
     <string name="user_info_phone">Номер телефона</string>
+    <string name="user_info_profile_enable">Использовать профиль</string>
+    <string name="user_info_pronouns">Местоимения</string>
+    <string name="user_info_role">Роль</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Сайт</string>
     <string name="user_status">Состояние</string>

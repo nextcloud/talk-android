@@ -751,9 +751,16 @@
     <string name="user_absence_replacement">取代︰</string>
     <string name="user_avatar">用戶虛擬化身大頭照</string>
     <string name="user_info_address">地址</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">全名</string>
     <string name="user_info_email">電郵地址</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">標題</string>
+    <string name="user_info_organisation">生產力</string>
     <string name="user_info_phone">電話號碼</string>
+    <string name="user_info_profile_enable">啟用簡介</string>
+    <string name="user_info_pronouns">代名詞</string>
+    <string name="user_info_role">角色</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">網站</string>
     <string name="user_status">狀態</string>

@@ -399,7 +399,10 @@
     <string name="user_info_address">Indiritzu</string>
     <string name="user_info_displayname">Nùmene e sambenadu</string>
     <string name="user_info_email">Posta eletrònica</string>
+    <string name="user_info_headline">Tìtulos</string>
+    <string name="user_info_organisation">Organizatzione</string>
     <string name="user_info_phone">Nùmeru de telèfonu</string>
+    <string name="user_info_profile_enable">Ativa su profilu</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Situ ìnternet</string>
     <string name="user_status">Status</string>

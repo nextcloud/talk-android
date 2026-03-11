@@ -432,6 +432,9 @@
     <string name="user_info_address">نشانی</string>
     <string name="user_info_displayname">نام کامل</string>
     <string name="user_info_email">رایانامه</string>
+    <string name="user_info_fediverse">فدیورس</string>
+    <string name="user_info_headline">عنوان</string>
+    <string name="user_info_organisation">سازمانی</string>
     <string name="user_info_phone">شماره تلفن</string>
     <string name="user_info_twitter">توییتر</string>
     <string name="user_info_website">وب‌ سایت</string>

@@ -719,9 +719,15 @@
     <string name="user_absence_replacement">Helyettes: </string>
     <string name="user_avatar">Felhasználói profilkép</string>
     <string name="user_info_address">Cím</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Teljes név</string>
     <string name="user_info_email">E-mail</string>
+    <string name="user_info_fediverse">Födiverzum</string>
+    <string name="user_info_headline">Címsor</string>
+    <string name="user_info_organisation">Szervezet</string>
     <string name="user_info_phone">Telefonszám</string>
+    <string name="user_info_profile_enable">Profil engedélyezése</string>
+    <string name="user_info_role">Szerepkör</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Weboldal</string>
     <string name="user_status">Állapot</string>

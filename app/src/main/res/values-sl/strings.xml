@@ -530,7 +530,12 @@
     <string name="user_info_address">Naslov</string>
     <string name="user_info_displayname">Polno ime</string>
     <string name="user_info_email">Elektronsko sporočilo</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Naslov</string>
+    <string name="user_info_organisation">Organizacija</string>
     <string name="user_info_phone">Telefonska številka</string>
+    <string name="user_info_profile_enable">Omogoči profil</string>
+    <string name="user_info_role">Vloga</string>
     <string name="user_info_twitter">Račun Twitter</string>
     <string name="user_info_website">Spletna stran</string>
     <string name="user_status">Stanje</string>

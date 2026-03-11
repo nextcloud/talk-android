@@ -728,9 +728,16 @@
     <string name="user_absence_replacement">Náhrada:</string>
     <string name="user_avatar">Avatar používateľa</string>
     <string name="user_info_address">Adresa</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Meno a priezvisko</string>
     <string name="user_info_email">Email</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Titul</string>
+    <string name="user_info_organisation">Organizácia</string>
     <string name="user_info_phone">Telefónne číslo</string>
+    <string name="user_info_profile_enable">Povoliť profil</string>
+    <string name="user_info_pronouns">Zámená</string>
+    <string name="user_info_role">Rola</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Webstránka</string>
     <string name="user_status">Stav</string>

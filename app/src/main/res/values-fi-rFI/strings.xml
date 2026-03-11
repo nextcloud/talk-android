@@ -434,9 +434,13 @@
     <string name="unread">Lukematon</string>
     <string name="user_avatar">Käyttäjän avatar</string>
     <string name="user_info_address">Osoite</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Koko nimi</string>
     <string name="user_info_email">Sähköposti</string>
+    <string name="user_info_headline">Otsikko</string>
+    <string name="user_info_organisation">Organisaatio</string>
     <string name="user_info_phone">Puhelinnumero</string>
+    <string name="user_info_role">Rooli</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Verkkosivu</string>
     <string name="user_status">Tila</string>

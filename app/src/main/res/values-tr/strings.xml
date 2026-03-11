@@ -751,9 +751,16 @@
     <string name="user_absence_replacement">Yedek:</string>
     <string name="user_avatar">Kullanıcı avatarı</string>
     <string name="user_info_address">Adres</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Tam ad</string>
     <string name="user_info_email">E-posta</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Başlık</string>
+    <string name="user_info_organisation">Kuruluş</string>
     <string name="user_info_phone">Telefon numarası</string>
+    <string name="user_info_profile_enable">Profili kullanıma al</string>
+    <string name="user_info_pronouns">Hitaplar</string>
+    <string name="user_info_role">Rol</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Site</string>
     <string name="user_status">Durum</string>

@@ -751,9 +751,15 @@
     <string name="user_absence_replacement">Substitución: </string>
     <string name="user_avatar">Avatar do usuario</string>
     <string name="user_info_address">Enderezo</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Nome completo</string>
     <string name="user_info_email">Correo-e</string>
+    <string name="user_info_fediverse">Fediverso</string>
+    <string name="user_info_headline">Titular</string>
+    <string name="user_info_organisation">Organización</string>
     <string name="user_info_phone">Número de teléfono</string>
+    <string name="user_info_pronouns">Pronomes</string>
+    <string name="user_info_role">Rol</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Sitio web</string>
     <string name="user_status">Estado</string>

@@ -665,7 +665,13 @@
     <string name="user_info_address">العنوان</string>
     <string name="user_info_displayname">الاسم الكامل</string>
     <string name="user_info_email">البريد الإلكتروني</string>
+    <string name="user_info_fediverse">الشبكة اللامركزية للتواصل الاجتماعي Fediverse</string>
+    <string name="user_info_headline">العنوان</string>
+    <string name="user_info_organisation">المنظمة</string>
     <string name="user_info_phone">رقم الهاتف</string>
+    <string name="user_info_profile_enable">تمكين الملف الشخصي</string>
+    <string name="user_info_pronouns">الضمائر</string>
+    <string name="user_info_role">الوظيفة</string>
     <string name="user_info_twitter">تويتر</string>
     <string name="user_info_website">موقع الويب</string>
     <string name="user_status">الحاله</string>
