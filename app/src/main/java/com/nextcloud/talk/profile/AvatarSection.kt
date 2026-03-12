@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.nextcloud.talk.R
@@ -41,116 +42,103 @@ internal fun AvatarSection(
     isLandscape: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val avatarSize = if (isLandscape) 72.dp else 96.dp
+    if (isLandscape) {
+        AvatarSectionLandscape(state, callbacks, modifier)
+    } else {
+        AvatarSectionPortrait(state, callbacks, modifier)
+    }
+}
 
-    @Composable
-    fun AvatarImage() {
-        key(state.currentUser?.userId, state.avatarRefreshKey) {
-            AndroidView(
-                factory = { ctx ->
-                    ImageView(ctx).apply {
-                        transitionName = "userAvatar.transitionTag"
-                        contentDescription = ctx.getString(R.string.avatar)
-                    }.also { imageView ->
-                        DisplayUtils.loadAvatarImage(
-                            state.currentUser,
-                            imageView,
-                            state.avatarRefreshKey > 0
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .size(avatarSize)
-                    .clip(CircleShape)
+@Composable
+private fun AvatarImage(state: ProfileUiState, avatarSize: Dp) {
+    key(state.currentUser?.userId, state.avatarRefreshKey) {
+        AndroidView(
+            factory = { ctx ->
+                ImageView(ctx).apply {
+                    transitionName = "userAvatar.transitionTag"
+                    contentDescription = ctx.getString(R.string.avatar)
+                }.also { imageView ->
+                    DisplayUtils.loadAvatarImage(state.currentUser, imageView, state.avatarRefreshKey > 0)
+                }
+            },
+            modifier = Modifier.size(avatarSize).clip(CircleShape)
+        )
+    }
+}
+
+@Composable
+private fun AvatarSectionLandscape(state: ProfileUiState, callbacks: ProfileCallbacks, modifier: Modifier) {
+    Column(modifier = modifier.padding(16.dp)) {
+        Row(verticalAlignment = Alignment.Top) {
+            AvatarImage(state, 72.dp)
+            Spacer(modifier = Modifier.width(16.dp))
+            Column {
+                if (state.displayName.isNotEmpty()) {
+                    Text(
+                        text = state.displayName,
+                        style = MaterialTheme.typography.titleLarge,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                if (state.baseUrl.isNotEmpty()) {
+                    Text(
+                        text = state.baseUrl,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(top = 2.dp)
+                    )
+                }
+            }
+        }
+        if (state.showAvatarButtons) {
+            AvatarButtonsRow(callbacks = callbacks, modifier = Modifier.padding(top = 8.dp, start = 40.dp))
+        }
+        if (state.showProfileEnabledCard) {
+            ProfileEnabledCard(
+                isEnabled = state.isProfileEnabled,
+                onCheckedChange = callbacks.onProfileEnabledChange,
+                modifier = Modifier.padding(vertical = 8.dp)
             )
         }
     }
+}
 
-    if (isLandscape) {
-        // Landscape: avatar on the left, name + base URL inline to its right
-        Column(modifier = modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.Top) {
-                AvatarImage()
-                Spacer(modifier = Modifier.width(16.dp))
-                Column {
-                    if (state.displayName.isNotEmpty()) {
-                        Text(
-                            text = state.displayName,
-                            style = MaterialTheme.typography.titleLarge,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                    if (state.baseUrl.isNotEmpty()) {
-                        Text(
-                            text = state.baseUrl,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.padding(top = 2.dp)
-                        )
-                    }
-                }
-            }
-            if (state.showAvatarButtons) {
-                AvatarButtonsRow(
-                    callbacks = callbacks,
-                    modifier = Modifier.padding(top = 8.dp, start = 40.dp)
-                )
-            }
-            if (state.showProfileEnabledCard) {
-                ProfileEnabledCard(
-                    isEnabled = state.isProfileEnabled,
-                    onCheckedChange = callbacks.onProfileEnabledChange,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-            }
+@Composable
+private fun AvatarSectionPortrait(state: ProfileUiState, callbacks: ProfileCallbacks, modifier: Modifier) {
+    Column(modifier = modifier.padding(top = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        AvatarImage(state, 96.dp)
+        if (state.displayName.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = state.displayName,
+                style = MaterialTheme.typography.titleLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
         }
-    } else {
-        // Portrait: everything stacked and centred
-        Column(
-            modifier = modifier.padding(top = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            AvatarImage()
-
-            if (state.displayName.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = state.displayName,
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
-
-            if (state.baseUrl.isNotEmpty()) {
-                Text(
-                    text = state.baseUrl,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)
-                )
-            }
-
-            if (state.showAvatarButtons) {
-                AvatarButtonsRow(
-                    callbacks = callbacks,
-                    modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
-                )
-            }
-
-            if (state.showProfileEnabledCard) {
-                ProfileEnabledCard(
-                    isEnabled = state.isProfileEnabled,
-                    onCheckedChange = callbacks.onProfileEnabledChange,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                )
-            }
+        if (state.baseUrl.isNotEmpty()) {
+            Text(
+                text = state.baseUrl,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)
+            )
+        }
+        if (state.showAvatarButtons) {
+            AvatarButtonsRow(callbacks = callbacks, modifier = Modifier.padding(top = 8.dp, bottom = 8.dp))
+        }
+        if (state.showProfileEnabledCard) {
+            ProfileEnabledCard(
+                isEnabled = state.isProfileEnabled,
+                onCheckedChange = callbacks.onProfileEnabledChange,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            )
         }
     }
 }

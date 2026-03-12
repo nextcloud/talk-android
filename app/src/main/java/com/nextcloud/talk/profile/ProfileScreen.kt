@@ -37,44 +37,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.userprofile.Scope
 
+private const val FULL_WEIGHT = 1f
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(state: ProfileUiState, callbacks: ProfileCallbacks, modifier: Modifier = Modifier) {
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.nc_profile_personal_info_title),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = callbacks.onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                            contentDescription = null
-                        )
-                    }
-                },
-                actions = {
-                    if (state.editableFields.isNotEmpty()) {
-                        IconButton(onClick = callbacks.onEditSave) {
-                            Icon(
-                                painter = painterResource(
-                                    if (state.isEditMode) R.drawable.ic_check else R.drawable.ic_edit
-                                ),
-                                contentDescription = stringResource(
-                                    if (state.isEditMode) R.string.save else R.string.edit
-                                )
-                            )
-                        }
-                    }
-                }
-            )
-        },
+        topBar = { ProfileTopBar(state, callbacks) },
         // safeDrawing insets: top consumed by TopAppBar, bottom passed to the LazyColumn as
         // contentPadding so items scroll behind — not above — the navigation bar.
         contentWindowInsets = WindowInsets.safeDrawing,
@@ -90,12 +60,12 @@ fun ProfileScreen(state: ProfileUiState, callbacks: ProfileCallbacks, modifier: 
                     state = state,
                     callbacks = callbacks,
                     isLandscape = true,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(FULL_WEIGHT)
                 )
                 ProfileContentPane(
                     state = state,
                     callbacks = callbacks,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(FULL_WEIGHT)
                 )
             }
         } else {
@@ -116,12 +86,48 @@ fun ProfileScreen(state: ProfileUiState, callbacks: ProfileCallbacks, modifier: 
                 ProfileContentPane(
                     state = state,
                     callbacks = callbacks,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(FULL_WEIGHT),
                     bottomPadding = innerPadding.calculateBottomPadding()
                 )
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ProfileTopBar(state: ProfileUiState, callbacks: ProfileCallbacks) {
+    TopAppBar(
+        title = {
+            Text(
+                text = stringResource(R.string.nc_profile_personal_info_title),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = callbacks.onNavigateBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                    contentDescription = stringResource(R.string.back_button)
+                )
+            }
+        },
+        actions = {
+            if (state.editableFields.isNotEmpty()) {
+                IconButton(onClick = callbacks.onEditSave) {
+                    Icon(
+                        painter = painterResource(
+                            if (state.isEditMode) R.drawable.ic_check else R.drawable.ic_edit
+                        ),
+                        contentDescription = stringResource(
+                            if (state.isEditMode) R.string.save else R.string.edit
+                        )
+                    )
+                }
+            }
+        }
+    )
 }
 
 @Preview(name = "Light", showBackground = true, showSystemUi = true)
