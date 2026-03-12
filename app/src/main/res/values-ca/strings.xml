@@ -653,7 +653,11 @@
     <string name="user_info_address">Adreça</string>
     <string name="user_info_displayname">Nom complet</string>
     <string name="user_info_email">Correu electrònic</string>
+    <string name="user_info_fediverse">Fedivers</string>
+    <string name="user_info_headline">Capçalera</string>
     <string name="user_info_phone">Número de telèfon</string>
+    <string name="user_info_profile_enable">Habilita el perfil</string>
+    <string name="user_info_pronouns">Pronoms</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Lloc web</string>
     <string name="user_status">Estat</string>

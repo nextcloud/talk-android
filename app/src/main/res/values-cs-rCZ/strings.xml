@@ -747,9 +747,16 @@
     <string name="user_absence_replacement">Nahrazení:</string>
     <string name="user_avatar">Zástupný obrázek uživatele</string>
     <string name="user_info_address">Adresa</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Celé jméno</string>
     <string name="user_info_email">E-mail</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Nadpis</string>
+    <string name="user_info_organisation">Organizování</string>
     <string name="user_info_phone">Telefonní číslo</string>
+    <string name="user_info_profile_enable">Zapnout profil</string>
+    <string name="user_info_pronouns">Zájmena</string>
+    <string name="user_info_role">Role</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Webová stránka</string>
     <string name="user_status">Stav</string>

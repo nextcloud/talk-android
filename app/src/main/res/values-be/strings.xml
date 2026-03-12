@@ -744,9 +744,17 @@
     <string name="user_absence_replacement">Замена:</string>
     <string name="user_avatar">Аватар карыстальніка</string>
     <string name="user_info_address">Адрас</string>
+    <string name="user_info_biography">Біяграфія</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Поўнае імя</string>
     <string name="user_info_email">Электронная пошта</string>
+    <string name="user_info_headline">Загаловак</string>
+    <string name="user_info_organisation">Арганізацыя</string>
     <string name="user_info_phone">Нумар тэлефона</string>
+    <string name="user_info_profile_disable">Адключыць профіль</string>
+    <string name="user_info_profile_enable">Уключыць профіль</string>
+    <string name="user_info_pronouns">Займеннікі</string>
+    <string name="user_info_role">Роля</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Вэб-сайт</string>
     <string name="user_status">Статус</string>

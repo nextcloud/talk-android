@@ -487,7 +487,12 @@
     <string name="user_info_displayname">Πλήρες όνομα</string>
     <string name="user_info_email">Ηλ. ταχυδρομείο</string>
     <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Τίτλος</string>
+    <string name="user_info_organisation">Οργανισμός</string>
     <string name="user_info_phone">Αριθμός τηλεφώνου</string>
+    <string name="user_info_profile_enable">Ενεργοποίηση προφίλ</string>
+    <string name="user_info_pronouns">Αντωνυμίες</string>
+    <string name="user_info_role">Ρόλος</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Ιστοσελίδα</string>
     <string name="user_status">Κατάσταση</string>

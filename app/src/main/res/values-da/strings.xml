@@ -719,7 +719,12 @@
     <string name="user_info_displayname">Fulde navn</string>
     <string name="user_info_email">E-mail</string>
     <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Overskrift</string>
+    <string name="user_info_organisation">Organisation</string>
     <string name="user_info_phone">Telefonnummer</string>
+    <string name="user_info_profile_enable">Aktivér profil</string>
+    <string name="user_info_pronouns">Pronominer</string>
+    <string name="user_info_role">Rolle</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Hjemmeside</string>
     <string name="user_status">Status</string>

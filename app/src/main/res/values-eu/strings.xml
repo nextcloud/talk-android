@@ -592,8 +592,11 @@
     <string name="user_info_displayname">Izen osoa</string>
     <string name="user_info_email">E-posta</string>
     <string name="user_info_fediverse">Fedibertsoa</string>
+    <string name="user_info_headline">Izenburua</string>
     <string name="user_info_organisation">Antolakuntza</string>
     <string name="user_info_phone">Telefono zenbakia</string>
+    <string name="user_info_profile_enable">Gaitu profila</string>
+    <string name="user_info_pronouns">Izenordainak</string>
     <string name="user_info_role">Zeregina</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Webgunea</string>

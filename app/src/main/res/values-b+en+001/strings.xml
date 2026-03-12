@@ -755,7 +755,12 @@
     <string name="user_info_displayname">Full name</string>
     <string name="user_info_email">Email</string>
     <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Headline</string>
+    <string name="user_info_organisation">Organisation</string>
     <string name="user_info_phone">Phone number</string>
+    <string name="user_info_profile_enable">Enable profile</string>
+    <string name="user_info_pronouns">Pronouns</string>
+    <string name="user_info_role">Role</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Website</string>
     <string name="user_status">Status</string>
