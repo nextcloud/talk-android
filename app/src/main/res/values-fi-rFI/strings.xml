@@ -421,6 +421,7 @@
     <string name="thisWeek">Tämä viikko</string>
     <string name="this_weekend">Tämä viikonloppu</string>
     <string name="thread_reply">Vastaa</string>
+    <string name="threads">Keskusteluketjut</string>
     <string name="today">Tänään</string>
     <string name="tomorrow">Huomenna</string>
     <string name="translate">Käännä</string>
@@ -440,6 +441,7 @@
     <string name="user_info_headline">Otsikko</string>
     <string name="user_info_organisation">Organisaatio</string>
     <string name="user_info_phone">Puhelinnumero</string>
+    <string name="user_info_profile_enable">Ota profiili käyttöön</string>
     <string name="user_info_role">Rooli</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Verkkosivu</string>
