@@ -11,7 +11,6 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.PreferenceManager
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -42,9 +41,6 @@ class GeocodingActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-
-        org.osmdroid.config.Configuration.getInstance()
-            .load(context, PreferenceManager.getDefaultSharedPreferences(context))
 
         roomToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
         chatApiVersion = intent.getIntExtra(BundleKeys.KEY_CHAT_API_VERSION, 1)

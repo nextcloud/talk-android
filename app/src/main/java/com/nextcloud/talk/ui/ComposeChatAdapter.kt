@@ -112,11 +112,13 @@ import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import org.osmdroid.config.Configuration
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.Marker
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.offset
+import org.maplibre.compose.camera.CameraPosition
+import org.maplibre.compose.camera.rememberCameraState
+import org.maplibre.compose.map.MaplibreMap
+import org.maplibre.compose.style.BaseStyle
+import org.maplibre.spatialk.geojson.Position
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -920,38 +922,34 @@ class ComposeChatAdapter(
 
     @Composable
     private fun OpenStreetMap(latitude: Double, longitude: Double) {
-        AndroidView(
+        val isDarkMode = isSystemInDarkTheme()
+        val styleUri = if (isDarkMode) "asset://map_style_dark.json" else "asset://map_style_light.json"
+        // Position uses GeoJSON convention: Position(longitude, latitude)
+        val cameraState = rememberCameraState(
+            firstPosition = CameraPosition(
+                target = Position(longitude, latitude),
+                zoom = MAP_ZOOM
+            )
+        )
+        Box(
             modifier = Modifier
                 .fillMaxHeight()
-                .fillMaxWidth(),
-            factory = { context ->
-                Configuration.getInstance().userAgentValue = context.packageName
-                MapView(context).apply {
-                    setTileSource(TileSourceFactory.MAPNIK)
-                    setMultiTouchControls(true)
-
-                    val geoPoint = GeoPoint(latitude, longitude)
-                    controller.setCenter(geoPoint)
-                    controller.setZoom(MAP_ZOOM)
-
-                    val marker = Marker(this)
-                    marker.position = geoPoint
-                    marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                    marker.title = "Location"
-                    overlays.add(marker)
-
-                    invalidate()
-                }
-            },
-            update = { mapView ->
-                val geoPoint = GeoPoint(latitude, longitude)
-                mapView.controller.setCenter(geoPoint)
-
-                val marker = mapView.overlays.find { it is Marker } as? Marker
-                marker?.position = geoPoint
-                mapView.invalidate()
-            }
-        )
+                .fillMaxWidth()
+        ) {
+            MaplibreMap(
+                modifier = Modifier.fillMaxSize(),
+                baseStyle = BaseStyle.Uri(styleUri),
+                cameraState = cameraState
+            )
+            androidx.compose.foundation.Image(
+                painter = painterResource(R.drawable.ic_baseline_location_on_red_24),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(width = 30.dp, height = 50.dp)
+                    .align(Alignment.Center)
+                    .offset(y = (-25).dp)
+            )
+        }
     }
 
     @Composable
