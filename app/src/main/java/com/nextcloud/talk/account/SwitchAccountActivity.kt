@@ -31,7 +31,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ACCOUNT_IMPORT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USERNAME
-import org.osmdroid.config.Configuration
 import java.net.CookieManager
 import javax.inject.Inject
 
@@ -62,8 +61,6 @@ class SwitchAccountActivity : BaseActivity() {
         setContentView(binding.root)
         setupActionBar()
         initSystemBars()
-
-        Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
 
         handleIntent()
     }
