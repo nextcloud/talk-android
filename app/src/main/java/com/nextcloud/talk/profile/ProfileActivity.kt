@@ -122,7 +122,7 @@ class ProfileActivity : BaseActivity() {
         val restoredEdit = savedInstanceState?.getBoolean(KEY_EDIT_MODE) ?: false
         profileUiState = profileUiState.copy(isEditMode = restoredEdit)
 
-        adapter = UserInfoAdapter(null, viewThemeUtils, this) {
+        adapter = UserInfoAdapter(null) {
             // Called by updateScope() / setData() — keep Compose state in sync.
             profileUiState = profileUiState.copy(
                 items = adapter.displayList.orEmpty().toList(),
@@ -226,8 +226,6 @@ class ProfileActivity : BaseActivity() {
                 override fun onComplete() = Unit
             })
     }
-
-    // ─── Edit / save toggle ────────────────────────────────────────────────────
 
     private fun handleEditSave() {
         val currentlyEditing = profileUiState.isEditMode
@@ -487,8 +485,6 @@ class ProfileActivity : BaseActivity() {
         return result
     }
 
-    // ─── Save ─────────────────────────────────────────────────────────────────
-
     private fun save() {
         val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
 
@@ -604,9 +600,6 @@ class ProfileActivity : BaseActivity() {
             file!!.name,
             file.asRequestBody(IMAGE_JPG.toMediaTypeOrNull())
         )
-        val builder = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("files[]", file.name, file.asRequestBody(IMAGE_PREFIX_GENERIC.toMediaTypeOrNull()))
 
         ncApi.uploadAvatar(
             ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
@@ -664,8 +657,6 @@ class ProfileActivity : BaseActivity() {
             })
     }
 
-    // ─── Permission result ────────────────────────────────────────────────────
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_PERMISSION_CAMERA) {
@@ -689,8 +680,6 @@ class ProfileActivity : BaseActivity() {
         }
     }
 
-    // ─── Inner classes ────────────────────────────────────────────────────────
-
     class UserInfoDetailsItem(
         @field:DrawableRes @param:DrawableRes
         var icon: Int,
@@ -706,8 +695,6 @@ class ProfileActivity : BaseActivity() {
      */
     class UserInfoAdapter(
         displayList: List<UserInfoDetailsItem>?,
-        private val viewThemeUtils: ViewThemeUtils,
-        private val profileActivity: ProfileActivity,
         /** Invoked after [setData] or [updateScope] so the caller can sync Compose state. */
         private val onChanged: () -> Unit = {}
     ) : androidx.recyclerview.widget.RecyclerView.Adapter<UserInfoAdapter.ViewHolder>() {
@@ -751,8 +738,6 @@ class ProfileActivity : BaseActivity() {
 
         override fun getItemCount(): Int = displayList?.size ?: 0
     }
-
-    // ─── Field enum ───────────────────────────────────────────────────────────
 
     enum class Field(val fieldName: String, val scopeName: String) {
         EMAIL("email", "emailScope"),
