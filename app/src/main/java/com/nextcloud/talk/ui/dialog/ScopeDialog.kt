@@ -12,63 +12,47 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import autodagger.AutoInjector
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.databinding.DialogScopeBinding
 import com.nextcloud.talk.models.json.userprofile.Scope
-import com.nextcloud.talk.profile.ProfileActivity
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ScopeDialog(
-    con: Context,
-    private val userInfoAdapter: ProfileActivity.UserInfoAdapter,
-    private val field: ProfileActivity.Field,
-    private val position: Int
-) : BottomSheetDialog(con) {
+class ScopeDialog(con: Context, private val showPrivate: Boolean, private val onScopeSelected: (Scope) -> Unit) :
+    BottomSheetDialog(con) {
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
-
-    private lateinit var dialogScopeBinding: DialogScopeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
 
-        dialogScopeBinding = DialogScopeBinding.inflate(layoutInflater)
-        setContentView(dialogScopeBinding.root)
+        val colorScheme = viewThemeUtils.getColorScheme(context)
 
+        val composeView = ComposeView(context).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme(colorScheme = colorScheme) {
+                    ScopeBottomSheetContent(
+                        showPrivate = showPrivate,
+                        onScopeSelected = { scope ->
+                            onScopeSelected(scope)
+                            dismiss()
+                        }
+                    )
+                }
+            }
+        }
+
+        setContentView(composeView)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-
-        viewThemeUtils.platform.themeDialog(dialogScopeBinding.root)
-
-        if (field == ProfileActivity.Field.DISPLAYNAME || field == ProfileActivity.Field.EMAIL) {
-            dialogScopeBinding.scopePrivate.visibility = View.GONE
-        }
-
-        dialogScopeBinding.scopePrivate.setOnClickListener {
-            userInfoAdapter.updateScope(position, Scope.PRIVATE)
-            dismiss()
-        }
-
-        dialogScopeBinding.scopeLocal.setOnClickListener {
-            userInfoAdapter.updateScope(position, Scope.LOCAL)
-            dismiss()
-        }
-
-        dialogScopeBinding.scopeFederated.setOnClickListener {
-            userInfoAdapter.updateScope(position, Scope.FEDERATED)
-            dismiss()
-        }
-
-        dialogScopeBinding.scopePublished.setOnClickListener {
-            userInfoAdapter.updateScope(position, Scope.PUBLISHED)
-            dismiss()
-        }
     }
 
     override fun onStart() {

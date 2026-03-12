@@ -12,9 +12,7 @@ package com.nextcloud.talk.profile
 import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
-import android.view.ViewGroup
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,8 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import autodagger.AutoInjector
@@ -43,12 +39,10 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileData
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.ui.dialog.ScopeDialog
-import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.Mimetype.IMAGE_JPG
-import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX_GENERIC
 import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.PickImage.Companion.REQUEST_PERMISSION_CAMERA
 import com.nextcloud.talk.utils.SpreedFeatures
@@ -60,7 +54,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
-import java.util.LinkedList
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -80,8 +73,7 @@ class ProfileActivity : BaseActivity() {
     /** Single source of truth that drives the Compose UI. */
     private var profileUiState by mutableStateOf(ProfileUiState())
 
-    /** Kept for ScopeDialog compatibility — its updateScope() mutates items and notifies the UI. */
-    lateinit var adapter: UserInfoAdapter
+    private val profileItems: MutableList<UserInfoDetailsItem> = mutableListOf()
 
     private lateinit var pickImage: PickImage
 
@@ -122,14 +114,6 @@ class ProfileActivity : BaseActivity() {
         val restoredEdit = savedInstanceState?.getBoolean(KEY_EDIT_MODE) ?: false
         profileUiState = profileUiState.copy(isEditMode = restoredEdit)
 
-        adapter = UserInfoAdapter(null) {
-            // Called by updateScope() / setData() — keep Compose state in sync.
-            profileUiState = profileUiState.copy(
-                items = adapter.displayList.orEmpty().toList(),
-                filteredItems = adapter.filteredDisplayList.toList()
-            )
-        }
-
         val colorScheme = viewThemeUtils.getColorScheme(this)
         setContent {
             MaterialTheme(colorScheme = colorScheme) {
@@ -155,10 +139,14 @@ class ProfileActivity : BaseActivity() {
                             profileUiState = profileUiState.copy(isProfileEnabled = enabled)
                         },
                         onTextChange = { position, newText ->
-                            adapter.displayList?.getOrNull(position)?.text = newText
+                            profileItems.getOrNull(position)?.text = newText
                         },
                         onScopeClick = { position, field ->
-                            ScopeDialog(this, adapter, field, position).show()
+                            ScopeDialog(
+                                con = this,
+                                showPrivate = field != Field.DISPLAYNAME && field != Field.EMAIL,
+                                onScopeSelected = { scope -> updateItemScope(position, scope) }
+                            ).show()
                         }
                     )
                 )
@@ -246,7 +234,7 @@ class ProfileActivity : BaseActivity() {
             )
             loadEditableFields()
         } else {
-            val hasVisibleItems = adapter.filteredDisplayList.isNotEmpty()
+            val hasVisibleItems = profileItems.any { !it.text.isNullOrEmpty() }
             profileUiState = profileUiState.copy(
                 isEditMode = false,
                 showAvatarButtons = false,
@@ -297,7 +285,8 @@ class ProfileActivity : BaseActivity() {
         val isProfileEnabled = "1" == userInfo?.profileEnabled
 
         val allItems = createUserInfoDetails(userInfo)
-        adapter.setData(allItems)
+        profileItems.clear()
+        profileItems.addAll(allItems)
 
         val hasContent = !isAllEmpty(
             arrayOf(
@@ -330,7 +319,7 @@ class ProfileActivity : BaseActivity() {
                     SpreedFeatures.TEMP_USER_AVATAR_API
                 ),
             items = allItems,
-            filteredItems = adapter.filteredDisplayList.toList(),
+            filteredItems = profileItems.filter { !it.text.isNullOrEmpty() },
             contentState = when {
                 hasContent -> ProfileContentState.ShowList
                 showEditControls -> ProfileContentState.ShowList
@@ -352,133 +341,124 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun createUserInfoDetails(userInfo: UserProfileData?): List<UserInfoDetailsItem> {
-        val result: MutableList<UserInfoDetailsItem> = LinkedList()
-        if (userInfo != null) {
-            result.add(
-                UserInfoDetailsItem(
-                    R.drawable.ic_user,
-                    userInfo.displayName,
-                    resources!!.getString(R.string.user_info_displayname),
-                    Field.DISPLAYNAME,
-                    userInfo.displayNameScope
-                )
-            )
-            result.add(
-                UserInfoDetailsItem(
-                    R.drawable.ic_record_voice_over_24px,
-                    userInfo.pronouns,
-                    resources!!.getString(R.string.user_info_pronouns),
-                    Field.PRONOUNS,
-                    userInfo.pronounsScope
-                )
-            )
-            result.add(
-                UserInfoDetailsItem(
-                    R.drawable.ic_email,
-                    userInfo.email,
-                    resources!!.getString(R.string.user_info_email),
-                    Field.EMAIL,
-                    userInfo.emailScope
-                )
-            )
-            result.add(
-                UserInfoDetailsItem(
-                    R.drawable.ic_phone,
-                    userInfo.phone,
-                    resources!!.getString(R.string.user_info_phone),
-                    Field.PHONE,
-                    userInfo.phoneScope
-                )
-            )
-            result.add(
-                UserInfoDetailsItem(
-                    R.drawable.ic_map_marker,
-                    userInfo.address,
-                    resources!!.getString(R.string.user_info_address),
-                    Field.ADDRESS,
-                    userInfo.addressScope
-                )
-            )
-            result.add(
-                UserInfoDetailsItem(
-                    R.drawable.ic_web,
-                    userInfo.website,
-                    resources!!.getString(R.string.user_info_website),
-                    Field.WEBSITE,
-                    userInfo.websiteScope
-                )
-            )
-            result.add(
-                UserInfoDetailsItem(
-                    R.drawable.ic_twitter,
-                    userInfo.twitter,
-                    resources!!.getString(R.string.user_info_twitter),
-                    Field.TWITTER,
-                    userInfo.twitterScope
-                )
-            )
-            result.add(
-                UserInfoDetailsItem(
-                    R.drawable.ic_cloud_24px,
-                    userInfo.bluesky,
-                    resources!!.getString(R.string.user_info_bluesky),
-                    Field.BLUESKY,
-                    userInfo.blueskyScope
-                )
-            )
-            result.add(
-                UserInfoDetailsItem(
-                    R.drawable.ic_fediverse_24px,
-                    userInfo.fediverse,
-                    resources!!.getString(R.string.user_info_fediverse),
-                    Field.FEDIVERSE,
-                    userInfo.fediverseScope
-                )
-            )
-            result.add(
-                UserInfoDetailsItem(
-                    R.drawable.ic_home_work_24px,
-                    userInfo.organisation,
-                    resources!!.getString(R.string.user_info_organisation),
-                    Field.ORGANISATION,
-                    userInfo.organisationScope
-                )
-            )
-            result.add(
-                UserInfoDetailsItem(
-                    R.drawable.ic_work_24px,
-                    userInfo.role,
-                    resources!!.getString(R.string.user_info_role),
-                    Field.ROLE,
-                    userInfo.roleScope
-                )
-            )
-            result.add(
-                UserInfoDetailsItem(
-                    R.drawable.ic_info_24px,
-                    userInfo.headline,
-                    resources!!.getString(R.string.user_info_headline),
-                    Field.HEADLINE,
-                    userInfo.headlineScope
-                )
-            )
-            result.add(
-                UserInfoDetailsItem(
-                    R.drawable.ic_article_24px,
-                    userInfo.biography,
-                    resources!!.getString(R.string.user_info_biography),
-                    Field.BIOGRAPHY,
-                    userInfo.biographyScope
-                )
-            )
-        }
-        return result
+        if (userInfo == null) return emptyList()
+        return createIdentityItems(userInfo) +
+            createContactItems(userInfo) +
+            createSocialItems(userInfo) +
+            createProfessionalItems(userInfo)
     }
+
+    private fun createIdentityItems(userInfo: UserProfileData): List<UserInfoDetailsItem> =
+        listOf(
+            UserInfoDetailsItem(
+                R.drawable.ic_user,
+                userInfo.displayName,
+                resources!!.getString(R.string.user_info_displayname),
+                Field.DISPLAYNAME,
+                userInfo.displayNameScope
+            ),
+            UserInfoDetailsItem(
+                R.drawable.ic_record_voice_over_24px,
+                userInfo.pronouns,
+                resources!!.getString(R.string.user_info_pronouns),
+                Field.PRONOUNS,
+                userInfo.pronounsScope
+            )
+        )
+
+    private fun createContactItems(userInfo: UserProfileData): List<UserInfoDetailsItem> =
+        listOf(
+            UserInfoDetailsItem(
+                R.drawable.ic_email,
+                userInfo.email,
+                resources!!.getString(R.string.user_info_email),
+                Field.EMAIL,
+                userInfo.emailScope
+            ),
+            UserInfoDetailsItem(
+                R.drawable.ic_phone,
+                userInfo.phone,
+                resources!!.getString(R.string.user_info_phone),
+                Field.PHONE,
+                userInfo.phoneScope
+            ),
+            UserInfoDetailsItem(
+                R.drawable.ic_map_marker,
+                userInfo.address,
+                resources!!.getString(R.string.user_info_address),
+                Field.ADDRESS,
+                userInfo.addressScope
+            ),
+            UserInfoDetailsItem(
+                R.drawable.ic_web,
+                userInfo.website,
+                resources!!.getString(R.string.user_info_website),
+                Field.WEBSITE,
+                userInfo.websiteScope
+            )
+        )
+
+    private fun createSocialItems(userInfo: UserProfileData): List<UserInfoDetailsItem> =
+        listOf(
+            UserInfoDetailsItem(
+                R.drawable.ic_twitter,
+                userInfo.twitter,
+                resources!!.getString(R.string.user_info_twitter),
+                Field.TWITTER,
+                userInfo.twitterScope
+            ),
+            UserInfoDetailsItem(
+                R.drawable.ic_cloud_24px,
+                userInfo.bluesky,
+                resources!!.getString(R.string.user_info_bluesky),
+                Field.BLUESKY,
+                userInfo.blueskyScope
+            ),
+            UserInfoDetailsItem(
+                R.drawable.ic_fediverse_24px,
+                userInfo.fediverse,
+                resources!!.getString(R.string.user_info_fediverse),
+                Field.FEDIVERSE,
+                userInfo.fediverseScope
+            )
+        )
+
+    private fun createProfessionalItems(userInfo: UserProfileData): List<UserInfoDetailsItem> =
+        listOf(
+            UserInfoDetailsItem(
+                R.drawable.ic_home_work_24px,
+                userInfo.organisation,
+                resources!!.getString(R.string.user_info_organisation),
+                Field.ORGANISATION,
+                userInfo.organisationScope
+            ),
+            UserInfoDetailsItem(
+                R.drawable.ic_work_24px,
+                userInfo.role,
+                resources!!.getString(R.string.user_info_role),
+                Field.ROLE,
+                userInfo.roleScope
+            ),
+            UserInfoDetailsItem(
+                R.drawable.ic_info_24px,
+                userInfo.headline,
+                resources!!.getString(R.string.user_info_headline),
+                Field.HEADLINE,
+                userInfo.headlineScope
+            ),
+            UserInfoDetailsItem(
+                R.drawable.ic_article_24px,
+                userInfo.biography,
+                resources!!.getString(R.string.user_info_biography),
+                Field.BIOGRAPHY,
+                userInfo.biographyScope
+            )
+        )
 
     private fun save() {
         val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
 
-        for (item in adapter.displayList.orEmpty()) {
+        for (item in profileItems) {
             if (item.text != userInfo?.getValueByField(item.field)) {
                 ncApi.setUserData(
                     credentials,
@@ -506,10 +486,7 @@ class ProfileActivity : BaseActivity() {
                                 String.format(resources!!.getString(R.string.failed_to_save), item.field),
                                 Snackbar.LENGTH_LONG
                             ).show()
-                            adapter.updateFilteredList()
-                            profileUiState = profileUiState.copy(
-                                filteredItems = adapter.filteredDisplayList.toList()
-                            )
+                            syncFilteredItems()
                             Log.e(TAG, "Failed to save: ${item.text} as ${item.field}", e)
                         }
 
@@ -520,7 +497,7 @@ class ProfileActivity : BaseActivity() {
             if (item.scope != userInfo?.getScopeByField(item.field)) {
                 saveScope(item, userInfo)
             }
-            adapter.updateFilteredList()
+            syncFilteredItems()
         }
 
         // Profile enabled
@@ -679,54 +656,17 @@ class ProfileActivity : BaseActivity() {
         var scope: Scope?
     )
 
-    /**
-     * Retained for [ScopeDialog] compatibility.  All RecyclerView rendering is done by Compose;
-     * only [setData] and [updateScope] are used at runtime.
-     */
-    class UserInfoAdapter(
-        displayList: List<UserInfoDetailsItem>?,
-        /** Invoked after [setData] or [updateScope] so the caller can sync Compose state. */
-        private val onChanged: () -> Unit = {}
-    ) : androidx.recyclerview.widget.RecyclerView.Adapter<UserInfoAdapter.ViewHolder>() {
+    private fun updateItemScope(position: Int, scope: Scope?) {
+        val old = profileItems[position]
+        profileItems[position] = UserInfoDetailsItem(old.icon, old.text, old.hint, old.field, scope)
+        syncFilteredItems()
+    }
 
-        var displayList: List<UserInfoDetailsItem>? = displayList ?: LinkedList()
-        var filteredDisplayList: MutableList<UserInfoDetailsItem> = LinkedList()
-
-        class ViewHolder(val composeView: ComposeView) :
-            androidx.recyclerview.widget.RecyclerView.ViewHolder(composeView)
-
-        fun setData(displayList: List<UserInfoDetailsItem>) {
-            this.displayList = displayList
-            updateFilteredList()
-            notifyDataSetChanged()
-            onChanged()
-        }
-
-        fun updateFilteredList() {
-            filteredDisplayList.clear()
-            displayList?.filterTo(filteredDisplayList) { !TextUtils.isEmpty(it.text) }
-        }
-
-        fun updateScope(position: Int, scope: Scope?) {
-            displayList!![position].scope = scope
-            notifyDataSetChanged()
-            onChanged()
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val composeView = ComposeView(parent.context).apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindowOrReleasedFromPool)
-            }
-            return ViewHolder(composeView)
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) = Unit
-
-        override fun getItemCount(): Int = displayList?.size ?: 0
+    private fun syncFilteredItems() {
+        profileUiState = profileUiState.copy(
+            items = profileItems.toList(),
+            filteredItems = profileItems.filter { !it.text.isNullOrEmpty() }
+        )
     }
 
     enum class Field(val fieldName: String, val scopeName: String) {
