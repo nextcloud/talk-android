@@ -304,7 +304,11 @@ dependencies {
     implementation "io.noties.markwon:ext-tasklist:$markwonVersion"
     implementation "io.noties.markwon:ext-tables:$markwonVersion"
 
+    // Avatar picker
     implementation 'com.github.nextcloud-deps:ImagePicker:2.1.0.2'
+    // Override avatar picker's internal crop lib for better dge-to-edge support
+    implementation 'com.github.yalantis:ucrop:2.2.11'
+
     implementation 'io.github.elye:loaderviewlibrary:3.0.0'
     implementation 'org.osmdroid:osmdroid-android:6.1.20'
     implementation ('fr.dudie:nominatim-api:3.4', {
