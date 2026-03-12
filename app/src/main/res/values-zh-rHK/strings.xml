@@ -365,6 +365,8 @@
     <string name="nc_no_open_conversations_headline">沒有公開的對話</string>
     <string name="nc_no_open_conversations_text">沒有您可以加入的公開對話。\n可能是沒有公開的對話，或是您已經加入全部的公開對話。</string>
     <string name="nc_no_proxy">無proxy代理</string>
+    <string name="nc_no_search_results_headline">您的搜尋沒有結果</string>
+    <string name="nc_no_search_results_text">請檢查您的搜尋詞彙，或嘗試使用其他關鍵字。</string>
     <string name="nc_not_allowed_to_activate_audio">你無權啟動音頻！</string>
     <string name="nc_not_allowed_to_activate_video">你無權啟動視像！</string>
     <string name="nc_not_now">現在不了</string>
@@ -441,6 +443,7 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">搜尋</string>
     <string name="nc_search_clear">清除搜尋</string>
+    <string name="nc_search_location">搜尋位置</string>
     <string name="nc_select_an_account">選擇一個賬號</string>
     <string name="nc_send_edit_message">更新訊息</string>
     <string name="nc_send_later">稍後傳送</string>
@@ -558,6 +561,7 @@
     <string name="nc_test_results">測試結果</string>
     <string name="nc_today_meeting">於今日 %1$s</string>
     <string name="nc_tomorrow_meeting">明日於 %1$s</string>
+    <string name="nc_upcoming_event_dismissed">即將進行的通話可於對話資訊中查看</string>
     <string name="nc_upload_choose_local_files">選擇檔案</string>
     <string name="nc_upload_confirm_send_multiple">將這些檔案發送到 %1$s？</string>
     <string name="nc_upload_confirm_send_single">將此檔案發送到 %1$s？</string>
@@ -578,6 +582,8 @@
     <string name="nc_voice_message_slide_to_cancel">« 滑動取消</string>
     <string name="nc_webinar">網絡研討會</string>
     <string name="nc_yes">是</string>
+    <string name="nc_zoom_in">放大</string>
+    <string name="nc_zoom_out">縮小</string>
     <string name="next_week">下星期</string>
     <string name="no_conversations_archived">沒有已封存的對話</string>
     <string name="no_offline_messages_saved">未儲存離線訊息</string>
@@ -745,9 +751,16 @@
     <string name="user_absence_replacement">取代︰</string>
     <string name="user_avatar">用戶虛擬化身大頭照</string>
     <string name="user_info_address">地址</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">全名</string>
     <string name="user_info_email">電郵地址</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">標題</string>
+    <string name="user_info_organisation">生產力</string>
     <string name="user_info_phone">電話號碼</string>
+    <string name="user_info_profile_enable">啟用簡介</string>
+    <string name="user_info_pronouns">代名詞</string>
+    <string name="user_info_role">角色</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">網站</string>
     <string name="user_status">狀態</string>

@@ -216,6 +216,7 @@
     <string name="nc_moderator">مدیر</string>
     <string name="nc_new_conversation">گفتگوی جدید</string>
     <string name="nc_new_conversation_visibility">Visibility</string>
+    <string name="nc_new_mention">اشاره‌های خوانده‌نشده</string>
     <string name="nc_new_messages">پیام‌های خوانده نشده</string>
     <string name="nc_nick_guest">مهمان</string>
     <string name="nc_no">نه</string>
@@ -359,6 +360,8 @@
     <string name="nc_voice_message_missing_audio_permission">جواز دسترسی به ضبط صدا مورد نیاز است</string>
     <string name="nc_webinar">وبینار</string>
     <string name="nc_yes">بله</string>
+    <string name="nc_zoom_in">بزرگ‌نمایی</string>
+    <string name="nc_zoom_out">کوچک‌نمایی</string>
     <string name="next_week">هفتهٔ بعد</string>
     <string name="notification_all_messages">All messages</string>
     <string name="notification_mention_only">\@-mentions only</string>
@@ -424,10 +427,14 @@
     <string name="translation_error_message">امکان تشخیص زبان وجود ندارد.</string>
     <string name="translation_from">از</string>
     <string name="translation_to">به</string>
+    <string name="unread">خوانده‌نشده</string>
     <string name="user_avatar">آواتار کاربر</string>
     <string name="user_info_address">نشانی</string>
     <string name="user_info_displayname">نام کامل</string>
     <string name="user_info_email">رایانامه</string>
+    <string name="user_info_fediverse">فدیورس</string>
+    <string name="user_info_headline">عنوان</string>
+    <string name="user_info_organisation">سازمانی</string>
     <string name="user_info_phone">شماره تلفن</string>
     <string name="user_info_twitter">توییتر</string>
     <string name="user_info_website">وب‌ سایت</string>

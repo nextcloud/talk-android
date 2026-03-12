@@ -353,6 +353,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Liu\'uta peruuttaaksesi</string>
     <string name="nc_webinar">Webinaari</string>
     <string name="nc_yes">Kyllä</string>
+    <string name="nc_zoom_in">Lähennä</string>
+    <string name="nc_zoom_out">Loitonna</string>
     <string name="next_week">Seuraava viikko</string>
     <string name="notifications_default">Oletus</string>
     <string name="oneHour">1 tunti</string>
@@ -419,6 +421,7 @@
     <string name="thisWeek">Tämä viikko</string>
     <string name="this_weekend">Tämä viikonloppu</string>
     <string name="thread_reply">Vastaa</string>
+    <string name="threads">Keskusteluketjut</string>
     <string name="today">Tänään</string>
     <string name="tomorrow">Huomenna</string>
     <string name="translate">Käännä</string>
@@ -432,9 +435,14 @@
     <string name="unread">Lukematon</string>
     <string name="user_avatar">Käyttäjän avatar</string>
     <string name="user_info_address">Osoite</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Koko nimi</string>
     <string name="user_info_email">Sähköposti</string>
+    <string name="user_info_headline">Otsikko</string>
+    <string name="user_info_organisation">Organisaatio</string>
     <string name="user_info_phone">Puhelinnumero</string>
+    <string name="user_info_profile_enable">Ota profiili käyttöön</string>
+    <string name="user_info_role">Rooli</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Verkkosivu</string>
     <string name="user_status">Tila</string>

@@ -566,6 +566,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Slide to cancel</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">ແມ່ນແລ້ວ</string>
+    <string name="nc_zoom_in">ຊູມເຂົ້າ</string>
+    <string name="nc_zoom_out">ຊູມອອກ</string>
     <string name="next_week">Next week</string>
     <string name="no_conversations_archived">No archived conversations</string>
     <string name="no_offline_messages_saved">No offline messages saved</string>
@@ -717,9 +719,16 @@
     <string name="user_absence_replacement">Replacement: </string>
     <string name="user_avatar">User avatar</string>
     <string name="user_info_address">ທີ່ຢູ່</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">ຊື່ເຕັມ</string>
     <string name="user_info_email">ອິເມວ</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Headline</string>
+    <string name="user_info_organisation">Organization</string>
     <string name="user_info_phone">ເບີໂທລະສັບ</string>
+    <string name="user_info_profile_enable">Enable profile</string>
+    <string name="user_info_pronouns">Pronouns</string>
+    <string name="user_info_role">ບົດບາດ</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">ເວັບໄຊ</string>
     <string name="user_status">Status</string>

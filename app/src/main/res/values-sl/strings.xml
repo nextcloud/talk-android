@@ -421,6 +421,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Potegnite za preklic</string>
     <string name="nc_webinar">Spletinar</string>
     <string name="nc_yes">Da</string>
+    <string name="nc_zoom_in">Približaj</string>
+    <string name="nc_zoom_out">Oddalji</string>
     <string name="next_week">Naslednji teden</string>
     <string name="no_phone_book_integration_due_to_permissions">Povezava s telefonskim imenikom ni na voljo zaradi neustreznih dovoljenj.</string>
     <string name="notifications_default">Privzeto</string>
@@ -528,7 +530,12 @@
     <string name="user_info_address">Naslov</string>
     <string name="user_info_displayname">Polno ime</string>
     <string name="user_info_email">Elektronsko sporočilo</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Naslov</string>
+    <string name="user_info_organisation">Organizacija</string>
     <string name="user_info_phone">Telefonska številka</string>
+    <string name="user_info_profile_enable">Omogoči profil</string>
+    <string name="user_info_role">Vloga</string>
     <string name="user_info_twitter">Račun Twitter</string>
     <string name="user_info_website">Spletna stran</string>
     <string name="user_status">Stanje</string>

@@ -388,6 +388,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Pomakni za otkazivanje</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Da</string>
+    <string name="nc_zoom_in">Uvećaj</string>
+    <string name="nc_zoom_out">Umanji</string>
     <string name="next_week">Sljedeći tjedan</string>
     <string name="no_phone_book_integration_due_to_permissions">Integracija broja telefona nije moguća jer nedostaje dopuštenje</string>
     <string name="notification_off">Isključeno</string>
@@ -487,9 +489,15 @@
     <string name="upload_new_avatar_from_device">Otpremi novi avatar s uređaja</string>
     <string name="user_avatar">Avatar korisnika</string>
     <string name="user_info_address">Adresa</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Puno ime</string>
     <string name="user_info_email">E-pošta</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Naslov</string>
+    <string name="user_info_organisation">Organizacija</string>
     <string name="user_info_phone">Broj telefona</string>
+    <string name="user_info_pronouns">Zamjenice</string>
+    <string name="user_info_role">Uloga</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Web-mjesto</string>
     <string name="user_status">Status</string>

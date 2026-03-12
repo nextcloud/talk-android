@@ -505,6 +505,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Skyv for å avbryte</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Ja</string>
+    <string name="nc_zoom_in">Zoom inn</string>
+    <string name="nc_zoom_out">Zoom ut</string>
     <string name="next_week">Neste uke</string>
     <string name="no_phone_book_integration_due_to_permissions">Ingen telefonnummerintegrasjon på grunn av manglende rettigheter</string>
     <string name="notification_all_messages">Alle meldinger</string>
@@ -631,9 +633,16 @@
     <string name="user_absence_replacement">Erstatter:</string>
     <string name="user_avatar">Bruker avatar</string>
     <string name="user_info_address">Adresse</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Fullt navn</string>
     <string name="user_info_email">E-post</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Overskrift</string>
+    <string name="user_info_organisation">Organisering</string>
     <string name="user_info_phone">Telefonnummer</string>
+    <string name="user_info_profile_enable">Aktiver profil</string>
+    <string name="user_info_pronouns">Pronomen</string>
+    <string name="user_info_role">Rolle</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Nettsted</string>
     <string name="user_status">Status</string>

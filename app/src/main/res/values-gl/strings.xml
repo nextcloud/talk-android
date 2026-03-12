@@ -365,6 +365,8 @@
     <string name="nc_no_open_conversations_headline">Non hai conversas abertas</string>
     <string name="nc_no_open_conversations_text">Non hai conversas abertas ás que poida unirse.\nNon hai conversas abertas ou xa se uníu a todas.</string>
     <string name="nc_no_proxy">Sen proxy</string>
+    <string name="nc_no_search_results_headline">Non hai resultados para a súa busca</string>
+    <string name="nc_no_search_results_text">Revise o termo que busca ou tente empregar outro.</string>
     <string name="nc_not_allowed_to_activate_audio">Vde. non ten permiso para activar o son!</string>
     <string name="nc_not_allowed_to_activate_video">Vde. non ten permiso para activar o vídeo!</string>
     <string name="nc_not_now">Agora non</string>
@@ -441,6 +443,7 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Buscar</string>
     <string name="nc_search_clear">Limpar a busca</string>
+    <string name="nc_search_location">Localización da busca</string>
     <string name="nc_select_an_account">Seleccione unha conta</string>
     <string name="nc_send_edit_message">Actualizar a mensaxe</string>
     <string name="nc_send_later">Enviar máis tarde</string>
@@ -579,6 +582,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Esvare para cancelar</string>
     <string name="nc_webinar">Seminario web</string>
     <string name="nc_yes">Si</string>
+    <string name="nc_zoom_in">Achegar</string>
+    <string name="nc_zoom_out">Afastar</string>
     <string name="next_week">Semana seguinte</string>
     <string name="no_conversations_archived">Non hai conversas arquivadas</string>
     <string name="no_offline_messages_saved">Non se gardou ningunha mensaxe sen conexión</string>
@@ -746,9 +751,15 @@
     <string name="user_absence_replacement">Substitución: </string>
     <string name="user_avatar">Avatar do usuario</string>
     <string name="user_info_address">Enderezo</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Nome completo</string>
     <string name="user_info_email">Correo-e</string>
+    <string name="user_info_fediverse">Fediverso</string>
+    <string name="user_info_headline">Titular</string>
+    <string name="user_info_organisation">Organización</string>
     <string name="user_info_phone">Número de teléfono</string>
+    <string name="user_info_pronouns">Pronomes</string>
+    <string name="user_info_role">Rol</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Sitio web</string>
     <string name="user_status">Estado</string>

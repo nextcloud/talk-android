@@ -75,6 +75,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 ore</string>
     <string name="get_invitations_error">Impossibile recuperare gli inviti in sospeso</string>
+    <string name="gplay_available_no">I servizi di Google Play non sono disponibili. Le notifiche non sono supportate</string>
     <string name="hint_edited_message">(modificato)</string>
     <string name="internal_note">Note interne</string>
     <string name="invisible">Invisibile</string>
@@ -181,6 +182,7 @@
     <string name="nc_connecting_call">Connessione in corso…</string>
     <string name="nc_contacts_done">Fine</string>
     <string name="nc_conversation_description">Descrizione della conversazione</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Vai al file</string>
     <string name="nc_conversation_menu_conversation_info">Informazioni di conversazione</string>
     <string name="nc_conversation_menu_video_call">Chiamata video</string>
     <string name="nc_conversation_menu_voice_call">Chiamata vocale</string>
@@ -343,6 +345,8 @@
     <string name="nc_message_offline">Offline</string>
     <string name="nc_message_quote_cancel_reply">Annulla risposta</string>
     <string name="nc_message_read">Messaggio letto</string>
+    <string name="nc_message_scheduled">Messaggio programmato</string>
+    <string name="nc_message_scheduled_at">Messaggio programmato per %1$s</string>
     <string name="nc_message_sending">Inviando</string>
     <string name="nc_message_sent">Messaggio inviato</string>
     <string name="nc_microphone_enabled_audio_recording">Il microfono è attivato e l\'audio è in registrazione.</string>
@@ -359,6 +363,8 @@
     <string name="nc_no_open_conversations_headline">Nessuna conversazione aperta</string>
     <string name="nc_no_open_conversations_text">Non ci sono conversazioni aperte a cui puoi partecipare.\nO non ci sono conversazioni aperte o hai già partecipato a tutte.</string>
     <string name="nc_no_proxy">Nessun proxy</string>
+    <string name="nc_no_search_results_headline">Nessun risultato per la tua ricerca</string>
+    <string name="nc_no_search_results_text">Controlla il termine di ricerca o prova a usarne uno diverso.</string>
     <string name="nc_not_allowed_to_activate_audio">Non è consentito attivare l\'audio!</string>
     <string name="nc_not_allowed_to_activate_video">Non è consentito attivare il video!</string>
     <string name="nc_not_now">Non ora</string>
@@ -413,9 +419,14 @@
     <string name="nc_rename_confirm">Rinomina</string>
     <string name="nc_reply">Rispondi</string>
     <string name="nc_reply_privately">Rispondi in privato</string>
+    <string name="nc_reschedule_message_with_notification">Riprogrammare con notifica</string>
+    <string name="nc_reschedule_message_without_notification">Riprogrammare senza notifica</string>
     <string name="nc_room_retention">La camera è stata prenotata con successo.</string>
     <string name="nc_save_message">Salva</string>
     <string name="nc_save_success">Salvato correttamente</string>
+    <string name="nc_schedule_message_without_notification">Invia più tardi senza notifica</string>
+    <string name="nc_scheduled_messages">Messaggi programmati</string>
+    <string name="nc_scheduled_messages_empty">Nessun messaggio programmato</string>
     <string name="nc_scheduled_time">Orario programmato</string>
     <string name="nc_screen_lock_timeout_30">30 secondi</string>
     <string name="nc_screen_lock_timeout_300">5 minuti</string>
@@ -428,6 +439,7 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Cerca</string>
     <string name="nc_search_clear">Svuota ricerca</string>
+    <string name="nc_search_location">Cerca posizione</string>
     <string name="nc_select_an_account">Seleziona account</string>
     <string name="nc_send_edit_message">Aggiorna messaggio</string>
     <string name="nc_send_later">Invia più tardi</string>
@@ -532,6 +544,7 @@
     <string name="nc_shared_items_empty">Nessun elemento condiviso</string>
     <string name="nc_shared_items_location">Posizione</string>
     <string name="nc_shared_location">Posizione condivisa</string>
+    <string name="nc_show_ecosystem_description">Suggerimenti per le app Nextcloud nella finestra di dialogo di selezione dell\'account</string>
     <string name="nc_show_ecosystem_title">Mostra il selettore delle applicazioni</string>
     <string name="nc_show_notification_warning_description">Quando le notifiche non sono impostate correttamente, mostra un avviso regolare</string>
     <string name="nc_show_notification_warning_title">Mostra avviso di notifica regolare</string>
@@ -564,10 +577,13 @@
     <string name="nc_voice_message_slide_to_cancel">« Scorri per annullare</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Sì</string>
+    <string name="nc_zoom_in">Ingrandisci</string>
+    <string name="nc_zoom_out">Rimpicciolisci</string>
     <string name="next_week">Settimana successiva</string>
     <string name="no_conversations_archived">Nessuna conversazione archiviato</string>
     <string name="no_offline_messages_saved">Nessun messaggio offline salvato</string>
     <string name="no_phone_book_integration_due_to_permissions">Nessuna integrazione del numero di telefono a causa di autorizzazioni mancanti</string>
+    <string name="no_scheduled_messages_offline">Nessuna connessione al server - Impossibile caricare i messaggi pianificati</string>
     <string name="notification_all_messages">Tutti i messaggi</string>
     <string name="notification_mention_only">\@-solo menzioni</string>
     <string name="notification_off">Spento</string>
@@ -588,6 +604,7 @@
     <string name="pinned_message_options">Opzioni messaggi</string>
     <string name="play_pause_voice_message">Riproduci/ferma messaggio vocale</string>
     <string name="playback_speed_control">Velocità di riproduzione</string>
+    <string name="please_continue_the_login_process_in_the_browser">Si prega di continuare ad accedere nel browser</string>
     <string name="polls_add_option">Aggiungi opzione</string>
     <string name="polls_edit_vote">Modifica voto</string>
     <string name="polls_end_poll">Termina sondaggio</string>
@@ -607,6 +624,7 @@
     <string name="previously_set">Impostato in precedenza</string>
     <string name="qr_code_error">Il QR code non può essere letto</string>
     <string name="raise_hand">Alza la mano</string>
+    <string name="reaction_forbidden">Non ti è consentito aggiungere o rimuovere reazioni in questa conversazione</string>
     <string name="reactions_tab_all">Tutti</string>
     <string name="read_storage_no_permission">La condivisione dei file dall\'archiviazione non è possibile senza permessi</string>
     <string name="recent_threads">Argomenti recenti</string>
@@ -718,9 +736,16 @@
     <string name="user_absence_replacement">Sostituzione:</string>
     <string name="user_avatar">Avatar dell\'utente</string>
     <string name="user_info_address">Indirizzo</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Nome completo</string>
     <string name="user_info_email">Posta elettronica</string>
+    <string name="user_info_fediverse">Fediverso</string>
+    <string name="user_info_headline">Titolo</string>
+    <string name="user_info_organisation">Organizzazione</string>
     <string name="user_info_phone">Numero di telefono</string>
+    <string name="user_info_profile_enable">Abilita profilo</string>
+    <string name="user_info_pronouns">Pronomi</string>
+    <string name="user_info_role">Ruolo</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Sito web</string>
     <string name="user_status">Stato</string>

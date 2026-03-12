@@ -459,6 +459,8 @@
     <string name="nc_voice_message_slide_to_cancel">«滑动取消</string>
     <string name="nc_webinar">网络研讨会</string>
     <string name="nc_yes">是的</string>
+    <string name="nc_zoom_in">放大</string>
+    <string name="nc_zoom_out">缩小</string>
     <string name="next_week">下周</string>
     <string name="no_phone_book_integration_due_to_permissions">由于缺少权限，没有电话集成 </string>
     <string name="notification_mention_only">仅被@提及的消息</string>
@@ -592,9 +594,16 @@
     <string name="user_absence_replacement">接替者：</string>
     <string name="user_avatar">用户头像</string>
     <string name="user_info_address">地址</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">全名</string>
     <string name="user_info_email">电子邮件</string>
+    <string name="user_info_fediverse">联邦宇宙</string>
+    <string name="user_info_headline">标题</string>
+    <string name="user_info_organisation">组织</string>
     <string name="user_info_phone">电话号码  </string>
+    <string name="user_info_profile_enable">启用简介</string>
+    <string name="user_info_pronouns">称号</string>
+    <string name="user_info_role">角色</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">网站</string>
     <string name="user_status">状态</string>

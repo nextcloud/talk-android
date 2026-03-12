@@ -566,6 +566,8 @@
     <string name="nc_voice_message_slide_to_cancel">«ئەمەلدىن قالدۇرۇش</string>
     <string name="nc_webinar">تور سۆھبىتى</string>
     <string name="nc_yes">ھەئە</string>
+    <string name="nc_zoom_in">چوڭايتىش</string>
+    <string name="nc_zoom_out">چوڭايتىڭ</string>
     <string name="next_week">كېلەر ھەپتە</string>
     <string name="no_conversations_archived">ئارخىپلانغان سۆھبەت يوق</string>
     <string name="no_offline_messages_saved">ساقلانغان تورسىز ئۇچۇر يوق</string>
@@ -721,9 +723,16 @@
     <string name="user_absence_replacement">ئالماشتۇرۇش: </string>
     <string name="user_avatar">ئىشلەتكۈچى باش سۈرىتى</string>
     <string name="user_info_address">ئادرېس</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">تولۇق ئىسمى</string>
     <string name="user_info_email">ئېلخەت</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">ماۋزۇ</string>
+    <string name="user_info_organisation">ئورگان</string>
     <string name="user_info_phone">تېلېفون نومۇرى</string>
+    <string name="user_info_profile_enable">ئارخىپنى قوزغىتىڭ</string>
+    <string name="user_info_pronouns">ئاتىلىشى</string>
+    <string name="user_info_role">رولى</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">تور بېكەت</string>
     <string name="user_status">ھالەت</string>

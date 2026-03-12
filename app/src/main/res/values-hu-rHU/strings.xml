@@ -566,6 +566,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Csúsztassa a megszakításhoz</string>
     <string name="nc_webinar">Webinár</string>
     <string name="nc_yes">Igen</string>
+    <string name="nc_zoom_in">Nagyítás</string>
+    <string name="nc_zoom_out">Kicsinyítés</string>
     <string name="next_week">Következő hét</string>
     <string name="no_conversations_archived">Nincs archivált beszélgetés</string>
     <string name="no_offline_messages_saved">Nincs mentett offline üzenet</string>
@@ -717,9 +719,15 @@
     <string name="user_absence_replacement">Helyettes: </string>
     <string name="user_avatar">Felhasználói profilkép</string>
     <string name="user_info_address">Cím</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Teljes név</string>
     <string name="user_info_email">E-mail</string>
+    <string name="user_info_fediverse">Födiverzum</string>
+    <string name="user_info_headline">Címsor</string>
+    <string name="user_info_organisation">Szervezet</string>
     <string name="user_info_phone">Telefonszám</string>
+    <string name="user_info_profile_enable">Profil engedélyezése</string>
+    <string name="user_info_role">Szerepkör</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Weboldal</string>
     <string name="user_status">Állapot</string>

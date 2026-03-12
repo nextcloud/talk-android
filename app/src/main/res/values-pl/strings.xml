@@ -576,6 +576,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Przesuń, aby anulować</string>
     <string name="nc_webinar">Webinarium</string>
     <string name="nc_yes">Tak</string>
+    <string name="nc_zoom_in">Powiększ</string>
+    <string name="nc_zoom_out">Pomniejsz</string>
     <string name="next_week">Następny tydzień</string>
     <string name="no_conversations_archived">Brak zarchiwizowanych rozmów</string>
     <string name="no_offline_messages_saved">Nie zapisano żadnych wiadomości offline</string>
@@ -743,9 +745,16 @@
     <string name="user_absence_replacement">Zastępnik:</string>
     <string name="user_avatar">Awatar użytkownika</string>
     <string name="user_info_address">Adres</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Pełna nazwa</string>
     <string name="user_info_email">E-mail</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Nagłówek</string>
+    <string name="user_info_organisation">Organizacja</string>
     <string name="user_info_phone">Numer telefonu</string>
+    <string name="user_info_profile_enable">Włącz profil</string>
+    <string name="user_info_pronouns">Zaimki</string>
+    <string name="user_info_role">Rola społeczna</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Strona internetowa</string>
     <string name="user_status">Status</string>

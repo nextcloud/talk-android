@@ -13,6 +13,7 @@
     <string name="automatic_status_set">Η κατάστασή σας ορίστηκε αυτόματα</string>
     <string name="avatar">Εικόνα προφίλ</string>
     <string name="away">Λείπω</string>
+    <string name="battery_optimization_title">Ρυθμίσεις μπαταρίας</string>
     <string name="busy">Απασχολημένος</string>
     <string name="calendar">Ημερολόγιο</string>
     <string name="call_running_since_one_hour">Η κλήση εκτελείται για μία ώρα.</string>
@@ -385,6 +386,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Σύρετε για ακύρωση</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Ναι</string>
+    <string name="nc_zoom_in">Μεγέθυνση</string>
+    <string name="nc_zoom_out">Σμίκρυνση</string>
     <string name="next_week">Επόμενη εβδομάδα</string>
     <string name="no_phone_book_integration_due_to_permissions">Δεν υπάρχει ενσωμάτωση αριθμού τηλεφώνου λόγω έλλειψης δικαιωμάτων</string>
     <string name="notification_off">Απενεργοποιημένο</string>
@@ -480,9 +483,16 @@
     <string name="upload_new_avatar_from_device">Μεταφόρτωση νέας εικόνας προφίλ από την συσκευή</string>
     <string name="user_avatar">Άβαταρ χρήστη</string>
     <string name="user_info_address">Διεύθυνση</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Πλήρες όνομα</string>
     <string name="user_info_email">Ηλ. ταχυδρομείο</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Τίτλος</string>
+    <string name="user_info_organisation">Οργανισμός</string>
     <string name="user_info_phone">Αριθμός τηλεφώνου</string>
+    <string name="user_info_profile_enable">Ενεργοποίηση προφίλ</string>
+    <string name="user_info_pronouns">Αντωνυμίες</string>
+    <string name="user_info_role">Ρόλος</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Ιστοσελίδα</string>
     <string name="user_status">Κατάσταση</string>

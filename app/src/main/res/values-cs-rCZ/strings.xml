@@ -578,6 +578,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Zrušíte přejetím prstem</string>
     <string name="nc_webinar">Webinář</string>
     <string name="nc_yes">Ano</string>
+    <string name="nc_zoom_in">Přiblížit</string>
+    <string name="nc_zoom_out">Oddálit</string>
     <string name="next_week">Příští týden</string>
     <string name="no_conversations_archived">Žádné archivované konverzace</string>
     <string name="no_offline_messages_saved">Neuloženy žádné zprávy pro režim bez připojení</string>
@@ -745,9 +747,16 @@
     <string name="user_absence_replacement">Nahrazení:</string>
     <string name="user_avatar">Zástupný obrázek uživatele</string>
     <string name="user_info_address">Adresa</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Celé jméno</string>
     <string name="user_info_email">E-mail</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Nadpis</string>
+    <string name="user_info_organisation">Organizování</string>
     <string name="user_info_phone">Telefonní číslo</string>
+    <string name="user_info_profile_enable">Zapnout profil</string>
+    <string name="user_info_pronouns">Zájmena</string>
+    <string name="user_info_role">Role</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Webová stránka</string>
     <string name="user_status">Stav</string>

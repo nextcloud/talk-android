@@ -365,6 +365,8 @@
     <string name="nc_no_open_conversations_headline">Níl aon chomhrá oscailte</string>
     <string name="nc_no_open_conversations_text">Níl aon chomhrá oscailte ar féidir leat páirt a ghlacadh ann.\nNíl aon chomhráite oscailte ann nó chuir tú isteach ar gach ceann acu cheana féin.</string>
     <string name="nc_no_proxy">Gan seachfhreastalaí</string>
+    <string name="nc_no_search_results_headline">Gan aon torthaí do do chuardach</string>
+    <string name="nc_no_search_results_text">Seiceáil do théarma cuardaigh nó bain triail as ceann eile.</string>
     <string name="nc_not_allowed_to_activate_audio">Níl cead agat an fhuaim a ghníomhachtú!</string>
     <string name="nc_not_allowed_to_activate_video">Níl cead agat físeáin a ghníomhachtú!</string>
     <string name="nc_not_now">Ní anois</string>
@@ -441,6 +443,7 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Cuardach</string>
     <string name="nc_search_clear">Glan cuardach</string>
+    <string name="nc_search_location">Cuardaigh suíomh</string>
     <string name="nc_select_an_account">Roghnaigh cuntas</string>
     <string name="nc_send_edit_message">Nuashonraigh teachtaireacht</string>
     <string name="nc_send_later">Seol níos déanaí</string>
@@ -579,6 +582,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Sleamhnán le cur ar ceal</string>
     <string name="nc_webinar">webinar</string>
     <string name="nc_yes">Tá</string>
+    <string name="nc_zoom_in">Zúmáil isteach</string>
+    <string name="nc_zoom_out">Súmáil amach</string>
     <string name="next_week">An tseachtain seo chugainn</string>
     <string name="no_conversations_archived">Níl aon chomhráite sa chartlann</string>
     <string name="no_offline_messages_saved">Níor sábháladh aon teachtaireacht as líne</string>
@@ -746,9 +751,15 @@
     <string name="user_absence_replacement">Athsholáthar:</string>
     <string name="user_avatar">Avatar úsáideoir</string>
     <string name="user_info_address">Seoladh</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Ainm iomlán</string>
     <string name="user_info_email">Ríomhphost</string>
+    <string name="user_info_fediverse">Feidearálach</string>
+    <string name="user_info_headline">Ceannlíne</string>
+    <string name="user_info_organisation">Eagraíocht</string>
     <string name="user_info_phone">Uimhir teileafón</string>
+    <string name="user_info_pronouns">Forainmneacha</string>
+    <string name="user_info_role">Ról</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Suíomh Gréasáin</string>
     <string name="user_status">Stádas</string>
