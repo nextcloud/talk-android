@@ -101,7 +101,7 @@
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Suuremad esimesena</string>
-    <string name="menu_item_sort_by_size_smallest_first">Väiksemad esimesenaa</string>
+    <string name="menu_item_sort_by_size_smallest_first">Väiksemad esimesena</string>
     <string name="message_copied">Sõnum on kopeeritud</string>
     <string name="message_delete_are_you_sure">Kas oled kindel, et tahad selle sõnumi kustutada?</string>
     <string name="message_deleted_by_you">Sina kustutasid sõnumi</string>
@@ -287,7 +287,7 @@
     <string name="nc_filter">Filtreeri vestlusi</string>
     <string name="nc_following_link">Kasutaja, kes järgnes avalikule lingile</string>
     <string name="nc_formatted_message_you">Sina: %1$s</string>
-    <string name="nc_forward_message">Edasi</string>
+    <string name="nc_forward_message">Edasta</string>
     <string name="nc_forward_to_three_dots">Edasta saajale…</string>
     <string name="nc_gallery">Galerii</string>
     <string name="nc_get_from_provider">Kas sul ei ole veel oma serverit?\nVajuta siia, et tutvuda teenusepakkujatega</string>
@@ -365,6 +365,8 @@
     <string name="nc_no_open_conversations_headline">Pole avalikke vestlusi</string>
     <string name="nc_no_open_conversations_text">Pole avalikke vestlusi, millega saaksid liituda.\nSee siis tähendab, et kas neid pole üldse või oled kõikide olemasolevatega juba liitunud.</string>
     <string name="nc_no_proxy">Proksiserver pole vajalik</string>
+    <string name="nc_no_search_results_headline">Sinu otsingul pole vastuseid</string>
+    <string name="nc_no_search_results_text">Palun kontrolli, kas otsingusõna oli õige või vajadusel proovi midagi muud.</string>
     <string name="nc_not_allowed_to_activate_audio">Sul pole lubatud heliriba sisse lülitada!</string>
     <string name="nc_not_allowed_to_activate_video">Sul pole lubatud videot sisse lülitada!</string>
     <string name="nc_not_now">Mitte praegu</string>
@@ -441,6 +443,7 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Otsi</string>
     <string name="nc_search_clear">Tühjenda otsing</string>
+    <string name="nc_search_location">Otsi asukohta</string>
     <string name="nc_select_an_account">Otsi kasutajakontot</string>
     <string name="nc_send_edit_message">Uuenda sõnumit</string>
     <string name="nc_send_later">Saada hiljem</string>
@@ -549,7 +552,7 @@
     <string name="nc_show_ecosystem_title">Näita rakenduste vahetajat</string>
     <string name="nc_show_notification_warning_description">Näita tavalist hoiatust, kui teavitused pole korrektselt seadistatud</string>
     <string name="nc_show_notification_warning_title">Näita tavalist teavituse hoiatust</string>
-    <string name="nc_sort_by">Sorteeri</string>
+    <string name="nc_sort_by">Järjestuse alus</string>
     <string name="nc_start_group_chat">Alusta rühmavestlust</string>
     <string name="nc_start_time">Algusaeg</string>
     <string name="nc_switch_account">Vaheta kasutajakontot</string>
@@ -593,8 +596,8 @@
     <string name="notifications_default">Vaikimisi</string>
     <string name="notifications_default_description">Järgi vestluse seadistusi</string>
     <string name="oneHour">1 tund</string>
-    <string name="online">Online</string>
-    <string name="online_status">Võrgus staatus</string>
+    <string name="online">Võrgus</string>
+    <string name="online_status">Olek võrgus</string>
     <string name="openConversations">Ava vestlused</string>
     <string name="open_in_files_app">Ava failirakenduses</string>
     <string name="open_notes">Ava märkmik</string>
@@ -680,8 +683,8 @@
     <string name="send_without_notification">Saada ilma teavituseta</string>
     <string name="set">Lisa</string>
     <string name="set_avatar_from_camera">Lisa tunnuspilt kaamera abil</string>
-    <string name="set_status">Määra staatus</string>
-    <string name="set_status_message">Sea staatuse sõnum</string>
+    <string name="set_status">Määra olek</string>
+    <string name="set_status_message">Sisesta olekuteade</string>
     <string name="share">Jaga</string>
     <string name="share_link_to_conversation">Liitu „%1$s“ vestkusega: %2$s</string>
     <string name="shared_items_audio">Helid</string>
@@ -697,7 +700,7 @@
     <string name="startCallForbidden">Sul pole luba kõne algatamiseks</string>
     <string name="start_thread">Alusta jutulõnga</string>
     <string name="started_a_call">helistas</string>
-    <string name="status_message">Staatuse teade</string>
+    <string name="status_message">Olekuteade</string>
     <string name="status_reverted">Olek on tagasi pööratud</string>
     <string name="switch_to_breakout_room">Mine töötuppa</string>
     <string name="switch_to_main_room">Mine põhilisse jututuppa</string>
@@ -748,6 +751,7 @@
     <string name="user_absence_replacement">Asendus:</string>
     <string name="user_avatar">Kasutaja tunnuspilt</string>
     <string name="user_info_address">Aadress</string>
+    <string name="user_info_biography">Elulugu</string>
     <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Täisnimi</string>
     <string name="user_info_email">Epost</string>
@@ -755,6 +759,7 @@
     <string name="user_info_headline">Alapealkiri</string>
     <string name="user_info_organisation">Organisatsioon</string>
     <string name="user_info_phone">Telefoninumber</string>
+    <string name="user_info_profile_disable">Eemalda profiil kasutuselt</string>
     <string name="user_info_profile_enable">Võta profiil kasutusele</string>
     <string name="user_info_pronouns">Asesõnad pöördumisel</string>
     <string name="user_info_role">Roll</string>

@@ -751,6 +751,7 @@
     <string name="user_absence_replacement">Substituto:</string>
     <string name="user_avatar">Avatar do usuário</string>
     <string name="user_info_address">Endereço</string>
+    <string name="user_info_biography">Biografia</string>
     <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Nome completo</string>
     <string name="user_info_email">E-mail</string>
@@ -758,6 +759,7 @@
     <string name="user_info_headline">Título</string>
     <string name="user_info_organisation">Organização</string>
     <string name="user_info_phone">Número do telefone</string>
+    <string name="user_info_profile_disable">Desativar perfil</string>
     <string name="user_info_profile_enable">Ativar perfil</string>
     <string name="user_info_pronouns">Pronomes</string>
     <string name="user_info_role">Função</string>
