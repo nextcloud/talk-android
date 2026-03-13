@@ -505,6 +505,7 @@
     <string name="next_week">来週</string>
     <string name="no_phone_book_integration_due_to_permissions">利用権限がないため、電話番号統合ができません。</string>
     <string name="notification_mention_only">\@で直接会話</string>
+    <string name="notification_off">オフ</string>
     <string name="notification_permission">通知権限</string>
     <string name="notifications_default">デフォルト</string>
     <string name="oneHour">1時間</string>
