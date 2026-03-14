@@ -114,6 +114,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.offset
+import co.touchlab.kermit.Logger
 import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.compose.camera.rememberCameraState
 import org.maplibre.compose.map.MaplibreMap
@@ -922,9 +923,7 @@ class ComposeChatAdapter(
 
     @Composable
     private fun OpenStreetMap(latitude: Double, longitude: Double) {
-        val isDarkMode = isSystemInDarkTheme()
-        val styleUri = if (isDarkMode) "asset://map_style_dark.json" else "asset://map_style_light.json"
-        // Position uses GeoJSON convention: Position(longitude, latitude)
+        val styleUri = if (isSystemInDarkTheme()) "asset://map_style_dark.json" else "asset://map_style_light.json"
         val cameraState = rememberCameraState(
             firstPosition = CameraPosition(
                 target = Position(longitude, latitude),
@@ -933,13 +932,20 @@ class ComposeChatAdapter(
         )
         Box(
             modifier = Modifier
-                .fillMaxHeight()
+                .heightIn(max = 200.dp)
                 .fillMaxWidth()
         ) {
             MaplibreMap(
                 modifier = Modifier.fillMaxSize(),
                 baseStyle = BaseStyle.Uri(styleUri),
-                cameraState = cameraState
+                cameraState = cameraState,
+                logger = remember { Logger.withTag("MapLibre/Chat") },
+                onMapLoadFailed = { reason ->
+                    Log.e("MapLibre/Chat", "Style failed to load: $reason | styleUri=$styleUri")
+                },
+                onMapLoadFinished = {
+                    Log.d("MapLibre/Chat", "Style loaded successfully: $styleUri")
+                }
             )
             androidx.compose.foundation.Image(
                 painter = painterResource(R.drawable.ic_baseline_location_on_red_24),
@@ -947,7 +953,7 @@ class ComposeChatAdapter(
                 modifier = Modifier
                     .size(width = 30.dp, height = 50.dp)
                     .align(Alignment.Center)
-                    .offset(y = (-25).dp)
+                    .offset(y = (-20).dp)
             )
         }
     }
@@ -1092,7 +1098,7 @@ fun AllMessageTypesPreview() {
             ChatMessage().apply {
                 jsonMessageId = 2
                 actorId = "user1_id"
-                message = "I love Nextcloud"
+                message = "I love\nNextcloud"
                 timestamp = System.currentTimeMillis()
                 actorDisplayName = "User2"
                 messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
@@ -1101,14 +1107,6 @@ fun AllMessageTypesPreview() {
                 jsonMessageId = 3
                 actorId = "user1_id"
                 message = "This is a really really really really really really really really really long message"
-                timestamp = System.currentTimeMillis()
-                actorDisplayName = "User2"
-                messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
-            },
-            ChatMessage().apply {
-                jsonMessageId = 4
-                actorId = "user1_id"
-                message = "some \n linebreak"
                 timestamp = System.currentTimeMillis()
                 actorDisplayName = "User2"
                 messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
@@ -1132,6 +1130,21 @@ fun AllMessageTypesPreview() {
                 timestamp = System.currentTimeMillis()
                 actorDisplayName = "User2"
                 messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
+            },
+            ChatMessage().apply {
+                jsonMessageId = 7
+                actorId = "user1_id"
+                actorDisplayName = "User2"
+                message = "geo-location"
+                timestamp = System.currentTimeMillis()
+                messageParameters = hashMapOf(
+                    "geo1" to hashMapOf(
+                        "type" to "geo-location",
+                        "latitude" to "52.5163",
+                        "longitude" to "13.3777",
+                        "name" to "Brandenburg Gate, Berlin"
+                    )
+                )
             }
         )
     }

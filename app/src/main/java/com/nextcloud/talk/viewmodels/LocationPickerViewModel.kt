@@ -31,6 +31,7 @@ import okhttp3.OkHttpClient
 import java.io.IOException
 import javax.inject.Inject
 
+@Suppress("TooManyFunctions")
 class LocationPickerViewModel @Inject constructor(
     private val ncApi: NcApi,
     private val currentUserProviderOld: CurrentUserProviderOld,
@@ -64,8 +65,16 @@ class LocationPickerViewModel @Inject constructor(
 
     private var isStateInitialized = false
 
+    private var roomToken: String = ""
+    private var chatApiVersion: Int = 1
+
     fun initGeocoder(baseUrl: String, email: String) {
         nominatimClient = TalkJsonNominatimClient(baseUrl, okHttpClient, email)
+    }
+
+    fun initRouting(roomToken: String, chatApiVersion: Int) {
+        this.roomToken = roomToken
+        this.chatApiVersion = chatApiVersion
     }
 
     fun initState(
@@ -88,7 +97,7 @@ class LocationPickerViewModel @Inject constructor(
         setLocationDescription(isGpsLocation = false, isGeocodedResult = geocodingResult != null)
     }
 
-    fun setMoveToCurrentLocation(value: Boolean) {
+    private fun setMoveToCurrentLocation(value: Boolean) {
         _uiState.update { it.copy(moveToCurrentLocation = value) }
     }
 
@@ -182,15 +191,9 @@ class LocationPickerViewModel @Inject constructor(
         }
     }
 
-    @Suppress("Detekt.LongParameterList")
-    fun shareLocation(
-        selectedLat: Double?,
-        selectedLon: Double?,
-        locationName: String?,
-        sharedLocationFallbackName: String,
-        roomToken: String,
-        chatApiVersion: Int
-    ) {
+    fun shareLocation(locationName: String?, sharedLocationFallbackName: String) {
+        val selectedLat = _uiState.value.mapCenterLat.takeIf { it != 0.0 }
+        val selectedLon = _uiState.value.mapCenterLon.takeIf { it != 0.0 }
         if (selectedLat == null || selectedLon == null) return
         if (locationName.isNullOrEmpty()) {
             viewModelScope.launch(Dispatchers.IO) {
@@ -205,32 +208,20 @@ class LocationPickerViewModel @Inject constructor(
                         selectedLat,
                         selectedLon,
                         address?.displayName,
-                        sharedLocationFallbackName,
-                        roomToken,
-                        chatApiVersion
+                        sharedLocationFallbackName
                     )
                 }
             }
         } else {
-            executeShareLocation(
-                selectedLat,
-                selectedLon,
-                locationName,
-                sharedLocationFallbackName,
-                roomToken,
-                chatApiVersion
-            )
+            executeShareLocation(selectedLat, selectedLon, locationName, sharedLocationFallbackName)
         }
     }
 
-    @Suppress("Detekt.LongParameterList")
     private fun executeShareLocation(
         selectedLat: Double,
         selectedLon: Double,
         locationName: String?,
-        sharedLocationFallbackName: String,
-        roomToken: String,
-        chatApiVersion: Int
+        sharedLocationFallbackName: String
     ) {
         _uiState.update { it.copy(viewState = ViewState.SendingLocation) }
 

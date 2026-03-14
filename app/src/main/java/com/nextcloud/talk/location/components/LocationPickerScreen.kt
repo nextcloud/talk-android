@@ -110,8 +110,6 @@ private const val TAG = "LocationPickerScreen"
 @Composable
 fun LocationPickerScreen(
     viewModel: LocationPickerViewModel,
-    roomToken: String,
-    chatApiVersion: Int,
     onSearchClick: () -> Unit,
     onBack: () -> Unit,
     onFinish: () -> Unit
@@ -288,12 +286,8 @@ fun LocationPickerScreen(
         onBack = onBack,
         onShareClick = {
             viewModel.shareLocation(
-                selectedLat = cameraState.position.target.latitude,
-                selectedLon = cameraState.position.target.longitude,
                 locationName = uiState.placeName.ifEmpty { null },
-                sharedLocationFallbackName = sharedLocationFallbackName,
-                roomToken = roomToken,
-                chatApiVersion = chatApiVersion
+                sharedLocationFallbackName = sharedLocationFallbackName
             )
         },
         onCenterClick = {
@@ -305,7 +299,7 @@ fun LocationPickerScreen(
                 coroutineScope.launch {
                     cameraState.animateTo(CameraPosition(target = myLocation, zoom = ZOOM_LEVEL_DEFAULT))
                 }
-                viewModel.setMoveToCurrentLocation(true)
+                viewModel.onCenterLocationRequested()
             }
         },
         onZoomIn = {
