@@ -123,7 +123,8 @@ fun ImageView.loadUserAvatar(
     val imageRequestUri = ApiUtils.getUrlForAvatar(
         user.baseUrl!!,
         avatarId,
-        requestBigSize
+        requestBigSize,
+        darkMode = DisplayUtils.isDarkModeOn(this.context)
     )
 
     return loadAvatarInternal(user, imageRequestUri, ignoreCache, null)
