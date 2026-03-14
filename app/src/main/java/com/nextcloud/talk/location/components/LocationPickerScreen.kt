@@ -84,16 +84,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import co.touchlab.kermit.Logger
 import com.nextcloud.talk.R
 import com.nextcloud.talk.viewmodels.LocationPickerViewModel
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.compose.camera.rememberCameraState
 import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.spatialk.geojson.Position
-import androidx.compose.runtime.collectAsState
 
 private const val ZOOM_LEVEL_RECEIVED_RESULT: Double = 14.0
 private const val ZOOM_LEVEL_DEFAULT: Double = 14.0
@@ -117,16 +118,19 @@ fun LocationPickerScreen(
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-
-    // Position uses GeoJSON convention: Position(longitude, latitude)
     var myLocation by remember { mutableStateOf(Position(COORDINATE_ZERO, COORDINATE_ZERO)) }
     var hasZoomedToInitialLocation by remember { mutableStateOf(false) }
     var isProgrammaticCameraMove by remember { mutableStateOf(false) }
+    var isMapInitialized by remember { mutableStateOf(false) }
 
-    val initialState = viewModel.uiState.collectAsState().value
+    // Captured once at first composition — only used to derive the initial camera position and
+    // to decide whether to auto-zoom to GPS on first fix. Using remember{} avoids creating a
+    // second Flow subscriber (uiState above already uses collectAsStateWithLifecycle()).
+    val initialState = remember { viewModel.uiState.value }
     val initialZoom = if (initialState.geocodingResult != null) ZOOM_LEVEL_RECEIVED_RESULT else ZOOM_LEVEL_DEFAULT
     val initialTarget: Position? = when {
         initialState.mapCenterLat != COORDINATE_ZERO && initialState.mapCenterLon != COORDINATE_ZERO ->
@@ -154,6 +158,8 @@ fun LocationPickerScreen(
         snapshotFlow { cameraState.position }
             .drop(1)
             .collect { position ->
+                // Ignore all camera events until the map style has finished loading
+                if (!isMapInitialized) return@collect
                 if (!isProgrammaticCameraMove) {
                     viewModel.onMapScrolled()
                 }
@@ -210,9 +216,10 @@ fun LocationPickerScreen(
             cameraState.animateTo(
                 CameraPosition(target = Position(result.lon, result.lat), zoom = ZOOM_LEVEL_RECEIVED_RESULT)
             )
-            isProgrammaticCameraMove = false
+            yield()
             viewModel.updateMapCenter(result.lat, result.lon)
             viewModel.onMapScrolled()
+            isProgrammaticCameraMove = false
         }
     }
 
@@ -237,12 +244,7 @@ fun LocationPickerScreen(
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_RESUME -> {
-                    viewModel.setReadyToShareLocation(false)
-                    val state = viewModel.uiState.value
-                    viewModel.setLocationDescription(
-                        isGpsLocation = false,
-                        isGeocodedResult = state.geocodingResult != null
-                    )
+                    viewModel.onScreenResumed()
                 }
 
                 Lifecycle.Event.ON_STOP -> {
@@ -335,7 +337,16 @@ fun LocationPickerScreen(
             MaplibreMap(
                 baseStyle = BaseStyle.Uri(styleUri),
                 modifier = Modifier.fillMaxSize(),
-                cameraState = cameraState
+                cameraState = cameraState,
+                logger = remember { Logger.withTag("MapLibre/LocationPicker") },
+                onMapLoadFailed = { reason ->
+                    isMapInitialized = true
+                    Log.e("MapLibre/LocationPicker", "Style failed to load: $reason | styleUri=$styleUri")
+                },
+                onMapLoadFinished = {
+                    isMapInitialized = true
+                    Log.d("MapLibre/LocationPicker", "Style loaded successfully: $styleUri")
+                }
             )
         }
     )

@@ -12,7 +12,6 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.core.graphics.drawable.toDrawable
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
