@@ -58,43 +58,49 @@ class LocationPickerViewModel @Inject constructor(
         val viewState: ViewState = ViewState.Idle
     )
 
+    data class LocationPickerInitParams(
+        val roomToken: String,
+        val chatApiVersion: Int,
+        val geocodingResult: GeocodingResult?,
+        val moveToCurrentLocation: Boolean,
+        val mapCenterLat: Double,
+        val mapCenterLon: Double,
+        val geocoderBaseUrl: String,
+        val geocoderEmail: String
+    )
+
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState
 
-    private var nominatimClient: TalkJsonNominatimClient? = null
+    private lateinit var nominatimClient: TalkJsonNominatimClient
 
     private var isStateInitialized = false
 
     private var roomToken: String = ""
     private var chatApiVersion: Int = 1
 
-    fun initGeocoder(baseUrl: String, email: String) {
-        nominatimClient = TalkJsonNominatimClient(baseUrl, okHttpClient, email)
-    }
-
-    fun initRouting(roomToken: String, chatApiVersion: Int) {
-        this.roomToken = roomToken
-        this.chatApiVersion = chatApiVersion
-    }
-
-    fun initState(
-        geocodingResult: GeocodingResult?,
-        moveToCurrentLocation: Boolean,
-        mapCenterLat: Double,
-        mapCenterLon: Double
-    ) {
+    /**
+     * Initialises routing, map state, and the geocoder in one atomic call.
+     * Safe to call on every [Activity.onCreate] — subsequent calls after the first are no-ops
+     * because the ViewModel survives configuration changes.
+     */
+    fun initialize(params: LocationPickerInitParams) {
         if (isStateInitialized) return
         isStateInitialized = true
 
+        roomToken = params.roomToken
+        chatApiVersion = params.chatApiVersion
+        nominatimClient = TalkJsonNominatimClient(params.geocoderBaseUrl, okHttpClient, params.geocoderEmail)
+
         _uiState.update {
             it.copy(
-                geocodingResult = geocodingResult,
-                moveToCurrentLocation = moveToCurrentLocation,
-                mapCenterLat = mapCenterLat,
-                mapCenterLon = mapCenterLon
+                geocodingResult = params.geocodingResult,
+                moveToCurrentLocation = params.moveToCurrentLocation,
+                mapCenterLat = params.mapCenterLat,
+                mapCenterLon = params.mapCenterLon
             )
         }
-        setLocationDescription(isGpsLocation = false, isGeocodedResult = geocodingResult != null)
+        setLocationDescription(isGpsLocation = false, isGeocodedResult = params.geocodingResult != null)
     }
 
     private fun setMoveToCurrentLocation(value: Boolean) {
@@ -199,7 +205,7 @@ class LocationPickerViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 var address: Address? = null
                 try {
-                    address = nominatimClient?.getAddress(selectedLon, selectedLat)
+                    address = nominatimClient.getAddress(selectedLon, selectedLat)
                 } catch (e: IOException) {
                     Log.e(TAG, "Failed to get geocoded addresses", e)
                 }

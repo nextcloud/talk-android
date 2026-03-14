@@ -74,12 +74,18 @@ class LocationPickerActivity : BaseActivity() {
         val mapCenterLat = savedInstanceState?.getDouble("mapCenterLat") ?: 0.0
         val mapCenterLon = savedInstanceState?.getDouble("mapCenterLon") ?: 0.0
 
-        viewModel.initRouting(roomToken, chatApiVersion)
-        viewModel.initState(geocodingResult, moveToCurrentLocation, mapCenterLat, mapCenterLon)
-
-        val baseUrl = getString(R.string.osm_geocoder_url)
-        val email = getString(R.string.osm_geocoder_contact)
-        viewModel.initGeocoder(baseUrl, email)
+        viewModel.initialize(
+            LocationPickerViewModel.LocationPickerInitParams(
+                roomToken = roomToken,
+                chatApiVersion = chatApiVersion,
+                geocodingResult = geocodingResult,
+                moveToCurrentLocation = moveToCurrentLocation,
+                mapCenterLat = mapCenterLat,
+                mapCenterLon = mapCenterLon,
+                geocoderBaseUrl = getString(R.string.osm_geocoder_url),
+                geocoderEmail = getString(R.string.osm_geocoder_contact)
+            )
+        )
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
