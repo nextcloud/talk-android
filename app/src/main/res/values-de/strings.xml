@@ -163,7 +163,7 @@
     <string name="nc_clear_edit_message">Bearbeitung abbrechen</string>
     <string name="nc_clear_history">Alle Nachrichten löschen</string>
     <string name="nc_clear_history_success">Alle Nachrichten wurden gelöscht</string>
-    <string name="nc_clear_history_warning">Möchten Sie wirklich alle Nachrichten dieser Unterhaltung löschen?</string>
+    <string name="nc_clear_history_warning">Möchten Sie alle Nachrichten dieser Unterhaltung löschen?</string>
     <string name="nc_client_cert_change">Client-Zertifikat ändern</string>
     <string name="nc_client_cert_setup">Client-Zertifikat einrichten</string>
     <string name="nc_common_and">und</string>
@@ -621,7 +621,7 @@
     <string name="polls_add_option">Option hinzufügen</string>
     <string name="polls_edit_vote">Abstimmung bearbeiten</string>
     <string name="polls_end_poll">Umfrage beenden</string>
-    <string name="polls_end_poll_confirm">Soll diese Umfrage wirklich beendet werden? Das kann nicht rückgängig gemacht werden.</string>
+    <string name="polls_end_poll_confirm">Soll diese Umfrage beendet werden? Das kann nicht rückgängig gemacht werden.</string>
     <string name="polls_max_votes_reached">Sie können nicht mit mehreren Optionen für diese Umfrage abstimmen.</string>
     <string name="polls_multiple_answers">Mehrere Antworten</string>
     <string name="polls_option_delete">Option %1$d löschen</string>
@@ -645,7 +645,7 @@
     <string name="record_cancel_start">Aufnahmestart abbrechen</string>
     <string name="record_failed_info">Aufnahme fehlgeschlagen. Bitte wenden Sie sich an Ihre Administration.</string>
     <string name="record_start_description">Aufnahme beginnen</string>
-    <string name="record_stop_confirm_message">Möchten Sie die Aufnahme wirklich beenden?</string>
+    <string name="record_stop_confirm_message">Soll die Aufnahme beendet werden?</string>
     <string name="record_stop_confirm_title">Anrufaufnahme beenden</string>
     <string name="record_stop_description">Aufnahme stoppen</string>
     <string name="record_stopping">Stoppe Aufnahme …</string>
