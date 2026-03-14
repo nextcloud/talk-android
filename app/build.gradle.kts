@@ -151,6 +151,7 @@ android {
             listOf(
                 "GradleDependency",
                 "InvalidPackage",
+                "LogNotTimber",
                 "MissingTranslation",
                 "PrivateResource",
                 "UnusedQuantity",
