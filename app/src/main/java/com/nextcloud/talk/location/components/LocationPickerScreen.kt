@@ -71,6 +71,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -97,7 +98,11 @@ import org.maplibre.compose.camera.rememberCameraState
 import org.maplibre.compose.map.MapOptions
 import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.map.OrnamentOptions
+import org.maplibre.compose.material3.AttributionButtonDefaults
+import org.maplibre.compose.material3.ExpandingAttributionButton
 import org.maplibre.compose.style.BaseStyle
+import org.maplibre.compose.style.StyleState
+import org.maplibre.compose.style.rememberStyleState
 import org.maplibre.spatialk.geojson.Position
 
 private const val ZOOM_LEVEL_RECEIVED_RESULT: Double = 14.0
@@ -108,6 +113,7 @@ private const val COORDINATE_ZERO: Double = 0.0
 private const val MIN_LOCATION_UPDATE_TIME: Long = 30 * 1000L
 private const val MIN_LOCATION_UPDATE_DISTANCE: Float = 0f
 private const val PIN_HEIGHT_DP = 50
+private const val ATTRIBUTION_BUTTON_ALPHA = 0.7f
 private const val TAG = "LocationPickerScreen"
 
 @Suppress("Detekt.LongMethod", "Detekt.LongParameterList")
@@ -133,8 +139,10 @@ fun LocationPickerScreen(
     val initialTarget: Position? = when {
         initialState.mapCenterLat != COORDINATE_ZERO && initialState.mapCenterLon != COORDINATE_ZERO ->
             Position(initialState.mapCenterLon, initialState.mapCenterLat)
+
         initialState.geocodingResult?.let { it.lat != COORDINATE_ZERO && it.lon != COORDINATE_ZERO } == true ->
             Position(initialState.geocodingResult!!.lon, initialState.geocodingResult!!.lat)
+
         else -> null
     }
 
@@ -144,6 +152,8 @@ fun LocationPickerScreen(
             zoom = initialZoom
         )
     )
+
+    val styleState = rememberStyleState()
 
     if (initialTarget != null) {
         LaunchedEffect(Unit) {
@@ -282,7 +292,6 @@ fun LocationPickerScreen(
     LocationPickerScreenContent(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
-        metersPerDp = cameraState.metersPerDpAtTarget,
         onSearchClick = onSearchClick,
         onBack = onBack,
         onShareClick = {
@@ -333,6 +342,7 @@ fun LocationPickerScreen(
                 baseStyle = BaseStyle.Uri(styleUri),
                 modifier = Modifier.fillMaxSize(),
                 cameraState = cameraState,
+                styleState = styleState,
                 logger = remember { Logger.withTag("MapLibre/LocationPicker") },
                 onMapLoadFailed = { reason ->
                     isMapInitialized = true
@@ -343,29 +353,24 @@ fun LocationPickerScreen(
                     Log.d("MapLibre/LocationPicker", "Style loaded successfully: $styleUri")
                 },
                 options =
-                    MapOptions(
-                        ornamentOptions =
-                            OrnamentOptions(
-                                isLogoEnabled = true,
-                                logoAlignment = Alignment.BottomStart,
-                                isAttributionEnabled = true,
-                                attributionAlignment = Alignment.BottomEnd,
-                                isCompassEnabled = true,
-                                compassAlignment = Alignment.TopEnd,
-                                isScaleBarEnabled = false
-                            )
+                MapOptions(
+                    ornamentOptions =
+                    OrnamentOptions(
+                        isLogoEnabled = false,
+                        isAttributionEnabled = false,
+                        isCompassEnabled = false,
+                        isScaleBarEnabled = false
                     )
+                )
             )
-        }
+        },
+        styleState = styleState
     )
 }
 
 @Composable
-private fun BoxScope.LocationPickerSearchCard(onBack: () -> Unit, onSearchClick: () -> Unit) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-        ),
+private fun BoxScope.LocationPickerSearchCard(onBack: () -> Unit, onSearchClick: () -> Unit, styleState: StyleState) {
+    Column(
         modifier = Modifier
             .widthIn(min = 360.dp, max = 720.dp)
             .fillMaxWidth()
@@ -373,45 +378,65 @@ private fun BoxScope.LocationPickerSearchCard(onBack: () -> Unit, onSearchClick:
             .navigationBarsPadding()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .align(Alignment.TopCenter),
-        shape = RoundedCornerShape(28.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        horizontalAlignment = Alignment.End
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Card(
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(28.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.back_button)
-                )
+            LocationPickerSearchRow(onBack = onBack, onSearchClick = onSearchClick)
+        }
+        var attributionExpanded by remember { mutableStateOf(false) }
+        ExpandingAttributionButton(
+            expanded = attributionExpanded,
+            onClick = { attributionExpanded = !attributionExpanded },
+            styleState = styleState,
+            modifier = Modifier.padding(top = 4.dp),
+            contentAlignment = Alignment.TopEnd,
+            toggleButton = { onToggle ->
+                Box(modifier = Modifier.alpha(ATTRIBUTION_BUTTON_ALPHA)) {
+                    AttributionButtonDefaults.button(onToggle)
+                }
             }
-            Text(
-                text = stringResource(R.string.nc_search_location),
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .wrapContentHeight(Alignment.CenterVertically)
-                    .clickable(onClick = onSearchClick),
-                fontSize = 16.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+private fun LocationPickerSearchRow(onBack: () -> Unit, onSearchClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(onClick = onBack) {
+            Icon(
+                Icons.AutoMirrored.Outlined.ArrowBack,
+                contentDescription = stringResource(R.string.back_button)
             )
-            IconButton(onClick = onSearchClick) {
-                Icon(Icons.Outlined.Search, contentDescription = stringResource(R.string.nc_search))
-            }
+        }
+        Text(
+            text = stringResource(R.string.nc_search_location),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .wrapContentHeight(Alignment.CenterVertically)
+                .clickable(onClick = onSearchClick),
+            fontSize = 16.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        IconButton(onClick = onSearchClick) {
+            Icon(Icons.Outlined.Search, contentDescription = stringResource(R.string.nc_search))
         }
     }
 }
 
 @Composable
-private fun LocationPickerZoomControls(
-    onZoomIn: () -> Unit,
-    onZoomOut: () -> Unit,
-    onCenterClick: () -> Unit
-) {
+private fun LocationPickerZoomControls(onZoomIn: () -> Unit, onZoomOut: () -> Unit, onCenterClick: () -> Unit) {
     val zoomColors = IconButtonDefaults.filledIconButtonColors(
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -444,7 +469,6 @@ private fun LocationPickerZoomControls(
 private fun BoxScope.LocationPickerBottomControls(
     uiState: LocationPickerViewModel.UiState,
     snackbarHostState: SnackbarHostState,
-    metersPerDp: Double = 0.0,
     onShareClick: () -> Unit,
     onCenterClick: () -> Unit,
     onZoomIn: () -> Unit,
@@ -516,14 +540,14 @@ private fun BoxScope.LocationPickerMapOverlays() {
 private fun LocationPickerScreenContent(
     uiState: LocationPickerViewModel.UiState,
     snackbarHostState: SnackbarHostState,
-    metersPerDp: Double = 0.0,
     onSearchClick: () -> Unit,
     onBack: () -> Unit,
     onShareClick: () -> Unit,
     onCenterClick: () -> Unit,
     onZoomIn: () -> Unit,
     onZoomOut: () -> Unit,
-    mapContent: @Composable BoxScope.() -> Unit
+    mapContent: @Composable BoxScope.() -> Unit,
+    styleState: StyleState
 ) {
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
@@ -535,11 +559,14 @@ private fun LocationPickerScreenContent(
         ) {
             mapContent()
             LocationPickerMapOverlays()
-            LocationPickerSearchCard(onBack = onBack, onSearchClick = onSearchClick)
+            LocationPickerSearchCard(
+                onBack = onBack,
+                onSearchClick = onSearchClick,
+                styleState = styleState
+            )
             LocationPickerBottomControls(
                 uiState = uiState,
                 snackbarHostState = snackbarHostState,
-                metersPerDp = metersPerDp,
                 onShareClick = onShareClick,
                 onCenterClick = onCenterClick,
                 onZoomIn = onZoomIn,
@@ -623,7 +650,7 @@ private fun LocationPickerSharePanel(
         }
         Text(
             text = stringResource(R.string.osm_map_view_attributation),
-            fontSize = 12.sp,
+            fontSize = 11.sp,
             color = colorResource(R.color.medium_emphasis_text),
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -635,8 +662,10 @@ private fun getLastKnownLocation(locationManager: LocationManager): android.loca
     when {
         locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ->
             locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+
         locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ->
             locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
         else -> null
     }
 
@@ -726,7 +755,8 @@ private fun PreviewLocationPickerScreen() {
             onCenterClick = {},
             onZoomIn = {},
             onZoomOut = {},
-            mapContent = previewMapPlaceholder
+            mapContent = previewMapPlaceholder,
+            styleState = rememberStyleState()
         )
     }
 }
@@ -751,7 +781,8 @@ private fun PreviewLocationPickerScreenLandscape() {
             onCenterClick = {},
             onZoomIn = {},
             onZoomOut = {},
-            mapContent = previewMapPlaceholder
+            mapContent = previewMapPlaceholder,
+            styleState = rememberStyleState()
         )
     }
 }
@@ -773,7 +804,8 @@ private fun PreviewLocationPickerScreenGeocoded() {
             onCenterClick = {},
             onZoomIn = {},
             onZoomOut = {},
-            mapContent = previewMapPlaceholder
+            mapContent = previewMapPlaceholder,
+            styleState = rememberStyleState()
         )
     }
 }
@@ -795,7 +827,8 @@ private fun PreviewLocationPickerScreenSending() {
             onCenterClick = {},
             onZoomIn = {},
             onZoomOut = {},
-            mapContent = previewMapPlaceholder
+            mapContent = previewMapPlaceholder,
+            styleState = rememberStyleState()
         )
     }
 }
@@ -826,7 +859,8 @@ private fun PreviewLocationPickerScreenRtl() {
                 ) {
                     Text(text = "معاينة الخريطة")
                 }
-            }
+            },
+            styleState = rememberStyleState()
         )
     }
 }
