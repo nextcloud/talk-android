@@ -58,6 +58,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -92,7 +94,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.compose.camera.rememberCameraState
+import org.maplibre.compose.map.MapOptions
 import org.maplibre.compose.map.MaplibreMap
+import org.maplibre.compose.map.OrnamentOptions
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.spatialk.geojson.Position
 
@@ -124,10 +128,6 @@ fun LocationPickerScreen(
     var hasZoomedToInitialLocation by remember { mutableStateOf(false) }
     var isProgrammaticCameraMove by remember { mutableStateOf(false) }
     var isMapInitialized by remember { mutableStateOf(false) }
-
-    // Captured once at first composition — only used to derive the initial camera position and
-    // to decide whether to auto-zoom to GPS on first fix. Using remember{} avoids creating a
-    // second Flow subscriber (uiState above already uses collectAsStateWithLifecycle()).
     val initialState = remember { viewModel.uiState.value }
     val initialZoom = if (initialState.geocodingResult != null) ZOOM_LEVEL_RECEIVED_RESULT else ZOOM_LEVEL_DEFAULT
     val initialTarget: Position? = when {
@@ -282,6 +282,7 @@ fun LocationPickerScreen(
     LocationPickerScreenContent(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
+        metersPerDp = cameraState.metersPerDpAtTarget,
         onSearchClick = onSearchClick,
         onBack = onBack,
         onShareClick = {
@@ -340,7 +341,20 @@ fun LocationPickerScreen(
                 onMapLoadFinished = {
                     isMapInitialized = true
                     Log.d("MapLibre/LocationPicker", "Style loaded successfully: $styleUri")
-                }
+                },
+                options =
+                    MapOptions(
+                        ornamentOptions =
+                            OrnamentOptions(
+                                isLogoEnabled = true,
+                                logoAlignment = Alignment.BottomStart,
+                                isAttributionEnabled = true,
+                                attributionAlignment = Alignment.BottomEnd,
+                                isCompassEnabled = true,
+                                compassAlignment = Alignment.TopEnd,
+                                isScaleBarEnabled = false
+                            )
+                    )
             )
         }
     )
@@ -393,12 +407,20 @@ private fun BoxScope.LocationPickerSearchCard(onBack: () -> Unit, onSearchClick:
 }
 
 @Composable
-private fun LocationPickerZoomControls(onZoomIn: () -> Unit, onZoomOut: () -> Unit, onCenterClick: () -> Unit) {
+private fun LocationPickerZoomControls(
+    onZoomIn: () -> Unit,
+    onZoomOut: () -> Unit,
+    onCenterClick: () -> Unit
+) {
     val zoomColors = IconButtonDefaults.filledIconButtonColors(
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant
     )
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.Bottom
+    ) {
         Column(
             modifier = Modifier.padding(end = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -422,6 +444,7 @@ private fun LocationPickerZoomControls(onZoomIn: () -> Unit, onZoomOut: () -> Un
 private fun BoxScope.LocationPickerBottomControls(
     uiState: LocationPickerViewModel.UiState,
     snackbarHostState: SnackbarHostState,
+    metersPerDp: Double = 0.0,
     onShareClick: () -> Unit,
     onCenterClick: () -> Unit,
     onZoomIn: () -> Unit,
@@ -465,7 +488,11 @@ private fun BoxScope.LocationPickerBottomControls(
                 }
             }
         } else {
-            LocationPickerZoomControls(onZoomIn = onZoomIn, onZoomOut = onZoomOut, onCenterClick = onCenterClick)
+            LocationPickerZoomControls(
+                onZoomIn = onZoomIn,
+                onZoomOut = onZoomOut,
+                onCenterClick = onCenterClick
+            )
             LocationPickerSharePanel(uiState = uiState, onShareClick = onShareClick)
         }
         SnackbarHost(hostState = snackbarHostState)
@@ -489,6 +516,7 @@ private fun BoxScope.LocationPickerMapOverlays() {
 private fun LocationPickerScreenContent(
     uiState: LocationPickerViewModel.UiState,
     snackbarHostState: SnackbarHostState,
+    metersPerDp: Double = 0.0,
     onSearchClick: () -> Unit,
     onBack: () -> Unit,
     onShareClick: () -> Unit,
@@ -511,6 +539,7 @@ private fun LocationPickerScreenContent(
             LocationPickerBottomControls(
                 uiState = uiState,
                 snackbarHostState = snackbarHostState,
+                metersPerDp = metersPerDp,
                 onShareClick = onShareClick,
                 onCenterClick = onCenterClick,
                 onZoomIn = onZoomIn,
@@ -683,7 +712,8 @@ private val previewMapPlaceholder: @Composable BoxScope.() -> Unit = {
 @Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewLocationPickerScreen() {
-    MaterialTheme {
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    MaterialTheme(colorScheme = colorScheme) {
         LocationPickerScreenContent(
             uiState = LocationPickerViewModel.UiState(
                 locationDescriptionType = LocationPickerViewModel.LocationDescriptionType.GPS,
@@ -805,7 +835,8 @@ private fun PreviewLocationPickerScreenRtl() {
 @Preview(name = "Map Overlays - Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewLocationPickerMapOverlays() {
-    MaterialTheme {
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    MaterialTheme(colorScheme = colorScheme) {
         Box(
             modifier = Modifier
                 .size(300.dp)
@@ -820,7 +851,8 @@ private fun PreviewLocationPickerMapOverlays() {
 @Preview(name = "Share Panel - Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewLocationPickerSharePanelGps() {
-    MaterialTheme {
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    MaterialTheme(colorScheme = colorScheme) {
         LocationPickerSharePanel(
             uiState = LocationPickerViewModel.UiState(
                 locationDescriptionType = LocationPickerViewModel.LocationDescriptionType.GPS,
