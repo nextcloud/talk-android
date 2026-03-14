@@ -23,7 +23,7 @@ import com.nextcloud.talk.location.components.LocationPickerScreen
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CHAT_API_VERSION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_GEOCODING_RESULT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.viewmodels.LocationPickerViewModel
+import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)

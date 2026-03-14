@@ -86,7 +86,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
 import com.nextcloud.talk.R
-import com.nextcloud.talk.viewmodels.LocationPickerViewModel
+import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
