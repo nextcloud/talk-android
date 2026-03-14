@@ -95,11 +95,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.compose.camera.rememberCameraState
+import org.maplibre.compose.expressions.ast.ColorLiteral
+import org.maplibre.compose.expressions.ast.DpLiteral
+import org.maplibre.compose.layers.CircleLayer
 import org.maplibre.compose.map.MapOptions
 import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.map.OrnamentOptions
 import org.maplibre.compose.material3.AttributionButtonDefaults
 import org.maplibre.compose.material3.ExpandingAttributionButton
+import org.maplibre.compose.sources.GeoJsonData
+import org.maplibre.compose.sources.rememberGeoJsonSource
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.style.StyleState
 import org.maplibre.compose.style.rememberStyleState
@@ -114,6 +119,8 @@ private const val MIN_LOCATION_UPDATE_TIME: Long = 30 * 1000L
 private const val MIN_LOCATION_UPDATE_DISTANCE: Float = 0f
 private const val PIN_HEIGHT_DP = 50
 private const val ATTRIBUTION_BUTTON_ALPHA = 0.7f
+private const val USER_LOCATION_LAYER_ID = "location-picker-user-location"
+private const val COLOR_NC_BLUE_PACKED = 0xFF0082C9.toInt()
 private const val TAG = "LocationPickerScreen"
 
 @Suppress("Detekt.LongMethod", "Detekt.LongParameterList")
@@ -362,7 +369,20 @@ fun LocationPickerScreen(
                         isScaleBarEnabled = false
                     )
                 )
-            )
+            ) {
+                val userLocationGeoJson = remember(myLocation) {
+                    userLocationGeoJsonData(myLocation)
+                }
+                val userLocationSource = rememberGeoJsonSource(userLocationGeoJson)
+                CircleLayer(
+                    id = USER_LOCATION_LAYER_ID,
+                    source = userLocationSource,
+                    color = ColorLiteral.of(Color(COLOR_NC_BLUE_PACKED)),
+                    radius = DpLiteral.of(7.5.dp),
+                    strokeColor = ColorLiteral.of(Color.White),
+                    strokeWidth = DpLiteral.of(2.dp)
+                )
+            }
         },
         styleState = styleState
     )
@@ -725,6 +745,17 @@ private fun requestLocationUpdates(
         onError(R.string.nc_common_error_sorry)
     }
 }
+
+private fun userLocationGeoJsonData(location: Position): GeoJsonData.JsonString =
+    if (location.latitude != COORDINATE_ZERO || location.longitude != COORDINATE_ZERO) {
+        val lon = location.longitude
+        val lat = location.latitude
+        GeoJsonData.JsonString(
+            """{"type":"Feature","geometry":{"type":"Point","coordinates":[$lon,$lat]},"properties":{}}"""
+        )
+    } else {
+        GeoJsonData.JsonString("""{"type":"FeatureCollection","features":[]}""")
+    }
 
 private val previewMapPlaceholder: @Composable BoxScope.() -> Unit = {
     Box(
