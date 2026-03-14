@@ -13,7 +13,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.MaterialTheme
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.PreferenceManager
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -24,8 +23,7 @@ import com.nextcloud.talk.location.components.LocationPickerScreen
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CHAT_API_VERSION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_GEOCODING_RESULT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.viewmodels.LocationPickerViewModel
-import org.osmdroid.config.Configuration.getInstance
+import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -76,13 +74,18 @@ class LocationPickerActivity : BaseActivity() {
         val mapCenterLat = savedInstanceState?.getDouble("mapCenterLat") ?: 0.0
         val mapCenterLon = savedInstanceState?.getDouble("mapCenterLon") ?: 0.0
 
-        viewModel.initState(geocodingResult, moveToCurrentLocation, mapCenterLat, mapCenterLon)
-
-        val baseUrl = getString(R.string.osm_geocoder_url)
-        val email = getString(R.string.osm_geocoder_contact)
-        viewModel.initGeocoder(baseUrl, email)
-
-        getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
+        viewModel.initialize(
+            LocationPickerViewModel.LocationPickerInitParams(
+                roomToken = roomToken,
+                chatApiVersion = chatApiVersion,
+                geocodingResult = geocodingResult,
+                moveToCurrentLocation = moveToCurrentLocation,
+                mapCenterLat = mapCenterLat,
+                mapCenterLon = mapCenterLon,
+                geocoderBaseUrl = getString(R.string.osm_geocoder_url),
+                geocoderEmail = getString(R.string.osm_geocoder_contact)
+            )
+        )
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
@@ -92,8 +95,6 @@ class LocationPickerActivity : BaseActivity() {
                 ColoredStatusBar()
                 LocationPickerScreen(
                     viewModel = viewModel,
-                    roomToken = roomToken,
-                    chatApiVersion = chatApiVersion,
                     onSearchClick = { navigateToGeocoding() },
                     onBack = { onBackPressedDispatcher.onBackPressed() },
                     onFinish = { finish() }

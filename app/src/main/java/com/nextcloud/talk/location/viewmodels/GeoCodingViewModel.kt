@@ -1,10 +1,10 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2023 Samanwith KSN <samanwith21@gmail.com>
+ * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.viewmodels
+package com.nextcloud.talk.location.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

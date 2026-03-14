@@ -15,11 +15,8 @@ import android.content.Context
 import android.content.res.Configuration
 import android.location.LocationListener
 import android.location.LocationManager
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -61,6 +58,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -69,8 +68,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -81,76 +82,127 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.PermissionChecker
-import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import co.touchlab.kermit.Logger
 import com.nextcloud.talk.R
-import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.viewmodels.LocationPickerViewModel
+import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
-import org.osmdroid.events.DelayedMapListener
-import org.osmdroid.events.MapListener
-import org.osmdroid.events.ScrollEvent
-import org.osmdroid.events.ZoomEvent
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.CustomZoomButtonsController.Visibility
-import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.TilesOverlay
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
+import kotlinx.coroutines.yield
+import org.maplibre.compose.camera.CameraPosition
+import org.maplibre.compose.camera.rememberCameraState
+import org.maplibre.compose.expressions.ast.ColorLiteral
+import org.maplibre.compose.expressions.ast.DpLiteral
+import org.maplibre.compose.layers.CircleLayer
+import org.maplibre.compose.map.MapOptions
+import org.maplibre.compose.map.MaplibreMap
+import org.maplibre.compose.map.OrnamentOptions
+import org.maplibre.compose.material3.AttributionButtonDefaults
+import org.maplibre.compose.material3.ExpandingAttributionButton
+import org.maplibre.compose.sources.GeoJsonData
+import org.maplibre.compose.sources.rememberGeoJsonSource
+import org.maplibre.compose.style.BaseStyle
+import org.maplibre.compose.style.StyleState
+import org.maplibre.compose.style.rememberStyleState
+import org.maplibre.spatialk.geojson.Position
 
-private const val PERSON_HOT_SPOT_X: Float = 0.5F
-private const val PERSON_HOT_SPOT_Y: Float = 0.5F
 private const val ZOOM_LEVEL_RECEIVED_RESULT: Double = 14.0
 private const val ZOOM_LEVEL_DEFAULT: Double = 14.0
+private const val ZOOM_LEVEL_MIN: Double = 1.0
+private const val ZOOM_LEVEL_MAX: Double = 22.0
 private const val COORDINATE_ZERO: Double = 0.0
 private const val MIN_LOCATION_UPDATE_TIME: Long = 30 * 1000L
 private const val MIN_LOCATION_UPDATE_DISTANCE: Float = 0f
 private const val PIN_HEIGHT_DP = 50
+private const val ATTRIBUTION_BUTTON_ALPHA = 0.7f
+private const val USER_LOCATION_LAYER_ID = "location-picker-user-location"
+private const val COLOR_NC_BLUE_PACKED = 0xFF0082C9.toInt()
 private const val TAG = "LocationPickerScreen"
 
 @Suppress("Detekt.LongMethod", "Detekt.LongParameterList")
 @Composable
 fun LocationPickerScreen(
     viewModel: LocationPickerViewModel,
-    roomToken: String,
-    chatApiVersion: Int,
     onSearchClick: () -> Unit,
     onBack: () -> Unit,
     onFinish: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+    var myLocation by remember { mutableStateOf(Position(COORDINATE_ZERO, COORDINATE_ZERO)) }
+    var hasZoomedToInitialLocation by remember { mutableStateOf(false) }
+    var isProgrammaticCameraMove by remember { mutableStateOf(false) }
+    var isMapInitialized by remember { mutableStateOf(false) }
+    val initialState = remember { viewModel.uiState.value }
+    val initialZoom = if (initialState.geocodingResult != null) ZOOM_LEVEL_RECEIVED_RESULT else ZOOM_LEVEL_DEFAULT
+    val initialTarget: Position? = when {
+        initialState.mapCenterLat != COORDINATE_ZERO && initialState.mapCenterLon != COORDINATE_ZERO ->
+            Position(initialState.mapCenterLon, initialState.mapCenterLat)
 
-    var myLocation by remember { mutableStateOf(GeoPoint(COORDINATE_ZERO, COORDINATE_ZERO)) }
+        initialState.geocodingResult?.let { it.lat != COORDINATE_ZERO && it.lon != COORDINATE_ZERO } == true ->
+            Position(initialState.geocodingResult!!.lon, initialState.geocodingResult!!.lat)
 
-    val mapView = remember { MapView(context) }
+        else -> null
+    }
 
-    @SuppressLint("LocalContextResourcesRead")
-    val locationOverlay = remember {
-        MyLocationNewOverlay(GpsMyLocationProvider(context), mapView).apply {
-            enableMyLocation()
-            setPersonIcon(
-                DisplayUtils.getBitmap(
-                    ResourcesCompat.getDrawable(context.resources, R.drawable.current_location_circle, null)!!
-                )
-            )
-            setPersonAnchor(PERSON_HOT_SPOT_X, PERSON_HOT_SPOT_Y)
+    val cameraState = rememberCameraState(
+        firstPosition = CameraPosition(
+            target = initialTarget ?: Position(COORDINATE_ZERO, COORDINATE_ZERO),
+            zoom = initialZoom
+        )
+    )
+
+    val styleState = rememberStyleState()
+
+    if (initialTarget != null) {
+        LaunchedEffect(Unit) {
+            viewModel.updateMapCenter(initialTarget.latitude, initialTarget.longitude)
         }
+    }
+
+    // Detect user-driven camera movement (drop(1) skips the initial value)
+    LaunchedEffect(cameraState) {
+        snapshotFlow { cameraState.position }
+            .drop(1)
+            .collect { position ->
+                // Ignore all camera events until the map style has finished loading
+                if (!isMapInitialized) return@collect
+                if (!isProgrammaticCameraMove) {
+                    viewModel.onMapScrolled()
+                }
+                viewModel.updateMapCenter(position.target.latitude, position.target.longitude)
+            }
     }
 
     val locationManager = remember { context.getSystemService(Context.LOCATION_SERVICE) as LocationManager }
 
     val locationListener = remember {
-        LocationListener { location -> myLocation = GeoPoint(location) }
+        LocationListener { location ->
+            // Position(longitude, latitude) — GeoJSON convention
+            myLocation = Position(location.longitude, location.latitude)
+        }
+    }
+
+    val zoomToCurrentPositionOnFirstFix =
+        initialState.geocodingResult == null && initialState.moveToCurrentLocation
+
+    LaunchedEffect(myLocation) {
+        if (zoomToCurrentPositionOnFirstFix &&
+            !hasZoomedToInitialLocation &&
+            myLocation.latitude != COORDINATE_ZERO
+        ) {
+            cameraState.animateTo(CameraPosition(target = myLocation, zoom = ZOOM_LEVEL_DEFAULT))
+            viewModel.updateMapCenter(myLocation.latitude, myLocation.longitude)
+            hasZoomedToInitialLocation = true
+        }
     }
 
     @SuppressLint("LocalContextGetResourceValueCall")
@@ -160,6 +212,9 @@ fun LocationPickerScreen(
                 requestLocationUpdates(locationManager, locationListener) { msgRes ->
                     coroutineScope.launch { snackbarHostState.showSnackbar(context.getString(msgRes)) }
                 }
+                getLastKnownLocation(locationManager)?.let { location ->
+                    myLocation = Position(location.longitude, location.latitude)
+                }
             } else {
                 coroutineScope.launch {
                     snackbarHostState.showSnackbar(context.getString(R.string.nc_location_permission_required))
@@ -168,16 +223,18 @@ fun LocationPickerScreen(
         }
 
     val isDarkMode = isSystemInDarkTheme()
-    LaunchedEffect(isDarkMode) {
-        val colorFilter = if (isDarkMode) TilesOverlay.INVERT_COLORS else null
-        mapView.overlayManager.tilesOverlay.setColorFilter(colorFilter)
-    }
 
     LaunchedEffect(uiState.geocodingResult) {
         val result = uiState.geocodingResult ?: return@LaunchedEffect
         if (result.lat != COORDINATE_ZERO && result.lon != COORDINATE_ZERO) {
-            mapView.controller.animateTo(GeoPoint(result.lat, result.lon))
+            isProgrammaticCameraMove = true
+            cameraState.animateTo(
+                CameraPosition(target = Position(result.lon, result.lat), zoom = ZOOM_LEVEL_RECEIVED_RESULT)
+            )
+            yield()
             viewModel.updateMapCenter(result.lat, result.lon)
+            viewModel.onMapScrolled()
+            isProgrammaticCameraMove = false
         }
     }
 
@@ -202,18 +259,10 @@ fun LocationPickerScreen(
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_RESUME -> {
-                    mapView.onResume()
-                    viewModel.setReadyToShareLocation(false)
-                    val state = viewModel.uiState.value
-                    viewModel.setLocationDescription(
-                        isGpsLocation = false,
-                        isGeocodedResult = state.geocodingResult != null
-                    )
+                    viewModel.onScreenResumed()
                 }
 
-                Lifecycle.Event.ON_PAUSE -> mapView.onPause()
                 Lifecycle.Event.ON_STOP -> {
-                    locationOverlay.disableMyLocation()
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     try {
                         locationManager.removeUpdates(locationListener)
@@ -228,7 +277,19 @@ fun LocationPickerScreen(
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
-            mapView.onDetach()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (isLocationPermissionsGranted(context)) {
+            requestLocationUpdates(locationManager, locationListener) { /* permissions already granted */ }
+            getLastKnownLocation(locationManager)?.let { location ->
+                myLocation = Position(location.longitude, location.latitude)
+            }
+        } else {
+            permissionLauncher.launch(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+            )
         }
     }
 
@@ -242,12 +303,8 @@ fun LocationPickerScreen(
         onBack = onBack,
         onShareClick = {
             viewModel.shareLocation(
-                selectedLat = mapView.mapCenter?.latitude,
-                selectedLon = mapView.mapCenter?.longitude,
                 locationName = uiState.placeName.ifEmpty { null },
-                sharedLocationFallbackName = sharedLocationFallbackName,
-                roomToken = roomToken,
-                chatApiVersion = chatApiVersion
+                sharedLocationFallbackName = sharedLocationFallbackName
             )
         },
         onCenterClick = {
@@ -256,73 +313,84 @@ fun LocationPickerScreen(
                     snackbarHostState.showSnackbar(context.getString(R.string.nc_location_unknown))
                 }
             } else {
-                mapView.controller.animateTo(myLocation)
-                viewModel.setMoveToCurrentLocation(true)
+                coroutineScope.launch {
+                    cameraState.animateTo(CameraPosition(target = myLocation, zoom = ZOOM_LEVEL_DEFAULT))
+                }
+                viewModel.onCenterLocationRequested()
             }
         },
-        onZoomIn = { mapView.controller.zoomIn() },
-        onZoomOut = { mapView.controller.zoomOut() },
+        onZoomIn = {
+            val newZoom = (cameraState.position.zoom + 1).coerceAtMost(ZOOM_LEVEL_MAX)
+            if (newZoom > cameraState.position.zoom) {
+                coroutineScope.launch {
+                    isProgrammaticCameraMove = true
+                    cameraState.animateTo(CameraPosition(target = cameraState.position.target, zoom = newZoom))
+                    isProgrammaticCameraMove = false
+                }
+            }
+        },
+        onZoomOut = {
+            val newZoom = (cameraState.position.zoom - 1).coerceAtLeast(ZOOM_LEVEL_MIN)
+            if (newZoom > ZOOM_LEVEL_MIN) {
+                coroutineScope.launch {
+                    isProgrammaticCameraMove = true
+                    cameraState.animateTo(CameraPosition(target = cameraState.position.target, zoom = newZoom))
+                    isProgrammaticCameraMove = false
+                }
+            }
+        },
         mapContent = {
-            AndroidView(
-                factory = { ctx ->
-                    setupMapView(
-                        mapView,
-                        locationOverlay,
-                        locationManager,
-                        locationListener,
-                        viewModel,
-                        permissionLauncher,
-                        ctx
-                    )
+            val styleUri = if (isDarkMode) {
+                "asset://map_style_dark.json"
+            } else {
+                "asset://map_style_light.json"
+            }
+            MaplibreMap(
+                baseStyle = BaseStyle.Uri(styleUri),
+                modifier = Modifier.fillMaxSize(),
+                cameraState = cameraState,
+                styleState = styleState,
+                logger = remember { Logger.withTag("MapLibre/LocationPicker") },
+                onMapLoadFailed = { reason ->
+                    isMapInitialized = true
+                    Log.e("MapLibre/LocationPicker", "Style failed to load: $reason | styleUri=$styleUri")
                 },
-                modifier = Modifier.fillMaxSize()
-            )
-        }
+                onMapLoadFinished = {
+                    isMapInitialized = true
+                    Log.d("MapLibre/LocationPicker", "Style loaded successfully: $styleUri")
+                },
+                options =
+                MapOptions(
+                    ornamentOptions =
+                    OrnamentOptions(
+                        isLogoEnabled = false,
+                        isAttributionEnabled = false,
+                        isCompassEnabled = false,
+                        isScaleBarEnabled = false
+                    )
+                )
+            ) {
+                val userLocationGeoJson = remember(myLocation) {
+                    userLocationGeoJsonData(myLocation)
+                }
+                val userLocationSource = rememberGeoJsonSource(userLocationGeoJson)
+                CircleLayer(
+                    id = USER_LOCATION_LAYER_ID,
+                    source = userLocationSource,
+                    color = ColorLiteral.of(Color(COLOR_NC_BLUE_PACKED)),
+                    radius = DpLiteral.of(7.5.dp),
+                    strokeColor = ColorLiteral.of(Color.White),
+                    strokeWidth = DpLiteral.of(2.dp)
+                )
+            }
+        },
+        styleState = styleState
     )
 }
 
-@Suppress("Detekt.LongParameterList")
 @Composable
-private fun LocationPickerScreenContent(
-    uiState: LocationPickerViewModel.UiState,
-    snackbarHostState: SnackbarHostState,
-    onSearchClick: () -> Unit,
-    onBack: () -> Unit,
-    onShareClick: () -> Unit,
-    onCenterClick: () -> Unit,
-    onZoomIn: () -> Unit,
-    onZoomOut: () -> Unit,
-    mapContent: @Composable BoxScope.() -> Unit
-) {
-    Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            mapContent()
-            LocationPickerMapOverlays()
-            LocationPickerSearchCard(onBack = onBack, onSearchClick = onSearchClick)
-            LocationPickerBottomControls(
-                uiState = uiState,
-                snackbarHostState = snackbarHostState,
-                onShareClick = onShareClick,
-                onCenterClick = onCenterClick,
-                onZoomIn = onZoomIn,
-                onZoomOut = onZoomOut
-            )
-        }
-    }
-}
-
-@Composable
-private fun BoxScope.LocationPickerSearchCard(onBack: () -> Unit, onSearchClick: () -> Unit) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-        ),
+private fun BoxScope.LocationPickerSearchCard(onBack: () -> Unit, onSearchClick: () -> Unit, styleState: StyleState) {
+    Column(
         modifier = Modifier
             .widthIn(min = 360.dp, max = 720.dp)
             .fillMaxWidth()
@@ -330,35 +398,59 @@ private fun BoxScope.LocationPickerSearchCard(onBack: () -> Unit, onSearchClick:
             .navigationBarsPadding()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .align(Alignment.TopCenter),
-        shape = RoundedCornerShape(28.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        horizontalAlignment = Alignment.End
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Card(
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(28.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.back_button)
-                )
+            LocationPickerSearchRow(onBack = onBack, onSearchClick = onSearchClick)
+        }
+        var attributionExpanded by remember { mutableStateOf(false) }
+        ExpandingAttributionButton(
+            expanded = attributionExpanded,
+            onClick = { attributionExpanded = !attributionExpanded },
+            styleState = styleState,
+            modifier = Modifier.padding(top = 4.dp),
+            contentAlignment = Alignment.TopEnd,
+            toggleButton = { onToggle ->
+                Box(modifier = Modifier.alpha(ATTRIBUTION_BUTTON_ALPHA)) {
+                    AttributionButtonDefaults.button(onToggle)
+                }
             }
-            Text(
-                text = stringResource(R.string.nc_search_location),
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .wrapContentHeight(Alignment.CenterVertically)
-                    .clickable(onClick = onSearchClick),
-                fontSize = 16.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+private fun LocationPickerSearchRow(onBack: () -> Unit, onSearchClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(onClick = onBack) {
+            Icon(
+                Icons.AutoMirrored.Outlined.ArrowBack,
+                contentDescription = stringResource(R.string.back_button)
             )
-            IconButton(onClick = onSearchClick) {
-                Icon(Icons.Outlined.Search, contentDescription = stringResource(R.string.nc_search))
-            }
+        }
+        Text(
+            text = stringResource(R.string.nc_search_location),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .wrapContentHeight(Alignment.CenterVertically)
+                .clickable(onClick = onSearchClick),
+            fontSize = 16.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        IconButton(onClick = onSearchClick) {
+            Icon(Icons.Outlined.Search, contentDescription = stringResource(R.string.nc_search))
         }
     }
 }
@@ -369,7 +461,11 @@ private fun LocationPickerZoomControls(onZoomIn: () -> Unit, onZoomOut: () -> Un
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant
     )
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.Bottom
+    ) {
         Column(
             modifier = Modifier.padding(end = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -436,7 +532,11 @@ private fun BoxScope.LocationPickerBottomControls(
                 }
             }
         } else {
-            LocationPickerZoomControls(onZoomIn = onZoomIn, onZoomOut = onZoomOut, onCenterClick = onCenterClick)
+            LocationPickerZoomControls(
+                onZoomIn = onZoomIn,
+                onZoomOut = onZoomOut,
+                onCenterClick = onCenterClick
+            )
             LocationPickerSharePanel(uiState = uiState, onShareClick = onShareClick)
         }
         SnackbarHost(hostState = snackbarHostState)
@@ -453,6 +553,47 @@ private fun BoxScope.LocationPickerMapOverlays() {
             .align(Alignment.Center)
             .offset(y = (-(PIN_HEIGHT_DP / 2)).dp)
     )
+}
+
+@Suppress("Detekt.LongParameterList")
+@Composable
+private fun LocationPickerScreenContent(
+    uiState: LocationPickerViewModel.UiState,
+    snackbarHostState: SnackbarHostState,
+    onSearchClick: () -> Unit,
+    onBack: () -> Unit,
+    onShareClick: () -> Unit,
+    onCenterClick: () -> Unit,
+    onZoomIn: () -> Unit,
+    onZoomOut: () -> Unit,
+    mapContent: @Composable BoxScope.() -> Unit,
+    styleState: StyleState
+) {
+    Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            mapContent()
+            LocationPickerMapOverlays()
+            LocationPickerSearchCard(
+                onBack = onBack,
+                onSearchClick = onSearchClick,
+                styleState = styleState
+            )
+            LocationPickerBottomControls(
+                uiState = uiState,
+                snackbarHostState = snackbarHostState,
+                onShareClick = onShareClick,
+                onCenterClick = onCenterClick,
+                onZoomIn = onZoomIn,
+                onZoomOut = onZoomOut
+            )
+        }
+    }
 }
 
 @Suppress("LongMethod")
@@ -529,95 +670,24 @@ private fun LocationPickerSharePanel(
         }
         Text(
             text = stringResource(R.string.osm_map_view_attributation),
-            fontSize = 12.sp,
+            fontSize = 11.sp,
             color = colorResource(R.color.medium_emphasis_text),
             modifier = Modifier.padding(horizontal = 16.dp)
         )
     }
 }
 
-@Suppress("Detekt.LongParameterList")
-private fun setupMapView(
-    mapView: MapView,
-    locationOverlay: MyLocationNewOverlay,
-    locationManager: LocationManager,
-    locationListener: LocationListener,
-    viewModel: LocationPickerViewModel,
-    permissionLauncher: ActivityResultLauncher<Array<String>>,
-    context: Context
-): MapView {
-    return mapView.apply {
-        setTileSource(TileSourceFactory.MAPNIK)
-        onResume()
-        setMultiTouchControls(true)
-        isTilesScaledToDpi = true
-        overlays.add(locationOverlay)
+@SuppressLint("MissingPermission")
+private fun getLastKnownLocation(locationManager: LocationManager): android.location.Location? =
+    when {
+        locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ->
+            locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
 
-        val mapController = controller
-        val initialState = viewModel.uiState.value
+        locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ->
+            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
-        if (initialState.geocodingResult != null) {
-            mapController.setZoom(ZOOM_LEVEL_RECEIVED_RESULT)
-        } else {
-            mapController.setZoom(ZOOM_LEVEL_DEFAULT)
-        }
-
-        if (initialState.mapCenterLat != COORDINATE_ZERO && initialState.mapCenterLon != COORDINATE_ZERO) {
-            mapController.setCenter(GeoPoint(initialState.mapCenterLat, initialState.mapCenterLon))
-            viewModel.updateMapCenter(initialState.mapCenterLat, initialState.mapCenterLon)
-        }
-
-        val zoomToCurrentPositionOnFirstFix =
-            initialState.geocodingResult == null && initialState.moveToCurrentLocation
-
-        locationOverlay.runOnFirstFix {
-            val loc = locationOverlay.myLocation ?: return@runOnFirstFix
-            if (zoomToCurrentPositionOnFirstFix) {
-                Handler(Looper.getMainLooper()).post {
-                    mapController.setZoom(ZOOM_LEVEL_DEFAULT)
-                    mapController.setCenter(loc)
-                    viewModel.updateMapCenter(loc.latitude, loc.longitude)
-                }
-            }
-        }
-
-        initialState.geocodingResult?.let {
-            if (it.lat != COORDINATE_ZERO && it.lon != COORDINATE_ZERO) {
-                mapController.setCenter(GeoPoint(it.lat, it.lon))
-                viewModel.updateMapCenter(it.lat, it.lon)
-            }
-        }
-
-        if (isLocationPermissionsGranted(context)) {
-            requestLocationUpdates(locationManager, locationListener) { /* permissions already granted */ }
-        } else {
-            permissionLauncher.launch(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-            )
-        }
-
-        addMapListener(
-            DelayedMapListener(
-                object : MapListener {
-                    @Suppress("Detekt.TooGenericExceptionCaught")
-                    override fun onScroll(event: ScrollEvent): Boolean {
-                        try {
-                            viewModel.onMapScrolled()
-                            viewModel.updateMapCenter(mapCenter.latitude, mapCenter.longitude)
-                        } catch (_: NullPointerException) {
-                            Log.d(TAG, "UI already closed")
-                        }
-                        return true
-                    }
-
-                    override fun onZoom(event: ZoomEvent): Boolean = false
-                }
-            )
-        )
-
-        zoomController.setVisibility(Visibility.NEVER)
+        else -> null
     }
-}
 
 private fun isLocationPermissionsGranted(context: Context): Boolean =
     PermissionChecker.checkSelfPermission(
@@ -643,7 +713,7 @@ private fun requestLocationUpdates(
                     MIN_LOCATION_UPDATE_TIME,
                     MIN_LOCATION_UPDATE_DISTANCE,
                     locationListener,
-                    Looper.getMainLooper()
+                    android.os.Looper.getMainLooper()
                 )
             }
 
@@ -653,7 +723,7 @@ private fun requestLocationUpdates(
                     MIN_LOCATION_UPDATE_TIME,
                     MIN_LOCATION_UPDATE_DISTANCE,
                     locationListener,
-                    Looper.getMainLooper()
+                    android.os.Looper.getMainLooper()
                 )
                 Log.d(TAG, "LocationManager.NETWORK_PROVIDER falling back to LocationManager.GPS_PROVIDER")
             }
@@ -676,6 +746,17 @@ private fun requestLocationUpdates(
     }
 }
 
+private fun userLocationGeoJsonData(location: Position): GeoJsonData.JsonString =
+    if (location.latitude != COORDINATE_ZERO || location.longitude != COORDINATE_ZERO) {
+        val lon = location.longitude
+        val lat = location.latitude
+        GeoJsonData.JsonString(
+            """{"type":"Feature","geometry":{"type":"Point","coordinates":[$lon,$lat]},"properties":{}}"""
+        )
+    } else {
+        GeoJsonData.JsonString("""{"type":"FeatureCollection","features":[]}""")
+    }
+
 private val previewMapPlaceholder: @Composable BoxScope.() -> Unit = {
     Box(
         modifier = Modifier
@@ -691,7 +772,8 @@ private val previewMapPlaceholder: @Composable BoxScope.() -> Unit = {
 @Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewLocationPickerScreen() {
-    MaterialTheme {
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    MaterialTheme(colorScheme = colorScheme) {
         LocationPickerScreenContent(
             uiState = LocationPickerViewModel.UiState(
                 locationDescriptionType = LocationPickerViewModel.LocationDescriptionType.GPS,
@@ -704,7 +786,8 @@ private fun PreviewLocationPickerScreen() {
             onCenterClick = {},
             onZoomIn = {},
             onZoomOut = {},
-            mapContent = previewMapPlaceholder
+            mapContent = previewMapPlaceholder,
+            styleState = rememberStyleState()
         )
     }
 }
@@ -729,7 +812,8 @@ private fun PreviewLocationPickerScreenLandscape() {
             onCenterClick = {},
             onZoomIn = {},
             onZoomOut = {},
-            mapContent = previewMapPlaceholder
+            mapContent = previewMapPlaceholder,
+            styleState = rememberStyleState()
         )
     }
 }
@@ -751,7 +835,8 @@ private fun PreviewLocationPickerScreenGeocoded() {
             onCenterClick = {},
             onZoomIn = {},
             onZoomOut = {},
-            mapContent = previewMapPlaceholder
+            mapContent = previewMapPlaceholder,
+            styleState = rememberStyleState()
         )
     }
 }
@@ -773,7 +858,8 @@ private fun PreviewLocationPickerScreenSending() {
             onCenterClick = {},
             onZoomIn = {},
             onZoomOut = {},
-            mapContent = previewMapPlaceholder
+            mapContent = previewMapPlaceholder,
+            styleState = rememberStyleState()
         )
     }
 }
@@ -804,7 +890,8 @@ private fun PreviewLocationPickerScreenRtl() {
                 ) {
                     Text(text = "معاينة الخريطة")
                 }
-            }
+            },
+            styleState = rememberStyleState()
         )
     }
 }
@@ -813,7 +900,8 @@ private fun PreviewLocationPickerScreenRtl() {
 @Preview(name = "Map Overlays - Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewLocationPickerMapOverlays() {
-    MaterialTheme {
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    MaterialTheme(colorScheme = colorScheme) {
         Box(
             modifier = Modifier
                 .size(300.dp)
@@ -828,7 +916,8 @@ private fun PreviewLocationPickerMapOverlays() {
 @Preview(name = "Share Panel - Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewLocationPickerSharePanelGps() {
-    MaterialTheme {
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    MaterialTheme(colorScheme = colorScheme) {
         LocationPickerSharePanel(
             uiState = LocationPickerViewModel.UiState(
                 locationDescriptionType = LocationPickerViewModel.LocationDescriptionType.GPS,
