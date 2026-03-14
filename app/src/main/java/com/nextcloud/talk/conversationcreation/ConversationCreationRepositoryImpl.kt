@@ -14,6 +14,7 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
+import com.nextcloud.talk.models.json.passwordResult.PasswordResultOverall
 import com.nextcloud.talk.utils.Mimetype
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -120,5 +121,14 @@ class ConversationCreationRepositoryImpl @Inject constructor(private val ncApiCo
             )
         }
         return result
+    }
+
+    override suspend fun validatePassword(credentials: String, url: String, password: String): PasswordResultOverall {
+        val passwordOverall = ncApiCoroutines.validatePassword(
+            credentials,
+            url,
+            password
+        )
+        return passwordOverall
     }
 }
