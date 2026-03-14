@@ -62,6 +62,8 @@ class LocationPickerViewModel @Inject constructor(
 
     private var nominatimClient: TalkJsonNominatimClient? = null
 
+    private var isStateInitialized = false
+
     fun initGeocoder(baseUrl: String, email: String) {
         nominatimClient = TalkJsonNominatimClient(baseUrl, okHttpClient, email)
     }
@@ -72,6 +74,9 @@ class LocationPickerViewModel @Inject constructor(
         mapCenterLat: Double,
         mapCenterLon: Double
     ) {
+        if (isStateInitialized) return
+        isStateInitialized = true
+
         _uiState.update {
             it.copy(
                 geocodingResult = geocodingResult,
@@ -87,7 +92,7 @@ class LocationPickerViewModel @Inject constructor(
         _uiState.update { it.copy(moveToCurrentLocation = value) }
     }
 
-    fun setReadyToShareLocation(value: Boolean) {
+    private fun setReadyToShareLocation(value: Boolean) {
         _uiState.update { it.copy(readyToShareLocation = value) }
     }
 
@@ -103,12 +108,35 @@ class LocationPickerViewModel @Inject constructor(
         }
     }
 
-    fun setGeocodingResultToNull() {
+    private fun setGeocodingResultToNull() {
         _uiState.update { it.copy(geocodingResult = null) }
     }
 
     fun updateMapCenter(lat: Double, lon: Double) {
         _uiState.update { it.copy(mapCenterLat = lat, mapCenterLon = lon) }
+    }
+
+    /**
+     * Called when the screen becomes visible (ON_RESUME).
+     * Resets the ready-to-share flag and location description for non-geocoded states so
+     * the user must re-confirm the map position before sharing.
+     * For an already-geocoded result the state is deliberately preserved.
+     */
+    fun onScreenResumed() {
+        val state = _uiState.value
+        if (state.locationDescriptionType != LocationDescriptionType.GEOCODED) {
+            setReadyToShareLocation(false)
+            setLocationDescription(isGpsLocation = false, isGeocodedResult = state.geocodingResult != null)
+        }
+    }
+
+    /**
+     * Called when the user taps the "center on my location" button.
+     * The actual camera animation is driven by the View; the ViewModel records the intent
+     * so that the next onMapScrolled() call is classified as a GPS-location event.
+     */
+    fun onCenterLocationRequested() {
+        setMoveToCurrentLocation(true)
     }
 
     fun onMapScrolled() {
@@ -129,7 +157,7 @@ class LocationPickerViewModel @Inject constructor(
         setReadyToShareLocation(true)
     }
 
-    fun setLocationDescription(isGpsLocation: Boolean, isGeocodedResult: Boolean) {
+    private fun setLocationDescription(isGpsLocation: Boolean, isGeocodedResult: Boolean) {
         when {
             isGpsLocation -> _uiState.update {
                 it.copy(
@@ -140,7 +168,9 @@ class LocationPickerViewModel @Inject constructor(
             isGeocodedResult -> _uiState.update {
                 it.copy(
                     locationDescriptionType = LocationDescriptionType.GEOCODED,
-                    placeName = _uiState.value.geocodingResult?.displayName ?: ""
+                    // Fall back to the already-stored placeName if geocodingResult was
+                    // cleared before this call (e.g. second call after setGeocodingResultToNull).
+                    placeName = _uiState.value.geocodingResult?.displayName ?: it.placeName
                 )
             }
             else -> _uiState.update {
