@@ -185,7 +185,7 @@ configurations.configureEach {
 }
 
 dependencies {
-
+    implementation 'androidx.lifecycle:lifecycle-runtime-compose:2.10.0'
     kapt "org.jetbrains.kotlin:kotlin-metadata-jvm:${kotlinVersion}"
     implementation "androidx.room:room-testing-android:${roomVersion}"
     implementation 'androidx.compose.foundation:foundation-layout:1.10.5'
@@ -303,6 +303,8 @@ dependencies {
     implementation "io.noties.markwon:ext-strikethrough:$markwonVersion"
     implementation "io.noties.markwon:ext-tasklist:$markwonVersion"
     implementation "io.noties.markwon:ext-tables:$markwonVersion"
+
+    implementation "org.maplibre.compose:maplibre-compose:0.12.1"
 
     // Avatar picker
     implementation 'com.github.nextcloud-deps:ImagePicker:2.1.0.2'

@@ -7,12 +7,15 @@
 
 package com.nextcloud.talk.data.database.migrations
 
-import androidx.room.Room
+import android.database.sqlite.SQLiteConstraintException
 import androidx.room.testing.MigrationTestHelper
+import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.nextcloud.talk.data.source.local.Migrations
 import com.nextcloud.talk.data.source.local.TalkDatabase
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,10 +23,9 @@ import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class MigrationsTest {
+
     companion object {
         private const val TEST_DB = "migration-test"
-        private const val INIT_VERSION = 10 // last version before update to offline first
-        private val TAG = MigrationsTest::class.java.simpleName
     }
 
     @get:Rule
@@ -32,21 +34,96 @@ class MigrationsTest {
         TalkDatabase::class.java
     )
 
-    @Test
-    @Throws(IOException::class)
-    @Suppress("SpreadOperator")
-    fun migrateAll() {
-        helper.createDatabase(TEST_DB, INIT_VERSION).apply {
-            close()
-        }
-
-        Room.databaseBuilder(
-            InstrumentationRegistry.getInstrumentation().targetContext,
-            TalkDatabase::class.java,
-            TEST_DB
-        ).addMigrations(*TalkDatabase.MIGRATIONS).build().apply {
-            openHelper.writableDatabase.close()
-        }
+    private fun insertMessage(
+        db: SupportSQLiteDatabase,
+        internalId: String,
+        referenceId: String?,
+        isTemporary: Int,
+        timestamp: Long
+    ) {
+        db.execSQL(
+            """
+            INSERT INTO ChatMessages (
+                internalId,
+                accountId,
+                token,
+                id,
+                internalConversationId,
+                threadId,
+                isThread,
+                actorDisplayName,
+                message,
+                actorId,
+                actorType,
+                deleted,
+                expirationTimestamp,
+                isReplyable,
+                isTemporary,
+                lastEditActorDisplayName,
+                lastEditActorId,
+                lastEditActorType,
+                lastEditTimestamp,
+                markdown,
+                messageParameters,
+                messageType,
+                parent,
+                reactions,
+                reactionsSelf,
+                referenceId,
+                sendStatus,
+                silent,
+                systemMessage,
+                threadTitle,
+                threadReplies,
+                timestamp,
+                pinnedActorType,
+                pinnedActorId,
+                pinnedActorDisplayName,
+                pinnedAt,
+                pinnedUntil,
+                sendAt
+            ) VALUES (
+                '$internalId',
+                1,
+                'token',
+                1,
+                'conv',
+                NULL,
+                0,
+                'User',
+                'Hello',
+                'actor1',
+                'USER',
+                0,
+                0,
+                0,
+                $isTemporary,
+                NULL,
+                NULL,
+                NULL,
+                0,
+                0,
+                NULL,
+                'comment',
+                NULL,
+                NULL,
+                NULL,
+                ${if (referenceId != null) "'$referenceId'" else "NULL"},
+                NULL,
+                0,
+                0,
+                NULL,
+                0,
+                $timestamp,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                0
+            )
+        """
+        )
     }
 
     @Test

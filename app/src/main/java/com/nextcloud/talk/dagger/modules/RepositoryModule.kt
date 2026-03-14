@@ -196,4 +196,5 @@ class RepositoryModule {
     @Provides
     fun provideStatusRepository(ncApiCoroutines: NcApiCoroutines): StatusRepository =
         StatusRepositoryImplementation(ncApiCoroutines)
+
 }

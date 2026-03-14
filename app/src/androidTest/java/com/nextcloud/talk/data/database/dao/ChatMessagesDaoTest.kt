@@ -108,7 +108,7 @@ class ChatMessagesDaoTest {
             assertEquals(conversation1, conversation1GotByToken)
 
             // Lets insert some messages to the conversations
-            chatMessagesDao.upsertChatMessages(
+            chatMessagesDao.upsertChatMessagesAndDeleteTemp(
                 listOf(
                     createChatMessageEntity(conversation1.internalId, "hello"),
                     createChatMessageEntity(conversation1.internalId, "here"),
@@ -117,22 +117,22 @@ class ChatMessagesDaoTest {
                     createChatMessageEntity(conversation1.internalId, "messages")
                 )
             )
-            chatMessagesDao.upsertChatMessages(
+            chatMessagesDao.upsertChatMessagesAndDeleteTemp(
                 listOf(
                     createChatMessageEntity(conversation2.internalId, "first message in conversation 2")
                 )
             )
 
-            chatMessagesDao.getMessagesForConversation(conversation1.internalId).first().forEach {
+            chatMessagesDao.getMessagesForConversation(conversation1.internalId, null).first().forEach {
                 Log.d(tag, "- next Message for conversation1 (account1)-")
                 Log.d(tag, "id (PK): " + it.id)
                 Log.d(tag, "message: " + it.message)
             }
 
-            val chatMessagesConv1 = chatMessagesDao.getMessagesForConversation(conversation1.internalId)
+            val chatMessagesConv1 = chatMessagesDao.getMessagesForConversation(conversation1.internalId, null)
             assertEquals(5, chatMessagesConv1.first().size)
 
-            val chatMessagesConv2 = chatMessagesDao.getMessagesForConversation(conversation2.internalId)
+            val chatMessagesConv2 = chatMessagesDao.getMessagesForConversation(conversation2.internalId, null)
             assertEquals(1, chatMessagesConv2.first().size)
 
             assertEquals("some", chatMessagesConv1.first()[1].message)
