@@ -74,6 +74,7 @@ class LocationPickerActivity : BaseActivity() {
         val mapCenterLat = savedInstanceState?.getDouble("mapCenterLat") ?: 0.0
         val mapCenterLon = savedInstanceState?.getDouble("mapCenterLon") ?: 0.0
 
+        viewModel.initRouting(roomToken, chatApiVersion)
         viewModel.initState(geocodingResult, moveToCurrentLocation, mapCenterLat, mapCenterLon)
 
         val baseUrl = getString(R.string.osm_geocoder_url)
@@ -88,8 +89,6 @@ class LocationPickerActivity : BaseActivity() {
                 ColoredStatusBar()
                 LocationPickerScreen(
                     viewModel = viewModel,
-                    roomToken = roomToken,
-                    chatApiVersion = chatApiVersion,
                     onSearchClick = { navigateToGeocoding() },
                     onBack = { onBackPressedDispatcher.onBackPressed() },
                     onFinish = { finish() }
