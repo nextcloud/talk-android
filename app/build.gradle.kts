@@ -303,6 +303,7 @@ dependencies {
 
     implementation("io.github.elye:loaderviewlibrary:3.0.0")
     implementation("org.maplibre.compose:maplibre-compose:0.12.1")
+	implementation("org.maplibre.compose:maplibre-compose-material3:0.12.1")
     implementation("fr.dudie:nominatim-api:3.4") {
         //noinspection DuplicatePlatformClasses
         exclude(group = "org.apache.httpcomponents", module = "httpclient")
