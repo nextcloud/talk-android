@@ -21,6 +21,7 @@ import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.Mimetype
 import com.stfalcon.chatkit.commons.models.IUser
 import com.stfalcon.chatkit.commons.models.MessageContentType
 import java.security.MessageDigest
@@ -246,6 +247,18 @@ data class ChatMessage(
                     selectedIndividualHashMap = individualHashMap
                     if (!isVoiceMessage) {
                         if (activeUser != null && activeUser!!.baseUrl != null) {
+                            val mimetype = individualHashMap["mimetype"]
+                            val path = individualHashMap["path"]
+                            if (mimetype == Mimetype.IMAGE_GIF &&
+                                path != null &&
+                                activeUser!!.username != null
+                            ) {
+                                return ApiUtils.getUrlForFileDownload(
+                                    activeUser!!.baseUrl!!,
+                                    activeUser!!.username!!,
+                                    path
+                                )
+                            }
                             return ApiUtils.getUrlForFilePreviewWithFileId(
                                 activeUser!!.baseUrl!!,
                                 individualHashMap["id"]!!,
