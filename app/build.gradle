@@ -71,6 +71,7 @@ android {
 
         lintOptions {
             disable 'InvalidPackage'
+            disable 'LogNotTimber'
             disable 'MissingTranslation'
             disable 'VectorPath'
             disable 'UnusedQuantity'
