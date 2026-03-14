@@ -35,7 +35,7 @@ import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
 import com.nextcloud.talk.translate.viewmodels.TranslateViewModel
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
-import com.nextcloud.talk.viewmodels.LocationPickerViewModel
+import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module

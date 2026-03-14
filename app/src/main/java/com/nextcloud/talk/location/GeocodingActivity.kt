@@ -19,7 +19,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.location.components.GeocodingScreen
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.viewmodels.GeoCodingViewModel
+import com.nextcloud.talk.location.viewmodels.GeoCodingViewModel
 import fr.dudie.nominatim.client.TalkJsonNominatimClient
 import fr.dudie.nominatim.model.Address
 import okhttp3.OkHttpClient
