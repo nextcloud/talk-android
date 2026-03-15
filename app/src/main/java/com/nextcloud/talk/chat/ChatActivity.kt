@@ -1358,21 +1358,12 @@ class ChatActivity :
                     }
 
                     if (uiState.userAbsence.replacementUserDisplayName != null) {
-                        var imageUri = ApiUtils.getUrlForAvatar(
+                        val imageUri = ApiUtils.getUrlForAvatar(
                             conversationUser?.baseUrl,
-                            uiState.userAbsence
-                                .replacementUserId,
-                            false
+                            uiState.userAbsence.replacementUserId,
+                            false,
+                            darkMode = DisplayUtils.isDarkModeOn(context)
                         ).toUri()
-                        if (DisplayUtils.isDarkModeOn(context)) {
-                            imageUri = ApiUtils.getUrlForAvatarDarkTheme(
-                                conversationUser?.baseUrl,
-                                uiState
-                                    .userAbsence
-                                    .replacementUserId,
-                                false
-                            ).toUri()
-                        }
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).text =
                             context.resources.getString(R.string.user_absence_replacement)
                         binding.outOfOfficeContainer.findViewById<ImageView>(R.id.replacement_user_avatar)
@@ -1944,15 +1935,12 @@ class ChatActivity :
         }
 
         if (isOneToOneConversation()) {
-            var url = ApiUtils.getUrlForAvatar(
+            val url = ApiUtils.getUrlForAvatar(
                 conversationUser!!.baseUrl!!,
                 currentConversation!!.name,
-                true
+                true,
+                darkMode = DisplayUtils.isDarkModeOn(supportActionBar?.themedContext!!)
             )
-
-            if (DisplayUtils.isDarkModeOn(supportActionBar?.themedContext!!)) {
-                url = "$url/dark"
-            }
 
             val target = object : Target {
 

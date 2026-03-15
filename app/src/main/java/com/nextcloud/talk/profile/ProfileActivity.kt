@@ -368,6 +368,14 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun showUserProfile() {
+        updateProfileHeader()
+        isProfileEnabled = "1" == userInfo?.profileEnabled
+        adapter!!.setData(createUserInfoDetails(userInfo))
+        updateProfileContentVisibility()
+        updateAvatarButtonsVisibility()
+    }
+
+    private fun updateProfileHeader() {
         if (currentUser!!.baseUrl != null) {
             binding.userinfoBaseurl.text = currentUser!!.baseUrl!!.toUri().host
         }
@@ -376,10 +384,10 @@ class ProfileActivity : BaseActivity() {
             binding.userinfoFullName.text = userInfo?.displayName
         }
         binding.loadingContent.visibility = View.VISIBLE
+    }
 
-        isProfileEnabled = "1" == userInfo?.profileEnabled
-
-        adapter!!.setData(createUserInfoDetails(userInfo))
+    private fun updateProfileContentVisibility() {
+        val profileEnabledVisibility = if (edit) View.VISIBLE else View.GONE
         if (
             isAllEmpty(
                 arrayOf(
@@ -400,7 +408,7 @@ class ProfileActivity : BaseActivity() {
             )
         ) {
             binding.userinfoList.visibility = View.GONE
-            binding.profileSettingEnabledProfile.visibility = if (edit) View.VISIBLE else View.GONE
+            binding.profileSettingEnabledProfile.visibility = profileEnabledVisibility
             binding.loadingContent.visibility = View.GONE
             binding.emptyList.root.visibility = View.VISIBLE
             setErrorMessageForMultiList(
@@ -411,13 +419,12 @@ class ProfileActivity : BaseActivity() {
         } else {
             binding.emptyList.root.visibility = View.GONE
             binding.loadingContent.visibility = View.GONE
-            binding.profileSettingEnabledProfile.visibility = if (edit) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
+            binding.profileSettingEnabledProfile.visibility = profileEnabledVisibility
             binding.userinfoList.visibility = View.VISIBLE
         }
+    }
+
+    private fun updateAvatarButtonsVisibility() {
         binding.avatarButtons.visibility = if (edit &&
             CapabilitiesUtil.hasSpreedFeatureCapability(
                 currentUser?.capabilities?.spreedCapability,

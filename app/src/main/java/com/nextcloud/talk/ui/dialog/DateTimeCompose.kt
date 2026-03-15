@@ -63,6 +63,7 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
+import com.nextcloud.talk.ui.dialog.DateTimeCompose.Companion.HALF_WEIGHT
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
@@ -388,7 +389,7 @@ class DateTimeCompose(val bundle: Bundle) {
         if (DateFormat.is24HourFormat(context)) "dd MMM, HH:mm" else "dd MMM, hh:mm a"
 
     companion object {
-        private const val HALF_WEIGHT = 0.5f
+        const val HALF_WEIGHT = 0.5f
         private const val INT_8 = 8
         private const val INT_16 = 16
         private const val INT_18 = 18
@@ -422,8 +423,8 @@ private fun TimeOption(label: String, timeString: String, onClick: () -> Unit) {
             .padding(8.dp)
             .clickable { onClick() }
     ) {
-        Text(label, modifier = Modifier.weight(0.5f))
-        Text(timeString, modifier = Modifier.weight(0.5f))
+        Text(label, modifier = Modifier.weight(HALF_WEIGHT))
+        Text(timeString, modifier = Modifier.weight(HALF_WEIGHT))
     }
 }
 

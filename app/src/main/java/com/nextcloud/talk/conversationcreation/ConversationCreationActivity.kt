@@ -70,6 +70,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import com.nextcloud.talk.utils.DisplayUtils
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -405,7 +406,9 @@ fun AddParticipants(
         }
         participants.toSet().forEach { participant ->
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                val imageUri = participant.id?.let { conversationCreationViewModel.getImageUri(it, true) }
+                val imageUri = participant.id?.let {
+                    conversationCreationViewModel.getImageUri(it, true, DisplayUtils.isDarkModeOn(LocalContext.current))
+                }
                 val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
                 val loadedImage = loadImage(imageUri, context, errorPlaceholderImage)
                 AsyncImage(

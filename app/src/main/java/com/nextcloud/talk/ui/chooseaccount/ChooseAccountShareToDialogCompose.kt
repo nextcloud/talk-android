@@ -40,6 +40,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DisplayUtils
 
 @Composable
 fun ChooseAccountShareToContent(
@@ -80,7 +81,12 @@ private fun CurrentAccountRow(user: User, onClick: () -> Unit) {
     ) {
         AsyncImage(
             model = loadImage(
-                ApiUtils.getUrlForAvatar(user.baseUrl, user.userId, true),
+                ApiUtils.getUrlForAvatar(
+                    user.baseUrl,
+                    user.userId,
+                    true,
+                    darkMode = DisplayUtils.isDarkModeOn(context)
+                ),
                 context,
                 R.drawable.account_circle_48dp
             ),
@@ -132,7 +138,12 @@ private fun OtherAccountRow(user: User, onClick: () -> Unit) {
     ) {
         AsyncImage(
             model = loadImage(
-                ApiUtils.getUrlForAvatar(user.baseUrl, user.userId, true),
+                ApiUtils.getUrlForAvatar(
+                    user.baseUrl,
+                    user.userId,
+                    true,
+                    darkMode = DisplayUtils.isDarkModeOn(context)
+                ),
                 context,
                 R.drawable.account_circle_48dp
             ),

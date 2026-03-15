@@ -24,7 +24,7 @@ interface ContactsRepository {
         conversationName: String?
     ): RoomOverall
 
-    fun getImageUri(user: User, avatarId: String, requestBigSize: Boolean): String
+    fun getImageUri(user: User, avatarId: String, requestBigSize: Boolean, isDarkMode: Boolean): String
 
     fun getContactsFlow(user: User, searchQuery: String?): Flow<List<AutocompleteUser>>
 }
