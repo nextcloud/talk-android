@@ -133,14 +133,14 @@ class ContactsViewModelTest {
     @Test
     fun `test image uri`() {
         val expectedImageUri = "https://mydomain.com/index.php/avatar/vidya/512"
-        val imageUri = viewModel.getImageUri("vidya", false)
+        val imageUri = viewModel.getImageUri("vidya", false, false)
         assert(imageUri == expectedImageUri)
     }
 
     @Test
     fun `test error image uri`() {
         val expectedImageUri = "https://mydoman.com/index.php/avatar/vidya/512"
-        val imageUri = viewModel.getImageUri("vidya", false)
+        val imageUri = viewModel.getImageUri("vidya", false, false)
         assert(imageUri != expectedImageUri)
     }
 }
