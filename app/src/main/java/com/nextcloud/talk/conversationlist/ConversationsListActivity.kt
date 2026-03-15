@@ -127,6 +127,7 @@ import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
+import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -463,6 +464,11 @@ class ConversationsListActivity :
                         .firstOrNull { ConversationUtils.isNoteToSelfConversation(it) }
                     val isNoteToSelfAvailable = noteToSelf != null
                     handleNoteToSelfShortcut(isNoteToSelfAvailable, noteToSelf?.token ?: "")
+
+                    // Update dynamic shortcuts for frequent/favorite conversations
+                    currentUser?.let { user ->
+                        ShortcutManagerHelper.updateDynamicShortcuts(context, list, user)
+                    }
 
                     val pair = appPreferences.conversationListPositionAndOffset
                     layoutManager?.scrollToPositionWithOffset(pair.first, pair.second)
@@ -2076,6 +2082,14 @@ class ConversationsListActivity :
                 if (workInfo != null) {
                     when (workInfo.state) {
                         WorkInfo.State.SUCCEEDED -> {
+                            currentUser?.id?.let { userId ->
+                                ShortcutManagerHelper.disableConversationShortcut(
+                                    context,
+                                    conversation.token,
+                                    userId,
+                                    context.resources.getString(R.string.nc_shortcut_conversation_deleted)
+                                )
+                            }
                             showSnackbar(
                                 String.format(
                                     context.resources.getString(R.string.deleted_conversation),
