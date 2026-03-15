@@ -80,9 +80,7 @@ class LocationPickerViewModel @Inject constructor(
     private var chatApiVersion: Int = 1
 
     /**
-     * Initialises routing, map state, and the geocoder in one atomic call.
-     * Safe to call on every [Activity.onCreate] — subsequent calls after the first are no-ops
-     * because the ViewModel survives configuration changes.
+     * Initializes routing, map state, and the geocoder in one atomic call.
      */
     fun initialize(params: LocationPickerInitParams) {
         if (isStateInitialized) return

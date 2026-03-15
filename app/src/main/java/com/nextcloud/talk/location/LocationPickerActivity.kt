@@ -26,6 +26,14 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
 import javax.inject.Inject
 
+private const val MAP_CENTER_LAT_KEY = "mapCenterLat"
+
+private const val MAP_CENTER_LON_KEY = "mapCenterLon"
+
+private const val MOVE_TO_CURRENT_LOCATION_KEY = "moveToCurrentLocation"
+
+private const val GEOCODING_RESULT_KEY = "geocodingResult"
+
 @AutoInjector(NextcloudTalkApplication::class)
 class LocationPickerActivity : BaseActivity() {
 
@@ -65,14 +73,14 @@ class LocationPickerActivity : BaseActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory)[LocationPickerViewModel::class.java]
 
         val geocodingResult: GeocodingResult? = if (savedInstanceState != null) {
-            savedInstanceState.getParcelable("geocodingResult")
+            savedInstanceState.getParcelable(GEOCODING_RESULT_KEY)
         } else {
             intent.getParcelableExtraProvider(KEY_GEOCODING_RESULT)
         }
 
-        val moveToCurrentLocation = savedInstanceState?.getBoolean("moveToCurrentLocation") ?: true
-        val mapCenterLat = savedInstanceState?.getDouble("mapCenterLat") ?: 0.0
-        val mapCenterLon = savedInstanceState?.getDouble("mapCenterLon") ?: 0.0
+        val moveToCurrentLocation = savedInstanceState?.getBoolean(MOVE_TO_CURRENT_LOCATION_KEY) ?: true
+        val mapCenterLat = savedInstanceState?.getDouble(MAP_CENTER_LAT_KEY) ?: 0.0
+        val mapCenterLon = savedInstanceState?.getDouble(MAP_CENTER_LON_KEY) ?: 0.0
 
         viewModel.initialize(
             LocationPickerViewModel.LocationPickerInitParams(
@@ -106,10 +114,10 @@ class LocationPickerActivity : BaseActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val state = viewModel.uiState.value
-        outState.putBoolean("moveToCurrentLocation", state.moveToCurrentLocation)
-        outState.putDouble("mapCenterLat", state.mapCenterLat)
-        outState.putDouble("mapCenterLon", state.mapCenterLon)
-        outState.putParcelable("geocodingResult", state.geocodingResult)
+        outState.putBoolean(MOVE_TO_CURRENT_LOCATION_KEY, state.moveToCurrentLocation)
+        outState.putDouble(MAP_CENTER_LAT_KEY, state.mapCenterLat)
+        outState.putDouble(MAP_CENTER_LON_KEY, state.mapCenterLon)
+        outState.putParcelable(GEOCODING_RESULT_KEY, state.geocodingResult)
     }
 
     private fun navigateToGeocoding() {
