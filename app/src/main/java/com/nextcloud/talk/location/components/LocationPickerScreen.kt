@@ -176,7 +176,7 @@ fun LocationPickerScreen(
                 // Ignore all camera events until the map style has finished loading
                 if (!isMapInitialized) return@collect
                 if (!isProgrammaticCameraMove) {
-                    viewModel.onMapScrolled()
+                    viewModel.onMapScrolled(position.target.latitude, position.target.longitude)
                 }
                 viewModel.updateMapCenter(position.target.latitude, position.target.longitude)
             }
@@ -233,7 +233,7 @@ fun LocationPickerScreen(
             )
             yield()
             viewModel.updateMapCenter(result.lat, result.lon)
-            viewModel.onMapScrolled()
+            viewModel.onMapScrolled(result.lat, result.lon)
             isProgrammaticCameraMove = false
         }
     }

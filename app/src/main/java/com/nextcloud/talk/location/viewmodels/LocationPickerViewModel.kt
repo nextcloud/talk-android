@@ -152,8 +152,12 @@ class LocationPickerViewModel @Inject constructor(
         setMoveToCurrentLocation(true)
     }
 
-    fun onMapScrolled() {
+    fun onMapScrolled(newLat: Double, newLon: Double) {
         val state = _uiState.value
+        val coordinatesChanged =
+            Math.abs(newLat - state.mapCenterLat) > COORDINATE_EPSILON ||
+                Math.abs(newLon - state.mapCenterLon) > COORDINATE_EPSILON
+
         when {
             state.moveToCurrentLocation -> {
                 setLocationDescription(isGpsLocation = true, isGeocodedResult = false)
@@ -163,8 +167,12 @@ class LocationPickerViewModel @Inject constructor(
                 setLocationDescription(isGpsLocation = false, isGeocodedResult = true)
                 setGeocodingResultToNull()
             }
-            else -> {
+            coordinatesChanged -> {
+                // User panned to a genuinely new position — clear the place name
                 setLocationDescription(isGpsLocation = false, isGeocodedResult = false)
+            }
+            else -> {
+                // Zoom-level changed but coordinates are the same — preserve placeName
             }
         }
         setReadyToShareLocation(true)
@@ -274,5 +282,6 @@ class LocationPickerViewModel @Inject constructor(
 
     companion object {
         private val TAG = LocationPickerViewModel::class.java.simpleName
+        private const val COORDINATE_EPSILON = 1e-6
     }
 }
