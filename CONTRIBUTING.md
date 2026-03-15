@@ -120,11 +120,11 @@ There are three build variants
 ### Apply a license
 
 Nextcloud doesn't require a CLA (Contributor License Agreement).
-The copyright belongs to all the individual contributors.
-Therefore we recommend that every contributor adds following line to the header of a file, if they changed it substantially:
+The copyright belongs to all the individual contributors. 
+Therefore we recommend that every contributor adds the following line to the [AUTHORS.md](AUTHORS.md) file if they made substantial changes to the code:
 
 ```
-Copyright (c) <year> <your name> <your email address>
+- <your name> <your email address>
 ```
 
 See section [Adding new files](#adding-new-files) for templates which can be used in new files.
@@ -189,53 +189,25 @@ If automatic backport fails, it will create a comment.
 ### Adding new files
 
 If you create a new file it needs to contain a license header. We encourage you to use the same license (GPL3+) as we do.
-Copyright of Nextcloud GmbH is optional.
+Copyright of Nextcloud GmbH is optional. Individual contributor names shall go into [AUTHORS.md](AUTHORS.md) so headers are kept brief.
 
 Source code of app:
 ```java/kotlin
 /*
- * Nextcloud Talk application
+ * Nextcloud Talk - Android Client
  *
- * @author Your Name
- * Copyright (C) 2021 Your Name
- * Copyright (C) 2021 Nextcloud GmbH
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
  ```
  
- XML (layout) file:
+ XML file:
  ```xml
 <!--
-  Nextcloud Talk application
-
-  @author Your Name
-  Copyright (C) 2021 Your Name
-  Copyright (C) 2021 Nextcloud GmbH
- 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  at your option) any later version.
- 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
- 
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
 ```
 
