@@ -110,9 +110,8 @@ class LocationPickerViewModelTest {
         assertEquals("Brandenburger Tor", viewModel.uiState.value.placeName)
 
         // User pans the map to a genuinely new location
-        val newLat = 52.5200
-        val newLon = 13.4050
-        viewModel.updateMapCenter(newLat, newLon)
+        val newLat = 15.5200
+        val newLon = 42.4050
         viewModel.onMapScrolled(newLat, newLon)
 
         assertEquals(
