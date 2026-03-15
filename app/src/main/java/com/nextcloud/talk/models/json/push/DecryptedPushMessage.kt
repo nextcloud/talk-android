@@ -32,7 +32,7 @@ data class DecryptedPushMessage(
     var notificationId: Long?,
 
     @JsonField(name = ["nids"])
-    var notificationIds: LongArray?,
+    var notificationIds: List<Long>?,
 
     @JsonField(name = ["delete"])
     var delete: Boolean,
@@ -70,12 +70,7 @@ data class DecryptedPushMessage(
         if (subject != other.subject) return false
         if (id != other.id) return false
         if (notificationId != other.notificationId) return false
-        if (notificationIds != null) {
-            if (other.notificationIds == null) return false
-            if (!notificationIds.contentEquals(other.notificationIds)) return false
-        } else if (other.notificationIds != null) {
-            return false
-        }
+        if (notificationIds != other.notificationIds) return false
         if (delete != other.delete) return false
         if (deleteAll != other.deleteAll) return false
         if (deleteMultiple != other.deleteMultiple) return false
@@ -93,7 +88,7 @@ data class DecryptedPushMessage(
         result = 31 * result + (subject?.hashCode() ?: 0)
         result = 31 * result + (id?.hashCode() ?: 0)
         result = 31 * result + (notificationId?.hashCode() ?: 0)
-        result = 31 * result + (notificationIds?.contentHashCode() ?: 0)
+        result = 31 * result + (notificationIds?.hashCode() ?: 0)
         result = 31 * result + (delete?.hashCode() ?: 0)
         result = 31 * result + (deleteAll?.hashCode() ?: 0)
         result = 31 * result + (deleteMultiple?.hashCode() ?: 0)
