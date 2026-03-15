@@ -13,14 +13,14 @@
     {
       "id": "background",
       "type": "background",
-      "paint": { "background-color": "#f2efe9" }
+      "paint": { "background-color": "#f5f0e6" }
     },
     {
       "id": "water",
       "type": "fill",
       "source": "openmaptiles",
       "source-layer": "water",
-      "paint": { "fill-color": "#a8d8ea" }
+      "paint": { "fill-color": "#6cbad0" }
     },
     {
       "id": "waterway",
@@ -29,7 +29,7 @@
       "source-layer": "waterway",
       "minzoom": 8,
       "paint": {
-        "line-color": "#a8d8ea",
+        "line-color": "#6cbad0",
         "line-width": ["interpolate", ["linear"], ["zoom"], 8, 0.5, 12, 1.5, 16, 3]
       }
     },
@@ -39,7 +39,7 @@
       "source": "openmaptiles",
       "source-layer": "landcover",
       "filter": ["==", "class", "wood"],
-      "paint": { "fill-color": "#c8dfc0" }
+      "paint": { "fill-color": "#9ecc82" }
     },
     {
       "id": "landcover-grass",
@@ -47,7 +47,7 @@
       "source": "openmaptiles",
       "source-layer": "landcover",
       "filter": ["in", "class", "grass", "scrub", "crop"],
-      "paint": { "fill-color": "#d6e8cc" }
+      "paint": { "fill-color": "#b2e08a" }
     },
     {
       "id": "landuse-residential",
@@ -55,7 +55,7 @@
       "source": "openmaptiles",
       "source-layer": "landuse",
       "filter": ["in", "class", "residential", "suburb", "neighbourhood"],
-      "paint": { "fill-color": "#f0ece4" }
+      "paint": { "fill-color": "#f2e8dc" }
     },
     {
       "id": "landuse-commercial",
@@ -63,7 +63,7 @@
       "source": "openmaptiles",
       "source-layer": "landuse",
       "filter": ["in", "class", "commercial", "retail", "industrial"],
-      "paint": { "fill-color": "#ede8de" }
+      "paint": { "fill-color": "#ede8d8" }
     },
     {
       "id": "landuse-park",
@@ -71,14 +71,14 @@
       "source": "openmaptiles",
       "source-layer": "landuse",
       "filter": ["in", "class", "park", "pitch", "playground", "golf", "cemetery"],
-      "paint": { "fill-color": "#d6e8cc" }
+      "paint": { "fill-color": "#b2e08a" }
     },
     {
       "id": "park",
       "type": "fill",
       "source": "openmaptiles",
       "source-layer": "park",
-      "paint": { "fill-color": "#d6e8cc", "fill-opacity": 0.8 }
+      "paint": { "fill-color": "#acd87e", "fill-opacity": 0.8 }
     },
     {
       "id": "building",
@@ -87,8 +87,8 @@
       "source-layer": "building",
       "minzoom": 13,
       "paint": {
-        "fill-color": "#e2dbd2",
-        "fill-outline-color": "#cec6bc"
+        "fill-color": "#e4d0bc",
+        "fill-outline-color": "#c8b8a2"
       }
     },
     {
@@ -100,7 +100,7 @@
       "minzoom": 14,
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#d0c8bc",
+        "line-color": "#b2b0a8",
         "line-width": 1,
         "line-dasharray": [2, 2]
       }
@@ -113,7 +113,7 @@
       "filter": ["==", "class", "service"],
       "minzoom": 14,
       "layout": { "line-cap": "round", "line-join": "round" },
-      "paint": { "line-color": "#d8d0c8", "line-width": 3 }
+      "paint": { "line-color": "#ccc4b8", "line-width": 3 }
     },
     {
       "id": "road-service",
@@ -134,7 +134,7 @@
       "minzoom": 12,
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#d8d0c8",
+        "line-color": "#c8bea8",
         "line-width": ["interpolate", ["linear"], ["zoom"], 12, 2, 16, 5]
       }
     },
@@ -159,7 +159,7 @@
       "filter": ["==", "class", "secondary"],
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#d8c8a0",
+        "line-color": "#d0b030",
         "line-width": ["interpolate", ["linear"], ["zoom"], 8, 2, 14, 7]
       }
     },
@@ -171,7 +171,7 @@
       "filter": ["==", "class", "secondary"],
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#f5e8c0",
+        "line-color": "#f8d870",
         "line-width": ["interpolate", ["linear"], ["zoom"], 8, 1, 14, 5]
       }
     },
@@ -183,7 +183,7 @@
       "filter": ["in", "class", "primary", "trunk"],
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#d4b070",
+        "line-color": "#cc9020",
         "line-width": ["interpolate", ["linear"], ["zoom"], 6, 2, 14, 9]
       }
     },
@@ -195,7 +195,7 @@
       "filter": ["in", "class", "primary", "trunk"],
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#fdd090",
+        "line-color": "#f8c858",
         "line-width": ["interpolate", ["linear"], ["zoom"], 6, 1, 14, 7]
       }
     },
@@ -207,7 +207,7 @@
       "filter": ["==", "class", "motorway"],
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#c88830",
+        "line-color": "#b46000",
         "line-width": ["interpolate", ["linear"], ["zoom"], 4, 2, 14, 12]
       }
     },
@@ -219,7 +219,7 @@
       "filter": ["==", "class", "motorway"],
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#f5a940",
+        "line-color": "#f48810",
         "line-width": ["interpolate", ["linear"], ["zoom"], 4, 1, 14, 10]
       }
     },
@@ -231,7 +231,7 @@
       "filter": ["in", "class", "rail", "transit"],
       "minzoom": 10,
       "paint": {
-        "line-color": "#b8b0a8",
+        "line-color": "#908e86",
         "line-width": 1.5,
         "line-dasharray": [4, 3]
       }
@@ -243,7 +243,7 @@
       "source-layer": "boundary",
       "filter": ["==", "admin_level", 2],
       "paint": {
-        "line-color": "#b0a090",
+        "line-color": "#9e887a",
         "line-width": 1.5,
         "line-dasharray": [4, 3]
       }
@@ -256,7 +256,7 @@
       "filter": ["==", "admin_level", 4],
       "minzoom": 4,
       "paint": {
-        "line-color": "#c8b8a8",
+        "line-color": "#b09e8e",
         "line-width": 1,
         "line-dasharray": [3, 4]
       }
@@ -274,8 +274,8 @@
         "text-max-width": 8
       },
       "paint": {
-        "text-color": "#4a4a4a",
-        "text-halo-color": "#f2efe9",
+        "text-color": "#1e2428",
+        "text-halo-color": "#f5f0e6",
         "text-halo-width": 1.5
       }
     },
@@ -292,7 +292,7 @@
         "text-max-width": 10
       },
       "paint": {
-        "text-color": "#333333",
+        "text-color": "#1e2428",
         "text-halo-color": "#ffffff",
         "text-halo-width": 1.5
       }
@@ -311,7 +311,7 @@
         "text-max-width": 8
       },
       "paint": {
-        "text-color": "#555555",
+        "text-color": "#44484c",
         "text-halo-color": "#ffffff",
         "text-halo-width": 1.5
       }
@@ -330,7 +330,7 @@
         "text-max-width": 8
       },
       "paint": {
-        "text-color": "#666666",
+        "text-color": "#555a60",
         "text-halo-color": "#ffffff",
         "text-halo-width": 1
       }
@@ -351,7 +351,7 @@
         "text-letter-spacing": 0.1
       },
       "paint": {
-        "text-color": "#888888",
+        "text-color": "#64696e",
         "text-halo-color": "#ffffff",
         "text-halo-width": 1
       }
@@ -370,7 +370,7 @@
         "text-max-angle": 30
       },
       "paint": {
-        "text-color": "#666666",
+        "text-color": "#44484c",
         "text-halo-color": "#ffffff",
         "text-halo-width": 1
       }
