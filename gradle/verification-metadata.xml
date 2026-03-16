@@ -15,10 +15,6 @@
          <trust file=".*-sources[.]jar" regex="true" reason="Android Studio downloads source jars but doesn't add checksums - fixes building in AS"/>
          <trust file="gradle-9.4.0-src.zip" regex="true" reason="Android Studio downloads gradle source zip but doesn't add checksums - fixes building in AS"/>
       </trusted-artifacts>
-      <ignored-keys>
-         <ignored-key id="5A68A2249128E2C6" reason="Key couldn't be downloaded from any key server"/>
-         <ignored-key id="DEA3D207428EF16D" reason="Key couldn't be downloaded from any key server"/>
-      </ignored-keys>
       <trusted-keys>
          <trusted-key id="02A36B6DB7056EB5E6FFEF893DA731F041734930" group="org.parceler"/>
          <trusted-key id="03C123038C20AAE9E286C857479D601F3A7B5C1A" group="com.github.ajalt.clikt"/>
@@ -280,6 +276,7 @@
             <trusting group="org.jetbrains.intellij.deps"/>
             <trusting group="org.jetbrains.kotlinx"/>
          </trusted-key>
+         <trusted-key id="8DF3B0AA23ED78BE5233F6C2DEA3D207428EF16D" group="com.linkedin.dexmaker"/>
          <trusted-key id="8E3A02905A1AE67E7B0F9ACD3967D4EDA591B991" group="org.jetbrains.kotlinx" name="kotlinx-html-jvm" version="0.8.1"/>
          <trusted-key id="8F9A3C6D105B9F57844A721D79E193516BE7998F">
             <trusting group="org.dom4j" name="dom4j" version="2.1.4"/>
