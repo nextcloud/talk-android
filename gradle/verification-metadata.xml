@@ -13,6 +13,7 @@
          <trust group="org.javassist" name="javassist" version="3.26.0-GA" reason="java assist"/>
          <trust file=".*-javadoc[.]jar" regex="true" reason="Android Studio downloads javadoc jars but doesn't add checksums - fixes building in AS"/>
          <trust file=".*-sources[.]jar" regex="true" reason="Android Studio downloads source jars but doesn't add checksums - fixes building in AS"/>
+		 <trust file="gradle-9.4.0-src.zip" regex="true" reason="Android Studio downloads gradle source zip but doesn't add checksums - fixes building in AS"/>
       </trusted-artifacts>
       <ignored-keys>
          <ignored-key id="5A68A2249128E2C6" reason="Key couldn't be downloaded from any key server"/>
