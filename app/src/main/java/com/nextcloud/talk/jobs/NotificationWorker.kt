@@ -67,7 +67,6 @@ import com.nextcloud.talk.receivers.MarkAsReadReceiver
 import com.nextcloud.talk.receivers.ShareRecordingToChatReceiver
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils
@@ -983,7 +982,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             userType.equals("guest", ignoreCase = true) ->
                 ApiUtils.getUrlForGuestAvatar(baseUrl, notificationUser.name, true)
 
-            isDarkMode -> ApiUtils.getUrlForAvatarDarkTheme(baseUrl, notificationUser.id, true)
+            isDarkMode -> ApiUtils.getUrlForAvatar(baseUrl, notificationUser.id, true, true)
             else -> ApiUtils.getUrlForAvatar(baseUrl, notificationUser.id, true)
         }
 
