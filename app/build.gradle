@@ -27,15 +27,15 @@ apply plugin: "org.jlleitschuh.gradle.ktlint"
 apply plugin: 'kotlinx-serialization'
 
 android {
-    compileSdkVersion 36
+    compileSdk = 36
 
     namespace = 'com.nextcloud.talk'
 
     defaultConfig {
         manifestPlaceholders
         testInstrumentationRunnerArguments TEST_SERVER_URL: "$NC_TEST_SERVER_BASEURL", TEST_SERVER_USERNAME: "$NC_TEST_SERVER_USERNAME", TEST_SERVER_PASSWORD: "$NC_TEST_SERVER_PASSWORD"
-        minSdkVersion 26
-        targetSdkVersion 36
+        minSdk = 26
+        targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
@@ -44,8 +44,6 @@ android {
         versionName "23.1.0 Alpha 09"
 
         flavorDimensions "default"
-        renderscriptTargetApi = 19
-        renderscriptSupportModeEnabled true
 
         productFlavors {
             // used for f-droid
@@ -64,9 +62,6 @@ android {
                 versionName "1"
             }
         }
-
-        // Enabling multidex support.
-        multiDexEnabled = true
 
         vectorDrawables.useSupportLibrary = true
 
@@ -232,8 +227,6 @@ dependencies {
 
     implementation 'androidx.biometric:biometric:1.1.0'
 
-    implementation 'androidx.multidex:multidex:2.0.1'
-
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation "io.reactivex.rxjava2:rxjava:2.2.21"
 
@@ -353,8 +346,6 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-accessibility:$espressoVersion"
 
     androidTestImplementation "androidx.test.espresso:espresso-intents:$espressoVersion"
-
-    androidTestImplementation('com.android.support.test.espresso:espresso-intents:3.0.2')
 
     androidTestImplementation(platform("androidx.compose:compose-bom:2026.03.00"))
     testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
