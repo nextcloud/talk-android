@@ -67,6 +67,8 @@ import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.nextcloud.android.common.core.utils.ecosystem.AccountReceiverCallback
+import com.nextcloud.android.common.core.utils.ecosystem.EcosystemManager
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.BrowserLoginActivity
@@ -245,6 +247,8 @@ class ConversationsListActivity :
     val searchBehaviorSubject = BehaviorSubject.createDefault(false)
     private lateinit var accountIconBadge: BadgeDrawable
 
+    lateinit var ecosystemManager: EcosystemManager
+
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (forwardMessage) {
@@ -258,6 +262,7 @@ class ConversationsListActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        ecosystemManager = EcosystemManager(this@ConversationsListActivity)
 
         currentUser = currentUserProviderOld.currentUser.blockingGet()
 
@@ -275,7 +280,44 @@ class ConversationsListActivity :
         forwardMessage = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
+        intent?.let {
+            handleEcoSystemIntent(it)
+        }
         initObservers()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleEcoSystemIntent(intent)
+    }
+
+    private fun handleEcoSystemIntent(intent: Intent) {
+        ecosystemManager.receiveAccount(
+            intent,
+            object : AccountReceiverCallback {
+                @SuppressLint("UseKtx")
+                override fun onAccountReceived(accountName: String) {
+                    val users = userManager.users.blockingGet()
+                    val baseUrl = accountName.substringAfterLast("@")
+                    val accountName = accountName.substringBeforeLast("@")
+                    val user = users.firstOrNull { user ->
+                        user.username == accountName && baseUrl == user.baseUrl?.toUri()?.host
+                    }
+                    if (user != null) {
+                        userManager.setUserAsActive(user)
+                        val intent = Intent(context, ConversationsListActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        Snackbar.make(binding.root, R.string.nc_no_account_found, Snackbar.LENGTH_LONG).show()
+                    }
+                    Log.d(TAG, accountName)
+                }
+
+                override fun onAccountError(reason: String) {
+                    Log.d(TAG, "handleEcosystemIntent: $reason")
+                }
+            }
+        )
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
