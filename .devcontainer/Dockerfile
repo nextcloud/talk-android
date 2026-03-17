@@ -1,4 +1,4 @@
-FROM ubuntu:noble@sha256:9d6e6f7d762bf55c4a2f17694dc43d3eefae8452ee70e067d5aa4ddd922fc462
+FROM ubuntu:noble@sha256:0d39fcc8335d6d74d5502f6df2d30119ff4790ebbb60b364818d5112d9e3e932
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV ANDROID_HOME=/usr/lib/android-sdk
