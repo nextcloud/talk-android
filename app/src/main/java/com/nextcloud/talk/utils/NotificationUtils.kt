@@ -78,7 +78,6 @@ object NotificationUtils {
     private const val BUBBLE_ICON_CONTENT_RATIO = 0.68f
     private const val BUBBLE_SIZE_MULTIPLIER = 4
     private const val MIN_BUBBLE_CONTENT_RATIO = 0.5f
-    private const val PENDING_INTENT_FLAG_IMMUTABLE = 0x02000000
     private val bubbleIconCache = ConcurrentHashMap<String, IconCompat>()
 
     enum class NotificationChannels {
@@ -703,7 +702,7 @@ object NotificationUtils {
             context,
             bubbleRequestCode,
             BubbleActivity.newIntent(context, bubbleInfo.roomToken, data.conversationName),
-            PendingIntent.FLAG_UPDATE_CURRENT or PENDING_INTENT_FLAG_IMMUTABLE
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
         )
 
         val contentIntent = PendingIntent.getActivity(
