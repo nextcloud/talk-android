@@ -11,7 +11,6 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.PreferenceManager
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -20,7 +19,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.location.components.GeocodingScreen
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.viewmodels.GeoCodingViewModel
+import com.nextcloud.talk.location.viewmodels.GeoCodingViewModel
 import fr.dudie.nominatim.client.TalkJsonNominatimClient
 import fr.dudie.nominatim.model.Address
 import okhttp3.OkHttpClient
@@ -42,9 +41,6 @@ class GeocodingActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-
-        org.osmdroid.config.Configuration.getInstance()
-            .load(context, PreferenceManager.getDefaultSharedPreferences(context))
 
         roomToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
         chatApiVersion = intent.getIntExtra(BundleKeys.KEY_CHAT_API_VERSION, 1)

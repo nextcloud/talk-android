@@ -112,11 +112,14 @@ import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import org.osmdroid.config.Configuration
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.Marker
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.offset
+import co.touchlab.kermit.Logger
+import org.maplibre.compose.camera.CameraPosition
+import org.maplibre.compose.camera.rememberCameraState
+import org.maplibre.compose.map.MaplibreMap
+import org.maplibre.compose.style.BaseStyle
+import org.maplibre.spatialk.geojson.Position
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -920,38 +923,39 @@ class ComposeChatAdapter(
 
     @Composable
     private fun OpenStreetMap(latitude: Double, longitude: Double) {
-        AndroidView(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth(),
-            factory = { context ->
-                Configuration.getInstance().userAgentValue = context.packageName
-                MapView(context).apply {
-                    setTileSource(TileSourceFactory.MAPNIK)
-                    setMultiTouchControls(true)
-
-                    val geoPoint = GeoPoint(latitude, longitude)
-                    controller.setCenter(geoPoint)
-                    controller.setZoom(MAP_ZOOM)
-
-                    val marker = Marker(this)
-                    marker.position = geoPoint
-                    marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                    marker.title = "Location"
-                    overlays.add(marker)
-
-                    invalidate()
-                }
-            },
-            update = { mapView ->
-                val geoPoint = GeoPoint(latitude, longitude)
-                mapView.controller.setCenter(geoPoint)
-
-                val marker = mapView.overlays.find { it is Marker } as? Marker
-                marker?.position = geoPoint
-                mapView.invalidate()
-            }
+        val styleUri = if (isSystemInDarkTheme()) "asset://map_style_dark.json" else "asset://map_style_light.json"
+        val cameraState = rememberCameraState(
+            firstPosition = CameraPosition(
+                target = Position(longitude, latitude),
+                zoom = MAP_ZOOM
+            )
         )
+        Box(
+            modifier = Modifier
+                .heightIn(max = 200.dp)
+                .fillMaxWidth()
+        ) {
+            MaplibreMap(
+                modifier = Modifier.fillMaxSize(),
+                baseStyle = BaseStyle.Uri(styleUri),
+                cameraState = cameraState,
+                logger = remember { Logger.withTag("MapLibre/Chat") },
+                onMapLoadFailed = { reason ->
+                    Log.e("MapLibre/Chat", "Style failed to load: $reason | styleUri=$styleUri")
+                },
+                onMapLoadFinished = {
+                    Log.d("MapLibre/Chat", "Style loaded successfully: $styleUri")
+                }
+            )
+            androidx.compose.foundation.Image(
+                painter = painterResource(R.drawable.ic_baseline_location_on_red_24),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(width = 30.dp, height = 50.dp)
+                    .align(Alignment.Center)
+                    .offset(y = (-20).dp)
+            )
+        }
     }
 
     @Composable
@@ -1094,7 +1098,7 @@ fun AllMessageTypesPreview() {
             ChatMessage().apply {
                 jsonMessageId = 2
                 actorId = "user1_id"
-                message = "I love Nextcloud"
+                message = "I love\nNextcloud"
                 timestamp = System.currentTimeMillis()
                 actorDisplayName = "User2"
                 messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
@@ -1103,14 +1107,6 @@ fun AllMessageTypesPreview() {
                 jsonMessageId = 3
                 actorId = "user1_id"
                 message = "This is a really really really really really really really really really long message"
-                timestamp = System.currentTimeMillis()
-                actorDisplayName = "User2"
-                messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
-            },
-            ChatMessage().apply {
-                jsonMessageId = 4
-                actorId = "user1_id"
-                message = "some \n linebreak"
                 timestamp = System.currentTimeMillis()
                 actorDisplayName = "User2"
                 messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
@@ -1134,6 +1130,21 @@ fun AllMessageTypesPreview() {
                 timestamp = System.currentTimeMillis()
                 actorDisplayName = "User2"
                 messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
+            },
+            ChatMessage().apply {
+                jsonMessageId = 7
+                actorId = "user1_id"
+                actorDisplayName = "User2"
+                message = "geo-location"
+                timestamp = System.currentTimeMillis()
+                messageParameters = hashMapOf(
+                    "geo1" to hashMapOf(
+                        "type" to "geo-location",
+                        "latitude" to "52.5163",
+                        "longitude" to "13.3777",
+                        "name" to "Brandenburg Gate, Berlin"
+                    )
+                )
             }
         )
     }
