@@ -40,7 +40,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nextcloud.talk.R
-import com.nextcloud.talk.viewmodels.GeoCodingViewModel
+import com.nextcloud.talk.location.viewmodels.GeoCodingViewModel
 import fr.dudie.nominatim.model.Address
 
 @Composable

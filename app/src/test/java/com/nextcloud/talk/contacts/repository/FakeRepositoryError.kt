@@ -29,7 +29,7 @@ class FakeRepositoryError : ContactsRepository {
         conversationName: String?
     ): RoomOverall = throw Exception("unable to create room")
 
-    override fun getImageUri(user: User, avatarId: String, requestBigSize: Boolean) =
+    override fun getImageUri(user: User, avatarId: String, requestBigSize: Boolean, isDarkMode: Boolean) =
         "https://mydoman.com/index.php/avatar/$avatarId/512"
 
     override fun getContactsFlow(user: User, searchQuery: String?): Flow<List<AutocompleteUser>> =

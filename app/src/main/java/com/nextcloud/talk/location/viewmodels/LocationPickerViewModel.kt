@@ -4,7 +4,7 @@
  * SPDX-FileCopyrightText: 2021-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.viewmodels
+package com.nextcloud.talk.location.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -31,6 +31,7 @@ import okhttp3.OkHttpClient
 import java.io.IOException
 import javax.inject.Inject
 
+@Suppress("TooManyFunctions")
 class LocationPickerViewModel @Inject constructor(
     private val ncApi: NcApi,
     private val currentUserProviderOld: CurrentUserProviderOld,
@@ -57,37 +58,54 @@ class LocationPickerViewModel @Inject constructor(
         val viewState: ViewState = ViewState.Idle
     )
 
+    data class LocationPickerInitParams(
+        val roomToken: String,
+        val chatApiVersion: Int,
+        val geocodingResult: GeocodingResult?,
+        val moveToCurrentLocation: Boolean,
+        val mapCenterLat: Double,
+        val mapCenterLon: Double,
+        val geocoderBaseUrl: String,
+        val geocoderEmail: String
+    )
+
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState
 
-    private var nominatimClient: TalkJsonNominatimClient? = null
+    private lateinit var nominatimClient: TalkJsonNominatimClient
 
-    fun initGeocoder(baseUrl: String, email: String) {
-        nominatimClient = TalkJsonNominatimClient(baseUrl, okHttpClient, email)
-    }
+    private var isStateInitialized = false
 
-    fun initState(
-        geocodingResult: GeocodingResult?,
-        moveToCurrentLocation: Boolean,
-        mapCenterLat: Double,
-        mapCenterLon: Double
-    ) {
+    private var roomToken: String = ""
+    private var chatApiVersion: Int = 1
+
+    /**
+     * Initializes routing, map state, and the geocoder in one atomic call.
+     */
+    fun initialize(params: LocationPickerInitParams) {
+        if (isStateInitialized) return
+        isStateInitialized = true
+
+        roomToken = params.roomToken
+        chatApiVersion = params.chatApiVersion
+        nominatimClient = TalkJsonNominatimClient(params.geocoderBaseUrl, okHttpClient, params.geocoderEmail)
+
         _uiState.update {
             it.copy(
-                geocodingResult = geocodingResult,
-                moveToCurrentLocation = moveToCurrentLocation,
-                mapCenterLat = mapCenterLat,
-                mapCenterLon = mapCenterLon
+                geocodingResult = params.geocodingResult,
+                moveToCurrentLocation = params.moveToCurrentLocation,
+                mapCenterLat = params.mapCenterLat,
+                mapCenterLon = params.mapCenterLon
             )
         }
-        setLocationDescription(isGpsLocation = false, isGeocodedResult = geocodingResult != null)
+        setLocationDescription(isGpsLocation = false, isGeocodedResult = params.geocodingResult != null)
     }
 
-    fun setMoveToCurrentLocation(value: Boolean) {
+    private fun setMoveToCurrentLocation(value: Boolean) {
         _uiState.update { it.copy(moveToCurrentLocation = value) }
     }
 
-    fun setReadyToShareLocation(value: Boolean) {
+    private fun setReadyToShareLocation(value: Boolean) {
         _uiState.update { it.copy(readyToShareLocation = value) }
     }
 
@@ -103,7 +121,7 @@ class LocationPickerViewModel @Inject constructor(
         }
     }
 
-    fun setGeocodingResultToNull() {
+    private fun setGeocodingResultToNull() {
         _uiState.update { it.copy(geocodingResult = null) }
     }
 
@@ -111,8 +129,35 @@ class LocationPickerViewModel @Inject constructor(
         _uiState.update { it.copy(mapCenterLat = lat, mapCenterLon = lon) }
     }
 
-    fun onMapScrolled() {
+    /**
+     * Called when the screen becomes visible (ON_RESUME).
+     * Resets the ready-to-share flag and location description for non-geocoded states so
+     * the user must re-confirm the map position before sharing.
+     * For an already-geocoded result the state is deliberately preserved.
+     */
+    fun onScreenResumed() {
         val state = _uiState.value
+        if (state.locationDescriptionType != LocationDescriptionType.GEOCODED) {
+            setReadyToShareLocation(false)
+            setLocationDescription(isGpsLocation = false, isGeocodedResult = state.geocodingResult != null)
+        }
+    }
+
+    /**
+     * Called when the user taps the "center on my location" button.
+     * The actual camera animation is driven by the View; the ViewModel records the intent
+     * so that the next onMapScrolled() call is classified as a GPS-location event.
+     */
+    fun onCenterLocationRequested() {
+        setMoveToCurrentLocation(true)
+    }
+
+    fun onMapScrolled(newLat: Double, newLon: Double) {
+        val state = _uiState.value
+        val coordinatesChanged =
+            Math.abs(newLat - state.mapCenterLat) > COORDINATE_EPSILON ||
+                Math.abs(newLon - state.mapCenterLon) > COORDINATE_EPSILON
+
         when {
             state.moveToCurrentLocation -> {
                 setLocationDescription(isGpsLocation = true, isGeocodedResult = false)
@@ -122,14 +167,18 @@ class LocationPickerViewModel @Inject constructor(
                 setLocationDescription(isGpsLocation = false, isGeocodedResult = true)
                 setGeocodingResultToNull()
             }
-            else -> {
+            coordinatesChanged -> {
+                // User panned to a genuinely new position — clear the place name
                 setLocationDescription(isGpsLocation = false, isGeocodedResult = false)
+            }
+            else -> {
+                // Zoom-level changed but coordinates are the same — preserve placeName
             }
         }
         setReadyToShareLocation(true)
     }
 
-    fun setLocationDescription(isGpsLocation: Boolean, isGeocodedResult: Boolean) {
+    private fun setLocationDescription(isGpsLocation: Boolean, isGeocodedResult: Boolean) {
         when {
             isGpsLocation -> _uiState.update {
                 it.copy(
@@ -140,7 +189,9 @@ class LocationPickerViewModel @Inject constructor(
             isGeocodedResult -> _uiState.update {
                 it.copy(
                     locationDescriptionType = LocationDescriptionType.GEOCODED,
-                    placeName = _uiState.value.geocodingResult?.displayName ?: ""
+                    // Fall back to the already-stored placeName if geocodingResult was
+                    // cleared before this call (e.g. second call after setGeocodingResultToNull).
+                    placeName = _uiState.value.geocodingResult?.displayName ?: it.placeName
                 )
             }
             else -> _uiState.update {
@@ -152,21 +203,15 @@ class LocationPickerViewModel @Inject constructor(
         }
     }
 
-    @Suppress("Detekt.LongParameterList")
-    fun shareLocation(
-        selectedLat: Double?,
-        selectedLon: Double?,
-        locationName: String?,
-        sharedLocationFallbackName: String,
-        roomToken: String,
-        chatApiVersion: Int
-    ) {
+    fun shareLocation(locationName: String?, sharedLocationFallbackName: String) {
+        val selectedLat = _uiState.value.mapCenterLat.takeIf { it != 0.0 }
+        val selectedLon = _uiState.value.mapCenterLon.takeIf { it != 0.0 }
         if (selectedLat == null || selectedLon == null) return
         if (locationName.isNullOrEmpty()) {
             viewModelScope.launch(Dispatchers.IO) {
                 var address: Address? = null
                 try {
-                    address = nominatimClient?.getAddress(selectedLon, selectedLat)
+                    address = nominatimClient.getAddress(selectedLon, selectedLat)
                 } catch (e: IOException) {
                     Log.e(TAG, "Failed to get geocoded addresses", e)
                 }
@@ -175,32 +220,20 @@ class LocationPickerViewModel @Inject constructor(
                         selectedLat,
                         selectedLon,
                         address?.displayName,
-                        sharedLocationFallbackName,
-                        roomToken,
-                        chatApiVersion
+                        sharedLocationFallbackName
                     )
                 }
             }
         } else {
-            executeShareLocation(
-                selectedLat,
-                selectedLon,
-                locationName,
-                sharedLocationFallbackName,
-                roomToken,
-                chatApiVersion
-            )
+            executeShareLocation(selectedLat, selectedLon, locationName, sharedLocationFallbackName)
         }
     }
 
-    @Suppress("Detekt.LongParameterList")
     private fun executeShareLocation(
         selectedLat: Double,
         selectedLon: Double,
         locationName: String?,
-        sharedLocationFallbackName: String,
-        roomToken: String,
-        chatApiVersion: Int
+        sharedLocationFallbackName: String
     ) {
         _uiState.update { it.copy(viewState = ViewState.SendingLocation) }
 
@@ -249,5 +282,6 @@ class LocationPickerViewModel @Inject constructor(
 
     companion object {
         private val TAG = LocationPickerViewModel::class.java.simpleName
+        private const val COORDINATE_EPSILON = 1e-6
     }
 }

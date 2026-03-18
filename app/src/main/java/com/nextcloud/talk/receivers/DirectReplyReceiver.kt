@@ -29,6 +29,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
@@ -154,7 +155,12 @@ class DirectReplyReceiver : BroadcastReceiver() {
 
         // Add reply
         Single.fromCallable {
-            val avatarUrl = ApiUtils.getUrlForAvatar(currentUser.baseUrl!!, currentUser.userId, false)
+            val avatarUrl = ApiUtils.getUrlForAvatar(
+                currentUser.baseUrl!!,
+                currentUser.userId,
+                false,
+                darkMode = DisplayUtils.isDarkModeOn(context)
+            )
             val me = Person.Builder()
                 .setName(currentUser.displayName)
                 .setIcon(NotificationUtils.loadAvatarSync(avatarUrl, context))

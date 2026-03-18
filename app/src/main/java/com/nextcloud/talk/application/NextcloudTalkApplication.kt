@@ -1,16 +1,13 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
- * SPDX-FileCopyrightText: 2022 Marcel Hibbe <dev@mhibbe.de>
- * SPDX-FileCopyrightText: 2022 Tim Krüger <t@timkrueger.me>
- * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
+ * SPDX-FileCopyrightText: 2017-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.application
 
 import android.app.Activity
-import android.content.Context
+import android.app.Application
 import android.content.pm.PackageManager
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.P
@@ -19,8 +16,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
 import androidx.lifecycle.LifecycleObserver
-import androidx.multidex.MultiDex
-import androidx.multidex.MultiDexApplication
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
@@ -89,7 +84,7 @@ import javax.inject.Singleton
 @Singleton
 @AutoInjector(NextcloudTalkApplication::class)
 class NextcloudTalkApplication :
-    MultiDexApplication(),
+    Application(),
     LifecycleObserver {
     //region Fields (components)
     lateinit var componentApplication: NextcloudTalkApplicationComponent
@@ -215,11 +210,6 @@ class NextcloudTalkApplication :
             .restModule(RestModule(applicationContext))
             .arbitraryStorageModule(ArbitraryStorageModule())
             .build()
-    }
-
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(base)
-        MultiDex.install(this)
     }
 
     private fun buildDefaultImageLoader(): ImageLoader {
