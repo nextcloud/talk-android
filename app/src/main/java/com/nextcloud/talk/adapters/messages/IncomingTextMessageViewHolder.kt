@@ -115,6 +115,10 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 viewThemeUtils
             )
 
+            message.message?.let {
+                messageUtils.hyperLinks(binding.messageText, message.message!!)
+            }
+
             val spansFromString: Array<Any> = processedMessageText!!.getSpans(
                 0,
                 processedMessageText.length,
@@ -144,6 +148,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 message,
                 itemView
             )
+
             val messageParameters = message.messageParameters
             if (
                 (messageParameters == null || messageParameters.size <= 0) &&
