@@ -103,11 +103,9 @@ public abstract class CallBaseActivity extends BaseActivity {
         super.onStop();
         // Don't automatically finish when going to background
         // Only finish if explicitly leaving the call
-        if (shouldFinishOnStop() && !isChangingConfigurations()) {
+        if (shouldFinishOnStop() && !isChangingConfigurations() && isFinishing()) {
             // Check if we're really leaving the call or just backgrounding
-            if (isFinishing()) {
-                finish();
-            }
+            finish();
         }
     }
 
