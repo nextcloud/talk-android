@@ -25,8 +25,11 @@ data class ProfileUiState(
     val displayName: String = "",
     val baseUrl: String = "",
     val currentUser: User? = null,
-    /** Increment to tell the avatar AndroidView to reload (e.g. after upload/delete). */
+    /** Increment to tell the avatar composable to reload (e.g. after upload/delete). */
     val avatarRefreshKey: Int = 0,
+    /** True when the most recent avatar action was a delete (server-generated avatars differ per
+     *  theme); false for upload/choose/camera (same image for both themes). */
+    val avatarIsDeleted: Boolean = false,
     val isEditMode: Boolean = false,
     val showAvatarButtons: Boolean = false,
     val showProfileEnabledCard: Boolean = false,

@@ -560,7 +560,8 @@ class ProfileActivity : BaseActivity() {
 
                 override fun onNext(genericOverall: GenericOverall) {
                     profileUiState = profileUiState.copy(
-                        avatarRefreshKey = profileUiState.avatarRefreshKey + 1
+                        avatarRefreshKey = profileUiState.avatarRefreshKey + 1,
+                        avatarIsDeleted = true
                     )
                 }
 
@@ -591,7 +592,8 @@ class ProfileActivity : BaseActivity() {
 
                 override fun onNext(genericOverall: GenericOverall) {
                     profileUiState = profileUiState.copy(
-                        avatarRefreshKey = profileUiState.avatarRefreshKey + 1
+                        avatarRefreshKey = profileUiState.avatarRefreshKey + 1,
+                        avatarIsDeleted = false
                     )
                 }
 
