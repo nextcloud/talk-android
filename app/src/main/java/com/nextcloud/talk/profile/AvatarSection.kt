@@ -6,7 +6,6 @@
  */
 package com.nextcloud.talk.profile
 
-import android.widget.ImageView
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,34 +20,40 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.nextcloud.talk.R
-import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.ApiUtils
 
 @Composable
 private fun AvatarImage(state: ProfileUiState, avatarSize: Dp) {
-    key(state.currentUser?.userId, state.avatarRefreshKey) {
-        AndroidView(
-            factory = { ctx ->
-                ImageView(ctx).apply {
-                    transitionName = "userAvatar.transitionTag"
-                    contentDescription = ctx.getString(R.string.avatar)
-                }.also { imageView ->
-                    DisplayUtils.loadAvatarImage(state.currentUser, imageView, state.avatarRefreshKey > 0)
-                }
-            },
-            modifier = Modifier.size(avatarSize).clip(CircleShape)
-        )
-    }
+    val user = state.currentUser
+    val url = ApiUtils.getUrlForAvatar(user?.baseUrl,state.currentUser?.userId, true)
+    val model = ImageRequest.Builder(LocalContext.current)
+        .data(url)
+        .crossfade(true)
+        .build()
+    
+    AsyncImage(
+        model = model,
+        contentDescription = stringResource(R.string.avatar),
+        contentScale = ContentScale.Crop,
+        placeholder = painterResource(R.drawable.account_circle_96dp),
+        error = painterResource(R.drawable.account_circle_96dp),
+        modifier = Modifier
+            .size(avatarSize)
+            .clip(CircleShape)
+    )
 }
 
 @Composable
