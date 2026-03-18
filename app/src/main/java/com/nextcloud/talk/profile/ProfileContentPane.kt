@@ -80,6 +80,15 @@ private fun ProfileItemList(
         contentPadding = PaddingValues(bottom = bottomPadding),
         modifier = modifier
     ) {
+        if (state.showProfileEnabledCard) {
+            item(key = "profile_enabled_card") {
+                ProfileEnabledCard(
+                    isEnabled = state.isProfileEnabled,
+                    onCheckedChange = callbacks.onProfileEnabledChange,
+                    modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 8.dp)
+                )
+            }
+        }
         itemsIndexed(displayItems) { index, item ->
             val position = when {
                 displayItems.size == 1 -> UserInfoDetailItemPosition.FIRST

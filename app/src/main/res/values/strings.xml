@@ -687,7 +687,6 @@ How to translate with transifex:
     <string name="user_info_headline">Headline</string>
     <string name="user_info_organisation">Organization</string>
     <string name="user_info_profile_enable">Enable profile</string>
-    <string name="user_info_profile_disable">Disable profile</string>
     <string name="user_info_pronouns">Pronouns</string>
     <string name="user_info_role">Role</string>
     <string name="user_info_bluesky">Bluesky</string>

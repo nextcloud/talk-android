@@ -55,6 +55,9 @@ private fun AvatarImage(state: ProfileUiState, avatarSize: Dp) {
 fun AvatarSection(state: ProfileUiState, callbacks: ProfileCallbacks, modifier: Modifier) {
     Column(modifier = modifier.padding(top = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         AvatarImage(state, 96.dp)
+        if (state.showAvatarButtons) {
+            AvatarButtonsRow(callbacks = callbacks, modifier = Modifier.padding(top = 8.dp, bottom = 8.dp))
+        }
         if (state.displayName.isNotEmpty()) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -73,16 +76,6 @@ fun AvatarSection(state: ProfileUiState, callbacks: ProfileCallbacks, modifier: 
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)
-            )
-        }
-        if (state.showAvatarButtons) {
-            AvatarButtonsRow(callbacks = callbacks, modifier = Modifier.padding(top = 8.dp, bottom = 8.dp))
-        }
-        if (state.showProfileEnabledCard) {
-            ProfileEnabledCard(
-                isEnabled = state.isProfileEnabled,
-                onCheckedChange = callbacks.onProfileEnabledChange,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
         }
     }
