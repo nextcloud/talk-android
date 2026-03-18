@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilledTonalIconButton
@@ -36,20 +35,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.utils.DisplayUtils
 
 @Composable
-internal fun AvatarSection(
-    state: ProfileUiState,
-    callbacks: ProfileCallbacks,
-    isLandscape: Boolean,
-    modifier: Modifier = Modifier
-) {
-    if (isLandscape) {
-        AvatarSectionLandscape(state, callbacks, modifier)
-    } else {
-        AvatarSectionPortrait(state, callbacks, modifier)
-    }
-}
-
-@Composable
 private fun AvatarImage(state: ProfileUiState, avatarSize: Dp) {
     key(state.currentUser?.userId, state.avatarRefreshKey) {
         AndroidView(
@@ -67,47 +52,7 @@ private fun AvatarImage(state: ProfileUiState, avatarSize: Dp) {
 }
 
 @Composable
-private fun AvatarSectionLandscape(state: ProfileUiState, callbacks: ProfileCallbacks, modifier: Modifier) {
-    Column(modifier = modifier.padding(16.dp)) {
-        Row(verticalAlignment = Alignment.Top) {
-            AvatarImage(state, 72.dp)
-            Spacer(modifier = Modifier.width(16.dp))
-            Column {
-                if (state.displayName.isNotEmpty()) {
-                    Text(
-                        text = state.displayName,
-                        style = MaterialTheme.typography.titleLarge,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                if (state.baseUrl.isNotEmpty()) {
-                    Text(
-                        text = state.baseUrl,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(top = 2.dp)
-                    )
-                }
-            }
-        }
-        if (state.showAvatarButtons) {
-            AvatarButtonsRow(callbacks = callbacks, modifier = Modifier.padding(top = 8.dp, start = 40.dp))
-        }
-        if (state.showProfileEnabledCard) {
-            ProfileEnabledCard(
-                isEnabled = state.isProfileEnabled,
-                onCheckedChange = callbacks.onProfileEnabledChange,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-        }
-    }
-}
-
-@Composable
-private fun AvatarSectionPortrait(state: ProfileUiState, callbacks: ProfileCallbacks, modifier: Modifier) {
+fun AvatarSection(state: ProfileUiState, callbacks: ProfileCallbacks, modifier: Modifier) {
     Column(modifier = modifier.padding(top = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         AvatarImage(state, 96.dp)
         if (state.displayName.isNotEmpty()) {

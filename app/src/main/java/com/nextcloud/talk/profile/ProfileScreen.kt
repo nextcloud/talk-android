@@ -59,7 +59,6 @@ fun ProfileScreen(state: ProfileUiState, callbacks: ProfileCallbacks, modifier: 
                 AvatarSection(
                     state = state,
                     callbacks = callbacks,
-                    isLandscape = true,
                     modifier = Modifier.weight(FULL_WEIGHT)
                 )
                 ProfileContentPane(
@@ -79,8 +78,7 @@ fun ProfileScreen(state: ProfileUiState, callbacks: ProfileCallbacks, modifier: 
                 AvatarSection(
                     state = state,
                     callbacks = callbacks,
-                    modifier = Modifier.fillMaxWidth(),
-                    isLandscape = false
+                    modifier = Modifier.fillMaxWidth()
                 )
                 // weight(1f) — fills the space that remains after the avatar section.
                 ProfileContentPane(
@@ -142,6 +140,27 @@ private fun PreviewLight() {
 @Composable
 private fun PreviewDark() {
     MaterialTheme(colorScheme = darkColorScheme()) {
+        ProfileScreen(state = previewState, callbacks = previewCallbacks)
+    }
+}
+
+@Preview(
+    name = "Landscape · Light",
+    showBackground = true,
+    widthDp = 891,
+    heightDp = 411
+)
+@Preview(
+    name = "Landscape · Dark",
+    showBackground = true,
+    widthDp = 891,
+    heightDp = 411,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun PreviewLandscape() {
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    MaterialTheme(colorScheme = colorScheme) {
         ProfileScreen(state = previewState, callbacks = previewCallbacks)
     }
 }
