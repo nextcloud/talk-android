@@ -149,6 +149,7 @@ android {
         warningsAsErrors = false
         disable.addAll(
             listOf(
+                "AndroidGradlePluginVersion",
                 "GradleDependency",
                 "InvalidPackage",
                 "LogNotTimber",
