@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2017-2024 Nextcloud GmbH and Nextcloud contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 build:
-  maxIssues: 72
+  maxIssues: 98
   weights:
     # complexity: 2
     # LongParameterList: 1
@@ -53,9 +53,9 @@ complexity:
     active: false
     threshold: 10
     includeStaticDeclarations: false
-  ComplexMethod:
+  CyclomaticComplexMethod:
     active: true
-    threshold: 10
+    threshold: 15
     ignoreSingleWhenExpression: false
     ignoreSimpleWhenEntries: false
     excludes: ['**/androidTest/**']
@@ -204,7 +204,6 @@ formatting:
   Indentation:
     active: true
     indentSize: 4
-    continuationIndentSize: 4
   MaximumLineLength:
     active: true
     maxLineLength: 120
@@ -280,14 +279,12 @@ naming:
     active: true
     functionPattern: '^([a-z$A-Z][a-zA-Z$0-9]*)|(`.*`)$'
     excludeClassPattern: '$^'
-    ignoreOverridden: true
     excludes:
         - "**/*Test.kt"
   FunctionParameterNaming:
     active: true
     parameterPattern: '[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
-    ignoreOverridden: true
   MatchingDeclarationName:
     active: true
   MemberNameEqualsClassName:
@@ -317,7 +314,6 @@ naming:
     variablePattern: '[a-z][A-Za-z0-9]*'
     privateVariablePattern: '(_)?[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
-    ignoreOverridden: true
 
 performance:
   active: true
@@ -332,8 +328,6 @@ performance:
 
 potential-bugs:
   active: true
-  DuplicateCaseInWhenExpression:
-    active: true
   EqualsAlwaysReturnsTrueOrFalse:
     active: false
   EqualsWithHashCodeExist:
@@ -369,7 +363,8 @@ style:
     active: false
   DataClassContainsFunctions:
     active: false
-    conversionFunctionPrefix: 'to'
+    conversionFunctionPrefix:
+        - to
   EqualsNullCall:
     active: false
   EqualsOnSignatureLine:
@@ -381,7 +376,7 @@ style:
     includeLineWrapping: false
   ForbiddenComment:
     active: true
-    values:
+    comments:
         - "TODO:"
         - "FIXME:"
         - "STOPSHIP:"
@@ -393,7 +388,8 @@ style:
   FunctionOnlyReturningConstant:
     active: false
     ignoreOverridableFunction: true
-    excludedFunctions: 'describeContents'
+    excludedFunctions:
+        - describeContents
   LoopWithTooManyJumpStatements:
     active: false
     maxJumpCount: 1
@@ -409,7 +405,7 @@ style:
     ignoreEnums: false
     excludes:
         - "**/*Test.kt"
-  MandatoryBracesIfStatements:
+  BracesOnIfStatements:
     active: false
   MaxLineLength:
     active: true
@@ -431,7 +427,7 @@ style:
     active: true
   OptionalUnit:
     active: false
-  OptionalWhenBraces:
+  BracesOnWhenStatements:
     active: false
   PreferToOverPairSyntax:
     active: false
@@ -442,7 +438,8 @@ style:
   ReturnCount:
     active: true
     max: 2
-    excludedFunctions: "equals"
+    excludedFunctions:
+        - equals
     excludeLabeled: false
     excludeReturnFromLambda: true
   SafeCast:
