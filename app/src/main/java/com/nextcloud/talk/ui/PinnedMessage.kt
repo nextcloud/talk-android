@@ -8,19 +8,17 @@
 package com.nextcloud.talk.ui
 
 import android.text.format.DateFormat
+import android.widget.ScrollView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -38,12 +36,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
@@ -76,7 +76,7 @@ fun PinnedMessageView(
 ) {
     message.incoming = true
 
-    val pinnedHeadline = if (message.pinnedActorId != message.actorId) {
+    if (message.pinnedActorId != message.actorId) {
         if (message.pinnedActorId == currentConversation?.actorId) {
             stringResource(
                 R.string.pinned_by_you,
@@ -93,7 +93,7 @@ fun PinnedMessageView(
         "${message.actorDisplayName}"
     }
 
-    val scrollState = rememberScrollState()
+    rememberScrollState()
 
     val context = LocalContext.current
 
@@ -122,7 +122,6 @@ fun PinnedMessageView(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp)
             .shadow(
                 elevation = ELEVATION,
                 shape = RoundedCornerShape(CORNER_RADIUS.dp),
@@ -132,7 +131,7 @@ fun PinnedMessageView(
                 incomingBubbleColor,
                 RoundedCornerShape(CORNER_RADIUS.dp)
             )
-            .padding(SPACE_16.dp, SPACE_0.dp, SPACE_0.dp, SPACE_16.dp)
+            .padding(SPACE_16.dp, SPACE_16.dp, SPACE_0.dp, SPACE_16.dp)
             .heightIn(max = MAX_HEIGHT.dp)
             .clickable(
                 interactionSource = interactionSource,
@@ -162,22 +161,25 @@ fun PinnedMessageView(
             } ?: untilUnpin
         }
 
-        Column(
-            modifier = Modifier
-                .verticalScroll(scrollState)
-                .padding(top = SPACE_16.dp, end = 40.dp)
-        ) {
-            Text(
-                text = pinnedHeadline,
-                color = colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.labelMedium
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = message.text,
-                color = colorScheme.onSurface
-            )
+        Column {
+            // FIXME - this is being rendered over by the scroll view
+            // Text(
+            //     text = pinnedHeadline,
+            //     color = colorScheme.onSurfaceVariant,
+            //     style = MaterialTheme.typography.labelMedium,
+            //     modifier = Modifier
+            //         .background(incomingBubbleColor)
+            //         .fillMaxWidth()
+            // )
+
+            ScrollViewWrapper {
+                Text(
+                    text = message.text,
+                    color = colorScheme.onSurface
+                )
+            }
         }
+
 
         Box(
             modifier = Modifier
@@ -238,6 +240,26 @@ fun PinnedMessageView(
             }
         }
     }
+}
+
+@Composable
+private fun ScrollViewWrapper(content: @Composable () -> Unit) {
+    AndroidView(
+        factory = { ctx ->
+            val composeView = ComposeView(ctx).apply {
+                setContent {
+                    content()
+                }
+            }
+
+            ScrollView(ctx).apply {
+                addView(composeView)
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth(.85f)
+            .heightIn(max = 80.dp)
+    )
 }
 
 @Preview(name = "Long Content")

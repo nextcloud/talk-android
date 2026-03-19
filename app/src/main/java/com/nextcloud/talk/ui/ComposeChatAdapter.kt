@@ -22,6 +22,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -86,6 +88,7 @@ import androidx.emoji2.widget.EmojiTextView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import autodagger.AutoInjector
+import co.touchlab.kermit.Logger
 import coil.compose.AsyncImage
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -112,9 +115,6 @@ import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.offset
-import co.touchlab.kermit.Logger
 import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.compose.camera.rememberCameraState
 import org.maplibre.compose.map.MaplibreMap
@@ -133,6 +133,8 @@ class ComposeChatAdapter(
     private var threadId: String? = null,
     private val utils: ComposePreviewUtils? = null
 ) {
+
+    // TODO different UI for thread messages so it don't look like reply
 
     interface PreviewAble {
         val viewThemeUtils: ViewThemeUtils
