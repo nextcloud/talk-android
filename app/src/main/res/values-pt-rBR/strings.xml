@@ -759,7 +759,6 @@
     <string name="user_info_headline">Título</string>
     <string name="user_info_organisation">Organização</string>
     <string name="user_info_phone">Número do telefone</string>
-    <string name="user_info_profile_disable">Desativar perfil</string>
     <string name="user_info_profile_enable">Ativar perfil</string>
     <string name="user_info_pronouns">Pronomes</string>
     <string name="user_info_role">Função</string>

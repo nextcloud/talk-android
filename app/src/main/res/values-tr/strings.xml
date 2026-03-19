@@ -759,7 +759,6 @@
     <string name="user_info_headline">Başlık</string>
     <string name="user_info_organisation">Kuruluş</string>
     <string name="user_info_phone">Telefon numarası</string>
-    <string name="user_info_profile_disable">Profili kullanımdan kaldır</string>
     <string name="user_info_profile_enable">Profili kullanıma al</string>
     <string name="user_info_pronouns">Hitaplar</string>
     <string name="user_info_role">Rol</string>
