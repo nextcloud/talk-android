@@ -13,7 +13,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -76,7 +75,7 @@ fun PinnedMessageView(
 ) {
     message.incoming = true
 
-    if (message.pinnedActorId != message.actorId) {
+    val pinnedHeadline = if (message.pinnedActorId != message.actorId) {
         if (message.pinnedActorId == currentConversation?.actorId) {
             stringResource(
                 R.string.pinned_by_you,
@@ -131,7 +130,7 @@ fun PinnedMessageView(
                 incomingBubbleColor,
                 RoundedCornerShape(CORNER_RADIUS.dp)
             )
-            .padding(SPACE_16.dp, SPACE_16.dp, SPACE_0.dp, SPACE_16.dp)
+            .padding(SPACE_16.dp, 0.dp, SPACE_0.dp, SPACE_16.dp)
             .heightIn(max = MAX_HEIGHT.dp)
             .clickable(
                 interactionSource = interactionSource,
@@ -161,25 +160,22 @@ fun PinnedMessageView(
             } ?: untilUnpin
         }
 
-        Column {
-            // FIXME - this is being rendered over by the scroll view
-            // Text(
-            //     text = pinnedHeadline,
-            //     color = colorScheme.onSurfaceVariant,
-            //     style = MaterialTheme.typography.labelMedium,
-            //     modifier = Modifier
-            //         .background(incomingBubbleColor)
-            //         .fillMaxWidth()
-            // )
-
-            ScrollViewWrapper {
-                Text(
-                    text = message.text,
-                    color = colorScheme.onSurface
-                )
-            }
+        ScrollViewWrapper {
+            Text(
+                text = message.text,
+                color = colorScheme.onSurface
+            )
         }
 
+        Text(
+            text = pinnedHeadline,
+            color = colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier
+                .background(incomingBubbleColor)
+                .padding(top = 8.dp)
+                .fillMaxWidth()
+        )
 
         Box(
             modifier = Modifier
@@ -244,22 +240,23 @@ fun PinnedMessageView(
 
 @Composable
 private fun ScrollViewWrapper(content: @Composable () -> Unit) {
-    AndroidView(
-        factory = { ctx ->
-            val composeView = ComposeView(ctx).apply {
-                setContent {
-                    content()
+    Box(modifier = Modifier.padding(top = 36.dp)) {
+        AndroidView(
+            factory = { ctx ->
+                val composeView = ComposeView(ctx).apply {
+                    setContent {
+                        content()
+                    }
                 }
-            }
 
-            ScrollView(ctx).apply {
-                addView(composeView)
-            }
-        },
-        modifier = Modifier
-            .fillMaxWidth(.85f)
-            .heightIn(max = 80.dp)
-    )
+                ScrollView(ctx).apply {
+                    addView(composeView)
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth(.85f)
+        )
+    }
 }
 
 @Preview(name = "Long Content")
