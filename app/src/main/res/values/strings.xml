@@ -465,6 +465,7 @@ How to translate with transifex:
     <string name="nc_message_quote_cancel_reply">Cancel reply</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">You: %1$s</string>
+    <string name="nc_draft_prefix">Draft: %1$s</string>
     <string name="nc_message_read">Message read</string>
     <string name="nc_message_sent">Message sent</string>
     <string name="nc_message_added_to_notes">Message added to notes</string>

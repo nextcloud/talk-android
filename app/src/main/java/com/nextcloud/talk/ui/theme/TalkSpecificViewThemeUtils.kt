@@ -325,6 +325,28 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
+    fun themeDraftSubline(textView: TextView, fullText: String, draftText: String) {
+        withScheme(textView) { scheme ->
+            val prefixEnd = fullText.length - draftText.length
+            val spannable = android.text.SpannableStringBuilder(fullText)
+            spannable.setSpan(
+                StyleSpan(Typeface.BOLD),
+                0,
+                prefixEnd,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            spannable.setSpan(
+                ForegroundColorSpan(dynamicColor.primary().getArgb(scheme)),
+                0,
+                prefixEnd,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            textView.setTypeface(null, Typeface.NORMAL)
+            textView.setTextColor(ContextCompat.getColor(textView.context, R.color.textColorMaxContrast))
+            textView.setText(spannable, TextView.BufferType.SPANNABLE)
+        }
+    }
+
     fun themeForegroundColorSpan(context: Context): ForegroundColorSpan {
         return withScheme(context) { scheme ->
             return@withScheme ForegroundColorSpan(dynamicColor.primary().getArgb(scheme))

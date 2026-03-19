@@ -58,7 +58,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
             if (networkMonitor.isOnline.value) {
                 val conversationEntitiesFromSync = getRoomsFromServer(user)
                 if (!conversationEntitiesFromSync.isNullOrEmpty()) {
-                    val conversationModelsFromSync = conversationEntitiesFromSync.map(ConversationEntity::asModel)
+                    val conversationModelsFromSync = getListOfConversations(user.id!!)
                     _roomListFlow.emit(conversationModelsFromSync)
                 }
             }
