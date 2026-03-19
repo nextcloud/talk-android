@@ -759,7 +759,6 @@
     <string name="user_info_headline">標題</string>
     <string name="user_info_organisation">生產力</string>
     <string name="user_info_phone">電話號碼</string>
-    <string name="user_info_profile_disable">停用簡介</string>
     <string name="user_info_profile_enable">啟用簡介</string>
     <string name="user_info_pronouns">代名詞</string>
     <string name="user_info_role">角色</string>

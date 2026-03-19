@@ -496,6 +496,7 @@
     <string name="user_info_headline">Naslov</string>
     <string name="user_info_organisation">Organizacija</string>
     <string name="user_info_phone">Broj telefona</string>
+    <string name="user_info_profile_enable">Omogući profil</string>
     <string name="user_info_pronouns">Zamjenice</string>
     <string name="user_info_role">Uloga</string>
     <string name="user_info_twitter">Twitter</string>

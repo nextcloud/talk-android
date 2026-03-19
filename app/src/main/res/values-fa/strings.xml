@@ -436,6 +436,7 @@
     <string name="user_info_headline">عنوان</string>
     <string name="user_info_organisation">سازمانی</string>
     <string name="user_info_phone">شماره تلفن</string>
+    <string name="user_info_pronouns">ضمایر</string>
     <string name="user_info_twitter">توییتر</string>
     <string name="user_info_website">وب‌ سایت</string>
     <string name="user_status">وضعیت</string>

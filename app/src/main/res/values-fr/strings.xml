@@ -735,6 +735,7 @@
     <string name="user_info_headline">Titre</string>
     <string name="user_info_organisation">Organisation</string>
     <string name="user_info_phone">Numéro de téléphone</string>
+    <string name="user_info_profile_enable">Activer le profil</string>
     <string name="user_info_pronouns">Pronoms</string>
     <string name="user_info_role">Rôle</string>
     <string name="user_info_twitter">Twitter</string>
