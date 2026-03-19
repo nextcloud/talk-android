@@ -8,13 +8,14 @@ package com.nextcloud.talk.profile
 
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -34,45 +35,35 @@ import com.nextcloud.talk.R
 
 @Composable
 fun ProfileEnabledCard(isEnabled: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+    Box(
+        modifier = Modifier
+            .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
+            .clickable { onCheckedChange(!isEnabled) }
     ) {
-        Icon(
-            painter = painterResource(R.drawable.ic_id_card_24px),
-            contentDescription = null,
-            modifier = Modifier.size(24.dp),
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Card(modifier = Modifier.weight(1f), onClick = { onCheckedChange(!isEnabled) }) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(
-                        if (isEnabled) {
-                            R.string.user_info_profile_disable
-                        } else {
-                            R.string.user_info_profile_enable
-                        }
-                    ),
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Switch(
-                    checked = isEnabled,
-                    onCheckedChange = onCheckedChange
-                )
-            }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_id_card_24px),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.width(32.dp))
+            Text(
+                text = stringResource(R.string.user_info_profile_enable),
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Switch(
+                checked = isEnabled,
+                onCheckedChange = onCheckedChange
+            )
         }
-        Spacer(modifier = Modifier.width(32.dp))
     }
 }
 

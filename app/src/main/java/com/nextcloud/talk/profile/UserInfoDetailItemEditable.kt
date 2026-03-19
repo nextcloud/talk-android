@@ -33,7 +33,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -42,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.userprofile.Scope
 
-private const val ENABLED_ALPHA = 1f
 private const val DISABLED_ALPHA = 0.38f
 
 @Composable
@@ -60,7 +58,7 @@ fun UserInfoDetailItemEditable(
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 48.dp)
-            .padding(top = topPadding, bottom = bottomPadding),
+            .padding(top = topPadding, bottom = bottomPadding, end = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.width(16.dp))
@@ -84,15 +82,20 @@ fun UserInfoDetailItemEditable(
             enabled = enabled,
             singleLine = !multiLine,
             keyboardOptions = KeyboardOptions(imeAction = if (multiLine) ImeAction.Default else ImeAction.Next),
+            trailingIcon = if (data.scope != null) {
+                { ScopeIconButton(data.scope, data.hint, enabled, listeners.onScopeClick) }
+            } else {
+                null
+            },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                 focusedLabelColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary
+                cursorColor = MaterialTheme.colorScheme.primary,
+                focusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = DISABLED_ALPHA)
             )
         )
-        if (data.scope != null) {
-            ScopeIconButton(data.scope, data.hint, enabled, listeners.onScopeClick)
-        }
     }
 }
 
@@ -106,16 +109,11 @@ private fun ScopeIconButton(scope: Scope, hint: String, enabled: Boolean, onScop
     }
     IconButton(
         onClick = { onScopeClick?.invoke() },
-        modifier = Modifier
-            .size(48.dp)
-            .padding(top = 8.dp)
-            .alpha(if (enabled) ENABLED_ALPHA else DISABLED_ALPHA),
         enabled = enabled
     ) {
         Icon(
             painter = painterResource(id = scopeIconRes),
-            contentDescription = stringResource(R.string.scope_toggle_description, hint),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
+            contentDescription = stringResource(R.string.scope_toggle_description, hint)
         )
     }
 }
