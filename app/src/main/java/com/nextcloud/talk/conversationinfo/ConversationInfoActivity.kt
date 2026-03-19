@@ -8,11 +8,13 @@ package com.nextcloud.talk.conversationinfo
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.activity.result.ActivityResult
@@ -89,6 +91,8 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.DrawableUtils
+import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -139,6 +143,7 @@ class ConversationInfoActivity : BaseActivity() {
 
     private var databaseStorageModule: DatabaseStorageModule? = null
     private var conversation: ConversationModel? = null
+    private var focusBubbleSwitch: Boolean = false
 
     private var participantAdapter: ParticipantItemAdapter? = null
 
@@ -193,6 +198,7 @@ class ConversationInfoActivity : BaseActivity() {
         ) { "Missing room token" }
 
         hasAvatarSpacing = intent.getBooleanExtra(BundleKeys.KEY_ROOM_ONE_TO_ONE, false)
+        focusBubbleSwitch = intent.getBooleanExtra(BundleKeys.KEY_FOCUS_CONVERSATION_BUBBLE, false)
 
         val upcomingEvent = intent.getParcelableExtraProvider<UpcomingEvent>(BundleKeys.KEY_UPCOMING_EVENT)
         if (upcomingEvent != null && (upcomingEvent.summary != null || upcomingEvent.start != null)) {
@@ -283,10 +289,12 @@ class ConversationInfoActivity : BaseActivity() {
                         Snackbar.LENGTH_LONG
                     ).show()
                 }
+
                 is ConversationInfoViewModel.MarkConversationAsSensitiveViewState.Error -> {
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     Log.e(TAG, "failed to mark conversation as insensitive", uiState.exception)
                 }
+
                 else -> {
                 }
             }
@@ -303,15 +311,18 @@ class ConversationInfoActivity : BaseActivity() {
                         Snackbar.LENGTH_LONG
                     ).show()
                 }
+
                 is ConversationInfoViewModel.MarkConversationAsInsensitiveViewState.Error -> {
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     Log.e(TAG, "failed to mark conversation as sensitive", uiState.exception)
                 }
+
                 else -> {
                 }
             }
         }
     }
+
     private fun initClearChatHistoryObserver() {
         viewModel.clearChatHistoryViewState.observe(this) { uiState ->
             when (uiState) {
@@ -410,10 +421,12 @@ class ConversationInfoActivity : BaseActivity() {
                         Snackbar.LENGTH_LONG
                     ).show()
                 }
+
                 is ConversationInfoViewModel.MarkConversationAsImportantViewState.Error -> {
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     Log.e(TAG, "failed to mark conversation as important", uiState.exception)
                 }
+
                 else -> {
                 }
             }
@@ -430,10 +443,12 @@ class ConversationInfoActivity : BaseActivity() {
                         Snackbar.LENGTH_LONG
                     ).show()
                 }
+
                 is ConversationInfoViewModel.MarkConversationAsUnimportantViewState.Error -> {
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     Log.e(TAG, "failed to mark conversation as unimportant", uiState.exception)
                 }
+
                 else -> {
                 }
             }
@@ -448,6 +463,7 @@ class ConversationInfoActivity : BaseActivity() {
                 is ConversationInfoViewModel.GetRoomErrorState -> {
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
+
                 else -> {}
             }
         }
@@ -462,10 +478,12 @@ class ConversationInfoActivity : BaseActivity() {
                         Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     }
                 }
+
                 is ConversationInfoViewModel.GetProfileErrorState -> {
                     Log.e(TAG, "Network error occurred getting profile information")
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
+
                 else -> {}
             }
         }
@@ -573,7 +591,8 @@ class ConversationInfoActivity : BaseActivity() {
                 binding.guestAccessView.passwordProtectionSwitch,
                 binding.recordingConsentView.recordingConsentForConversationSwitch,
                 binding.lockConversationSwitch,
-                binding.notificationSettingsView.sensitiveConversationSwitch
+                binding.notificationSettingsView.sensitiveConversationSwitch,
+                binding.notificationSettingsView.bubbleSwitch
             ).forEach(viewThemeUtils.talk::colorSwitch)
         }
     }
@@ -1896,6 +1915,13 @@ class ConversationInfoActivity : BaseActivity() {
     }
 
     private fun setUpNotificationSettings(module: DatabaseStorageModule) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            binding.notificationSettingsView.notificationSettingsBubble.visibility = VISIBLE
+            configureConversationBubbleSetting(module)
+        } else {
+            binding.notificationSettingsView.notificationSettingsBubble.visibility = GONE
+        }
+
         binding.notificationSettingsView.notificationSettingsCallNotifications.setOnClickListener {
             val isChecked = binding.notificationSettingsView.callNotificationsSwitch.isChecked
             binding.notificationSettingsView.callNotificationsSwitch.isChecked = !isChecked
@@ -1922,6 +1948,70 @@ class ConversationInfoActivity : BaseActivity() {
         }
     }
 
+    private fun configureConversationBubbleSetting(module: DatabaseStorageModule) {
+        val bubbleRow = binding.notificationSettingsView.notificationSettingsBubble
+        val bubbleSwitch = binding.notificationSettingsView.bubbleSwitch
+        val bubbleSummary = binding.notificationSettingsView.notificationSettingsBubbleSummary
+
+        val globalBubblesEnabled = appPreferences.areBubblesEnabled()
+        val forceAllBubbles = appPreferences.areBubblesForced()
+        val storedPreference = module.getBoolean(BUBBLE_SWITCH_KEY, false)
+
+        val effectiveState = when {
+            !globalBubblesEnabled -> false
+            forceAllBubbles -> true
+            else -> storedPreference
+        }
+        bubbleSwitch.isChecked = effectiveState
+
+        val rowIsInteractive = globalBubblesEnabled && !forceAllBubbles
+        bubbleRow.isEnabled = rowIsInteractive
+        bubbleSwitch.isEnabled = rowIsInteractive
+        bubbleRow.alpha = if (rowIsInteractive) 1f else LOW_EMPHASIS_OPACITY
+
+        val summaryText = when {
+            !globalBubblesEnabled -> R.string.nc_conversation_notification_bubble_disabled
+            forceAllBubbles -> R.string.nc_conversation_notification_bubble_forced
+            else -> R.string.nc_conversation_notification_bubble_desc
+        }
+        bubbleSummary.setText(summaryText)
+
+        bubbleRow.setOnClickListener {
+            if (!rowIsInteractive) {
+                return@setOnClickListener
+            }
+            val newValue = !bubbleSwitch.isChecked
+            bubbleSwitch.isChecked = newValue
+            lifecycleScope.launch {
+                module.saveBoolean(BUBBLE_SWITCH_KEY, newValue)
+            }
+            if (!newValue) {
+                NotificationUtils.dismissBubbleForRoom(
+                    this@ConversationInfoActivity,
+                    conversationUser,
+                    conversationToken
+                )
+            }
+        }
+
+        if (focusBubbleSwitch) {
+            focusBubbleSwitch = false
+            highlightBubbleRow(bubbleRow)
+        }
+    }
+
+    private fun highlightBubbleRow(target: View) {
+        binding.conversationInfoScroll.post {
+            val scrollViewLocation = IntArray(2)
+            val targetLocation = IntArray(2)
+            binding.conversationInfoScroll.getLocationOnScreen(scrollViewLocation)
+            target.getLocationOnScreen(targetLocation)
+            val offset = targetLocation[1] - scrollViewLocation[1]
+            binding.conversationInfoScroll.smoothScrollBy(0, offset)
+            target.background?.let { DrawableUtils.blinkDrawable(it) }
+        }
+    }
+
     companion object {
         private val TAG = ConversationInfoActivity::class.java.simpleName
         private const val NOTIFICATION_LEVEL_ALWAYS: Int = 1
@@ -1933,5 +2023,6 @@ class ConversationInfoActivity : BaseActivity() {
         private const val DEMOTE_OR_PROMOTE = 1
         private const val REMOVE_FROM_CONVERSATION = 2
         private const val BAN_FROM_CONVERSATION = 3
+        private const val BUBBLE_SWITCH_KEY = "bubble_switch"
     }
 }
