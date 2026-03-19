@@ -62,6 +62,9 @@ const val SPACE_0 = 0
 const val CORNER_RADIUS = 16
 val ELEVATION = 2.dp
 const val MAX_HEIGHT = 100
+const val FLOAT_85 = .85f
+const val SPACE_8 = 8
+const val SPACE_36 = 36
 
 @Suppress("LongMethod", "LongParameterList")
 @Composable
@@ -173,7 +176,7 @@ fun PinnedMessageView(
             style = MaterialTheme.typography.labelMedium,
             modifier = Modifier
                 .background(incomingBubbleColor)
-                .padding(top = 8.dp)
+                .padding(top = SPACE_8.dp)
                 .fillMaxWidth()
         )
 
@@ -240,7 +243,7 @@ fun PinnedMessageView(
 
 @Composable
 private fun ScrollViewWrapper(content: @Composable () -> Unit) {
-    Box(modifier = Modifier.padding(top = 36.dp)) {
+    Box(modifier = Modifier.padding(top = SPACE_36.dp)) {
         AndroidView(
             factory = { ctx ->
                 val composeView = ComposeView(ctx).apply {
@@ -254,7 +257,7 @@ private fun ScrollViewWrapper(content: @Composable () -> Unit) {
                 }
             },
             modifier = Modifier
-                .fillMaxWidth(.85f)
+                .fillMaxWidth(FLOAT_85)
         )
     }
 }
