@@ -89,8 +89,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import java.io.File
 import java.time.LocalDate
 import javax.inject.Inject
@@ -648,10 +650,14 @@ class ChatViewModel @AssistedInject constructor(
 
                 chatRepository.updateConversation(conversation)
 
+                val isChatRelaySupported = withTimeoutOrNull(WEBSOCKET_CONNECT_TIMEOUT_MS) {
+                    awaitChatRelaySupport(user)
+                } ?: false
+
                 loadInitialMessages(
                     withCredentials = credentials,
                     withUrl = url,
-                    isChatRelaySupported = isChatRelaySupported(user)
+                    isChatRelaySupported = isChatRelaySupported
                 )
 
                 getCapabilities(user, chatRoomToken, conversation)
@@ -662,6 +668,14 @@ class ChatViewModel @AssistedInject constructor(
     fun isChatRelaySupported(user: User): Boolean {
         val websocketInstance = WebSocketConnectionHelper.getWebSocketInstanceForUser(user)
         return websocketInstance?.supportsChatRelay() == true
+    }
+
+    private suspend fun awaitChatRelaySupport(user: User): Boolean {
+        val wsInstance = WebSocketConnectionHelper.getWebSocketInstanceForUser(user) ?: return false
+        while (!wsInstance.isConnected) {
+            delay(WEBSOCKET_POLL_INTERVAL_MS)
+        }
+        return wsInstance.supportsChatRelay()
     }
 
     fun observeConversationAndUserEveryTime() {
@@ -1705,6 +1719,8 @@ class ChatViewModel @AssistedInject constructor(
         private val TAG = ChatViewModel::class.simpleName
         const val JOIN_ROOM_RETRY_COUNT: Long = 3
         const val HTTP_CODE_OK: Int = 200
+        private const val WEBSOCKET_CONNECT_TIMEOUT_MS = 3000L
+        private const val WEBSOCKET_POLL_INTERVAL_MS = 50L
     }
 
     sealed class OutOfOfficeUIState {
