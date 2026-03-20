@@ -336,10 +336,15 @@ class MainActivity :
 
                         if (isFinishing || isDestroyed) return@subscribe
 
+                        // Open conversation list first so back press shows correct user's conversations
+                        val listIntent = Intent(context, ConversationsListActivity::class.java)
+                        listIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
                         val chatIntent = Intent(context, ChatActivity::class.java)
                         chatIntent.putExtra(KEY_ROOM_TOKEN, deepLinkResult.roomToken)
                         chatIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, targetUser.id)
-                        startActivity(chatIntent)
+
+                        startActivities(arrayOf(listIntent, chatIntent))
                     } else {
                         Toast.makeText(
                             context,
