@@ -53,6 +53,9 @@ data class Participant(
     @JsonField(name = ["sessionId"])
     var sessionId: String? = null,
 
+    @JsonField(name = ["nextcloudSessionId"])
+    var nextcloudSessionId: String? = null,
+
     @JsonField(name = ["sessionIds"])
     var sessionIds: ArrayList<String> = ArrayList(0),
 
@@ -80,7 +83,7 @@ data class Participant(
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(
         null, null, null, null, null, null, null, null, null,
-        0, null, ArrayList(0), 0, 0, null,
+        0, null, null, ArrayList(0), 0, 0, null,
         null, null
     )
 
