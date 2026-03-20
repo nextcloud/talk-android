@@ -170,6 +170,10 @@ class OfflineFirstChatRepository @Inject constructor(
             // We must only end up here when NO HPB is used!
             // If a HPB is used, longPolling is not available to handle loading of newer messages.
             // When a HPB is used the initial request must be made.
+
+            // Emit the initial lastCommonRead so the combine in observeMessages() unblocks and
+            // displays the offline messages that are already in the DB.
+            updateUiForLastCommonRead()
         } else {
             if (isChatRelaySupported) {
                 Log.d(
@@ -204,6 +208,8 @@ class OfflineFirstChatRepository @Inject constructor(
             getAndPersistMessages(withNetworkParams)
         }
 
+
+        // Problem: before the PR made sure the initial data is displayed. Now nothing is triggered.
         // handleMessagesFromDb(newestMessageIdFromDb)
     }
 
