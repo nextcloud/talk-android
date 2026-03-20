@@ -45,13 +45,11 @@ fun ConversationListFab(isVisible: Boolean, isEnabled: Boolean, onClick: () -> U
     ) {
         FloatingActionButton(
             onClick = { if (isEnabled) onClick() },
-            containerColor = MaterialTheme.colorScheme.primary,
             modifier = Modifier.alpha(if (isEnabled) 1f else DISABLED_ALPHA)
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_pencil_grey600_24dp),
-                contentDescription = stringResource(R.string.nc_new_conversation),
-                tint = MaterialTheme.colorScheme.onPrimary
+                contentDescription = stringResource(R.string.nc_new_conversation)
             )
         }
     }
