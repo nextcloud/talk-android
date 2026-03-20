@@ -2,8 +2,7 @@
 <!--
   ~ Nextcloud Talk - Android Client
   ~
-  ~ SPDX-FileCopyrightText: 2023-2024 Marcel Hibbe <dev@mhibbe.de>
-  ~ SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
+  ~ SPDX-FileCopyrightText: 2017-2026 Nextcloud GmbH and Nextcloud contributors
   ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -26,27 +25,10 @@
         app:liftOnScrollTargetViewId="@id/recycler_view"
         app:liftOnScrollColor="@color/bg_default">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/chat_list_connection_lost"
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/status_banner_compose_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/connection_lost"
-            android:textColor="@color/white"
-            android:background="@color/hwSecurityRed"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/chat_list_maintenance_warning"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/hwSecurityRed"
-            android:gravity="center"
-            android:text="@string/nc_dialog_maintenance_mode_description"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:id="@+id/search_toolbar"

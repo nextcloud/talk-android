@@ -1,12 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2022-2024 Marcel Hibbe <dev@mhibbe.de>
- * SPDX-FileCopyrightText: 2022-2023 Andy Scherzinger <info@andy-scherzinger.de>
- * SPDX-FileCopyrightText: 2023 Tobias Kaminsky <tobias@kaminsky.me>
- * SPDX-FileCopyrightText: 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
- * SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro.brey@nextcloud.com>
- * SPDX-FileCopyrightText: 2017-2020 Mario Danic <mario@lovelyhq.com>
+ * SPDX-FileCopyrightText: 2017-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.conversationlist
@@ -38,7 +33,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -49,6 +46,7 @@ import androidx.core.view.MenuItemCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Data
@@ -90,6 +88,7 @@ import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contextchat.ContextChatView
 import com.nextcloud.talk.contextchat.ContextChatViewModel
+import com.nextcloud.talk.conversationlist.ui.StatusBannerRow
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
@@ -109,22 +108,21 @@ import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.ui.BackgroundVoiceMessageCard
-import com.nextcloud.talk.ui.dialog.ChooseAccountDialogCompose
 import com.nextcloud.talk.ui.chooseaccount.ChooseAccountShareToDialogFragment
+import com.nextcloud.talk.ui.dialog.ChooseAccountDialogCompose
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.MENTION
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.UNREAD
 import com.nextcloud.talk.users.UserManager
-import androidx.compose.ui.platform.LocalContext
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
@@ -152,6 +150,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -207,6 +206,7 @@ class ConversationsListActivity :
         get() = AppBarLayoutType.SEARCH_BAR
 
     private var currentUser: User? = null
+    private val _isMaintenanceMode = MutableStateFlow(false)
     private var roomsQueryDisposable: Disposable? = null
     private var openConversationsQueryDisposable: Disposable? = null
     private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
@@ -267,6 +267,7 @@ class ConversationsListActivity :
         binding = ActivityConversationsBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
+        setupStatusBanner()
         initSystemBars()
         viewThemeUtils.material.themeSearchCardView(binding.searchToolbarContainer)
         viewThemeUtils.material.colorMaterialButtonContent(binding.menuButton, ColorRole.ON_SURFACE_VARIANT)
@@ -371,7 +372,6 @@ class ConversationsListActivity :
     private fun initObservers() {
         this.lifecycleScope.launch {
             networkMonitor.isOnline.onEach { isOnline ->
-                showNetworkErrorDialog(!isOnline)
                 handleUI(isOnline)
             }.collect()
         }
@@ -1147,12 +1147,18 @@ class ConversationsListActivity :
         }
     }
 
-    private fun showNetworkErrorDialog(show: Boolean) {
-        binding.chatListConnectionLost.visibility = if (show) View.VISIBLE else View.GONE
-    }
-
-    private fun showMaintenanceModeWarning(show: Boolean) {
-        binding.chatListMaintenanceWarning.visibility = if (show) View.VISIBLE else View.GONE
+    private fun setupStatusBanner() {
+        binding.statusBannerComposeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
+                val isMaintenanceMode by _isMaintenanceMode.collectAsStateWithLifecycle()
+                StatusBannerRow(
+                    isOffline = !isOnline,
+                    isMaintenanceMode = isMaintenanceMode
+                )
+            }
+        }
     }
 
     private fun handleUI(show: Boolean) {
@@ -1205,7 +1211,7 @@ class ConversationsListActivity :
     private fun prepareViews() {
         hideLogoForBrandedClients()
 
-        showMaintenanceModeWarning(false)
+        _isMaintenanceMode.value = false
 
         layoutManager = SmoothScrollLinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
@@ -1230,7 +1236,7 @@ class ConversationsListActivity :
             false
         }
         binding.swipeRefreshLayoutView.setOnRefreshListener {
-            showMaintenanceModeWarning(false)
+            _isMaintenanceMode.value = false
             fetchRooms()
             fetchPendingInvitations()
         }
@@ -2022,7 +2028,7 @@ class ConversationsListActivity :
 
     private fun showServiceUnavailableDialog(httpException: HttpException) {
         if (httpException.response()?.headers()?.get(MAINTENANCE_MODE_HEADER_KEY) == "1") {
-            showMaintenanceModeWarning(true)
+            _isMaintenanceMode.value = true
         } else {
             showErrorDialog()
         }
