@@ -1339,38 +1339,43 @@ class ConversationsListActivity :
         }
     }
 
-    @SuppressLint("CheckResult")
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun checkToShowUnreadBubble() {
-        searchBehaviorSubject.subscribe { value ->
-            if (value) {
+        if (searchBehaviorSubject.value == true) {
+            nextUnreadConversationScrollPosition = 0
+            showUnreadBubbleState.value = false
+            return
+        }
+        try {
+            val lastVisibleItem = layoutManager!!.findLastCompletelyVisibleItemPosition()
+            val firstUnreadPosition = findFirstOffscreenUnreadPosition(lastVisibleItem)
+            if (firstUnreadPosition != null) {
+                nextUnreadConversationScrollPosition = firstUnreadPosition
+                showUnreadBubbleState.value = true
+            } else {
                 nextUnreadConversationScrollPosition = 0
                 showUnreadBubbleState.value = false
-            } else {
-                try {
-                    val lastVisibleItem = layoutManager!!.findLastCompletelyVisibleItemPosition()
-                    for (flexItem in conversationItems) {
-                        val conversation: ConversationModel = (flexItem as ConversationItem).model
-                        val position = adapter?.getGlobalPositionOf(flexItem)
-                        if (position != null && hasUnreadItems(conversation) && position > lastVisibleItem) {
-                            nextUnreadConversationScrollPosition = position
-                            showUnreadBubbleState.value = true
-                            return@subscribe
-                        }
-                    }
-                    nextUnreadConversationScrollPosition = 0
-                    showUnreadBubbleState.value = false
-                } catch (e: NullPointerException) {
-                    Log.d(
-                        TAG,
-                        "A NPE was caught when trying to show the unread popup bubble. This might happen when the " +
-                            "user already left the conversations-list screen so the popup bubble is not available " +
-                            "anymore.",
-                        e
-                    )
-                }
+            }
+        } catch (e: NullPointerException) {
+            Log.d(
+                TAG,
+                "A NPE was caught when trying to show the unread popup bubble. This might happen when the " +
+                    "user already left the conversations-list screen so the popup bubble is not available " +
+                    "anymore.",
+                e
+            )
+        }
+    }
+
+    private fun findFirstOffscreenUnreadPosition(lastVisibleItem: Int): Int? {
+        for (flexItem in conversationItems) {
+            val conversation = (flexItem as ConversationItem).model
+            val position = adapter?.getGlobalPositionOf(flexItem)
+            if (position != null && hasUnreadItems(conversation) && position > lastVisibleItem) {
+                return position
             }
         }
+        return null
     }
 
     private fun hasUnreadItems(conversation: ConversationModel) =
