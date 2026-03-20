@@ -90,6 +90,7 @@ import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.ShareUtils
+import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
@@ -1013,6 +1014,14 @@ class ConversationInfoActivity : BaseActivity() {
                     if (workInfo != null) {
                         when (workInfo.state) {
                             WorkInfo.State.SUCCEEDED -> {
+                                conversationUser.id?.let { userId ->
+                                    ShortcutManagerHelper.disableConversationShortcut(
+                                        context,
+                                        conversationToken,
+                                        userId,
+                                        context.resources.getString(R.string.nc_shortcut_conversation_deleted)
+                                    )
+                                }
                                 val intent = Intent(context, MainActivity::class.java)
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                 startActivity(intent)
@@ -1088,6 +1097,14 @@ class ConversationInfoActivity : BaseActivity() {
                     DeleteConversationWorker::class.java
                 ).setInputData(it).build()
             )
+            conversationUser.id?.let { userId ->
+                ShortcutManagerHelper.disableConversationShortcut(
+                    context,
+                    conversationToken,
+                    userId,
+                    context.resources.getString(R.string.nc_shortcut_conversation_deleted)
+                )
+            }
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
