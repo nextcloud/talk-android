@@ -16,6 +16,7 @@ import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DrawableUtils
+import com.nextcloud.talk.ui.PlaybackSpeed
 import java.time.LocalDate
 
 // immutable class for chat message UI. only val, no vars!
@@ -59,8 +60,15 @@ sealed interface MessageTypeContent {
         MessageTypeContent
 
     data class Voice(
-        // TODO
-        val todo: String
+        val actorId: String?,
+        val isPlaying: Boolean,
+        val wasPlayed: Boolean,
+        val isDownloading: Boolean,
+        val durationSeconds: Int,
+        val playedSeconds: Int,
+        val seekbarProgress: Int,
+        val waveform: List<Float>,
+        val playbackSpeed: PlaybackSpeed = PlaybackSpeed.NORMAL
     ) : MessageTypeContent
 }
 
@@ -227,5 +235,12 @@ fun getDeckContent(message: ChatMessage): MessageTypeContent.Deck {
 
 fun getVoiceContent(message: ChatMessage): MessageTypeContent.Voice =
     MessageTypeContent.Voice(
-        todo = "still todo..."
+        actorId = message.actorId,
+        isPlaying = message.isPlayingVoiceMessage,
+        wasPlayed = message.wasPlayedVoiceMessage,
+        isDownloading = message.isDownloadingVoiceMessage,
+        durationSeconds = message.voiceMessageDuration,
+        playedSeconds = message.voiceMessagePlayedSeconds,
+        seekbarProgress = message.voiceMessageSeekbarProgress,
+        waveform = message.voiceMessageFloatArray?.toList().orEmpty()
     )

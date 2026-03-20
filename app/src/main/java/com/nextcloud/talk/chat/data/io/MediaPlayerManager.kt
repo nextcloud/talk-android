@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileNotFoundException
@@ -89,6 +88,7 @@ class MediaPlayerManager : LifecycleAwareManager {
     private var currentDataSource: String = ""
     var mediaPlayerDuration: Int = 0
     var mediaPlayerPosition: Int = 0
+    private var requestedPlaybackSpeed: PlaybackSpeed? = null
 
     /**
      * Starts playing audio from the given path, initializes or resumes if the player is already created.
@@ -237,6 +237,7 @@ class MediaPlayerManager : LifecycleAwareManager {
      * Sets the player speed.
      */
     fun setPlayBackSpeed(speed: PlaybackSpeed) {
+        requestedPlaybackSpeed = speed
         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
             mediaPlayer!!.playbackParams.let { params ->
                 params.setSpeed(speed.value)
@@ -292,11 +293,16 @@ class MediaPlayerManager : LifecycleAwareManager {
                         currentCycledMessage?.let {
                             it.resetVoiceMessage = true
                             it.isPlayingVoiceMessage = false
+                            it.voiceMessageSeekbarProgress = 0
+                            it.voiceMessagePlayedSeconds = 0
                         }
-                        runBlocking {
-                            _mediaPlayerSeekBarPositionMsg.emit(currentCycledMessage!!)
-                        }
+                        val completedMessage = currentCycledMessage
                         currentCycledMessage = null
+                        if (completedMessage != null) {
+                            scope.launch {
+                                _mediaPlayerSeekBarPositionMsg.emit(completedMessage)
+                            }
+                        }
                         loop = false
                         _managerState.value = MediaPlayerManagerState.STOPPED
                     }
@@ -311,12 +317,13 @@ class MediaPlayerManager : LifecycleAwareManager {
     private fun MediaPlayer.onPrepare() {
         mediaPlayerDuration = this.duration
 
-        val playBackSpeed = if (currentCycledMessage?.actorId == null) {
-            PlaybackSpeed.NORMAL.value
-        } else {
-            appPreferences.getPreferredPlayback(currentCycledMessage?.actorId).value
-        }
-        mediaPlayer!!.playbackParams.setSpeed(playBackSpeed)
+        val playBackSpeed = requestedPlaybackSpeed?.value
+            ?: if (currentCycledMessage?.actorId == null) {
+                PlaybackSpeed.NORMAL.value
+            } else {
+                appPreferences.getPreferredPlayback(currentCycledMessage?.actorId).value
+            }
+        mediaPlayer!!.playbackParams = mediaPlayer!!.playbackParams.setSpeed(playBackSpeed)
 
         start()
         _managerState.value = MediaPlayerManagerState.STARTED

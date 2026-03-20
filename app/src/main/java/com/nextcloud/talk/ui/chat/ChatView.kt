@@ -71,7 +71,10 @@ fun GetNewChatView(
     updateRemoteLastReadMessageIfNeeded: (() -> Unit?)?,
     onLongClick: ((Int) -> Unit?)?,
     onFileClick: (Int) -> Unit,
-    onPollClick: (pollId: String, pollName: String) -> Unit = { _, _ -> }
+    onPollClick: (pollId: String, pollName: String) -> Unit = { _, _ -> },
+    onVoicePlayPauseClick: (Int) -> Unit = {},
+    onVoiceSeek: (messageId: Int, progress: Int) -> Unit = { _, _ -> },
+    onVoiceSpeedClick: (Int) -> Unit = {}
 ) {
     val viewThemeUtils = LocalViewThemeUtils.current
     val colorScheme = viewThemeUtils.getColorScheme(LocalContext.current)
@@ -249,7 +252,10 @@ fun GetNewChatView(
                             conversationThreadId = conversationThreadId,
                             onFileClick = onFileClick,
                             onLongClick = onLongClick,
-                            onPollClick = onPollClick
+                            onPollClick = onPollClick,
+                            onVoicePlayPauseClick = onVoicePlayPauseClick,
+                            onVoiceSeek = onVoiceSeek,
+                            onVoiceSpeedClick = onVoiceSpeedClick
                         )
                     }
 

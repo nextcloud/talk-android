@@ -140,6 +140,7 @@ import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.contextchat.ContextChatView
@@ -664,10 +665,74 @@ class ChatActivity :
                     updateRemoteLastReadMessageIfNeeded = { updateRemoteLastReadMessageIfNeeded() },
                     onLongClick = { openMessageActionsDialog(it) },
                     onFileClick = { downloadAndOpenFile(it) },
-                    onPollClick = { pollId, pollName -> openPollDialog(pollId, pollName) }
+                    onPollClick = { pollId, pollName -> openPollDialog(pollId, pollName) },
+                    onVoicePlayPauseClick = { onVoicePlayPauseClickCompose(it) },
+                    onVoiceSeek = { _, progress -> chatViewModel.seekToMediaPlayer(progress) },
+                    onVoiceSpeedClick = { onVoiceSpeedClickCompose(it) }
                 )
             }
         }
+    }
+
+    private fun onVoicePlayPauseClickCompose(messageId: Int) {
+        lifecycleScope.launch {
+            val isCurrentlyPlaying = chatViewModel.uiState.value.items
+                .mapNotNull { (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage }
+                .firstOrNull { it.id == messageId }
+                ?.content
+                ?.let { it as? MessageTypeContent.Voice }
+                ?.isPlaying ?: false
+
+            val message = chatViewModel.getMessageById(messageId.toLong()).first()
+            val filename = message.fileParameters.name
+            if (filename.isEmpty()) {
+                return@launch
+            }
+
+            val file = File(context.cacheDir, filename)
+            if (file.exists()) {
+                if (isCurrentlyPlaying) {
+                    chatViewModel.pauseMediaPlayer(true)
+                    chatViewModel.pauseVoiceMessageUiState(messageId)
+                } else {
+                    val uiSpeed = chatViewModel.uiState.value.items
+                        .mapNotNull { (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage }
+                        .firstOrNull { it.id == messageId }
+                        ?.content
+                        ?.let { it as? MessageTypeContent.Voice }
+                        ?.playbackSpeed ?: PlaybackSpeed.NORMAL
+                    chatViewModel.setPlayBack(uiSpeed)
+
+                    val retrieved = appPreferences.getWaveFormFromFile(filename)
+                    if (retrieved.isEmpty()) {
+                        setUpWaveform(message)
+                    } else {
+                        if (message.voiceMessageFloatArray == null || message.voiceMessageFloatArray!!.isEmpty()) {
+                            message.voiceMessageFloatArray = retrieved.toFloatArray()
+                            chatViewModel.syncVoiceMessageUiState(message)
+                        }
+                        startPlayback(file, message)
+                    }
+                }
+            } else {
+                downloadFileToCache(message, true) {
+                    setUpWaveform(message)
+                }
+            }
+        }
+    }
+
+    private fun onVoiceSpeedClickCompose(messageId: Int) {
+        val currentSpeed = chatViewModel.uiState.value.items
+            .mapNotNull { (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage }
+            .firstOrNull { it.id == messageId }
+            ?.content
+            ?.let { it as? MessageTypeContent.Voice }
+            ?.playbackSpeed ?: PlaybackSpeed.NORMAL
+        val nextSpeed = currentSpeed.next()
+        chatViewModel.setPlayBack(nextSpeed)
+        appPreferences.savePreferredPlayback(conversationUser!!.userId, nextSpeed)
+        chatViewModel.setVoiceMessageSpeed(messageId, nextSpeed)
     }
 
     fun downloadAndOpenFile(messageId: Int) {
@@ -1734,12 +1799,15 @@ class ChatActivity :
         val file = File(context.cacheDir, filename!!)
         if (file.exists() && message.voiceMessageFloatArray == null) {
             message.isDownloadingVoiceMessage = true
+            chatViewModel.syncVoiceMessageUiState(message)
             adapter?.update(message)
             CoroutineScope(Dispatchers.Default).launch {
                 val r = AudioUtils.audioFileToFloatArray(file)
                 appPreferences.saveWaveFormForFile(filename, r.toTypedArray())
                 message.voiceMessageFloatArray = r
                 withContext(Dispatchers.Main) {
+                    message.isDownloadingVoiceMessage = false
+                    chatViewModel.syncVoiceMessageUiState(message)
                     startPlayback(file, message)
                 }
             }
@@ -1753,6 +1821,7 @@ class ChatActivity :
         chatViewModel.queueInMediaPlayer(file.canonicalPath, message)
         chatViewModel.startCyclingMediaPlayer()
         message.isPlayingVoiceMessage = true
+        chatViewModel.syncVoiceMessageUiState(message)
         adapter?.update(message)
 
         var pos = adapter?.getMessagePositionById(message.id)?.minus(1) ?: -1
@@ -2211,13 +2280,14 @@ class ChatActivity :
         funToCallWhenDownloadSuccessful: (() -> Unit)
     ) {
         message.isDownloadingVoiceMessage = true
+        chatViewModel.syncVoiceMessageUiState(message)
         message.openWhenDownloaded = openWhenDownloaded
         adapter?.update(message)
 
-        val baseUrl = message.activeUser!!.baseUrl
-        val userId = message.activeUser!!.userId
+        val baseUrl = conversationUser.baseUrl
+        val userId = conversationUser.userId
         val attachmentFolder = CapabilitiesUtil.getAttachmentFolder(
-            message.activeUser!!.capabilities!!
+            conversationUser.capabilities!!
                 .spreedCapability!!
         )
         val fileName = message.fileParameters.name

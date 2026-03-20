@@ -37,6 +37,7 @@ data class ChatMessage(
 
     var isFormerOneToOneConversation: Boolean = false,
 
+    @Deprecated("should be deleted in long term")
     var activeUser: User? = null,
 
     @Deprecated("delete with chatkit?")

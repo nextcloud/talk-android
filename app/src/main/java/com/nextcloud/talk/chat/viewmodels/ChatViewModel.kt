@@ -26,6 +26,7 @@ import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
+import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.ui.model.toUiModel
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
@@ -421,6 +422,81 @@ class ChatViewModel @AssistedInject constructor(
     init {
         observeConversation()
         observeMessages()
+        observeMediaPlayerProgressForCompose()
+    }
+
+    private fun observeMediaPlayerProgressForCompose() {
+        mediaPlayerSeekbarObserver
+            .onEach { message ->
+                syncVoiceMessageUiState(message)
+            }
+            .launchIn(viewModelScope)
+    }
+
+    fun pauseVoiceMessageUiState(messageId: Int) {
+        _uiState.update { current ->
+            val updatedItems = current.items.map { item ->
+                if (item is ChatItem.MessageItem && item.uiMessage.id == messageId) {
+                    val voiceContent = item.uiMessage.content as? MessageTypeContent.Voice
+                    if (voiceContent != null) {
+                        item.copy(uiMessage = item.uiMessage.copy(content = voiceContent.copy(isPlaying = false)))
+                    } else {
+                        item
+                    }
+                } else {
+                    item
+                }
+            }
+            current.copy(items = updatedItems)
+        }
+    }
+
+    fun setVoiceMessageSpeed(messageId: Int, speed: PlaybackSpeed) {
+        _uiState.update { current ->
+            val updatedItems = current.items.map { item ->
+                if (item is ChatItem.MessageItem && item.uiMessage.id == messageId) {
+                    val voiceContent = item.uiMessage.content as? MessageTypeContent.Voice
+                    if (voiceContent != null) {
+                        item.copy(uiMessage = item.uiMessage.copy(content = voiceContent.copy(playbackSpeed = speed)))
+                    } else {
+                        item
+                    }
+                } else {
+                    item
+                }
+            }
+            current.copy(items = updatedItems)
+        }
+    }
+
+    fun syncVoiceMessageUiState(message: ChatMessage) {
+        _uiState.update { current ->
+            val updatedItems = current.items.map { item ->
+                if (item is ChatItem.MessageItem && item.uiMessage.id == message.jsonMessageId) {
+                    val voiceContent = item.uiMessage.content as? MessageTypeContent.Voice
+                    if (voiceContent != null) {
+                        val updatedVoiceContent = voiceContent.copy(
+                            actorId = message.actorId,
+                            isPlaying = message.isPlayingVoiceMessage,
+                            wasPlayed = message.wasPlayedVoiceMessage,
+                            isDownloading = message.isDownloadingVoiceMessage,
+                            durationSeconds = message.voiceMessageDuration,
+                            playedSeconds = message.voiceMessagePlayedSeconds,
+                            seekbarProgress = message.voiceMessageSeekbarProgress,
+                            waveform = message.voiceMessageFloatArray?.toList() ?: voiceContent.waveform
+                            // playbackSpeed is preserved from existing voiceContent
+                        )
+                        item.copy(uiMessage = item.uiMessage.copy(content = updatedVoiceContent))
+                    } else {
+                        item
+                    }
+                } else {
+                    item
+                }
+            }
+
+            current.copy(items = updatedItems)
+        }
     }
 
     // ------------------------------

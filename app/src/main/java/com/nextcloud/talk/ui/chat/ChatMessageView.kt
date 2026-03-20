@@ -30,7 +30,10 @@ fun ChatMessageView(
     conversationThreadId: Long? = null,
     onLongClick: ((Int) -> Unit?)? = null,
     onFileClick: (Int) -> Unit = {},
-    onPollClick: (pollId: String, pollName: String) -> Unit = { _, _ -> }
+    onPollClick: (pollId: String, pollName: String) -> Unit = { _, _ -> },
+    onVoicePlayPauseClick: (Int) -> Unit = {},
+    onVoiceSeek: (messageId: Int, progress: Int) -> Unit = { _, _ -> },
+    onVoiceSpeedClick: (Int) -> Unit = {}
 ) {
     Box(
         modifier = Modifier
@@ -85,7 +88,10 @@ fun ChatMessageView(
                     typeContent = content,
                     message = message,
                     isOneToOneConversation = isOneToOneConversation,
-                    conversationThreadId = conversationThreadId
+                    conversationThreadId = conversationThreadId,
+                    onPlayPauseClick = onVoicePlayPauseClick,
+                    onSeek = onVoiceSeek,
+                    onSpeedClick = onVoiceSpeedClick
                 )
             }
 
@@ -191,7 +197,18 @@ private fun ChatMessageViewGeolocationPreview() {
 @Composable
 private fun ChatMessageViewVoicePreview() {
     PreviewContainer {
-        val uiMessage = createBaseMessage(MessageTypeContent.Voice(todo = "preview"))
+        val uiMessage = createBaseMessage(
+            MessageTypeContent.Voice(
+                actorId = "john",
+                isPlaying = false,
+                wasPlayed = false,
+                isDownloading = false,
+                durationSeconds = 16,
+                playedSeconds = 4,
+                seekbarProgress = 25,
+                waveform = listOf(0.1f, 0.2f, 0.4f, 0.15f, 0.3f, 0.5f)
+            )
+        )
         ChatMessageView(message = uiMessage)
     }
 }
