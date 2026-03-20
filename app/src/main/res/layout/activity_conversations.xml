@@ -170,22 +170,11 @@
             android:layout_height="wrap_content"/>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
-        android:id="@+id/loading_content"
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/shimmer_compose_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="50dp">
-
-        <include layout="@layout/rv_item_conversation_with_last_message_shimmer" />
-
-        <include layout="@layout/rv_item_conversation_with_last_message_shimmer" />
-
-        <include layout="@layout/rv_item_conversation_with_last_message_shimmer" />
-
-        <include layout="@layout/rv_item_conversation_with_last_message_shimmer" />
-
-    </LinearLayout>
+        android:layout_marginTop="50dp" />
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/empty_state_compose_view"
