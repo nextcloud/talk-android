@@ -16,15 +16,20 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -38,8 +43,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -49,6 +56,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -68,6 +76,7 @@ import androidx.core.graphics.ColorUtils
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
+import com.nextcloud.talk.chat.ui.model.MessageReactionUi
 import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
@@ -86,6 +95,10 @@ private const val ANIMATED_BLINK = 500
 
 private val BUBBLE_RADIUS_BIG = 10.dp
 private val BUBBLE_RADIUS_SMALL = 2.dp
+private val REACTION_OVERLAP_OFFSET = (-4).dp
+
+internal val LocalReactionClickHandler = compositionLocalOf<(Int, String) -> Unit> { { _, _ -> } }
+internal val LocalReactionLongClickHandler = compositionLocalOf<(Int) -> Unit> { {} }
 
 private enum class MetadataLayoutMode {
     CAPTION,
@@ -190,107 +203,283 @@ fun MessageScaffold(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = if (incoming) Arrangement.Start else Arrangement.End
     ) {
-        if (incoming && isOneToOneConversation) {
-            val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
-            val loadedImage = loadImage(uiMessage.avatarUrl, LocalContext.current, errorPlaceholderImage)
-            AsyncImage(
-                model = loadedImage,
-                contentDescription = stringResource(R.string.user_avatar),
-                modifier = Modifier
-                    .size(48.dp)
-                    .align(Alignment.CenterVertically)
-                    .padding(end = 8.dp)
-            )
-        } else if (incoming) {
-            Spacer(Modifier.width(8.dp))
-        }
+        MessageLeadingDecoration(
+            uiMessage = uiMessage,
+            isOneToOneConversation = isOneToOneConversation
+        )
+        MessageBubbleWithReactions(
+            uiMessage = uiMessage,
+            incoming = incoming,
+            includePadding = includePadding,
+            isOneToOneConversation = isOneToOneConversation,
+            shape = shape,
+            resolvedBubbleColor = resolvedBubbleColor,
+            metadataLayoutMode = metadataLayoutMode,
+            captionText = captionText,
+            showInlineMetadata = showInlineMetadata,
+            content = content
+        )
+    }
+}
 
-        val bubbleModifier = Modifier
-            .defaultMinSize(60.dp, 40.dp)
-            .widthIn(60.dp, 280.dp)
+@Composable
+private fun RowScope.MessageLeadingDecoration(
+    uiMessage: ChatMessageUi,
+    isOneToOneConversation: Boolean
+) {
+    if (uiMessage.incoming && isOneToOneConversation) {
+        val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
+        val loadedImage = loadImage(uiMessage.avatarUrl, LocalContext.current, errorPlaceholderImage)
+        AsyncImage(
+            model = loadedImage,
+            contentDescription = stringResource(R.string.user_avatar),
+            modifier = Modifier
+                .size(48.dp)
+                .align(Alignment.CenterVertically)
+                .padding(end = 8.dp)
+        )
+    } else if (uiMessage.incoming) {
+        Spacer(Modifier.width(8.dp))
+    }
+}
 
+@Composable
+private fun MessageBubbleWithReactions(
+    uiMessage: ChatMessageUi,
+    incoming: Boolean,
+    includePadding: Boolean,
+    isOneToOneConversation: Boolean,
+    shape: RoundedCornerShape,
+    resolvedBubbleColor: Color,
+    metadataLayoutMode: MetadataLayoutMode,
+    captionText: String?,
+    showInlineMetadata: Boolean,
+    content: @Composable () -> Unit
+) {
+    val bubbleModifier = Modifier
+        .defaultMinSize(60.dp, 40.dp)
+        .widthIn(60.dp, 280.dp)
+
+    Column(horizontalAlignment = if (incoming) Alignment.Start else Alignment.End) {
         Surface(
             modifier = bubbleModifier,
             color = resolvedBubbleColor,
             shape = shape
         ) {
-            val modifier = if (includePadding) {
-                Modifier.padding(10.dp, 4.dp, 10.dp, 4.dp)
-            } else {
-                Modifier
-            }
+            MessageBubbleContent(
+                uiMessage = uiMessage,
+                includePadding = includePadding,
+                isOneToOneConversation = isOneToOneConversation,
+                metadataLayoutMode = metadataLayoutMode,
+                captionText = captionText,
+                showInlineMetadata = showInlineMetadata,
+                content = content
+            )
+        }
 
-            Column(
-                modifier = modifier,
-                verticalArrangement = Arrangement.Center
-            ) {
-                uiMessage.parentMessage?.let {
-                    CommonMessageQuote(it)
-                }
+        MessageReactions(uiMessage = uiMessage)
+    }
+}
 
-                if (incoming && isOneToOneConversation) {
-                    // we only need padding for the author if we did not already apply a padding
-                    val authorStartPadding = if (includePadding) 0.dp else 10.dp
-                    Text(
-                        uiMessage.actorDisplayName,
-                        fontSize = AUTHOR_TEXT_SIZE,
-                        color = colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(authorStartPadding, 4.dp, 6.dp, 4.dp)
-                    )
-                }
+@Composable
+private fun MessageBubbleContent(
+    uiMessage: ChatMessageUi,
+    includePadding: Boolean,
+    isOneToOneConversation: Boolean,
+    metadataLayoutMode: MetadataLayoutMode,
+    captionText: String?,
+    showInlineMetadata: Boolean,
+    content: @Composable () -> Unit
+) {
+    val bubbleContentModifier = if (includePadding) {
+        Modifier.padding(10.dp, 4.dp, 10.dp, 4.dp)
+    } else {
+        Modifier
+    }
 
-                ThreadTitle(uiMessage, padding = if (includePadding) 0.dp else 8.dp)
+    Column(
+        modifier = bubbleContentModifier,
+        verticalArrangement = Arrangement.Center
+    ) {
+        MessageHeader(
+            uiMessage = uiMessage,
+            includePadding = includePadding,
+            isOneToOneConversation = isOneToOneConversation
+        )
+        MessageBodyWithMetadata(
+            uiMessage = uiMessage,
+            metadataLayoutMode = metadataLayoutMode,
+            captionText = captionText,
+            showInlineMetadata = showInlineMetadata,
+            content = content
+        )
+    }
+}
 
-                when (metadataLayoutMode) {
-                    MetadataLayoutMode.CAPTION -> {
-                        content()
-                        CaptionWithMetadata(
-                            captionText = captionText.orEmpty(),
-                            uiMessage = uiMessage,
-                            showInlineMetadata = showInlineMetadata
-                        )
-                    }
+@Composable
+private fun MessageHeader(
+    uiMessage: ChatMessageUi,
+    includePadding: Boolean,
+    isOneToOneConversation: Boolean
+) {
+    uiMessage.parentMessage?.let {
+        CommonMessageQuote(it)
+    }
 
-                    MetadataLayoutMode.OVERLAY -> {
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            content()
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .padding(bottom = 8.dp, end = 8.dp)
-                                    .background(Color.Black.copy(alpha = 0.4f), RoundedCornerShape(10.dp))
-                            ) {
-                                MessageMetadata(uiMessage = uiMessage, color = Color.White)
-                            }
-                        }
-                    }
+    if (uiMessage.incoming && isOneToOneConversation) {
+        // we only need padding for the author if we did not already apply a padding
+        val authorStartPadding = if (includePadding) 0.dp else 10.dp
+        Text(
+            uiMessage.actorDisplayName,
+            fontSize = AUTHOR_TEXT_SIZE,
+            color = colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(authorStartPadding, 4.dp, 6.dp, 4.dp)
+        )
+    }
 
-                    MetadataLayoutMode.INLINE -> {
-                        Row(verticalAlignment = Alignment.Bottom) {
-                            Box(modifier = Modifier.padding(bottom = 5.dp)) {
-                                content()
-                            }
-                            MessageMetadata(uiMessage)
-                        }
-                    }
+    ThreadTitle(uiMessage, padding = if (includePadding) 0.dp else 8.dp)
+}
 
-                    MetadataLayoutMode.BELOW -> {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            content()
-                        }
-                        Row(
-                            modifier = Modifier
-                                .align(Alignment.End)
-                                .padding(bottom = 8.dp, end = 5.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            MessageMetadata(uiMessage)
-                        }
-                    }
-                }
+@Composable
+private fun ColumnScope.MessageBodyWithMetadata(
+    uiMessage: ChatMessageUi,
+    metadataLayoutMode: MetadataLayoutMode,
+    captionText: String?,
+    showInlineMetadata: Boolean,
+    content: @Composable () -> Unit
+) {
+    when (metadataLayoutMode) {
+        MetadataLayoutMode.CAPTION -> {
+            content()
+            CaptionWithMetadata(
+                captionText = captionText.orEmpty(),
+                uiMessage = uiMessage,
+                showInlineMetadata = showInlineMetadata
+            )
+        }
+
+        MetadataLayoutMode.OVERLAY -> {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                content()
+                OverlayMetadataBadge(uiMessage = uiMessage)
             }
         }
+
+        MetadataLayoutMode.INLINE -> {
+            Row(verticalAlignment = Alignment.Bottom) {
+                Box(modifier = Modifier.padding(bottom = 5.dp)) {
+                    content()
+                }
+                MessageMetadata(uiMessage)
+            }
+        }
+
+        MetadataLayoutMode.BELOW -> {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                content()
+            }
+            Row(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(bottom = 8.dp, end = 5.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                MessageMetadata(uiMessage)
+            }
+        }
+    }
+}
+
+@Composable
+private fun BoxScope.OverlayMetadataBadge(uiMessage: ChatMessageUi) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .padding(bottom = 8.dp, end = 8.dp)
+            .background(Color.Black.copy(alpha = 0.4f), RoundedCornerShape(10.dp))
+    ) {
+        MessageMetadata(uiMessage = uiMessage, color = Color.White)
+    }
+}
+
+@Composable
+private fun ColumnScope.MessageReactions(uiMessage: ChatMessageUi) {
+    if (uiMessage.reactions.isEmpty()) {
+        return
+    }
+
+    val onReactionClick = LocalReactionClickHandler.current
+    val onReactionLongClick = LocalReactionLongClickHandler.current
+
+    Row(
+        modifier = Modifier
+            .align(Alignment.Start)
+            .padding(start = dimensionResource(R.dimen.message_bubble_corners_horizontal_padding))
+            .offset(y = REACTION_OVERLAP_OFFSET)
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        uiMessage.reactions.forEach { reaction ->
+            MessageReactionChip(
+                messageId = uiMessage.id,
+                incoming = uiMessage.incoming,
+                reaction = reaction,
+                onReactionClick = onReactionClick,
+                onReactionLongClick = onReactionLongClick
+            )
+        }
+    }
+}
+
+@Composable
+private fun MessageReactionChip(
+    messageId: Int,
+    incoming: Boolean,
+    reaction: MessageReactionUi,
+    onReactionClick: (Int, String) -> Unit,
+    onReactionLongClick: (Int) -> Unit
+) {
+    val themedColors = LocalViewThemeUtils.current.getColorScheme(LocalContext.current)
+
+    val backgroundColor = if (reaction.isSelfReaction) {
+        themedColors.primaryContainer
+    } else {
+        colorResource(R.color.bg_message_list_incoming_bubble)
+    }
+    val borderColor = if (reaction.isSelfReaction) {
+        themedColors.primary
+    } else {
+        themedColors.surface
+    }
+    val textColor = if (incoming || reaction.isSelfReaction) {
+        colorResource(R.color.high_emphasis_text)
+    } else {
+        themedColors.onSurfaceVariant
+    }
+
+    Row(
+        modifier = Modifier
+            .border(1.5.dp, borderColor, RoundedCornerShape(16.dp))
+            .background(backgroundColor, RoundedCornerShape(16.dp))
+            .combinedClickable(
+                onClick = { onReactionClick(messageId, reaction.emoji) },
+                onLongClick = { onReactionLongClick(messageId) }
+            )
+            .padding(start = 8.dp, top = 4.dp, end = 8.dp, bottom = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = reaction.emoji,
+            color = textColor
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(
+            text = reaction.amount.toString(),
+            color = textColor,
+            fontSize = AUTHOR_TEXT_SIZE
+        )
     }
 }
 

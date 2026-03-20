@@ -15,13 +15,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
+import com.nextcloud.talk.chat.ui.model.MessageReactionUi
 import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import java.time.LocalDate
+
+private val PREVIEW_REACTIONS = listOf(
+    MessageReactionUi(emoji = "👍", amount = 1, isSelfReaction = true),
+    MessageReactionUi(emoji = "❤️", amount = 1, isSelfReaction = false)
+)
 
 @Composable
 fun ChatMessageView(
@@ -33,55 +40,61 @@ fun ChatMessageView(
     onPollClick: (pollId: String, pollName: String) -> Unit = { _, _ -> },
     onVoicePlayPauseClick: (Int) -> Unit = {},
     onVoiceSeek: (messageId: Int, progress: Int) -> Unit = { _, _ -> },
-    onVoiceSpeedClick: (Int) -> Unit = {}
+    onVoiceSpeedClick: (Int) -> Unit = {},
+    onReactionClick: (messageId: Int, emoji: String) -> Unit = { _, _ -> },
+    onReactionLongClick: (messageId: Int) -> Unit = {}
 ) {
-    Box(
-        modifier = Modifier
-            .combinedClickable(
-                onClick = { onLongClick?.invoke(message.id) },
-                onLongClick = { onLongClick?.invoke(message.id) }
-            )
+    CompositionLocalProvider(
+        LocalReactionClickHandler provides onReactionClick,
+        LocalReactionLongClickHandler provides onReactionLongClick
     ) {
-        when (val content = message.content) {
-            MessageTypeContent.RegularText -> {
-                TextMessage(
-                    uiMessage = message,
-                    isOneToOneConversation = isOneToOneConversation,
-                    conversationThreadId = conversationThreadId
+        Box(
+            modifier = Modifier
+                .combinedClickable(
+                    onClick = { onLongClick?.invoke(message.id) },
+                    onLongClick = { onLongClick?.invoke(message.id) }
                 )
-            }
+        ) {
+            when (val content = message.content) {
+                MessageTypeContent.RegularText -> {
+                    TextMessage(
+                        uiMessage = message,
+                        isOneToOneConversation = isOneToOneConversation,
+                        conversationThreadId = conversationThreadId
+                    )
+                }
 
-            MessageTypeContent.SystemMessage -> {
-                SystemMessage(message)
-            }
+                MessageTypeContent.SystemMessage -> {
+                    SystemMessage(message)
+                }
 
-            is MessageTypeContent.Media -> {
-                MediaMessage(
-                    typeContent = content,
-                    message = message,
-                    isOneToOneConversation = isOneToOneConversation,
-                    conversationThreadId = conversationThreadId,
-                    onImageClick = onFileClick
-                )
-            }
+                is MessageTypeContent.Media -> {
+                    MediaMessage(
+                        typeContent = content,
+                        message = message,
+                        isOneToOneConversation = isOneToOneConversation,
+                        conversationThreadId = conversationThreadId,
+                        onImageClick = onFileClick
+                    )
+                }
 
-            is MessageTypeContent.LinkPreview -> {
-                LinkMessage(
-                    typeContent = content,
-                    message = message,
-                    isOneToOneConversation = isOneToOneConversation,
-                    conversationThreadId = conversationThreadId
-                )
-            }
+                is MessageTypeContent.LinkPreview -> {
+                    LinkMessage(
+                        typeContent = content,
+                        message = message,
+                        isOneToOneConversation = isOneToOneConversation,
+                        conversationThreadId = conversationThreadId
+                    )
+                }
 
-            is MessageTypeContent.Geolocation -> {
-                GeolocationMessage(
-                    typeContent = content,
-                    message = message,
-                    isOneToOneConversation = isOneToOneConversation,
-                    conversationThreadId = conversationThreadId
-                )
-            }
+                is MessageTypeContent.Geolocation -> {
+                    GeolocationMessage(
+                        typeContent = content,
+                        message = message,
+                        isOneToOneConversation = isOneToOneConversation,
+                        conversationThreadId = conversationThreadId
+                    )
+                }
 
             is MessageTypeContent.Voice -> {
                 VoiceMessage(
@@ -95,27 +108,28 @@ fun ChatMessageView(
                 )
             }
 
-            is MessageTypeContent.Poll -> {
-                PollMessage(
-                    typeContent = content,
-                    message = message,
-                    isOneToOneConversation = isOneToOneConversation,
-                    conversationThreadId = conversationThreadId,
-                    onPollClick = onPollClick
-                )
-            }
+                is MessageTypeContent.Poll -> {
+                    PollMessage(
+                        typeContent = content,
+                        message = message,
+                        isOneToOneConversation = isOneToOneConversation,
+                        conversationThreadId = conversationThreadId,
+                        onPollClick = onPollClick
+                    )
+                }
 
-            is MessageTypeContent.Deck -> {
-                DeckMessage(
-                    typeContent = content,
-                    message = message,
-                    isOneToOneConversation = isOneToOneConversation,
-                    conversationThreadId = conversationThreadId
-                )
-            }
+                is MessageTypeContent.Deck -> {
+                    DeckMessage(
+                        typeContent = content,
+                        message = message,
+                        isOneToOneConversation = isOneToOneConversation,
+                        conversationThreadId = conversationThreadId
+                    )
+                }
 
-            else -> {
-                Log.d("ChatView", "Unknown message type: ${'$'}content")
+                else -> {
+                    Log.d("ChatView", "Unknown message type: ${'$'}content")
+                }
             }
         }
     }
@@ -275,7 +289,8 @@ private fun createBaseMessage(content: MessageTypeContent?): ChatMessageUi {
         statusIcon = MessageStatusIcon.SENT,
         timestamp = System.currentTimeMillis() / 1000,
         date = LocalDate.now(),
-        content = content
+        content = content,
+        reactions = PREVIEW_REACTIONS
     )
 }
 
@@ -294,7 +309,8 @@ private fun createBaseMessageWithoutCaption(content: MessageTypeContent?): ChatM
         statusIcon = MessageStatusIcon.SENT,
         timestamp = System.currentTimeMillis() / 1000,
         date = LocalDate.now(),
-        content = content
+        content = content,
+        reactions = PREVIEW_REACTIONS
     )
 }
 
@@ -313,6 +329,7 @@ private fun createLongBaseMessage(content: MessageTypeContent?): ChatMessageUi {
         statusIcon = MessageStatusIcon.SENT,
         timestamp = System.currentTimeMillis() / 1000,
         date = LocalDate.now(),
-        content = content
+        content = content,
+        reactions = PREVIEW_REACTIONS
     )
 }

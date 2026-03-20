@@ -668,7 +668,9 @@ class ChatActivity :
                     onPollClick = { pollId, pollName -> openPollDialog(pollId, pollName) },
                     onVoicePlayPauseClick = { onVoicePlayPauseClickCompose(it) },
                     onVoiceSeek = { _, progress -> chatViewModel.seekToMediaPlayer(progress) },
-                    onVoiceSpeedClick = { onVoiceSpeedClickCompose(it) }
+                    onVoiceSpeedClick = { onVoiceSpeedClickCompose(it) },
+                    onReactionClick = { messageId, emoji -> handleReactionClick(messageId, emoji) },
+                    onReactionLongClick = { messageId -> openReactionsDialog(messageId) }
                 )
             }
         }
@@ -747,6 +749,20 @@ class ChatActivity :
         PollMainDialogFragment
             .newInstance(conversationUser!!, roomToken, isOwnerOrModerator, pollId, pollName)
             .show(supportFragmentManager, "PollMainDialogFragment")
+    }
+
+    private fun handleReactionClick(messageId: Int, emoji: String) {
+        lifecycleScope.launch {
+            val chatMessage = chatViewModel.getMessageById(messageId.toLong()).first()
+            onClickReaction(chatMessage, emoji)
+        }
+    }
+
+    private fun openReactionsDialog(messageId: Int) {
+        lifecycleScope.launch {
+            val chatMessage = chatViewModel.getMessageById(messageId.toLong()).first()
+            onLongClickReactions(chatMessage)
+        }
     }
 
     // lifecycleScope.launch {
@@ -1282,32 +1298,6 @@ class ChatActivity :
             chatViewModel.mediaPlayerSeekbarObserver.onEach { msg ->
                 adapter?.update(msg)
             }.collect()
-        }
-
-        chatViewModel.reactionDeletedViewState.observe(this) { state ->
-            when (state) {
-                is ChatViewModel.ReactionDeletedSuccessState -> {
-                    updateUiToDeleteReaction(
-                        state.reactionDeletedModel.chatMessage,
-                        state.reactionDeletedModel.emoji
-                    )
-                }
-
-                else -> {}
-            }
-        }
-
-        chatViewModel.reactionAddedViewState.observe(this) { state ->
-            when (state) {
-                is ChatViewModel.ReactionAddedSuccessState -> {
-                    updateUiToAddReaction(
-                        state.reactionAddedModel.chatMessage,
-                        state.reactionAddedModel.emoji
-                    )
-                }
-
-                else -> {}
-            }
         }
 
         messageInputViewModel.editMessageViewState.observe(this) { state ->
@@ -4757,45 +4747,6 @@ class ChatActivity :
 
             adapter?.update(messageTemp)
         }
-    }
-
-    fun updateUiToAddReaction(message: ChatMessage, emoji: String) {
-        if (message.reactions == null) {
-            message.reactions = LinkedHashMap()
-        }
-
-        if (message.reactionsSelf == null) {
-            message.reactionsSelf = ArrayList()
-        }
-
-        var amount = message.reactions!![emoji]
-        if (amount == null) {
-            amount = 0
-        }
-        message.reactions!![emoji] = amount + 1
-        message.reactionsSelf!!.add(emoji)
-        adapter?.update(message)
-    }
-
-    fun updateUiToDeleteReaction(message: ChatMessage, emoji: String) {
-        if (message.reactions == null) {
-            message.reactions = LinkedHashMap()
-        }
-
-        if (message.reactionsSelf == null) {
-            message.reactionsSelf = ArrayList()
-        }
-
-        var amount = message.reactions!![emoji]
-        if (amount == null) {
-            amount = 0
-        }
-        message.reactions!![emoji] = amount - 1
-        if (message.reactions!![emoji]!! <= 0) {
-            message.reactions!!.remove(emoji)
-        }
-        message.reactionsSelf!!.remove(emoji)
-        adapter?.update(message)
     }
 
     private fun isShowMessageDeletionButton(message: ChatMessage): Boolean {

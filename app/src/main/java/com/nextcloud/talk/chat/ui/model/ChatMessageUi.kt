@@ -36,7 +36,14 @@ data class ChatMessageUi(
     val timestamp: Long,
     val date: LocalDate,
     val content: MessageTypeContent?,
+    val reactions: List<MessageReactionUi> = emptyList(),
     val parentMessage: ChatMessageUi? = null
+)
+
+data class MessageReactionUi(
+    val emoji: String,
+    val amount: Int,
+    val isSelfReaction: Boolean
 )
 
 sealed interface MessageTypeContent {
@@ -106,10 +113,25 @@ fun ChatMessage.toUiModel(
         timestamp = timestamp,
         date = dateKey(),
         content = getMessageTypeContent(user, chatMessage),
+        reactions = getReactionUiModels(),
         // setting parent message recursively might be a problem regarding recompositions? extract only what is needed
         // for UI?
-        parentMessage = parentMessage?.toUiModel(user,parentMessage, 0, null)
+        parentMessage = parentMessage?.toUiModel(user, parentMessage, 0, null)
     )
+
+private fun ChatMessage.getReactionUiModels(): List<MessageReactionUi> {
+    val selfReactions = reactionsSelf.orEmpty().toSet()
+
+    return reactions.orEmpty()
+        .filterValues { amount -> amount > 0 }
+        .map { (emoji, amount) ->
+        MessageReactionUi(
+            emoji = emoji,
+            amount = amount,
+            isSelfReaction = selfReactions.contains(emoji)
+        )
+        }
+}
 
 fun resolveStatusIcon(
     jsonMessageId: Int,

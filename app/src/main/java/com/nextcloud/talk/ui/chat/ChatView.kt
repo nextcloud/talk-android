@@ -58,7 +58,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 private const val LONG_1000 = 1000L
-private val AUTHOR_TEXT_SIZE = 12.sp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -74,7 +73,9 @@ fun GetNewChatView(
     onPollClick: (pollId: String, pollName: String) -> Unit = { _, _ -> },
     onVoicePlayPauseClick: (Int) -> Unit = {},
     onVoiceSeek: (messageId: Int, progress: Int) -> Unit = { _, _ -> },
-    onVoiceSpeedClick: (Int) -> Unit = {}
+    onVoiceSpeedClick: (Int) -> Unit = {},
+    onReactionClick: (messageId: Int, emoji: String) -> Unit = { _, _ -> },
+    onReactionLongClick: (messageId: Int) -> Unit = {}
 ) {
     val viewThemeUtils = LocalViewThemeUtils.current
     val colorScheme = viewThemeUtils.getColorScheme(LocalContext.current)
@@ -255,7 +256,9 @@ fun GetNewChatView(
                             onPollClick = onPollClick,
                             onVoicePlayPauseClick = onVoicePlayPauseClick,
                             onVoiceSeek = onVoiceSeek,
-                            onVoiceSpeedClick = onVoiceSpeedClick
+                            onVoiceSpeedClick = onVoiceSpeedClick,
+                            onReactionClick = onReactionClick,
+                            onReactionLongClick = onReactionLongClick
                         )
                     }
 
