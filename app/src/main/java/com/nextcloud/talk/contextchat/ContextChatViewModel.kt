@@ -12,7 +12,6 @@ import androidx.lifecycle.viewModelScope
 import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
-import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.users.UserManager
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,9 +22,6 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource: ChatNetworkDataSource) :
     ViewModel() {
-
-    @Inject
-    lateinit var chatViewModel: ChatViewModel
 
     @Inject
     lateinit var userManager: UserManager

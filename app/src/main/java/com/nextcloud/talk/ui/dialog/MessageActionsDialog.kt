@@ -645,10 +645,10 @@ class MessageActionsDialog(
 
         override fun onNext(reactionAddedModel: ReactionAddedModel) {
             if (reactionAddedModel.success) {
-                chatActivity.updateUiToAddReaction(
-                    reactionAddedModel.chatMessage,
-                    reactionAddedModel.emoji
-                )
+                // chatActivity.updateUiToAddReaction(
+                //     reactionAddedModel.chatMessage,
+                //     reactionAddedModel.emoji
+                // )
             }
         }
 
@@ -668,10 +668,10 @@ class MessageActionsDialog(
 
         override fun onNext(reactionDeletedModel: ReactionDeletedModel) {
             if (reactionDeletedModel.success) {
-                chatActivity.updateUiToDeleteReaction(
-                    reactionDeletedModel.chatMessage,
-                    reactionDeletedModel.emoji
-                )
+                // chatActivity.updateUiToDeleteReaction(
+                //     reactionDeletedModel.chatMessage,
+                //     reactionDeletedModel.emoji
+                // )
             }
         }
 

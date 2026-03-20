@@ -188,7 +188,6 @@ class ShowReactionsDialog(
     override fun onClick(reactionItem: ReactionItem) {
         if (hasReactPermission && reactionItem.reactionVoter.actorId?.equals(user?.userId) == true) {
             deleteReaction(chatMessage, reactionItem.reaction!!)
-            adapter?.list?.remove(reactionItem)
             dismiss()
         }
     }
@@ -213,7 +212,6 @@ class ShowReactionsDialog(
 
                 override fun onNext(genericOverall: GenericOverall) {
                     Log.d(TAG, "deleted reaction: $emoji")
-                    (activity as ChatActivity).updateUiToDeleteReaction(message, emoji)
                 }
 
                 override fun onError(e: Throwable) {
