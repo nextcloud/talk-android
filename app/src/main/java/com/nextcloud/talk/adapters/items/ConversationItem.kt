@@ -246,6 +246,16 @@ class ConversationItem(
         }
 
     private fun setLastMessage(holder: ConversationItemViewHolder, appContext: Context) {
+        val draftText = model.messageDraft?.messageText?.takeIf { it.isNotBlank() }
+        if (draftText != null) {
+            showDraft(holder, appContext, draftText)
+            return
+        }
+
+        holder.binding.dialogLastMessage.setTextColor(
+            ContextCompat.getColor(context, R.color.textColorMaxContrast)
+        )
+
         if (chatMessage != null) {
             holder.binding.dialogDate.visibility = View.VISIBLE
             holder.binding.dialogDate.text = DateUtils.getRelativeTimeSpanString(
@@ -275,6 +285,19 @@ class ConversationItem(
             holder.binding.dialogDate.visibility = View.GONE
             holder.binding.dialogLastMessage.text = ""
         }
+    }
+
+    private fun showDraft(holder: ConversationItemViewHolder, appContext: Context, draftText: String) {
+        holder.binding.dialogDate.visibility = View.VISIBLE
+        holder.binding.dialogDate.text = DateUtils.getRelativeTimeSpanString(
+            model.lastActivity * MILLIES,
+            System.currentTimeMillis(),
+            0,
+            DateUtils.FORMAT_ABBREV_RELATIVE
+        )
+
+        val label = String.format(appContext.getString(R.string.nc_draft_prefix), draftText)
+        viewThemeUtils.talk.themeDraftSubline(holder.binding.dialogLastMessage, label, draftText)
     }
 
     private fun calculateRegularLastMessageText(appContext: Context): CharSequence =
