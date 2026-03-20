@@ -84,6 +84,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.take
@@ -544,7 +545,7 @@ class ChatViewModel @AssistedInject constructor(
     // }
 
     private fun observeMessages() {
-        combine(messagesFlow, getLastCommonReadFlow) { messages, lastRead ->
+        combine(messagesFlow, getLastCommonReadFlow.onStart { emit(0) }) { messages, lastRead ->
             messages to lastRead
         }
             .onEach { (messages, lastRead) ->
