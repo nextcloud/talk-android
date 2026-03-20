@@ -41,7 +41,7 @@ val espressoVersion = "3.7.0"
 val androidxTestVersion = "1.5.0"
 val media3Version = "1.9.3"
 val coroutinesVersion = "1.10.2"
-val mockitoKotlinVersion = "6.2.3"
+val mockitoKotlinVersion = "6.3.0"
 
 android {
     compileSdk = 36
