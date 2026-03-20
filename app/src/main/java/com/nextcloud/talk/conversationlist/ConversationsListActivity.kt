@@ -88,6 +88,7 @@ import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contextchat.ContextChatView
 import com.nextcloud.talk.contextchat.ContextChatViewModel
+import com.nextcloud.talk.conversationlist.ui.ConversationsEmptyStateView
 import com.nextcloud.talk.conversationlist.ui.StatusBannerRow
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
@@ -207,6 +208,8 @@ class ConversationsListActivity :
 
     private var currentUser: User? = null
     private val _isMaintenanceMode = MutableStateFlow(false)
+    private val _isListEmpty = MutableStateFlow(false)
+    private val _showNoArchivedView = MutableStateFlow(false)
     private var roomsQueryDisposable: Disposable? = null
     private var openConversationsQueryDisposable: Disposable? = null
     private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
@@ -268,6 +271,7 @@ class ConversationsListActivity :
         setupActionBar()
         setContentView(binding.root)
         setupStatusBanner()
+        setupEmptyStateView()
         initSystemBars()
         viewThemeUtils.material.themeSearchCardView(binding.searchToolbarContainer)
         viewThemeUtils.material.colorMaterialButtonContent(binding.menuButton, ColorRole.ON_SURFACE_VARIANT)
@@ -671,11 +675,7 @@ class ConversationsListActivity :
         }
 
         val archiveFilterOn = filterState[ARCHIVE] == true
-        if (archiveFilterOn && newItems.isEmpty()) {
-            binding.noArchivedConversationLayout.visibility = View.VISIBLE
-        } else {
-            binding.noArchivedConversationLayout.visibility = View.GONE
-        }
+        _showNoArchivedView.value = archiveFilterOn && newItems.isEmpty()
 
         adapter?.updateDataSet(newItems, true)
         setFilterableItems(newItems)
@@ -1056,17 +1056,12 @@ class ConversationsListActivity :
     }
 
     private fun initOverallLayout(isConversationListNotEmpty: Boolean) {
+        _isListEmpty.value = !isConversationListNotEmpty
         if (isConversationListNotEmpty) {
-            if (binding.emptyLayout.visibility != View.GONE) {
-                binding.emptyLayout.visibility = View.GONE
-            }
             if (binding.swipeRefreshLayoutView.visibility != View.VISIBLE) {
                 binding.swipeRefreshLayoutView.visibility = View.VISIBLE
             }
         } else {
-            if (binding.emptyLayout.visibility != View.VISIBLE) {
-                binding.emptyLayout.visibility = View.VISIBLE
-            }
             if (binding.swipeRefreshLayoutView.visibility != View.GONE) {
                 binding.swipeRefreshLayoutView.visibility = View.GONE
             }
@@ -1161,6 +1156,23 @@ class ConversationsListActivity :
         }
     }
 
+    private fun setupEmptyStateView() {
+        val showLogo = BrandingUtils.isOriginalNextcloudClient(applicationContext)
+        binding.emptyStateComposeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val isListEmpty by _isListEmpty.collectAsStateWithLifecycle()
+                val showNoArchivedView by _showNoArchivedView.collectAsStateWithLifecycle()
+                ConversationsEmptyStateView(
+                    isListEmpty = isListEmpty,
+                    showNoArchivedView = showNoArchivedView,
+                    showLogo = showLogo,
+                    onCreateNewConversation = { showNewConversationsScreen() }
+                )
+            }
+        }
+    }
+
     private fun handleUI(show: Boolean) {
         binding.floatingActionButton.isEnabled = show
         binding.searchText.isEnabled = show
@@ -1209,8 +1221,6 @@ class ConversationsListActivity :
 
     @SuppressLint("ClickableViewAccessibility")
     private fun prepareViews() {
-        hideLogoForBrandedClients()
-
         _isMaintenanceMode.value = false
 
         layoutManager = SmoothScrollLinearLayoutManager(this)
@@ -1241,7 +1251,6 @@ class ConversationsListActivity :
             fetchPendingInvitations()
         }
         binding.swipeRefreshLayoutView.let { viewThemeUtils.androidx.themeSwipeRefreshLayout(it) }
-        binding.emptyLayout.setOnClickListener { showNewConversationsScreen() }
         binding.floatingActionButton.setOnClickListener {
             run(context)
             showNewConversationsScreen()
@@ -1281,12 +1290,6 @@ class ConversationsListActivity :
             binding.newMentionPopupBubble.visibility = View.GONE
         }
         binding.newMentionPopupBubble.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
-    }
-
-    private fun hideLogoForBrandedClients() {
-        if (!BrandingUtils.isOriginalNextcloudClient(applicationContext)) {
-            binding.emptyListIcon.visibility = View.GONE
-        }
     }
 
     @SuppressLint("CheckResult")
@@ -1388,7 +1391,7 @@ class ConversationsListActivity :
 
     private fun performFilterAndSearch(filter: String?) {
         if (filter!!.length >= SEARCH_MIN_CHARS) {
-            binding.noArchivedConversationLayout.visibility = View.GONE
+            _showNoArchivedView.value = false
             adapter?.setFilter(filter)
             conversationsListViewModel.getSearchQuery(context, filter)
         } else {
@@ -1401,11 +1404,7 @@ class ConversationsListActivity :
         adapter?.setFilter("")
         adapter?.filterItems()
         val archiveFilterOn = filterState[ARCHIVE] == true
-        if (archiveFilterOn && adapter!!.isEmpty) {
-            binding.noArchivedConversationLayout.visibility = View.VISIBLE
-        } else {
-            binding.noArchivedConversationLayout.visibility = View.GONE
-        }
+        _showNoArchivedView.value = archiveFilterOn && adapter!!.isEmpty
     }
 
     private fun clearMessageSearchResults() {
