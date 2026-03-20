@@ -79,6 +79,8 @@ import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.ShareUtils
+import com.nextcloud.talk.utils.ShortcutManagerHelper
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
@@ -524,6 +526,15 @@ class ConversationInfoActivity : BaseActivity() {
                     if (workInfo != null) {
                         when (workInfo.state) {
                             WorkInfo.State.SUCCEEDED -> {
+                                conversationUser?.id?.let { userId ->
+                                    ShortcutManagerHelper.disableConversationShortcut(
+                                        context,
+                                        conversationToken,
+                                        userId,
+                                        context.resources.getString(R.string.nc_shortcut_conversation_deleted)
+                                    )
+                                }
+
                                 startActivity(
                                     Intent(context, MainActivity::class.java).apply {
                                         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -578,6 +589,16 @@ class ConversationInfoActivity : BaseActivity() {
             WorkManager.getInstance(context).enqueue(
                 OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java).setInputData(it).build()
             )
+
+            conversationUser?.id?.let { userId ->
+                ShortcutManagerHelper.disableConversationShortcut(
+                    context,
+                    conversationToken,
+                    userId,
+                    context.resources.getString(R.string.nc_shortcut_conversation_deleted)
+                )
+            }
+
             startActivity(
                 Intent(context, MainActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) }
             )
