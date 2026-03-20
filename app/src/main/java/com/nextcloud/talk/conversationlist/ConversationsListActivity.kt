@@ -90,6 +90,7 @@ import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contextchat.ContextChatView
 import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationlist.ui.ConversationListFab
+import com.nextcloud.talk.conversationlist.ui.ConversationListSkeleton
 import com.nextcloud.talk.conversationlist.ui.ConversationsEmptyStateView
 import com.nextcloud.talk.conversationlist.ui.StatusBannerRow
 import com.nextcloud.talk.conversationlist.ui.UnreadMentionBubble
@@ -215,6 +216,7 @@ class ConversationsListActivity :
     private val showNoArchivedViewState = MutableStateFlow(false)
     private val showUnreadBubbleState = MutableStateFlow(false)
     private val isFabVisibleState = MutableStateFlow(true)
+    private val isShimmerVisibleState = MutableStateFlow(true)
     private var roomsQueryDisposable: Disposable? = null
     private var openConversationsQueryDisposable: Disposable? = null
     private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
@@ -279,6 +281,7 @@ class ConversationsListActivity :
         setupEmptyStateView()
         setupFab()
         setupUnreadBubble()
+        setupShimmer()
         initSystemBars()
         viewThemeUtils.material.themeSearchCardView(binding.searchToolbarContainer)
         viewThemeUtils.material.colorMaterialButtonContent(binding.menuButton, ColorRole.ON_SURFACE_VARIANT)
@@ -311,7 +314,7 @@ class ConversationsListActivity :
             adapter = FlexibleAdapter(conversationItems, this, true)
             addEmptyItemForEdgeToEdgeIfNecessary()
         } else {
-            binding.loadingContent.visibility = View.GONE
+            isShimmerVisibleState.value = false
         }
         adapter?.addListener(this)
         prepareViews()
@@ -437,7 +440,7 @@ class ConversationsListActivity :
                 is ConversationsListViewModel.GetRoomsSuccessState -> {
                     if (adapterWasNull) {
                         adapterWasNull = false
-                        binding.loadingContent.visibility = View.GONE
+                        isShimmerVisibleState.value = false
                     }
                     initOverallLayout(state.listIsNotEmpty)
                     binding.swipeRefreshLayoutView.isRefreshing = false
@@ -1223,6 +1226,19 @@ class ConversationsListActivity :
                             showUnreadBubbleState.value = false
                         }
                     )
+                }
+            }
+        }
+    }
+
+    private fun setupShimmer() {
+        binding.shimmerComposeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
+                val isShimmerVisible by isShimmerVisibleState.collectAsStateWithLifecycle()
+                MaterialTheme(colorScheme = colorScheme) {
+                    ConversationListSkeleton(isVisible = isShimmerVisible)
                 }
             }
         }

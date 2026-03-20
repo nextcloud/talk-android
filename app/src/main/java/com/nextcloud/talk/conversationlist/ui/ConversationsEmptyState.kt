@@ -124,8 +124,6 @@ fun NoArchivedConversationsView() {
     }
 }
 
-// --- Previews ---
-
 @Preview(showBackground = true)
 @Composable
 private fun EmptyConversationsWithLogoPreview() {
