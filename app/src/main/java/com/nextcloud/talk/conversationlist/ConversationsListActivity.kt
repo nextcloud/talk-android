@@ -92,6 +92,7 @@ import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationlist.ui.ConversationListFab
 import com.nextcloud.talk.conversationlist.ui.ConversationListSkeleton
 import com.nextcloud.talk.conversationlist.ui.ConversationsEmptyStateView
+import com.nextcloud.talk.conversationlist.ui.FederationInvitationHintCard
 import com.nextcloud.talk.conversationlist.ui.NotificationWarningCard
 import com.nextcloud.talk.conversationlist.ui.StatusBannerRow
 import com.nextcloud.talk.conversationlist.ui.UnreadMentionBubble
@@ -285,6 +286,7 @@ class ConversationsListActivity :
         setupUnreadBubble()
         setupShimmer()
         setupNotificationWarning()
+        setupFederationHintCard()
         initSystemBars()
         viewThemeUtils.material.themeSearchCardView(binding.searchToolbarContainer)
         viewThemeUtils.material.colorMaterialButtonContent(binding.menuButton, ColorRole.ON_SURFACE_VARIANT)
@@ -347,7 +349,6 @@ class ConversationsListActivity :
 
             loadUserAvatar(binding.switchAccountButton)
             viewThemeUtils.material.colorMaterialTextButton(binding.switchAccountButton)
-            viewThemeUtils.material.themeCardView(binding.conversationListHintInclude.hintLayoutCardview)
             searchBehaviorSubject.onNext(false)
             fetchRooms()
             fetchPendingInvitations()
@@ -391,25 +392,6 @@ class ConversationsListActivity :
                 if (adapter?.hasFilter() == true) {
                     adapter?.updateDataSet(searchResults)
                 }
-            }
-        }
-
-        conversationsListViewModel.getFederationInvitationsViewState.observe(this) { state ->
-            when (state) {
-                is ConversationsListViewModel.GetFederationInvitationsStartState -> {
-                    binding.conversationListHintInclude.conversationListHintLayout.visibility = View.GONE
-                }
-
-                is ConversationsListViewModel.GetFederationInvitationsSuccessState -> {
-                    binding.conversationListHintInclude.conversationListHintLayout.visibility =
-                        if (state.showInvitationsHint) View.VISIBLE else View.GONE
-                }
-
-                is ConversationsListViewModel.GetFederationInvitationsErrorState -> {
-                    // do nothing
-                }
-
-                else -> {}
             }
         }
 
@@ -1053,10 +1035,6 @@ class ConversationsListActivity :
 
     private fun fetchPendingInvitations() {
         if (hasSpreedFeatureCapability(currentUser?.capabilities?.spreedCapability, SpreedFeatures.FEDERATION_V1)) {
-            binding.conversationListHintInclude.conversationListHintLayout.setOnClickListener {
-                val intent = Intent(this, InvitationsActivity::class.java)
-                startActivity(intent)
-            }
             conversationsListViewModel.getFederationInvitations()
         }
     }
@@ -1838,6 +1816,25 @@ class ConversationsListActivity :
                             val settingsIntent = Intent(context, SettingsActivity::class.java)
                             settingsIntent.putExtras(bundle)
                             startActivity(settingsIntent)
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setupFederationHintCard() {
+        binding.federationHintComposeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
+                val visible by conversationsListViewModel.federationInvitationHintVisible.collectAsStateWithLifecycle()
+                MaterialTheme(colorScheme = colorScheme) {
+                    FederationInvitationHintCard(
+                        visible = visible,
+                        onClick = {
+                            val intent = Intent(context, InvitationsActivity::class.java)
+                            startActivity(intent)
                         }
                     )
                 }
