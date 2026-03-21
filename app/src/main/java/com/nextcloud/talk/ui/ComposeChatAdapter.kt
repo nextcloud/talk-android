@@ -811,7 +811,7 @@ class ComposeChatAdapter(
                 val imageUri = message.imageUrl
                 val mimetype = message.selectedIndividualHashMap!![KEY_MIMETYPE]
                 val drawableResourceId = getDrawableResourceIdForMimeType(mimetype)
-                val isGif = mimetype == Mimetype.IMAGE_GIF
+                val isGif = message.shouldAutoplayGif()
                 val authHeader = if (isGif) {
                     ApiUtils.getCredentials(currentUser.username, currentUser.token)
                 } else {
