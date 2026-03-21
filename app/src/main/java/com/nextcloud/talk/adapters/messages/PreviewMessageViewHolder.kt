@@ -17,6 +17,7 @@ import android.os.Handler
 import android.util.Base64
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -47,6 +48,9 @@ import com.nextcloud.talk.utils.FileViewerUtils
 import com.nextcloud.talk.utils.FileViewerUtils.ProgressUi
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.stfalcon.chatkit.messages.MessageHolders.IncomingImageMessageViewHolder
+import coil.load
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.MimetypeUtils
 import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
@@ -100,6 +104,23 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
         super.onBind(message)
         image.minimumHeight = DisplayUtils.convertDpToPixel(MIN_IMAGE_HEIGHT, context!!).toInt()
 
+        // Reset state for view recycling
+        image.adjustViewBounds = false
+        messageText.visibility = View.VISIBLE
+
+        // Check if image is GIF and load animated image
+        val mimetype = message.selectedIndividualHashMap?.get(KEY_MIMETYPE)
+        if (message.imageUrl != null && message.shouldAutoplayGif()) {
+            image.adjustViewBounds = true
+            image.load(message.imageUrl) {
+                size(coil.size.Size.ORIGINAL)
+                addHeader(
+                    "Authorization",
+                    ApiUtils.getCredentials(message.activeUser!!.username, message.activeUser!!.token)!!
+                )
+            }
+        }
+
         if (message.lastEditTimestamp != 0L && !message.isDeleted) {
             time.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp!!)
             messageEditIndicator.visibility = View.VISIBLE
@@ -110,13 +131,17 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
 
         viewThemeUtils!!.platform.colorCircularProgressBar(progressBar!!, ColorRole.PRIMARY)
         clickView = image
-        messageText.visibility = View.VISIBLE
         if (message.getCalculateMessageType() === ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
             val chatActivity = commonMessageInterface as ChatActivity
             fileViewerUtils = FileViewerUtils(chatActivity, message.activeUser!!)
             val fileName = message.selectedIndividualHashMap!![KEY_NAME]
 
             messageText.text = fileName
+
+            // hide filename display for GIF images
+            if (message.shouldAutoplayGif()) {
+                messageText.visibility = View.INVISIBLE
+            }
 
             if (message.activeUser != null &&
                 message.activeUser!!.username != null &&

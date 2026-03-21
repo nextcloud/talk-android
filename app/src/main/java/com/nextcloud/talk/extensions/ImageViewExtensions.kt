@@ -234,7 +234,7 @@ fun ImageView.loadThumbnail(url: String, user: User): io.reactivex.disposables.D
     requestBuilder.placeholder(LayerDrawable(layers))
 
     if (url.startsWith(user.baseUrl!!) &&
-        (url.contains("index.php/core/preview") || url.contains("/avatar/"))
+        (url.contains("index.php/core/preview") || url.contains("/avatar/") || url.contains("remote.php/dav/"))
     ) {
         requestBuilder.addHeader(
             "Authorization",
@@ -260,7 +260,7 @@ fun ImageView.loadImage(url: String, user: User, placeholder: Drawable? = null):
         .transformations(RoundedCornersTransformation(ROUNDING_PIXEL, ROUNDING_PIXEL, ROUNDING_PIXEL, ROUNDING_PIXEL))
 
     if (url.startsWith(user.baseUrl!!) &&
-        (url.contains("index.php/core/preview") || url.contains("/avatar/"))
+        (url.contains("index.php/core/preview") || url.contains("/avatar/") || url.contains("remote.php/dav/"))
     ) {
         requestBuilder.addHeader(
             "Authorization",

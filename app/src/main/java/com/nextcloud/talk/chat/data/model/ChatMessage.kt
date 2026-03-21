@@ -21,6 +21,7 @@ import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.Mimetype
 import com.stfalcon.chatkit.commons.models.IUser
 import com.stfalcon.chatkit.commons.models.MessageContentType
 import java.security.MessageDigest
@@ -236,6 +237,19 @@ data class ChatMessage(
         return false
     }
 
+    /**
+     * @return true if message is a GIF file, and size is below max-gif-size in the config
+     */
+    fun shouldAutoplayGif(): Boolean {
+        val mimetype = selectedIndividualHashMap?.get("mimetype")
+        if (mimetype != Mimetype.IMAGE_GIF) return false
+        val user = activeUser ?: return false
+        val capabilities = user.capabilities?.spreedCapability ?: return false
+        val maxGifSize = CapabilitiesUtil.getMaxGifSize(capabilities)
+        val fileSize = selectedIndividualHashMap?.get("size")?.toLongOrNull() ?: return true
+        return fileSize in 1..maxGifSize
+    }
+
     @Suppress("Detekt.NestedBlockDepth")
     override fun getImageUrl(): String? {
         if (messageParameters != null && messageParameters!!.size > 0) {
@@ -246,6 +260,16 @@ data class ChatMessage(
                     selectedIndividualHashMap = individualHashMap
                     if (!isVoiceMessage) {
                         if (activeUser != null && activeUser!!.baseUrl != null) {
+                            val path = individualHashMap["path"]
+                            if (path != null && activeUser!!.username != null) {
+                                if (shouldAutoplayGif()) {
+                                    return ApiUtils.getUrlForFileDownload(
+                                        activeUser!!.baseUrl!!,
+                                        activeUser!!.username!!,
+                                        path
+                                    )
+                                }
+                            }
                             return ApiUtils.getUrlForFilePreviewWithFileId(
                                 activeUser!!.baseUrl!!,
                                 individualHashMap["id"]!!,
