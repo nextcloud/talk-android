@@ -194,9 +194,10 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <include
-                android:id="@+id/conversation_list_hint_include"
-                layout="@layout/federated_invitation_hint" />
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/federation_hint_compose_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <androidx.compose.ui.platform.ComposeView
                 android:id="@+id/notification_warning_compose_view"

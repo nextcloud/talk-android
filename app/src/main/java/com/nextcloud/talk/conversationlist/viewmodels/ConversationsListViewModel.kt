@@ -121,15 +121,8 @@ class ConversationsListViewModel @Inject constructor(
         .roomListFlow
         .stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
 
-    object GetFederationInvitationsStartState : ViewState
-    object GetFederationInvitationsErrorState : ViewState
-
-    open class GetFederationInvitationsSuccessState(val showInvitationsHint: Boolean) : ViewState
-
-    private val _getFederationInvitationsViewState: MutableLiveData<ViewState> =
-        MutableLiveData(GetFederationInvitationsStartState)
-    val getFederationInvitationsViewState: LiveData<ViewState>
-        get() = _getFederationInvitationsViewState
+    private val _federationInvitationHintVisible = MutableStateFlow(false)
+    val federationInvitationHintVisible: StateFlow<Boolean> = _federationInvitationHintVisible.asStateFlow()
 
     object ShowBadgeStartState : ViewState
     object ShowBadgeErrorState : ViewState
@@ -140,7 +133,7 @@ class ConversationsListViewModel @Inject constructor(
         get() = _showBadgeViewState
 
     fun getFederationInvitations() {
-        _getFederationInvitationsViewState.value = GetFederationInvitationsStartState
+        _federationInvitationHintVisible.value = false
         _showBadgeViewState.value = ShowBadgeStartState
 
         userManager.users.blockingGet()?.forEach {
@@ -393,9 +386,9 @@ class ConversationsListViewModel @Inject constructor(
                 invitationsModel.user.baseUrl?.equals(currentUser.baseUrl) == true
             ) {
                 if (invitationsModel.invitations.isNotEmpty()) {
-                    _getFederationInvitationsViewState.value = GetFederationInvitationsSuccessState(true)
+                    _federationInvitationHintVisible.value = true
                 } else {
-                    _getFederationInvitationsViewState.value = GetFederationInvitationsSuccessState(false)
+                    _federationInvitationHintVisible.value = false
                 }
             } else {
                 if (invitationsModel.invitations.isNotEmpty()) {
@@ -405,7 +398,6 @@ class ConversationsListViewModel @Inject constructor(
         }
 
         override fun onError(e: Throwable) {
-            _getFederationInvitationsViewState.value = GetFederationInvitationsErrorState
             Log.e(TAG, "Failed to fetch pending invitations", e)
         }
 
