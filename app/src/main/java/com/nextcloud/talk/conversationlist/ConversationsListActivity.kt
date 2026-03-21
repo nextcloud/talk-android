@@ -117,7 +117,9 @@ import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.MENTION
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.UNREAD
 import com.nextcloud.talk.users.UserManager
+import androidx.compose.ui.platform.LocalContext
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
@@ -500,7 +502,8 @@ class ConversationsListActivity :
                             val imageURI = ApiUtils.getUrlForAvatar(
                                 currentUser?.baseUrl,
                                 msg.actorId,
-                                true
+                                true,
+                                darkMode = DisplayUtils.isDarkModeOn(LocalContext.current)
                             )
                             val conversationImageURI = ApiUtils.getUrlForConversationAvatar(
                                 ApiUtils.API_V1,
@@ -734,7 +737,8 @@ class ConversationsListActivity :
             val url = ApiUtils.getUrlForAvatar(
                 currentUser!!.baseUrl!!,
                 currentUser!!.userId,
-                true
+                true,
+                darkMode = DisplayUtils.isDarkModeOn(this)
             )
 
             val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)

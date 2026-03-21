@@ -67,12 +67,8 @@ class ContactsRepositoryImpl @Inject constructor(private val ncApiCoroutines: Nc
         return response
     }
 
-    override fun getImageUri(user: User, avatarId: String, requestBigSize: Boolean): String =
-        ApiUtils.getUrlForAvatar(
-            user.baseUrl,
-            avatarId,
-            requestBigSize
-        )
+    override fun getImageUri(user: User, avatarId: String, requestBigSize: Boolean, isDarkMode: Boolean): String =
+        ApiUtils.getUrlForAvatar(user.baseUrl, avatarId, requestBigSize, darkMode = isDarkMode)
 
     override fun getContactsFlow(user: User, searchQuery: String?): Flow<List<AutocompleteUser>> =
         flow {

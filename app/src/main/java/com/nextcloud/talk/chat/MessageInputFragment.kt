@@ -77,6 +77,7 @@ import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CharPolicy
 import com.nextcloud.talk.utils.ConversationUtils
@@ -297,7 +298,12 @@ class MessageInputFragment : Fragment() {
                 val url: String = if (message.actorType == "guests" || message.actorType == "guest") {
                     ApiUtils.getUrlForGuestAvatar(user!!.baseUrl!!, message.actorDisplayName, true)
                 } else {
-                    ApiUtils.getUrlForAvatar(user!!.baseUrl!!, message.actorId, false)
+                    ApiUtils.getUrlForAvatar(
+                        user!!.baseUrl!!,
+                        message.actorId,
+                        false,
+                        darkMode = DisplayUtils.isDarkModeOn(requireContext())
+                    )
                 }
 
                 val imageRequest: ImageRequest = ImageRequest.Builder(requireContext())

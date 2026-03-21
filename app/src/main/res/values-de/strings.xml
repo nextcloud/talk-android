@@ -71,7 +71,7 @@
     <string name="failed_to_save">%1$s konnte nicht gespeichert werden</string>
     <string name="fifteenMinutes">15 Minuten</string>
     <string name="file_list_folder">Ordner</string>
-    <string name="file_list_loading">Lade …</string>
+    <string name="file_list_loading">Lade …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 Stunden</string>
     <string name="get_invitations_error">Ausstehende Einladungen konnten nicht abgerufen werden</string>
@@ -108,8 +108,8 @@
     <string name="message_last_edited_by">Bearbeitet von %1$s</string>
     <string name="message_poll_tap_to_open">Tippen, um die Umfrage zu öffnen</string>
     <string name="message_search_begin_empty">Keine Suchergebnisse</string>
-    <string name="message_search_begin_typing">Beginnen Sie mit der Eingabe, um zu suchen …</string>
-    <string name="message_search_hint">Suche …</string>
+    <string name="message_search_begin_typing">Beginnen Sie mit der Eingabe, um zu suchen …</string>
+    <string name="message_search_hint">Suche …</string>
     <string name="messages">Nachrichten</string>
     <string name="mute_all_notifications">Alle Benachrichtigungen stummschalten</string>
     <string name="nc_Server_account_imported">Das ausgewählte Konto ist nun importiert und verfügbar</string>
@@ -141,7 +141,7 @@
     <string name="nc_call_ongoing_notification_content">Tippen um zum Anruf zurückzukehren</string>
     <string name="nc_call_ongoing_notification_default_title">Anruf ist aktiv</string>
     <string name="nc_call_raised_hand">%1$s hat die Hand gehoben</string>
-    <string name="nc_call_reconnecting">Verbinde erneut …</string>
+    <string name="nc_call_reconnecting">Verbinde erneut …</string>
     <string name="nc_call_ringing">KLINGELT</string>
     <string name="nc_call_state_in_call">%1$s ist in einem Gespräch</string>
     <string name="nc_call_state_with_phone">%1$s mit Telefon</string>
@@ -179,7 +179,7 @@
     <string name="nc_common_unknown">Unbekannt</string>
     <string name="nc_configure_cert_auth">Authentifizierungs-Zertifikat auswählen</string>
     <string name="nc_confirm">Bestätigen</string>
-    <string name="nc_connecting_call">Verbinde …</string>
+    <string name="nc_connecting_call">Verbinde …</string>
     <string name="nc_contacts_done">Fertig</string>
     <string name="nc_conversation_description">Beschreibung der Unterhaltung</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Zur Datei wechseln</string>
@@ -255,7 +255,7 @@
     <string name="nc_dialog_outdated_client_description">Die App ist zu alt und wird von diesem Server nicht mehr unterstützt. Bitte aktualisieren.</string>
     <string name="nc_dialog_outdated_client_option_update">Aktualisieren</string>
     <string name="nc_dialog_reauth_or_delete">Möchten Sie das Konto erneut autorisieren oder löschen?</string>
-    <string name="nc_dialog_save_to_storage_content">Wenn Sie dieses Medium im Speicher sichern, können alle anderen Apps auf Ihrem Gerät darauf zugreifen.</string>
+    <string name="nc_dialog_save_to_storage_content">Wenn dieses Medium im Speicher gesichert wird, können alle anderen Apps auf Ihrem Gerät darauf zugreifen.</string>
     <string name="nc_dialog_save_to_storage_continue">Fortsetzen?</string>
     <string name="nc_dialog_save_to_storage_no">Nein</string>
     <string name="nc_dialog_save_to_storage_title">Im Speicher speichern?</string>
@@ -288,7 +288,7 @@
     <string name="nc_following_link">Benutzer kommt von einem öffentlichen Link</string>
     <string name="nc_formatted_message_you">Sie: %1$s</string>
     <string name="nc_forward_message">Weiterleiten</string>
-    <string name="nc_forward_to_three_dots">Weiterleiten an …</string>
+    <string name="nc_forward_to_three_dots">Weiterleiten an …</string>
     <string name="nc_gallery">Galerie</string>
     <string name="nc_get_from_provider">Sie haben noch keinen Server?\nKlicken Sie hier, um Anbieter zu finden</string>
     <string name="nc_get_source_code">Zum Programmcode</string>
@@ -307,7 +307,7 @@
     <string name="nc_guest_access_resend_invitations_failed">Einladungen wurden aufgrund eines Fehlers nicht gesendet.</string>
     <string name="nc_guest_access_resend_invitations_successful">Es wurden erneut Einladungen verschickt.</string>
     <string name="nc_guest_access_share_link">Unterhaltungs-Link teilen</string>
-    <string name="nc_hint_enter_a_message">Eine Nachricht eingeben …</string>
+    <string name="nc_hint_enter_a_message">Eine Nachricht eingeben …</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Die Akkuoptimierung wird nicht ignoriert. Dies sollte geändert werden, um sicherzustellen, dass Benachrichtigungen im Hintergrund funktionieren! Bitte dazu  auf OK klicken und \"Alle Apps\" wählen -> %1$s und anschließend \"Nicht optimieren\" bzw. \"Hintergrundnutzung zulassen -> Uneingeschränkt\" auswählen.</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Batterieoptimierung ignorieren</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
@@ -320,7 +320,7 @@
     <string name="nc_last_moderator_leaving_room_warning">Sie müssen einen neuen Moderator bestimmen, bevor Sie die Unterhaltung verlassen können.</string>
     <string name="nc_last_modified">%1$s | Zuletzt geändert: %2$s</string>
     <string name="nc_leave">Unterhaltung verlassen</string>
-    <string name="nc_leaving_call">Verlasse Anruf …</string>
+    <string name="nc_leaving_call">Verlasse Anruf …</string>
     <string name="nc_license_summary">GNU General Public Lizenz, Version 3</string>
     <string name="nc_license_title">Lizenz</string>
     <string name="nc_limit_hit">%s-Zeichen-Limit wurde erreicht</string>
@@ -544,7 +544,7 @@
     <string name="nc_share_to_choose_account">Konto auswählen</string>
     <string name="nc_shared_items">Geteilte Elemente</string>
     <string name="nc_shared_items_deck_card">Deck-Karte</string>
-    <string name="nc_shared_items_description">Bilder, Dateien, Sprachnachrichten …</string>
+    <string name="nc_shared_items_description">Bilder, Dateien, Sprachnachrichten …</string>
     <string name="nc_shared_items_empty">Keine geteilten Elemente</string>
     <string name="nc_shared_items_location">Ort</string>
     <string name="nc_shared_location">Geteilter Ort</string>
@@ -648,7 +648,7 @@
     <string name="record_stop_confirm_message">Soll die Aufnahme beendet werden?</string>
     <string name="record_stop_confirm_title">Anrufaufnahme beenden</string>
     <string name="record_stop_description">Aufnahme stoppen</string>
-    <string name="record_stopping">Stoppe Aufnahme …</string>
+    <string name="record_stopping">Stoppe Aufnahme …</string>
     <string name="recording_consent_all">Für alle Unterhaltungen ist eine Zustimmung zur Aufzeichnung erforderlich</string>
     <string name="recording_consent_description">Die Aufnahme kann Ihre Stimme sowie Video von der Kamera und einer Bildschirmfreigabe beinhalten. Vor der Teilnahme am Anruf ist Ihre Zustimmung hierzu erforderlich. Stimmen Sie zu?</string>
     <string name="recording_consent_for_conversation_description">Zur Teilnahme an dieser Unterhaltung ist die Zustimmung zur Aufzeichnung erforderlich.</string>
@@ -679,7 +679,7 @@
     <string name="send_email">E-Mail senden</string>
     <string name="send_to">Senden an</string>
     <string name="send_to_forbidden">Sie sind nicht berechtigt, Inhalte in diesem Chat zu teilen</string>
-    <string name="send_to_three_dots">Senden an …</string>
+    <string name="send_to_three_dots">Senden an …</string>
     <string name="send_without_notification">Ohne Benachrichtigung senden</string>
     <string name="set">Setzen</string>
     <string name="set_avatar_from_camera">Avatar mit der Kamera setzen</string>
@@ -734,10 +734,10 @@
     <string name="translation_error_title">Übersetzung fehlgeschlagen</string>
     <string name="translation_from">Von</string>
     <string name="translation_to">An</string>
-    <string name="typing_1_other">und 1 anderer schreibt…</string>
-    <string name="typing_are_typing">schreiben…</string>
-    <string name="typing_is_typing">schreibt…</string>
-    <string name="typing_x_others">und %1$s andere schreiben…</string>
+    <string name="typing_1_other">und 1 anderer schreibt …</string>
+    <string name="typing_are_typing">schreiben …</string>
+    <string name="typing_is_typing">schreibt …</string>
+    <string name="typing_x_others">und %1$s andere schreiben …</string>
     <string name="unarchive_conversation">Unterhaltung dearchivieren</string>
     <string name="unarchive_hint">Sobald eine Unterhaltung dearchiviert wurde, wird sie standardmäßig wieder angezeigt.</string>
     <string name="unarchived_conversation">%1$s dearchiviert</string>
