@@ -198,9 +198,10 @@
                 android:id="@+id/conversation_list_hint_include"
                 layout="@layout/federated_invitation_hint" />
 
-            <include
-                android:id="@+id/conversation_list_notification_warning"
-                layout="@layout/notifications_warning" />
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/notification_warning_compose_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"

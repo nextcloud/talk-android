@@ -92,6 +92,7 @@ import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationlist.ui.ConversationListFab
 import com.nextcloud.talk.conversationlist.ui.ConversationListSkeleton
 import com.nextcloud.talk.conversationlist.ui.ConversationsEmptyStateView
+import com.nextcloud.talk.conversationlist.ui.NotificationWarningCard
 import com.nextcloud.talk.conversationlist.ui.StatusBannerRow
 import com.nextcloud.talk.conversationlist.ui.UnreadMentionBubble
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
@@ -217,6 +218,7 @@ class ConversationsListActivity :
     private val showUnreadBubbleState = MutableStateFlow(false)
     private val isFabVisibleState = MutableStateFlow(true)
     private val isShimmerVisibleState = MutableStateFlow(true)
+    private val showNotificationWarningState = MutableStateFlow(false)
     private var roomsQueryDisposable: Disposable? = null
     private var openConversationsQueryDisposable: Disposable? = null
     private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
@@ -282,6 +284,7 @@ class ConversationsListActivity :
         setupFab()
         setupUnreadBubble()
         setupShimmer()
+        setupNotificationWarning()
         initSystemBars()
         viewThemeUtils.material.themeSearchCardView(binding.searchToolbarContainer)
         viewThemeUtils.material.colorMaterialButtonContent(binding.menuButton, ColorRole.ON_SURFACE_VARIANT)
@@ -319,7 +322,7 @@ class ConversationsListActivity :
         adapter?.addListener(this)
         prepareViews()
 
-        showNotificationWarning()
+        showNotificationWarningState.value = shouldShowNotificationWarning()
 
         showShareToScreen = hasActivityActionSendIntent()
 
@@ -345,13 +348,6 @@ class ConversationsListActivity :
             loadUserAvatar(binding.switchAccountButton)
             viewThemeUtils.material.colorMaterialTextButton(binding.switchAccountButton)
             viewThemeUtils.material.themeCardView(binding.conversationListHintInclude.hintLayoutCardview)
-            viewThemeUtils.material.themeCardView(
-                binding.conversationListNotificationWarning.notificationWarningCardview
-            )
-            viewThemeUtils.material.colorMaterialButtonText(binding.conversationListNotificationWarning.notNowButton)
-            viewThemeUtils.material.colorMaterialButtonText(
-                binding.conversationListNotificationWarning.showSettingsButton
-            )
             searchBehaviorSubject.onNext(false)
             fetchRooms()
             fetchPendingInvitations()
@@ -1823,25 +1819,29 @@ class ConversationsListActivity :
         }
     }
 
-    private fun showNotificationWarning() {
-        if (shouldShowNotificationWarning()) {
-            binding.conversationListNotificationWarning.conversationListNotificationWarningLayout.visibility =
-                View.VISIBLE
-            binding.conversationListNotificationWarning.notNowButton.setOnClickListener {
-                binding.conversationListNotificationWarning.conversationListNotificationWarningLayout.visibility =
-                    View.GONE
-                val lastWarningDate = System.currentTimeMillis()
-                appPreferences.setNotificationWarningLastPostponedDate(lastWarningDate)
+    private fun setupNotificationWarning() {
+        binding.notificationWarningComposeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
+                val showWarning by showNotificationWarningState.collectAsStateWithLifecycle()
+                MaterialTheme(colorScheme = colorScheme) {
+                    NotificationWarningCard(
+                        visible = showWarning,
+                        onNotNow = {
+                            appPreferences.setNotificationWarningLastPostponedDate(System.currentTimeMillis())
+                            showNotificationWarningState.value = false
+                        },
+                        onShowSettings = {
+                            val bundle = Bundle()
+                            bundle.putBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY, true)
+                            val settingsIntent = Intent(context, SettingsActivity::class.java)
+                            settingsIntent.putExtras(bundle)
+                            startActivity(settingsIntent)
+                        }
+                    )
+                }
             }
-            binding.conversationListNotificationWarning.showSettingsButton.setOnClickListener {
-                val bundle = Bundle()
-                bundle.putBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY, true)
-                val settingsIntent = Intent(context, SettingsActivity::class.java)
-                settingsIntent.putExtras(bundle)
-                startActivity(settingsIntent)
-            }
-        } else {
-            binding.conversationListNotificationWarning.conversationListNotificationWarningLayout.visibility = View.GONE
         }
     }
 
