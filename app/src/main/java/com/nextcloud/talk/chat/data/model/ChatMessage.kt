@@ -237,6 +237,19 @@ data class ChatMessage(
         return false
     }
 
+    /**
+     * @return true if message is a GIF file, and size is below max-gif-size in the config
+     */
+    fun shouldAutoplayGif(): Boolean {
+        val mimetype = selectedIndividualHashMap?.get("mimetype")
+        if (mimetype != Mimetype.IMAGE_GIF) return false
+        val user = activeUser ?: return false
+        val capabilities = user.capabilities?.spreedCapability ?: return false
+        val maxGifSize = CapabilitiesUtil.getMaxGifSize(capabilities)
+        val fileSize = selectedIndividualHashMap?.get("size")?.toLongOrNull() ?: return true
+        return fileSize in 1..maxGifSize
+    }
+
     @Suppress("Detekt.NestedBlockDepth")
     override fun getImageUrl(): String? {
         if (messageParameters != null && messageParameters!!.size > 0) {
@@ -247,17 +260,15 @@ data class ChatMessage(
                     selectedIndividualHashMap = individualHashMap
                     if (!isVoiceMessage) {
                         if (activeUser != null && activeUser!!.baseUrl != null) {
-                            val mimetype = individualHashMap["mimetype"]
                             val path = individualHashMap["path"]
-                            if (mimetype == Mimetype.IMAGE_GIF &&
-                                path != null &&
-                                activeUser!!.username != null
-                            ) {
-                                return ApiUtils.getUrlForFileDownload(
-                                    activeUser!!.baseUrl!!,
-                                    activeUser!!.username!!,
-                                    path
-                                )
+                            if (path != null && activeUser!!.username != null) {
+                                if (shouldAutoplayGif()) {
+                                    return ApiUtils.getUrlForFileDownload(
+                                        activeUser!!.baseUrl!!,
+                                        activeUser!!.username!!,
+                                        path
+                                    )
+                                }
                             }
                             return ApiUtils.getUrlForFilePreviewWithFileId(
                                 activeUser!!.baseUrl!!,

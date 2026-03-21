@@ -110,7 +110,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
 
         // Check if image is GIF and load animated image
         val mimetype = message.selectedIndividualHashMap?.get(KEY_MIMETYPE)
-        if (MimetypeUtils.isGif(mimetype ?: "") && message.imageUrl != null) {
+        if (message.imageUrl != null && message.shouldAutoplayGif()) {
             image.adjustViewBounds = true
             image.load(message.imageUrl) {
                 size(coil.size.Size.ORIGINAL)
@@ -139,7 +139,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             messageText.text = fileName
 
             // hide filename display for GIF images
-            if (MimetypeUtils.isGif(mimetype ?: "")) {
+            if (message.shouldAutoplayGif()) {
                 messageText.visibility = View.INVISIBLE
             }
 
