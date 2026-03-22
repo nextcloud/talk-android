@@ -1,9 +1,11 @@
-/*
+﻿/*
  * Nextcloud Talk - Android Client
  *
  * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
+@file:Suppress("TooManyFunctions")
 
 package com.nextcloud.talk.conversationlist.ui
 
@@ -21,6 +23,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -40,7 +43,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.colorResource
@@ -55,12 +60,13 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.graphics.toArgb
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.extensions.loadNoteToSelfAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.models.MessageDraft
@@ -74,8 +80,6 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.SpreedFeatures
 
-// ── Constants ─────────────────────────────────────────────────────────────────
-
 private const val AVATAR_SIZE_DP = 48
 private const val FAVORITE_OVERLAY_SIZE_DP = 16
 private const val STATUS_OVERLAY_SIZE_DP = 18
@@ -86,8 +90,7 @@ private const val ICON_MSG_SIZE_DP = 14
 private const val ICON_MSG_SPACING_DP = 2
 private const val UNREAD_THRESHOLD = 1000
 private const val UNREAD_BUBBLE_STROKE_DP = 1.5f
-
-// ── Avatar content model ───────────────────────────────────────────────────────
+private const val MILLIS_PER_SECOND = 1_000L
 
 private sealed class AvatarContent {
     data class Url(val url: String) : AvatarContent()
@@ -96,10 +99,8 @@ private sealed class AvatarContent {
     object NoteToSelf : AvatarContent()
 }
 
-@Composable
-private fun buildAvatarContent(model: ConversationModel, currentUser: User): AvatarContent {
-    val context = LocalContext.current
-    val isDark = DisplayUtils.isDarkModeOn(context)
+private fun buildAvatarContent(model: ConversationModel, currentUser: User, isDark: Boolean): AvatarContent {
+    val avatarVersion = model.avatarVersion.takeIf { it.isNotEmpty() }
     return when {
         model.objectType == ConversationEnums.ObjectType.SHARE_PASSWORD ->
             AvatarContent.Res(R.drawable.ic_circular_lock)
@@ -123,22 +124,23 @@ private fun buildAvatarContent(model: ConversationModel, currentUser: User): Ava
                     currentUser.baseUrl,
                     model.token,
                     isDark,
-                    model.avatarVersion.takeIf { it.isNotEmpty() }
+                    avatarVersion
                 )
             )
     }
 }
 
-// ── Main Composable ────────────────────────────────────────────────────────────
+/** Groups the tap callbacks for [ConversationListItem] to keep the parameter count low. */
+data class ConversationListItemCallbacks(val onClick: () -> Unit, val onLongClick: () -> Unit)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ConversationListItem(
     model: ConversationModel,
     currentUser: User,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit,
-    modifier: Modifier = Modifier
+    callbacks: ConversationListItemCallbacks,
+    modifier: Modifier = Modifier,
+    searchQuery: String = ""
 ) {
     val chatMessage = remember(model.lastMessage, currentUser) {
         model.lastMessage?.asModel()?.also { it.activeUser = currentUser }
@@ -147,10 +149,10 @@ fun ConversationListItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .combinedClickable(onClick = onClick, onLongClick = onLongClick)
+            .combinedClickable(onClick = callbacks.onClick, onLongClick = callbacks.onLongClick)
             .padding(
                 horizontal = 16.dp,
-                vertical = 8.dp
+                vertical = 16.dp
             ),
         verticalAlignment = Alignment.Top
     ) {
@@ -166,7 +168,7 @@ fun ConversationListItem(
         if (model.hasSensitive) {
             SensitiveContent(model = model, currentUser = currentUser)
         } else {
-            FullContent(model = model, currentUser = currentUser, chatMessage = chatMessage)
+            FullContent(model = model, currentUser = currentUser, chatMessage = chatMessage, searchQuery = searchQuery)
         }
     }
 }
@@ -198,23 +200,23 @@ private fun RowScope.SensitiveContent(model: ConversationModel, currentUser: Use
 private fun RowScope.FullContent(
     model: ConversationModel,
     currentUser: User,
-    chatMessage: ChatMessage?
+    chatMessage: ChatMessage?,
+    searchQuery: String = ""
 ) {
     Column(modifier = Modifier.weight(1f)) {
-        ConversationNameRow(model = model, chatMessage = chatMessage)
+        ConversationNameRow(model = model, chatMessage = chatMessage, searchQuery = searchQuery)
         Spacer(Modifier.height(4.dp))
-        ConversationLastMessageRow(model = model, currentUser = currentUser, chatMessage = chatMessage)
+        ConversationLastMessageRow(
+            model = model,
+            currentUser = currentUser,
+            chatMessage = chatMessage,
+            searchQuery = searchQuery
+        )
     }
 }
 
-// ── Sub-Composables ────────────────────────────────────────────────────────────
-
 @Composable
-private fun ConversationAvatar(
-    model: ConversationModel,
-    currentUser: User,
-    modifier: Modifier = Modifier
-) {
+private fun ConversationAvatar(model: ConversationModel, currentUser: User, modifier: Modifier = Modifier) {
     Box(modifier = modifier) {
         ConversationAvatarImage(
             model = model,
@@ -258,32 +260,53 @@ private fun ConversationAvatar(
     }
 }
 
+@Suppress("LongMethod")
 @Composable
-private fun ConversationAvatarImage(
-    model: ConversationModel,
-    currentUser: User,
-    modifier: Modifier = Modifier
-) {
+private fun ConversationAvatarImage(model: ConversationModel, currentUser: User, modifier: Modifier = Modifier) {
     val isInPreview = LocalInspectionMode.current
-    val avatarContent = buildAvatarContent(model = model, currentUser = currentUser)
+    val context = LocalContext.current
+    val isDark = LocalConfiguration.current.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
+        Configuration.UI_MODE_NIGHT_YES
+    val credentials = remember(currentUser.id) {
+        ApiUtils.getCredentials(currentUser.username, currentUser.token) ?: ""
+    }
+    val avatarContent = buildAvatarContent(model = model, currentUser = currentUser, isDark = isDark)
 
     when (avatarContent) {
         is AvatarContent.Url -> {
-            AsyncImage(
-                model = avatarContent.url,
-                contentDescription = stringResource(R.string.avatar),
-                contentScale = ContentScale.Crop,
-                modifier = modifier
-            )
+            if (isInPreview) {
+                Box(modifier = modifier.background(Color.LightGray))
+            } else {
+                val request = remember(avatarContent.url, credentials) {
+                    ImageRequest.Builder(context)
+                        .data(avatarContent.url)
+                        .diskCacheKey("${avatarContent.url}#v2")
+                        .addHeader("Authorization", credentials)
+                        .crossfade(true)
+                        .build()
+                }
+                AsyncImage(
+                    model = request,
+                    contentDescription = stringResource(R.string.avatar),
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(R.drawable.account_circle_96dp),
+                    error = painterResource(R.drawable.account_circle_96dp),
+                    modifier = modifier
+                )
+            }
         }
 
         is AvatarContent.Res -> {
-            AsyncImage(
-                model = avatarContent.resId,
-                contentDescription = stringResource(R.string.avatar),
-                contentScale = ContentScale.Crop,
-                modifier = modifier
-            )
+            if (isInPreview) {
+                Box(modifier = modifier.background(Color.LightGray))
+            } else {
+                AsyncImage(
+                    model = avatarContent.resId,
+                    contentDescription = stringResource(R.string.avatar),
+                    contentScale = ContentScale.Crop,
+                    modifier = modifier
+                )
+            }
         }
 
         AvatarContent.System -> {
@@ -417,25 +440,34 @@ private fun PublicBadgeOverlay(model: ConversationModel, modifier: Modifier = Mo
         else -> null
     } ?: return
 
-    Icon(
-        painter = painterResource(badgeRes),
-        contentDescription = stringResource(R.string.nc_public_call_status),
-        tint = colorResource(R.color.no_emphasis_text),
+    Box(
+        contentAlignment = Alignment.Center,
         modifier = modifier
-    )
+            .background(MaterialTheme.colorScheme.surface, CircleShape)
+    ) {
+        Icon(
+            painter = painterResource(badgeRes),
+            contentDescription = stringResource(R.string.nc_public_call_status),
+            tint = colorResource(R.color.no_emphasis_text),
+            modifier = Modifier
+                .padding(1.dp)
+                .fillMaxSize()
+        )
+    }
 }
 
 @Composable
-private fun ConversationNameRow(model: ConversationModel, chatMessage: ChatMessage?) {
+private fun ConversationNameRow(model: ConversationModel, chatMessage: ChatMessage?, searchQuery: String = "") {
     val hasDraft = model.messageDraft?.messageText?.isNotBlank() == true
     val showDate = chatMessage != null || hasDraft
+    val primaryColor = MaterialTheme.colorScheme.primary
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = model.displayName,
+            text = buildHighlightedText(model.displayName, searchQuery, primaryColor),
             modifier = Modifier.weight(1f),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -448,7 +480,7 @@ private fun ConversationNameRow(model: ConversationModel, chatMessage: ChatMessa
             val dateText = remember(model.lastActivity) {
                 if (model.lastActivity > 0L) {
                     DateUtils.getRelativeTimeSpanString(
-                        model.lastActivity * 1_000L,
+                        model.lastActivity * MILLIS_PER_SECOND,
                         System.currentTimeMillis(),
                         0L,
                         DateUtils.FORMAT_ABBREV_RELATIVE
@@ -471,7 +503,8 @@ private fun ConversationNameRow(model: ConversationModel, chatMessage: ChatMessa
 private fun ConversationLastMessageRow(
     model: ConversationModel,
     currentUser: User,
-    chatMessage: ChatMessage?
+    chatMessage: ChatMessage?,
+    searchQuery: String = ""
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -481,14 +514,13 @@ private fun ConversationLastMessageRow(
             model = model,
             currentUser = currentUser,
             chatMessage = chatMessage,
+            searchQuery = searchQuery,
             modifier = Modifier.weight(1f)
         )
         Spacer(Modifier.width(4.dp))
         UnreadBubble(model = model, currentUser = currentUser)
     }
 }
-
-// ── Unread Bubble ─────────────────────────────────────────────────────────────
 
 @Composable
 private fun UnreadBubble(model: ConversationModel, currentUser: User) {
@@ -565,22 +597,22 @@ private fun GreyUnreadChip(text: String) {
     }
 }
 
-// ── Last Message Content ───────────────────────────────────────────────────────
-
+@Suppress("LongMethod", "CyclomaticComplexMethod", "ReturnCount")
 @Composable
 private fun LastMessageContent(
     model: ConversationModel,
     currentUser: User,
     chatMessage: ChatMessage?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    searchQuery: String = ""
 ) {
     val isBold = model.unreadMessages > 0
     val fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal
+    val primaryColor = MaterialTheme.colorScheme.primary
 
-    // ── Case 1: Draft ─────────────────────────────────────────────────────────
+    // Draft
     val draftText = model.messageDraft?.messageText?.takeIf { it.isNotBlank() }
     if (draftText != null) {
-        val primaryColor = MaterialTheme.colorScheme.primary
         val draftPrefixTemplate = stringResource(R.string.nc_draft_prefix)
         val fullLabel = remember(draftText, draftPrefixTemplate) {
             String.format(draftPrefixTemplate, draftText)
@@ -590,7 +622,7 @@ private fun LastMessageContent(
             withStyle(SpanStyle(color = primaryColor, fontWeight = FontWeight.Bold)) {
                 append(fullLabel.substring(0, prefixEnd))
             }
-            append(draftText)
+            append(buildHighlightedText(draftText, searchQuery, primaryColor))
         }
         Text(
             text = annotated,
@@ -598,21 +630,26 @@ private fun LastMessageContent(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodyMedium,
-            fontWeight = fontWeight
+            fontWeight = fontWeight,
+            color = colorResource(R.color.textColorMaxContrast)
         )
         return
     }
 
-    // ── Case 2: No message ────────────────────────────────────────────────────
+    // No message
     if (chatMessage == null) {
         Text(text = "", modifier = modifier)
         return
     }
 
-    // ── Case 3: Deleted comment ───────────────────────────────────────────────
+    // Deleted comment
     if (chatMessage.isDeletedCommentMessage) {
         Text(
-            text = chatMessage.message ?: "",
+            text = buildHighlightedText(
+                ChatUtils.getParsedMessage(chatMessage.message, chatMessage.messageParameters) ?: "",
+                searchQuery,
+                primaryColor
+            ),
             modifier = modifier,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -624,27 +661,36 @@ private fun LastMessageContent(
 
     val msgType = chatMessage.getCalculateMessageType()
 
-    // ── Case 4: System message ────────────────────────────────────────────────
+    // System message
     if (msgType == ChatMessage.MessageType.SYSTEM_MESSAGE ||
         model.type == ConversationEnums.ConversationType.ROOM_SYSTEM
     ) {
+        val parsedText = ChatUtils.getParsedMessage(chatMessage.message, chatMessage.messageParameters) ?: ""
         Text(
-            text = chatMessage.message ?: "",
+            text = buildHighlightedText(parsedText, searchQuery, primaryColor),
             modifier = modifier,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodyMedium,
-            fontWeight = fontWeight
+            fontWeight = fontWeight,
+            color = colorResource(R.color.textColorMaxContrast)
         )
         return
     }
 
-    // ── Case 5: Attachment / special message types ────────────────────────────
+    // Attachment / special message types
     when (msgType) {
         ChatMessage.MessageType.VOICE_MESSAGE -> {
             val name = chatMessage.messageParameters?.get("file")?.get("name") ?: ""
             val prefix = authorPrefix(chatMessage, currentUser)
-            AttachmentRow(prefix, R.drawable.baseline_mic_24, name, fontWeight, modifier)
+            AttachmentRow(
+                authorPrefix = prefix,
+                iconRes = R.drawable.baseline_mic_24,
+                name = name,
+                fontWeight = fontWeight,
+                modifier = modifier,
+                searchQuery = searchQuery
+            )
             return
         }
 
@@ -654,28 +700,56 @@ private fun LastMessageContent(
             val mime = chatMessage.messageParameters?.get("file")?.get("mimetype")
             val icon = attachmentIconRes(mime)
             val prefix = authorPrefix(chatMessage, currentUser)
-            AttachmentRow(prefix, icon, name, fontWeight, modifier)
+            AttachmentRow(
+                authorPrefix = prefix,
+                iconRes = icon,
+                name = name,
+                fontWeight = fontWeight,
+                modifier = modifier,
+                searchQuery = searchQuery
+            )
             return
         }
 
         ChatMessage.MessageType.SINGLE_NC_GEOLOCATION_MESSAGE -> {
             val name = chatMessage.messageParameters?.get("object")?.get("name") ?: ""
             val prefix = authorPrefix(chatMessage, currentUser)
-            AttachmentRow(prefix, R.drawable.baseline_location_pin_24, name, fontWeight, modifier)
+            AttachmentRow(
+                authorPrefix = prefix,
+                iconRes = R.drawable.baseline_location_pin_24,
+                name = name,
+                fontWeight = fontWeight,
+                modifier = modifier,
+                searchQuery = searchQuery
+            )
             return
         }
 
         ChatMessage.MessageType.POLL_MESSAGE -> {
             val name = chatMessage.messageParameters?.get("object")?.get("name") ?: ""
             val prefix = authorPrefix(chatMessage, currentUser)
-            AttachmentRow(prefix, R.drawable.baseline_bar_chart_24, name, fontWeight, modifier)
+            AttachmentRow(
+                authorPrefix = prefix,
+                iconRes = R.drawable.baseline_bar_chart_24,
+                name = name,
+                fontWeight = fontWeight,
+                modifier = modifier,
+                searchQuery = searchQuery
+            )
             return
         }
 
         ChatMessage.MessageType.DECK_CARD -> {
             val name = chatMessage.messageParameters?.get("object")?.get("name") ?: ""
             val prefix = authorPrefix(chatMessage, currentUser)
-            AttachmentRow(prefix, R.drawable.baseline_article_24, name, fontWeight, modifier)
+            AttachmentRow(
+                authorPrefix = prefix,
+                iconRes = R.drawable.baseline_article_24,
+                name = name,
+                fontWeight = fontWeight,
+                modifier = modifier,
+                searchQuery = searchQuery
+            )
             return
         }
 
@@ -686,8 +760,12 @@ private fun LastMessageContent(
             val gifOther = stringResource(R.string.nc_sent_a_gif, chatMessage.actorDisplayName ?: "")
             Text(
                 text = if (chatMessage.actorId == currentUser.userId) gifSelf else gifOther,
-                modifier = modifier, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium, fontWeight = fontWeight
+                modifier = modifier,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = fontWeight,
+                color = colorResource(R.color.textColorMaxContrast)
             )
             return
         }
@@ -697,8 +775,12 @@ private fun LastMessageContent(
             val imgOther = stringResource(R.string.nc_sent_an_image, chatMessage.actorDisplayName ?: "")
             Text(
                 text = if (chatMessage.actorId == currentUser.userId) imgSelf else imgOther,
-                modifier = modifier, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium, fontWeight = fontWeight
+                modifier = modifier,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = fontWeight,
+                color = colorResource(R.color.textColorMaxContrast)
             )
             return
         }
@@ -708,8 +790,12 @@ private fun LastMessageContent(
             val vidOther = stringResource(R.string.nc_sent_a_video, chatMessage.actorDisplayName ?: "")
             Text(
                 text = if (chatMessage.actorId == currentUser.userId) vidSelf else vidOther,
-                modifier = modifier, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium, fontWeight = fontWeight
+                modifier = modifier,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = fontWeight,
+                color = colorResource(R.color.textColorMaxContrast)
             )
             return
         }
@@ -719,8 +805,12 @@ private fun LastMessageContent(
             val audOther = stringResource(R.string.nc_sent_an_audio, chatMessage.actorDisplayName ?: "")
             Text(
                 text = if (chatMessage.actorId == currentUser.userId) audSelf else audOther,
-                modifier = modifier, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium, fontWeight = fontWeight
+                modifier = modifier,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = fontWeight,
+                color = colorResource(R.color.textColorMaxContrast)
             )
             return
         }
@@ -728,14 +818,14 @@ private fun LastMessageContent(
         else -> { /* fall through to regular text */ }
     }
 
-    // ── Case 6: Regular text message ─────────────────────────────────────────
-    val rawText = chatMessage.message ?: ""
-    val youPrefix = stringResource(R.string.nc_formatted_message_you, rawText)
+    // Regular text message
+    val parsedText = ChatUtils.getParsedMessage(chatMessage.message, chatMessage.messageParameters) ?: ""
+    val youPrefix = stringResource(R.string.nc_formatted_message_you, parsedText)
     val groupFormat = stringResource(R.string.nc_formatted_message)
     val guestLabel = stringResource(R.string.nc_guest)
     val displayText = when {
         chatMessage.actorId == currentUser.userId -> youPrefix
-        model.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> rawText
+        model.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> parsedText
         else -> {
             val actorName = chatMessage.actorDisplayName?.takeIf { it.isNotBlank() }
                 ?: if (chatMessage.actorType == "guests" || chatMessage.actorType == "emails") {
@@ -743,34 +833,39 @@ private fun LastMessageContent(
                 } else {
                     ""
                 }
-            String.format(groupFormat, actorName, rawText)
+            String.format(groupFormat, actorName, parsedText)
         }
     }
     Text(
-        text = displayText,
+        text = buildHighlightedText(displayText, searchQuery, primaryColor),
         modifier = modifier,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
         style = MaterialTheme.typography.bodyMedium,
-        fontWeight = fontWeight
+        fontWeight = fontWeight,
+        color = colorResource(R.color.textColorMaxContrast)
     )
 }
 
+@Suppress("LongParameterList")
 @Composable
 private fun AttachmentRow(
     authorPrefix: String,
     @DrawableRes iconRes: Int?,
     name: String,
     fontWeight: FontWeight,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    searchQuery: String = ""
 ) {
+    val primaryColor = MaterialTheme.colorScheme.primary
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         if (authorPrefix.isNotBlank()) {
             Text(
                 text = "$authorPrefix ",
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = fontWeight,
-                maxLines = 1
+                maxLines = 1,
+                color = colorResource(R.color.textColorMaxContrast)
             )
         }
         if (iconRes != null) {
@@ -783,17 +878,16 @@ private fun AttachmentRow(
             Spacer(Modifier.width(ICON_MSG_SPACING_DP.dp))
         }
         Text(
-            text = name,
+            text = buildHighlightedText(name, searchQuery, primaryColor),
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = fontWeight,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            color = colorResource(R.color.textColorMaxContrast)
         )
     }
 }
-
-// ── Pure Helper Functions ──────────────────────────────────────────────────────
 
 private fun authorPrefix(chatMessage: ChatMessage, currentUser: User): String =
     if (chatMessage.actorId == currentUser.userId) {
@@ -803,27 +897,27 @@ private fun authorPrefix(chatMessage: ChatMessage, currentUser: User): String =
         if (!name.isNullOrBlank()) "$name:" else ""
     }
 
-private fun attachmentIconRes(mimetype: String?): Int? = when {
-    mimetype == null -> null
-    mimetype.contains("image") -> R.drawable.baseline_image_24
-    mimetype.contains("video") -> R.drawable.baseline_video_24
-    mimetype.contains("application") -> R.drawable.baseline_insert_drive_file_24
-    mimetype.contains("audio") -> R.drawable.baseline_audiotrack_24
-    mimetype.contains("text/vcard") -> R.drawable.baseline_contacts_24
-    else -> null
-}
+private fun attachmentIconRes(mimetype: String?): Int? =
+    when {
+        mimetype == null -> null
+        mimetype.contains("image") -> R.drawable.baseline_image_24
+        mimetype.contains("video") -> R.drawable.baseline_video_24
+        mimetype.contains("application") -> R.drawable.baseline_insert_drive_file_24
+        mimetype.contains("audio") -> R.drawable.baseline_audiotrack_24
+        mimetype.contains("text/vcard") -> R.drawable.baseline_contacts_24
+        else -> null
+    }
 
-// ── Preview Helpers ────────────────────────────────────────────────────────────
-
-private fun previewUser(userId: String = "user1") = User(
-    id = 1L,
-    userId = userId,
-    username = userId,
-    baseUrl = "https://cloud.example.com",
-    token = "token",
-    displayName = "Test User",
-    capabilities = null
-)
+private fun previewUser(userId: String = "user1") =
+    User(
+        id = 1L,
+        userId = userId,
+        username = userId,
+        baseUrl = "https://cloud.example.com",
+        token = "token",
+        displayName = "Test User",
+        capabilities = null
+    )
 
 @Suppress("LongParameterList")
 private fun previewModel(
@@ -884,6 +978,7 @@ private fun previewModel(
     lastActivity = System.currentTimeMillis() / 1000L - 3600L
 )
 
+@Suppress("LongParameterList")
 private fun previewMsg(
     actorId: String = "other",
     actorDisplayName: String = "Bob",
@@ -911,747 +1006,793 @@ private fun PreviewWrapper(darkTheme: Boolean = isSystemInDarkTheme(), content: 
     }
 }
 
-// ── Section A – Conversation Type ─────────────────────────────────────────────
+// Section A – Conversation Type
 
 @Preview(name = "A1 – 1:1 online")
 @Composable
-private fun PreviewOneToOne() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            type = ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL,
-            status = "online",
-            lastMessage = previewMsg(message = "Hey, how are you?")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewOneToOne() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                type = ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL,
+                status = "online",
+                lastMessage = previewMsg(message = "Hey, how are you?")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "A2 – Group")
 @Composable
-private fun PreviewGroup() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Project Team",
-            type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
-            lastMessage = previewMsg(message = "Meeting at 3pm")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewGroup() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Project Team",
+                type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+                lastMessage = previewMsg(message = "Meeting at 3pm")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "A3 – Group no avatar")
 @Composable
-private fun PreviewGroupNoAvatar() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Team Chat",
-            type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
-            lastMessage = previewMsg(message = "Anyone free?")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewGroupNoAvatar() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Team Chat",
+                type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+                lastMessage = previewMsg(message = "Anyone free?")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "A4 – Public room")
 @Composable
-private fun PreviewPublicRoom() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Open Room",
-            type = ConversationEnums.ConversationType.ROOM_PUBLIC_CALL,
-            lastMessage = previewMsg(message = "Welcome everyone!")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewPublicRoom() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Open Room",
+                type = ConversationEnums.ConversationType.ROOM_PUBLIC_CALL,
+                lastMessage = previewMsg(message = "Welcome everyone!")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "A5 – System room")
 @Composable
-private fun PreviewSystemRoom() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Nextcloud",
-            type = ConversationEnums.ConversationType.ROOM_SYSTEM,
-            lastMessage = previewMsg(message = "You joined the conversation", messageType = "system")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewSystemRoom() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Nextcloud",
+                type = ConversationEnums.ConversationType.ROOM_SYSTEM,
+                lastMessage = previewMsg(message = "You joined the conversation", messageType = "system")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "A6 – Note to self")
 @Composable
-private fun PreviewNoteToSelf() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Personal notes",
-            type = ConversationEnums.ConversationType.NOTE_TO_SELF,
-            lastMessage = previewMsg(message = "Reminder: buy groceries")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewNoteToSelf() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Personal notes",
+                type = ConversationEnums.ConversationType.NOTE_TO_SELF,
+                lastMessage = previewMsg(message = "Reminder: buy groceries")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "A7 – Former 1:1")
 @Composable
-private fun PreviewFormerOneToOne() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Deleted User",
-            type = ConversationEnums.ConversationType.FORMER_ONE_TO_ONE,
-            lastMessage = previewMsg(message = "Last message before leaving")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewFormerOneToOne() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Deleted User",
+                type = ConversationEnums.ConversationType.FORMER_ONE_TO_ONE,
+                lastMessage = previewMsg(message = "Last message before leaving")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
-// ── Section B – ObjectType / Special Avatar ────────────────────────────────────
+// Section B – ObjectType / Special Avatar
 
 @Preview(name = "B8 – Password protected")
 @Composable
-private fun PreviewPasswordProtected() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Protected room",
-            objectType = ConversationEnums.ObjectType.SHARE_PASSWORD,
-            type = ConversationEnums.ConversationType.ROOM_PUBLIC_CALL,
-            lastMessage = previewMsg(message = "Enter password to join")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewPasswordProtected() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Protected room",
+                objectType = ConversationEnums.ObjectType.SHARE_PASSWORD,
+                type = ConversationEnums.ConversationType.ROOM_PUBLIC_CALL,
+                lastMessage = previewMsg(message = "Enter password to join")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "B9 – File room")
 @Composable
-private fun PreviewFileRoom() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "document.pdf",
-            objectType = ConversationEnums.ObjectType.FILE,
-            type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
-            lastMessage = previewMsg(message = "What do you think about this file?")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewFileRoom() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "document.pdf",
+                objectType = ConversationEnums.ObjectType.FILE,
+                type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+                lastMessage = previewMsg(message = "What do you think about this file?")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "B10 – Phone temporary room")
 @Composable
-private fun PreviewPhoneNumberRoom() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "+49 170 1234567",
-            objectType = ConversationEnums.ObjectType.PHONE_TEMPORARY,
-            type = ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL,
-            lastMessage = previewMsg(message = "Missed call")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewPhoneNumberRoom() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "+49 170 1234567",
+                objectType = ConversationEnums.ObjectType.PHONE_TEMPORARY,
+                type = ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL,
+                lastMessage = previewMsg(message = "Missed call")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
-// ── Section C – Federated ─────────────────────────────────────────────────────
+// Section C – Federated
 
 @Preview(name = "C11 – Federated")
 @Composable
-private fun PreviewFederated() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Remote Friend",
-            type = ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL,
-            remoteServer = "https://other.cloud.com",
-            lastMessage = previewMsg(message = "Hi from another server!")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewFederated() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Remote Friend",
+                type = ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL,
+                remoteServer = "https://other.cloud.com",
+                lastMessage = previewMsg(message = "Hi from another server!")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
-// ── Section D – Unread States ─────────────────────────────────────────────────
+// Section D – Unread States
 
 @Preview(name = "D12 – No unread")
 @Composable
-private fun PreviewNoUnread() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            unreadMessages = 0,
-            lastMessage = previewMsg(message = "See you tomorrow")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewNoUnread() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                unreadMessages = 0,
+                lastMessage = previewMsg(message = "See you tomorrow")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "D13 – Unread few (5)")
 @Composable
-private fun PreviewUnreadFew() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            unreadMessages = 5,
-            lastMessage = previewMsg(message = "Did you see this?")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewUnreadFew() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                unreadMessages = 5,
+                lastMessage = previewMsg(message = "Did you see this?")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "D14 – Unread many (1500)")
 @Composable
-private fun PreviewUnreadMany() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Busy Channel",
-            type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
-            unreadMessages = 1500,
-            lastMessage = previewMsg(message = "So many messages!")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewUnreadMany() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Busy Channel",
+                type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+                unreadMessages = 1500,
+                lastMessage = previewMsg(message = "So many messages!")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "D15 – Unread mention group (outlined)")
 @Composable
-private fun PreviewUnreadMentionGroup() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Dev Team",
-            type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
-            unreadMessages = 3,
-            unreadMention = true,
-            unreadMentionDirect = false,
-            lastMessage = previewMsg(message = "@user1 please review PR")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewUnreadMentionGroup() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Dev Team",
+                type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+                unreadMessages = 3,
+                unreadMention = true,
+                unreadMentionDirect = false,
+                lastMessage = previewMsg(message = "@user1 please review PR")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "D16 – Unread mention direct 1:1 (filled)")
 @Composable
-private fun PreviewUnreadMentionDirect1to1() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            type = ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL,
-            unreadMessages = 2,
-            unreadMention = true,
-            unreadMentionDirect = true,
-            lastMessage = previewMsg(message = "Did you see my message?")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewUnreadMentionDirect1to1() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                type = ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL,
+                unreadMessages = 2,
+                unreadMention = true,
+                unreadMentionDirect = true,
+                lastMessage = previewMsg(message = "Did you see my message?")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "D17 – Unread mention group direct (filled)")
 @Composable
-private fun PreviewUnreadMentionGroupDirect() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Ops Team",
-            type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
-            unreadMessages = 7,
-            unreadMention = true,
-            unreadMentionDirect = true,
-            lastMessage = previewMsg(message = "@user1 urgent!")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewUnreadMentionGroupDirect() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Ops Team",
+                type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+                unreadMessages = 7,
+                unreadMention = true,
+                unreadMentionDirect = true,
+                lastMessage = previewMsg(message = "@user1 urgent!")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
-// ── Section E – Favorite ──────────────────────────────────────────────────────
+// Section E – Favorite
 
 @Preview(name = "E18 – Favorite")
 @Composable
-private fun PreviewFavorite() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Best Friend",
-            favorite = true,
-            lastMessage = previewMsg(message = "Let's meet up!")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewFavorite() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Best Friend",
+                favorite = true,
+                lastMessage = previewMsg(message = "Let's meet up!")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "E19 – Not favorite")
 @Composable
-private fun PreviewNotFavorite() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Colleague",
-            favorite = false,
-            lastMessage = previewMsg(message = "See the report?")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewNotFavorite() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Colleague",
+                favorite = false,
+                lastMessage = previewMsg(message = "See the report?")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
-// ── Section F – Status (1:1 only) ─────────────────────────────────────────────
+// Section F – Status (1:1 only)
 
 @Preview(name = "F20 – Status online")
 @Composable
-private fun PreviewStatusOnline() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(displayName = "Alice", status = "online", lastMessage = previewMsg()),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewStatusOnline() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(displayName = "Alice", status = "online", lastMessage = previewMsg()),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "F21 – Status away")
 @Composable
-private fun PreviewStatusAway() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(displayName = "Bob", status = "away", lastMessage = previewMsg()),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewStatusAway() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(displayName = "Bob", status = "away", lastMessage = previewMsg()),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "F22 – Status DND")
 @Composable
-private fun PreviewStatusDnd() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(displayName = "Carol", status = "dnd", lastMessage = previewMsg()),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewStatusDnd() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(displayName = "Carol", status = "dnd", lastMessage = previewMsg()),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "F23 – Status offline")
 @Composable
-private fun PreviewStatusOffline() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(displayName = "Dave", status = "offline", lastMessage = previewMsg()),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewStatusOffline() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(displayName = "Dave", status = "offline", lastMessage = previewMsg()),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "F24 – Status with emoji")
 @Composable
-private fun PreviewStatusWithEmoji() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Eve",
-            status = "online",
-            statusIcon = "☕",
-            lastMessage = previewMsg(message = "Grabbing coffee")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewStatusWithEmoji() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Eve",
+                status = "online",
+                statusIcon = "☕",
+                lastMessage = previewMsg(message = "Grabbing coffee")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
-// ── Section G – Last Message Types ────────────────────────────────────────────
+// Section G – Last Message Types
 
 @Preview(name = "G25 – Own regular text")
 @Composable
-private fun PreviewLastMessageOwnText() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
-            displayName = "Team",
-            lastMessage = previewMsg(actorId = "user1", actorDisplayName = "Me", message = "Good morning!")
-        ),
-        currentUser = previewUser("user1"),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewLastMessageOwnText() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+                displayName = "?? Team",
+                lastMessage = previewMsg(actorId = "user1", actorDisplayName = "Me", message = "Good morning!")
+            ),
+            currentUser = previewUser("user1"),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "G26 – Other regular text")
 @Composable
-private fun PreviewLastMessageOtherText() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
-            displayName = "Team",
-            lastMessage = previewMsg(actorId = "user2", actorDisplayName = "Alice", message = "Good morning!")
-        ),
-        currentUser = previewUser("user1"),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewLastMessageOtherText() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+                displayName = "Team",
+                lastMessage = previewMsg(actorId = "user2", actorDisplayName = "Alice", message = "Good morning!")
+            ),
+            currentUser = previewUser("user1"),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "G27 – System message")
 @Composable
-private fun PreviewLastMessageSystem() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            lastMessage = previewMsg(
-                message = "Alice joined the call",
-                messageType = "system",
-                systemMessageType = ChatMessage.SystemMessageType.CALL_STARTED
-            )
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewLastMessageSystem() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                lastMessage = previewMsg(
+                    message = "Alice joined the call",
+                    messageType = "system",
+                    systemMessageType = ChatMessage.SystemMessageType.CALL_STARTED
+                )
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "G28 – Voice message")
 @Composable
-private fun PreviewLastMessageVoice() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            lastMessage = previewMsg(
-                message = "voice-message.mp3",
-                messageType = "voice-message",
-                messageParameters = hashMapOf("file" to hashMapOf("name" to "voice_001.mp3"))
-            )
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewLastMessageVoice() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                lastMessage = previewMsg(
+                    message = "voice-message.mp3",
+                    messageType = "voice-message",
+                    messageParameters = hashMapOf("file" to hashMapOf("name" to "voice_001.mp3"))
+                )
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "G29 – Image attachment")
 @Composable
-private fun PreviewLastMessageImage() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            lastMessage = previewMsg(
-                message = "{file}",
-                messageParameters = hashMapOf(
-                    "file" to hashMapOf("name" to "photo.jpg", "mimetype" to "image/jpeg")
+private fun PreviewLastMessageImage() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                lastMessage = previewMsg(
+                    message = "{file}",
+                    messageParameters = hashMapOf(
+                        "file" to hashMapOf("name" to "photo.jpg", "mimetype" to "image/jpeg")
+                    )
                 )
-            )
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "G30 – Video attachment")
 @Composable
-private fun PreviewLastMessageVideo() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            lastMessage = previewMsg(
-                message = "{file}",
-                messageParameters = hashMapOf(
-                    "file" to hashMapOf("name" to "clip.mp4", "mimetype" to "video/mp4")
+private fun PreviewLastMessageVideo() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                lastMessage = previewMsg(
+                    message = "{file}",
+                    messageParameters = hashMapOf(
+                        "file" to hashMapOf("name" to "clip.mp4", "mimetype" to "video/mp4")
+                    )
                 )
-            )
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "G31 – Audio attachment")
 @Composable
-private fun PreviewLastMessageAudio() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            lastMessage = previewMsg(
-                message = "{file}",
-                messageParameters = hashMapOf(
-                    "file" to hashMapOf("name" to "song.mp3", "mimetype" to "audio/mpeg")
+private fun PreviewLastMessageAudio() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                lastMessage = previewMsg(
+                    message = "{file}",
+                    messageParameters = hashMapOf(
+                        "file" to hashMapOf("name" to "song.mp3", "mimetype" to "audio/mpeg")
+                    )
                 )
-            )
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "G32 – File attachment")
 @Composable
-private fun PreviewLastMessageFile() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            lastMessage = previewMsg(
-                message = "{file}",
-                messageParameters = hashMapOf(
-                    "file" to hashMapOf("name" to "report.pdf", "mimetype" to "application/pdf")
+private fun PreviewLastMessageFile() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                lastMessage = previewMsg(
+                    message = "{file}",
+                    messageParameters = hashMapOf(
+                        "file" to hashMapOf("name" to "report.pdf", "mimetype" to "application/pdf")
+                    )
                 )
-            )
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "G33 – GIF message")
 @Composable
-private fun PreviewLastMessageGif() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            lastMessage = previewMsg(message = "https://giphy.com/gif.gif", messageType = "comment")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewLastMessageGif() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                lastMessage = previewMsg(message = "https://giphy.com/gif.gif", messageType = "comment")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "G34 – Location message")
 @Composable
-private fun PreviewLastMessageLocation() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            lastMessage = previewMsg(
-                message = "geo:48.8566,2.3522",
-                messageParameters = hashMapOf(
-                    "object" to hashMapOf("name" to "Eiffel Tower", "type" to "geo-location")
+private fun PreviewLastMessageLocation() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                lastMessage = previewMsg(
+                    message = "geo:48.8566,2.3522",
+                    messageParameters = hashMapOf(
+                        "object" to hashMapOf("name" to "Eiffel Tower", "type" to "geo-location")
+                    )
                 )
-            )
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "G35 – Poll message")
 @Composable
-private fun PreviewLastMessagePoll() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Team",
-            type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
-            lastMessage = previewMsg(
-                message = "{object}",
-                messageParameters = hashMapOf(
-                    "object" to hashMapOf("name" to "Best framework?", "type" to "talk-poll")
+private fun PreviewLastMessagePoll() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Team",
+                type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+                lastMessage = previewMsg(
+                    message = "{object}",
+                    messageParameters = hashMapOf(
+                        "object" to hashMapOf("name" to "Best framework?", "type" to "talk-poll")
+                    )
                 )
-            )
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "G36 – Deck card")
 @Composable
-private fun PreviewLastMessageDeck() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            lastMessage = previewMsg(
-                message = "{object}",
-                messageParameters = hashMapOf(
-                    "object" to hashMapOf("name" to "Sprint backlog item", "type" to "deck-card")
+private fun PreviewLastMessageDeck() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                lastMessage = previewMsg(
+                    message = "{object}",
+                    messageParameters = hashMapOf(
+                        "object" to hashMapOf("name" to "Sprint backlog item", "type" to "deck-card")
+                    )
                 )
-            )
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "G37 – Deleted message")
 @Composable
-private fun PreviewLastMessageDeleted() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            lastMessage = previewMsg(
-                message = "Message deleted",
-                messageType = "comment_deleted"
-            )
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewLastMessageDeleted() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                lastMessage = previewMsg(
+                    message = "Message deleted",
+                    messageType = "comment_deleted"
+                )
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "G38 – No last message")
 @Composable
-private fun PreviewNoLastMessage() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(displayName = "New Conversation", lastMessage = null),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewNoLastMessage() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(displayName = "New Conversation", lastMessage = null),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "G39 – Draft")
 @Composable
-private fun PreviewDraft() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            messageDraft = MessageDraft(messageText = "I was going to say…")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewDraft() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                messageDraft = MessageDraft(messageText = "I was going to say…")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "G49 – Text with emoji")
 @Composable
-private fun PreviewLastMessageTextWithEmoji() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            lastMessage = previewMsg(message = "Schönes Wochenende! 🎉😊")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewLastMessageTextWithEmoji() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                lastMessage = previewMsg(message = "Schönes Wochenende! 🎉😊")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
-// ── Section H – Call Status ────────────────────────────────────────────────────
+// Section H – Call Status
 
 @Preview(name = "H40 – Active call")
 @Composable
-private fun PreviewActiveCall() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Team Stand-up",
-            type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
-            hasCall = true,
-            lastMessage = previewMsg(message = "Call in progress")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewActiveCall() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Team Stand-up",
+                type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+                hasCall = true,
+                lastMessage = previewMsg(message = "Call in progress")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
-// ── Section I – Lobby / Read-only ─────────────────────────────────────────────
+// Section I – Lobby / Read-only
 
 @Preview(name = "I41 – Lobby active")
 @Composable
-private fun PreviewLobbyActive() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "VIP Room",
-            type = ConversationEnums.ConversationType.ROOM_PUBLIC_CALL,
-            lobbyState = ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY,
-            lastMessage = previewMsg(message = "Waiting for moderator to let you in")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewLobbyActive() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "VIP Room",
+                type = ConversationEnums.ConversationType.ROOM_PUBLIC_CALL,
+                lobbyState = ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY,
+                lastMessage = previewMsg(message = "Waiting for moderator to let you in")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "I42 – Read only")
 @Composable
-private fun PreviewReadOnly() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Announcements",
-            type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
-            readOnlyState = ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY,
-            lastMessage = previewMsg(message = "Important update posted")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewReadOnly() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Announcements",
+                type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+                readOnlyState = ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY,
+                lastMessage = previewMsg(message = "Important update posted")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
-// ── Section J – Sensitive ─────────────────────────────────────────────────────
+// Section J – Sensitive
 
 @Preview(name = "J43 – Sensitive (name only)")
 @Composable
-private fun PreviewSensitive() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Confidential Project",
-            hasSensitive = true,
-            unreadMessages = 3,
-            lastMessage = previewMsg(message = "This text should be hidden")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewSensitive() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Confidential Project",
+                hasSensitive = true,
+                unreadMessages = 3,
+                lastMessage = previewMsg(message = "This text should be hidden")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
-// ── Section K – Archived ──────────────────────────────────────────────────────
+// Section K – Archived
 
 @Preview(name = "K44 – Archived")
 @Composable
-private fun PreviewArchived() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Old Project",
-            hasArchived = true,
-            lastMessage = previewMsg(message = "Project completed ✓")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewArchived() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Old Project",
+                hasArchived = true,
+                lastMessage = previewMsg(message = "Project completed ✓")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
-// ── Section L – UI Variants ────────────────────────────────────────────────────
+// Section L – UI Variants
 
 @Preview(
     name = "L45 – Dark mode",
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
-private fun PreviewDarkMode() = PreviewWrapper(darkTheme = true) {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "Alice",
-            unreadMessages = 4,
-            lastMessage = previewMsg(message = "Good night!")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewDarkMode() =
+    PreviewWrapper(darkTheme = true) {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "Alice",
+                unreadMessages = 4,
+                lastMessage = previewMsg(message = "Good night!")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "L46 – Long name (truncation)")
 @Composable
-private fun PreviewLongName() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "This Is A Very Long Conversation Name That Should Be Truncated With Ellipsis",
-            lastMessage = previewMsg(message = "Short message")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewLongName() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "This Is A Very Long Conversation Name That Should Be Truncated With Ellipsis",
+                lastMessage = previewMsg(message = "Short message")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "L47 – Short content, no date")
 @Composable
-private fun PreviewShortContent() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(displayName = "Hi", lastMessage = null),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
+private fun PreviewShortContent() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(displayName = "Hi", lastMessage = null),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }
 
 @Preview(name = "L48 – RTL (Arabic)", locale = "ar")
 @Composable
-private fun PreviewRtl() = PreviewWrapper {
-    ConversationListItem(
-        model = previewModel(
-            displayName = "محادثة",
-            unreadMessages = 2,
-            lastMessage = previewMsg(message = "مرحبا كيف حالك")
-        ),
-        currentUser = previewUser(),
-        onClick = {}, onLongClick = {}
-    )
-}
-
-
-
+private fun PreviewRtl() =
+    PreviewWrapper {
+        ConversationListItem(
+            model = previewModel(
+                displayName = "محادثة",
+                unreadMessages = 2,
+                lastMessage = previewMsg(message = "مرحبا كيف حالك")
+            ),
+            currentUser = previewUser(),
+            callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
+        )
+    }

@@ -182,36 +182,32 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayoutView"
+    <!-- Step 8: SwipeRefreshLayout + RecyclerView replaced by ConversationList ComposeView.
+         PullToRefreshBox is now handled inside the Composable. -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
+        android:orientation="vertical"
         app:layout_behavior="com.nextcloud.talk.utils.FABAwareScrollingViewBehavior">
 
-        <LinearLayout
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/federation_hint_compose_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content" />
 
-            <androidx.compose.ui.platform.ComposeView
-                android:id="@+id/federation_hint_compose_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/notification_warning_compose_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-            <androidx.compose.ui.platform.ComposeView
-                android:id="@+id/notification_warning_compose_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/conversation_list_compose_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+    </LinearLayout>
 
-        </LinearLayout>
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/fab_compose_view"

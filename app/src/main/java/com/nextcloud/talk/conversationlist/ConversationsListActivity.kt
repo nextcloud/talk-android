@@ -23,10 +23,8 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.OptIn
@@ -49,7 +47,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
@@ -73,13 +70,6 @@ import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
-import com.nextcloud.talk.adapters.items.ContactItem
-import com.nextcloud.talk.adapters.items.ConversationItem
-import com.nextcloud.talk.adapters.items.GenericTextHeaderItem
-import com.nextcloud.talk.adapters.items.LoadMoreResultsItem
-import com.nextcloud.talk.adapters.items.MessageResultItem
-import com.nextcloud.talk.adapters.items.MessagesTextHeaderItem
-import com.nextcloud.talk.adapters.items.SpacerItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
@@ -87,8 +77,8 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
-import com.nextcloud.talk.contextchat.ContextChatView
 import com.nextcloud.talk.contextchat.ContextChatViewModel
+import com.nextcloud.talk.conversationlist.ui.ConversationList
 import com.nextcloud.talk.conversationlist.ui.ConversationListFab
 import com.nextcloud.talk.conversationlist.ui.ConversationListSkeleton
 import com.nextcloud.talk.conversationlist.ui.ConversationsEmptyStateView
@@ -108,8 +98,8 @@ import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.run
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
-import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.settings.SettingsActivity
@@ -149,9 +139,6 @@ import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
-import eu.davidea.flexibleadapter.FlexibleAdapter
-import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
-import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -161,8 +148,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import org.apache.commons.lang3.builder.CompareToBuilder
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
@@ -172,10 +157,8 @@ import javax.inject.Inject
 
 @SuppressLint("StringFormatInvalid")
 @AutoInjector(NextcloudTalkApplication::class)
-class ConversationsListActivity :
-    BaseActivity(),
-    FlexibleAdapter.OnItemClickListener,
-    FlexibleAdapter.OnItemLongClickListener {
+@Suppress("LargeClass", "TooManyFunctions")
+class ConversationsListActivity : BaseActivity() {
 
     private lateinit var binding: ActivityConversationsBinding
 
@@ -218,33 +201,24 @@ class ConversationsListActivity :
     private val showNoArchivedViewState = MutableStateFlow(false)
     private val showUnreadBubbleState = MutableStateFlow(false)
     private val isFabVisibleState = MutableStateFlow(true)
-    private val isShimmerVisibleState = MutableStateFlow(true)
     private val showNotificationWarningState = MutableStateFlow(false)
-    private var roomsQueryDisposable: Disposable? = null
-    private var openConversationsQueryDisposable: Disposable? = null
-    private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
-    private var conversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-    private var conversationItemsWithHeader: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-    private var searchableConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-    private var filterableConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-    private val mutex = Mutex()
-    private var nearFutureEventConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+    private val isRefreshingState = MutableStateFlow(false)
+
+    // Lazy list state – set from inside setContent, read from onPause
+    private var conversationListLazyListState: androidx.compose.foundation.lazy.LazyListState? = null
+
+    private var nextUnreadConversationScrollPosition = 0
     private var searchItem: MenuItem? = null
     private var chooseAccountItem: MenuItem? = null
     private var searchView: SearchView? = null
     private var searchQuery: String? = null
     private var credentials: String? = null
-    private var adapterWasNull = true
-    private var isRefreshing = false
     private var showShareToScreen = false
     private var filesToShare: ArrayList<String>? = null
     private var selectedConversation: ConversationModel? = null
     private var textToPaste: String? = ""
     private var selectedMessageId: String? = null
     private var forwardMessage: Boolean = false
-    private var nextUnreadConversationScrollPosition = 0
-    private var layoutManager: SmoothScrollLinearLayoutManager? = null
-    private val callHeaderItems = HashMap<String, GenericTextHeaderItem>()
     private var conversationsListBottomDialog: ConversationsListBottomDialog? = null
     private var searchHelper: MessageSearchHelper? = null
     private var searchViewDisposable: Disposable? = null
@@ -287,6 +261,7 @@ class ConversationsListActivity :
         setupShimmer()
         setupNotificationWarning()
         setupFederationHintCard()
+        setupConversationList()
         initSystemBars()
         viewThemeUtils.material.themeSearchCardView(binding.searchToolbarContainer)
         viewThemeUtils.material.colorMaterialButtonContent(binding.menuButton, ColorRole.ON_SURFACE_VARIANT)
@@ -315,17 +290,8 @@ class ConversationsListActivity :
 
     override fun onResume() {
         super.onResume()
-        if (adapter == null) {
-            adapter = FlexibleAdapter(conversationItems, this, true)
-            addEmptyItemForEdgeToEdgeIfNecessary()
-        } else {
-            isShimmerVisibleState.value = false
-        }
-        adapter?.addListener(this)
-        prepareViews()
 
         showNotificationWarningState.value = shouldShowNotificationWarning()
-
         showShareToScreen = hasActivityActionSendIntent()
 
         if (!eventBus.isRegistered(this)) {
@@ -349,7 +315,10 @@ class ConversationsListActivity :
 
             loadUserAvatar(binding.switchAccountButton)
             viewThemeUtils.material.colorMaterialTextButton(binding.switchAccountButton)
-            searchBehaviorSubject.onNext(false)
+            val isSearchCurrentlyActive = conversationsListViewModel.isSearchActiveFlow.value
+            searchBehaviorSubject.onNext(isSearchCurrentlyActive)
+            conversationsListViewModel.setIsSearchActive(isSearchCurrentlyActive)
+            conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
             fetchRooms()
             fetchPendingInvitations()
         } else {
@@ -359,40 +328,25 @@ class ConversationsListActivity :
 
         showSearchOrToolbar()
         conversationsListViewModel.checkIfThreadsExist()
+        // initialise filter state in ViewModel
+        getFilterStates()
+        conversationsListViewModel.applyFilter(filterState)
     }
 
     override fun onPause() {
         super.onPause()
-        val firstVisible = layoutManager?.findFirstVisibleItemPosition() ?: 0
-        val firstItem = adapter?.getItem(firstVisible)
-        val firstTop = (firstItem as? ConversationItem)?.mHolder?.itemView?.top
-        val firstOffset = firstTop?.minus(CONVERSATION_ITEM_HEIGHT) ?: 0
-
-        appPreferences.setConversationListPositionAndOffset(firstVisible, firstOffset)
-    }
-
-    // if edge to edge is used, add an empty item at the bottom of the list
-    @Suppress("MagicNumber")
-    private fun addEmptyItemForEdgeToEdgeIfNecessary() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            adapter?.addScrollableFooter(SpacerItem(100))
+        conversationListLazyListState?.let { state ->
+            val firstOffset = state.layoutInfo.visibleItemsInfo.firstOrNull()?.offset ?: 0
+            appPreferences.setConversationListPositionAndOffset(state.firstVisibleItemIndex, firstOffset)
         }
     }
 
-    @Suppress("LongMethod")
+    @Suppress("LongMethod", "CyclomaticComplexMethod")
     private fun initObservers() {
         this.lifecycleScope.launch {
             networkMonitor.isOnline.onEach { isOnline ->
                 handleUI(isOnline)
             }.collect()
-        }
-
-        lifecycleScope.launch {
-            conversationsListViewModel.searchResultFlow.collect { searchResults ->
-                if (adapter?.hasFilter() == true) {
-                    adapter?.updateDataSet(searchResults)
-                }
-            }
         }
 
         conversationsListViewModel.showBadgeViewState.observe(this) { state ->
@@ -416,15 +370,12 @@ class ConversationsListActivity :
         conversationsListViewModel.getRoomsViewState.observe(this) { state ->
             when (state) {
                 is ConversationsListViewModel.GetRoomsSuccessState -> {
-                    if (adapterWasNull) {
-                        adapterWasNull = false
-                        isShimmerVisibleState.value = false
-                    }
+                    isRefreshingState.value = false
                     initOverallLayout(state.listIsNotEmpty)
-                    binding.swipeRefreshLayoutView.isRefreshing = false
                 }
 
                 is ConversationsListViewModel.GetRoomsErrorState -> {
+                    isRefreshingState.value = false
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
                 }
 
@@ -452,14 +403,15 @@ class ConversationsListActivity :
         lifecycleScope.launch {
             conversationsListViewModel.getRoomsFlow
                 .onEach { list ->
-                    setConversationList(list)
                     val noteToSelf = list
                         .firstOrNull { ConversationUtils.isNoteToSelfConversation(it) }
                     val isNoteToSelfAvailable = noteToSelf != null
                     handleNoteToSelfShortcut(isNoteToSelfAvailable, noteToSelf?.token ?: "")
 
                     val pair = appPreferences.conversationListPositionAndOffset
-                    layoutManager?.scrollToPositionWithOffset(pair.first, pair.second)
+                    lifecycleScope.launch {
+                        conversationListLazyListState?.scrollToItem(pair.first, pair.second)
+                    }
                 }.collect()
         }
 
@@ -484,7 +436,6 @@ class ConversationsListActivity :
         lifecycleScope.launch {
             chatViewModel.backgroundPlayUIFlow.onEach { msg ->
                 binding.composeViewForBackgroundPlay.apply {
-                    // Dispose of the Composition when the view's LifecycleOwner is destroyed
                     setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                     setContent {
                         msg?.let {
@@ -555,157 +506,145 @@ class ConversationsListActivity :
         }
     }
 
-    private fun setConversationList(list: List<ConversationModel>) {
-        // Update Conversations
-        conversationItems.clear()
-        conversationItemsWithHeader.clear()
-        nearFutureEventConversationItems.clear()
-
-        for (conversation in list) {
-            if (!isFutureEvent(conversation) && !conversation.hasArchived) {
-                addToNearFutureEventConversationItems(conversation)
-            }
-            addToConversationItems(conversation)
-        }
-
-        getFilterStates()
-        val noFiltersActive = !(
-            filterState[MENTION] == true ||
-                filterState[UNREAD] == true ||
-                filterState[ARCHIVE] == true
-            )
-
-        sortConversations(conversationItems)
-        sortConversations(conversationItemsWithHeader)
-        sortConversations(nearFutureEventConversationItems)
-
-        if (noFiltersActive && searchBehaviorSubject.value == false) {
-            adapter?.updateDataSet(nearFutureEventConversationItems, false)
-        } else {
-            applyFilter()
-        }
-
-        Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
-    }
-
     fun applyFilter() {
-        if (!hasFilterEnabled()) {
-            filterableConversationItems = conversationItems
-        }
-        filterConversation()
-        adapter?.updateDataSet(filterableConversationItems, false)
+        getFilterStates()
+        conversationsListViewModel.applyFilter(filterState)
+        updateFilterConversationButtonColor()
     }
 
     private fun hasFilterEnabled(): Boolean {
         for ((k, v) in filterState) {
             if (k != FilterConversationFragment.DEFAULT && v) return true
         }
-
         return false
     }
 
-    private fun isFutureEvent(conversation: ConversationModel): Boolean {
-        val eventTimeStart = conversation.objectId
-            .substringBefore("#")
-            .toLongOrNull() ?: return false
-        val currentTimeStampInSeconds = System.currentTimeMillis() / LONG_1000
-        val sixteenHoursAfterTimeStamp = (eventTimeStart - currentTimeStampInSeconds) > SIXTEEN_HOURS_IN_SECONDS
-        return conversation.objectType == ConversationEnums.ObjectType.EVENT && sixteenHoursAfterTimeStamp
-    }
-
     fun showOnlyNearFutureEvents() {
-        sortConversations(nearFutureEventConversationItems)
-        adapter?.updateDataSet(nearFutureEventConversationItems, false)
-        adapter?.smoothScrollToPosition(0)
+        // Reset all filters so the ViewModel's default view (non-archived, non-future-events) is shown
+        filterState[MENTION] = false
+        filterState[UNREAD] = false
+        filterState[ARCHIVE] = false
+        filterState[FilterConversationFragment.DEFAULT] = true
+        conversationsListViewModel.applyFilter(filterState)
+        updateFilterConversationButtonColor()
     }
 
-    private fun addToNearFutureEventConversationItems(conversation: ConversationModel) {
-        val conversationItem = ConversationItem(conversation, currentUser!!, this, null, viewThemeUtils)
-        nearFutureEventConversationItems.add(conversationItem)
+    private fun setupConversationList() {
+        binding.conversationListComposeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
+                val entries by conversationsListViewModel.conversationListEntriesFlow
+                    .collectAsStateWithLifecycle()
+                val isRefreshing by isRefreshingState.collectAsStateWithLifecycle()
+                val searchQuery by conversationsListViewModel.currentSearchQueryFlow
+                    .collectAsStateWithLifecycle()
+                val lazyListState = androidx.compose.foundation.lazy.rememberLazyListState()
+
+                // Store reference so Activity can read scroll position in onPause
+                androidx.compose.runtime.DisposableEffect(lazyListState) {
+                    conversationListLazyListState = lazyListState
+                    onDispose { conversationListLazyListState = null }
+                }
+
+                MaterialTheme(colorScheme = colorScheme) {
+                    ConversationList(
+                        entries = entries,
+                        isRefreshing = isRefreshing,
+                        currentUser = currentUser!!,
+                        credentials = credentials ?: "",
+                        searchQuery = searchQuery,
+                        onConversationClick = { handleConversation(it) },
+                        onConversationLongClick = { handleConversationLongClick(it) },
+                        onMessageResultClick = { showContextChatForMessage(it) },
+                        onContactClick = {
+                            contactsViewModel.createRoom(ROOM_TYPE_ONE_ONE, null, it.actorId!!, null)
+                        },
+                        onLoadMoreClick = { conversationsListViewModel.loadMoreMessages(context) },
+                        onRefresh = {
+                            isMaintenanceModeState.value = false
+                            isRefreshingState.value = true
+                            fetchRooms()
+                            fetchPendingInvitations()
+                        },
+                        onScrollChanged = { isFabVisibleState.value = !it },
+                        onScrollStopped = { checkToShowUnreadBubble(it) },
+                        listState = lazyListState
+                    )
+                }
+            }
+        }
+
+        setupToolbarButtons()
+    }
+
+    private fun handleConversationLongClick(model: ConversationModel) {
+        lifecycleScope.launch {
+            if (!showShareToScreen && networkMonitor.isOnline.value) {
+                conversationsListBottomDialog = ConversationsListBottomDialog(
+                    this@ConversationsListActivity,
+                    currentUser!!,
+                    model
+                )
+                conversationsListBottomDialog!!.show()
+            }
+        }
+    }
+
+    private fun showContextChatForMessage(result: SearchMessageEntry) {
+        binding.genericComposeView.apply {
+            setContent {
+                contextChatViewModel.getContextForChatMessages(
+                    credentials = credentials!!,
+                    baseUrl = currentUser!!.baseUrl!!,
+                    token = result.conversationToken,
+                    threadId = result.threadId,
+                    messageId = result.messageId!!,
+                    title = result.title
+                )
+                com.nextcloud.talk.contextchat.ContextChatView(context, contextChatViewModel)
+            }
+        }
+    }
+
+    private fun setupToolbarButtons() {
+        binding.switchAccountButton.setOnClickListener {
+            if (resources != null && resources!!.getBoolean(R.bool.multiaccount_support)) {
+                showChooseAccountDialog()
+            } else {
+                startActivity(Intent(context, SettingsActivity::class.java))
+            }
+        }
+        updateFilterConversationButtonColor()
+        binding.filterConversationsButton.setOnClickListener {
+            val newFragment = FilterConversationFragment.newInstance(filterState)
+            newFragment.show(supportFragmentManager, FilterConversationFragment.TAG)
+        }
+        binding.threadsButton.setOnClickListener { openFollowedThreadsOverview() }
+        viewThemeUtils.platform.colorImageView(binding.threadsButton, ColorRole.ON_SURFACE_VARIANT)
     }
 
     fun getFilterStates() {
         val accountId = UserIdUtils.getIdForUser(currentUser)
         filterState[UNREAD] = (
-            arbitraryStorageManager.getStorageSetting(
-                accountId,
-                UNREAD,
-                ""
-            ).blockingGet()?.value ?: ""
+            arbitraryStorageManager.getStorageSetting(accountId, UNREAD, "").blockingGet()?.value ?: ""
             ) == "true"
-
         filterState[MENTION] = (
-            arbitraryStorageManager.getStorageSetting(
-                accountId,
-                MENTION,
-                ""
-            ).blockingGet()?.value ?: ""
+            arbitraryStorageManager.getStorageSetting(accountId, MENTION, "").blockingGet()?.value ?: ""
             ) == "true"
-
         filterState[ARCHIVE] = (
-            arbitraryStorageManager.getStorageSetting(
-                accountId,
-                ARCHIVE,
-                ""
-            ).blockingGet()?.value ?: ""
+            arbitraryStorageManager.getStorageSetting(accountId, ARCHIVE, "").blockingGet()?.value ?: ""
             ) == "true"
     }
 
     fun filterConversation() {
+        // Delegate to ViewModel; FilterConversationFragment still calls this via cast
         getFilterStates()
-        val newItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-        val items = conversationItems
-        for (i in items) {
-            val conversation = (i as ConversationItem).model
-            if (filter(conversation)) {
-                newItems.add(i)
-            }
-        }
-
         val archiveFilterOn = filterState[ARCHIVE] == true
-        showNoArchivedViewState.value = archiveFilterOn && newItems.isEmpty()
-
-        adapter?.updateDataSet(newItems, true)
-        setFilterableItems(newItems)
-        if (archiveFilterOn) {
-            // Never a notification from archived conversations
-            showUnreadBubbleState.value = false
-        }
-
-        layoutManager?.scrollToPositionWithOffset(0, 0)
+        showNoArchivedViewState.value = archiveFilterOn
+        conversationsListViewModel.applyFilter(filterState)
+        if (archiveFilterOn) showUnreadBubbleState.value = false
         updateFilterConversationButtonColor()
-    }
-
-    private fun filter(conversation: ConversationModel): Boolean {
-        var result = true
-        for ((k, v) in filterState) {
-            if (v) {
-                when (k) {
-                    MENTION -> result = (result && conversation.unreadMention) ||
-                        (
-                            result &&
-                                (
-                                    conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
-                                        conversation.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE
-                                    ) &&
-                                (conversation.unreadMessages > 0)
-                            )
-
-                    UNREAD -> result = result && (conversation.unreadMessages > 0)
-
-                    FilterConversationFragment.DEFAULT -> {
-                        result = if (filterState[ARCHIVE] == true) {
-                            result && conversation.hasArchived
-                        } else {
-                            result && !conversation.hasArchived
-                        }
-                    }
-                }
-            }
-        }
-
-        Log.d(TAG, "Conversation: ${conversation.name} Result: $result")
-        return result
     }
 
     private fun setupActionBar() {
@@ -869,7 +808,9 @@ class ConversationsListActivity :
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         super.onPrepareOptionsMenu(menu)
 
-        searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+        if (searchItem != null) {
+            searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+        }
 
         val moreAccountsAvailable = userManager.users.blockingGet().size > 1
         menu.findItem(R.id.action_choose_account).isVisible = showShareToScreen && moreAccountsAvailable
@@ -881,26 +822,28 @@ class ConversationsListActivity :
             hideSearchBar()
             supportActionBar?.setTitle(R.string.nc_forward_to_three_dots)
         } else {
-            searchItem!!.isVisible = conversationItems.size > 0
-            if (adapter?.hasFilter() == true) {
+            searchItem!!.isVisible = conversationsListViewModel.conversationListEntriesFlow.value.isNotEmpty()
+            if (searchBehaviorSubject.value == true && searchView != null) {
                 showSearchView(searchView, searchItem)
-                searchView!!.setQuery(adapter?.getFilter(String::class.java), false)
+                val savedQuery = conversationsListViewModel.currentSearchQueryFlow.value
+                if (savedQuery.isNotEmpty()) {
+                    searchView!!.setQuery(savedQuery, false)
+                }
             }
             binding.searchText.setOnClickListener {
                 showSearchView(searchView, searchItem)
                 viewThemeUtils.platform.themeStatusBar(this)
             }
-            searchView!!.findViewById<View>(R.id.search_close_btn).setOnClickListener {
+            searchView?.findViewById<View>(R.id.search_close_btn)?.setOnClickListener {
                 if (TextUtils.isEmpty(searchView!!.query.toString())) {
                     searchView!!.onActionViewCollapsed()
                     viewThemeUtils.platform.resetStatusBar(this)
                 } else {
-                    resetSearchResults()
                     searchView!!.setQuery("", false)
                 }
             }
 
-            searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(p0: String?): Boolean {
                     initSearchDisposable()
                     searchView!!.clearFocus()
@@ -916,31 +859,17 @@ class ConversationsListActivity :
             searchItem!!.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                 override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                     initSearchDisposable()
-                    adapter?.setHeadersShown(true)
-                    adapter!!.showAllHeaders()
-                    searchableConversationItems.addAll(conversationItemsWithHeader)
-                    if (!hasFilterEnabled()) filterableConversationItems = searchableConversationItems
-                    binding.swipeRefreshLayoutView.isEnabled = false
                     searchBehaviorSubject.onNext(true)
+                    conversationsListViewModel.setIsSearchActive(true)
                     return true
                 }
 
                 override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                    adapter?.setHeadersShown(false)
                     searchBehaviorSubject.onNext(false)
-                    if (!hasFilterEnabled()) filterableConversationItems = conversationItemsWithHeader
-                    if (!hasFilterEnabled()) {
-                        adapter?.updateDataSet(nearFutureEventConversationItems, false)
-                    } else {
-                        filterableConversationItems = conversationItems
-                    }
-                    adapter?.hideAllHeaders()
+                    conversationsListViewModel.setIsSearchActive(false)
                     if (searchHelper != null) {
-                        // cancel any pending searches
                         searchHelper!!.cancelSearch()
                     }
-                    binding.swipeRefreshLayoutView.isRefreshing = false
-                    binding.swipeRefreshLayoutView.isEnabled = true
                     searchView!!.onActionViewCollapsed()
 
                     binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
@@ -953,8 +882,9 @@ class ConversationsListActivity :
                         viewThemeUtils.platform.resetStatusBar(this@ConversationsListActivity)
                     }
 
-                    val layoutManager = binding.recyclerView.layoutManager as SmoothScrollLinearLayoutManager?
-                    layoutManager?.scrollToPositionWithOffset(0, 0)
+                    lifecycleScope.launch {
+                        conversationListLazyListState?.scrollToItem(0)
+                    }
                     return true
                 }
             })
@@ -963,7 +893,7 @@ class ConversationsListActivity :
     }
 
     private fun showSearchOrToolbar() {
-        if (TextUtils.isEmpty(searchQuery)) {
+        if (TextUtils.isEmpty(searchQuery) && !conversationsListViewModel.isSearchActiveFlow.value) {
             if (appBarLayoutType == AppBarLayoutType.SEARCH_BAR) {
                 showSearchBar()
             } else {
@@ -1041,52 +971,6 @@ class ConversationsListActivity :
 
     private fun initOverallLayout(isConversationListNotEmpty: Boolean) {
         isListEmptyState.value = !isConversationListNotEmpty
-        if (isConversationListNotEmpty) {
-            if (binding.swipeRefreshLayoutView.visibility != View.VISIBLE) {
-                binding.swipeRefreshLayoutView.visibility = View.VISIBLE
-            }
-        } else {
-            if (binding.swipeRefreshLayoutView.visibility != View.GONE) {
-                binding.swipeRefreshLayoutView.visibility = View.GONE
-            }
-        }
-    }
-
-    private fun addToConversationItems(conversation: ConversationModel) {
-        if (intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM) != null &&
-            intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM) == conversation.token
-        ) {
-            return
-        }
-
-        if (conversation.objectType == ConversationEnums.ObjectType.ROOM &&
-            conversation.lobbyState == ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY
-        ) {
-            return
-        }
-
-        val headerTitle: String = resources!!.getString(R.string.conversations)
-        val genericTextHeaderItem: GenericTextHeaderItem
-        if (!callHeaderItems.containsKey(headerTitle)) {
-            genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
-            callHeaderItems[headerTitle] = genericTextHeaderItem
-        }
-
-        val conversationItem = ConversationItem(
-            conversation,
-            currentUser!!,
-            this,
-            viewThemeUtils
-        )
-        conversationItems.add(conversationItem)
-        val conversationItemWithHeader = ConversationItem(
-            conversation,
-            currentUser!!,
-            this,
-            callHeaderItems[headerTitle],
-            viewThemeUtils
-        )
-        conversationItemsWithHeader.add(conversationItemWithHeader)
     }
 
     private fun showErrorDialog() {
@@ -1168,9 +1052,10 @@ class ConversationsListActivity :
                 val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
                 val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
                 val isFabVisible by isFabVisibleState.collectAsStateWithLifecycle()
+                val isSearchActive by conversationsListViewModel.isSearchActiveFlow.collectAsStateWithLifecycle()
                 MaterialTheme(colorScheme = colorScheme) {
                     ConversationListFab(
-                        isVisible = isFabVisible,
+                        isVisible = isFabVisible && !isSearchActive,
                         isEnabled = isOnline,
                         onClick = {
                             run(context)
@@ -1188,15 +1073,17 @@ class ConversationsListActivity :
             setContent {
                 val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
                 val showBubble by showUnreadBubbleState.collectAsStateWithLifecycle()
+                val isSearchActive by conversationsListViewModel.isSearchActiveFlow.collectAsStateWithLifecycle()
                 MaterialTheme(colorScheme = colorScheme) {
                     UnreadMentionBubble(
-                        visible = showBubble,
+                        visible = showBubble && !isSearchActive,
                         onClick = {
-                            val lm = binding.recyclerView.layoutManager as? SmoothScrollLinearLayoutManager
-                            lm?.scrollToPositionWithOffset(
-                                nextUnreadConversationScrollPosition,
-                                binding.recyclerView.height / OFFSET_HEIGHT_DIVIDER
-                            )
+                            lifecycleScope.launch {
+                                conversationListLazyListState?.scrollToItem(
+                                    nextUnreadConversationScrollPosition,
+                                    0
+                                )
+                            }
                             showUnreadBubbleState.value = false
                         }
                     )
@@ -1210,7 +1097,7 @@ class ConversationsListActivity :
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
-                val isShimmerVisible by isShimmerVisibleState.collectAsStateWithLifecycle()
+                val isShimmerVisible by conversationsListViewModel.isShimmerVisible.collectAsStateWithLifecycle()
                 MaterialTheme(colorScheme = colorScheme) {
                     ConversationListSkeleton(isVisible = isShimmerVisible)
                 }
@@ -1223,20 +1110,7 @@ class ConversationsListActivity :
         binding.searchText.isVisible = show
     }
 
-    private fun sortConversations(conversationItems: MutableList<AbstractFlexibleItem<*>>) {
-        conversationItems.sortWith { o1: AbstractFlexibleItem<*>, o2: AbstractFlexibleItem<*> ->
-            val conversation1 = (o1 as ConversationItem).model
-            val conversation2 = (o2 as ConversationItem).model
-            CompareToBuilder()
-                .append(conversation2.favorite, conversation1.favorite)
-                .append(conversation2.lastActivity, conversation1.lastActivity)
-                .toComparison()
-        }
-    }
-
     private suspend fun fetchOpenConversations(searchTerm: String) {
-        searchableConversationItems.clear()
-        searchableConversationItems.addAll(conversationItemsWithHeader)
         conversationsListViewModel.fetchOpenConversations(searchTerm)
     }
 
@@ -1266,79 +1140,20 @@ class ConversationsListActivity :
     @SuppressLint("ClickableViewAccessibility")
     private fun prepareViews() {
         isMaintenanceModeState.value = false
-
-        layoutManager = SmoothScrollLinearLayoutManager(this)
-        binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.setHasFixedSize(true)
-        binding.recyclerView.adapter = adapter
-        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val isSearchActive = searchBehaviorSubject.value
-                    if (!isSearchActive!!) {
-                        checkToShowUnreadBubble()
-                    }
-                }
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0) {
-                    isFabVisibleState.value = false
-                } else if (dy < 0) {
-                    isFabVisibleState.value = true
-                }
-            }
-        })
-        binding.recyclerView.setOnTouchListener { v: View, _: MotionEvent? ->
-            if (!isDestroyed) {
-                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(v.windowToken, 0)
-            }
-            false
-        }
-        binding.swipeRefreshLayoutView.setOnRefreshListener {
-            isMaintenanceModeState.value = false
-            fetchRooms()
-            fetchPendingInvitations()
-        }
-        binding.swipeRefreshLayoutView.let { viewThemeUtils.androidx.themeSwipeRefreshLayout(it) }
-
-        binding.switchAccountButton.setOnClickListener {
-            if (resources != null && resources!!.getBoolean(R.bool.multiaccount_support)) {
-                showChooseAccountDialog()
-            } else {
-                val intent = Intent(context, SettingsActivity::class.java)
-                startActivity(intent)
-            }
-        }
-
-        updateFilterConversationButtonColor()
-
-        binding.filterConversationsButton.setOnClickListener {
-            val newFragment = FilterConversationFragment.newInstance(filterState)
-            newFragment.show(supportFragmentManager, FilterConversationFragment.TAG)
-        }
-
-        binding.threadsButton.setOnClickListener {
-            openFollowedThreadsOverview()
-        }
-        binding.threadsButton.let {
-            viewThemeUtils.platform.colorImageView(it, ColorRole.ON_SURFACE_VARIANT)
-        }
+        // RecyclerView setup moved to setupConversationList().
+        // Only legacy view wiring that hasn't migrated to Compose yet remains here.
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    private fun checkToShowUnreadBubble() {
-        if (searchBehaviorSubject.value == true) {
+    private fun checkToShowUnreadBubble(lastVisibleIndex: Int) {
+        if (searchBehaviorSubject.value == true || conversationsListViewModel.isSearchActiveFlow.value) {
             nextUnreadConversationScrollPosition = 0
             showUnreadBubbleState.value = false
             return
         }
         try {
-            val lastVisibleItem = layoutManager!!.findLastCompletelyVisibleItemPosition()
-            val firstUnreadPosition = findFirstOffscreenUnreadPosition(lastVisibleItem)
+            val entries = conversationsListViewModel.conversationListEntriesFlow.value
+            val firstUnreadPosition = findFirstOffscreenUnreadPosition(entries, lastVisibleIndex)
             if (firstUnreadPosition != null) {
                 nextUnreadConversationScrollPosition = firstUnreadPosition
                 showUnreadBubbleState.value = true
@@ -1346,32 +1161,32 @@ class ConversationsListActivity :
                 nextUnreadConversationScrollPosition = 0
                 showUnreadBubbleState.value = false
             }
-        } catch (e: NullPointerException) {
-            Log.d(
-                TAG,
-                "A NPE was caught when trying to show the unread popup bubble. This might happen when the " +
-                    "user already left the conversations-list screen so the popup bubble is not available " +
-                    "anymore.",
-                e
-            )
+        } catch (e: Exception) {
+            Log.d(TAG, "Exception in checkToShowUnreadBubble", e)
         }
     }
 
-    private fun findFirstOffscreenUnreadPosition(lastVisibleItem: Int): Int? {
-        for (flexItem in conversationItems) {
-            val conversation = (flexItem as ConversationItem).model
-            val position = adapter?.getGlobalPositionOf(flexItem)
-            if (position != null && hasUnreadItems(conversation) && position > lastVisibleItem) {
-                return position
+    private fun findFirstOffscreenUnreadPosition(
+        entries: List<com.nextcloud.talk.conversationlist.ui.ConversationListEntry>,
+        lastVisibleIndex: Int
+    ): Int? {
+        entries.forEachIndexed { index, entry ->
+            if (index > lastVisibleIndex &&
+                entry is com.nextcloud.talk.conversationlist.ui.ConversationListEntry.ConversationEntry
+            ) {
+                val model = entry.model
+                if (model.unreadMention ||
+                    (
+                        model.unreadMessages > 0 &&
+                            model.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+                        )
+                ) {
+                    return index
+                }
             }
         }
         return null
     }
-
-    private fun hasUnreadItems(conversation: ConversationModel) =
-        conversation.unreadMention ||
-            conversation.unreadMessages > 0 &&
-            conversation.type === ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
     private fun showNewConversationsScreen() {
         val intent = Intent(context, ContactsActivity::class.java)
@@ -1381,15 +1196,6 @@ class ConversationsListActivity :
     private fun dispose(disposable: Disposable?) {
         if (disposable != null && !disposable.isDisposed) {
             disposable.dispose()
-        } else if (disposable == null && roomsQueryDisposable != null && !roomsQueryDisposable!!.isDisposed) {
-            roomsQueryDisposable!!.dispose()
-            roomsQueryDisposable = null
-        } else if (disposable == null &&
-            openConversationsQueryDisposable != null &&
-            !openConversationsQueryDisposable!!.isDisposed
-        ) {
-            openConversationsQueryDisposable!!.dispose()
-            openConversationsQueryDisposable = null
         }
     }
 
@@ -1422,122 +1228,27 @@ class ConversationsListActivity :
             val filter = searchQuery
             searchQuery = ""
             performFilterAndSearch(filter)
-        } else if (adapter?.hasNewFilter(newText) == true) {
+        } else {
             performFilterAndSearch(newText)
         }
     }
 
     private fun performFilterAndSearch(filter: String?) {
-        if (filter!!.length >= SEARCH_MIN_CHARS) {
+        if (!filter.isNullOrEmpty() && filter.length >= SEARCH_MIN_CHARS) {
             showNoArchivedViewState.value = false
-            adapter?.setFilter(filter)
             conversationsListViewModel.getSearchQuery(context, filter)
-        } else {
-            resetSearchResults()
         }
-    }
-
-    private fun resetSearchResults() {
-        adapter?.updateDataSet(conversationItems)
-        adapter?.setFilter("")
-        adapter?.filterItems()
-        val archiveFilterOn = filterState[ARCHIVE] == true
-        showNoArchivedViewState.value = archiveFilterOn && adapter!!.isEmpty
-    }
-
-    private fun clearMessageSearchResults() {
-        val firstHeader = adapter?.getSectionHeader(0)
-        if (firstHeader != null && firstHeader.itemViewType == MessagesTextHeaderItem.VIEW_TYPE) {
-            adapter?.removeSection(firstHeader)
-        } else {
-            adapter?.removeItemsOfType(MessageResultItem.VIEW_TYPE)
-            adapter?.removeItemsOfType(MessagesTextHeaderItem.VIEW_TYPE)
-        }
-        adapter?.removeItemsOfType(LoadMoreResultsItem.VIEW_TYPE)
-    }
-
-    @SuppressLint("CheckResult") // handled by helper
-    private fun startMessageSearch(search: String?) {
-        binding.swipeRefreshLayoutView.isRefreshing = true
-        searchHelper?.startMessageSearch(search!!)
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe({ results: MessageSearchResults -> onMessageSearchResult(results) }) { throwable: Throwable ->
-                onMessageSearchError(
-                    throwable
-                )
-            }
-    }
-
-    @SuppressLint("CheckResult") // handled by helper
-    private fun loadMoreMessages() {
-        binding.swipeRefreshLayoutView.isRefreshing = true
-        val observable = searchHelper!!.loadMore()
-        observable?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe({ results: MessageSearchResults ->
-                onMessageSearchResult(results)
-                binding.swipeRefreshLayoutView.isRefreshing = false
-            }) { throwable: Throwable ->
-                onMessageSearchError(
-                    throwable
-                )
-            }
-    }
-
-    override fun onItemClick(view: View, position: Int): Boolean {
-        val item = adapter?.getItem(position)
-        if (item != null) {
-            when (item) {
-                is MessageResultItem -> {
-                    val token = item.messageEntry.conversationToken
-                    (
-                        conversationItems.first {
-                            (it is ConversationItem) && it.model.token == token
-                        } as ConversationItem
-                        ).model.displayName
-
-                    binding.genericComposeView.apply {
-                        setContent {
-                            contextChatViewModel.getContextForChatMessages(
-                                credentials = credentials!!,
-                                baseUrl = currentUser!!.baseUrl!!,
-                                token = token,
-                                threadId = item.messageEntry.threadId,
-                                messageId = item.messageEntry.messageId!!,
-                                title = item.messageEntry.title
-                            )
-                            ContextChatView(context, contextChatViewModel)
-                        }
-                    }
-                }
-
-                is LoadMoreResultsItem -> {
-                    conversationsListViewModel.loadMoreMessages(context)
-                }
-
-                is ConversationItem -> {
-                    handleConversation(item.model)
-                }
-
-                is ContactItem -> {
-                    contactsViewModel.createRoom(
-                        ROOM_TYPE_ONE_ONE,
-                        null,
-                        item.model.actorId!!,
-                        null
-                    )
-                }
-            }
-        }
-        return true
+        // Query too short: search results remain empty, ViewModel shows regular list
     }
 
     private fun showConversationByToken(conversationToken: String) {
-        for (absItem in conversationItems) {
-            val conversationItem = absItem as ConversationItem
-            if (conversationItem.model.token == conversationToken) {
-                val conversation = conversationItem.model
-                handleConversation(conversation)
+        val entries = conversationsListViewModel.conversationListEntriesFlow.value
+        for (entry in entries) {
+            if (entry is com.nextcloud.talk.conversationlist.ui.ConversationListEntry.ConversationEntry &&
+                entry.model.token == conversationToken
+            ) {
+                handleConversation(entry.model)
+                return
             }
         }
     }
@@ -1646,72 +1357,56 @@ class ConversationsListActivity :
         intent.action = ""
     }
 
-    override fun onItemLongClick(position: Int) {
-        this.lifecycleScope.launch {
-            if (showShareToScreen || !networkMonitor.isOnline.value) {
-                Log.d(TAG, "sharing to multiple rooms not yet implemented. onItemLongClick is ignored.")
-            } else {
-                val clickedItem: Any? = adapter?.getItem(position)
-                if (clickedItem != null && clickedItem is ConversationItem) {
-                    val conversation = clickedItem.model
-                    conversationsListBottomDialog = ConversationsListBottomDialog(
-                        this@ConversationsListActivity,
-                        currentUser!!,
-                        conversation
-                    )
-                    conversationsListBottomDialog!!.show()
-                }
-            }
-        }
-    }
-
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun collectDataFromIntent() {
         filesToShare = ArrayList()
-        if (intent != null) {
-            if (Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action) {
-                try {
-                    val mimeType = intent.type
-                    if (Mimetype.TEXT_PLAIN == mimeType && intent.getStringExtra(Intent.EXTRA_TEXT) != null) {
-                        // Share from Google Chrome sets text/plain MIME type, but also provides a content:// URI
-                        // with a *screenshot* of the current page in getClipData().
-                        // Here we assume that when sharing a web page the user would prefer to send the URL
-                        // of the current page rather than a screenshot.
-                        textToPaste = intent.getStringExtra(Intent.EXTRA_TEXT)
-                    } else {
-                        if (intent.clipData != null) {
-                            for (i in 0 until intent.clipData!!.itemCount) {
-                                val item = intent.clipData!!.getItemAt(i)
-                                if (item.uri != null) {
-                                    filesToShare!!.add(item.uri.toString())
-                                } else if (item.text != null) {
-                                    textToPaste = item.text.toString()
-                                    break
-                                } else {
-                                    Log.w(TAG, "datatype not yet implemented for share-to")
-                                }
-                            }
-                        } else {
-                            filesToShare!!.add(intent.data.toString())
-                        }
+        val intentAction = intent?.action ?: return
+        if (intentAction != Intent.ACTION_SEND && intentAction != Intent.ACTION_SEND_MULTIPLE) return
+        try {
+            val mimeType = intent.type
+            if (Mimetype.TEXT_PLAIN == mimeType && intent.getStringExtra(Intent.EXTRA_TEXT) != null) {
+                // Share from Google Chrome sets text/plain MIME type, but also provides a content:// URI
+                // with a *screenshot* of the current page in getClipData().
+                // Here we assume that when sharing a web page the user would prefer to send the URL
+                // of the current page rather than a screenshot.
+                textToPaste = intent.getStringExtra(Intent.EXTRA_TEXT)
+            } else {
+                extractFilesFromClipData()
+            }
+            if (filesToShare!!.isEmpty() && textToPaste!!.isEmpty()) {
+                Snackbar.make(
+                    binding.root,
+                    context.resources.getString(R.string.nc_common_error_sorry),
+                    Snackbar.LENGTH_LONG
+                ).show()
+                Log.e(TAG, "failed to get data from intent")
+            }
+        } catch (e: Exception) {
+            Snackbar.make(
+                binding.root,
+                context.resources.getString(R.string.nc_common_error_sorry),
+                Snackbar.LENGTH_LONG
+            ).show()
+            Log.e(TAG, "Something went wrong when extracting data from intent")
+        }
+    }
+
+    private fun extractFilesFromClipData() {
+        val clipData = intent.clipData
+        if (clipData != null) {
+            for (i in 0 until clipData.itemCount) {
+                val item = clipData.getItemAt(i)
+                when {
+                    item.uri != null -> filesToShare!!.add(item.uri.toString())
+                    item.text != null -> {
+                        textToPaste = item.text.toString()
+                        return
                     }
-                    if (filesToShare!!.isEmpty() && textToPaste!!.isEmpty()) {
-                        Snackbar.make(
-                            binding.root,
-                            context.resources.getString(R.string.nc_common_error_sorry),
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                        Log.e(TAG, "failed to get data from intent")
-                    }
-                } catch (e: Exception) {
-                    Snackbar.make(
-                        binding.root,
-                        context.resources.getString(R.string.nc_common_error_sorry),
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                    Log.e(TAG, "Something went wrong when extracting data from intent")
+                    else -> Log.w(TAG, "datatype not yet implemented for share-to")
                 }
             }
+        } else {
+            filesToShare!!.add(intent.data.toString())
         }
     }
 
@@ -1915,7 +1610,7 @@ class ConversationsListActivity :
     fun onMessageEvent(eventStatus: EventStatus) {
         if (currentUser != null && eventStatus.userId == currentUser!!.id) {
             when (eventStatus.eventType) {
-                EventStatus.EventType.CONVERSATION_UPDATE -> if (eventStatus.isAllGood && !isRefreshing) {
+                EventStatus.EventType.CONVERSATION_UPDATE -> if (eventStatus.isAllGood && !isRefreshingState.value) {
                     fetchRooms()
                 }
 
@@ -2153,49 +1848,6 @@ class ConversationsListActivity :
                     }
                 }
             }
-    }
-
-    private fun onMessageSearchResult(results: MessageSearchResults) {
-        if (searchView!!.query.isNotEmpty()) {
-            clearMessageSearchResults()
-            val entries = results.messages
-            if (entries.isNotEmpty()) {
-                val adapterItems: MutableList<AbstractFlexibleItem<*>> = ArrayList(entries.size + 1)
-
-                for (i in entries.indices) {
-                    val showHeader = i == 0
-                    adapterItems.add(
-                        MessageResultItem(
-                            context,
-                            currentUser!!,
-                            entries[i],
-                            showHeader,
-                            viewThemeUtils = viewThemeUtils
-                        )
-                    )
-                }
-
-                if (results.hasMore) {
-                    adapterItems.add(LoadMoreResultsItem)
-                }
-
-                adapter?.addItems(Int.MAX_VALUE, adapterItems)
-            }
-        }
-    }
-
-    private fun onMessageSearchError(throwable: Throwable) {
-        handleHttpExceptions(throwable)
-        binding.swipeRefreshLayoutView.isRefreshing = false
-    }
-
-    fun updateFilterState(mention: Boolean, unread: Boolean) {
-        filterState[MENTION] = mention
-        filterState[UNREAD] = unread
-    }
-
-    fun setFilterableItems(items: MutableList<AbstractFlexibleItem<*>>) {
-        filterableConversationItems = items
     }
 
     fun updateFilterConversationButtonColor() {

@@ -71,7 +71,7 @@ fun ConversationListSkeleton(isVisible: Boolean, itemCount: Int = SHIMMER_ITEM_C
             label = "shimmerAlpha"
         )
         val shimmerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = shimmerAlpha)
-
+        Spacer(modifier = Modifier.width(4.dp))
         Column {
             repeat(itemCount) {
                 ShimmerConversationItem(shimmerColor = shimmerColor)
@@ -85,7 +85,7 @@ private fun ShimmerConversationItem(shimmerColor: androidx.compose.ui.graphics.C
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(

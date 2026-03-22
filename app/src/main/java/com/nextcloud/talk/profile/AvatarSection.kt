@@ -6,7 +6,6 @@
  */
 package com.nextcloud.talk.profile
 
-import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,16 +36,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
 import coil.imageLoader
-import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.nextcloud.talk.R
+import com.nextcloud.talk.ui.copyAvatarToOtherThemeCache
 import com.nextcloud.talk.utils.ApiUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
@@ -126,45 +121,6 @@ private fun AvatarCacheEffect(state: ProfileUiState, isDark: Boolean) {
             }
             // Upload/picker/camera: the other theme's cache is populated via onSuccess once the
             // current theme's image has been fetched, avoiding a redundant network request.
-        }
-    }
-}
-
-/**
- * Copies the freshly loaded avatar into the opposite theme's cache slots (memory + disk)
- * preventing the need for a second network request.
- */
-@OptIn(ExperimentalCoilApi::class)
-private fun copyAvatarToOtherThemeCache(
-    successState: AsyncImagePainter.State.Success,
-    context: Context,
-    otherUrl: String,
-    url: String,
-    coroutineScope: CoroutineScope
-) {
-    val imageLoader = context.imageLoader
-    // Copy memory-cache entry, preserving key extras (e.g. resolved image size).
-    val currentMemKey = successState.result.memoryCacheKey
-    val memValue = currentMemKey?.let { imageLoader.memoryCache?.get(it) }
-    if (currentMemKey != null && memValue != null) {
-        imageLoader.memoryCache?.set(MemoryCache.Key(otherUrl, currentMemKey.extras), memValue)
-    }
-    // Copy disk-cache bytes on a background thread.
-    val diskKey = successState.result.diskCacheKey ?: url
-    coroutineScope.launch(Dispatchers.IO) {
-        val diskCache = imageLoader.diskCache ?: return@launch
-        diskCache.openSnapshot(diskKey)?.use { snapshot ->
-            diskCache.openEditor(otherUrl)?.let { editor ->
-                try {
-                    java.io.File(snapshot.data.toString())
-                        .copyTo(java.io.File(editor.data.toString()), overwrite = true)
-                    java.io.File(snapshot.metadata.toString())
-                        .copyTo(java.io.File(editor.metadata.toString()), overwrite = true)
-                    editor.commitAndOpenSnapshot()?.close()
-                } catch (_: Exception) {
-                    editor.abort()
-                }
-            }
         }
     }
 }
