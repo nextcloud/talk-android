@@ -1,12 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2022-2024 Marcel Hibbe <dev@mhibbe.de>
- * SPDX-FileCopyrightText: 2022-2023 Andy Scherzinger <info@andy-scherzinger.de>
- * SPDX-FileCopyrightText: 2023 Tobias Kaminsky <tobias@kaminsky.me>
- * SPDX-FileCopyrightText: 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
- * SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro.brey@nextcloud.com>
- * SPDX-FileCopyrightText: 2017-2020 Mario Danic <mario@lovelyhq.com>
+ * SPDX-FileCopyrightText: 2017-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.conversationlist
@@ -30,7 +25,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -38,7 +32,11 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -49,6 +47,7 @@ import androidx.core.view.MenuItemCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Data
@@ -90,6 +89,13 @@ import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contextchat.ContextChatView
 import com.nextcloud.talk.contextchat.ContextChatViewModel
+import com.nextcloud.talk.conversationlist.ui.ConversationListFab
+import com.nextcloud.talk.conversationlist.ui.ConversationListSkeleton
+import com.nextcloud.talk.conversationlist.ui.ConversationsEmptyStateView
+import com.nextcloud.talk.conversationlist.ui.FederationInvitationHintCard
+import com.nextcloud.talk.conversationlist.ui.NotificationWarningCard
+import com.nextcloud.talk.conversationlist.ui.StatusBannerRow
+import com.nextcloud.talk.conversationlist.ui.UnreadMentionBubble
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
@@ -109,22 +115,21 @@ import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.ui.BackgroundVoiceMessageCard
-import com.nextcloud.talk.ui.dialog.ChooseAccountDialogCompose
 import com.nextcloud.talk.ui.chooseaccount.ChooseAccountShareToDialogFragment
+import com.nextcloud.talk.ui.dialog.ChooseAccountDialogCompose
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.MENTION
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.UNREAD
 import com.nextcloud.talk.users.UserManager
-import androidx.compose.ui.platform.LocalContext
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
@@ -152,6 +157,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -207,6 +213,13 @@ class ConversationsListActivity :
         get() = AppBarLayoutType.SEARCH_BAR
 
     private var currentUser: User? = null
+    private val isMaintenanceModeState = MutableStateFlow(false)
+    private val isListEmptyState = MutableStateFlow(false)
+    private val showNoArchivedViewState = MutableStateFlow(false)
+    private val showUnreadBubbleState = MutableStateFlow(false)
+    private val isFabVisibleState = MutableStateFlow(true)
+    private val isShimmerVisibleState = MutableStateFlow(true)
+    private val showNotificationWarningState = MutableStateFlow(false)
     private var roomsQueryDisposable: Disposable? = null
     private var openConversationsQueryDisposable: Disposable? = null
     private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
@@ -267,6 +280,13 @@ class ConversationsListActivity :
         binding = ActivityConversationsBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
+        setupStatusBanner()
+        setupEmptyStateView()
+        setupFab()
+        setupUnreadBubble()
+        setupShimmer()
+        setupNotificationWarning()
+        setupFederationHintCard()
         initSystemBars()
         viewThemeUtils.material.themeSearchCardView(binding.searchToolbarContainer)
         viewThemeUtils.material.colorMaterialButtonContent(binding.menuButton, ColorRole.ON_SURFACE_VARIANT)
@@ -299,12 +319,12 @@ class ConversationsListActivity :
             adapter = FlexibleAdapter(conversationItems, this, true)
             addEmptyItemForEdgeToEdgeIfNecessary()
         } else {
-            binding.loadingContent.visibility = View.GONE
+            isShimmerVisibleState.value = false
         }
         adapter?.addListener(this)
         prepareViews()
 
-        showNotificationWarning()
+        showNotificationWarningState.value = shouldShowNotificationWarning()
 
         showShareToScreen = hasActivityActionSendIntent()
 
@@ -329,14 +349,6 @@ class ConversationsListActivity :
 
             loadUserAvatar(binding.switchAccountButton)
             viewThemeUtils.material.colorMaterialTextButton(binding.switchAccountButton)
-            viewThemeUtils.material.themeCardView(binding.conversationListHintInclude.hintLayoutCardview)
-            viewThemeUtils.material.themeCardView(
-                binding.conversationListNotificationWarning.notificationWarningCardview
-            )
-            viewThemeUtils.material.colorMaterialButtonText(binding.conversationListNotificationWarning.notNowButton)
-            viewThemeUtils.material.colorMaterialButtonText(
-                binding.conversationListNotificationWarning.showSettingsButton
-            )
             searchBehaviorSubject.onNext(false)
             fetchRooms()
             fetchPendingInvitations()
@@ -371,7 +383,6 @@ class ConversationsListActivity :
     private fun initObservers() {
         this.lifecycleScope.launch {
             networkMonitor.isOnline.onEach { isOnline ->
-                showNetworkErrorDialog(!isOnline)
                 handleUI(isOnline)
             }.collect()
         }
@@ -381,25 +392,6 @@ class ConversationsListActivity :
                 if (adapter?.hasFilter() == true) {
                     adapter?.updateDataSet(searchResults)
                 }
-            }
-        }
-
-        conversationsListViewModel.getFederationInvitationsViewState.observe(this) { state ->
-            when (state) {
-                is ConversationsListViewModel.GetFederationInvitationsStartState -> {
-                    binding.conversationListHintInclude.conversationListHintLayout.visibility = View.GONE
-                }
-
-                is ConversationsListViewModel.GetFederationInvitationsSuccessState -> {
-                    binding.conversationListHintInclude.conversationListHintLayout.visibility =
-                        if (state.showInvitationsHint) View.VISIBLE else View.GONE
-                }
-
-                is ConversationsListViewModel.GetFederationInvitationsErrorState -> {
-                    // do nothing
-                }
-
-                else -> {}
             }
         }
 
@@ -426,7 +418,7 @@ class ConversationsListActivity :
                 is ConversationsListViewModel.GetRoomsSuccessState -> {
                     if (adapterWasNull) {
                         adapterWasNull = false
-                        binding.loadingContent.visibility = View.GONE
+                        isShimmerVisibleState.value = false
                     }
                     initOverallLayout(state.listIsNotEmpty)
                     binding.swipeRefreshLayoutView.isRefreshing = false
@@ -671,17 +663,13 @@ class ConversationsListActivity :
         }
 
         val archiveFilterOn = filterState[ARCHIVE] == true
-        if (archiveFilterOn && newItems.isEmpty()) {
-            binding.noArchivedConversationLayout.visibility = View.VISIBLE
-        } else {
-            binding.noArchivedConversationLayout.visibility = View.GONE
-        }
+        showNoArchivedViewState.value = archiveFilterOn && newItems.isEmpty()
 
         adapter?.updateDataSet(newItems, true)
         setFilterableItems(newItems)
         if (archiveFilterOn) {
             // Never a notification from archived conversations
-            binding.newMentionPopupBubble.visibility = View.GONE
+            showUnreadBubbleState.value = false
         }
 
         layoutManager?.scrollToPositionWithOffset(0, 0)
@@ -1047,26 +1035,17 @@ class ConversationsListActivity :
 
     private fun fetchPendingInvitations() {
         if (hasSpreedFeatureCapability(currentUser?.capabilities?.spreedCapability, SpreedFeatures.FEDERATION_V1)) {
-            binding.conversationListHintInclude.conversationListHintLayout.setOnClickListener {
-                val intent = Intent(this, InvitationsActivity::class.java)
-                startActivity(intent)
-            }
             conversationsListViewModel.getFederationInvitations()
         }
     }
 
     private fun initOverallLayout(isConversationListNotEmpty: Boolean) {
+        isListEmptyState.value = !isConversationListNotEmpty
         if (isConversationListNotEmpty) {
-            if (binding.emptyLayout.visibility != View.GONE) {
-                binding.emptyLayout.visibility = View.GONE
-            }
             if (binding.swipeRefreshLayoutView.visibility != View.VISIBLE) {
                 binding.swipeRefreshLayoutView.visibility = View.VISIBLE
             }
         } else {
-            if (binding.emptyLayout.visibility != View.VISIBLE) {
-                binding.emptyLayout.visibility = View.VISIBLE
-            }
             if (binding.swipeRefreshLayoutView.visibility != View.GONE) {
                 binding.swipeRefreshLayoutView.visibility = View.GONE
             }
@@ -1111,52 +1090,135 @@ class ConversationsListActivity :
     }
 
     private fun showErrorDialog() {
-        binding.floatingActionButton.let {
-            val dialogBuilder = MaterialAlertDialogBuilder(it.context)
-                .setIcon(
-                    viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
-                        context,
-                        R.drawable.ic_baseline_error_outline_24dp
-                    )
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setIcon(
+                viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
+                    context,
+                    R.drawable.ic_baseline_error_outline_24dp
                 )
-                .setTitle(R.string.error_loading_chats)
-                .setCancelable(false)
-                .setNegativeButton(R.string.close, null)
-
-            if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
-                dialogBuilder.setPositiveButton(R.string.nc_switch_account) { _, _ ->
-                    showChooseAccountDialog()
-                }
-            }
-
-            if (resources!!.getBoolean(R.bool.multiaccount_support)) {
-                dialogBuilder.setNeutralButton(R.string.nc_account_chooser_add_account) { _, _ ->
-                    val intent = Intent(this, ServerSelectionActivity::class.java)
-                    intent.putExtra(ADD_ADDITIONAL_ACCOUNT, true)
-                    startActivity(intent)
-                }
-            }
-
-            viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
-            val dialog = dialogBuilder.show()
-            viewThemeUtils.platform.colorTextButtons(
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
             )
+            .setTitle(R.string.error_loading_chats)
+            .setCancelable(false)
+            .setNegativeButton(R.string.close, null)
+
+        if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
+            dialogBuilder.setPositiveButton(R.string.nc_switch_account) { _, _ ->
+                showChooseAccountDialog()
+            }
+        }
+
+        if (resources!!.getBoolean(R.bool.multiaccount_support)) {
+            dialogBuilder.setNeutralButton(R.string.nc_account_chooser_add_account) { _, _ ->
+                val intent = Intent(this, ServerSelectionActivity::class.java)
+                intent.putExtra(ADD_ADDITIONAL_ACCOUNT, true)
+                startActivity(intent)
+            }
+        }
+
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
+        )
+    }
+
+    private fun setupStatusBanner() {
+        binding.statusBannerComposeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
+                val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
+                val isMaintenanceMode by isMaintenanceModeState.collectAsStateWithLifecycle()
+                MaterialTheme(colorScheme = colorScheme) {
+                    StatusBannerRow(
+                        isOffline = !isOnline,
+                        isMaintenanceMode = isMaintenanceMode
+                    )
+                }
+            }
         }
     }
 
-    private fun showNetworkErrorDialog(show: Boolean) {
-        binding.chatListConnectionLost.visibility = if (show) View.VISIBLE else View.GONE
+    private fun setupEmptyStateView() {
+        val showLogo = BrandingUtils.isOriginalNextcloudClient(applicationContext)
+        binding.emptyStateComposeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
+                val isListEmpty by isListEmptyState.collectAsStateWithLifecycle()
+                val showNoArchivedView by showNoArchivedViewState.collectAsStateWithLifecycle()
+                MaterialTheme(colorScheme = colorScheme) {
+                    ConversationsEmptyStateView(
+                        isListEmpty = isListEmpty,
+                        showNoArchivedView = showNoArchivedView,
+                        showLogo = showLogo,
+                        onCreateNewConversation = { showNewConversationsScreen() }
+                    )
+                }
+            }
+        }
     }
 
-    private fun showMaintenanceModeWarning(show: Boolean) {
-        binding.chatListMaintenanceWarning.visibility = if (show) View.VISIBLE else View.GONE
+    private fun setupFab() {
+        binding.fabComposeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
+                val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
+                val isFabVisible by isFabVisibleState.collectAsStateWithLifecycle()
+                MaterialTheme(colorScheme = colorScheme) {
+                    ConversationListFab(
+                        isVisible = isFabVisible,
+                        isEnabled = isOnline,
+                        onClick = {
+                            run(context)
+                            showNewConversationsScreen()
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setupUnreadBubble() {
+        binding.unreadBubbleComposeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
+                val showBubble by showUnreadBubbleState.collectAsStateWithLifecycle()
+                MaterialTheme(colorScheme = colorScheme) {
+                    UnreadMentionBubble(
+                        visible = showBubble,
+                        onClick = {
+                            val lm = binding.recyclerView.layoutManager as? SmoothScrollLinearLayoutManager
+                            lm?.scrollToPositionWithOffset(
+                                nextUnreadConversationScrollPosition,
+                                binding.recyclerView.height / OFFSET_HEIGHT_DIVIDER
+                            )
+                            showUnreadBubbleState.value = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setupShimmer() {
+        binding.shimmerComposeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
+                val isShimmerVisible by isShimmerVisibleState.collectAsStateWithLifecycle()
+                MaterialTheme(colorScheme = colorScheme) {
+                    ConversationListSkeleton(isVisible = isShimmerVisible)
+                }
+            }
+        }
     }
 
     private fun handleUI(show: Boolean) {
-        binding.floatingActionButton.isEnabled = show
         binding.searchText.isEnabled = show
         binding.searchText.isVisible = show
     }
@@ -1203,9 +1265,7 @@ class ConversationsListActivity :
 
     @SuppressLint("ClickableViewAccessibility")
     private fun prepareViews() {
-        hideLogoForBrandedClients()
-
-        showMaintenanceModeWarning(false)
+        isMaintenanceModeState.value = false
 
         layoutManager = SmoothScrollLinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
@@ -1221,6 +1281,15 @@ class ConversationsListActivity :
                     }
                 }
             }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0) {
+                    isFabVisibleState.value = false
+                } else if (dy < 0) {
+                    isFabVisibleState.value = true
+                }
+            }
         })
         binding.recyclerView.setOnTouchListener { v: View, _: MotionEvent? ->
             if (!isDestroyed) {
@@ -1230,17 +1299,11 @@ class ConversationsListActivity :
             false
         }
         binding.swipeRefreshLayoutView.setOnRefreshListener {
-            showMaintenanceModeWarning(false)
+            isMaintenanceModeState.value = false
             fetchRooms()
             fetchPendingInvitations()
         }
         binding.swipeRefreshLayoutView.let { viewThemeUtils.androidx.themeSwipeRefreshLayout(it) }
-        binding.emptyLayout.setOnClickListener { showNewConversationsScreen() }
-        binding.floatingActionButton.setOnClickListener {
-            run(context)
-            showNewConversationsScreen()
-        }
-        binding.floatingActionButton.let { viewThemeUtils.material.themeFAB(it) }
 
         binding.switchAccountButton.setOnClickListener {
             if (resources != null && resources!!.getBoolean(R.bool.multiaccount_support)) {
@@ -1264,61 +1327,45 @@ class ConversationsListActivity :
         binding.threadsButton.let {
             viewThemeUtils.platform.colorImageView(it, ColorRole.ON_SURFACE_VARIANT)
         }
-
-        binding.newMentionPopupBubble.visibility = View.GONE
-        binding.newMentionPopupBubble.setOnClickListener {
-            val layoutManager = binding.recyclerView.layoutManager as SmoothScrollLinearLayoutManager?
-            layoutManager?.scrollToPositionWithOffset(
-                nextUnreadConversationScrollPosition,
-                binding.recyclerView.height / OFFSET_HEIGHT_DIVIDER
-            )
-            binding.newMentionPopupBubble.visibility = View.GONE
-        }
-        binding.newMentionPopupBubble.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
     }
 
-    private fun hideLogoForBrandedClients() {
-        if (!BrandingUtils.isOriginalNextcloudClient(applicationContext)) {
-            binding.emptyListIcon.visibility = View.GONE
-        }
-    }
-
-    @SuppressLint("CheckResult")
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun checkToShowUnreadBubble() {
-        searchBehaviorSubject.subscribe { value ->
-            if (value) {
-                nextUnreadConversationScrollPosition = 0
-                binding.newMentionPopupBubble.visibility = View.GONE
+        if (searchBehaviorSubject.value == true) {
+            nextUnreadConversationScrollPosition = 0
+            showUnreadBubbleState.value = false
+            return
+        }
+        try {
+            val lastVisibleItem = layoutManager!!.findLastCompletelyVisibleItemPosition()
+            val firstUnreadPosition = findFirstOffscreenUnreadPosition(lastVisibleItem)
+            if (firstUnreadPosition != null) {
+                nextUnreadConversationScrollPosition = firstUnreadPosition
+                showUnreadBubbleState.value = true
             } else {
-                try {
-                    val lastVisibleItem = layoutManager!!.findLastCompletelyVisibleItemPosition()
-                    for (flexItem in conversationItems) {
-                        val conversation: ConversationModel = (flexItem as ConversationItem).model
-                        val position = adapter?.getGlobalPositionOf(flexItem)
-                        if (position != null && hasUnreadItems(conversation) && position > lastVisibleItem) {
-                            nextUnreadConversationScrollPosition = position
-                            if (!binding.newMentionPopupBubble.isShown) {
-                                binding.newMentionPopupBubble.visibility = View.VISIBLE
-                                val popupAnimation = AnimationUtils.loadAnimation(this, R.anim.popup_animation)
-                                binding.newMentionPopupBubble.startAnimation(popupAnimation)
-                            }
-                            return@subscribe
-                        }
-                    }
-                    nextUnreadConversationScrollPosition = 0
-                    binding.newMentionPopupBubble.visibility = View.GONE
-                } catch (e: NullPointerException) {
-                    Log.d(
-                        TAG,
-                        "A NPE was caught when trying to show the unread popup bubble. This might happen when the " +
-                            "user already left the conversations-list screen so the popup bubble is not available " +
-                            "anymore.",
-                        e
-                    )
-                }
+                nextUnreadConversationScrollPosition = 0
+                showUnreadBubbleState.value = false
+            }
+        } catch (e: NullPointerException) {
+            Log.d(
+                TAG,
+                "A NPE was caught when trying to show the unread popup bubble. This might happen when the " +
+                    "user already left the conversations-list screen so the popup bubble is not available " +
+                    "anymore.",
+                e
+            )
+        }
+    }
+
+    private fun findFirstOffscreenUnreadPosition(lastVisibleItem: Int): Int? {
+        for (flexItem in conversationItems) {
+            val conversation = (flexItem as ConversationItem).model
+            val position = adapter?.getGlobalPositionOf(flexItem)
+            if (position != null && hasUnreadItems(conversation) && position > lastVisibleItem) {
+                return position
             }
         }
+        return null
     }
 
     private fun hasUnreadItems(conversation: ConversationModel) =
@@ -1382,7 +1429,7 @@ class ConversationsListActivity :
 
     private fun performFilterAndSearch(filter: String?) {
         if (filter!!.length >= SEARCH_MIN_CHARS) {
-            binding.noArchivedConversationLayout.visibility = View.GONE
+            showNoArchivedViewState.value = false
             adapter?.setFilter(filter)
             conversationsListViewModel.getSearchQuery(context, filter)
         } else {
@@ -1395,11 +1442,7 @@ class ConversationsListActivity :
         adapter?.setFilter("")
         adapter?.filterItems()
         val archiveFilterOn = filterState[ARCHIVE] == true
-        if (archiveFilterOn && adapter!!.isEmpty) {
-            binding.noArchivedConversationLayout.visibility = View.VISIBLE
-        } else {
-            binding.noArchivedConversationLayout.visibility = View.GONE
-        }
+        showNoArchivedViewState.value = archiveFilterOn && adapter!!.isEmpty
     }
 
     private fun clearMessageSearchResults() {
@@ -1575,27 +1618,25 @@ class ConversationsListActivity :
                     selectedConversation!!.displayName
                 )
             }
-            binding.floatingActionButton.let {
-                val dialogBuilder = MaterialAlertDialogBuilder(it.context)
-                    .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.upload))
-                    .setTitle(confirmationQuestion)
-                    .setMessage(fileNamesWithLineBreaks.toString())
-                    .setPositiveButton(R.string.nc_yes) { _, _ ->
-                        upload()
-                        openConversation()
-                    }
-                    .setNegativeButton(R.string.nc_no) { _, _ ->
-                        Log.d(TAG, "sharing files aborted, going back to share-to screen")
-                    }
+            val dialogBuilder = MaterialAlertDialogBuilder(this)
+                .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.upload))
+                .setTitle(confirmationQuestion)
+                .setMessage(fileNamesWithLineBreaks.toString())
+                .setPositiveButton(R.string.nc_yes) { _, _ ->
+                    upload()
+                    openConversation()
+                }
+                .setNegativeButton(R.string.nc_no) { _, _ ->
+                    Log.d(TAG, "sharing files aborted, going back to share-to screen")
+                }
 
-                viewThemeUtils.dialog
-                    .colorMaterialAlertDialogBackground(it.context, dialogBuilder)
-                val dialog = dialogBuilder.show()
-                viewThemeUtils.platform.colorTextButtons(
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                )
-            }
+            viewThemeUtils.dialog
+                .colorMaterialAlertDialogBackground(this, dialogBuilder)
+            val dialog = dialogBuilder.show()
+            viewThemeUtils.platform.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            )
         } else {
             UploadAndShareFilesWorker.requestStoragePermission(this)
         }
@@ -1756,25 +1797,48 @@ class ConversationsListActivity :
         }
     }
 
-    private fun showNotificationWarning() {
-        if (shouldShowNotificationWarning()) {
-            binding.conversationListNotificationWarning.conversationListNotificationWarningLayout.visibility =
-                View.VISIBLE
-            binding.conversationListNotificationWarning.notNowButton.setOnClickListener {
-                binding.conversationListNotificationWarning.conversationListNotificationWarningLayout.visibility =
-                    View.GONE
-                val lastWarningDate = System.currentTimeMillis()
-                appPreferences.setNotificationWarningLastPostponedDate(lastWarningDate)
+    private fun setupNotificationWarning() {
+        binding.notificationWarningComposeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
+                val showWarning by showNotificationWarningState.collectAsStateWithLifecycle()
+                MaterialTheme(colorScheme = colorScheme) {
+                    NotificationWarningCard(
+                        visible = showWarning,
+                        onNotNow = {
+                            appPreferences.setNotificationWarningLastPostponedDate(System.currentTimeMillis())
+                            showNotificationWarningState.value = false
+                        },
+                        onShowSettings = {
+                            val bundle = Bundle()
+                            bundle.putBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY, true)
+                            val settingsIntent = Intent(context, SettingsActivity::class.java)
+                            settingsIntent.putExtras(bundle)
+                            startActivity(settingsIntent)
+                        }
+                    )
+                }
             }
-            binding.conversationListNotificationWarning.showSettingsButton.setOnClickListener {
-                val bundle = Bundle()
-                bundle.putBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY, true)
-                val settingsIntent = Intent(context, SettingsActivity::class.java)
-                settingsIntent.putExtras(bundle)
-                startActivity(settingsIntent)
+        }
+    }
+
+    private fun setupFederationHintCard() {
+        binding.federationHintComposeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
+                val visible by conversationsListViewModel.federationInvitationHintVisible.collectAsStateWithLifecycle()
+                MaterialTheme(colorScheme = colorScheme) {
+                    FederationInvitationHintCard(
+                        visible = visible,
+                        onClick = {
+                            val intent = Intent(context, InvitationsActivity::class.java)
+                            startActivity(intent)
+                        }
+                    )
+                }
             }
-        } else {
-            binding.conversationListNotificationWarning.conversationListNotificationWarningLayout.visibility = View.GONE
         }
     }
 
@@ -1871,61 +1935,57 @@ class ConversationsListActivity :
     }
 
     fun showDeleteConversationDialog(conversation: ConversationModel) {
-        binding.floatingActionButton.let {
-            val dialogBuilder = MaterialAlertDialogBuilder(it.context)
-                .setIcon(
-                    viewThemeUtils.dialog
-                        .colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp)
-                )
-                .setTitle(R.string.nc_delete_call)
-                .setMessage(R.string.nc_delete_conversation_more)
-                .setPositiveButton(R.string.nc_delete) { _, _ ->
-                    deleteConversation(conversation)
-                }
-                .setNegativeButton(R.string.nc_cancel) { _, _ ->
-                }
-
-            viewThemeUtils.dialog
-                .colorMaterialAlertDialogBackground(it.context, dialogBuilder)
-            val dialog = dialogBuilder.show()
-            viewThemeUtils.platform.colorTextButtons(
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setIcon(
+                viewThemeUtils.dialog
+                    .colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp)
             )
-        }
+            .setTitle(R.string.nc_delete_call)
+            .setMessage(R.string.nc_delete_conversation_more)
+            .setPositiveButton(R.string.nc_delete) { _, _ ->
+                deleteConversation(conversation)
+            }
+            .setNegativeButton(R.string.nc_cancel) { _, _ ->
+            }
+
+        viewThemeUtils.dialog
+            .colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
     private fun showUnauthorizedDialog() {
-        binding.floatingActionButton.let {
-            val dialogBuilder = MaterialAlertDialogBuilder(it.context)
-                .setIcon(
-                    viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
-                        context,
-                        R.drawable.ic_delete_black_24dp
-                    )
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setIcon(
+                viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
+                    context,
+                    R.drawable.ic_delete_black_24dp
                 )
-                .setTitle(R.string.nc_dialog_invalid_password)
-                .setMessage(R.string.nc_dialog_reauth_or_delete)
-                .setCancelable(false)
-                .setPositiveButton(R.string.nc_settings_remove_account) { _, _ ->
-                    deleteUserAndRestartApp()
-                }
-                .setNegativeButton(R.string.nc_settings_reauthorize) { _, _ ->
-                    val intent = Intent(context, BrowserLoginActivity::class.java)
-                    val bundle = Bundle()
-                    bundle.putString(BundleKeys.KEY_BASE_URL, currentUser!!.baseUrl!!)
-                    bundle.putBoolean(BundleKeys.KEY_REAUTHORIZE_ACCOUNT, true)
-                    intent.putExtras(bundle)
-                    startActivity(intent)
-                }
-
-            viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
-            val dialog = dialogBuilder.show()
-            viewThemeUtils.platform.colorTextButtons(
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             )
-        }
+            .setTitle(R.string.nc_dialog_invalid_password)
+            .setMessage(R.string.nc_dialog_reauth_or_delete)
+            .setCancelable(false)
+            .setPositiveButton(R.string.nc_settings_remove_account) { _, _ ->
+                deleteUserAndRestartApp()
+            }
+            .setNegativeButton(R.string.nc_settings_reauthorize) { _, _ ->
+                val intent = Intent(context, BrowserLoginActivity::class.java)
+                val bundle = Bundle()
+                bundle.putString(BundleKeys.KEY_BASE_URL, currentUser!!.baseUrl!!)
+                bundle.putBoolean(BundleKeys.KEY_REAUTHORIZE_ACCOUNT, true)
+                intent.putExtras(bundle)
+                startActivity(intent)
+            }
+
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
     @SuppressLint("CheckResult")
@@ -1973,94 +2033,90 @@ class ConversationsListActivity :
     }
 
     private fun showOutdatedClientDialog() {
-        binding.floatingActionButton.let {
-            val dialogBuilder = MaterialAlertDialogBuilder(it.context)
-                .setIcon(
-                    viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
-                        context,
-                        R.drawable.ic_info_white_24dp
-                    )
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setIcon(
+                viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
+                    context,
+                    R.drawable.ic_info_white_24dp
                 )
-                .setTitle(R.string.nc_dialog_outdated_client)
-                .setMessage(R.string.nc_dialog_outdated_client_description)
-                .setCancelable(false)
-                .setPositiveButton(R.string.nc_dialog_outdated_client_option_update) { _, _ ->
-                    try {
-                        startActivity(
-                            Intent(Intent.ACTION_VIEW, (CLIENT_UPGRADE_MARKET_LINK + packageName).toUri())
-                        )
-                    } catch (e: ActivityNotFoundException) {
-                        startActivity(
-                            Intent(Intent.ACTION_VIEW, (CLIENT_UPGRADE_GPLAY_LINK + packageName).toUri())
-                        )
-                    }
-                }
-
-            if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
-                dialogBuilder.setNegativeButton(R.string.nc_switch_account) { _, _ ->
-                    showChooseAccountDialog()
-                }
-            }
-
-            if (resources!!.getBoolean(R.bool.multiaccount_support)) {
-                dialogBuilder.setNeutralButton(R.string.nc_account_chooser_add_account) { _, _ ->
-                    val intent = Intent(this, ServerSelectionActivity::class.java)
-                    intent.putExtra(ADD_ADDITIONAL_ACCOUNT, true)
-                    startActivity(intent)
-                }
-            }
-
-            viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
-            val dialog = dialogBuilder.show()
-            viewThemeUtils.platform.colorTextButtons(
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
             )
+            .setTitle(R.string.nc_dialog_outdated_client)
+            .setMessage(R.string.nc_dialog_outdated_client_description)
+            .setCancelable(false)
+            .setPositiveButton(R.string.nc_dialog_outdated_client_option_update) { _, _ ->
+                try {
+                    startActivity(
+                        Intent(Intent.ACTION_VIEW, (CLIENT_UPGRADE_MARKET_LINK + packageName).toUri())
+                    )
+                } catch (e: ActivityNotFoundException) {
+                    startActivity(
+                        Intent(Intent.ACTION_VIEW, (CLIENT_UPGRADE_GPLAY_LINK + packageName).toUri())
+                    )
+                }
+            }
+
+        if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
+            dialogBuilder.setNegativeButton(R.string.nc_switch_account) { _, _ ->
+                showChooseAccountDialog()
+            }
         }
+
+        if (resources!!.getBoolean(R.bool.multiaccount_support)) {
+            dialogBuilder.setNeutralButton(R.string.nc_account_chooser_add_account) { _, _ ->
+                val intent = Intent(this, ServerSelectionActivity::class.java)
+                intent.putExtra(ADD_ADDITIONAL_ACCOUNT, true)
+                startActivity(intent)
+            }
+        }
+
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
+        )
     }
 
     private fun showServiceUnavailableDialog(httpException: HttpException) {
         if (httpException.response()?.headers()?.get(MAINTENANCE_MODE_HEADER_KEY) == "1") {
-            showMaintenanceModeWarning(true)
+            isMaintenanceModeState.value = true
         } else {
             showErrorDialog()
         }
     }
 
     private fun showServerEOLDialog() {
-        binding.floatingActionButton.let {
-            val dialogBuilder = MaterialAlertDialogBuilder(it.context)
-                .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.ic_warning_white))
-                .setTitle(R.string.nc_settings_server_eol_title)
-                .setMessage(R.string.nc_settings_server_eol)
-                .setCancelable(false)
-                .setPositiveButton(R.string.nc_settings_remove_account) { _, _ ->
-                    deleteUserAndRestartApp()
-                }
-
-            if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
-                dialogBuilder.setNegativeButton(R.string.nc_switch_account) { _, _ ->
-                    showChooseAccountDialog()
-                }
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.ic_warning_white))
+            .setTitle(R.string.nc_settings_server_eol_title)
+            .setMessage(R.string.nc_settings_server_eol)
+            .setCancelable(false)
+            .setPositiveButton(R.string.nc_settings_remove_account) { _, _ ->
+                deleteUserAndRestartApp()
             }
 
-            if (resources!!.getBoolean(R.bool.multiaccount_support)) {
-                dialogBuilder.setNeutralButton(R.string.nc_account_chooser_add_account) { _, _ ->
-                    val intent = Intent(this, ServerSelectionActivity::class.java)
-                    intent.putExtra(ADD_ADDITIONAL_ACCOUNT, true)
-                    startActivity(intent)
-                }
+        if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
+            dialogBuilder.setNegativeButton(R.string.nc_switch_account) { _, _ ->
+                showChooseAccountDialog()
             }
-
-            viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
-            val dialog = dialogBuilder.show()
-            viewThemeUtils.platform.colorTextButtons(
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
-            )
         }
+
+        if (resources!!.getBoolean(R.bool.multiaccount_support)) {
+            dialogBuilder.setNeutralButton(R.string.nc_account_chooser_add_account) { _, _ ->
+                val intent = Intent(this, ServerSelectionActivity::class.java)
+                intent.putExtra(ADD_ADDITIONAL_ACCOUNT, true)
+                startActivity(intent)
+            }
+        }
+
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
+        )
     }
 
     private fun deleteConversation(conversation: ConversationModel) {
