@@ -262,6 +262,7 @@
     <string name="nc_dialog_save_to_storage_yes">Tá</string>
     <string name="nc_display_name_not_fetched">Níorbh fhéidir an t-ainm taispeána a fháil, ag éirí as</string>
     <string name="nc_display_name_not_stored">Níorbh fhéidir an t-ainm taispeána a stóráil, ag cur deireadh leis</string>
+    <string name="nc_draft_prefix">Dréacht: %1$s</string>
     <string name="nc_edit_icon">Cuir in eagar</string>
     <string name="nc_edit_message">Cuir in eagar</string>
     <string name="nc_edit_message_text">Cuir teachtaireacht in eagar</string>

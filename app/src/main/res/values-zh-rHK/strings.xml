@@ -262,6 +262,7 @@
     <string name="nc_dialog_save_to_storage_yes">是</string>
     <string name="nc_display_name_not_fetched">無法取得顯示名稱，將停止操作。</string>
     <string name="nc_display_name_not_stored">無法儲存顯示名稱，操作中斷。</string>
+    <string name="nc_draft_prefix">草稿：%1$s</string>
     <string name="nc_edit_icon">編輯</string>
     <string name="nc_edit_message">編輯</string>
     <string name="nc_edit_message_text">編輯訊息</string>

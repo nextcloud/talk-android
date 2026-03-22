@@ -262,6 +262,7 @@
     <string name="nc_dialog_save_to_storage_yes">Ja</string>
     <string name="nc_display_name_not_fetched">Anzeigename konnte nicht abgerufen werden. Breche ab.</string>
     <string name="nc_display_name_not_stored">Der Anzeigename konnte nicht gespeichert werden. Breche ab.</string>
+    <string name="nc_draft_prefix">Entwurf: %1$s</string>
     <string name="nc_edit_icon">Bearbeiten</string>
     <string name="nc_edit_message">Bearbeiten</string>
     <string name="nc_edit_message_text">Nachricht bearbeiten</string>
