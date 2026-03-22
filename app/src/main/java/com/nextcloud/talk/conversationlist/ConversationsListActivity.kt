@@ -97,11 +97,9 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.run
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
-import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.ui.BackgroundVoiceMessageCard
@@ -143,7 +141,6 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -167,9 +164,6 @@ class ConversationsListActivity : BaseActivity() {
 
     @Inject
     lateinit var ncApi: NcApi
-
-    @Inject
-    lateinit var unifiedSearchRepository: UnifiedSearchRepository
 
     @Inject
     lateinit var platformPermissionUtil: PlatformPermissionUtil
@@ -220,16 +214,7 @@ class ConversationsListActivity : BaseActivity() {
     private var selectedMessageId: String? = null
     private var forwardMessage: Boolean = false
     private var conversationsListBottomDialog: ConversationsListBottomDialog? = null
-    private var searchHelper: MessageSearchHelper? = null
     private var searchViewDisposable: Disposable? = null
-    private var filterState =
-        mutableMapOf(
-            MENTION to false,
-            UNREAD to false,
-            ARCHIVE to false,
-            FilterConversationFragment.DEFAULT to true
-        )
-    val searchBehaviorSubject = BehaviorSubject.createDefault(false)
     private lateinit var accountIconBadge: BadgeDrawable
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -303,21 +288,10 @@ class ConversationsListActivity : BaseActivity() {
                 showServerEOLDialog()
                 return
             }
-            currentUser?.capabilities?.spreedCapability?.let { spreedCapabilities ->
-                if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.UNIFIED_SEARCH)) {
-                    searchHelper = MessageSearchHelper(
-                        unifiedSearchRepository = unifiedSearchRepository,
-                        currentUser = currentUser!!
-                    )
-                }
-            }
             credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
 
             loadUserAvatar(binding.switchAccountButton)
             viewThemeUtils.material.colorMaterialTextButton(binding.switchAccountButton)
-            val isSearchCurrentlyActive = conversationsListViewModel.isSearchActiveFlow.value
-            searchBehaviorSubject.onNext(isSearchCurrentlyActive)
-            conversationsListViewModel.setIsSearchActive(isSearchCurrentlyActive)
             conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
             fetchRooms()
             fetchPendingInvitations()
@@ -328,9 +302,7 @@ class ConversationsListActivity : BaseActivity() {
 
         showSearchOrToolbar()
         conversationsListViewModel.checkIfThreadsExist()
-        // initialise filter state in ViewModel
-        getFilterStates()
-        conversationsListViewModel.applyFilter(filterState)
+        conversationsListViewModel.reloadFilterFromStorage(UserIdUtils.getIdForUser(currentUser))
     }
 
     override fun onPause() {
@@ -434,6 +406,15 @@ class ConversationsListActivity : BaseActivity() {
         }
 
         lifecycleScope.launch {
+            conversationsListViewModel.filterStateFlow.collect { filterState ->
+                val archiveFilterOn = filterState[ARCHIVE] == true
+                showNoArchivedViewState.value = archiveFilterOn
+                if (archiveFilterOn) showUnreadBubbleState.value = false
+                updateFilterConversationButtonColor()
+            }
+        }
+
+        lifecycleScope.launch {
             chatViewModel.backgroundPlayUIFlow.onEach { msg ->
                 binding.composeViewForBackgroundPlay.apply {
                     setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -507,26 +488,24 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     fun applyFilter() {
-        getFilterStates()
-        conversationsListViewModel.applyFilter(filterState)
-        updateFilterConversationButtonColor()
+        conversationsListViewModel.reloadFilterFromStorage(UserIdUtils.getIdForUser(currentUser))
     }
 
-    private fun hasFilterEnabled(): Boolean {
-        for ((k, v) in filterState) {
-            if (k != FilterConversationFragment.DEFAULT && v) return true
+    private fun hasFilterEnabled(): Boolean =
+        conversationsListViewModel.filterStateFlow.value.any { (k, v) ->
+            k != FilterConversationFragment.DEFAULT && v
         }
-        return false
-    }
 
     fun showOnlyNearFutureEvents() {
         // Reset all filters so the ViewModel's default view (non-archived, non-future-events) is shown
-        filterState[MENTION] = false
-        filterState[UNREAD] = false
-        filterState[ARCHIVE] = false
-        filterState[FilterConversationFragment.DEFAULT] = true
-        conversationsListViewModel.applyFilter(filterState)
-        updateFilterConversationButtonColor()
+        conversationsListViewModel.applyFilter(
+            mapOf(
+                MENTION to false,
+                UNREAD to false,
+                ARCHIVE to false,
+                FilterConversationFragment.DEFAULT to true
+            )
+        )
     }
 
     private fun setupConversationList() {
@@ -617,34 +596,19 @@ class ConversationsListActivity : BaseActivity() {
         }
         updateFilterConversationButtonColor()
         binding.filterConversationsButton.setOnClickListener {
-            val newFragment = FilterConversationFragment.newInstance(filterState)
+            val newFragment = FilterConversationFragment.newInstance(
+                conversationsListViewModel.filterStateFlow.value.toMutableMap()
+            )
             newFragment.show(supportFragmentManager, FilterConversationFragment.TAG)
         }
         binding.threadsButton.setOnClickListener { openFollowedThreadsOverview() }
         viewThemeUtils.platform.colorImageView(binding.threadsButton, ColorRole.ON_SURFACE_VARIANT)
     }
 
-    fun getFilterStates() {
-        val accountId = UserIdUtils.getIdForUser(currentUser)
-        filterState[UNREAD] = (
-            arbitraryStorageManager.getStorageSetting(accountId, UNREAD, "").blockingGet()?.value ?: ""
-            ) == "true"
-        filterState[MENTION] = (
-            arbitraryStorageManager.getStorageSetting(accountId, MENTION, "").blockingGet()?.value ?: ""
-            ) == "true"
-        filterState[ARCHIVE] = (
-            arbitraryStorageManager.getStorageSetting(accountId, ARCHIVE, "").blockingGet()?.value ?: ""
-            ) == "true"
-    }
-
     fun filterConversation() {
-        // Delegate to ViewModel; FilterConversationFragment still calls this via cast
-        getFilterStates()
-        val archiveFilterOn = filterState[ARCHIVE] == true
-        showNoArchivedViewState.value = archiveFilterOn
-        conversationsListViewModel.applyFilter(filterState)
-        if (archiveFilterOn) showUnreadBubbleState.value = false
-        updateFilterConversationButtonColor()
+        // Delegate to ViewModel; FilterConversationFragment still calls this via cast.
+        // filterStateFlow observer in initObservers handles showNoArchivedViewState + button colour.
+        conversationsListViewModel.reloadFilterFromStorage(UserIdUtils.getIdForUser(currentUser))
     }
 
     private fun setupActionBar() {
@@ -823,7 +787,7 @@ class ConversationsListActivity : BaseActivity() {
             supportActionBar?.setTitle(R.string.nc_forward_to_three_dots)
         } else {
             searchItem!!.isVisible = conversationsListViewModel.conversationListEntriesFlow.value.isNotEmpty()
-            if (searchBehaviorSubject.value == true && searchView != null) {
+            if (conversationsListViewModel.isSearchActiveFlow.value && searchView != null) {
                 showSearchView(searchView, searchItem)
                 val savedQuery = conversationsListViewModel.currentSearchQueryFlow.value
                 if (savedQuery.isNotEmpty()) {
@@ -859,17 +823,13 @@ class ConversationsListActivity : BaseActivity() {
             searchItem!!.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                 override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                     initSearchDisposable()
-                    searchBehaviorSubject.onNext(true)
                     conversationsListViewModel.setIsSearchActive(true)
                     return true
                 }
 
                 override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                    searchBehaviorSubject.onNext(false)
                     conversationsListViewModel.setIsSearchActive(false)
-                    if (searchHelper != null) {
-                        searchHelper!!.cancelSearch()
-                    }
+                    conversationsListViewModel.cancelSearch()
                     searchView!!.onActionViewCollapsed()
 
                     binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
@@ -1146,7 +1106,7 @@ class ConversationsListActivity : BaseActivity() {
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun checkToShowUnreadBubble(lastVisibleIndex: Int) {
-        if (searchBehaviorSubject.value == true || conversationsListViewModel.isSearchActiveFlow.value) {
+        if (conversationsListViewModel.isSearchActiveFlow.value) {
             nextUnreadConversationScrollPosition = 0
             showUnreadBubbleState.value = false
             return

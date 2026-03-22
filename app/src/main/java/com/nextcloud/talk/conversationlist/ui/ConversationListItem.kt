@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Nextcloud Talk - Android Client
  *
  * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
@@ -1006,9 +1006,9 @@ private fun PreviewWrapper(darkTheme: Boolean = isSystemInDarkTheme(), content: 
     }
 }
 
-// Section A – Conversation Type
+// Section A - Conversation Type
 
-@Preview(name = "A1 – 1:1 online")
+@Preview(name = "A1 - 1:1 online")
 @Composable
 private fun PreviewOneToOne() =
     PreviewWrapper {
@@ -1024,10 +1024,10 @@ private fun PreviewOneToOne() =
         )
     }
 
-@Preview(name = "A2 – Group")
+@Preview(name = "A2 - Group", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewGroup() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "Project Team",
@@ -1039,7 +1039,7 @@ private fun PreviewGroup() =
         )
     }
 
-@Preview(name = "A3 – Group no avatar")
+@Preview(name = "A3 - Group no avatar")
 @Composable
 private fun PreviewGroupNoAvatar() =
     PreviewWrapper {
@@ -1054,10 +1054,10 @@ private fun PreviewGroupNoAvatar() =
         )
     }
 
-@Preview(name = "A4 – Public room")
+@Preview(name = "A4 - Public room", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewPublicRoom() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "Open Room",
@@ -1069,7 +1069,7 @@ private fun PreviewPublicRoom() =
         )
     }
 
-@Preview(name = "A5 – System room")
+@Preview(name = "A5 - System room")
 @Composable
 private fun PreviewSystemRoom() =
     PreviewWrapper {
@@ -1084,10 +1084,10 @@ private fun PreviewSystemRoom() =
         )
     }
 
-@Preview(name = "A6 – Note to self")
+@Preview(name = "A6 - Note to self", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewNoteToSelf() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "Personal notes",
@@ -1099,7 +1099,7 @@ private fun PreviewNoteToSelf() =
         )
     }
 
-@Preview(name = "A7 – Former 1:1")
+@Preview(name = "A7 - Former 1:1")
 @Composable
 private fun PreviewFormerOneToOne() =
     PreviewWrapper {
@@ -1114,12 +1114,12 @@ private fun PreviewFormerOneToOne() =
         )
     }
 
-// Section B – ObjectType / Special Avatar
+// Section B - ObjectType / Special Avatar
 
-@Preview(name = "B8 – Password protected")
+@Preview(name = "B8 - Password protected", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewPasswordProtected() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "Protected room",
@@ -1132,7 +1132,7 @@ private fun PreviewPasswordProtected() =
         )
     }
 
-@Preview(name = "B9 – File room")
+@Preview(name = "B9 - File room")
 @Composable
 private fun PreviewFileRoom() =
     PreviewWrapper {
@@ -1148,10 +1148,10 @@ private fun PreviewFileRoom() =
         )
     }
 
-@Preview(name = "B10 – Phone temporary room")
+@Preview(name = "B10 - Phone temporary room", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewPhoneNumberRoom() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "+49 170 1234567",
@@ -1164,9 +1164,9 @@ private fun PreviewPhoneNumberRoom() =
         )
     }
 
-// Section C – Federated
+// Section C - Federated
 
-@Preview(name = "C11 – Federated")
+@Preview(name = "C11 - Federated")
 @Composable
 private fun PreviewFederated() =
     PreviewWrapper {
@@ -1182,12 +1182,12 @@ private fun PreviewFederated() =
         )
     }
 
-// Section D – Unread States
+// Section D - Unread States
 
-@Preview(name = "D12 – No unread")
+@Preview(name = "D12 - No unread", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewNoUnread() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "Alice",
@@ -1199,7 +1199,7 @@ private fun PreviewNoUnread() =
         )
     }
 
-@Preview(name = "D13 – Unread few (5)")
+@Preview(name = "D13 - Unread few (5)")
 @Composable
 private fun PreviewUnreadFew() =
     PreviewWrapper {
@@ -1214,10 +1214,10 @@ private fun PreviewUnreadFew() =
         )
     }
 
-@Preview(name = "D14 – Unread many (1500)")
+@Preview(name = "D14 - Unread many (1500)", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewUnreadMany() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "Busy Channel",
@@ -1230,7 +1230,7 @@ private fun PreviewUnreadMany() =
         )
     }
 
-@Preview(name = "D15 – Unread mention group (outlined)")
+@Preview(name = "D15 - Unread mention group (outlined)")
 @Composable
 private fun PreviewUnreadMentionGroup() =
     PreviewWrapper {
@@ -1248,10 +1248,10 @@ private fun PreviewUnreadMentionGroup() =
         )
     }
 
-@Preview(name = "D16 – Unread mention direct 1:1 (filled)")
+@Preview(name = "D16 - Unread mention direct 1:1 (filled)", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewUnreadMentionDirect1to1() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "Alice",
@@ -1266,7 +1266,7 @@ private fun PreviewUnreadMentionDirect1to1() =
         )
     }
 
-@Preview(name = "D17 – Unread mention group direct (filled)")
+@Preview(name = "D17 - Unread mention group direct (filled)")
 @Composable
 private fun PreviewUnreadMentionGroupDirect() =
     PreviewWrapper {
@@ -1284,12 +1284,12 @@ private fun PreviewUnreadMentionGroupDirect() =
         )
     }
 
-// Section E – Favorite
+// Section E - Favorite
 
-@Preview(name = "E18 – Favorite")
+@Preview(name = "E18 - Favorite", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewFavorite() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "Best Friend",
@@ -1301,7 +1301,7 @@ private fun PreviewFavorite() =
         )
     }
 
-@Preview(name = "E19 – Not favorite")
+@Preview(name = "E19 - Not favorite")
 @Composable
 private fun PreviewNotFavorite() =
     PreviewWrapper {
@@ -1316,12 +1316,12 @@ private fun PreviewNotFavorite() =
         )
     }
 
-// Section F – Status (1:1 only)
+// Section F - Status (1:1 only)
 
-@Preview(name = "F20 – Status online")
+@Preview(name = "F20 - Status online", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewStatusOnline() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(displayName = "Alice", status = "online", lastMessage = previewMsg()),
             currentUser = previewUser(),
@@ -1329,7 +1329,7 @@ private fun PreviewStatusOnline() =
         )
     }
 
-@Preview(name = "F21 – Status away")
+@Preview(name = "F21 - Status away")
 @Composable
 private fun PreviewStatusAway() =
     PreviewWrapper {
@@ -1340,10 +1340,10 @@ private fun PreviewStatusAway() =
         )
     }
 
-@Preview(name = "F22 – Status DND")
+@Preview(name = "F22 - Status DND", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewStatusDnd() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(displayName = "Carol", status = "dnd", lastMessage = previewMsg()),
             currentUser = previewUser(),
@@ -1351,7 +1351,7 @@ private fun PreviewStatusDnd() =
         )
     }
 
-@Preview(name = "F23 – Status offline")
+@Preview(name = "F23 - Status offline")
 @Composable
 private fun PreviewStatusOffline() =
     PreviewWrapper {
@@ -1362,15 +1362,15 @@ private fun PreviewStatusOffline() =
         )
     }
 
-@Preview(name = "F24 – Status with emoji")
+@Preview(name = "F24 - Status with emoji", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewStatusWithEmoji() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "Eve",
                 status = "online",
-                statusIcon = "☕",
+                statusIcon = "?",
                 lastMessage = previewMsg(message = "Grabbing coffee")
             ),
             currentUser = previewUser(),
@@ -1378,9 +1378,9 @@ private fun PreviewStatusWithEmoji() =
         )
     }
 
-// Section G – Last Message Types
+// Section G - Last Message Types
 
-@Preview(name = "G25 – Own regular text")
+@Preview(name = "G25 - Own regular text")
 @Composable
 private fun PreviewLastMessageOwnText() =
     PreviewWrapper {
@@ -1395,10 +1395,10 @@ private fun PreviewLastMessageOwnText() =
         )
     }
 
-@Preview(name = "G26 – Other regular text")
+@Preview(name = "G26 - Other regular text", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewLastMessageOtherText() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
@@ -1410,7 +1410,7 @@ private fun PreviewLastMessageOtherText() =
         )
     }
 
-@Preview(name = "G27 – System message")
+@Preview(name = "G27 - System message")
 @Composable
 private fun PreviewLastMessageSystem() =
     PreviewWrapper {
@@ -1428,10 +1428,10 @@ private fun PreviewLastMessageSystem() =
         )
     }
 
-@Preview(name = "G28 – Voice message")
+@Preview(name = "G28 - Voice message", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewLastMessageVoice() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "Alice",
@@ -1446,7 +1446,7 @@ private fun PreviewLastMessageVoice() =
         )
     }
 
-@Preview(name = "G29 – Image attachment")
+@Preview(name = "G29 - Image attachment")
 @Composable
 private fun PreviewLastMessageImage() =
     PreviewWrapper {
@@ -1465,10 +1465,10 @@ private fun PreviewLastMessageImage() =
         )
     }
 
-@Preview(name = "G30 – Video attachment")
+@Preview(name = "G30 - Video attachment", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewLastMessageVideo() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "Alice",
@@ -1484,7 +1484,7 @@ private fun PreviewLastMessageVideo() =
         )
     }
 
-@Preview(name = "G31 – Audio attachment")
+@Preview(name = "G31 - Audio attachment")
 @Composable
 private fun PreviewLastMessageAudio() =
     PreviewWrapper {
@@ -1503,10 +1503,10 @@ private fun PreviewLastMessageAudio() =
         )
     }
 
-@Preview(name = "G32 – File attachment")
+@Preview(name = "G32 - File attachment", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewLastMessageFile() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "Alice",
@@ -1522,7 +1522,7 @@ private fun PreviewLastMessageFile() =
         )
     }
 
-@Preview(name = "G33 – GIF message")
+@Preview(name = "G33 - GIF message")
 @Composable
 private fun PreviewLastMessageGif() =
     PreviewWrapper {
@@ -1536,10 +1536,10 @@ private fun PreviewLastMessageGif() =
         )
     }
 
-@Preview(name = "G34 – Location message")
+@Preview(name = "G34 - Location message", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewLastMessageLocation() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "Alice",
@@ -1555,7 +1555,7 @@ private fun PreviewLastMessageLocation() =
         )
     }
 
-@Preview(name = "G35 – Poll message")
+@Preview(name = "G35 - Poll message")
 @Composable
 private fun PreviewLastMessagePoll() =
     PreviewWrapper {
@@ -1575,10 +1575,10 @@ private fun PreviewLastMessagePoll() =
         )
     }
 
-@Preview(name = "G36 – Deck card")
+@Preview(name = "G36 - Deck card", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewLastMessageDeck() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "Alice",
@@ -1594,7 +1594,7 @@ private fun PreviewLastMessageDeck() =
         )
     }
 
-@Preview(name = "G37 – Deleted message")
+@Preview(name = "G37 - Deleted message")
 @Composable
 private fun PreviewLastMessageDeleted() =
     PreviewWrapper {
@@ -1611,10 +1611,10 @@ private fun PreviewLastMessageDeleted() =
         )
     }
 
-@Preview(name = "G38 – No last message")
+@Preview(name = "G38 - No last message", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewNoLastMessage() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(displayName = "New Conversation", lastMessage = null),
             currentUser = previewUser(),
@@ -1622,37 +1622,37 @@ private fun PreviewNoLastMessage() =
         )
     }
 
-@Preview(name = "G39 – Draft")
+@Preview(name = "G39 - Draft")
 @Composable
 private fun PreviewDraft() =
     PreviewWrapper {
         ConversationListItem(
             model = previewModel(
                 displayName = "Alice",
-                messageDraft = MessageDraft(messageText = "I was going to say…")
+                messageDraft = MessageDraft(messageText = "I was going to say-")
             ),
             currentUser = previewUser(),
             callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
         )
     }
 
-@Preview(name = "G49 – Text with emoji")
+@Preview(name = "G49 - Text with emoji", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewLastMessageTextWithEmoji() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "Alice",
-                lastMessage = previewMsg(message = "Schönes Wochenende! 🎉😊")
+                lastMessage = previewMsg(message = "Sch-nes Wochenende! ????")
             ),
             currentUser = previewUser(),
             callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
         )
     }
 
-// Section H – Call Status
+// Section H - Call Status
 
-@Preview(name = "H40 – Active call")
+@Preview(name = "H40 - Active call")
 @Composable
 private fun PreviewActiveCall() =
     PreviewWrapper {
@@ -1668,12 +1668,12 @@ private fun PreviewActiveCall() =
         )
     }
 
-// Section I – Lobby / Read-only
+// Section I - Lobby / Read-only
 
-@Preview(name = "I41 – Lobby active")
+@Preview(name = "I41 - Lobby active", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewLobbyActive() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "VIP Room",
@@ -1686,7 +1686,7 @@ private fun PreviewLobbyActive() =
         )
     }
 
-@Preview(name = "I42 – Read only")
+@Preview(name = "I42 - Read only")
 @Composable
 private fun PreviewReadOnly() =
     PreviewWrapper {
@@ -1702,12 +1702,12 @@ private fun PreviewReadOnly() =
         )
     }
 
-// Section J – Sensitive
+// Section J - Sensitive
 
-@Preview(name = "J43 – Sensitive (name only)")
+@Preview(name = "J43 - Sensitive (name only)", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewSensitive() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(
                 displayName = "Confidential Project",
@@ -1720,9 +1720,9 @@ private fun PreviewSensitive() =
         )
     }
 
-// Section K – Archived
+// Section K - Archived
 
-@Preview(name = "K44 – Archived")
+@Preview(name = "K44 - Archived")
 @Composable
 private fun PreviewArchived() =
     PreviewWrapper {
@@ -1730,17 +1730,17 @@ private fun PreviewArchived() =
             model = previewModel(
                 displayName = "Old Project",
                 hasArchived = true,
-                lastMessage = previewMsg(message = "Project completed ✓")
+                lastMessage = previewMsg(message = "Project completed ?")
             ),
             currentUser = previewUser(),
             callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})
         )
     }
 
-// Section L – UI Variants
+// Section L - UI Variants
 
 @Preview(
-    name = "L45 – Dark mode",
+    name = "L45 - Dark mode",
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
@@ -1757,7 +1757,7 @@ private fun PreviewDarkMode() =
         )
     }
 
-@Preview(name = "L46 – Long name (truncation)")
+@Preview(name = "L46 - Long name (truncation)")
 @Composable
 private fun PreviewLongName() =
     PreviewWrapper {
@@ -1771,10 +1771,10 @@ private fun PreviewLongName() =
         )
     }
 
-@Preview(name = "L47 – Short content, no date")
+@Preview(name = "L47 - Short content, no date", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewShortContent() =
-    PreviewWrapper {
+    PreviewWrapper(darkTheme = true) {
         ConversationListItem(
             model = previewModel(displayName = "Hi", lastMessage = null),
             currentUser = previewUser(),
@@ -1782,15 +1782,15 @@ private fun PreviewShortContent() =
         )
     }
 
-@Preview(name = "L48 – RTL (Arabic)", locale = "ar")
+@Preview(name = "L48 - RTL (Arabic)", locale = "ar")
 @Composable
 private fun PreviewRtl() =
     PreviewWrapper {
         ConversationListItem(
             model = previewModel(
-                displayName = "محادثة",
+                displayName = "??????",
                 unreadMessages = 2,
-                lastMessage = previewMsg(message = "مرحبا كيف حالك")
+                lastMessage = previewMsg(message = "????? ??? ????")
             ),
             currentUser = previewUser(),
             callbacks = ConversationListItemCallbacks(onClick = {}, onLongClick = {})

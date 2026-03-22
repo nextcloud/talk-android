@@ -22,7 +22,6 @@
         android:clipToPadding="false"
         android:windowContentOverlay="@null"
         app:elevation="0dp"
-        app:liftOnScrollTargetViewId="@id/recycler_view"
         app:liftOnScrollColor="@color/bg_default">
 
         <androidx.compose.ui.platform.ComposeView
@@ -214,8 +213,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="36dp" />
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="28dp" />
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/unread_bubble_compose_view"

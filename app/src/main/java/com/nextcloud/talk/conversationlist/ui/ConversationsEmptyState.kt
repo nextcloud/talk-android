@@ -7,13 +7,19 @@
 
 package com.nextcloud.talk.conversationlist.ui
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +48,7 @@ fun ConversationsEmptyStateView(
     onCreateNewConversation: () -> Unit
 ) {
     when {
-        showNoArchivedView -> NoArchivedConversationsView()
+        showNoArchivedView && isListEmpty -> NoArchivedConversationsView()
         isListEmpty -> EmptyConversationsView(showLogo = showLogo, onCreateNewConversation = onCreateNewConversation)
     }
 }
@@ -124,20 +130,68 @@ fun NoArchivedConversationsView() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "Empty – with logo · Light")
+@Preview(name = "Empty – with logo · Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun EmptyConversationsWithLogoPreview() {
-    EmptyConversationsView(showLogo = true, onCreateNewConversation = {})
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    MaterialTheme(colorScheme = colorScheme) {
+        Surface {
+            EmptyConversationsView(showLogo = true, onCreateNewConversation = {})
+        }
+    }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "Empty – with logo · RTL / Arabic", locale = "ar")
+@Composable
+private fun EmptyConversationsWithLogoRtlPreview() {
+    MaterialTheme(colorScheme = lightColorScheme()) {
+        Surface {
+            EmptyConversationsView(showLogo = true, onCreateNewConversation = {})
+        }
+    }
+}
+
+@Preview(name = "Empty – no logo · Light")
+@Preview(name = "Empty – no logo · Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun EmptyConversationsNoLogoPreview() {
-    EmptyConversationsView(showLogo = false, onCreateNewConversation = {})
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    MaterialTheme(colorScheme = colorScheme) {
+        Surface {
+            EmptyConversationsView(showLogo = false, onCreateNewConversation = {})
+        }
+    }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "Empty – no logo · RTL / Arabic", locale = "ar")
+@Composable
+private fun EmptyConversationsNoLogoRtlPreview() {
+    MaterialTheme(colorScheme = lightColorScheme()) {
+        Surface {
+            EmptyConversationsView(showLogo = false, onCreateNewConversation = {})
+        }
+    }
+}
+
+@Preview(name = "No archived conversations · Light")
+@Preview(name = "No archived conversations · Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun NoArchivedConversationsPreview() {
-    NoArchivedConversationsView()
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    MaterialTheme(colorScheme = colorScheme) {
+        Surface {
+            NoArchivedConversationsView()
+        }
+    }
+}
+
+@Preview(name = "No archived conversations · RTL / Arabic", locale = "ar")
+@Composable
+private fun NoArchivedConversationsRtlPreview() {
+    MaterialTheme(colorScheme = lightColorScheme()) {
+        Surface {
+            NoArchivedConversationsView()
+        }
+    }
 }

@@ -62,7 +62,7 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "TooManyFunctions")
 class ConversationsListViewModel @Inject constructor(
     private val repository: OfflineConversationsRepository,
     private val threadsRepository: ThreadsRepository,
@@ -144,9 +144,10 @@ class ConversationsListViewModel @Inject constructor(
     private val searchResultEntries: MutableStateFlow<List<ConversationListEntry>> =
         MutableStateFlow(emptyList())
 
-    private val filterStateFlow = MutableStateFlow<Map<String, Boolean>>(
+    private val _filterStateFlow = MutableStateFlow<Map<String, Boolean>>(
         mapOf(MENTION to false, UNREAD to false, ARCHIVE to false, DEFAULT to true)
     )
+    val filterStateFlow: StateFlow<Map<String, Boolean>> = _filterStateFlow.asStateFlow()
 
     private val _isSearchActiveFlow = MutableStateFlow(false)
     val isSearchActiveFlow: StateFlow<Boolean> = _isSearchActiveFlow.asStateFlow()
@@ -162,7 +163,7 @@ class ConversationsListViewModel @Inject constructor(
      */
     val conversationListEntriesFlow: StateFlow<List<ConversationListEntry>> = combine(
         getRoomsStateFlow,
-        filterStateFlow,
+        _filterStateFlow,
         _isSearchActiveFlow,
         searchResultEntries,
         hideRoomToken
@@ -172,7 +173,35 @@ class ConversationsListViewModel @Inject constructor(
 
     /** Update filter state; triggers [conversationListEntriesFlow] re-emit. */
     fun applyFilter(newFilterState: Map<String, Boolean>) {
-        filterStateFlow.value = newFilterState
+        _filterStateFlow.value = newFilterState
+    }
+
+    /**
+     * Reload filter settings from [ArbitraryStorageManager] and update [filterStateFlow].
+     * Runs on IO dispatcher; [conversationListEntriesFlow] will re-emit once done.
+     */
+    fun reloadFilterFromStorage(accountId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val mention = arbitraryStorageManager.getStorageSetting(accountId, MENTION, "")
+                .blockingGet()?.value == "true"
+            val unread = arbitraryStorageManager.getStorageSetting(accountId, UNREAD, "")
+                .blockingGet()?.value == "true"
+            val archive = arbitraryStorageManager.getStorageSetting(accountId, ARCHIVE, "")
+                .blockingGet()?.value == "true"
+            _filterStateFlow.value = mapOf(
+                MENTION to mention,
+                UNREAD to unread,
+                ARCHIVE to archive,
+                DEFAULT to true
+            )
+        }
+    }
+
+    /** Cancel any active message search and clear search results. */
+    fun cancelSearch() {
+        searchHelper.cancelSearch()
+        searchResultEntries.value = emptyList()
+        _currentSearchQueryFlow.value = ""
     }
 
     /** Mark the SearchView as expanded (true) or collapsed (false). */
