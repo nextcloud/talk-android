@@ -262,6 +262,7 @@
     <string name="nc_dialog_save_to_storage_yes">Yes</string>
     <string name="nc_display_name_not_fetched">Display name couldn\'t be fetched, aborting</string>
     <string name="nc_display_name_not_stored">Could not store display name, aborting</string>
+    <string name="nc_draft_prefix">Draft: %1$s</string>
     <string name="nc_edit_icon">Edit</string>
     <string name="nc_edit_message">Edit</string>
     <string name="nc_edit_message_text">Edit message</string>
