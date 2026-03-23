@@ -145,6 +145,13 @@ Layout/menu files follow the component they belong to:
 | AdapterView item | —                      | `item_person.xml`               |
 | Partial layout   | —                      | `partial_stats_bar.xml`         |
 
+## Design
+
+- Follow Material Design 3 guidelines
+- In addition to any Material Design wording guidelines, follow the Nextcloud wording guidelines at https://docs.nextcloud.com/server/latest/developer_manual/design/foundations.html#wording
+- Ensure the app works in both light and dark theme
+- Ensure the app works with different server primary colors by using the colorTheme of viewThemeUtils
+
 ## After Making Changes
 
 After finishing code changes, run `./gradlew detekt ktlintCheck` and fix any new errors or warnings before considering the task done.
