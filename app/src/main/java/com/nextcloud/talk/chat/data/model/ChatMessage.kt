@@ -242,12 +242,15 @@ data class ChatMessage(
      */
     fun shouldAutoplayGif(): Boolean {
         val mimetype = selectedIndividualHashMap?.get("mimetype")
-        if (mimetype != Mimetype.IMAGE_GIF) return false
-        val user = activeUser ?: return false
-        val capabilities = user.capabilities?.spreedCapability ?: return false
-        val maxGifSize = CapabilitiesUtil.getMaxGifSize(capabilities)
-        val fileSize = selectedIndividualHashMap?.get("size")?.toLongOrNull() ?: return true
-        return fileSize in 1..maxGifSize
+        val capabilities = activeUser?.capabilities?.spreedCapability
+        val fileSize = selectedIndividualHashMap?.get("size")?.toLongOrNull()
+
+        return if (mimetype != Mimetype.IMAGE_GIF || activeUser == null || capabilities == null) {
+            false
+        } else {
+            val maxGifSize = CapabilitiesUtil.getMaxGifSize(capabilities)
+            fileSize == null || fileSize in 1..maxGifSize
+        }
     }
 
     @Suppress("Detekt.NestedBlockDepth")

@@ -17,7 +17,6 @@ import android.os.Handler
 import android.util.Base64
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -50,7 +49,6 @@ import com.nextcloud.talk.utils.message.MessageUtils
 import com.stfalcon.chatkit.messages.MessageHolders.IncomingImageMessageViewHolder
 import coil.load
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.MimetypeUtils
 import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
@@ -109,7 +107,6 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
         messageText.visibility = View.VISIBLE
 
         // Check if image is GIF and load animated image
-        val mimetype = message.selectedIndividualHashMap?.get(KEY_MIMETYPE)
         if (message.imageUrl != null && message.shouldAutoplayGif()) {
             image.adjustViewBounds = true
             image.load(message.imageUrl) {
