@@ -262,6 +262,7 @@
     <string name="nc_dialog_save_to_storage_yes">Sim</string>
     <string name="nc_display_name_not_fetched">Nome de exibição não obtido, interrompendo</string>
     <string name="nc_display_name_not_stored">Não foi possível armazenar o nome de exibição, cancelando</string>
+    <string name="nc_draft_prefix">Rascunho: %1$s</string>
     <string name="nc_edit_icon">Editar</string>
     <string name="nc_edit_message">Editar</string>
     <string name="nc_edit_message_text">Editar mensagem</string>
