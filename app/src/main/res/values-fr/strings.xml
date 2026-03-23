@@ -262,6 +262,7 @@
     <string name="nc_dialog_save_to_storage_yes">Oui</string>
     <string name="nc_display_name_not_fetched">Le nom d’affichage n’a pas pu être récupéré, annulation</string>
     <string name="nc_display_name_not_stored">Impossible d\'enregistrer le nom d\'affichage, abandon</string>
+    <string name="nc_draft_prefix">Brouillon : %1$s</string>
     <string name="nc_edit_icon">Éditer</string>
     <string name="nc_edit_message">Modifier</string>
     <string name="nc_edit_message_text">Modifier le message</string>
@@ -312,6 +313,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorer l\'optimisation de batterie</string>
     <string name="nc_important_conversation">Conversation importante</string>
     <string name="nc_important_conversation_desc">Le statut utilisateur  \"Ne pas déranger\" est ignoré pour les conversations importantes</string>
+    <string name="nc_in_conversation">Dans %1$s</string>
     <string name="nc_invalid_time">Heure invalide</string>
     <string name="nc_invitations">Invitations</string>
     <string name="nc_join_open_conversations">Rejoindre des conversations ouvertes</string>
@@ -346,6 +348,8 @@
     <string name="nc_message_offline">Hors-ligne</string>
     <string name="nc_message_quote_cancel_reply">Annuler la réponse</string>
     <string name="nc_message_read">Message lu</string>
+    <string name="nc_message_scheduled">Message planifié</string>
+    <string name="nc_message_scheduled_at">Message planifié pour %1$s</string>
     <string name="nc_message_sending">Envoi en cours</string>
     <string name="nc_message_sent">Message envoyé</string>
     <string name="nc_microphone_enabled_audio_recording">Le micro est activé et le son est enregistré</string>
@@ -362,6 +366,8 @@
     <string name="nc_no_open_conversations_headline">Pas de conversations ouvertes</string>
     <string name="nc_no_open_conversations_text">Aucune conversation ouverte.\nSoit il n\'y aucune conversation ouverte, soit vous les avez déjà toutes rejointes.</string>
     <string name="nc_no_proxy">Aucun proxy</string>
+    <string name="nc_no_search_results_headline">Aucun résultat pour votre recherche</string>
+    <string name="nc_no_search_results_text">Veuillez vérifier vos termes de recherche ou essayer d\'en utiliser une différente.</string>
     <string name="nc_not_allowed_to_activate_audio">Vous n\'êtes pas autorisé(e) à activer l\'audio !</string>
     <string name="nc_not_allowed_to_activate_video">Vous n\'êtes pas autorisé(e) à activer la vidéo !</string>
     <string name="nc_not_now">Pas maintenant</string>
@@ -416,12 +422,16 @@
     <string name="nc_rename_confirm">Renommer</string>
     <string name="nc_reply">Répondre</string>
     <string name="nc_reply_privately">Répondre en privé</string>
+    <string name="nc_reschedule_message_with_notification">Reprogrammer avec notification</string>
+    <string name="nc_reschedule_message_without_notification">Reprogrammer sans notification</string>
     <string name="nc_room_retention">Salle réservée avec succès</string>
     <string name="nc_save_message">Enregistrer</string>
     <string name="nc_save_success">Enregistré avec succès</string>
     <string name="nc_schedule_message">Programmer le message</string>
     <string name="nc_schedule_message_title">Programmer le message</string>
+    <string name="nc_schedule_message_without_notification">Envoyer plus tard sans notificatio</string>
     <string name="nc_scheduled_messages">Messages programmés</string>
+    <string name="nc_scheduled_messages_empty">Aucun message programmé</string>
     <string name="nc_scheduled_time">Horaire programmé</string>
     <string name="nc_screen_lock_timeout_30">30 secondes</string>
     <string name="nc_screen_lock_timeout_300">5 minutes</string>
