@@ -131,6 +131,21 @@ object CapabilitiesUtil {
         return DEFAULT_CHAT_SIZE
     }
 
+    fun getMaxGifSize(spreedCapabilities: SpreedCapability): Long {
+        if (spreedCapabilities.config?.containsKey("previews") == true) {
+            val previewsConfigHashMap = spreedCapabilities.config!!["previews"]
+            if (previewsConfigHashMap?.containsKey("max-gif-size") == true) {
+                val maxGifSize = previewsConfigHashMap["max-gif-size"]!!.toString().toLong()
+                return if (maxGifSize > 0) {
+                    maxGifSize
+                } else {
+                    DEFAULT_MAX_GIF_SIZE
+                }
+            }
+        }
+        return DEFAULT_MAX_GIF_SIZE
+    }
+
     fun conversationDescriptionLength(spreedCapabilities: SpreedCapability): Int {
         if (spreedCapabilities.config?.containsKey("conversations") == true) {
             val map: Map<String, Any>? = spreedCapabilities.config!!["conversations"]
@@ -331,6 +346,7 @@ object CapabilitiesUtil {
 
     private val TAG = CapabilitiesUtil::class.java.simpleName
     const val DEFAULT_CHAT_SIZE = 1000
+    const val DEFAULT_MAX_GIF_SIZE = 3_145_728L
     const val RECORDING_CONSENT_NOT_REQUIRED = 0
     const val RECORDING_CONSENT_REQUIRED = 1
     const val RECORDING_CONSENT_DEPEND_ON_CONVERSATION = 2

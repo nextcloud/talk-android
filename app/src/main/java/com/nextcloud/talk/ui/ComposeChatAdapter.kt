@@ -105,6 +105,7 @@ import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
@@ -814,7 +815,19 @@ class ComposeChatAdapter(
                 val imageUri = message.imageUrl
                 val mimetype = message.selectedIndividualHashMap!![KEY_MIMETYPE]
                 val drawableResourceId = getDrawableResourceIdForMimeType(mimetype)
-                val loadedImage = load(imageUri, LocalContext.current, drawableResourceId)
+                val isGif = message.shouldAutoplayGif()
+                val authHeader = if (isGif) {
+                    ApiUtils.getCredentials(currentUser.username, currentUser.token)
+                } else {
+                    null
+                }
+                val loadedImage = load(
+                    imageUri,
+                    LocalContext.current,
+                    drawableResourceId,
+                    animated = isGif,
+                    authHeader = authHeader
+                )
 
                 AsyncImage(
                     model = loadedImage,
