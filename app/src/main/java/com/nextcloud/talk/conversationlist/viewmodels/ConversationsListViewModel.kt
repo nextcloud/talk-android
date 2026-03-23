@@ -45,6 +45,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -133,16 +134,23 @@ class ConversationsListViewModel @Inject constructor(
     private val _federationInvitationHintVisible = MutableStateFlow(false)
     val federationInvitationHintVisible: StateFlow<Boolean> = _federationInvitationHintVisible.asStateFlow()
 
-    object ShowBadgeStartState : ViewState
-    object ShowBadgeErrorState : ViewState
-    open class ShowBadgeSuccessState(val showBadge: Boolean) : ViewState
-
-    private val _showBadgeViewState: MutableLiveData<ViewState> = MutableLiveData(ShowBadgeStartState)
-    val showBadgeViewState: LiveData<ViewState>
-        get() = _showBadgeViewState
+    private val _showAvatarBadge = MutableStateFlow(false)
+    val showAvatarBadge: StateFlow<Boolean> = _showAvatarBadge.asStateFlow()
 
     private val searchResultEntries: MutableStateFlow<List<ConversationListEntry>> =
         MutableStateFlow(emptyList())
+
+    /** Job tracking the currently active [getSearchQuery] coroutine; canceled on cleanup. */
+    private var searchJob: Job? = null
+
+    /**
+     * Tracks the query that the last completed/running [getSearchQuery] call was started for.
+     * Used to skip re-searching the same query on configuration changes (rotation, display
+     * off/on) where the [LaunchedEffect] in the Compose toolbar fires again with an unchanged
+     * key but a brand-new composition.  Reset whenever search is canceled or deactivated so
+     * that the next explicit search always runs.
+     */
+    private var lastSearchedFilter: String = ""
 
     private val _filterStateFlow = MutableStateFlow<Map<String, Boolean>>(
         mapOf(MENTION to false, UNREAD to false, ARCHIVE to false, DEFAULT to true)
@@ -154,6 +162,15 @@ class ConversationsListViewModel @Inject constructor(
 
     private val _currentSearchQueryFlow = MutableStateFlow("")
     val currentSearchQueryFlow: StateFlow<String> = _currentSearchQueryFlow.asStateFlow()
+
+    /**
+     * True from the moment the user types a non-empty query (debounce starts) until the first
+     * set of search results arrives.  Used by the UI to distinguish "waiting for results" from
+     * "search completed with no results", so that [SearchNoResultsView] is not shown
+     * prematurely during the search round-trip.
+     */
+    private val _isSearchLoadingFlow = MutableStateFlow(false)
+    val isSearchLoadingFlow: StateFlow<Boolean> = _isSearchLoadingFlow.asStateFlow()
 
     private val hideRoomToken = MutableStateFlow<String?>(null)
 
@@ -199,15 +216,40 @@ class ConversationsListViewModel @Inject constructor(
 
     /** Cancel any active message search and clear search results. */
     fun cancelSearch() {
+        lastSearchedFilter = ""
+        _isSearchLoadingFlow.value = false
+        searchJob?.cancel()
+        searchJob = null
         searchHelper.cancelSearch()
         searchResultEntries.value = emptyList()
         _currentSearchQueryFlow.value = ""
+    }
+
+    /**
+     * Updates the displayed query text without triggering an immediate search.
+     * Debouncing is handled by the caller via [kotlinx.coroutines.delay] in a
+     * [androidx.compose.runtime.LaunchedEffect].
+     */
+    fun setSearchQuery(text: String) {
+        _currentSearchQueryFlow.value = text
+        if (text.isEmpty()) {
+            _isSearchLoadingFlow.value = false
+            searchResultEntries.value = emptyList()
+        } else {
+            _isSearchLoadingFlow.value = true
+        }
     }
 
     /** Mark the SearchView as expanded (true) or collapsed (false). */
     fun setIsSearchActive(active: Boolean) {
         _isSearchActiveFlow.value = active
         if (!active) {
+            cancelSearch()
+        } else {
+            // Clear any stale results from a previous search so they don't
+            // flash on screen before the user has typed the first character.
+            lastSearchedFilter = ""
+            _isSearchLoadingFlow.value = false
             searchResultEntries.value = emptyList()
             _currentSearchQueryFlow.value = ""
         }
@@ -220,7 +262,7 @@ class ConversationsListViewModel @Inject constructor(
 
     fun getFederationInvitations() {
         _federationInvitationHintVisible.value = false
-        _showBadgeViewState.value = ShowBadgeStartState
+        _showAvatarBadge.value = false
 
         userManager.users.blockingGet()?.forEach {
             invitationsRepository.fetchInvitations(it)
@@ -232,6 +274,14 @@ class ConversationsListViewModel @Inject constructor(
 
     @Suppress("LongMethod")
     fun getSearchQuery(context: Context, filter: String) {
+        // Rotation / display-off guard: if the composition restarts (config change) the
+        // LaunchedEffect fires again with the same query.  Skip the search so the existing
+        // results are not replaced by a partial first-emit from the cold network flows.
+        if (filter == lastSearchedFilter && searchResultEntries.value.isNotEmpty()) return
+
+        _isSearchLoadingFlow.value = true
+        lastSearchedFilter = filter
+        searchJob?.cancel()
         _currentSearchQueryFlow.value = filter
         val conversationsTitle = context.resources.getString(R.string.conversations)
         val openConversationsTitle = context.resources.getString(R.string.openConversations)
@@ -239,7 +289,7 @@ class ConversationsListViewModel @Inject constructor(
         val messagesTitle = context.resources.getString(R.string.messages)
         val actorTypeConverter = EnumActorTypeConverter()
 
-        viewModelScope.launch {
+        searchJob = viewModelScope.launch {
             combine(
                 getRoomsStateFlow.map { list ->
                     list.filter { it.displayName?.contains(filter, ignoreCase = true) == true }
@@ -283,6 +333,7 @@ class ConversationsListViewModel @Inject constructor(
                 entries.toList()
             }.collect { results ->
                 searchResultEntries.emit(results)
+                _isSearchLoadingFlow.value = false
             }
         }
     }
@@ -429,7 +480,7 @@ class ConversationsListViewModel @Inject constructor(
         searchResults: List<ConversationListEntry>,
         hideToken: String?
     ): List<ConversationListEntry> {
-        if (isSearchActive && searchResults.isNotEmpty()) return searchResults
+        if (isSearchActive) return searchResults
 
         val hasFilterEnabled = filterState[MENTION] == true ||
             filterState[UNREAD] == true ||
@@ -505,7 +556,7 @@ class ConversationsListViewModel @Inject constructor(
                 _federationInvitationHintVisible.value = invitationsModel.invitations.isNotEmpty()
             } else {
                 if (invitationsModel.invitations.isNotEmpty()) {
-                    _showBadgeViewState.value = ShowBadgeSuccessState(true)
+                    _showAvatarBadge.value = true
                 }
             }
         }

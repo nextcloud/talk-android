@@ -130,6 +130,70 @@ fun NoArchivedConversationsView() {
     }
 }
 
+@Composable
+fun SearchNoResultsView() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(R.drawable.ic_search_24px),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(72.dp),
+            contentScale = ContentScale.Fit,
+            colorFilter = ColorFilter.tint(colorResource(R.color.grey_600), BlendMode.SrcIn)
+        )
+
+        Text(
+            text = stringResource(R.string.nc_no_search_results_headline),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, bottom = 8.dp),
+            color = colorResource(R.color.conversation_item_header),
+            fontSize = 22.sp,
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        Text(
+            text = stringResource(R.string.nc_no_search_results_text),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            color = colorResource(R.color.textColorMaxContrast),
+            fontSize = 16.sp,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Preview(name = "No search results · Light")
+@Preview(name = "No search results · Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun SearchNoResultsPreview() {
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    MaterialTheme(colorScheme = colorScheme) {
+        Surface {
+            SearchNoResultsView()
+        }
+    }
+}
+
+@Preview(name = "No search results · RTL / Arabic", locale = "ar")
+@Composable
+private fun SearchNoResultsRtlPreview() {
+    MaterialTheme(colorScheme = lightColorScheme()) {
+        Surface {
+            SearchNoResultsView()
+        }
+    }
+}
+
 @Preview(name = "Empty – with logo · Light")
 @Preview(name = "Empty – with logo · Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable

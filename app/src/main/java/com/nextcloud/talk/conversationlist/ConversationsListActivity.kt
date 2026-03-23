@@ -9,28 +9,24 @@ package com.nextcloud.talk.conversationlist
 import android.Manifest
 import android.animation.AnimatorInflater
 import android.annotation.SuppressLint
-import android.app.SearchManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
-import android.text.InputType
-import android.text.TextUtils
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.SearchView
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,11 +35,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
-import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
-import androidx.core.view.MenuItemCompat
-import androidx.core.view.isVisible
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -52,18 +44,8 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
-import coil.imageLoader
-import coil.request.ImageRequest
-import coil.target.Target
-import coil.transform.CircleCropTransformation
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.badge.BadgeDrawable
-import com.google.android.material.badge.BadgeUtils
-import com.google.android.material.badge.ExperimentalBadgeUtils
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.account.ServerSelectionActivity
@@ -81,10 +63,15 @@ import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationlist.ui.ConversationList
 import com.nextcloud.talk.conversationlist.ui.ConversationListFab
 import com.nextcloud.talk.conversationlist.ui.ConversationListSkeleton
+import com.nextcloud.talk.conversationlist.ui.ConversationListTopBar
+import com.nextcloud.talk.conversationlist.ui.ConversationListTopBarActions
+import com.nextcloud.talk.conversationlist.ui.ConversationListTopBarState
 import com.nextcloud.talk.conversationlist.ui.ConversationsEmptyStateView
+import com.nextcloud.talk.conversationlist.ui.SearchNoResultsView
 import com.nextcloud.talk.conversationlist.ui.FederationInvitationHintCard
 import com.nextcloud.talk.conversationlist.ui.NotificationWarningCard
 import com.nextcloud.talk.conversationlist.ui.StatusBannerRow
+import com.nextcloud.talk.conversationlist.ui.TopBarMode
 import com.nextcloud.talk.conversationlist.ui.UnreadMentionBubble
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
@@ -135,12 +122,8 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_TO_NOTIFICATION_CAT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
-import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -202,20 +185,17 @@ class ConversationsListActivity : BaseActivity() {
     private var conversationListLazyListState: androidx.compose.foundation.lazy.LazyListState? = null
 
     private var nextUnreadConversationScrollPosition = 0
-    private var searchItem: MenuItem? = null
-    private var chooseAccountItem: MenuItem? = null
-    private var searchView: SearchView? = null
-    private var searchQuery: String? = null
     private var credentials: String? = null
-    private var showShareToScreen = false
+    private val showShareToScreenState = MutableStateFlow(false)
+    private val forwardMessageState = MutableStateFlow(false)
+    private val hasMultipleAccountsState = MutableStateFlow(false)
+    private val showShareToScreen get() = showShareToScreenState.value
+    private val forwardMessage get() = forwardMessageState.value
     private var filesToShare: ArrayList<String>? = null
     private var selectedConversation: ConversationModel? = null
     private var textToPaste: String? = ""
     private var selectedMessageId: String? = null
-    private var forwardMessage: Boolean = false
     private var conversationsListBottomDialog: ConversationsListBottomDialog? = null
-    private var searchViewDisposable: Disposable? = null
-    private lateinit var accountIconBadge: BadgeDrawable
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -237,7 +217,7 @@ class ConversationsListActivity : BaseActivity() {
         contextChatViewModel = ViewModelProvider(this, viewModelFactory)[ContextChatViewModel::class.java]
 
         binding = ActivityConversationsBinding.inflate(layoutInflater)
-        setupActionBar()
+        setSupportActionBar(null)
         setContentView(binding.root)
         setupStatusBanner()
         setupEmptyStateView()
@@ -247,12 +227,10 @@ class ConversationsListActivity : BaseActivity() {
         setupNotificationWarning()
         setupFederationHintCard()
         setupConversationList()
+        setupTopBar()
         initSystemBars()
-        viewThemeUtils.material.themeSearchCardView(binding.searchToolbarContainer)
-        viewThemeUtils.material.colorMaterialButtonContent(binding.menuButton, ColorRole.ON_SURFACE_VARIANT)
-        viewThemeUtils.platform.colorTextView(binding.searchText, ColorRole.ON_SURFACE_VARIANT)
 
-        forwardMessage = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
+        forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         initObservers()
@@ -277,7 +255,7 @@ class ConversationsListActivity : BaseActivity() {
         super.onResume()
 
         showNotificationWarningState.value = shouldShowNotificationWarning()
-        showShareToScreen = hasActivityActionSendIntent()
+        showShareToScreenState.value = hasActivityActionSendIntent()
 
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this)
@@ -290,8 +268,7 @@ class ConversationsListActivity : BaseActivity() {
             }
             credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
 
-            loadUserAvatar(binding.switchAccountButton)
-            viewThemeUtils.material.colorMaterialTextButton(binding.switchAccountButton)
+            hasMultipleAccountsState.value = userManager.users.blockingGet().size > 1
             conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
             fetchRooms()
             fetchPendingInvitations()
@@ -300,7 +277,6 @@ class ConversationsListActivity : BaseActivity() {
             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
         }
 
-        showSearchOrToolbar()
         conversationsListViewModel.checkIfThreadsExist()
         conversationsListViewModel.reloadFilterFromStorage(UserIdUtils.getIdForUser(currentUser))
     }
@@ -315,30 +291,6 @@ class ConversationsListActivity : BaseActivity() {
 
     @Suppress("LongMethod", "CyclomaticComplexMethod")
     private fun initObservers() {
-        this.lifecycleScope.launch {
-            networkMonitor.isOnline.onEach { isOnline ->
-                handleUI(isOnline)
-            }.collect()
-        }
-
-        conversationsListViewModel.showBadgeViewState.observe(this) { state ->
-            when (state) {
-                is ConversationsListViewModel.ShowBadgeStartState -> {
-                    showAccountIconBadge(false)
-                }
-
-                is ConversationsListViewModel.ShowBadgeSuccessState -> {
-                    showAccountIconBadge(state.showBadge)
-                }
-
-                is ConversationsListViewModel.ShowBadgeErrorState -> {
-                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                }
-
-                else -> {}
-            }
-        }
-
         conversationsListViewModel.getRoomsViewState.observe(this) { state ->
             when (state) {
                 is ConversationsListViewModel.GetRoomsSuccessState -> {
@@ -352,23 +304,6 @@ class ConversationsListActivity : BaseActivity() {
                 }
 
                 else -> {}
-            }
-        }
-
-        lifecycleScope.launch {
-            conversationsListViewModel.threadsExistState.collect { state ->
-                when (state) {
-                    is ConversationsListViewModel.ThreadsExistUiState.Success -> {
-                        binding.threadsButton.visibility = if (state.threadsExistence == true) {
-                            View.VISIBLE
-                        } else {
-                            View.GONE
-                        }
-                    }
-                    else -> {
-                        binding.threadsButton.visibility = View.GONE
-                    }
-                }
             }
         }
 
@@ -410,7 +345,6 @@ class ConversationsListActivity : BaseActivity() {
                 val archiveFilterOn = filterState[ARCHIVE] == true
                 showNoArchivedViewState.value = archiveFilterOn
                 if (archiveFilterOn) showUnreadBubbleState.value = false
-                updateFilterConversationButtonColor()
             }
         }
 
@@ -518,6 +452,10 @@ class ConversationsListActivity : BaseActivity() {
                 val isRefreshing by isRefreshingState.collectAsStateWithLifecycle()
                 val searchQuery by conversationsListViewModel.currentSearchQueryFlow
                     .collectAsStateWithLifecycle()
+                val isSearchActive by conversationsListViewModel.isSearchActiveFlow
+                    .collectAsStateWithLifecycle()
+                val isSearchLoading by conversationsListViewModel.isSearchLoadingFlow
+                    .collectAsStateWithLifecycle()
                 val lazyListState = androidx.compose.foundation.lazy.rememberLazyListState()
 
                 // Store reference so Activity can read scroll position in onPause
@@ -527,34 +465,161 @@ class ConversationsListActivity : BaseActivity() {
                 }
 
                 MaterialTheme(colorScheme = colorScheme) {
-                    ConversationList(
-                        entries = entries,
-                        isRefreshing = isRefreshing,
-                        currentUser = currentUser!!,
-                        credentials = credentials ?: "",
-                        searchQuery = searchQuery,
-                        onConversationClick = { handleConversation(it) },
-                        onConversationLongClick = { handleConversationLongClick(it) },
-                        onMessageResultClick = { showContextChatForMessage(it) },
-                        onContactClick = {
-                            contactsViewModel.createRoom(ROOM_TYPE_ONE_ONE, null, it.actorId!!, null)
-                        },
-                        onLoadMoreClick = { conversationsListViewModel.loadMoreMessages(context) },
-                        onRefresh = {
-                            isMaintenanceModeState.value = false
-                            isRefreshingState.value = true
-                            fetchRooms()
-                            fetchPendingInvitations()
-                        },
-                        onScrollChanged = { isFabVisibleState.value = !it },
-                        onScrollStopped = { checkToShowUnreadBubble(it) },
-                        listState = lazyListState
+                    if (isSearchActive && entries.isEmpty() && searchQuery.isNotEmpty() && !isSearchLoading) {
+                        Box(
+                            modifier = Modifier.fillMaxSize().imePadding(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            SearchNoResultsView()
+                        }
+                    } else {
+                        ConversationList(
+                            entries = entries,
+                            isRefreshing = isRefreshing,
+                            currentUser = currentUser!!,
+                            credentials = credentials ?: "",
+                            searchQuery = searchQuery,
+                            onConversationClick = { handleConversation(it) },
+                            onConversationLongClick = { handleConversationLongClick(it) },
+                            onMessageResultClick = { showContextChatForMessage(it) },
+                            onContactClick = {
+                                contactsViewModel.createRoom(ROOM_TYPE_ONE_ONE, null, it.actorId!!, null)
+                            },
+                            onLoadMoreClick = { conversationsListViewModel.loadMoreMessages(context) },
+                            onRefresh = {
+                                isMaintenanceModeState.value = false
+                                isRefreshingState.value = true
+                                fetchRooms()
+                                fetchPendingInvitations()
+                            },
+                            onScrollChanged = { isFabVisibleState.value = !it },
+                            onScrollStopped = { checkToShowUnreadBubble(it) },
+                            listState = lazyListState
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    @Suppress("LongMethod")
+    private fun setupTopBar() {
+        updateAppBarElevation(elevated = false)
+        binding.toolbarComposeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
+
+                val isSearchActive by conversationsListViewModel.isSearchActiveFlow
+                    .collectAsStateWithLifecycle()
+                val searchQuery by conversationsListViewModel.currentSearchQueryFlow
+                    .collectAsStateWithLifecycle()
+                val showAvatarBadge by conversationsListViewModel.showAvatarBadge
+                    .collectAsStateWithLifecycle()
+                val filterState by conversationsListViewModel.filterStateFlow
+                    .collectAsStateWithLifecycle()
+                val threadsState by conversationsListViewModel.threadsExistState
+                    .collectAsStateWithLifecycle()
+                val showShareTo by showShareToScreenState.collectAsStateWithLifecycle()
+                val isForward by forwardMessageState.collectAsStateWithLifecycle()
+                val multipleAccounts by hasMultipleAccountsState.collectAsStateWithLifecycle()
+
+                val showFilterActive = filterState.any { (k, v) ->
+                    k != FilterConversationFragment.DEFAULT && v
+                }
+                val showThreadsButton =
+                    threadsState is ConversationsListViewModel.ThreadsExistUiState.Success &&
+                        (threadsState as ConversationsListViewModel.ThreadsExistUiState.Success)
+                            .threadsExistence == true
+
+                val mode: TopBarMode = when {
+                    showShareTo -> TopBarMode.TitleBar(
+                        title = getString(R.string.send_to_three_dots),
+                        showAccountChooser = multipleAccounts
+                    )
+                    isForward -> TopBarMode.TitleBar(
+                        title = getString(R.string.nc_forward_to_three_dots),
+                        showAccountChooser = false
+                    )
+                    isSearchActive -> TopBarMode.SearchActive(query = searchQuery)
+                    else -> TopBarMode.SearchBarIdle
+                }
+
+                val avatarUrl = remember(currentUser) {
+                    ApiUtils.getUrlForAvatar(
+                        currentUser?.baseUrl,
+                        currentUser?.userId,
+                        true,
+                        darkMode = DisplayUtils.isDarkModeOn(this@ConversationsListActivity)
+                    )
+                }
+
+                // Debounce search: 300 ms after last keystroke, then fire ViewModel search.
+                LaunchedEffect(searchQuery) {
+                    if (searchQuery.isNotEmpty()) {
+                        delay(SEARCH_DEBOUNCE_INTERVAL_MS.toLong())
+                        if (searchQuery.length >= SEARCH_MIN_CHARS) {
+                            conversationsListViewModel.getSearchQuery(context, searchQuery)
+                        }
+                    }
+                }
+
+                MaterialTheme(colorScheme = colorScheme) {
+                    ConversationListTopBar(
+                        state = ConversationListTopBarState(
+                            mode = mode,
+                            showAvatarBadge = showAvatarBadge,
+                            avatarUrl = avatarUrl,
+                            credentials = credentials ?: "",
+                            showFilterActive = showFilterActive,
+                            showThreadsButton = showThreadsButton
+                        ),
+                        actions = ConversationListTopBarActions(
+                            onSearchQueryChange = { conversationsListViewModel.setSearchQuery(it) },
+                            onSearchActivate = {
+                                conversationsListViewModel.setIsSearchActive(true)
+                                updateAppBarElevation(elevated = true)
+                                viewThemeUtils.platform.themeStatusBar(this@ConversationsListActivity)
+                            },
+                            onSearchClose = {
+                                conversationsListViewModel.setIsSearchActive(false)
+                                updateAppBarElevation(elevated = false)
+                                viewThemeUtils.platform.resetStatusBar(this@ConversationsListActivity)
+                                lifecycleScope.launch {
+                                    conversationListLazyListState?.scrollToItem(0)
+                                }
+                            },
+                            onFilterClick = {
+                                FilterConversationFragment
+                                    .newInstance(
+                                        conversationsListViewModel.filterStateFlow.value.toMutableMap()
+                                    )
+                                    .show(supportFragmentManager, FilterConversationFragment.TAG)
+                            },
+                            onThreadsClick = { openFollowedThreadsOverview() },
+                            onAvatarClick = {
+                                if (resources.getBoolean(R.bool.multiaccount_support)) {
+                                    showChooseAccountDialog()
+                                } else {
+                                    startActivity(Intent(context, SettingsActivity::class.java))
+                                }
+                            },
+                            onNavigateBack = { onBackPressedDispatcher.onBackPressed() },
+                            onAccountChooserClick = {
+                                ChooseAccountShareToDialogFragment.newInstance()
+                                    .show(supportFragmentManager, ChooseAccountShareToDialogFragment.TAG)
+                            }
+                        )
                     )
                 }
             }
         }
+    }
 
-        setupToolbarButtons()
+    private fun updateAppBarElevation(elevated: Boolean) {
+        val animRes = if (elevated) R.animator.appbar_elevation_on else R.animator.appbar_elevation_off
+        binding.conversationListAppbar.stateListAnimator =
+            AnimatorInflater.loadStateListAnimator(binding.conversationListAppbar.context, animRes)
     }
 
     private fun handleConversationLongClick(model: ConversationModel) {
@@ -586,68 +651,10 @@ class ConversationsListActivity : BaseActivity() {
         }
     }
 
-    private fun setupToolbarButtons() {
-        binding.switchAccountButton.setOnClickListener {
-            if (resources != null && resources!!.getBoolean(R.bool.multiaccount_support)) {
-                showChooseAccountDialog()
-            } else {
-                startActivity(Intent(context, SettingsActivity::class.java))
-            }
-        }
-        updateFilterConversationButtonColor()
-        binding.filterConversationsButton.setOnClickListener {
-            val newFragment = FilterConversationFragment.newInstance(
-                conversationsListViewModel.filterStateFlow.value.toMutableMap()
-            )
-            newFragment.show(supportFragmentManager, FilterConversationFragment.TAG)
-        }
-        binding.threadsButton.setOnClickListener { openFollowedThreadsOverview() }
-        viewThemeUtils.platform.colorImageView(binding.threadsButton, ColorRole.ON_SURFACE_VARIANT)
-    }
-
     fun filterConversation() {
         // Delegate to ViewModel; FilterConversationFragment still calls this via cast.
         // filterStateFlow observer in initObservers handles showNoArchivedViewState + button colour.
         conversationsListViewModel.reloadFilterFromStorage(UserIdUtils.getIdForUser(currentUser))
-    }
-
-    private fun setupActionBar() {
-        setSupportActionBar(binding.conversationListToolbar)
-        binding.conversationListToolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(resources!!.getColor(R.color.transparent, null).toDrawable())
-        supportActionBar?.title = resources!!.getString(R.string.nc_app_product_name)
-        viewThemeUtils.material.themeToolbar(binding.conversationListToolbar)
-    }
-
-    private fun loadUserAvatar(target: Target) {
-        if (currentUser != null) {
-            val url = ApiUtils.getUrlForAvatar(
-                currentUser!!.baseUrl!!,
-                currentUser!!.userId,
-                true,
-                darkMode = DisplayUtils.isDarkModeOn(this)
-            )
-
-            val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
-
-            context.imageLoader.enqueue(
-                ImageRequest.Builder(context)
-                    .data(url)
-                    .addHeader("Authorization", credentials!!)
-                    .placeholder(R.drawable.ic_user)
-                    .transformations(CircleCropTransformation())
-                    .crossfade(true)
-                    .target(target)
-                    .build()
-            )
-        } else {
-            Log.e(TAG, "currentUser was null in loadUserAvatar")
-            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-        }
     }
 
     private fun showChooseAccountDialog() {
@@ -664,256 +671,8 @@ class ConversationsListActivity : BaseActivity() {
         }
     }
 
-    private fun loadUserAvatar(button: MaterialButton) {
-        val target = object : Target {
-            override fun onStart(placeholder: Drawable?) {
-                button.icon = placeholder
-            }
-
-            override fun onSuccess(result: Drawable) {
-                button.icon = result
-            }
-        }
-
-        loadUserAvatar(target)
-    }
-
-    private fun loadUserAvatar(menuItem: MenuItem) {
-        val target = object : Target {
-            override fun onStart(placeholder: Drawable?) {
-                menuItem.icon = placeholder
-            }
-
-            override fun onSuccess(result: Drawable) {
-                menuItem.icon = result
-            }
-        }
-        loadUserAvatar(target)
-    }
-
-    private fun initSearchView() {
-        val searchManager = getSystemService(SEARCH_SERVICE) as SearchManager?
-        if (searchItem != null) {
-            searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-            viewThemeUtils.talk.themeSearchView(searchView!!)
-            searchView!!.maxWidth = Int.MAX_VALUE
-            searchView!!.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
-            var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
-            if (appPreferences.isKeyboardIncognito) {
-                imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
-            }
-            searchView!!.imeOptions = imeOptions
-            searchView!!.queryHint = getString(R.string.appbar_search_in, getString(R.string.nc_app_product_name))
-            if (searchManager != null) {
-                searchView!!.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-            }
-            initSearchDisposable()
-        }
-    }
-
-    private fun initSearchDisposable() {
-        if (searchViewDisposable == null || searchViewDisposable?.isDisposed == true) {
-            searchViewDisposable = observeSearchView(searchView!!)
-                .debounce { query: String? ->
-                    if (TextUtils.isEmpty(query)) {
-                        return@debounce Observable.empty<Long>()
-                    } else {
-                        return@debounce Observable.timer(
-                            SEARCH_DEBOUNCE_INTERVAL_MS.toLong(),
-                            TimeUnit.MILLISECONDS
-                        )
-                    }
-                }
-                .distinctUntilChanged()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { newText: String? -> onQueryTextChange(newText) }
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        super.onCreateOptionsMenu(menu)
-
-        menuInflater.inflate(R.menu.menu_conversation_plus_filter, menu)
-        searchItem = menu.findItem(R.id.action_search)
-        chooseAccountItem = menu.findItem(R.id.action_choose_account)
-        loadUserAvatar(chooseAccountItem!!)
-
-        chooseAccountItem?.setOnMenuItemClickListener {
-            if (resources != null && resources!!.getBoolean(R.bool.multiaccount_support)) {
-                val newFragment: DialogFragment = ChooseAccountShareToDialogFragment.newInstance()
-                newFragment.show(
-                    supportFragmentManager,
-                    ChooseAccountShareToDialogFragment.TAG
-                )
-            }
-            true
-        }
-        initSearchView()
-        return true
-    }
-
-    @OptIn(ExperimentalBadgeUtils::class)
-    fun showAccountIconBadge(showBadge: Boolean) {
-        if (!::accountIconBadge.isInitialized) {
-            accountIconBadge = BadgeDrawable.create(binding.switchAccountButton.context)
-            accountIconBadge.verticalOffset = BADGE_OFFSET
-            accountIconBadge.horizontalOffset = BADGE_OFFSET
-            accountIconBadge.backgroundColor = resources.getColor(R.color.badge_color, null)
-        }
-
-        if (showBadge) {
-            BadgeUtils.attachBadgeDrawable(accountIconBadge, binding.switchAccountButton)
-        } else {
-            BadgeUtils.detachBadgeDrawable(accountIconBadge, binding.switchAccountButton)
-        }
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        super.onPrepareOptionsMenu(menu)
-
-        if (searchItem != null) {
-            searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-        }
-
-        val moreAccountsAvailable = userManager.users.blockingGet().size > 1
-        menu.findItem(R.id.action_choose_account).isVisible = showShareToScreen && moreAccountsAvailable
-
-        if (showShareToScreen) {
-            hideSearchBar()
-            supportActionBar?.setTitle(R.string.send_to_three_dots)
-        } else if (forwardMessage) {
-            hideSearchBar()
-            supportActionBar?.setTitle(R.string.nc_forward_to_three_dots)
-        } else {
-            searchItem!!.isVisible = conversationsListViewModel.conversationListEntriesFlow.value.isNotEmpty()
-            if (conversationsListViewModel.isSearchActiveFlow.value && searchView != null) {
-                showSearchView(searchView, searchItem)
-                val savedQuery = conversationsListViewModel.currentSearchQueryFlow.value
-                if (savedQuery.isNotEmpty()) {
-                    searchView!!.setQuery(savedQuery, false)
-                }
-            }
-            binding.searchText.setOnClickListener {
-                showSearchView(searchView, searchItem)
-                viewThemeUtils.platform.themeStatusBar(this)
-            }
-            searchView?.findViewById<View>(R.id.search_close_btn)?.setOnClickListener {
-                if (TextUtils.isEmpty(searchView!!.query.toString())) {
-                    searchView!!.onActionViewCollapsed()
-                    viewThemeUtils.platform.resetStatusBar(this)
-                } else {
-                    searchView!!.setQuery("", false)
-                }
-            }
-
-            searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(p0: String?): Boolean {
-                    initSearchDisposable()
-                    searchView!!.clearFocus()
-                    return true
-                }
-
-                override fun onQueryTextChange(p0: String?): Boolean {
-                    this@ConversationsListActivity.onQueryTextChange(p0)
-                    return true
-                }
-            })
-
-            searchItem!!.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-                override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                    initSearchDisposable()
-                    conversationsListViewModel.setIsSearchActive(true)
-                    return true
-                }
-
-                override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                    conversationsListViewModel.setIsSearchActive(false)
-                    conversationsListViewModel.cancelSearch()
-                    searchView!!.onActionViewCollapsed()
-
-                    binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
-                        binding.conversationListAppbar.context,
-                        R.animator.appbar_elevation_off
-                    )
-                    binding.conversationListToolbar.visibility = View.GONE
-                    binding.searchToolbar.visibility = View.VISIBLE
-                    if (resources != null) {
-                        viewThemeUtils.platform.resetStatusBar(this@ConversationsListActivity)
-                    }
-
-                    lifecycleScope.launch {
-                        conversationListLazyListState?.scrollToItem(0)
-                    }
-                    return true
-                }
-            })
-        }
-        return true
-    }
-
-    private fun showSearchOrToolbar() {
-        if (TextUtils.isEmpty(searchQuery) && !conversationsListViewModel.isSearchActiveFlow.value) {
-            if (appBarLayoutType == AppBarLayoutType.SEARCH_BAR) {
-                showSearchBar()
-            } else {
-                showToolbar()
-            }
-            initSystemBars()
-        }
-    }
-
-    private fun showSearchBar() {
-        val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
-        binding.searchToolbar.visibility = View.VISIBLE
-        binding.searchText.text = getString(R.string.appbar_search_in, getString(R.string.nc_app_product_name))
-        binding.conversationListToolbar.visibility = View.GONE
-        // layoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout
-        // .LayoutParams.SCROLL_FLAG_SNAP | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-        layoutParams.scrollFlags = 0
-        binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
-            binding.conversationListAppbar.context,
-            R.animator.appbar_elevation_off
-        )
-        binding.searchToolbar.layoutParams = layoutParams
-    }
-
-    private fun showToolbar() {
-        val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
-        binding.searchToolbar.visibility = View.GONE
-        binding.conversationListToolbar.visibility = View.VISIBLE
-        viewThemeUtils.material.colorToolbarOverflowIcon(binding.conversationListToolbar)
-        layoutParams.scrollFlags = 0
-        binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
-            binding.conversationListAppbar.context,
-            R.animator.appbar_elevation_on
-        )
-        binding.conversationListToolbar.layoutParams = layoutParams
-    }
-
-    private fun hideSearchBar() {
-        val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
-        binding.searchToolbar.visibility = View.GONE
-        binding.conversationListToolbar.visibility = View.VISIBLE
-        layoutParams.scrollFlags = 0
-        binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
-            binding.conversationListAppbar.context,
-            R.animator.appbar_elevation_on
-        )
-    }
-
     private fun hasActivityActionSendIntent(): Boolean =
         Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action
-
-    private fun showSearchView(searchView: SearchView?, searchItem: MenuItem?) {
-        binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
-            binding.conversationListAppbar.context,
-            R.animator.appbar_elevation_on
-        )
-        binding.conversationListToolbar.visibility = View.VISIBLE
-        binding.searchToolbar.visibility = View.GONE
-        searchItem!!.expandActionView()
-    }
 
     fun showSnackbar(text: String) {
         Snackbar.make(binding.root, text, Snackbar.LENGTH_LONG).show()
@@ -1065,11 +824,6 @@ class ConversationsListActivity : BaseActivity() {
         }
     }
 
-    private fun handleUI(show: Boolean) {
-        binding.searchText.isEnabled = show
-        binding.searchText.isVisible = show
-    }
-
     private suspend fun fetchOpenConversations(searchTerm: String) {
         conversationsListViewModel.fetchOpenConversations(searchTerm)
     }
@@ -1153,52 +907,8 @@ class ConversationsListActivity : BaseActivity() {
         startActivity(intent)
     }
 
-    private fun dispose(disposable: Disposable?) {
-        if (disposable != null && !disposable.isDisposed) {
-            disposable.dispose()
-        }
-    }
-
-    override fun onSaveInstanceState(bundle: Bundle) {
-        super.onSaveInstanceState(bundle)
-
-        if (searchView != null && !TextUtils.isEmpty(searchView!!.query)) {
-            bundle.putString(KEY_SEARCH_QUERY, searchView!!.query.toString())
-        }
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-
-        if (savedInstanceState.containsKey(KEY_SEARCH_QUERY)) {
-            searchQuery = savedInstanceState.getString(KEY_SEARCH_QUERY, "")
-        }
-    }
-
     public override fun onDestroy() {
         super.onDestroy()
-        dispose(null)
-        if (searchViewDisposable != null && !searchViewDisposable!!.isDisposed) {
-            searchViewDisposable!!.dispose()
-        }
-    }
-
-    private fun onQueryTextChange(newText: String?) {
-        if (!TextUtils.isEmpty(searchQuery)) {
-            val filter = searchQuery
-            searchQuery = ""
-            performFilterAndSearch(filter)
-        } else {
-            performFilterAndSearch(newText)
-        }
-    }
-
-    private fun performFilterAndSearch(filter: String?) {
-        if (!filter.isNullOrEmpty() && filter.length >= SEARCH_MIN_CHARS) {
-            showNoArchivedViewState.value = false
-            conversationsListViewModel.getSearchQuery(context, filter)
-        }
-        // Query too short: search results remain empty, ViewModel shows regular list
     }
 
     private fun showConversationByToken(conversationToken: String) {
@@ -1234,7 +944,7 @@ class ConversationsListActivity : BaseActivity() {
             } else if (forwardMessage) {
                 if (hasChatPermission && !isReadOnlyConversation(selectedConversation!!)) {
                     openConversation(intent.getStringExtra(KEY_FORWARD_MSG_TEXT))
-                    forwardMessage = false
+                    forwardMessageState.value = false
                 } else {
                     Snackbar.make(binding.root, R.string.send_to_forbidden, Snackbar.LENGTH_LONG).show()
                 }
@@ -1810,19 +1520,6 @@ class ConversationsListActivity : BaseActivity() {
             }
     }
 
-    fun updateFilterConversationButtonColor() {
-        if (hasFilterEnabled()) {
-            binding.filterConversationsButton.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }
-        } else {
-            binding.filterConversationsButton.let {
-                viewThemeUtils.platform.colorImageView(
-                    it,
-                    ColorRole.ON_SURFACE_VARIANT
-                )
-            }
-        }
-    }
-
     fun openFollowedThreadsOverview() {
         val threadsUrl = ApiUtils.getUrlForSubscribedThreads(
             version = 1,
@@ -1841,7 +1538,6 @@ class ConversationsListActivity : BaseActivity() {
         private val TAG = ConversationsListActivity::class.java.simpleName
         const val UNREAD_BUBBLE_DELAY = 2500
         const val BOTTOM_SHEET_DELAY: Long = 2500
-        private const val KEY_SEARCH_QUERY = "ConversationsListActivity.searchQuery"
         private const val CHAT_ACTIVITY_LOCAL_NAME = "com.nextcloud.talk.chat.ChatActivity"
         const val SEARCH_DEBOUNCE_INTERVAL_MS = 300
         const val SEARCH_MIN_CHARS = 1
@@ -1852,7 +1548,6 @@ class ConversationsListActivity : BaseActivity() {
         const val HTTP_SERVICE_UNAVAILABLE = 503
         const val MAINTENANCE_MODE_HEADER_KEY = "X-Nextcloud-Maintenance-Mode"
         const val REQUEST_POST_NOTIFICATIONS_PERMISSION = 111
-        const val BADGE_OFFSET = 35
         const val DAYS_FOR_NOTIFICATION_WARNING = 5L
         const val NOTIFICATION_WARNING_DATE_NOT_SET = 0L
         const val OFFSET_HEIGHT_DIVIDER: Int = 3
