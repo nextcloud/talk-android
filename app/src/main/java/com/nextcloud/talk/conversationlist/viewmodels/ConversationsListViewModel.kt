@@ -103,7 +103,7 @@ class ConversationsListViewModel @Inject constructor(
     val openConversationsState: StateFlow<OpenConversationsUiState> = _openConversationsState
 
     object GetRoomsStartState : ViewState
-    object GetRoomsErrorState : ViewState
+    class GetRoomsErrorState(val throwable: Throwable) : ViewState
     open class GetRoomsSuccessState(val listIsNotEmpty: Boolean) : ViewState
 
     private val _getRoomsViewState: MutableLiveData<ViewState> = MutableLiveData(GetRoomsStartState)
@@ -114,7 +114,7 @@ class ConversationsListViewModel @Inject constructor(
         .onEach { list ->
             _getRoomsViewState.value = GetRoomsSuccessState(list.isNotEmpty())
         }.catch {
-            _getRoomsViewState.value = GetRoomsErrorState
+            _getRoomsViewState.value = GetRoomsErrorState(it)
         }
 
     private val _isShimmerVisible = MutableStateFlow(true)

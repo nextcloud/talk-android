@@ -644,12 +644,25 @@ private fun LastMessageContent(
 
     // Deleted comment
     if (chatMessage.isDeletedCommentMessage) {
+        val parsedText = ChatUtils.getParsedMessage(chatMessage.message, chatMessage.messageParameters) ?: ""
+        val youPrefix = stringResource(R.string.nc_formatted_message_you, parsedText)
+        val groupFormat = stringResource(R.string.nc_formatted_message)
+        val guestLabel = stringResource(R.string.nc_guest)
+        val displayText = when {
+            chatMessage.actorId == currentUser.userId -> youPrefix
+            model.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> parsedText
+            else -> {
+                val actorName = chatMessage.actorDisplayName?.takeIf { it.isNotBlank() }
+                    ?: if (chatMessage.actorType == "guests" || chatMessage.actorType == "emails") {
+                        guestLabel
+                    } else {
+                        ""
+                    }
+                if (actorName.isBlank()) parsedText else String.format(groupFormat, actorName, parsedText)
+            }
+        }
         Text(
-            text = buildHighlightedText(
-                ChatUtils.getParsedMessage(chatMessage.message, chatMessage.messageParameters) ?: "",
-                searchQuery,
-                primaryColor
-            ),
+            text = buildHighlightedText(displayText, searchQuery, primaryColor),
             modifier = modifier,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -696,7 +709,11 @@ private fun LastMessageContent(
 
         ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE -> {
             var name = chatMessage.message ?: ""
-            if (name == "{file}") name = chatMessage.messageParameters?.get("file")?.get("name") ?: ""
+            name = if (name == "{file}") {
+                chatMessage.messageParameters?.get("file")?.get("name") ?: ""
+            } else {
+                ChatUtils.getParsedMessage(name, chatMessage.messageParameters) ?: name
+            }
             val mime = chatMessage.messageParameters?.get("file")?.get("mimetype")
             val icon = attachmentIconRes(mime)
             val prefix = authorPrefix(chatMessage, currentUser)
@@ -833,7 +850,7 @@ private fun LastMessageContent(
                 } else {
                     ""
                 }
-            String.format(groupFormat, actorName, parsedText)
+            if (actorName.isBlank()) parsedText else String.format(groupFormat, actorName, parsedText)
         }
     }
     Text(
@@ -1602,7 +1619,7 @@ private fun PreviewLastMessageDeleted() =
             model = previewModel(
                 displayName = "Alice",
                 lastMessage = previewMsg(
-                    message = "Message deleted",
+                    message = "You: Message deleted",
                     messageType = "comment_deleted"
                 )
             ),

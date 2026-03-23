@@ -49,7 +49,6 @@ fun ConversationListFab(isVisible: Boolean, isEnabled: Boolean, onClick: () -> U
         FloatingActionButton(
             onClick = { if (isEnabled) onClick() },
             modifier = Modifier
-                .padding(8.dp)
                 .alpha(if (isEnabled) 1f else DISABLED_ALPHA)
         ) {
             Icon(
@@ -61,9 +60,10 @@ fun ConversationListFab(isVisible: Boolean, isEnabled: Boolean, onClick: () -> U
 }
 
 @Composable
-fun UnreadMentionBubble(visible: Boolean, onClick: () -> Unit) {
+fun UnreadMentionBubble(visible: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     AnimatedVisibility(
         visible = visible,
+        modifier = modifier,
         enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
         exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
     ) {

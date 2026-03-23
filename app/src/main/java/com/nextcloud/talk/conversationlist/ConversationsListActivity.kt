@@ -7,7 +7,6 @@
 package com.nextcloud.talk.conversationlist
 
 import android.Manifest
-import android.animation.AnimatorInflater
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -19,25 +18,14 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AlertDialog
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.material3.SnackbarHostState
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -45,38 +33,24 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
-import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contextchat.ContextChatViewModel
-import com.nextcloud.talk.conversationlist.ui.ConversationList
-import com.nextcloud.talk.conversationlist.ui.ConversationListFab
-import com.nextcloud.talk.conversationlist.ui.ConversationListSkeleton
-import com.nextcloud.talk.conversationlist.ui.ConversationListTopBar
-import com.nextcloud.talk.conversationlist.ui.ConversationListTopBarActions
-import com.nextcloud.talk.conversationlist.ui.ConversationListTopBarState
-import com.nextcloud.talk.conversationlist.ui.ConversationsEmptyStateView
-import com.nextcloud.talk.conversationlist.ui.SearchNoResultsView
-import com.nextcloud.talk.conversationlist.ui.FederationInvitationHintCard
-import com.nextcloud.talk.conversationlist.ui.NotificationWarningCard
-import com.nextcloud.talk.conversationlist.ui.StatusBannerRow
-import com.nextcloud.talk.conversationlist.ui.TopBarMode
-import com.nextcloud.talk.conversationlist.ui.UnreadMentionBubble
+import com.nextcloud.talk.conversationlist.ui.ConversationsListScreen
+import com.nextcloud.talk.conversationlist.ui.ConversationsListScreenCallbacks
+import com.nextcloud.talk.conversationlist.ui.ConversationsListScreenState
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.databinding.ActivityConversationsBinding
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.invitation.InvitationsActivity
@@ -89,9 +63,7 @@ import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
-import com.nextcloud.talk.ui.BackgroundVoiceMessageCard
 import com.nextcloud.talk.ui.chooseaccount.ChooseAccountShareToDialogFragment
-import com.nextcloud.talk.ui.dialog.ChooseAccountDialogCompose
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
@@ -104,7 +76,6 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConversationUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
@@ -123,7 +94,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -131,7 +101,6 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
-import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -140,19 +109,11 @@ import javax.inject.Inject
 @Suppress("LargeClass", "TooManyFunctions")
 class ConversationsListActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityConversationsBinding
-
     @Inject
     lateinit var userManager: UserManager
 
     @Inject
-    lateinit var ncApi: NcApi
-
-    @Inject
     lateinit var platformPermissionUtil: PlatformPermissionUtil
-
-    @Inject
-    lateinit var arbitraryStorageManager: ArbitraryStorageManager
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -169,17 +130,14 @@ class ConversationsListActivity : BaseActivity() {
     lateinit var conversationsListViewModel: ConversationsListViewModel
     lateinit var contextChatViewModel: ContextChatViewModel
 
-    override val appBarLayoutType: AppBarLayoutType
-        get() = AppBarLayoutType.SEARCH_BAR
-
     private var currentUser: User? = null
+    private val snackbarHostState = SnackbarHostState()
     private val isMaintenanceModeState = MutableStateFlow(false)
-    private val isListEmptyState = MutableStateFlow(false)
-    private val showNoArchivedViewState = MutableStateFlow(false)
     private val showUnreadBubbleState = MutableStateFlow(false)
     private val isFabVisibleState = MutableStateFlow(true)
     private val showNotificationWarningState = MutableStateFlow(false)
     private val isRefreshingState = MutableStateFlow(false)
+    private val showAccountDialogState = MutableStateFlow(false)
 
     // Lazy list state – set from inside setContent, read from onPause
     private var conversationListLazyListState: androidx.compose.foundation.lazy.LazyListState? = null
@@ -216,25 +174,103 @@ class ConversationsListActivity : BaseActivity() {
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
         contextChatViewModel = ViewModelProvider(this, viewModelFactory)[ContextChatViewModel::class.java]
 
-        binding = ActivityConversationsBinding.inflate(layoutInflater)
         setSupportActionBar(null)
-        setContentView(binding.root)
-        setupStatusBanner()
-        setupEmptyStateView()
-        setupFab()
-        setupUnreadBubble()
-        setupShimmer()
-        setupNotificationWarning()
-        setupFederationHintCard()
-        setupConversationList()
-        setupTopBar()
-        initSystemBars()
-
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
+        setContent {
+            ConversationsListScreen(
+                viewModel = conversationsListViewModel,
+                contextChatViewModel = contextChatViewModel,
+                chatViewModel = chatViewModel,
+                state = buildScreenState(),
+                callbacks = buildScreenCallbacks()
+            )
+        }
+
         initObservers()
     }
+
+    private fun buildScreenState() =
+        ConversationsListScreenState(
+            currentUser = currentUser,
+            credentials = credentials ?: "",
+            showLogo = BrandingUtils.isOriginalNextcloudClient(applicationContext),
+            viewThemeUtils = viewThemeUtils,
+            isShowEcosystem = appPreferences.isShowEcosystem && !resources.getBoolean(R.bool.is_branded_client),
+            snackbarHostState = snackbarHostState,
+            isMaintenanceModeFlow = isMaintenanceModeState,
+            isOnlineFlow = networkMonitor.isOnline,
+            showUnreadBubbleFlow = showUnreadBubbleState,
+            isFabVisibleFlow = isFabVisibleState,
+            showNotificationWarningFlow = showNotificationWarningState,
+            isRefreshingFlow = isRefreshingState,
+            showShareToFlow = showShareToScreenState,
+            forwardMessageFlow = forwardMessageState,
+            hasMultipleAccountsFlow = hasMultipleAccountsState,
+            showAccountDialogFlow = showAccountDialogState
+        )
+
+    @Suppress("LongMethod")
+    private fun buildScreenCallbacks() =
+        ConversationsListScreenCallbacks(
+            onLazyListStateAvailable = { listState -> conversationListLazyListState = listState },
+            onScrollChanged = { isFabVisibleState.value = !it },
+            onScrollStopped = { checkToShowUnreadBubble(it) },
+            onConversationClick = { handleConversation(it) },
+            onConversationLongClick = { handleConversationLongClick(it) },
+            onMessageResultClick = { showContextChatForMessage(it) },
+            onContactClick = { contactsViewModel.createRoom(ROOM_TYPE_ONE_ONE, null, it.actorId!!, null) },
+            onLoadMoreClick = { conversationsListViewModel.loadMoreMessages(context) },
+            onRefresh = {
+                isMaintenanceModeState.value = false
+                isRefreshingState.value = true
+                fetchRooms()
+                fetchPendingInvitations()
+            },
+            onFabClick = {
+                run(context)
+                showNewConversationsScreen()
+            },
+            onUnreadBubbleClick = {
+                lifecycleScope.launch {
+                    conversationListLazyListState?.scrollToItem(nextUnreadConversationScrollPosition, 0)
+                }
+                showUnreadBubbleState.value = false
+            },
+            onNotificationWarningNotNow = {
+                appPreferences.setNotificationWarningLastPostponedDate(System.currentTimeMillis())
+                showNotificationWarningState.value = false
+            },
+            onNotificationWarningShowSettings = {
+                val bundle = Bundle()
+                bundle.putBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY, true)
+                val settingsIntent = Intent(context, SettingsActivity::class.java)
+                settingsIntent.putExtras(bundle)
+                startActivity(settingsIntent)
+            },
+            onFederationHintClick = { startActivity(Intent(context, InvitationsActivity::class.java)) },
+            onFilterClick = {
+                FilterConversationFragment
+                    .newInstance(conversationsListViewModel.filterStateFlow.value.toMutableMap())
+                    .show(supportFragmentManager, FilterConversationFragment.TAG)
+            },
+            onThreadsClick = { openFollowedThreadsOverview() },
+            onAvatarClick = {
+                if (resources.getBoolean(R.bool.multiaccount_support)) {
+                    showChooseAccountDialog()
+                } else {
+                    startActivity(Intent(context, SettingsActivity::class.java))
+                }
+            },
+            onNavigateBack = { onBackPressedDispatcher.onBackPressed() },
+            onAccountChooserClick = {
+                ChooseAccountShareToDialogFragment.newInstance()
+                    .show(supportFragmentManager, ChooseAccountShareToDialogFragment.TAG)
+            },
+            onNewConversation = { showNewConversationsScreen() },
+            onAccountDialogDismiss = { showAccountDialogState.value = false }
+        )
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
@@ -274,7 +310,7 @@ class ConversationsListActivity : BaseActivity() {
             fetchPendingInvitations()
         } else {
             Log.e(TAG, "currentUser was null")
-            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            showSnackbar(getString(R.string.nc_common_error_sorry))
         }
 
         conversationsListViewModel.checkIfThreadsExist()
@@ -295,12 +331,11 @@ class ConversationsListActivity : BaseActivity() {
             when (state) {
                 is ConversationsListViewModel.GetRoomsSuccessState -> {
                     isRefreshingState.value = false
-                    initOverallLayout(state.listIsNotEmpty)
                 }
 
                 is ConversationsListViewModel.GetRoomsErrorState -> {
                     isRefreshingState.value = false
-                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
+                    handleHttpExceptions(state.throwable)
                 }
 
                 else -> {}
@@ -342,59 +377,8 @@ class ConversationsListActivity : BaseActivity() {
 
         lifecycleScope.launch {
             conversationsListViewModel.filterStateFlow.collect { filterState ->
-                val archiveFilterOn = filterState[ARCHIVE] == true
-                showNoArchivedViewState.value = archiveFilterOn
-                if (archiveFilterOn) showUnreadBubbleState.value = false
+                if (filterState[ARCHIVE] == true) showUnreadBubbleState.value = false
             }
-        }
-
-        lifecycleScope.launch {
-            chatViewModel.backgroundPlayUIFlow.onEach { msg ->
-                binding.composeViewForBackgroundPlay.apply {
-                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                    setContent {
-                        msg?.let {
-                            val duration = chatViewModel.mediaPlayerDuration
-                            val position = chatViewModel.mediaPlayerPosition
-                            val offset = position.toFloat() / duration
-                            val imageURI = ApiUtils.getUrlForAvatar(
-                                currentUser?.baseUrl,
-                                msg.actorId,
-                                true,
-                                darkMode = DisplayUtils.isDarkModeOn(LocalContext.current)
-                            )
-                            val conversationImageURI = ApiUtils.getUrlForConversationAvatar(
-                                ApiUtils.API_V1,
-                                currentUser?.baseUrl,
-                                msg.token
-                            )
-
-                            if (duration > 0) {
-                                BackgroundVoiceMessageCard(
-                                    msg.actorDisplayName!!,
-                                    duration - position,
-                                    offset,
-                                    imageURI,
-                                    conversationImageURI,
-                                    viewThemeUtils,
-                                    context
-                                )
-                                    .GetView({ isPaused ->
-                                        if (isPaused) {
-                                            chatViewModel.pauseMediaPlayer(false)
-                                        } else {
-                                            val filename = msg.selectedIndividualHashMap!!["name"]
-                                            val file = File(context.cacheDir, filename!!)
-                                            chatViewModel.startMediaPlayer(file.canonicalPath)
-                                        }
-                                    }) {
-                                        chatViewModel.stopMediaPlayer()
-                                    }
-                            }
-                        }
-                    }
-                }
-            }.collect()
         }
     }
 
@@ -421,15 +405,6 @@ class ConversationsListActivity : BaseActivity() {
         }
     }
 
-    fun applyFilter() {
-        conversationsListViewModel.reloadFilterFromStorage(UserIdUtils.getIdForUser(currentUser))
-    }
-
-    private fun hasFilterEnabled(): Boolean =
-        conversationsListViewModel.filterStateFlow.value.any { (k, v) ->
-            k != FilterConversationFragment.DEFAULT && v
-        }
-
     fun showOnlyNearFutureEvents() {
         // Reset all filters so the ViewModel's default view (non-archived, non-future-events) is shown
         conversationsListViewModel.applyFilter(
@@ -440,186 +415,6 @@ class ConversationsListActivity : BaseActivity() {
                 FilterConversationFragment.DEFAULT to true
             )
         )
-    }
-
-    private fun setupConversationList() {
-        binding.conversationListComposeView.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
-                val entries by conversationsListViewModel.conversationListEntriesFlow
-                    .collectAsStateWithLifecycle()
-                val isRefreshing by isRefreshingState.collectAsStateWithLifecycle()
-                val searchQuery by conversationsListViewModel.currentSearchQueryFlow
-                    .collectAsStateWithLifecycle()
-                val isSearchActive by conversationsListViewModel.isSearchActiveFlow
-                    .collectAsStateWithLifecycle()
-                val isSearchLoading by conversationsListViewModel.isSearchLoadingFlow
-                    .collectAsStateWithLifecycle()
-                val lazyListState = androidx.compose.foundation.lazy.rememberLazyListState()
-
-                // Store reference so Activity can read scroll position in onPause
-                androidx.compose.runtime.DisposableEffect(lazyListState) {
-                    conversationListLazyListState = lazyListState
-                    onDispose { conversationListLazyListState = null }
-                }
-
-                MaterialTheme(colorScheme = colorScheme) {
-                    if (isSearchActive && entries.isEmpty() && searchQuery.isNotEmpty() && !isSearchLoading) {
-                        Box(
-                            modifier = Modifier.fillMaxSize().imePadding(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            SearchNoResultsView()
-                        }
-                    } else {
-                        ConversationList(
-                            entries = entries,
-                            isRefreshing = isRefreshing,
-                            currentUser = currentUser!!,
-                            credentials = credentials ?: "",
-                            searchQuery = searchQuery,
-                            onConversationClick = { handleConversation(it) },
-                            onConversationLongClick = { handleConversationLongClick(it) },
-                            onMessageResultClick = { showContextChatForMessage(it) },
-                            onContactClick = {
-                                contactsViewModel.createRoom(ROOM_TYPE_ONE_ONE, null, it.actorId!!, null)
-                            },
-                            onLoadMoreClick = { conversationsListViewModel.loadMoreMessages(context) },
-                            onRefresh = {
-                                isMaintenanceModeState.value = false
-                                isRefreshingState.value = true
-                                fetchRooms()
-                                fetchPendingInvitations()
-                            },
-                            onScrollChanged = { isFabVisibleState.value = !it },
-                            onScrollStopped = { checkToShowUnreadBubble(it) },
-                            listState = lazyListState
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    @Suppress("LongMethod")
-    private fun setupTopBar() {
-        updateAppBarElevation(elevated = false)
-        binding.toolbarComposeView.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
-
-                val isSearchActive by conversationsListViewModel.isSearchActiveFlow
-                    .collectAsStateWithLifecycle()
-                val searchQuery by conversationsListViewModel.currentSearchQueryFlow
-                    .collectAsStateWithLifecycle()
-                val showAvatarBadge by conversationsListViewModel.showAvatarBadge
-                    .collectAsStateWithLifecycle()
-                val filterState by conversationsListViewModel.filterStateFlow
-                    .collectAsStateWithLifecycle()
-                val threadsState by conversationsListViewModel.threadsExistState
-                    .collectAsStateWithLifecycle()
-                val showShareTo by showShareToScreenState.collectAsStateWithLifecycle()
-                val isForward by forwardMessageState.collectAsStateWithLifecycle()
-                val multipleAccounts by hasMultipleAccountsState.collectAsStateWithLifecycle()
-
-                val showFilterActive = filterState.any { (k, v) ->
-                    k != FilterConversationFragment.DEFAULT && v
-                }
-                val showThreadsButton =
-                    threadsState is ConversationsListViewModel.ThreadsExistUiState.Success &&
-                        (threadsState as ConversationsListViewModel.ThreadsExistUiState.Success)
-                            .threadsExistence == true
-
-                val mode: TopBarMode = when {
-                    showShareTo -> TopBarMode.TitleBar(
-                        title = getString(R.string.send_to_three_dots),
-                        showAccountChooser = multipleAccounts
-                    )
-                    isForward -> TopBarMode.TitleBar(
-                        title = getString(R.string.nc_forward_to_three_dots),
-                        showAccountChooser = false
-                    )
-                    isSearchActive -> TopBarMode.SearchActive(query = searchQuery)
-                    else -> TopBarMode.SearchBarIdle
-                }
-
-                val avatarUrl = remember(currentUser) {
-                    ApiUtils.getUrlForAvatar(
-                        currentUser?.baseUrl,
-                        currentUser?.userId,
-                        true,
-                        darkMode = DisplayUtils.isDarkModeOn(this@ConversationsListActivity)
-                    )
-                }
-
-                // Debounce search: 300 ms after last keystroke, then fire ViewModel search.
-                LaunchedEffect(searchQuery) {
-                    if (searchQuery.isNotEmpty()) {
-                        delay(SEARCH_DEBOUNCE_INTERVAL_MS.toLong())
-                        if (searchQuery.length >= SEARCH_MIN_CHARS) {
-                            conversationsListViewModel.getSearchQuery(context, searchQuery)
-                        }
-                    }
-                }
-
-                MaterialTheme(colorScheme = colorScheme) {
-                    ConversationListTopBar(
-                        state = ConversationListTopBarState(
-                            mode = mode,
-                            showAvatarBadge = showAvatarBadge,
-                            avatarUrl = avatarUrl,
-                            credentials = credentials ?: "",
-                            showFilterActive = showFilterActive,
-                            showThreadsButton = showThreadsButton
-                        ),
-                        actions = ConversationListTopBarActions(
-                            onSearchQueryChange = { conversationsListViewModel.setSearchQuery(it) },
-                            onSearchActivate = {
-                                conversationsListViewModel.setIsSearchActive(true)
-                                updateAppBarElevation(elevated = true)
-                                viewThemeUtils.platform.themeStatusBar(this@ConversationsListActivity)
-                            },
-                            onSearchClose = {
-                                conversationsListViewModel.setIsSearchActive(false)
-                                updateAppBarElevation(elevated = false)
-                                viewThemeUtils.platform.resetStatusBar(this@ConversationsListActivity)
-                                lifecycleScope.launch {
-                                    conversationListLazyListState?.scrollToItem(0)
-                                }
-                            },
-                            onFilterClick = {
-                                FilterConversationFragment
-                                    .newInstance(
-                                        conversationsListViewModel.filterStateFlow.value.toMutableMap()
-                                    )
-                                    .show(supportFragmentManager, FilterConversationFragment.TAG)
-                            },
-                            onThreadsClick = { openFollowedThreadsOverview() },
-                            onAvatarClick = {
-                                if (resources.getBoolean(R.bool.multiaccount_support)) {
-                                    showChooseAccountDialog()
-                                } else {
-                                    startActivity(Intent(context, SettingsActivity::class.java))
-                                }
-                            },
-                            onNavigateBack = { onBackPressedDispatcher.onBackPressed() },
-                            onAccountChooserClick = {
-                                ChooseAccountShareToDialogFragment.newInstance()
-                                    .show(supportFragmentManager, ChooseAccountShareToDialogFragment.TAG)
-                            }
-                        )
-                    )
-                }
-            }
-        }
-    }
-
-    private fun updateAppBarElevation(elevated: Boolean) {
-        val animRes = if (elevated) R.animator.appbar_elevation_on else R.animator.appbar_elevation_off
-        binding.conversationListAppbar.stateListAnimator =
-            AnimatorInflater.loadStateListAnimator(binding.conversationListAppbar.context, animRes)
     }
 
     private fun handleConversationLongClick(model: ConversationModel) {
@@ -636,46 +431,29 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     private fun showContextChatForMessage(result: SearchMessageEntry) {
-        binding.genericComposeView.apply {
-            setContent {
-                contextChatViewModel.getContextForChatMessages(
-                    credentials = credentials!!,
-                    baseUrl = currentUser!!.baseUrl!!,
-                    token = result.conversationToken,
-                    threadId = result.threadId,
-                    messageId = result.messageId!!,
-                    title = result.title
-                )
-                com.nextcloud.talk.contextchat.ContextChatView(context, contextChatViewModel)
-            }
-        }
+        contextChatViewModel.getContextForChatMessages(
+            credentials = credentials ?: "",
+            baseUrl = currentUser?.baseUrl ?: "",
+            token = result.conversationToken,
+            threadId = result.threadId,
+            messageId = result.messageId ?: "",
+            title = result.title
+        )
     }
 
     fun filterConversation() {
-        // Delegate to ViewModel; FilterConversationFragment still calls this via cast.
-        // filterStateFlow observer in initObservers handles showNoArchivedViewState + button colour.
         conversationsListViewModel.reloadFilterFromStorage(UserIdUtils.getIdForUser(currentUser))
     }
 
     private fun showChooseAccountDialog() {
-        val brandedClient = getResources().getBoolean(R.bool.is_branded_client)
-        binding.genericComposeView.apply {
-            val shouldDismiss = mutableStateOf(false)
-            setContent {
-                ChooseAccountDialogCompose().GetChooseAccountDialog(
-                    shouldDismiss,
-                    this@ConversationsListActivity,
-                    appPreferences.isShowEcosystem && !brandedClient
-                )
-            }
-        }
+        showAccountDialogState.value = true
     }
 
     private fun hasActivityActionSendIntent(): Boolean =
         Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action
 
     fun showSnackbar(text: String) {
-        Snackbar.make(binding.root, text, Snackbar.LENGTH_LONG).show()
+        lifecycleScope.launch { snackbarHostState.showSnackbar(text) }
     }
 
     fun fetchRooms() {
@@ -688,8 +466,23 @@ class ConversationsListActivity : BaseActivity() {
         }
     }
 
-    private fun initOverallLayout(isConversationListNotEmpty: Boolean) {
-        isListEmptyState.value = !isConversationListNotEmpty
+    private fun handleHttpExceptions(throwable: Throwable) {
+        if (!networkMonitor.isOnline.value) return
+
+        if (throwable is HttpException) {
+            when (throwable.code()) {
+                HTTP_UNAUTHORIZED -> showUnauthorizedDialog()
+                HTTP_CLIENT_UPGRADE_REQUIRED -> showOutdatedClientDialog()
+                HTTP_SERVICE_UNAVAILABLE -> showServiceUnavailableDialog(throwable)
+                else -> {
+                    Log.e(TAG, "Http Exception in ConversationListActivity", throwable)
+                    showErrorDialog()
+                }
+            }
+        } else {
+            Log.e(TAG, "Exception in ConversationListActivity", throwable)
+            showErrorDialog()
+        }
     }
 
     private fun showErrorDialog() {
@@ -725,137 +518,6 @@ class ConversationsListActivity : BaseActivity() {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
             dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
         )
-    }
-
-    private fun setupStatusBanner() {
-        binding.statusBannerComposeView.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
-                val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
-                val isMaintenanceMode by isMaintenanceModeState.collectAsStateWithLifecycle()
-                MaterialTheme(colorScheme = colorScheme) {
-                    StatusBannerRow(
-                        isOffline = !isOnline,
-                        isMaintenanceMode = isMaintenanceMode
-                    )
-                }
-            }
-        }
-    }
-
-    private fun setupEmptyStateView() {
-        val showLogo = BrandingUtils.isOriginalNextcloudClient(applicationContext)
-        binding.emptyStateComposeView.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
-                val isListEmpty by isListEmptyState.collectAsStateWithLifecycle()
-                val showNoArchivedView by showNoArchivedViewState.collectAsStateWithLifecycle()
-                MaterialTheme(colorScheme = colorScheme) {
-                    ConversationsEmptyStateView(
-                        isListEmpty = isListEmpty,
-                        showNoArchivedView = showNoArchivedView,
-                        showLogo = showLogo,
-                        onCreateNewConversation = { showNewConversationsScreen() }
-                    )
-                }
-            }
-        }
-    }
-
-    private fun setupFab() {
-        binding.fabComposeView.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
-                val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
-                val isFabVisible by isFabVisibleState.collectAsStateWithLifecycle()
-                val isSearchActive by conversationsListViewModel.isSearchActiveFlow.collectAsStateWithLifecycle()
-                MaterialTheme(colorScheme = colorScheme) {
-                    ConversationListFab(
-                        isVisible = isFabVisible && !isSearchActive,
-                        isEnabled = isOnline,
-                        onClick = {
-                            run(context)
-                            showNewConversationsScreen()
-                        }
-                    )
-                }
-            }
-        }
-    }
-
-    private fun setupUnreadBubble() {
-        binding.unreadBubbleComposeView.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
-                val showBubble by showUnreadBubbleState.collectAsStateWithLifecycle()
-                val isSearchActive by conversationsListViewModel.isSearchActiveFlow.collectAsStateWithLifecycle()
-                MaterialTheme(colorScheme = colorScheme) {
-                    UnreadMentionBubble(
-                        visible = showBubble && !isSearchActive,
-                        onClick = {
-                            lifecycleScope.launch {
-                                conversationListLazyListState?.scrollToItem(
-                                    nextUnreadConversationScrollPosition,
-                                    0
-                                )
-                            }
-                            showUnreadBubbleState.value = false
-                        }
-                    )
-                }
-            }
-        }
-    }
-
-    private fun setupShimmer() {
-        binding.shimmerComposeView.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
-                val isShimmerVisible by conversationsListViewModel.isShimmerVisible.collectAsStateWithLifecycle()
-                MaterialTheme(colorScheme = colorScheme) {
-                    ConversationListSkeleton(isVisible = isShimmerVisible)
-                }
-            }
-        }
-    }
-
-    private suspend fun fetchOpenConversations(searchTerm: String) {
-        conversationsListViewModel.fetchOpenConversations(searchTerm)
-    }
-
-    private suspend fun fetchUsers(query: String = "") {
-        contactsViewModel.getBlockingContactsFromSearchParams(query)
-    }
-
-    private fun handleHttpExceptions(throwable: Throwable) {
-        if (!networkMonitor.isOnline.value) return
-
-        if (throwable is HttpException) {
-            when (throwable.code()) {
-                HTTP_UNAUTHORIZED -> showUnauthorizedDialog()
-                HTTP_CLIENT_UPGRADE_REQUIRED -> showOutdatedClientDialog()
-                HTTP_SERVICE_UNAVAILABLE -> showServiceUnavailableDialog(throwable)
-                else -> {
-                    Log.e(TAG, "Http Exception in ConversationListActivity", throwable)
-                    showErrorDialog()
-                }
-            }
-        } else {
-            Log.e(TAG, "Exception in ConversationListActivity", throwable)
-            showErrorDialog()
-        }
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun prepareViews() {
-        isMaintenanceModeState.value = false
-        // RecyclerView setup moved to setupConversationList().
-        // Only legacy view wiring that hasn't migrated to Compose yet remains here.
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -911,18 +573,6 @@ class ConversationsListActivity : BaseActivity() {
         super.onDestroy()
     }
 
-    private fun showConversationByToken(conversationToken: String) {
-        val entries = conversationsListViewModel.conversationListEntriesFlow.value
-        for (entry in entries) {
-            if (entry is com.nextcloud.talk.conversationlist.ui.ConversationListEntry.ConversationEntry &&
-                entry.model.token == conversationToken
-            ) {
-                handleConversation(entry.model)
-                return
-            }
-        }
-    }
-
     @Suppress("Detekt.ComplexMethod")
     private fun handleConversation(conversation: ConversationModel?) {
         selectedConversation = conversation
@@ -939,14 +589,14 @@ class ConversationsListActivity : BaseActivity() {
                 ) {
                     handleSharedData()
                 } else {
-                    Snackbar.make(binding.root, R.string.send_to_forbidden, Snackbar.LENGTH_LONG).show()
+                    showSnackbar(getString(R.string.send_to_forbidden))
                 }
             } else if (forwardMessage) {
                 if (hasChatPermission && !isReadOnlyConversation(selectedConversation!!)) {
                     openConversation(intent.getStringExtra(KEY_FORWARD_MSG_TEXT))
                     forwardMessageState.value = false
                 } else {
-                    Snackbar.make(binding.root, R.string.send_to_forbidden, Snackbar.LENGTH_LONG).show()
+                    showSnackbar(getString(R.string.send_to_forbidden))
                 }
             } else {
                 openConversation()
@@ -975,9 +625,7 @@ class ConversationsListActivity : BaseActivity() {
         } else if (filesToShare != null && filesToShare!!.isNotEmpty()) {
             showSendFilesConfirmDialog()
         } else {
-            Snackbar
-                .make(binding.root, context.resources.getString(R.string.nc_common_error_sorry), Snackbar.LENGTH_LONG)
-                .show()
+            showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
         }
     }
 
@@ -1044,19 +692,11 @@ class ConversationsListActivity : BaseActivity() {
                 extractFilesFromClipData()
             }
             if (filesToShare!!.isEmpty() && textToPaste!!.isEmpty()) {
-                Snackbar.make(
-                    binding.root,
-                    context.resources.getString(R.string.nc_common_error_sorry),
-                    Snackbar.LENGTH_LONG
-                ).show()
+                showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
                 Log.e(TAG, "failed to get data from intent")
             }
         } catch (e: Exception) {
-            Snackbar.make(
-                binding.root,
-                context.resources.getString(R.string.nc_common_error_sorry),
-                Snackbar.LENGTH_LONG
-            ).show()
+            showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
             Log.e(TAG, "Something went wrong when extracting data from intent")
         }
     }
@@ -1072,6 +712,7 @@ class ConversationsListActivity : BaseActivity() {
                         textToPaste = item.text.toString()
                         return
                     }
+
                     else -> Log.w(TAG, "datatype not yet implemented for share-to")
                 }
             }
@@ -1082,11 +723,7 @@ class ConversationsListActivity : BaseActivity() {
 
     private fun upload() {
         if (selectedConversation == null) {
-            Snackbar.make(
-                binding.root,
-                context.resources.getString(R.string.nc_common_error_sorry),
-                Snackbar.LENGTH_LONG
-            ).show()
+            showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
             Log.e(TAG, "not able to upload any files because conversation was null.")
             return
         }
@@ -1100,8 +737,7 @@ class ConversationsListActivity : BaseActivity() {
                 )
             }
         } catch (e: IllegalArgumentException) {
-            Snackbar.make(binding.root, context.resources.getString(R.string.nc_upload_failed), Snackbar.LENGTH_LONG)
-                .show()
+            showSnackbar(context.resources.getString(R.string.nc_upload_failed))
             Log.e(TAG, "Something went wrong when trying to upload file", e)
         }
     }
@@ -1115,11 +751,7 @@ class ConversationsListActivity : BaseActivity() {
                     Log.d(TAG, "upload starting after permissions were granted")
                     showSendFilesConfirmDialog()
                 } else {
-                    Snackbar.make(
-                        binding.root,
-                        context.getString(R.string.read_storage_no_permission),
-                        Snackbar.LENGTH_LONG
-                    ).show()
+                    showSnackbar(context.getString(R.string.read_storage_no_permission))
                 }
             }
 
@@ -1156,51 +788,6 @@ class ConversationsListActivity : BaseActivity() {
                         TAG,
                         "Notification permission is denied. Either because user denied it when being asked. " +
                             "Or permission is already denied and android decided to not offer the dialog."
-                    )
-                }
-            }
-        }
-    }
-
-    private fun setupNotificationWarning() {
-        binding.notificationWarningComposeView.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
-                val showWarning by showNotificationWarningState.collectAsStateWithLifecycle()
-                MaterialTheme(colorScheme = colorScheme) {
-                    NotificationWarningCard(
-                        visible = showWarning,
-                        onNotNow = {
-                            appPreferences.setNotificationWarningLastPostponedDate(System.currentTimeMillis())
-                            showNotificationWarningState.value = false
-                        },
-                        onShowSettings = {
-                            val bundle = Bundle()
-                            bundle.putBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY, true)
-                            val settingsIntent = Intent(context, SettingsActivity::class.java)
-                            settingsIntent.putExtras(bundle)
-                            startActivity(settingsIntent)
-                        }
-                    )
-                }
-            }
-        }
-    }
-
-    private fun setupFederationHintCard() {
-        binding.federationHintComposeView.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
-                val visible by conversationsListViewModel.federationInvitationHintVisible.collectAsStateWithLifecycle()
-                MaterialTheme(colorScheme = colorScheme) {
-                    FederationInvitationHintCard(
-                        visible = visible,
-                        onClick = {
-                            val intent = Intent(context, InvitationsActivity::class.java)
-                            startActivity(intent)
-                        }
                     )
                 }
             }
@@ -1253,11 +840,7 @@ class ConversationsListActivity : BaseActivity() {
         if (CallActivity.active &&
             selectedConversation!!.token != ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken
         ) {
-            Snackbar.make(
-                binding.root,
-                context.getString(R.string.restrict_join_other_room_while_call),
-                Snackbar.LENGTH_LONG
-            ).show()
+            showSnackbar(context.getString(R.string.restrict_join_other_room_while_call))
             return
         }
 
@@ -1536,11 +1119,8 @@ class ConversationsListActivity : BaseActivity() {
 
     companion object {
         private val TAG = ConversationsListActivity::class.java.simpleName
-        const val UNREAD_BUBBLE_DELAY = 2500
         const val BOTTOM_SHEET_DELAY: Long = 2500
-        private const val CHAT_ACTIVITY_LOCAL_NAME = "com.nextcloud.talk.chat.ChatActivity"
         const val SEARCH_DEBOUNCE_INTERVAL_MS = 300
-        const val SEARCH_MIN_CHARS = 1
         const val HTTP_UNAUTHORIZED = 401
         const val HTTP_CLIENT_UPGRADE_REQUIRED = 426
         const val CLIENT_UPGRADE_MARKET_LINK = "market://details?id="
@@ -1550,11 +1130,7 @@ class ConversationsListActivity : BaseActivity() {
         const val REQUEST_POST_NOTIFICATIONS_PERMISSION = 111
         const val DAYS_FOR_NOTIFICATION_WARNING = 5L
         const val NOTIFICATION_WARNING_DATE_NOT_SET = 0L
-        const val OFFSET_HEIGHT_DIVIDER: Int = 3
         const val ROOM_TYPE_ONE_ONE = "1"
-        private const val SIXTEEN_HOURS_IN_SECONDS: Long = 57600
-        const val LONG_1000: Long = 1000
         private const val NOTE_TO_SELF_SHORTCUT_ID = "NOTE_TO_SELF_SHORTCUT_ID"
-        private const val CONVERSATION_ITEM_HEIGHT = 44
     }
 }

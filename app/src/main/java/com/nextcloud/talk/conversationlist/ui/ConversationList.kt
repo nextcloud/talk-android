@@ -9,6 +9,7 @@ package com.nextcloud.talk.conversationlist.ui
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,6 +47,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -82,7 +84,9 @@ fun ConversationList(
     onScrollChanged: (scrolledDown: Boolean) -> Unit = {},
     /** Called when the list stops scrolling; delivers the last-visible item index. */
     onScrollStopped: (lastVisibleIndex: Int) -> Unit = {},
-    listState: LazyListState = rememberLazyListState()
+    listState: LazyListState = rememberLazyListState(),
+    /** Extra bottom padding added as LazyColumn contentPadding so the last item is reachable above the nav bar. */
+    contentBottomPadding: Dp = 0.dp
 ) {
     var prevIndex by remember { mutableIntStateOf(listState.firstVisibleItemIndex) }
     var prevOffset by remember { mutableIntStateOf(listState.firstVisibleItemScrollOffset) }
@@ -116,7 +120,8 @@ fun ConversationList(
     ) {
         LazyColumn(
             state = listState,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = contentBottomPadding)
         ) {
             items(
                 items = entries,
@@ -194,7 +199,7 @@ private fun MessageResultListItem(result: SearchMessageEntry, credentials: Strin
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(

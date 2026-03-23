@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -91,14 +92,14 @@ data class ConversationListTopBarState(
 
 @Suppress("LongParameterList")
 data class ConversationListTopBarActions(
-    val onSearchQueryChange: (String) -> Unit,
-    val onSearchActivate: () -> Unit,
-    val onSearchClose: () -> Unit,
-    val onFilterClick: () -> Unit,
-    val onThreadsClick: () -> Unit,
-    val onAvatarClick: () -> Unit,
-    val onNavigateBack: () -> Unit,
-    val onAccountChooserClick: () -> Unit
+    val onSearchQueryChange: (String) -> Unit = {},
+    val onSearchActivate: () -> Unit = {},
+    val onSearchClose: () -> Unit = {},
+    val onFilterClick: () -> Unit = {},
+    val onThreadsClick: () -> Unit = {},
+    val onAvatarClick: () -> Unit = {},
+    val onNavigateBack: () -> Unit = {},
+    val onAccountChooserClick: () -> Unit = {}
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -117,18 +118,11 @@ fun ConversationListTopBar(
         }
     }
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth().statusBarsPadding()) {
         when (val mode = state.mode) {
             is TopBarMode.SearchBarIdle -> TopBarIdleContent(
-                onSearchActivate = actions.onSearchActivate,
-                onFilterClick = actions.onFilterClick,
-                onThreadsClick = actions.onThreadsClick,
-                onAvatarClick = actions.onAvatarClick,
-                showAvatarBadge = state.showAvatarBadge,
-                avatarUrl = state.avatarUrl,
-                credentials = state.credentials,
-                showFilterActive = state.showFilterActive,
-                showThreadsButton = state.showThreadsButton
+                state = state,
+                actions = actions
             )
             is TopBarMode.SearchActive -> TopBarSearchActiveContent(
                 query = mode.query,
@@ -148,91 +142,106 @@ fun ConversationListTopBar(
     }
 }
 
-@Suppress("LongParameterList")
 @Composable
-private fun TopBarIdleContent(
-    onSearchActivate: () -> Unit,
-    onFilterClick: () -> Unit,
-    onThreadsClick: () -> Unit,
-    onAvatarClick: () -> Unit,
-    showAvatarBadge: Boolean,
-    avatarUrl: String?,
-    credentials: String,
-    showFilterActive: Boolean,
-    showThreadsButton: Boolean
-) {
+private fun TopBarIdleContent(state: ConversationListTopBarState, actions: ConversationListTopBarActions) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 4.dp, top = 4.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Card(
+        IdleSearchBarCard(
+            state = state,
+            actions = actions,
             modifier = Modifier
                 .weight(1f)
-                .height(50.dp),
-            shape = RoundedCornerShape(25.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-        ) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Text(
-                    text = stringResource(R.string.appbar_search_in, stringResource(R.string.nc_app_product_name)),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterStart)
-                        .padding(start = 16.dp, end = if (showThreadsButton) 80.dp else 48.dp)
-                        .clickable { onSearchActivate() },
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Row(
-                    modifier = Modifier.align(Alignment.CenterEnd),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(
-                        onClick = onFilterClick,
-                        modifier = Modifier.size(48.dp)
-                    ) {
-                        Box(
-                            Modifier.fillMaxSize(),
-                            contentAlignment = if (showThreadsButton) Alignment.CenterEnd else Alignment.Center
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_baseline_filter_list_24),
-                                contentDescription = stringResource(R.string.nc_filter),
-                                tint = if (showFilterActive) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                                }
-                            )
-                        }
-                    }
-                    if (showThreadsButton) {
-                        IconButton(
-                            onClick = onThreadsClick,
-                            modifier = Modifier.size(48.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.outline_forum_24),
-                                contentDescription = stringResource(R.string.threads),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
-            }
-        }
+                .height(50.dp)
+        )
         Spacer(modifier = Modifier.width(8.dp))
         AvatarButton(
-            avatarUrl = avatarUrl,
-            credentials = credentials,
-            showBadge = showAvatarBadge,
-            onClick = onAvatarClick
+            avatarUrl = state.avatarUrl,
+            credentials = state.credentials,
+            showBadge = state.showAvatarBadge,
+            onClick = actions.onAvatarClick
         )
+    }
+}
+
+@Composable
+private fun IdleSearchBarCard(
+    state: ConversationListTopBarState,
+    actions: ConversationListTopBarActions,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(25.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Text(
+                text = stringResource(R.string.appbar_search_in, stringResource(R.string.nc_app_product_name)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterStart)
+                    .padding(start = 16.dp, end = if (state.showThreadsButton) 80.dp else 48.dp)
+                    .clickable { actions.onSearchActivate() },
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            IdleSearchBarActions(
+                state = state,
+                actions = actions,
+                modifier = Modifier.align(Alignment.CenterEnd)
+            )
+        }
+    }
+}
+
+@Composable
+private fun IdleSearchBarActions(
+    state: ConversationListTopBarState,
+    actions: ConversationListTopBarActions,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(
+            onClick = actions.onFilterClick,
+            modifier = Modifier.size(48.dp)
+        ) {
+            Box(
+                Modifier.fillMaxSize(),
+                contentAlignment = if (state.showThreadsButton) Alignment.CenterEnd else Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_baseline_filter_list_24),
+                    contentDescription = stringResource(R.string.nc_filter),
+                    tint = if (state.showFilterActive) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    }
+                )
+            }
+        }
+        if (state.showThreadsButton) {
+            IconButton(
+                onClick = actions.onThreadsClick,
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.outline_forum_24),
+                    contentDescription = stringResource(R.string.threads),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
     }
 }
 
@@ -366,7 +375,8 @@ private fun TopBarTitleContent(
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface
-        )
+        ),
+        windowInsets = WindowInsets(0)
     )
 }
 
