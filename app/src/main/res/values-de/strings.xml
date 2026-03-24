@@ -103,7 +103,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Größste zuerst</string>
     <string name="menu_item_sort_by_size_smallest_first">Kleinste zuerst</string>
     <string name="message_copied">Nachricht kopiert</string>
-    <string name="message_delete_are_you_sure">Möchten Sie diese Nachricht löschen?</string>
+    <string name="message_delete_are_you_sure">Soll diese Nachricht gelöscht werden?</string>
     <string name="message_deleted_by_you">Nachricht von Ihnen gelöscht</string>
     <string name="message_last_edited_by">Bearbeitet von %1$s</string>
     <string name="message_poll_tap_to_open">Tippen, um die Umfrage zu öffnen</string>
@@ -163,7 +163,7 @@
     <string name="nc_clear_edit_message">Bearbeitung abbrechen</string>
     <string name="nc_clear_history">Alle Nachrichten löschen</string>
     <string name="nc_clear_history_success">Alle Nachrichten wurden gelöscht</string>
-    <string name="nc_clear_history_warning">Möchten Sie alle Nachrichten dieser Unterhaltung löschen?</string>
+    <string name="nc_clear_history_warning">Sollen alle Nachrichten dieser Unterhaltung gelöscht werden?</string>
     <string name="nc_client_cert_change">Client-Zertifikat ändern</string>
     <string name="nc_client_cert_setup">Client-Zertifikat einrichten</string>
     <string name="nc_common_and">und</string>
