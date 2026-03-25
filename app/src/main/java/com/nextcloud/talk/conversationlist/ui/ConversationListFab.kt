@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
@@ -80,10 +81,11 @@ fun UnreadMentionBubble(visible: Boolean, onClick: () -> Unit, modifier: Modifie
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onPrimary
             )
-            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.standard_padding)))
+            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.standard_half_padding)))
             Text(
                 text = stringResource(R.string.nc_new_mention),
-                color = MaterialTheme.colorScheme.onPrimary
+                color = MaterialTheme.colorScheme.onPrimary,
+                textAlign = TextAlign.Center
             )
         }
     }
