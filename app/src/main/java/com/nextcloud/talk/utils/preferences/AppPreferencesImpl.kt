@@ -422,6 +422,18 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return Pair(position, offset)
     }
 
+    override fun setConversationListLastUserId(userId: Long) =
+        runBlocking<Unit> {
+            async {
+                writeLong(CONVERSATION_LIST_LAST_USER_ID, userId)
+            }
+        }
+
+    override fun getConversationListLastUserId(): Long =
+        runBlocking {
+            async { readLong(CONVERSATION_LIST_LAST_USER_ID, defaultValue = 0L).first() }
+        }.getCompleted()
+
     override fun setPhoneBookIntegrationLastRun(currentTimeMillis: Long) =
         runBlocking<Unit> {
             async {
@@ -637,6 +649,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val SHOW_REGULAR_NOTIFICATION_WARNING = "show_regular_notification_warning"
         const val LAST_NOTIFICATION_WARNING = "last_notification_warning"
         const val CONVERSATION_LIST_POSITION_OFFSET = "CONVERSATION_LIST_POSITION_OFFSET"
+        const val CONVERSATION_LIST_LAST_USER_ID = "CONVERSATION_LIST_LAST_USER_ID"
         private fun String.convertStringToArray(): Array<Float> {
             var varString = this
             val floatList = mutableListOf<Float>()

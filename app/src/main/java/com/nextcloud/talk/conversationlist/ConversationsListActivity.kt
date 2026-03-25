@@ -225,6 +225,7 @@ class ConversationsListActivity : BaseActivity() {
             onRefresh = {
                 isMaintenanceModeState.value = false
                 isRefreshingState.value = true
+                appPreferences.setConversationListPositionAndOffset(0, 0)
                 fetchRooms()
                 fetchPendingInvitations()
             },
@@ -304,6 +305,10 @@ class ConversationsListActivity : BaseActivity() {
             }
             credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
 
+            if (currentUser!!.id != appPreferences.getConversationListLastUserId()) {
+                appPreferences.setConversationListPositionAndOffset(0, 0)
+            }
+
             hasMultipleAccountsState.value = userManager.users.blockingGet().size > 1
             conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
             fetchRooms()
@@ -323,6 +328,7 @@ class ConversationsListActivity : BaseActivity() {
             val firstOffset = state.layoutInfo.visibleItemsInfo.firstOrNull()?.offset ?: 0
             appPreferences.setConversationListPositionAndOffset(state.firstVisibleItemIndex, firstOffset)
         }
+        appPreferences.setConversationListLastUserId(currentUser?.id ?: -1L)
     }
 
     @Suppress("LongMethod", "CyclomaticComplexMethod")
