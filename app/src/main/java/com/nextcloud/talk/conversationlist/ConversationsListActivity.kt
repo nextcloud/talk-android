@@ -142,6 +142,9 @@ class ConversationsListActivity : BaseActivity() {
     // Lazy list state – set from inside setContent, read from onPause
     private var conversationListLazyListState: androidx.compose.foundation.lazy.LazyListState? = null
 
+    // Ensures saved scroll position is restored only once per resume cycle, not on every room-list refresh.
+    private var scrollPositionRestored = false
+
     private var nextUnreadConversationScrollPosition = 0
     private var credentials: String? = null
     private val showShareToScreenState = MutableStateFlow(false)
@@ -298,6 +301,7 @@ class ConversationsListActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        scrollPositionRestored = false
 
         showNotificationWarningState.value = shouldShowNotificationWarning()
         showShareToScreenState.value = hasActivityActionSendIntent()
@@ -364,9 +368,12 @@ class ConversationsListActivity : BaseActivity() {
                     val isNoteToSelfAvailable = noteToSelf != null
                     handleNoteToSelfShortcut(isNoteToSelfAvailable, noteToSelf?.token ?: "")
 
-                    val pair = appPreferences.conversationListPositionAndOffset
-                    lifecycleScope.launch {
-                        conversationListLazyListState?.scrollToItem(pair.first, pair.second)
+                    if (!scrollPositionRestored) {
+                        scrollPositionRestored = true
+                        val pair = appPreferences.conversationListPositionAndOffset
+                        lifecycleScope.launch {
+                            conversationListLazyListState?.scrollToItem(pair.first, pair.second)
+                        }
                     }
                 }.collect()
         }
