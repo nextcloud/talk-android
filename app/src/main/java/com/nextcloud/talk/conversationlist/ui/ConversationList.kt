@@ -33,6 +33,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import kotlinx.coroutines.flow.first
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -111,6 +112,19 @@ fun ConversationList(
                     onScrollStopped(lastVisible)
                 }
             }
+    }
+
+    // Unread-bubble: also trigger the check after entries are first loaded (or updated)
+    LaunchedEffect(entries) {
+        if (entries.isEmpty()) {
+            onScrollStopped(0)
+            return@LaunchedEffect
+        }
+        // Wait until the LazyColumn has measured visible items so the last-visible index is accurate.
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo }
+            .first { it.isNotEmpty() }
+        val lastVisible = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+        onScrollStopped(lastVisible)
     }
 
     PullToRefreshBox(
