@@ -186,7 +186,7 @@ class ConversationsListViewModel @Inject constructor(
         hideRoomToken
     ) { rooms, filterState, isSearchActive, searchResults, hideToken ->
         buildConversationListEntries(rooms, filterState, isSearchActive, searchResults, hideToken)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(WHILE_SUBSCRIBED_TIMEOUT_MS), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     /** Update filter state; triggers [conversationListEntriesFlow] re-emit. */
     fun applyFilter(newFilterState: Map<String, Boolean>) {
@@ -576,6 +576,5 @@ class ConversationsListViewModel @Inject constructor(
         const val FOLLOWED_THREADS_EXIST = "FOLLOWED_THREADS_EXIST"
         private const val SIXTEEN_HOURS_IN_SECONDS: Long = 57600
         private const val LONG_1000: Long = 1000
-        private const val WHILE_SUBSCRIBED_TIMEOUT_MS: Long = 5_000
     }
 }

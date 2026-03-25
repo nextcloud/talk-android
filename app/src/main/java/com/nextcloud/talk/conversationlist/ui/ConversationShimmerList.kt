@@ -8,13 +8,13 @@
 package com.nextcloud.talk.conversationlist.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,7 +58,7 @@ fun ConversationListSkeleton(isVisible: Boolean, itemCount: Int = SHIMMER_ITEM_C
     AnimatedVisibility(
         visible = isVisible,
         enter = fadeIn(),
-        exit = fadeOut()
+        exit = ExitTransition.None
     ) {
         val infiniteTransition = rememberInfiniteTransition(label = "shimmer")
         val shimmerAlpha by infiniteTransition.animateFloat(
