@@ -235,7 +235,15 @@ class ConversationsListActivity : BaseActivity() {
             },
             onUnreadBubbleClick = {
                 lifecycleScope.launch {
-                    conversationListLazyListState?.scrollToItem(nextUnreadConversationScrollPosition, 0)
+                    val listState = conversationListLazyListState ?: return@launch
+                    val viewportHeight = listState.layoutInfo.viewportEndOffset
+                    val avgItemHeight = listState.layoutInfo.visibleItemsInfo
+                        .map { it.size }
+                        .average()
+                        .takeIf { it.isFinite() }
+                        ?.toInt() ?: 0
+                    val scrollOffset = -(viewportHeight / 2) + (avgItemHeight / 2)
+                    listState.scrollToItem(nextUnreadConversationScrollPosition, scrollOffset)
                 }
                 showUnreadBubbleState.value = false
             },
