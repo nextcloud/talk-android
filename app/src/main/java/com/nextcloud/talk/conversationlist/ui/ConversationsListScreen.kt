@@ -34,7 +34,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -162,27 +161,8 @@ fun ConversationsListScreen(
 
     // Derived state
     val isArchivedFilterActive = filterState[ARCHIVE] == true
-    val hasConversationEntries = entries.any { it is ConversationListEntry.ConversationEntry }
 
-    // Tracks whether the initial shimmer→list transition has completed at least once.
-    // Once true it stays true for the lifetime of this composition, which prevents a filter
-    // that returns no results from re-showing the shimmer after the list was already loaded.
-    val initialLoadComplete = remember { mutableStateOf(false) }
-    SideEffect {
-        if (!initialLoadComplete.value && !isShimmerVisible && hasConversationEntries) {
-            initialLoadComplete.value = true
-        }
-    }
-
-    // Keep the shimmer visible until actual conversation entries are ready to render.
-    // Without this guard there is a brief window — between isShimmerVisible becoming false
-    // and the LazyColumn emitting its first items — where the screen would be blank.
-    // After the initial load has completed we simply mirror the ViewModel flag so that
-    // filter/search changes can never accidentally re-show the shimmer.
-    val effectiveShimmerVisible = when {
-        initialLoadComplete.value -> isShimmerVisible
-        else -> isShimmerVisible || (rooms.isNotEmpty() && !hasConversationEntries)
-    }
+    val effectiveShimmerVisible = isShimmerVisible
 
     val isRoomsEmpty = rooms.isEmpty() && !effectiveShimmerVisible
     val showSearchNoResults = isSearchActive && entries.isEmpty() && searchQuery.isNotEmpty() && !isSearchLoading
