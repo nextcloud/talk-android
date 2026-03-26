@@ -189,6 +189,7 @@
     <string name="nc_mark_as_read">Žymėti kaip skaitytą</string>
     <string name="nc_mark_as_unread">Žymėti kaip neskaitytą</string>
     <string name="nc_message_failed">Nepavyko</string>
+    <string name="nc_message_offline">Neprisijungęs</string>
     <string name="nc_message_sent">Žinutė išsiųsta</string>
     <string name="nc_moderator">Moderatorius</string>
     <string name="nc_new_conversation">Naujas pokalbis</string>
@@ -308,6 +309,7 @@
     <string name="nc_shared_items_description">Paveikslai, failai, balso žinutės…</string>
     <string name="nc_shared_items_empty">Nėra bendrinamų elementų</string>
     <string name="nc_shared_items_location">Vieta</string>
+    <string name="nc_show_ecosystem_title">Rodyti programėllių perjungiklį</string>
     <string name="nc_sort_by">Rikiuoti pagal</string>
     <string name="nc_start_time">Pradžios laikas</string>
     <string name="nc_switch_account">Perjungti paskyrą</string>
