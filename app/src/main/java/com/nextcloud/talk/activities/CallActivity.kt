@@ -104,6 +104,7 @@ import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOveral
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel.LoweredHandState
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel.RaisedHandState
+import com.nextcloud.talk.receivers.EndCallReceiver.Companion.END_CALL_FROM_NOTIFICATION
 import com.nextcloud.talk.services.CallForegroundService
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageReceiver.CallParticipantMessageListener
@@ -426,8 +427,8 @@ class CallActivity : CallBaseActivity() {
         sharedApplication!!.componentApplication.inject(this)
 
         // Register broadcast receiver for ending call from notification
-        val endCallFilter = IntentFilter("com.nextcloud.talk.END_CALL_FROM_NOTIFICATION")
-
+        val endCallFilter = IntentFilter(END_CALL_FROM_NOTIFICATION)
+        
         // Use the proper utility function with ReceiverFlag for Android 14+ compatibility
         // This receiver is for internal app use only (notification actions), so it should NOT be exported
         registerPermissionHandlerBroadcastReceiver(
@@ -1151,7 +1152,7 @@ class CallActivity : CallBaseActivity() {
                     Snackbar.make(
                         binding!!.root,
                         resources.getString(R.string.nc_notification_permission_hint),
-                        10000
+                        SEC_10
                     ).show()
                 }
             } else {
@@ -3377,11 +3378,8 @@ class CallActivity : CallBaseActivity() {
     // Broadcast receiver to handle end call from notification
     private val endCallFromNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == "com.nextcloud.talk.END_CALL_FROM_NOTIFICATION") {
-                Log.d(TAG, "Received end call from notification broadcast")
-                Log.d(TAG, "endCallFromNotificationReceiver: Setting isIntentionallyLeavingCall=true")
+            if (intent.action == END_CALL_FROM_NOTIFICATION) {
                 isIntentionallyLeavingCall = true
-                Log.d(TAG, "endCallFromNotificationReceiver: Releasing proximity sensor before hangup")
                 powerManagerUtils?.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
                 hangup(shutDownView = true, endCallForAll = false)
             }
@@ -3437,6 +3435,7 @@ class CallActivity : CallBaseActivity() {
 
         private const val CALLING_TIMEOUT: Long = 45000
         private const val PULSE_ANIMATION_DURATION: Int = 310
+        private const val SEC_10 = 10000
 
         internal fun isPushToTalkRelease(action: Int): Boolean =
             action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL
