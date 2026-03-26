@@ -331,7 +331,7 @@ class CallActivity : CallBaseActivity() {
             if (java.lang.Boolean.TRUE == audioPermission) {
                 Log.d(TAG, "Microphone permission was granted")
             } else {
-                Log.d(TAG, "Microphone permission was denied")
+                Log.d(TAG, "Microphone permission is not yet granted. Request will be made for permission.")
                 rationaleList.add(resources.getString(R.string.nc_microphone_permission_hint))
             }
         }
