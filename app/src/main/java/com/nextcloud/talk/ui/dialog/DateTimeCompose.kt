@@ -308,73 +308,54 @@ class DateTimeCompose(val bundle: Bundle) {
     @SuppressLint("UnusedBoxWithConstraintsScope")
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
+    private fun ExpandedDateTimePickers() {
+        val todayMillis = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val currentYear = LocalDate.now().year
+        val selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean = utcTimeMillis >= todayMillis
+            override fun isSelectableYear(year: Int): Boolean = year >= currentYear
+        }
+        val datePickerState = rememberDatePickerState(selectableDates = selectableDates)
+        val now = LocalDateTime.now()
+        val timePickerState = rememberTimePickerState(
+            initialHour = now.hour,
+            initialMinute = now.minute,
+            is24Hour = DateFormat.is24HourFormat(LocalContext.current)
+        )
+        BoxWithConstraints(modifier = Modifier.requiredSizeIn(minWidth = 360.dp)) {
+            val scale = remember(maxWidth) { if (maxWidth < 360.dp) maxWidth / 360.dp else 1f }
+            DatePicker(
+                state = datePickerState,
+                modifier = Modifier.scale(scale),
+                colors = DatePickerDefaults.colors(containerColor = colorResource(R.color.bg_default))
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        TimePicker(state = timePickerState)
+        val date = datePickerState.selectedDateMillis?.let {
+            LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneOffset.UTC) // Google sends time in UTC
+        }
+        val newTime = if (date != null) {
+            LocalDateTime.of(date.year, date.month, date.dayOfMonth, timePickerState.hour, timePickerState.minute)
+        } else {
+            LocalDate.now().atTime(timePickerState.hour, timePickerState.minute)
+        }
+        setTime(newTime)
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
     private fun CollapsableDateTime(shouldDismiss: MutableState<Boolean>, isCollapsed: MutableState<Boolean>) {
         GeneralIconButton(
             icon = ImageVector.vectorResource(R.drawable.ic_date_range_24px),
             label = stringResource(R.string.custom)
         ) { isCollapsed.value = !isCollapsed.value }
-        val scrollState = rememberScrollState()
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.verticalScroll(scrollState)
+            modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
             if (!isCollapsed.value) {
-                val todayMillis = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-                val currentYear = LocalDate.now().year
-                val selectableDates = object : SelectableDates {
-                    override fun isSelectableDate(utcTimeMillis: Long): Boolean = utcTimeMillis >= todayMillis
-
-                    override fun isSelectableYear(year: Int): Boolean = year >= currentYear
-                }
-
-                val datePickerState = rememberDatePickerState(
-                    selectableDates = selectableDates
-                )
-                val now = LocalDateTime.now()
-                val timePickerState = rememberTimePickerState(
-                    initialHour = now.hour,
-                    initialMinute = now.minute,
-                    is24Hour = DateFormat.is24HourFormat(LocalContext.current)
-                )
-
-                BoxWithConstraints(
-                    modifier = Modifier
-                        .requiredSizeIn(minWidth = 360.dp)
-                ) {
-                    val scale = remember(maxWidth) { if (maxWidth < 360.dp) maxWidth / 360.dp else 1f }
-
-                    DatePicker(
-                        state = datePickerState,
-                        modifier = Modifier
-                            .scale(scale),
-                        colors = DatePickerDefaults.colors(
-                            containerColor = colorResource(R.color.bg_default)
-                        )
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                TimePicker(
-                    state = timePickerState
-                )
-
-                val date = datePickerState.selectedDateMillis?.let {
-                    val instant = Instant.ofEpochMilli(it)
-                    LocalDateTime.ofInstant(instant, ZoneOffset.UTC) // Google sends time in UTC
-                }
-                if (date != null) {
-                    val year = date.year
-                    val month = date.month
-                    val day = date.dayOfMonth
-                    val hour = timePickerState.hour
-                    val minute = timePickerState.minute
-                    val newTime = LocalDateTime.of(year, month, day, hour, minute)
-                    setTime(newTime)
-                } else {
-                    val newTime = LocalDate.now().atTime(timePickerState.hour, timePickerState.minute)
-                    setTime(newTime)
-                }
+                ExpandedDateTimePickers()
             }
             Submission(shouldDismiss)
         }
@@ -429,6 +410,7 @@ private fun TimeOption(label: String, timeString: String, onClick: () -> Unit) {
 }
 
 @Preview(name = "Light Mode")
+@Preview(name = "Dark Mode", uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun GeneralIconButtonPreview(label: String = "Custom") {
     val context = LocalContext.current
@@ -443,15 +425,6 @@ fun GeneralIconButtonPreview(label: String = "Custom") {
     }
 }
 
-@Preview(
-    name = "Dark Mode",
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun GeneralIconButtonDarkPreview() {
-    GeneralIconButtonPreview()
-}
-
 @Preview(name = "RTL / Arabic", locale = "ar")
 @Composable
 fun GeneralIconButtonRtlPreview() {
@@ -459,6 +432,8 @@ fun GeneralIconButtonRtlPreview() {
 }
 
 @Preview(name = "Light Mode")
+@Preview(name = "Dark Mode", uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "RTL / Arabic", locale = "ar")
 @Composable
 fun TimeOptionPreview() {
     val context = LocalContext.current
@@ -475,17 +450,75 @@ fun TimeOptionPreview() {
     }
 }
 
-@Preview(
-    name = "Dark Mode",
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun TimeOptionDarkPreview() {
-    TimeOptionPreview()
-}
-
+@SuppressLint("UnusedBoxWithConstraintsScope")
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(name = "Light Mode")
+@Preview(name = "Dark Mode", uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "RTL / Arabic", locale = "ar")
 @Composable
-fun TimeOptionRtlPreview() {
-    TimeOptionPreview()
+fun ExpandedDateTimePickersPreview() {
+    val context = LocalContext.current
+    val colorScheme = ComposePreviewUtils.getInstance(context).viewThemeUtils.getColorScheme(context)
+    val todayMillis = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    val currentYear = LocalDate.now().year
+    val selectableDates = object : SelectableDates {
+        override fun isSelectableDate(utcTimeMillis: Long): Boolean = utcTimeMillis >= todayMillis
+        override fun isSelectableYear(year: Int): Boolean = year >= currentYear
+    }
+    val datePickerState = rememberDatePickerState(selectableDates = selectableDates)
+    val now = LocalDateTime.now()
+    val timePickerState = rememberTimePickerState(
+        initialHour = now.hour,
+        initialMinute = now.minute,
+        is24Hour = DateFormat.is24HourFormat(context)
+    )
+    MaterialTheme(colorScheme = colorScheme) {
+        Surface {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
+                BoxWithConstraints(modifier = Modifier.requiredSizeIn(minWidth = 360.dp)) {
+                    val scale = remember(maxWidth) { if (maxWidth < 360.dp) maxWidth / 360.dp else 1f }
+                    DatePicker(
+                        state = datePickerState,
+                        modifier = Modifier.scale(scale),
+                        colors = DatePickerDefaults.colors(containerColor = colorResource(R.color.bg_default))
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                TimePicker(state = timePickerState)
+            }
+        }
+    }
+}
+
+@Preview(name = "Light Mode")
+@Preview(name = "Dark Mode", uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "RTL / Arabic", locale = "ar")
+@Composable
+fun CollapsableDateTimePreview() {
+    val context = LocalContext.current
+    val colorScheme = ComposePreviewUtils.getInstance(context).viewThemeUtils.getColorScheme(context)
+    MaterialTheme(colorScheme = colorScheme) {
+        Surface {
+            Column(modifier = Modifier.padding(16.dp)) {
+                GeneralIconButton(
+                    icon = ImageVector.vectorResource(R.drawable.ic_date_range_24px),
+                    label = stringResource(R.string.custom)
+                ) {}
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    TextButton(onClick = {}, modifier = Modifier.weight(HALF_WEIGHT)) {
+                        Text(stringResource(R.string.nc_delete), color = Color.Red)
+                    }
+                    TextButton(onClick = {}, modifier = Modifier.weight(HALF_WEIGHT)) {
+                        Text(stringResource(R.string.close))
+                    }
+                    TextButton(onClick = {}, modifier = Modifier.weight(HALF_WEIGHT)) {
+                        Text(stringResource(R.string.set))
+                    }
+                }
+            }
+        }
+    }
 }
