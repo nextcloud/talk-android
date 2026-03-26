@@ -70,10 +70,6 @@ class CallForegroundService : Service() {
         // Create action to end call
         val endCallPendingIntent = createEndCallIntent(callExtras)
         
-        // DIAGNOSTIC: Logging icon resource availability
-        Log.d("CallForegroundService", "Creating end call action - checking icon resources")
-        Log.d("CallForegroundService", "Using ic_baseline_close_24 instead of non-existent ic_close_white_24px")
-        
         val endCallAction = NotificationCompat.Action.Builder(
             R.drawable.ic_baseline_close_24,  // DIAGNOSTIC: Fixed - using existing icon
             getString(R.string.nc_call_ongoing_notification_end_action),
