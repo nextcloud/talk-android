@@ -1,11 +1,11 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2024 Sowjanya Kota <sowjanya.kch@gmail.com>
+ * SPDX-FileCopyrightText: 2024-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-package com.nextcloud.talk.conversationcreation
+package com.nextcloud.talk.conversationcreation.viewmodel
 
 import android.net.Uri
 import android.util.Log
@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.net.toFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.conversationcreation.data.ConversationCreationRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser

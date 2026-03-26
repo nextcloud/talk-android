@@ -1,8 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2024 Sowjanya Kota <sowjanya.kch@gmail.com>
- * SPDX-FileCopyrightText: 2025 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2024-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -91,6 +90,7 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.loadImage
+import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationViewModel
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.utils.CapabilitiesUtil
@@ -379,8 +379,9 @@ fun AddParticipants(
     ) {
         Row {
             Text(
-                text = stringResource(id = R.string.nc_participants).uppercase(),
-                fontSize = 14.sp,
+                text = stringResource(id = R.string.nc_participants),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(start = 0.dp, bottom = 16.dp)
             )
             Spacer(modifier = Modifier.weight(1f))
@@ -463,8 +464,9 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
     val isPasswordSet = conversationCreationViewModel.isPasswordEnabled.value
 
     Text(
-        text = stringResource(id = R.string.nc_new_conversation_visibility).uppercase(),
-        fontSize = 14.sp,
+        text = stringResource(id = R.string.nc_new_conversation_visibility),
+        style = MaterialTheme.typography.titleSmall,
+        color = MaterialTheme.colorScheme.primary,
         modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp)
     )
     ConversationOptions(
@@ -690,6 +692,7 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
                     if (password.isNotEmpty() && password.isNotBlank()) {
                         conversationCreationViewModel.updatePassword(password)
                         conversationCreationViewModel.isPasswordEnabled(true)
+                        onDismiss()
                     }
                 }
             ) {
@@ -742,6 +745,8 @@ class CompanionClass {
 }
 
 @Preview(name = "Light Mode")
+@Preview(name = "Dark Mode", uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "RTL / Arabic", locale = "ar")
 @Composable
 fun ConversationCreationScreenPreview() {
     val context = LocalContext.current
@@ -753,19 +758,4 @@ fun ConversationCreationScreenPreview() {
             context = context
         )
     }
-}
-
-@Preview(
-    name = "Dark Mode",
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun ConversationCreationScreenDarkPreview() {
-    ConversationCreationScreenPreview()
-}
-
-@Preview(name = "RTL / Arabic", locale = "ar")
-@Composable
-fun ConversationCreationScreenRtlPreview() {
-    ConversationCreationScreenPreview()
 }

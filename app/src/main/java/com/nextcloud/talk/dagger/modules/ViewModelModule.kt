@@ -16,7 +16,7 @@ import com.nextcloud.talk.chat.viewmodels.ScheduledMessagesViewModel
 import com.nextcloud.talk.chooseaccount.StatusViewModel
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contextchat.ContextChatViewModel
-import com.nextcloud.talk.conversationcreation.ConversationCreationViewModel
+import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationViewModel
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
