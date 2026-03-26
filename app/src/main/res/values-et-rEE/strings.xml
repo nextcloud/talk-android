@@ -262,6 +262,7 @@
     <string name="nc_dialog_save_to_storage_yes">Ja</string>
     <string name="nc_display_name_not_fetched">Kuvatavat nime ei õnnestunud laadida, katkestan</string>
     <string name="nc_display_name_not_stored">Kuvatavat nime ei õnnestunud salvestade, katkestan</string>
+    <string name="nc_draft_prefix">Kavand: %1$s</string>
     <string name="nc_edit_icon">Muuda</string>
     <string name="nc_edit_message">Redigeeri</string>
     <string name="nc_edit_message_text">Muuda sõnumit</string>
@@ -450,7 +451,7 @@
     <string name="nc_send_now">Saada kohe</string>
     <string name="nc_send_voice_recording">Saada helisalvestis</string>
     <string name="nc_sensitive_conversation">Vestlus tundlikul teemal</string>
-    <string name="nc_sensitive_conversation_hint">Sõnumite eelvaated saava vestluste loendis ja teavitustes olema peidetud</string>
+    <string name="nc_sensitive_conversation_hint">Sõnumite eelvaated saavad vestluste loendis ja teavitustes olema peidetud</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s saatis gif-faili.</string>
     <string name="nc_sent_a_gif_you">Sina saatsid gif-faili.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s saatis video.</string>
