@@ -98,6 +98,7 @@ import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOveral
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel.LoweredHandState
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel.RaisedHandState
+import com.nextcloud.talk.receivers.EndCallReceiver.Companion.END_CALL_FROM_NOTIFICATION
 import com.nextcloud.talk.services.CallForegroundService
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageReceiver.CallParticipantMessageListener
@@ -190,7 +191,6 @@ import java.util.Objects
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
-import kotlin.String
 import kotlin.math.abs
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -415,7 +415,7 @@ class CallActivity : CallBaseActivity() {
         sharedApplication!!.componentApplication.inject(this)
         
         // Register broadcast receiver for ending call from notification
-        val endCallFilter = IntentFilter("com.nextcloud.talk.END_CALL_FROM_NOTIFICATION")
+        val endCallFilter = IntentFilter(END_CALL_FROM_NOTIFICATION)
         
         // Use the proper utility function with ReceiverFlag for Android 14+ compatibility
         // This receiver is for internal app use only (notification actions), so it should NOT be exported
@@ -1118,7 +1118,7 @@ class CallActivity : CallBaseActivity() {
                     Snackbar.make(
                         binding!!.root,
                         resources.getString(R.string.nc_notification_permission_hint),
-                        10000
+                        SEC_10
                     ).show()
                 }
             } else {
@@ -3245,11 +3245,8 @@ class CallActivity : CallBaseActivity() {
     // Broadcast receiver to handle end call from notification
     private val endCallFromNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == "com.nextcloud.talk.END_CALL_FROM_NOTIFICATION") {
-                Log.d(TAG, "Received end call from notification broadcast")
-                Log.d(TAG, "endCallFromNotificationReceiver: Setting isIntentionallyLeavingCall=true")
+            if (intent.action == END_CALL_FROM_NOTIFICATION) {
                 isIntentionallyLeavingCall = true
-                Log.d(TAG, "endCallFromNotificationReceiver: Releasing proximity sensor before hangup")
                 powerManagerUtils?.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
                 hangup(shutDownView = true, endCallForAll = false)
             }
@@ -3307,6 +3304,7 @@ class CallActivity : CallBaseActivity() {
         private const val INTRO_ANIMATION_DURATION: Long = 300
         private const val FADE_IN_ANIMATION_DURATION: Long = 400
         private const val PULSE_ANIMATION_DURATION: Int = 310
+        private const val SEC_10 = 10000
 
         private const val SPOTLIGHT_HEADING_SIZE: Int = 20
         private const val SPOTLIGHT_SUBHEADING_SIZE: Int = 16
@@ -3314,19 +3312,5 @@ class CallActivity : CallBaseActivity() {
         private const val DELAY_ON_ERROR_STOP_THRESHOLD: Int = 16
 
         private const val SESSION_ID_PREFFIX_END: Int = 4
-    }
-    
-    // Broadcast receiver to handle end call from notification
-    private val endCallFromNotificationReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == "com.nextcloud.talk.END_CALL_FROM_NOTIFICATION") {
-                Log.d(TAG, "Received end call from notification broadcast")
-                Log.d(TAG, "endCallFromNotificationReceiver: Setting isIntentionallyLeavingCall=true")
-                isIntentionallyLeavingCall = true
-                Log.d(TAG, "endCallFromNotificationReceiver: Releasing proximity sensor before hangup")
-                powerManagerUtils?.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
-                hangup(shutDownView = true, endCallForAll = false)
-            }
-        }
     }
 }

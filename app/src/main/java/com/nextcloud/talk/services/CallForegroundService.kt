@@ -23,6 +23,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.receivers.EndCallReceiver
+import com.nextcloud.talk.receivers.EndCallReceiver.Companion.END_CALL_ACTION
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO
@@ -71,10 +72,10 @@ class CallForegroundService : Service() {
         val endCallPendingIntent = createEndCallIntent(callExtras)
         
         val endCallAction = NotificationCompat.Action.Builder(
-            R.drawable.ic_baseline_close_24,  // DIAGNOSTIC: Fixed - using existing icon
+            R.drawable.ic_baseline_close_24,
             getString(R.string.nc_call_ongoing_notification_end_action),
             endCallPendingIntent
-        ).build()  // Already has parentheses, good!
+        ).build()
 
         return NotificationCompat.Builder(this, channelId)
             .setContentTitle(contentTitle)
@@ -109,16 +110,11 @@ class CallForegroundService : Service() {
     }
     
     private fun createEndCallIntent(callExtras: Bundle?): PendingIntent {
-        // DIAGNOSTIC: Logging intent creation
-        Log.d("CallForegroundService", "Creating EndCallIntent with EndCallReceiver class")
-        
         val intent = Intent(this, EndCallReceiver::class.java).apply {
-            action = "com.nextcloud.talk.END_CALL"
+            action = END_CALL_ACTION
             callExtras?.let { putExtras(Bundle(it)) }
         }
-        
-        Log.d("CallForegroundService", "EndCallIntent created successfully with action: ${intent.action}")
-        
+
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         return PendingIntent.getBroadcast(this, 1, intent, flags)
     }

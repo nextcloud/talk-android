@@ -34,7 +34,7 @@ public abstract class CallBaseActivity extends BaseActivity {
     long onCreateTime;
 
 
-    private OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+    private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
         @Override
         public void handleOnBackPressed() {
             if (isPipModePossible()) {
@@ -65,7 +65,7 @@ public abstract class CallBaseActivity extends BaseActivity {
         getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
     }
 
-    public void hideNavigationIfNoPipAvailable(){
+    public void hideNavigationIfNoPipAvailable() {
         if (!isPipModePossible()) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
                                                                  View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
