@@ -831,6 +831,7 @@ class CallActivity : CallBaseActivity() {
                 hangup(shutDownView = true, endCallForAll = true)
             }
             binding!!.endCallPopupMenu.setOnClickListener {
+                isIntentionallyLeavingCall = true
                 hangup(shutDownView = true, endCallForAll = true)
                 binding!!.endCallPopupMenu.visibility = View.GONE
             }
@@ -846,6 +847,7 @@ class CallActivity : CallBaseActivity() {
                 hangup(shutDownView = true, endCallForAll = false)
             }
             binding!!.endCallPopupMenu.setOnClickListener {
+                isIntentionallyLeavingCall = true
                 hangup(shutDownView = true, endCallForAll = false)
                 binding!!.endCallPopupMenu.visibility = View.GONE
             }
@@ -2209,44 +2211,33 @@ class CallActivity : CallBaseActivity() {
         }
         val endCall: Boolean? = if (endCallForAll) true else null
 
+        // Fire DELETE best-effort; do not block the UI waiting for the server response.
+        // The subscription runs entirely on the IO thread — no observeOn(mainThread) needed.
         ncApi!!.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken!!), endCall)
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
+            .subscribe(
+                { /* successfully left call */ },
+                { e -> Log.w(TAG, "Something went wrong when leaving the call", e) }
+            )
 
-                override fun onNext(genericOverall: GenericOverall) {
-                    if (switchToRoomToken.isNotEmpty()) {
-                        val intent = Intent(context, ChatActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        val bundle = Bundle()
-                        bundle.putBoolean(KEY_SWITCH_TO_ROOM, true)
-                        bundle.putBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, true)
-                        bundle.putString(KEY_ROOM_TOKEN, switchToRoomToken)
-                        bundle.putBoolean(KEY_CALL_VOICE_ONLY, isVoiceOnlyCall)
-                        intent.putExtras(bundle)
-                        startActivity(intent)
-                        finish()
-                    } else if (shutDownView) {
-                        finish()
-                    } else if (currentCallStatus === CallStatus.RECONNECTING ||
-                        currentCallStatus === CallStatus.PUBLISHER_FAILED
-                    ) {
-                        initiateCall()
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.w(TAG, "Something went wrong when leaving the call", e)
-                    finish()
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+        if (switchToRoomToken.isNotEmpty()) {
+            val intent = Intent(context, ChatActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            val bundle = Bundle()
+            bundle.putBoolean(KEY_SWITCH_TO_ROOM, true)
+            bundle.putBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, true)
+            bundle.putString(KEY_ROOM_TOKEN, switchToRoomToken)
+            bundle.putBoolean(KEY_CALL_VOICE_ONLY, isVoiceOnlyCall)
+            intent.putExtras(bundle)
+            startActivity(intent)
+            finish()
+        } else if (shutDownView) {
+            finish()
+        } else if (currentCallStatus === CallStatus.RECONNECTING ||
+            currentCallStatus === CallStatus.PUBLISHER_FAILED
+        ) {
+            initiateCall()
+        }
     }
 
     private fun startVideoCapture(isPortrait: Boolean) {
