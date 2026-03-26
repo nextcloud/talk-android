@@ -182,7 +182,7 @@ configurations.configureEach {
 dependencies {
     kapt("org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlinVersion")
     implementation("androidx.room:room-testing-android:$roomVersion")
-    implementation("androidx.compose.foundation:foundation-layout:1.10.5")
+    implementation("androidx.compose.foundation:foundation-layout:1.10.6")
     spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0")
     spotbugsPlugins("com.mebigfatguy.fb-contrib:fb-contrib:7.7.4")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
