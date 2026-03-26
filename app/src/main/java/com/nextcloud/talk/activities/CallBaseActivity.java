@@ -60,6 +60,10 @@ public abstract class CallBaseActivity extends BaseActivity {
 
         if (isPipModePossible()) {
             mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                mPictureInPictureParamsBuilder.setAutoEnterEnabled(true);
+                setPictureInPictureParams(mPictureInPictureParamsBuilder.build());
+            }
         }
 
         getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
@@ -95,6 +99,38 @@ public abstract class CallBaseActivity extends BaseActivity {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        }
+    }
+
+    /**
+     * Fired on API 29+ when another activity becomes the top resumed activity — including
+     * same-app task switches (e.g. task switcher or quick-switch gesture to the chat window).
+     * This fires *before* onPause() while our window is still fully visible, so
+     * enterPictureInPictureMode() can succeed. On API 26-28 this method is never called by
+     * the system; onPause() below serves as the fallback for those devices.
+     */
+    @Override
+    public void onTopResumedActivityChanged(boolean isTopResumedActivity) {
+        super.onTopResumedActivityChanged(isTopResumedActivity);
+        if (!isTopResumedActivity
+                && !isInPipMode
+                && isPipModePossible()
+                && !isChangingConfigurations()
+                && !isFinishing()) {
+            enterPipMode();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Fallback for API 26-28 (no onTopResumedActivityChanged) and any edge cases
+        // where PIP was not yet entered by the time we reach onPause().
+        if (!isInPipMode
+                && isPipModePossible()
+                && !isChangingConfigurations()
+                && !isFinishing()) {
+            enterPipMode();
         }
     }
 
