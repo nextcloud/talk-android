@@ -1,11 +1,11 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2024 Sowjanya Kota <sowjanya.kch@gmail.com>
+ * SPDX-FileCopyrightText: 2024-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-package com.nextcloud.talk.conversationcreation
+package com.nextcloud.talk.conversationcreation.data
 
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket

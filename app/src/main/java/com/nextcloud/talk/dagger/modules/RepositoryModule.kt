@@ -23,8 +23,8 @@ import com.nextcloud.talk.chooseaccount.StatusRepository
 import com.nextcloud.talk.chooseaccount.StatusRepositoryImplementation
 import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.contacts.ContactsRepositoryImpl
-import com.nextcloud.talk.conversationcreation.ConversationCreationRepository
-import com.nextcloud.talk.conversationcreation.ConversationCreationRepositoryImpl
+import com.nextcloud.talk.conversationcreation.data.ConversationCreationRepository
+import com.nextcloud.talk.conversationcreation.data.ConversationCreationRepositoryImpl
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepositoryImpl
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
