@@ -3242,6 +3242,20 @@ class CallActivity : CallBaseActivity() {
         ) ||
             isBreakoutRoom
 
+    // Broadcast receiver to handle end call from notification
+    private val endCallFromNotificationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == "com.nextcloud.talk.END_CALL_FROM_NOTIFICATION") {
+                Log.d(TAG, "Received end call from notification broadcast")
+                Log.d(TAG, "endCallFromNotificationReceiver: Setting isIntentionallyLeavingCall=true")
+                isIntentionallyLeavingCall = true
+                Log.d(TAG, "endCallFromNotificationReceiver: Releasing proximity sensor before hangup")
+                powerManagerUtils?.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
+                hangup(shutDownView = true, endCallForAll = false)
+            }
+        }
+    }
+
     companion object {
         var active = false
 
