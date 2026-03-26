@@ -24,7 +24,7 @@ plugins {
 
 val kotlinVersion: String by rootProject.extra
 
-val androidxCameraVersion = "1.5.3"
+val androidxCameraVersion = "1.6.0"
 val coilKtVersion = "2.7.0"
 val daggerVersion = "2.59.2"
 val emojiVersion = "1.6.0"
