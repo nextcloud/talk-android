@@ -67,7 +67,7 @@ public class LoginIT {
 
             try {
                 // Delete account if exists
-                onView(withId(R.id.switch_account_button)).perform(click());
+                onView(withContentDescription(R.string.nc_settings)).perform(click());
                 onView(withId(R.id.settings_remove_account)).perform(click());
                 onView(withText(R.string.nc_settings_remove)).perform(click());
                 // The remove button must be clicked two times
@@ -120,7 +120,7 @@ public class LoginIT {
 
         Thread.sleep(5 * 1000);
 
-        onView(withId(R.id.switch_account_button)).perform(click());
+        onView(withContentDescription(R.string.nc_settings)).perform(click());
         onView(withId(R.id.user_name)).check(matches(withText("User One")));
 
         activityScenario.onActivity(activity -> {

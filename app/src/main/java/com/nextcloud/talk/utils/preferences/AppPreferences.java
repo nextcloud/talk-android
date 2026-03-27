@@ -187,5 +187,9 @@ public interface AppPreferences {
 
     Pair<Integer, Integer> getConversationListPositionAndOffset();
 
+    void setConversationListLastUserId(long userId);
+
+    long getConversationListLastUserId();
+
     void clear();
 }
