@@ -39,11 +39,16 @@ import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
+import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.conversation.RenameConversationDialogFragment
+import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contextchat.ContextChatViewModel
+import com.nextcloud.talk.conversationlist.ui.ConversationOpsAction
 import com.nextcloud.talk.conversationlist.ui.ConversationsListScreen
 import com.nextcloud.talk.conversationlist.ui.ConversationsListScreenCallbacks
 import com.nextcloud.talk.conversationlist.ui.ConversationsListScreenState
@@ -56,14 +61,15 @@ import com.nextcloud.talk.invitation.InvitationsActivity
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.run
 import com.nextcloud.talk.jobs.DeleteConversationWorker
+import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
+import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.ui.chooseaccount.ChooseAccountShareToDialogFragment
-import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.MENTION
@@ -71,6 +77,7 @@ import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.UNREAD
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.BrandingUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -79,6 +86,7 @@ import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
+import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -93,10 +101,17 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
+import android.text.TextUtils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
@@ -112,6 +127,12 @@ class ConversationsListActivity : BaseActivity() {
     lateinit var userManager: UserManager
 
     @Inject
+    lateinit var ncApi: NcApi
+
+    @Inject
+    lateinit var ncApiCoroutines: NcApiCoroutines
+
+    @Inject
     lateinit var platformPermissionUtil: PlatformPermissionUtil
 
     @Inject
@@ -125,6 +146,7 @@ class ConversationsListActivity : BaseActivity() {
 
     lateinit var conversationsListViewModel: ConversationsListViewModel
     lateinit var contextChatViewModel: ContextChatViewModel
+    private lateinit var conversationOpsViewModel: ConversationInfoViewModel
 
     private var currentUser: User? = null
     private val snackbarHostState = SnackbarHostState()
@@ -152,7 +174,7 @@ class ConversationsListActivity : BaseActivity() {
     private var selectedConversation: ConversationModel? = null
     private var textToPaste: String? = ""
     private var selectedMessageId: String? = null
-    private var conversationsListBottomDialog: ConversationsListBottomDialog? = null
+    private val selectedConversationForOpsState = MutableStateFlow<ConversationModel?>(null)
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -172,6 +194,7 @@ class ConversationsListActivity : BaseActivity() {
 
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
         contextChatViewModel = ViewModelProvider(this, viewModelFactory)[ContextChatViewModel::class.java]
+        conversationOpsViewModel = ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
 
         setSupportActionBar(null)
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
@@ -205,7 +228,8 @@ class ConversationsListActivity : BaseActivity() {
             showShareToFlow = showShareToScreenState,
             forwardMessageFlow = forwardMessageState,
             hasMultipleAccountsFlow = hasMultipleAccountsState,
-            showAccountDialogFlow = showAccountDialogState
+            showAccountDialogFlow = showAccountDialogState,
+            selectedConversationForOpsFlow = selectedConversationForOpsState
         )
 
     @Suppress("LongMethod")
@@ -275,7 +299,9 @@ class ConversationsListActivity : BaseActivity() {
                     .show(supportFragmentManager, ChooseAccountShareToDialogFragment.TAG)
             },
             onNewConversation = { showNewConversationsScreen() },
-            onAccountDialogDismiss = { showAccountDialogState.value = false }
+            onAccountDialogDismiss = { showAccountDialogState.value = false },
+            onConversationOpsDismiss = { selectedConversationForOpsState.value = null },
+            onConversationOpsAction = { action, conversation -> handleConversationOpsAction(action, conversation) }
         )
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -433,15 +459,8 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     private fun handleConversationLongClick(model: ConversationModel) {
-        lifecycleScope.launch {
-            if (!showShareToScreen && networkMonitor.isOnline.value) {
-                conversationsListBottomDialog = ConversationsListBottomDialog(
-                    this@ConversationsListActivity,
-                    currentUser!!,
-                    model
-                )
-                conversationsListBottomDialog!!.show()
-            }
+        if (!showShareToScreen && networkMonitor.isOnline.value) {
+            selectedConversationForOpsState.value = model
         }
     }
 
@@ -891,10 +910,167 @@ class ConversationsListActivity : BaseActivity() {
     fun onMessageEvent(conversationsListFetchDataEvent: ConversationsListFetchDataEvent?) {
         fetchRooms()
         Handler().postDelayed({
-            if (conversationsListBottomDialog!!.isShowing) {
-                conversationsListBottomDialog!!.dismiss()
-            }
+            selectedConversationForOpsState.value = null
         }, BOTTOM_SHEET_DELAY)
+    }
+
+    private fun handleConversationOpsAction(action: ConversationOpsAction, conversation: ConversationModel) {
+        when (action) {
+            is ConversationOpsAction.AddToFavorites -> addConversationToFavorites(conversation)
+            is ConversationOpsAction.RemoveFromFavorites -> removeConversationFromFavorites(conversation)
+            is ConversationOpsAction.MarkAsRead -> markConversationAsRead(conversation)
+            is ConversationOpsAction.MarkAsUnread -> markConversationAsUnread(conversation)
+            is ConversationOpsAction.ShareLink -> shareConversationLink(conversation)
+            is ConversationOpsAction.Rename -> renameConversation(conversation)
+            is ConversationOpsAction.ToggleArchive -> handleArchiving(conversation)
+            is ConversationOpsAction.Leave -> leaveConversation(conversation)
+            is ConversationOpsAction.Delete -> showDeleteConversationDialog(conversation)
+        }
+    }
+
+    private fun shareConversationLink(conversation: ConversationModel) {
+        val canGeneratePrettyURL = CapabilitiesUtil.canGeneratePrettyURL(currentUser!!)
+        ShareUtils.shareConversationLink(
+            this,
+            currentUser?.baseUrl,
+            conversation.token,
+            conversation.name,
+            canGeneratePrettyURL
+        )
+    }
+
+    private fun handleArchiving(conversation: ConversationModel) {
+        lifecycleScope.launch {
+            if (conversation.hasArchived) {
+                conversationOpsViewModel.unarchiveConversation(currentUser!!, conversation.token)
+                showSnackbar(
+                    String.format(resources.getString(R.string.unarchived_conversation), conversation.displayName)
+                )
+            } else {
+                conversationOpsViewModel.archiveConversation(currentUser!!, conversation.token)
+                showSnackbar(
+                    String.format(resources.getString(R.string.archived_conversation), conversation.displayName)
+                )
+            }
+        }
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught", "TooGenericExceptionCaught")
+    private fun addConversationToFavorites(conversation: ConversationModel) {
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser!!, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+        val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser?.baseUrl!!, conversation.token)
+        lifecycleScope.launch {
+            try {
+                withContext(Dispatchers.IO) { ncApiCoroutines.addConversationToFavorites(credentials!!, url) }
+                fetchRooms()
+                showSnackbar(
+                    String.format(resources.getString(R.string.added_to_favorites), conversation.displayName)
+                )
+            } catch (e: Exception) {
+                showSnackbar(resources.getString(R.string.nc_common_error_sorry))
+            }
+        }
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught", "TooGenericExceptionCaught")
+    private fun removeConversationFromFavorites(conversation: ConversationModel) {
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser!!, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+        val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser?.baseUrl!!, conversation.token)
+        lifecycleScope.launch {
+            try {
+                withContext(Dispatchers.IO) { ncApiCoroutines.removeConversationFromFavorites(credentials!!, url) }
+                fetchRooms()
+                showSnackbar(
+                    String.format(resources.getString(R.string.removed_from_favorites), conversation.displayName)
+                )
+            } catch (e: Exception) {
+                showSnackbar(resources.getString(R.string.nc_common_error_sorry))
+            }
+        }
+    }
+
+    private fun markConversationAsUnread(conversation: ConversationModel) {
+        val apiVersion = ApiUtils.getChatApiVersion(
+            currentUser?.capabilities!!.spreedCapability!!,
+            intArrayOf(ApiUtils.API_V1)
+        )
+        ncApi.markRoomAsUnread(
+            credentials!!,
+            ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser?.baseUrl!!, conversation.token!!)
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) { /* unused */ }
+                override fun onNext(t: GenericOverall) {
+                    fetchRooms()
+                    showSnackbar(
+                        String.format(resources.getString(R.string.marked_as_unread), conversation.displayName)
+                    )
+                }
+                override fun onError(e: Throwable) {
+                    showSnackbar(resources.getString(R.string.nc_common_error_sorry))
+                }
+                override fun onComplete() { /* unused */ }
+            })
+    }
+
+    private fun markConversationAsRead(conversation: ConversationModel) {
+        val messageId = if (conversation.remoteServer.isNullOrEmpty()) conversation.lastMessage?.id else null
+        val apiVersion = ApiUtils.getChatApiVersion(
+            currentUser?.capabilities!!.spreedCapability!!,
+            intArrayOf(ApiUtils.API_V1)
+        )
+        ncApi.setChatReadMarker(
+            credentials!!,
+            ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser?.baseUrl!!, conversation.token!!),
+            messageId?.toInt()
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) { /* unused */ }
+                override fun onNext(t: GenericOverall) {
+                    fetchRooms()
+                    showSnackbar(String.format(resources.getString(R.string.marked_as_read), conversation.displayName))
+                }
+                override fun onError(e: Throwable) {
+                    showSnackbar(resources.getString(R.string.nc_common_error_sorry))
+                }
+                override fun onComplete() { /* unused */ }
+            })
+    }
+
+    private fun renameConversation(conversation: ConversationModel) {
+        if (!TextUtils.isEmpty(conversation.token)) {
+            RenameConversationDialogFragment
+                .newInstance(conversation.token!!, conversation.displayName!!)
+                .show(supportFragmentManager, RenameConversationDialogFragment::class.simpleName)
+        }
+    }
+
+    @SuppressLint("StringFormatInvalid")
+    private fun leaveConversation(conversation: ConversationModel) {
+        val data = Data.Builder()
+            .putString(KEY_ROOM_TOKEN, conversation.token)
+            .putLong(KEY_INTERNAL_USER_ID, currentUser?.id!!)
+            .build()
+        val worker = OneTimeWorkRequest.Builder(LeaveConversationWorker::class.java).setInputData(data).build()
+        WorkManager.getInstance().enqueue(worker)
+        WorkManager.getInstance(this).getWorkInfoByIdLiveData(worker.id).observeForever { workInfo ->
+            when (workInfo?.state) {
+                WorkInfo.State.SUCCEEDED -> {
+                    showSnackbar(
+                        String.format(resources.getString(R.string.left_conversation), conversation.displayName)
+                    )
+                    startActivity(Intent(this, MainActivity::class.java))
+                }
+                WorkInfo.State.FAILED -> showSnackbar(resources.getString(R.string.nc_common_error_sorry))
+                else -> {}
+            }
+        }
     }
 
     fun showDeleteConversationDialog(conversation: ConversationModel) {
