@@ -393,6 +393,7 @@
     <string name="typing_is_typing">rašo…</string>
     <string name="typing_x_others">ir dar %1$s rašo…</string>
     <string name="user_info_address">Adresas</string>
+    <string name="user_info_bluesky">"Bluesky"</string>
     <string name="user_info_displayname">Vardas, pavardė</string>
     <string name="user_info_email">El. paštas</string>
     <string name="user_info_headline">Santrauka</string>
