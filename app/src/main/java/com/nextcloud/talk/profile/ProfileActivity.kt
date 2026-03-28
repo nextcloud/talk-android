@@ -1,10 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
- * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
- * SPDX-FileCopyrightText: 2022 Tim Krüger <t@timkrueger.me>
- * SPDX-FileCopyrightText: 2021 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
+ * SPDX-FileCopyrightText: 2021-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.profile
@@ -38,7 +35,7 @@ import com.nextcloud.talk.models.json.userprofile.Scope
 import com.nextcloud.talk.models.json.userprofile.UserProfileData
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
-import com.nextcloud.talk.ui.dialog.ScopeDialog
+import com.nextcloud.talk.ui.dialog.ScopeModalBottomSheet
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
@@ -72,6 +69,9 @@ class ProfileActivity : BaseActivity() {
 
     /** Single source of truth that drives the Compose UI. */
     private var profileUiState by mutableStateOf(ProfileUiState())
+
+    private data class ScopeSheetRequest(val position: Int, val field: Field)
+    private var scopeSheetRequest by mutableStateOf<ScopeSheetRequest?>(null)
 
     private val profileItems: MutableList<UserInfoDetailsItem> = mutableListOf()
 
@@ -142,14 +142,17 @@ class ProfileActivity : BaseActivity() {
                             profileItems.getOrNull(position)?.text = newText
                         },
                         onScopeClick = { position, field ->
-                            ScopeDialog(
-                                con = this,
-                                showPrivate = field != Field.DISPLAYNAME && field != Field.EMAIL,
-                                onScopeSelected = { scope -> updateItemScope(position, scope) }
-                            ).show()
+                            scopeSheetRequest = ScopeSheetRequest(position, field)
                         }
                     )
                 )
+                scopeSheetRequest?.let { req ->
+                    ScopeModalBottomSheet(
+                        showPrivate = req.field != Field.DISPLAYNAME && req.field != Field.EMAIL,
+                        onScopeSelected = { scope -> updateItemScope(req.position, scope) },
+                        onDismiss = { scopeSheetRequest = null }
+                    )
+                }
             }
         }
     }

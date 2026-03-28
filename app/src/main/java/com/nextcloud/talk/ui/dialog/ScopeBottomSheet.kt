@@ -16,14 +16,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,13 +38,29 @@ import com.nextcloud.talk.models.json.userprofile.Scope
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun ScopeModalBottomSheet(showPrivate: Boolean = true, onScopeSelected: (Scope) -> Unit, onDismiss: () -> Unit) {
+    val sheetState = rememberModalBottomSheetState()
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState
+    ) {
+        ScopeBottomSheetContent(
+            showPrivate = showPrivate,
+            onScopeSelected = { scope ->
+                onScopeSelected(scope)
+                onDismiss()
+            }
+        )
+    }
+}
+
+@Composable
 fun ScopeBottomSheetContent(
     modifier: Modifier = Modifier,
     showPrivate: Boolean = true,
     onScopeSelected: (Scope) -> Unit
 ) {
     Column(modifier = modifier.fillMaxWidth().padding(bottom = 8.dp)) {
-        BottomSheetDefaults.DragHandle(modifier = Modifier.align(Alignment.CenterHorizontally))
         if (showPrivate) {
             ScopeOption(
                 iconRes = R.drawable.ic_cellphone,
