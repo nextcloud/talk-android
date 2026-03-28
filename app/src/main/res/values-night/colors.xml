@@ -53,8 +53,6 @@
     <!-- shimmer element colors -->
     <color name="nc_shimmer_default_color">#4B4B4B</color>
 
-    <color name="grey_200">#818181</color>
-
     <color name="dialog_background">#353535</color>
 
     <color name="icon_on_bg_default">#99FFFFFF</color>
