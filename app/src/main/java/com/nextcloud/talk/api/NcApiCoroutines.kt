@@ -22,6 +22,7 @@ import com.nextcloud.talk.models.json.participants.TalkBanOverall
 import com.nextcloud.talk.models.json.profile.ProfileOverall
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.models.json.status.StatusOverall
+import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
 import com.nextcloud.talk.models.json.testNotification.TestNotificationOverall
 import com.nextcloud.talk.models.json.threads.ThreadOverall
 import com.nextcloud.talk.models.json.threads.ThreadsOverall
@@ -332,6 +333,48 @@ interface NcApiCoroutines {
 
     @GET
     suspend fun status(@Header("Authorization") authorization: String, @Url url: String): StatusOverall
+
+    @FormUrlEncoded
+    @PUT
+    suspend fun setStatusType(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("statusType") statusType: String
+    ): GenericOverall
+
+    @GET
+    suspend fun getPredefinedStatuses(
+        @Header("Authorization") authorization: String,
+        @Url url: String
+    ): PredefinedStatusOverall
+
+    @GET
+    suspend fun backupStatus(@Header("Authorization") authorization: String, @Url url: String): StatusOverall
+
+    @DELETE
+    suspend fun statusDeleteMessage(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
+
+    @FormUrlEncoded
+    @PUT
+    suspend fun setPredefinedStatusMessage(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("messageId") messageId: String,
+        @Field("clearAt") clearAt: Long?
+    ): GenericOverall
+
+    @FormUrlEncoded
+    @PUT
+    suspend fun setCustomStatusMessage(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("statusIcon") statusIcon: String?,
+        @Field("message") message: String,
+        @Field("clearAt") clearAt: Long?
+    ): GenericOverall
+
+    @DELETE
+    suspend fun revertStatus(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 
     @FormUrlEncoded
     @POST

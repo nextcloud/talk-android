@@ -1,11 +1,11 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2025 Sowjanya Kota <sowjanya.kch@gmail.com>
+ * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-package com.nextcloud.talk.ui.dialog
+package com.nextcloud.talk.chooseaccount
 
 import android.app.Activity
 import android.content.Context
@@ -42,7 +42,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -64,7 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
-import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import coil.compose.AsyncImage
 import com.nextcloud.android.common.core.utils.ecosystem.EcosystemApp
@@ -74,14 +73,18 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.account.data.model.AccountItem
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.chooseaccount.StatusUiState
-import com.nextcloud.talk.chooseaccount.StatusViewModel
+import com.nextcloud.talk.chooseaccount.ui.OnlineStatusModalBottomSheet
+import com.nextcloud.talk.chooseaccount.ui.StatusMessageModalBottomSheet
+import com.nextcloud.talk.chooseaccount.viewmodel.StatusMessageViewModel
+import com.nextcloud.talk.chooseaccount.viewmodel.StatusUiState
+import com.nextcloud.talk.chooseaccount.viewmodel.StatusViewModel
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
 import com.nextcloud.talk.models.json.status.Status
+import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -119,6 +122,9 @@ class ChooseAccountDialogCompose {
     lateinit var statusViewModel: StatusViewModel
 
     @Inject
+    lateinit var statusMessageViewModel: StatusMessageViewModel
+
+    @Inject
     lateinit var networkMonitor: NetworkMonitor
 
     lateinit var ecosystemManager: EcosystemManager
@@ -131,10 +137,12 @@ class ChooseAccountDialogCompose {
         if (shouldDismiss.value) return
         val colorScheme = viewThemeUtils.getColorScheme(activity)
         val status = remember { mutableStateOf<Status?>(null) }
+        val showOnlineStatusSheet = remember { mutableStateOf(false) }
+        val showStatusMessageSheet = remember { mutableStateOf(false) }
         val context = LocalContext.current
-        val statusViewState by statusViewModel.statusViewState.collectAsState()
-        val invitationsState by invitationsViewModel.getInvitationsViewState.collectAsState()
-        val isOnline by networkMonitor.isOnline.collectAsState()
+        val statusViewState by statusViewModel.statusViewState.collectAsStateWithLifecycle()
+        val invitationsState by invitationsViewModel.getInvitationsViewState.collectAsStateWithLifecycle()
+        val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
         val currentUser = currentUserProvider.currentUser.blockingGet()!!
         val isStatusAvailable = CapabilitiesUtil.isUserStatusAvailable(currentUser)
         ecosystemManager = EcosystemManager(activity)
@@ -166,12 +174,11 @@ class ChooseAccountDialogCompose {
                 accountItems = userItems,
                 onCurrentUserClick = { shouldDismiss.value = true },
                 onSetOnlineStatusClick = {
-                    shouldDismiss.value = true
-                    openSetOnlineStatusFragment(status.value, activity)
+                    showOnlineStatusSheet.value = true
                 },
                 onSetStatusMessageClick = {
-                    shouldDismiss.value = true
-                    openSetStatusMessageFragment(status.value, activity)
+                    statusMessageViewModel.resetDismissed()
+                    showStatusMessageSheet.value = true
                 },
                 onAddAccountClick = {
                     shouldDismiss.value = true
@@ -202,6 +209,28 @@ class ChooseAccountDialogCompose {
                 showEcosystem = showEcosystem,
                 context = context
             )
+            if (showOnlineStatusSheet.value) {
+                val currentStatusType = StatusType.entries.firstOrNull { it.string == status.value?.status }
+                OnlineStatusModalBottomSheet(
+                    currentStatusType = currentStatusType,
+                    onStatusSelected = { statusType ->
+                        statusViewModel.setStatusType(statusType)
+                    },
+                    onDismiss = { showOnlineStatusSheet.value = false }
+                )
+            }
+            if (showStatusMessageSheet.value) {
+                status.value?.let { currentStatus ->
+                    StatusMessageModalBottomSheet(
+                        currentStatus = currentStatus,
+                        viewModel = statusMessageViewModel,
+                        onDismiss = {
+                            showStatusMessageSheet.value = false
+                            statusViewModel.getStatus()
+                        }
+                    )
+                }
+            }
         }
     }
 
@@ -227,22 +256,6 @@ class ChooseAccountDialogCompose {
             StatusUiState.None -> {
             }
         }
-    }
-
-    private fun openSetOnlineStatusFragment(status: Status?, activity: Activity) {
-        val fragmentActivity = activity as FragmentActivity
-        status?.let {
-            val setStatusDialog = OnlineStatusBottomDialogFragment.newInstance(it)
-            setStatusDialog.show(fragmentActivity.supportFragmentManager, "fragment_set_status")
-        } ?: Log.w(TAG, "status was null")
-    }
-
-    private fun openSetStatusMessageFragment(status: Status?, activity: Activity) {
-        val fragmentActivity = activity as FragmentActivity
-        status?.let {
-            val setStatusDialog = StatusMessageBottomDialogFragment.newInstance(it)
-            setStatusDialog.show(fragmentActivity.supportFragmentManager, "fragment_set_status")
-        } ?: Log.w(TAG, "status was null")
     }
 
     private fun addAccount(activity: Activity) {

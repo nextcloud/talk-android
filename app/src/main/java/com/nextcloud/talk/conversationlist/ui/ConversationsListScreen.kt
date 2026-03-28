@@ -58,7 +58,7 @@ import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.ui.dialog.ChooseAccountDialogCompose
+import com.nextcloud.talk.chooseaccount.ChooseAccountDialogCompose
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.DEFAULT
 import com.nextcloud.talk.ui.theme.ViewThemeUtils

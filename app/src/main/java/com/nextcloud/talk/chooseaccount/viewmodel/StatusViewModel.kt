@@ -1,15 +1,18 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2025 Sowjanya Kota <sowjanya.kch@gmail.com>
+ * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-package com.nextcloud.talk.chooseaccount
+package com.nextcloud.talk.chooseaccount.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.chooseaccount.data.StatusRepository
 import com.nextcloud.talk.models.json.status.StatusOverall
+import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,6 +45,23 @@ class StatusViewModel @Inject constructor(
                 _statusViewState.value = StatusUiState.Error(exception.message ?: "")
             }
         }
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun setStatusType(statusType: StatusType) {
+        viewModelScope.launch {
+            try {
+                val url = ApiUtils.getUrlForSetStatusType(currentUser.baseUrl!!)
+                repository.setStatusType(credentials!!, url, statusType.string)
+                getStatus()
+            } catch (exception: Exception) {
+                Log.e(TAG, "Failed to set statusType", exception)
+            }
+        }
+    }
+
+    companion object {
+        private val TAG = StatusViewModel::class.simpleName
     }
 }
 
