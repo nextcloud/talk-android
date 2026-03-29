@@ -11,10 +11,10 @@ import android.content.res.Configuration
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -42,8 +42,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -61,13 +59,11 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.getSystemService
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chooseaccount.viewmodel.StatusMessageViewModel
-import com.nextcloud.talk.models.json.status.ClearAt
 import com.nextcloud.talk.models.json.status.Status
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
 import com.vanniktech.emoji.EmojiEditText
@@ -142,44 +138,65 @@ internal fun StatusMessageSheetContentStateless(
     onSet: () -> Unit
 ) {
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
-
     if (isLandscape) {
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                StatusMessageTitle()
-                EmojiAndMessageRow(
-                    emoji = emoji,
-                    message = message,
-                    onEmojiSelected = onEmojiSelected,
-                    onMessageChanged = onMessageChanged
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                ClearAfterDropdown(
-                    selectedPosition = clearAtPosition,
-                    onPositionSelected = onClearAtPositionSelected
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                ActionButtons(onClear = onClear, onSet = onSet)
-            }
-            PredefinedStatusList(
-                statuses = predefinedStatuses,
-                isBackupStatusAvailable = isBackupStatusAvailable,
-                onRevertStatus = onRevertStatus,
-                onSelectStatus = onSelectStatus,
-                modifier = Modifier.weight(1f)
-            )
-        }
+        LandscapeSheetContent(
+            modifier = modifier,
+            emoji = emoji,
+            message = message,
+            clearAtPosition = clearAtPosition,
+            predefinedStatuses = predefinedStatuses,
+            isBackupStatusAvailable = isBackupStatusAvailable,
+            onEmojiSelected = onEmojiSelected,
+            onMessageChanged = onMessageChanged,
+            onClearAtPositionSelected = onClearAtPositionSelected,
+            onRevertStatus = onRevertStatus,
+            onSelectStatus = onSelectStatus,
+            onClear = onClear,
+            onSet = onSet
+        )
     } else {
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 24.dp)
-        ) {
+        PortraitSheetContent(
+            modifier = modifier,
+            emoji = emoji,
+            message = message,
+            clearAtPosition = clearAtPosition,
+            predefinedStatuses = predefinedStatuses,
+            isBackupStatusAvailable = isBackupStatusAvailable,
+            onEmojiSelected = onEmojiSelected,
+            onMessageChanged = onMessageChanged,
+            onClearAtPositionSelected = onClearAtPositionSelected,
+            onRevertStatus = onRevertStatus,
+            onSelectStatus = onSelectStatus,
+            onClear = onClear,
+            onSet = onSet
+        )
+    }
+}
+
+@Suppress("LongParameterList")
+@Composable
+private fun LandscapeSheetContent(
+    modifier: Modifier,
+    emoji: String,
+    message: String,
+    clearAtPosition: Int,
+    predefinedStatuses: List<PredefinedStatus>,
+    isBackupStatusAvailable: Boolean,
+    onEmojiSelected: (String) -> Unit,
+    onMessageChanged: (String) -> Unit,
+    onClearAtPositionSelected: (Int) -> Unit,
+    onRevertStatus: () -> Unit,
+    onSelectStatus: (PredefinedStatus) -> Unit,
+    onClear: () -> Unit,
+    onSet: () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, bottom = 24.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
             StatusMessageTitle()
             EmojiAndMessageRow(
                 emoji = emoji,
@@ -187,21 +204,61 @@ internal fun StatusMessageSheetContentStateless(
                 onEmojiSelected = onEmojiSelected,
                 onMessageChanged = onMessageChanged
             )
-            PredefinedStatusList(
-                statuses = predefinedStatuses,
-                isBackupStatusAvailable = isBackupStatusAvailable,
-                onRevertStatus = onRevertStatus,
-                onSelectStatus = onSelectStatus,
-                modifier = Modifier.weight(1f, fill = false)
-            )
             Spacer(modifier = Modifier.height(12.dp))
-            ClearAfterDropdown(
-                selectedPosition = clearAtPosition,
-                onPositionSelected = onClearAtPositionSelected
-            )
+            ClearAfterDropdown(selectedPosition = clearAtPosition, onPositionSelected = onClearAtPositionSelected)
             Spacer(modifier = Modifier.height(16.dp))
             ActionButtons(onClear = onClear, onSet = onSet)
         }
+        PredefinedStatusList(
+            statuses = predefinedStatuses,
+            isBackupStatusAvailable = isBackupStatusAvailable,
+            onRevertStatus = onRevertStatus,
+            onSelectStatus = onSelectStatus,
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@Suppress("LongParameterList")
+@Composable
+private fun PortraitSheetContent(
+    modifier: Modifier,
+    emoji: String,
+    message: String,
+    clearAtPosition: Int,
+    predefinedStatuses: List<PredefinedStatus>,
+    isBackupStatusAvailable: Boolean,
+    onEmojiSelected: (String) -> Unit,
+    onMessageChanged: (String) -> Unit,
+    onClearAtPositionSelected: (Int) -> Unit,
+    onRevertStatus: () -> Unit,
+    onSelectStatus: (PredefinedStatus) -> Unit,
+    onClear: () -> Unit,
+    onSet: () -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, bottom = 24.dp)
+    ) {
+        StatusMessageTitle()
+        EmojiAndMessageRow(
+            emoji = emoji,
+            message = message,
+            onEmojiSelected = onEmojiSelected,
+            onMessageChanged = onMessageChanged
+        )
+        PredefinedStatusList(
+            statuses = predefinedStatuses,
+            isBackupStatusAvailable = isBackupStatusAvailable,
+            onRevertStatus = onRevertStatus,
+            onSelectStatus = onSelectStatus,
+            modifier = Modifier.weight(1f, fill = false)
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        ClearAfterDropdown(selectedPosition = clearAtPosition, onPositionSelected = onClearAtPositionSelected)
+        Spacer(modifier = Modifier.height(16.dp))
+        ActionButtons(onClear = onClear, onSet = onSet)
     }
 }
 
@@ -357,51 +414,56 @@ private fun PredefinedStatusRow(
             modifier = Modifier.width(42.dp)
         )
         if (isBackupEntry) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = status.message,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    text = stringResource(R.string.previously_set),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            BackupStatusContent(message = status.message, onRevertStatus = onRevertStatus)
         } else {
-            Row(
-                modifier = Modifier.weight(1f),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = status.message,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                if (clearAtLabel.isNotEmpty()) {
-                    Text(
-                        text = stringResource(R.string.divider),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    )
-                    Text(
-                        text = clearAtLabel,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
+            StandardStatusContent(message = status.message, clearAtLabel = clearAtLabel)
         }
-        if (isBackupEntry) {
-            Spacer(modifier = Modifier.width(8.dp))
-            FilledTonalButton(
-                onClick = onRevertStatus,
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-            ) {
-                Text(stringResource(R.string.reset_status))
-            }
+    }
+}
+
+@Composable
+private fun RowScope.BackupStatusContent(message: String, onRevertStatus: () -> Unit) {
+    Column(modifier = Modifier.weight(1f)) {
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Text(
+            text = stringResource(R.string.previously_set),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+    Spacer(modifier = Modifier.width(8.dp))
+    FilledTonalButton(
+        onClick = onRevertStatus,
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        Text(stringResource(R.string.reset_status))
+    }
+}
+
+@Composable
+private fun RowScope.StandardStatusContent(message: String, clearAtLabel: String) {
+    Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        if (clearAtLabel.isNotEmpty()) {
+            Text(
+                text = stringResource(R.string.divider),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
+            Text(
+                text = clearAtLabel,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
@@ -510,151 +572,3 @@ private fun ActionButtons(onClear: () -> Unit, onSet: () -> Unit) {
 }
 
 private const val EMOJI_TEXT_SIZE_SP = 24f
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(name = "Light", showBackground = true)
-@Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(
-    name = "Light · Landscape",
-    device = "spec:width=411dp,height=891dp,orientation=landscape"
-)
-@Preview(
-    name = "Dark · Landscape",
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    device = "spec:width=411dp,height=891dp,orientation=landscape"
-)
-@Composable
-private fun PreviewStatusMessageSheet() {
-    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
-    MaterialTheme(colorScheme = colorScheme) {
-        ModalBottomSheet(
-            onDismissRequest = {},
-            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        ) {
-            StatusMessageSheetContentStateless(
-                emoji = "🏖️",
-                message = "On vacation",
-                clearAtPosition = 3,
-                predefinedStatuses = previewPredefinedStatuses(),
-                isBackupStatusAvailable = false,
-                onEmojiSelected = {},
-                onMessageChanged = {},
-                onClearAtPositionSelected = {},
-                onRevertStatus = {},
-                onSelectStatus = {},
-                onClear = {},
-                onSet = {}
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(name = "RTL · Arabic", showBackground = true, locale = "ar")
-@Preview(
-    name = "RTL · Arabic · Landscape",
-    locale = "ar",
-    device = "spec:width=411dp,height=891dp,orientation=landscape"
-)
-@Composable
-private fun PreviewStatusMessageSheetRtl() {
-    MaterialTheme(colorScheme = lightColorScheme()) {
-        ModalBottomSheet(
-            onDismissRequest = {},
-            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        ) {
-            StatusMessageSheetContentStateless(
-                emoji = "📆",
-                message = "In a meeting",
-                clearAtPosition = 1,
-                predefinedStatuses = previewPredefinedStatuses(),
-                isBackupStatusAvailable = false,
-                onEmojiSelected = {},
-                onMessageChanged = {},
-                onClearAtPositionSelected = {},
-                onRevertStatus = {},
-                onSelectStatus = {},
-                onClear = {},
-                onSet = {}
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(name = "With backup status · Light")
-@Preview(name = "With backup status · Dark · German", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "de")
-@Preview(name = "With backup status · RTL · Arabic", locale = "ar")
-@Preview(
-    name = "With backup status · Light · Landscape",
-    device = "spec:width=411dp,height=891dp,orientation=landscape"
-)
-@Preview(
-    name = "With backup status · Dark · German · Landscape",
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    locale = "de",
-    device = "spec:width=411dp,height=891dp,orientation=landscape"
-)
-@Preview(
-    name = "With backup status · RTL · Arabic · Landscape",
-    locale = "ar",
-    device = "spec:width=411dp,height=891dp,orientation=landscape"
-)
-@Composable
-private fun PreviewStatusMessageSheetWithBackup() {
-    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
-    MaterialTheme(colorScheme = colorScheme) {
-        ModalBottomSheet(
-            onDismissRequest = {},
-            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        ) {
-            StatusMessageSheetContentStateless(
-                emoji = "🏖️",
-                message = "On vacation",
-                clearAtPosition = 0,
-                predefinedStatuses = previewPredefinedStatusesWithBackup(),
-                isBackupStatusAvailable = true,
-                onEmojiSelected = {},
-                onMessageChanged = {},
-                onClearAtPositionSelected = {},
-                onRevertStatus = {},
-                onSelectStatus = {},
-                onClear = {},
-                onSet = {}
-            )
-        }
-    }
-}
-
-private fun previewPredefinedStatuses() =
-    listOf(
-        PredefinedStatus(
-            id = "meeting",
-            icon = "📆",
-            message = "In a meeting",
-            clearAt = ClearAt(type = "period", time = "3600")
-        ),
-        PredefinedStatus(
-            id = "commuting",
-            icon = "🚌",
-            message = "Commuting",
-            clearAt = ClearAt(type = "period", time = "1800")
-        ),
-        PredefinedStatus(
-            id = "remote",
-            icon = "🏡",
-            message = "Working remotely",
-            clearAt = ClearAt(type = "end-of", time = "day")
-        ),
-        PredefinedStatus(
-            id = "sick",
-            icon = "🤒",
-            message = "Out sick",
-            clearAt = ClearAt(type = "end-of", time = "day")
-        ),
-        PredefinedStatus(id = "vacation", icon = "🏖️", message = "On vacation", clearAt = null)
-    )
-
-private fun previewPredefinedStatusesWithBackup() =
-    listOf(PredefinedStatus(id = "backup", icon = "⌛", message = "Be right back", clearAt = null)) +
-        previewPredefinedStatuses()
