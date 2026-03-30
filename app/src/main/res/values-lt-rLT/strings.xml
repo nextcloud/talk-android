@@ -341,8 +341,10 @@
     <string name="polls_results_subtitle">Rezultatai</string>
     <string name="polls_settings">Nustatymai</string>
     <string name="polls_submit_vote">Balsuoti</string>
+    <string name="previously_set">Anksčiau nustatyta</string>
     <string name="raise_hand">Pakelti ranką</string>
     <string name="reactions_tab_all">Visos</string>
+    <string name="reset_status">Atstatyti būseną</string>
     <string name="save">Įrašyti</string>
     <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Sinchronizuoti tik į patikimus serverius</string>
