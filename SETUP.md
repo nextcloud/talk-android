@@ -106,6 +106,19 @@ This requires a working Internet connection.
 
 The generated APK file is saved in ```app/build/outputs/apk``` as ```app-generic-debug.apk```.
 
+### Working with Android Auto
+
+To test [notification extension to Android Auto](https://developer.android.com/training/cars/communication/notification-messaging), Developer settings and Unknown sources need to be enabled in 
+the Android Auto settings: 
+
+1. Open the Settings app on your device
+2. Search for Android Auto, or click on Connected Devices > Android Auto
+3. Scroll all the way down to Version, and click it 10 times to enable Developer settings
+4. Click the 3 dots in the top right and select Developer settings
+5. Enable Unknown sources
+
+You can now receive notifications on Android Auto from a Nextcloud Talk development build.
+
 ### App flavours
 
 The app is currently equipped to be built with three flavours:
