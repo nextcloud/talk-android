@@ -99,7 +99,11 @@
 
         <meta-data
             android:name="android.max_aspect"
-            android:value="10" />
+            android:value="10"/>
+
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc"/>
 
         <activity
             android:name=".activities.MainActivity"
@@ -291,10 +295,18 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receivers.DirectReplyReceiver" />
-        <receiver android:name=".receivers.MarkAsReadReceiver" />
-        <receiver android:name=".receivers.DismissRecordingAvailableReceiver" />
-        <receiver android:name=".receivers.ShareRecordingToChatReceiver" />
+        <receiver
+            android:name=".receivers.DirectReplyReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".receivers.MarkAsReadReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".receivers.DismissRecordingAvailableReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".receivers.ShareRecordingToChatReceiver"
+            android:exported="false" />
 
         <service
             android:name=".utils.SyncService"

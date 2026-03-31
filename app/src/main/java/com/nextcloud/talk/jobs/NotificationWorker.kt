@@ -685,6 +685,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     private fun styleImageNotification(notificationBuilder: NotificationCompat.Builder) {
+        val notificationUser = pushMessage.notificationUser
+        val senderName = notificationUser?.name ?: ""
+        val conversationTitle = pushMessage.subject.ifEmpty { senderName }
+
         val bitmap = loadImageBitmapSync(imagePreviewUrl!!)
         if (bitmap != null) {
             notificationBuilder
@@ -693,6 +697,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     NotificationCompat.BigPictureStyle()
                         .bigPicture(bitmap)
                         .bigLargeIcon(null as Bitmap?)
+                        .setBigContentTitle(conversationTitle)
                 )
         }
     }
@@ -744,10 +749,19 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             }
             person.setIcon(loadAvatarSync(avatarUrl, context!!))
         }
-        notificationBuilder.setStyle(getStyle(person.build(), style))
+        val deviceUser = Person.Builder()
+            .setKey(signatureVerification.user!!.id.toString() + "@" + signatureVerification.user!!.userId)
+            .setName(signatureVerification.user!!.displayName ?: signatureVerification.user!!.userId ?: "You")
+            .build()
+        notificationBuilder.setStyle(getStyle(deviceUser, person.build(), style))
     }
 
-    private fun buildIntentForAction(cls: Class<*>, systemNotificationId: Int, messageId: Int): PendingIntent {
+    private fun buildIntentForAction(
+        cls: Class<*>,
+        systemNotificationId: Int,
+        messageId: Int,
+        mutable: Boolean = true
+    ): PendingIntent {
         val actualIntent = Intent(context, cls)
 
         // NOTE - systemNotificationId is an internal ID used on the device only.
@@ -758,7 +772,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         actualIntent.putExtra(KEY_MESSAGE_ID, messageId)
 
         val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            val mutabilityFlag = if (mutable) PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_IMMUTABLE
+            mutabilityFlag or PendingIntent.FLAG_UPDATE_CURRENT
         } else {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
@@ -777,7 +792,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             val pendingIntent = buildIntentForAction(
                 MarkAsReadReceiver::class.java,
                 systemNotificationId,
-                messageId
+                messageId,
+                mutable = false
             )
             val markAsReadAction = NotificationCompat.Action.Builder(
                 R.drawable.ic_mark_chat_read_24px,
@@ -887,9 +903,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         notificationBuilder.addAction(shareRecordingAction)
     }
 
-    private fun getStyle(person: Person, style: NotificationCompat.MessagingStyle?): NotificationCompat.MessagingStyle {
-        val newStyle = NotificationCompat.MessagingStyle(person)
-        newStyle.conversationTitle = pushMessage.subject
+    private fun getStyle(
+        deviceUser: Person,
+        sender: Person,
+        style: NotificationCompat.MessagingStyle?
+    ): NotificationCompat.MessagingStyle {
+        val newStyle = NotificationCompat.MessagingStyle(deviceUser)
+        newStyle.conversationTitle = pushMessage.subject.ifEmpty { sender.name }
         newStyle.isGroupConversation = "one2one" != conversationType
         style?.messages?.forEach(
             Consumer { message: NotificationCompat.MessagingStyle.Message ->
@@ -902,7 +922,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 )
             }
         )
-        newStyle.addMessage(pushMessage.text, pushMessage.timestamp, person)
+        newStyle.addMessage(pushMessage.text, pushMessage.timestamp, sender)
         return newStyle
     }
 
