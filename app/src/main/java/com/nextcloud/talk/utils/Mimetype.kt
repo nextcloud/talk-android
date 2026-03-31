@@ -23,6 +23,7 @@ object Mimetype {
     const val IMAGE_JPG = "image/jpg"
     const val IMAGE_GIF = "image/gif"
     const val IMAGE_HEIC = "image/heic"
+    const val IMAGE_WEBP = "image/webp"
 
     const val VIDEO_MP4 = "video/mp4"
     const val VIDEO_QUICKTIME = "video/quicktime"

@@ -38,6 +38,7 @@ import com.nextcloud.talk.upload.normal.FileUploader
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.FileUtils
+import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.RemoteFileUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
@@ -102,9 +103,24 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             require(sourceFile.isNotEmpty())
             checkNotNull(roomToken)
 
-            val sourceFileUri = sourceFile.toUri()
+            var sourceFileUri = sourceFile.toUri()
             fileName = FileUtils.getFileName(sourceFileUri, context)
             file = FileUtils.getFileFromUri(context, sourceFileUri)
+
+            val mimeType = context.contentResolver.getType(sourceFileUri)
+            if (mimeType == Mimetype.IMAGE_WEBP && file != null) {
+                val convertedFile = FileUtils.convertWebp(context, file!!)
+                if (convertedFile == null) {
+                    Log.e(TAG, "WebP conversion failed for $fileName")
+                    initNotificationSetup()
+                    showFailedToUploadNotification()
+                    return Result.failure()
+                }
+                file = convertedFile
+                fileName = convertedFile.name
+                sourceFileUri = Uri.fromFile(convertedFile)
+            }
+
             val remotePath = getRemotePath(currentUser)
 
             initNotificationSetup()

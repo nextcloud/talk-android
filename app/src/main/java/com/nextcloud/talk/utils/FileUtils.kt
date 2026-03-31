@@ -12,6 +12,8 @@ package com.nextcloud.talk.utils
 import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
@@ -27,6 +29,7 @@ object FileUtils {
     private val TAG = FileUtils::class.java.simpleName
     private const val RADIX: Int = 16
     private const val MD5_LENGTH: Int = 32
+    private const val JPEG_QUALITY = 80
 
     /**
      * Creates a new [File]
@@ -149,6 +152,41 @@ object FileUtils {
         }
 
         return filename
+    }
+
+    /**
+     * Returns PNG [File] for transparent WebP, and JPG [File] for opaque WebP image.
+     * Returns null if conversion fails.
+     */
+    fun convertWebp(context: Context, sourceFile: File): File? {
+        val bitmap = BitmapFactory.decodeFile(sourceFile.absolutePath)
+        if (bitmap == null) {
+            Log.e(TAG, "Failed to decode WebP file: ${sourceFile.absolutePath}")
+            return null
+        }
+        val (format, extension) = if (bitmap.hasAlpha()) {
+            Bitmap.CompressFormat.PNG to "png"
+        } else {
+            Bitmap.CompressFormat.JPEG to "jpg"
+        }
+        val outputFileName = sourceFile.nameWithoutExtension + ".$extension"
+        File(context.applicationContext.filesDir, outputFileName).let { if (it.exists()) it.delete() }
+        return try {
+            val outputFile = getTempCacheFile(context, outputFileName)
+            val quality = if (format == Bitmap.CompressFormat.JPEG) JPEG_QUALITY else 0
+            val compressed = FileOutputStream(outputFile).use { out -> bitmap.compress(format, quality, out) }
+            bitmap.recycle()
+            if (compressed) {
+                outputFile
+            } else {
+                Log.e(TAG, "Failed to compress WebP bitmap to $format")
+                outputFile.delete()
+                null
+            }
+        } catch (e: IOException) {
+            Log.e(TAG, "IOException during WebP conversion", e)
+            null
+        }
     }
 
     @JvmStatic
