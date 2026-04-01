@@ -735,7 +735,7 @@ Kies er eentje van een provider.</string>
     <string name="user_info_displayname">Volledige naam</string>
     <string name="user_info_email">E-mailadres</string>
     <string name="user_info_fediverse">Fediverse</string>
-    <string name="user_info_headline">Hoofdlijn</string>
+    <string name="user_info_headline">Kop</string>
     <string name="user_info_organisation">Organisatie</string>
     <string name="user_info_phone">Telefoonnummer</string>
     <string name="user_info_profile_enable">Schakel profiel in</string>
