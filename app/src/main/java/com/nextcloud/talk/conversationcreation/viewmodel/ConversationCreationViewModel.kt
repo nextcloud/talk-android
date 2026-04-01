@@ -19,6 +19,7 @@ import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericMeta
+import com.nextcloud.talk.models.json.passwordResult.PasswordResult
 import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl.Companion.STATUS_CODE_OK
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ApiUtils.getRetrofitBucketForAddParticipant
@@ -36,6 +37,9 @@ class ConversationCreationViewModel @Inject constructor(
     private val _selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
     val selectedParticipants: StateFlow<List<AutocompleteUser>> = _selectedParticipants
     private val roomViewState = MutableStateFlow<RoomUIState>(RoomUIState.None)
+
+    private val _validPasswordViewState = MutableStateFlow<ValidPasswordUiState>(ValidPasswordUiState.None)
+    val validPasswordViewState: StateFlow<ValidPasswordUiState> = _validPasswordViewState
 
     private val _selectedImageUri = MutableStateFlow<Uri?>(null)
     val selectedImageUri: StateFlow<Uri?> = _selectedImageUri
@@ -79,6 +83,28 @@ class ConversationCreationViewModel @Inject constructor(
 
     fun updateConversationDescription(conversationDescription: String) {
         _conversationDescription.value = conversationDescription
+    }
+
+    fun resetPasswordViewState() {
+        _validPasswordViewState.value = ValidPasswordUiState.None
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun validatePassword(url: String, password: String) {
+        val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token) ?: ""
+        viewModelScope.launch {
+            try {
+                val passwordResult = repository.validatePassword(
+                    credentials,
+                    url,
+                    password
+                )
+
+                _validPasswordViewState.value = ValidPasswordUiState.Success(passwordResult.ocs?.data!!)
+            } catch (exception: Exception) {
+                _validPasswordViewState.value = ValidPasswordUiState.Error(exception.message ?: "")
+            }
+        }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -253,4 +279,10 @@ sealed class AddParticipantsUiState {
     data object None : AddParticipantsUiState()
     data class Success(val participants: List<Conversation>?) : AddParticipantsUiState()
     data class Error(val message: String) : AddParticipantsUiState()
+}
+
+sealed class ValidPasswordUiState {
+    data object None : ValidPasswordUiState()
+    data class Success(val result: PasswordResult) : ValidPasswordUiState()
+    data class Error(val message: String) : ValidPasswordUiState()
 }

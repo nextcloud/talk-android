@@ -8,10 +8,30 @@
  */
 package com.nextcloud.talk.conversationinfo
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context.CLIPBOARD_SERVICE
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -19,7 +39,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
-import com.nextcloud.talk.databinding.DialogPasswordBinding
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -41,8 +60,13 @@ class GuestAccessHelper(
     private val lifecycleOwner: LifecycleOwner
 ) {
     private val conversationsRepository = activity.conversationsRepository
-    private val viewThemeUtils = activity.viewThemeUtils
     private val context = activity.context
+
+    private var shouldCopyPasswordAfterSet: Boolean = false
+    private var lastSetPassword: String = ""
+    private var passwordValidationState by mutableStateOf<ConversationInfoViewModel.SecurePasswordViewState>(
+        ConversationInfoViewModel.SecurePasswordViewState.None
+    )
 
     fun setupGuestAccess() {
         if (ConversationUtils.canModerate(conversation, spreedCapabilities)) {
@@ -62,34 +86,38 @@ class GuestAccessHelper(
             hideAllOptions()
         }
 
+        viewModel.allowGuestsViewState.observe(lifecycleOwner) { uiState ->
+            when (uiState) {
+                is ConversationInfoViewModel.AllowGuestsUIState.Success -> {
+                    binding.guestAccessView.allowGuestsSwitch.isChecked = uiState.allow
+                    if (uiState.allow) {
+                        showAllOptions()
+                    } else {
+                        hideAllOptions()
+                    }
+                }
+
+                is ConversationInfoViewModel.AllowGuestsUIState.Error -> {
+                    val exception = uiState.exception
+                    val message = context.getString(R.string.nc_guest_access_allow_failed)
+                    Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                    Log.e(TAG, message, exception)
+                }
+
+                ConversationInfoViewModel.AllowGuestsUIState.None -> Unit
+            }
+        }
+
+        viewModel.securePasswordViewState.observe(lifecycleOwner) { uiState ->
+            passwordValidationState = uiState
+        }
+
+        passwordObserver()
+
         binding.guestAccessView.guestAccessSettingsAllowGuest.setOnClickListener {
             val isChecked = binding.guestAccessView.allowGuestsSwitch.isChecked
             binding.guestAccessView.allowGuestsSwitch.isChecked = !isChecked
-            viewModel.allowGuests(
-                conversationUser,
-                conversation.token,
-                !isChecked
-            )
-            viewModel.allowGuestsViewState.observe(lifecycleOwner) { uiState ->
-                when (uiState) {
-                    is ConversationInfoViewModel.AllowGuestsUIState.Success -> {
-                        binding.guestAccessView.allowGuestsSwitch.isChecked = uiState.allow
-                        if (uiState.allow) {
-                            showAllOptions()
-                        } else {
-                            hideAllOptions()
-                        }
-                    }
-                    is ConversationInfoViewModel.AllowGuestsUIState.Error -> {
-                        val exception = uiState.exception
-                        val message = context.getString(R.string.nc_guest_access_allow_failed)
-                        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                        Log.e(TAG, message, exception)
-                    }
-                    ConversationInfoViewModel.AllowGuestsUIState.None -> {
-                    }
-                }
-            }
+            viewModel.allowGuests(conversationUser, conversation.token, !isChecked)
         }
 
         binding.guestAccessView.guestAccessSettingsPasswordProtection.setOnClickListener {
@@ -105,12 +133,7 @@ class GuestAccessHelper(
                     conversationUser.baseUrl!!,
                     conversation.token
                 )
-                viewModel.setPassword(
-                    user = conversationUser,
-                    url = url,
-                    password = ""
-                )
-                passwordObserver()
+                viewModel.setPassword(user = conversationUser, url = url, password = "")
             } else {
                 showPasswordDialog()
             }
@@ -124,11 +147,10 @@ class GuestAccessHelper(
                 conversation.token
             )
 
-            conversationsRepository.resendInvitations(
-                user = conversationUser,
-                url = url
-            ).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(ResendInvitationsObserver())
+            conversationsRepository.resendInvitations(user = conversationUser, url = url)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ResendInvitationsObserver())
         }
     }
 
@@ -136,61 +158,64 @@ class GuestAccessHelper(
         viewModel.passwordViewState.observe(lifecycleOwner) { uiState ->
             when (uiState) {
                 is ConversationInfoViewModel.PasswordUiState.Success -> {
-                    // unused atm
+                    if (shouldCopyPasswordAfterSet && lastSetPassword.isNotEmpty()) {
+                        val clipboardManager = activity.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                        val clipData = ClipData.newPlainText("Guest access password", lastSetPassword)
+                        clipboardManager.setPrimaryClip(clipData)
+                    }
+                    shouldCopyPasswordAfterSet = false
+                    lastSetPassword = ""
                 }
+
                 is ConversationInfoViewModel.PasswordUiState.Error -> {
                     val exception = uiState.exception
                     val message = context.getString(R.string.nc_guest_access_password_failed)
                     Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
                     Log.e(TAG, message, exception)
                 }
-                is ConversationInfoViewModel.PasswordUiState.None -> {
-                    // unused atm
-                }
+
+                is ConversationInfoViewModel.PasswordUiState.None -> Unit
             }
         }
     }
 
     private fun showPasswordDialog() {
-        val builder = MaterialAlertDialogBuilder(activity)
-        builder.apply {
-            val dialogPassword = DialogPasswordBinding.inflate(LayoutInflater.from(context))
-            viewThemeUtils.platform.colorEditText(dialogPassword.password)
-            setView(dialogPassword.root)
-            setTitle(R.string.nc_guest_access_password_dialog_title)
-            setPositiveButton(R.string.nc_ok) { _, _ ->
-                val apiVersion = ApiUtils.getConversationApiVersion(
-                    conversationUser,
-                    intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
-                )
-                val url = ApiUtils.getUrlForRoomPassword(
-                    apiVersion,
-                    conversationUser.baseUrl!!,
-                    conversation.token
-                )
-                val password = dialogPassword.password.text.toString()
-                viewModel.setPassword(
-                    user = conversationUser,
-                    url = url,
-                    password = password
-                )
-            }
-            setNegativeButton(R.string.nc_cancel) { _, _ ->
-                binding.guestAccessView.passwordProtectionSwitch.isChecked = false
-            }
-        }
-        createDialog(builder)
-        passwordObserver()
-    }
-
-    private fun createDialog(builder: MaterialAlertDialogBuilder) {
-        builder.create()
-        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(binding.conversationInfoName.context, builder)
-        val dialog = builder.show()
-        viewThemeUtils.platform.colorTextButtons(
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        val apiVersion = ApiUtils.getConversationApiVersion(
+            conversationUser,
+            intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
         )
+        val url = ApiUtils.getUrlForRoomPassword(apiVersion, conversationUser.baseUrl!!, conversation.token)
+
+        val validPasswordUrl = conversationUser?.capabilities?.passwordCapability?.api?.validatePasswordApi ?: ""
+        passwordValidationState = ConversationInfoViewModel.SecurePasswordViewState.None
+
+        val composeView = ComposeView(activity)
+        var materialDialog: AlertDialog? = null
+        val credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)
+        composeView.setContent {
+            GuestAccessPasswordDialog(
+                validationState = passwordValidationState,
+                onPasswordChanged = { password ->
+                    viewModel.securePassword(credentials!!, validPasswordUrl, password)
+                },
+                onDismiss = {
+                    binding.guestAccessView.passwordProtectionSwitch.isChecked = false
+                    materialDialog?.dismiss()
+                },
+                onSave = { password, copyAfterSave ->
+                    shouldCopyPasswordAfterSet = copyAfterSave
+                    lastSetPassword = password
+                    viewModel.setPassword(user = conversationUser, url = url, password = password)
+                    materialDialog?.dismiss()
+                }
+            )
+        }
+
+        val builder = MaterialAlertDialogBuilder(activity)
+            .setView(composeView)
+            .setCancelable(true)
+
+        materialDialog = builder.show()
     }
 
     inner class ResendInvitationsObserver : Observer<ConversationsRepository.ResendInvitationsResult> {
@@ -236,3 +261,91 @@ class GuestAccessHelper(
         private val TAG = GuestAccessHelper::class.simpleName
     }
 }
+
+@Composable
+@Suppress("LongMethod")
+private fun GuestAccessPasswordDialog(
+    validationState: ConversationInfoViewModel.SecurePasswordViewState,
+    onPasswordChanged: (String) -> Unit,
+    onDismiss: () -> Unit,
+    onSave: (password: String, copyAfterSave: Boolean) -> Unit
+) {
+    var password by rememberSaveable { mutableStateOf("") }
+    val secureText = stringResource(R.string.nc_password_secure)
+    val warningMessage = passwordWarningMessage(validationState, secureText)
+    val isPasswordValid =
+        password.isNotBlank() && warningMessage == secureText
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = stringResource(id = R.string.nc_guest_access_password_dialog_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = {
+                        password = it
+                        onPasswordChanged(it)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    label = {
+                        Text(text = stringResource(id = R.string.nc_guest_access_password_dialog_hint))
+                    },
+                    supportingText = {
+                        warningMessage?.let {
+                            Text(
+                                text = it,
+                                color = if (!isPasswordValid) {
+                                    colorResource(R.color.nc_darkRed)
+                                } else {
+                                    colorResource(R.color.nc_darkGreen)
+                                }
+                            )
+                        }
+                    }
+                )
+            }
+        },
+        confirmButton = {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                TextButton(
+                    onClick = { onSave(password, true) },
+                    enabled = isPasswordValid
+                ) {
+                    Text(text = stringResource(R.string.nc_copy_password))
+                }
+                TextButton(
+                    onClick = { onSave(password, false) },
+                    enabled = isPasswordValid
+                ) {
+                    Text(text = stringResource(R.string.save))
+                }
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(id = R.string.nc_cancel))
+            }
+        }
+    )
+}
+
+@Composable
+private fun passwordWarningMessage(
+    validationState: ConversationInfoViewModel.SecurePasswordViewState,
+    secureText: String
+): String? =
+    when (validationState) {
+        is ConversationInfoViewModel.SecurePasswordViewState.Success -> {
+            validationState.result.passed?.let { passed ->
+                if (passed) secureText else validationState.result.reason
+            }
+        }
+
+        is ConversationInfoViewModel.SecurePasswordViewState.Error -> {
+            stringResource(R.string.nc_common_error_sorry)
+        }
+
+        ConversationInfoViewModel.SecurePasswordViewState.None -> ""
+    }
