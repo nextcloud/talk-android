@@ -98,6 +98,7 @@ import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationViewModel
+import com.nextcloud.talk.conversationcreation.viewmodel.ValidPasswordUiState
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.utils.CapabilitiesUtil
@@ -567,10 +568,10 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
         text = stringResource(id = R.string.nc_new_conversation_visibility),
         style = MaterialTheme.typography.titleSmall,
         color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp)
+        modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
     )
 
-    Column {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         ConversationOptions(
             icon = R.drawable.ic_avatar_link,
             text = R.string.nc_guest_access_allow_title,
@@ -666,7 +667,8 @@ fun ConversationOptions(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+            .height(40.dp)
+            .padding(horizontal = 16.dp)
             .then(
                 if (!conversationCreationViewModel.isPasswordEnabled.value && isPasswordSetOrChange) {
                     Modifier.clickable {
@@ -681,7 +683,7 @@ fun ConversationOptions(
                         val clipboardManager =
                             context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         val clip = ClipData.newPlainText(
-                            context.getString(R.string.nc_app_product_name),
+                            context.resources.getString(R.string.nc_app_product_name),
                             conversationCreationViewModel.password.value
                         )
                         clipboardManager.setPrimaryClip(clip)

@@ -15,7 +15,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
-import com.nextcloud.talk.conversationcreation.ConversationCreationRepository
+import com.nextcloud.talk.conversationcreation.data.ConversationCreationRepository
 import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.conversationinfo.Participants
 import com.nextcloud.talk.data.user.model.User
