@@ -2129,7 +2129,7 @@ class CallActivity : CallBaseActivity() {
         Log.d(TAG, "hangup! shutDownView=$shutDownView, endCallForAll=$endCallForAll")
         Log.d(TAG, "hangup! isIntentionallyLeavingCall=$isIntentionallyLeavingCall")
         Log.d(TAG, "hangup! powerManagerUtils state before cleanup: ${powerManagerUtils != null}")
-        
+
         if (shutDownView) {
             setCallState(CallStatus.LEAVING)
         }
