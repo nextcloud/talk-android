@@ -34,10 +34,8 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.core.utils.ecosystem.AccountReceiverCallback
 import com.nextcloud.android.common.core.utils.ecosystem.EcosystemManager
-import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.account.ServerSelectionActivity
@@ -341,7 +339,7 @@ class ConversationsListActivity : BaseActivity() {
                         val intent = Intent(context, ConversationsListActivity::class.java)
                         startActivity(intent)
                     } else {
-                        Snackbar.make(binding.root, R.string.nc_no_account_found, Snackbar.LENGTH_LONG).show()
+                        showSnackbar(getString(R.string.nc_no_account_found))
                     }
                     Log.d(TAG, accountName)
                 }
