@@ -370,6 +370,8 @@ class ChatActivity :
     private lateinit var path: String
 
     var myFirstMessage: CharSequence? = null
+    var checkingLobbyStatus: Boolean = false
+    private var isLeavingRoom: Boolean = false
 
     private var lastHandledHighlightNonce: Long? = null
     private var pendingHighlightedMessageId: Long? = null
@@ -421,6 +423,42 @@ class ChatActivity :
     private lateinit var messageInputFragment: MessageInputFragment
 
     val typingParticipants = HashMap<String, TypingParticipant>()
+
+    var callStarted = false
+
+    private val leaveRoomObserver = androidx.lifecycle.Observer<ChatViewModel.ViewState> { state ->
+        when (state) {
+            is ChatViewModel.LeaveRoomSuccessState -> {
+                logConversationInfos("leaveRoom#onNext")
+
+                isLeavingRoom = false
+
+                checkingLobbyStatus = false
+
+                if (getRoomInfoTimerHandler != null) {
+                    getRoomInfoTimerHandler?.removeCallbacksAndMessages(null)
+                }
+
+                ApplicationWideCurrentRoomHolder.getInstance().clear()
+
+                if (webSocketInstance != null && currentConversation != null) {
+                    webSocketInstance?.joinRoomWithRoomTokenAndSession(
+                        "",
+                        sessionIdAfterRoomJoined
+                    )
+                }
+
+                sessionIdAfterRoomJoined = "0"
+
+                if (state.funToCallWhenLeaveSuccessful != null) {
+                    Log.d(TAG, "a callback action was set and is now executed because room was left successfully")
+                    state.funToCallWhenLeaveSuccessful.invoke()
+                }
+            }
+
+            else -> {}
+        }
+    }
 
     private val localParticipantMessageListener = SignalingMessageReceiver.LocalParticipantMessageListener { token ->
         if (CallActivity.active) {
@@ -1467,6 +1505,8 @@ class ChatActivity :
                 else -> {}
             }
         }
+
+        chatViewModel.leaveRoomViewState.observeForever(leaveRoomObserver)
 
         messageInputViewModel.sendChatMessageViewState.observe(this) { state ->
             when (state) {
@@ -2760,11 +2800,13 @@ class ChatActivity :
         }
 
         if (::conversationUser.isInitialized && isActivityNotChangingConfigurations() && isNotInCall()) {
-            ApplicationWideCurrentRoomHolder.getInstance().clear()
-            if (validSessionId()) {
+            if (isLeavingRoom) {
+                Log.d(TAG, "not leaving room (leave already in progress)")
+            } else if (validSessionId()) {
                 leaveRoom(null)
             } else {
                 Log.d(TAG, "not leaving room (validSessionId is false)")
+                ApplicationWideCurrentRoomHolder.getInstance().clear()
             }
         } else {
             Log.d(TAG, "not leaving room...")
@@ -2819,6 +2861,8 @@ class ChatActivity :
         super.onDestroy()
         logConversationInfos("onDestroy")
 
+        chatViewModel.leaveRoomViewState.removeObserver(leaveRoomObserver)
+
         findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
 
         if (actionBar != null) {
@@ -2854,6 +2898,7 @@ class ChatActivity :
 
     fun leaveRoom(functionToCallAfterLeave: (() -> Unit)?) {
         logConversationInfos("leaveRoom")
+        isLeavingRoom = true
 
         // Send the HPB "leave room" immediately, before waiting for the backend DELETE to
         // confirm. This minimises the window in which the HPB could still consider the user
