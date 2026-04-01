@@ -263,6 +263,7 @@ class GuestAccessHelper(
 }
 
 @Composable
+@Suppress("LongMethod")
 private fun GuestAccessPasswordDialog(
     validationState: ConversationInfoViewModel.SecurePasswordViewState,
     onPasswordChanged: (String) -> Unit,
@@ -270,27 +271,10 @@ private fun GuestAccessPasswordDialog(
     onSave: (password: String, copyAfterSave: Boolean) -> Unit
 ) {
     var password by rememberSaveable { mutableStateOf("") }
-
-    val warningMessage = when (validationState) {
-        is ConversationInfoViewModel.SecurePasswordViewState.Success -> {
-            validationState.result.passed?.let { validPassword ->
-                if (!validPassword) {
-                    validationState.result.reason
-                } else {
-                    stringResource(R.string.nc_password_secure)
-                }
-            }
-        }
-
-        is ConversationInfoViewModel.SecurePasswordViewState.Error -> {
-            stringResource(id = R.string.nc_common_error_sorry)
-        }
-
-        ConversationInfoViewModel.SecurePasswordViewState.None -> ""
-    }
-
+    val secureText = stringResource(R.string.nc_password_secure)
+    val warningMessage = passwordWarningMessage(validationState, secureText)
     val isPasswordValid =
-        password.isNotBlank() && warningMessage == stringResource(R.string.nc_password_secure)
+        password.isNotBlank() && warningMessage == secureText
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -331,7 +315,6 @@ private fun GuestAccessPasswordDialog(
                 ) {
                     Text(text = stringResource(R.string.nc_copy_password))
                 }
-
                 TextButton(
                     onClick = { onSave(password, false) },
                     enabled = isPasswordValid
@@ -347,3 +330,22 @@ private fun GuestAccessPasswordDialog(
         }
     )
 }
+
+@Composable
+private fun passwordWarningMessage(
+    validationState: ConversationInfoViewModel.SecurePasswordViewState,
+    secureText: String
+): String? =
+    when (validationState) {
+        is ConversationInfoViewModel.SecurePasswordViewState.Success -> {
+            validationState.result.passed?.let { passed ->
+                if (passed) secureText else validationState.result.reason
+            }
+        }
+
+        is ConversationInfoViewModel.SecurePasswordViewState.Error -> {
+            stringResource(R.string.nc_common_error_sorry)
+        }
+
+        ConversationInfoViewModel.SecurePasswordViewState.None -> ""
+    }
