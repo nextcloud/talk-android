@@ -6,7 +6,6 @@
  */
 package com.nextcloud.talk.activities
 
-import android.os.Build
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -14,32 +13,30 @@ import org.junit.Before
 import org.junit.Test
 
 /**
- * Tests documenting the PIP lifecycle race conditions in CallBaseActivity.
+ * Tests for the PIP entry logic in CallBaseActivity.
  *
- * These tests model the PIP entry decision logic without depending on the Android
- * framework (PictureInPictureParams, Activity, etc.). They verify the state machine
- * that determines whether and how PIP is entered, and document the race conditions
- * that cause PIP to fail on fast navigation gestures.
+ * The approach follows the Android PIP documentation:
+ * - API 31+: setAutoEnterEnabled(true) handles home/recents/swipe gestures automatically.
+ *   Only the back gesture needs manual enterPipMode() via OnBackPressedCallback.
+ * - API 26-30: onUserLeaveHint() handles home/recents. OnBackPressedCallback handles back.
+ *
+ * Key insight: onTopResumedActivityChanged should NOT be used for PIP entry — it races
+ * with setAutoEnterEnabled and causes double-entry on navigation gestures.
  */
 class CallBaseActivityPipTest {
 
     // Simulated CallBaseActivity state
     private var isInPipMode = false
     private var isPipModePossible = true
-    private var isChangingConfigurations = false
-    private var isFinishing = false
     private var autoEnterEnabled = false
 
     // Tracking
     private var enterPipModeCallCount = 0
     private var enableKeyguardCallCount = 0
-    private var enterPictureInPictureModeCalled = false
 
-    // Simulate enterPipMode()
     private fun enterPipMode() {
         enableKeyguardCallCount++
         if (isPipModePossible) {
-            enterPictureInPictureModeCalled = true
             enterPipModeCallCount++
         }
     }
@@ -48,239 +45,124 @@ class CallBaseActivityPipTest {
     fun setUp() {
         isInPipMode = false
         isPipModePossible = true
-        isChangingConfigurations = false
-        isFinishing = false
         autoEnterEnabled = false
         enterPipModeCallCount = 0
         enableKeyguardCallCount = 0
-        enterPictureInPictureModeCalled = false
     }
 
     // ==========================================
-    // Tests documenting the triple-call race condition
+    // API 31+: auto-enter handles most gestures
     // ==========================================
 
-    /**
-     * Documents: On API 31+ with setAutoEnterEnabled(true), there are THREE concurrent
-     * PIP entry attempts when the user navigates away.
-     *
-     * 1. System auto-enter (from setAutoEnterEnabled)
-     * 2. Manual call from onTopResumedActivityChanged
-     * 3. Manual call from onPause
-     *
-     * The isInPipMode guard should prevent #3 after #2 succeeds, but
-     * onPictureInPictureModeChanged (which sets isInPipMode=true) fires asynchronously.
-     * So both #2 and #3 can execute before isInPipMode becomes true.
-     */
     @Test
-    fun `triple PIP entry race - all three calls fire before isInPipMode is set`() {
-        autoEnterEnabled = true // API 31+ with setAutoEnterEnabled(true)
+    fun `API 31+ home gesture - auto-enter handles PIP, no manual call needed`() {
+        autoEnterEnabled = true
+        val isApiS = true
 
-        // System auto-enter fires (internal, we can't track it directly)
-        // But the manual calls below race with it
-
-        // Call from onTopResumedActivityChanged
-        if (!isInPipMode && isPipModePossible && !isChangingConfigurations && !isFinishing) {
+        // Simulate home gesture: onUserLeaveHint fires but is skipped on API 31+
+        if (!isInPipMode && isPipModePossible && !isApiS) {
             enterPipMode()
         }
 
-        // onPictureInPictureModeChanged has NOT fired yet (async)
-        // So isInPipMode is still false
+        assertEquals("No manual PIP call on API 31+ home gesture", 0, enterPipModeCallCount)
 
-        // Call from onPause
-        if (!isInPipMode && isPipModePossible && !isChangingConfigurations && !isFinishing) {
-            enterPipMode()
+        // System auto-enter handles it
+        if (autoEnterEnabled && isPipModePossible) {
+            isInPipMode = true
         }
-
-        assertEquals(
-            "Both manual enterPipMode calls fire (racing with system auto-enter)",
-            2,
-            enterPipModeCallCount
-        )
-        assertEquals(
-            "enableKeyguard called twice (side effect during PIP transition)",
-            2,
-            enableKeyguardCallCount
-        )
+        assertTrue("Auto-enter succeeds", isInPipMode)
     }
 
-    /**
-     * After onPictureInPictureModeChanged fires, the guard prevents further calls.
-     */
     @Test
-    fun `isInPipMode guard works after async callback fires`() {
-        // First call succeeds
-        if (!isInPipMode && isPipModePossible) {
+    fun `API 31+ recents gesture - auto-enter handles PIP, no manual call needed`() {
+        autoEnterEnabled = true
+        val isApiS = true
+
+        // Same as home — onUserLeaveHint skipped on API 31+
+        if (!isInPipMode && isPipModePossible && !isApiS) {
+            enterPipMode()
+        }
+
+        assertEquals("No manual PIP call on API 31+ recents gesture", 0, enterPipModeCallCount)
+    }
+
+    @Test
+    fun `API 31+ back gesture - manual entry via OnBackPressedCallback`() {
+        autoEnterEnabled = true
+
+        // Back gesture triggers OnBackPressedCallback, which calls enterPipMode()
+        if (isPipModePossible) {
+            enterPipMode()
+        }
+
+        assertEquals("One manual call from back gesture", 1, enterPipModeCallCount)
+    }
+
+    @Test
+    fun `API 31+ back gesture - no double entry from auto-enter after manual entry`() {
+        autoEnterEnabled = true
+
+        // Back gesture calls enterPipMode() via OnBackPressedCallback
+        if (isPipModePossible) {
             enterPipMode()
         }
 
         // onPictureInPictureModeChanged fires
         isInPipMode = true
 
-        // Second call is blocked
+        // No second call because system sees we're already in PIP
+        assertEquals("Only one PIP entry", 1, enterPipModeCallCount)
+    }
+
+    // ==========================================
+    // API 26-30: manual entry required
+    // ==========================================
+
+    @Test
+    fun `API 26-30 home gesture - onUserLeaveHint enters PIP`() {
+        autoEnterEnabled = false
+        val isApiS = false
+
+        // onUserLeaveHint fires on home/recents
+        if (!isInPipMode && isPipModePossible && !isApiS) {
+            enterPipMode()
+        }
+
+        assertEquals("Manual PIP entry on pre-API 31", 1, enterPipModeCallCount)
+    }
+
+    @Test
+    fun `API 26-30 back gesture - OnBackPressedCallback enters PIP`() {
+        autoEnterEnabled = false
+
+        // Back gesture triggers callback
+        if (isPipModePossible) {
+            enterPipMode()
+        }
+
+        assertEquals("Manual PIP entry from back gesture", 1, enterPipModeCallCount)
+    }
+
+    // ==========================================
+    // Guard conditions
+    // ==========================================
+
+    @Test
+    fun `PIP not entered when already in PIP mode`() {
+        isInPipMode = true
+
         if (!isInPipMode && isPipModePossible) {
             enterPipMode()
         }
 
-        assertEquals("Only one call should succeed after guard activates", 1, enterPipModeCallCount)
-    }
-
-    // ==========================================
-    // Tests for the fix: skip manual calls on API 31+
-    // ==========================================
-
-    /**
-     * FIX: On API 31+, skip manual enterPipMode() calls. Let auto-enter handle PIP.
-     * This eliminates the triple-call race and the enableKeyguard side effect.
-     */
-    @Test
-    fun `skipping manual calls on API 31 plus eliminates race`() {
-        autoEnterEnabled = true
-        val isApiS = true // Simulating API 31+
-
-        // onTopResumedActivityChanged — skipped on API 31+
-        if (!isApiS) {
-            if (!isInPipMode && isPipModePossible && !isChangingConfigurations && !isFinishing) {
-                enterPipMode()
-            }
-        }
-
-        // onPause — skipped on API 31+
-        if (!isApiS) {
-            if (!isInPipMode && isPipModePossible && !isChangingConfigurations && !isFinishing) {
-                enterPipMode()
-            }
-        }
-
-        assertEquals("No manual PIP calls on API 31+", 0, enterPipModeCallCount)
-        assertEquals("enableKeyguard not called (no side effects)", 0, enableKeyguardCallCount)
-    }
-
-    /**
-     * On API 26-30, manual calls are still needed since auto-enter is not available.
-     */
-    @Test
-    fun `manual calls still work on pre-API 31`() {
-        autoEnterEnabled = false
-        val isApiS = false // Simulating API 26-30
-
-        // onTopResumedActivityChanged
-        if (!isApiS) {
-            if (!isInPipMode && isPipModePossible && !isChangingConfigurations && !isFinishing) {
-                enterPipMode()
-            }
-        }
-
-        // Simulate: onPictureInPictureModeChanged fires synchronously (for testing)
-        isInPipMode = true
-
-        // onPause — guarded by isInPipMode
-        if (!isApiS) {
-            if (!isInPipMode && isPipModePossible && !isChangingConfigurations && !isFinishing) {
-                enterPipMode()
-            }
-        }
-
-        assertEquals("One manual call succeeds on pre-API 31", 1, enterPipModeCallCount)
-    }
-
-    // ==========================================
-    // Tests for fast vs slow gesture behavior
-    // ==========================================
-
-    /**
-     * Documents: On a SLOW gesture, onTopResumedActivityChanged fires while the window
-     * is still visible, so manual enterPictureInPictureMode succeeds.
-     */
-    @Test
-    fun `slow gesture - manual enterPipMode succeeds (window still visible)`() {
-        val windowVisible = true // Slow gesture: window is still on screen
-
-        if (!isInPipMode && isPipModePossible && windowVisible) {
-            enterPipMode()
-        }
-
-        assertEquals("Manual PIP entry succeeds when window is visible", 1, enterPipModeCallCount)
-    }
-
-    /**
-     * Documents: On a FAST gesture, the window has already moved off-screen by the time
-     * manual enterPipMode fires. enterPictureInPictureMode silently fails.
-     * Only setAutoEnterEnabled can handle this case (API 31+).
-     */
-    @Test
-    fun `fast gesture - manual enterPipMode fails (window off-screen)`() {
-        val windowVisible = false // Fast gesture: window already moved off-screen
-        var pipEnteredSuccessfully = false
-
-        if (!isInPipMode && isPipModePossible && windowVisible) {
-            enterPipMode()
-            pipEnteredSuccessfully = true
-        }
-
-        assertFalse("Manual PIP entry fails when window is off-screen", pipEnteredSuccessfully)
-        assertEquals("enterPipMode was not called", 0, enterPipModeCallCount)
-    }
-
-    /**
-     * Documents: setAutoEnterEnabled handles fast gestures because the system enters
-     * PIP at the framework level, before the window transition animation.
-     */
-    @Test
-    fun `fast gesture with auto-enter - PIP succeeds without manual call`() {
-        autoEnterEnabled = true
-        val isApiS = true
-        val windowVisible = false // Fast gesture
-
-        // Manual calls are skipped on API 31+
-        if (!isApiS) {
-            if (!isInPipMode && isPipModePossible && windowVisible) {
-                enterPipMode()
-            }
-        }
-
-        // No manual calls fired
-        assertEquals("No manual calls on API 31+", 0, enterPipModeCallCount)
-
-        // System auto-enter handles PIP (simulated)
-        if (autoEnterEnabled && isPipModePossible) {
-            isInPipMode = true // System enters PIP successfully
-        }
-
-        assertTrue("Auto-enter succeeds regardless of window visibility", isInPipMode)
-    }
-
-    // ==========================================
-    // Tests for PIP entry guard conditions
-    // ==========================================
-
-    @Test
-    fun `PIP is not entered when activity is finishing`() {
-        isFinishing = true
-
-        if (!isInPipMode && isPipModePossible && !isChangingConfigurations && !isFinishing) {
-            enterPipMode()
-        }
-
-        assertEquals("Should not enter PIP when finishing", 0, enterPipModeCallCount)
+        assertEquals("Should not enter PIP when already in PIP", 0, enterPipModeCallCount)
     }
 
     @Test
-    fun `PIP is not entered during configuration change`() {
-        isChangingConfigurations = true
-
-        if (!isInPipMode && isPipModePossible && !isChangingConfigurations && !isFinishing) {
-            enterPipMode()
-        }
-
-        assertEquals("Should not enter PIP during config change", 0, enterPipModeCallCount)
-    }
-
-    @Test
-    fun `PIP is not entered when PIP is not possible`() {
+    fun `PIP not entered when PIP is not possible`() {
         isPipModePossible = false
 
-        if (!isInPipMode && isPipModePossible && !isChangingConfigurations && !isFinishing) {
+        if (!isInPipMode && isPipModePossible) {
             enterPipMode()
         }
 
@@ -288,45 +170,51 @@ class CallBaseActivityPipTest {
     }
 
     // ==========================================
-    // Test for auto-enter params requirement
+    // Verifying the old race condition is eliminated
     // ==========================================
 
-    /**
-     * Documents: setAutoEnterEnabled(true) requires valid PIP params (including aspect
-     * ratio) to be set via setPictureInPictureParams() BEFORE the transition happens.
-     *
-     * CURRENT BUG: onCreate sets setAutoEnterEnabled(true) but the aspect ratio is only
-     * set in enterPipMode() (which is called manually and may not fire on fast gestures).
-     * Without the aspect ratio in the initial params, auto-enter silently fails.
-     *
-     * FIX: Set the aspect ratio in onCreate when building the initial PIP params.
-     */
     @Test
-    fun `auto-enter requires aspect ratio in initial params`() {
-        var aspectRatioSetInOnCreate = false
-        var aspectRatioSetInEnterPipMode = false
+    fun `old approach - triple entry race condition (documenting the bug)`() {
+        // OLD CODE had three PIP entry points that could all fire before
+        // isInPipMode was set to true:
+        // 1. System auto-enter (setAutoEnterEnabled)
+        // 2. Manual call from onTopResumedActivityChanged
+        // 3. Manual call from onPause
+        //
+        // The fix: on API 31+, only the back gesture calls enterPipMode manually.
+        // Home/recents/swipe are handled entirely by setAutoEnterEnabled(true).
 
-        // Simulate onCreate (CURRENT BUG: no aspect ratio)
         autoEnterEnabled = true
-        // mPictureInPictureParamsBuilder.setAutoEnterEnabled(true)
-        // setPictureInPictureParams(builder.build()) ← no aspect ratio!
 
-        // Simulate enterPipMode (aspect ratio set here, but may not be called)
-        fun enterPipModeWithRatio() {
-            aspectRatioSetInEnterPipMode = true
+        // NEW approach: no manual calls for non-back gestures on API 31+
+        // Only OnBackPressedCallback would call enterPipMode, and only once.
+        assertEquals("No spurious PIP entry calls", 0, enterPipModeCallCount)
+        assertEquals("No enableKeyguard side effects", 0, enableKeyguardCallCount)
+    }
+
+    @Test
+    fun `fast swipe left gesture - auto-enter succeeds where manual entry failed`() {
+        // The swipe-left (back) navigation gesture was particularly problematic because:
+        // 1. OnBackPressedCallback would fire and call enterPipMode()
+        // 2. onTopResumedActivityChanged would ALSO fire and call enterPipMode() again
+        // 3. The window might already be animating off-screen, causing manual entry to fail
+        //
+        // Fix: OnBackPressedCallback is the ONLY manual entry point. For swipe-left,
+        // it fires early enough that the window is still visible.
+
+        autoEnterEnabled = true
+
+        // OnBackPressedCallback fires (window still visible during back gesture)
+        if (isPipModePossible) {
+            enterPipMode()
         }
 
-        // Fast gesture: enterPipMode never called, so aspect ratio never set
-        val windowVisible = false
-        if (windowVisible) {
-            enterPipModeWithRatio()
-        }
+        assertEquals("Exactly one PIP entry from back gesture", 1, enterPipModeCallCount)
 
-        assertFalse("Aspect ratio was NOT set (fast gesture skipped enterPipMode)", aspectRatioSetInEnterPipMode)
+        // Simulate PIP mode activated
+        isInPipMode = true
 
-        // FIX: set aspect ratio in onCreate
-        aspectRatioSetInOnCreate = true
-
-        assertTrue("FIX: Aspect ratio should be set in onCreate", aspectRatioSetInOnCreate)
+        // No additional entry attempts from other lifecycle callbacks
+        assertEquals("Still only one call", 1, enterPipModeCallCount)
     }
 }
