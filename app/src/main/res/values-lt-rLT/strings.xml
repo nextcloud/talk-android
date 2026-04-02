@@ -403,6 +403,7 @@
     <string name="user_info_headline">Santrauka</string>
     <string name="user_info_organisation">Organizavimas</string>
     <string name="user_info_phone">Telefono numeris</string>
+    <string name="user_info_profile_enable">Įgalinti profilį</string>
     <string name="user_info_pronouns">Vardikliai</string>
     <string name="user_info_role">Vaidmuo</string>
     <string name="user_info_twitter">Twitter</string>
