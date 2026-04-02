@@ -14,7 +14,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.util.Log;
 import android.util.Rational;
 import android.view.View;
@@ -31,8 +30,6 @@ public abstract class CallBaseActivity extends BaseActivity {
 
     public PictureInPictureParams.Builder mPictureInPictureParamsBuilder;
     public Boolean isInPipMode = Boolean.FALSE;
-    long onCreateTime;
-
 
     private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
         @Override
@@ -40,7 +37,6 @@ public abstract class CallBaseActivity extends BaseActivity {
             if (isPipModePossible()) {
                 enterPipMode();
             } else {
-                // Move the task to background instead of finishing
                 moveTaskToBack(true);
             }
         }
@@ -51,8 +47,6 @@ public abstract class CallBaseActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        onCreateTime = System.currentTimeMillis();
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         dismissKeyguard();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -62,9 +56,9 @@ public abstract class CallBaseActivity extends BaseActivity {
             mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
             Rational pipRatio = new Rational(300, 500);
             mPictureInPictureParamsBuilder.setAspectRatio(pipRatio);
-            // Do NOT use setAutoEnterEnabled — it conflicts with manual enterPictureInPictureMode()
-            // calls, causing the PIP window to be invisible. Manual calls from
-            // onTopResumedActivityChanged fire early enough to work even on fast gestures.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                mPictureInPictureParamsBuilder.setAutoEnterEnabled(true);
+            }
             setPictureInPictureParams(mPictureInPictureParamsBuilder.build());
         }
 
@@ -105,26 +99,22 @@ public abstract class CallBaseActivity extends BaseActivity {
     }
 
     /**
-     * Fired on API 29+ when another activity becomes the top resumed activity — including
-     * same-app task switches (e.g. task switcher or quick-switch gesture to the chat window).
-     * This fires *before* onPause() while our window is still fully visible, so
-     * enterPictureInPictureMode() can succeed. On API 26-28 this method is never called by
-     * the system; onPause() below serves as the fallback for those devices.
+     * On API 29+, fires BEFORE onPause while the window is still fully visible.
+     * This is the earliest point where we can detect that another activity is taking over
+     * (including quick-switch gestures that setAutoEnterEnabled doesn't always catch).
+     * We do NOT disable auto-enter here — if auto-enter already handled it,
+     * isInPictureInPictureMode() will be true and this is a no-op.
      */
     @Override
     public void onTopResumedActivityChanged(boolean isTopResumedActivity) {
         super.onTopResumedActivityChanged(isTopResumedActivity);
         Log.d(TAG, "onTopResumedActivityChanged: isTopResumedActivity=" + isTopResumedActivity
-                + " isInPipMode=" + isInPipMode);
+                + " isInPictureInPictureMode=" + isInPictureInPictureMode());
         if (!isTopResumedActivity
-                && !isInPipMode
+                && !isInPictureInPictureMode()
                 && isPipModePossible()
                 && !isChangingConfigurations()
                 && !isFinishing()) {
-            // Always call enterPipMode here — this fires while the window is still visible,
-            // so it works for both task switching (where auto-enter doesn't fire) and
-            // home gestures. On API 31+, auto-enter handles home gestures independently,
-            // but this manual call is needed for task switch (left/right swipe).
             enterPipMode();
         }
     }
@@ -132,9 +122,12 @@ public abstract class CallBaseActivity extends BaseActivity {
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause: isInPipMode=" + isInPipMode);
-        // Fallback: enter PIP if onTopResumedActivityChanged didn't already handle it.
-        if (!isInPipMode
+        Log.d(TAG, "onPause: isInPipMode=" + isInPipMode
+                + " isInPictureInPictureMode=" + isInPictureInPictureMode());
+        // Fallback for API 26-28 where onTopResumedActivityChanged doesn't exist.
+        // On API 29+, onTopResumedActivityChanged already handled this.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
+                && !isInPictureInPictureMode()
                 && isPipModePossible()
                 && !isChangingConfigurations()
                 && !isFinishing()) {
@@ -146,28 +139,17 @@ public abstract class CallBaseActivity extends BaseActivity {
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop: isInPipMode=" + isInPipMode + " isFinishing=" + isFinishing());
-        // Don't automatically finish when going to background
-        // Only finish if explicitly leaving the call
-        if (shouldFinishOnStop() && !isChangingConfigurations()) {
-            // Check if we're really leaving the call or just backgrounding
-            if (isFinishing()) {
-                finish();
-            }
-        }
     }
 
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
-        long onUserLeaveHintTime = System.currentTimeMillis();
-        long diff = onUserLeaveHintTime - onCreateTime;
-        Log.d(TAG, "onUserLeaveHint: diff=" + diff + " isInPipMode=" + isInPipMode);
-
-        if (diff < 3000) {
-            Log.d(TAG, "enterPipMode skipped (too soon after onCreate)");
-        } else if (isInPipMode) {
-            Log.d(TAG, "enterPipMode skipped (already in PIP)");
-        } else {
+        Log.d(TAG, "onUserLeaveHint: isInPipMode=" + isInPipMode);
+        // On API 31+, setAutoEnterEnabled(true) handles this automatically.
+        // On API 26-30, we must enter PIP manually here.
+        if (!isInPipMode
+                && isPipModePossible()
+                && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             enterPipMode();
         }
     }
@@ -178,7 +160,8 @@ public abstract class CallBaseActivity extends BaseActivity {
         if (isPipModePossible()) {
             Rational pipRatio = new Rational(300, 500);
             mPictureInPictureParamsBuilder.setAspectRatio(pipRatio);
-            enterPictureInPictureMode(mPictureInPictureParamsBuilder.build());
+            boolean entered = enterPictureInPictureMode(mPictureInPictureParamsBuilder.build());
+            Log.d(TAG, "enterPictureInPictureMode returned: " + entered);
         } else {
             // If PIP is not available, move to background instead of finishing
             Log.d(TAG, "PIP is not available, moving call to background.");
@@ -195,24 +178,6 @@ public abstract class CallBaseActivity extends BaseActivity {
                 android.os.Process.myUid(),
                 BuildConfig.APPLICATION_ID) == AppOpsManager.MODE_ALLOWED;
             return deviceHasPipFeature && isPipFeatureGranted;
-    }
-
-    private boolean shouldFinishOnStop() {
-        if (!isInPipMode) {
-            return false;
-        }
-
-        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        if (powerManager == null) {
-            return true;
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            return powerManager.isInteractive();
-        } else {
-            //noinspection deprecation
-            return powerManager.isScreenOn();
-        }
     }
 
     public abstract void updateUiForPipMode();
