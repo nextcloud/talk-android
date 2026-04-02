@@ -296,6 +296,10 @@ dependencies {
     implementation("io.noties.markwon:ext-tasklist:$markwonVersion")
     implementation("io.noties.markwon:ext-tables:$markwonVersion")
 
+    // Computer Vision - for background effects during video calls
+    implementation("com.google.mediapipe:tasks-vision:0.10.26")
+    implementation("io.github.crow-misia.libyuv:libyuv-android:0.43.2")
+
     // Avatar picker
     implementation("com.github.nextcloud-deps:ImagePicker:2.1.0.2")
     // Override avatar picker's internal crop lib for better edge-to-edge support
