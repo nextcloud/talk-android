@@ -3061,6 +3061,13 @@ class CallActivity : CallBaseActivity() {
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState) {
             runOnUiThread {
                 if (iceConnectionState == IceConnectionState.FAILED) {
+                    // Don't hang up if the activity is just backgrounded (e.g., task switching).
+                    // The ICE failure is likely transient due to the activity being stopped.
+                    // The connection will recover when the activity resumes.
+                    if (!active && currentCallStatus === CallStatus.IN_CONVERSATION) {
+                        Log.d(TAG, "ICE FAILED while backgrounded, skipping hangup (will recover on resume)")
+                        return@runOnUiThread
+                    }
                     setCallState(CallStatus.PUBLISHER_FAILED)
                     webSocketClient!!.clearResumeId()
                     hangup(false, false)
@@ -3228,8 +3235,15 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    private var pipUiInitialized = false
+
     override fun updateUiForPipMode() {
-        Log.d(TAG, "updateUiForPipMode")
+        Log.d(TAG, "updateUiForPipMode: pipUiInitialized=$pipUiInitialized")
+        if (pipUiInitialized) {
+            return
+        }
+        pipUiInitialized = true
+
         binding!!.callControls.visibility = View.GONE
         binding!!.selfVideoViewWrapper.visibility = View.GONE
         binding!!.callStates.callStateRelativeLayout.visibility = View.GONE
@@ -3247,7 +3261,7 @@ class CallActivity : CallBaseActivity() {
                 try {
                     binding!!.pipSelfVideoRenderer.init(rootEglBase!!.eglBaseContext, null)
                 } catch (e: IllegalStateException) {
-                    Log.d(TAG, "pipGroupVideoRenderer already initialized", e)
+                    Log.d(TAG, "pipSelfVideoRenderer already initialized", e)
                 }
                 binding!!.pipSelfVideoRenderer.setZOrderMediaOverlay(true)
                 // disabled because it causes some devices to crash
@@ -3264,6 +3278,7 @@ class CallActivity : CallBaseActivity() {
 
     override fun updateUiForNormalMode() {
         Log.d(TAG, "updateUiForNormalMode")
+        pipUiInitialized = false
         binding!!.pipOverlay.visibility = View.GONE
         binding!!.composeParticipantGrid.visibility = View.VISIBLE
 
