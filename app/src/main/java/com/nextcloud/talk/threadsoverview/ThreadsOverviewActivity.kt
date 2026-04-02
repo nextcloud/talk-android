@@ -47,7 +47,7 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.ChatActivity.Companion.TAG
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
-import com.nextcloud.talk.data.database.mappers.asModel
+import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.models.json.threads.ThreadInfo
 import com.nextcloud.talk.threadsoverview.components.ThreadRow
 import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
@@ -196,7 +196,7 @@ fun ThreadsList(threads: List<ThreadInfo>, onThreadClick: (roomToken: String, th
             key = { threadInfo -> threadInfo.thread!!.id }
         ) { threadInfo ->
             val messageJson = threadInfo.last ?: threadInfo.first
-            val messageModel = messageJson?.asModel()
+            val messageModel = messageJson?.toDomainModel()
 
             ThreadRow(
                 roomToken = threadInfo.thread!!.roomToken,
@@ -208,7 +208,7 @@ fun ThreadsList(threads: List<ThreadInfo>, onThreadClick: (roomToken: String, th
                     threadInfo.thread?.numReplies ?: 0
                 ),
                 secondLineTitle = messageModel?.actorDisplayName?.substringBefore(space)?.let { "$it:" }.orEmpty(),
-                secondLine = messageModel?.text.orEmpty(),
+                secondLine = messageModel?.getRichText().orEmpty(),
                 date = getLastActivityDate(threadInfo), // replace with value from api when available
                 onClick = onThreadClick
             )

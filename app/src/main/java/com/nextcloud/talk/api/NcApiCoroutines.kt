@@ -20,6 +20,7 @@ import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.participants.TalkBanOverall
 import com.nextcloud.talk.models.json.profile.ProfileOverall
+import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.models.json.status.StatusOverall
 import com.nextcloud.talk.models.json.testNotification.TestNotificationOverall
 import com.nextcloud.talk.models.json.threads.ThreadOverall
@@ -28,6 +29,7 @@ import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEventsOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.Field
@@ -374,4 +376,32 @@ interface NcApiCoroutines {
 
     @GET
     suspend fun getScheduledMessage(@Header("Authorization") authorization: String, @Url url: String): ChatOverall
+
+    @GET
+    suspend fun pullChatMessages(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @QueryMap fields: Map<String, Int>
+    ): Response<ChatOverall>
+
+    @POST
+    suspend fun sendReaction(
+        @Header("Authorization") authorization: String?,
+        @Url url: String,
+        @Query("reaction") reaction: String
+    ): GenericOverall
+
+    @DELETE
+    suspend fun deleteReaction(
+        @Header("Authorization") authorization: String?,
+        @Url url: String,
+        @Query("reaction") reaction: String
+    ): GenericOverall
+
+    @GET
+    suspend fun getReactions(
+        @Header("Authorization") authorization: String?,
+        @Url url: String,
+        @Query("reaction") reaction: String?
+    ): ReactionsOverall
 }

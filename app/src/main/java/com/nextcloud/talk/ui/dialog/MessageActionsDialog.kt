@@ -32,8 +32,6 @@ import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageActionsBinding
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ReactionAddedModel
-import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
@@ -52,10 +50,6 @@ import com.vanniktech.emoji.installDisableKeyboardInput
 import com.vanniktech.emoji.installForceSingleEmoji
 import com.vanniktech.emoji.recent.RecentEmojiManager
 import com.vanniktech.emoji.search.SearchEmojiManager
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -209,8 +203,8 @@ class MessageActionsDialog(
     private fun hasUserId(user: User?): Boolean = user?.userId?.isNotEmpty() == true && user.userId != "?"
 
     private fun hasUserActorId(message: ChatMessage): Boolean =
-        message.user.id.startsWith("users/") &&
-            message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId
+        message.actorType == "users" &&
+            message.actorId != currentConversation?.actorId
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initEmojiMore() {
@@ -603,84 +597,41 @@ class MessageActionsDialog(
             View.GONE
         }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun clickOnEmoji(message: ChatMessage, emoji: String) {
         val credentials = ApiUtils.getCredentials(user!!.username, user.token)
         val url = ApiUtils.getUrlForMessageReaction(
-            user.baseUrl!!,
-            currentConversation!!.token,
-            message.id
+            baseUrl = user.baseUrl!!,
+            roomToken = currentConversation!!.token,
+            messageId = message.jsonMessageId.toString()
         )
 
-        if (message.reactionsSelf?.contains(emoji) == true) {
-            reactionsRepository.deleteReaction(
-                credentials,
-                user.id!!,
-                url,
-                currentConversation.token,
-                message,
-                emoji
-            )
-                .subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(ReactionDeletedObserver())
-        } else {
-            reactionsRepository.addReaction(
-                credentials,
-                user.id!!,
-                url,
-                currentConversation.token,
-                message,
-                emoji
-            )
-                .subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(ReactionAddedObserver())
-        }
-    }
-
-    inner class ReactionAddedObserver : Observer<ReactionAddedModel> {
-        override fun onSubscribe(d: Disposable) {
-            // unused atm
-        }
-
-        override fun onNext(reactionAddedModel: ReactionAddedModel) {
-            if (reactionAddedModel.success) {
-                chatActivity.updateUiToAddReaction(
-                    reactionAddedModel.chatMessage,
-                    reactionAddedModel.emoji
-                )
+        chatActivity.lifecycleScope.launch {
+            try {
+                if (message.reactionsSelf?.contains(emoji) == true) {
+                    reactionsRepository.deleteReaction(
+                        credentials,
+                        user.id!!,
+                        url,
+                        currentConversation.token,
+                        message,
+                        emoji
+                    )
+                } else {
+                    reactionsRepository.addReaction(
+                        credentials,
+                        user.id!!,
+                        url,
+                        currentConversation.token,
+                        message,
+                        emoji
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "clickOnEmoji error", e)
+            } finally {
+                dismiss()
             }
-        }
-
-        override fun onError(e: Throwable) {
-            Log.e(TAG, "failure in ReactionAddedObserver", e)
-        }
-
-        override fun onComplete() {
-            dismiss()
-        }
-    }
-
-    inner class ReactionDeletedObserver : Observer<ReactionDeletedModel> {
-        override fun onSubscribe(d: Disposable) {
-            // unused atm
-        }
-
-        override fun onNext(reactionDeletedModel: ReactionDeletedModel) {
-            if (reactionDeletedModel.success) {
-                chatActivity.updateUiToDeleteReaction(
-                    reactionDeletedModel.chatMessage,
-                    reactionDeletedModel.emoji
-                )
-            }
-        }
-
-        override fun onError(e: Throwable) {
-            Log.e(TAG, "failure in ReactionDeletedObserver", e)
-        }
-
-        override fun onComplete() {
-            dismiss()
         }
     }
 

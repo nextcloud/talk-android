@@ -41,7 +41,6 @@ import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
-import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contextchat.ContextChatViewModel
@@ -122,9 +121,6 @@ class ConversationsListActivity : BaseActivity() {
     lateinit var networkMonitor: NetworkMonitor
 
     @Inject
-    lateinit var chatViewModel: ChatViewModel
-
-    @Inject
     lateinit var contactsViewModel: ContactsViewModel
 
     lateinit var conversationsListViewModel: ConversationsListViewModel
@@ -184,8 +180,6 @@ class ConversationsListActivity : BaseActivity() {
         setContent {
             ConversationsListScreen(
                 viewModel = conversationsListViewModel,
-                contextChatViewModel = contextChatViewModel,
-                chatViewModel = chatViewModel,
                 state = buildScreenState(),
                 callbacks = buildScreenCallbacks()
             )

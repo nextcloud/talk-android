@@ -47,10 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nextcloud.talk.R
-import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.components.ColoredStatusBar
-import com.nextcloud.talk.contextchat.ContextChatView
-import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -58,7 +55,6 @@ import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.ui.BackgroundVoiceMessageCard
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogCompose
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.DEFAULT
@@ -68,7 +64,6 @@ import com.nextcloud.talk.utils.DisplayUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.io.File
 
 private const val SEARCH_DEBOUNCE_MS = 300
 private const val SEARCH_MIN_CHARS = 1
@@ -122,8 +117,6 @@ data class ConversationsListScreenCallbacks(
 @Composable
 fun ConversationsListScreen(
     viewModel: ConversationsListViewModel,
-    contextChatViewModel: ContextChatViewModel,
-    chatViewModel: ChatViewModel,
     state: ConversationsListScreenState,
     callbacks: ConversationsListScreenCallbacks
 ) {
@@ -155,9 +148,6 @@ fun ConversationsListScreen(
     val isForward by state.forwardMessageFlow.collectAsStateWithLifecycle()
     val hasMultipleAccounts by state.hasMultipleAccountsFlow.collectAsStateWithLifecycle()
     val showAccountDialog by state.showAccountDialogFlow.collectAsStateWithLifecycle()
-
-    // Background voice message mini-player
-    val backgroundMsg by chatViewModel.backgroundPlayUIFlow.collectAsStateWithLifecycle()
 
     // Derived state
     val isArchivedFilterActive = filterState[ARCHIVE] == true
@@ -240,12 +230,6 @@ fun ConversationsListScreen(
                             onNavigateBack = callbacks.onNavigateBack,
                             onAccountChooserClick = callbacks.onAccountChooserClick
                         )
-                    )
-                    BackgroundVoiceMiniPlayer(
-                        backgroundMsg = backgroundMsg,
-                        currentUser = state.currentUser,
-                        chatViewModel = chatViewModel,
-                        viewThemeUtils = state.viewThemeUtils
                     )
                 }
             },
@@ -348,9 +332,6 @@ fun ConversationsListScreen(
                 )
             }
 
-            // Context-chat dialog (Dialog composable; renders on top regardless of position)
-            ContextChatView(context, contextChatViewModel)
-
             // Account-chooser dialog
             if (showAccountDialog) {
                 val dialog = remember { ChooseAccountDialogCompose() }
@@ -362,57 +343,6 @@ fun ConversationsListScreen(
             }
         }
     }
-}
-
-@Composable
-private fun BackgroundVoiceMiniPlayer(
-    backgroundMsg: com.nextcloud.talk.chat.data.model.ChatMessage?,
-    currentUser: User?,
-    chatViewModel: ChatViewModel,
-    viewThemeUtils: ViewThemeUtils
-) {
-    val context = LocalContext.current
-    backgroundMsg ?: return
-
-    val duration = chatViewModel.mediaPlayerDuration
-    val position = chatViewModel.mediaPlayerPosition
-    if (duration <= 0) return
-
-    val offset = position.toFloat() / duration
-    val imageURI = ApiUtils.getUrlForAvatar(
-        currentUser?.baseUrl,
-        backgroundMsg.actorId,
-        true,
-        darkMode = DisplayUtils.isDarkModeOn(context)
-    )
-    val conversationImageURI = ApiUtils.getUrlForConversationAvatar(
-        ApiUtils.API_V1,
-        currentUser?.baseUrl,
-        backgroundMsg.token
-    )
-    val card = remember(backgroundMsg) {
-        BackgroundVoiceMessageCard(
-            name = backgroundMsg.actorDisplayName ?: "",
-            duration = duration - position,
-            offset = offset,
-            imageURI = imageURI,
-            conversationImageURI = conversationImageURI,
-            viewThemeUtils = viewThemeUtils,
-            context = context
-        )
-    }
-    card.GetView(
-        onPlayPaused = { isPaused ->
-            if (isPaused) {
-                chatViewModel.pauseMediaPlayer(false)
-            } else {
-                val filename = backgroundMsg.selectedIndividualHashMap?.get("name")
-                val file = File(context.cacheDir, filename ?: "")
-                chatViewModel.startMediaPlayer(file.canonicalPath)
-            }
-        },
-        onClosed = { chatViewModel.stopMediaPlayer() }
-    )
 }
 
 @Suppress("LongParameterList")

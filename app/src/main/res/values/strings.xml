@@ -465,12 +465,9 @@ How to translate with transifex:
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">You: %1$s</string>
     <string name="nc_draft_prefix">Draft: %1$s</string>
-    <string name="nc_message_read">Message read</string>
     <string name="nc_message_sent">Message sent</string>
     <string name="nc_message_added_to_notes">Message added to notes</string>
-    <string name="nc_message_offline">Offline</string>
     <string name="nc_message_failed">Failed</string>
-    <string name="nc_message_sending">Sending</string>
     <string name="nc_message_failed_to_send">Failed to send message:</string>
     <string name="nc_add_attachment">Add attachment</string>
     <string name="emoji_category_recent">Recent</string>
@@ -593,6 +590,8 @@ How to translate with transifex:
     <string name="notification_all_messages">All messages</string>
     <string name="notification_mention_only">\@-mentions only</string>
     <string name="notification_off">Off</string>
+    <string name="media_message_content_description">File preview</string>
+    <string name="media_message_content_play">Play media file</string>
 
     <!-- Upload -->
     <string name="nc_add_file">Add to conversation</string>
@@ -842,6 +841,7 @@ How to translate with transifex:
     <string name="nc_not_allowed_to_activate_audio">You are not allowed to activate audio!</string>
     <string name="nc_not_allowed_to_activate_video">You are not allowed to activate video!</string>
     <string name="scroll_to_bottom">Scroll to bottom</string>
+    <string name="quoted_message_too_old">This message is too old to be shown</string>
     <string name="translate">Translate</string>
     <string name="translation">Translation</string>
     <string name="translation_from">From</string>

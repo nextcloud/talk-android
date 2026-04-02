@@ -138,7 +138,7 @@ fun PinnedMessageView(
                 interactionSource = interactionSource,
                 indication = null
             ) {
-                scrollToMessageWithIdWithOffset(message.id)
+                scrollToMessageWithIdWithOffset(message.jsonMessageId.toString())
             }
     ) {
         var expanded by remember { mutableStateOf(false) }
@@ -174,7 +174,7 @@ fun PinnedMessageView(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = message.text,
+                text = message.getRichText(),
                 color = colorScheme.onSurface
             )
         }
@@ -214,7 +214,7 @@ fun PinnedMessageView(
                     text = { Text(stringResource(R.string.pinned_go_to_message), color = highEmphasisColor) },
                     onClick = {
                         expanded = false
-                        scrollToMessageWithIdWithOffset(message.id)
+                        scrollToMessageWithIdWithOffset(message.jsonMessageId.toString())
                     }
                 )
 
