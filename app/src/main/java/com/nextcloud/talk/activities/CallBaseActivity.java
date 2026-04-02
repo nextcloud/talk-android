@@ -60,10 +60,12 @@ public abstract class CallBaseActivity extends BaseActivity {
 
         if (isPipModePossible()) {
             mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                mPictureInPictureParamsBuilder.setAutoEnterEnabled(true);
-                setPictureInPictureParams(mPictureInPictureParamsBuilder.build());
-            }
+            Rational pipRatio = new Rational(300, 500);
+            mPictureInPictureParamsBuilder.setAspectRatio(pipRatio);
+            // Do NOT use setAutoEnterEnabled — it conflicts with manual enterPictureInPictureMode()
+            // calls, causing the PIP window to be invisible. Manual calls from
+            // onTopResumedActivityChanged fire early enough to work even on fast gestures.
+            setPictureInPictureParams(mPictureInPictureParamsBuilder.build());
         }
 
         getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
@@ -112,11 +114,17 @@ public abstract class CallBaseActivity extends BaseActivity {
     @Override
     public void onTopResumedActivityChanged(boolean isTopResumedActivity) {
         super.onTopResumedActivityChanged(isTopResumedActivity);
+        Log.d(TAG, "onTopResumedActivityChanged: isTopResumedActivity=" + isTopResumedActivity
+                + " isInPipMode=" + isInPipMode);
         if (!isTopResumedActivity
                 && !isInPipMode
                 && isPipModePossible()
                 && !isChangingConfigurations()
                 && !isFinishing()) {
+            // Always call enterPipMode here — this fires while the window is still visible,
+            // so it works for both task switching (where auto-enter doesn't fire) and
+            // home gestures. On API 31+, auto-enter handles home gestures independently,
+            // but this manual call is needed for task switch (left/right swipe).
             enterPipMode();
         }
     }
@@ -124,8 +132,8 @@ public abstract class CallBaseActivity extends BaseActivity {
     @Override
     public void onPause() {
         super.onPause();
-        // Fallback for API 26-28 (no onTopResumedActivityChanged) and any edge cases
-        // where PIP was not yet entered by the time we reach onPause().
+        Log.d(TAG, "onPause: isInPipMode=" + isInPipMode);
+        // Fallback: enter PIP if onTopResumedActivityChanged didn't already handle it.
         if (!isInPipMode
                 && isPipModePossible()
                 && !isChangingConfigurations()
@@ -137,6 +145,7 @@ public abstract class CallBaseActivity extends BaseActivity {
     @Override
     public void onStop() {
         super.onStop();
+        Log.d(TAG, "onStop: isInPipMode=" + isInPipMode + " isFinishing=" + isFinishing());
         // Don't automatically finish when going to background
         // Only finish if explicitly leaving the call
         if (shouldFinishOnStop() && !isChangingConfigurations()) {
@@ -152,16 +161,19 @@ public abstract class CallBaseActivity extends BaseActivity {
         super.onUserLeaveHint();
         long onUserLeaveHintTime = System.currentTimeMillis();
         long diff = onUserLeaveHintTime - onCreateTime;
-        Log.d(TAG, "onUserLeaveHintTime - onCreateTime: " + diff);
+        Log.d(TAG, "onUserLeaveHint: diff=" + diff + " isInPipMode=" + isInPipMode);
 
         if (diff < 3000) {
-            Log.d(TAG, "enterPipMode skipped");
+            Log.d(TAG, "enterPipMode skipped (too soon after onCreate)");
+        } else if (isInPipMode) {
+            Log.d(TAG, "enterPipMode skipped (already in PIP)");
         } else {
             enterPipMode();
         }
     }
 
     void enterPipMode() {
+        Log.d(TAG, "enterPipMode: isPipModePossible=" + isPipModePossible() + " isInPipMode=" + isInPipMode);
         enableKeyguard();
         if (isPipModePossible()) {
             Rational pipRatio = new Rational(300, 500);
