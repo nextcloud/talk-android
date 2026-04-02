@@ -124,8 +124,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -141,7 +141,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingStart="@dimen/standard_dialog_padding"
             android:paddingEnd="@dimen/zero"
             android:text="@string/turn_on_background_blur"
             android:textAlignment="viewStart"
