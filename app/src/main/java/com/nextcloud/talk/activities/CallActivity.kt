@@ -741,6 +741,8 @@ class CallActivity : CallBaseActivity() {
 
     override fun onStop() {
         super.onStop()
+        Log.d(TAG, "CallActivity.onStop: isInPipMode=$isInPipMode currentCallStatus=$currentCallStatus" +
+            " isFinishing=$isFinishing isChangingConfigurations=$isChangingConfigurations")
         active = false
 
         if (isMicInputAudioThreadRunning) {
@@ -2030,14 +2032,20 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 "roomJoined" -> {
-                    Log.d(TAG, "onMessageEvent 'roomJoined' joinRoomInitiated=$joinRoomInitiated")
+                    Log.d(TAG, "onMessageEvent 'roomJoined' joinRoomInitiated=$joinRoomInitiated" +
+                        " currentCallStatus=$currentCallStatus")
                     if (!joinRoomInitiated) {
                         Log.d(TAG, "Ignoring stale roomJoined event (joinRoomAndCall not yet called)")
                         return
                     }
                     startSendingNick()
                     if (webSocketCommunicationEvent.getHashMap()!!["roomToken"] == roomToken) {
-                        performCall()
+                        if (currentCallStatus === CallStatus.IN_CONVERSATION) {
+                            Log.d(TAG, "Already in conversation, skipping performCall()" +
+                                " (ChatActivity resume triggered spurious roomJoined)")
+                        } else {
+                            performCall()
+                        }
                     }
                 }
 
@@ -3176,8 +3184,8 @@ class CallActivity : CallBaseActivity() {
 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        Log.d(TAG, "onPictureInPictureModeChanged")
-        Log.d(TAG, "isInPictureInPictureMode= $isInPictureInPictureMode")
+        Log.d(TAG, "onPictureInPictureModeChanged: isInPictureInPictureMode=$isInPictureInPictureMode" +
+            " currentCallStatus=$currentCallStatus isIntentionallyLeavingCall=$isIntentionallyLeavingCall")
         isInPipMode = isInPictureInPictureMode
         if (isInPictureInPictureMode) {
             mReceiver = object : BroadcastReceiver() {
