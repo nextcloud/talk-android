@@ -1520,42 +1520,59 @@ class CallActivity : CallBaseActivity() {
         Log.d(TAG, "onDestroy called")
         Log.d(TAG, "onDestroy: isIntentionallyLeavingCall=$isIntentionallyLeavingCall")
         Log.d(TAG, "onDestroy: currentCallStatus=$currentCallStatus")
-        
+
+        val isSystemInitiatedDestroy = !isIntentionallyLeavingCall && currentCallStatus !== CallStatus.LEAVING
+
         if (signalingMessageReceiver != null) {
-            signalingMessageReceiver!!.removeListener(localParticipantMessageListener)
-            signalingMessageReceiver!!.removeListener(offerMessageListener)
+            if (!isSystemInitiatedDestroy) {
+                signalingMessageReceiver!!.removeListener(localParticipantMessageListener)
+                signalingMessageReceiver!!.removeListener(offerMessageListener)
+            } else {
+                Log.d(TAG, "System-initiated destroy, keeping signaling listeners for foreground service")
+            }
         }
         if (localStream != null) {
-            localStream!!.dispose()
-            localStream = null
-            Log.d(TAG, "Disposed localStream")
+            if (!isSystemInitiatedDestroy) {
+                localStream!!.dispose()
+                localStream = null
+                Log.d(TAG, "Disposed localStream (intentionally leaving)")
+            } else {
+                Log.d(TAG, "System-initiated destroy while call active, keeping localStream alive for foreground service")
+            }
         } else {
             Log.d(TAG, "localStream is null")
         }
         if (currentCallStatus !== CallStatus.LEAVING) {
-            // Only hangup if we're intentionally leaving
             if (isIntentionallyLeavingCall) {
                 hangup(true, false)
             }
         }
-        // Only stop the foreground service if we're actually leaving the call
-        if (isIntentionallyLeavingCall || currentCallStatus === CallStatus.LEAVING) {
+        if (!isSystemInitiatedDestroy) {
             CallForegroundService.stop(applicationContext)
+        } else {
+            Log.d(TAG, "System-initiated destroy, keeping foreground service alive")
         }
-        
-        Log.d(TAG, "onDestroy: Releasing proximity sensor - updating to IDLE state")
-        powerManagerUtils!!.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
-        Log.d(TAG, "onDestroy: Proximity sensor released")
-        
-        // Unregister receiver
-        try {
-            Log.d(TAG, "Unregistering endCallFromNotificationReceiver...")
-            unregisterReceiver(endCallFromNotificationReceiver)
-            Log.d(TAG, "endCallFromNotificationReceiver unregistered successfully")
-        } catch (e: Exception) {
-            Log.w(TAG, "Failed to unregister endCallFromNotificationReceiver", e)
+
+        if (!isSystemInitiatedDestroy) {
+            Log.d(TAG, "onDestroy: Releasing proximity sensor - updating to IDLE state")
+            powerManagerUtils!!.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
+            Log.d(TAG, "onDestroy: Proximity sensor released")
+        } else {
+            Log.d(TAG, "System-initiated destroy, keeping proximity sensor active")
         }
-        
+
+        if (!isSystemInitiatedDestroy) {
+            try {
+                Log.d(TAG, "Unregistering endCallFromNotificationReceiver...")
+                unregisterReceiver(endCallFromNotificationReceiver)
+                Log.d(TAG, "endCallFromNotificationReceiver unregistered successfully")
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to unregister endCallFromNotificationReceiver", e)
+            }
+        } else {
+            Log.d(TAG, "System-initiated destroy, keeping endCallFromNotificationReceiver registered")
+        }
+
         super.onDestroy()
     }
 

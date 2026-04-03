@@ -171,7 +171,6 @@
         <activity
             android:name=".activities.CallActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
-            android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:showOnLockScreen="true"
             android:supportsPictureInPicture="true"
