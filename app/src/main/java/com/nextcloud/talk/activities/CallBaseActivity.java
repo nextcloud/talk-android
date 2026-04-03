@@ -100,21 +100,26 @@ public abstract class CallBaseActivity extends BaseActivity {
 
     /**
      * On API 29+, fires BEFORE onPause while the window is still fully visible.
-     * This is the earliest point where we can detect that another activity is taking over
-     * (including quick-switch gestures that setAutoEnterEnabled doesn't always catch).
-     * We do NOT disable auto-enter here — if auto-enter already handled it,
-     * isInPictureInPictureMode() will be true and this is a no-op.
+     *
+     * On API 29-30: enter PIP immediately (no auto-enter available).
+     *
+     * On API 31+: auto-enter handles swipe-up/home gestures. Task switching
+     * (left/right swipe) does NOT trigger auto-enter — we accept no PIP for
+     * task switch since the call stays alive in the background via the ICE
+     * failure guard in CallActivity.
      */
     @Override
     public void onTopResumedActivityChanged(boolean isTopResumedActivity) {
         super.onTopResumedActivityChanged(isTopResumedActivity);
         Log.d(TAG, "onTopResumedActivityChanged: isTopResumedActivity=" + isTopResumedActivity
                 + " isInPictureInPictureMode=" + isInPictureInPictureMode());
-        if (!isTopResumedActivity
-                && !isInPictureInPictureMode()
-                && isPipModePossible()
-                && !isChangingConfigurations()
-                && !isFinishing()) {
+        if (isTopResumedActivity || isInPictureInPictureMode()
+                || !isPipModePossible()
+                || isChangingConfigurations()
+                || isFinishing()) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             enterPipMode();
         }
     }
@@ -144,13 +149,23 @@ public abstract class CallBaseActivity extends BaseActivity {
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
-        Log.d(TAG, "onUserLeaveHint: isInPipMode=" + isInPipMode);
-        // On API 31+, setAutoEnterEnabled(true) handles this automatically.
-        // On API 26-30, we must enter PIP manually here.
+        Log.d(TAG, "onUserLeaveHint: isInPipMode=" + isInPipMode
+                + " isInPictureInPictureMode=" + isInPictureInPictureMode());
+        // On API 26-30, enter PIP manually.
         if (!isInPipMode
                 && isPipModePossible()
                 && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             enterPipMode();
+            return;
+        }
+        // On API 31+: if auto-enter didn't handle it (task switch), move the
+        // task to back so the activity survives instead of being destroyed
+        // (excludeFromRecents + separate taskAffinity causes task death).
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                && !isInPictureInPictureMode()
+                && isPipModePossible()) {
+            Log.d(TAG, "onUserLeaveHint: not PIP, moving task to back to survive task switch");
+            moveTaskToBack(true);
         }
     }
 
