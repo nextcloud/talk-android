@@ -269,12 +269,12 @@ private fun MentionChip(mention: MentionChipModel, textStyle: TextStyle, isMulti
     val backgroundColor = if (mention.isSelfMention) {
         viewThemeUtils.getColorScheme(context).primary
     } else {
-        Color.White.copy(alpha = 0.87f)
+        MaterialTheme.colorScheme.surfaceContainerHighest
     }
     val textColor = if (mention.isSelfMention) {
-        colorResource(R.color.textColorOnPrimaryBackground)
+        viewThemeUtils.getColorScheme(context).onPrimary
     } else {
-        colorResource(R.color.high_emphasis_text)
+        MaterialTheme.colorScheme.onSurface
     }
     val fallbackIcon = resolveMentionFallbackIcon(mention)
     val verticalPadding = if (isMultilineLayout) multilineChipVerticalPadding else chipVerticalPadding
@@ -305,6 +305,8 @@ private fun MentionChip(mention: MentionChipModel, textStyle: TextStyle, isMulti
             text = mention.name,
             color = textColor,
             maxLines = 1,
+            modifier = Modifier
+                .padding(end = 3.dp),
             style = textStyle.copy(
                 color = textColor,
                 fontSize = chipTextSize,
