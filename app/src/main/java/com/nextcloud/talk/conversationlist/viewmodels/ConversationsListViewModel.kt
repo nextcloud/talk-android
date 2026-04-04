@@ -172,6 +172,20 @@ class ConversationsListViewModel @Inject constructor(
     private val _isSearchLoadingFlow = MutableStateFlow(false)
     val isSearchLoadingFlow: StateFlow<Boolean> = _isSearchLoadingFlow.asStateFlow()
 
+    private val _selectedConversationForOps = MutableStateFlow<ConversationModel?>(null)
+    val selectedConversationForOps: StateFlow<ConversationModel?> = _selectedConversationForOps.asStateFlow()
+
+    fun setSelectedConversationForOps(model: ConversationModel?) {
+        _selectedConversationForOps.value = model
+    }
+
+    fun clearSelectedConversationForOpsWithDelay(delayMs: Long) {
+        viewModelScope.launch {
+            kotlinx.coroutines.delay(delayMs)
+            _selectedConversationForOps.value = null
+        }
+    }
+
     private val hideRoomToken = MutableStateFlow<String?>(null)
 
     /**

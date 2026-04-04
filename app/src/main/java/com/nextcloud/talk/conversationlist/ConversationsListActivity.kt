@@ -13,7 +13,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
@@ -172,7 +171,6 @@ class ConversationsListActivity : BaseActivity() {
     private var selectedConversation: ConversationModel? = null
     private var textToPaste: String? = ""
     private var selectedMessageId: String? = null
-    private val selectedConversationForOpsState = MutableStateFlow<ConversationModel?>(null)
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -226,7 +224,7 @@ class ConversationsListActivity : BaseActivity() {
             forwardMessageFlow = forwardMessageState,
             hasMultipleAccountsFlow = hasMultipleAccountsState,
             showAccountDialogFlow = showAccountDialogState,
-            selectedConversationForOpsFlow = selectedConversationForOpsState
+            selectedConversationForOpsFlow = conversationsListViewModel.selectedConversationForOps
         )
 
     @Suppress("LongMethod")
@@ -297,7 +295,7 @@ class ConversationsListActivity : BaseActivity() {
             },
             onNewConversation = { showNewConversationsScreen() },
             onAccountDialogDismiss = { showAccountDialogState.value = false },
-            onConversationOpsDismiss = { selectedConversationForOpsState.value = null },
+            onConversationOpsDismiss = { conversationsListViewModel.setSelectedConversationForOps(null) },
             onConversationOpsAction = { action, conversation -> handleConversationOpsAction(action, conversation) }
         )
 
@@ -457,7 +455,7 @@ class ConversationsListActivity : BaseActivity() {
 
     private fun handleConversationLongClick(model: ConversationModel) {
         if (!showShareToScreen && networkMonitor.isOnline.value) {
-            selectedConversationForOpsState.value = model
+            conversationsListViewModel.setSelectedConversationForOps(model)
         }
     }
 
@@ -906,9 +904,7 @@ class ConversationsListActivity : BaseActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(conversationsListFetchDataEvent: ConversationsListFetchDataEvent?) {
         fetchRooms()
-        Handler().postDelayed({
-            selectedConversationForOpsState.value = null
-        }, BOTTOM_SHEET_DELAY)
+        conversationsListViewModel.clearSelectedConversationForOpsWithDelay(BOTTOM_SHEET_DELAY)
     }
 
     private fun handleConversationOpsAction(action: ConversationOpsAction, conversation: ConversationModel) {
