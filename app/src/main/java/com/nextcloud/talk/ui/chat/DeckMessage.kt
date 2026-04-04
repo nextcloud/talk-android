@@ -9,8 +9,10 @@ package com.nextcloud.talk.ui.chat
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -45,15 +47,24 @@ fun DeckMessage(
                         typeContent.stackName,
                         typeContent.boardName
                     )
-                    Row(modifier = Modifier.padding(start = 8.dp)) {
-                        Icon(painterResource(R.drawable.deck), "")
+                    Row {
+                        Icon(
+                            painter = painterResource(R.drawable.deck),
+                            tint = colorScheme.onSurface,
+                            contentDescription = "")
+                        Spacer(modifier = Modifier.padding(start = 8.dp))
                         Text(
                             text = typeContent.cardName,
                             fontSize = AUTHOR_TEXT_SIZE.sp,
+                            color = colorScheme.onSurface,
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    Text(cardDescription, fontSize = AUTHOR_TEXT_SIZE.sp)
+                    Text(
+                        text = cardDescription,
+                        color = colorScheme.onSurface,
+                        fontSize = AUTHOR_TEXT_SIZE.sp
+                    )
                 }
             }
         }

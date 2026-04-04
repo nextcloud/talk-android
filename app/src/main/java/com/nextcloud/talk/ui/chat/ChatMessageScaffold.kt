@@ -768,6 +768,7 @@ fun EnrichedText(message: ChatMessageUi, modifier: Modifier) {
         modifier = modifier,
         textStyle = TextStyle(
             fontSize = regularTextSize,
+            color = colorScheme.onSurface,
             lineHeight = regularTextSize * LINE_SPACING
         )
     )

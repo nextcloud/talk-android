@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,6 +34,7 @@ fun SystemMessage(message: ChatMessageUi) {
             Text(
                 message.message,
                 fontSize = AUTHOR_TEXT_SIZE.sp,
+                color = colorScheme.onSurface,
                 modifier = Modifier
                     .padding(8.dp)
                     .align(Alignment.Center)
@@ -40,6 +42,7 @@ fun SystemMessage(message: ChatMessageUi) {
             Text(
                 timeString,
                 fontSize = TIME_TEXT_SIZE.sp,
+                color = colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.End,
                 modifier = Modifier
                     .align(Alignment.CenterEnd)

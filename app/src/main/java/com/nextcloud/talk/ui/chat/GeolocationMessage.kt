@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -113,6 +114,7 @@ fun GeolocationContent(
                 Text(
                     text = name,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                    color = colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

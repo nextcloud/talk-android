@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
+import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 
 @Composable
 fun TextMessage(uiMessage: ChatMessageUi, isOneToOneConversation: Boolean = false, conversationThreadId: Long? = null) {
@@ -26,4 +27,30 @@ fun TextMessage(uiMessage: ChatMessageUi, isOneToOneConversation: Boolean = fals
             )
         }
     )
+}
+
+@ChatMessagePreviews
+@Composable
+private fun TextMessageIncomingPreview() {
+    PreviewContainer {
+        TextMessage(uiMessage = createBaseMessage(MessageTypeContent.RegularText))
+    }
+}
+
+@ChatMessagePreviews
+@Composable
+private fun TextMessageIncomingLongPreview() {
+    PreviewContainer {
+        TextMessage(uiMessage = createLongBaseMessage(MessageTypeContent.RegularText))
+    }
+}
+
+@ChatMessagePreviews
+@Composable
+private fun TextMessageOutgoingPreview() {
+    PreviewContainer {
+        TextMessage(
+            uiMessage = createBaseMessage(MessageTypeContent.RegularText).copy(incoming = false)
+        )
+    }
 }
