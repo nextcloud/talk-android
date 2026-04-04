@@ -43,7 +43,6 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.conversation.RenameConversationDialogFragment
-import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
@@ -146,7 +145,6 @@ class ConversationsListActivity : BaseActivity() {
 
     lateinit var conversationsListViewModel: ConversationsListViewModel
     lateinit var contextChatViewModel: ContextChatViewModel
-    private lateinit var conversationOpsViewModel: ConversationInfoViewModel
 
     private var currentUser: User? = null
     private val snackbarHostState = SnackbarHostState()
@@ -194,7 +192,6 @@ class ConversationsListActivity : BaseActivity() {
 
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
         contextChatViewModel = ViewModelProvider(this, viewModelFactory)[ContextChatViewModel::class.java]
-        conversationOpsViewModel = ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
 
         setSupportActionBar(null)
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
@@ -939,18 +936,27 @@ class ConversationsListActivity : BaseActivity() {
         )
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught", "TooGenericExceptionCaught")
     private fun handleArchiving(conversation: ConversationModel) {
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser!!, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+        val url = ApiUtils.getUrlForArchive(apiVersion, currentUser?.baseUrl, conversation.token)
         lifecycleScope.launch {
-            if (conversation.hasArchived) {
-                conversationOpsViewModel.unarchiveConversation(currentUser!!, conversation.token)
-                showSnackbar(
-                    String.format(resources.getString(R.string.unarchived_conversation), conversation.displayName)
-                )
-            } else {
-                conversationOpsViewModel.archiveConversation(currentUser!!, conversation.token)
-                showSnackbar(
-                    String.format(resources.getString(R.string.archived_conversation), conversation.displayName)
-                )
+            try {
+                if (conversation.hasArchived) {
+                    withContext(Dispatchers.IO) { ncApiCoroutines.unarchiveConversation(credentials!!, url) }
+                    fetchRooms()
+                    showSnackbar(
+                        String.format(resources.getString(R.string.unarchived_conversation), conversation.displayName)
+                    )
+                } else {
+                    withContext(Dispatchers.IO) { ncApiCoroutines.archiveConversation(credentials!!, url) }
+                    fetchRooms()
+                    showSnackbar(
+                        String.format(resources.getString(R.string.archived_conversation), conversation.displayName)
+                    )
+                }
+            } catch (e: Exception) {
+                showSnackbar(resources.getString(R.string.nc_common_error_sorry))
             }
         }
     }
