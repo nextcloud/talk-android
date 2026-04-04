@@ -95,6 +95,8 @@
     <string name="lower_hand">Lámh íochtair</string>
     <string name="marked_as_read">Marcáladh comhrá %1$s mar léite</string>
     <string name="marked_as_unread">Marcáladh comhrá %1$s mar neamhléite</string>
+    <string name="media_message_content_description">Réamhamharc comhaid</string>
+    <string name="media_message_content_play">Seinn comhad meán</string>
     <string name="mentioned">Luaite</string>
     <string name="menu_item_sort_by_date_newest_first">Is nua ar dtús</string>
     <string name="menu_item_sort_by_date_oldest_first">Is sine ar dtús</string>
@@ -637,6 +639,7 @@
     <string name="polls_voted_hidden_success">Vóta curtha isteach</string>
     <string name="previously_set">Socraíodh roimhe seo</string>
     <string name="qr_code_error">Níorbh fhéidir an cód QR a léamh</string>
+    <string name="quoted_message_too_old">Tá an teachtaireacht seo róshean le taispeáint</string>
     <string name="raise_hand">Ardaigh lámh</string>
     <string name="reaction_forbidden">Ní cheadaítear duit imoibrithe a chur leis ná a bhaint sa chomhrá seo</string>
     <string name="reactions_tab_all">Gach</string>

@@ -95,6 +95,8 @@
     <string name="lower_hand">Hand herunternehmen</string>
     <string name="marked_as_read">Unterhaltung %1$s als gelesen markiert</string>
     <string name="marked_as_unread">Unterhaltung %1$s als ungelesen markiert</string>
+    <string name="media_message_content_description">Dateivorschau</string>
+    <string name="media_message_content_play">Mediendatei abspielen</string>
     <string name="mentioned">Erwähnt</string>
     <string name="menu_item_sort_by_date_newest_first">Neue zuerst</string>
     <string name="menu_item_sort_by_date_oldest_first">Älteste zuerst</string>
@@ -637,6 +639,7 @@
     <string name="polls_voted_hidden_success">Stimme abgegeben</string>
     <string name="previously_set">Zuvor eingestellt</string>
     <string name="qr_code_error">Der QR-Code konnte nicht gelesen werden</string>
+    <string name="quoted_message_too_old">Diese Nachricht ist zu alt, um angezeigt zu werden</string>
     <string name="raise_hand">Hand heben</string>
     <string name="reaction_forbidden">Sie haben nicht die Berechtigung, in dieser Unterhaltung Reaktionen hinzuzufügen oder zu entfernen</string>
     <string name="reactions_tab_all">Alle</string>
