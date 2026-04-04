@@ -12,12 +12,9 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -26,22 +23,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
-import com.nextcloud.talk.chat.ui.model.MessageReactionUi
-import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
-import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
-import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 import kotlinx.coroutines.delay
-import java.time.LocalDate
-
-private val previewReactions = listOf(
-    MessageReactionUi(emoji = "👍", amount = 1, isSelfReaction = true),
-    MessageReactionUi(emoji = "❤️", amount = 1, isSelfReaction = false)
-)
 
 private const val QUOTE_HIGHLIGHT_INITIAL_ALPHA = 0.15f
 private const val PREVIEW_WAVEFORM_POINT_ONE = 0.1f
@@ -198,7 +183,7 @@ fun ChatMessageView(
     }
 }
 
-@Preview(showBackground = true, name = "Regular Text")
+@ChatMessagePreviews
 @Composable
 private fun ChatMessageViewRegularTextPreview() {
     PreviewContainer {
@@ -207,7 +192,7 @@ private fun ChatMessageViewRegularTextPreview() {
     }
 }
 
-@Preview(showBackground = true, name = "Regular Text")
+@ChatMessagePreviews
 @Composable
 private fun ChatMessageViewRegularLongTextPreview() {
     PreviewContainer {
@@ -216,7 +201,7 @@ private fun ChatMessageViewRegularLongTextPreview() {
     }
 }
 
-@Preview(showBackground = true, name = "System Message")
+@ChatMessagePreviews
 @Composable
 private fun ChatMessageViewSystemMessagePreview() {
     PreviewContainer {
@@ -226,7 +211,7 @@ private fun ChatMessageViewSystemMessagePreview() {
     }
 }
 
-@Preview(showBackground = true, name = "Media Message")
+@ChatMessagePreviews
 @Composable
 private fun ChatMessageViewMediaPreview() {
     PreviewContainer {
@@ -240,7 +225,7 @@ private fun ChatMessageViewMediaPreview() {
     }
 }
 
-@Preview(showBackground = true, name = "Media Message")
+@ChatMessagePreviews
 @Composable
 private fun ChatMessageViewMediaPreviewWithoutCaption() {
     PreviewContainer {
@@ -254,7 +239,7 @@ private fun ChatMessageViewMediaPreviewWithoutCaption() {
     }
 }
 
-@Preview(showBackground = true, name = "Geolocation Message")
+@ChatMessagePreviews
 @Composable
 private fun ChatMessageViewGeolocationPreview() {
     PreviewContainer {
@@ -270,7 +255,7 @@ private fun ChatMessageViewGeolocationPreview() {
     }
 }
 
-@Preview(showBackground = true, name = "Voice Message")
+@ChatMessagePreviews
 @Composable
 private fun ChatMessageViewVoicePreview() {
     PreviewContainer {
@@ -290,7 +275,7 @@ private fun ChatMessageViewVoicePreview() {
     }
 }
 
-@Preview(showBackground = true, name = "Poll Message")
+@ChatMessagePreviews
 @Composable
 private fun ChatMessageViewPollPreview() {
     PreviewContainer {
@@ -304,7 +289,7 @@ private fun ChatMessageViewPollPreview() {
     }
 }
 
-@Preview(showBackground = true, name = "Deck Message")
+@ChatMessagePreviews
 @Composable
 private fun ChatMessageViewDeckPreview() {
     PreviewContainer {
@@ -320,7 +305,7 @@ private fun ChatMessageViewDeckPreview() {
     }
 }
 
-@Preview(showBackground = true, name = "Link Preview Message")
+@ChatMessagePreviews
 @Composable
 private fun ChatMessageViewLinkPreviewPreview() {
     PreviewContainer {
@@ -328,78 +313,3 @@ private fun ChatMessageViewLinkPreviewPreview() {
         ChatMessageView(message = uiMessage)
     }
 }
-
-@Composable
-private fun PreviewContainer(content: @Composable () -> Unit) {
-    val context = LocalContext.current
-    val previewUtils = remember { ComposePreviewUtils.getInstance(context) }
-    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
-
-    CompositionLocalProvider(
-        LocalViewThemeUtils provides previewUtils.viewThemeUtils
-    ) {
-        MaterialTheme(colorScheme = colorScheme) {
-            content()
-        }
-    }
-}
-
-private fun createBaseMessage(content: MessageTypeContent?): ChatMessageUi =
-    ChatMessageUi(
-        id = 1,
-        message = "Sample message text",
-        plainMessage = "Sample message text",
-        renderMarkdown = false,
-        actorDisplayName = "John Doe",
-        isThread = false,
-        threadTitle = "",
-        threadReplies = 0,
-        incoming = true,
-        isDeleted = false,
-        avatarUrl = null,
-        statusIcon = MessageStatusIcon.SENT,
-        timestamp = System.currentTimeMillis() / 1000,
-        date = LocalDate.now(),
-        content = content,
-        reactions = previewReactions
-    )
-
-private fun createBaseMessageWithoutCaption(content: MessageTypeContent?): ChatMessageUi =
-    ChatMessageUi(
-        id = 1,
-        message = "",
-        plainMessage = "",
-        renderMarkdown = false,
-        actorDisplayName = "John Doe",
-        isThread = false,
-        threadTitle = "",
-        threadReplies = 0,
-        incoming = true,
-        isDeleted = false,
-        avatarUrl = null,
-        statusIcon = MessageStatusIcon.SENT,
-        timestamp = System.currentTimeMillis() / 1000,
-        date = LocalDate.now(),
-        content = content,
-        reactions = previewReactions
-    )
-
-private fun createLongBaseMessage(content: MessageTypeContent?): ChatMessageUi =
-    ChatMessageUi(
-        id = 1,
-        message = "Sample message text that is very very very very very long",
-        plainMessage = "Sample message text that is very very very very very long",
-        renderMarkdown = false,
-        actorDisplayName = "John Doe",
-        isThread = false,
-        threadTitle = "",
-        threadReplies = 0,
-        incoming = true,
-        isDeleted = false,
-        avatarUrl = null,
-        statusIcon = MessageStatusIcon.SENT,
-        timestamp = System.currentTimeMillis() / 1000,
-        date = LocalDate.now(),
-        content = content,
-        reactions = previewReactions
-    )

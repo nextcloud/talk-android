@@ -29,9 +29,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
@@ -45,11 +44,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.TextUnit
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
@@ -269,12 +268,12 @@ private fun MentionChip(mention: MentionChipModel, textStyle: TextStyle, isMulti
     val backgroundColor = if (mention.isSelfMention) {
         viewThemeUtils.getColorScheme(context).primary
     } else {
-        Color.White.copy(alpha = 0.87f)
+        MaterialTheme.colorScheme.surfaceContainerHighest
     }
     val textColor = if (mention.isSelfMention) {
-        colorResource(R.color.textColorOnPrimaryBackground)
+        viewThemeUtils.getColorScheme(context).onPrimary
     } else {
-        colorResource(R.color.high_emphasis_text)
+        MaterialTheme.colorScheme.onSurface
     }
     val fallbackIcon = resolveMentionFallbackIcon(mention)
     val verticalPadding = if (isMultilineLayout) multilineChipVerticalPadding else chipVerticalPadding
@@ -305,6 +304,8 @@ private fun MentionChip(mention: MentionChipModel, textStyle: TextStyle, isMulti
             text = mention.name,
             color = textColor,
             maxLines = 1,
+            modifier = Modifier
+                .padding(end = 3.dp),
             style = textStyle.copy(
                 color = textColor,
                 fontSize = chipTextSize,
