@@ -557,20 +557,22 @@ class ChatActivity :
 
     private fun setPinnedMessageContent() {
         binding.pinnedMessageComposeView.setContent {
-            val uiState by chatViewModel.uiState.collectAsStateWithLifecycle()
-            val pinnedMessage = uiState.pinnedMessage
-            binding.pinnedMessageContainer.visibility = if (pinnedMessage != null) View.VISIBLE else View.GONE
-            if (pinnedMessage != null) {
-                PinnedMessageView(
-                    message = pinnedMessage,
-                    viewThemeUtils = viewThemeUtils,
-                    currentConversation = uiState.conversation,
-                    scrollToMessageWithIdWithOffset = { messageId ->
-                        scrollToMessageById(messageId.toLong())
-                    },
-                    hidePinnedMessage = ::hidePinnedMessage,
-                    unPinMessage = ::unPinMessage
-                )
+            MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
+                val uiState by chatViewModel.uiState.collectAsStateWithLifecycle()
+                val pinnedMessage = uiState.pinnedMessage
+                binding.pinnedMessageContainer.visibility = if (pinnedMessage != null) View.VISIBLE else View.GONE
+                if (pinnedMessage != null) {
+                    PinnedMessageView(
+                        message = pinnedMessage,
+                        viewThemeUtils = viewThemeUtils,
+                        currentConversation = uiState.conversation,
+                        scrollToMessageWithIdWithOffset = { messageId ->
+                            scrollToMessageById(messageId.toLong())
+                        },
+                        hidePinnedMessage = ::hidePinnedMessage,
+                        unPinMessage = ::unPinMessage
+                    )
+                }
             }
         }
     }
@@ -591,41 +593,43 @@ class ChatActivity :
 
     private fun setChatListContent() {
         binding.messagesListViewCompose.setContent {
-            val uiState by chatViewModel.uiState.collectAsStateWithLifecycle()
-            currentConversation = uiState.conversation
+            MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
+                val uiState by chatViewModel.uiState.collectAsStateWithLifecycle()
+                currentConversation = uiState.conversation
 
-            binding.messagesListViewCompose.visibility = View.VISIBLE
+                binding.messagesListViewCompose.visibility = View.VISIBLE
 
-            val listState = rememberLazyListState()
-            SideEffect { chatListState = listState }
+                val listState = rememberLazyListState()
+                SideEffect { chatListState = listState }
 
-            CompositionLocalProvider(
-                LocalViewThemeUtils provides viewThemeUtils,
-                LocalMessageUtils provides messageUtils,
-                LocalOpenGraphFetcher provides { url -> chatViewModel.fetchOpenGraph(url) }
-            ) {
-                val isOneToOneConversation = uiState.isOneToOneConversation
-                Log.d(TAG, "isOneToOneConversation=" + isOneToOneConversation)
+                CompositionLocalProvider(
+                    LocalViewThemeUtils provides viewThemeUtils,
+                    LocalMessageUtils provides messageUtils,
+                    LocalOpenGraphFetcher provides { url -> chatViewModel.fetchOpenGraph(url) }
+                ) {
+                    val isOneToOneConversation = uiState.isOneToOneConversation
+                    Log.d(TAG, "isOneToOneConversation=" + isOneToOneConversation)
 
-                ChatView(
-                    chatItems = uiState.items,
-                    isOneToOneConversation = isOneToOneConversation,
-                    conversationThreadId = conversationThreadId,
-                    onLoadMore = { loadMoreMessagesCompose() },
-                    advanceLocalLastReadMessageIfNeeded = { advanceLocalLastReadMessageIfNeeded(it) },
-                    updateRemoteLastReadMessageIfNeeded = { updateRemoteLastReadMessageIfNeeded() },
-                    onLongClick = { openMessageActionsDialog(it) },
-                    onFileClick = { downloadAndOpenFile(it) },
-                    onPollClick = { pollId, pollName -> openPollDialog(pollId, pollName) },
-                    onVoicePlayPauseClick = { onVoicePlayPauseClickCompose(it) },
-                    onVoiceSeek = { _, progress -> chatViewModel.seekToMediaPlayer(progress) },
-                    onVoiceSpeedClick = { onVoiceSpeedClickCompose(it) },
-                    onReactionClick = { messageId, emoji -> handleReactionClick(messageId, emoji) },
-                    onReactionLongClick = { messageId -> openReactionsDialog(messageId) },
-                    onOpenThreadClick = { messageId -> openThread(messageId.toLong()) },
-                    onLoadQuotedMessageClick = { messageId -> onLoadQuotedMessage(messageId) },
-                    listState = listState
-                )
+                    ChatView(
+                        chatItems = uiState.items,
+                        isOneToOneConversation = isOneToOneConversation,
+                        conversationThreadId = conversationThreadId,
+                        onLoadMore = { loadMoreMessagesCompose() },
+                        advanceLocalLastReadMessageIfNeeded = { advanceLocalLastReadMessageIfNeeded(it) },
+                        updateRemoteLastReadMessageIfNeeded = { updateRemoteLastReadMessageIfNeeded() },
+                        onLongClick = { openMessageActionsDialog(it) },
+                        onFileClick = { downloadAndOpenFile(it) },
+                        onPollClick = { pollId, pollName -> openPollDialog(pollId, pollName) },
+                        onVoicePlayPauseClick = { onVoicePlayPauseClickCompose(it) },
+                        onVoiceSeek = { _, progress -> chatViewModel.seekToMediaPlayer(progress) },
+                        onVoiceSpeedClick = { onVoiceSpeedClickCompose(it) },
+                        onReactionClick = { messageId, emoji -> handleReactionClick(messageId, emoji) },
+                        onReactionLongClick = { messageId -> openReactionsDialog(messageId) },
+                        onOpenThreadClick = { messageId -> openThread(messageId.toLong()) },
+                        onLoadQuotedMessageClick = { messageId -> onLoadQuotedMessage(messageId) },
+                        listState = listState
+                    )
+                }
             }
         }
     }
