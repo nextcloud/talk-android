@@ -31,7 +31,11 @@ internal val previewReactions = listOf(
 )
 
 @Preview(showBackground = true, name = "Light")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL, name = "Dark")
+@Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
+    name = "Dark"
+)
 @Preview(showBackground = true, locale = "ar", name = "RTL Arabic")
 internal annotation class ChatMessagePreviews
 
@@ -109,4 +113,3 @@ internal fun createLongBaseMessage(content: MessageTypeContent?): ChatMessageUi 
         content = content,
         reactions = previewReactions
     )
-

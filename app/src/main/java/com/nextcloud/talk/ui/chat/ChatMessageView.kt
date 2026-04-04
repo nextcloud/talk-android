@@ -183,7 +183,6 @@ fun ChatMessageView(
     }
 }
 
-
 @ChatMessagePreviews
 @Composable
 private fun ChatMessageViewRegularTextPreview() {
@@ -314,4 +313,3 @@ private fun ChatMessageViewLinkPreviewPreview() {
         ChatMessageView(message = uiMessage)
     }
 }
-
