@@ -105,6 +105,10 @@ class ProfileActivity : BaseActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_EDIT_MODE, profileUiState.isEditMode)
+        scopeSheetRequest?.let { req ->
+            outState.putInt(KEY_SCOPE_SHEET_POSITION, req.position)
+            outState.putString(KEY_SCOPE_SHEET_FIELD, req.field.name)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,6 +117,14 @@ class ProfileActivity : BaseActivity() {
 
         val restoredEdit = savedInstanceState?.getBoolean(KEY_EDIT_MODE) ?: false
         profileUiState = profileUiState.copy(isEditMode = restoredEdit)
+        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_SCOPE_SHEET_POSITION)) {
+            val position = savedInstanceState.getInt(KEY_SCOPE_SHEET_POSITION)
+            val fieldName = savedInstanceState.getString(KEY_SCOPE_SHEET_FIELD)
+            val field = fieldName?.let { name -> Field.entries.find { it.name == name } }
+            if (field != null) {
+                scopeSheetRequest = ScopeSheetRequest(position, field)
+            }
+        }
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
         setContent {
@@ -706,5 +718,7 @@ class ProfileActivity : BaseActivity() {
         private val TAG = ProfileActivity::class.java.simpleName
         private const val DEFAULT_RETRIES: Long = 3
         private const val KEY_EDIT_MODE = "edit_mode"
+        private const val KEY_SCOPE_SHEET_POSITION = "scope_sheet_position"
+        private const val KEY_SCOPE_SHEET_FIELD = "scope_sheet_field"
     }
 }
