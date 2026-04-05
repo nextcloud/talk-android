@@ -24,13 +24,16 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -55,7 +58,7 @@ import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.ui.dialog.ChooseAccountDialogCompose
+import com.nextcloud.talk.chooseaccount.ChooseAccountDialogCompose
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.DEFAULT
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -85,7 +88,8 @@ data class ConversationsListScreenState(
     val showShareToFlow: StateFlow<Boolean>,
     val forwardMessageFlow: StateFlow<Boolean>,
     val hasMultipleAccountsFlow: StateFlow<Boolean>,
-    val showAccountDialogFlow: StateFlow<Boolean>
+    val showAccountDialogFlow: StateFlow<Boolean>,
+    val selectedConversationForOpsFlow: StateFlow<ConversationModel?>
 )
 
 @Suppress("LongParameterList")
@@ -110,9 +114,12 @@ data class ConversationsListScreenCallbacks(
     val onNavigateBack: () -> Unit,
     val onAccountChooserClick: () -> Unit,
     val onNewConversation: () -> Unit,
-    val onAccountDialogDismiss: () -> Unit
+    val onAccountDialogDismiss: () -> Unit,
+    val onConversationOpsDismiss: () -> Unit,
+    val onConversationOpsAction: (ConversationOpsAction, ConversationModel) -> Unit
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Suppress("LongMethod", "CyclomaticComplexMethod")
 @Composable
 fun ConversationsListScreen(
@@ -148,6 +155,8 @@ fun ConversationsListScreen(
     val isForward by state.forwardMessageFlow.collectAsStateWithLifecycle()
     val hasMultipleAccounts by state.hasMultipleAccountsFlow.collectAsStateWithLifecycle()
     val showAccountDialog by state.showAccountDialogFlow.collectAsStateWithLifecycle()
+    val selectedConversationForOps by state.selectedConversationForOpsFlow.collectAsStateWithLifecycle()
+    val opsSheetState = rememberModalBottomSheetState()
 
     // Derived state
     val isArchivedFilterActive = filterState[ARCHIVE] == true
@@ -340,6 +349,25 @@ fun ConversationsListScreen(
                     if (shouldDismiss.value) callbacks.onAccountDialogDismiss()
                 }
                 dialog.GetChooseAccountDialog(shouldDismiss, activity, state.isShowEcosystem)
+            }
+
+            // Conversation-operations bottom sheet
+            val conv = selectedConversationForOps
+            if (conv != null && state.currentUser != null) {
+                ModalBottomSheet(
+                    onDismissRequest = callbacks.onConversationOpsDismiss,
+                    sheetState = opsSheetState,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                ) {
+                    ConversationOperationsContent(
+                        conversation = conv,
+                        user = state.currentUser,
+                        onAction = { action ->
+                            callbacks.onConversationOpsDismiss()
+                            callbacks.onConversationOpsAction(action, conv)
+                        }
+                    )
+                }
             }
         }
     }

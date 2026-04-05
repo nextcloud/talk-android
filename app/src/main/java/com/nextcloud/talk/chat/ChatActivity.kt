@@ -68,6 +68,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -159,7 +160,7 @@ import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.GetPinnedOptionsDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
-import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
+import com.nextcloud.talk.chat.ui.ShowReactionsModalBottomSheet
 import com.nextcloud.talk.ui.dialog.TempMessageActionsDialog
 import com.nextcloud.talk.ui.theme.LocalMessageUtils
 import com.nextcloud.talk.ui.theme.LocalOpenGraphFetcher
@@ -630,6 +631,24 @@ class ChatActivity :
                         listState = listState
                     )
                 }
+
+                val reactionsSheetMessageId by chatViewModel.reactionsSheetMessageId.collectAsStateWithLifecycle()
+                val reactionsSheetMessage by produceState<ChatMessage?>(null, reactionsSheetMessageId) {
+                    value = reactionsSheetMessageId?.let { id -> chatViewModel.getMessageById(id).first() }
+                }
+                reactionsSheetMessage?.let { msg ->
+                    conversationUser?.let { user ->
+                        ShowReactionsModalBottomSheet(
+                            chatMessage = msg,
+                            user = user,
+                            roomToken = roomToken,
+                            hasReactPermission = participantPermissions.hasReactPermission(),
+                            ncApiCoroutines = ncApiCoroutines,
+                            onDeleteReaction = { emoji -> chatViewModel.deleteReaction(roomToken, msg, emoji) },
+                            onDismiss = { chatViewModel.dismissReactionsSheet() }
+                        )
+                    }
+                }
             }
         }
     }
@@ -724,10 +743,7 @@ class ChatActivity :
     }
 
     private fun openReactionsDialog(messageId: Int) {
-        lifecycleScope.launch {
-            val chatMessage = chatViewModel.getMessageById(messageId.toLong()).first()
-            onLongClickReactions(chatMessage)
-        }
+        chatViewModel.showReactionsSheet(messageId.toLong())
     }
 
     private fun getMessageInputFragment(): MessageInputFragment {
@@ -3235,17 +3251,6 @@ class ChatActivity :
 
     fun openThread(chatMessage: ChatMessage) {
         openThread(chatMessage.jsonMessageId.toLong())
-    }
-
-    fun onLongClickReactions(chatMessage: ChatMessage) {
-        ShowReactionsDialog(
-            this,
-            roomToken,
-            chatMessage,
-            conversationUser,
-            participantPermissions.hasReactPermission(),
-            ncApiCoroutines
-        ).show()
     }
 
     fun onMessageClick(message: ChatMessage) {

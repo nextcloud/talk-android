@@ -13,6 +13,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.R
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
@@ -40,6 +41,7 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import com.nextcloud.talk.utils.withRetry
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -73,7 +75,8 @@ class ConversationsListViewModel @Inject constructor(
     private val unifiedSearchRepository: UnifiedSearchRepository,
     private val invitationsRepository: InvitationsRepository,
     private val arbitraryStorageManager: ArbitraryStorageManager,
-    var userManager: UserManager
+    var userManager: UserManager,
+    private val ncApiCoroutines: NcApiCoroutines
 ) : ViewModel() {
 
     private val _currentUser = currentUserProvider.currentUser.blockingGet()
@@ -101,6 +104,16 @@ class ConversationsListViewModel @Inject constructor(
 
     private val _openConversationsState = MutableStateFlow<OpenConversationsUiState>(OpenConversationsUiState.None)
     val openConversationsState: StateFlow<OpenConversationsUiState> = _openConversationsState
+
+    sealed class ConversationReadUnreadUiState {
+        data object None : ConversationReadUnreadUiState()
+        data class Success(val conversationDisplayName: String, val isMarkedRead: Boolean) :
+            ConversationReadUnreadUiState()
+        data object Error : ConversationReadUnreadUiState()
+    }
+
+    private val _readUnreadState = MutableStateFlow<ConversationReadUnreadUiState>(ConversationReadUnreadUiState.None)
+    val readUnreadState: StateFlow<ConversationReadUnreadUiState> = _readUnreadState.asStateFlow()
 
     object GetRoomsStartState : ViewState
     class GetRoomsErrorState(val throwable: Throwable) : ViewState
@@ -171,6 +184,20 @@ class ConversationsListViewModel @Inject constructor(
      */
     private val _isSearchLoadingFlow = MutableStateFlow(false)
     val isSearchLoadingFlow: StateFlow<Boolean> = _isSearchLoadingFlow.asStateFlow()
+
+    private val _selectedConversationForOps = MutableStateFlow<ConversationModel?>(null)
+    val selectedConversationForOps: StateFlow<ConversationModel?> = _selectedConversationForOps.asStateFlow()
+
+    fun setSelectedConversationForOps(model: ConversationModel?) {
+        _selectedConversationForOps.value = model
+    }
+
+    fun clearSelectedConversationForOpsWithDelay(delayMs: Long) {
+        viewModelScope.launch {
+            kotlinx.coroutines.delay(delayMs)
+            _selectedConversationForOps.value = null
+        }
+    }
 
     private val hideRoomToken = MutableStateFlow<String?>(null)
 
@@ -540,6 +567,49 @@ class ConversationsListViewModel @Inject constructor(
         val currentTimeStampInSeconds = System.currentTimeMillis() / LONG_1000
         return conversation.objectType == ConversationEnums.ObjectType.EVENT &&
             (eventTimeStart - currentTimeStampInSeconds) > SIXTEEN_HOURS_IN_SECONDS
+    }
+
+    fun resetReadUnreadState() {
+        _readUnreadState.value = ConversationReadUnreadUiState.None
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun markConversationAsRead(conversation: ConversationModel) {
+        val messageId = if (conversation.remoteServer.isNullOrEmpty()) conversation.lastMessage?.id?.toInt() else null
+        val apiVersion = ApiUtils.getChatApiVersion(
+            currentUser.capabilities?.spreedCapability!!,
+            intArrayOf(ApiUtils.API_V1)
+        )
+        val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    withRetry(1) { ncApiCoroutines.setChatReadMarker(credentials, url, messageId) }
+                }
+                _readUnreadState.value = ConversationReadUnreadUiState.Success(conversation.displayName, true)
+            } catch (e: Exception) {
+                _readUnreadState.value = ConversationReadUnreadUiState.Error
+            }
+        }
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun markConversationAsUnread(conversation: ConversationModel) {
+        val apiVersion = ApiUtils.getChatApiVersion(
+            currentUser.capabilities?.spreedCapability!!,
+            intArrayOf(ApiUtils.API_V1)
+        )
+        val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    withRetry(1) { ncApiCoroutines.markRoomAsUnread(credentials, url) }
+                }
+                _readUnreadState.value = ConversationReadUnreadUiState.Success(conversation.displayName, false)
+            } catch (e: Exception) {
+                _readUnreadState.value = ConversationReadUnreadUiState.Error
+            }
+        }
     }
 
     inner class FederatedInvitationsObserver : Observer<InvitationsModel> {

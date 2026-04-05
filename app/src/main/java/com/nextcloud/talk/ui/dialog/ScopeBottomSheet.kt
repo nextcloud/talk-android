@@ -10,20 +10,22 @@ import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,13 +39,29 @@ import com.nextcloud.talk.models.json.userprofile.Scope
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun ScopeModalBottomSheet(showPrivate: Boolean = true, onScopeSelected: (Scope) -> Unit, onDismiss: () -> Unit) {
+    val sheetState = rememberModalBottomSheetState()
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState
+    ) {
+        ScopeBottomSheetContent(
+            showPrivate = showPrivate,
+            onScopeSelected = { scope ->
+                onScopeSelected(scope)
+                onDismiss()
+            }
+        )
+    }
+}
+
+@Composable
 fun ScopeBottomSheetContent(
     modifier: Modifier = Modifier,
     showPrivate: Boolean = true,
     onScopeSelected: (Scope) -> Unit
 ) {
-    Column(modifier = modifier.fillMaxWidth().padding(bottom = 8.dp)) {
-        BottomSheetDefaults.DragHandle(modifier = Modifier.align(Alignment.CenterHorizontally))
+    Column(modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(bottom = 8.dp)) {
         if (showPrivate) {
             ScopeOption(
                 iconRes = R.drawable.ic_cellphone,
@@ -111,23 +129,18 @@ private fun ScopeOption(
     }
 }
 
-@Preview(name = "Light", showBackground = true)
-@Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "RTL · Arabic", locale = "ar")
 @Composable
 private fun PreviewScopeBottomSheet() {
     val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
     MaterialTheme(colorScheme = colorScheme) {
-        Surface {
-            ScopeBottomSheetContent(onScopeSelected = {})
-        }
-    }
-}
-
-@Preview(name = "RTL · Arabic", showBackground = true, locale = "ar")
-@Composable
-private fun PreviewScopeBottomSheetRtl() {
-    MaterialTheme(colorScheme = lightColorScheme()) {
-        Surface {
+        ModalBottomSheet(
+            onDismissRequest = {},
+            sheetState = rememberModalBottomSheetState()
+        ) {
             ScopeBottomSheetContent(onScopeSelected = {})
         }
     }
