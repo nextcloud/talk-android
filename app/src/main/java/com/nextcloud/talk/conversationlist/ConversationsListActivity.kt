@@ -193,6 +193,9 @@ class ConversationsListActivity : BaseActivity() {
 
         setSupportActionBar(null)
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
+        if (savedInstanceState != null) {
+            showAccountDialogState.value = savedInstanceState.getBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, false)
+        }
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         setContent {
@@ -204,6 +207,11 @@ class ConversationsListActivity : BaseActivity() {
         }
 
         initObservers()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, showAccountDialogState.value)
     }
 
     private fun buildScreenState() =
@@ -1325,5 +1333,6 @@ class ConversationsListActivity : BaseActivity() {
         const val NOTIFICATION_WARNING_DATE_NOT_SET = 0L
         const val ROOM_TYPE_ONE_ONE = "1"
         private const val NOTE_TO_SELF_SHORTCUT_ID = "NOTE_TO_SELF_SHORTCUT_ID"
+        private const val KEY_ACCOUNT_DIALOG_VISIBLE = "account_dialog_visible"
     }
 }

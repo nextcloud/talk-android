@@ -46,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -137,8 +138,8 @@ class ChooseAccountDialogCompose {
         if (shouldDismiss.value) return
         val colorScheme = viewThemeUtils.getColorScheme(activity)
         val status = remember { mutableStateOf<Status?>(null) }
-        val showOnlineStatusSheet = remember { mutableStateOf(false) }
-        val showStatusMessageSheet = remember { mutableStateOf(false) }
+        val showOnlineStatusSheet = rememberSaveable { mutableStateOf(false) }
+        val showStatusMessageSheet = rememberSaveable { mutableStateOf(false) }
         val context = LocalContext.current
         val statusViewState by statusViewModel.statusViewState.collectAsStateWithLifecycle()
         val invitationsState by invitationsViewModel.getInvitationsViewState.collectAsStateWithLifecycle()
@@ -470,54 +471,14 @@ private fun CurrentUserSection(
             .clickable { onCurrentUserClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box {
-            val avatarUrl = ApiUtils.getUrlForAvatar(
-                currentUser.baseUrl,
-                currentUser.userId,
-                true,
-                darkMode = DisplayUtils.isDarkModeOn(context)
-            )
-            val request = loadImage(
-                avatarUrl,
-                context,
-                R.drawable.account_circle_96dp
-            )
-            AsyncImage(
-                model = request,
-                contentDescription = stringResource(R.string.user_avatar),
-                modifier = Modifier.size(48.dp)
-            )
-            statusIndicator(Modifier.align(Alignment.BottomEnd))
-        }
-        Column(
+        UserAvatarWithStatus(currentUser = currentUser, context = context, statusIndicator = statusIndicator)
+        CurrentUserInfo(
+            currentUser = currentUser,
+            status = status,
             modifier = Modifier
                 .padding(start = 12.dp)
                 .weight(1f)
-        ) {
-            Text(text = currentUser.displayName ?: currentUser.username ?: "")
-            status?.let {
-                Column {
-                    if (!it.message.isNullOrEmpty()) {
-                        Text(
-                            text = it.message!!,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = colorResource(id = R.color.low_emphasis_text),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                    Text(
-                        currentUser.baseUrl!!.toUri().host ?: "",
-                        modifier = Modifier.padding(top = 2.dp),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = colorResource(id = R.color.low_emphasis_text),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            }
-        }
-
+        )
         Spacer(modifier = Modifier.padding(end = 8.dp))
         Icon(
             painterResource(id = R.drawable.ic_check_circle),
@@ -525,6 +486,53 @@ private fun CurrentUserSection(
             modifier = Modifier.size(32.dp),
             tint = colorScheme.primary
         )
+    }
+}
+
+@Composable
+private fun UserAvatarWithStatus(currentUser: User, context: Context, statusIndicator: @Composable (Modifier) -> Unit) {
+    Box {
+        AsyncImage(
+            model = loadImage(
+                ApiUtils.getUrlForAvatar(
+                    currentUser.baseUrl,
+                    currentUser.userId,
+                    true,
+                    DisplayUtils.isDarkModeOn(context)
+                ),
+                context,
+                R.drawable.account_circle_96dp
+            ),
+            contentDescription = stringResource(R.string.user_avatar),
+            modifier = Modifier.size(48.dp)
+        )
+        statusIndicator(Modifier.align(Alignment.BottomEnd))
+    }
+}
+
+@Composable
+private fun CurrentUserInfo(currentUser: User, status: Status?, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        Text(text = currentUser.displayName ?: currentUser.username ?: "")
+        status?.let {
+            if (!it.message.isNullOrEmpty()) {
+                Text(
+                    text = it.message!!,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = colorResource(id = R.color.low_emphasis_text),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            Text(
+                text = currentUser.baseUrl!!.toUri().host ?: "",
+                modifier = Modifier.padding(top = 2.dp),
+                style = MaterialTheme.typography.bodySmall,
+                color = colorResource(id = R.color.low_emphasis_text),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
 }
 
