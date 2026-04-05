@@ -38,7 +38,6 @@ import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
-import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.conversation.RenameConversationDialogFragment
@@ -63,7 +62,6 @@ import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
-import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
@@ -106,10 +104,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
@@ -123,9 +117,6 @@ class ConversationsListActivity : BaseActivity() {
 
     @Inject
     lateinit var userManager: UserManager
-
-    @Inject
-    lateinit var ncApi: NcApi
 
     @Inject
     lateinit var ncApiCoroutines: NcApiCoroutines
@@ -422,6 +413,24 @@ class ConversationsListActivity : BaseActivity() {
         lifecycleScope.launch {
             conversationsListViewModel.filterStateFlow.collect { filterState ->
                 if (filterState[ARCHIVE] == true) showUnreadBubbleState.value = false
+            }
+        }
+
+        lifecycleScope.launch {
+            conversationsListViewModel.readUnreadState.collect { state ->
+                when (state) {
+                    is ConversationsListViewModel.ConversationReadUnreadUiState.Success -> {
+                        fetchRooms()
+                        val resId = if (state.isMarkedRead) R.string.marked_as_read else R.string.marked_as_unread
+                        showSnackbar(String.format(resources.getString(resId), state.conversationDisplayName))
+                        conversationsListViewModel.resetReadUnreadState()
+                    }
+                    is ConversationsListViewModel.ConversationReadUnreadUiState.Error -> {
+                        showSnackbar(resources.getString(R.string.nc_common_error_sorry))
+                        conversationsListViewModel.resetReadUnreadState()
+                    }
+                    ConversationsListViewModel.ConversationReadUnreadUiState.None -> { /* no-op */ }
+                }
             }
         }
     }
@@ -1000,57 +1009,11 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     private fun markConversationAsUnread(conversation: ConversationModel) {
-        val apiVersion = ApiUtils.getChatApiVersion(
-            currentUser?.capabilities!!.spreedCapability!!,
-            intArrayOf(ApiUtils.API_V1)
-        )
-        ncApi.markRoomAsUnread(
-            credentials!!,
-            ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser?.baseUrl!!, conversation.token!!)
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .retry(1)
-            .subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) { /* unused */ }
-                override fun onNext(t: GenericOverall) {
-                    fetchRooms()
-                    showSnackbar(
-                        String.format(resources.getString(R.string.marked_as_unread), conversation.displayName)
-                    )
-                }
-                override fun onError(e: Throwable) {
-                    showSnackbar(resources.getString(R.string.nc_common_error_sorry))
-                }
-                override fun onComplete() { /* unused */ }
-            })
+        conversationsListViewModel.markConversationAsUnread(conversation)
     }
 
     private fun markConversationAsRead(conversation: ConversationModel) {
-        val messageId = if (conversation.remoteServer.isNullOrEmpty()) conversation.lastMessage?.id else null
-        val apiVersion = ApiUtils.getChatApiVersion(
-            currentUser?.capabilities!!.spreedCapability!!,
-            intArrayOf(ApiUtils.API_V1)
-        )
-        ncApi.setChatReadMarker(
-            credentials!!,
-            ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser?.baseUrl!!, conversation.token!!),
-            messageId?.toInt()
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .retry(1)
-            .subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) { /* unused */ }
-                override fun onNext(t: GenericOverall) {
-                    fetchRooms()
-                    showSnackbar(String.format(resources.getString(R.string.marked_as_read), conversation.displayName))
-                }
-                override fun onError(e: Throwable) {
-                    showSnackbar(resources.getString(R.string.nc_common_error_sorry))
-                }
-                override fun onComplete() { /* unused */ }
-            })
+        conversationsListViewModel.markConversationAsRead(conversation)
     }
 
     private fun renameConversation(conversation: ConversationModel) {

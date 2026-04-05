@@ -447,4 +447,17 @@ interface NcApiCoroutines {
         @Url url: String,
         @Query("reaction") reaction: String?
     ): ReactionsOverall
+
+    // Url is: /api/{apiVersion}/chat/{token}/read
+    @FormUrlEncoded
+    @POST
+    suspend fun setChatReadMarker(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("lastReadMessage") lastReadMessage: Int?
+    ): GenericOverall
+
+    // Url is: /api/{apiVersion}/chat/{token}/read
+    @DELETE
+    suspend fun markRoomAsUnread(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 }
