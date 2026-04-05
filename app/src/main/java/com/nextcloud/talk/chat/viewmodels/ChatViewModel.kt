@@ -231,6 +231,17 @@ class ChatViewModel @AssistedInject constructor(
     private val _threadRetrieveState = MutableStateFlow<ThreadRetrieveUiState>(ThreadRetrieveUiState.None)
     val threadRetrieveState: StateFlow<ThreadRetrieveUiState> = _threadRetrieveState
 
+    private val _reactionsSheetMessageId = MutableStateFlow<Long?>(null)
+    val reactionsSheetMessageId: StateFlow<Long?> = _reactionsSheetMessageId
+
+    fun showReactionsSheet(messageId: Long) {
+        _reactionsSheetMessageId.value = messageId
+    }
+
+    fun dismissReactionsSheet() {
+        _reactionsSheetMessageId.value = null
+    }
+
     val getLastCommonReadFlow = chatRepository.lastCommonReadFlow
 
     sealed interface ViewState
