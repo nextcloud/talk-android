@@ -95,6 +95,8 @@
     <string name="lower_hand">Lase käsi alla</string>
     <string name="marked_as_read">„%1$s“ vestlus on märgitud loetuks</string>
     <string name="marked_as_unread">„%1$s“ vestlus on märgitud mitteloetuks</string>
+    <string name="media_message_content_description">Faili eelvaade</string>
+    <string name="media_message_content_play">Esita meediafaili</string>
     <string name="mentioned">Mainitud</string>
     <string name="menu_item_sort_by_date_newest_first">Uuemad eespool</string>
     <string name="menu_item_sort_by_date_oldest_first">Vanemad eespool</string>
@@ -524,7 +526,7 @@
     <string name="nc_settings_server_eol">Kasutatav serveri versioon on liiga vana ning selle rakenduse see versioon seda ei toeta!</string>
     <string name="nc_settings_server_eol_title">Mittetoetatud server</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Serveriteavituste rakendus pole paigaldatud</string>
-    <string name="nc_settings_theme_battery_saver">Määratud askukasutuse piiraja poolt</string>
+    <string name="nc_settings_theme_battery_saver">Määratud akukasutuse piiraja poolt</string>
     <string name="nc_settings_theme_dark">Tume kujundus</string>
     <string name="nc_settings_theme_follow_system">Kasuta süsteemi kujundust</string>
     <string name="nc_settings_theme_key">kujundus</string>
@@ -637,6 +639,7 @@
     <string name="polls_voted_hidden_success">Hääletatud</string>
     <string name="previously_set">Määratud varasemalt</string>
     <string name="qr_code_error">QR-koodi lugemine pole võimalik</string>
+    <string name="quoted_message_too_old">See sõnum on näitamiseks liiga vana</string>
     <string name="raise_hand">Anna käega märku</string>
     <string name="reaction_forbidden">Pole õigust selles vestluses reageerida või reageerimisi eemaldada</string>
     <string name="reactions_tab_all">Kõik</string>
