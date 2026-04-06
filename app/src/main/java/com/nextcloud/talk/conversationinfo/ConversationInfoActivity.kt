@@ -178,6 +178,14 @@ class ConversationInfoActivity : BaseActivity() {
         }
     }
 
+    private val editConversationResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            viewModel.getRoom(conversationUser, conversationToken)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -558,7 +566,7 @@ class ConversationInfoActivity : BaseActivity() {
 
             val intent = Intent(this, ConversationInfoEditActivity::class.java)
             intent.putExtras(bundle)
-            startActivity(intent)
+            editConversationResult.launch(intent)
         }
         return true
     }

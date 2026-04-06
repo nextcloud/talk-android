@@ -56,6 +56,10 @@ class ConversationInfoEditViewModel @Inject constructor(
         _uiState.update { it.copy(userMessage = null) }
     }
 
+    fun resetNavigateBack() {
+        _uiState.update { it.copy(navigateBack = false) }
+    }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun loadRoom() {
         _uiState.update { it.copy(isLoading = true) }

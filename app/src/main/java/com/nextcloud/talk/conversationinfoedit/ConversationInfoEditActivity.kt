@@ -110,6 +110,8 @@ class ConversationInfoEditActivity : BaseActivity() {
 
             LaunchedEffect(uiState.navigateBack) {
                 if (uiState.navigateBack) {
+                    conversationInfoEditViewModel.resetNavigateBack()
+                    setResult(RESULT_OK)
                     onBackPressedDispatcher.onBackPressed()
                 }
             }
