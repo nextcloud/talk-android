@@ -14,59 +14,44 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toFile
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.github.dhaval2404.imagepicker.ImagePicker
-import com.google.android.material.snackbar.Snackbar
-import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
-import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.conversationinfoedit.ui.ConversationInfoEditCallbacks
 import com.nextcloud.talk.conversationinfoedit.ui.ConversationInfoEditScreen
-import com.nextcloud.talk.conversationinfoedit.ui.ConversationInfoEditUiState
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
-import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import java.io.File
 import javax.inject.Inject
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.launch
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationInfoEditActivity : BaseActivity() {
-
-    @Inject
-    lateinit var ncApi: NcApi
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     lateinit var conversationInfoEditViewModel: ConversationInfoEditViewModel
 
-    private lateinit var roomToken: String
-    private lateinit var conversationUser: User
-    private lateinit var credentials: String
-
     private lateinit var pickImage: PickImage
-
-    private lateinit var spreedCapabilities: SpreedCapability
-
-    private var uiState by mutableStateOf(ConversationInfoEditUiState())
-    private val snackbarHostState = SnackbarHostState()
 
     private val startImagePickerForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             handleResult(it) { result ->
                 pickImage.onImagePickerResult(result.data) { uri ->
-                    uploadAvatar(uri.toFile())
+                    conversationInfoEditViewModel.uploadAvatar(uri.toFile())
                 }
             }
         }
@@ -91,36 +76,51 @@ class ConversationInfoEditActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        val extras: Bundle? = intent.extras
-
-        conversationUser = currentUserProviderOld.currentUser.blockingGet()
-        roomToken = extras?.getString(BundleKeys.KEY_ROOM_TOKEN)!!
-        credentials = com.nextcloud.talk.utils.ApiUtils.getCredentials(
-            conversationUser.username,
-            conversationUser.token
-        )!!
-
-        pickImage = PickImage(this, conversationUser)
+        val roomToken = intent.extras?.getString(BundleKeys.KEY_ROOM_TOKEN)!!
 
         conversationInfoEditViewModel =
             ViewModelProvider(this, viewModelFactory)[ConversationInfoEditViewModel::class.java]
 
-        conversationInfoEditViewModel.getRoom(conversationUser, roomToken)
+        conversationInfoEditViewModel.initialize(roomToken)
 
+        lifecycleScope.launch {
+            val user = conversationInfoEditViewModel.uiState
+                .mapNotNull { it.conversationUser }
+                .first()
+            pickImage = PickImage(this@ConversationInfoEditActivity, user)
+        }
+
+        setupCompose()
+    }
+
+    private fun setupCompose() {
         val colorScheme = viewThemeUtils.getColorScheme(this)
-
         setContent {
+            val uiState by conversationInfoEditViewModel.uiState.collectAsStateWithLifecycle()
+            val snackbarHostState = remember { SnackbarHostState() }
+            val context = LocalContext.current
+
+            LaunchedEffect(uiState.userMessage) {
+                val msgRes = uiState.userMessage
+                if (msgRes != null) {
+                    snackbarHostState.showSnackbar(context.getString(msgRes))
+                    conversationInfoEditViewModel.messageShown()
+                }
+            }
+
+            LaunchedEffect(uiState.navigateBack) {
+                if (uiState.navigateBack) {
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
+
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
                 ConversationInfoEditScreen(
                     uiState = uiState,
                     callbacks = ConversationInfoEditCallbacks(
                         onNavigateBack = { onBackPressedDispatcher.onBackPressed() },
-                        onSaveClick = {
-                            if (uiState.conversation?.objectType != ConversationEnums.ObjectType.EVENT) {
-                                saveConversationNameAndDescription()
-                            }
-                        },
+                        onSaveClick = { conversationInfoEditViewModel.saveNameAndDescription() },
                         onAvatarUploadClick = {
                             pickImage.selectLocal(startImagePickerForResult = startImagePickerForResult)
                         },
@@ -132,128 +132,22 @@ class ConversationInfoEditActivity : BaseActivity() {
                         onAvatarCameraClick = {
                             pickImage.takePicture(startTakePictureIntentForResult = startTakePictureIntentForResult)
                         },
-                        onAvatarDeleteClick = { deleteAvatar() },
-                        onNameChange = { uiState = uiState.copy(conversationName = it) },
-                        onDescriptionChange = { uiState = uiState.copy(conversationDescription = it) }
+                        onAvatarDeleteClick = { conversationInfoEditViewModel.deleteAvatar() },
+                        onNameChange = { conversationInfoEditViewModel.updateConversationName(it) },
+                        onDescriptionChange = { conversationInfoEditViewModel.updateConversationDescription(it) }
                     ),
                     snackbarHostState = snackbarHostState
                 )
             }
         }
-
-        initObservers()
-    }
-
-    private fun initObservers() {
-        initViewStateObserver()
-        initRenameRoomObserver()
-        initSetDescriptionObserver()
-    }
-
-    private fun initViewStateObserver() {
-        conversationInfoEditViewModel.viewState.observe(this) { state ->
-            when (state) {
-                is ConversationInfoEditViewModel.GetRoomSuccessState -> handleRoomLoaded(state.conversationModel)
-                is ConversationInfoEditViewModel.GetRoomErrorState ->
-                    showSnackbar(getString(R.string.nc_common_error_sorry))
-                is ConversationInfoEditViewModel.UploadAvatarSuccessState ->
-                    uiState = uiState.copy(
-                        conversation = state.conversationModel,
-                        avatarRefreshKey = uiState.avatarRefreshKey + 1
-                    )
-                is ConversationInfoEditViewModel.UploadAvatarErrorState ->
-                    showSnackbar(getString(R.string.nc_common_error_sorry))
-                is ConversationInfoEditViewModel.DeleteAvatarSuccessState ->
-                    uiState = uiState.copy(
-                        conversation = state.conversationModel,
-                        avatarRefreshKey = uiState.avatarRefreshKey + 1
-                    )
-                is ConversationInfoEditViewModel.DeleteAvatarErrorState ->
-                    showSnackbar(getString(R.string.nc_common_error_sorry))
-                else -> {}
-            }
-        }
-    }
-
-    private fun handleRoomLoaded(conversation: com.nextcloud.talk.models.domain.ConversationModel) {
-        spreedCapabilities = conversationUser.capabilities!!.spreedCapability!!
-        val descriptionEndpointAvailable =
-            CapabilitiesUtil.isConversationDescriptionEndpointAvailable(spreedCapabilities)
-        val descriptionMaxLength = CapabilitiesUtil.conversationDescriptionLength(spreedCapabilities)
-        val isEvent = conversation.objectType == ConversationEnums.ObjectType.EVENT
-
-        uiState = uiState.copy(
-            conversationName = conversation.displayName,
-            conversationDescription = conversation.description.takeIf { it.isNotEmpty() }.orEmpty(),
-            conversation = conversation,
-            conversationUser = conversationUser,
-            nameEnabled = !isEvent,
-            descriptionEnabled = descriptionEndpointAvailable && !isEvent,
-            descriptionMaxLength = descriptionMaxLength,
-            isDescriptionEndpointAvailable = descriptionEndpointAvailable
-        )
-    }
-
-    private fun initRenameRoomObserver() {
-        conversationInfoEditViewModel.renameRoomUiState.observe(this) { uiStateVm ->
-            when (uiStateVm) {
-                is ConversationInfoEditViewModel.RenameRoomUiState.None -> {}
-                is ConversationInfoEditViewModel.RenameRoomUiState.Success -> {
-                    if (uiState.isDescriptionEndpointAvailable) saveConversationDescription() else finish()
-                }
-                is ConversationInfoEditViewModel.RenameRoomUiState.Error -> {
-                    showSnackbar(getString(R.string.default_error_msg))
-                    Log.e(TAG, "Error while saving conversation name", uiStateVm.exception)
-                }
-            }
-        }
-    }
-
-    private fun initSetDescriptionObserver() {
-        conversationInfoEditViewModel.setConversationDescriptionUiState.observe(this) { uiStateVm ->
-            when (uiStateVm) {
-                is ConversationInfoEditViewModel.SetConversationDescriptionUiState.None -> {}
-                is ConversationInfoEditViewModel.SetConversationDescriptionUiState.Success -> finish()
-                is ConversationInfoEditViewModel.SetConversationDescriptionUiState.Error -> {
-                    showSnackbar(getString(R.string.default_error_msg))
-                    Log.e(TAG, "Error while saving conversation description", uiStateVm.exception)
-                }
-            }
-        }
-    }
-
-    private fun saveConversationNameAndDescription() {
-        conversationInfoEditViewModel.renameRoom(
-            uiState.conversation!!.token,
-            uiState.conversationName
-        )
-    }
-
-    private fun saveConversationDescription() {
-        conversationInfoEditViewModel.setConversationDescription(
-            uiState.conversation!!.token,
-            uiState.conversationDescription
-        )
     }
 
     private fun handleResult(result: ActivityResult, onResult: (result: ActivityResult) -> Unit) {
         when (result.resultCode) {
             RESULT_OK -> onResult(result)
-            ImagePicker.RESULT_ERROR -> showSnackbar(ImagePicker.getError(result.data))
+            ImagePicker.RESULT_ERROR -> Log.e(TAG, "Image picker error: ${ImagePicker.getError(result.data)}")
             else -> Log.i(TAG, "Task Cancelled")
         }
-    }
-
-    private fun uploadAvatar(file: File) {
-        conversationInfoEditViewModel.uploadConversationAvatar(conversationUser, file, roomToken)
-    }
-
-    private fun deleteAvatar() {
-        conversationInfoEditViewModel.deleteConversationAvatar(conversationUser, roomToken)
-    }
-
-    private fun showSnackbar(message: String) {
-        Snackbar.make(window.decorView, message, Snackbar.LENGTH_LONG).show()
     }
 
     companion object {

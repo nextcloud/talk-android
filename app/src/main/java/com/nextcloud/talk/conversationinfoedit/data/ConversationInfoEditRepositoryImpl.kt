@@ -6,58 +6,53 @@
  */
 package com.nextcloud.talk.conversationinfoedit.data
 
-import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.Mimetype
-import io.reactivex.Observable
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
-class ConversationInfoEditRepositoryImpl(private val ncApi: NcApi, private val ncApiCoroutines: NcApiCoroutines) :
+class ConversationInfoEditRepositoryImpl(private val ncApiCoroutines: NcApiCoroutines) :
     ConversationInfoEditRepository {
 
-    override fun uploadConversationAvatar(
+    override suspend fun getRoom(credentials: String, url: String, user: User): ConversationModel {
+        val result = ncApiCoroutines.getRoom(credentials, url)
+        return ConversationModel.mapToConversationModel(result.ocs?.data!!, user)
+    }
+
+    override suspend fun uploadConversationAvatar(
         credentials: String?,
         url: String,
         user: User,
         file: File,
         roomToken: String
-    ): Observable<ConversationModel> {
-        val builder = MultipartBody.Builder()
-        builder.setType(MultipartBody.FORM)
-        builder.addFormDataPart(
-            "file",
-            file.name,
-            file.asRequestBody(Mimetype.IMAGE_PREFIX_GENERIC.toMediaTypeOrNull())
-        )
+    ): ConversationModel {
         val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
             "file",
             file.name,
             file.asRequestBody(Mimetype.IMAGE_JPG.toMediaTypeOrNull())
         )
-
-        return ncApi.uploadConversationAvatar(
-            credentials,
+        val result = ncApiCoroutines.uploadConversationAvatar(
+            credentials ?: "",
             url,
             filePart
-        ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!, user) }
+        )
+        return ConversationModel.mapToConversationModel(result.ocs?.data!!, user)
     }
 
-    override fun deleteConversationAvatar(
+    override suspend fun deleteConversationAvatar(
         credentials: String?,
         url: String,
         user: User,
         roomToken: String
-    ): Observable<ConversationModel> =
-        ncApi.deleteConversationAvatar(
-            credentials,
-            url
-        ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!, user) }
+    ): ConversationModel {
+        val result = ncApiCoroutines.deleteConversationAvatar(credentials ?: "", url)
+        return ConversationModel.mapToConversationModel(result.ocs?.data!!, user)
+    }
 
     override suspend fun renameConversation(
         credentials: String?,

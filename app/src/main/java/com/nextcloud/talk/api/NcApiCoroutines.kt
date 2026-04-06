@@ -295,6 +295,9 @@ interface NcApiCoroutines {
     ): ChatOverall
 
     @GET
+    suspend fun getRoom(@Header("Authorization") authorization: String, @Url url: String): RoomOverall
+
+    @GET
     suspend fun getNoteToSelfRoom(@Header("Authorization") authorization: String, @Url url: String): RoomOverall
 
     @GET

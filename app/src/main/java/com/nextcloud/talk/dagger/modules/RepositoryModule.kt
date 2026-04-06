@@ -127,10 +127,8 @@ class RepositoryModule {
         RetrofitConversationsNetwork(ncApi)
 
     @Provides
-    fun provideConversationInfoEditRepository(
-        ncApi: NcApi,
-        ncApiCoroutines: NcApiCoroutines
-    ): ConversationInfoEditRepository = ConversationInfoEditRepositoryImpl(ncApi, ncApiCoroutines)
+    fun provideConversationInfoEditRepository(ncApiCoroutines: NcApiCoroutines): ConversationInfoEditRepository =
+        ConversationInfoEditRepositoryImpl(ncApiCoroutines)
 
     @Provides
     fun provideInvitationsRepository(ncApi: NcApi, ncApiCoroutines: NcApiCoroutines): InvitationsRepository =

@@ -20,7 +20,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -33,6 +36,7 @@ import com.nextcloud.talk.databinding.DialogRenameConversationBinding
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.vanniktech.emoji.EmojiPopup
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
@@ -168,15 +172,15 @@ class RenameConversationDialogFragment : DialogFragment() {
     }
 
     private fun setupStateObserver() {
-        viewModel.renameRoomUiState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is ConversationInfoEditViewModel.RenameRoomUiState.None -> {
-                }
-                is ConversationInfoEditViewModel.RenameRoomUiState.Success -> {
-                    handleSuccess()
-                }
-                is ConversationInfoEditViewModel.RenameRoomUiState.Error -> {
-                    showError()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    if (state.navigateBack) {
+                        handleSuccess()
+                    } else if (state.userMessage != null) {
+                        showError()
+                        viewModel.messageShown()
+                    }
                 }
             }
         }

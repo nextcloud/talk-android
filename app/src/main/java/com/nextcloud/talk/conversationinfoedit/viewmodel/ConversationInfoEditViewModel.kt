@@ -7,221 +7,197 @@
 package com.nextcloud.talk.conversationinfoedit.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.R
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.database.user.CurrentUserProvider
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
 class ConversationInfoEditViewModel @Inject constructor(
-    private val repository: ChatNetworkDataSource,
     private val conversationInfoEditRepository: ConversationInfoEditRepository,
-    private val currentUserProvider: CurrentUserProviderOld
+    private val currentUserProvider: CurrentUserProvider
 ) : ViewModel() {
 
-    sealed interface ViewState
+    private val _uiState = MutableStateFlow(ConversationInfoEditUiState())
+    val uiState: StateFlow<ConversationInfoEditUiState> = _uiState.asStateFlow()
 
-    object GetRoomStartState : ViewState
-    object GetRoomErrorState : ViewState
-    open class GetRoomSuccessState(val conversationModel: ConversationModel) : ViewState
+    private var roomToken: String = ""
+    private var initialized = false
 
-    object UploadAvatarErrorState : ViewState
-    open class UploadAvatarSuccessState(val conversationModel: ConversationModel) : ViewState
+    private suspend fun resolveCurrentUser(): User = currentUserProvider.getCurrentUser().getOrThrow()
 
-    object DeleteAvatarErrorState : ViewState
-    open class DeleteAvatarSuccessState(val conversationModel: ConversationModel) : ViewState
-
-    private val _viewState: MutableLiveData<ViewState> = MutableLiveData(GetRoomStartState)
-    val viewState: LiveData<ViewState>
-        get() = _viewState
-
-    private val _renameRoomUiState = MutableLiveData<RenameRoomUiState>(RenameRoomUiState.None)
-    val renameRoomUiState: LiveData<RenameRoomUiState>
-        get() = _renameRoomUiState
-
-    private val _setConversationDescriptionUiState =
-        MutableLiveData<SetConversationDescriptionUiState>(SetConversationDescriptionUiState.None)
-    val setConversationDescriptionUiState: LiveData<SetConversationDescriptionUiState>
-        get() = _setConversationDescriptionUiState
-
-    private val currentUser = currentUserProvider.currentUser.blockingGet()
-
-    val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
-
-    fun getRoom(user: User, token: String) {
-        _viewState.value = GetRoomStartState
-        repository.getRoom(user, token)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(GetRoomObserver())
+    fun initialize(token: String) {
+        if (initialized) return
+        initialized = true
+        roomToken = token
+        loadRoom()
     }
 
-    fun uploadConversationAvatar(user: User, file: File, roomToken: String) {
-        val url = ApiUtils.getUrlForConversationAvatar(1, user.baseUrl!!, roomToken)
-
-        conversationInfoEditRepository.uploadConversationAvatar(
-            credentials,
-            url,
-            user,
-            file,
-            roomToken
-        )
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(UploadConversationAvatarObserver())
+    fun updateConversationName(name: String) {
+        _uiState.update { it.copy(conversationName = name) }
     }
 
-    fun deleteConversationAvatar(user: User, roomToken: String) {
-        val url = ApiUtils.getUrlForConversationAvatar(1, user.baseUrl!!, roomToken)
+    fun updateConversationDescription(description: String) {
+        _uiState.update { it.copy(conversationDescription = description) }
+    }
 
-        conversationInfoEditRepository.deleteConversationAvatar(
-            credentials,
-            url,
-            user,
-            roomToken
-        )
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(DeleteConversationAvatarObserver())
+    fun messageShown() {
+        _uiState.update { it.copy(userMessage = null) }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun renameRoom(roomToken: String, newRoomName: String) {
+    private fun loadRoom() {
+        _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             try {
+                val user = resolveCurrentUser()
                 val apiVersion = ApiUtils.getConversationApiVersion(
-                    currentUser,
-                    intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
+                    user,
+                    intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, ApiUtils.API_V1)
                 )
-                val url = ApiUtils.getUrlForRoom(
-                    apiVersion,
-                    currentUser.baseUrl!!,
-                    roomToken
-                )
-
-                conversationInfoEditRepository.renameConversation(
-                    credentials,
-                    url,
-                    roomToken,
-                    newRoomName
-                )
-                _renameRoomUiState.value = RenameRoomUiState.Success
-            } catch (exception: Exception) {
-                _renameRoomUiState.value = RenameRoomUiState.Error(exception)
+                val url = ApiUtils.getUrlForRoom(apiVersion, user.baseUrl!!, roomToken)
+                val userCredentials = ApiUtils.getCredentials(user.username, user.token) ?: ""
+                val conversationModel = conversationInfoEditRepository.getRoom(userCredentials, url, user)
+                val spreedCapabilities = user.capabilities?.spreedCapability!!
+                val descriptionEndpointAvailable =
+                    CapabilitiesUtil.isConversationDescriptionEndpointAvailable(spreedCapabilities)
+                val descriptionMaxLength = CapabilitiesUtil.conversationDescriptionLength(spreedCapabilities)
+                val isEvent = conversationModel.objectType == ConversationEnums.ObjectType.EVENT
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        conversationName = conversationModel.displayName,
+                        conversationDescription = conversationModel.description
+                            .takeIf { desc -> desc.isNotEmpty() }.orEmpty(),
+                        conversation = conversationModel,
+                        conversationUser = user,
+                        nameEnabled = !isEvent,
+                        descriptionEnabled = descriptionEndpointAvailable && !isEvent,
+                        descriptionMaxLength = descriptionMaxLength,
+                        isDescriptionEndpointAvailable = descriptionEndpointAvailable
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error when fetching room", e)
+                _uiState.update { it.copy(isLoading = false, userMessage = R.string.nc_common_error_sorry) }
             }
         }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun setConversationDescription(roomToken: String, conversationDescription: String?) {
+    fun uploadAvatar(file: File) {
         viewModelScope.launch {
             try {
-                val apiVersion = ApiUtils.getConversationApiVersion(
-                    currentUser,
-                    intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
-                )
-                val url = ApiUtils.getUrlForConversationDescription(
-                    apiVersion,
-                    currentUser.baseUrl!!,
+                val user = resolveCurrentUser()
+                val url = ApiUtils.getUrlForConversationAvatar(1, user.baseUrl!!, roomToken)
+                val userCredentials = ApiUtils.getCredentials(user.username, user.token)
+                val conversationModel = conversationInfoEditRepository.uploadConversationAvatar(
+                    userCredentials,
+                    url,
+                    user,
+                    file,
                     roomToken
                 )
-
-                conversationInfoEditRepository.setConversationDescription(
-                    credentials,
-                    url,
-                    roomToken,
-                    conversationDescription
-                )
-
-                _setConversationDescriptionUiState.value = SetConversationDescriptionUiState.Success
-            } catch (exception: Exception) {
-                _setConversationDescriptionUiState.value = SetConversationDescriptionUiState.Error(exception)
+                _uiState.update {
+                    it.copy(conversation = conversationModel, avatarRefreshKey = it.avatarRefreshKey + 1)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error when uploading avatar", e)
+                _uiState.update { it.copy(userMessage = R.string.nc_common_error_sorry) }
             }
         }
     }
 
-    inner class GetRoomObserver : Observer<ConversationModel> {
-        override fun onSubscribe(d: Disposable) {
-            // unused atm
-        }
-
-        override fun onNext(conversationModel: ConversationModel) {
-            _viewState.value = GetRoomSuccessState(conversationModel)
-        }
-
-        override fun onError(e: Throwable) {
-            Log.e(TAG, "Error when fetching room")
-            _viewState.value = GetRoomErrorState
-        }
-
-        override fun onComplete() {
-            // unused atm
-        }
-    }
-
-    inner class UploadConversationAvatarObserver : Observer<ConversationModel> {
-        override fun onSubscribe(d: Disposable) {
-            // unused atm
-        }
-
-        override fun onNext(conversationModel: ConversationModel) {
-            _viewState.value = UploadAvatarSuccessState(conversationModel)
-        }
-
-        override fun onError(e: Throwable) {
-            Log.e(TAG, "Error when uploading avatar")
-            _viewState.value = UploadAvatarErrorState
-        }
-
-        override fun onComplete() {
-            // unused atm
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun deleteAvatar() {
+        viewModelScope.launch {
+            try {
+                val user = resolveCurrentUser()
+                val url = ApiUtils.getUrlForConversationAvatar(1, user.baseUrl!!, roomToken)
+                val userCredentials = ApiUtils.getCredentials(user.username, user.token)
+                val conversationModel = conversationInfoEditRepository.deleteConversationAvatar(
+                    userCredentials,
+                    url,
+                    user,
+                    roomToken
+                )
+                _uiState.update {
+                    it.copy(conversation = conversationModel, avatarRefreshKey = it.avatarRefreshKey + 1)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error when deleting avatar", e)
+                _uiState.update { it.copy(userMessage = R.string.nc_common_error_sorry) }
+            }
         }
     }
 
-    inner class DeleteConversationAvatarObserver : Observer<ConversationModel> {
-        override fun onSubscribe(d: Disposable) {
-            // unused atm
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun renameRoom(token: String, newName: String) {
+        viewModelScope.launch {
+            try {
+                val user = resolveCurrentUser()
+                val userCredentials = ApiUtils.getCredentials(user.username, user.token)
+                val apiVersion = ApiUtils.getConversationApiVersion(
+                    user,
+                    intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
+                )
+                val url = ApiUtils.getUrlForRoom(apiVersion, user.baseUrl!!, token)
+                conversationInfoEditRepository.renameConversation(userCredentials, url, token, newName)
+                _uiState.update { it.copy(navigateBack = true) }
+            } catch (exception: Exception) {
+                Log.e(TAG, "Error while renaming conversation", exception)
+                _uiState.update { it.copy(userMessage = R.string.default_error_msg) }
+            }
         }
+    }
 
-        override fun onNext(conversationModel: ConversationModel) {
-            _viewState.value = DeleteAvatarSuccessState(conversationModel)
-        }
-
-        override fun onError(e: Throwable) {
-            Log.e(TAG, "Error when deleting avatar")
-            _viewState.value = DeleteAvatarErrorState
-        }
-
-        override fun onComplete() {
-            // unused atm
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun saveNameAndDescription() {
+        val roomToken = _uiState.value.conversation?.token ?: return
+        val newRoomName = _uiState.value.conversationName
+        viewModelScope.launch {
+            try {
+                val user = resolveCurrentUser()
+                val userCredentials = ApiUtils.getCredentials(user.username, user.token)
+                val apiVersion = ApiUtils.getConversationApiVersion(
+                    user,
+                    intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
+                )
+                val url = ApiUtils.getUrlForRoom(apiVersion, user.baseUrl!!, roomToken)
+                conversationInfoEditRepository.renameConversation(userCredentials, url, roomToken, newRoomName)
+                if (_uiState.value.isDescriptionEndpointAvailable) {
+                    val descApiVersion = ApiUtils.getConversationApiVersion(
+                        user,
+                        intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
+                    )
+                    val descUrl = ApiUtils.getUrlForConversationDescription(descApiVersion, user.baseUrl!!, roomToken)
+                    conversationInfoEditRepository.setConversationDescription(
+                        userCredentials,
+                        descUrl,
+                        roomToken,
+                        _uiState.value.conversationDescription
+                    )
+                }
+                _uiState.update { it.copy(navigateBack = true) }
+            } catch (exception: Exception) {
+                Log.e(TAG, "Error while saving conversation", exception)
+                _uiState.update { it.copy(userMessage = R.string.default_error_msg) }
+            }
         }
     }
 
     companion object {
         private val TAG = ConversationInfoEditViewModel::class.simpleName
-    }
-
-    sealed class RenameRoomUiState {
-        data object None : RenameRoomUiState()
-        data object Success : RenameRoomUiState()
-        data class Error(val exception: Exception) : RenameRoomUiState()
-    }
-
-    sealed class SetConversationDescriptionUiState {
-        data object None : SetConversationDescriptionUiState()
-        data object Success : SetConversationDescriptionUiState()
-        data class Error(val exception: Exception) : SetConversationDescriptionUiState()
     }
 }

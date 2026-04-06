@@ -60,8 +60,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditUiState
 import com.nextcloud.talk.extensions.loadSystemAvatar
-import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.utils.ApiUtils
 
@@ -69,22 +69,6 @@ private const val AVATAR_SIZE_DP = 96
 private const val AVATAR_BUTTON_SIZE_DP = 40
 private const val CONVERSATION_NAME_MAX_LENGTH = 255
 private val avatarButtonShape = RoundedCornerShape(12.dp)
-
-data class ConversationInfoEditUiState(
-    val conversationName: String = "",
-    val conversationDescription: String = "",
-    val conversation: ConversationModel? = null,
-    val conversationUser: User? = null,
-    val avatarRefreshKey: Int = 0,
-    val nameEnabled: Boolean = true,
-    val descriptionEnabled: Boolean = true,
-    val descriptionMaxLength: Int = DESCRIPTION_MAX_LENGTH_DEFAULT,
-    val isDescriptionEndpointAvailable: Boolean = false
-) {
-    companion object {
-        const val DESCRIPTION_MAX_LENGTH_DEFAULT = 500
-    }
-}
 
 data class ConversationInfoEditCallbacks(
     val onNavigateBack: () -> Unit = {},
