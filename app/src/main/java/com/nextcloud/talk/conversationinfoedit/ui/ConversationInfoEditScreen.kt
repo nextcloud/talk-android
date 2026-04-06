@@ -10,16 +10,20 @@ package com.nextcloud.talk.conversationinfoedit.ui
 import android.content.res.Configuration
 import android.widget.ImageView
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,6 +41,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -59,11 +65,11 @@ import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.nextcloud.talk.R
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditUiState
 import com.nextcloud.talk.extensions.loadSystemAvatar
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.models.json.participants.Participant
 
 private const val AVATAR_SIZE_DP = 96
 private const val AVATAR_BUTTON_SIZE_DP = 40
@@ -90,7 +96,8 @@ fun ConversationInfoEditScreen(
 ) {
     Scaffold(
         topBar = { ConversationInfoEditTopBar(uiState = uiState, callbacks = callbacks) },
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        contentWindowInsets = WindowInsets.safeDrawing
     ) { paddingValues ->
         ConversationInfoEditContent(
             uiState = uiState,
@@ -125,8 +132,7 @@ private fun ConversationInfoEditTopBar(uiState: ConversationInfoEditUiState, cal
             }
         },
         actions = {
-            val isEvent = uiState.conversation?.objectType == ConversationEnums.ObjectType.EVENT
-            if (!isEvent) {
+            if (uiState.showSaveButton) {
                 IconButton(onClick = callbacks.onSaveClick) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_check),
@@ -144,15 +150,63 @@ private fun ConversationInfoEditContent(
     callbacks: ConversationInfoEditCallbacks,
     modifier: Modifier = Modifier
 ) {
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    if (isLandscape) {
+        Row(modifier = modifier.fillMaxSize()) {
+            AvatarPane(
+                uiState = uiState,
+                callbacks = callbacks,
+                modifier = Modifier.weight(1f).fillMaxHeight()
+            )
+            FieldsPane(
+                uiState = uiState,
+                callbacks = callbacks,
+                modifier = Modifier.weight(1f).fillMaxHeight()
+            )
+        }
+    } else {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .imePadding(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            ConversationAvatarImage(
+                uiState = uiState,
+                modifier = Modifier.size(AVATAR_SIZE_DP.dp).clip(CircleShape)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            AvatarButtonsRow(uiState = uiState, callbacks = callbacks)
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            NameField(uiState = uiState, callbacks = callbacks)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            DescriptionField(uiState = uiState, callbacks = callbacks)
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun AvatarPane(
+    uiState: ConversationInfoEditUiState,
+    callbacks: ConversationInfoEditCallbacks,
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .imePadding(),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
         ConversationAvatarImage(
             uiState = uiState,
             modifier = Modifier.size(AVATAR_SIZE_DP.dp).clip(CircleShape)
@@ -161,9 +215,22 @@ private fun ConversationInfoEditContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         AvatarButtonsRow(uiState = uiState, callbacks = callbacks)
+    }
+}
 
-        Spacer(modifier = Modifier.height(8.dp))
-
+@Composable
+private fun FieldsPane(
+    uiState: ConversationInfoEditUiState,
+    callbacks: ConversationInfoEditCallbacks,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+            .imePadding()
+            .padding(top = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         NameField(uiState = uiState, callbacks = callbacks)
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -224,6 +291,7 @@ private fun AvatarButtonsRow(uiState: ConversationInfoEditUiState, callbacks: Co
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         FilledTonalIconButton(
             onClick = callbacks.onAvatarUploadClick,
+            enabled = uiState.avatarButtonsEnabled,
             modifier = Modifier.size(AVATAR_BUTTON_SIZE_DP.dp),
             shape = avatarButtonShape
         ) {
@@ -234,6 +302,7 @@ private fun AvatarButtonsRow(uiState: ConversationInfoEditUiState, callbacks: Co
         }
         FilledTonalIconButton(
             onClick = callbacks.onAvatarChooseClick,
+            enabled = uiState.avatarButtonsEnabled,
             modifier = Modifier.size(AVATAR_BUTTON_SIZE_DP.dp),
             shape = avatarButtonShape
         ) {
@@ -244,6 +313,7 @@ private fun AvatarButtonsRow(uiState: ConversationInfoEditUiState, callbacks: Co
         }
         FilledTonalIconButton(
             onClick = callbacks.onAvatarCameraClick,
+            enabled = uiState.avatarButtonsEnabled,
             modifier = Modifier.size(AVATAR_BUTTON_SIZE_DP.dp),
             shape = avatarButtonShape
         ) {
@@ -255,6 +325,7 @@ private fun AvatarButtonsRow(uiState: ConversationInfoEditUiState, callbacks: Co
         if (uiState.conversation.hasCustomAvatar) {
             FilledTonalIconButton(
                 onClick = callbacks.onAvatarDeleteClick,
+                enabled = uiState.avatarButtonsEnabled,
                 modifier = Modifier.size(AVATAR_BUTTON_SIZE_DP.dp),
                 shape = avatarButtonShape
             ) {
@@ -271,9 +342,8 @@ private fun AvatarButtonsRow(uiState: ConversationInfoEditUiState, callbacks: Co
 @Composable
 private fun ConversationAvatarImage(uiState: ConversationInfoEditUiState, modifier: Modifier = Modifier) {
     val conversation = uiState.conversation
-    val user = uiState.conversationUser
 
-    if (conversation == null || user == null) {
+    if (conversation == null || uiState.conversationUser == null) {
         Image(
             painter = painterResource(R.drawable.account_circle_96dp),
             contentDescription = stringResource(R.string.avatar),
@@ -285,21 +355,20 @@ private fun ConversationAvatarImage(uiState: ConversationInfoEditUiState, modifi
     val isInPreview = LocalInspectionMode.current
     val isDark = LocalConfiguration.current.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
         Configuration.UI_MODE_NIGHT_YES
-    val credentials = remember(user.id) { ApiUtils.getCredentials(user.username, user.token) ?: "" }
-    val params = AvatarImageParams(user, isDark, uiState.avatarRefreshKey, credentials)
+    val params = AvatarImageParams(
+        isDark = isDark,
+        credentials = uiState.avatarCredentials,
+        avatarUrl = uiState.avatarUrl,
+        avatarUrlDark = uiState.avatarUrlDark
+    )
 
     when (conversation.type) {
         ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ->
-            OneToOneAvatarImage(params, conversation.name, modifier)
+            OneToOneAvatarImage(params, modifier)
 
         ConversationEnums.ConversationType.ROOM_GROUP_CALL,
         ConversationEnums.ConversationType.ROOM_PUBLIC_CALL ->
-            GroupAvatarImage(
-                params,
-                conversation.token,
-                conversation.avatarVersion.takeIf { it.isNotEmpty() },
-                modifier
-            )
+            GroupAvatarImage(params, modifier)
 
         ConversationEnums.ConversationType.ROOM_SYSTEM ->
             SystemAvatarImage(isInPreview = isInPreview, modifier = modifier)
@@ -314,18 +383,16 @@ private fun ConversationAvatarImage(uiState: ConversationInfoEditUiState, modifi
 }
 
 private data class AvatarImageParams(
-    val user: User,
     val isDark: Boolean,
-    val avatarRefreshKey: Int,
-    val credentials: String
+    val credentials: String,
+    val avatarUrl: String,
+    val avatarUrlDark: String
 )
 
 @Composable
-private fun OneToOneAvatarImage(params: AvatarImageParams, conversationName: String, modifier: Modifier = Modifier) {
+private fun OneToOneAvatarImage(params: AvatarImageParams, modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    val url = remember(params.user.baseUrl, conversationName, params.isDark, params.avatarRefreshKey) {
-        ApiUtils.getUrlForAvatar(params.user.baseUrl, conversationName, true, params.isDark)
-    }
+    val url = if (params.isDark) params.avatarUrlDark else params.avatarUrl
     val request = remember(url, params.credentials) {
         ImageRequest.Builder(context)
             .data(url)
@@ -344,16 +411,9 @@ private fun OneToOneAvatarImage(params: AvatarImageParams, conversationName: Str
 }
 
 @Composable
-private fun GroupAvatarImage(
-    params: AvatarImageParams,
-    token: String,
-    avatarVersion: String?,
-    modifier: Modifier = Modifier
-) {
+private fun GroupAvatarImage(params: AvatarImageParams, modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    val url = remember(params.user.baseUrl, token, params.isDark, params.avatarRefreshKey) {
-        ApiUtils.getUrlForConversationAvatarWithVersion(1, params.user.baseUrl, token, params.isDark, avatarVersion)
-    }
+    val url = if (params.isDark) params.avatarUrlDark else params.avatarUrl
     val request = remember(url, params.credentials) {
         ImageRequest.Builder(context)
             .data(url)
@@ -387,21 +447,51 @@ private fun SystemAvatarImage(isInPreview: Boolean, modifier: Modifier = Modifie
     }
 }
 
-@Preview(name = "Light")
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(name = "RTL Arabic", locale = "ar")
+@Preview(name = "Light", showSystemUi = true)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
+@Preview(name = "RTL Arabic", locale = "ar", showSystemUi = true)
+@Preview(name = "Landscape", widthDp = 891, heightDp = 411)
 @Composable
 private fun ConversationInfoEditScreenPreview() {
-    MaterialTheme {
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    MaterialTheme(colorScheme = colorScheme) {
         ConversationInfoEditScreen(
             uiState = ConversationInfoEditUiState(
                 conversationName = "My Conversation",
                 conversationDescription = "A great conversation about everything",
                 nameEnabled = true,
                 descriptionEnabled = true,
-                descriptionMaxLength = ConversationInfoEditUiState.DESCRIPTION_MAX_LENGTH_DEFAULT
+                descriptionMaxLength = ConversationInfoEditUiState.DESCRIPTION_MAX_LENGTH_DEFAULT,
+                conversation = previewConversation,
+                avatarButtonsEnabled = true
             ),
             callbacks = ConversationInfoEditCallbacks()
         )
     }
 }
+
+private val previewConversation = ConversationModel(
+    internalId = "1@preview",
+    accountId = 1L,
+    token = "preview",
+    name = "My Conversation",
+    displayName = "My Conversation",
+    description = "A great conversation about everything",
+    type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+    participantType = Participant.ParticipantType.OWNER,
+    sessionId = "",
+    actorId = "",
+    actorType = "",
+    objectType = ConversationEnums.ObjectType.DEFAULT,
+    notificationLevel = ConversationEnums.NotificationLevel.DEFAULT,
+    conversationReadOnlyState = ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_WRITE,
+    lobbyState = ConversationEnums.LobbyState.LOBBY_STATE_ALL_PARTICIPANTS,
+    lobbyTimer = 0L,
+    canLeaveConversation = true,
+    canDeleteConversation = false,
+    unreadMentionDirect = false,
+    notificationCalls = 1,
+    avatarVersion = "",
+    hasCustomAvatar = false,
+    callStartTime = 0L
+)

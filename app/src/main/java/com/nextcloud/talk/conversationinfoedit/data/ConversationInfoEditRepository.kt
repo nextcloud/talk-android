@@ -13,33 +13,16 @@ import java.io.File
 
 interface ConversationInfoEditRepository {
 
-    suspend fun getRoom(credentials: String, url: String, user: User): ConversationModel
+    suspend fun getRoom(user: User, roomToken: String): ConversationInfoEditRoomData
 
-    suspend fun uploadConversationAvatar(
-        credentials: String?,
-        url: String,
-        user: User,
-        file: File,
-        roomToken: String
-    ): ConversationModel
+    suspend fun uploadConversationAvatar(user: User, roomToken: String, file: File): ConversationModel
 
-    suspend fun deleteConversationAvatar(
-        credentials: String?,
-        url: String,
-        user: User,
-        roomToken: String
-    ): ConversationModel
+    suspend fun deleteConversationAvatar(user: User, roomToken: String): ConversationModel
 
-    suspend fun renameConversation(
-        credentials: String?,
-        url: String,
-        roomToken: String,
-        newRoomName: String
-    ): GenericOverall
+    suspend fun renameConversation(user: User, roomToken: String, newRoomName: String): GenericOverall
 
     suspend fun setConversationDescription(
-        credentials: String?,
-        url: String,
+        user: User,
         roomToken: String,
         conversationDescription: String?
     ): GenericOverall

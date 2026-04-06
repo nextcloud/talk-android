@@ -12,9 +12,9 @@ import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.R
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,8 +34,7 @@ class ConversationInfoEditViewModel @Inject constructor(
 
     private var roomToken: String = ""
     private var initialized = false
-
-    private suspend fun resolveCurrentUser(): User = currentUserProvider.getCurrentUser().getOrThrow()
+    private var currentUser: User? = null
 
     fun initialize(token: String) {
         if (initialized) return
@@ -65,19 +64,13 @@ class ConversationInfoEditViewModel @Inject constructor(
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             try {
-                val user = resolveCurrentUser()
-                val apiVersion = ApiUtils.getConversationApiVersion(
-                    user,
-                    intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, ApiUtils.API_V1)
-                )
-                val url = ApiUtils.getUrlForRoom(apiVersion, user.baseUrl!!, roomToken)
-                val userCredentials = ApiUtils.getCredentials(user.username, user.token) ?: ""
-                val conversationModel = conversationInfoEditRepository.getRoom(userCredentials, url, user)
-                val spreedCapabilities = user.capabilities?.spreedCapability!!
-                val descriptionEndpointAvailable =
-                    CapabilitiesUtil.isConversationDescriptionEndpointAvailable(spreedCapabilities)
-                val descriptionMaxLength = CapabilitiesUtil.conversationDescriptionLength(spreedCapabilities)
+                val user = currentUserProvider.getCurrentUser().getOrThrow()
+                currentUser = user
+                val roomData = conversationInfoEditRepository.getRoom(user, roomToken)
+                val conversationModel = roomData.conversation
                 val isEvent = conversationModel.objectType == ConversationEnums.ObjectType.EVENT
+                val userCredentials = ApiUtils.getCredentials(user.username, user.token) ?: ""
+                val (avatarUrlLight, avatarUrlDark) = buildAvatarUrls(user, conversationModel)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -86,10 +79,15 @@ class ConversationInfoEditViewModel @Inject constructor(
                             .takeIf { desc -> desc.isNotEmpty() }.orEmpty(),
                         conversation = conversationModel,
                         conversationUser = user,
+                        avatarCredentials = userCredentials,
+                        avatarUrl = avatarUrlLight,
+                        avatarUrlDark = avatarUrlDark,
                         nameEnabled = !isEvent,
-                        descriptionEnabled = descriptionEndpointAvailable && !isEvent,
-                        descriptionMaxLength = descriptionMaxLength,
-                        isDescriptionEndpointAvailable = descriptionEndpointAvailable
+                        descriptionEnabled = roomData.descriptionEndpointAvailable && !isEvent,
+                        showSaveButton = !isEvent,
+                        avatarButtonsEnabled = true,
+                        descriptionMaxLength = roomData.descriptionMaxLength,
+                        isDescriptionEndpointAvailable = roomData.descriptionEndpointAvailable
                     )
                 }
             } catch (e: Exception) {
@@ -103,18 +101,16 @@ class ConversationInfoEditViewModel @Inject constructor(
     fun uploadAvatar(file: File) {
         viewModelScope.launch {
             try {
-                val user = resolveCurrentUser()
-                val url = ApiUtils.getUrlForConversationAvatar(1, user.baseUrl!!, roomToken)
-                val userCredentials = ApiUtils.getCredentials(user.username, user.token)
-                val conversationModel = conversationInfoEditRepository.uploadConversationAvatar(
-                    userCredentials,
-                    url,
-                    user,
-                    file,
-                    roomToken
-                )
+                val user = currentUser ?: return@launch
+                val conversationModel = conversationInfoEditRepository.uploadConversationAvatar(user, roomToken, file)
+                val (avatarUrlLight, avatarUrlDark) = buildAvatarUrls(user, conversationModel)
                 _uiState.update {
-                    it.copy(conversation = conversationModel, avatarRefreshKey = it.avatarRefreshKey + 1)
+                    it.copy(
+                        conversation = conversationModel,
+                        avatarUrl = avatarUrlLight,
+                        avatarUrlDark = avatarUrlDark,
+                        avatarRefreshKey = it.avatarRefreshKey + 1
+                    )
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error when uploading avatar", e)
@@ -127,17 +123,16 @@ class ConversationInfoEditViewModel @Inject constructor(
     fun deleteAvatar() {
         viewModelScope.launch {
             try {
-                val user = resolveCurrentUser()
-                val url = ApiUtils.getUrlForConversationAvatar(1, user.baseUrl!!, roomToken)
-                val userCredentials = ApiUtils.getCredentials(user.username, user.token)
-                val conversationModel = conversationInfoEditRepository.deleteConversationAvatar(
-                    userCredentials,
-                    url,
-                    user,
-                    roomToken
-                )
+                val user = currentUser ?: return@launch
+                val conversationModel = conversationInfoEditRepository.deleteConversationAvatar(user, roomToken)
+                val (avatarUrlLight, avatarUrlDark) = buildAvatarUrls(user, conversationModel)
                 _uiState.update {
-                    it.copy(conversation = conversationModel, avatarRefreshKey = it.avatarRefreshKey + 1)
+                    it.copy(
+                        conversation = conversationModel,
+                        avatarUrl = avatarUrlLight,
+                        avatarUrlDark = avatarUrlDark,
+                        avatarRefreshKey = it.avatarRefreshKey + 1
+                    )
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error when deleting avatar", e)
@@ -150,14 +145,8 @@ class ConversationInfoEditViewModel @Inject constructor(
     fun renameRoom(token: String, newName: String) {
         viewModelScope.launch {
             try {
-                val user = resolveCurrentUser()
-                val userCredentials = ApiUtils.getCredentials(user.username, user.token)
-                val apiVersion = ApiUtils.getConversationApiVersion(
-                    user,
-                    intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
-                )
-                val url = ApiUtils.getUrlForRoom(apiVersion, user.baseUrl!!, token)
-                conversationInfoEditRepository.renameConversation(userCredentials, url, token, newName)
+                val user = currentUser ?: currentUserProvider.getCurrentUser().getOrThrow()
+                conversationInfoEditRepository.renameConversation(user, token, newName)
                 _uiState.update { it.copy(navigateBack = true) }
             } catch (exception: Exception) {
                 Log.e(TAG, "Error while renaming conversation", exception)
@@ -172,23 +161,11 @@ class ConversationInfoEditViewModel @Inject constructor(
         val newRoomName = _uiState.value.conversationName
         viewModelScope.launch {
             try {
-                val user = resolveCurrentUser()
-                val userCredentials = ApiUtils.getCredentials(user.username, user.token)
-                val apiVersion = ApiUtils.getConversationApiVersion(
-                    user,
-                    intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
-                )
-                val url = ApiUtils.getUrlForRoom(apiVersion, user.baseUrl!!, roomToken)
-                conversationInfoEditRepository.renameConversation(userCredentials, url, roomToken, newRoomName)
+                val user = currentUser ?: return@launch
+                conversationInfoEditRepository.renameConversation(user, roomToken, newRoomName)
                 if (_uiState.value.isDescriptionEndpointAvailable) {
-                    val descApiVersion = ApiUtils.getConversationApiVersion(
-                        user,
-                        intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
-                    )
-                    val descUrl = ApiUtils.getUrlForConversationDescription(descApiVersion, user.baseUrl!!, roomToken)
                     conversationInfoEditRepository.setConversationDescription(
-                        userCredentials,
-                        descUrl,
+                        user,
                         roomToken,
                         _uiState.value.conversationDescription
                     )
@@ -203,5 +180,33 @@ class ConversationInfoEditViewModel @Inject constructor(
 
     companion object {
         private val TAG = ConversationInfoEditViewModel::class.simpleName
+    }
+
+    private fun buildAvatarUrls(user: User, conversationModel: ConversationModel): Pair<String, String> {
+        val avatarVersion = conversationModel.avatarVersion.takeIf { it.isNotEmpty() }
+        return when (conversationModel.type) {
+            ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> Pair(
+                ApiUtils.getUrlForAvatar(user.baseUrl, conversationModel.displayName, true, false),
+                ApiUtils.getUrlForAvatar(user.baseUrl, conversationModel.displayName, true, true)
+            )
+            ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+            ConversationEnums.ConversationType.ROOM_PUBLIC_CALL -> Pair(
+                ApiUtils.getUrlForConversationAvatarWithVersion(
+                    version = 1,
+                    baseUrl = user.baseUrl,
+                    token = conversationModel.token,
+                    isDark = false,
+                    avatarVersion = avatarVersion
+                ),
+                ApiUtils.getUrlForConversationAvatarWithVersion(
+                    version = 1,
+                    baseUrl = user.baseUrl,
+                    token = conversationModel.token,
+                    isDark = true,
+                    avatarVersion = avatarVersion
+                )
+            )
+            else -> Pair("", "")
+        }
     }
 }

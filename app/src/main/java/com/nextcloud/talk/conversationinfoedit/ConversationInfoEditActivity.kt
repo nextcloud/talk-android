@@ -17,7 +17,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.core.net.toFile
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -45,12 +45,12 @@ class ConversationInfoEditActivity : BaseActivity() {
 
     lateinit var conversationInfoEditViewModel: ConversationInfoEditViewModel
 
-    private lateinit var pickImage: PickImage
+    private var pickImage: PickImage? = null
 
     private val startImagePickerForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             handleResult(it) { result ->
-                pickImage.onImagePickerResult(result.data) { uri ->
+                pickImage?.onImagePickerResult(result.data) { uri ->
                     conversationInfoEditViewModel.uploadAvatar(uri.toFile())
                 }
             }
@@ -60,7 +60,7 @@ class ConversationInfoEditActivity : BaseActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) {
         handleResult(it) { result ->
-            pickImage.onSelectRemoteFilesResult(startImagePickerForResult, result.data)
+            pickImage?.onSelectRemoteFilesResult(startImagePickerForResult, result.data)
         }
     }
 
@@ -68,7 +68,7 @@ class ConversationInfoEditActivity : BaseActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) {
         handleResult(it) { result ->
-            pickImage.onTakePictureResult(startImagePickerForResult, result.data)
+            pickImage?.onTakePictureResult(startImagePickerForResult, result.data)
         }
     }
 
@@ -83,11 +83,17 @@ class ConversationInfoEditActivity : BaseActivity() {
 
         conversationInfoEditViewModel.initialize(roomToken)
 
-        lifecycleScope.launch {
-            val user = conversationInfoEditViewModel.uiState
-                .mapNotNull { it.conversationUser }
-                .first()
-            pickImage = PickImage(this@ConversationInfoEditActivity, user)
+        conversationInfoEditViewModel.uiState.value.conversationUser?.let { user ->
+            pickImage = PickImage(this, user)
+        }
+
+        if (pickImage == null) {
+            lifecycleScope.launch {
+                val user = conversationInfoEditViewModel.uiState
+                    .mapNotNull { it.conversationUser }
+                    .first()
+                pickImage = PickImage(this@ConversationInfoEditActivity, user)
+            }
         }
 
         setupCompose()
@@ -98,12 +104,12 @@ class ConversationInfoEditActivity : BaseActivity() {
         setContent {
             val uiState by conversationInfoEditViewModel.uiState.collectAsStateWithLifecycle()
             val snackbarHostState = remember { SnackbarHostState() }
-            val context = LocalContext.current
+            val userMessage = uiState.userMessage
+            val userMessageText = userMessage?.let { stringResource(it) }
 
-            LaunchedEffect(uiState.userMessage) {
-                val msgRes = uiState.userMessage
-                if (msgRes != null) {
-                    snackbarHostState.showSnackbar(context.getString(msgRes))
+            LaunchedEffect(userMessage) {
+                if (userMessageText != null) {
+                    snackbarHostState.showSnackbar(userMessageText)
                     conversationInfoEditViewModel.messageShown()
                 }
             }
@@ -124,15 +130,15 @@ class ConversationInfoEditActivity : BaseActivity() {
                         onNavigateBack = { onBackPressedDispatcher.onBackPressed() },
                         onSaveClick = { conversationInfoEditViewModel.saveNameAndDescription() },
                         onAvatarUploadClick = {
-                            pickImage.selectLocal(startImagePickerForResult = startImagePickerForResult)
+                            pickImage?.selectLocal(startImagePickerForResult = startImagePickerForResult)
                         },
                         onAvatarChooseClick = {
-                            pickImage.selectRemote(
+                            pickImage?.selectRemote(
                                 startSelectRemoteFilesIntentForResult = startSelectRemoteFilesIntentForResult
                             )
                         },
                         onAvatarCameraClick = {
-                            pickImage.takePicture(startTakePictureIntentForResult = startTakePictureIntentForResult)
+                            pickImage?.takePicture(startTakePictureIntentForResult = startTakePictureIntentForResult)
                         },
                         onAvatarDeleteClick = { conversationInfoEditViewModel.deleteAvatar() },
                         onNameChange = { conversationInfoEditViewModel.updateConversationName(it) },
