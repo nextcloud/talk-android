@@ -1288,8 +1288,6 @@ class ChatActivity :
                             false,
                             darkMode = DisplayUtils.isDarkModeOn(context)
                         ).toUri()
-                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).text =
-                            context.resources.getString(R.string.user_absence_replacement)
                         binding.outOfOfficeContainer.findViewById<ImageView>(R.id.replacement_user_avatar)
                             .load(imageUri) {
                                 transformations(CircleCropTransformation())
