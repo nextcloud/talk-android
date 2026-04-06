@@ -115,8 +115,10 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             tools:visibility="visible"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="12dp">
+            android:layout_marginStart="@dimen/standard_quarter_margin"
+            android:layout_marginEnd="@dimen/standard_quarter_margin"
+            android:layout_marginTop="@dimen/standard_quarter_margin"
+            app:cardCornerRadius="@dimen/meta_info_corner_radius">
 
             <include layout="@layout/remainder_to_delete_conversation" />
         </com.google.android.material.card.MaterialCardView>
@@ -143,7 +145,9 @@
                 android:id="@+id/upcoming_event_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/standard_quarter_margin"
+                android:layout_marginStart="@dimen/standard_quarter_margin"
+                android:layout_marginEnd="@dimen/standard_quarter_margin"
+                android:layout_marginTop="@dimen/standard_quarter_margin"
                 android:visibility="gone"
                 app:cardCornerRadius="@dimen/meta_info_corner_radius"
                 tools:visibility="visible">
@@ -158,7 +162,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="@dimen/standard_half_padding"
+                android:padding="@dimen/standard_quarter_padding"
                 android:visibility="gone"
                 android:background="@color/transparent"
                 tools:visibility="visible">
@@ -174,16 +178,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_margin="8dp"
                 android:background="@color/bg_default">
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/out_of_office_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
                     tools:visibility="visible"
-                    app:cardCornerRadius="12dp">
+                    android:layout_marginStart="@dimen/standard_quarter_margin"
+                    android:layout_marginEnd="@dimen/standard_quarter_margin"
+                    android:layout_marginTop="@dimen/standard_quarter_margin"
+                    android:visibility="gone"
+                    app:cardCornerRadius="@dimen/meta_info_corner_radius">
 
                     <include layout="@layout/out_of_office_view" />
                 </com.google.android.material.card.MaterialCardView>
