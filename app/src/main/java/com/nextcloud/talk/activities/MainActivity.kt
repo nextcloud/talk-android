@@ -298,8 +298,6 @@ class MainActivity :
     private fun handleDeepLink(intent: Intent): Boolean {
         val deepLinkResult = intent.data?.let { DeepLinkHandler.parseDeepLink(it) } ?: return false
 
-        Log.d(TAG, "Handling deep link: token=${deepLinkResult.roomToken}, server=${deepLinkResult.serverUrl}")
-
         val disposable = userManager.users
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -339,6 +337,7 @@ class MainActivity :
                         // Open conversation list first so back press shows correct user's conversations
                         val listIntent = Intent(context, ConversationsListActivity::class.java)
                         listIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        listIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, targetUser.id)
 
                         val chatIntent = Intent(context, ChatActivity::class.java)
                         chatIntent.putExtra(KEY_ROOM_TOKEN, deepLinkResult.roomToken)

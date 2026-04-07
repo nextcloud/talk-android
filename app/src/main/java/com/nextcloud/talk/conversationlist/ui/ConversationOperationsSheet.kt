@@ -53,6 +53,7 @@ private data class ConversationOpsVisibility(
     val showShareLink: Boolean,
     val showRename: Boolean,
     val isArchived: Boolean,
+    val showAddToHomeScreen: Boolean,
     val showLeave: Boolean,
     val showDelete: Boolean
 )
@@ -70,6 +71,7 @@ private fun computeVisibility(conversation: ConversationModel, user: User): Conv
         showShareLink = !ConversationUtils.isNoteToSelfConversation(conversation),
         showRename = spreedCap != null && ConversationUtils.isNameEditable(conversation, spreedCap),
         isArchived = conversation.hasArchived,
+        showAddToHomeScreen = true,
         showLeave = conversation.canLeaveConversation,
         showDelete = conversation.canDeleteConversation
     )
@@ -165,6 +167,12 @@ private fun ConversationOpsManageGroup(
         stringResource(R.string.archive_conversation)
     }
     ConversationOpsMenuItem(archiveIcon, archiveLabel) { onAction(ConversationOpsAction.ToggleArchive) }
+    if (visibility.showAddToHomeScreen) {
+        ConversationOpsMenuItem(
+            R.drawable.ic_home,
+            stringResource(R.string.nc_add_to_home_screen)
+        ) { onAction(ConversationOpsAction.AddToHomeScreen) }
+    }
     if (visibility.showLeave) {
         ConversationOpsMenuItem(
             R.drawable.ic_exit_to_app_black_24dp,
