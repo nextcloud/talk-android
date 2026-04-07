@@ -128,7 +128,8 @@ object ShortcutManagerHelper {
      */
     @Suppress("DEPRECATION")
     private fun createLegacyShortcut(context: Context, conversation: ConversationModel, user: User): Boolean {
-        if (user.id == null || user.baseUrl == null) {
+        val baseUrl = user.baseUrl
+        if (user.id == null || baseUrl == null) {
             Log.w(TAG, "Cannot create legacy shortcut: user ID or base URL is null")
             return false
         }
@@ -137,7 +138,7 @@ object ShortcutManagerHelper {
 
         val uri = DeepLinkHandler.createConversationUri(
             roomToken = conversation.token,
-            serverUrl = user.baseUrl!!,
+            serverUrl = baseUrl,
             username = user.username
         )
 
