@@ -95,6 +95,8 @@
     <string name="lower_hand">放手</string>
     <string name="marked_as_read">將對話 %1$s 標記為已讀</string>
     <string name="marked_as_unread">將對話 %1$s 標記為未讀</string>
+    <string name="media_message_content_description">檔案預覽</string>
+    <string name="media_message_content_play">播放媒體檔案</string>
     <string name="mentioned">已提及</string>
     <string name="menu_item_sort_by_date_newest_first">新的在前</string>
     <string name="menu_item_sort_by_date_oldest_first">舊的在前</string>
@@ -637,6 +639,7 @@
     <string name="polls_voted_hidden_success">投票已提交</string>
     <string name="previously_set">先前設定</string>
     <string name="qr_code_error">無法讀取 QR code</string>
+    <string name="quoted_message_too_old">此訊息太舊，無法顯示</string>
     <string name="raise_hand">舉手</string>
     <string name="reaction_forbidden">您無法在此對話中新增或移除反應</string>
     <string name="reactions_tab_all">全部</string>
