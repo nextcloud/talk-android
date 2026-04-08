@@ -34,11 +34,14 @@ public abstract class CallBaseActivity extends BaseActivity {
     long onCreateTime;
 
 
-    private OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+    private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
         @Override
         public void handleOnBackPressed() {
             if (isPipModePossible()) {
                 enterPipMode();
+            } else {
+                // Move the task to background instead of finishing
+                moveTaskToBack(true);
             }
         }
     };
@@ -57,12 +60,16 @@ public abstract class CallBaseActivity extends BaseActivity {
 
         if (isPipModePossible()) {
             mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                mPictureInPictureParamsBuilder.setAutoEnterEnabled(true);
+                setPictureInPictureParams(mPictureInPictureParamsBuilder.build());
+            }
         }
 
         getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
     }
 
-    public void hideNavigationIfNoPipAvailable(){
+    public void hideNavigationIfNoPipAvailable() {
         if (!isPipModePossible()) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
                                                                  View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
@@ -95,11 +102,48 @@ public abstract class CallBaseActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Fired on API 29+ when another activity becomes the top resumed activity — including
+     * same-app task switches (e.g. task switcher or quick-switch gesture to the chat window).
+     * This fires *before* onPause() while our window is still fully visible, so
+     * enterPictureInPictureMode() can succeed. On API 26-28 this method is never called by
+     * the system; onPause() below serves as the fallback for those devices.
+     */
+    @Override
+    public void onTopResumedActivityChanged(boolean isTopResumedActivity) {
+        super.onTopResumedActivityChanged(isTopResumedActivity);
+        if (!isTopResumedActivity
+                && !isInPipMode
+                && isPipModePossible()
+                && !isChangingConfigurations()
+                && !isFinishing()) {
+            enterPipMode();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Fallback for API 26-28 (no onTopResumedActivityChanged) and any edge cases
+        // where PIP was not yet entered by the time we reach onPause().
+        if (!isInPipMode
+                && isPipModePossible()
+                && !isChangingConfigurations()
+                && !isFinishing()) {
+            enterPipMode();
+        }
+    }
+
     @Override
     public void onStop() {
         super.onStop();
-        if (shouldFinishOnStop()) {
-            finish();
+        // Don't automatically finish when going to background
+        // Only finish if explicitly leaving the call
+        if (shouldFinishOnStop() && !isChangingConfigurations()) {
+            // Check if we're really leaving the call or just backgrounding
+            if (isFinishing()) {
+                finish();
+            }
         }
     }
 
@@ -124,10 +168,9 @@ public abstract class CallBaseActivity extends BaseActivity {
             mPictureInPictureParamsBuilder.setAspectRatio(pipRatio);
             enterPictureInPictureMode(mPictureInPictureParamsBuilder.build());
         } else {
-            // we don't support other solutions than PIP to have a call in the background.
-            // If PIP is not available the call is ended when user presses the home button.
-            Log.d(TAG, "Activity was finished because PIP is not available.");
-            finish();
+            // If PIP is not available, move to background instead of finishing
+            Log.d(TAG, "PIP is not available, moving call to background.");
+            moveTaskToBack(true);
         }
     }
 
