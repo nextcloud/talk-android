@@ -101,6 +101,7 @@
             <trusting group="org.snakeyaml" name="snakeyaml-engine" version="2.7"/>
          </trusted-key>
          <trusted-key id="12AD14C3B9F0A4A3781DB7F387A6E2E8D3CF7F26" group="^org[.]maplibre($|([.].*))" regex="true"/>
+         <trusted-key id="1390EC1374BA3F4EE6DC74A9A020597F309CEB64" group="io.github.crow-misia.libyuv" name="libyuv-android" version="0.43.2"/>
          <trusted-key id="147B691A19097624902F4EA9689CBE64F4BC997F">
             <trusting group="org.mockito"/>
             <trusting group="org.mockito.kotlin" name="mockito-kotlin" version="4.1.0"/>
