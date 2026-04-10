@@ -583,7 +583,7 @@
     <string name="nc_voice_message_hold_to_record_info">Segure para gravar, solte para enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">A permissão para gravação de áudio é necessária</string>
     <string name="nc_voice_message_slide_to_cancel">« Deslize para cancelar</string>
-    <string name="nc_webinar">Webinarário</string>
+    <string name="nc_webinar">Webinário</string>
     <string name="nc_yes">Sim</string>
     <string name="nc_zoom_in">Aumentar zoom</string>
     <string name="nc_zoom_out">Diminuir zoom</string>
