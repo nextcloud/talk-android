@@ -532,6 +532,23 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             else -> Log.e(TAG, "unknown pushMessage.type")
         }
 
+        if (pushMessage.type == TYPE_CHAT || pushMessage.type == TYPE_ROOM) {
+            val token = pushMessage.id
+            val user = signatureVerification.user
+            val displayName = pushMessage.subject
+            if (token != null && user != null && displayName.isNotEmpty()) {
+                kotlinx.coroutines.runBlocking {
+                    com.nextcloud.talk.conversationlist.DirectShareHelper.reportIncomingMessage(
+                        context!!,
+                        user,
+                        token,
+                        displayName,
+                        isOneToOne = "one2one" == conversationType
+                    )
+                }
+            }
+        }
+
         val pendingIntent = createUniquePendingIntent(intent)
         val uri = signatureVerification.user!!.baseUrl!!.toUri()
         val baseUrl = uri.host

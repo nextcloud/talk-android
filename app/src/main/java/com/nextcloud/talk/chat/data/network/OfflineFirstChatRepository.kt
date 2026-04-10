@@ -29,10 +29,15 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.conversationlist.DirectShareHelper
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.message.SendMessageUtils
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch
@@ -495,6 +500,28 @@ class OfflineFirstChatRepository @Inject constructor(
     ) {
         val chatMessageEntities = persistChatMessagesAndHandleSystemMessages(chatMessagesJson)
 
+        if (lookIntoFuture) {
+            val hasIncomingFromOther = chatMessagesJson.any { msg ->
+                msg.systemMessageType == ChatMessage.SystemMessageType.DUMMY &&
+                    msg.actorId != currentUser.userId
+            }
+            if (hasIncomingFromOther) {
+                val context = NextcloudTalkApplication.sharedApplication!!
+                val isOneToOne = conversationModel.type ==
+                    ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+                val displayName = conversationModel.displayName
+                CoroutineScope(Dispatchers.IO).launch {
+                    DirectShareHelper.reportIncomingMessage(
+                        context,
+                        currentUser,
+                        conversationModel.token,
+                        displayName,
+                        isOneToOne
+                    )
+                }
+            }
+        }
+
         val oldestIdFromSync = chatMessageEntities.minByOrNull { it.id }!!.id
         val newestIdFromSync = chatMessageEntities.maxByOrNull { it.id }!!.id
         Log.d(TAG, "oldestIdFromSync: $oldestIdFromSync")
@@ -951,6 +978,26 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override suspend fun onSignalingChatMessageReceived(chatMessages: List<ChatMessageJson>) {
         persistChatMessagesAndHandleSystemMessages(chatMessages)
+
+        val hasIncomingFromOther = chatMessages.any { msg ->
+            msg.systemMessageType == ChatMessage.SystemMessageType.DUMMY &&
+                msg.actorId != currentUser.userId
+        }
+        if (hasIncomingFromOther) {
+            val context = NextcloudTalkApplication.sharedApplication!!
+            val isOneToOne = conversationModel.type ==
+                ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            val displayName = conversationModel.displayName ?: conversationModel.token
+            CoroutineScope(Dispatchers.IO).launch {
+                DirectShareHelper.reportIncomingMessage(
+                    context,
+                    currentUser,
+                    conversationModel.token,
+                    displayName,
+                    isOneToOne
+                )
+            }
+        }
 
         // we assume that the signaling messages are on top of the latest chatblock and include them inside it.
         // If for whatever reason the assume was not correct and there would be messages in between, the

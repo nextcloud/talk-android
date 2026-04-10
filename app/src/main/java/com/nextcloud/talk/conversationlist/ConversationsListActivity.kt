@@ -162,6 +162,7 @@ class ConversationsListActivity : BaseActivity() {
     private var selectedConversation: ConversationModel? = null
     private var textToPaste: String? = ""
     private var selectedMessageId: String? = null
+    private var pendingDirectShareToken: String? = null
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -320,6 +321,21 @@ class ConversationsListActivity : BaseActivity() {
         showNotificationWarningState.value = shouldShowNotificationWarning()
         showShareToScreenState.value = hasActivityActionSendIntent()
 
+        // Home screen shortcut tap: shortcut uses ACTION_VIEW with KEY_ROOM_TOKEN to open the
+        // conversation directly without showing the share picker.
+        if (Intent.ACTION_VIEW == intent.action && intent.hasExtra(KEY_ROOM_TOKEN)) {
+            pendingDirectShareToken = intent.getStringExtra(KEY_ROOM_TOKEN)
+        }
+
+        // Share sheet shortcut tap: Android delivers ACTION_SEND with EXTRA_SHORTCUT_ID.
+        // Extract the room token from the shortcut ID so we can pre-select the conversation.
+        if (hasActivityActionSendIntent()) {
+            val shortcutId = intent.getStringExtra(Intent.EXTRA_SHORTCUT_ID)
+            if (shortcutId != null) {
+                pendingDirectShareToken = DirectShareHelper.extractTokenFromShortcutId(shortcutId)
+            }
+        }
+
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this)
         }
@@ -377,10 +393,27 @@ class ConversationsListActivity : BaseActivity() {
         lifecycleScope.launch {
             conversationsListViewModel.getRoomsFlow
                 .onEach { list ->
+                    // Add app shortcut for note to self
                     val noteToSelf = list
                         .firstOrNull { ConversationUtils.isNoteToSelfConversation(it) }
                     val isNoteToSelfAvailable = noteToSelf != null
                     handleNoteToSelfShortcut(isNoteToSelfAvailable, noteToSelf?.token ?: "")
+
+                    // Update Direct Share targets
+                    if (currentUser != null) {
+                        lifecycleScope.launch {
+                            DirectShareHelper.publishShareTargetShortcuts(context,
+                                currentUser!!, list)
+                        }
+                    }
+
+                    // check for Direct Share
+                    val token = pendingDirectShareToken
+                    if (token != null) {
+                        pendingDirectShareToken = null
+                        val conversation = list.firstOrNull { it.token == token }
+                        if (conversation != null) handleConversation(conversation)
+                    }
 
                     if (!scrollPositionRestored) {
                         scrollPositionRestored = true

@@ -20,6 +20,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.conversationlist.DirectShareHelper
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ApiUtils.getConversationApiVersion
 import com.nextcloud.talk.utils.ApiUtils.getCredentials
@@ -89,6 +90,10 @@ class LeaveConversationWorker(context: Context, workerParams: WorkerParameters) 
                     }
 
                     override fun onComplete() {
+                        if (currentUser.id != null) {
+                            DirectShareHelper.removeShortcutForConversation(
+                                applicationContext, currentUser.id!!, conversationToken)
+                        }
                         result.set(Result.success())
                     }
                 })
