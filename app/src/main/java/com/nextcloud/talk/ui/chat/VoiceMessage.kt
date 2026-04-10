@@ -68,7 +68,11 @@ fun VoiceMessage(
             val remainingSeconds = (typeContent.durationSeconds - typeContent.playedSeconds).coerceAtLeast(0)
             val waveformData = remember(typeContent.waveform) {
                 val floatArr = typeContent.waveform.toFloatArray()
-                AudioUtils.shrinkFloatArray(floatArr, WAVEFORM_SIZE)
+                if (floatArr.size < WAVEFORM_SIZE) {
+                    FloatArray(WAVEFORM_SIZE)
+                } else {
+                    AudioUtils.shrinkFloatArray(floatArr, WAVEFORM_SIZE)
+                }
             }
 
             Column {
@@ -99,7 +103,6 @@ fun VoiceMessage(
                         {
                             val progressI = (it * SEEKBAR_MAX).toInt()
                             onSeek(message.id, progressI)
-                            sliderValue = it
                         },
                         modifier = Modifier
                             .height(56.dp)
