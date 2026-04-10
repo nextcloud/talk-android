@@ -109,6 +109,7 @@ class ChatMessagesDaoTest {
 
             // Lets insert some messages to the conversations
             chatMessagesDao.upsertChatMessagesAndDeleteTemp(
+                conversation1.internalId,
                 listOf(
                     createChatMessageEntity(conversation1.internalId, "hello"),
                     createChatMessageEntity(conversation1.internalId, "here"),
@@ -118,6 +119,7 @@ class ChatMessagesDaoTest {
                 )
             )
             chatMessagesDao.upsertChatMessagesAndDeleteTemp(
+                conversation1.internalId,
                 listOf(
                     createChatMessageEntity(conversation2.internalId, "first message in conversation 2")
                 )
