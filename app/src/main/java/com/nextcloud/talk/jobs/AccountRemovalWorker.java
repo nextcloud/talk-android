@@ -22,6 +22,7 @@ import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.generic.GenericMeta;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.push.PushConfigurationState;
+import com.nextcloud.talk.conversationlist.DirectShareHelper;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -179,6 +180,7 @@ public class AccountRemovalWorker extends Worker {
     private void initiateUserDeletion(User user) {
         if (user.getId() != null) {
             long id = user.getId();
+            DirectShareHelper.INSTANCE.removeShortcutsForUser(getApplicationContext(), id);
             WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(id);
 
             try {
