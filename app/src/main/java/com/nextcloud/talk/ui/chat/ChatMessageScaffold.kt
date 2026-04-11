@@ -257,7 +257,7 @@ private fun RowScope.MessageLeadingDecoration(uiMessage: ChatMessageUi, isOneToO
             contentDescription = stringResource(R.string.user_avatar),
             modifier = Modifier
                 .size(48.dp)
-                .align(Alignment.CenterVertically)
+                .align(Alignment.Top)
                 .padding(end = 8.dp)
         )
     } else if (uiMessage.incoming) {
