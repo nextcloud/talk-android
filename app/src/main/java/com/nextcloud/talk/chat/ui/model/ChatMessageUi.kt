@@ -42,7 +42,8 @@ data class ChatMessageUi(
     val messageParameters: Map<String, Map<String, String>> = emptyMap(),
     val reactions: List<MessageReactionUi> = emptyList(),
     val isEdited: Boolean = false,
-    val parentMessage: ChatMessageUi? = null
+    val parentMessage: ChatMessageUi? = null,
+    val replyable: Boolean = false
 )
 
 data class MessageReactionUi(val emoji: String, val amount: Int, val isSelfReaction: Boolean)
@@ -123,7 +124,8 @@ fun ChatMessage.toUiModel(
             chatMessage = parentMessage,
             lastCommonReadMessageId = 0,
             parentMessage = null
-        )
+        ),
+        replyable = replyable
     )
 
 private fun ChatMessage.normalizeMessageParameters(): Map<String, Map<String, String>> =

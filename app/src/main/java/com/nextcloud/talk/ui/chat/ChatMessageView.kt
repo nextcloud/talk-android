@@ -55,6 +55,8 @@ fun ChatMessageView(
     isOneToOneConversation: Boolean = false,
     conversationThreadId: Long? = null,
     onLongClick: ((Int) -> Unit?)? = null,
+    onSwipeReply: ((Int) -> Unit)? = null,
+    hasChatPermission: Boolean = true,
     onFileClick: (Int) -> Unit = {},
     onPollClick: (pollId: String, pollName: String) -> Unit = { _, _ -> },
     onVoicePlayPauseClick: (Int) -> Unit = {},
@@ -87,97 +89,102 @@ fun ChatMessageView(
         LocalOpenThreadHandler provides onOpenThreadClick,
         LocalQuotedMessageClickHandler provides onQuotedMessageClick
     ) {
-        Box(
-            modifier = Modifier
-                .combinedClickable(
-                    interactionSource = interactionSource,
-                    indication = ripple(),
-                    onClick = { onLongClick?.invoke(message.id) },
-                    onLongClick = { onLongClick?.invoke(message.id) }
-                )
+        SwipeToReplyContainer(
+            replyable = message.replyable && hasChatPermission,
+            onSwipeReply = { onSwipeReply?.invoke(message.id) }
         ) {
-            when (val content = message.content) {
-                MessageTypeContent.RegularText -> {
-                    TextMessage(
-                        uiMessage = message,
-                        isOneToOneConversation = isOneToOneConversation,
-                        conversationThreadId = conversationThreadId
+            Box(
+                modifier = Modifier
+                    .combinedClickable(
+                        interactionSource = interactionSource,
+                        indication = ripple(),
+                        onClick = { onLongClick?.invoke(message.id) },
+                        onLongClick = { onLongClick?.invoke(message.id) }
+                    )
+            ) {
+                when (val content = message.content) {
+                    MessageTypeContent.RegularText -> {
+                        TextMessage(
+                            uiMessage = message,
+                            isOneToOneConversation = isOneToOneConversation,
+                            conversationThreadId = conversationThreadId
+                        )
+                    }
+
+                    MessageTypeContent.SystemMessage -> {
+                        SystemMessage(message)
+                    }
+
+                    is MessageTypeContent.Media -> {
+                        MediaMessage(
+                            typeContent = content,
+                            message = message,
+                            isOneToOneConversation = isOneToOneConversation,
+                            conversationThreadId = conversationThreadId,
+                            onImageClick = onFileClick
+                        )
+                    }
+
+                    is MessageTypeContent.LinkPreview -> {
+                        LinkMessage(
+                            typeContent = content,
+                            message = message,
+                            isOneToOneConversation = isOneToOneConversation,
+                            conversationThreadId = conversationThreadId
+                        )
+                    }
+
+                    is MessageTypeContent.Geolocation -> {
+                        GeolocationMessage(
+                            typeContent = content,
+                            message = message,
+                            isOneToOneConversation = isOneToOneConversation,
+                            conversationThreadId = conversationThreadId
+                        )
+                    }
+
+                    is MessageTypeContent.Voice -> {
+                        VoiceMessage(
+                            typeContent = content,
+                            message = message,
+                            isOneToOneConversation = isOneToOneConversation,
+                            conversationThreadId = conversationThreadId,
+                            onPlayPauseClick = onVoicePlayPauseClick,
+                            onSeek = onVoiceSeek,
+                            onSpeedClick = onVoiceSpeedClick
+                        )
+                    }
+
+                    is MessageTypeContent.Poll -> {
+                        PollMessage(
+                            typeContent = content,
+                            message = message,
+                            isOneToOneConversation = isOneToOneConversation,
+                            conversationThreadId = conversationThreadId,
+                            onPollClick = onPollClick
+                        )
+                    }
+
+                    is MessageTypeContent.Deck -> {
+                        DeckMessage(
+                            typeContent = content,
+                            message = message,
+                            isOneToOneConversation = isOneToOneConversation,
+                            conversationThreadId = conversationThreadId
+                        )
+                    }
+
+                    else -> {
+                        Log.d("ChatView", "Unknown message type: ${'$'}content")
+                    }
+                }
+                if (highlightAlpha.value > 0f) {
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = highlightAlpha.value))
                     )
                 }
-
-                MessageTypeContent.SystemMessage -> {
-                    SystemMessage(message)
-                }
-
-                is MessageTypeContent.Media -> {
-                    MediaMessage(
-                        typeContent = content,
-                        message = message,
-                        isOneToOneConversation = isOneToOneConversation,
-                        conversationThreadId = conversationThreadId,
-                        onImageClick = onFileClick
-                    )
-                }
-
-                is MessageTypeContent.LinkPreview -> {
-                    LinkMessage(
-                        typeContent = content,
-                        message = message,
-                        isOneToOneConversation = isOneToOneConversation,
-                        conversationThreadId = conversationThreadId
-                    )
-                }
-
-                is MessageTypeContent.Geolocation -> {
-                    GeolocationMessage(
-                        typeContent = content,
-                        message = message,
-                        isOneToOneConversation = isOneToOneConversation,
-                        conversationThreadId = conversationThreadId
-                    )
-                }
-
-                is MessageTypeContent.Voice -> {
-                    VoiceMessage(
-                        typeContent = content,
-                        message = message,
-                        isOneToOneConversation = isOneToOneConversation,
-                        conversationThreadId = conversationThreadId,
-                        onPlayPauseClick = onVoicePlayPauseClick,
-                        onSeek = onVoiceSeek,
-                        onSpeedClick = onVoiceSpeedClick
-                    )
-                }
-
-                is MessageTypeContent.Poll -> {
-                    PollMessage(
-                        typeContent = content,
-                        message = message,
-                        isOneToOneConversation = isOneToOneConversation,
-                        conversationThreadId = conversationThreadId,
-                        onPollClick = onPollClick
-                    )
-                }
-
-                is MessageTypeContent.Deck -> {
-                    DeckMessage(
-                        typeContent = content,
-                        message = message,
-                        isOneToOneConversation = isOneToOneConversation,
-                        conversationThreadId = conversationThreadId
-                    )
-                }
-
-                else -> {
-                    Log.d("ChatView", "Unknown message type: ${'$'}content")
-                }
-            }
-            if (highlightAlpha.value > 0f) {
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = highlightAlpha.value))
-                )
             }
         }
     }

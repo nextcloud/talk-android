@@ -619,6 +619,9 @@ class ChatActivity :
                         advanceLocalLastReadMessageIfNeeded = { advanceLocalLastReadMessageIfNeeded(it) },
                         updateRemoteLastReadMessageIfNeeded = { updateRemoteLastReadMessageIfNeeded() },
                         onLongClick = { openMessageActionsDialog(it) },
+                        onSwipeReply = { handleSwipeToReply(it) },
+                        hasChatPermission = this::participantPermissions.isInitialized &&
+                            participantPermissions.hasChatPermission(),
                         onFileClick = { downloadAndOpenFile(it) },
                         onPollClick = { pollId, pollName -> openPollDialog(pollId, pollName) },
                         onVoicePlayPauseClick = { onVoicePlayPauseClickCompose(it) },
@@ -3274,6 +3277,17 @@ class ChatActivity :
         this.lifecycleScope.launch {
             val chatMessage = chatViewModel.getMessageById(messageId.toLong()).first()
             openMessageActionsDialog(chatMessage)
+        }
+    }
+
+    private fun handleSwipeToReply(messageId: Int) {
+        lifecycleScope.launch {
+            val chatMessage = chatViewModel.getMessageById(messageId.toLong()).first()
+            if (chatMessage.isThread && conversationThreadId == null) {
+                openThread(chatMessage)
+            } else {
+                messageInputViewModel.reply(chatMessage)
+            }
         }
     }
 

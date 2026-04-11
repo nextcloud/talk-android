@@ -102,6 +102,8 @@ fun ChatView(
     onReactionLongClick: (messageId: Int) -> Unit = {},
     onOpenThreadClick: (messageId: Int) -> Unit = {},
     onLoadQuotedMessageClick: (messageId: Int) -> Unit = {},
+    onSwipeReply: ((Int) -> Unit)? = null,
+    hasChatPermission: Boolean = true,
     listState: LazyListState = rememberLazyListState(),
     initialUnreadCount: Int = 0,
     initialShowUnreadPopup: Boolean = false
@@ -310,6 +312,8 @@ fun ChatView(
                             conversationThreadId = conversationThreadId,
                             onFileClick = onFileClick,
                             onLongClick = onLongClick,
+                            onSwipeReply = onSwipeReply,
+                            hasChatPermission = hasChatPermission,
                             onPollClick = onPollClick,
                             onVoicePlayPauseClick = onVoicePlayPauseClick,
                             onVoiceSeek = onVoiceSeek,
