@@ -107,6 +107,7 @@ fun ChatMessageView(
                         interactionSource = interactionSource,
                         indication = ripple(),
                         onClick = { callbacks.onLongClick?.invoke(message.id) },
+                        onDoubleClick = { callbacks.onLongClick?.invoke(message.id) },
                         onLongClick = { callbacks.onLongClick?.invoke(message.id) }
                     )
             ) {
