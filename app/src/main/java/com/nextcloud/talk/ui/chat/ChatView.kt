@@ -82,34 +82,44 @@ private const val PREVIEW_UNREAD_MARKER_OFFSET = 15
 
 private data class QuoteHighlightEvent(val messageId: Int, val nonce: Long)
 
-@Suppress("Detekt.LongMethod", "Detekt.ComplexMethod", "LongParameterList")
+data class ChatViewState(
+    val chatItems: List<ChatViewModel.ChatItem>,
+    val isOneToOneConversation: Boolean,
+    val conversationThreadId: Long? = null,
+    val hasChatPermission: Boolean = true,
+    val initialUnreadCount: Int = 0,
+    val initialShowUnreadPopup: Boolean = false
+)
+
+class ChatViewCallbacks(
+    val onLoadMore: (() -> Unit?)? = null,
+    val advanceLocalLastReadMessageIfNeeded: ((Int) -> Unit?)? = null,
+    val updateRemoteLastReadMessageIfNeeded: (() -> Unit?)? = null,
+    val onLongClick: ((Int) -> Unit?)? = null,
+    val onFileClick: (Int) -> Unit = {},
+    val onPollClick: (String, String) -> Unit = { _, _ -> },
+    val onVoicePlayPauseClick: (Int) -> Unit = {},
+    val onVoiceSeek: (Int, Int) -> Unit = { _, _ -> },
+    val onVoiceSpeedClick: (Int) -> Unit = {},
+    val onReactionClick: (Int, String) -> Unit = { _, _ -> },
+    val onReactionLongClick: (Int) -> Unit = {},
+    val onOpenThreadClick: (Int) -> Unit = {},
+    val onLoadQuotedMessageClick: (Int) -> Unit = {},
+    val onSwipeReply: ((Int) -> Unit)? = null
+)
+
+@Suppress("Detekt.LongMethod", "Detekt.ComplexMethod")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChatView(
-    chatItems: List<ChatViewModel.ChatItem>,
-    isOneToOneConversation: Boolean,
-    conversationThreadId: Long? = null,
-    onLoadMore: (() -> Unit?)? = null,
-    advanceLocalLastReadMessageIfNeeded: ((Int) -> Unit?)? = null,
-    updateRemoteLastReadMessageIfNeeded: (() -> Unit?)? = null,
-    onLongClick: ((Int) -> Unit?)? = null,
-    onFileClick: (Int) -> Unit = {},
-    onPollClick: (pollId: String, pollName: String) -> Unit = { _, _ -> },
-    onVoicePlayPauseClick: (Int) -> Unit = {},
-    onVoiceSeek: (messageId: Int, progress: Int) -> Unit = { _, _ -> },
-    onVoiceSpeedClick: (Int) -> Unit = {},
-    onReactionClick: (messageId: Int, emoji: String) -> Unit = { _, _ -> },
-    onReactionLongClick: (messageId: Int) -> Unit = {},
-    onOpenThreadClick: (messageId: Int) -> Unit = {},
-    onLoadQuotedMessageClick: (messageId: Int) -> Unit = {},
-    listState: LazyListState = rememberLazyListState(),
-    initialUnreadCount: Int = 0,
-    initialShowUnreadPopup: Boolean = false
+    state: ChatViewState,
+    callbacks: ChatViewCallbacks = ChatViewCallbacks(),
+    listState: LazyListState = rememberLazyListState()
 ) {
     val viewThemeUtils = LocalViewThemeUtils.current
     val colorScheme = viewThemeUtils.getColorScheme(LocalContext.current)
 
-    val showUnreadPopup = remember { mutableStateOf(initialShowUnreadPopup) }
+    val showUnreadPopup = remember { mutableStateOf(state.initialShowUnreadPopup) }
     val coroutineScope = rememberCoroutineScope()
 
     val lastNewestIdRef = remember {
@@ -118,10 +128,8 @@ fun ChatView(
         }
     }
 
-    // Track unread messages count.
-    var unreadCount by remember { mutableIntStateOf(initialUnreadCount) }
+    var unreadCount by remember { mutableIntStateOf(state.initialUnreadCount) }
 
-    // Determine if user is at newest message
     val isAtNewest by remember(listState) {
         derivedStateOf {
             listState.firstVisibleItemIndex == 0 &&
@@ -135,11 +143,10 @@ fun ChatView(
         }
     }
 
-    // Show floating scroll-to-newest button when not at newest
     val showScrollToNewest by remember { derivedStateOf { !isNearNewest } }
 
-    val latestChatItems by rememberUpdatedState(chatItems)
-    val latestOnLoadQuotedMessageClick by rememberUpdatedState(onLoadQuotedMessageClick)
+    val latestChatItems by rememberUpdatedState(state.chatItems)
+    val latestOnLoadQuotedMessageClick by rememberUpdatedState(callbacks.onLoadQuotedMessageClick)
     var quoteHighlightEvent by remember { mutableStateOf<QuoteHighlightEvent?>(null) }
 
     val handleQuotedMessageClick: (Int) -> Unit = remember(coroutineScope, listState) {
@@ -167,10 +174,10 @@ fun ChatView(
     }
 
     // Track newest message and show unread popup
-    LaunchedEffect(chatItems) {
-        if (chatItems.isEmpty()) return@LaunchedEffect
+    LaunchedEffect(state.chatItems) {
+        if (state.chatItems.isEmpty()) return@LaunchedEffect
 
-        val newestId = chatItems.firstNotNullOfOrNull { it.messageOrNull()?.id }
+        val newestId = state.chatItems.firstNotNullOfOrNull { it.messageOrNull()?.id }
         val previousNewestId = lastNewestIdRef.value
 
         val isNearBottom = listState.firstVisibleItemIndex <= 2
@@ -203,7 +210,7 @@ fun ChatView(
     }
 
     // Load more when near end
-    LaunchedEffect(listState, chatItems.size) {
+    LaunchedEffect(listState, state.chatItems.size) {
         snapshotFlow {
             val layoutInfo = listState.layoutInfo
             val total = layoutInfo.totalItemsCount
@@ -218,15 +225,15 @@ fun ChatView(
                 val shouldLoadMore = lastVisible >= (total - 1 - buffer)
 
                 if (shouldLoadMore) {
-                    onLoadMore?.invoke()
+                    callbacks.onLoadMore?.invoke()
                 }
             }
     }
 
     // Sticky date header
-    val stickyDateHeaderText by remember(listState, chatItems) {
+    val stickyDateHeaderText by remember(listState, state.chatItems) {
         derivedStateOf {
-            chatItems.getOrNull(
+            state.chatItems.getOrNull(
                 listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             )?.let { item ->
                 when (item) {
@@ -246,10 +253,8 @@ fun ChatView(
     var stickyDateHeader by remember { mutableStateOf(false) }
 
     LaunchedEffect(listState, isNearNewest) {
-        // Only listen to scroll if user is away from newest messages. This ensures the stickyHeader is not shown on
-        // every new received message when being at the bottom of the list (because this triggers a scroll).
         if (!isNearNewest) {
-            updateRemoteLastReadMessageIfNeeded?.invoke()
+            callbacks.updateRemoteLastReadMessageIfNeeded?.invoke()
             snapshotFlow { listState.isScrollInProgress }
                 .collectLatest { scrolling ->
                     if (scrolling) {
@@ -270,10 +275,8 @@ fun ChatView(
         latestChatItems
             .getOrNull(listState.firstVisibleItemIndex)
             ?.let { item ->
-                // It might not always be a chat message. Not calling advanceLocalLastReadMessageIfNeeded should not
-                // matter. This should be triggered often enough so it's okay when it's true the next times.
                 if (item is ChatViewModel.ChatItem.MessageItem) {
-                    advanceLocalLastReadMessageIfNeeded?.invoke(item.uiMessage.id)
+                    callbacks.advanceLocalLastReadMessageIfNeeded?.invoke(item.uiMessage.id)
                 }
             }
     }
@@ -295,8 +298,7 @@ fun ChatView(
                 .fillMaxSize()
         ) {
             items(
-                items = chatItems,
-                // key = { "" + it.stableKey() + it.hashCode() }   // TODO remove hash
+                items = state.chatItems,
                 key = { it.stableKey() }
             ) { chatItem ->
                 when (chatItem) {
@@ -306,18 +308,24 @@ fun ChatView(
                             highlightTriggerKey = quoteHighlightEvent
                                 ?.takeIf { it.messageId == chatItem.uiMessage.id }
                                 ?.nonce,
-                            isOneToOneConversation = isOneToOneConversation,
-                            conversationThreadId = conversationThreadId,
-                            onFileClick = onFileClick,
-                            onLongClick = onLongClick,
-                            onPollClick = onPollClick,
-                            onVoicePlayPauseClick = onVoicePlayPauseClick,
-                            onVoiceSeek = onVoiceSeek,
-                            onVoiceSpeedClick = onVoiceSpeedClick,
-                            onReactionClick = onReactionClick,
-                            onReactionLongClick = onReactionLongClick,
-                            onOpenThreadClick = onOpenThreadClick,
-                            onQuotedMessageClick = handleQuotedMessageClick
+                            context = ChatMessageContext(
+                                isOneToOneConversation = state.isOneToOneConversation,
+                                conversationThreadId = state.conversationThreadId,
+                                hasChatPermission = state.hasChatPermission
+                            ),
+                            callbacks = ChatMessageCallbacks(
+                                onLongClick = callbacks.onLongClick,
+                                onSwipeReply = callbacks.onSwipeReply,
+                                onFileClick = callbacks.onFileClick,
+                                onPollClick = callbacks.onPollClick,
+                                onVoicePlayPauseClick = callbacks.onVoicePlayPauseClick,
+                                onVoiceSeek = callbacks.onVoiceSeek,
+                                onVoiceSpeedClick = callbacks.onVoiceSpeedClick,
+                                onReactionClick = callbacks.onReactionClick,
+                                onReactionLongClick = callbacks.onReactionLongClick,
+                                onOpenThreadClick = callbacks.onOpenThreadClick,
+                                onQuotedMessageClick = handleQuotedMessageClick
+                            )
                         )
                     }
 
@@ -509,18 +517,19 @@ private suspend fun LazyListState.centerItemInViewportIfVisible(index: Int) {
 private fun ChatViewPreview() {
     val context = LocalContext.current
     val previewUtils = remember { ComposePreviewUtils.getInstance(context) }
-    // Scroll away from bottom (index 0) to show the floating button and unread marker
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = 12)
 
     CompositionLocalProvider(
         LocalViewThemeUtils provides previewUtils.viewThemeUtils
     ) {
         ChatView(
-            chatItems = createSampleChatItems(PREVIEW_SAMPLE_CHAT_COUNT),
-            isOneToOneConversation = false,
-            listState = listState,
-            initialUnreadCount = 3,
-            initialShowUnreadPopup = true
+            state = ChatViewState(
+                chatItems = createSampleChatItems(PREVIEW_SAMPLE_CHAT_COUNT),
+                isOneToOneConversation = false,
+                initialUnreadCount = 3,
+                initialShowUnreadPopup = true
+            ),
+            listState = listState
         )
     }
 }
