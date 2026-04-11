@@ -155,6 +155,8 @@ import com.nextcloud.talk.ui.PinnedMessageView
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.chat.ChatView
+import com.nextcloud.talk.ui.chat.ChatViewCallbacks
+import com.nextcloud.talk.ui.chat.ChatViewState
 import com.nextcloud.talk.ui.dialog.DateTimeCompose
 import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.GetPinnedOptionsDialog
@@ -612,25 +614,29 @@ class ChatActivity :
                     Log.d(TAG, "isOneToOneConversation=" + isOneToOneConversation)
 
                     ChatView(
-                        chatItems = uiState.items,
-                        isOneToOneConversation = isOneToOneConversation,
-                        conversationThreadId = conversationThreadId,
-                        onLoadMore = { loadMoreMessagesCompose() },
-                        advanceLocalLastReadMessageIfNeeded = { advanceLocalLastReadMessageIfNeeded(it) },
-                        updateRemoteLastReadMessageIfNeeded = { updateRemoteLastReadMessageIfNeeded() },
-                        onLongClick = { openMessageActionsDialog(it) },
-                        onSwipeReply = { handleSwipeToReply(it) },
-                        hasChatPermission = this::participantPermissions.isInitialized &&
-                            participantPermissions.hasChatPermission(),
-                        onFileClick = { downloadAndOpenFile(it) },
-                        onPollClick = { pollId, pollName -> openPollDialog(pollId, pollName) },
-                        onVoicePlayPauseClick = { onVoicePlayPauseClickCompose(it) },
-                        onVoiceSeek = { _, progress -> chatViewModel.seekToMediaPlayer(progress) },
-                        onVoiceSpeedClick = { onVoiceSpeedClickCompose(it) },
-                        onReactionClick = { messageId, emoji -> handleReactionClick(messageId, emoji) },
-                        onReactionLongClick = { messageId -> openReactionsDialog(messageId) },
-                        onOpenThreadClick = { messageId -> openThread(messageId.toLong()) },
-                        onLoadQuotedMessageClick = { messageId -> onLoadQuotedMessage(messageId) },
+                        state = ChatViewState(
+                            chatItems = uiState.items,
+                            isOneToOneConversation = isOneToOneConversation,
+                            conversationThreadId = conversationThreadId,
+                            hasChatPermission = this::participantPermissions.isInitialized &&
+                                participantPermissions.hasChatPermission()
+                        ),
+                        callbacks = ChatViewCallbacks(
+                            onLoadMore = { loadMoreMessagesCompose() },
+                            advanceLocalLastReadMessageIfNeeded = { advanceLocalLastReadMessageIfNeeded(it) },
+                            updateRemoteLastReadMessageIfNeeded = { updateRemoteLastReadMessageIfNeeded() },
+                            onLongClick = { openMessageActionsDialog(it) },
+                            onSwipeReply = { handleSwipeToReply(it) },
+                            onFileClick = { downloadAndOpenFile(it) },
+                            onPollClick = { pollId, pollName -> openPollDialog(pollId, pollName) },
+                            onVoicePlayPauseClick = { onVoicePlayPauseClickCompose(it) },
+                            onVoiceSeek = { _, progress -> chatViewModel.seekToMediaPlayer(progress) },
+                            onVoiceSpeedClick = { onVoiceSpeedClickCompose(it) },
+                            onReactionClick = { messageId, emoji -> handleReactionClick(messageId, emoji) },
+                            onReactionLongClick = { messageId -> openReactionsDialog(messageId) },
+                            onOpenThreadClick = { messageId -> openThread(messageId.toLong()) },
+                            onLoadQuotedMessageClick = { messageId -> onLoadQuotedMessage(messageId) }
+                        ),
                         listState = listState
                     )
                 }
