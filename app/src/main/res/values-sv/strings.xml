@@ -584,6 +584,7 @@
     <string name="open_in_files_app">Öppna i appen Filer</string>
     <string name="open_notes">Öppna anteckningar</string>
     <string name="open_thread">Gå till tråd</string>
+    <string name="pin_message">Fäst meddelande</string>
     <string name="pinned_dismiss">Avfärda</string>
     <string name="pinned_message_options">Meddelandeinställningar</string>
     <string name="play_pause_voice_message">Spela/pausa röstmeddelande</string>
@@ -713,7 +714,9 @@
     <string name="unarchive_hint">När en konversation har avarkiverats visas den som standard igen.</string>
     <string name="unarchived_conversation">Avarkiverad %1$s</string>
     <string name="unban">Tillåt</string>
+    <string name="unpin_message">Ta bort fäst meddelande</string>
     <string name="unread">Oläst</string>
+    <string name="until_unpin">Tills fästet tas bort</string>
     <string name="upload_new_avatar_from_device">Ladda upp ny avatar från enheten</string>
     <string name="user_absence">%1$s är frånvarande och kanske inte svarar</string>
     <string name="user_absence_for_one_day">%1$s är frånvarande idag</string>
