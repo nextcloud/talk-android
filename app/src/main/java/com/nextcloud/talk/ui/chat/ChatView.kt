@@ -105,7 +105,8 @@ class ChatViewCallbacks(
     val onReactionLongClick: (Int) -> Unit = {},
     val onOpenThreadClick: (Int) -> Unit = {},
     val onLoadQuotedMessageClick: (Int) -> Unit = {},
-    val onSwipeReply: ((Int) -> Unit)? = null
+    val onSwipeReply: ((Int) -> Unit)? = null,
+    val onCancelUpload: (String) -> Unit = {}
 )
 
 @Suppress("Detekt.LongMethod", "Detekt.ComplexMethod")
@@ -324,7 +325,8 @@ fun ChatView(
                                 onReactionClick = callbacks.onReactionClick,
                                 onReactionLongClick = callbacks.onReactionLongClick,
                                 onOpenThreadClick = callbacks.onOpenThreadClick,
-                                onQuotedMessageClick = handleQuotedMessageClick
+                                onQuotedMessageClick = handleQuotedMessageClick,
+                                onCancelUpload = callbacks.onCancelUpload
                             )
                         )
                     }

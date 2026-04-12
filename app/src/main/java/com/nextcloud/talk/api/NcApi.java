@@ -386,7 +386,8 @@ public interface NcApi {
                                                  @Field("path") String remotePath,
                                                  @Field("shareWith") String roomToken,
                                                  @Field("shareType") String shareType,
-                                                 @Field("talkMetaData") String talkMetaData);
+                                                 @Field("talkMetaData") String talkMetaData,
+                                                 @Field("referenceId") String referenceId);
 
     @FormUrlEncoded
     @PUT
