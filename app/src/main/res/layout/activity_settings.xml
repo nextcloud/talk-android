@@ -402,7 +402,7 @@
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/nc_diagnose_push_available_no"/>
+                        android:text="@string/nc_diagnosis_push_available_no"/>
                 </LinearLayout>
 
                 <LinearLayout
