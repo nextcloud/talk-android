@@ -328,6 +328,7 @@
     <string name="nc_zoom_in">Didinti</string>
     <string name="nc_zoom_out">Mažinti</string>
     <string name="next_week">Kita savaitė</string>
+    <string name="notification_off">Išjungta</string>
     <string name="notifications_default">Numatytasis</string>
     <string name="oneHour">1 valanda</string>
     <string name="online">Prisijungęs</string>
@@ -387,6 +388,7 @@
     <string name="today">Šiandiena</string>
     <string name="tomorrow">Rytoj</string>
     <string name="translate">Verskite</string>
+    <string name="translation_copy_translated_text">Kopijuoti išverstą tekstą</string>
     <string name="translation_detect_language">Aptikti kalbą</string>
     <string name="translation_device_settings">Įrenginio nustatymai</string>
     <string name="translation_error_message">Nepavyko aptikti kalbos</string>
@@ -397,6 +399,7 @@
     <string name="typing_are_typing">rašo…</string>
     <string name="typing_is_typing">rašo…</string>
     <string name="typing_x_others">ir dar %1$s rašo…</string>
+    <string name="unread">Neskaityta</string>
     <string name="user_info_address">Adresas</string>
     <string name="user_info_bluesky">"Bluesky"</string>
     <string name="user_info_displayname">Vardas, pavardė</string>
