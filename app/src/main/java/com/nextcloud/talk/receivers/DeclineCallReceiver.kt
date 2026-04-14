@@ -15,14 +15,10 @@ import android.content.Intent
 import androidx.core.app.NotificationManagerCompat
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_TIMESTAMP
 
-class CallNotificationActionReceiver : BroadcastReceiver() {
+class DeclineCallReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val notificationId = intent.getIntExtra(KEY_NOTIFICATION_TIMESTAMP, 0)
         NotificationManagerCompat.from(context).cancel(notificationId)
-    }
-
-    companion object {
-        const val ACTION_DECLINE_CALL = "com.nextcloud.talk.ACTION_DECLINE_CALL"
     }
 }
