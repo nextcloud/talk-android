@@ -18,7 +18,6 @@
       <ignored-keys>
          <ignored-key id="07D3516820BCF6B1" reason="Key couldn't be downloaded from any key server"/>
          <ignored-key id="17A27CE7A60FF5F0" reason="Key couldn't be downloaded from any key server"/>
-         <ignored-key id="A020597F309CEB64" reason="Key couldn't be downloaded from any key server"/>
          <ignored-key id="A40E24B5B408DBD5" reason="Key couldn't be downloaded from any key server"/>
          <ignored-key id="D3DBC823BE4819ED" reason="Key couldn't be downloaded from any key server"/>
       </ignored-keys>
