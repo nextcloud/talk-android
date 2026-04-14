@@ -1038,7 +1038,10 @@ class CallActivity : CallBaseActivity() {
             binding!!.selfVideoViewWrapper.visibility = View.GONE
         } else if (permissionUtil!!.isCameraPermissionGranted()) {
             binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
-            onCameraClick()
+            // don't enable the camera if call was answered via notification
+            if (!isIncomingCallFromNotification) {
+                onCameraClick()
+            }
             if (cameraEnumerator!!.deviceNames.isEmpty()) {
                 binding!!.cameraButton.visibility = View.GONE
             }
