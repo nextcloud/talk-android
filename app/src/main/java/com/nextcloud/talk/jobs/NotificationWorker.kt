@@ -62,7 +62,7 @@ import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage
 import com.nextcloud.talk.models.json.push.NotificationUser
-import com.nextcloud.talk.receivers.CallNotificationActionReceiver
+import com.nextcloud.talk.receivers.DeclineCallReceiver
 import com.nextcloud.talk.receivers.DirectReplyReceiver
 import com.nextcloud.talk.receivers.DismissRecordingAvailableReceiver
 import com.nextcloud.talk.receivers.MarkAsReadReceiver
@@ -300,8 +300,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             val declinePendingIntent = PendingIntent.getBroadcast(
                 applicationContext,
                 requestCode + DECLINE_CALL_REQUEST_OFFSET,
-                Intent(applicationContext, CallNotificationActionReceiver::class.java).apply {
-                    action = CallNotificationActionReceiver.ACTION_DECLINE_CALL
+                Intent(applicationContext, DeclineCallReceiver::class.java).apply {
                     putExtra(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
                 },
                 pendingIntentFlags
