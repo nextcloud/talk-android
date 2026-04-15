@@ -30,6 +30,7 @@
 * hidrohase <github@honesz.net>
 * Jan-Christoph Borchardt <hey@jancborchardt.net>
 * jld3103 <jld3103yt@gmail.com>
+* Jens Zalzala <jens@shakingearthdigital.com>
 * Joas Schilling <coding@schilljs.com>
 * John Molakvoæ <skjnldsv@protonmail.com>
 * Jos Poortvliet <jos@opensuse.org>
