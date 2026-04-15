@@ -45,6 +45,7 @@ import coil.request.ImageRequest
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -61,6 +62,7 @@ import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage
 import com.nextcloud.talk.models.json.push.NotificationUser
+import com.nextcloud.talk.receivers.DeclineCallReceiver
 import com.nextcloud.talk.receivers.DirectReplyReceiver
 import com.nextcloud.talk.receivers.DismissRecordingAvailableReceiver
 import com.nextcloud.talk.receivers.MarkAsReadReceiver
@@ -95,7 +97,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observable
 import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.JavaNetCookieJar
@@ -268,10 +269,64 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 }
             )
 
+            val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            } else {
+                PendingIntent.FLAG_UPDATE_CURRENT
+            }
+
+            val answerVoiceBundle = Bundle(bundle).apply { putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true) }
+            val answerVoicePendingIntent = PendingIntent.getActivity(
+                applicationContext,
+                requestCode + ANSWER_VOICE_REQUEST_OFFSET,
+                Intent(applicationContext, CallActivity::class.java).apply {
+                    putExtras(answerVoiceBundle)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                },
+                pendingIntentFlags
+            )
+
+            val answerVideoBundle = Bundle(bundle).apply { putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false) }
+            val answerVideoPendingIntent = PendingIntent.getActivity(
+                applicationContext,
+                requestCode + ANSWER_VIDEO_REQUEST_OFFSET,
+                Intent(applicationContext, CallActivity::class.java).apply {
+                    putExtras(answerVideoBundle)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                },
+                pendingIntentFlags
+            )
+
+            val declinePendingIntent = PendingIntent.getBroadcast(
+                applicationContext,
+                requestCode + DECLINE_CALL_REQUEST_OFFSET,
+                Intent(applicationContext, DeclineCallReceiver::class.java).apply {
+                    putExtra(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
+                },
+                pendingIntentFlags
+            )
+
             val soundUri = getCallRingtoneUri(applicationContext, appPreferences)
             val notificationChannelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
             val uri = signatureVerification.user!!.baseUrl!!.toUri()
             val baseUrl = uri.host
+
+            val callerPersonBuilder = Person.Builder()
+                .setName(conversation.displayName)
+                .setImportant(true)
+            if (conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+                val avatarUrl = ApiUtils.getUrlForAvatar(
+                    signatureVerification.user!!.baseUrl!!,
+                    conversation.name,
+                    false,
+                    darkMode = DisplayUtils.isDarkModeOn(applicationContext)
+                )
+                loadAvatarSync(avatarUrl, applicationContext)?.let { callerPersonBuilder.setIcon(it) }
+            }
+            val callerPerson = callerPersonBuilder.build()
+
+            val isVideoCall = (conversation.callFlag and Participant.InCallFlags.WITH_VIDEO) > 0
+            val primaryAnswerIntent = if (isVideoCall) answerVideoPendingIntent else answerVoicePendingIntent
 
             val notification =
                 NotificationCompat.Builder(applicationContext, notificationChannelId)
@@ -289,6 +344,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     .setContentIntent(fullScreenPendingIntent)
                     .setFullScreenIntent(fullScreenPendingIntent, true)
                     .setSound(soundUri)
+                    .setStyle(
+                        NotificationCompat.CallStyle
+                            .forIncomingCall(callerPerson, declinePendingIntent, primaryAnswerIntent)
+                            .setIsVideo(isVideoCall)
+                    )
                     .build()
             notification.flags = notification.flags or Notification.FLAG_INSISTENT
 
@@ -299,7 +359,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         chatNetworkDataSource?.getRoom(userBeingCalled, roomToken = pushMessage.id!!)
             ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.observeOn(Schedulers.io())
             ?.subscribe(object : Observer<ConversationModel> {
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
@@ -1107,5 +1167,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         private const val TIMER_COUNT = 12
         private const val TIMER_DELAY: Long = 5
         private const val LINEBREAK: String = "\n"
+        private const val ANSWER_VOICE_REQUEST_OFFSET = 1
+        private const val ANSWER_VIDEO_REQUEST_OFFSET = 2
+        private const val DECLINE_CALL_REQUEST_OFFSET = 3
     }
 }
