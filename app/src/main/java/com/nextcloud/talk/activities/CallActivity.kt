@@ -1592,13 +1592,6 @@ class CallActivity : CallBaseActivity() {
                             }
                             ApplicationWideCurrentRoomHolder.getInstance().isInCall = true
                             ApplicationWideCurrentRoomHolder.getInstance().isDialing = false
-                            if (!TextUtils.isEmpty(roomToken)) {
-                                cancelExistingNotificationsForRoom(
-                                    applicationContext,
-                                    conversationUser!!,
-                                    roomToken!!
-                                )
-                            }
                             if (!hasExternalSignalingServer) {
                                 pullSignalingMessages()
                             }
