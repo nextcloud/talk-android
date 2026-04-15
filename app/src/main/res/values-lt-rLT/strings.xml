@@ -307,6 +307,7 @@
     <string name="nc_share_this_location">Bendrinti šią vietą</string>
     <string name="nc_share_to_choose_account">Parinkti paskyrą</string>
     <string name="nc_shared_items">Bendrinami elementai</string>
+    <string name="nc_shared_items_deck_card">„Deck“ kortelė</string>
     <string name="nc_shared_items_description">Paveikslai, failai, balso žinutės…</string>
     <string name="nc_shared_items_empty">Nėra bendrinamų elementų</string>
     <string name="nc_shared_items_location">Vieta</string>
@@ -380,6 +381,7 @@
     <string name="take_photo_send">Siųsti</string>
     <string name="take_photo_switch_camera">Perjungti kamerą</string>
     <string name="take_photo_toggle_crop">Apkirpti nuotrauką</string>
+    <string name="take_photo_toggle_torch">Perjungti žibintuvėlį</string>
     <string name="thirtyMinutes">30 minučių</string>
     <string name="thisWeek">Šią savaitę</string>
     <string name="this_is_a_test_message">Tai yra bandomoji žinutė</string>
@@ -400,6 +402,7 @@
     <string name="typing_is_typing">rašo…</string>
     <string name="typing_x_others">ir dar %1$s rašo…</string>
     <string name="unread">Neskaityta</string>
+    <string name="user_avatar">Vartotojo avataras</string>
     <string name="user_info_address">Adresas</string>
     <string name="user_info_bluesky">"Bluesky"</string>
     <string name="user_info_displayname">Vardas, pavardė</string>
