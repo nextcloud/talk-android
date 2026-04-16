@@ -238,50 +238,36 @@ class ChatActivityLeaveRoomLifecycleTest {
     // ==========================================
 
     /**
-     * The switchToRoom callback must fire even when the activity is paused.
-     * This ensures the new ChatActivity is launched after the room is left.
+     * The switchToRoom callback must fire even when the activity is paused and even
+     * when a call is active — only the holder/websocket cleanup is skipped, not the callback.
      */
     @Test
-    fun `switchToRoom callback fires via observeForever even when paused`() {
-        val observer = androidx.lifecycle.Observer<LeaveState> { state ->
-            if (state is LeaveRoomSuccessState) {
-                simulateLeaveRoomObserverAction(state)
+    fun `switchToRoom callback fires via observeForever regardless of call state`() {
+        for ((inCall, label) in listOf(false to "no call", true to "active call")) {
+            holderIsInCall = inCall
+            callbackInvoked = false
+            holderCleared = false
+
+            val observer = androidx.lifecycle.Observer<LeaveState> { state ->
+                if (state is LeaveRoomSuccessState) {
+                    simulateLeaveRoomObserverAction(state)
+                }
             }
+            leaveRoomViewState.observeForever(observer)
+
+            leaveRoomViewState.value = LeaveRoomSuccessState {
+                callbackInvoked = true
+            }
+
+            assertTrue("Callback should fire ($label)", callbackInvoked)
+            if (inCall) {
+                assertFalse("Holder should NOT be cleared during active call", holderCleared)
+            }
+
+            leaveRoomViewState.removeObserver(observer)
+            leaveRoomViewState.value = LeaveRoomStartState
         }
-        leaveRoomViewState.observeForever(observer)
-
-        leaveRoomViewState.value = LeaveRoomSuccessState {
-            callbackInvoked = true
-        }
-
-        assertTrue("Callback should be invoked", callbackInvoked)
-
-        leaveRoomViewState.removeObserver(observer)
     }
-
-    /**
-     * The switchToRoom callback must still fire even when a call is active —
-     * only the holder/websocket cleanup is skipped, not the callback.
-     */
-    @Test
-    fun `switchToRoom callback fires even during active call`() {
-        holderIsInCall = true
-
-        val observer = androidx.lifecycle.Observer<LeaveState> { state ->
-            if (state is LeaveRoomSuccessState) {
-                simulateLeaveRoomObserverAction(state)
-            }
-        }
-        leaveRoomViewState.observeForever(observer)
-
-        leaveRoomViewState.value = LeaveRoomSuccessState {
-            callbackInvoked = true
-        }
-
-        assertTrue("Callback should fire even during active call", callbackInvoked)
-        assertFalse("But holder should NOT be cleared", holderCleared)
-
-        leaveRoomViewState.removeObserver(observer)
     }
 
     // ==========================================

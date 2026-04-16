@@ -333,8 +333,8 @@ class CallActivity : CallBaseActivity() {
     private var requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissionMap: Map<String, Boolean> ->
-        // DEBUG: Log permission results
-        Log.d(TAG, "DEBUG: Permission request completed with results: $permissionMap")
+        // Log permission results
+        Log.d(TAG, "Permission request completed with results: $permissionMap")
 
         val rationaleList: MutableList<String> = ArrayList()
         val audioPermission = permissionMap[Manifest.permission.RECORD_AUDIO]
