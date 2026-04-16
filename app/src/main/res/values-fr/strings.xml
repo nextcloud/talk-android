@@ -95,6 +95,8 @@
     <string name="lower_hand">Baisser la main</string>
     <string name="marked_as_read">La conversation %1$s a été marquée comme lue</string>
     <string name="marked_as_unread">La conversation %1$s a été marquée comme non-lue</string>
+    <string name="media_message_content_description">Prévisualisation du fichier</string>
+    <string name="media_message_content_play">Lire le fichier multimédia</string>
     <string name="mentioned">Mentionné</string>
     <string name="menu_item_sort_by_date_newest_first">Les plus récents d\'abord</string>
     <string name="menu_item_sort_by_date_oldest_first">Les plus anciens d\'abord</string>
@@ -444,6 +446,7 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Recherche</string>
     <string name="nc_search_clear">Effacer la recherche</string>
+    <string name="nc_search_location">Rechercher la position</string>
     <string name="nc_select_an_account">Choisissez un compte</string>
     <string name="nc_send_edit_message">Message de mise à jour</string>
     <string name="nc_send_later">Envoyer ultérieurement</string>
@@ -548,6 +551,7 @@
     <string name="nc_shared_items_empty">Pas d\'éléments partagés</string>
     <string name="nc_shared_items_location">Position</string>
     <string name="nc_shared_location">Position partagée</string>
+    <string name="nc_show_ecosystem_description">Suggestions d\'applications Nextcloud dans la boîte de dialogue de sélection de compte</string>
     <string name="nc_show_ecosystem_title">Afficher le sélecteur d\'applications</string>
     <string name="nc_show_notification_warning_description">Quand les notifications ne sont pas correctement configurées, afficher un avertissement régulier</string>
     <string name="nc_show_notification_warning_title">Afficher un avertissement régulier à propos des notifications</string>
@@ -560,6 +564,7 @@
     <string name="nc_test_results">Résultats des tests</string>
     <string name="nc_today_meeting">Aujourd\'hui à %1$s</string>
     <string name="nc_tomorrow_meeting">Demain à %1$s</string>
+    <string name="nc_upcoming_event_dismissed">Les appels entrants peuvent être vus dans les informations de conversation</string>
     <string name="nc_upload_choose_local_files">Choisir des fichiers</string>
     <string name="nc_upload_confirm_send_multiple">Envoyer ces fichiers à %1$s ?</string>
     <string name="nc_upload_confirm_send_single">Envoyer ce fichier à %1$s ?</string>
@@ -586,6 +591,7 @@
     <string name="no_conversations_archived">Aucune conversation archivée</string>
     <string name="no_offline_messages_saved">Aucun message hors-ligne trouvé</string>
     <string name="no_phone_book_integration_due_to_permissions">Pas d\'intégration avec le carnet d\'adresses à cause d\'autorisations manquantes</string>
+    <string name="no_scheduled_messages_offline">Connexion au serveur impossible - Les messages programmés n\'ont pas pu être chargés</string>
     <string name="notification_all_messages">Tous les messages</string>
     <string name="notification_mention_only">Seulement les mentions @</string>
     <string name="notification_off">Désactiver</string>
@@ -599,10 +605,19 @@
     <string name="open_in_files_app">Ouvrir dans l\'application Fichiers</string>
     <string name="open_notes">Ouvrir les Notes</string>
     <string name="open_thread">Aller à la conversation</string>
+    <string name="pin_24hr">Épingler pendant 24 heures</string>
+    <string name="pin_30_days">Épingler pendant 30 jours</string>
+    <string name="pin_7_days">Épingler pendant 7 jours</string>
+    <string name="pin_indefinitely">Épingler indéfiniment</string>
     <string name="pin_message">Épingler le message</string>
     <string name="pinned">Épinglé</string>
+    <string name="pinned_by_author">%1$s (épinglé par %2$s)</string>
+    <string name="pinned_by_you">%1$s (épinglé par vous)</string>
     <string name="pinned_dismiss">Rejeter</string>
+    <string name="pinned_go_to_message">Aller au message</string>
+    <string name="pinned_indefinitely">Épinglé indéfiniment</string>
     <string name="pinned_message_options">Options du message</string>
+    <string name="pinned_until">Épinglé jusqu\'au</string>
     <string name="play_pause_voice_message">Jouer / mettre en pause le message vocal</string>
     <string name="playback_speed_control">Contrôle de la vitesse de lecture</string>
     <string name="please_continue_the_login_process_in_the_browser">Veuillez continuer la connexion dans votre navigateur</string>
@@ -624,7 +639,9 @@
     <string name="polls_voted_hidden_success">Vote soumis</string>
     <string name="previously_set">Précédemment défini</string>
     <string name="qr_code_error">Le code QR ne peut être lu</string>
+    <string name="quoted_message_too_old">Ce message est trop ancien pour être affiché</string>
     <string name="raise_hand">Lever la main</string>
+    <string name="reaction_forbidden">Vous n\'êtes pas autorisé à ajouter ou à supprimer des réactions dans cette conversation</string>
     <string name="reactions_tab_all">Tout</string>
     <string name="read_storage_no_permission">le partage de fichier n\'est pas possible sans les permissions</string>
     <string name="recent_threads">Conversations récentes</string>
@@ -740,6 +757,7 @@
     <string name="user_absence_replacement">Remplacement :</string>
     <string name="user_avatar">Avatar utilisateur</string>
     <string name="user_info_address">Adresse</string>
+    <string name="user_info_biography">Biographie</string>
     <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Nom complet</string>
     <string name="user_info_email">E-mail</string>
