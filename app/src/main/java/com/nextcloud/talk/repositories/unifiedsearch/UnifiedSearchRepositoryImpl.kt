@@ -8,31 +8,23 @@
 package com.nextcloud.talk.repositories.unifiedsearch
 
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchEntry
 import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchResponseData
-import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observable
 
-class UnifiedSearchRepositoryImpl(private val api: NcApi, private val userProvider: CurrentUserProviderNew) :
-    UnifiedSearchRepository {
-
-    private val user: User
-        get() = userProvider.currentUser.blockingGet()
-
-    private val credentials: String
-        get() = ApiUtils.getCredentials(user.username, user.token)!!
+class UnifiedSearchRepositoryImpl(private val api: NcApi) : UnifiedSearchRepository {
 
     override fun searchMessages(
+        credentials: String?,
+        url: String,
         searchTerm: String,
         cursor: Int,
         limit: Int
     ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> {
         val apiObservable = api.performUnifiedSearch(
             credentials,
-            ApiUtils.getUrlForUnifiedSearch(user.baseUrl!!, PROVIDER_TALK_MESSAGE),
+            url,
             searchTerm,
             null,
             limit,
@@ -42,6 +34,8 @@ class UnifiedSearchRepositoryImpl(private val api: NcApi, private val userProvid
     }
 
     override fun searchInRoom(
+        credentials: String?,
+        url: String,
         roomToken: String,
         searchTerm: String,
         cursor: Int,
@@ -49,7 +43,7 @@ class UnifiedSearchRepositoryImpl(private val api: NcApi, private val userProvid
     ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> {
         val apiObservable = api.performUnifiedSearch(
             credentials,
-            ApiUtils.getUrlForUnifiedSearch(user.baseUrl!!, PROVIDER_TALK_MESSAGE_CURRENT),
+            url,
             searchTerm,
             fromUrlForRoom(roomToken),
             limit,
@@ -61,8 +55,8 @@ class UnifiedSearchRepositoryImpl(private val api: NcApi, private val userProvid
     private fun fromUrlForRoom(roomToken: String) = "/call/$roomToken"
 
     companion object {
-        private const val PROVIDER_TALK_MESSAGE = "talk-message"
-        private const val PROVIDER_TALK_MESSAGE_CURRENT = "talk-message-current"
+        const val PROVIDER_TALK_MESSAGE = "talk-message"
+        const val PROVIDER_TALK_MESSAGE_CURRENT = "talk-message-current"
 
         private const val ATTRIBUTE_CONVERSATION = "conversation"
         private const val ATTRIBUTE_MESSAGE_ID = "messageId"

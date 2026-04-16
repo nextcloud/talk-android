@@ -8,7 +8,6 @@ package com.nextcloud.talk.activities;
 
 import android.annotation.SuppressLint;
 import android.app.AppOpsManager;
-import android.app.KeyguardManager;
 import android.app.PictureInPictureParams;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -79,10 +78,7 @@ public abstract class CallBaseActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true);
             setTurnScreenOn(true);
-            KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-            keyguardManager.requestDismissKeyguard(this, null);
         } else {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         }
@@ -193,6 +189,19 @@ public abstract class CallBaseActivity extends BaseActivity {
                 android.os.Process.myUid(),
                 BuildConfig.APPLICATION_ID) == AppOpsManager.MODE_ALLOWED;
             return deviceHasPipFeature && isPipFeatureGranted;
+    }
+
+    private boolean shouldFinishOnStop() {
+        if (!isInPipMode) {
+            return false;
+        }
+
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        if (powerManager == null) {
+            return true;
+        }
+
+        return powerManager.isInteractive();
     }
 
     public abstract void updateUiForPipMode();

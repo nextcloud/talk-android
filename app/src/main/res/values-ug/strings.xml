@@ -23,6 +23,9 @@
     <string name="ban">چەكلە</string>
     <string name="ban_participant">قاتناشقۇچىنى چەكلەش</string>
     <string name="bans_list">چەكلەش تىزىملىكى</string>
+    <string name="battery_optimization_ignored">باتارېيەنى ئەلالاشتۇرۇشقا سەل قارىلىدۇ ، ھەممىسى ياخشى</string>
+    <string name="battery_optimization_not_ignored">باتارېيە ئەلالاشتۇرۇش ئىقتىدارى قوزغىتىلغان بولۇپ، مەسىلە پەيدا قىلىشى مۇمكىن. باتارېيە ئەلالاشتۇرۇش ئىقتىدارىدىن ۋاز كېچىشىڭىز كېرەك!</string>
+    <string name="battery_optimization_title">باتارېيە تەڭشىكى</string>
     <string name="busy">ئالدىراش</string>
     <string name="calendar">كالېندار</string>
     <string name="call_more_actions_dialog_headline">ئىلغار چاقىرىش تاللانمىلىرى</string>
@@ -53,6 +56,9 @@
     <string name="deleted_conversation">ئۆچۈرۈلگەن سۆھبەت%1$s</string>
     <string name="dnd">ئاۋارە قىلماڭ</string>
     <string name="dontClear">ئېنىق ئەمەس</string>
+    <string name="ecosystem_apps_files">ھۆججەتلەر</string>
+    <string name="ecosystem_apps_more">تېخىمۇ كۆپ</string>
+    <string name="ecosystem_apps_notes">ئىزاھات</string>
     <string name="edit">تەھرىر</string>
     <string name="edit_error_24_hours_old_message">24 سائەتتىن كونا ئۇچۇرلارنى تەھرىرلىگىلى بولمايدۇ</string>
     <string name="edit_message_icon_description">ئۇچۇرنى تەھرىرلەش</string>
@@ -171,9 +177,11 @@
     <string name="nc_common_skip">ئاتلاش</string>
     <string name="nc_common_unknown">نامەلۇم</string>
     <string name="nc_configure_cert_auth">دەلىللەش گۇۋاھنامىسىنى تاللاڭ</string>
+    <string name="nc_confirm">جەزملەشتۈرۈڭ</string>
     <string name="nc_connecting_call">ئۇلىنىش…</string>
     <string name="nc_contacts_done">تامام</string>
     <string name="nc_conversation_description">سۆھبەت چۈشەندۈرۈشى</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">ھۆججەتكە بېرىڭ</string>
     <string name="nc_conversation_menu_conversation_info">سۆھبەت ئۇچۇرى</string>
     <string name="nc_conversation_menu_video_call">سىنلىق تېلېفون</string>
     <string name="nc_conversation_menu_voice_call">ئاۋازلىق تېلېفون</string>
@@ -237,6 +245,9 @@
     <string name="nc_diagnose_signaling_mode_extern">سىرتقى</string>
     <string name="nc_diagnose_signaling_mode_intern">ئىچكى</string>
     <string name="nc_diagnose_signaling_mode_title">سىگنال ھالىتى</string>
+    <string name="nc_diagnosis_dialog_open_checklist">چاتاقنى تەكشۈرۈش تىزىملىكىنى ئېچىڭ</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">دىئاگنوز قويۇش ئېكرانىنى ئېچىڭ</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Dontkillmyapp.com نى ئېچىڭ</string>
     <string name="nc_dialog_invalid_password">پارول ئىناۋەتسىز</string>
     <string name="nc_dialog_maintenance_mode_description">مۇلازىمېتىر ھازىر ئاسراش ھالىتىدە.</string>
     <string name="nc_dialog_outdated_client">ئەپنىڭ ۋاقتى ئۆتتى</string>
@@ -394,8 +405,6 @@
     <string name="nc_push_notification_error">كەچۈرۈڭ خاتالىق كۆرۈلدى، خاتالىق بولسا %1$s</string>
     <string name="nc_push_notification_fetch_error">كەچۈرۈڭ خاتالىق كۆرۈلدى، سىناق ئۇچۇرنى چۈشۈرەلمىدى</string>
     <string name="nc_push_notification_message">Push ئۇقتۇرۇش مۇۋەپپەقىيەتلىك ئەۋەتىلدى. سىز ھازىر بۇ ئۈسكۈنىدە «Push ئۇقتۇرۇشلىرىنى سىناق قىلىۋاتىدۇ» دېگەن ماۋزۇدىكى ئۇقتۇرۇشنى تاپشۇرۇۋېلىشىڭىز كېرەك.</string>
-    <string name="nc_push_to_talk">پاراڭلىشىش</string>
-    <string name="nc_push_to_talk_desc">مىكروفون چەكلەنگەندىن كېيىن «&amp;» نى چېكىش ئارقىلىق «Push-to-talk» نى ئىشلىتىڭ</string>
     <string name="nc_remind">كېيىن ماڭا ئەسكەرتىڭ</string>
     <string name="nc_remove_from_favorites">ياقتۇرىدىغانلاردىن ئۆچۈرۈڭ</string>
     <string name="nc_remove_group_and_members">گۇرۇپپا ۋە ئەزالارنى چىقىرىۋېتىڭ</string>
@@ -409,6 +418,7 @@
     <string name="nc_room_retention">ئۆيگە قايتا ئېرىشىلدى</string>
     <string name="nc_save_message">ساقلاش</string>
     <string name="nc_save_success">مۇۋەپپەقىيەتلىك ساقلاندى</string>
+    <string name="nc_scheduled_time">ۋاقىت ئورۇنلاشتۇرۇش</string>
     <string name="nc_screen_lock_timeout_30">30 سېكۇنت</string>
     <string name="nc_screen_lock_timeout_300">5 مىنۇت</string>
     <string name="nc_screen_lock_timeout_60">1 مىنۇت</string>
@@ -422,6 +432,8 @@
     <string name="nc_search_clear">ئىزدەشنى تازىلاش</string>
     <string name="nc_select_an_account">ھېسابات تاللاڭ</string>
     <string name="nc_send_edit_message">ئۇچۇرنى يېڭىلا</string>
+    <string name="nc_send_later">كېيىن ئەۋەتىڭ</string>
+    <string name="nc_send_now">ھازىر ئەۋەتىڭ</string>
     <string name="nc_send_voice_recording">ئاۋاز خاتىرسى يوللا</string>
     <string name="nc_sensitive_conversation">نازۇك سۆھبەت</string>
     <string name="nc_sensitive_conversation_hint">سۆھبەت تىزىملىكى ۋە ئۇقتۇرۇشلاردا خەۋەرنى ئالدىن كۆرۈش چەكلىنىدۇ</string>
@@ -458,6 +470,8 @@
     <string name="nc_settings_contact_admin_of">باشقۇرغۇچى بىلەن ئالاقىلىشىڭ</string>
     <string name="nc_settings_diagnose_subtitle">تەڭشەكلەرنى تەكشۈرۈش ياكى خاتالىق دوكلاتىنى تەكشۈرۈش ئۈچۈن دىئاگنوز ئېكرانىنى ئېچىڭ</string>
     <string name="nc_settings_diagnose_title">دىئاگنوز</string>
+    <string name="nc_settings_diagnosis_subtitle">تەڭشەكلەرنى تەكشۈرۈش ياكى خاتالىق دوكلاتىنى تەكشۈرۈش ئۈچۈن دىئاگنوز ئېكرانىنى ئېچىڭ</string>
+    <string name="nc_settings_diagnosis_title">دىئاگنوز</string>
     <string name="nc_settings_incognito_keyboard_desc">خاسلاشتۇرۇلغان ئۆگىنىشنى چەكلەش ئۈچۈن كۇنۇپكا تاختىسىغا بۇيرۇق بېرىدۇ (كاپالەتسىز)</string>
     <string name="nc_settings_incognito_keyboard_title">Incognito كۇنۇپكا تاختىسى</string>
     <string name="nc_settings_no_ringtone">ئاۋاز يوق</string>
@@ -520,6 +534,7 @@
     <string name="nc_shared_items_empty">ئورتاق بەھرىلىنىدىغان تۈر يوق</string>
     <string name="nc_shared_items_location">ئورنى</string>
     <string name="nc_shared_location">ئورتاق ئورۇن</string>
+    <string name="nc_show_ecosystem_title">ئەپ ئالماشتۇرغۇچنى كۆرسەت</string>
     <string name="nc_show_notification_warning_description">ئۇختۇرۇش توغرا تەڭشەلمىگەندە، ئادەتتىكى ئاگاھلاندۇرۇش كۆرسەت</string>
     <string name="nc_show_notification_warning_title">ئادەتتىكى ئاگاھلاندۇرۇش ئۇقتۇرۇشى كۆرسەت</string>
     <string name="nc_sort_by">تەرتىپلەش</string>
@@ -551,6 +566,8 @@
     <string name="nc_voice_message_slide_to_cancel">«ئەمەلدىن قالدۇرۇش</string>
     <string name="nc_webinar">تور سۆھبىتى</string>
     <string name="nc_yes">ھەئە</string>
+    <string name="nc_zoom_in">چوڭايتىش</string>
+    <string name="nc_zoom_out">چوڭايتىڭ</string>
     <string name="next_week">كېلەر ھەپتە</string>
     <string name="no_conversations_archived">ئارخىپلانغان سۆھبەت يوق</string>
     <string name="no_offline_messages_saved">ساقلانغان تورسىز ئۇچۇر يوق</string>
@@ -558,6 +575,7 @@
     <string name="notification_all_messages">بارلىق ئۇچۇرلار</string>
     <string name="notification_mention_only">\@-mentions پەقەتلا</string>
     <string name="notification_off">ئىتىك</string>
+    <string name="notification_permission">ئۇقتۇرۇش ئىجازىتى</string>
     <string name="notifications_default">كۆڭۈلدىكى</string>
     <string name="notifications_default_description">سۆھبەت تەڭشەكلىرىگە ئەگەش</string>
     <string name="oneHour">1 سائەت</string>
@@ -567,6 +585,9 @@
     <string name="open_in_files_app">ھۆججەتلەر دېتالىدا ئېچىڭ</string>
     <string name="open_notes">خاتىرىنى ئاچ</string>
     <string name="open_thread">يىپقا بار</string>
+    <string name="pin_message">مىخلاش ئۇچۇرى</string>
+    <string name="pinned">مىخلاندى</string>
+    <string name="pinned_dismiss">پەرۋا قىلما</string>
     <string name="play_pause_voice_message">ئاۋازلىق ئۇچۇرنى قويۇش / توختىتىش</string>
     <string name="playback_speed_control">قۇيۇش سۈرئىتىنى تىزگىنلەش</string>
     <string name="please_continue_the_login_process_in_the_browser">تور كۆرگۈدە كىرىشنى داۋاملاشتۇرۇڭ</string>
@@ -695,16 +716,25 @@
     <string name="unarchive_hint">سۆھبەت بىر تەرەپ قىلىنمىغاندىن كېيىن ، سۈكۈتتىكى ھالەتتە يەنە كۆرسىتىلىدۇ.</string>
     <string name="unarchived_conversation">%1$s ئارخىپتىن چىقىرىلدى</string>
     <string name="unban">چەكلىمە</string>
+    <string name="unpin_message">مىختىن چىقىرىش ئۇچۇرى</string>
     <string name="unread">ئوقۇمىغان</string>
+    <string name="until_unpin">مىخلاشتىن چىقارغىچە</string>
     <string name="upload_new_avatar_from_device">ئۈسكۈنىدىن يېڭى باش سۈرىتىنى يۈكلەڭ</string>
     <string name="user_absence">%1$s ئىشخانىنىڭ سىرتىدا ، جاۋاب قايتۇرماسلىقى مۇمكىن.</string>
     <string name="user_absence_for_one_day">بۈگۈن %1$s ئىشخانىنىڭ سىرتىدا</string>
     <string name="user_absence_replacement">ئالماشتۇرۇش: </string>
     <string name="user_avatar">ئىشلەتكۈچى باش سۈرىتى</string>
     <string name="user_info_address">ئادرېس</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">تولۇق ئىسمى</string>
     <string name="user_info_email">ئېلخەت</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">ماۋزۇ</string>
+    <string name="user_info_organisation">ئورگان</string>
     <string name="user_info_phone">تېلېفون نومۇرى</string>
+    <string name="user_info_profile_enable">ئارخىپنى قوزغىتىڭ</string>
+    <string name="user_info_pronouns">ئاتىلىشى</string>
+    <string name="user_info_role">رولى</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">تور بېكەت</string>
     <string name="user_status">ھالەت</string>
@@ -713,6 +743,14 @@
     <string name="userinfo_no_info_text">ئارخىپ بېتىڭىزگە ئىسىم ، رەسىم ۋە ئالاقىلىشىش تەپسىلاتلىرىنى قوشۇڭ.</string>
     <string name="video_call">سىنلىق تېلېفون</string>
     <string name="whats_your_status">ئەھۋالىڭىز نېمە؟</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">%d مۇشۇنىڭغا ئوخشاش ئۇچۇرنى كۆر</item>
+        <item quantity="other">%d مۇشۇنىڭغا ئوخشاش ئۇچۇرلارنى كۆر</item>
+    </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="one">بۇ سۆھبەت %1$d كۈندە پائالىيىتى بولمىغان بارلىق كىشىلەر ئۈچۈن ئاپتوماتىك ئۆچۈرۈلىدۇ.</item>
+        <item quantity="other">بۇ سۆھبەت %1$d كۈندە  پائالىيىتى بولمىغان بارلىق كىشىلەر ئۈچۈن ئاپتوماتىك ئۆچۈرۈلىدۇ.</item>
+    </plurals>
     <plurals name="thread_replies">
         <item quantity="one">%d جاۋاپ</item>
         <item quantity="other">%d جاۋاپلار</item>

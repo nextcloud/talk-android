@@ -281,11 +281,12 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + "/apps/notifications/api/v2/push
      */
 
+    @FormUrlEncoded
     @POST
     Observable<PushRegistrationOverall> registerDeviceForNotificationsWithNextcloud(
         @Header("Authorization") String authorization,
         @Url String url,
-        @QueryMap Map<String, String> options);
+        @FieldMap Map<String, String> options);
 
     @DELETE
     Observable<GenericOverall> unregisterDeviceForNotificationsWithNextcloud(
@@ -323,18 +324,6 @@ public interface NcApi {
     @GET
     Observable<RoomCapabilitiesOverall> getRoomCapabilities(@Header("Authorization") String authorization,
                                                             @Url String url);
-
-    /*
-       QueryMap items are as follows:
-         - "lookIntoFuture": int (0 or 1),
-         - "limit" : int, range 100-200,
-         - "timeout": used with look into future, 30 default, 60 at most
-         - "lastKnownMessageId", int, use one from X-Chat-Last-Given
-   */
-    @GET
-    Observable<Response<ChatOverall>> pullChatMessages(@Header("Authorization") String authorization,
-                                                       @Url String url,
-                                                       @QueryMap Map<String, Integer> fields);
 
     /*
         Fieldmap items are as follows:

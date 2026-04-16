@@ -83,12 +83,15 @@
 
                     <TextView
                         android:id="@+id/call_duration"
-                        android:layout_width="60dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:minWidth="60dp"
                         android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textSize="16sp"
-                        tools:text="200:22"/>
+                        tools:text="01:20:22"/>
                 </LinearLayout>
 
                 <RelativeLayout

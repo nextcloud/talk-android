@@ -74,12 +74,6 @@ public interface AppPreferences {
 
     void removeTemporaryClientCertAlias();
 
-    boolean getPushToTalkIntroShown();
-
-    void setPushToTalkIntroShown(boolean shown);
-
-    void removePushToTalkIntroShown();
-
     String getCallRingtoneUri();
 
     void setCallRingtoneUri(String value);
@@ -121,6 +115,12 @@ public interface AppPreferences {
     void setIncognitoKeyboard(boolean value);
 
     void removeIncognitoKeyboard();
+
+    boolean getIsShowEcosystem();
+
+    void setShowEcosystem(boolean value);
+
+    void removeShowEcosystem();
 
     boolean isPhoneBookIntegrationEnabled();
 
@@ -186,6 +186,10 @@ public interface AppPreferences {
     void setConversationListPositionAndOffset(int position, int offset);
 
     Pair<Integer, Integer> getConversationListPositionAndOffset();
+
+    void setConversationListLastUserId(long userId);
+
+    long getConversationListLastUserId();
 
     void clear();
 }

@@ -18,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -31,12 +32,11 @@ import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageActionsBinding
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ReactionAddedModel
-import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
@@ -50,10 +50,6 @@ import com.vanniktech.emoji.installDisableKeyboardInput
 import com.vanniktech.emoji.installForceSingleEmoji
 import com.vanniktech.emoji.recent.RecentEmojiManager
 import com.vanniktech.emoji.search.SearchEmojiManager
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -67,6 +63,7 @@ class MessageActionsDialog(
     private val currentConversation: ConversationModel?,
     private val showMessageDeletionButton: Boolean,
     private val hasChatPermission: Boolean,
+    private val hasReactPermission: Boolean,
     private val spreedCapabilities: SpreedCapability
 ) : BottomSheetDialog(chatActivity) {
 
@@ -97,6 +94,8 @@ class MessageActionsDialog(
         .createdAt
         .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_EDIT_MESSAGE))
 
+    private val canPin = message.isOneToOneConversation ||
+        ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
     private val isUserAllowedToEdit = chatActivity.userAllowedByPrivilages(message)
     private var isNoTimeLimitOnNoteToSelf = hasSpreedFeatureCapability(
         spreedCapabilities,
@@ -112,11 +111,13 @@ class MessageActionsDialog(
             ) &&
         !isOlderThanTwentyFourHours
 
+    private val messageHasCaptions = messageHasFileAttachment && message.message != "{file}" && !message.isDeleted
+
     private var messageIsEditable = hasSpreedFeatureCapability(
         spreedCapabilities,
         SpreedFeatures.EDIT_MESSAGES
     ) &&
-        messageHasRegularText &&
+        (messageHasRegularText || messageHasCaptions) &&
         !isOlderThanTwentyFourHours &&
         isUserAllowedToEdit
 
@@ -132,7 +133,7 @@ class MessageActionsDialog(
 
         viewThemeUtils.material.colorBottomSheetBackground(dialogMessageActionsBinding.root)
         viewThemeUtils.material.colorBottomSheetDragHandle(dialogMessageActionsBinding.bottomSheetDragHandle)
-        initEmojiBar(hasChatPermission)
+        initEmojiBar(hasReactPermission)
         initMenuItemCopy(!message.isDeleted)
         initMenuItems(networkMonitor.isOnline.value)
     }
@@ -167,6 +168,12 @@ class MessageActionsDialog(
                     hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REMIND_ME_LATER) &&
                     isOnline
             )
+            initMenuPinMessage(
+                !message.isDeleted &&
+                    hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.PINNED_MESSAGES) &&
+                    isOnline &&
+                    canPin
+            )
             initMenuMarkAsUnread(
                 message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
                     ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType() &&
@@ -196,8 +203,8 @@ class MessageActionsDialog(
     private fun hasUserId(user: User?): Boolean = user?.userId?.isNotEmpty() == true && user.userId != "?"
 
     private fun hasUserActorId(message: ChatMessage): Boolean =
-        message.user.id.startsWith("users/") &&
-            message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId
+        message.actorType == "users" &&
+            message.actorId != currentConversation?.actorId
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initEmojiMore() {
@@ -252,9 +259,10 @@ class MessageActionsDialog(
         }
     }
 
-    private fun initEmojiBar(hasChatPermission: Boolean) {
+    private fun initEmojiBar(hasReactPermission: Boolean) {
         if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REACTIONS) &&
-            isPermitted(hasChatPermission) &&
+            hasReactPermission &&
+            isConversationWritable() &&
             isReactableMessageType(message)
         ) {
             val recentEmojiManager = RecentEmojiManager(context, MAX_RECENTS)
@@ -341,9 +349,8 @@ class MessageActionsDialog(
         }
     }
 
-    private fun isPermitted(hasChatPermission: Boolean): Boolean =
-        hasChatPermission &&
-            ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
+    private fun isConversationWritable(): Boolean =
+        ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
             currentConversation?.conversationReadOnlyState
 
     private fun isReactableMessageType(message: ChatMessage): Boolean =
@@ -386,6 +393,27 @@ class MessageActionsDialog(
         }
 
         dialogMessageActionsBinding.menuNotifyMessage.visibility = getVisibility(visible)
+    }
+
+    private fun initMenuPinMessage(visible: Boolean) {
+        if (visible) {
+            dialogMessageActionsBinding.menuPinMessage.setOnClickListener {
+                if (currentConversation?.lastPinnedId == message.jsonMessageId.toLong()) {
+                    chatActivity.unPinMessage(message)
+                } else {
+                    chatActivity.pinMessage(message)
+                }
+                dismiss()
+            }
+
+            if (currentConversation?.lastPinnedId == message.jsonMessageId.toLong()) {
+                dialogMessageActionsBinding.menuPinMessageText.text = context.getString(R.string.unpin_message)
+                val unpinnedDrawable = AppCompatResources.getDrawable(context, R.drawable.keep_off_24px)
+                dialogMessageActionsBinding.menuPinMessageIcon.setImageDrawable(unpinnedDrawable)
+            }
+        }
+
+        dialogMessageActionsBinding.menuPinMessage.visibility = getVisibility(visible)
     }
 
     private fun initMenuDeleteMessage(visible: Boolean) {
@@ -464,7 +492,11 @@ class MessageActionsDialog(
     private fun initMenuReplyToMessage(visible: Boolean) {
         if (visible) {
             dialogMessageActionsBinding.menuReplyToMessage.setOnClickListener {
-                chatActivity.messageInputViewModel.reply(message)
+                if (message.isThread && chatActivity.conversationThreadId == null) {
+                    chatActivity.openThread(message)
+                } else {
+                    chatActivity.messageInputViewModel.reply(message)
+                }
                 dismiss()
             }
         }
@@ -565,63 +597,41 @@ class MessageActionsDialog(
             View.GONE
         }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun clickOnEmoji(message: ChatMessage, emoji: String) {
-        if (message.reactionsSelf?.contains(emoji) == true) {
-            reactionsRepository.deleteReaction(currentConversation!!.token!!, message, emoji)
-                .subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(ReactionDeletedObserver())
-        } else {
-            reactionsRepository.addReaction(currentConversation!!.token!!, message, emoji)
-                .subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(ReactionAddedObserver())
-        }
-    }
+        val credentials = ApiUtils.getCredentials(user!!.username, user.token)
+        val url = ApiUtils.getUrlForMessageReaction(
+            baseUrl = user.baseUrl!!,
+            roomToken = currentConversation!!.token,
+            messageId = message.jsonMessageId.toString()
+        )
 
-    inner class ReactionAddedObserver : Observer<ReactionAddedModel> {
-        override fun onSubscribe(d: Disposable) {
-            // unused atm
-        }
-
-        override fun onNext(reactionAddedModel: ReactionAddedModel) {
-            if (reactionAddedModel.success) {
-                chatActivity.updateUiToAddReaction(
-                    reactionAddedModel.chatMessage,
-                    reactionAddedModel.emoji
-                )
+        chatActivity.lifecycleScope.launch {
+            try {
+                if (message.reactionsSelf?.contains(emoji) == true) {
+                    reactionsRepository.deleteReaction(
+                        credentials,
+                        user.id!!,
+                        url,
+                        currentConversation.token,
+                        message,
+                        emoji
+                    )
+                } else {
+                    reactionsRepository.addReaction(
+                        credentials,
+                        user.id!!,
+                        url,
+                        currentConversation.token,
+                        message,
+                        emoji
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "clickOnEmoji error", e)
+            } finally {
+                dismiss()
             }
-        }
-
-        override fun onError(e: Throwable) {
-            Log.e(TAG, "failure in ReactionAddedObserver", e)
-        }
-
-        override fun onComplete() {
-            dismiss()
-        }
-    }
-
-    inner class ReactionDeletedObserver : Observer<ReactionDeletedModel> {
-        override fun onSubscribe(d: Disposable) {
-            // unused atm
-        }
-
-        override fun onNext(reactionDeletedModel: ReactionDeletedModel) {
-            if (reactionDeletedModel.success) {
-                chatActivity.updateUiToDeleteReaction(
-                    reactionDeletedModel.chatMessage,
-                    reactionDeletedModel.emoji
-                )
-            }
-        }
-
-        override fun onError(e: Throwable) {
-            Log.e(TAG, "failure in ReactionDeletedObserver", e)
-        }
-
-        override fun onComplete() {
-            dismiss()
         }
     }
 

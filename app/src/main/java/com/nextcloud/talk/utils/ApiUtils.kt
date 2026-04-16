@@ -19,6 +19,7 @@ import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import okhttp3.Credentials.basic
+import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Suppress("TooManyFunctions")
@@ -245,6 +246,12 @@ object ApiUtils {
     fun getUrlForChatSharedItemsOverview(version: Int, baseUrl: String?, token: String): String =
         getUrlForChatSharedItems(version, baseUrl, token) + "/overview"
 
+    fun getUrlForChatMessagePinning(version: Int, baseUrl: String?, token: String, messageId: String): String =
+        "${getUrlForChatMessage(version, baseUrl, token, messageId)}/pin"
+
+    fun getUrlForChatMessageHiding(version: Int, baseUrl: String?, token: String, messageId: String): String =
+        "${getUrlForChatMessage(version, baseUrl, token, messageId)}/pin/self"
+
     fun getUrlForSignaling(version: Int, baseUrl: String?): String = getUrlForApi(version, baseUrl) + "/signaling"
 
     fun getUrlForTestPushNotifications(baseUrl: String): String =
@@ -327,15 +334,10 @@ object ApiUtils {
     fun getUrlPostfixForStatus(): String = "/status.php"
 
     @JvmStatic
-    fun getUrlForAvatar(baseUrl: String?, name: String?, requestBigSize: Boolean): String {
+    fun getUrlForAvatar(baseUrl: String?, name: String?, requestBigSize: Boolean, darkMode: Boolean = false): String {
         val avatarSize = if (requestBigSize) AVATAR_SIZE_BIG else AVATAR_SIZE_SMALL
-        return baseUrl + "/index.php/avatar/" + Uri.encode(name) + "/" + avatarSize
-    }
-
-    @JvmStatic
-    fun getUrlForAvatarDarkTheme(baseUrl: String?, name: String?, requestBigSize: Boolean): String {
-        val avatarSize = if (requestBigSize) AVATAR_SIZE_BIG else AVATAR_SIZE_SMALL
-        return baseUrl + "/index.php/avatar/" + Uri.encode(name) + "/" + avatarSize + "/dark"
+        val darkPath = if (darkMode) "/dark" else ""
+        return baseUrl + "/index.php/avatar/" + Uri.encode(name) + "/" + avatarSize + darkPath
     }
 
     @JvmStatic
@@ -527,6 +529,10 @@ object ApiUtils {
     fun getUrlForOutOfOffice(baseUrl: String, userId: String): String =
         "$baseUrl$OCS_API_VERSION/apps/dav/api/v1/outOfOffice/$userId/now"
 
+    fun getUrlForUpcomingEvents(baseUrl: String, roomToken: String): String =
+        "$baseUrl$OCS_API_VERSION/apps/dav/api/v1/events/upcoming" +
+            "?location=${URLEncoder.encode("$baseUrl/call/$roomToken", "UTF-8")}"
+
     fun getUrlForChatMessageContext(baseUrl: String, token: String, messageId: String): String =
         "$baseUrl$OCS_API_VERSION$SPREED_API_VERSION/chat/$token/$messageId/context"
 
@@ -543,4 +549,10 @@ object ApiUtils {
 
     fun getUrlForThreadNotificationLevel(version: Int, baseUrl: String?, token: String, threadId: Int): String =
         getUrlForChat(version, baseUrl, token) + "/threads" + "/$threadId" + "/notify"
+
+    fun getUrlForScheduledMessages(baseUrl: String?, token: String): String =
+        "$baseUrl$OCS_API_VERSION/apps/spreed/api/v1/chat/$token/schedule"
+
+    fun getUrlForScheduledMessage(baseUrl: String?, token: String, messageId: String?): String =
+        getUrlForScheduledMessages(baseUrl, token) + "/$messageId"
 }

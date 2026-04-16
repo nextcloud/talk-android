@@ -1,11 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
- * SPDX-FileCopyrightText: 2021-2023 Andy Scherzinger <info@andy-scherzinger.de>
- * SPDX-FileCopyrightText: 2021-2023 Marcel Hibbe <dev@mhibbe.de>
- * SPDX-FileCopyrightText: 2021-2022 Tim Krüger <t@timkrueger.me>
- * SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * SPDX-FileCopyrightText: 2017-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.conversationinfo
@@ -17,7 +13,6 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.activity.result.ActivityResult
@@ -29,6 +24,7 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
@@ -46,7 +42,6 @@ import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.MainActivity
-import com.nextcloud.talk.adapters.items.ParticipantItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.bottomsheet.items.BasicListItemWithImage
@@ -54,6 +49,7 @@ import com.nextcloud.talk.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.CompanionClass.Companion.KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS
 import com.nextcloud.talk.contacts.ContactsActivity
+import com.nextcloud.talk.conversationinfo.model.ParticipantModel
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
 import com.nextcloud.talk.data.user.model.User
@@ -61,6 +57,7 @@ import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
 import com.nextcloud.talk.databinding.DialogBanParticipantBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
+import com.nextcloud.talk.extensions.getParcelableExtraProvider
 import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.extensions.loadNoteToSelfAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
@@ -80,6 +77,8 @@ import com.nextcloud.talk.models.json.participants.Participant.ActorType.CIRCLES
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
+import com.nextcloud.talk.models.json.profile.Profile
+import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEvent
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
@@ -95,8 +94,6 @@ import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
-import eu.davidea.flexibleadapter.FlexibleAdapter
-import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -105,19 +102,17 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.time.Instant
+import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Calendar
-import java.util.Collections
 import java.util.Locale
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ConversationInfoActivity :
-    BaseActivity(),
-    FlexibleAdapter.OnItemClickListener {
+class ConversationInfoActivity : BaseActivity() {
     private lateinit var binding: ActivityConversationInfoBinding
 
     @Inject
@@ -145,8 +140,7 @@ class ConversationInfoActivity :
     private var databaseStorageModule: DatabaseStorageModule? = null
     private var conversation: ConversationModel? = null
 
-    private var adapter: FlexibleAdapter<ParticipantItem>? = null
-    private var userItems: MutableList<ParticipantItem> = ArrayList()
+    private var participantAdapter: ParticipantItemAdapter? = null
 
     private var startGroupChat: Boolean = false
 
@@ -174,7 +168,7 @@ class ConversationInfoActivity :
             if (startGroupChat) {
                 viewModel.createRoomFromOneToOne(
                     conversationUser,
-                    userItems.map { it.model },
+                    participantAdapter?.currentList?.map { it.participant } ?: emptyList(),
                     selectedAutocompleteUsers,
                     conversationToken
                 )
@@ -184,23 +178,60 @@ class ConversationInfoActivity :
         }
     }
 
+    private val editConversationResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            viewModel.getRoom(conversationUser, conversationToken)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         binding = ActivityConversationInfoBinding.inflate(layoutInflater)
-        setupActionBar()
         setContentView(binding.root)
+
+        setupActionBar()
         initSystemBars()
 
-        viewModel =
-            ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
+        conversationToken = requireNotNull(
+            intent.getStringExtra(KEY_ROOM_TOKEN)
+        ) { "Missing room token" }
 
-        conversationUser = currentUserProvider.currentUser.blockingGet()
-
-        conversationToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         hasAvatarSpacing = intent.getBooleanExtra(BundleKeys.KEY_ROOM_ONE_TO_ONE, false)
-        credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)!!
+
+        val upcomingEvent = intent.getParcelableExtraProvider<UpcomingEvent>(BundleKeys.KEY_UPCOMING_EVENT)
+        if (upcomingEvent != null && (upcomingEvent.summary != null || upcomingEvent.start != null)) {
+            binding.upcomingEventCard.visibility = VISIBLE
+            viewThemeUtils.material.themeCardView(binding.upcomingEventCard)
+            binding.upcomingEventContainer.upcomingEventSummary.text = upcomingEvent.summary
+            upcomingEvent.start?.let { start ->
+                val startDateTime = Instant.ofEpochSecond(start).atZone(ZoneId.systemDefault())
+                val currentTime = ZonedDateTime.now(ZoneId.systemDefault())
+                binding.upcomingEventContainer.upcomingEventTime.text =
+                    DateUtils(this).getStringForMeetingStartDateTime(startDateTime, currentTime)
+            }
+        }
+
+        viewModel = ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
+
+        lifecycleScope.launch {
+            currentUserProvider.getCurrentUser()
+                .onSuccess { user ->
+                    conversationUser = user
+                    credentials = ApiUtils.getCredentials(user.username, user.token)!!
+                    databaseStorageModule = DatabaseStorageModule(user, conversationToken)
+                    viewModel.getRoom(user, conversationToken)
+                    initObservers()
+                }
+                .onFailure {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    Log.e(TAG, "Failed to get current user")
+                    finish()
+                }
+        }
     }
 
     override fun onStart() {
@@ -216,10 +247,6 @@ class ConversationInfoActivity :
     override fun onResume() {
         super.onResume()
 
-        if (databaseStorageModule == null) {
-            databaseStorageModule = DatabaseStorageModule(conversationUser, conversationToken)
-        }
-
         binding.deleteConversationAction.setOnClickListener { showDeleteConversationDialog() }
         binding.leaveConversationAction.setOnClickListener { leaveConversation() }
         binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog() }
@@ -233,15 +260,12 @@ class ConversationInfoActivity :
         }
         binding.listBansButton.setOnClickListener { listBans() }
 
-        viewModel.getRoom(conversationUser, conversationToken)
-
         themeTextViews()
         themeSwitchPreferences()
 
         binding.addParticipantsAction.visibility = GONE
 
         binding.progressBar.let { viewThemeUtils.platform.colorCircularProgressBar(it, ColorRole.PRIMARY) }
-        initObservers()
     }
 
     private fun initObservers() {
@@ -428,34 +452,10 @@ class ConversationInfoActivity :
     private fun initViewStateObserver() {
         viewModel.viewState.observe(this) { state ->
             when (state) {
-                is ConversationInfoViewModel.GetRoomSuccessState -> {
-                    conversation = state.conversationModel
-                    viewModel.getCapabilities(conversationUser, conversationToken, conversation!!)
-                    if (ConversationUtils.isNoteToSelfConversation(conversation)) {
-                        binding.shareConversationButton.visibility = GONE
-                    }
-                    val canGeneratePrettyURL = CapabilitiesUtil.canGeneratePrettyURL(conversationUser)
-                    binding.shareConversationButton.setOnClickListener {
-                        ShareUtils.shareConversationLink(
-                            this,
-                            conversationUser.baseUrl,
-                            conversation?.token,
-                            conversation?.name,
-                            canGeneratePrettyURL
-                        )
-                    }
-
-                    conversation?.let {
-                        if (it.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-                            viewModel.getProfileData(conversationUser, it.name)
-                        }
-                    }
-                }
-
+                is ConversationInfoViewModel.GetRoomSuccessState -> handleRoomSuccess(state)
                 is ConversationInfoViewModel.GetRoomErrorState -> {
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
-
                 else -> {}
             }
         }
@@ -464,52 +464,63 @@ class ConversationInfoActivity :
             when (state) {
                 is ConversationInfoViewModel.GetProfileSuccessState -> {
                     try {
-                        // Pronouns
-                        val profile = state.profile
-                        val pronouns = profile.pronouns ?: ""
-                        binding.pronouns.text = pronouns
-
-                        // Role @ Organization
-                        val concat1 = if (profile.role != null && profile.company != null) " @ " else ""
-                        val role = profile.role ?: ""
-                        val company = profile.company ?: ""
-                        val professionCompanyText = "$role$concat1$company"
-                        binding.professionCompany.text = professionCompanyText
-
-                        // Local Time: xX:xX · Address
-                        val profileZoneOffset = ZoneOffset.ofTotalSeconds(0)
-                        val secondsToAdd = profile.timezoneOffset?.toLong() ?: 0
-                        val localTime = ZonedDateTime.ofInstant(
-                            Instant.now().plusSeconds(secondsToAdd),
-                            profileZoneOffset
-                        )
-                        val localTimeString = localTime.format(
-                            DateTimeFormatter
-                                .ofLocalizedTime(FormatStyle.SHORT)
-                                .withLocale(Locale.getDefault())
-                        )
-                        val concat2 = if (profile.address != null) " · " else ""
-                        val address = profile.address ?: ""
-                        val localTimeLocation = "$localTimeString$concat2$address"
-                        binding.locationTime.text = resources.getString(R.string.local_time, localTimeLocation)
-
-                        binding.pronouns.visibility = VISIBLE
-                        binding.professionCompany.visibility = if (professionCompanyText.isNotEmpty()) VISIBLE else GONE
-                        binding.locationTime.visibility = VISIBLE
+                        handleProfileSuccess(state.profile)
                     } catch (e: Exception) {
                         Log.e(TAG, "Exception getting profile information", e)
                         Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     }
                 }
-
                 is ConversationInfoViewModel.GetProfileErrorState -> {
                     Log.e(TAG, "Network error occurred getting profile information")
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
-
                 else -> {}
             }
         }
+    }
+
+    private fun handleRoomSuccess(state: ConversationInfoViewModel.GetRoomSuccessState) {
+        conversation = state.conversationModel
+        viewModel.getCapabilities(conversationUser, conversationToken, conversation!!)
+        if (ConversationUtils.isNoteToSelfConversation(conversation)) {
+            binding.shareConversationButton.visibility = GONE
+        }
+        val canGeneratePrettyURL = CapabilitiesUtil.canGeneratePrettyURL(conversationUser)
+        binding.shareConversationButton.setOnClickListener {
+            ShareUtils.shareConversationLink(
+                this,
+                conversationUser.baseUrl,
+                conversation?.token,
+                conversation?.name,
+                canGeneratePrettyURL
+            )
+        }
+        conversation?.let {
+            if (it.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+                viewModel.getProfileData(conversationUser, it.name)
+            }
+        }
+    }
+
+    private fun handleProfileSuccess(profile: Profile) {
+        val pronouns = profile.pronouns ?: ""
+        binding.pronouns.text = pronouns
+
+        val concat1 = if (profile.role != null && profile.company != null) " @ " else ""
+        val professionCompanyText = "${profile.role ?: ""}$concat1${profile.company ?: ""}"
+        binding.professionCompany.text = professionCompanyText
+
+        val secondsToAdd = profile.timezoneOffset?.toLong() ?: 0
+        val localTime = ZonedDateTime.ofInstant(Instant.now().plusSeconds(secondsToAdd), ZoneOffset.ofTotalSeconds(0))
+        val localTimeString =
+            localTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.getDefault()))
+        val concat2 = if (profile.address != null) " · " else ""
+        val localTimeLocation = "$localTimeString$concat2${profile.address ?: ""}"
+        binding.locationTime.text = resources.getString(R.string.local_time, localTimeLocation)
+
+        binding.pronouns.visibility = VISIBLE
+        binding.professionCompany.visibility = if (professionCompanyText.isNotEmpty()) VISIBLE else GONE
+        binding.locationTime.visibility = VISIBLE
     }
 
     private fun setupActionBar() {
@@ -555,7 +566,7 @@ class ConversationInfoActivity :
 
             val intent = Intent(this, ConversationInfoEditActivity::class.java)
             intent.putExtras(bundle)
-            startActivity(intent)
+            editConversationResult.launch(intent)
         }
         return true
     }
@@ -591,13 +602,15 @@ class ConversationInfoActivity :
 
     private fun showSharedItems() {
         val intent = Intent(this, SharedItemsActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(BundleKeys.KEY_CONVERSATION_NAME, conversation?.displayName)
         intent.putExtra(KEY_ROOM_TOKEN, conversationToken)
         intent.putExtra(
             SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR,
             ConversationUtils.isParticipantOwnerOrModerator(conversation!!)
+        )
+        intent.putExtra(
+            SharedItemsActivity.KEY_IS_ONE_2_ONE,
+            conversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         )
         startActivity(intent)
     }
@@ -788,55 +801,67 @@ class ConversationInfoActivity :
     }
 
     private fun setupAdapter() {
-        if (adapter == null) {
-            adapter = FlexibleAdapter(userItems, this, true)
+        if (participantAdapter == null) {
+            participantAdapter = ParticipantItemAdapter(
+                this,
+                conversationUser,
+                viewThemeUtils,
+                conversation!!
+            ) { uiModel ->
+                handleParticipantClick(uiModel.participant)
+            }
         }
-
-        val layoutManager = SmoothScrollLinearLayoutManager(this)
-        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.setHasFixedSize(false)
-        binding.recyclerView.adapter = adapter
+        binding.recyclerView.adapter = participantAdapter
         binding.recyclerView.isNestedScrollingEnabled = false
-        adapter!!.addListener(this)
     }
 
     private fun handleParticipants(participants: List<Participant>) {
-        var userItem: ParticipantItem
-        var participant: Participant
+        val uiItems: MutableList<ParticipantModel> = ArrayList()
+        var ownUiItem: ParticipantModel? = null
 
-        userItems = ArrayList()
-        var ownUserItem: ParticipantItem? = null
-
-        for (i in participants.indices) {
-            participant = participants[i]
-            userItem = ParticipantItem(this, participant, conversationUser, viewThemeUtils, conversation!!)
-            if (participant.sessionId != null) {
-                userItem.isOnline = !participant.sessionId.equals("0")
+        for (participant in participants) {
+            val isOnline = if (participant.sessionId != null) {
+                !participant.sessionId.equals("0")
             } else {
-                userItem.isOnline = participant.sessionIds.isNotEmpty()
+                participant.sessionIds.isNotEmpty()
             }
 
             if (participant.calculatedActorType == USERS &&
                 participant.calculatedActorId == conversationUser.userId
             ) {
-                ownUserItem = userItem
-                ownUserItem.model.sessionId = "-1"
-                ownUserItem.isOnline = true
+                participant.sessionId = "-1"
+                ownUiItem = ParticipantModel(participant, true)
             } else {
-                userItems.add(userItem)
+                uiItems.add(ParticipantModel(participant, isOnline))
             }
         }
 
-        Collections.sort(userItems, ParticipantItemComparator())
+        // sort by group/circle, online-status, moderator-status and display name
+        uiItems.sortWith(
+            compareBy(
+                { it.participant.actorType == GROUPS || it.participant.actorType == CIRCLES },
+                { !it.isOnline },
+                {
+                    it.participant.type !in listOf(
+                        Participant.ParticipantType.MODERATOR,
+                        Participant.ParticipantType.OWNER,
+                        Participant.ParticipantType.GUEST_MODERATOR
+                    )
+                },
+                { it.participant.displayName!!.lowercase(Locale.ROOT) }
+            )
+        )
 
-        if (ownUserItem != null) {
-            userItems.add(0, ownUserItem)
+        if (ownUiItem != null) {
+            uiItems.add(0, ownUiItem)
         }
 
         setupAdapter()
 
         binding.participants.visibility = VISIBLE
-        adapter!!.updateDataSet(userItems)
+        participantAdapter!!.submitList(uiItems)
     }
 
     private fun getListOfParticipants() {
@@ -899,11 +924,11 @@ class ConversationInfoActivity :
     private fun selectParticipantsToAdd() {
         val bundle = Bundle()
         val existingParticipants = ArrayList<AutocompleteUser>()
-        for (userItem in userItems) {
+        for (uiModel in participantAdapter?.currentList ?: emptyList()) {
             val user = AutocompleteUser(
-                userItem.model.calculatedActorId!!,
-                userItem.model.displayName,
-                userItem.model.calculatedActorType.name.lowercase()
+                uiModel.participant.calculatedActorId!!,
+                uiModel.participant.displayName,
+                uiModel.participant.calculatedActorType.name.lowercase()
             )
             existingParticipants.add(user)
         }
@@ -1048,7 +1073,12 @@ class ConversationInfoActivity :
 
     private fun clearHistory() {
         val apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
-        viewModel.clearChatHistory(apiVersion, conversationToken)
+        val url = ApiUtils.getUrlForChat(apiVersion, conversationUser.baseUrl!!, conversationToken)
+
+        viewModel.clearChatHistory(
+            conversationUser,
+            url
+        )
     }
 
     private fun deleteConversation() {
@@ -1145,7 +1175,7 @@ class ConversationInfoActivity :
                 } else {
                     viewModel.archiveConversation(conversationUser, conversationToken)
                     binding.archiveConversationIcon
-                        .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_eye, null))
+                        .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_unarchive_24px, null))
                     binding.archiveConversationText.text = resources.getString(R.string.unarchive_conversation)
                     binding.archiveConversationTextHint.text = resources.getString(R.string.unarchive_hint)
                 }
@@ -1155,7 +1185,7 @@ class ConversationInfoActivity :
 
         if (conversation!!.hasArchived) {
             binding.archiveConversationIcon
-                .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_eye, null))
+                .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_unarchive_24px, null))
             binding.archiveConversationText.text = resources.getString(R.string.unarchive_conversation)
             binding.archiveConversationTextHint.text = resources.getString(R.string.unarchive_hint)
         } else {
@@ -1281,7 +1311,11 @@ class ConversationInfoActivity :
     }
 
     private fun makeConversationReadOnly(roomToken: String, state: Int) {
-        viewModel.setConversationReadOnly(roomToken, state)
+        viewModel.setConversationReadOnly(
+            conversationUser,
+            roomToken,
+            state
+        )
     }
 
     private fun initRecordingConsentOption() {
@@ -1697,13 +1731,11 @@ class ConversationInfoActivity :
     }
 
     @SuppressLint("CheckResult", "StringFormatInvalid")
-    override fun onItemClick(view: View?, position: Int): Boolean {
+    private fun handleParticipantClick(participant: Participant) {
         if (!ConversationUtils.canModerate(conversation!!, spreedCapabilities)) {
-            return true
+            return
         }
 
-        val userItem = adapter?.getItem(position) as ParticipantItem
-        val participant = userItem.model
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
 
         if (participant.calculatedActorType == USERS && participant.calculatedActorId == conversationUser.userId) {
@@ -1732,7 +1764,6 @@ class ConversationInfoActivity :
         } else {
             launchDefaultActions(participant, apiVersion)
         }
-        return true
     }
 
     @SuppressLint("CheckResult")
@@ -1910,44 +1941,5 @@ class ConversationInfoActivity :
         private const val DEMOTE_OR_PROMOTE = 1
         private const val REMOVE_FROM_CONVERSATION = 2
         private const val BAN_FROM_CONVERSATION = 3
-    }
-
-    /**
-     * Comparator for participants, sorts by online-status, moderator-status and display name.
-     */
-    class ParticipantItemComparator : Comparator<ParticipantItem> {
-        override fun compare(left: ParticipantItem, right: ParticipantItem): Int {
-            val leftIsGroup = left.model.actorType == GROUPS || left.model.actorType == CIRCLES
-            val rightIsGroup = right.model.actorType == GROUPS || right.model.actorType == CIRCLES
-            if (leftIsGroup != rightIsGroup) {
-                // Groups below participants
-                return if (rightIsGroup) {
-                    -1
-                } else {
-                    1
-                }
-            }
-
-            if (left.isOnline && !right.isOnline) {
-                return -1
-            } else if (!left.isOnline && right.isOnline) {
-                return 1
-            }
-
-            val moderatorTypes = ArrayList<Participant.ParticipantType>()
-            moderatorTypes.add(Participant.ParticipantType.MODERATOR)
-            moderatorTypes.add(Participant.ParticipantType.OWNER)
-            moderatorTypes.add(Participant.ParticipantType.GUEST_MODERATOR)
-
-            if (moderatorTypes.contains(left.model.type) && !moderatorTypes.contains(right.model.type)) {
-                return -1
-            } else if (!moderatorTypes.contains(left.model.type) && moderatorTypes.contains(right.model.type)) {
-                return 1
-            }
-
-            return left.model.displayName!!.lowercase(Locale.ROOT).compareTo(
-                right.model.displayName!!.lowercase(Locale.ROOT)
-            )
-        }
     }
 }

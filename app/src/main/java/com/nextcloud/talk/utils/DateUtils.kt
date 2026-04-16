@@ -13,6 +13,9 @@ import android.icu.text.RelativeDateTimeFormatter.Direction
 import android.icu.text.RelativeDateTimeFormatter.RelativeUnit
 import com.nextcloud.talk.R
 import java.text.DateFormat
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Calendar
 import java.util.Date
 import kotlin.math.abs
@@ -60,6 +63,30 @@ class DateUtils(val context: Context) {
     fun getTimeDifferenceInSeconds(time2: Long, time1: Long): Long {
         val difference = (time2 - time1)
         return abs(difference)
+    }
+
+    fun getStringForMeetingStartDateTime(startDateTime: ZonedDateTime, currentTime: ZonedDateTime): String {
+        val isToday = startDateTime.toLocalDate().isEqual(currentTime.toLocalDate())
+        val isTomorrow = startDateTime.toLocalDate().isEqual(currentTime.toLocalDate().plusDays(1))
+        val timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+        return when {
+            isToday -> String.format(
+                context.resources.getString(R.string.nc_today_meeting),
+                startDateTime.format(timeFormatter)
+            )
+
+            isTomorrow -> String.format(
+                context.resources.getString(R.string.nc_tomorrow_meeting),
+                startDateTime.format(timeFormatter)
+            )
+
+            else -> startDateTime.format(
+                DateTimeFormatter.ofLocalizedDateTime(
+                    FormatStyle.MEDIUM,
+                    FormatStyle.SHORT
+                )
+            )
+        }
     }
 
     fun relativeStartTimeForLobby(timestampMilliseconds: Long, resources: Resources): String {

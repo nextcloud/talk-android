@@ -11,6 +11,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import kotlinx.coroutines.flow.Flow
@@ -18,16 +19,37 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 @Suppress("Detekt.TooManyFunctions")
 interface ChatMessagesDao {
+
+    /*
+     * Do not filter with "isTemporary = 0" to make sure temporary messages are also shown
+     */
+    @Query(
+        """
+    SELECT *
+    FROM ChatMessages
+    WHERE internalConversationId = :internalConversationId
+      AND (:threadId IS NULL OR threadId = :threadId)
+      AND id >= :oldestMessageId
+    ORDER BY timestamp ASC, id ASC
+    """
+    )
+    fun getMessagesEqualOrNewerThan(
+        internalConversationId: String,
+        threadId: Long?,
+        oldestMessageId: Long
+    ): Flow<List<ChatMessageEntity>>
+
     @Query(
         """
         SELECT *
         FROM ChatMessages
         WHERE internalConversationId = :internalConversationId
         AND isTemporary = 0
+        AND (:threadId IS NULL OR threadId = :threadId)
         ORDER BY timestamp DESC, id DESC
         """
     )
-    fun getMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>>
+    fun getMessagesForConversation(internalConversationId: String, threadId: Long?): Flow<List<ChatMessageEntity>>
 
     @Query(
         """
@@ -76,9 +98,21 @@ interface ChatMessagesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatMessages(chatMessages: List<ChatMessageEntity>)
 
+    @Transaction
+    suspend fun upsertChatMessagesAndDeleteTemp(internalConversationId: String, chatMessages: List<ChatMessageEntity>) {
+        upsertChatMessages(chatMessages)
+
+        val referenceIds = chatMessages
+            .mapNotNull { it.referenceId }
+            .ifEmpty { return }
+
+        deleteTempChatMessages(internalConversationId, referenceIds)
+    }
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatMessage(chatMessage: ChatMessageEntity)
 
+    @Deprecated("use getChatMessageEntity")
     @Query(
         """
         SELECT * 
@@ -89,13 +123,49 @@ interface ChatMessagesDao {
     )
     fun getChatMessageForConversation(internalConversationId: String, messageId: Long): Flow<ChatMessageEntity>
 
+    @Deprecated("use getChatMessageEntity")
     @Query(
-        value = """
-            DELETE FROM ChatMessages
-            WHERE internalId in (:internalIds)
+        """
+    SELECT *
+    FROM ChatMessages
+    WHERE internalConversationId = :internalConversationId
+    AND id = :messageId
+    """
+    )
+    suspend fun getChatMessageOnce(internalConversationId: String, messageId: Long): ChatMessageEntity?
+
+    @Deprecated("use getChatMessageEntity")
+    @Query(
+        """
+        SELECT * 
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId 
+        AND id = :messageId
         """
     )
-    fun deleteChatMessages(internalIds: List<String>)
+    fun getChatMessageForConversationNullable(internalConversationId: String, messageId: Long): Flow<ChatMessageEntity?>
+
+    @Query(
+        """
+        SELECT * 
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId 
+        AND id = :messageId
+        LIMIT 1
+        """
+    )
+    suspend fun getChatMessageEntity(internalConversationId: String, messageId: Long): ChatMessageEntity?
+
+    @Query(
+        """
+        SELECT * 
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND id = :messageId
+        LIMIT 1
+        """
+    )
+    fun observeMessage(internalConversationId: String, messageId: Long): Flow<ChatMessageEntity?>
 
     @Query(
         value = """

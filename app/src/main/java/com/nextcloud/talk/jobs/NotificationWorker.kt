@@ -15,6 +15,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -38,9 +39,13 @@ import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
+import coil.executeBlocking
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -57,12 +62,14 @@ import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage
 import com.nextcloud.talk.models.json.push.NotificationUser
+import com.nextcloud.talk.receivers.DeclineCallReceiver
 import com.nextcloud.talk.receivers.DirectReplyReceiver
 import com.nextcloud.talk.receivers.DismissRecordingAvailableReceiver
 import com.nextcloud.talk.receivers.MarkAsReadReceiver
 import com.nextcloud.talk.receivers.ShareRecordingToChatReceiver
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.cancelAllNotificationsForAccount
@@ -80,17 +87,16 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MESSAGE_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_RESTRICT_DELETION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_TIMESTAMP
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPENED_VIA_NOTIFICATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_REMOTE_TALK_SHARE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARE_RECORDING_TO_CHAT_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPENED_VIA_NOTIFICATION
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observable
 import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.JavaNetCookieJar
@@ -137,6 +143,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private var context: Context? = null
     private var conversationType: String? = "one2one"
     private lateinit var notificationManager: NotificationManagerCompat
+    private var imagePreviewUrl: String? = null
+    private var imageMimeType: String? = null
 
     override fun doWork(): Result {
         sharedApplication!!.componentApplication.inject(this)
@@ -261,10 +269,64 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 }
             )
 
+            val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            } else {
+                PendingIntent.FLAG_UPDATE_CURRENT
+            }
+
+            val answerVoiceBundle = Bundle(bundle).apply { putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true) }
+            val answerVoicePendingIntent = PendingIntent.getActivity(
+                applicationContext,
+                requestCode + ANSWER_VOICE_REQUEST_OFFSET,
+                Intent(applicationContext, CallActivity::class.java).apply {
+                    putExtras(answerVoiceBundle)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                },
+                pendingIntentFlags
+            )
+
+            val answerVideoBundle = Bundle(bundle).apply { putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false) }
+            val answerVideoPendingIntent = PendingIntent.getActivity(
+                applicationContext,
+                requestCode + ANSWER_VIDEO_REQUEST_OFFSET,
+                Intent(applicationContext, CallActivity::class.java).apply {
+                    putExtras(answerVideoBundle)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                },
+                pendingIntentFlags
+            )
+
+            val declinePendingIntent = PendingIntent.getBroadcast(
+                applicationContext,
+                requestCode + DECLINE_CALL_REQUEST_OFFSET,
+                Intent(applicationContext, DeclineCallReceiver::class.java).apply {
+                    putExtra(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
+                },
+                pendingIntentFlags
+            )
+
             val soundUri = getCallRingtoneUri(applicationContext, appPreferences)
             val notificationChannelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
             val uri = signatureVerification.user!!.baseUrl!!.toUri()
             val baseUrl = uri.host
+
+            val callerPersonBuilder = Person.Builder()
+                .setName(conversation.displayName)
+                .setImportant(true)
+            if (conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+                val avatarUrl = ApiUtils.getUrlForAvatar(
+                    signatureVerification.user!!.baseUrl!!,
+                    conversation.name,
+                    false,
+                    darkMode = DisplayUtils.isDarkModeOn(applicationContext)
+                )
+                loadAvatarSync(avatarUrl, applicationContext)?.let { callerPersonBuilder.setIcon(it) }
+            }
+            val callerPerson = callerPersonBuilder.build()
+
+            val isVideoCall = (conversation.callFlag and Participant.InCallFlags.WITH_VIDEO) > 0
+            val primaryAnswerIntent = if (isVideoCall) answerVideoPendingIntent else answerVoicePendingIntent
 
             val notification =
                 NotificationCompat.Builder(applicationContext, notificationChannelId)
@@ -282,6 +344,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     .setContentIntent(fullScreenPendingIntent)
                     .setFullScreenIntent(fullScreenPendingIntent, true)
                     .setSound(soundUri)
+                    .setStyle(
+                        NotificationCompat.CallStyle
+                            .forIncomingCall(callerPerson, declinePendingIntent, primaryAnswerIntent)
+                            .setIsVideo(isVideoCall)
+                    )
                     .build()
             notification.flags = notification.flags or Notification.FLAG_INSISTENT
 
@@ -292,7 +359,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         chatNetworkDataSource?.getRoom(userBeingCalled, roomToken = pushMessage.id!!)
             ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.observeOn(Schedulers.io())
             ?.subscribe(object : Observer<ConversationModel> {
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
@@ -477,6 +544,36 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         } else {
             pushMessage.subject = ncNotification.subject.orEmpty()
         }
+
+        checkAndExtractImagePreviewData(ncNotification)
+    }
+
+    private fun checkAndExtractImagePreviewData(
+        notification: com.nextcloud.talk.models.json.notifications.Notification
+    ) {
+        imagePreviewUrl = null
+        imageMimeType = null
+        val msgParams = notification.messageRichParameters
+        if (msgParams != null) {
+            for ((_, param) in msgParams) {
+                if (extractImagePreviewData(param)) break
+            }
+        }
+    }
+
+    private fun extractImagePreviewData(param: HashMap<String?, String?>): Boolean {
+        if (param["type"] == "file") {
+            val mimetype = param["mimetype"].orEmpty()
+            val fileId = param["id"]
+            if (mimetype.startsWith("image/") && fileId != null) {
+                val baseUrl = signatureVerification.user!!.baseUrl!!
+                val px = context!!.resources.displayMetrics.widthPixels
+                imagePreviewUrl = ApiUtils.getUrlForFilePreviewWithFileId(baseUrl, fileId, px)
+                imageMimeType = mimetype
+                return true
+            }
+        }
+        return false
     }
 
     @Suppress("MagicNumber")
@@ -539,7 +636,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         if (TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) {
             notificationBuilder.setOnlyAlertOnce(false)
             if (pushMessage.notificationUser != null) {
-                styleChatNotification(notificationBuilder, activeStatusBarNotification)
+                if (imagePreviewUrl != null) {
+                    styleImageNotification(notificationBuilder)
+                } else {
+                    styleChatNotification(notificationBuilder, activeStatusBarNotification)
+                }
                 addReplyAction(notificationBuilder, systemNotificationId)
                 addMarkAsReadAction(notificationBuilder, systemNotificationId)
             }
@@ -643,6 +744,34 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return crc32.value
     }
 
+    private fun styleImageNotification(notificationBuilder: NotificationCompat.Builder) {
+        val bitmap = loadImageBitmapSync(imagePreviewUrl!!)
+        if (bitmap != null) {
+            notificationBuilder
+                .setLargeIcon(bitmap)
+                .setStyle(
+                    NotificationCompat.BigPictureStyle()
+                        .bigPicture(bitmap)
+                        .bigLargeIcon(null as Bitmap?)
+                )
+        }
+    }
+
+    private fun loadImageBitmapSync(imageUrl: String): Bitmap? {
+        var bitmap: Bitmap? = null
+        val request = ImageRequest.Builder(context!!)
+            .data(imageUrl)
+            .allowHardware(false)
+            .addHeader("Authorization", credentials)
+            .target(
+                onSuccess = { result -> bitmap = (result as BitmapDrawable).bitmap },
+                onError = { Log.w(TAG, "Failed to load notification image: $imageUrl") }
+            )
+            .build()
+        context!!.imageLoader.executeBlocking(request)
+        return bitmap
+    }
+
     private fun styleChatNotification(
         notificationBuilder: NotificationCompat.Builder,
         activeStatusBarNotification: StatusBarNotification?
@@ -667,7 +796,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 ApiUtils.getUrlForAvatar(
                     baseUrl!!,
                     notificationUser.id,
-                    false
+                    false,
+                    darkMode = DisplayUtils.isDarkModeOn(context!!)
                 )
             } else {
                 ApiUtils.getUrlForGuestAvatar(baseUrl!!, notificationUser.name, false)
@@ -710,7 +840,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 messageId
             )
             val markAsReadAction = NotificationCompat.Action.Builder(
-                R.drawable.ic_eye,
+                R.drawable.ic_mark_chat_read_24px,
                 context!!.resources.getString(R.string.nc_mark_as_read),
                 pendingIntent
             )
@@ -1037,5 +1167,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         private const val TIMER_COUNT = 12
         private const val TIMER_DELAY: Long = 5
         private const val LINEBREAK: String = "\n"
+        private const val ANSWER_VOICE_REQUEST_OFFSET = 1
+        private const val ANSWER_VIDEO_REQUEST_OFFSET = 2
+        private const val DECLINE_CALL_REQUEST_OFFSET = 3
     }
 }

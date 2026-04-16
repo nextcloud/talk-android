@@ -23,6 +23,7 @@ import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedLocationItem
 import com.nextcloud.talk.shareditems.model.SharedOtherItem
+import com.nextcloud.talk.shareditems.model.SharedPinnedItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 
@@ -125,6 +126,33 @@ class SharedItemsListViewHolder(
             val browserIntent = Intent(Intent.ACTION_VIEW, item.link)
             browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             it.context.startActivity(browserIntent)
+        }
+    }
+
+    override fun onBind(
+        item: SharedPinnedItem,
+        openMessage: (item: SharedItem, context: Context) -> Unit,
+        unpinMessage: (item: SharedItem, context: Context) -> Unit
+    ) {
+        super.onBind(item, openMessage, unpinMessage)
+        binding.fileName.text = item.name // actually the message of the chat item
+        binding.fileSize.visibility = View.GONE
+        binding.separator1.visibility = View.GONE
+        binding.fileDate.text = item.dateTime
+        binding.actor.text = item.actorName
+
+        image.load(R.drawable.keep_off_24px)
+        image.setColorFilter(
+            ContextCompat.getColor(image.context, R.color.high_emphasis_menu_icon),
+            android.graphics.PorterDuff.Mode.SRC_IN
+        )
+
+        image.setOnClickListener {
+            unpinMessage(item, it.context)
+        }
+
+        clickTarget.setOnClickListener {
+            openMessage(item, it.context)
         }
     }
 }

@@ -98,7 +98,12 @@ data class ConversationEntity(
     @ColumnInfo(name = "hasArchived") var hasArchived: Boolean = false,
     @ColumnInfo(name = "hasSensitive") var hasSensitive: Boolean = false,
     @ColumnInfo(name = "hasImportant") var hasImportant: Boolean = false,
-    @ColumnInfo(name = "messageDraft") var messageDraft: MessageDraft? = MessageDraft()
+    @ColumnInfo(name = "hiddenPinnedId") var hiddenPinnedId: Long? = null,
+    @ColumnInfo(name = "lastPinnedId") var lastPinnedId: Long? = null,
+    // local-only field
+    @ColumnInfo(name = "messageDraft") var messageDraft: MessageDraft? = MessageDraft(),
+    // local-only field
+    @ColumnInfo(name = "hiddenUpcomingEvent") var hiddenUpcomingEvent: String? = null
     // missing/not needed: attendeeId
     // missing/not needed: attendeePin
     // missing/not needed: attendeePermissions

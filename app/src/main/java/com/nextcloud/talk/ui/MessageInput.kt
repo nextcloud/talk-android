@@ -8,7 +8,9 @@ package com.nextcloud.talk.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.widget.Chronometer
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.SeekBar
@@ -16,9 +18,8 @@ import android.widget.TextView
 import androidx.emoji2.widget.EmojiEditText
 import com.google.android.material.button.MaterialButton
 import com.nextcloud.talk.R
-import com.stfalcon.chatkit.messages.MessageInput
 
-class MessageInput : MessageInput {
+class MessageInput : FrameLayout {
     lateinit var audioRecordDuration: Chronometer
     lateinit var recordAudioButton: ImageButton
     lateinit var submitThreadButton: ImageButton
@@ -32,20 +33,34 @@ class MessageInput : MessageInput {
     lateinit var playPauseBtn: MaterialButton
     lateinit var editMessageButton: ImageButton
     lateinit var seekBar: SeekBar
+    lateinit var scheduledMessagesButton: ImageButton
 
-    constructor(context: Context?) : super(context) {
+    lateinit var inputEditText: EmojiEditText
+    lateinit var attachmentButton: ImageButton
+    lateinit var messageSendButton: ImageButton
+    val messageInput: EmojiEditText
+        get() = inputEditText
+    val button: ImageButton
+        get() = messageSendButton
+
+    constructor(context: Context) : super(context) {
         init()
     }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init()
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init()
     }
 
     private fun init() {
+        LayoutInflater.from(context).inflate(R.layout.view_message_input, this, true)
+
+        inputEditText = findViewById(R.id.messageInput)
+        attachmentButton = findViewById(R.id.attachmentButton)
+        messageSendButton = findViewById(R.id.messageSendButton)
         audioRecordDuration = findViewById(R.id.audioRecordDuration)
         recordAudioButton = findViewById(R.id.recordAudioButton)
         submitThreadButton = findViewById(R.id.submitThreadButton)
@@ -59,23 +74,12 @@ class MessageInput : MessageInput {
         playPauseBtn = findViewById(R.id.playPauseBtn)
         seekBar = findViewById(R.id.seekbar)
         editMessageButton = findViewById(R.id.editMessageButton)
+        scheduledMessagesButton = findViewById(R.id.scheduledMessagesButton)
     }
 
-    var messageInput: EmojiEditText
-        get() = super.messageInput
-        set(messageInput) {
-            super.messageInput = messageInput
+    fun setAttachmentsListener(listener: (() -> Unit)?) {
+        attachmentButton.setOnClickListener {
+            listener?.invoke()
         }
-
-    var attachmentButton: ImageButton
-        get() = super.attachmentButton
-        set(attachmentButton) {
-            super.attachmentButton = attachmentButton
-        }
-
-    var messageSendButton: ImageButton
-        get() = super.messageSendButton
-        set(messageSendButton) {
-            super.messageSendButton = messageSendButton
-        }
+    }
 }

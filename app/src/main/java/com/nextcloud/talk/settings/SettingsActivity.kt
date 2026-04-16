@@ -61,7 +61,7 @@ import com.nextcloud.talk.conversationlist.ConversationsListActivity.Companion.N
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySettingsBinding
-import com.nextcloud.talk.diagnose.DiagnoseActivity
+import com.nextcloud.talk.diagnosis.DiagnosisActivity
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker
@@ -171,7 +171,7 @@ class SettingsActivity :
             resources!!.getString(R.string.nc_app_product_name)
         )
 
-        setupDiagnose()
+        setupDiagnosis()
 
         setupPrivacyUrl(isOnline.value)
         setupSourceCodeUrl(isOnline.value)
@@ -216,6 +216,7 @@ class SettingsActivity :
         }
 
         setupCheckables(isOnline.value)
+        setupEcosystemSetting()
         setupScreenLockSetting()
         setupNotificationSettings()
         setupProxyTypeSettings()
@@ -249,6 +250,14 @@ class SettingsActivity :
 
         if (openedByNotificationWarning) {
             scrollToNotificationCategory()
+        }
+    }
+
+    private fun setupEcosystemSetting() {
+        if (getResources().getBoolean(R.bool.is_branded_client)) {
+            binding.settingsShowEcosystem.visibility = View.GONE
+        } else {
+            binding.settingsShowEcosystem.visibility = View.VISIBLE
         }
     }
 
@@ -290,7 +299,7 @@ class SettingsActivity :
     }
 
     private fun getCurrentUser() {
-        currentUser = currentUserProvider.currentUser.blockingGet()
+        currentUser = currentUserProviderOld.currentUser.blockingGet()
         credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
     }
 
@@ -323,13 +332,13 @@ class SettingsActivity :
 
             if (PowerManagerUtils().isIgnoringBatteryOptimizations()) {
                 binding.batteryOptimizationIgnored.text =
-                    resources!!.getString(R.string.nc_diagnose_battery_optimization_ignored)
+                    resources!!.getString(R.string.battery_optimization_ignored)
                 binding.batteryOptimizationIgnored.setTextColor(
                     resources.getColor(R.color.high_emphasis_text, null)
                 )
             } else {
                 binding.batteryOptimizationIgnored.text =
-                    resources!!.getString(R.string.nc_diagnose_battery_optimization_not_ignored)
+                    resources!!.getString(R.string.battery_optimization_not_ignored)
                 binding.batteryOptimizationIgnored.setTextColor(resources.getColor(R.color.nc_darkRed, null))
 
                 if (openedByNotificationWarning) {
@@ -363,9 +372,9 @@ class SettingsActivity :
             // handle notification permission on API level >= 33
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 if (platformPermissionUtil.isPostNotificationsPermissionGranted()) {
-                    binding.ncDiagnoseNotificationPermissionSubtitle.text =
+                    binding.ncDiagnosisNotificationPermissionSubtitle.text =
                         resources.getString(R.string.nc_settings_notifications_granted)
-                    binding.ncDiagnoseNotificationPermissionSubtitle.setTextColor(
+                    binding.ncDiagnosisNotificationPermissionSubtitle.setTextColor(
                         resources.getColor(R.color.high_emphasis_text, null)
                     )
                     binding.settingsCallSound.isEnabled = true
@@ -373,9 +382,9 @@ class SettingsActivity :
                     binding.settingsMessageSound.isEnabled = true
                     binding.settingsMessageSound.alpha = ENABLED_ALPHA
                 } else {
-                    binding.ncDiagnoseNotificationPermissionSubtitle.text =
+                    binding.ncDiagnosisNotificationPermissionSubtitle.text =
                         resources.getString(R.string.nc_settings_notifications_declined)
-                    binding.ncDiagnoseNotificationPermissionSubtitle.setTextColor(
+                    binding.ncDiagnosisNotificationPermissionSubtitle.setTextColor(
                         resources.getColor(R.color.nc_darkRed, null)
                     )
 
@@ -462,7 +471,7 @@ class SettingsActivity :
             val dialogBuilder = MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.nc_notifications_troubleshooting_dialog_title)
                 .setMessage(R.string.nc_notifications_troubleshooting_dialog_text)
-                .setNegativeButton(R.string.nc_diagnose_dialog_open_checklist) { _, _ ->
+                .setNegativeButton(R.string.nc_diagnosis_dialog_open_checklist) { _, _ ->
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
@@ -470,7 +479,7 @@ class SettingsActivity :
                         )
                     )
                 }
-                .setPositiveButton(R.string.nc_diagnose_dialog_open_dontkillmyapp_website) { _, _ ->
+                .setPositiveButton(R.string.nc_diagnosis_dialog_open_dontkillmyapp_website) { _, _ ->
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
@@ -478,8 +487,8 @@ class SettingsActivity :
                         )
                     )
                 }
-                .setNeutralButton(R.string.nc_diagnose_dialog_open_diagnose) { _, _ ->
-                    val intent = Intent(context, DiagnoseActivity::class.java)
+                .setNeutralButton(R.string.nc_diagnosis_dialog_open_diagnosis) { _, _ ->
+                    val intent = Intent(context, DiagnosisActivity::class.java)
                     startActivity(intent)
                 }
             viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
@@ -505,13 +514,14 @@ class SettingsActivity :
 
     private fun setupServerNotificationAppCheck() {
         val serverNotificationAppInstalled =
-            currentUserProvider.currentUser.blockingGet().capabilities?.notificationsCapability?.features?.isNotEmpty()
+            currentUserProviderOld.currentUser.blockingGet()
+                .capabilities?.notificationsCapability?.features?.isNotEmpty()
                 ?: false
         if (!serverNotificationAppInstalled) {
             binding.settingsServerNotificationAppWrapper.visibility = View.VISIBLE
 
             val description = context.getString(R.string.nc_settings_contact_admin_of) + LINEBREAK +
-                currentUserProvider.currentUser.blockingGet().baseUrl!!
+                currentUserProviderOld.currentUser.blockingGet().baseUrl!!
 
             binding.settingsServerNotificationAppDescription.text = description
             if (openedByNotificationWarning) {
@@ -538,9 +548,9 @@ class SettingsActivity :
         }
     }
 
-    private fun setupDiagnose() {
-        binding.diagnoseWrapper.setOnClickListener {
-            val intent = Intent(context, DiagnoseActivity::class.java)
+    private fun setupDiagnosis() {
+        binding.diagnosisWrapper.setOnClickListener {
+            val intent = Intent(context, DiagnosisActivity::class.java)
             startActivity(intent)
         }
     }
@@ -770,6 +780,7 @@ class SettingsActivity :
     private fun themeSwitchPreferences() {
         binding.run {
             listOf(
+                settingsShowEcosystemSwitch,
                 settingsShowNotificationWarningSwitch,
                 settingsScreenLockSwitch,
                 settingsScreenSecuritySwitch,
@@ -966,6 +977,8 @@ class SettingsActivity :
     }
 
     private fun setupCheckables(isOnline: Boolean) {
+        setupShowEcosystemCheckable()
+
         binding.settingsShowNotificationWarningSwitch.isChecked =
             appPreferences.showRegularNotificationWarning
 
@@ -1027,6 +1040,15 @@ class SettingsActivity :
             val isChecked = binding.settingsTypingStatusSwitch.isChecked
             binding.settingsTypingStatusSwitch.isChecked = !isChecked
             appPreferences.setTypingStatus(!isChecked)
+        }
+    }
+
+    private fun setupShowEcosystemCheckable() {
+        binding.settingsShowEcosystemSwitch.isChecked = appPreferences.isShowEcosystem
+        binding.settingsShowEcosystem.setOnClickListener {
+            val isChecked = binding.settingsShowEcosystemSwitch.isChecked
+            binding.settingsShowEcosystemSwitch.isChecked = !isChecked
+            appPreferences.setShowEcosystem(!isChecked)
         }
     }
 

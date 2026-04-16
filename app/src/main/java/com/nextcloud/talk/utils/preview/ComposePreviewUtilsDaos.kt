@@ -23,7 +23,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 class DummyChatMessagesDaoImpl : ChatMessagesDao {
-    override fun getMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>> = flowOf()
+    override fun getMessagesEqualOrNewerThan(
+        internalConversationId: String,
+        threadId: Long?,
+        oldestMessageId: Long
+    ): Flow<List<ChatMessageEntity>> = flowOf()
+
+    override fun getMessagesForConversation(
+        internalConversationId: String,
+        threadId: Long?
+    ): Flow<List<ChatMessageEntity>> = flowOf()
 
     override fun getTempMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>> =
         flowOf()
@@ -42,20 +51,42 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
         threadId: Long?
     ): Flow<ChatMessageEntity> = flowOf()
 
-    override suspend fun upsertChatMessages(chatMessages: List<ChatMessageEntity>) { /* */ }
+    override suspend fun upsertChatMessages(chatMessages: List<ChatMessageEntity>) {
+        /* */
+    }
 
-    override suspend fun upsertChatMessage(chatMessage: ChatMessageEntity) { /* */ }
+    override suspend fun upsertChatMessage(chatMessage: ChatMessageEntity) {
+        /* */
+    }
 
     override fun getChatMessageForConversation(
         internalConversationId: String,
         messageId: Long
     ): Flow<ChatMessageEntity> = flowOf()
 
-    override fun deleteChatMessages(internalIds: List<String>) { /* */ }
+    override suspend fun getChatMessageEntity(internalConversationId: String, messageId: Long): ChatMessageEntity? =
+        null
 
-    override fun deleteTempChatMessages(internalConversationId: String, referenceIds: List<String>) { /* */ }
+    override fun observeMessage(internalConversationId: String, messageId: Long): Flow<ChatMessageEntity?> = flowOf()
 
-    override fun updateChatMessage(message: ChatMessageEntity) { /* */ }
+    override suspend fun getChatMessageOnce(internalConversationId: String, messageId: Long): ChatMessageEntity? = null
+
+    override fun getChatMessageForConversationNullable(
+        internalConversationId: String,
+        messageId: Long
+    ): Flow<ChatMessageEntity?> = flowOf()
+
+    // override fun deleteChatMessages(internalIds: List<String>) {
+    //     /* */
+    // }
+
+    override fun deleteTempChatMessages(internalConversationId: String, referenceIds: List<String>) {
+        /* */
+    }
+
+    override fun updateChatMessage(message: ChatMessageEntity) {
+        /* */
+    }
 
     override fun getMessagesFromIds(messageIds: List<Long>): Flow<List<ChatMessageEntity>> = flowOf()
 
@@ -86,9 +117,13 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
         threadId: Long?
     ): Int = 0
 
-    override fun clearAllMessagesForUser(pattern: String) { /* */ }
+    override fun clearAllMessagesForUser(pattern: String) {
+        /* */
+    }
 
-    override fun deleteMessagesOlderThan(internalConversationId: String, messageId: Long) { /* */ }
+    override fun deleteMessagesOlderThan(internalConversationId: String, messageId: Long) {
+        /* */
+    }
 
     override fun getNumberOfThreadReplies(internalConversationId: String, threadId: Long): Int = 0
 }
@@ -194,25 +229,37 @@ class DummyConversationDaoImpl : ConversationsDao {
 
     override fun getConversationForUser(accountId: Long, token: String): Flow<ConversationEntity?> = flowOf()
 
-    override suspend fun upsertConversations(accountId: Long, serverItems: List<ConversationEntity>) { /* */ }
+    override suspend fun upsertConversations(accountId: Long, serverItems: List<ConversationEntity>) {
+        /* */
+    }
 
-    override fun deleteConversations(conversationIds: List<String>) { /* */ }
+    override fun deleteConversations(conversationIds: List<String>) {
+        /* */
+    }
 
-    override fun updateConversation(conversationEntity: ConversationEntity) { /* */ }
+    override fun updateConversation(conversationEntity: ConversationEntity) {
+        /* */
+    }
 
-    override fun insertConversation(conversation: ConversationEntity) { /* */ }
+    override fun insertConversation(conversation: ConversationEntity) {
+        /* */
+    }
 
-    override fun clearAllConversationsForUser(accountId: Long) { /* */ }
+    override fun clearAllConversationsForUser(accountId: Long) {
+        /* */
+    }
 }
 
 class DummyChatBlocksDaoImpl : ChatBlocksDao {
-    override fun deleteChatBlocks(blocks: List<ChatBlockEntity>) { /* */ }
+    override fun deleteChatBlocks(blocks: List<ChatBlockEntity>) {
+        /* */
+    }
 
     override fun getChatBlocksContainingMessageId(
         internalConversationId: String,
         threadId: Long?,
         messageId: Long
-    ): Flow<List<ChatBlockEntity?>> = flowOf()
+    ): Flow<List<ChatBlockEntity>> = flowOf()
 
     override fun getConnectedChatBlocks(
         internalConversationId: String,
@@ -223,7 +270,12 @@ class DummyChatBlocksDaoImpl : ChatBlocksDao {
 
     override fun getNewestMessageIdFromChatBlocks(internalConversationId: String, threadId: Long?): Long = 0L
 
-    override suspend fun upsertChatBlock(chatBlock: ChatBlockEntity) { /* */ }
+    override suspend fun upsertChatBlock(chatBlock: ChatBlockEntity) {
+        /* */
+    }
 
-    override fun deleteChatBlocksOlderThan(internalConversationId: String, messageId: Long) { /* */ }
+    override fun deleteChatBlocksOlderThan(internalConversationId: String, messageId: Long) {
+        /* */
+    }
+    override fun getLatestChatBlock(internalConversationId: String, threadId: Long?): Flow<ChatBlockEntity?> = flowOf()
 }

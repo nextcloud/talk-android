@@ -21,18 +21,22 @@ import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedLocationItem
 import com.nextcloud.talk.shareditems.model.SharedOtherItem
+import com.nextcloud.talk.shareditems.model.SharedPinnedItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.ApiUtils
+import java.util.Collections.emptyList
 
 class SharedItemsAdapter(
     private val showGrid: Boolean,
     private val user: User,
     private val roomToken: String,
     private val isUserConversationOwnerOrModerator: Boolean,
+    private val isOne2One: Boolean,
     private val viewThemeUtils: ViewThemeUtils
 ) : RecyclerView.Adapter<SharedItemsViewHolder>() {
 
-    var items: List<SharedItem> = emptyList()
+    var items: MutableList<SharedItem> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SharedItemsViewHolder =
         if (showGrid) {
@@ -64,6 +68,7 @@ class SharedItemsAdapter(
             is SharedLocationItem -> holder.onBind(item)
             is SharedOtherItem -> holder.onBind(item)
             is SharedDeckCardItem -> holder.onBind(item)
+            is SharedPinnedItem -> holder.onBind(item, ::openMessage, ::unpinMessage)
         }
     }
 
@@ -80,6 +85,33 @@ class SharedItemsAdapter(
         pollVoteDialog.show(
             (context as SharedItemsActivity).supportFragmentManager,
             TAG
+        )
+    }
+
+    private fun unpinMessage(item: SharedItem, context: Context) {
+        val credentials = ApiUtils.getCredentials(user.username, user.token)
+        val url = ApiUtils.getUrlForChatMessagePinning(1, user.baseUrl, roomToken, item.id)
+
+        val canPin = isOne2One || isUserConversationOwnerOrModerator
+        if (canPin) {
+            credentials?.let {
+                (context as SharedItemsActivity).chatViewModel.unPinMessage(credentials, url)
+                val index = items.indexOf(item)
+                items.remove(item)
+                this.notifyItemRemoved(index)
+            }
+        }
+    }
+
+    private fun openMessage(item: SharedItem, context: Context) {
+        val credentials = ApiUtils.getCredentials(user.username, user.token)
+        val baseUrl = user.baseUrl
+        (context as SharedItemsActivity).startContextChatWindowForMessage(
+            credentials,
+            baseUrl,
+            roomToken,
+            item.id,
+            null
         )
     }
 

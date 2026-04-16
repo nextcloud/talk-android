@@ -22,6 +22,9 @@
     <string name="ban">حظر</string>
     <string name="ban_participant">حظر مشارك</string>
     <string name="bans_list">قائمة المحظورين</string>
+    <string name="battery_optimization_ignored">تمّ تجاهل توفير البطارية، و كل شيء على ما يرُام</string>
+    <string name="battery_optimization_not_ignored">تحسين البطارية تمّ تمكينه؛ الأمر الذي قد يتسبب في مشكلات. يجب عليك تعطيل تحسين البطارية!</string>
+    <string name="battery_optimization_title">إعدادات البطارية</string>
     <string name="busy">مشغول</string>
     <string name="calendar">التقويم Calendar</string>
     <string name="call_more_actions_dialog_headline">خيارات الاتصال المتقدمة</string>
@@ -49,6 +52,9 @@
     <string name="deleted_conversation">محادثة محذوفة %1$s</string>
     <string name="dnd">الرجاء عدم الإزعاج</string>
     <string name="dontClear">لا تمحُ</string>
+    <string name="ecosystem_apps_files">الملفّات</string>
+    <string name="ecosystem_apps_more">المزيد</string>
+    <string name="ecosystem_apps_notes">الملاحظات</string>
     <string name="edit">تعديل</string>
     <string name="edit_message_icon_description">تحرير رسالة</string>
     <string name="emoji_category_recent">مؤخّراً recednt</string>
@@ -158,9 +164,11 @@
     <string name="nc_common_skip">تخطى</string>
     <string name="nc_common_unknown">غير معروف</string>
     <string name="nc_configure_cert_auth">اختر شهادة المصادقة</string>
+    <string name="nc_confirm">تأكيد</string>
     <string name="nc_connecting_call">الاتصال جارٍ …</string>
     <string name="nc_contacts_done">تم</string>
     <string name="nc_conversation_description">وصف المحادثة</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">الذهاب إلى ملف</string>
     <string name="nc_conversation_menu_conversation_info">بيانات المحادثة</string>
     <string name="nc_conversation_menu_video_call">اتصال فيديو</string>
     <string name="nc_conversation_menu_voice_call">اتصال فيديو</string>
@@ -222,6 +230,9 @@
     <string name="nc_diagnose_signaling_mode_extern">خارجي</string>
     <string name="nc_diagnose_signaling_mode_intern">داخلي</string>
     <string name="nc_diagnose_signaling_mode_title">وضعية إرسال الإشارات</string>
+    <string name="nc_diagnosis_dialog_open_checklist">فتح قائمة التحقق لاكتشاف الأعطال و إصلاحها</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">فتح شاشة الفحص</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">فتح dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">كلمة المرور غير صحيحة</string>
     <string name="nc_dialog_maintenance_mode_description">الخادم حالياً في وضع الصيانة</string>
     <string name="nc_dialog_outdated_client">التطبيق غير مُحدَّث</string>
@@ -363,8 +374,6 @@
     <string name="nc_promote">ترقية لمشرف</string>
     <string name="nc_public_call_status">محادثة عمومية</string>
     <string name="nc_push_disabled">الإشعارات معطلة</string>
-    <string name="nc_push_to_talk">اضغط للتحدث</string>
-    <string name="nc_push_to_talk_desc">في وضعية تعطل المايكرفون، علق على الزر &amp; لاستخدام اضغط للتحدث</string>
     <string name="nc_remind">ذكرني لاحقا</string>
     <string name="nc_remove_from_favorites">إزالتها مِن المفضلة</string>
     <string name="nc_remove_group_and_members">حذف المجموعة group و الأعضاء</string>
@@ -389,6 +398,8 @@
     <string name="nc_search">البحث</string>
     <string name="nc_search_clear">مَحوُ البحث</string>
     <string name="nc_select_an_account">اختيار حساب</string>
+    <string name="nc_send_later">أرسِل لاحقاً</string>
+    <string name="nc_send_now">أرسِل الآن</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s ارسل GIF.</string>
     <string name="nc_sent_a_gif_you">لقد قمت بارسال GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$sارسل فيديو.</string>
@@ -422,6 +433,8 @@
     <string name="nc_settings_contact_admin_of">رجاءً، تواصل مع المشرف</string>
     <string name="nc_settings_diagnose_subtitle">فتح شاشة فحص الأعطال لاختبار الإعدادات أو تكوين تقرير بالعطل</string>
     <string name="nc_settings_diagnose_title">فحوصات</string>
+    <string name="nc_settings_diagnosis_subtitle">فتح شاشة فحص الأعطال لاختبار الإعدادات أو تكوين تقرير بالعطل</string>
+    <string name="nc_settings_diagnosis_title">فحوصات</string>
     <string name="nc_settings_incognito_keyboard_desc">توجيه لوحة المفاتيح لتعطيل التعلم المخصص (بدون ضمانات)</string>
     <string name="nc_settings_incognito_keyboard_title">لوحة المفاتيح في وضع المجهول</string>
     <string name="nc_settings_no_ringtone">بدون صوت</string>
@@ -483,6 +496,7 @@
     <string name="nc_shared_items_empty">لا توجد عناصر مُشارَكة</string>
     <string name="nc_shared_items_location">الموقع</string>
     <string name="nc_shared_location">موقع مُشارَك</string>
+    <string name="nc_show_ecosystem_title">إظهار مُبدِّل التطبيقات app switcher</string>
     <string name="nc_show_notification_warning_description">عندما لا تكون الإشعارات مهيأة بالصورة الصحيحة، أظهِر التحذيرات الاعتيادية.</string>
     <string name="nc_show_notification_warning_title">أظِهر تحذيراً بالإشعارات الاعتيادية</string>
     <string name="nc_sort_by">رتِّب حسب</string>
@@ -510,17 +524,21 @@
     <string name="nc_voice_message_slide_to_cancel">« إسحب للإلغاء</string>
     <string name="nc_webinar">ويبنار</string>
     <string name="nc_yes">نعم</string>
+    <string name="nc_zoom_in">تكبير</string>
+    <string name="nc_zoom_out">تصغير</string>
     <string name="next_week">الأسبوع القادم</string>
     <string name="no_offline_messages_saved">لم يتم حفظ أي رسائل غير متصلة بالإنترنت</string>
     <string name="no_phone_book_integration_due_to_permissions">لا ارتباط لرقم الهاتف بسبب أذونات ناقصة</string>
     <string name="notification_mention_only">\@-إشارة فقط</string>
     <string name="notification_off">معطل</string>
+    <string name="notification_permission">إذونات الإشعارات</string>
     <string name="notifications_default">التلقائي</string>
     <string name="oneHour">1 ساعة</string>
     <string name="online">مُتّصلٌ</string>
     <string name="online_status">حالة الاتصال</string>
     <string name="openConversations">فتح المحادثات</string>
     <string name="open_in_files_app">فتح في تطبيق الملفات Files</string>
+    <string name="pinned_dismiss">الغاء</string>
     <string name="play_pause_voice_message">تشغيل/تجميد رسالة صوتية</string>
     <string name="playback_speed_control">التحكم في سرعة التشغيل</string>
     <string name="polls_add_option">إضِف خِياراً</string>
@@ -647,7 +665,13 @@
     <string name="user_info_address">العنوان</string>
     <string name="user_info_displayname">الاسم الكامل</string>
     <string name="user_info_email">البريد الإلكتروني</string>
+    <string name="user_info_fediverse">الشبكة اللامركزية للتواصل الاجتماعي Fediverse</string>
+    <string name="user_info_headline">العنوان</string>
+    <string name="user_info_organisation">المنظمة</string>
     <string name="user_info_phone">رقم الهاتف</string>
+    <string name="user_info_profile_enable">تمكين الملف الشخصي</string>
+    <string name="user_info_pronouns">الضمائر</string>
+    <string name="user_info_role">الوظيفة</string>
     <string name="user_info_twitter">تويتر</string>
     <string name="user_info_website">موقع الويب</string>
     <string name="user_status">الحاله</string>

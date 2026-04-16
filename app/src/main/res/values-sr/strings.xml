@@ -23,6 +23,9 @@
     <string name="ban">Забрана</string>
     <string name="ban_participant">Забрани учесника</string>
     <string name="bans_list">Листа забрањених</string>
+    <string name="battery_optimization_ignored">Игнорише се оптимизација батерије, све је у реду</string>
+    <string name="battery_optimization_not_ignored">Укључена је оптимизација батерије и то може да буде узрок проблема. Требало би да искључите оптимизацију батерије.</string>
+    <string name="battery_optimization_title">Подешавања батерије</string>
     <string name="busy">Заузет</string>
     <string name="calendar">Календар</string>
     <string name="call_more_actions_dialog_headline">Напредне опције позива</string>
@@ -53,6 +56,9 @@
     <string name="deleted_conversation">Разговор %1$s је обрисан</string>
     <string name="dnd">Не узнемиравај</string>
     <string name="dontClear">Не бриши</string>
+    <string name="ecosystem_apps_files">Фајлови</string>
+    <string name="ecosystem_apps_more">Више</string>
+    <string name="ecosystem_apps_notes">Белешке</string>
     <string name="edit">Измени</string>
     <string name="edit_error_24_hours_old_message">Поруке старије од 24 часова не могу да се уређују</string>
     <string name="edit_message_icon_description">Уреди поруку</string>
@@ -171,9 +177,11 @@
     <string name="nc_common_skip">Preskoči</string>
     <string name="nc_common_unknown">Непознато</string>
     <string name="nc_configure_cert_auth">Одабери сертификат за пријаву</string>
+    <string name="nc_confirm">Потврди</string>
     <string name="nc_connecting_call">Повезивање ..</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_description">Опис разговора</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Иди на фајл</string>
     <string name="nc_conversation_menu_conversation_info">Информације о разговору</string>
     <string name="nc_conversation_menu_video_call">Видео позив</string>
     <string name="nc_conversation_menu_voice_call">Аудио позив</string>
@@ -237,6 +245,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Спољно</string>
     <string name="nc_diagnose_signaling_mode_intern">Интерни</string>
     <string name="nc_diagnose_signaling_mode_title">Режим сигнализирања</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Отвори контролну листу за отклањање проблема</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Отвори дијагностички екран</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Отвори dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Неисправна лозинка</string>
     <string name="nc_dialog_maintenance_mode_description">Сервер је тренутно у режиму одржавања.</string>
     <string name="nc_dialog_outdated_client">Апликација је застарела</string>
@@ -394,8 +405,6 @@
     <string name="nc_push_notification_error">Жао нам је, нешто је пошло наопако. Грешка је %1$s</string>
     <string name="nc_push_notification_fetch_error">Жао нам је, нешто је пошло наопако, тест брзо обавештење не може да се преузме</string>
     <string name="nc_push_notification_message">Брзо обавештење је успешно послато. Сада би требало да примите обавештење на овај уређај под називом ’Тестирање брзих обавештења’</string>
-    <string name="nc_push_to_talk">Притисни за разговор</string>
-    <string name="nc_push_to_talk_desc">Са онемогућеним микрофоном, кликните &amp; држите да користите притисак за разговор</string>
     <string name="nc_remind">Подсети ме касније</string>
     <string name="nc_remove_from_favorites">Уклони из омиљених</string>
     <string name="nc_remove_group_and_members">Уклони групу и чланове</string>
@@ -409,6 +418,7 @@
     <string name="nc_room_retention">Соба је успешно задржана</string>
     <string name="nc_save_message">Сачувај</string>
     <string name="nc_save_success">Успешно сачувано</string>
+    <string name="nc_scheduled_time">Заказано време</string>
     <string name="nc_screen_lock_timeout_30">30 секунди</string>
     <string name="nc_screen_lock_timeout_300">5 минута</string>
     <string name="nc_screen_lock_timeout_60">1 минут</string>
@@ -422,6 +432,8 @@
     <string name="nc_search_clear">Обриши претрагу</string>
     <string name="nc_select_an_account">Изаберите налог</string>
     <string name="nc_send_edit_message">Ажурирај поруку</string>
+    <string name="nc_send_later">Пошаљи касније</string>
+    <string name="nc_send_now">Пошаљи одмах</string>
     <string name="nc_send_voice_recording">Пошаљи снимак гласа</string>
     <string name="nc_sensitive_conversation">Осетљиви разговор</string>
     <string name="nc_sensitive_conversation_hint">Преглед поруке ће се сакрити у листи разговора и у обавештењима</string>
@@ -458,6 +470,8 @@
     <string name="nc_settings_contact_admin_of">Молимо вас да контактирате администратора</string>
     <string name="nc_settings_diagnose_subtitle">Отвара дијагностички екран да проверите поставке или да креирате извештај о багу</string>
     <string name="nc_settings_diagnose_title">Дијагностика</string>
+    <string name="nc_settings_diagnosis_subtitle">Отвара дијагностички екран да проверите поставке или да креирате извештај о багу</string>
+    <string name="nc_settings_diagnosis_title">Дијагностика</string>
     <string name="nc_settings_incognito_keyboard_desc">Наложи тастатури да искључи персонализовано учење (без гаранција)</string>
     <string name="nc_settings_incognito_keyboard_title">Инкогнито тастатура</string>
     <string name="nc_settings_no_ringtone">Нема звука</string>
@@ -520,6 +534,7 @@
     <string name="nc_shared_items_empty">Нема дељених ставки</string>
     <string name="nc_shared_items_location">Локација</string>
     <string name="nc_shared_location">Дељена локација</string>
+    <string name="nc_show_ecosystem_title">Прикажи мењач апликација</string>
     <string name="nc_show_notification_warning_description">Када обавештења нису исправно подешена, прикажи уобичајено упозорење</string>
     <string name="nc_show_notification_warning_title">Прикажи уобичајено упозорење о обавештењу</string>
     <string name="nc_sort_by">Разврстај</string>
@@ -551,6 +566,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Превуците да откажете</string>
     <string name="nc_webinar">Вебинар</string>
     <string name="nc_yes">Да</string>
+    <string name="nc_zoom_in">Увеличај</string>
+    <string name="nc_zoom_out">Умањи приказ</string>
     <string name="next_week">Наредне недеље</string>
     <string name="no_conversations_archived">Нема архивираних разговора</string>
     <string name="no_offline_messages_saved">Није сачувана ниједна порука за ван мреже</string>
@@ -558,6 +575,7 @@
     <string name="notification_all_messages">Све поруке</string>
     <string name="notification_mention_only">Само @-помињања</string>
     <string name="notification_off">Искључено</string>
+    <string name="notification_permission">Дозволе за обавештења</string>
     <string name="notifications_default">Подразумевано</string>
     <string name="notifications_default_description">Прати подешавања разговора</string>
     <string name="oneHour">1 сат</string>
@@ -567,6 +585,7 @@
     <string name="open_in_files_app">Отвори у апликацији Фајлови</string>
     <string name="open_notes">Отвори Белешке</string>
     <string name="open_thread">Иди на нит</string>
+    <string name="pinned_dismiss">Одбаци</string>
     <string name="play_pause_voice_message">Пусти/паузирај гласовну поруку</string>
     <string name="playback_speed_control">Контрола брзине репродукције</string>
     <string name="please_continue_the_login_process_in_the_browser">Молимо вас да пријављивање настивете у прегледачу</string>
@@ -702,9 +721,16 @@
     <string name="user_absence_replacement">Замена:</string>
     <string name="user_avatar">Кориснички аватар</string>
     <string name="user_info_address">Адреса</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Пуно име</string>
     <string name="user_info_email">Е-пошта</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Наслов</string>
+    <string name="user_info_organisation">Организација</string>
     <string name="user_info_phone">Број телефона</string>
+    <string name="user_info_profile_enable">Укључи профил</string>
+    <string name="user_info_pronouns">Заменице</string>
+    <string name="user_info_role">Улога</string>
     <string name="user_info_twitter">Твитер</string>
     <string name="user_info_website">Веб страна</string>
     <string name="user_status">Статус</string>

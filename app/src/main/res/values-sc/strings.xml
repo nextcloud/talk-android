@@ -9,6 +9,7 @@
     <string name="audio_output_speaker">Altoparlante</string>
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
+    <string name="battery_optimization_title">Cunfiguratzione de sa bateria</string>
     <string name="busy">Impinnadu</string>
     <string name="calendar">Calendàriu</string>
     <string name="choose_avatar_from_cloud">Sèbera s\'avatar dae sa nue virtuale</string>
@@ -22,6 +23,9 @@
     <string name="danger_zone">Zona de perìgulu</string>
     <string name="delete_avatar">Cantzella s\'avatar</string>
     <string name="dnd">No istorbes</string>
+    <string name="ecosystem_apps_files">Archìvios</string>
+    <string name="ecosystem_apps_more">Prus</string>
+    <string name="ecosystem_apps_notes">Notas</string>
     <string name="edit">Modìfica</string>
     <string name="emoji_category_recent">Reghente</string>
     <string name="encrypted">Tzifradu</string>
@@ -96,8 +100,10 @@
     <string name="nc_common_skip">Brinca</string>
     <string name="nc_common_unknown">Disconnotu</string>
     <string name="nc_configure_cert_auth">Seletziona tzertificadu autenticatzione</string>
+    <string name="nc_confirm">Cunfirma</string>
     <string name="nc_connecting_call">Connetende …</string>
     <string name="nc_contacts_done">Fatu</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Bae a s\'archìviu</string>
     <string name="nc_conversation_menu_conversation_info">Informatziones de resonada</string>
     <string name="nc_conversation_menu_video_call">Mutida de vìdeu</string>
     <string name="nc_conversation_menu_voice_call">Mutida de boghe</string>
@@ -211,8 +217,6 @@
     <string name="nc_profile_personal_info_title">Informatziones personales</string>
     <string name="nc_promote">Approva a moderadore</string>
     <string name="nc_push_disabled">Notìficas push disativadas</string>
-    <string name="nc_push_to_talk">Cumandu de trasmissione</string>
-    <string name="nc_push_to_talk_desc">Cun su micròfonu disativadu, mantene incarcadu&amp;pro impreare su cumandu de trasmissione</string>
     <string name="nc_remind">Regorda•mi•ddu a coa</string>
     <string name="nc_remove_from_favorites">Boga dae preferidos</string>
     <string name="nc_remove_group_and_members">Boga·nche grupu e partetzipantes</string>
@@ -309,6 +313,7 @@
     <string name="nc_shared_items_deck_card">Ischeda in Deck</string>
     <string name="nc_shared_items_location">Positzione</string>
     <string name="nc_shared_location">Positzione cumpartzida</string>
+    <string name="nc_show_ecosystem_title">Mustra su cuncambiadore de aplicatziones</string>
     <string name="nc_sort_by">Assenta segundu</string>
     <string name="nc_start_time">Ora de cumintzu</string>
     <string name="nc_switch_account">Passa a àteru contu</string>
@@ -326,6 +331,7 @@
     <string name="nc_voice_message_slide_to_cancel">« Iscurre pro annullare</string>
     <string name="nc_webinar">Seminàriu in lìnia</string>
     <string name="nc_yes">Eja</string>
+    <string name="nc_zoom_in">Ammània</string>
     <string name="next_week">Sa chida chi benit</string>
     <string name="no_phone_book_integration_due_to_permissions">Peruna integratzione de nùmeru de telèfonu pro farta de permissos</string>
     <string name="notifications_default">Predefinidu</string>
@@ -334,6 +340,7 @@
     <string name="online_status">Istadu in lìnia</string>
     <string name="openConversations">Aberre is resonadas</string>
     <string name="open_in_files_app">Aberi in s\'aplicatzione de is archìvios</string>
+    <string name="pinned_dismiss">Iscarta</string>
     <string name="play_pause_voice_message">Riprodue/pausa messàgiu de boghe</string>
     <string name="polls_add_option">Agiunghe sèberu</string>
     <string name="polls_options">Optziones</string>
@@ -392,7 +399,10 @@
     <string name="user_info_address">Indiritzu</string>
     <string name="user_info_displayname">Nùmene e sambenadu</string>
     <string name="user_info_email">Posta eletrònica</string>
+    <string name="user_info_headline">Tìtulos</string>
+    <string name="user_info_organisation">Organizatzione</string>
     <string name="user_info_phone">Nùmeru de telèfonu</string>
+    <string name="user_info_profile_enable">Ativa su profilu</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Situ ìnternet</string>
     <string name="user_status">Status</string>

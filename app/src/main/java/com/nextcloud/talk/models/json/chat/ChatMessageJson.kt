@@ -52,5 +52,7 @@ data class ChatMessageJson(
     @JsonField(name = ["referenceId"]) var referenceId: String? = null,
     @JsonField(name = ["silent"]) var silent: Boolean = false,
     @JsonField(name = ["threadTitle"]) var threadTitle: String? = null,
-    @JsonField(name = ["threadReplies"]) var threadReplies: Int? = 0
+    @JsonField(name = ["threadReplies"]) var threadReplies: Int? = 0,
+    @JsonField(name = ["metaData"]) var metaData: ChatMessageMetaData? = null,
+    @JsonField(name = ["sendAt"]) var sendAt: Int? = null
 ) : Parcelable

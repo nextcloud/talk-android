@@ -78,7 +78,8 @@ fun getUrlForAvatar(participant: ParticipantUiState, displayName: String): Strin
     var url = ApiUtils.getUrlForAvatar(
         participant.baseUrl,
         participant.actorId,
-        true
+        true,
+        darkMode = isDarkModeOn(LocalContext.current)
     )
     if (Participant.ActorType.GUESTS == participant.actorType ||
         Participant.ActorType.EMAILS == participant.actorType

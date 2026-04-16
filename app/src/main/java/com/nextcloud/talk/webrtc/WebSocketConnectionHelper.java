@@ -25,7 +25,9 @@ import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.RoomWebSocketMessage;
 import com.nextcloud.talk.utils.ApiUtils;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -116,6 +118,10 @@ public class WebSocketConnectionHelper {
         }
         authWebSocketMessage.setAuthParametersWebSocketMessage(authParametersWebSocketMessage);
         helloWebSocketMessage.setAuthWebSocketMessage(authWebSocketMessage);
+
+        List<String> features = Collections.singletonList("chat-relay");
+        helloWebSocketMessage.setFeatures(features);
+
         helloOverallWebSocketMessage.setHelloWebSocketMessage(helloWebSocketMessage);
         return helloOverallWebSocketMessage;
     }
@@ -126,6 +132,8 @@ public class WebSocketConnectionHelper {
         HelloWebSocketMessage helloWebSocketMessage = new HelloWebSocketMessage();
         helloWebSocketMessage.setVersion("1.0");
         helloWebSocketMessage.setResumeid(resumeId);
+        List<String> features = Collections.singletonList("chat-relay");
+        helloWebSocketMessage.setFeatures(features);
         helloOverallWebSocketMessage.setHelloWebSocketMessage(helloWebSocketMessage);
         return helloOverallWebSocketMessage;
     }

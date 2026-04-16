@@ -98,10 +98,6 @@
         tools:replace="label, icon, theme, name, allowBackup">
 
         <meta-data
-            android:name="com.google.android.gms.car.application"
-            android:resource="@xml/automotive_app_desc"/>
-
-        <meta-data
             android:name="android.max_aspect"
             android:value="10" />
 
@@ -112,6 +108,11 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="com.nextcloud.intent.OPEN_ECOSYSTEM_APP" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <intent-filter>
@@ -144,6 +145,10 @@
 
         <activity
             android:name=".account.SwitchAccountActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".chat.ScheduledMessagesActivity"
             android:theme="@style/AppTheme" />
 
         <activity
@@ -240,12 +245,22 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".diagnose.DiagnoseActivity"
+            android:name=".diagnosis.DiagnosisActivity"
             android:theme="@style/AppTheme" />
 
         <activity
             android:name=".conversationinfo.ConversationInfoActivity"
             android:theme="@style/AppTheme" />
+
+        <activity
+            android:name="com.github.dhaval2404.imagepicker.ImagePickerActivity"
+            android:theme="@style/ImagePickerTheme.NonFullScreen"
+            tools:replace="android:theme" />
+
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:theme="@style/Theme.UCrop"
+            tools:replace="android:theme" />
 
         <activity
             android:name=".conversationinfoedit.ConversationInfoEditActivity"
@@ -277,6 +292,7 @@
 
         <receiver android:name=".receivers.DirectReplyReceiver" />
         <receiver android:name=".receivers.MarkAsReadReceiver" />
+        <receiver android:name=".receivers.DeclineCallReceiver" android:exported="false" />
         <receiver android:name=".receivers.DismissRecordingAvailableReceiver" />
         <receiver android:name=".receivers.ShareRecordingToChatReceiver" />
         <receiver android:name=".receivers.EndCallReceiver" />

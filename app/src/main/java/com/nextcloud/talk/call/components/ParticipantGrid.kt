@@ -33,7 +33,7 @@ import android.util.Log
 import com.nextcloud.talk.activities.ParticipantUiState
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "LongMethod")
 @Composable
 fun ParticipantGrid(
     modifier: Modifier = Modifier,

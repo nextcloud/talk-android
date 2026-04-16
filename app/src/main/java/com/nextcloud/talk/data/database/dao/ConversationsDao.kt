@@ -32,6 +32,7 @@ interface ConversationsDao {
             if (existingItem != null) {
                 val mergedItem = serverItem.copy()
                 mergedItem.messageDraft = existingItem.messageDraft
+                mergedItem.hiddenUpcomingEvent = existingItem.hiddenUpcomingEvent
                 updateConversation(mergedItem)
             } else {
                 insertConversation(serverItem)

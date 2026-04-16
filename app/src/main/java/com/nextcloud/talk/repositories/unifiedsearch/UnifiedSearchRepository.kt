@@ -13,12 +13,16 @@ interface UnifiedSearchRepository {
     data class UnifiedSearchResults<T>(val cursor: Int, val hasMore: Boolean, val entries: List<T>)
 
     fun searchMessages(
+        credentials: String?,
+        url: String,
         searchTerm: String,
         cursor: Int = 0,
         limit: Int = DEFAULT_PAGE_SIZE
     ): Observable<UnifiedSearchResults<SearchMessageEntry>>
 
     fun searchInRoom(
+        credentials: String?,
+        url: String,
         roomToken: String,
         searchTerm: String,
         cursor: Int = 0,

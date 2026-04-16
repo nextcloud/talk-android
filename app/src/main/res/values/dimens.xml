@@ -14,6 +14,7 @@
     <dimen name="item_height">72dp</dimen>
     <dimen name="bottom_sheet_item_height">56dp</dimen>
     <dimen name="bottom_sheet_text_size">16sp</dimen>
+    <dimen name="bottom_sheet_title_size">22sp</dimen>
     <dimen name="small_item_height">48dp</dimen>
 
     <dimen name="min_size_clickable_area">48dp</dimen>
@@ -22,32 +23,22 @@
     <dimen name="margin_between_elements">8dp</dimen>
     <dimen name="double_margin_between_elements">16dp</dimen>
     <dimen name="avatar_size">40dp</dimen>
-    <dimen name="avatar_size_app_bar">30dp</dimen>
     <dimen name="avatar_size_big">96dp</dimen>
     <dimen name="avatar_size_open_conversation_list">52dp</dimen>
 
     <dimen name="chat_text_size">16sp</dimen>
-    <dimen name="chat_system_message_text_size">14sp</dimen>
-    <dimen name="message_bubble_corners_radius">18dp</dimen>
-    <dimen name="message_bubble_corners_horizontal_padding">12dp</dimen>
-    <dimen name="message_bubble_corners_vertical_padding">8dp</dimen>
-    <dimen name="message_bubble_checkmark_height">18dp</dimen>
-
-    <dimen name="link_preview_height">120dp</dimen>
-    <dimen name="link_preview_width">220dp</dimen>
-
-    <dimen name="geocoding_result_text_size">18sp</dimen>
+    <dimen name="message_text_size">16sp</dimen>
 
     <dimen name="maximum_file_preview_size">192dp</dimen>
 
     <dimen name="corner_radius">16dp</dimen>
     <dimen name="button_corner_radius">24dp</dimen>
     <dimen name="status_corner_radius">12dp</dimen>
+    <dimen name="meta_info_corner_radius">4dp</dimen>
     <dimen name="standard_margin">16dp</dimen>
     <dimen name="two_line_primary_text_size">16sp</dimen>
     <dimen name="headline_text_size">16sp</dimen>
     <dimen name="supporting_text_text_size">14sp</dimen>
-    <dimen name="iconized_single_line_item_layout_height">56dp</dimen>
     <dimen name="iconized_single_line_item_icon_size">24dp</dimen>
     <dimen name="standard_double_margin">32dp</dimen>
     <dimen name="empty_list_icon_layout_width">72dp</dimen>
@@ -64,13 +55,11 @@
     <dimen name="call_controls_height">110dp</dimen>
     <dimen name="zero">0dp</dimen>
 
-    <dimen name="online_status_item_height">48dp</dimen>
     <dimen name="standard_quarter_margin">4dp</dimen>
-    <dimen name="activity_list_item_title_header_text_size">16sp</dimen>
+    <dimen name="standard_quarter_padding">4dp</dimen>
     <dimen name="activity_row_layout_height">48dp</dimen>
     <dimen name="reaction_bottom_sheet_layout_size">40dp</dimen>
     <dimen name="standard_eighth_margin">2dp</dimen>
-    <dimen name="scope_padding">12dp</dimen>
 
     <dimen name="default_checkbox_dialog_start_margin">18dp</dimen>
 
@@ -85,6 +74,4 @@
     <dimen name="notification_icon_width">24dp</dimen>
     <dimen name="notification_icon_height">24dp</dimen>
     <dimen name="notification_icon_layout_right_end_margin">21dp</dimen>
-    <dimen name="sm_text_size">12sp</dimen>
-
 </resources>

@@ -23,6 +23,9 @@
     <string name="ban">Bloker</string>
     <string name="ban_participant">Bloker deltager</string>
     <string name="bans_list">Liste over blokerede</string>
+    <string name="battery_optimization_ignored">Batterioptimering er ignoreret, alt er fint</string>
+    <string name="battery_optimization_not_ignored">Batterioptimering er aktiveret, hvilket kan medføre problemer. Du bør deaktivere batterioptimering!</string>
+    <string name="battery_optimization_title">Batteri indstillinger</string>
     <string name="busy">Optaget</string>
     <string name="calendar">Kalender</string>
     <string name="call_more_actions_dialog_headline">Avancerede opkaldsmuligheder</string>
@@ -53,6 +56,9 @@
     <string name="deleted_conversation">Slettede samtale %1$s</string>
     <string name="dnd">Forstyr ikke</string>
     <string name="dontClear">Ryd ikke</string>
+    <string name="ecosystem_apps_files">Filer</string>
+    <string name="ecosystem_apps_more">Mere</string>
+    <string name="ecosystem_apps_notes">Noter</string>
     <string name="edit">Redigér</string>
     <string name="edit_error_24_hours_old_message">Beskeder der er ældre end 24 timer kan ikke redigeres</string>
     <string name="edit_message_icon_description">Redigér besked</string>
@@ -170,9 +176,11 @@
     <string name="nc_common_skip">Spring over</string>
     <string name="nc_common_unknown">Ukendt</string>
     <string name="nc_configure_cert_auth">Vælg godkendelsescertifikat</string>
+    <string name="nc_confirm">Bekræft</string>
     <string name="nc_connecting_call">Forbinder ...</string>
     <string name="nc_contacts_done">Færdig</string>
     <string name="nc_conversation_description">Samtalebeskrivelse</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Gå til fil</string>
     <string name="nc_conversation_menu_conversation_info">Samtaleinfo</string>
     <string name="nc_conversation_menu_video_call">Videoopkald</string>
     <string name="nc_conversation_menu_voice_call">Stemmeopkald</string>
@@ -236,6 +244,9 @@
     <string name="nc_diagnose_signaling_mode_extern">Ekstern</string>
     <string name="nc_diagnose_signaling_mode_intern">Intern</string>
     <string name="nc_diagnose_signaling_mode_title">Signaleringstilstanding Mode</string>
+    <string name="nc_diagnosis_dialog_open_checklist">Åbn fejlsøgnings kontrolliste</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Åbn diagnosticeringsskærm</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Åbn dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Ugyldigt kodeord</string>
     <string name="nc_dialog_maintenance_mode_description">Server er aktuelt i vedligeholdelsestilstand.</string>
     <string name="nc_dialog_outdated_client">App\'en er forældet is outdated</string>
@@ -392,8 +403,6 @@
     <string name="nc_push_notification_error"> Desværre, noget gik galt, fejlen er %1$s</string>
     <string name="nc_push_notification_fetch_error">Desværre, noget gik galt, kan ikke hente test push besked</string>
     <string name="nc_push_notification_message">Push notifikation afsendt. Du bør nu modtage en notifikation på apparatet med titlen \'Test push notifikationer\'</string>
-    <string name="nc_push_to_talk">Tryk-for-at-tale</string>
-    <string name="nc_push_to_talk_desc">Med mikrofonen deaktiveret, hold&amp;nede for at bruge Tryk-for-at-tale</string>
     <string name="nc_remind">Påmind mig senere</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
     <string name="nc_remove_group_and_members">Fjern gruppe og medlemmer</string>
@@ -420,6 +429,8 @@
     <string name="nc_search_clear">Ryd søgning</string>
     <string name="nc_select_an_account">Vælg konto</string>
     <string name="nc_send_edit_message">Opdater besked</string>
+    <string name="nc_send_later">Send senere</string>
+    <string name="nc_send_now">Send nu</string>
     <string name="nc_send_voice_recording">Send stemmeoptagelse</string>
     <string name="nc_sensitive_conversation">Følsom samtale</string>
     <string name="nc_sensitive_conversation_hint">Besked forhåndsvisning vil blive deaktiveret i samtalelisten og notifikationer</string>
@@ -456,6 +467,8 @@
     <string name="nc_settings_contact_admin_of">Kontakt venligst administratoren for</string>
     <string name="nc_settings_diagnose_subtitle">Åben diagnosticeringsskærmen for at kontrollere indstillinger og oprette en fejlrapport</string>
     <string name="nc_settings_diagnose_title">Diagnose</string>
+    <string name="nc_settings_diagnosis_subtitle">Åbn diagnosticeringsskærmen for at kontrollere indstillinger eller oprette en fejlrapport</string>
+    <string name="nc_settings_diagnosis_title">Diagnose</string>
     <string name="nc_settings_incognito_keyboard_desc">Indstiller tastatur til at deaktivere personaliseret indlæring (uden garanti)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito tastatur</string>
     <string name="nc_settings_no_ringtone">Ingen lyd</string>
@@ -518,6 +531,7 @@
     <string name="nc_shared_items_empty">Ingen delte elementer</string>
     <string name="nc_shared_items_location">Sted</string>
     <string name="nc_shared_location">Delt placering</string>
+    <string name="nc_show_ecosystem_title">Vis app skifter</string>
     <string name="nc_show_notification_warning_description">Når notifikationer ikke er opsat korrekt, så vis en regulær advarsel</string>
     <string name="nc_show_notification_warning_title">Vis regulær notifikationsadvarsel</string>
     <string name="nc_sort_by">Sorter efter</string>
@@ -549,6 +563,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Rul for at annullere</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Ja</string>
+    <string name="nc_zoom_in">Zoom ind</string>
+    <string name="nc_zoom_out">Zoom ud</string>
     <string name="next_week">Næste uge</string>
     <string name="no_conversations_archived">Ingen arkiverede samtaler</string>
     <string name="no_offline_messages_saved">Ingen offline beskeder gemt</string>
@@ -556,6 +572,7 @@
     <string name="notification_all_messages">Alle beskeder</string>
     <string name="notification_mention_only">Kun omtalt med @</string>
     <string name="notification_off">Deaktivér</string>
+    <string name="notification_permission">Notifikationstilladelser</string>
     <string name="notifications_default">Standard</string>
     <string name="notifications_default_description">Følg samtaleindstillinger</string>
     <string name="oneHour">1 time</string>
@@ -565,6 +582,7 @@
     <string name="open_in_files_app">Åben i appe\'en filer</string>
     <string name="open_notes">Åben noter</string>
     <string name="open_thread">Gå til tråd</string>
+    <string name="pinned_dismiss">Afvis</string>
     <string name="play_pause_voice_message">Afspil/pauser stemmebesked</string>
     <string name="playback_speed_control">Afspilningshastighedskontrol</string>
     <string name="polls_add_option">Tilføj valg</string>
@@ -697,9 +715,16 @@
     <string name="user_absence_replacement">Erstatning:</string>
     <string name="user_avatar">Bruger avatar</string>
     <string name="user_info_address">Adresse</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Fulde navn</string>
     <string name="user_info_email">E-mail</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Overskrift</string>
+    <string name="user_info_organisation">Organisation</string>
     <string name="user_info_phone">Telefonnummer</string>
+    <string name="user_info_profile_enable">Aktivér profil</string>
+    <string name="user_info_pronouns">Pronominer</string>
+    <string name="user_info_role">Rolle</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Hjemmeside</string>
     <string name="user_status">Status</string>

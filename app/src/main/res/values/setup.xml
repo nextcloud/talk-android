@@ -23,6 +23,8 @@
     <bool name="hide_auth_cert">false</bool>
     <bool name="multiaccount_support">true</bool>
     <string name="weblogin_url" translatable="false"></string>
+    <!-- Flags to auto enable/disable some features -->
+    <bool name="is_branded_client">false</bool>
 
     <!-- Will not be shown if empty -->
     <string name="nc_privacy_url" translatable="false">https://nextcloud.com/privacy/</string>
@@ -51,8 +53,7 @@
     <string name="dontkillmyapp_url" translatable="false">https://dontkillmyapp.com/</string>
 
     <!-- Map and Geocoding -->
-    <string name="osm_tile_server_url" translatable="false">https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</string>
-    <string name="osm_tile_server_attributation" translatable="false">OpenStreetMap contributors</string>
+    <string name="osm_map_view_attributation" translatable="false">© MapLibre, OpenFreeMap, OpenStreetMap contributors</string>
     <string name="osm_geocoder_url" translatable="false">https://nominatim.openstreetmap.org/</string>
     <string name="osm_geocoder_contact" translatable="false">android@nextcloud.com</string>
 

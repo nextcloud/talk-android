@@ -18,7 +18,7 @@ import com.nextcloud.talk.models.json.threads.ThreadsOverall
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.UserIdUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -27,7 +27,7 @@ import javax.inject.Inject
 @Suppress("TooGenericExceptionCaught")
 class ThreadsOverviewViewModel @Inject constructor(
     private val threadsRepository: ThreadsRepository,
-    private val currentUserProvider: CurrentUserProviderNew,
+    private val currentUserProvider: CurrentUserProviderOld,
     private val arbitraryStorageManager: ArbitraryStorageManager
 ) : ViewModel() {
     private val _currentUser = currentUserProvider.currentUser.blockingGet()

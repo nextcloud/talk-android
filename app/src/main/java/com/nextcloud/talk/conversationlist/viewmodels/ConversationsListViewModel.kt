@@ -6,54 +6,84 @@
  */
 package com.nextcloud.talk.conversationlist.viewmodels
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.R
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
+import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
+import com.nextcloud.talk.conversationlist.ui.ConversationListEntry
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.data.InvitationsModel
 import com.nextcloud.talk.invitation.data.InvitationsRepository
+import com.nextcloud.talk.messagesearch.MessageSearchHelper
+import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
+import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
+import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
+import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
+import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.DEFAULT
+import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.MENTION
+import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.UNREAD
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import com.nextcloud.talk.utils.withRetry
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.asFlow
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+@Suppress("LongParameterList", "TooManyFunctions")
 class ConversationsListViewModel @Inject constructor(
     private val repository: OfflineConversationsRepository,
     private val threadsRepository: ThreadsRepository,
-    private val currentUserProvider: CurrentUserProviderNew,
+    private val currentUserProvider: CurrentUserProviderOld,
     private val openConversationsRepository: OpenConversationsRepository,
-    var userManager: UserManager
+    private val contactsRepository: ContactsRepository,
+    private val unifiedSearchRepository: UnifiedSearchRepository,
+    private val invitationsRepository: InvitationsRepository,
+    private val arbitraryStorageManager: ArbitraryStorageManager,
+    var userManager: UserManager,
+    private val ncApiCoroutines: NcApiCoroutines
 ) : ViewModel() {
-
-    @Inject
-    lateinit var invitationsRepository: InvitationsRepository
-
-    @Inject
-    lateinit var arbitraryStorageManager: ArbitraryStorageManager
 
     private val _currentUser = currentUserProvider.currentUser.blockingGet()
     val currentUser: User = _currentUser
     val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token) ?: ""
+
+    private val searchHelper = MessageSearchHelper(unifiedSearchRepository, currentUser)
 
     sealed interface ViewState
 
@@ -75,8 +105,18 @@ class ConversationsListViewModel @Inject constructor(
     private val _openConversationsState = MutableStateFlow<OpenConversationsUiState>(OpenConversationsUiState.None)
     val openConversationsState: StateFlow<OpenConversationsUiState> = _openConversationsState
 
+    sealed class ConversationReadUnreadUiState {
+        data object None : ConversationReadUnreadUiState()
+        data class Success(val conversationDisplayName: String, val isMarkedRead: Boolean) :
+            ConversationReadUnreadUiState()
+        data object Error : ConversationReadUnreadUiState()
+    }
+
+    private val _readUnreadState = MutableStateFlow<ConversationReadUnreadUiState>(ConversationReadUnreadUiState.None)
+    val readUnreadState: StateFlow<ConversationReadUnreadUiState> = _readUnreadState.asStateFlow()
+
     object GetRoomsStartState : ViewState
-    object GetRoomsErrorState : ViewState
+    class GetRoomsErrorState(val throwable: Throwable) : ViewState
     open class GetRoomsSuccessState(val listIsNotEmpty: Boolean) : ViewState
 
     private val _getRoomsViewState: MutableLiveData<ViewState> = MutableLiveData(GetRoomsStartState)
@@ -87,30 +127,169 @@ class ConversationsListViewModel @Inject constructor(
         .onEach { list ->
             _getRoomsViewState.value = GetRoomsSuccessState(list.isNotEmpty())
         }.catch {
-            _getRoomsViewState.value = GetRoomsErrorState
+            _getRoomsViewState.value = GetRoomsErrorState(it)
         }
 
-    object GetFederationInvitationsStartState : ViewState
-    object GetFederationInvitationsErrorState : ViewState
+    private val _isShimmerVisible = MutableStateFlow(true)
 
-    open class GetFederationInvitationsSuccessState(val showInvitationsHint: Boolean) : ViewState
+    /**
+     * Drives the shimmer skeleton visibility. Set to false as soon as the first room-list
+     * emission arrives (same subscription as [getRoomsStateFlow] so it hides in the same
+     * coroutine step that populates [conversationListEntriesFlow].
+     */
+    val isShimmerVisible: StateFlow<Boolean> = _isShimmerVisible.asStateFlow()
 
-    private val _getFederationInvitationsViewState: MutableLiveData<ViewState> =
-        MutableLiveData(GetFederationInvitationsStartState)
-    val getFederationInvitationsViewState: LiveData<ViewState>
-        get() = _getFederationInvitationsViewState
+    val getRoomsStateFlow = repository
+        .roomListFlow
+        .onEach { _isShimmerVisible.value = false }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
 
-    object ShowBadgeStartState : ViewState
-    object ShowBadgeErrorState : ViewState
-    open class ShowBadgeSuccessState(val showBadge: Boolean) : ViewState
+    private val _federationInvitationHintVisible = MutableStateFlow(false)
+    val federationInvitationHintVisible: StateFlow<Boolean> = _federationInvitationHintVisible.asStateFlow()
 
-    private val _showBadgeViewState: MutableLiveData<ViewState> = MutableLiveData(ShowBadgeStartState)
-    val showBadgeViewState: LiveData<ViewState>
-        get() = _showBadgeViewState
+    private val _showAvatarBadge = MutableStateFlow(false)
+    val showAvatarBadge: StateFlow<Boolean> = _showAvatarBadge.asStateFlow()
+
+    private val searchResultEntries: MutableStateFlow<List<ConversationListEntry>> =
+        MutableStateFlow(emptyList())
+
+    /** Job tracking the currently active [getSearchQuery] coroutine; canceled on cleanup. */
+    private var searchJob: Job? = null
+
+    /**
+     * Tracks the query that the last completed/running [getSearchQuery] call was started for.
+     * Used to skip re-searching the same query on configuration changes (rotation, display
+     * off/on) where the [LaunchedEffect] in the Compose toolbar fires again with an unchanged
+     * key but a brand-new composition.  Reset whenever search is canceled or deactivated so
+     * that the next explicit search always runs.
+     */
+    private var lastSearchedFilter: String = ""
+
+    private val _filterStateFlow = MutableStateFlow<Map<String, Boolean>>(
+        mapOf(MENTION to false, UNREAD to false, ARCHIVE to false, DEFAULT to true)
+    )
+    val filterStateFlow: StateFlow<Map<String, Boolean>> = _filterStateFlow.asStateFlow()
+
+    private val _isSearchActiveFlow = MutableStateFlow(false)
+    val isSearchActiveFlow: StateFlow<Boolean> = _isSearchActiveFlow.asStateFlow()
+
+    private val _currentSearchQueryFlow = MutableStateFlow("")
+    val currentSearchQueryFlow: StateFlow<String> = _currentSearchQueryFlow.asStateFlow()
+
+    /**
+     * True from the moment the user types a non-empty query (debounce starts) until the first
+     * set of search results arrives.  Used by the UI to distinguish "waiting for results" from
+     * "search completed with no results", so that [SearchNoResultsView] is not shown
+     * prematurely during the search round-trip.
+     */
+    private val _isSearchLoadingFlow = MutableStateFlow(false)
+    val isSearchLoadingFlow: StateFlow<Boolean> = _isSearchLoadingFlow.asStateFlow()
+
+    private val _selectedConversationForOps = MutableStateFlow<ConversationModel?>(null)
+    val selectedConversationForOps: StateFlow<ConversationModel?> = _selectedConversationForOps.asStateFlow()
+
+    fun setSelectedConversationForOps(model: ConversationModel?) {
+        _selectedConversationForOps.value = model
+    }
+
+    fun clearSelectedConversationForOpsWithDelay(delayMs: Long) {
+        viewModelScope.launch {
+            kotlinx.coroutines.delay(delayMs)
+            _selectedConversationForOps.value = null
+        }
+    }
+
+    private val hideRoomToken = MutableStateFlow<String?>(null)
+
+    /**
+     * Single source of truth for the [ConversationList] LazyColumn.
+     * Auto-reacts to rooms, filter, search-active and search-result changes.
+     */
+    val conversationListEntriesFlow: StateFlow<List<ConversationListEntry>> = combine(
+        getRoomsStateFlow,
+        _filterStateFlow,
+        _isSearchActiveFlow,
+        searchResultEntries,
+        hideRoomToken
+    ) { rooms, filterState, isSearchActive, searchResults, hideToken ->
+        buildConversationListEntries(rooms, filterState, isSearchActive, searchResults, hideToken)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    /** Update filter state; triggers [conversationListEntriesFlow] re-emit. */
+    fun applyFilter(newFilterState: Map<String, Boolean>) {
+        _filterStateFlow.value = newFilterState
+    }
+
+    /**
+     * Reload filter settings from [ArbitraryStorageManager] and update [filterStateFlow].
+     * Runs on IO dispatcher; [conversationListEntriesFlow] will re-emit once done.
+     */
+    fun reloadFilterFromStorage(accountId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val mention = arbitraryStorageManager.getStorageSetting(accountId, MENTION, "")
+                .blockingGet()?.value == "true"
+            val unread = arbitraryStorageManager.getStorageSetting(accountId, UNREAD, "")
+                .blockingGet()?.value == "true"
+            val archive = arbitraryStorageManager.getStorageSetting(accountId, ARCHIVE, "")
+                .blockingGet()?.value == "true"
+            _filterStateFlow.value = mapOf(
+                MENTION to mention,
+                UNREAD to unread,
+                ARCHIVE to archive,
+                DEFAULT to true
+            )
+        }
+    }
+
+    /** Cancel any active message search and clear search results. */
+    fun cancelSearch() {
+        lastSearchedFilter = ""
+        _isSearchLoadingFlow.value = false
+        searchJob?.cancel()
+        searchJob = null
+        searchHelper.cancelSearch()
+        searchResultEntries.value = emptyList()
+        _currentSearchQueryFlow.value = ""
+    }
+
+    /**
+     * Updates the displayed query text without triggering an immediate search.
+     * Debouncing is handled by the caller via [kotlinx.coroutines.delay] in a
+     * [androidx.compose.runtime.LaunchedEffect].
+     */
+    fun setSearchQuery(text: String) {
+        _currentSearchQueryFlow.value = text
+        if (text.isEmpty()) {
+            _isSearchLoadingFlow.value = false
+            searchResultEntries.value = emptyList()
+        } else {
+            _isSearchLoadingFlow.value = true
+        }
+    }
+
+    /** Mark the SearchView as expanded (true) or collapsed (false). */
+    fun setIsSearchActive(active: Boolean) {
+        _isSearchActiveFlow.value = active
+        if (!active) {
+            cancelSearch()
+        } else {
+            // Clear any stale results from a previous search so they don't
+            // flash on screen before the user has typed the first character.
+            lastSearchedFilter = ""
+            _isSearchLoadingFlow.value = false
+            searchResultEntries.value = emptyList()
+            _currentSearchQueryFlow.value = ""
+        }
+    }
+
+    /** Exclude the forward-source room token from the list. */
+    fun setHideRoomToken(token: String?) {
+        hideRoomToken.value = token
+    }
 
     fun getFederationInvitations() {
-        _getFederationInvitationsViewState.value = GetFederationInvitationsStartState
-        _showBadgeViewState.value = ShowBadgeStartState
+        _federationInvitationHintVisible.value = false
+        _showAvatarBadge.value = false
 
         userManager.users.blockingGet()?.forEach {
             invitationsRepository.fetchInvitations(it)
@@ -120,10 +299,99 @@ class ConversationsListViewModel @Inject constructor(
         }
     }
 
-    fun getRooms() {
+    @Suppress("LongMethod")
+    fun getSearchQuery(context: Context, filter: String) {
+        // Rotation / display-off guard: if the composition restarts (config change) the
+        // LaunchedEffect fires again with the same query.  Skip the search so the existing
+        // results are not replaced by a partial first-emit from the cold network flows.
+        if (filter == lastSearchedFilter && searchResultEntries.value.isNotEmpty()) return
+
+        _isSearchLoadingFlow.value = true
+        lastSearchedFilter = filter
+        searchJob?.cancel()
+        _currentSearchQueryFlow.value = filter
+        val conversationsTitle = context.resources.getString(R.string.conversations)
+        val openConversationsTitle = context.resources.getString(R.string.openConversations)
+        val usersTitle = context.resources.getString(R.string.nc_user)
+        val messagesTitle = context.resources.getString(R.string.messages)
+        val actorTypeConverter = EnumActorTypeConverter()
+
+        searchJob = viewModelScope.launch {
+            combine(
+                getRoomsStateFlow.map { list ->
+                    list.filter { it.displayName?.contains(filter, ignoreCase = true) == true }
+                },
+                openConversationsRepository.fetchOpenConversationsFlow(currentUser, filter),
+                contactsRepository.getContactsFlow(currentUser, filter),
+                getMessagesFlow(filter)
+            ) { localConvs, openConvs, contacts, (messages, hasMore) ->
+                val entries = mutableListOf<ConversationListEntry>()
+
+                if (localConvs.isNotEmpty()) {
+                    entries.add(ConversationListEntry.Header(conversationsTitle))
+                    localConvs.forEach { entries.add(ConversationListEntry.ConversationEntry(it)) }
+                }
+                if (openConvs.isNotEmpty()) {
+                    entries.add(ConversationListEntry.Header(openConversationsTitle))
+                    openConvs.forEach { conv ->
+                        entries.add(
+                            ConversationListEntry.ConversationEntry(
+                                ConversationModel.mapToConversationModel(conv, currentUser)
+                            )
+                        )
+                    }
+                }
+                if (contacts.isNotEmpty()) {
+                    entries.add(ConversationListEntry.Header(usersTitle))
+                    contacts.forEach { autocompleteUser ->
+                        val participant = Participant()
+                        participant.actorId = autocompleteUser.id
+                        participant.actorType = actorTypeConverter.getFromString(autocompleteUser.source)
+                        participant.displayName = autocompleteUser.label
+                        entries.add(ConversationListEntry.ContactEntry(participant))
+                    }
+                }
+                if (messages.isNotEmpty()) {
+                    entries.add(ConversationListEntry.Header(messagesTitle))
+                    messages.forEach { msg -> entries.add(ConversationListEntry.MessageResultEntry(msg)) }
+                }
+                if (hasMore) entries.add(ConversationListEntry.LoadMore)
+
+                entries.toList()
+            }.collect { results ->
+                searchResultEntries.emit(results)
+                _isSearchLoadingFlow.value = false
+            }
+        }
+    }
+
+    private fun getMessagesFlow(search: String): Flow<MessageSearchResults> =
+        searchHelper.startMessageSearch(search).subscribeOn(Schedulers.io()).asFlow()
+
+    fun loadMoreMessages(context: Context) {
+        viewModelScope.launch {
+            searchHelper.loadMore()
+                ?.asFlow()
+                ?.map { (messages, hasMore) ->
+                    val newEntries: List<ConversationListEntry> =
+                        messages.map { ConversationListEntry.MessageResultEntry(it) }
+                    if (hasMore) newEntries + ConversationListEntry.LoadMore else newEntries
+                }?.collect { newEntries ->
+                    searchResultEntries.update { current ->
+                        val withoutOld = current.filter { entry ->
+                            entry !is ConversationListEntry.MessageResultEntry &&
+                                entry !is ConversationListEntry.LoadMore
+                        }
+                        withoutOld + newEntries
+                    }
+                }
+        }
+    }
+
+    fun getRooms(user: User) {
         val startNanoTime = System.nanoTime()
         Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
-        repository.getRooms()
+        repository.getRooms(user)
     }
 
     fun checkIfThreadsExist() {
@@ -133,10 +401,11 @@ class ConversationsListViewModel @Inject constructor(
         fun isLastCheckTooOld(lastCheckDate: Long): Boolean {
             val currentTimeMillis = System.currentTimeMillis()
             val differenceMillis = currentTimeMillis - lastCheckDate
-            val checkIntervalInMillies = TimeUnit.HOURS.toMillis(2)
-            return differenceMillis > checkIntervalInMillies
+            val checkIntervalInMillis = TimeUnit.HOURS.toMillis(2)
+            return differenceMillis > checkIntervalInMillis
         }
 
+        @Suppress("Detekt.TooGenericExceptionCaught")
         fun checkIfFollowedThreadsExist() {
             val threadsUrl = ApiUtils.getUrlForSubscribedThreads(
                 version = 1,
@@ -199,15 +468,25 @@ class ConversationsListViewModel @Inject constructor(
         }
     }
 
-    fun fetchOpenConversations() {
-        _openConversationsState.value = OpenConversationsUiState.None
+    suspend fun fetchOpenConversations(searchTerm: String) =
+        withContext(Dispatchers.IO) {
+            _openConversationsState.value = OpenConversationsUiState.None
 
-        if (!hasSpreedFeatureCapability(currentUser.capabilities?.spreedCapability, SpreedFeatures.LISTABLE_ROOMS)) {
-            return
-        }
+            if (!hasSpreedFeatureCapability(
+                    currentUser.capabilities?.spreedCapability,
+                    SpreedFeatures.LISTABLE_ROOMS
+                )
+            ) {
+                return@withContext
+            }
 
-        viewModelScope.launch {
-            openConversationsRepository.fetchConversations("")
+            val apiVersion = ApiUtils.getConversationApiVersion(
+                currentUser,
+                intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
+            )
+            val url = ApiUtils.getUrlForOpenConversations(apiVersion, currentUser.baseUrl!!)
+
+            openConversationsRepository.fetchConversations(currentUser, url, searchTerm)
                 .onSuccess { conversations ->
                     if (conversations.isEmpty()) {
                         _openConversationsState.value = OpenConversationsUiState.None
@@ -219,6 +498,117 @@ class ConversationsListViewModel @Inject constructor(
                     Log.e(TAG, "Failed to fetch conversations", exception)
                     _openConversationsState.value = OpenConversationsUiState.Error(exception)
                 }
+        }
+
+    private fun buildConversationListEntries(
+        rooms: List<ConversationModel>,
+        filterState: Map<String, Boolean>,
+        isSearchActive: Boolean,
+        searchResults: List<ConversationListEntry>,
+        hideToken: String?
+    ): List<ConversationListEntry> {
+        if (isSearchActive) return searchResults
+
+        val hasFilterEnabled = filterState[MENTION] == true ||
+            filterState[UNREAD] == true ||
+            filterState[ARCHIVE] == true
+
+        var filtered = rooms
+            .filter { it.token != hideToken }
+            .filter { conversation ->
+                !(
+                    conversation.objectType == ConversationEnums.ObjectType.ROOM &&
+                        conversation.lobbyState == ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY
+                    )
+            }
+
+        filtered = if (hasFilterEnabled) {
+            filtered.filter { filterConversationModel(it, filterState) }
+        } else {
+            filtered.filter { !isFutureEvent(it) && !it.hasArchived }
+        }
+
+        val sorted = filtered.sortedWith(
+            compareByDescending<ConversationModel> { it.favorite }
+                .thenByDescending { it.lastActivity }
+        )
+        return sorted.map { ConversationListEntry.ConversationEntry(it) }
+    }
+
+    @Suppress("CyclomaticComplexMethod", "NestedBlockDepth")
+    private fun filterConversationModel(conversation: ConversationModel, filterState: Map<String, Boolean>): Boolean {
+        var result = true
+        for ((k, v) in filterState) {
+            if (v) {
+                when (k) {
+                    MENTION -> result = (result && conversation.unreadMention) ||
+                        (
+                            result &&
+                                (
+                                    conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
+                                        conversation.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE
+                                    ) &&
+                                (conversation.unreadMessages > 0)
+                            )
+                    UNREAD -> result = result && (conversation.unreadMessages > 0)
+                    DEFAULT -> result = if (filterState[ARCHIVE] == true) {
+                        result && conversation.hasArchived
+                    } else {
+                        result && !conversation.hasArchived
+                    }
+                }
+            }
+        }
+        return result
+    }
+
+    private fun isFutureEvent(conversation: ConversationModel): Boolean {
+        val eventTimeStart = conversation.objectId.substringBefore("#").toLongOrNull() ?: return false
+        val currentTimeStampInSeconds = System.currentTimeMillis() / LONG_1000
+        return conversation.objectType == ConversationEnums.ObjectType.EVENT &&
+            (eventTimeStart - currentTimeStampInSeconds) > SIXTEEN_HOURS_IN_SECONDS
+    }
+
+    fun resetReadUnreadState() {
+        _readUnreadState.value = ConversationReadUnreadUiState.None
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun markConversationAsRead(conversation: ConversationModel) {
+        val messageId = if (conversation.remoteServer.isNullOrEmpty()) conversation.lastMessage?.id?.toInt() else null
+        val apiVersion = ApiUtils.getChatApiVersion(
+            currentUser.capabilities?.spreedCapability!!,
+            intArrayOf(ApiUtils.API_V1)
+        )
+        val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    withRetry(1) { ncApiCoroutines.setChatReadMarker(credentials, url, messageId) }
+                }
+                _readUnreadState.value = ConversationReadUnreadUiState.Success(conversation.displayName, true)
+            } catch (e: Exception) {
+                _readUnreadState.value = ConversationReadUnreadUiState.Error
+            }
+        }
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun markConversationAsUnread(conversation: ConversationModel) {
+        val apiVersion = ApiUtils.getChatApiVersion(
+            currentUser.capabilities?.spreedCapability!!,
+            intArrayOf(ApiUtils.API_V1)
+        )
+        val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    withRetry(1) { ncApiCoroutines.markRoomAsUnread(credentials, url) }
+                }
+                _readUnreadState.value = ConversationReadUnreadUiState.Success(conversation.displayName, false)
+            } catch (e: Exception) {
+                _readUnreadState.value = ConversationReadUnreadUiState.Error
+            }
         }
     }
 
@@ -233,20 +623,15 @@ class ConversationsListViewModel @Inject constructor(
             if (invitationsModel.user.userId?.equals(currentUser.userId) == true &&
                 invitationsModel.user.baseUrl?.equals(currentUser.baseUrl) == true
             ) {
-                if (invitationsModel.invitations.isNotEmpty()) {
-                    _getFederationInvitationsViewState.value = GetFederationInvitationsSuccessState(true)
-                } else {
-                    _getFederationInvitationsViewState.value = GetFederationInvitationsSuccessState(false)
-                }
+                _federationInvitationHintVisible.value = invitationsModel.invitations.isNotEmpty()
             } else {
                 if (invitationsModel.invitations.isNotEmpty()) {
-                    _showBadgeViewState.value = ShowBadgeSuccessState(true)
+                    _showAvatarBadge.value = true
                 }
             }
         }
 
         override fun onError(e: Throwable) {
-            _getFederationInvitationsViewState.value = GetFederationInvitationsErrorState
             Log.e(TAG, "Failed to fetch pending invitations", e)
         }
 
@@ -259,5 +644,7 @@ class ConversationsListViewModel @Inject constructor(
         private val TAG = ConversationsListViewModel::class.simpleName
         const val FOLLOWED_THREADS_EXIST_LAST_CHECK = "FOLLOWED_THREADS_EXIST_LAST_CHECK"
         const val FOLLOWED_THREADS_EXIST = "FOLLOWED_THREADS_EXIST"
+        private const val SIXTEEN_HOURS_IN_SECONDS: Long = 57600
+        private const val LONG_1000: Long = 1000
     }
 }

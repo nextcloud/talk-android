@@ -9,11 +9,26 @@ package com.nextcloud.talk.repositories.reactions
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.chat.data.model.ChatMessage
-import io.reactivex.Observable
 
 interface ReactionsRepository {
 
-    fun addReaction(roomToken: String, message: ChatMessage, emoji: String): Observable<ReactionAddedModel>
+    @Suppress("LongParameterList")
+    suspend fun addReaction(
+        credentials: String?,
+        userId: Long,
+        url: String,
+        roomToken: String,
+        message: ChatMessage,
+        emoji: String
+    ): ReactionAddedModel
 
-    fun deleteReaction(roomToken: String, message: ChatMessage, emoji: String): Observable<ReactionDeletedModel>
+    @Suppress("LongParameterList")
+    suspend fun deleteReaction(
+        credentials: String?,
+        userId: Long,
+        url: String,
+        roomToken: String,
+        message: ChatMessage,
+        emoji: String
+    ): ReactionDeletedModel
 }

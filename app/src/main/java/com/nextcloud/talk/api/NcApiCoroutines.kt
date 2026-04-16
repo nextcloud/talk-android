@@ -20,13 +20,17 @@ import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.participants.TalkBanOverall
 import com.nextcloud.talk.models.json.profile.ProfileOverall
+import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.models.json.status.StatusOverall
+import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
 import com.nextcloud.talk.models.json.testNotification.TestNotificationOverall
 import com.nextcloud.talk.models.json.threads.ThreadOverall
 import com.nextcloud.talk.models.json.threads.ThreadsOverall
+import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEventsOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.Field
@@ -270,6 +274,12 @@ interface NcApiCoroutines {
         @Url url: String
     ): UserAbsenceOverall
 
+    @GET
+    suspend fun getUpcomingEvents(
+        @Header("Authorization") authorization: String,
+        @Url url: String
+    ): UpcomingEventsOverall
+
     @POST
     suspend fun testPushNotifications(
         @Header("Authorization") authorization: String,
@@ -283,6 +293,9 @@ interface NcApiCoroutines {
         @Query("limit") limit: Int,
         @Query("threadId") threadId: Int?
     ): ChatOverall
+
+    @GET
+    suspend fun getRoom(@Header("Authorization") authorization: String, @Url url: String): RoomOverall
 
     @GET
     suspend fun getNoteToSelfRoom(@Header("Authorization") authorization: String, @Url url: String): RoomOverall
@@ -323,4 +336,131 @@ interface NcApiCoroutines {
 
     @GET
     suspend fun status(@Header("Authorization") authorization: String, @Url url: String): StatusOverall
+
+    @FormUrlEncoded
+    @PUT
+    suspend fun setStatusType(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("statusType") statusType: String
+    ): GenericOverall
+
+    @GET
+    suspend fun getPredefinedStatuses(
+        @Header("Authorization") authorization: String,
+        @Url url: String
+    ): PredefinedStatusOverall
+
+    @GET
+    suspend fun backupStatus(@Header("Authorization") authorization: String, @Url url: String): StatusOverall
+
+    @DELETE
+    suspend fun statusDeleteMessage(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
+
+    @FormUrlEncoded
+    @PUT
+    suspend fun setPredefinedStatusMessage(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("messageId") messageId: String,
+        @Field("clearAt") clearAt: Long?
+    ): GenericOverall
+
+    @FormUrlEncoded
+    @PUT
+    suspend fun setCustomStatusMessage(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("statusIcon") statusIcon: String?,
+        @Field("message") message: String,
+        @Field("clearAt") clearAt: Long?
+    ): GenericOverall
+
+    @DELETE
+    suspend fun revertStatus(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
+
+    @FormUrlEncoded
+    @POST
+    suspend fun pinMessage(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("pinUntil") pinUntil: Int
+    ): ChatOverallSingleMessage
+
+    @DELETE
+    suspend fun unPinMessage(@Header("Authorization") authorization: String, @Url url: String): ChatOverallSingleMessage
+
+    @DELETE
+    suspend fun hidePinnedMessage(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
+
+    @FormUrlEncoded
+    @POST
+    @Suppress("LongParameterList")
+    suspend fun sendScheduleChatMessage(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("message") message: String,
+        @Field("replyTo") replyTo: Int?,
+        @Field("silent") sendWithoutNotification: Boolean,
+        @Field("threadTitle") threadTitle: String?,
+        @Field("threadId") threadId: Long?,
+        @Field("sendAt") sendAt: Int?
+    ): ChatOverallSingleMessage
+
+    @FormUrlEncoded
+    @POST
+    suspend fun updateScheduledMessage(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("message") message: String,
+        @Field("sendAt") sendAt: Int?,
+        @Field("silent") sendWithoutNotification: Boolean
+    ): ChatOverallSingleMessage
+
+    @DELETE
+    suspend fun deleteScheduleMessage(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
+
+    @GET
+    suspend fun getScheduledMessage(@Header("Authorization") authorization: String, @Url url: String): ChatOverall
+
+    @GET
+    suspend fun pullChatMessages(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @QueryMap fields: Map<String, Int>
+    ): Response<ChatOverall>
+
+    @POST
+    suspend fun sendReaction(
+        @Header("Authorization") authorization: String?,
+        @Url url: String,
+        @Query("reaction") reaction: String
+    ): GenericOverall
+
+    @DELETE
+    suspend fun deleteReaction(
+        @Header("Authorization") authorization: String?,
+        @Url url: String,
+        @Query("reaction") reaction: String
+    ): GenericOverall
+
+    @GET
+    suspend fun getReactions(
+        @Header("Authorization") authorization: String?,
+        @Url url: String,
+        @Query("reaction") reaction: String?
+    ): ReactionsOverall
+
+    // Url is: /api/{apiVersion}/chat/{token}/read
+    @FormUrlEncoded
+    @POST
+    suspend fun setChatReadMarker(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("lastReadMessage") lastReadMessage: Int?
+    ): GenericOverall
+
+    // Url is: /api/{apiVersion}/chat/{token}/read
+    @DELETE
+    suspend fun markRoomAsUnread(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 }

@@ -2,11 +2,8 @@
 <!--
   ~ Nextcloud Talk - Android Client
   ~
-  ~ SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
-  ~ SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
+  ~ SPDX-FileCopyrightText: 2017-2026 Nextcloud GmbH and Nextcloud contributors
   ~ SPDX-License-Identifier: GPL-3.0-or-later
-  ~
-  ~ Adapted from https://github.com/stfalcon-studio/ChatKit/blob/master/chatkit/src/main/res/layout/item_dialog.xml
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"

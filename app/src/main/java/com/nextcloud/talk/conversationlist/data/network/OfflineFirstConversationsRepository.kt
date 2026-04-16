@@ -13,13 +13,12 @@ import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.mappers.asEntity
-import com.nextcloud.talk.data.database.mappers.asModel
+import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -34,13 +33,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
+import kotlin.collections.map
 
 class OfflineFirstConversationsRepository @Inject constructor(
     private val dao: ConversationsDao,
     private val network: ConversationsNetworkDataSource,
     private val chatNetworkDataSource: ChatNetworkDataSource,
-    private val networkMonitor: NetworkMonitor,
-    private val currentUserProviderNew: CurrentUserProviderNew
+    private val networkMonitor: NetworkMonitor
 ) : OfflineConversationsRepository {
     override val roomListFlow: Flow<List<ConversationModel>>
         get() = _roomListFlow
@@ -51,23 +50,40 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val _conversationFlow: MutableSharedFlow<ConversationModel> = MutableSharedFlow()
 
     private val scope = CoroutineScope(Dispatchers.IO)
-    private var user: User = currentUserProviderNew.currentUser.blockingGet()
 
-    override fun getRooms(): Job =
+    sealed interface ConversationResult {
+        data class Found(val conversation: ConversationModel) : ConversationResult
+        object NotFound : ConversationResult
+    }
+
+    override fun observeConversation(accountId: Long, roomToken: String): Flow<ConversationResult> =
+        dao.getConversationForUser(
+            accountId,
+            roomToken
+        )
+            .map { entity ->
+                if (entity == null) {
+                    ConversationResult.NotFound
+                } else {
+                    ConversationResult.Found(entity.toDomainModel())
+                }
+            }
+
+    override fun getRooms(user: User): Job =
         scope.launch {
             val initialConversationModels = getListOfConversations(user.id!!)
             _roomListFlow.emit(initialConversationModels)
 
             if (networkMonitor.isOnline.value) {
-                val conversationEntitiesFromSync = getRoomsFromServer()
+                val conversationEntitiesFromSync = getRoomsFromServer(user)
                 if (!conversationEntitiesFromSync.isNullOrEmpty()) {
-                    val conversationModelsFromSync = conversationEntitiesFromSync.map(ConversationEntity::asModel)
+                    val conversationModelsFromSync = getListOfConversations(user.id!!)
                     _roomListFlow.emit(conversationModelsFromSync)
                 }
             }
         }
 
-    override fun getRoom(roomToken: String): Job =
+    override fun getRoom(user: User, roomToken: String): Job =
         scope.launch {
             chatNetworkDataSource.getRoom(user, roomToken)
                 .subscribeOn(Schedulers.io())
@@ -96,6 +112,8 @@ class OfflineFirstConversationsRepository @Inject constructor(
 
                     override fun onNext(model: ConversationModel) {
                         runBlocking {
+                            val existingEntity = dao.getConversationForUser(user.id!!, model.token).first()
+                            model.hiddenUpcomingEvent = existingEntity?.hiddenUpcomingEvent
                             _conversationFlow.emit(model)
                             val entityList = listOf(model.asEntity())
                             dao.upsertConversations(user.id!!, entityList)
@@ -109,13 +127,13 @@ class OfflineFirstConversationsRepository @Inject constructor(
         dao.updateConversation(entity)
     }
 
-    override suspend fun getLocallyStoredConversation(roomToken: String): ConversationModel? {
+    override suspend fun getLocallyStoredConversation(user: User, roomToken: String): ConversationModel? {
         val id = user.id!!
         return getConversation(id, roomToken)
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    private suspend fun getRoomsFromServer(): List<ConversationEntity>? {
+    private suspend fun getRoomsFromServer(user: User): List<ConversationEntity>? {
         var conversationsFromSync: List<ConversationEntity>? = null
 
         if (!networkMonitor.isOnline.value) {
@@ -135,7 +153,10 @@ class OfflineFirstConversationsRepository @Inject constructor(
                 it.asEntity(user.id!!)
             }
 
-            deleteLeftConversations(conversationsFromSync)
+            deleteLeftConversations(
+                user,
+                conversationsFromSync
+            )
             dao.upsertConversations(user.id!!, conversationsFromSync)
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong when fetching conversations", e)
@@ -143,7 +164,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
         return conversationsFromSync
     }
 
-    private suspend fun deleteLeftConversations(conversationsFromSync: List<ConversationEntity>) {
+    private suspend fun deleteLeftConversations(user: User, conversationsFromSync: List<ConversationEntity>) {
         val conversationsFromSyncIds = conversationsFromSync.map { it.internalId }.toSet()
         val oldConversationsFromDb = dao.getConversationsForUser(user.id!!).first()
 
@@ -156,12 +177,12 @@ class OfflineFirstConversationsRepository @Inject constructor(
 
     private suspend fun getListOfConversations(accountId: Long): List<ConversationModel> =
         dao.getConversationsForUser(accountId).map {
-            it.map(ConversationEntity::asModel)
+            it.map(ConversationEntity::toDomainModel)
         }.first()
 
     private suspend fun getConversation(accountId: Long, token: String): ConversationModel? {
         val entity = dao.getConversationForUser(accountId, token).first()
-        return entity?.asModel()
+        return entity?.toDomainModel()
     }
 
     companion object {

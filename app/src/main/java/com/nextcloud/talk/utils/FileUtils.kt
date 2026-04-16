@@ -11,7 +11,6 @@ package com.nextcloud.talk.utils
 
 import android.content.ContentResolver
 import android.content.Context
-import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
@@ -126,16 +125,13 @@ object FileUtils {
     fun getFileName(uri: Uri, context: Context?): String {
         var filename: String? = null
         if (uri.scheme == "content" && context != null) {
-            val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
+            context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                if (cursor.moveToFirst()) {
                     val displayNameColumnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
                     if (displayNameColumnIndex != -1) {
                         filename = cursor.getString(displayNameColumnIndex)
                     }
                 }
-            } finally {
-                cursor?.close()
             }
         }
         // if it was no content uri, read filename from path

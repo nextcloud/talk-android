@@ -25,7 +25,7 @@ import com.nextcloud.talk.utils.ApiUtils.getConversationApiVersion
 import com.nextcloud.talk.utils.ApiUtils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils.getUrlForParticipantsSelf
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -45,7 +45,7 @@ class LeaveConversationWorker(context: Context, workerParams: WorkerParameters) 
     lateinit var userManager: UserManager
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderNew
+    lateinit var currentUserProvider: CurrentUserProviderOld
 
     private val result = SettableFuture.create<Result>()
 

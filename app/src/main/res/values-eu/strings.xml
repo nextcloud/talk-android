@@ -5,6 +5,7 @@
     <string name="add_to_notes">Gehitu oharretara</string>
     <string name="added_to_favorites">%1$s elkarrizketa gogokoetara gehitu da</string>
     <string name="appbar_search_in">Bilatu %s(e)n</string>
+    <string name="appear_offline">Lineaz kanpo agertzen da</string>
     <string name="archive_conversation">Artxibatu elkarrizketa</string>
     <string name="archived">Artxibatuta</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -17,6 +18,7 @@
     <string name="away">Kanpoan</string>
     <string name="ban">Debekatu</string>
     <string name="ban_participant">Debekatu parte-hartzailea</string>
+    <string name="battery_optimization_title">Bateria ezarpenak</string>
     <string name="busy">Lanpetua</string>
     <string name="calendar">Egutegia</string>
     <string name="call_more_actions_dialog_headline">Dei-ezarpen aurreratuak</string>
@@ -39,6 +41,9 @@
     <string name="deleted_conversation"> %1$s elkarrizketa ezabatu da</string>
     <string name="dnd">Ez molestatu</string>
     <string name="dontClear">Ez garbitu</string>
+    <string name="ecosystem_apps_files">Fitxategiak</string>
+    <string name="ecosystem_apps_more">Gehiago</string>
+    <string name="ecosystem_apps_notes">Oharrak</string>
     <string name="edit">Editatu</string>
     <string name="edit_message_icon_description">Editatu mezua</string>
     <string name="emoji_category_recent">Azkenak</string>
@@ -145,9 +150,11 @@
     <string name="nc_common_skip">Jauzi</string>
     <string name="nc_common_unknown">Ezezaguna</string>
     <string name="nc_configure_cert_auth">Aukeratu autentifikazio ziurtagiria</string>
+    <string name="nc_confirm">Berretsi</string>
     <string name="nc_connecting_call">Konektatzen …</string>
     <string name="nc_contacts_done">Egina</string>
     <string name="nc_conversation_description">Elkarrizketaren deskribapena</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Joan fitxategira</string>
     <string name="nc_conversation_menu_conversation_info">Elkarrizketen informazioa</string>
     <string name="nc_conversation_menu_video_call">Bideo-deia</string>
     <string name="nc_conversation_menu_voice_call">Ahots-deia</string>
@@ -188,6 +195,7 @@
     <string name="nc_diagnose_signaling_mode_extern">Kanpokoa</string>
     <string name="nc_diagnose_signaling_mode_intern">Barnekoa</string>
     <string name="nc_diagnose_signaling_mode_title">Seinalizazio modua</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Ireki dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Pasahitz baliogabea</string>
     <string name="nc_dialog_maintenance_mode_description">Zerbitzaria mantentze moduan dago.</string>
     <string name="nc_dialog_outdated_client">Aplikazioa zaharkituta dago</string>
@@ -319,8 +327,6 @@
     <string name="nc_promote">Moderatzaile bihurtu zara</string>
     <string name="nc_public_call_status">Elkarrizketa publikoa</string>
     <string name="nc_push_disabled">Push jakinarazpenak desgaiturik</string>
-    <string name="nc_push_to_talk">Sakatu-hitz-egiteko</string>
-    <string name="nc_push_to_talk_desc">Mikrofonoa desgaituta daukazunean, egin klik &amp;mantendu sakatzerakoan hitz egiteko</string>
     <string name="nc_remind">Gogoratu geroago</string>
     <string name="nc_remove_from_favorites">Kendu gogokoetatik</string>
     <string name="nc_remove_group_and_members">Kendu taldea eta kideak</string>
@@ -343,6 +349,8 @@
     <string name="nc_search">Bilatu</string>
     <string name="nc_search_clear">Garbitu bilaketa</string>
     <string name="nc_select_an_account">Hautatu kontua bat</string>
+    <string name="nc_send_later">Bidali geroago</string>
+    <string name="nc_send_now">Bidali orain</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s-k GIF bat bidali du.</string>
     <string name="nc_sent_a_gif_you">GIF bat bidali duzu.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s-k bideoa bidali du.</string>
@@ -372,6 +380,7 @@
     <string name="nc_settings_appearance">Itxura</string>
     <string name="nc_settings_call_ringtone">Deiak</string>
     <string name="nc_settings_diagnose_title">Diagnostikoa</string>
+    <string name="nc_settings_diagnosis_title">Diagnostikoa</string>
     <string name="nc_settings_incognito_keyboard_desc">Teklatuaren ikasketa pertsonalizatua desgaitzen du (bermerik gabe)</string>
     <string name="nc_settings_incognito_keyboard_title">Teklatu ezkutua</string>
     <string name="nc_settings_no_ringtone">Soinurik ez</string>
@@ -430,6 +439,7 @@
     <string name="nc_shared_items_empty">Ez dago partekatutako elementurik</string>
     <string name="nc_shared_items_location">Kokapena</string>
     <string name="nc_shared_location">Partekatutako kokalekua</string>
+    <string name="nc_show_ecosystem_title">Erakutsi aplikazioen aldatzailea</string>
     <string name="nc_sort_by">Ordenatu honen arabera</string>
     <string name="nc_start_time">Hasiera-ordua</string>
     <string name="nc_switch_account">Aldatu kontua</string>
@@ -454,15 +464,19 @@
     <string name="nc_voice_message_slide_to_cancel">« Irristatu bertan behera uzteko</string>
     <string name="nc_webinar">Web-mintegia</string>
     <string name="nc_yes">Bai</string>
+    <string name="nc_zoom_in">Hurbildu</string>
+    <string name="nc_zoom_out">Txikiagotu</string>
     <string name="next_week">Hurrengo astea</string>
     <string name="no_phone_book_integration_due_to_permissions">Ezin izan da telefono zenbakia integratu, baimen falta dela eta</string>
     <string name="notification_off">Off</string>
+    <string name="notification_permission">Jakinarazpen baimenak</string>
     <string name="notifications_default">Lehenetsia</string>
     <string name="oneHour">Ordu 1</string>
     <string name="online">Linean</string>
     <string name="online_status">Lineako egoera</string>
     <string name="openConversations">Ireki elkarrizketak</string>
     <string name="open_in_files_app">Ireki Fitxategiak aplikazioan</string>
+    <string name="pinned_dismiss">Ezikusi</string>
     <string name="play_pause_voice_message">Erreproduzitu/pausatu ahots mezua</string>
     <string name="polls_add_option">Gehitu aukera</string>
     <string name="polls_edit_vote">Editatu botoa</string>
@@ -574,9 +588,16 @@
     <string name="user_absence_replacement">Ordezkoa:</string>
     <string name="user_avatar">Erabltzaile-avatarra</string>
     <string name="user_info_address">Helbidea</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Izen osoa</string>
     <string name="user_info_email">E-posta</string>
+    <string name="user_info_fediverse">Fedibertsoa</string>
+    <string name="user_info_headline">Izenburua</string>
+    <string name="user_info_organisation">Antolakuntza</string>
     <string name="user_info_phone">Telefono zenbakia</string>
+    <string name="user_info_profile_enable">Gaitu profila</string>
+    <string name="user_info_pronouns">Izenordainak</string>
+    <string name="user_info_role">Zeregina</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Webgunea</string>
     <string name="user_status">Egoera</string>

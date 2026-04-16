@@ -40,6 +40,7 @@ class ContactsActivity : BaseActivity() {
         setContent {
             val isAddParticipants = intent.getBooleanExtra(BundleKeys.KEY_ADD_PARTICIPANTS, false)
             val hideAlreadyAddedParticipants = intent.getBooleanExtra(KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS, false)
+            contactsViewModel.getContactsFromSearchParams()
             contactsViewModel.updateIsAddParticipants(isAddParticipants)
             contactsViewModel.hideAlreadyAddedParticipants(hideAlreadyAddedParticipants)
             if (isAddParticipants) {

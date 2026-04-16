@@ -7,30 +7,25 @@
 
 package com.nextcloud.talk.contacts
 
-import android.util.Log
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ContactUtils
-import com.nextcloud.talk.utils.NoSupportedApiException
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class ContactsRepositoryImpl @Inject constructor(
-    private val ncApiCoroutines: NcApiCoroutines,
-    currentUserProvider: CurrentUserProviderNew
-) : ContactsRepository {
+class ContactsRepositoryImpl @Inject constructor(private val ncApiCoroutines: NcApiCoroutines) : ContactsRepository {
 
-    private val _currentUser = currentUserProvider.currentUser.blockingGet()
-    val currentUser: User = _currentUser
-    val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token)
+    override suspend fun getContacts(user: User, searchQuery: String?, shareTypes: List<String>): AutocompleteOverall {
+        val credentials = ApiUtils.getCredentials(user.username, user.token)
 
-    override suspend fun getContacts(searchQuery: String?, shareTypes: List<String>): AutocompleteOverall {
         val retrofitBucket: RetrofitBucket = ApiUtils.getRetrofitBucketForContactsSearchFor14(
-            currentUser.baseUrl!!,
+            user.baseUrl!!,
             searchQuery
         )
 
@@ -47,32 +42,18 @@ class ContactsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createRoom(
+        user: User,
         roomType: String,
         sourceType: String?,
         userId: String,
         conversationName: String?
     ): RoomOverall {
-        val apiVersion =
-            try {
-                ApiUtils.getConversationApiVersion(_currentUser, intArrayOf(ApiUtils.API_V4, 1))
-            } catch (e: NoSupportedApiException) {
-                // There were crash reports for:
-                // Exception java.lang.RuntimeException:
-                // ...
-                // Caused by com.nextcloud.talk.utils.NoSupportedApiException:
-                // at com.nextcloud.talk.utils.ApiUtils.getConversationApiVersion (ApiUtils.kt:134)
-                // at com.nextcloud.talk.contacts.ContactsRepositoryImpl.<init> (ContactsRepositoryImpl.kt:28)
-                //
-                // This could happen because of missing capabilities for user and should be fixed.
-                // As a fallback, API v4 is guessed
-
-                Log.e(TAG, "Failed to get an Api version for conversation.", e)
-                ApiUtils.API_V4
-            }
+        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, 1))
+        val credentials = ApiUtils.getCredentials(user.username, user.token)
 
         val retrofitBucket: RetrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
             version = apiVersion,
-            baseUrl = _currentUser.baseUrl,
+            baseUrl = user.baseUrl,
             roomType = roomType,
             source = sourceType,
             invite = userId,
@@ -86,12 +67,32 @@ class ContactsRepositoryImpl @Inject constructor(
         return response
     }
 
-    override fun getImageUri(avatarId: String, requestBigSize: Boolean): String =
-        ApiUtils.getUrlForAvatar(
-            _currentUser.baseUrl,
-            avatarId,
-            requestBigSize
-        )
+    override fun getImageUri(user: User, avatarId: String, requestBigSize: Boolean, isDarkMode: Boolean): String =
+        ApiUtils.getUrlForAvatar(user.baseUrl, avatarId, requestBigSize, darkMode = isDarkMode)
+
+    override fun getContactsFlow(user: User, searchQuery: String?): Flow<List<AutocompleteUser>> =
+        flow {
+            val credentials = ApiUtils.getCredentials(user.username, user.token)
+
+            val retrofitBucket: RetrofitBucket = ApiUtils.getRetrofitBucketForContactsSearchFor14(
+                user.baseUrl!!,
+                searchQuery
+            )
+
+            val shareTypes = mutableListOf(ShareType.User.shareType).toList()
+
+            val modifiedQueryMap: HashMap<String, Any> = HashMap(retrofitBucket.queryMap)
+            modifiedQueryMap["limit"] = ContactUtils.MAX_CONTACT_LIMIT
+            modifiedQueryMap["shareTypes[]"] = shareTypes
+            val response = ncApiCoroutines.getContactsWithSearchParam(
+                credentials,
+                retrofitBucket.url,
+                shareTypes,
+                modifiedQueryMap
+            )
+
+            emit(response.ocs?.data.orEmpty())
+        }
 
     companion object {
         private val TAG = ContactsRepositoryImpl::class.simpleName

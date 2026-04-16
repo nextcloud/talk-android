@@ -2,23 +2,23 @@
 <!--
   ~ Nextcloud Talk - Android Client
   ~
+  ~ SPDX-FileCopyrightText: 2026 Andy Scherzinger <info@andy-scherzinger.de>
   ~ SPDX-FileCopyrightText: 2024 Julius Linus <juliuslinus1@gmail.com>
   ~ SPDX-License-Identifier: GPL-3.0-or-later
-  -->
-
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.dialog.DialogBanListFragment"
-    tools:background="@color/white">
+    tools:background="@color/white"
+    tools:context=".ui.dialog.DialogBanListFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginHorizontal="@dimen/standard_margin">
+        android:layout_marginHorizontal="@dimen/standard_margin"
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/close_btn"
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:contentDescription="@string/close"
-            android:src="@drawable/ic_close_search"/>
+            android:src="@drawable/ic_close_search" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/ban_title"
@@ -38,7 +38,6 @@
             android:textSize="@dimen/md_title_textsize" />
     </LinearLayout>
 
-
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -47,10 +46,6 @@
         android:id="@+id/ban_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/standard_padding">
-
-    </ListView>
-
-
+        tools:listitem="@layout/ban_item_list" />
 
 </LinearLayout>

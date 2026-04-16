@@ -11,19 +11,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.account.viewmodels.BrowserLoginActivityViewModel
 import com.nextcloud.talk.activities.CallViewModel
-import com.nextcloud.talk.chat.viewmodels.ChatViewModel
-import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
-import com.nextcloud.talk.chooseaccount.StatusViewModel
+import com.nextcloud.talk.chat.viewmodels.ScheduledMessagesViewModel
+import com.nextcloud.talk.chooseaccount.viewmodel.StatusMessageViewModel
+import com.nextcloud.talk.chooseaccount.viewmodel.StatusViewModel
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contextchat.ContextChatViewModel
-import com.nextcloud.talk.conversationcreation.ConversationCreationViewModel
+import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationViewModel
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
-import com.nextcloud.talk.diagnose.DiagnoseViewModel
+import com.nextcloud.talk.diagnosis.DiagnosisViewModel
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
 import com.nextcloud.talk.messagesearch.MessageSearchViewModel
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
+import com.nextcloud.talk.ui.chooseaccount.ChooseAccountShareToViewModel
 import com.nextcloud.talk.polls.viewmodels.PollCreateViewModel
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.polls.viewmodels.PollResultsViewModel
@@ -34,6 +35,7 @@ import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
 import com.nextcloud.talk.translate.viewmodels.TranslateViewModel
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
+import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
@@ -46,6 +48,14 @@ class ViewModelFactory @Inject constructor(
     private val viewModels: MutableMap<Class<out ViewModel>, Provider<ViewModel>>
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T = viewModels[modelClass]?.get() as T
+}
+
+class ViewModelFactoryWithParams<T : ViewModel>(private val modelClass: Class<T>, private val create: () -> T) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        @Suppress("UNCHECKED_CAST")
+        return create() as T
+    }
 }
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
@@ -102,6 +112,11 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
+    @ViewModelKey(LocationPickerViewModel::class)
+    abstract fun locationPickerViewModel(viewModel: LocationPickerViewModel): ViewModel
+
+    @Binds
+    @IntoMap
     @ViewModelKey(RaiseHandViewModel::class)
     abstract fun raiseHandViewModel(viewModel: RaiseHandViewModel): ViewModel
 
@@ -120,15 +135,10 @@ abstract class ViewModelModule {
     @ViewModelKey(ConversationsListViewModel::class)
     abstract fun conversationsListViewModel(viewModel: ConversationsListViewModel): ViewModel
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(ChatViewModel::class)
-    abstract fun chatViewModel(viewModel: ChatViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(MessageInputViewModel::class)
-    abstract fun messageInputViewModel(viewModel: MessageInputViewModel): ViewModel
+    // @Binds
+    // @IntoMap
+    // @ViewModelKey(ChatViewModel::class)
+    // abstract fun chatViewModel(viewModel: ChatViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -157,8 +167,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(DiagnoseViewModel::class)
-    abstract fun diagnoseViewModel(viewModel: DiagnoseViewModel): ViewModel
+    @ViewModelKey(DiagnosisViewModel::class)
+    abstract fun diagnosisViewModel(viewModel: DiagnosisViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -184,4 +194,27 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(StatusViewModel::class)
     abstract fun statusRepositoryViewModel(viewModel: StatusViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(StatusMessageViewModel::class)
+    abstract fun statusMessageViewModel(viewModel: StatusMessageViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ScheduledMessagesViewModel::class)
+    abstract fun scheduledMessagesViewModel(viewModel: ScheduledMessagesViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChooseAccountShareToViewModel::class)
+    abstract fun chooseAccountShareToViewModel(viewModel: ChooseAccountShareToViewModel): ViewModel
 }
+
+// @Module
+// interface ChatViewModelAssistedModule {
+//     @Binds
+//     fun bindChatViewModelFactory(
+//         factory: ChatViewModel.Factory
+//     ): ChatViewModel.Factory
+// }

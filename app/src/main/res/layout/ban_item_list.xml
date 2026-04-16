@@ -2,6 +2,7 @@
 <!--
   ~ Nextcloud Talk - Android Client
   ~
+  ~ SPDX-FileCopyrightText: 2026 Andy Scherzinger <info@andy-scherzinger.de>
   ~ SPDX-FileCopyrightText: 2024 Julius Linus <juliuslinus1@gmail.com>
   ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
@@ -10,63 +11,53 @@
     android:id="@+id/ban_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingVertical="@dimen/standard_half_padding"
+    android:paddingStart="@dimen/standard_padding"
+    android:paddingEnd="@dimen/zero">
 
-        <LinearLayout
-            android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/ban_actor_name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:ellipsize="end"
+            android:lines="1"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text"
+            android:textSize="@dimen/two_line_primary_text_size"
+            tools:text="User 2" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/ban_actor_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:lines="1"
-                android:textAlignment="viewStart"
-                android:textAppearance="@style/ListItem"
-                android:textSize="@dimen/md_title_textsize"
-                tools:text="User 2" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/ban_time"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/textColorMaxContrast"
+            android:textSize="14sp"
+            tools:text="11th August, 2023" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/ban_time"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textSize="@dimen/sm_text_size"
-                tools:text="11th August, 2023" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/ban_reason"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/textColorMaxContrast"
+            android:textSize="14sp"
+            tools:text="Was being mean" />
 
+    </LinearLayout>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/ban_reason"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:text="Was being mean"
-                android:padding="@dimen/standard_half_padding" />
-
-        </LinearLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/unban_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/standard_half_margin"
-            android:layout_gravity="center"
-            android:text="@string/unban"
-            android:textColor="@color/hwSecurityRed"
-            style="@style/Widget.Material3.Button.TextButton"
-            />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/unban_btn"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/unban"
+        android:textColor="@color/hwSecurityRed" />
 
 </LinearLayout>
-
-
-
-
-
-
-
-
-
-
-
-

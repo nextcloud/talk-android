@@ -38,5 +38,5 @@ SPDX-License-Identifier = "CC-BY-4.0"
 [[annotations]]
 path = "app/src/main/assets/selfie_segmenter.tflite"
 precedence = "aggregate"
-SPDX-FileCopyrightText = "2025 Google"
+SPDX-FileCopyrightText = "2023 Google LLC"
 SPDX-License-Identifier = "Apache-2.0"

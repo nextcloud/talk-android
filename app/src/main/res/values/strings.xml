@@ -17,10 +17,10 @@ How to translate with transifex:
 -->
 
 <resources>
-    <!--
+<!--
   ~ Nextcloud Talk - Android Client
   ~
-  ~ SPDX-FileCopyrightText: 2017-2024 Nextcloud GmbH and Nextcloud contributors
+  ~ SPDX-FileCopyrightText: 2017-2026 Nextcloud GmbH and Nextcloud contributors
   ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
@@ -116,6 +116,12 @@ How to translate with transifex:
     <string name="nc_settings_no_ringtone">No sound</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Server notifications app not installed</string>
     <string name="nc_settings_contact_admin_of">Please contact the administrator of</string>
+    <string name="nc_confirm">Confirm</string>
+    <string name="battery_optimization_title">Battery settings</string>
+    <string name="battery_optimization_not_ignored">Battery optimization is enabled which might cause issues. You should disable battery optimization!</string>
+    <string name="battery_optimization_ignored">Battery optimization is ignored, all fine</string>
+    <string name="notification_permission">Notification permissions</string>
+
 
     <string name="nc_settings_appearance">Appearance</string>
     <string name="nc_settings_theme_title">Theme</string>
@@ -162,7 +168,6 @@ How to translate with transifex:
 
     <string name="nc_no_proxy">No proxy</string>
     <string name="nc_about">About</string>
-    <string name="nc_privacy">Privacy</string>
     <string name="nc_get_source_code">Get source code</string>
     <string name="nc_license_title">License</string>
     <string name="nc_license_summary">GNU General Public License, Version 3</string>
@@ -171,20 +176,25 @@ How to translate with transifex:
     <string name="nc_account_chooser_add_account">Add account</string>
     <string name="nc_account_chooser_active_user">Active user</string>
 
-    <string name="nc_profile_personal_info_title">Personal Info</string>
+    <string name="ecosystem_apps_files">Files</string>
+    <string name="ecosystem_apps_notes">Notes</string>
+    <string name="ecosystem_apps_more">More</string>
 
-    <string name="nc_settings_diagnose_title">Diagnosis</string>
-    <string name="nc_settings_diagnose_subtitle">Open diagnosis screen to check settings or create bug report</string>
+    <string name="nc_profile_personal_info_title">Personal Info</string>
 
     <string name="nc_settings_notifications_granted">Notifications are granted</string>
     <string name="nc_settings_notifications_declined">Notifications are declined</string>
+    <string name="gplay_available_no">Google Play services are not available.Notifications are not supported</string>
 
-    <!-- Diagnose -->
+    <string name="nc_settings_diagnosis_title">Diagnosis</string>
+    <string name="nc_settings_diagnosis_subtitle">Open diagnosis screen to check settings or create bug report</string>
+
+    <!-- Diagnosis -->
+    <string name="nc_diagnosis_dialog_open_checklist">Open troubleshooting checklist</string>
+    <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Open dontkillmyapp.com</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Notification troubleshooting</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Notification permission and battery settings are correctly set up to receive notifications. If you have problems to receive notifications anyway, please check if the notification channels for calls and messages are enabled. Further help can be found at DontKillMyApp.com or at the troubleshooting checklist. If this does not help, please go to diagnosis screen and send a bug report.</string>
-    <string name="nc_diagnose_dialog_open_checklist">Open troubleshooting checklist</string>
-    <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Open dontkillmyapp.com</string>
-    <string name="nc_diagnose_dialog_open_diagnose">Open diagnosis screen</string>
+    <string name="nc_diagnosis_dialog_open_diagnosis">Open diagnosis screen</string>
 
     <string name="nc_ignore_battery_optimization_dialog_title">Ignore battery optimization</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Battery optimization is not ignored. This should be changed to make sure that notifications work in the background! Please click OK and select \"All apps\" -> %1$s and then \"Do not optimize\" or \"Allow background usage -> Unrestricted\".</string>
@@ -193,49 +203,56 @@ How to translate with transifex:
     <string name="nc_notification_warning">Notifications are not set up correctly</string>
     <string name="nc_not_now">Not now</string>
 
-    <string name="nc_diagnose_meta_category_title">Meta information</string>
-    <string name="nc_diagnose_meta_system_report_date">Generation of system report</string>
-    <string name="nc_diagnose_phone_category_title">Phone</string>
-    <string name="nc_diagnose_device_name_title">Device</string>
-    <string name="nc_diagnose_android_version_title">Android version</string>
-    <string name="nc_diagnose_app_category_title">App</string>
-    <string name="nc_diagnose_app_name_title">App name</string>
-    <string name="nc_diagnose_app_version_title">App version</string>
-    <string name="nc_diagnose_app_users_amount">Registered users</string>
-    <string name="nc_diagnose_gplay_available_title">Google Play services</string>
-    <string name="nc_diagnose_gplay_available_yes">Google Play services are available</string>
-    <string name="nc_diagnose_gplay_available_no">Google Play services are not available. Notifications are not supported</string>
-    <string name="nc_diagnose_battery_optimization_title">Battery settings</string>
-    <string name="nc_diagnose_battery_optimization_not_ignored">Battery optimization is enabled which might cause issues. You should disable battery optimization!</string>
-    <string name="nc_diagnose_battery_optimization_ignored">Battery optimization is ignored, all fine</string>
-    <string name="nc_diagnose_notification_permission">Notification permissions</string>
-    <string name="nc_diagnose_notification_calls_channel_permission">Calls notification channel enabled?</string>
-    <string name="nc_diagnose_notification_messages_channel_permission">Messages notification channel enabled?</string>
-    <string name="nc_diagnose_firebase_push_token_title">Firebase push token</string>
-    <string name="nc_diagnose_firebase_push_token_latest_generated">Latest firebase push token generation</string>
-    <string name="nc_diagnose_firebase_push_token_latest_fetch">Latest firebase push token fetch</string>
-    <string name="nc_diagnose_firebase_push_token_missing">No firebase push token set. Please create a bug report.</string>
-    <string name="nc_diagnose_account_category_title">Current account</string>
-    <string name="nc_diagnose_account_server">Server</string>
-    <string name="nc_diagnose_account_user_name">User</string>
-    <string name="nc_diagnose_account_server_notification_app">Server notification app installed?</string>
-    <string name="nc_diagnose_account_user_status_enabled">User status enabled?</string>
-    <string name="nc_diagnose_latest_push_registration_at_server">Latest push registration at server</string>
-    <string name="nc_diagnose_latest_push_registration_at_server_fail">Not yet registered at server</string>
-    <string name="nc_diagnose_latest_push_registration_at_push_proxy">Latest push registration at push proxy</string>
-    <string name="nc_diagnose_latest_push_registration_at_push_proxy_fail">Not yet registered at push proxy</string>
-    <string name="nc_diagnose_server_version">Server version</string>
-    <string name="nc_diagnose_server_talk_version">Server Talk version</string>
-    <string name="nc_diagnose_signaling_mode_title">Signaling Mode</string>
-    <string name="nc_diagnose_signaling_mode_intern">Internal</string>
-    <string name="nc_diagnose_signaling_mode_extern">External</string>
     <string name="send_email">Send email</string>
     <string name="create_issue">Create issue</string>
-    <string name="nc_diagnose_flavor" translatable="false">Build flavor</string>
     <string name="nc_test_push_button">Test push notifications</string>
     <string name="nc_test_results">Test results</string>
     <string name="message_copied">Message copied</string>
     <string name="nc_push_notification_message">Push notification is sent successfully. You should now receive a notification on this device with the title \'Testing push notifications\'</string>
+
+    <string name="nc_diagnosis_meta_category_title" translatable="false" >Meta information</string>
+    <string name="nc_diagnosis_meta_system_report_date" translatable="false">Generation of system report</string>
+    <string name="nc_diagnosis_phone_category_title" translatable="false">Phone</string>
+    <string name="nc_diagnosis_device_name_title" translatable="false">Device</string>
+    <string name="nc_diagnosis_android_version_title" translatable="false">Android version</string>
+    <string name="nc_diagnosis_app_category_title" translatable="false">App</string>
+    <string name="nc_diagnosis_app_name_title" translatable="false">App name</string>
+    <string name="nc_diagnosis_app_version_title" translatable="false">App version</string>
+    <string name="nc_diagnosis_app_users_amount" translatable="false">Registered users</string>
+    <string name="nc_diagnosis_gplay_available_title" translatable="false">Google Play services</string>
+    <string name="nc_diagnosis_gplay_available_yes" translatable="false">Google Play services are available</string>
+    <string name="nc_diagnosis_gplay_available_no" translatable="false">Google Play services are not available. Notifications are not supported</string>
+    <string name="nc_diagnosis_battery_optimization_title" translatable="false">Battery settings</string>
+    <string name="nc_diagnosis_battery_optimization_not_ignored" translatable="false">Battery optimization is enabled which might cause issues. You should disable battery optimization!</string>
+    <string name="nc_diagnosis_battery_optimization_ignored" translatable="false">Battery optimization is ignored, all fine</string>
+    <string name="nc_diagnosis_notification_permission" translatable="false">Notification permissions</string>
+    <string name="nc_diagnosis_notification_calls_channel_permission" translatable="false">Calls notification channel enabled?</string>
+    <string name="nc_diagnosis_notification_messages_channel_permission" translatable="false">Messages notification channel enabled?</string>
+    <string name="nc_diagnosis_firebase_push_token_title" translatable="false">Firebase push token</string>
+    <string name="nc_diagnosis_firebase_push_token_latest_generated" translatable="false">Latest firebase push token generation</string>
+    <string name="nc_diagnosis_firebase_push_token_latest_fetch" translatable="false">Latest firebase push token fetch</string>
+    <string name="nc_diagnosis_firebase_push_token_missing" translatable="false">No firebase push token set. Please create a bug report.</string>
+    <string name="nc_diagnosis_account_category_title" translatable="false">Current account</string>
+    <string name="nc_diagnosis_account_server" translatable="false">Server</string>
+    <string name="nc_diagnosis_account_user_name" translatable="false">User</string>
+    <string name="nc_diagnosis_account_server_notification_app" translatable="false">Server notification app installed?</string>
+    <string name="nc_diagnosis_account_user_status_enabled" translatable="false">User status enabled?</string>
+    <string name="nc_diagnosis_latest_push_registration_at_server" translatable="false">Latest push registration at server</string>
+    <string name="nc_diagnosis_latest_push_registration_at_server_fail" translatable="false">Not yet registered at server</string>
+    <string name="nc_diagnosis_latest_push_registration_at_push_proxy" translatable="false">Latest push registration at push proxy</string>
+    <string name="nc_diagnosis_latest_push_registration_at_push_proxy_fail" translatable="false">Not yet registered at push proxy</string>
+    <string name="nc_diagnosis_server_version" translatable="false">Server version</string>
+    <string name="nc_diagnosis_server_talk_version" translatable="false">Server Talk version</string>
+    <string name="nc_diagnosis_signaling_mode_title" translatable="false">Signaling Mode</string>
+    <string name="nc_diagnosis_signaling_mode_intern" translatable="false">Internal</string>
+    <string name="nc_diagnosis_signaling_mode_extern" translatable="false">External</string>
+
+    <string name="nc_diagnosis_notifications_granted" translatable="false">Notifications are granted</string>
+    <string name="nc_diagnosis_notifications_declined" translatable="false">Notifications are declined</string>
+    <string name="nc_diagnosis_unknown" translatable="false">"Unknown"</string>
+    <string name="nc_diagnosis_yes" translatable="false">"Yes"</string>
+    <string name="nc_diagnosis_no" translatable="false">"No"</string>
+    <string name="nc_diagnosis_flavor" translatable="false">Build flavor</string>
 
     <!-- Conversation menu -->
     <string name="nc_leave">Leave conversation</string>
@@ -258,6 +275,7 @@ How to translate with transifex:
     <string name="nc_invalid_time">Invalid time</string>
     <string name="nc_today_meeting">Today at %1$s</string>
     <string name="nc_tomorrow_meeting">Tomorrow at %1$s</string>
+    <string name="nc_upcoming_event_dismissed">Upcoming call can be viewed in conversation info</string>
     <string name="nc_delete_conversation_more">If you delete the conversation, it will also be deleted for all other participants.</string>
 
     <string name="nc_new_conversation">New conversation</string>
@@ -284,6 +302,8 @@ How to translate with transifex:
     <!-- Open conversations -->
     <string name="nc_no_open_conversations_headline">No open conversations</string>
     <string name="nc_no_open_conversations_text">No open conversations that you can join.\nEither there are no open conversations or you already joined all of them.</string>
+    <string name="nc_no_search_results_headline">No results for your search</string>
+    <string name="nc_no_search_results_text">Please check your search term or try using a different one.</string>
 
     <!-- Contacts -->
     <string name="nc_add_participants">Add participants</string>
@@ -369,9 +389,6 @@ How to translate with transifex:
     <string name="create_conversation">Create conversation</string>
     <string name="nc_add_emojis">Add emojis</string>
 
-
-    <string name="nc_push_to_talk">Push-to-talk</string>
-    <string name="nc_push_to_talk_desc">With microphone disabled, click&amp;hold to use Push-to-talk</string>
     <string name="nc_configure_cert_auth">Select authentication certificate</string>
     <string name="nc_change_cert_auth">Change authentication certificate</string>
 
@@ -434,6 +451,7 @@ How to translate with transifex:
     <string name="nc_conversation_menu_voice_call">Voice call</string>
     <string name="nc_conversation_menu_video_call">Video call</string>
     <string name="nc_event_conversation_menu">Event conversation menu</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Go to file</string>
     <string name="nc_conversation_menu_conversation_info">Conversation info</string>
     <string name="nc_new_messages">Unread messages</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s sent a GIF.</string>
@@ -449,16 +467,13 @@ How to translate with transifex:
     <string name="nc_message_quote_cancel_reply">Cancel reply</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">You: %1$s</string>
-    <string name="nc_message_read">Message read</string>
+    <string name="nc_draft_prefix">Draft: %1$s</string>
     <string name="nc_message_sent">Message sent</string>
     <string name="nc_message_added_to_notes">Message added to notes</string>
-    <string name="nc_message_offline">Offline</string>
     <string name="nc_message_failed">Failed</string>
-    <string name="nc_message_sending">Sending</string>
     <string name="nc_message_failed_to_send">Failed to send message:</string>
     <string name="nc_add_attachment">Add attachment</string>
     <string name="emoji_category_recent">Recent</string>
-    <string name="nc_current_user">You:</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">See %d similar message</item>
         <item quantity="other">See %d similar messages</item>
@@ -552,6 +567,7 @@ How to translate with transifex:
     <string name="read_storage_no_permission">Sharing files from storage is not possible without permissions</string>
     <string name="open_in_files_app">Open in Files app</string>
     <string name="send_to_forbidden">You are not allowed to share content to this chat</string>
+    <string name="reaction_forbidden">You are not allowed to add or remove reactions in this conversation</string>
 
     <string name="typing_is_typing">is typing …</string>
     <string name="typing_are_typing">are typing …</string>
@@ -577,6 +593,8 @@ How to translate with transifex:
     <string name="notification_all_messages">All messages</string>
     <string name="notification_mention_only">\@-mentions only</string>
     <string name="notification_off">Off</string>
+    <string name="media_message_content_description">File preview</string>
+    <string name="media_message_content_play">Play media file</string>
 
     <!-- Upload -->
     <string name="nc_add_file">Add to conversation</string>
@@ -602,12 +620,15 @@ How to translate with transifex:
 
     <!-- location sharing -->
     <string name="nc_share_location">Share location</string>
+    <string name="nc_search_location">Search location</string>
     <string name="nc_location_permission_required">location permission is required</string>
     <string name="nc_share_current_location">Share current location</string>
     <string name="nc_share_this_location">Share this location</string>
     <string name="nc_shared_location">Shared location</string>
     <string name="nc_location_current_position_description">Your current location</string>
     <string name="nc_location_unknown">Position unknown</string>
+    <string name="nc_zoom_in">Zoom in</string>
+    <string name="nc_zoom_out">Zoom out</string>
 
     <!-- share contact -->
     <string name="nc_share_contact">Share contact</string>
@@ -662,6 +683,14 @@ How to translate with transifex:
     <string name="user_info_website">Website</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_displayname">Full name</string>
+    <string name="user_info_biography">Biography</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Headline</string>
+    <string name="user_info_organisation">Organization</string>
+    <string name="user_info_profile_enable">Enable profile</string>
+    <string name="user_info_pronouns">Pronouns</string>
+    <string name="user_info_role">Role</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="file_list_folder">folder</string>
     <string name="file_list_loading">Loading …</string>
     <string name="edit">Edit</string>
@@ -678,7 +707,6 @@ How to translate with transifex:
     <string name="scope_federated_description">Only synchronize to trusted servers</string>
     <string name="scope_published_title">Published</string>
     <string name="scope_published_description">Synchronize to trusted servers and the global and public address book</string>
-    <string name="scope_toggle">Scope toggle</string>
     <string name="scope_toggle_description">Change privacy level of %1$s</string>
 
     <!-- App Bar -->
@@ -686,7 +714,6 @@ How to translate with transifex:
 
     <!-- Non-translatable strings -->
     <string name="tooManyUnreadMessages" translatable="false">999+</string>
-    <string name="replyable_message_view_tag" translatable="false">REPLYABLE_TAG</string>
 
     <string name="nc_action_open_main_menu">Open main menu</string>
     <string name="failed_to_save">Failed to save %1$s</string>
@@ -816,6 +843,7 @@ How to translate with transifex:
     <string name="nc_not_allowed_to_activate_audio">You are not allowed to activate audio!</string>
     <string name="nc_not_allowed_to_activate_video">You are not allowed to activate video!</string>
     <string name="scroll_to_bottom">Scroll to bottom</string>
+    <string name="quoted_message_too_old">This message is too old to be shown</string>
     <string name="translate">Translate</string>
     <string name="translation">Translation</string>
     <string name="translation_from">From</string>
@@ -907,7 +935,39 @@ How to translate with transifex:
     <string name="location_permission_denied_msg">Please enable it in the app settings</string>
     <string name="location_services_disabled">Location services disabled</string>
     <string name="location_services_disabled_msg">Please enable location services (GPS) to use this feature</string>
+    <string name="please_continue_the_login_process_in_the_browser">Please continue login in browser</string>
+    <string name="pin_message">Pin message</string>
+    <string name="unpin_message">Unpin message</string>
+    <string name="pin_24hr">Pin for 24 hours</string>
+    <string name="pin_7_days">Pin for 7 days</string>
+    <string name="pin_30_days">Pin for 30 days</string>
+    <string name="pin_indefinitely">Pin indefinitely</string>
+    <string name="pinned_indefinitely">Pinned indefinitely</string>
+    <string name="pinned_until">Pinned until</string>
+    <string name="pinned_by_you">%1$s (pinned by you)</string>
+    <string name="pinned_by_author">%1$s (pinned by %2$s)</string>
+    <string name="pinned">Pinned</string>
+    <string name="until_unpin">Until unpin</string>
+    <string name="pinned_go_to_message">Go to message</string>
+    <string name="pinned_dismiss">Dismiss</string>
+    <string name="pinned_message_options">Message options</string>
+
+    <string name="nc_send_later">Send later</string>
+    <string name="nc_schedule_message">Schedule message</string>
+    <string name="nc_scheduled_messages">Scheduled messages</string>
+    <string name="nc_message_scheduled">Message scheduled</string>
+    <string name="nc_message_scheduled_at">Message scheduled for %1$s</string>
+    <string name="nc_scheduled_time">Scheduled time</string>
+    <string name="nc_reschedule_message_with_notification">Reschedule with notification</string>
+    <string name="nc_reschedule_message_without_notification">Reschedule without notification</string>
+    <string name="nc_send_now">Send now</string>
+    <string name="nc_schedule_message_title">Schedule message</string>
+    <string name="nc_scheduled_messages_empty">No scheduled messages</string>
+    <string name="nc_schedule_message_without_notification">Send later without notification</string>
+    <string name="nc_in_conversation">In %1$s</string>
+    <string name="no_scheduled_messages_offline">No connection to server - Scheduled messages could not be loaded</string>
+    <string name="nc_show_ecosystem_title">Show app switcher</string>
+    <string name="nc_show_ecosystem_description">Nextcloud app suggestions in account chooser dialog</string>
     <string name="turn_on_background_blur">Turn on background blur</string>
     <string name="turn_off_background_blur">Turn off background blur</string>
-    <string name="please_continue_the_login_process_in_the_browser">Please continue login in browser</string>
 </resources>

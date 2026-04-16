@@ -12,11 +12,13 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
+import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEventsOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.message.SendMessageUtils
@@ -158,11 +160,11 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
             threadTitle
         )
 
-    override fun pullChatMessages(
+    override suspend fun pullChatMessages(
         credentials: String,
         url: String,
         fieldMap: HashMap<String, Int>
-    ): Observable<Response<*>> = ncApi.pullChatMessages(credentials, url, fieldMap).map { it }
+    ): Response<ChatOverall> = ncApiCoroutines.pullChatMessages(credentials, url, fieldMap)
 
     override fun deleteChatMessage(credentials: String, url: String): Observable<ChatOverallSingleMessage> =
         ncApi.deleteChatMessage(credentials, url).map {
@@ -191,6 +193,16 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         ncApiCoroutines.getOutOfOfficeStatusForUser(
             credentials,
             ApiUtils.getUrlForOutOfOffice(baseUrl, userId)
+        )
+
+    override suspend fun getUpcomingEvents(
+        credentials: String,
+        baseUrl: String,
+        roomToken: String
+    ): UpcomingEventsOverall =
+        ncApiCoroutines.getUpcomingEvents(
+            credentials,
+            ApiUtils.getUrlForUpcomingEvents(baseUrl, roomToken)
         )
 
     override suspend fun getContextForChatMessage(
@@ -222,4 +234,55 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         val url = ApiUtils.getUrlForUnbindingRoom(baseUrl, roomToken)
         return ncApiCoroutines.unbindRoom(credentials, url)
     }
+
+    override suspend fun sendScheduledChatMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        replyTo: Int?,
+        sendWithoutNotification: Boolean,
+        threadTitle: String?,
+        threadId: Long?,
+        sendAt: Int?
+    ): ChatOverallSingleMessage =
+        ncApiCoroutines.sendScheduleChatMessage(
+            credentials,
+            url,
+            message,
+            replyTo,
+            sendWithoutNotification,
+            threadTitle,
+            threadId,
+            sendAt
+        )
+
+    override suspend fun updateScheduledMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        sendAt: Int?,
+        sendWithoutNotification: Boolean
+    ): ChatOverallSingleMessage =
+        ncApiCoroutines.updateScheduledMessage(
+            credentials,
+            url,
+            message,
+            sendAt,
+            sendWithoutNotification
+        )
+
+    override suspend fun deleteScheduledMessage(credentials: String, url: String): GenericOverall =
+        ncApiCoroutines.deleteScheduleMessage(credentials, url)
+
+    override suspend fun getScheduledMessages(credentials: String, url: String): ChatOverall =
+        ncApiCoroutines.getScheduledMessage(credentials, url)
+
+    override suspend fun pinMessage(credentials: String, url: String, pinUntil: Int): ChatOverallSingleMessage =
+        ncApiCoroutines.pinMessage(credentials, url, pinUntil)
+
+    override suspend fun unPinMessage(credentials: String, url: String): ChatOverallSingleMessage =
+        ncApiCoroutines.unPinMessage(credentials, url)
+
+    override suspend fun hidePinnedMessage(credentials: String, url: String): GenericOverall =
+        ncApiCoroutines.hidePinnedMessage(credentials, url)
 }

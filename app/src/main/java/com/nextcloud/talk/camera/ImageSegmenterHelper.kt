@@ -8,20 +8,15 @@
 package com.nextcloud.talk.camera
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.util.Log
-import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.framework.image.ByteBufferExtractor
+import com.google.mediapipe.framework.image.ByteBufferImageBuilder
 import com.google.mediapipe.framework.image.MPImage
 import com.google.mediapipe.tasks.core.BaseOptions
 import com.google.mediapipe.tasks.core.Delegate
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.imagesegmenter.ImageSegmenter
 import com.google.mediapipe.tasks.vision.imagesegmenter.ImageSegmenterResult
-import org.opencv.core.Core
-import org.opencv.core.CvType
-import org.opencv.core.Mat
-import org.opencv.core.Scalar
 import java.nio.ByteBuffer
 
 class ImageSegmenterHelper(val context: Context, var imageSegmenterListener: SegmenterListener? = null) {
@@ -95,8 +90,8 @@ class ImageSegmenterHelper(val context: Context, var imageSegmenterListener: Seg
      *
      * @throws IllegalArgumentException
      */
-    fun segmentLiveStreamFrame(bitmap: Bitmap, videoFrameTimeStamp: Long) {
-        val mpImage = BitmapImageBuilder(bitmap).build()
+    fun segmentFrame(byteBuffer: ByteBuffer, width: Int, height: Int, videoFrameTimeStamp: Long) {
+        val mpImage = ByteBufferImageBuilder(byteBuffer, width, height, MPImage.IMAGE_FORMAT_RGBA).build()
 
         imageSegmenter?.segmentAsync(mpImage, videoFrameTimeStamp)
     }
@@ -113,22 +108,12 @@ class ImageSegmenterHelper(val context: Context, var imageSegmenterListener: Seg
 
         (mask.duplicate().rewind() as ByteBuffer).get(data)
 
-        val mat = Mat(
-            mpImage.height,
-            mpImage.width,
-            CvType.CV_8UC1 // 8 bit unsigned 1 channel
-        )
-
-        mat.put(0, 0, data)
-
-        Core.bitwise_not(mat, mat)
-
-        Core.multiply(mat, Scalar(RGB_MAX), mat)
-
         imageSegmenterListener?.onResults(
             ResultBundle(
-                mat,
-                result.timestampMs() // videoFrameTimeStamp
+                data,
+                result.timestampMs(), // videoFrameTimeStamp
+                mpImage.width,
+                mpImage.height
             )
         )
     }
@@ -141,7 +126,25 @@ class ImageSegmenterHelper(val context: Context, var imageSegmenterListener: Seg
     }
 
     // Wraps results from inference, the time it takes for inference to be performed.
-    data class ResultBundle(val mask: Mat, val inferenceTime: Long)
+    data class ResultBundle(val mask: ByteArray, val inferenceTime: Long, val width: Int, val height: Int) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as ResultBundle
+
+            if (inferenceTime != other.inferenceTime) return false
+            if (!mask.contentEquals(other.mask)) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = inferenceTime.hashCode()
+            result = 31 * result + mask.contentHashCode()
+            return result
+        }
+    }
 
     companion object {
         const val OTHER_ERROR = 0

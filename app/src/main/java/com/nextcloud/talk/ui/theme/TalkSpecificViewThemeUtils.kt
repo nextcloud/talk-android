@@ -53,7 +53,6 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.vanniktech.emoji.EmojiTextView
-import com.wooplr.spotlight.SpotlightView
 import dynamiccolor.DynamicScheme
 import dynamiccolor.MaterialDynamicColors
 import eu.davidea.flexibleadapter.utils.FlexibleUtils
@@ -70,6 +69,13 @@ class TalkSpecificViewThemeUtils @Inject constructor(
     private val appcompat: AndroidXViewThemeUtils
 ) : ViewThemeUtilsBase(schemes) {
     private val dynamicColor = MaterialDynamicColors()
+
+    fun themeCardView(cardView: MaterialCardView) {
+        withScheme(cardView) { scheme ->
+            cardView.backgroundTintList = ColorStateList.valueOf(dynamicColor.surfaceVariant().getArgb(scheme))
+        }
+    }
+
     fun themeIncomingMessageBubble(bubble: View, grouped: Boolean, deleted: Boolean, isPlayed: Boolean = false) {
         val resources = bubble.resources
 
@@ -202,6 +208,31 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
+    fun setReactionsBackground(card: MaterialCardView, outgoing: Boolean, isSelfReaction: Boolean, isBubbled: Boolean) {
+        withScheme(card) { scheme ->
+            if (isSelfReaction) {
+                card.setCardBackgroundColor(dynamicColor.primaryContainer().getArgb(scheme))
+                card.strokeColor = dynamicColor.primary().getArgb(scheme)
+            } else {
+                if (isBubbled) {
+                    card.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            card.context,
+                            R.color.bg_message_list_incoming_bubble
+                        )
+                    )
+                    card.strokeColor = dynamicColor.surface().getArgb(scheme)
+                } else {
+                    card.setCardBackgroundColor(dynamicColor.surface().getArgb(scheme))
+                    card.strokeColor = ContextCompat.getColor(
+                        card.context,
+                        R.color.bg_message_list_incoming_bubble
+                    )
+                }
+            }
+        }
+    }
+
     fun getPlaceholderImage(context: Context, mimetype: String?): Drawable? {
         val drawableResourceId = DrawableUtils.getDrawableResourceIdForMimeType(mimetype)
         val drawable = AppCompatResources.getDrawable(
@@ -294,16 +325,31 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
-    fun themeForegroundColorSpan(context: Context): ForegroundColorSpan {
-        return withScheme(context) { scheme ->
-            return@withScheme ForegroundColorSpan(dynamicColor.primary().getArgb(scheme))
+    fun themeDraftSubline(textView: TextView, fullText: String, draftText: String) {
+        withScheme(textView) { scheme ->
+            val prefixEnd = fullText.length - draftText.length
+            val spannable = android.text.SpannableStringBuilder(fullText)
+            spannable.setSpan(
+                StyleSpan(Typeface.BOLD),
+                0,
+                prefixEnd,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            spannable.setSpan(
+                ForegroundColorSpan(dynamicColor.primary().getArgb(scheme)),
+                0,
+                prefixEnd,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            textView.setTypeface(null, Typeface.NORMAL)
+            textView.setTextColor(ContextCompat.getColor(textView.context, R.color.textColorMaxContrast))
+            textView.setText(spannable, TextView.BufferType.SPANNABLE)
         }
     }
 
-    fun themeSpotlightView(context: Context, builder: SpotlightView.Builder): SpotlightView.Builder {
+    fun themeForegroundColorSpan(context: Context): ForegroundColorSpan {
         return withScheme(context) { scheme ->
-            return@withScheme builder.headingTvColor(dynamicColor.primary().getArgb(scheme))
-                .lineAndArcColor(dynamicColor.primary().getArgb(scheme))
+            return@withScheme ForegroundColorSpan(dynamicColor.primary().getArgb(scheme))
         }
     }
 

@@ -19,6 +19,7 @@ class SearchViewObservable {
             val subject: PublishSubject<String> = PublishSubject.create()
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String): Boolean {
+                    searchView.clearFocus()
                     subject.onComplete()
                     return true
                 }

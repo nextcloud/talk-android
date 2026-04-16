@@ -1,0 +1,747 @@
+/*
+ * Nextcloud Talk - Android Client
+ *
+ * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+package com.nextcloud.talk.chooseaccount
+
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.res.Configuration
+import android.util.Log
+import android.widget.ImageView
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Dialog
+import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import autodagger.AutoInjector
+import coil.compose.AsyncImage
+import com.nextcloud.android.common.core.utils.ecosystem.EcosystemApp
+import com.nextcloud.android.common.core.utils.ecosystem.EcosystemManager
+import com.nextcloud.android.common.core.utils.ecosystem.LinkHelper
+import com.nextcloud.talk.R
+import com.nextcloud.talk.account.ServerSelectionActivity
+import com.nextcloud.talk.account.data.model.AccountItem
+import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.chooseaccount.ui.OnlineStatusModalBottomSheet
+import com.nextcloud.talk.chooseaccount.ui.StatusMessageModalBottomSheet
+import com.nextcloud.talk.chooseaccount.viewmodel.StatusMessageViewModel
+import com.nextcloud.talk.chooseaccount.viewmodel.StatusUiState
+import com.nextcloud.talk.chooseaccount.viewmodel.StatusViewModel
+import com.nextcloud.talk.contacts.loadImage
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
+import com.nextcloud.talk.data.network.NetworkMonitor
+import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
+import com.nextcloud.talk.models.json.status.Status
+import com.nextcloud.talk.models.json.status.StatusType
+import com.nextcloud.talk.settings.SettingsActivity
+import com.nextcloud.talk.ui.StatusDrawable
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import java.net.CookieManager
+import javax.inject.Inject
+
+@AutoInjector(NextcloudTalkApplication::class)
+class ChooseAccountDialogCompose {
+    init {
+        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+    }
+
+    @Inject
+    lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var currentUserProvider: CurrentUserProviderOld
+
+    @Inject
+    lateinit var cookieManager: CookieManager
+
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var invitationsViewModel: InvitationsViewModel
+
+    @Inject
+    lateinit var statusViewModel: StatusViewModel
+
+    @Inject
+    lateinit var statusMessageViewModel: StatusMessageViewModel
+
+    @Inject
+    lateinit var networkMonitor: NetworkMonitor
+
+    lateinit var ecosystemManager: EcosystemManager
+
+    private val userItems = mutableStateListOf<AccountItem>()
+
+    @Composable
+    @Suppress("LongMethod")
+    fun GetChooseAccountDialog(shouldDismiss: MutableState<Boolean>, activity: Activity, showEcosystem: Boolean) {
+        if (shouldDismiss.value) return
+        val colorScheme = viewThemeUtils.getColorScheme(activity)
+        val status = remember { mutableStateOf<Status?>(null) }
+        val showOnlineStatusSheet = rememberSaveable { mutableStateOf(false) }
+        val showStatusMessageSheet = rememberSaveable { mutableStateOf(false) }
+        val context = LocalContext.current
+        val statusViewState by statusViewModel.statusViewState.collectAsStateWithLifecycle()
+        val invitationsState by invitationsViewModel.getInvitationsViewState.collectAsStateWithLifecycle()
+        val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
+        val currentUser = currentUserProvider.currentUser.blockingGet()!!
+        val isStatusAvailable = CapabilitiesUtil.isUserStatusAvailable(currentUser)
+        ecosystemManager = EcosystemManager(activity)
+
+        LaunchedEffect(currentUser) {
+            val users = userManager.users.blockingGet()
+            users.forEach { user ->
+                if (!user.current) {
+                    invitationsViewModel.getInvitations(user)
+                }
+            }
+            if (isStatusAvailable) {
+                statusViewModel.getStatus()
+            }
+        }
+        LaunchedEffect(invitationsState) {
+            userItems.clear()
+            setupAccounts(invitationsState)
+        }
+        handleStatusState(statusViewState, status)
+        MaterialTheme(colorScheme = colorScheme) {
+            ChooseAccountDialogContent(
+                shouldDismiss = shouldDismiss,
+                colorScheme = colorScheme,
+                currentUser = currentUser,
+                status = status.value,
+                isStatusAvailable = isStatusAvailable,
+                isOnline = isOnline,
+                accountItems = userItems,
+                onCurrentUserClick = { shouldDismiss.value = true },
+                onSetOnlineStatusClick = {
+                    showOnlineStatusSheet.value = true
+                },
+                onSetStatusMessageClick = {
+                    statusMessageViewModel.resetDismissed()
+                    showStatusMessageSheet.value = true
+                },
+                onAddAccountClick = {
+                    shouldDismiss.value = true
+                    addAccount(activity)
+                },
+                onOpenSettingsClick = {
+                    shouldDismiss.value = true
+                    openSettings(activity)
+                },
+                onEcosystemFilesClick = {
+                    shouldDismiss.value = true
+                    openEcosystemFiles(currentUser)
+                },
+                onEcosystemNotesClick = {
+                    shouldDismiss.value = true
+                    openEcosystemNotes(currentUser)
+                },
+                onEcosystemMoreClick = {
+                    shouldDismiss.value = true
+                    openEcosystemMore(activity)
+                },
+                accountRowContent = { user ->
+                    AccountRow(user, activity) { shouldDismiss.value = true }
+                },
+                statusIndicator = { modifier ->
+                    StatusIndicator(modifier = modifier, status = status.value, context = context)
+                },
+                showEcosystem = showEcosystem,
+                context = context
+            )
+            if (showOnlineStatusSheet.value) {
+                val currentStatusType = StatusType.entries.firstOrNull { it.string == status.value?.status }
+                OnlineStatusModalBottomSheet(
+                    currentStatusType = currentStatusType,
+                    onStatusSelected = { statusType ->
+                        statusViewModel.setStatusType(statusType)
+                    },
+                    onDismiss = { showOnlineStatusSheet.value = false }
+                )
+            }
+            if (showStatusMessageSheet.value) {
+                status.value?.let { currentStatus ->
+                    StatusMessageModalBottomSheet(
+                        currentStatus = currentStatus,
+                        viewModel = statusMessageViewModel,
+                        onDismiss = {
+                            showStatusMessageSheet.value = false
+                            statusViewModel.getStatus()
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setupAccounts(invitationsUiState: InvitationsViewModel.ViewState) {
+        userManager.users.blockingGet().forEach { user ->
+            if (!user.current) {
+                val pendingCount = getPendingInvitations(invitationsUiState)
+                addAccountToList(user, pendingCount)
+            }
+        }
+    }
+
+    private fun handleStatusState(statusViewState: StatusUiState, status: MutableState<Status?>) {
+        when (statusViewState) {
+            is StatusUiState.Success -> {
+                status.value = statusViewState.status.ocs?.data!!
+            }
+
+            is StatusUiState.Error -> {
+                Log.e(TAG, "Failed to get account status")
+            }
+
+            StatusUiState.None -> {
+            }
+        }
+    }
+
+    private fun addAccount(activity: Activity) {
+        val intent = Intent(activity, ServerSelectionActivity::class.java)
+        intent.putExtra(BundleKeys.ADD_ADDITIONAL_ACCOUNT, true)
+        activity.startActivity(intent)
+    }
+
+    private fun openSettings(activity: Activity) {
+        val intent = Intent(activity, SettingsActivity::class.java)
+        activity.startActivity(intent)
+    }
+
+    private fun openEcosystemFiles(currentUser: User) {
+        ecosystemManager.openApp(EcosystemApp.FILES, getAccountHandle(currentUser))
+    }
+
+    private fun openEcosystemNotes(currentUser: User) {
+        ecosystemManager.openApp(EcosystemApp.NOTES, getAccountHandle(currentUser))
+    }
+
+    private fun getAccountHandle(user: User): String = user.username + "@" + user.baseUrl?.toUri()?.host
+
+    private fun openEcosystemMore(activity: Activity) {
+        LinkHelper.openAppStore("Nextcloud", true, activity)
+    }
+
+    @Composable
+    private fun AccountRow(userItem: AccountItem, activity: Activity, onSelected: () -> Unit) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    if (userManager.setUserAsActive(userItem.user).blockingGet()) {
+                        cookieManager.cookieStore.removeAll()
+                        val intent = Intent(activity, ConversationsListActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        activity.startActivity(intent)
+                        onSelected()
+                    }
+                }
+                .padding(8.dp)
+        ) {
+            AsyncImage(
+                model = ApiUtils.getUrlForAvatar(
+                    userItem.user.baseUrl,
+                    userItem.user.userId,
+                    true,
+                    darkMode = DisplayUtils.isDarkModeOn(LocalContext.current)
+                ),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+            )
+            Column(
+                modifier = Modifier
+                    .padding(start = 12.dp)
+                    .weight(1f)
+            ) {
+                Text(
+                    text = userItem.user.displayName ?: userItem.user.username ?: ""
+                )
+                Text(
+                    text = userItem.user.baseUrl!!.toUri().host ?: "",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = colorResource(id = R.color.low_emphasis_text)
+                )
+            }
+
+            if (userItem.pendingInvitation > 0) {
+                Box(
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .size(16.dp)
+                        .clip(CircleShape)
+                        .background(Color.Red)
+                )
+            }
+        }
+    }
+
+    fun getPendingInvitations(invitationsUiState: InvitationsViewModel.ViewState): Int =
+        when (invitationsUiState) {
+            is InvitationsViewModel.GetInvitationsSuccessState -> {
+                invitationsUiState.invitations.size
+            }
+
+            else -> {
+                0
+            }
+        }
+
+    @Composable
+    private fun StatusIndicator(modifier: Modifier = Modifier, status: Status?, context: Context) {
+        status?.let {
+            val size = remember { DisplayUtils.convertDpToPixel(STATUS_SIZE_DP, context) }
+            val drawable = remember(it) { StatusDrawable(it.status, it.icon, size, 0, context) }
+            viewThemeUtils.talk.themeStatusDrawable(context, drawable)
+            AndroidView(
+                factory = { ImageView(it) },
+                modifier = modifier.size(16.dp)
+            ) { imageView ->
+                imageView.setImageDrawable(drawable)
+            }
+        }
+    }
+
+    companion object {
+        private const val STATUS_SIZE_DP = 9f
+        private val TAG = ChooseAccountDialogCompose::class.simpleName
+    }
+
+    private fun addAccountToList(user: User, pendingInvitations: Int) {
+        userItems.add(AccountItem(user, pendingInvitations))
+    }
+}
+
+@Suppress("LongParameterList")
+@Composable
+private fun ChooseAccountDialogContent(
+    shouldDismiss: MutableState<Boolean>,
+    colorScheme: ColorScheme,
+    currentUser: User,
+    status: Status?,
+    isStatusAvailable: Boolean,
+    isOnline: Boolean,
+    accountItems: List<AccountItem>,
+    onCurrentUserClick: () -> Unit,
+    onSetOnlineStatusClick: () -> Unit,
+    onSetStatusMessageClick: () -> Unit,
+    onAddAccountClick: () -> Unit,
+    onOpenSettingsClick: () -> Unit,
+    onEcosystemFilesClick: () -> Unit,
+    onEcosystemNotesClick: () -> Unit,
+    onEcosystemMoreClick: () -> Unit,
+    accountRowContent: @Composable (AccountItem) -> Unit,
+    statusIndicator: @Composable (Modifier) -> Unit,
+    showEcosystem: Boolean = true,
+    context: Context
+) {
+    Dialog(onDismissRequest = { shouldDismiss.value = true }) {
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(24.dp)
+        ) {
+            Column {
+                CurrentUserSection(
+                    currentUser = currentUser,
+                    status = status,
+                    onCurrentUserClick = onCurrentUserClick,
+                    colorScheme = colorScheme,
+                    statusIndicator = statusIndicator,
+                    context = context
+                )
+                if (isStatusAvailable) {
+                    StatusActionButtons(
+                        onSetOnlineStatusClick = onSetOnlineStatusClick,
+                        onSetStatusMessageClick = onSetStatusMessageClick
+                    )
+                }
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+                if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT && showEcosystem) {
+                    EcosystemAppsSection(
+                        onFilesClick = onEcosystemFilesClick,
+                        onNotesClick = onEcosystemNotesClick,
+                        onMoreClick = onEcosystemMoreClick
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .weight(1f, fill = false)
+                ) {
+                    items(accountItems) { account ->
+                        if (account.user.userId + account.user.baseUrl != currentUser.userId + currentUser.baseUrl) {
+                            accountRowContent(account)
+                        }
+                    }
+                }
+
+                OnlineActions(
+                    onAddAccountClick = onAddAccountClick,
+                    onOpenSettingsClick = onOpenSettingsClick,
+                    isOnline = isOnline
+                )
+            }
+        }
+    }
+}
+
+@Suppress("LongParameterList")
+@Composable
+private fun CurrentUserSection(
+    currentUser: User,
+    status: Status?,
+    onCurrentUserClick: () -> Unit,
+    colorScheme: ColorScheme,
+    statusIndicator: @Composable (Modifier) -> Unit,
+    context: Context
+) {
+    Row(
+        modifier = Modifier
+            .padding(all = 16.dp)
+            .clickable { onCurrentUserClick() },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        UserAvatarWithStatus(currentUser = currentUser, context = context, statusIndicator = statusIndicator)
+        CurrentUserInfo(
+            currentUser = currentUser,
+            status = status,
+            modifier = Modifier
+                .padding(start = 12.dp)
+                .weight(1f)
+        )
+        Spacer(modifier = Modifier.padding(end = 8.dp))
+        Icon(
+            painterResource(id = R.drawable.ic_check_circle),
+            contentDescription = null,
+            modifier = Modifier.size(32.dp),
+            tint = colorScheme.primary
+        )
+    }
+}
+
+@Composable
+private fun UserAvatarWithStatus(currentUser: User, context: Context, statusIndicator: @Composable (Modifier) -> Unit) {
+    Box {
+        AsyncImage(
+            model = loadImage(
+                ApiUtils.getUrlForAvatar(
+                    currentUser.baseUrl,
+                    currentUser.userId,
+                    true,
+                    DisplayUtils.isDarkModeOn(context)
+                ),
+                context,
+                R.drawable.account_circle_96dp
+            ),
+            contentDescription = stringResource(R.string.user_avatar),
+            modifier = Modifier.size(48.dp)
+        )
+        statusIndicator(Modifier.align(Alignment.BottomEnd))
+    }
+}
+
+@Composable
+private fun CurrentUserInfo(currentUser: User, status: Status?, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        Text(text = currentUser.displayName ?: currentUser.username ?: "")
+        status?.let {
+            if (!it.message.isNullOrEmpty()) {
+                Text(
+                    text = it.message!!,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = colorResource(id = R.color.low_emphasis_text),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            Text(
+                text = currentUser.baseUrl!!.toUri().host ?: "",
+                modifier = Modifier.padding(top = 2.dp),
+                style = MaterialTheme.typography.bodySmall,
+                color = colorResource(id = R.color.low_emphasis_text),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+@Composable
+private fun EcosystemAppsSection(onFilesClick: () -> Unit, onNotesClick: () -> Unit, onMoreClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        EcosystemAppItem(
+            iconRes = R.drawable.ic_mimetype_folder,
+            label = stringResource(R.string.ecosystem_apps_files),
+            contentDescription = stringResource(R.string.ecosystem_apps_files),
+            onClick = onFilesClick
+        )
+        EcosystemAppItem(
+            iconRes = R.drawable.ic_notes,
+            label = stringResource(R.string.ecosystem_apps_notes),
+            contentDescription = stringResource(R.string.ecosystem_apps_notes),
+            onClick = onNotesClick
+        )
+        EcosystemAppItem(
+            iconRes = R.drawable.ic_more_apps,
+            label = stringResource(R.string.ecosystem_apps_more),
+            contentDescription = stringResource(R.string.ecosystem_apps_more),
+            onClick = onMoreClick
+        )
+    }
+}
+
+@Composable
+private fun EcosystemAppItem(iconRes: Int, label: String, contentDescription: String, onClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .widthIn(max = 80.dp)
+            .clickable(onClick = onClick)
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = contentDescription,
+            modifier = Modifier
+                .size(40.dp)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline,
+                    shape = CircleShape
+                )
+                .padding(8.dp),
+            tint = MaterialTheme.colorScheme.onSurface
+        )
+        Text(
+            text = label,
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier.padding(top = 4.dp),
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+private fun StatusActionButtons(onSetOnlineStatusClick: () -> Unit, onSetStatusMessageClick: () -> Unit) {
+    Row {
+        TextButton(onClick = onSetOnlineStatusClick) {
+            Icon(
+                painter = painterResource(R.drawable.ic_check_circle_outlined),
+                contentDescription = null,
+                tint = colorResource(id = R.color.high_emphasis_text)
+            )
+            Spacer(modifier = Modifier.padding(end = 8.dp))
+            Text(
+                text = stringResource(R.string.online_status),
+                color = colorResource(id = R.color.high_emphasis_text),
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        TextButton(onClick = onSetStatusMessageClick) {
+            Icon(
+                painter = painterResource(R.drawable.baseline_chat_bubble_outline_24),
+                contentDescription = null,
+                tint = colorResource(id = R.color.high_emphasis_text)
+            )
+            Spacer(modifier = Modifier.padding(end = 8.dp))
+            Text(
+                text = stringResource(R.string.status_message),
+                color = colorResource(id = R.color.high_emphasis_text),
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+private fun OnlineActions(onAddAccountClick: () -> Unit, onOpenSettingsClick: () -> Unit, isOnline: Boolean) {
+    if (isOnline) {
+        TextButton(onClick = onAddAccountClick, modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 8.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_account_plus),
+                    contentDescription = null,
+                    tint = colorResource(id = R.color.high_emphasis_text)
+                )
+                Spacer(Modifier.size(16.dp))
+                Text(
+                    stringResource(R.string.nc_account_chooser_add_account),
+                    color = colorResource(id = R.color.high_emphasis_text),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+
+    TextButton(onClick = onOpenSettingsClick, modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .padding(start = 16.dp, top = 8.dp, bottom = 16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painterResource(R.drawable.ic_settings),
+                contentDescription = null,
+                tint = colorResource(id = R.color.high_emphasis_text)
+            )
+            Spacer(Modifier.size(16.dp))
+            Text(
+                stringResource(R.string.nc_settings),
+                color = colorResource(id = R.color.high_emphasis_text),
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Preview(
+    name = "Dark Mode",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
+)
+@Preview(
+    name = "R-t-L",
+    showBackground = true,
+    locale = "ar"
+)
+@Composable
+private fun ChooseAccountDialogContentPreview() {
+    val shouldDismiss = remember { mutableStateOf(false) }
+    val sampleUser = User(
+        userId = "user1",
+        username = "user1",
+        baseUrl = "https://example.com",
+        displayName = "Sample User"
+    )
+    val sampleStatus = Status(
+        userId = "user1",
+        message = "Working remotely",
+        messageId = "message-id",
+        messageIsPredefined = false,
+        icon = "",
+        clearAt = 0,
+        status = "online",
+        statusIsUserDefined = true
+    )
+    val isDark = isSystemInDarkTheme()
+    val colorScheme = if (isDark) darkColorScheme() else lightColorScheme()
+    MaterialTheme(colorScheme = colorScheme) {
+        val context = LocalContext.current
+        ChooseAccountDialogContent(
+            shouldDismiss = shouldDismiss,
+            colorScheme = colorScheme,
+            currentUser = sampleUser,
+            status = sampleStatus,
+            isStatusAvailable = true,
+            isOnline = true,
+            accountItems = emptyList(),
+            onCurrentUserClick = {},
+            onSetOnlineStatusClick = {},
+            onSetStatusMessageClick = {},
+            onAddAccountClick = {},
+            onOpenSettingsClick = {},
+            onEcosystemFilesClick = {},
+            onEcosystemNotesClick = {},
+            onEcosystemMoreClick = {},
+            accountRowContent = {},
+            statusIndicator = { modifier -> SampleStatusIndicator(modifier) },
+            context = context
+        )
+    }
+}
+
+@Composable
+private fun SampleStatusIndicator(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .size(16.dp)
+            .clip(CircleShape)
+            .background(Color.Green)
+    )
+}

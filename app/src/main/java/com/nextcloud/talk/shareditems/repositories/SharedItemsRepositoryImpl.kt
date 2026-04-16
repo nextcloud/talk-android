@@ -20,6 +20,7 @@ import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.model.SharedItems
 import com.nextcloud.talk.shareditems.model.SharedLocationItem
 import com.nextcloud.talk.shareditems.model.SharedOtherItem
+import com.nextcloud.talk.shareditems.model.SharedPinnedItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
@@ -66,13 +67,27 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
         val mediaItems = response.body()!!.ocs!!.data
         if (mediaItems != null) {
             for (it in mediaItems) {
-                val actorParameters = it.value.messageParameters!!["actor"]!!
+                val metaData = it.value.metaData
                 val dateTime = dateUtils.getLocalDateTimeStringFromTimestamp(
                     it.value.timestamp * DateConstants.SECOND_DIVIDER
                 )
 
-                if (it.value.messageParameters?.containsKey("file") == true) {
+                if (metaData != null) {
+                    val fileParameters = it.value.messageParameters?.get("file")
+                    val message = it.value.message!!
+                    val name = fileParameters?.get("name") ?: message
+
+                    val sharedItem = SharedPinnedItem(
+                        it.value.id.toString(),
+                        name,
+                        it.value.actorId!!,
+                        metaData.pinnedActorDisplayName!!,
+                        dateTime
+                    )
+                    items[it.value.id.toString()] = sharedItem
+                } else if (it.value.messageParameters?.containsKey("file") == true) {
                     val fileParameters = it.value.messageParameters!!["file"]!!
+                    val actorParameters = it.value.messageParameters!!["actor"]!!
 
                     val previewAvailable =
                         "yes".equals(fileParameters["preview-available"]!!, ignoreCase = true)
@@ -92,6 +107,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
                     )
                 } else if (it.value.messageParameters?.containsKey("object") == true) {
                     val objectParameters = it.value.messageParameters!!["object"]!!
+                    val actorParameters = it.value.messageParameters!!["actor"]!!
                     items[it.value.id.toString()] = itemFromObject(objectParameters, actorParameters, dateTime)
                 } else {
                     Log.w(TAG, "Item contains neither 'file' or 'object'.")

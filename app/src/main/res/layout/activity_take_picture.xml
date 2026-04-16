@@ -212,7 +212,7 @@
         app:backgroundTint="@color/colorPrimary"
         app:cornerRadius="48dp"
         app:elevation="0dp"
-        app:icon="@drawable/ic_send"
+        app:icon="@drawable/ic_send_24px"
         app:iconGravity="textStart"
         app:iconPadding="8dp"
         app:iconSize="24dp"

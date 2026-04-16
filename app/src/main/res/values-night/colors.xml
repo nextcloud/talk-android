@@ -24,10 +24,9 @@
     <color name="low_emphasis_text">#61ffffff</color>
 
     <!-- bottom sheet specific icon default color -->
-    <color name="high_emphasis_menu_icon">#8Affffff</color>
+    <color name="high_emphasis_menu_icon">@color/high_emphasis_text</color>
 
     <color name="bg_default">#121212</color>
-    <color name="bg_default_semitransparent">#99121212</color>
 
     <color name="fg_default">#FFFFFF</color>
     <color name="fg_inverse">#121212</color>
@@ -36,8 +35,6 @@
 
     <color name="conversation_unread_bubble">#373737</color>
     <color name="conversation_unread_bubble_text">#D8D8D8</color>
-
-    <color name="chat_separator">#484848</color>
 
     <!-- Background for replied messages -->
     <color name="reply_background">#33000000</color>
@@ -55,10 +52,6 @@
 
     <!-- shimmer element colors -->
     <color name="nc_shimmer_default_color">#4B4B4B</color>
-    <color name="nc_shimmer_darker_color">#282828</color>
-
-    <color name="list_divider_background">#1FFFFFFF</color>
-    <color name="grey_200">#818181</color>
 
     <color name="dialog_background">#353535</color>
 

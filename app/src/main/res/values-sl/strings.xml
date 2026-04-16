@@ -14,6 +14,7 @@
     <string name="automatic_status_set">Stanje je določeno samodejno</string>
     <string name="avatar">Podoba</string>
     <string name="away">Ne spremljam</string>
+    <string name="battery_optimization_title">Nastavitve baterije</string>
     <string name="busy">Zasedeno</string>
     <string name="calendar">Koledar</string>
     <string name="call_more_actions_dialog_headline">Napredne možnosti klica</string>
@@ -33,6 +34,9 @@
     <string name="delete_avatar">Izbriši podobo</string>
     <string name="dnd">Ne moti</string>
     <string name="dontClear">Ne počisti</string>
+    <string name="ecosystem_apps_files">Datoteke</string>
+    <string name="ecosystem_apps_more">Več</string>
+    <string name="ecosystem_apps_notes">Beležke</string>
     <string name="edit">Uredi</string>
     <string name="edit_message_icon_description">Uredi sporočilo</string>
     <string name="emoji_category_recent">Nedavno</string>
@@ -129,9 +133,11 @@
     <string name="nc_common_skip">Preskoči</string>
     <string name="nc_common_unknown">Neznano</string>
     <string name="nc_configure_cert_auth">Izbor potrdila za overitev</string>
+    <string name="nc_confirm">Potrdi</string>
     <string name="nc_connecting_call">Poteka vzpostavljanje povezave …</string>
     <string name="nc_contacts_done">Začni pogovor</string>
     <string name="nc_conversation_description">Opis pogovora</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Odpri mesto datoteke</string>
     <string name="nc_conversation_menu_conversation_info">Podrobnosti pogovora</string>
     <string name="nc_conversation_menu_video_call">Video klic</string>
     <string name="nc_conversation_menu_voice_call">Glasovni klic</string>
@@ -283,8 +289,6 @@
     <string name="nc_promote">Povišaj v vlogo moderatorja</string>
     <string name="nc_public_call_status">Javni pogovor</string>
     <string name="nc_push_disabled">Potisno obveščanje je onemogočeno</string>
-    <string name="nc_push_to_talk">Možnost »push-to-talk«</string>
-    <string name="nc_push_to_talk_desc">Pri onemogočenem mikrofonu lahko za začetek govora kliknete in zadržite gumb</string>
     <string name="nc_remind">Opomni me kasneje</string>
     <string name="nc_remove_from_favorites">Odstrani iz priljubljenih</string>
     <string name="nc_remove_group_and_members">Odstrani skupino in člane</string>
@@ -296,6 +300,7 @@
     <string name="nc_reply_privately">Odgovori zasebno</string>
     <string name="nc_save_message">Shrani</string>
     <string name="nc_save_success">Uspešno shranjeno</string>
+    <string name="nc_scheduled_time">Načrtovan time</string>
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
     <string name="nc_screen_lock_timeout_300">5 minut</string>
     <string name="nc_screen_lock_timeout_60">1 minuta</string>
@@ -307,6 +312,8 @@
     <string name="nc_search">Poišči</string>
     <string name="nc_search_clear">Počisti iskanje</string>
     <string name="nc_select_an_account">Izbor računa</string>
+    <string name="nc_send_later">Pošlji kasneje</string>
+    <string name="nc_send_now">Pošlji takoj</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s pošlje sličico GIF.</string>
     <string name="nc_sent_a_gif_you">Pošljete sličico GIF</string>
     <string name="nc_sent_a_video" formatted="true">%1$s pošlje video datoteko.</string>
@@ -390,6 +397,7 @@
     <string name="nc_shared_items_empty">Ni predmetov v souporabi</string>
     <string name="nc_shared_items_location">Trenutno mesto</string>
     <string name="nc_shared_location">Objavljeno trenutno mesto</string>
+    <string name="nc_show_ecosystem_title">Pokaži preklopnika programov</string>
     <string name="nc_sort_by">Razvrsti po</string>
     <string name="nc_start_time">Čas začetka</string>
     <string name="nc_switch_account">Preklopi račun</string>
@@ -413,6 +421,8 @@
     <string name="nc_voice_message_slide_to_cancel">« Potegnite za preklic</string>
     <string name="nc_webinar">Spletinar</string>
     <string name="nc_yes">Da</string>
+    <string name="nc_zoom_in">Približaj</string>
+    <string name="nc_zoom_out">Oddalji</string>
     <string name="next_week">Naslednji teden</string>
     <string name="no_phone_book_integration_due_to_permissions">Povezava s telefonskim imenikom ni na voljo zaradi neustreznih dovoljenj.</string>
     <string name="notifications_default">Privzeto</string>
@@ -421,6 +431,8 @@
     <string name="online_status">Povezano stanje</string>
     <string name="openConversations">Odprti pogovori</string>
     <string name="open_in_files_app">Odpri v programu Datoteke</string>
+    <string name="pinned_dismiss">Prekliči</string>
+    <string name="pinned_message_options">Možnosti sporočila</string>
     <string name="play_pause_voice_message">Predvajaj/Ustavi zvočni posnetek</string>
     <string name="polls_add_option">Dodaj možnost</string>
     <string name="polls_edit_vote">Uredi glasovanje</string>
@@ -518,7 +530,12 @@
     <string name="user_info_address">Naslov</string>
     <string name="user_info_displayname">Polno ime</string>
     <string name="user_info_email">Elektronsko sporočilo</string>
+    <string name="user_info_fediverse">Fediverse</string>
+    <string name="user_info_headline">Naslov</string>
+    <string name="user_info_organisation">Organizacija</string>
     <string name="user_info_phone">Telefonska številka</string>
+    <string name="user_info_profile_enable">Omogoči profil</string>
+    <string name="user_info_role">Vloga</string>
     <string name="user_info_twitter">Račun Twitter</string>
     <string name="user_info_website">Spletna stran</string>
     <string name="user_status">Stanje</string>

@@ -1,15 +1,14 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
- * SPDX-FileCopyrightText: 2022 Marcel Hibbe <dev@mhibbe.de>
- * SPDX-FileCopyrightText: 2022 Tim Krüger <t@timkrueger.me>
- * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
+ * SPDX-FileCopyrightText: 2017-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.application
 
-import android.content.Context
+import android.app.Activity
+import android.app.Application
+import android.content.pm.PackageManager
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.P
 import android.util.Log
@@ -17,8 +16,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
 import androidx.lifecycle.LifecycleObserver
-import androidx.multidex.MultiDex
-import androidx.multidex.MultiDexApplication
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
@@ -33,6 +30,8 @@ import coil.decode.SvgDecoder
 import coil.memory.MemoryCache
 import coil.util.DebugLogger
 import com.nextcloud.talk.BuildConfig
+import com.nextcloud.talk.account.AccountVerificationActivity
+import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.dagger.modules.BusModule
 import com.nextcloud.talk.dagger.modules.ContextModule
 import com.nextcloud.talk.dagger.modules.DaosModule
@@ -85,7 +84,7 @@ import javax.inject.Singleton
 @Singleton
 @AutoInjector(NextcloudTalkApplication::class)
 class NextcloudTalkApplication :
-    MultiDexApplication(),
+    Application(),
     LifecycleObserver {
     //region Fields (components)
     lateinit var componentApplication: NextcloudTalkApplicationComponent
@@ -121,11 +120,30 @@ class NextcloudTalkApplication :
         sharedApplication = this
 
         val securityKeyManager = SecurityKeyManager.getInstance()
-        val securityKeyConfig = SecurityKeyManagerConfig.Builder()
+        val securityKeyConfigBuilder = SecurityKeyManagerConfig.Builder()
             .setEnableDebugLogging(BuildConfig.DEBUG)
-            .build()
-        securityKeyManager.init(this, securityKeyConfig)
 
+        try {
+            val packageManager = packageManager
+            val activities = packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES).activities
+            activities?.forEach { activityInfo ->
+                try {
+                    val activityClass = Class.forName(activityInfo.name)
+                    if (activityClass != AccountVerificationActivity::class.java &&
+                        activityClass != BrowserLoginActivity::class.java
+                    ) {
+                        @Suppress("UNCHECKED_CAST")
+                        securityKeyConfigBuilder.addExcludedActivityClass(activityClass as Class<out Activity>)
+                    }
+                } catch (exception: ClassNotFoundException) {
+                    Log.e(TAG, "Couldn't disable activity for security key listener", exception)
+                }
+            }
+        } catch (exception: PackageManager.NameNotFoundException) {
+            Log.e(TAG, "Couldn't disable activities for security key listener", exception)
+        }
+
+        securityKeyManager.init(this, securityKeyConfigBuilder.build())
         initializeWebRtc()
         buildComponent()
         DavUtils.registerCustomFactories()
@@ -192,11 +210,6 @@ class NextcloudTalkApplication :
             .restModule(RestModule(applicationContext))
             .arbitraryStorageModule(ArbitraryStorageModule())
             .build()
-    }
-
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(base)
-        MultiDex.install(this)
     }
 
     private fun buildDefaultImageLoader(): ImageLoader {

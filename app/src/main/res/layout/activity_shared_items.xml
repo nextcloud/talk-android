@@ -44,6 +44,11 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/generic_compose_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <include
         android:id="@+id/emptyContainer"
         layout="@layout/empty_list"

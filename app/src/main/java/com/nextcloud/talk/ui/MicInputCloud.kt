@@ -22,6 +22,7 @@ import android.view.animation.LinearInterpolator
 import androidx.annotation.ColorInt
 import com.nextcloud.talk.R
 import kotlin.math.roundToInt
+import androidx.core.graphics.withSave
 
 class MicInputCloud(context: Context, attrs: AttributeSet) : View(context, attrs) {
     /**
@@ -204,18 +205,18 @@ class MicInputCloud(context: Context, attrs: AttributeSet) : View(context, attrs
 
     private fun drawMicInputCloud(canvas: Canvas?) {
         canvas?.apply {
-            save()
-            rotate(r1, centerX, centerY)
-            drawPath(ovalOnePath, bottomCirclePaint)
-            restore()
-            save()
-            rotate(r2, centerX, centerY)
-            drawPath(ovalTwoPath, bottomCirclePaint)
-            restore()
-            save()
-            rotate(r3, centerX, centerY)
-            drawPath(ovalThreePath, bottomCirclePaint)
-            restore()
+            withSave {
+                rotate(r1, centerX, centerY)
+                drawPath(ovalOnePath, bottomCirclePaint)
+            }
+            withSave {
+                rotate(r2, centerX, centerY)
+                drawPath(ovalTwoPath, bottomCirclePaint)
+            }
+            withSave {
+                rotate(r3, centerX, centerY)
+                drawPath(ovalThreePath, bottomCirclePaint)
+            }
             circlePath.reset()
             ovalOnePath.reset()
             ovalTwoPath.reset()
