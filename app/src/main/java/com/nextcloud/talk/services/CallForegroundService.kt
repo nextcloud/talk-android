@@ -191,7 +191,7 @@ class CallForegroundService : Service() {
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         return PendingIntent.getActivity(this, 0, intent, flags)
     }
-    
+
     private fun createEndCallIntent(callExtras: Bundle?): PendingIntent {
         val intent = Intent(this, EndCallReceiver::class.java).apply {
             action = END_CALL_ACTION
