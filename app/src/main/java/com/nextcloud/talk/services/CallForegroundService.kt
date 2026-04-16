@@ -78,7 +78,7 @@ class CallForegroundService : Service() {
         val contentTitle = conversationName?.takeIf { it.isNotBlank() }
             ?: getString(R.string.nc_call_ongoing_notification_default_title)
         val pendingIntent = createContentIntent(callExtras)
-        
+
         // Create action to return to call
         val returnToCallAction = NotificationCompat.Action.Builder(
             R.drawable.ic_call_white_24dp,
@@ -182,7 +182,9 @@ class CallForegroundService : Service() {
 
     private fun createContentIntent(callExtras: Bundle?): PendingIntent {
         val intent = Intent(this, CallActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             callExtras?.let { putExtras(Bundle(it)) }
         }
 
