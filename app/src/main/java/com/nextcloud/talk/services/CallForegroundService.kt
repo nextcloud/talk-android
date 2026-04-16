@@ -85,7 +85,7 @@ class CallForegroundService : Service() {
             getString(R.string.nc_call_ongoing_notification_return_action),
             pendingIntent
         ).build()
-        
+
         // Create action to end call
         val endCallPendingIntent = createEndCallIntent(callExtras)
         
