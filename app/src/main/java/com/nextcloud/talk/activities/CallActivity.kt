@@ -391,9 +391,13 @@ class CallActivity : CallBaseActivity() {
         } else {
             true // Older Android versions have permission by default
         }
-
-        Log.d(TAG, "DEBUG: Notification permission granted: $notificationPermissionGranted, isConnectionEstablished: $isConnectionEstablished")
-
+        
+        Log.d(
+            TAG,
+            "Notification permission granted: $notificationPermissionGranted, " +
+                "isConnectionEstablished: $isConnectionEstablished"
+        )
+        
         if (!isConnectionEstablished) {
             Log.d(TAG, "DEBUG: Proceeding with prepareCall() despite notification permission status")
             prepareCall()
@@ -1144,7 +1148,11 @@ class CallActivity : CallBaseActivity() {
                     Log.d(TAG, "DEBUG: Starting foreground service with notification permission")
                     CallForegroundService.start(applicationContext, conversationName, intent.extras)
                 } else {
-                    Log.w(TAG, "Notification permission not granted - call will work but without persistent notification")
+                    Log.w(
+                        TAG,
+                        "Notification permission not granted - call will work " +
+                            "but without persistent notification"
+                    )
                     Snackbar.make(
                         binding!!.root,
                         resources.getString(R.string.nc_notification_permission_hint),
@@ -1200,11 +1208,13 @@ class CallActivity : CallBaseActivity() {
         for (rationale in rationaleList) {
             rationalesWithLineBreaks.append(rationale).append("\n\n")
         }
-
-        // DEBUG: Log when permission rationale dialog is shown
-        Log.d(TAG, "DEBUG: Showing permission rationale dialog for permissions: $permissionsToRequest")
-        Log.d(TAG, "DEBUG: Rationale includes notification permission: ${permissionsToRequest.contains(Manifest.permission.POST_NOTIFICATIONS)}")
-
+        
+        // Log when permission rationale dialog is shown
+        Log.d(TAG, "Showing permission rationale dialog for permissions: $permissionsToRequest")
+        val hasNotificationPerm = permissionsToRequest
+            .contains(Manifest.permission.POST_NOTIFICATIONS)
+        Log.d(TAG, "Rationale includes notification permission: $hasNotificationPerm")
+        
         val dialogBuilder = MaterialAlertDialogBuilder(this)
             .setTitle(R.string.nc_permissions_rationale_dialog_title)
             .setMessage(rationalesWithLineBreaks)
@@ -1526,7 +1536,7 @@ class CallActivity : CallBaseActivity() {
                 localStream = null
                 Log.d(TAG, "Disposed localStream (intentionally leaving)")
             } else {
-                Log.d(TAG, "System-initiated destroy while call active, keeping localStream alive for foreground service")
+                Log.d(TAG, "System-initiated destroy, keeping localStream alive for foreground service")
             }
         } else {
             Log.d(TAG, "localStream is null")
@@ -1552,7 +1562,7 @@ class CallActivity : CallBaseActivity() {
                 Log.d(TAG, "Unregistering endCallFromNotificationReceiver...")
                 unregisterReceiver(endCallFromNotificationReceiver)
                 Log.d(TAG, "endCallFromNotificationReceiver unregistered successfully")
-            } catch (e: Exception) {
+            } catch (e: IllegalArgumentException) {
                 Log.w(TAG, "Failed to unregister endCallFromNotificationReceiver", e)
             }
         } else {

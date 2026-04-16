@@ -10,7 +10,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import org.junit.After
@@ -177,53 +176,37 @@ class ChatActivityLeaveRoomLifecycleTest {
     // ==========================================
 
     /**
-     * When a call is active (isInCall=true), the leave observer must NOT clear the
-     * holder or send websocket leave — doing so would kill the active call/PIP.
+     * When a call is active (isInCall=true) or dialing (isDialing=true), the leave
+     * observer must NOT clear the holder or send websocket leave — doing so would
+     * kill the active call/PIP.
      */
     @Test
-    fun `leave observer skips cleanup when call is active`() {
-        holderIsInCall = true
+    fun `leave observer skips cleanup when call is active or dialing`() {
+        for ((inCall, dialing, label) in listOf(
+            Triple(true, false, "isInCall"),
+            Triple(false, true, "isDialing")
+        )) {
+            holderIsInCall = inCall
+            holderIsDialing = dialing
+            holderCleared = false
+            websocketLeaveRoomCalled = false
+            sessionIdAfterRoomJoined = "valid-session"
 
-        val observer = androidx.lifecycle.Observer<LeaveState> { state ->
-            if (state is LeaveRoomSuccessState) {
-                simulateLeaveRoomObserverAction(state)
+            val observer = androidx.lifecycle.Observer<LeaveState> { state ->
+                if (state is LeaveRoomSuccessState) {
+                    simulateLeaveRoomObserverAction(state)
+                }
             }
+            leaveRoomViewState.observeForever(observer)
+            leaveRoomViewState.value = LeaveRoomSuccessState(null)
+
+            assertFalse("Holder should NOT be cleared ($label)", holderCleared)
+            assertFalse("Websocket leave should NOT fire ($label)", websocketLeaveRoomCalled)
+            assertEquals("Session should NOT be reset ($label)", "valid-session", sessionIdAfterRoomJoined)
+
+            leaveRoomViewState.removeObserver(observer)
+            leaveRoomViewState.value = LeaveRoomStartState
         }
-        leaveRoomViewState.observeForever(observer)
-
-        leaveRoomViewState.value = LeaveRoomSuccessState(null)
-
-        assertFalse("Holder should NOT be cleared during active call", holderCleared)
-        assertFalse("Websocket leave should NOT be called during active call", websocketLeaveRoomCalled)
-        assertEquals(
-            "Session should NOT be reset during active call",
-            "valid-session",
-            sessionIdAfterRoomJoined
-        )
-
-        leaveRoomViewState.removeObserver(observer)
-    }
-
-    /**
-     * When dialing (isDialing=true), the leave observer must NOT clear the holder.
-     */
-    @Test
-    fun `leave observer skips cleanup when dialing`() {
-        holderIsDialing = true
-
-        val observer = androidx.lifecycle.Observer<LeaveState> { state ->
-            if (state is LeaveRoomSuccessState) {
-                simulateLeaveRoomObserverAction(state)
-            }
-        }
-        leaveRoomViewState.observeForever(observer)
-
-        leaveRoomViewState.value = LeaveRoomSuccessState(null)
-
-        assertFalse("Holder should NOT be cleared while dialing", holderCleared)
-        assertFalse("Websocket leave should NOT be called while dialing", websocketLeaveRoomCalled)
-
-        leaveRoomViewState.removeObserver(observer)
     }
 
     /**
