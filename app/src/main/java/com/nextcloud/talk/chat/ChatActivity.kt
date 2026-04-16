@@ -450,27 +450,6 @@ class ChatActivity :
         }
     }
 
-    private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
-        override fun onSwitchTo(token: String?) {
-            if (token != null) {
-                if (CallActivity.active) {
-                    Log.d(TAG, "CallActivity is running. Ignore to switch chat in ChatActivity...")
-                } else {
-                    switchToRoom(token, false, false)
-                }
-            }
-    private val localParticipantMessageListener = SignalingMessageReceiver.LocalParticipantMessageListener { token ->
-        if (CallActivity.active) {
-            Log.d(TAG, "CallActivity is running. Ignore to switch chat in ChatActivity...")
-        } else {
-            switchToRoom(
-                token = token,
-                startCallAfterRoomSwitch = false,
-                isVoiceOnlyCall = false
-            )
-        }
-    }
-
     private val conversationMessageListener = object : SignalingMessageReceiver.ConversationMessageListener {
         override fun onStartTyping(userId: String?, session: String?) {
             val userIdOrGuestSession = userId ?: session
