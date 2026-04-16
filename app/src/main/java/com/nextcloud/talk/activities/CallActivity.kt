@@ -381,7 +381,7 @@ class CallActivity : CallBaseActivity() {
         } else {
             true // Older Android versions have permission by default
         }
-        
+
         Log.d(
             TAG,
             "Notification permission granted: $notificationPermissionGranted, " +
