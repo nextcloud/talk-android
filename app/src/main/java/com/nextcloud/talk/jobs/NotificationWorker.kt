@@ -311,8 +311,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 val avatarUrl = ApiUtils.getUrlForAvatar(
                     signatureVerification.user!!.baseUrl!!,
                     conversation.name,
-                    false,
-                    darkMode = DisplayUtils.isDarkModeOn(applicationContext)
+                    false
                 )
                 loadAvatarSync(avatarUrl, applicationContext)?.let { callerPersonBuilder.setIcon(it) }
             }
