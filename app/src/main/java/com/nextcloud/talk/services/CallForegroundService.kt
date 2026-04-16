@@ -203,8 +203,8 @@ class CallForegroundService : Service() {
     }
 
     private fun createHangupPendingIntent(): PendingIntent {
-        val intent = Intent(ACTION_HANGUP).apply {
-            setPackage(packageName)
+        val intent = Intent(this, EndCallReceiver::class.java).apply {
+            action = EndCallReceiver.END_CALL_ACTION
         }
         return PendingIntent.getBroadcast(
             this,
@@ -238,7 +238,6 @@ class CallForegroundService : Service() {
         private const val FOREGROUND_SERVICE_TYPE_ZERO = 0
         private const val EXTRA_CONVERSATION_NAME = "extra_conversation_name"
         private const val EXTRA_CALL_INTENT_EXTRAS = "extra_call_intent_extras"
-        private const val ACTION_HANGUP = "com.nextcloud.talk.ACTION_HANGUP"
         private const val CALL_DURATION_UPDATE_INTERVAL = 1000L
 
         fun start(context: Context, conversationName: String?, callIntentExtras: Bundle?) {
