@@ -387,7 +387,7 @@ class CallActivity : CallBaseActivity() {
             "Notification permission granted: $notificationPermissionGranted, " +
                 "isConnectionEstablished: $isConnectionEstablished"
         )
-        
+
         if (!isConnectionEstablished) {
             Log.d(TAG, "Proceeding with prepareCall() despite notification permission status")
             prepareCall()
