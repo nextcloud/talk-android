@@ -51,10 +51,11 @@ private const val QUOTE_HIGHLIGHT_FADE_OUT_MILLIS = 1500
 data class ChatMessageContext(
     val isOneToOneConversation: Boolean = false,
     val conversationThreadId: Long? = null,
-    val hasChatPermission: Boolean = true
+    val hasChatPermission: Boolean = true,
+    val downloadingFileState: List<String> = listOf()
 )
 
-class ChatMessageCallbacks(
+data class ChatMessageCallbacks(
     val onLongClick: ((Int) -> Unit?)? = null,
     val onSwipeReply: ((Int) -> Unit)? = null,
     val onFileClick: (Int) -> Unit = {},
@@ -68,6 +69,7 @@ class ChatMessageCallbacks(
     val onQuotedMessageClick: (Int) -> Unit = {}
 )
 
+@Suppress("TooLongMethod")
 @Composable
 fun ChatMessageView(
     message: ChatMessageUi,
@@ -130,6 +132,7 @@ fun ChatMessageView(
                             message = message,
                             isOneToOneConversation = context.isOneToOneConversation,
                             conversationThreadId = context.conversationThreadId,
+                            chatViewDownloadingFileState = context.downloadingFileState,
                             onImageClick = callbacks.onFileClick
                         )
                     }

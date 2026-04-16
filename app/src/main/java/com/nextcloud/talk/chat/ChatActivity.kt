@@ -64,11 +64,16 @@ import androidx.cardview.widget.CardView
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -117,6 +122,8 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.data.model.FileParameters
+import com.nextcloud.talk.chat.ui.ShowReactionsModalBottomSheet
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
@@ -162,7 +169,6 @@ import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.GetPinnedOptionsDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
-import com.nextcloud.talk.chat.ui.ShowReactionsModalBottomSheet
 import com.nextcloud.talk.ui.dialog.TempMessageActionsDialog
 import com.nextcloud.talk.ui.theme.LocalMessageUtils
 import com.nextcloud.talk.ui.theme.LocalOpenGraphFetcher
@@ -603,6 +609,7 @@ class ChatActivity :
                 binding.messagesListViewCompose.visibility = View.VISIBLE
 
                 val listState = rememberLazyListState()
+
                 SideEffect { chatListState = listState }
 
                 CompositionLocalProvider(
@@ -613,13 +620,26 @@ class ChatActivity :
                     val isOneToOneConversation = uiState.isOneToOneConversation
                     Log.d(TAG, "isOneToOneConversation=" + isOneToOneConversation)
 
+                    // list of the file ids of messages being downloaded
+                    val downloadingFileState = remember { mutableStateOf(listOf<String>()) }
+
+                    // openWhenDownloaded is a derived boolean state of the visible chat message list on the condition
+                    // that if any of the messages that are present contain a fileId that is within downloadingFileState
+                    val openWhenDownloadState = remember { mutableStateOf(false) }
+
+                    val visibleIds = listState.visibleItemsWithThreshold()
+                    LaunchedEffect(visibleIds, downloadingFileState.value) {
+                        openWhenDownloadState.value = (downloadingFileState.value.intersect(visibleIds).isNotEmpty())
+                    }
+
                     ChatView(
                         state = ChatViewState(
                             chatItems = uiState.items,
                             isOneToOneConversation = isOneToOneConversation,
                             conversationThreadId = conversationThreadId,
                             hasChatPermission = this::participantPermissions.isInitialized &&
-                                participantPermissions.hasChatPermission()
+                                participantPermissions.hasChatPermission(),
+                            downloadingFileState = downloadingFileState.value
                         ),
                         callbacks = ChatViewCallbacks(
                             onLoadMore = { loadMoreMessagesCompose() },
@@ -627,7 +647,7 @@ class ChatActivity :
                             updateRemoteLastReadMessageIfNeeded = { updateRemoteLastReadMessageIfNeeded() },
                             onLongClick = { openMessageActionsDialog(it) },
                             onSwipeReply = { handleSwipeToReply(it) },
-                            onFileClick = { downloadAndOpenFile(it) },
+                            onFileClick = { downloadAndOpenFile(it, openWhenDownloadState, downloadingFileState) },
                             onPollClick = { pollId, pollName -> openPollDialog(pollId, pollName) },
                             onVoicePlayPauseClick = { onVoicePlayPauseClickCompose(it) },
                             onVoiceSeek = { _, progress -> chatViewModel.seekToMediaPlayer(progress) },
@@ -661,6 +681,39 @@ class ChatActivity :
             }
         }
     }
+
+    @Composable
+    private fun LazyListState.visibleItemsWithThreshold(): List<String> =
+        remember(this) {
+            derivedStateOf {
+                val visibleItemsInfo = layoutInfo.visibleItemsInfo
+                if (layoutInfo.totalItemsCount == 0) {
+                    emptyList()
+                } else {
+                    visibleItemsInfo.toMutableList().map { it.key as String }
+                }
+            }
+        }.value.mapNotNull { key ->
+            val messageItem = chatViewModel.uiState.value.items.firstOrNull { it.stableKey() == key }
+            val message = messageItem?.messageOrNull()
+            var result: String? = null
+            message?.let {
+                if (message.messageParameters.isNotEmpty()) {
+                    runCatching {
+                        message.messageParameters as HashMap<String?, HashMap<String?, String?>>?
+                        val fileParameters = FileParameters(message.messageParameters)
+                        result = fileParameters.id
+                    }.onFailure { e ->
+                        when (e) {
+                            is ClassCastException -> {} // weird
+                            else -> Log.e(TAG, "Error in LazyListState.visibleItemsWithThreshold $e")
+                        }
+                    }
+                }
+            }
+
+            result
+        }
 
     private fun onLoadQuotedMessage(messageId: Int) {
         // Loading and displaying surrounding messages for quotes is pending; replace flow from latestChatBlock with
@@ -730,10 +783,18 @@ class ChatActivity :
         chatViewModel.setVoiceMessageSpeed(messageId, nextSpeed)
     }
 
-    fun downloadAndOpenFile(messageId: Int) {
+    fun downloadAndOpenFile(
+        messageId: Int,
+        openWhenDownloadState: MutableState<Boolean>,
+        downloadState: MutableState<List<String>>
+    ) {
         lifecycleScope.launch {
             val chatMessage = chatViewModel.getMessageById(messageId.toLong()).first()
-            FileViewerUtils(this@ChatActivity, conversationUser).openFile(chatMessage)
+            FileViewerUtils(this@ChatActivity, conversationUser).openFile(
+                chatMessage,
+                openWhenDownloadState,
+                downloadState
+            )
         }
     }
 
@@ -3558,7 +3619,6 @@ class ChatActivity :
 
             if (noteToSelfConversation != null) {
                 var shareUri: Uri? = null
-                val data: HashMap<String, String>?
                 var metaData = ""
                 var objectId = ""
                 if (message.hasFileAttachment) {
