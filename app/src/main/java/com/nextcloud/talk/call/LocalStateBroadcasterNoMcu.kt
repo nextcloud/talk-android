@@ -14,26 +14,25 @@ package com.nextcloud.talk.call
  * state when a remote participant is added.
  *
  *
- * The state is sent when a connection with another participant is first established (which implicitly broadcasts the
- * initial state when the local participant joins the call, as a connection is established with all the remote
- * participants). Note that, as long as that participant stays in the call, the initial state is not sent again, even
- * after a temporary disconnection; data channels use a reliable transport by default, so even if the state changes
- * while the connection is temporarily interrupted the normal state update messages should be received by the other
- * participant once the connection is restored.
+ * The state is sent the first time the ICE connection reaches a "connected" state for a given participant
+ * (isConnected transitions from false/unknown to true).  The observer collects the participant's
+ * uiState StateFlow so that if the connection is briefly lost and then restored (e.g. an ICE restart),
+ * the state is re-sent on the next false → true transition.
  *
  *
- * Nevertheless, in case of a failed connection and an ICE restart it is unclear whether the data channel messages
- * would be received or not (as the data channel transport may be the one that failed and needs to be restarted).
- * However, the state (except the speaking state) is also sent through signaling messages, which need to be
- * explicitly fetched from the internal signaling server, so even in case of a failed connection they will be
- * eventually received once the remote participant connects again.
+ * Note that, as long as a participant stays in the call, the state is sent each time the ICE connection
+ * goes from disconnected to connected; data channels use a reliable transport by default, so even if the
+ * state changes while the connection is temporarily interrupted the normal state update messages should be
+ * received by the other participant once the connection is restored.
  */
 import com.nextcloud.talk.activities.ParticipantUiState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import org.webrtc.PeerConnection.IceConnectionState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 
 class LocalStateBroadcasterNoMcu(
@@ -42,39 +41,25 @@ class LocalStateBroadcasterNoMcu(
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())
 ) : LocalStateBroadcaster(localCallParticipantModel, messageSender) {
 
-    // Map sessionId -> observer wrapper (Flow collector job)
     private val iceConnectionStateObservers = ConcurrentHashMap<String, IceConnectionStateObserver>()
 
-    private inner class IceConnectionStateObserver(val uiState: ParticipantUiState) {
-        private var job: Job? = null
-
-        init {
-            handleStateChange(uiState)
-        }
-
-        private fun handleStateChange(uiState: ParticipantUiState) {
-            // Determine ICE connection state
-            val iceState = if (uiState.isConnected) IceConnectionState.CONNECTED else IceConnectionState.NEW
-
-            if (iceState == IceConnectionState.CONNECTED) {
-                remove()
-                sendState(uiState.sessionKey)
-            }
-        }
-
-        fun remove() {
-            job?.cancel()
-            iceConnectionStateObservers.remove(uiState.sessionKey)
-        }
+    /**
+     * Primary entry point called by CallActivity.  Starts (or restarts) collecting the live
+     * StateFlow so that the local state is sent every time the ICE connection transitions from
+     * disconnected to connected.
+     */
+    override fun handleCallParticipantAdded(uiStateFlow: StateFlow<ParticipantUiState>) {
+        val sessionId = uiStateFlow.value.sessionKey ?: return
+        iceConnectionStateObservers[sessionId]?.remove()
+        iceConnectionStateObservers[sessionId] = IceConnectionStateObserver(sessionId, uiStateFlow)
     }
 
+    /**
+     * Fallback for callers that only have a snapshot (e.g. tests that pre-date the StateFlow API).
+     * Wraps the snapshot in a single-value StateFlow and delegates to the primary overload.
+     */
     override fun handleCallParticipantAdded(uiState: ParticipantUiState) {
-        uiState.sessionKey?.let {
-            iceConnectionStateObservers[it]?.remove()
-
-            iceConnectionStateObservers[it] =
-                IceConnectionStateObserver(uiState)
-        }
+        handleCallParticipantAdded(MutableStateFlow(uiState) as StateFlow<ParticipantUiState>)
     }
 
     override fun handleCallParticipantRemoved(sessionId: String) {
@@ -83,10 +68,32 @@ class LocalStateBroadcasterNoMcu(
 
     override fun destroy() {
         super.destroy()
-        // Cancel all collectors safely
         val observersCopy = iceConnectionStateObservers.values.toList()
         for (observer in observersCopy) {
             observer.remove()
+        }
+    }
+
+    private inner class IceConnectionStateObserver(
+        private val sessionId: String,
+        uiStateFlow: StateFlow<ParticipantUiState>
+    ) {
+        private val job: Job = scope.launch {
+            var previousIsConnected: Boolean? = null
+            uiStateFlow.collect { uiState ->
+                val currentIsConnected = uiState.isConnected
+                // Send state on every false → true (or null → true) transition so that the
+                // remote participant receives the local state as soon as the data channel is ready.
+                if (currentIsConnected && previousIsConnected != true) {
+                    sendState(uiState.sessionKey)
+                }
+                previousIsConnected = currentIsConnected
+            }
+        }
+
+        fun remove() {
+            job.cancel()
+            iceConnectionStateObservers.remove(sessionId)
         }
     }
 

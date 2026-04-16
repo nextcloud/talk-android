@@ -2116,9 +2116,10 @@ class CallActivity : CallBaseActivity() {
     ) {
         Log.d(TAG, "handleCallParticipantsChanged")
 
-        // The signaling session is the same as the Nextcloud session only when the MCU is not used.
+        // The signaling session is the same as the Nextcloud session only when internal signaling is used.
+        // With external signaling (HPB), participant session IDs are HPB session IDs regardless of MCU.
         var currentSessionId = callSession
-        if (hasMCU) {
+        if (webSocketClient != null) {
             currentSessionId = webSocketClient!!.sessionId
         }
         Log.d(TAG, "   currentSessionId is $currentSessionId")
@@ -2423,7 +2424,9 @@ class CallActivity : CallBaseActivity() {
             signalingMessageReceiver!!
         )
 
-        localStateBroadcaster!!.handleCallParticipantAdded(callViewModel.getParticipant(sessionId)?.uiState?.value)
+        // Pass the live StateFlow so LocalStateBroadcasterNoMcu can observe ICE state changes
+        // and send the local state exactly when the data channel becomes ready.
+        localStateBroadcaster!!.handleCallParticipantAdded(callViewModel.getParticipant(sessionId)!!.uiState)
 
         initPipMode()
     }

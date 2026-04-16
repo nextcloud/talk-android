@@ -363,6 +363,9 @@ dependencies {
     testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
     testImplementation("com.google.dagger:hilt-android-testing:2.59.2")
     testImplementation("org.robolectric:robolectric:4.16.1")
+    // conscrypt-android provides Android JNI libs only; the openjdk-uber variant bundles
+    // JVM host natives so Robolectric can initialise the security provider without crashing.
+    testImplementation("org.conscrypt:conscrypt-openjdk-uber:2.5.2")
 }
 
 tasks.register<Copy>("installGitHooks") {
