@@ -7,6 +7,7 @@
  */
 package com.nextcloud.talk.services
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.PendingIntent
 import android.app.Person
@@ -43,6 +44,9 @@ class CallForegroundService : Service() {
 
     @Suppress("ForegroundServiceType")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d(TAG, "onStartCommand called")
+        handler.removeCallbacksAndMessages(null)
+
         val conversationName = intent?.getStringExtra(EXTRA_CONVERSATION_NAME)
         val callExtras = intent?.getBundleExtra(EXTRA_CALL_INTENT_EXTRAS)
         val notification = buildNotification(conversationName, callExtras)
@@ -60,6 +64,7 @@ class CallForegroundService : Service() {
     }
 
     override fun onDestroy() {
+        Log.d(TAG, "onDestroy called")
         handler.removeCallbacksAndMessages(null)
         stopForeground(STOP_FOREGROUND_REMOVE)
         super.onDestroy()
@@ -225,6 +230,7 @@ class CallForegroundService : Service() {
     }
 
     companion object {
+        private val TAG = CallForegroundService::class.java.simpleName
         private const val NOTIFICATION_ID = 47001
         private const val EXTRA_CONVERSATION_NAME = "extra_conversation_name"
         private const val EXTRA_CALL_INTENT_EXTRAS = "extra_call_intent_extras"
