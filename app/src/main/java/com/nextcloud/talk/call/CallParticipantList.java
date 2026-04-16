@@ -41,21 +41,54 @@ public class CallParticipantList {
 
         @Override
         public void onUsersInRoom(List<Participant> participants) {
-            processParticipantList(participants);
-        }
-
-        @Override
-        public void onParticipantsUpdate(List<Participant> participants) {
-            processParticipantList(participants);
-        }
-
-        private void processParticipantList(List<Participant> participants) {
+            // Internal signaling: full participant list; participants absent from the list have left.
             Collection<Participant> joined = new ArrayList<>();
             Collection<Participant> updated = new ArrayList<>();
             Collection<Participant> left = new ArrayList<>();
             Collection<Participant> unchanged = new ArrayList<>();
 
-            Collection<Participant> knownCallParticipantsNotFound = new ArrayList<>(callParticipants.values());
+            Collection<Participant> notFound = classifyParticipants(participants, joined, updated, left, unchanged);
+
+            for (Participant callParticipant : notFound) {
+                callParticipants.remove(callParticipant.getSessionId());
+                // No need to copy it, as it will be no longer used.
+                callParticipant.setInCall(Participant.InCallFlags.DISCONNECTED);
+            }
+            left.addAll(notFound);
+
+            notifyIfChanged(joined, updated, left, unchanged);
+        }
+
+        @Override
+        public void onParticipantsUpdate(List<Participant> participants) {
+            // HPB external signaling: partial update containing only changed participants.
+            // Participants absent from this list are still in the call — move them to "unchanged"
+            // so that observers (e.g. CallActivity) see the full set of active participants.
+            Collection<Participant> joined = new ArrayList<>();
+            Collection<Participant> updated = new ArrayList<>();
+            Collection<Participant> left = new ArrayList<>();
+            Collection<Participant> unchanged = new ArrayList<>();
+
+            Collection<Participant> notFound = classifyParticipants(participants, joined, updated, left, unchanged);
+
+            for (Participant callParticipant : notFound) {
+                unchanged.add(copyParticipant(callParticipant));
+            }
+
+            notifyIfChanged(joined, updated, left, unchanged);
+        }
+
+        /**
+         * Classifies each participant in the given list into joined/updated/left/unchanged based on
+         * the current known call participants. Returns the set of previously known participants that
+         * were not present in the list (callers decide what to do with them).
+         */
+        private Collection<Participant> classifyParticipants(List<Participant> participants,
+                                                             Collection<Participant> joined,
+                                                             Collection<Participant> updated,
+                                                             Collection<Participant> left,
+                                                             Collection<Participant> unchanged) {
+            Collection<Participant> notFound = new ArrayList<>(callParticipants.values());
 
             for (Participant participant : participants) {
                 String sessionId = participant.getSessionId();
@@ -78,17 +111,15 @@ public class CallParticipantList {
                 }
 
                 if (knownCallParticipant) {
-                    knownCallParticipantsNotFound.remove(callParticipant);
+                    notFound.remove(callParticipant);
                 }
             }
 
-            for (Participant callParticipant : knownCallParticipantsNotFound) {
-                callParticipants.remove(callParticipant.getSessionId());
-                // No need to copy it, as it will be no longer used.
-                callParticipant.setInCall(Participant.InCallFlags.DISCONNECTED);
-            }
-            left.addAll(knownCallParticipantsNotFound);
+            return notFound;
+        }
 
+        private void notifyIfChanged(Collection<Participant> joined, Collection<Participant> updated,
+                                     Collection<Participant> left, Collection<Participant> unchanged) {
             if (!joined.isEmpty() || !updated.isEmpty() || !left.isEmpty()) {
                 callParticipantListNotifier.notifyChanged(joined, updated, left, unchanged);
             }
