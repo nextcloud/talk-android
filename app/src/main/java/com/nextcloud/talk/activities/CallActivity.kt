@@ -432,7 +432,7 @@ class CallActivity : CallBaseActivity() {
 
         // Register broadcast receiver for ending call from notification
         val endCallFilter = IntentFilter(END_CALL_FROM_NOTIFICATION)
-        
+
         // Use the proper utility function with ReceiverFlag for Android 14+ compatibility
         // This receiver is for internal app use only (notification actions), so it should NOT be exported
         registerPermissionHandlerBroadcastReceiver(
@@ -1208,13 +1208,13 @@ class CallActivity : CallBaseActivity() {
         for (rationale in rationaleList) {
             rationalesWithLineBreaks.append(rationale).append("\n\n")
         }
-        
+
         // Log when permission rationale dialog is shown
         Log.d(TAG, "Showing permission rationale dialog for permissions: $permissionsToRequest")
         val hasNotificationPerm = permissionsToRequest
             .contains(Manifest.permission.POST_NOTIFICATIONS)
         Log.d(TAG, "Rationale includes notification permission: $hasNotificationPerm")
-        
+
         val dialogBuilder = MaterialAlertDialogBuilder(this)
             .setTitle(R.string.nc_permissions_rationale_dialog_title)
             .setMessage(rationalesWithLineBreaks)
