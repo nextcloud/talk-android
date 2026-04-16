@@ -418,10 +418,10 @@ class CallActivity : CallBaseActivity() {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
-        
+
         // Register broadcast receiver for ending call from notification
         val endCallFilter = IntentFilter(END_CALL_FROM_NOTIFICATION)
-        
+
         // Use the proper utility function with ReceiverFlag for Android 14+ compatibility
         // This receiver is for internal app use only (notification actions), so it should NOT be exported
         registerPermissionHandlerBroadcastReceiver(
@@ -431,7 +431,7 @@ class CallActivity : CallBaseActivity() {
             null,
             ReceiverFlag.NotExported
         )
-        
+
         Log.d(TAG, "Broadcast receiver registered successfully")
 
         callViewModel = ViewModelProvider(this, viewModelFactory)[CallViewModel::class.java]
@@ -1084,7 +1084,7 @@ class CallActivity : CallBaseActivity() {
                 permissionsToRequest.add(Manifest.permission.BLUETOOTH_CONNECT)
             }
         }
-        
+
         // Check notification permission for Android 13+ (API 33+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (permissionUtil!!.isPostNotificationsPermissionGranted()) {
@@ -1180,13 +1180,13 @@ class CallActivity : CallBaseActivity() {
         for (rationale in rationaleList) {
             rationalesWithLineBreaks.append(rationale).append("\n\n")
         }
-        
+
         // Log when permission rationale dialog is shown
         Log.d(TAG, "Showing permission rationale dialog for permissions: $permissionsToRequest")
         val hasNotificationPerm = permissionsToRequest
             .contains(Manifest.permission.POST_NOTIFICATIONS)
         Log.d(TAG, "Rationale includes notification permission: $hasNotificationPerm")
-        
+
         val dialogBuilder = MaterialAlertDialogBuilder(this)
             .setTitle(R.string.nc_permissions_rationale_dialog_title)
             .setMessage(rationalesWithLineBreaks)
@@ -1200,7 +1200,7 @@ class CallActivity : CallBaseActivity() {
                 if (permissionsToRequest.contains(Manifest.permission.POST_NOTIFICATIONS)) {
                     Log.w(TAG, "Notification permission specifically dismissed - proceeding with call anyway")
                 }
-                
+
                 // Proceed with call even when notification permission is dismissed
                 if (!isConnectionEstablished) {
                     Log.d(TAG, "Proceeding with prepareCall() after dismissing notification permission")
