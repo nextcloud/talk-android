@@ -13,6 +13,8 @@ import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 
 import java.util.Objects;
 
+import kotlinx.coroutines.flow.StateFlow;
+
 /**
  * Helper class to send the local participant state to the other participants in the call.
  * <p>
@@ -80,6 +82,17 @@ public abstract class LocalStateBroadcaster {
 
     public void destroy() {
         this.localCallParticipantModel.removeObserver(localCallParticipantModelObserver);
+    }
+
+    /**
+     * Passes the live StateFlow for the given participant so the broadcaster can react to each
+     * connection-state change.  The default implementation takes a snapshot of the current value
+     * and delegates to {@link #handleCallParticipantAdded(ParticipantUiState)}; subclasses that
+     * need to observe future emissions (e.g. {@code LocalStateBroadcasterNoMcu}) should override
+     * this method instead.
+     */
+    public void handleCallParticipantAdded(StateFlow<ParticipantUiState> uiStateFlow) {
+        handleCallParticipantAdded(uiStateFlow.getValue());
     }
 
     public abstract void handleCallParticipantAdded(ParticipantUiState uiState);
