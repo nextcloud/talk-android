@@ -325,7 +325,7 @@ class CallActivity : CallBaseActivity() {
     ) { permissionMap: Map<String, Boolean> ->
         // Log permission results
         Log.d(TAG, "Permission request completed with results: $permissionMap")
-        
+
         val rationaleList: MutableList<String> = ArrayList()
         val audioPermission = permissionMap[Manifest.permission.RECORD_AUDIO]
         if (audioPermission != null) {
