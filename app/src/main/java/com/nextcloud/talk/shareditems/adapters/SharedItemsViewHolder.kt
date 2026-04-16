@@ -11,6 +11,7 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
+import androidx.compose.runtime.mutableStateOf
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.nextcloud.talk.data.user.model.User
@@ -58,6 +59,7 @@ abstract class SharedItemsViewHolder(
         This should be done after a refactoring of FileViewerUtils.
          */
         val fileViewerUtils = FileViewerUtils(image.context, user)
+        val trueState = mutableStateOf(true)
 
         clickTarget.setOnClickListener {
             fileViewerUtils.openFile(
@@ -74,7 +76,7 @@ abstract class SharedItemsViewHolder(
                 //     null,
                 //     image
                 // ),
-                true
+                trueState
             )
         }
 
@@ -82,7 +84,7 @@ abstract class SharedItemsViewHolder(
             item.name,
             item.id,
             item.mimeType,
-            true,
+            trueState,
             FileViewerUtils.ProgressUi(progressBar, null, image)
         )
     }
