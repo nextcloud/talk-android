@@ -44,6 +44,9 @@ class CallForegroundService : Service() {
 
     @SuppressLint("ForegroundServiceType")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d(TAG, "onStartCommand called")
+        handler.removeCallbacksAndMessages(null)
+
         val conversationName = intent?.getStringExtra(EXTRA_CONVERSATION_NAME)
         val callExtras = intent?.getBundleExtra(EXTRA_CALL_INTENT_EXTRAS)
         val notification = buildNotification(conversationName, callExtras)
@@ -62,6 +65,7 @@ class CallForegroundService : Service() {
     }
 
     override fun onDestroy() {
+        Log.d(TAG, "onDestroy called")
         handler.removeCallbacksAndMessages(null)
         stopForeground(STOP_FOREGROUND_REMOVE)
         super.onDestroy()
@@ -227,6 +231,7 @@ class CallForegroundService : Service() {
     }
 
     companion object {
+        private val TAG = CallForegroundService::class.java.simpleName
         private const val NOTIFICATION_ID = 47001
         private const val FOREGROUND_SERVICE_TYPE_ZERO = 0
         private const val EXTRA_CONVERSATION_NAME = "extra_conversation_name"
