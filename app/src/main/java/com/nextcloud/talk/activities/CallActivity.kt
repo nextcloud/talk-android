@@ -1120,22 +1120,14 @@ class CallActivity : CallBaseActivity() {
     private fun prepareCall() {
         stopCallingSound()
         Log.d(TAG, "prepareCall() started")
-        basicInitialization()
-        initViews()
-        // updateSelfVideoViewPosition(true)
-        checkRecordingConsentAndInitiateCall()
 
-        // Start foreground service only if we have notification permission (for Android 13+)
-        // or if we're on older Android versions where permission is automatically granted
         if (permissionUtil!!.isMicrophonePermissionGranted()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                // Android 13+ requires explicit notification permission
                 if (permissionUtil!!.isPostNotificationsPermissionGranted()) {
                     Log.d(TAG, "Starting foreground service with notification permission")
                     CallForegroundService.start(applicationContext, conversationName, intent.extras)
                 } else {
                     Log.w(TAG, "Notification permission not granted - call will work but without persistent notification")
-                    // Show warning to user that notification permission is missing (10 seconds)
                     Snackbar.make(
                         binding!!.root,
                         resources.getString(R.string.nc_notification_permission_hint),
@@ -1143,11 +1135,10 @@ class CallActivity : CallBaseActivity() {
                     ).show()
                 }
             } else {
-                // Android 12 and below - notification permission is automatically granted
                 Log.d(TAG, "Starting foreground service (Android 12-)")
                 CallForegroundService.start(applicationContext, conversationName, intent.extras)
             }
-            
+
             if (!microphoneOn) {
                 onMicrophoneClick()
             }
@@ -1155,10 +1146,12 @@ class CallActivity : CallBaseActivity() {
             Log.w(TAG, "Microphone permission not granted - skipping foreground service start")
         }
 
-        // The call should not hang just because notification permission was denied
-        // Always proceed with call setup regardless of notification permission
         Log.d(TAG, "Ensuring call proceeds even without notification permission")
-        
+
+        basicInitialization()
+        initViews()
+        checkRecordingConsentAndInitiateCall()
+
         if (isVoiceOnlyCall) {
             binding!!.selfVideoViewWrapper.visibility = View.GONE
         } else if (permissionUtil!!.isCameraPermissionGranted()) {
@@ -1519,11 +1512,8 @@ class CallActivity : CallBaseActivity() {
                 hangup(true, false)
             }
         }
-        if (!isSystemInitiatedDestroy) {
-            CallForegroundService.stop(applicationContext)
-        } else {
-            Log.d(TAG, "System-initiated destroy, keeping foreground service alive")
-        }
+        CallForegroundService.stop(applicationContext)
+        Log.d(TAG, "Foreground service stop requested from onDestroy()")
 
         if (!isSystemInitiatedDestroy) {
             Log.d(TAG, "onDestroy: Releasing proximity sensor - updating to IDLE state")
@@ -2161,6 +2151,13 @@ class CallActivity : CallBaseActivity() {
         }
         ApplicationWideCurrentRoomHolder.getInstance().isInCall = false
         ApplicationWideCurrentRoomHolder.getInstance().isDialing = false
+        ApplicationWideCurrentRoomHolder.getInstance().callStartTime = null
+
+        if (shutDownView) {
+            Log.d(TAG, "Stopping foreground service from hangup()")
+            CallForegroundService.stop(applicationContext)
+        }
+
         hangupNetworkCalls(shutDownView, endCallForAll)
     }
 
