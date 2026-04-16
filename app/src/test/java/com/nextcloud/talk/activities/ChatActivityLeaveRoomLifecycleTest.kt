@@ -268,7 +268,6 @@ class ChatActivityLeaveRoomLifecycleTest {
             leaveRoomViewState.value = LeaveRoomStartState
         }
     }
-    }
 
     // ==========================================
     // Tests for the isLeavingRoom guard (double-leave prevention)
