@@ -402,8 +402,11 @@ class ConversationsListActivity : BaseActivity() {
                     // Update Direct Share targets
                     if (currentUser != null) {
                         lifecycleScope.launch {
-                            DirectShareHelper.publishShareTargetShortcuts(context,
-                                currentUser!!, list)
+                            DirectShareHelper.publishShareTargetShortcuts(
+                                context,
+                                currentUser!!,
+                                list
+                            )
                         }
                     }
 

@@ -497,7 +497,8 @@ class OfflineFirstChatRepository @Inject constructor(
         lookIntoFuture: Boolean,
         hasHistory: Boolean
     ) {
-        val chatMessageEntities = persistChatMessagesAndHandleSystemMessages(chatMessagesJson, emitOnIncoming = lookIntoFuture)
+        val chatMessageEntities =
+            persistChatMessagesAndHandleSystemMessages(chatMessagesJson, emitOnIncoming = lookIntoFuture)
 
         val oldestIdFromSync = chatMessageEntities.minByOrNull { it.id }!!.id
         val newestIdFromSync = chatMessageEntities.maxByOrNull { it.id }!!.id

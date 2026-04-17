@@ -92,7 +92,10 @@ class LeaveConversationWorker(context: Context, workerParams: WorkerParameters) 
                     override fun onComplete() {
                         if (currentUser.id != null) {
                             DirectShareHelper.removeShortcutForConversation(
-                                applicationContext, currentUser.id!!, conversationToken)
+                                applicationContext,
+                                currentUser.id!!,
+                                conversationToken
+                            )
                         }
                         result.set(Result.success())
                     }

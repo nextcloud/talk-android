@@ -146,12 +146,14 @@ object DirectShareHelper {
     fun extractTokenFromShortcutId(shortcutId: String): String? {
         if (!shortcutId.startsWith(SHORTCUT_ID_PREFIX)) return null
         val parts = shortcutId.split("_")
-        return if (parts.size < SHORTCUT_ID_MIN_PARTS) null
-        else parts.drop(SHORTCUT_ID_MIN_PARTS - 1).joinToString("_")
+        return if (parts.size < SHORTCUT_ID_MIN_PARTS) {
+            null
+        } else {
+            parts.drop(SHORTCUT_ID_MIN_PARTS - 1).joinToString("_")
+        }
     }
 
-    private fun shortcutId(user: User, token: String): String =
-        "$SHORTCUT_ID_PREFIX${user.id}_$token"
+    private fun shortcutId(user: User, token: String): String = "$SHORTCUT_ID_PREFIX${user.id}_$token"
 
     private suspend fun loadAvatarIcon(
         context: Context,
@@ -159,8 +161,8 @@ object DirectShareHelper {
         token: String,
         displayName: String,
         credentials: String?
-    ): IconCompat {
-        return try {
+    ): IconCompat =
+        try {
             val avatarUrl = ApiUtils.getUrlForConversationAvatar(
                 version = 1,
                 baseUrl = user.baseUrl,
@@ -188,7 +190,6 @@ object DirectShareHelper {
             Log.w(TAG, "Invalid avatar request for shortcut: $displayName", e)
             defaultIcon(context)
         }
-    }
 
     private fun defaultIcon(context: Context): IconCompat =
         IconCompat.createWithResource(context, R.drawable.ic_circular_group)
