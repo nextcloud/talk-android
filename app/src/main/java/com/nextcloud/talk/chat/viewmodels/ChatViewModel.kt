@@ -28,6 +28,8 @@ import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.ui.model.toUiModel
+import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.conversationlist.DirectShareHelper
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel.Companion.FOLLOWED_THREADS_EXIST
@@ -79,6 +81,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -435,6 +438,7 @@ class ChatViewModel @AssistedInject constructor(
         observeMediaPlayerProgressForCompose()
         observePinnedMessage()
         observeRoomRefresh()
+        observeIncomingMessages()
     }
 
     private fun observeMediaPlayerProgressForCompose() {
@@ -570,6 +574,23 @@ class ChatViewModel @AssistedInject constructor(
         chatRepository.roomRefreshFlow
             .debounce(ROOM_REFRESH_DEBOUNCE_MS)
             .onEach { getRoom(chatRoomToken) }
+            .launchIn(viewModelScope)
+    }
+
+    private fun observeIncomingMessages() {
+        chatRepository.incomingMessageFlow
+            .onEach {
+                val (conversation, user) = conversationAndUserFlow.first()
+                val context = NextcloudTalkApplication.sharedApplication!!
+                val isOneToOne = conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+                DirectShareHelper.reportIncomingMessage(
+                    context,
+                    user,
+                    conversation.token,
+                    conversation.displayName ?: conversation.token,
+                    isOneToOne
+                )
+            }
             .launchIn(viewModelScope)
     }
 

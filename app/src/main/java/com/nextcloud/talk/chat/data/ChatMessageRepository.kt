@@ -42,6 +42,8 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     val roomRefreshFlow: Flow<Unit>
 
+    val incomingMessageFlow: Flow<Unit>
+
     // /**
     //  * Used for informing the user of the underlying processing behind offline support, [String] is the key
     //  * which is handled in a switch statement in ChatActivity.
