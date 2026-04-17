@@ -23,6 +23,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySwitchAccountBinding
 import com.nextcloud.talk.models.ImportAccount
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.conversationlist.DirectShareHelper
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.AccountUtils.findAvailableAccountsOnDevice
 import com.nextcloud.talk.utils.AccountUtils.getInformationFromAccount
@@ -93,6 +94,7 @@ class SwitchAccountActivity : BaseActivity() {
                     reauthorizeFromImport(item.account)
                 } else {
                     if (userManager.setUserAsActive(item.user!!).blockingGet()) {
+                        DirectShareHelper.removeAllShareTargetShortcuts(this@SwitchAccountActivity)
                         cookieManager.cookieStore.removeAll()
                         finish()
                     }
