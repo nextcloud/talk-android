@@ -1037,12 +1037,30 @@ class MessageInputFragment : Fragment() {
             replaceMentionChipSpans(editable)
             binding.fragmentMessageInputView.inputEditText?.setText("")
             sendStopTypingMessage()
+            reportOutgoingDirectShare()
             sendMessage(
                 editable.toString(),
                 sendWithoutNotification
             )
             cancelReply()
             cancelCreateThread()
+        }
+    }
+
+    private fun reportOutgoingDirectShare() {
+        val user = chatActivity.conversationUser ?: return
+        val isOneToOne = chatActivity.currentConversation?.type ==
+            com.nextcloud.talk.models.json.conversations.ConversationEnums
+                .ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+        val displayName = chatActivity.currentConversation?.displayName ?: chatActivity.roomToken
+        lifecycleScope.launch {
+            com.nextcloud.talk.conversationlist.DirectShareHelper.reportOutgoingMessage(
+                requireContext(),
+                user,
+                chatActivity.roomToken,
+                displayName,
+                isOneToOne
+            )
         }
     }
 

@@ -50,7 +50,6 @@ import kotlinx.coroutines.flow.take
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
-import kotlin.collections.map
 
 @Suppress("LargeClass", "TooManyFunctions")
 class OfflineFirstChatRepository @Inject constructor(
@@ -103,6 +102,11 @@ class OfflineFirstChatRepository @Inject constructor(
         get() = _roomRefreshFlow
 
     private val _roomRefreshFlow: MutableSharedFlow<Unit> = MutableSharedFlow()
+
+    override val incomingMessageFlow: Flow<Unit>
+        get() = _incomingMessageFlow
+
+    private val _incomingMessageFlow: MutableSharedFlow<Unit> = MutableSharedFlow()
 
     private var newXChatLastCommonRead: Int? = null
     private var itIsPaused = false
@@ -493,7 +497,8 @@ class OfflineFirstChatRepository @Inject constructor(
         lookIntoFuture: Boolean,
         hasHistory: Boolean
     ) {
-        val chatMessageEntities = persistChatMessagesAndHandleSystemMessages(chatMessagesJson)
+        val chatMessageEntities =
+            persistChatMessagesAndHandleSystemMessages(chatMessagesJson, emitOnIncoming = lookIntoFuture)
 
         val oldestIdFromSync = chatMessageEntities.minByOrNull { it.id }!!.id
         val newestIdFromSync = chatMessageEntities.maxByOrNull { it.id }!!.id
@@ -950,7 +955,7 @@ class OfflineFirstChatRepository @Inject constructor(
         }
 
     override suspend fun onSignalingChatMessageReceived(chatMessages: List<ChatMessageJson>) {
-        persistChatMessagesAndHandleSystemMessages(chatMessages)
+        persistChatMessagesAndHandleSystemMessages(chatMessages, emitOnIncoming = true)
 
         // we assume that the signaling messages are on top of the latest chatblock and include them inside it.
         // If for whatever reason the assume was not correct and there would be messages in between, the
@@ -963,7 +968,8 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     suspend fun persistChatMessagesAndHandleSystemMessages(
-        chatMessages: List<ChatMessageJson>
+        chatMessages: List<ChatMessageJson>,
+        emitOnIncoming: Boolean = false
     ): List<ChatMessageEntity> {
         handleSystemMessagesThatAffectDatabase(chatMessages)
 
@@ -972,6 +978,16 @@ class OfflineFirstChatRepository @Inject constructor(
         }
 
         chatDao.upsertChatMessagesAndDeleteTemp(internalConversationId, chatMessageEntities)
+
+        if (emitOnIncoming) {
+            val hasIncomingFromOther = chatMessages.any { msg ->
+                msg.systemMessageType == ChatMessage.SystemMessageType.DUMMY &&
+                    msg.actorId != currentUser.userId
+            }
+            if (hasIncomingFromOther) {
+                _incomingMessageFlow.emit(Unit)
+            }
+        }
 
         return chatMessageEntities
     }

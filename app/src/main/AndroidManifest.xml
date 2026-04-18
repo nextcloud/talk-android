@@ -123,6 +123,10 @@
                 <data android:scheme="content" />
                 <data android:scheme="file" />
             </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
         <activity
@@ -155,6 +159,10 @@
             android:name=".conversationlist.ConversationsListActivity"
             android:exported="true"
             android:theme="@style/AppTheme">
+
+            <meta-data
+                android:name="android.service.chooser.chooser_target_service"
+                android:value="androidx.sharetarget.ChooserTargetServiceCompat" />
 
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
