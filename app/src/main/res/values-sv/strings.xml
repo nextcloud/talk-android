@@ -31,7 +31,7 @@
     <string name="call_more_actions_dialog_headline">Avancerade samtalsalternativ</string>
     <string name="call_running_since_one_hour">Samtalet har pågått i en timme.</string>
     <string name="call_without_notification">Samtal utan avisering</string>
-    <string name="camera_permission_granted">Kameratillstånd beviljad. Välj kamera igen.</string>
+    <string name="camera_permission_granted">Kameratillstånd beviljat. Välj kamera igen.</string>
     <string name="cancel_login">Avbryt inloggning</string>
     <string name="choose_avatar_from_cloud">Välj avatar från moln</string>
     <string name="clear_status_message">Rensa statusmeddelande</string>
@@ -40,7 +40,7 @@
     <string name="connection_established">Anslutning etablerad</string>
     <string name="connection_lost">Ingen anslutning till servern</string>
     <string name="connection_lost_sent_messages_are_queued">Anslutning förlorad - Skickade meddelanden är i kö</string>
-    <string name="continuous_voice_message_recording">Lås inspelning för kontinuerlig inspelning av röstmeddelandet</string>
+    <string name="continuous_voice_message_recording">Lås inspelningen för kontinuerlig inspelning av röstmeddelandet</string>
     <string name="conversation_archived">Konversationen är arkiverad</string>
     <string name="conversation_is_read_only">Konversationen är skrivskyddad</string>
     <string name="conversation_read_only_failed">Kunde inte sätta konversationen skrivskyddad</string>
@@ -87,7 +87,7 @@
     <string name="local_time">Lokal tid: %1$s</string>
     <string name="location_permission_denied">Behörighet för plats nekad</string>
     <string name="location_permission_denied_msg">Aktivera det i appens inställningar</string>
-    <string name="location_services_disabled">Platstjänster inaktiverat</string>
+    <string name="location_services_disabled">Platstjänster inaktiverade</string>
     <string name="location_services_disabled_msg">Aktivera platstjänster (GPS) för att använda denna funktion</string>
     <string name="lock_conversation">Lås konversation</string>
     <string name="lock_symbol">Låssymbol</string>
@@ -103,7 +103,7 @@
     <string name="menu_item_sort_by_name_z_a">Ö - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Störst först</string>
     <string name="menu_item_sort_by_size_smallest_first">Minst först</string>
-    <string name="message_copied">Meddelandet kopierat</string>
+    <string name="message_copied">Meddelandet har kopierats</string>
     <string name="message_delete_are_you_sure">Är du säker på att du vill ta bort detta meddelande?</string>
     <string name="message_deleted_by_you">Meddelandet togs bort av dig</string>
     <string name="message_last_edited_by">Redigerad av %1$s</string>
@@ -120,7 +120,7 @@
     <string name="nc_account_scheduled_for_deletion">Kontot är schemalagt för radering och kan inte ändras</string>
     <string name="nc_action_open_main_menu">Öppna huvudmenyn</string>
     <string name="nc_add_attachment">Lägg till bilaga</string>
-    <string name="nc_add_emojis">Lägg till emojis</string>
+    <string name="nc_add_emojis">Lägg till emojier</string>
     <string name="nc_add_file">Lägg till i konversation</string>
     <string name="nc_add_participants">Lägg till deltagare</string>
     <string name="nc_add_to_favorites">Lägg till som favorit</string>

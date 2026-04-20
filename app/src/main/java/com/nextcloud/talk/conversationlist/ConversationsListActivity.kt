@@ -329,7 +329,7 @@ class ConversationsListActivity : BaseActivity() {
 
         // Share sheet shortcut tap: Android delivers ACTION_SEND with EXTRA_SHORTCUT_ID.
         // Extract the room token from the shortcut ID so we can pre-select the conversation.
-        if (hasActivityActionSendIntent()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && hasActivityActionSendIntent()) {
             val shortcutId = intent.getStringExtra(Intent.EXTRA_SHORTCUT_ID)
             if (shortcutId != null) {
                 pendingDirectShareToken = DirectShareHelper.extractTokenFromShortcutId(shortcutId)
