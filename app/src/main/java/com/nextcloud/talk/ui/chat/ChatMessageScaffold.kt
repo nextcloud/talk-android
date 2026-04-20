@@ -144,7 +144,7 @@ private fun ChatMessageUi.hasMentionChips(): Boolean =
         message.contains("{$key}") && parameter["type"] in mentionChipTypes
     }
 
-@Suppress("Detekt.LongMethod")
+@Suppress("Detekt.LongMethod", "LongParameterList")
 @Composable
 fun MessageScaffold(
     uiMessage: ChatMessageUi,
@@ -313,6 +313,7 @@ private fun MessageBubbleWithReactions(
     }
 }
 
+@Suppress("LongParameterList")
 @Composable
 private fun MessageBubbleContent(
     uiMessage: ChatMessageUi,
