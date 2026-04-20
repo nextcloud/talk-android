@@ -1016,6 +1016,12 @@ class CallActivity : CallBaseActivity() {
         checkRecordingConsentAndInitiateCall()
 
         if (permissionUtil!!.isMicrophonePermissionGranted()) {
+            // Fix regression introduced with ForegroundService flow:
+            // ensure any incoming ringtone/calling sound is stopped
+            // BEFORE promoting call to foreground service.
+            // Prevents ringtone continuing after answering call.
+            stopCallingSound()
+
             CallForegroundService.start(applicationContext, conversationName, intent.extras)
             if (!microphoneOn) {
                 onMicrophoneClick()
