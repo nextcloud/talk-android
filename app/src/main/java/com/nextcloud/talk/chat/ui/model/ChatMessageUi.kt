@@ -13,9 +13,9 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DrawableUtils
-import com.nextcloud.talk.ui.PlaybackSpeed
 import java.time.LocalDate
 
 // immutable class for chat message UI. only val, no vars!
