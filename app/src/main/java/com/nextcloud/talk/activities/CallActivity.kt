@@ -41,6 +41,7 @@ import android.view.OrientationEventListener
 import android.view.View
 import android.view.View.OnTouchListener
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.NotificationManagerCompat
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.material3.MaterialTheme
@@ -107,7 +108,6 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isCallRecordingAvailable
-import com.nextcloud.talk.utils.NotificationUtils.cancelExistingNotificationsForRoom
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.ReceiverFlag
 import com.nextcloud.talk.utils.SpreedFeatures
@@ -118,6 +118,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_WITHOUT_NOTIFICATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_PASSWORD
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_TIMESTAMP
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_BREAKOUT_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MODIFIED_BASE_URL
@@ -553,6 +554,11 @@ class CallActivity : CallBaseActivity() {
 
         if (extras.containsKey(KEY_FROM_NOTIFICATION_START_CALL)) {
             isIncomingCallFromNotification = extras.getBoolean(KEY_FROM_NOTIFICATION_START_CALL)
+            val notificationId = extras.getInt(KEY_NOTIFICATION_TIMESTAMP, 0)
+            if (notificationId != 0) {
+                // cancel the notification to stop the call ringing
+                NotificationManagerCompat.from(this).cancel(notificationId)
+            }
         }
         if (extras.containsKey(KEY_IS_BREAKOUT_ROOM)) {
             isBreakoutRoom = extras.getBoolean(KEY_IS_BREAKOUT_ROOM)
@@ -1031,7 +1037,10 @@ class CallActivity : CallBaseActivity() {
             binding!!.selfVideoViewWrapper.visibility = View.GONE
         } else if (permissionUtil!!.isCameraPermissionGranted()) {
             binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
-            onCameraClick()
+            // don't enable the camera if call was answered via notification
+            if (!isIncomingCallFromNotification) {
+                onCameraClick()
+            }
             if (cameraEnumerator!!.deviceNames.isEmpty()) {
                 binding!!.cameraButton.visibility = View.GONE
             }
@@ -1582,13 +1591,6 @@ class CallActivity : CallBaseActivity() {
                             }
                             ApplicationWideCurrentRoomHolder.getInstance().isInCall = true
                             ApplicationWideCurrentRoomHolder.getInstance().isDialing = false
-                            if (!TextUtils.isEmpty(roomToken)) {
-                                cancelExistingNotificationsForRoom(
-                                    applicationContext,
-                                    conversationUser!!,
-                                    roomToken!!
-                                )
-                            }
                             if (!hasExternalSignalingServer) {
                                 pullSignalingMessages()
                             }
