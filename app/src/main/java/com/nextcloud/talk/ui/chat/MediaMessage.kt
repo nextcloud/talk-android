@@ -69,7 +69,13 @@ fun MediaMessage(
     val fileParameters =
         remember { FileParameters(message.messageParameters as HashMap<String?, HashMap<String?, String?>>?) }
 
-    val captionText = message.message.takeUnless { it == FILE_PLACEHOLDER_MESSAGE }
+    val hasExplicitCaption = message.plainMessage != FILE_PLACEHOLDER_MESSAGE
+    val hasPreview = !typeContent.previewUrl.isNullOrEmpty()
+    val captionText = when {
+        hasExplicitCaption -> message.message
+        !hasPreview -> message.message
+        else -> null
+    }
     val hasCaption = captionText != null
     val mediaInset = 4.dp
     val mediaShape = remember(message.incoming) {
