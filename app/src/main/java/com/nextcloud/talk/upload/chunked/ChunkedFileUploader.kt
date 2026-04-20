@@ -20,6 +20,7 @@ import at.bitfire.dav4jvm.property.GetContentType
 import at.bitfire.dav4jvm.property.GetLastModified
 import at.bitfire.dav4jvm.property.ResourceType
 import autodagger.AutoInjector
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.filebrowser.models.DavResponse
 import com.nextcloud.talk.filebrowser.models.properties.NCEncrypted
@@ -35,6 +36,7 @@ import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
+import kotlinx.coroutines.runBlocking
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
@@ -45,6 +47,7 @@ import java.io.IOException
 import java.io.RandomAccessFile
 import java.nio.channels.FileChannel
 import java.util.Locale
+import java.util.UUID
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ChunkedFileUploader(
@@ -52,7 +55,9 @@ class ChunkedFileUploader(
     val currentUser: User,
     val roomToken: String,
     val metaData: String?,
-    val listener: OnDataTransferProgressListener
+    val listener: OnDataTransferProgressListener,
+    val ncApiCoroutines: NcApiCoroutines,
+    val supportsConversationFolders: Boolean
 ) {
 
     private var okHttpClientNoRedirects: OkHttpClient? = null
@@ -68,6 +73,10 @@ class ChunkedFileUploader(
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun upload(localFile: File, mimeType: MediaType?, targetPath: String): Boolean {
         try {
+
+            if (supportsConversationFolders) {
+                return uploadToDraftFolder(localFile, mimeType)
+            }
             var isUploadSuccessful = true
             uploadFolderUri = remoteChunkUrl + "/" + FileUtils.md5Sum(localFile)
             val davResource = DavResource(
@@ -121,6 +130,72 @@ class ChunkedFileUploader(
             }
         }
     }
+
+
+    private fun uploadToDraftFolder(localFile: File, mimeType: MediaType?): Boolean {
+        val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token) ?: return false
+        val probeResponse = runBlocking {
+            ncApiCoroutines.probeConversationAttachmentFolder(
+                credentials,
+                ApiUtils.getUrlForChatAttachmentFolder(ApiUtils.API_V1,currentUser.baseUrl!!, roomToken),
+                listOf(localFile.name)
+            )
+        }
+        val draftFolderPath = probeResponse.ocs?.data?.folder?.trim('/').orEmpty()
+        if (draftFolderPath.isEmpty()) {
+            Log.e(TAG, "Draft folder path is empty")
+            return false
+        }
+        val renamedFileName = probeResponse.ocs?.data?.renames?.get(localFile.name) ?: localFile.name
+        val uploadId = UUID.randomUUID().toString()
+        val temporaryPath = "/$draftFolderPath/$uploadId-0-${localFile.name}"
+        uploadFullFile(localFile, mimeType, temporaryPath)
+         runBlocking {
+            ncApiCoroutines.postConversationAttachment(
+                credentials,
+                ApiUtils.getUrlForChatAttachment(ApiUtils.API_V1,currentUser.baseUrl!!, roomToken),
+                  temporaryPath,
+                uploadId,
+                renamedFileName,
+                metaData
+                )
+        }
+        return true
+    }
+
+    private fun uploadFullFile(localFile: File, mimeType: MediaType?, temporaryPath: String) {
+        var raf: RandomAccessFile? = null
+        var channel: FileChannel? = null
+        try {
+            raf = RandomAccessFile(localFile, "r")
+            channel = raf.channel
+            val requestBody = ChunkFromFileRequestBody(
+                localFile,
+                mimeType,
+                channel,
+                localFile.length(),
+                0L,
+                listener
+            )
+            val uploadUri = ApiUtils.getUrlForFileUpload(
+                currentUser.baseUrl!!,
+                currentUser.userId!!,
+                temporaryPath
+            )
+            DavResource(
+                okHttpClientNoRedirects!!,
+                uploadUri.toHttpUrlOrNull()!!
+            ).put(requestBody) { response: Response ->
+                if (!response.isSuccessful) {
+                    throw IOException("Failed to upload file to draft. response code: " + response.code)
+                }
+            }
+        } finally {
+            channel?.close()
+            raf?.close()
+        }
+    }
+
 
     @Suppress("Detekt.ComplexMethod")
     private fun getUploadedChunks(davResource: DavResource, uploadFolderUri: String): MutableList<Chunk> {
