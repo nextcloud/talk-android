@@ -20,7 +20,10 @@ import at.bitfire.dav4jvm.property.GetContentType
 import at.bitfire.dav4jvm.property.GetLastModified
 import at.bitfire.dav4jvm.property.ResourceType
 import autodagger.AutoInjector
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.dagger.modules.RestModule
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.filebrowser.models.DavResponse
 import com.nextcloud.talk.filebrowser.models.properties.NCEncrypted
 import com.nextcloud.talk.filebrowser.models.properties.NCPermission
@@ -28,8 +31,6 @@ import com.nextcloud.talk.filebrowser.models.properties.NCPreview
 import com.nextcloud.talk.filebrowser.models.properties.OCFavorite
 import com.nextcloud.talk.filebrowser.models.properties.OCId
 import com.nextcloud.talk.filebrowser.models.properties.OCSize
-import com.nextcloud.talk.dagger.modules.RestModule
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.utils.ApiUtils
@@ -52,7 +53,9 @@ class ChunkedFileUploader(
     val currentUser: User,
     val roomToken: String,
     val metaData: String?,
-    val listener: OnDataTransferProgressListener
+    val listener: OnDataTransferProgressListener,
+    val ncApiCoroutines: NcApiCoroutines,
+    val supportsConversationFolders: Boolean
 ) {
 
     private var okHttpClientNoRedirects: OkHttpClient? = null
@@ -92,7 +95,7 @@ class ChunkedFileUploader(
             }
 
             if (isUploadSuccessful) {
-                assembleChunks(uploadFolderUri, targetPath)
+                assembleChunks(uploadFolderUri, targetPath, supportsConversationFolders)
             }
             return isUploadSuccessful
         } catch (e: Exception) {
@@ -288,12 +291,13 @@ class ChunkedFileUploader(
         this.okHttpClientNoRedirects = okHttpClientBuilder.build()
     }
 
-    private fun assembleChunks(uploadFolderUri: String, targetPath: String) {
-        val destinationUri: String = ApiUtils.getUrlForFileUpload(
+    private fun assembleChunks(uploadFolderUri: String, targetPath: String, useConversationSubfolders: Boolean) {
+        val destinationUri = ApiUtils.getUrlForFileUpload(
             currentUser.baseUrl!!,
             currentUser.userId!!,
             targetPath
         )
+
         val originUri = "$uploadFolderUri/.file"
 
         DavResource(
@@ -304,12 +308,14 @@ class ChunkedFileUploader(
             true
         ) { response: Response ->
             if (response.isSuccessful) {
-                ShareOperationWorker.shareFile(
-                    roomToken,
-                    currentUser,
-                    targetPath,
-                    metaData
-                )
+                if (!useConversationSubfolders) {
+                    ShareOperationWorker.shareFile(
+                        roomToken,
+                        currentUser,
+                        targetPath,
+                        metaData
+                    )
+                }
             } else {
                 throw IOException("Failed to assemble chunks. response code: " + response.code)
             }
