@@ -406,7 +406,6 @@
     <string name="nc_promote">Promuovi a moderatore</string>
     <string name="nc_public_call_status">Conversazione pubblica</string>
     <string name="nc_push_disabled">Notifiche push disabilitate</string>
-    <string name="nc_push_notification_error">Qualcosa è andato storto, l\'errore è %1$s</string>
     <string name="nc_push_notification_fetch_error">Ci dispiace, si è verificato un errore, impossibile recuperare il messaggio di prova.</string>
     <string name="nc_push_notification_message">La notifica push è stata inviata con successo. Ora dovresti ricevere una notifica su questo dispositivo con il titolo “Test delle notifiche push”.</string>
     <string name="nc_remind">Ricordamelo più tardi</string>

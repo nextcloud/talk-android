@@ -95,6 +95,7 @@
     <string name="lower_hand">Přestat se hlásit</string>
     <string name="marked_as_read">Konverzace %1$s označena jako přečtená</string>
     <string name="marked_as_unread">Konverzace %1$s označena jako nepřečtená</string>
+    <string name="media_message_content_play">Přehrát multimediální soubor</string>
     <string name="mentioned">Zmíněni</string>
     <string name="menu_item_sort_by_date_newest_first">Nejnovější jako první</string>
     <string name="menu_item_sort_by_date_oldest_first">Nejstarší jako první</string>
@@ -409,7 +410,6 @@
     <string name="nc_promote">Povýšit na moderátora</string>
     <string name="nc_public_call_status">Veřejná konverzace</string>
     <string name="nc_push_disabled">Push upozorňování vypnutá</string>
-    <string name="nc_push_notification_error">Omlouváme se, něco se pokazilo – chyba je %1$s</string>
     <string name="nc_push_notification_fetch_error">Omlouváme se, něco se pokazilo – nebylo možné stáhnout si testovací push zprávu</string>
     <string name="nc_push_notification_message">Push upozornění úspěšně odesláno. Nyní byste měli obdržet upozornění na tomto zařízení s nadpisem „Testování push upozorňování“</string>
     <string name="nc_remind">Připomenout později</string>

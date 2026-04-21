@@ -405,7 +405,6 @@
     <string name="nc_promote">Promuj na moderatora</string>
     <string name="nc_public_call_status">Rozmowa publiczna</string>
     <string name="nc_push_disabled">Powiadomienie push wyłączone</string>
-    <string name="nc_push_notification_error">Przepraszamy, wystąpił błąd: %1$s</string>
     <string name="nc_push_notification_fetch_error">Przepraszamy, wystąpił błąd — nie można pobrać testowej wiadomości push.</string>
     <string name="nc_push_notification_message">Powiadomienie push zostało pomyślnie wysłane. Powinieneś teraz otrzymać powiadomienie na tym urządzeniu z tytułem „Testowanie powiadomień push”.</string>
     <string name="nc_remind">Przypomnij mi później</string>

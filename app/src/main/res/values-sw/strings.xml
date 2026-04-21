@@ -406,7 +406,6 @@
     <string name="nc_promote">Pandisha cheo hadi msimamizi</string>
     <string name="nc_public_call_status">Mazungumzo ya umma</string>
     <string name="nc_push_disabled">Arifa zinazotumwa na programu hata wakati huitumii zimezimwa</string>
-    <string name="nc_push_notification_error"> Samahani hitilafu imetokea %1$s</string>
     <string name="nc_push_notification_fetch_error">Samahani, hitilafu fulani imetokea, haiwezi kuleta ujumbe wa jaribio</string>
     <string name="nc_push_notification_message">Arifa kutoka kwa programu imetumwa kwa mafanikio. Sasa unapaswa kupokea arifa kwenye kifaa hiki yenye kichwa \'Kujaribu arifa zinazotumwa na programu hata wakati huitumii\'.</string>
     <string name="nc_remind">Nikumbushe baadaye</string>
