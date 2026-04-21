@@ -404,7 +404,6 @@
     <string name="nc_promote">Povýšiť na moderátora</string>
     <string name="nc_public_call_status">Verejný rozhovor</string>
     <string name="nc_push_disabled">Push notifikácie vypnuté</string>
-    <string name="nc_push_notification_error">Prepáč, niečo sa pokazilo, chyba je%1$s</string>
     <string name="nc_push_notification_fetch_error">Prepáčte, niečo sa pokazilo, nepodarilo sa načítať testovaciu push správu.</string>
     <string name="nc_push_notification_message">Push notifikácia bola úspešne odoslaná. Teraz by ste mali na tomto zariadení dostať notifikáciu s názvom „Testovanie push notifikácií“.</string>
     <string name="nc_remind">Pripomenúť neskôr</string>

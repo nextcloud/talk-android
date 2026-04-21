@@ -411,7 +411,6 @@
     <string name="nc_promote">Promote to moderator</string>
     <string name="nc_public_call_status">Public conversation</string>
     <string name="nc_push_disabled">Push notifications disabled</string>
-    <string name="nc_push_notification_error"> Sorry something went wrong, error is %1$s</string>
     <string name="nc_push_notification_fetch_error">Sorry something went wrong, cannot fetch test push message</string>
     <string name="nc_push_notification_message">Push notification is sent successfully. You should now receive a notification on this device with the title \'Testing push notifications\'</string>
     <string name="nc_remind">Remind me later</string>

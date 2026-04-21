@@ -391,7 +391,7 @@
     <string name="nc_ok">Gerai</string>
     <string name="nc_ongoing_meeting">Vykstantis susitikimas</string>
     <string name="nc_open_conversation_to_registered_users">Atviras pokalbis registruotiems vartotojams</string>
-    <string name="nc_open_to_guest_app_users">Taip pat prieinama svečių programėlės naudotojams</string>
+    <string name="nc_open_to_guest_app_users">Taip pat prieinama svečių programėlės vartotojams</string>
     <string name="nc_owner">Savininkas</string>
     <string name="nc_participants">Dalyviai</string>
     <string name="nc_participants_add">Pridėti dalyvius</string>
@@ -411,7 +411,6 @@
     <string name="nc_promote">Paaukštinti į moderatorius</string>
     <string name="nc_public_call_status">Viešas pokalbis</string>
     <string name="nc_push_disabled">\"Push\" pranešimai yra išjungti</string>
-    <string name="nc_push_notification_error">Atsiprašome, kažkas įvyko netinkamai, klaida %1$s</string>
     <string name="nc_push_notification_fetch_error">Atsiprašome, kažkas įvyko netinkamai, nepavyko gauti bandomojo „push“ pranešimo</string>
     <string name="nc_push_notification_message">Pranešimas išsiųstas sėkmingai. Dabar šiame įrenginyje turėtumėte gauti pranešimą su pavadinimu „Push pranešimų testavimas“</string>
     <string name="nc_remind">Priminti vėliau</string>

@@ -408,7 +408,6 @@
     <string name="nc_promote">Прызначыць мадэратарам</string>
     <string name="nc_public_call_status">Публічная размова</string>
     <string name="nc_push_disabled">Push-апавяшчэнні адключаны</string>
-    <string name="nc_push_notification_error">Нешта пайшло не так, памылка: %1$s</string>
     <string name="nc_push_notification_fetch_error">Нешта пайшло не так, не ўдалося атрымаць тэставае push-паведамленне</string>
     <string name="nc_push_notification_message">Push-апавяшчэнне паспяхова адпраўлена. Цяпер вы павінны атрымацьна гэтай прыладзе  апавяшчэнне з назвай \"Тэставае push-апавяшчэнне\".</string>
     <string name="nc_remind">Нагадаць пазней</string>
