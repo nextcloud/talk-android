@@ -411,7 +411,6 @@
     <string name="nc_promote">晉升為主持人</string>
     <string name="nc_public_call_status">公開對話</string>
     <string name="nc_push_disabled">取消推送通知</string>
-    <string name="nc_push_notification_error">抱歉，出現問題，錯誤是 %1$s</string>
     <string name="nc_push_notification_fetch_error">抱歉，出現問題，無法獲取測試推送訊息</string>
     <string name="nc_push_notification_message">推送通知已成功發送。您現在應該在此設備上收到標題為「測試推送通知」的通知</string>
     <string name="nc_remind">稍後提醒我</string>

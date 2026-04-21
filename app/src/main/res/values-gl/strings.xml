@@ -408,7 +408,6 @@
     <string name="nc_promote">Promover a moderador</string>
     <string name="nc_public_call_status">Conversa pública</string>
     <string name="nc_push_disabled">Desactivadas as notificacións emerxentes</string>
-    <string name="nc_push_notification_error"> Desculpe, algo foi mal, o erro é %1$s</string>
     <string name="nc_push_notification_fetch_error">Desculpe, algo foi mal,, non foi posíbel obter a mensaxe emerxente de proba</string>
     <string name="nc_push_notification_message">A notificación emerxente foi enviada satisfactoriamente. Agora ten que recibir unha notificación sobre este dispositivo co título «Probas de notificacións emerxentes»</string>
     <string name="nc_remind">Lembrarmo más adiante</string>

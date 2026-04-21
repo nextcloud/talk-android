@@ -402,7 +402,6 @@
     <string name="nc_promote">رىياسەتچىگە تەشۋىق قىلىڭ</string>
     <string name="nc_public_call_status">ئاممىۋى سۆھبەت</string>
     <string name="nc_push_disabled">ئىتتىرىش ئۇقتۇرۇشى چەكلەنگەن</string>
-    <string name="nc_push_notification_error">كەچۈرۈڭ خاتالىق كۆرۈلدى، خاتالىق بولسا %1$s</string>
     <string name="nc_push_notification_fetch_error">كەچۈرۈڭ خاتالىق كۆرۈلدى، سىناق ئۇچۇرنى چۈشۈرەلمىدى</string>
     <string name="nc_push_notification_message">Push ئۇقتۇرۇش مۇۋەپپەقىيەتلىك ئەۋەتىلدى. سىز ھازىر بۇ ئۈسكۈنىدە «Push ئۇقتۇرۇشلىرىنى سىناق قىلىۋاتىدۇ» دېگەن ماۋزۇدىكى ئۇقتۇرۇشنى تاپشۇرۇۋېلىشىڭىز كېرەك.</string>
     <string name="nc_remind">كېيىن ماڭا ئەسكەرتىڭ</string>
