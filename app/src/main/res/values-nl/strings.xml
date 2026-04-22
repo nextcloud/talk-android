@@ -403,7 +403,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_promote">Promoveer tot moderator</string>
     <string name="nc_public_call_status">Openbaar gesprek</string>
     <string name="nc_push_disabled">Push meldingen uitgeschakeld</string>
-    <string name="nc_push_notification_error">Er is iets misgegaan, fout is %1$s</string>
     <string name="nc_push_notification_fetch_error">Sorry, er is iets misgegaan, het testbericht kan niet worden opgehaald.</string>
     <string name="nc_push_notification_message">De pushmelding is succesvol verzonden. Je zou nu een melding moeten ontvangen op dit apparaat met de titel ‘Pushmeldingen testen’.</string>
     <string name="nc_remind">Herinner me later</string>

@@ -400,7 +400,6 @@
     <string name="nc_promote">Forfrem til moderator</string>
     <string name="nc_public_call_status">Offentlig samtale</string>
     <string name="nc_push_disabled">Pushbeskeder er slået fra</string>
-    <string name="nc_push_notification_error"> Desværre, noget gik galt, fejlen er %1$s</string>
     <string name="nc_push_notification_fetch_error">Desværre, noget gik galt, kan ikke hente test push besked</string>
     <string name="nc_push_notification_message">Push notifikation afsendt. Du bør nu modtage en notifikation på apparatet med titlen \'Test push notifikationer\'</string>
     <string name="nc_remind">Påmind mig senere</string>

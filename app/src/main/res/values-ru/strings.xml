@@ -75,6 +75,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 часа</string>
     <string name="get_invitations_error">Не удалось получить ожидающие приглашения</string>
+    <string name="gplay_available_no">Сервисы Google Play недоступны. Уведомления не поддерживаются</string>
     <string name="hint_edited_message">(изменено)</string>
     <string name="internal_note">Внутреннее примечание</string>
     <string name="invisible">Невидимый</string>
@@ -94,6 +95,8 @@
     <string name="lower_hand">Опустить руку</string>
     <string name="marked_as_read">Отметить обсуждение %1$s прочитанным</string>
     <string name="marked_as_unread">Отметить обсуждение %1$s непрочитанным</string>
+    <string name="media_message_content_description">Предпросмотр файла</string>
+    <string name="media_message_content_play">Воспроизвести медиа файл</string>
     <string name="mentioned">Упомянул</string>
     <string name="menu_item_sort_by_date_newest_first">Самый новый первый</string>
     <string name="menu_item_sort_by_date_oldest_first">Самый старый первый</string>
@@ -261,6 +264,7 @@
     <string name="nc_dialog_save_to_storage_yes">Да</string>
     <string name="nc_display_name_not_fetched">Не удалось получить отображаемое имя</string>
     <string name="nc_display_name_not_stored">Не удалось сохранить отображаемое имя</string>
+    <string name="nc_draft_prefix">Черновик: %1$s</string>
     <string name="nc_edit_icon">Редактирование</string>
     <string name="nc_edit_message">Редактирование</string>
     <string name="nc_edit_message_text">Редактировать сообщение</string>
@@ -311,6 +315,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Игнорировать оптимизацию батареи</string>
     <string name="nc_important_conversation">Важное обсуждение</string>
     <string name="nc_important_conversation_desc">Статус «Не беспокоить» игнорируется для важных обсуждений</string>
+    <string name="nc_in_conversation">В %1$s</string>
     <string name="nc_invalid_time">Некорректное время</string>
     <string name="nc_invitations">Приглашения</string>
     <string name="nc_join_open_conversations">Присоединиться к открытым обсуждениям</string>
@@ -402,7 +407,6 @@
     <string name="nc_promote">Назначить модератором</string>
     <string name="nc_public_call_status">Открытое обсуждение</string>
     <string name="nc_push_disabled">Всплывающие уведомления отключены</string>
-    <string name="nc_push_notification_error">Что-то пошло не так, ошибка %1$s</string>
     <string name="nc_push_notification_fetch_error">Что-то пошло не так, не могу получить тестовое пуш-сообщение</string>
     <string name="nc_push_notification_message">Пуш-сообщение отправлено успешно. Вы теперь должны получить сообщение на этом устройстве с заголовком \"Тестирование пуш-сообщений\"</string>
     <string name="nc_remind">Напомнить позже</string>
@@ -420,6 +424,7 @@
     <string name="nc_save_success">Сохранено успешно</string>
     <string name="nc_schedule_message">Запланировать сообщение</string>
     <string name="nc_schedule_message_title">Запланировать сообщение</string>
+    <string name="nc_schedule_message_without_notification">Отправить позже без уведомления</string>
     <string name="nc_scheduled_messages">Запланированные сообщения</string>
     <string name="nc_scheduled_time">Запланированное время</string>
     <string name="nc_screen_lock_timeout_30">30 секунд</string>
@@ -588,6 +593,8 @@
     <string name="open_in_files_app">Открыть в приложении Файлы</string>
     <string name="open_notes">Открыть примечания</string>
     <string name="open_thread">Перейти в тему</string>
+    <string name="pin_24hr">Закрепить на 24 часа</string>
+    <string name="pin_30_days">Закрепить на 30 дней</string>
     <string name="pin_message">Закрепить сообщение</string>
     <string name="pinned">Закреплено</string>
     <string name="pinned_dismiss">Скрыть</string>

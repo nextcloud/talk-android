@@ -411,7 +411,6 @@
     <string name="nc_promote">Kinevezés moderátorrá</string>
     <string name="nc_public_call_status">Nyilvános beszélgetés</string>
     <string name="nc_push_disabled">Leküldéses értesítések kikapcsolva</string>
-    <string name="nc_push_notification_error">Sajnos valamilyen hiba történt, a hiba: %1$s</string>
     <string name="nc_push_notification_fetch_error">Sajnos valamilyen hiba történt, a leküldéses tesztüzenet nem kérhető le</string>
     <string name="nc_push_notification_message">A leküldéses értesítés sikeresen elküldve. Kapnia kellene egy „Leküldéses értesítések tesztelése” című üzenetet ezen az eszközön.</string>
     <string name="nc_remind">Emlékeztessen később</string>
