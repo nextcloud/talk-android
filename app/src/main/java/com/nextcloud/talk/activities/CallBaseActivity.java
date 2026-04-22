@@ -33,11 +33,14 @@ public abstract class CallBaseActivity extends BaseActivity {
     long onCreateTime;
 
 
-    private OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+    private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
         @Override
         public void handleOnBackPressed() {
             if (isPipModePossible()) {
                 enterPipMode();
+            } else {
+                // Move the task to background instead of finishing
+                moveTaskToBack(true);
             }
         }
     };
@@ -61,7 +64,7 @@ public abstract class CallBaseActivity extends BaseActivity {
         getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
     }
 
-    public void hideNavigationIfNoPipAvailable(){
+    public void hideNavigationIfNoPipAvailable() {
         if (!isPipModePossible()) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
                                                                  View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
@@ -94,7 +97,10 @@ public abstract class CallBaseActivity extends BaseActivity {
     @Override
     public void onStop() {
         super.onStop();
-        if (shouldFinishOnStop()) {
+        // Don't automatically finish when going to background
+        // Only finish if explicitly leaving the call
+        if (shouldFinishOnStop() && !isChangingConfigurations() && isFinishing()) {
+            // Check if we're really leaving the call or just backgrounding
             finish();
         }
     }
@@ -120,22 +126,21 @@ public abstract class CallBaseActivity extends BaseActivity {
             mPictureInPictureParamsBuilder.setAspectRatio(pipRatio);
             enterPictureInPictureMode(mPictureInPictureParamsBuilder.build());
         } else {
-            // we don't support other solutions than PIP to have a call in the background.
-            // If PIP is not available the call is ended when user presses the home button.
-            Log.d(TAG, "Activity was finished because PIP is not available.");
-            finish();
+            // If PIP is not available, move to background instead of finishing
+            Log.d(TAG, "PIP is not available, moving call to background.");
+            moveTaskToBack(true);
         }
     }
 
     boolean isPipModePossible() {
-            boolean deviceHasPipFeature = getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
+        boolean deviceHasPipFeature = getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
 
-            AppOpsManager appOpsManager = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
-            boolean isPipFeatureGranted = appOpsManager.checkOpNoThrow(
-                AppOpsManager.OPSTR_PICTURE_IN_PICTURE,
-                android.os.Process.myUid(),
-                BuildConfig.APPLICATION_ID) == AppOpsManager.MODE_ALLOWED;
-            return deviceHasPipFeature && isPipFeatureGranted;
+        AppOpsManager appOpsManager = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
+        boolean isPipFeatureGranted = appOpsManager.checkOpNoThrow(
+            AppOpsManager.OPSTR_PICTURE_IN_PICTURE,
+            android.os.Process.myUid(),
+            BuildConfig.APPLICATION_ID) == AppOpsManager.MODE_ALLOWED;
+        return deviceHasPipFeature && isPipFeatureGranted;
     }
 
     private boolean shouldFinishOnStop() {
