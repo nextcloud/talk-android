@@ -29,7 +29,7 @@ interface ChatMessagesDao {
     FROM ChatMessages
     WHERE internalConversationId = :internalConversationId
       AND (:threadId IS NULL OR threadId = :threadId)
-      AND id >= :oldestMessageId
+      AND (id >= :oldestMessageId OR isTemporary = 1)
     ORDER BY timestamp ASC, id ASC
     """
     )
