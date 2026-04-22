@@ -1021,6 +1021,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun prepareCall() {
+        stopCallingSound()
         basicInitialization()
         initViews()
         // updateSelfVideoViewPosition(true)
