@@ -411,6 +411,7 @@
     <string name="nc_promote">Zum Moderator ernennen</string>
     <string name="nc_public_call_status">Öffentliche Unterhaltung</string>
     <string name="nc_push_disabled">Push-Benachrichtigungen sind deaktiviert</string>
+    <string name="nc_push_notification_error">Leider ist etwas schief gelaufen, der Fehler ist %1$s</string>
     <string name="nc_push_notification_fetch_error">Leider ist etwas schief gelaufen, die Test-Push-Nachricht kann nicht abgerufen werden</string>
     <string name="nc_push_notification_message">Die Push-Benachrichtigung wurde gesendet. Sie sollten nun auf diesem Gerät eine Benachrichtigung mit dem Titel \"Testen von Push-Benachrichtigungen\" erhalten.</string>
     <string name="nc_remind">Erinnere mich später</string>
