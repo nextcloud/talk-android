@@ -175,7 +175,7 @@ class MessageActionsDialog(
                     canPin
             )
             initMenuMarkAsUnread(
-                message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
+                hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CHAT_READ_MARKER) &&
                     ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType() &&
                     isOnline
             )
@@ -638,7 +638,6 @@ class MessageActionsDialog(
     companion object {
         private val TAG = MessageActionsDialog::class.java.simpleName
         private const val ACTOR_LENGTH = 6
-        private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
         private const val DELAY: Long = 200
         private const val AGE_THRESHOLD_FOR_EDIT_MESSAGE: Long = 86400000
         private const val ACTOR_BOTS = "bots"
