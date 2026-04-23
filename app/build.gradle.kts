@@ -187,7 +187,7 @@ dependencies {
     spotbugsPlugins("com.mebigfatguy.fb-contrib:fb-contrib:7.7.4")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
 
-    implementation("androidx.compose.runtime:runtime:1.10.6")
+    implementation("androidx.compose.runtime:runtime:1.11.0")
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("androidx.datastore:datastore-core:1.2.1")
     implementation("androidx.datastore:datastore-preferences:1.2.1")
