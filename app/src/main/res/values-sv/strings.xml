@@ -410,6 +410,7 @@
     <string name="nc_promote">Befordra till moderator</string>
     <string name="nc_public_call_status">Publik konversation</string>
     <string name="nc_push_disabled">Push-aviseringar inaktiverade</string>
+    <string name="nc_push_notification_error">Tyvärr, något gick fel. Felet är %1$s</string>
     <string name="nc_push_notification_fetch_error">Tyvärr, något gick fel. Kunde inte hämta testmeddelande för push-notis</string>
     <string name="nc_push_notification_message">Push-notis skickades framgångsrikt. Du bör nu få en notis på den här enheten med titeln \'Testar push-notiser\'</string>
     <string name="nc_remind">Påminn mig senare</string>
