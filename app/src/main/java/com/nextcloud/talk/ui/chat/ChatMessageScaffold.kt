@@ -71,12 +71,14 @@ import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.TextMatchers
 import java.time.LocalDate
 
 private val regularTextSize = 16.sp
 private val timeTextSize = 12.sp
 private val authorTextSize = 12.sp
 private const val LINE_SPACING = 1.2f
+private const val SINGLE_EMOJI_SIZE_MULTIPLIER = 2.5f
 private const val HALF_OPACITY = 127
 private const val MESSAGE_LENGTH_THRESHOLD = 25
 private const val ANIMATED_BLINK = 500
@@ -785,21 +787,26 @@ internal fun resolveMarkdownSource(message: ChatMessageUi): String {
 
 @Composable
 fun EnrichedText(message: ChatMessageUi, modifier: Modifier, maxLines: Int = Int.MAX_VALUE) {
+    val isSingleEmoji = message.messageParameters.isEmpty() &&
+        TextMatchers.isMessageWithSingleEmoticonOnly(message.plainMessage)
+    val fontSize = if (isSingleEmoji) regularTextSize * SINGLE_EMOJI_SIZE_MULTIPLIER else regularTextSize
+
     if (message.renderMarkdown) {
         MarkdownText(
             message = message,
             textColor = colorScheme.onSurface,
             modifier = modifier,
-            maxLines = maxLines
+            maxLines = maxLines,
+            textSizeSp = fontSize.value
         )
     } else {
         MentionEnrichedText(
             message = message,
             modifier = modifier,
             textStyle = TextStyle(
-                fontSize = regularTextSize,
+                fontSize = fontSize,
                 color = colorScheme.onSurface,
-                lineHeight = regularTextSize * LINE_SPACING
+                lineHeight = fontSize * LINE_SPACING
             ),
             maxLines = maxLines
         )
