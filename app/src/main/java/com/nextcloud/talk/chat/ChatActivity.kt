@@ -81,6 +81,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -136,6 +137,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.ui.ShowReactionsModalBottomSheet
 import com.nextcloud.talk.chat.data.model.FileParameters
 import com.nextcloud.talk.chat.ui.MessageActionsBottomSheet
 import com.nextcloud.talk.chat.ui.ProfileModalBottomSheet
@@ -188,6 +190,7 @@ import com.nextcloud.talk.ui.dialog.DateTimeCompose
 import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.GetPinnedOptionsDialog
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
+import com.nextcloud.talk.ui.dialog.TempMessageActionsDialog
 import com.nextcloud.talk.ui.theme.LocalMessageUtils
 import com.nextcloud.talk.ui.theme.LocalOpenGraphFetcher
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
@@ -746,6 +749,8 @@ class ChatActivity :
                     LocalMessageUtils provides messageUtils,
                     LocalOpenGraphFetcher provides { url -> chatViewModel.fetchOpenGraph(url) }
                 ) {
+                    val currentlyPlayingId by chatViewModel.currentlyPlayedMessageId.collectAsState(null)
+
                     val isOneToOneConversation = uiState.isOneToOneConversation
                     Log.d(TAG, "isOneToOneConversation=" + isOneToOneConversation)
 
@@ -765,6 +770,7 @@ class ChatActivity :
                         state = ChatViewState(
                             chatItems = uiState.items,
                             isOneToOneConversation = isOneToOneConversation,
+                            currentlyPlayingVoiceMessageId = currentlyPlayingId,
                             conversationThreadId = conversationThreadId,
                             chatMode = chatMode,
                             highlightedMessageId = uiState.highlightedMessageId,
