@@ -88,6 +88,7 @@ data class ChatViewState(
     val chatItems: List<ChatViewModel.ChatItem>,
     val isOneToOneConversation: Boolean,
     val conversationThreadId: Long? = null,
+    val currentlyPlayingVoiceMessageId: Int? = null,
     val hasChatPermission: Boolean = true,
     val initialUnreadCount: Int = 0,
     val initialShowUnreadPopup: Boolean = false,
@@ -348,9 +349,10 @@ fun ChatView(
                                 isSelected = state.highlightedMessageId == chatItem.uiMessage.id,
                                 highlightSearchTerm = state.highlightedSearchTerm,
                                 context = ChatMessageContext(
-                                    isOneToOneConversation = state.isOneToOneConversation,
-                                    conversationThreadId = state.conversationThreadId,
-                                    hasChatPermission = state.hasChatPermission,
+                                    currentlyPlayingVoiceMessageId = state.currentlyPlayingVoiceMessageId,
+                                isOneToOneConversation = state.isOneToOneConversation,
+                                conversationThreadId = state.conversationThreadId,
+                                hasChatPermission = state.hasChatPermission,
                                     downloadingFileState = state.downloadingFileState
                                 ),
                                 callbacks = ChatMessageCallbacks(
