@@ -13,7 +13,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.R
-import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
@@ -29,6 +28,7 @@ import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
+import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
@@ -76,7 +76,7 @@ class ConversationsListViewModel @Inject constructor(
     private val invitationsRepository: InvitationsRepository,
     private val arbitraryStorageManager: ArbitraryStorageManager,
     var userManager: UserManager,
-    private val ncApiCoroutines: NcApiCoroutines
+    private val conversationsRepository: ConversationsRepository
 ) : ViewModel() {
 
     private val _currentUser = currentUserProvider.currentUser.blockingGet()
@@ -584,7 +584,7 @@ class ConversationsListViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    withRetry(1) { ncApiCoroutines.setChatReadMarker(credentials, url, messageId) }
+                    withRetry(1) { conversationsRepository.markConversationAsRead(credentials, url, messageId) }
                 }
                 _readUnreadState.value = ConversationReadUnreadUiState.Success(conversation.displayName, true)
             } catch (e: Exception) {
@@ -603,7 +603,7 @@ class ConversationsListViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    withRetry(1) { ncApiCoroutines.markRoomAsUnread(credentials, url) }
+                    withRetry(1) { conversationsRepository.markConversationAsUnread(credentials, url) }
                 }
                 _readUnreadState.value = ConversationReadUnreadUiState.Success(conversation.displayName, false)
             } catch (e: Exception) {
