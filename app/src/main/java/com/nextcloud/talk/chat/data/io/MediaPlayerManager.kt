@@ -84,7 +84,11 @@ class MediaPlayerManager : LifecycleAwareManager {
     private var mediaPlayer: MediaPlayer? = null
     private var loop = false
     private var scope = MainScope()
-    private var currentCycledMessage: ChatMessage? = null
+
+    private val _currentCycledMessage = MutableStateFlow<ChatMessage?>(null)
+    val currentCycledMessage: StateFlow<ChatMessage?>
+        get() = _currentCycledMessage
+
     private var currentDataSource: String = ""
     var mediaPlayerDuration: Int = 0
     var mediaPlayerPosition: Int = 0
@@ -140,7 +144,7 @@ class MediaPlayerManager : LifecycleAwareManager {
             mediaPlayer!!.stop()
             mediaPlayer!!.release()
             mediaPlayer = null
-            currentCycledMessage = null
+            _currentCycledMessage.value = null
             _backgroundPlayUIFlow.tryEmit(null)
             _managerState.value = MediaPlayerManagerState.STOPPED
         }
@@ -174,8 +178,8 @@ class MediaPlayerManager : LifecycleAwareManager {
 
     private suspend fun seekbarUpdateObserver() {
         withContext(Dispatchers.IO) {
-            currentCycledMessage?.voiceMessageDuration = mediaPlayerDuration / ONE_SEC
-            currentCycledMessage?.resetVoiceMessage = false
+            _currentCycledMessage.value?.voiceMessageDuration = mediaPlayerDuration / ONE_SEC
+            _currentCycledMessage.value?.resetVoiceMessage = false
             while (true) {
                 if (!loop) {
                     // NOTE: ok so this doesn't stop the loop, but rather stop the update. Wasteful, but minimal
@@ -197,7 +201,7 @@ class MediaPlayerManager : LifecycleAwareManager {
                     val progressI = ceil(progress).toInt()
                     val seconds = (pos / ONE_SEC)
                     _mediaPlayerSeekBarPosition.emit(progressI)
-                    currentCycledMessage?.let { msg ->
+                    _currentCycledMessage.value?.let { msg ->
                         msg.isPlayingVoiceMessage = true
                         msg.voiceMessageSeekbarProgress = progressI
                         msg.voiceMessagePlayedSeconds = seconds
@@ -240,7 +244,7 @@ class MediaPlayerManager : LifecycleAwareManager {
         requestedPlaybackSpeed = speed
         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
             mediaPlayer!!.playbackParams.let { params ->
-                params.setSpeed(speed.value)
+                params.speed = speed.value
                 mediaPlayer!!.playbackParams = params
             }
         }
@@ -270,7 +274,7 @@ class MediaPlayerManager : LifecycleAwareManager {
                 val pair = playQueue.iterator().next()
                 setDataSource(pair.first)
                 currentDataSource = pair.first
-                currentCycledMessage = pair.second
+                _currentCycledMessage.value = pair.second
                 playQueue.removeAt(0)
                 prepareAsync()
                 setOnPreparedListener {
@@ -284,20 +288,20 @@ class MediaPlayerManager : LifecycleAwareManager {
                         playQueue.removeAt(0)
                         mediaPlayer?.reset()
                         mediaPlayer?.setDataSource(nextPair.first)
-                        currentCycledMessage = nextPair.second
+                        _currentCycledMessage.value = nextPair.second
                         prepare()
                     } else {
                         mediaPlayer?.release()
                         mediaPlayer = null
                         _backgroundPlayUIFlow.tryEmit(null)
-                        currentCycledMessage?.let {
+                        _currentCycledMessage.value?.let {
                             it.resetVoiceMessage = true
                             it.isPlayingVoiceMessage = false
                             it.voiceMessageSeekbarProgress = 0
                             it.voiceMessagePlayedSeconds = 0
                         }
-                        val completedMessage = currentCycledMessage
-                        currentCycledMessage = null
+                        val completedMessage = _currentCycledMessage.value
+                        _currentCycledMessage.value = null
                         if (completedMessage != null) {
                             scope.launch {
                                 _mediaPlayerSeekBarPositionMsg.emit(completedMessage)
@@ -318,16 +322,16 @@ class MediaPlayerManager : LifecycleAwareManager {
         mediaPlayerDuration = this.duration
 
         val playBackSpeed = requestedPlaybackSpeed?.value
-            ?: if (currentCycledMessage?.actorId == null) {
+            ?: if (_currentCycledMessage.value?.actorId == null) {
                 PlaybackSpeed.NORMAL.value
             } else {
-                appPreferences.getPreferredPlayback(currentCycledMessage?.actorId).value
+                appPreferences.getPreferredPlayback(_currentCycledMessage.value?.actorId).value
             }
         mediaPlayer!!.playbackParams = mediaPlayer!!.playbackParams.setSpeed(playBackSpeed)
 
         start()
         _managerState.value = MediaPlayerManagerState.STARTED
-        currentCycledMessage?.let {
+        _currentCycledMessage.value?.let {
             it.isPlayingVoiceMessage = true
             _backgroundPlayUIFlow.tryEmit(it)
         }
@@ -348,9 +352,9 @@ class MediaPlayerManager : LifecycleAwareManager {
 
     override fun handleOnStop() {
         loop = false
-        if (mediaPlayer != null && currentCycledMessage != null && mediaPlayer!!.isPlaying) {
+        if (mediaPlayer != null && _currentCycledMessage.value != null && mediaPlayer!!.isPlaying) {
             CoroutineScope(Dispatchers.Default).launch {
-                _backgroundPlayUIFlow.tryEmit(currentCycledMessage!!)
+                _backgroundPlayUIFlow.tryEmit(_currentCycledMessage.value)
             }
         }
     }

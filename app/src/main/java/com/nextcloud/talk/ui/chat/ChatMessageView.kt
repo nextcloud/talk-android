@@ -49,6 +49,7 @@ private const val QUOTE_HIGHLIGHT_HOLD_MILLIS = 700L
 private const val QUOTE_HIGHLIGHT_FADE_OUT_MILLIS = 1500
 
 data class ChatMessageContext(
+    val currentlyPlayingVoiceMessageId: Int? = null,
     val isOneToOneConversation: Boolean = false,
     val conversationThreadId: Long? = null,
     val hasChatPermission: Boolean = true
@@ -158,6 +159,7 @@ fun ChatMessageView(
                             message = message,
                             isOneToOneConversation = context.isOneToOneConversation,
                             conversationThreadId = context.conversationThreadId,
+                            currentlyPlayingVoiceMessageId = context.currentlyPlayingVoiceMessageId,
                             onPlayPauseClick = callbacks.onVoicePlayPauseClick,
                             onSeek = callbacks.onVoiceSeek,
                             onSpeedClick = callbacks.onVoiceSpeedClick

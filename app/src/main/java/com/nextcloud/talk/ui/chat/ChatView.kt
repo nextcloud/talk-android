@@ -15,8 +15,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,8 +25,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -57,6 +57,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
@@ -72,7 +73,6 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import com.nextcloud.talk.R
 
 private const val LONG_1000 = 1000L
 private const val LOAD_MORE_BUFFER_ITEMS = 5
@@ -86,6 +86,7 @@ data class ChatViewState(
     val chatItems: List<ChatViewModel.ChatItem>,
     val isOneToOneConversation: Boolean,
     val conversationThreadId: Long? = null,
+    val currentlyPlayingVoiceMessageId: Int? = null,
     val hasChatPermission: Boolean = true,
     val initialUnreadCount: Int = 0,
     val initialShowUnreadPopup: Boolean = false
@@ -309,6 +310,7 @@ fun ChatView(
                                 ?.takeIf { it.messageId == chatItem.uiMessage.id }
                                 ?.nonce,
                             context = ChatMessageContext(
+                                currentlyPlayingVoiceMessageId = state.currentlyPlayingVoiceMessageId,
                                 isOneToOneConversation = state.isOneToOneConversation,
                                 conversationThreadId = state.conversationThreadId,
                                 hasChatPermission = state.hasChatPermission
