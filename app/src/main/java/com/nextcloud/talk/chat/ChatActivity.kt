@@ -69,6 +69,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -694,7 +695,7 @@ class ChatActivity :
                 }
             }
         }.value.mapNotNull { key ->
-            val messageItem = chatViewModel.uiState.value.items.firstOrNull { it.stableKey() == key }
+            val messageItem = chatViewModel.uiState.collectAsState().value.items.firstOrNull { it.stableKey() == key }
             val message = messageItem?.messageOrNull()
             var result: String? = null
             message?.let {
