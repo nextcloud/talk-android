@@ -39,9 +39,11 @@ import com.nextcloud.talk.jobs.WebsocketConnectionsWorker
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
+import com.nextcloud.talk.ui.dialog.IntroduceUnifiedPushDialog
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
+import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
@@ -58,6 +60,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.unifiedpush.android.connector.UnifiedPush
 import java.net.CookieManager
 import javax.inject.Inject
 
@@ -260,18 +263,7 @@ class AccountVerificationActivity : BaseActivity() {
                 @SuppressLint("SetTextI18n")
                 override fun onSuccess(user: User) {
                     internalAccountId = user.id!!
-                    if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
-                        ClosedInterfaceImpl().setUpPushTokenRegistration()
-                    } else {
-                        Log.w(TAG, "Skipping push registration.")
-                        runOnUiThread {
-                            binding.progressText.text =
-                                """ ${binding.progressText.text}
-                                    ${resources!!.getString(R.string.nc_push_disabled)}
-                                """.trimIndent()
-                        }
-                        fetchAndStoreCapabilities()
-                    }
+                    eventBus.post(EventStatus(user.id!!, EventStatus.EventType.PROFILE_STORED, true))
                 }
 
                 @SuppressLint("SetTextI18n")
@@ -346,41 +338,153 @@ class AccountVerificationActivity : BaseActivity() {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onMessageEvent(eventStatus: EventStatus) {
         Log.d(TAG, "caught EventStatus of type " + eventStatus.eventType.toString())
-        if (eventStatus.eventType == EventStatus.EventType.PUSH_REGISTRATION) {
-            if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
-                runOnUiThread {
-                    binding.progressText.text =
-                        """
-                            ${binding.progressText.text}
-                            ${resources!!.getString(R.string.nc_push_disabled)}
-                        """.trimIndent()
-                }
+        if (internalAccountId != eventStatus.userId) {
+            Log.d(TAG, "Event isn't for us. Aborting.")
+            return
+        }
+        // We do: PROFILE_STORED
+        // -> CAPABILITIES_FETCH
+        // -> PUSH_REGISTRATION
+        // -> SIGNALING_SETTINGS
+        when (eventStatus.eventType) {
+            EventStatus.EventType.PROFILE_STORED -> {
+                fetchAndStoreCapabilities()
             }
-            fetchAndStoreCapabilities()
-        } else if (eventStatus.eventType == EventStatus.EventType.CAPABILITIES_FETCH) {
-            if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
-                runOnUiThread {
-                    binding.progressText.text =
-                        """
+            EventStatus.EventType.CAPABILITIES_FETCH -> {
+                if (!eventStatus.isAllGood) {
+                    runOnUiThread {
+                        binding.progressText.text =
+                            """
                             ${binding.progressText.text}
                             ${resources!!.getString(R.string.nc_capabilities_failed)}
                         """.trimIndent()
+                    }
+                    abortVerification()
+                } else {
+                    setupPushNotifications()
                 }
-                abortVerification()
-            } else if (internalAccountId == eventStatus.userId && eventStatus.isAllGood) {
+            }
+            EventStatus.EventType.PUSH_REGISTRATION -> {
+                if (!eventStatus.isAllGood) {
+                    runOnUiThread {
+                        binding.progressText.text =
+                            """
+                            ${binding.progressText.text}
+                            ${resources!!.getString(R.string.nc_push_disabled)}
+                        """.trimIndent()
+                    }
+                }
                 fetchAndStoreExternalSignalingSettings()
             }
-        } else if (eventStatus.eventType == EventStatus.EventType.SIGNALING_SETTINGS) {
-            if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
-                runOnUiThread {
-                    binding.progressText.text =
-                        """
+            EventStatus.EventType.SIGNALING_SETTINGS -> {
+                if (!eventStatus.isAllGood) {
+                    runOnUiThread {
+                        binding.progressText.text =
+                            """
                             ${binding.progressText.text}
                             ${resources!!.getString(R.string.nc_external_server_failed)}
                         """.trimIndent()
+                    }
+                }
+                proceedWithLogin()
+            }
+            else -> {}
+        }
+    }
+
+    private fun setupPushNotifications() {
+        // This isn't a first account, and UnifiedPush is enabled.
+        if (appPreferences.useUnifiedPush) {
+            if (userManager.getUserWithId(internalAccountId).blockingGet().hasWebPushCapability) {
+                UnifiedPushUtils.registerWithCurrentDistributor(context)
+                eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
+                return
+            } else {
+                Log.w(TAG, "Warning: disabling UnifiedPush, user server doesn't support web push.")
+                appPreferences.useUnifiedPush = false
+            }
+        }
+
+        // - By default, use the Play Services if available
+        // - If this is a first user, and we have an External UnifiedPush distributor,
+        //    and the server supports it: we use it
+        // - Else if there is an embedded distributor (so this is a generic flavor, and the
+        //    Play services are installed) => we use it for all accounts that support web push
+        // - Else we skip push registrations
+        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
+            ClosedInterfaceImpl().setUpPushTokenRegistration()
+            eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
+        } else if (userManager.users.blockingGet().size == 1 &&
+            UnifiedPushUtils.getExternalDistributors(context).isNotEmpty() &&
+            userManager.getUserWithId(internalAccountId).blockingGet().hasWebPushCapability) {
+            useUnifiedPushIntroduced()
+        } else if (UnifiedPushUtils.hasEmbeddedDistributor(context) &&
+            userManager.users.blockingGet().any { it.hasWebPushCapability }) {
+            useEmbeddedUnifiedPush()
+        } else {
+            Log.w(TAG, "Skipping push registration.")
+            eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, false))
+        }
+    }
+
+    /**
+     * Show a dialog if the user has to select their distributor
+     *
+     * Most of the time, nothing will be shown, as most users have
+     * a single distributor, or already selected their default one
+     */
+    private fun useUnifiedPushIntroduced() {
+        if (UnifiedPushUtils.usingDefaultDistributorNeedsIntro(context)) {
+            dialogForUnifiedPush { res ->
+                if (res) {
+                    useUnifiedPush()
+                } else {
+                    fallbackToEmbeddedUnifiedPush()
                 }
             }
-            proceedWithLogin()
+        } else {
+            useUnifiedPush()
+        }
+    }
+
+    /**
+     * Check if there is an embedded distributor, and use it if present,
+     * else, send EventStatus PUSH_REGISTRATION with success=false
+     */
+    private fun fallbackToEmbeddedUnifiedPush() {
+        if (UnifiedPushUtils.hasEmbeddedDistributor(context)) {
+            useEmbeddedUnifiedPush()
+        } else {
+            eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, false))
+        }
+    }
+
+    private fun useEmbeddedUnifiedPush() {
+        UnifiedPushUtils.useEmbeddedDistributor(context)
+        UnifiedPushUtils.registerWithCurrentDistributor(context)
+        eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
+    }
+
+    private fun useUnifiedPush() {
+        UnifiedPushUtils.useDefaultDistributor(this) { distrib ->
+            distrib?.let {
+                Log.d(TAG, "UnifiedPush registered with $distrib")
+                appPreferences.useUnifiedPush = true
+                eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
+            } ?: run {
+                Log.d(TAG, "No UnifiedPush distrib selected")
+                fallbackToEmbeddedUnifiedPush()
+            }
+        }
+    }
+
+    private fun dialogForUnifiedPush(onResponse: (Boolean) -> Unit) {
+        binding.genericComposeView.apply {
+            setContent {
+                IntroduceUnifiedPushDialog { res ->
+                    onResponse(res)
+                }
+            }
         }
     }
 

@@ -177,6 +177,14 @@ configurations.configureEach {
     exclude(group = "com.google.firebase", module = "firebase-analytics")
     exclude(group = "com.google.firebase", module = "firebase-measurement-connector")
     exclude(group = "org.jetbrains", module = "annotations-java5") // via prism4j, already using annotations explicitly
+    val protobufJava = "com.google.protobuf:protobuf-java:4.28.2"
+    resolutionStrategy {
+        force(protobufJava)
+        dependencySubstitution {
+            substitute(module("com.google.protobuf:protobuf-javalite"))
+                .using(module(protobufJava))
+        }
+    }
 }
 
 dependencies {
@@ -322,6 +330,9 @@ dependencies {
 
     "gplayImplementation"("com.google.android.gms:play-services-base:18.10.0")
     "gplayImplementation"("com.google.firebase:firebase-messaging:25.0.1")
+
+    implementation("org.unifiedpush.android:connector:3.3.2")
+    "genericImplementation"("org.unifiedpush.android:embedded-fcm-distributor:3.1.0-rc1")
 
     // compose
     implementation(platform("androidx.compose:compose-bom:2026.04.01"))
