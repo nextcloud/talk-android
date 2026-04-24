@@ -85,7 +85,7 @@ fun Preview() {
     val waveData = remember { FloatArray(WAVEFORM_SIZE) { (Math.random() % 1).toFloat() } }
 
     ComposeWaveformSeekBar(
-        0.4f,
+        0.0f,
         {},
         modifier = Modifier
             .height(MAX_HEIGHT.dp)
