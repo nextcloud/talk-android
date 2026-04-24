@@ -2208,7 +2208,15 @@ class CallActivity : CallBaseActivity() {
                 selfJoined = true
                 continue
             }
-            Log.d(TAG, "   newSession joined: $sessionId")
+            val participantHasAudioOrVideo = participantInCallFlagsHaveAudioOrVideo(participant)
+            val shouldCreatePeerConnection = hasMCUAndAudioVideo(participantHasAudioOrVideo) ||
+                hasNoMCUAndAudioVideo(
+                    participantHasAudioOrVideo,
+                    selfParticipantHasAudioOrVideo,
+                    sessionId,
+                    currentSessionId!!
+                )
+            Log.d(TAG, "   newSession joined: $sessionId (actorType=${participant.actorType}, inCall=${participant.inCall}, hasAudioOrVideo=$participantHasAudioOrVideo, createPeerConnection=$shouldCreatePeerConnection)")
             addCallParticipant(sessionId)
 
             if (participant.actorType != null && participant.actorId != null) {
@@ -2226,21 +2234,16 @@ class CallActivity : CallBaseActivity() {
             }
 
             callViewModel.getParticipant(sessionId)?.updateNick(nick)
-            val participantHasAudioOrVideo = participantInCallFlagsHaveAudioOrVideo(participant)
 
             // FIXME Without MCU, PeerConnectionWrapper only sends an offer if the local session ID is higher than the
             // remote session ID. However, if the other participant does not have audio nor video that participant
             // will not send an offer, so no connection is actually established when the remote participant has a
             // higher session ID but is not publishing media.
-            if (hasMCUAndAudioVideo(participantHasAudioOrVideo) ||
-                hasNoMCUAndAudioVideo(
-                    participantHasAudioOrVideo,
-                    selfParticipantHasAudioOrVideo,
-                    sessionId,
-                    currentSessionId!!
-                )
-            ) {
+            if (shouldCreatePeerConnection) {
+                Log.d(TAG, "   → Creating PeerConnection for $sessionId")
                 getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false)
+            } else {
+                Log.d(TAG, "   → Skipping PeerConnection for $sessionId (hasAudioOrVideo=$participantHasAudioOrVideo, sessionIdCompare=${sessionId < currentSessionId})")
             }
         }
         othersInCall = if (selfJoined) {
