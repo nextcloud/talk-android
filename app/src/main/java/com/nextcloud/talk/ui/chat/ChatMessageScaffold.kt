@@ -581,6 +581,16 @@ private fun MessageMetadata(uiMessage: ChatMessageUi, color: Color = colorScheme
                 color = color
             )
         }
+        if (uiMessage.isSilent) {
+            Icon(
+                painter = painterResource(R.drawable.ic_baseline_notifications_off_24),
+                contentDescription = stringResource(R.string.silent_message_hint),
+                modifier = Modifier
+                    .padding(end = 4.dp)
+                    .size(16.dp),
+                tint = color
+            )
+        }
         TimeDisplay(uiMessage, color)
         if (!uiMessage.incoming) {
             ReadStatus(uiMessage, color)
