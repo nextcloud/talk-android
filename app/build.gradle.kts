@@ -10,10 +10,10 @@ import com.github.spotbugs.snom.SpotBugsTask
 import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
-    id("org.jetbrains.kotlin.plugin.compose") version "2.3.20"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.3.21"
     id("com.android.built-in-kotlin")
     id("com.android.legacy-kapt")
-    id("com.google.devtools.ksp") version "2.3.6"
+    id("com.google.devtools.ksp") version "2.3.7"
     id("com.android.application")
     id("kotlin-parcelize")
     id("com.github.spotbugs")
@@ -182,12 +182,12 @@ configurations.configureEach {
 dependencies {
     kapt("org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlinVersion")
     implementation("androidx.room:room-testing-android:$roomVersion")
-    implementation("androidx.compose.foundation:foundation-layout:1.10.6")
+    implementation("androidx.compose.foundation:foundation-layout:1.11.0")
     spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0")
     spotbugsPlugins("com.mebigfatguy.fb-contrib:fb-contrib:7.7.4")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
 
-    implementation("androidx.compose.runtime:runtime:1.10.6")
+    implementation("androidx.compose.runtime:runtime:1.11.0")
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("androidx.datastore:datastore-core:1.2.1")
     implementation("androidx.datastore:datastore-preferences:1.2.1")
@@ -195,7 +195,7 @@ dependencies {
 
     implementation(fileTree(mapOf("include" to listOf("*"), "dir" to "libs")))
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$coroutinesVersion")
 
     implementation("androidx.appcompat:appcompat:1.7.1")
@@ -256,7 +256,7 @@ dependencies {
     kapt("javax.annotation:javax.annotation-api:1.3.2")
 
     implementation("org.greenrobot:eventbus:3.3.1")
-    implementation("net.zetetic:sqlcipher-android:4.14.0")
+    implementation("net.zetetic:sqlcipher-android:4.14.1")
 
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-rxjava2:$roomVersion")
@@ -324,7 +324,7 @@ dependencies {
     "gplayImplementation"("com.google.firebase:firebase-messaging:25.0.1")
 
     // compose
-    implementation(platform("androidx.compose:compose-bom:2026.03.01"))
+    implementation(platform("androidx.compose:compose-bom:2026.04.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3:1.4.0")
     implementation("androidx.compose.material:material-icons-extended")
@@ -334,7 +334,7 @@ dependencies {
 
     // tests
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.0.3")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.10.6")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.11.0")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     testImplementation("junit:junit:4.13.2")
@@ -355,7 +355,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-accessibility:$espressoVersion")
     androidTestImplementation("androidx.test.espresso:espresso-intents:$espressoVersion")
 
-    androidTestImplementation(platform("androidx.compose:compose-bom:2026.03.01"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2026.04.01"))
     testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
 
