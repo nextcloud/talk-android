@@ -193,20 +193,22 @@ fun MessageScaffold(
         showInlineMetadata = showInlineMetadata
     )
 
-    val shape = remember(incoming) {
+    val shape = remember(incoming, uiMessage.isGrouped, uiMessage.isGroupedWithNext) {
+        val outerTop = if (uiMessage.isGrouped) bubbleRadiusSmall else bubbleRadiusBig
+        val outerBottom = if (uiMessage.isGroupedWithNext) bubbleRadiusSmall else bubbleRadiusBig
         if (incoming) {
             RoundedCornerShape(
                 topStart = bubbleRadiusSmall,
-                topEnd = bubbleRadiusBig,
-                bottomEnd = bubbleRadiusBig,
-                bottomStart = bubbleRadiusBig
+                topEnd = outerTop,
+                bottomEnd = outerBottom,
+                bottomStart = outerBottom
             )
         } else {
             RoundedCornerShape(
-                topStart = bubbleRadiusBig,
+                topStart = outerTop,
                 topEnd = bubbleRadiusSmall,
-                bottomEnd = bubbleRadiusBig,
-                bottomStart = bubbleRadiusBig
+                bottomEnd = outerBottom,
+                bottomStart = outerBottom
             )
         }
     }
@@ -238,7 +240,7 @@ fun MessageScaffold(
 
 @Composable
 private fun RowScope.MessageLeadingDecoration(uiMessage: ChatMessageUi, isOneToOneConversation: Boolean) {
-    if (uiMessage.incoming && isOneToOneConversation) {
+    if (uiMessage.incoming && isOneToOneConversation && !uiMessage.isGrouped) {
         val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
         val avatarContext = LocalContext.current
         val loadedImage = remember(uiMessage.avatarUrl) {
@@ -252,6 +254,8 @@ private fun RowScope.MessageLeadingDecoration(uiMessage: ChatMessageUi, isOneToO
                 .align(Alignment.Top)
                 .padding(end = 8.dp)
         )
+    } else if (uiMessage.incoming && isOneToOneConversation) {
+        Spacer(Modifier.width(48.dp))
     } else if (uiMessage.incoming) {
         Spacer(Modifier.width(8.dp))
     }
@@ -278,7 +282,7 @@ private fun MessageBubbleWithReactions(
         .widthIn(60.dp, 280.dp)
 
     Column(horizontalAlignment = if (incoming) Alignment.Start else Alignment.End) {
-        if (incoming && isOneToOneConversation) {
+        if (incoming && isOneToOneConversation && !uiMessage.isGrouped) {
             Text(
                 text = uiMessage.actorDisplayName,
                 fontSize = authorTextSize,
