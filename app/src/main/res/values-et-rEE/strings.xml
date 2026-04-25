@@ -411,6 +411,7 @@
     <string name="nc_promote">Määra moderaatoriks</string>
     <string name="nc_public_call_status">Avalik vestlus</string>
     <string name="nc_push_disabled">Tõuketeavitused pole kasutusel</string>
+    <string name="nc_push_notification_error">Vabandust, midagi läks valesti, veateade on: %1$s</string>
     <string name="nc_push_notification_fetch_error">Vabandust, midagi läks valesti, tõuketeavituse testsõnumit ei õnnestu laadida</string>
     <string name="nc_push_notification_message">Tõuketeavituse saatmine õnnestus. Peaksid selles seadmes nüüd saama tõuketeavituse pealkirjaga „Tõuketeavituse test“</string>
     <string name="nc_remind">Tuleta mulle hiljem meelde</string>
@@ -483,7 +484,7 @@
     <string name="nc_settings_advanced_title">Täiendavad seadistused</string>
     <string name="nc_settings_appearance">Välimus</string>
     <string name="nc_settings_call_ringtone">Kõned</string>
-    <string name="nc_settings_contact_admin_of">Palun võta ühendust serveri administraatoriga - </string>
+    <string name="nc_settings_contact_admin_of">Palun võta ühendust serveri peakasutajaga - </string>
     <string name="nc_settings_diagnose_subtitle">Seadistuste kontrollimiseks või veateate koostamiseks ava veaotsingu vaade</string>
     <string name="nc_settings_diagnose_title">Veaotsing</string>
     <string name="nc_settings_diagnosis_subtitle">Seadistuste kontrollimiseks või veateate koostamiseks ava veaotsingu vaade</string>
@@ -775,6 +776,10 @@
     <string name="userinfo_no_info_text">Lisa oma profiili lehele nimi, pilt ja kontaktteave. </string>
     <string name="video_call">Videokõne</string>
     <string name="whats_your_status">Mis on su staatus?</string>
+    <plurals name="nc_new_messages_count">
+        <item quantity="one">%d uus sõnum</item>
+        <item quantity="other">%d uut sõnumit</item>
+    </plurals>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Vaata %d sarnast sõnumit</item>
         <item quantity="other">Vaata %d sarnast sõnumit</item>

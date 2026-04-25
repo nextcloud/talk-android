@@ -75,6 +75,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 godziny</string>
     <string name="get_invitations_error">Nie udało się pobrać oczekujących zaproszeń</string>
+    <string name="gplay_available_no">Usługi Google Play są niedostępne. Powiadomienia nie są obsługiwane</string>
     <string name="hint_edited_message">(edytowane)</string>
     <string name="internal_note">Notatka wewnętrzna</string>
     <string name="invisible">Niewidoczny</string>
@@ -94,6 +95,8 @@
     <string name="lower_hand">Opuścić rękę</string>
     <string name="marked_as_read">Oznaczono rozmowę %1$s jako przeczytaną</string>
     <string name="marked_as_unread">Oznaczono rozmowę %1$s jako nieprzeczytaną</string>
+    <string name="media_message_content_description">Podgląd pliku</string>
+    <string name="media_message_content_play">Odtwórz plik multimedialny</string>
     <string name="mentioned">Wspomniany</string>
     <string name="menu_item_sort_by_date_newest_first">Od najnowszych</string>
     <string name="menu_item_sort_by_date_oldest_first">Od najstarszych</string>
@@ -261,6 +264,7 @@
     <string name="nc_dialog_save_to_storage_yes">Tak</string>
     <string name="nc_display_name_not_fetched">Nie udało się pobrać nazwy, przerwano żądanie</string>
     <string name="nc_display_name_not_stored">Nie można zapisać wyświetlanej nazwy, przerwano żądanie</string>
+    <string name="nc_draft_prefix">Szkic: %1$s</string>
     <string name="nc_edit_icon">Edycja</string>
     <string name="nc_edit_message">Edycja</string>
     <string name="nc_edit_message_text">Edytuj wiadomość</string>
@@ -364,6 +368,8 @@
     <string name="nc_no_open_conversations_headline">Brak otwartych rozmów</string>
     <string name="nc_no_open_conversations_text">Brak otwartych rozmów, do których możesz dołączyć.\nAlbo nie ma otwartych rozmów lub już do nich dołączyłeś.</string>
     <string name="nc_no_proxy">Brak proxy</string>
+    <string name="nc_no_search_results_headline">Brak wyników dla Twojego wyszukiwania</string>
+    <string name="nc_no_search_results_text">Sprawdź zapytanie lub spróbuj użyć innego</string>
     <string name="nc_not_allowed_to_activate_audio">Nie możesz aktywować dźwięku!</string>
     <string name="nc_not_allowed_to_activate_video">Nie możesz aktywować wideo!</string>
     <string name="nc_not_now">Nie teraz</string>
@@ -405,6 +411,7 @@
     <string name="nc_promote">Promuj na moderatora</string>
     <string name="nc_public_call_status">Rozmowa publiczna</string>
     <string name="nc_push_disabled">Powiadomienie push wyłączone</string>
+    <string name="nc_push_notification_error">Coś poszło nie tak, kod błędu: %1$s</string>
     <string name="nc_push_notification_fetch_error">Przepraszamy, wystąpił błąd — nie można pobrać testowej wiadomości push.</string>
     <string name="nc_push_notification_message">Powiadomienie push zostało pomyślnie wysłane. Powinieneś teraz otrzymać powiadomienie na tym urządzeniu z tytułem „Testowanie powiadomień push”.</string>
     <string name="nc_remind">Przypomnij mi później</string>
@@ -439,6 +446,7 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Szukaj</string>
     <string name="nc_search_clear">Wyczyść wyszukiwanie</string>
+    <string name="nc_search_location">Lokalizacja wyszukiwania</string>
     <string name="nc_select_an_account">Wybierz konto</string>
     <string name="nc_send_edit_message">Zaktualizuj wiadomość</string>
     <string name="nc_send_later">Wyślij później</string>
@@ -543,6 +551,7 @@
     <string name="nc_shared_items_empty">Brak udostępnionych elementów</string>
     <string name="nc_shared_items_location">Lokalizacja</string>
     <string name="nc_shared_location">Udostępniona lokalizacja</string>
+    <string name="nc_show_ecosystem_description">Sugestie aplikacji Nextcloud w oknie wyboru konta</string>
     <string name="nc_show_ecosystem_title">Pokaż przełącznik aplikacji</string>
     <string name="nc_show_notification_warning_description">Gdy powiadomienia nie są poprawnie skonfigurowane, wyświetlaj regularne ostrzeżenie</string>
     <string name="nc_show_notification_warning_title">Pokaż regularne ostrzeżenie o powiadomieniu</string>
@@ -555,6 +564,7 @@
     <string name="nc_test_results">Test wyników</string>
     <string name="nc_today_meeting">Dziś o %1$s</string>
     <string name="nc_tomorrow_meeting">Jutro o %1$s</string>
+    <string name="nc_upcoming_event_dismissed">Nadchodzące połączenie można zobaczyć w informacjach o rozmowie</string>
     <string name="nc_upload_choose_local_files">Wybierz pliki</string>
     <string name="nc_upload_confirm_send_multiple">Wysłać te pliki do %1$s?</string>
     <string name="nc_upload_confirm_send_single">Wysłać ten plik do %1$s?</string>
@@ -629,6 +639,7 @@
     <string name="polls_voted_hidden_success">Oddano głos</string>
     <string name="previously_set">Ustawione wcześniej</string>
     <string name="qr_code_error">Nie można odczytać kodu QR</string>
+    <string name="quoted_message_too_old">Ta wiadomość jest zbyt stara, aby ją wyświetlić</string>
     <string name="raise_hand">Podnieść rękę</string>
     <string name="reaction_forbidden">Nie masz uprawnień do dodawania ani usuwania reakcji w tej rozmowie</string>
     <string name="reactions_tab_all">Wszystkie</string>
@@ -746,6 +757,7 @@
     <string name="user_absence_replacement">Zastępnik:</string>
     <string name="user_avatar">Awatar użytkownika</string>
     <string name="user_info_address">Adres</string>
+    <string name="user_info_biography">Biografia</string>
     <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Pełna nazwa</string>
     <string name="user_info_email">E-mail</string>

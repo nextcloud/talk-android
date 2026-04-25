@@ -283,7 +283,7 @@ dependencies {
     implementation("com.afollestad.material-dialogs:bottomsheets:$materialDialogsVersion")
     implementation("com.afollestad.material-dialogs:lifecycle:$materialDialogsVersion")
 
-    implementation("com.google.code.gson:gson:2.13.2")
+    implementation("com.google.code.gson:gson:2.14.0")
 
     implementation("androidx.media3:media3-exoplayer:$media3Version")
     implementation("androidx.media3:media3-ui:$media3Version")
