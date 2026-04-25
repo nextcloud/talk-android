@@ -333,6 +333,14 @@ class ChatViewModel @AssistedInject constructor(
 
     @Volatile private var oneOrMoreMessagesWereSent = false
 
+    private val expandedSystemMessageParents = MutableStateFlow<Set<Int>>(emptySet())
+
+    fun toggleSystemMessageCollapse(parentMessageId: Int) {
+        expandedSystemMessageParents.update { current ->
+            if (parentMessageId in current) current - parentMessageId else current + parentMessageId
+        }
+    }
+
     // ------------------------------
     // UI State. This should be the only UI state. Add more val here and update via copy whenever necessary.
     // ------------------------------
@@ -624,7 +632,8 @@ class ChatViewModel @AssistedInject constructor(
         val messages: List<ChatMessage>,
         val lastCommonRead: Int,
         val parentMap: Map<Long, ChatMessage>,
-        val conversationLastRead: Int
+        val conversationLastRead: Int,
+        val expandedParents: Set<Int> = emptySet()
     )
 
     private data class ProcessedMessages(val items: List<ChatItem>, val missingParentIds: List<Long>)
@@ -637,11 +646,12 @@ class ChatViewModel @AssistedInject constructor(
             messagesFlow,
             getLastCommonReadFlow.onStart { emit(0) },
             parentMessagesFlow,
-            conversationFlow.map { it.lastReadMessage }
-        ) { messages, lastCommonRead, parentMap, conversationLastRead ->
-            CombinedInput(messages, lastCommonRead, parentMap, conversationLastRead)
+            conversationFlow.map { it.lastReadMessage },
+            expandedSystemMessageParents
+        ) { messages, lastCommonRead, parentMap, conversationLastRead, expandedParents ->
+            CombinedInput(messages, lastCommonRead, parentMap, conversationLastRead, expandedParents)
         }
-            .map { (messages, lastCommonRead, parentMap, conversationLastRead) ->
+            .map { (messages, lastCommonRead, parentMap, conversationLastRead, expandedParents) ->
                 val messageMap: Map<Long, ChatMessage> = messages.associateBy { it.jsonMessageId.toLong() }
                 val combinedMap: Map<Long, ChatMessage> = messageMap + parentMap
 
@@ -652,6 +662,7 @@ class ChatViewModel @AssistedInject constructor(
 
                 val user = currentUserFlow.value
                 applyMessageGrouping(messages)
+                applySystemMessageGrouping(messages)
                 val uiMessages = messages.map { message ->
                     val parent: ChatMessage? = combinedMap[message.parentMessageId]
                     message.toUiModel(
@@ -662,7 +673,7 @@ class ChatViewModel @AssistedInject constructor(
                     )
                 }
 
-                val items = buildChatItems(uiMessages, conversationLastRead)
+                val items = buildChatItems(uiMessages, conversationLastRead, expandedParents)
                 ProcessedMessages(items = items, missingParentIds = missingParentIds)
             }
             .flowOn(Dispatchers.Default)
@@ -688,8 +699,13 @@ class ChatViewModel @AssistedInject constructor(
     // ------------------------------
     // Build chat items (pure)
     // ------------------------------
-    private fun buildChatItems(uiMessages: List<ChatMessageUi>, lastReadMessage: Int): List<ChatItem> {
+    private fun buildChatItems(
+        uiMessages: List<ChatMessageUi>,
+        lastReadMessage: Int,
+        expandedParents: Set<Int> = emptySet()
+    ): List<ChatItem> {
         var lastDate: LocalDate? = null
+        var lastExpandableParentId: Int? = null
 
         return buildList {
             if (firstUnreadMessageId == null && lastReadMessage > 0) {
@@ -703,6 +719,14 @@ class ChatViewModel @AssistedInject constructor(
             }
 
             for (uiMessage in uiMessages) {
+                if (uiMessage.isExpandableParent) {
+                    lastExpandableParentId = uiMessage.id
+                }
+
+                if (uiMessage.isHiddenByCollapse && lastExpandableParentId !in expandedParents) {
+                    continue
+                }
+
                 val date = uiMessage.date
 
                 if (date != lastDate) {
@@ -714,7 +738,12 @@ class ChatViewModel @AssistedInject constructor(
                     add(ChatItem.UnreadMessagesMarkerItem(date))
                 }
 
-                add(ChatItem.MessageItem(uiMessage))
+                val adjustedMessage = if (uiMessage.isExpandableParent) {
+                    uiMessage.copy(isExpanded = uiMessage.id in expandedParents)
+                } else {
+                    uiMessage
+                }
+                add(ChatItem.MessageItem(adjustedMessage))
             }
         }.asReversed()
     }
@@ -724,6 +753,55 @@ class ChatViewModel @AssistedInject constructor(
             message.isGrouped = index > 0 && shouldGroupMessage(message, messages[index - 1])
             message.isGroupedWithNext = index < messages.size - 1 && shouldGroupMessage(messages[index + 1], message)
         }
+    }
+
+    private fun applySystemMessageGrouping(messages: List<ChatMessage>) {
+        messages.forEach { message ->
+            message.expandableParent = false
+            message.lastItemOfExpandableGroup = 0
+            message.expandableChildrenAmount = 0
+            message.hiddenByCollapse = false
+        }
+
+        messages.forEachIndexed { index, currentMessage ->
+            if (!currentMessage.isSystemMessage || index == 0) return@forEachIndexed
+            val previousMessage = messages[index - 1]
+            if (previousMessage.isSystemMessage &&
+                previousMessage.systemMessageType == currentMessage.systemMessageType &&
+                isSameDayMessages(previousMessage, currentMessage)
+            ) {
+                groupSystemMessages(previousMessage, currentMessage)
+            }
+        }
+
+        messages.forEach { message ->
+            if (isChildOfExpandableGroup(message)) {
+                message.hiddenByCollapse = true
+            }
+        }
+    }
+
+    private fun groupSystemMessages(previousMessage: ChatMessage, currentMessage: ChatMessage) {
+        previousMessage.expandableParent = true
+        currentMessage.expandableParent = false
+
+        if (currentMessage.lastItemOfExpandableGroup == 0) {
+            currentMessage.lastItemOfExpandableGroup = currentMessage.jsonMessageId
+        }
+
+        previousMessage.lastItemOfExpandableGroup = currentMessage.lastItemOfExpandableGroup
+        previousMessage.expandableChildrenAmount = currentMessage.expandableChildrenAmount + 1
+    }
+
+    private fun isChildOfExpandableGroup(message: ChatMessage): Boolean =
+        message.isSystemMessage && !message.expandableParent && message.lastItemOfExpandableGroup != 0
+
+    private fun isSameDayMessages(message1: ChatMessage, message2: ChatMessage): Boolean {
+        val date1 = Instant.ofEpochMilli(message1.timestamp * TIMESTAMP_TO_MILLIS)
+            .atZone(ZoneId.systemDefault()).toLocalDate()
+        val date2 = Instant.ofEpochMilli(message2.timestamp * TIMESTAMP_TO_MILLIS)
+            .atZone(ZoneId.systemDefault()).toLocalDate()
+        return date1 == date2
     }
 
     private fun shouldGroupMessage(current: ChatMessage, previous: ChatMessage): Boolean {
