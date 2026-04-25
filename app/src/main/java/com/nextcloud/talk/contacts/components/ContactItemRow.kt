@@ -90,7 +90,7 @@ fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewMod
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.ic_check_circle),
-                    contentDescription = "Selected",
+                    contentDescription = stringResource(R.string.selected_list_item),
                     tint = Color.Blue,
                     modifier = Modifier.padding(end = 8.dp)
                 )

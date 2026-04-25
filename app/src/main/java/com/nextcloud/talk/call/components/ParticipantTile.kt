@@ -92,7 +92,7 @@ fun ParticipantTile(
             if (participantUiState.raisedHand) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_hand_back_left),
-                    contentDescription = "Raised Hand",
+                    contentDescription = stringResource(R.string.nc_call_raised_hand, displayName),
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(6.dp)
