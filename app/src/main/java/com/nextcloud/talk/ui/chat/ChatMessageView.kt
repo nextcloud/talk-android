@@ -54,6 +54,7 @@ data class ChatMessageContext(
     val hasChatPermission: Boolean = true
 )
 
+@Suppress("Detekt.LongParameterList")
 class ChatMessageCallbacks(
     val onLongClick: ((Int) -> Unit?)? = null,
     val onSwipeReply: ((Int) -> Unit)? = null,
@@ -65,9 +66,11 @@ class ChatMessageCallbacks(
     val onReactionClick: (Int, String) -> Unit = { _, _ -> },
     val onReactionLongClick: (Int) -> Unit = {},
     val onOpenThreadClick: (Int) -> Unit = {},
-    val onQuotedMessageClick: (Int) -> Unit = {}
+    val onQuotedMessageClick: (Int) -> Unit = {},
+    val onSystemMessageExpandClick: (Int) -> Unit = {}
 )
 
+@Suppress("Detekt.LongMethod", "Detekt.CyclomaticComplexMethod")
 @Composable
 fun ChatMessageView(
     message: ChatMessageUi,
@@ -92,6 +95,7 @@ fun ChatMessageView(
     }
 
     CompositionLocalProvider(
+        LocalMessageLongClickHandler provides { id -> callbacks.onLongClick?.invoke(id) ?: Unit },
         LocalReactionClickHandler provides callbacks.onReactionClick,
         LocalReactionLongClickHandler provides callbacks.onReactionLongClick,
         LocalOpenThreadHandler provides callbacks.onOpenThreadClick,
@@ -106,7 +110,13 @@ fun ChatMessageView(
                     .combinedClickable(
                         interactionSource = interactionSource,
                         indication = ripple(),
-                        onClick = { callbacks.onLongClick?.invoke(message.id) },
+                        onClick = {
+                            if (message.isExpandableParent) {
+                                callbacks.onSystemMessageExpandClick(message.id)
+                            } else {
+                                callbacks.onLongClick?.invoke(message.id)
+                            }
+                        },
                         onDoubleClick = { callbacks.onLongClick?.invoke(message.id) },
                         onLongClick = { callbacks.onLongClick?.invoke(message.id) }
                     )

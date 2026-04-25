@@ -25,6 +25,8 @@ import java.util.Date
 data class ChatMessage(
     var isGrouped: Boolean = false,
 
+    var isGroupedWithNext: Boolean = false,
+
     var isOneToOneConversation: Boolean = false,
 
     var isFormerOneToOneConversation: Boolean = false,

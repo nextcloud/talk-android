@@ -96,17 +96,8 @@ class ChatViewCallbacks(
     val onLoadMore: (() -> Unit?)? = null,
     val advanceLocalLastReadMessageIfNeeded: ((Int) -> Unit?)? = null,
     val updateRemoteLastReadMessageIfNeeded: (() -> Unit?)? = null,
-    val onLongClick: ((Int) -> Unit?)? = null,
-    val onFileClick: (Int) -> Unit = {},
-    val onPollClick: (String, String) -> Unit = { _, _ -> },
-    val onVoicePlayPauseClick: (Int) -> Unit = {},
-    val onVoiceSeek: (Int, Int) -> Unit = { _, _ -> },
-    val onVoiceSpeedClick: (Int) -> Unit = {},
-    val onReactionClick: (Int, String) -> Unit = { _, _ -> },
-    val onReactionLongClick: (Int) -> Unit = {},
-    val onOpenThreadClick: (Int) -> Unit = {},
     val onLoadQuotedMessageClick: (Int) -> Unit = {},
-    val onSwipeReply: ((Int) -> Unit)? = null
+    val messageCallbacks: ChatMessageCallbacks = ChatMessageCallbacks()
 )
 
 @Suppress("Detekt.LongMethod", "Detekt.ComplexMethod")
@@ -292,7 +283,7 @@ fun ChatView(
         LazyColumn(
             state = listState,
             reverseLayout = true,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
             contentPadding = PaddingValues(bottom = 20.dp),
             modifier = Modifier
                 .padding(start = 12.dp, end = 12.dp)
@@ -304,38 +295,49 @@ fun ChatView(
             ) { chatItem ->
                 when (chatItem) {
                     is ChatViewModel.ChatItem.MessageItem -> {
-                        ChatMessageView(
-                            message = chatItem.uiMessage,
-                            highlightTriggerKey = quoteHighlightEvent
-                                ?.takeIf { it.messageId == chatItem.uiMessage.id }
-                                ?.nonce,
-                            context = ChatMessageContext(
-                                isOneToOneConversation = state.isOneToOneConversation,
-                                conversationThreadId = state.conversationThreadId,
-                                hasChatPermission = state.hasChatPermission
-                            ),
-                            callbacks = ChatMessageCallbacks(
-                                onLongClick = callbacks.onLongClick,
-                                onSwipeReply = callbacks.onSwipeReply,
-                                onFileClick = callbacks.onFileClick,
-                                onPollClick = callbacks.onPollClick,
-                                onVoicePlayPauseClick = callbacks.onVoicePlayPauseClick,
-                                onVoiceSeek = callbacks.onVoiceSeek,
-                                onVoiceSpeedClick = callbacks.onVoiceSpeedClick,
-                                onReactionClick = callbacks.onReactionClick,
-                                onReactionLongClick = callbacks.onReactionLongClick,
-                                onOpenThreadClick = callbacks.onOpenThreadClick,
-                                onQuotedMessageClick = handleQuotedMessageClick
+                        Box(
+                            modifier = Modifier.padding(
+                                top = if (!chatItem.uiMessage.isGrouped) 4.dp else 0.dp
                             )
-                        )
+                        ) {
+                            ChatMessageView(
+                                message = chatItem.uiMessage,
+                                highlightTriggerKey = quoteHighlightEvent
+                                    ?.takeIf { it.messageId == chatItem.uiMessage.id }
+                                    ?.nonce,
+                                context = ChatMessageContext(
+                                    isOneToOneConversation = state.isOneToOneConversation,
+                                    conversationThreadId = state.conversationThreadId,
+                                    hasChatPermission = state.hasChatPermission
+                                ),
+                                callbacks = ChatMessageCallbacks(
+                                    onLongClick = callbacks.messageCallbacks.onLongClick,
+                                    onSwipeReply = callbacks.messageCallbacks.onSwipeReply,
+                                    onFileClick = callbacks.messageCallbacks.onFileClick,
+                                    onPollClick = callbacks.messageCallbacks.onPollClick,
+                                    onVoicePlayPauseClick = callbacks.messageCallbacks.onVoicePlayPauseClick,
+                                    onVoiceSeek = callbacks.messageCallbacks.onVoiceSeek,
+                                    onVoiceSpeedClick = callbacks.messageCallbacks.onVoiceSpeedClick,
+                                    onReactionClick = callbacks.messageCallbacks.onReactionClick,
+                                    onReactionLongClick = callbacks.messageCallbacks.onReactionLongClick,
+                                    onOpenThreadClick = callbacks.messageCallbacks.onOpenThreadClick,
+                                    onQuotedMessageClick = handleQuotedMessageClick,
+                                    onSystemMessageExpandClick = callbacks.messageCallbacks.onSystemMessageExpandClick
+                                )
+                            )
+                        }
                     }
 
                     is ChatViewModel.ChatItem.DateHeaderItem -> {
-                        DateHeader(chatItem.date)
+                        Box(modifier = Modifier.padding(top = 6.dp)) {
+                            DateHeader(chatItem.date)
+                        }
                     }
 
                     is ChatViewModel.ChatItem.UnreadMessagesMarkerItem -> {
-                        UnreadMessagesMarker()
+                        Box(modifier = Modifier.padding(top = 6.dp)) {
+                            UnreadMessagesMarker()
+                        }
                     }
                 }
             }

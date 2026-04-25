@@ -43,7 +43,14 @@ data class ChatMessageUi(
     val reactions: List<MessageReactionUi> = emptyList(),
     val isEdited: Boolean = false,
     val parentMessage: ChatMessageUi? = null,
-    val replyable: Boolean = false
+    val replyable: Boolean = false,
+    val isGrouped: Boolean = false,
+    val isGroupedWithNext: Boolean = false,
+    val isSilent: Boolean = false,
+    val isExpandableParent: Boolean = false,
+    val expandableChildrenAmount: Int = 0,
+    val isHiddenByCollapse: Boolean = false,
+    val isExpanded: Boolean = false
 )
 
 data class MessageReactionUi(val emoji: String, val amount: Int, val isSelfReaction: Boolean)
@@ -125,7 +132,13 @@ fun ChatMessage.toUiModel(
             lastCommonReadMessageId = 0,
             parentMessage = null
         ),
-        replyable = replyable
+        replyable = replyable,
+        isGrouped = isGrouped,
+        isGroupedWithNext = isGroupedWithNext,
+        isSilent = silent,
+        isExpandableParent = expandableParent,
+        expandableChildrenAmount = expandableChildrenAmount,
+        isHiddenByCollapse = hiddenByCollapse
     )
 
 private fun ChatMessage.normalizeMessageParameters(): Map<String, Map<String, String>> =
