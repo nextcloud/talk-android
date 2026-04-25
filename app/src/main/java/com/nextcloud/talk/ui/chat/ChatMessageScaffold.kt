@@ -18,7 +18,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -35,12 +34,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
@@ -48,24 +44,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.LinkAnnotation
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -79,15 +71,14 @@ import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.TextMatchers
 import java.time.LocalDate
 
 private val regularTextSize = 16.sp
 private val timeTextSize = 12.sp
 private val authorTextSize = 12.sp
-private const val QUOTE_SHAPE_OFFSET = 6
-private val quoteLineOffset = 8.dp
-private val quoteLineStrokeWidth = 6.dp
 private const val LINE_SPACING = 1.2f
+private const val SINGLE_EMOJI_SIZE_MULTIPLIER = 2.5f
 private const val HALF_OPACITY = 127
 private const val MESSAGE_LENGTH_THRESHOLD = 25
 private const val ANIMATED_BLINK = 500
@@ -101,6 +92,7 @@ internal val LocalReactionClickHandler = compositionLocalOf<(Int, String) -> Uni
 internal val LocalReactionLongClickHandler = compositionLocalOf<(Int) -> Unit> { {} }
 internal val LocalOpenThreadHandler = compositionLocalOf<(Int) -> Unit> { {} }
 internal val LocalQuotedMessageClickHandler = compositionLocalOf<(Int) -> Unit> { {} }
+internal val LocalMessageLongClickHandler = compositionLocalOf<(Int) -> Unit> { {} }
 
 private enum class MetadataLayoutMode {
     CAPTION,
@@ -201,20 +193,22 @@ fun MessageScaffold(
         showInlineMetadata = showInlineMetadata
     )
 
-    val shape = remember(incoming) {
+    val shape = remember(incoming, uiMessage.isGrouped, uiMessage.isGroupedWithNext) {
+        val outerTop = if (uiMessage.isGrouped) bubbleRadiusSmall else bubbleRadiusBig
+        val outerBottom = if (uiMessage.isGroupedWithNext) bubbleRadiusSmall else bubbleRadiusBig
         if (incoming) {
             RoundedCornerShape(
                 topStart = bubbleRadiusSmall,
-                topEnd = bubbleRadiusBig,
-                bottomEnd = bubbleRadiusBig,
-                bottomStart = bubbleRadiusBig
+                topEnd = outerTop,
+                bottomEnd = outerBottom,
+                bottomStart = outerBottom
             )
         } else {
             RoundedCornerShape(
-                topStart = bubbleRadiusBig,
+                topStart = outerTop,
                 topEnd = bubbleRadiusSmall,
-                bottomEnd = bubbleRadiusBig,
-                bottomStart = bubbleRadiusBig
+                bottomEnd = outerBottom,
+                bottomStart = outerBottom
             )
         }
     }
@@ -246,7 +240,7 @@ fun MessageScaffold(
 
 @Composable
 private fun RowScope.MessageLeadingDecoration(uiMessage: ChatMessageUi, isOneToOneConversation: Boolean) {
-    if (uiMessage.incoming && isOneToOneConversation) {
+    if (uiMessage.incoming && isOneToOneConversation && !uiMessage.isGrouped) {
         val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
         val avatarContext = LocalContext.current
         val loadedImage = remember(uiMessage.avatarUrl) {
@@ -260,6 +254,8 @@ private fun RowScope.MessageLeadingDecoration(uiMessage: ChatMessageUi, isOneToO
                 .align(Alignment.Top)
                 .padding(end = 8.dp)
         )
+    } else if (uiMessage.incoming && isOneToOneConversation) {
+        Spacer(Modifier.width(48.dp))
     } else if (uiMessage.incoming) {
         Spacer(Modifier.width(8.dp))
     }
@@ -286,7 +282,7 @@ private fun MessageBubbleWithReactions(
         .widthIn(60.dp, 280.dp)
 
     Column(horizontalAlignment = if (incoming) Alignment.Start else Alignment.End) {
-        if (incoming && isOneToOneConversation) {
+        if (incoming && isOneToOneConversation && !uiMessage.isGrouped) {
             Text(
                 text = uiMessage.actorDisplayName,
                 fontSize = authorTextSize,
@@ -585,6 +581,16 @@ private fun MessageMetadata(uiMessage: ChatMessageUi, color: Color = colorScheme
                 color = color
             )
         }
+        if (uiMessage.isSilent) {
+            Icon(
+                painter = painterResource(R.drawable.ic_baseline_notifications_off_24),
+                contentDescription = stringResource(R.string.silent_message_hint),
+                modifier = Modifier
+                    .padding(end = 4.dp)
+                    .size(16.dp),
+                tint = color
+            )
+        }
         TimeDisplay(uiMessage, color)
         if (!uiMessage.incoming) {
             ReadStatus(uiMessage, color)
@@ -636,37 +642,54 @@ private fun ColumnScope.CaptionWithMetadata(
     }
 }
 
+@Suppress("LongMethod")
 @Composable
 fun CommonMessageQuote(message: ChatMessageUi) {
-    val quoteLineColor = colorResource(R.color.textColorMaxContrast)
-    val quoteBackgroundColor = colorResource(R.color.reply_background)
+    val lineColor = if (!message.incoming) {
+        colorScheme.primary
+    } else {
+        colorScheme.onSurfaceVariant
+    }
+    val bgColor = colorResource(R.color.reply_background)
     val onQuotedMessageClick = LocalQuotedMessageClickHandler.current
     Row(
         modifier = Modifier
-            .combinedClickable(
-                onClick = { onQuotedMessageClick(message.id) }
-            )
+            .padding(vertical = 4.dp)
+            .combinedClickable(onClick = { onQuotedMessageClick(message.id) })
             .fillMaxWidth()
-            .background(
-                color = quoteBackgroundColor,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .drawWithCache {
-                val lineOffset = quoteLineOffset.toPx()
-                val lineStrokeWidth = quoteLineStrokeWidth.toPx()
-                onDrawWithContent {
-                    drawLine(
-                        color = quoteLineColor,
-                        start = Offset(lineOffset, this.size.height / QUOTE_SHAPE_OFFSET),
-                        end = Offset(lineOffset, this.size.height - (this.size.height / QUOTE_SHAPE_OFFSET)),
-                        strokeWidth = lineStrokeWidth,
-                        cap = StrokeCap.Round
-                    )
-
-                    drawContent()
-                }
+            .drawBehind {
+                val barWidth = 4.dp.toPx()
+                val r = 8.dp.toPx()
+                drawPath(
+                    Path().apply {
+                        addRoundRect(
+                            RoundRect(
+                                rect = Rect(0f, 0f, barWidth, size.height),
+                                topLeft = CornerRadius(r),
+                                topRight = CornerRadius.Zero,
+                                bottomRight = CornerRadius.Zero,
+                                bottomLeft = CornerRadius(r)
+                            )
+                        )
+                    },
+                    lineColor
+                )
+                drawPath(
+                    Path().apply {
+                        addRoundRect(
+                            RoundRect(
+                                rect = Rect(barWidth, 0f, size.width, size.height),
+                                topLeft = CornerRadius.Zero,
+                                topRight = CornerRadius(r),
+                                bottomRight = CornerRadius(r),
+                                bottomLeft = CornerRadius.Zero
+                            )
+                        )
+                    },
+                    bgColor
+                )
             }
-            .padding(start = 16.dp, top = 8.dp, end = 8.dp, bottom = 8.dp)
+            .padding(start = 12.dp, top = 4.dp, end = 4.dp, bottom = 4.dp)
     ) {
         Column {
             Text(
@@ -675,8 +698,9 @@ fun CommonMessageQuote(message: ChatMessageUi) {
                 color = colorResource(R.color.no_emphasis_text)
             )
             EnrichedText(
-                message,
-                Modifier.padding(start = 10.dp)
+                message = message,
+                modifier = Modifier.padding(end = 4.dp),
+                maxLines = 4
             )
         }
     }
@@ -762,128 +786,44 @@ fun ThreadTitle(
     }
 }
 
-@Composable
-fun EnrichedText(message: ChatMessageUi, modifier: Modifier) {
-    MentionEnrichedText(
-        message = message,
-        modifier = modifier,
-        textStyle = TextStyle(
-            fontSize = regularTextSize,
-            color = colorScheme.onSurface,
-            lineHeight = regularTextSize * LINE_SPACING
-        )
-    )
+internal fun resolveMarkdownSource(message: ChatMessageUi): String {
+    var result = message.plainMessage
+    for ((key, params) in message.messageParameters) {
+        val token = "{$key}"
+        if (result.contains(token)) {
+            val name = params["name"].orEmpty()
+            val replacement = if (params["type"] in mentionChipTypes) "@$name" else name
+            result = result.replace(token, replacement)
+        }
+    }
+    return result
 }
 
-fun AnnotatedString.Builder.appendMarkdownWithLinks(text: String) {
-    val regex = Regex(
-        pattern = """(\*\*.*?\*\*|\*.*?\*|`.*?`|\[.*?\]\(.*?\)|https?://\S+)"""
-    )
+@Composable
+fun EnrichedText(message: ChatMessageUi, modifier: Modifier, maxLines: Int = Int.MAX_VALUE) {
+    val isSingleEmoji = message.messageParameters.isEmpty() &&
+        TextMatchers.isMessageWithSingleEmoticonOnly(message.plainMessage)
+    val fontSize = if (isSingleEmoji) regularTextSize * SINGLE_EMOJI_SIZE_MULTIPLIER else regularTextSize
 
-    var lastIndex = 0
-
-    for (match in regex.findAll(text)) {
-        val range = match.range
-
-        // Append normal text before match
-        if (lastIndex < range.first) {
-            append(text.substring(lastIndex, range.first))
-        }
-
-        val token = match.value
-
-        when {
-            // **bold**
-            token.startsWith("**") -> {
-                val content = token.removeSurrounding("**")
-                val start = length
-                append(content)
-                addStyle(
-                    SpanStyle(fontWeight = FontWeight.Bold),
-                    start,
-                    length
-                )
-            }
-
-            // *italic*
-            token.startsWith("*") -> {
-                val content = token.removeSurrounding("*")
-                val start = length
-                append(content)
-                addStyle(
-                    SpanStyle(fontStyle = FontStyle.Italic),
-                    start,
-                    length
-                )
-            }
-
-            // `code`
-            token.startsWith("`") -> {
-                val content = token.removeSurrounding("`")
-                val start = length
-                append(content)
-                addStyle(
-                    SpanStyle(
-                        fontFamily = FontFamily.Monospace,
-                        background = Color.LightGray
-                    ),
-                    start,
-                    length
-                )
-            }
-
-            // [text](url)
-            token.startsWith("[") -> {
-                val textPart = token.substringAfter("[").substringBefore("]")
-                val url = token.substringAfter("(").substringBefore(")")
-
-                val start = length
-                append(textPart)
-
-                addStyle(
-                    SpanStyle(
-                        color = Color.Blue,
-                        textDecoration = TextDecoration.Underline
-                    ),
-                    start,
-                    length
-                )
-
-                addLink(
-                    LinkAnnotation.Url(url),
-                    start,
-                    length
-                )
-            }
-
-            // plain URL
-            token.startsWith("http") -> {
-                val start = length
-                append(token)
-
-                addStyle(
-                    SpanStyle(
-                        color = Color.Blue,
-                        textDecoration = TextDecoration.Underline
-                    ),
-                    start,
-                    length
-                )
-
-                addLink(
-                    LinkAnnotation.Url(token),
-                    start,
-                    length
-                )
-            }
-        }
-
-        lastIndex = range.last + 1
-    }
-
-    // Append remaining text
-    if (lastIndex < text.length) {
-        append(text.substring(lastIndex))
+    if (message.renderMarkdown) {
+        MarkdownText(
+            message = message,
+            textColor = colorScheme.onSurface,
+            modifier = modifier,
+            maxLines = maxLines,
+            textSizeSp = fontSize.value
+        )
+    } else {
+        MentionEnrichedText(
+            message = message,
+            modifier = modifier,
+            textStyle = TextStyle(
+                fontSize = fontSize,
+                color = colorScheme.onSurface,
+                lineHeight = fontSize * LINE_SPACING
+            ),
+            maxLines = maxLines
+        )
     }
 }
 
@@ -917,8 +857,7 @@ private fun Modifier.withCustomAnimation(incoming: Boolean, shape: RoundedCorner
 )
 @Composable
 private fun MessageScaffoldIncomingPreview() {
-    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
-    MaterialTheme(colorScheme = colorScheme) {
+    PreviewContainer {
         val uiMessage = ChatMessageUi(
             id = 1,
             message = "Hello! How are you?",
@@ -952,8 +891,7 @@ private fun MessageScaffoldIncomingPreview() {
 )
 @Composable
 private fun MessageScaffoldIncomingLongPreview() {
-    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
-    MaterialTheme(colorScheme = colorScheme) {
+    PreviewContainer {
         val uiMessage = ChatMessageUi(
             id = 1,
             message = "Hello! How are youuuuuuuuuuuuuuuuuuuuuuuuuuuuuu?",
@@ -987,8 +925,7 @@ private fun MessageScaffoldIncomingLongPreview() {
 )
 @Composable
 private fun MessageScaffoldOutgoingPreview() {
-    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
-    MaterialTheme(colorScheme = colorScheme) {
+    PreviewContainer {
         val uiMessage = ChatMessageUi(
             id = 2,
             message = "I'm doing great, thanks!",
@@ -1017,7 +954,7 @@ private fun MessageScaffoldOutgoingPreview() {
 @Preview(showBackground = true, name = "Quoted Message")
 @Composable
 private fun CommonMessageQuotePreview() {
-    MaterialTheme(colorScheme = lightColorScheme()) {
+    PreviewContainer {
         val uiMessage = ChatMessageUi(
             id = 3,
             message = "This is a quoted message",

@@ -292,7 +292,7 @@ fun ChatView(
         LazyColumn(
             state = listState,
             reverseLayout = true,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
             contentPadding = PaddingValues(bottom = 20.dp),
             modifier = Modifier
                 .padding(start = 12.dp, end = 12.dp)
@@ -304,38 +304,48 @@ fun ChatView(
             ) { chatItem ->
                 when (chatItem) {
                     is ChatViewModel.ChatItem.MessageItem -> {
-                        ChatMessageView(
-                            message = chatItem.uiMessage,
-                            highlightTriggerKey = quoteHighlightEvent
-                                ?.takeIf { it.messageId == chatItem.uiMessage.id }
-                                ?.nonce,
-                            context = ChatMessageContext(
-                                isOneToOneConversation = state.isOneToOneConversation,
-                                conversationThreadId = state.conversationThreadId,
-                                hasChatPermission = state.hasChatPermission
-                            ),
-                            callbacks = ChatMessageCallbacks(
-                                onLongClick = callbacks.onLongClick,
-                                onSwipeReply = callbacks.onSwipeReply,
-                                onFileClick = callbacks.onFileClick,
-                                onPollClick = callbacks.onPollClick,
-                                onVoicePlayPauseClick = callbacks.onVoicePlayPauseClick,
-                                onVoiceSeek = callbacks.onVoiceSeek,
-                                onVoiceSpeedClick = callbacks.onVoiceSpeedClick,
-                                onReactionClick = callbacks.onReactionClick,
-                                onReactionLongClick = callbacks.onReactionLongClick,
-                                onOpenThreadClick = callbacks.onOpenThreadClick,
-                                onQuotedMessageClick = handleQuotedMessageClick
+                        Box(
+                            modifier = Modifier.padding(
+                                top = if (!chatItem.uiMessage.isGrouped) 4.dp else 0.dp
                             )
-                        )
+                        ) {
+                            ChatMessageView(
+                                message = chatItem.uiMessage,
+                                highlightTriggerKey = quoteHighlightEvent
+                                    ?.takeIf { it.messageId == chatItem.uiMessage.id }
+                                    ?.nonce,
+                                context = ChatMessageContext(
+                                    isOneToOneConversation = state.isOneToOneConversation,
+                                    conversationThreadId = state.conversationThreadId,
+                                    hasChatPermission = state.hasChatPermission
+                                ),
+                                callbacks = ChatMessageCallbacks(
+                                    onLongClick = callbacks.onLongClick,
+                                    onSwipeReply = callbacks.onSwipeReply,
+                                    onFileClick = callbacks.onFileClick,
+                                    onPollClick = callbacks.onPollClick,
+                                    onVoicePlayPauseClick = callbacks.onVoicePlayPauseClick,
+                                    onVoiceSeek = callbacks.onVoiceSeek,
+                                    onVoiceSpeedClick = callbacks.onVoiceSpeedClick,
+                                    onReactionClick = callbacks.onReactionClick,
+                                    onReactionLongClick = callbacks.onReactionLongClick,
+                                    onOpenThreadClick = callbacks.onOpenThreadClick,
+                                    onQuotedMessageClick = handleQuotedMessageClick
+                                )
+                            )
+                        }
                     }
 
                     is ChatViewModel.ChatItem.DateHeaderItem -> {
-                        DateHeader(chatItem.date)
+                        Box(modifier = Modifier.padding(top = 6.dp)) {
+                            DateHeader(chatItem.date)
+                        }
                     }
 
                     is ChatViewModel.ChatItem.UnreadMessagesMarkerItem -> {
-                        UnreadMessagesMarker()
+                        Box(modifier = Modifier.padding(top = 6.dp)) {
+                            UnreadMessagesMarker()
+                        }
                     }
                 }
             }

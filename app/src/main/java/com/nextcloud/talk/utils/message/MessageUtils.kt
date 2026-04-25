@@ -21,6 +21,7 @@ import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.ext.tasklist.TaskListDrawable
 import io.noties.markwon.ext.tasklist.TaskListPlugin
+import java.lang.ref.WeakReference
 
 class MessageUtils(val context: Context) {
 
@@ -48,26 +49,42 @@ class MessageUtils(val context: Context) {
         return SpannableString(result)
     }
 
-    fun getRenderedMarkdownText(context: Context, markdown: String, textColor: Int): Spanned {
-        val drawable = TaskListDrawable(textColor, textColor, context.getColor(R.color.bg_default))
-        val markwon = Markwon.builder(context).usePlugin(object : AbstractMarkwonPlugin() {
-            override fun configureTheme(builder: MarkwonTheme.Builder) {
-                builder.isLinkUnderlined(true).headingBreakHeight(0)
-            }
-
-            override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
-                builder.linkResolver { view: View?, link: String? ->
-                    Log.i(TAG, "Link action not implemented $view / $link")
-                }
-            }
-        })
-            .usePlugin(TaskListPlugin.create(drawable))
-            .usePlugin(TablePlugin.create { _ -> })
-            .usePlugin(StrikethroughPlugin.create()).build()
-        return markwon.toMarkdown(markdown)
-    }
+    fun getRenderedMarkdownText(context: Context, markdown: String, textColor: Int): Spanned =
+        buildMarkwon(context, textColor).toMarkdown(markdown)
 
     companion object {
         private const val TAG = "MessageUtils"
+
+        private var cachedMarkwon: Markwon? = null
+        private var cachedContextRef: WeakReference<Context>? = null
+        private var cachedTextColor: Int = 0
+
+        fun buildMarkwon(context: Context, textColor: Int): Markwon {
+            val cached = cachedMarkwon
+            if (cached != null && cachedContextRef?.get() === context && cachedTextColor == textColor) {
+                return cached
+            }
+            val drawable = TaskListDrawable(textColor, textColor, context.getColor(R.color.bg_default))
+            val markwon = Markwon.builder(context)
+                .usePlugin(object : AbstractMarkwonPlugin() {
+                    override fun configureTheme(builder: MarkwonTheme.Builder) {
+                        builder.isLinkUnderlined(true).headingBreakHeight(0)
+                    }
+
+                    override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
+                        builder.linkResolver { view: View?, link: String? ->
+                            Log.i(TAG, "Link action not implemented $view / $link")
+                        }
+                    }
+                })
+                .usePlugin(TaskListPlugin.create(drawable))
+                .usePlugin(TablePlugin.create { _ -> })
+                .usePlugin(StrikethroughPlugin.create())
+                .build()
+            cachedMarkwon = markwon
+            cachedContextRef = WeakReference(context)
+            cachedTextColor = textColor
+            return markwon
+        }
     }
 }

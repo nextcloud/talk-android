@@ -102,7 +102,9 @@ import kotlinx.coroutines.withTimeoutOrNull
 import retrofit2.HttpException
 import java.io.File
 import java.io.IOException
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions", "LongParameterList")
@@ -649,6 +651,7 @@ class ChatViewModel @AssistedInject constructor(
                         .distinct()
 
                 val user = currentUserFlow.value
+                applyMessageGrouping(messages)
                 val uiMessages = messages.map { message ->
                     val parent: ChatMessage? = combinedMap[message.parentMessageId]
                     message.toUiModel(
@@ -714,6 +717,34 @@ class ChatViewModel @AssistedInject constructor(
                 add(ChatItem.MessageItem(uiMessage))
             }
         }.asReversed()
+    }
+
+    private fun applyMessageGrouping(messages: List<ChatMessage>) {
+        messages.forEachIndexed { index, message ->
+            message.isGrouped = index > 0 && shouldGroupMessage(message, messages[index - 1])
+            message.isGroupedWithNext = index < messages.size - 1 && shouldGroupMessage(messages[index + 1], message)
+        }
+    }
+
+    private fun shouldGroupMessage(current: ChatMessage, previous: ChatMessage): Boolean {
+        val sameMessageKind = current.isSystemMessage == previous.isSystemMessage
+        val notUnclassifiedBot = current.actorType != "bots" || current.actorId == "changelog"
+        val sameActor = current.isSystemMessage ||
+            (current.actorType == previous.actorType && current.actorId == previous.actorId)
+        val currentDate = Instant.ofEpochMilli(current.timestamp * TIMESTAMP_TO_MILLIS)
+            .atZone(ZoneId.systemDefault()).toLocalDate()
+        val previousDate = Instant.ofEpochMilli(previous.timestamp * TIMESTAMP_TO_MILLIS)
+            .atZone(ZoneId.systemDefault()).toLocalDate()
+        val timeDifference = kotlin.math.abs(current.timestamp - previous.timestamp)
+        val neitherEdited = (current.lastEditTimestamp ?: 0L) == 0L || (previous.lastEditTimestamp ?: 0L) == 0L
+
+        return sameMessageKind &&
+            notUnclassifiedBot &&
+            sameActor &&
+            currentDate == previousDate &&
+            current.actorId == previous.actorId &&
+            timeDifference <= GROUPING_TIME_WINDOW_SECONDS &&
+            neitherEdited
     }
 
     fun onMessageSent() {
@@ -1775,6 +1806,8 @@ class ChatViewModel @AssistedInject constructor(
         private const val WEBSOCKET_CONNECT_TIMEOUT_MS = 3000L
         private const val WEBSOCKET_POLL_INTERVAL_MS = 50L
         private const val ROOM_REFRESH_DEBOUNCE_MS = 500L
+        private const val GROUPING_TIME_WINDOW_SECONDS = 300L
+        private const val TIMESTAMP_TO_MILLIS = 1000L
     }
 
     sealed class OutOfOfficeUIState {
