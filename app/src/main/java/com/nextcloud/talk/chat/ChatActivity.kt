@@ -66,6 +66,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -117,6 +118,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.ui.ShowReactionsModalBottomSheet
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
@@ -162,7 +164,6 @@ import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.GetPinnedOptionsDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
-import com.nextcloud.talk.chat.ui.ShowReactionsModalBottomSheet
 import com.nextcloud.talk.ui.dialog.TempMessageActionsDialog
 import com.nextcloud.talk.ui.theme.LocalMessageUtils
 import com.nextcloud.talk.ui.theme.LocalOpenGraphFetcher
@@ -610,6 +611,8 @@ class ChatActivity :
                     LocalMessageUtils provides messageUtils,
                     LocalOpenGraphFetcher provides { url -> chatViewModel.fetchOpenGraph(url) }
                 ) {
+                    val currentlyPlayingId by chatViewModel.currentlyPlayedMessageId.collectAsState(null)
+
                     val isOneToOneConversation = uiState.isOneToOneConversation
                     Log.d(TAG, "isOneToOneConversation=" + isOneToOneConversation)
 
@@ -617,6 +620,7 @@ class ChatActivity :
                         state = ChatViewState(
                             chatItems = uiState.items,
                             isOneToOneConversation = isOneToOneConversation,
+                            currentlyPlayingVoiceMessageId = currentlyPlayingId,
                             conversationThreadId = conversationThreadId,
                             hasChatPermission = this::participantPermissions.isInitialized &&
                                 participantPermissions.hasChatPermission()
@@ -3558,7 +3562,6 @@ class ChatActivity :
 
             if (noteToSelfConversation != null) {
                 var shareUri: Uri? = null
-                val data: HashMap<String, String>?
                 var metaData = ""
                 var objectId = ""
                 if (message.hasFileAttachment) {
