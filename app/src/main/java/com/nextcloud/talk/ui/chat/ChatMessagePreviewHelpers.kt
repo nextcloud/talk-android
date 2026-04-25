@@ -113,3 +113,22 @@ internal fun createLongBaseMessage(content: MessageTypeContent?): ChatMessageUi 
         content = content,
         reactions = previewReactions
     )
+
+internal fun createMarkdownMessage(): ChatMessageUi =
+    ChatMessageUi(
+        id = 4,
+        message = "- Item 1\n- Item 2\n\n> A blockquote\n\n```kotlin\nval x = 1\n```",
+        plainMessage = "- Item 1\n- Item 2\n\n> A blockquote\n\n```kotlin\nval x = 1\n```",
+        renderMarkdown = true,
+        actorDisplayName = "Markdown Sender",
+        isThread = false,
+        threadTitle = "",
+        threadReplies = 0,
+        incoming = true,
+        isDeleted = false,
+        avatarUrl = null,
+        statusIcon = MessageStatusIcon.SENT,
+        timestamp = System.currentTimeMillis() / 1000,
+        date = LocalDate.now(),
+        content = MessageTypeContent.RegularText
+    )

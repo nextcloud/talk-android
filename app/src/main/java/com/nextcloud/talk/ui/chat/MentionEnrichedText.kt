@@ -59,7 +59,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import org.greenrobot.eventbus.EventBus
 
 private val messageTokenRegex =
-    Regex("""(\{[^{}]+\}|\*\*.*?\*\*|\*.*?\*|`.*?`|\[.*?]\(.*?\)|https?://\S+)""")
+    Regex("""(\{[^{}]+\}|\*\*.*?\*\*|\*.*?\*|~~.*?~~|`.*?`|\[.*?]\(.*?\)|https?://\S+)""")
 
 private val mentionParameterTypes = setOf("user", "guest", "call", "user-group", "email", "circle")
 
@@ -90,7 +90,12 @@ private data class MentionChipModel(
 private data class MentionRichText(val annotated: AnnotatedString, val inlineContent: Map<String, InlineTextContent>)
 
 @Composable
-fun MentionEnrichedText(message: ChatMessageUi, modifier: Modifier = Modifier, textStyle: TextStyle) {
+fun MentionEnrichedText(
+    message: ChatMessageUi,
+    modifier: Modifier = Modifier,
+    textStyle: TextStyle,
+    maxLines: Int = Int.MAX_VALUE
+) {
     var isMultilineLayout by remember(message.id, message.message) {
         mutableStateOf(message.message.contains("\n") || message.message.contains("\r"))
     }
@@ -116,6 +121,8 @@ fun MentionEnrichedText(message: ChatMessageUi, modifier: Modifier = Modifier, t
         text = richText.annotated,
         inlineContent = richText.inlineContent,
         style = resolvedTextStyle,
+        maxLines = maxLines,
+        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
         onTextLayout = { textLayoutResult ->
             val isCurrentlyMultiline = textLayoutResult.lineCount > 1
             if (isMultilineLayout != isCurrentlyMultiline) {
@@ -167,6 +174,12 @@ private fun buildMentionRichText(
                 token.startsWith(
                     "*"
                 ) -> appendStyledToken(token.removeSurrounding("*"), SpanStyle(fontStyle = FontStyle.Italic))
+                token.startsWith(
+                    "~~"
+                ) -> appendStyledToken(
+                    token.removeSurrounding("~~"),
+                    SpanStyle(textDecoration = TextDecoration.LineThrough)
+                )
                 token.startsWith("`") -> {
                     appendStyledToken(
                         token.removeSurrounding("`"),
@@ -288,24 +301,13 @@ private fun MentionChip(mention: MentionChipModel, textStyle: TextStyle, isMulti
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        if (mention.avatarUrl != null) {
-            val loadedImage = remember(mention.avatarUrl) { loadImage(mention.avatarUrl, context, fallbackIcon) }
-            AsyncImage(model = loadedImage, contentDescription = null, modifier = Modifier.size(mentionAvatarSize))
-        } else {
-            Icon(
-                painter = painterResource(fallbackIcon),
-                contentDescription = null,
-                modifier = Modifier.size(mentionIconSize),
-                tint = Color.Unspecified
-            )
-        }
+        MentionChipIcon(mention = mention, fallbackIcon = fallbackIcon)
 
         Text(
             text = mention.name,
             color = textColor,
             maxLines = 1,
-            modifier = Modifier
-                .padding(end = 3.dp),
+            modifier = Modifier.padding(end = 3.dp),
             style = textStyle.copy(
                 color = textColor,
                 fontSize = chipTextSize,
@@ -313,6 +315,22 @@ private fun MentionChip(mention: MentionChipModel, textStyle: TextStyle, isMulti
                 fontStyle = FontStyle.Normal,
                 fontFamily = FontFamily.Default
             )
+        )
+    }
+}
+
+@Composable
+private fun MentionChipIcon(mention: MentionChipModel, fallbackIcon: Int) {
+    if (mention.avatarUrl != null) {
+        val context = LocalContext.current
+        val loadedImage = remember(mention.avatarUrl) { loadImage(mention.avatarUrl, context, fallbackIcon) }
+        AsyncImage(model = loadedImage, contentDescription = null, modifier = Modifier.size(mentionAvatarSize))
+    } else {
+        Icon(
+            painter = painterResource(fallbackIcon),
+            contentDescription = null,
+            modifier = Modifier.size(mentionIconSize),
+            tint = Color.Unspecified
         )
     }
 }

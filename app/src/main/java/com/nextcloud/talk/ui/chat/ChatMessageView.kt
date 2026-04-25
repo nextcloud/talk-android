@@ -92,6 +92,7 @@ fun ChatMessageView(
     }
 
     CompositionLocalProvider(
+        LocalMessageLongClickHandler provides { id -> callbacks.onLongClick?.invoke(id) ?: Unit },
         LocalReactionClickHandler provides callbacks.onReactionClick,
         LocalReactionLongClickHandler provides callbacks.onReactionLongClick,
         LocalOpenThreadHandler provides callbacks.onOpenThreadClick,
