@@ -54,3 +54,11 @@ private fun TextMessageOutgoingPreview() {
         )
     }
 }
+
+@ChatMessagePreviews
+@Composable
+private fun TextMessageMarkdownPreview() {
+    PreviewContainer {
+        TextMessage(uiMessage = createMarkdownMessage())
+    }
+}
