@@ -83,6 +83,7 @@ import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.ShareUtils
+import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -178,7 +179,12 @@ class ConversationsListActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        currentUser = currentUserProviderOld.currentUser.blockingGet()
+        val targetUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, 0L)
+        currentUser = if (targetUserId != 0L) {
+            userManager.getUserWithId(targetUserId).blockingGet()
+        } else {
+            currentUserProviderOld.currentUser.blockingGet()
+        }
 
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
         contextChatViewModel = ViewModelProvider(this, viewModelFactory)[ContextChatViewModel::class.java]
@@ -416,6 +422,11 @@ class ConversationsListActivity : BaseActivity() {
                         pendingDirectShareToken = null
                         val conversation = list.firstOrNull { it.token == token }
                         if (conversation != null) handleConversation(conversation)
+                    }
+
+                    // Update dynamic shortcuts for frequent/favorite conversations
+                    currentUser?.let { user ->
+                        ShortcutManagerHelper.updateDynamicShortcuts(context, list, user)
                     }
 
                     if (!scrollPositionRestored) {
@@ -969,6 +980,7 @@ class ConversationsListActivity : BaseActivity() {
             is ConversationOpsAction.ShareLink -> shareConversationLink(conversation)
             is ConversationOpsAction.Rename -> renameConversation(conversation)
             is ConversationOpsAction.ToggleArchive -> handleArchiving(conversation)
+            is ConversationOpsAction.AddToHomeScreen -> addConversationToHomeScreen(conversation)
             is ConversationOpsAction.Leave -> leaveConversation(conversation)
             is ConversationOpsAction.Delete -> showDeleteConversationDialog(conversation)
         }
@@ -983,6 +995,16 @@ class ConversationsListActivity : BaseActivity() {
             conversation.name,
             canGeneratePrettyURL
         )
+    }
+
+    private fun addConversationToHomeScreen(conversation: ConversationModel) {
+        val user = currentUser ?: return
+        val success = ShortcutManagerHelper.requestPinShortcut(this, conversation, user)
+        if (success) {
+            showSnackbar(resources.getString(R.string.nc_shortcut_created))
+        } else {
+            showSnackbar(resources.getString(R.string.nc_common_error_sorry))
+        }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught", "TooGenericExceptionCaught")
@@ -1071,6 +1093,14 @@ class ConversationsListActivity : BaseActivity() {
         WorkManager.getInstance(this).getWorkInfoByIdLiveData(worker.id).observeForever { workInfo ->
             when (workInfo?.state) {
                 WorkInfo.State.SUCCEEDED -> {
+                    currentUser?.id?.let { userId ->
+                        ShortcutManagerHelper.disableConversationShortcut(
+                            this,
+                            conversation.token,
+                            userId,
+                            resources.getString(R.string.nc_shortcut_conversation_deleted)
+                        )
+                    }
                     showSnackbar(
                         String.format(resources.getString(R.string.left_conversation), conversation.displayName)
                     )
@@ -1284,6 +1314,14 @@ class ConversationsListActivity : BaseActivity() {
                 if (workInfo != null) {
                     when (workInfo.state) {
                         WorkInfo.State.SUCCEEDED -> {
+                            currentUser?.id?.let { userId ->
+                                ShortcutManagerHelper.disableConversationShortcut(
+                                    context,
+                                    conversation.token,
+                                    userId,
+                                    context.resources.getString(R.string.nc_shortcut_conversation_deleted)
+                                )
+                            }
                             showSnackbar(
                                 String.format(
                                     context.resources.getString(R.string.deleted_conversation),
