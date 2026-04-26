@@ -313,6 +313,7 @@ data class ChatMessage(
         FEDERATED_USER_REMOVED,
         PHONE_ADDED,
         THREAD_CREATED,
+        THREAD_RENAMED,
         MESSAGE_PINNED,
         MESSAGE_UNPINNED
     }
@@ -320,6 +321,16 @@ data class ChatMessage(
     companion object {
         private const val TAG = "ChatMessage"
         private const val MILLIES: Long = 1000L
+
+        val SYSTEM_MESSAGE_TYPE_UNTRANSLATED: Set<SystemMessageType> = setOf(
+            SystemMessageType.REACTION,
+            SystemMessageType.REACTION_DELETED,
+            SystemMessageType.REACTION_REVOKED,
+            SystemMessageType.MESSAGE_DELETED,
+            SystemMessageType.MESSAGE_EDITED,
+            SystemMessageType.THREAD_CREATED,
+            SystemMessageType.THREAD_RENAMED,
+        )
 
         private const val REGEX_STRING_DEFAULT =
             """(\s|\n|^)(https?:\/\/)((?:[-A-Z0-9+_]+\.)+[-A-Z]+(?:\/[-A-Z0-9+&@#%?=~_|!:,.;()]*)*)(\s|\n|$)"""
