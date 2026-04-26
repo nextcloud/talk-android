@@ -776,6 +776,10 @@
     <string name="userinfo_no_info_text">Add name, picture and contact details on your profile page.</string>
     <string name="video_call">Video call</string>
     <string name="whats_your_status">What is your status?</string>
+    <plurals name="nc_new_messages_count">
+        <item quantity="one">%d new message</item>
+        <item quantity="other">%d new messages</item>
+    </plurals>
     <plurals name="see_similar_system_messages">
         <item quantity="one">See %d similar message</item>
         <item quantity="other">See %d similar messages</item>
