@@ -157,6 +157,7 @@ import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.chat.ChatView
 import com.nextcloud.talk.ui.chat.ChatViewCallbacks
 import com.nextcloud.talk.ui.chat.ChatViewState
+import com.nextcloud.talk.ui.chat.LocalUploadProgressProvider
 import com.nextcloud.talk.ui.dialog.DateTimeCompose
 import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.GetPinnedOptionsDialog
@@ -605,10 +606,13 @@ class ChatActivity :
                 val listState = rememberLazyListState()
                 SideEffect { chatListState = listState }
 
+                val uploadProgressMap by chatViewModel.uploadProgressMap.collectAsStateWithLifecycle()
+
                 CompositionLocalProvider(
                     LocalViewThemeUtils provides viewThemeUtils,
                     LocalMessageUtils provides messageUtils,
-                    LocalOpenGraphFetcher provides { url -> chatViewModel.fetchOpenGraph(url) }
+                    LocalOpenGraphFetcher provides { url -> chatViewModel.fetchOpenGraph(url) },
+                    LocalUploadProgressProvider provides { refId -> uploadProgressMap[refId] }
                 ) {
                     val isOneToOneConversation = uiState.isOneToOneConversation
                     Log.d(TAG, "isOneToOneConversation=" + isOneToOneConversation)
@@ -635,7 +639,8 @@ class ChatActivity :
                             onReactionClick = { messageId, emoji -> handleReactionClick(messageId, emoji) },
                             onReactionLongClick = { messageId -> openReactionsDialog(messageId) },
                             onOpenThreadClick = { messageId -> openThread(messageId.toLong()) },
-                            onLoadQuotedMessageClick = { messageId -> onLoadQuotedMessage(messageId) }
+                            onLoadQuotedMessageClick = { messageId -> onLoadQuotedMessage(messageId) },
+                            onCancelUpload = { referenceId -> chatViewModel.cancelUpload(referenceId) }
                         ),
                         listState = listState
                     )

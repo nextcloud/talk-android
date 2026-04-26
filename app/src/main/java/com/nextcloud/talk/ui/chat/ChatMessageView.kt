@@ -65,7 +65,8 @@ class ChatMessageCallbacks(
     val onReactionClick: (Int, String) -> Unit = { _, _ -> },
     val onReactionLongClick: (Int) -> Unit = {},
     val onOpenThreadClick: (Int) -> Unit = {},
-    val onQuotedMessageClick: (Int) -> Unit = {}
+    val onQuotedMessageClick: (Int) -> Unit = {},
+    val onCancelUpload: (String) -> Unit = {}
 )
 
 @Composable
@@ -180,6 +181,16 @@ fun ChatMessageView(
                             message = message,
                             isOneToOneConversation = context.isOneToOneConversation,
                             conversationThreadId = context.conversationThreadId
+                        )
+                    }
+
+                    is MessageTypeContent.UploadingMedia -> {
+                        UploadingMediaMessage(
+                            typeContent = content,
+                            message = message,
+                            isOneToOneConversation = context.isOneToOneConversation,
+                            conversationThreadId = context.conversationThreadId,
+                            onCancelUpload = callbacks.onCancelUpload
                         )
                     }
 
