@@ -83,6 +83,7 @@ import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.NotificationUtils.getMessageRingtoneUri
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_TO_NOTIFICATION_CATEGORY
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
@@ -100,6 +101,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.unifiedpush.android.connector.UnifiedPush
 import retrofit2.HttpException
 import java.net.URI
 import java.net.URISyntaxException
@@ -317,16 +319,78 @@ class SettingsActivity :
     }
 
     private fun setupNotificationSettings() {
+        setupUnifiedPushSettings()
         setupNotificationSoundsSettings()
         setupNotificationPermissionSettings()
         setupServerNotificationAppCheck()
     }
 
+    private fun showUnifiedPushToggle(): Boolean {
+        return UnifiedPush.getDistributors(this).isNotEmpty() &&
+            userManager.users.blockingGet().all { it.hasWebPushCapability }
+    }
+
+    private fun setupUnifiedPushSettings() {
+        // If any user doesn't support web push, or there is no UnifiedPush
+        // service (distributor) available: hide the feature.
+        //
+        // We could provide the feature as soon as one user supports web push,
+        // but for simplicity (UX & dev), and at least in a first step:
+        // we require that all the users support webpush
+        if (!showUnifiedPushToggle()) {
+            binding.settingsUnifiedpush.visibility = View.GONE
+            binding.settingsUnifiedpushService.visibility = View.GONE
+        } else {
+            val nDistrib = UnifiedPush.getDistributors(context).size
+            binding.settingsUnifiedpush.visibility = View.VISIBLE
+            binding.settingsUnifiedpushSwitch.isChecked = appPreferences.useUnifiedPush
+            binding.settingsUnifiedpush.setOnClickListener {
+                val checked = !appPreferences.useUnifiedPush
+                appPreferences.useUnifiedPush = checked
+                binding.settingsUnifiedpushSwitch.isChecked = checked
+                setupNotificationPermissionSettings()
+                setupUnifiedPushServiceSelectionVisibility(nDistrib)
+                if (checked) {
+                    UnifiedPushUtils.useDefaultDistributor(this) { distrib ->
+                        Log.d(TAG, "Registered to $distrib")
+                        binding.settingsUnifiedpushServiceSummary.text = distrib
+                    }
+                } else {
+                    UnifiedPushUtils.disableExternalUnifiedPush(this)
+                }
+            }
+            // To use non-default service
+            binding.settingsUnifiedpushService.setOnClickListener {
+                UnifiedPushUtils.pickDistributor(this) { distrib ->
+                    Log.d(TAG, "Registered to $distrib")
+                    binding.settingsUnifiedpushServiceSummary.text = distrib
+                }
+            }
+            // For the init only
+            if (binding.settingsUnifiedpushServiceSummary.text.isBlank()) {
+                binding.settingsUnifiedpushServiceSummary.text = UnifiedPush.getAckDistributor(context) ?: ""
+            }
+            setupUnifiedPushServiceSelectionVisibility(nDistrib)
+        }
+    }
+
+    private fun setupUnifiedPushServiceSelectionVisibility(nDistrib: Int) {
+        // We offer the option to use non-default service, only if UnifiedPush
+        // is enabled and there are more than one service
+        if (binding.settingsUnifiedpushSwitch.isChecked && nDistrib > 1) {
+            binding.settingsUnifiedpushService.visibility = View.VISIBLE
+        } else {
+            binding.settingsUnifiedpushService.visibility = View.GONE
+        }
+    }
+
     @SuppressLint("StringFormatInvalid")
     @Suppress("LongMethod")
     private fun setupNotificationPermissionSettings() {
-        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
-            binding.settingsGplayOnlyWrapper.visibility = View.VISIBLE
+        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable || appPreferences.useUnifiedPush) {
+            binding.settingsPushOnlyWrapper.visibility = View.VISIBLE
+            binding.settingsGplayNotAvailable.visibility = View.GONE
+            binding.settingsPushNotAvailable.visibility = View.GONE
 
             setTroubleshootingClickListenersIfNecessary()
 
@@ -408,8 +472,17 @@ class SettingsActivity :
                 binding.settingsNotificationsPermissionWrapper.visibility = View.GONE
             }
         } else {
-            binding.settingsGplayOnlyWrapper.visibility = View.GONE
-            binding.settingsGplayNotAvailable.visibility = View.VISIBLE
+            binding.settingsPushOnlyWrapper.visibility = View.GONE
+            // Shows "UnifiedPush is disabled and Google Play services are not available." if we offer UnifiedPush
+            // Else "Google Play services are not available" (if any account doesn't support webpush yet, or no
+            // distrib are installed)
+            if (showUnifiedPushToggle()) {
+                binding.settingsGplayNotAvailable.visibility = View.GONE
+                binding.settingsPushNotAvailable.visibility = View.VISIBLE
+            } else {
+                binding.settingsGplayNotAvailable.visibility = View.VISIBLE
+                binding.settingsPushNotAvailable.visibility = View.GONE
+            }
         }
     }
 
@@ -782,6 +855,7 @@ class SettingsActivity :
             listOf(
                 settingsShowEcosystemSwitch,
                 settingsShowNotificationWarningSwitch,
+                settingsUnifiedpushSwitch,
                 settingsScreenLockSwitch,
                 settingsScreenSecuritySwitch,
                 settingsIncognitoKeyboardSwitch,
