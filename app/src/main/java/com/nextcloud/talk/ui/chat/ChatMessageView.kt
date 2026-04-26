@@ -234,7 +234,8 @@ private fun ChatMessageViewMediaPreview() {
         val uiMessage = createBaseMessage(
             MessageTypeContent.Media(
                 previewUrl = null,
-                drawableResourceId = R.drawable.ic_mimetype_image
+                drawableResourceId = R.drawable.ic_mimetype_image,
+                mimeType = ""
             )
         )
         ChatMessageView(message = uiMessage)
@@ -248,7 +249,8 @@ private fun ChatMessageViewMediaPreviewWithoutCaption() {
         val uiMessage = createBaseMessageWithoutCaption(
             MessageTypeContent.Media(
                 previewUrl = null,
-                drawableResourceId = R.drawable.ic_mimetype_image
+                drawableResourceId = R.drawable.ic_mimetype_image,
+                mimeType = ""
             )
         )
         ChatMessageView(message = uiMessage)
