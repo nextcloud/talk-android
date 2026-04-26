@@ -303,6 +303,7 @@ class CallActivity : CallBaseActivity() {
     private var externalSignalingServer: ExternalSignalingServer? = null
     private var webSocketClient: WebSocketInstance? = null
     private var webSocketConnectionHelper: WebSocketConnectionHelper? = null
+    private var joinRoomInitiated = false
     private var hasMCU = false
     private var hasExternalSignalingServer = false
     private var conversationPassword: String? = null
@@ -1531,6 +1532,7 @@ class CallActivity : CallBaseActivity() {
             .toSet()
 
     private fun joinRoomAndCall() {
+        joinRoomInitiated = true
         callSession = ApplicationWideCurrentRoomHolder.getInstance().session
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
         Log.d(TAG, "joinRoomAndCall")
@@ -1878,7 +1880,11 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 "roomJoined" -> {
-                    Log.d(TAG, "onMessageEvent 'roomJoined'")
+                    Log.d(TAG, "onMessageEvent 'roomJoined' joinRoomInitiated=$joinRoomInitiated")
+                    if (!joinRoomInitiated) {
+                        Log.d(TAG, "Ignoring stale roomJoined event (joinRoomAndCall not yet called)")
+                        return
+                    }
                     startSendingNick()
                     if (webSocketCommunicationEvent.getHashMap()!!["roomToken"] == roomToken) {
                         performCall()
@@ -1947,6 +1953,7 @@ class CallActivity : CallBaseActivity() {
 
     private fun hangup(shutDownView: Boolean, endCallForAll: Boolean) {
         Log.d(TAG, "hangup! shutDownView=$shutDownView")
+        joinRoomInitiated = false
         if (shutDownView) {
             setCallState(CallStatus.LEAVING)
         }
