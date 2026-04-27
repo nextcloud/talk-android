@@ -73,7 +73,6 @@ class ChunkedFileUploader(
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun upload(localFile: File, mimeType: MediaType?, targetPath: String): Boolean {
         try {
-
             if (supportsConversationFolders) {
                 return uploadToDraftFolder(localFile, mimeType)
             }
@@ -131,13 +130,12 @@ class ChunkedFileUploader(
         }
     }
 
-
     private fun uploadToDraftFolder(localFile: File, mimeType: MediaType?): Boolean {
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token) ?: return false
         val probeResponse = runBlocking {
             ncApiCoroutines.probeConversationAttachmentFolder(
                 credentials,
-                ApiUtils.getUrlForChatAttachmentFolder(ApiUtils.API_V1,currentUser.baseUrl!!, roomToken),
+                ApiUtils.getUrlForChatAttachmentFolder(ApiUtils.API_V1, currentUser.baseUrl!!, roomToken),
                 listOf(localFile.name)
             )
         }
@@ -150,15 +148,15 @@ class ChunkedFileUploader(
         val uploadId = UUID.randomUUID().toString()
         val temporaryPath = "/$draftFolderPath/$uploadId-0-${localFile.name}"
         uploadFullFile(localFile, mimeType, temporaryPath)
-         runBlocking {
+        runBlocking {
             ncApiCoroutines.postConversationAttachment(
                 credentials,
-                ApiUtils.getUrlForChatAttachment(ApiUtils.API_V1,currentUser.baseUrl!!, roomToken),
-                  temporaryPath,
+                ApiUtils.getUrlForChatAttachment(ApiUtils.API_V1, currentUser.baseUrl!!, roomToken),
+                temporaryPath,
                 uploadId,
                 renamedFileName,
                 metaData
-                )
+            )
         }
         return true
     }
@@ -195,7 +193,6 @@ class ChunkedFileUploader(
             raf?.close()
         }
     }
-
 
     @Suppress("Detekt.ComplexMethod")
     private fun getUploadedChunks(davResource: DavResource, uploadFolderUri: String): MutableList<Chunk> {

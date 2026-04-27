@@ -556,7 +556,6 @@ object ApiUtils {
     fun getUrlForScheduledMessage(baseUrl: String?, token: String, messageId: String?): String =
         getUrlForScheduledMessages(baseUrl, token) + "/$messageId"
 
-
     fun getUrlForChatAttachment(version: Int, baseUrl: String?, token: String): String =
         getUrlForChat(version, baseUrl, token) + "/attachment"
 

@@ -466,7 +466,6 @@ interface NcApiCoroutines {
     @DELETE
     suspend fun markRoomAsUnread(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 
-
     @FormUrlEncoded
     @POST
     suspend fun probeConversationAttachmentFolder(
