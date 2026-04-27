@@ -8,6 +8,7 @@ package com.nextcloud.talk.conversationlist
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -925,6 +926,8 @@ class ConversationsListActivity : BaseActivity() {
         val notificationPermissionNotGranted = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             !platformPermissionUtil.isPostNotificationsPermissionGranted()
         val batteryOptimizationNotIgnored = !PowerManagerUtils().isIgnoringBatteryOptimizations()
+        val fullScreenIntentNotGranted = Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
+            !getSystemService(NotificationManager::class.java).canUseFullScreenIntent()
 
         val messagesChannelNotEnabled = !NotificationUtils.isMessagesNotificationChannelEnabled(this)
         val callsChannelNotEnabled = !NotificationUtils.isCallsNotificationChannelEnabled(this)
@@ -934,6 +937,7 @@ class ConversationsListActivity : BaseActivity() {
 
         val settingsOfUserAreWrong = notificationPermissionNotGranted ||
             batteryOptimizationNotIgnored ||
+            fullScreenIntentNotGranted ||
             messagesChannelNotEnabled ||
             callsChannelNotEnabled ||
             !serverNotificationAppInstalled

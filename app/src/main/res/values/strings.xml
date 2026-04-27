@@ -123,6 +123,9 @@ How to translate with transifex:
     <string name="battery_optimization_not_ignored">Battery optimization is enabled which might cause issues. You should disable battery optimization!</string>
     <string name="battery_optimization_ignored">Battery optimization is ignored, all fine</string>
     <string name="notification_permission">Notification permissions</string>
+    <string name="full_screen_intent_permission_title">Show incoming call screen</string>
+    <string name="full_screen_intent_permission_granted">Incoming call screen over lock screen is granted, all fine</string>
+    <string name="full_screen_intent_permission_not_granted">Incoming call screen over lock screen is not granted. Please grant this so incoming calls appear on the lock screen!</string>
 
 
     <string name="nc_settings_appearance">Appearance</string>
