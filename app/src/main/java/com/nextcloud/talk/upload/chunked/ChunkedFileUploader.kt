@@ -130,6 +130,7 @@ class ChunkedFileUploader(
         }
     }
 
+    @Suppress("ReturnCount")
     private fun uploadToDraftFolder(localFile: File, mimeType: MediaType?): Boolean {
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token) ?: return false
         val probeResponse = runBlocking {

@@ -474,6 +474,7 @@ interface NcApiCoroutines {
         @Field("fileNames") fileName: List<String>
     ): ChatProbeAttachmentFolderOverall
 
+    @Suppress("LongParameterList")
     @FormUrlEncoded
     @POST
     suspend fun postConversationAttachment(
