@@ -170,18 +170,14 @@ fun resolveStatusIcon(
     lastCommonReadMessageId: Int,
     isTemporary: Boolean,
     sendStatus: SendStatus?
-): MessageStatusIcon {
-    val status = if (sendStatus == SendStatus.FAILED) {
-        MessageStatusIcon.FAILED
-    } else if (isTemporary) {
-        MessageStatusIcon.SENDING
-    } else if (jsonMessageId <= lastCommonReadMessageId) {
-        MessageStatusIcon.READ
-    } else {
-        MessageStatusIcon.SENT
+): MessageStatusIcon =
+    when {
+        sendStatus == SendStatus.FAILED -> MessageStatusIcon.FAILED
+        sendStatus == SendStatus.SENT_PENDING_ACK -> MessageStatusIcon.SENT
+        isTemporary -> MessageStatusIcon.SENDING
+        jsonMessageId <= lastCommonReadMessageId -> MessageStatusIcon.READ
+        else -> MessageStatusIcon.SENT
     }
-    return status
-}
 
 fun getMessageTypeContent(user: User, message: ChatMessage): MessageTypeContent? =
     if (message.isSystemMessage) {
