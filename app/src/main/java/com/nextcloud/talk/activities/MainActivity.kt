@@ -43,8 +43,10 @@ import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
