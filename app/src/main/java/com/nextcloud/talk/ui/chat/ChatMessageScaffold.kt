@@ -136,6 +136,10 @@ private fun shouldShowTimeNextToContent(
 
 private val mentionChipTypes = setOf("user", "guest", "call", "user-group", "email", "circle")
 
+private val parentMessageLinkRegex = Regex(
+    """https?://[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(/[^\s)]*)?"""
+)
+
 private fun ChatMessageUi.hasMentionChips(): Boolean =
     messageParameters.any { (key, parameter) ->
         message.contains("{$key}") && parameter["type"] in mentionChipTypes
@@ -686,9 +690,13 @@ fun CommonMessageQuote(message: ChatMessageUi) {
                 fontSize = authorTextSize,
                 color = colorResource(R.color.no_emphasis_text)
             )
+
+            val hasParentLink = parentMessageLinkRegex.containsMatchIn(message.message)
+
             EnrichedText(
-                message = message,
-                modifier = Modifier.padding(end = 4.dp),
+                message,
+                Modifier.padding(start = 10.dp),
+                !hasParentLink,
                 maxLines = 4
             )
         }
@@ -800,7 +808,8 @@ internal fun resolveMarkdownSource(message: ChatMessageUi): String {
 }
 
 @Composable
-fun EnrichedText(message: ChatMessageUi, modifier: Modifier, maxLines: Int = Int.MAX_VALUE) {
+fun EnrichedText(message: ChatMessageUi, modifier: Modifier, enableLinks: Boolean = true,maxLines: Int = Int
+    .MAX_VALUE) {
     val isInspectionMode = LocalInspectionMode.current
     val isSingleEmoji = !isInspectionMode &&
         message.messageParameters.isEmpty() &&
@@ -824,6 +833,7 @@ fun EnrichedText(message: ChatMessageUi, modifier: Modifier, maxLines: Int = Int
                 color = colorScheme.onSurface,
                 lineHeight = fontSize * LINE_SPACING
             ),
+            enableLinks = enableLinks,
             maxLines = maxLines
         )
     }
