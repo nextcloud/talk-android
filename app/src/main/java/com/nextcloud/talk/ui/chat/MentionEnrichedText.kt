@@ -58,8 +58,9 @@ import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import org.greenrobot.eventbus.EventBus
 
-private val messageTokenRegex =
-    Regex("""(\{[^{}]+\}|\*\*.*?\*\*|\*.*?\*|`.*?`|\[.*?]\(.*?\)|https?://\S+|www\.\S+)""")
+val messageTokenRegex = Regex(
+    """(\{[^{}]+\}|\*\*.*?\*\*|\*.*?\*|`.*?`|\[.*?]\(.*?\)|https?://[^\s)]+|www\.[^\s)]+|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(?:/[^\s)]*)?)"""
+)
 
 private val mentionParameterTypes = setOf("user", "guest", "call", "user-group", "email", "circle")
 
@@ -132,6 +133,9 @@ fun MentionEnrichedText(
     )
 }
 
+
+
+@Suppress("LongParameterList")
 private fun buildMentionRichText(
     message: ChatMessageUi,
     linkColor: Color,
@@ -190,6 +194,9 @@ private fun buildMentionRichText(
 
                 token.startsWith("http") -> appendLinkedToken(token, token, linkColor, enableLinks)
                 token.startsWith(WWW_PREFIX) -> appendLinkedToken(token, "https://$token", linkColor, enableLinks)
+                token.matches(
+                    Regex("""(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}.*""")
+                ) -> appendLinkedToken(token, "https://$token", linkColor, enableLinks)
             }
 
             lastIndex = range.last + 1
