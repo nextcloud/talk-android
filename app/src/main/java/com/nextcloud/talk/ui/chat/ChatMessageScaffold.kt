@@ -140,7 +140,8 @@ private fun shouldShowTimeNextToContent(
 private val mentionChipTypes = setOf("user", "guest", "call", "user-group", "email", "circle")
 
 private val parentMessageLinkRegex = Regex(
-    """(\[[^\]]+]\([^)]*\)|(?:https?://|www\.)[^\s)]+|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(?:/[^\s)]*)?)"""
+    """(\[[^\]]+]\([^)]*\)|(?:https?://|www\.)[^\s)]+|""" +
+        """(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(?:/[^\s)]*)?)"""
 )
 
 private fun ChatMessageUi.hasMentionChips(): Boolean =
