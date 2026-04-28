@@ -59,7 +59,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import org.greenrobot.eventbus.EventBus
 
 private val messageTokenRegex =
-    Regex("""(\{[^{}]+\}|\*\*.*?\*\*|\*.*?\*|`.*?`|\[.*?]\(.*?\)|https?://\S+)""")
+    Regex("""(\{[^{}]+\}|\*\*.*?\*\*|\*.*?\*|`.*?`|\[.*?]\(.*?\)|https?://\S+|www\.\S+)""")
 
 private val mentionParameterTypes = setOf("user", "guest", "call", "user-group", "email", "circle")
 
@@ -68,6 +68,7 @@ private val mentionIconSize = 20.dp
 
 private const val MIN_CHIP_LABEL_LENGTH = 4
 private const val MAX_CHIP_LABEL_LENGTH = 22
+private const val WWW_PREFIX = "www."
 private const val CHIP_BASE_WIDTH_EM = 2.45f
 private const val CHIP_CHAR_WIDTH_EM = 0.56f
 private const val CHIP_HEIGHT_EM = 1.75f
@@ -181,6 +182,7 @@ private fun buildMentionRichText(
                 }
 
                 token.startsWith("http") -> appendLinkedToken(token, token, linkColor)
+                token.startsWith(WWW_PREFIX) -> appendLinkedToken(token, "https://$token", linkColor)
             }
 
             lastIndex = range.last + 1
