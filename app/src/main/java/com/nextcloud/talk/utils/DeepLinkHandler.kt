@@ -76,9 +76,8 @@ object DeepLinkHandler {
      */
     private fun parseAuthority(authority: String): Pair<String?, String> =
         if (authority.contains("@")) {
-            val parts = authority.split("@", limit = 2)
-            val username = parts[0].takeIf { it.isNotBlank() }
-            val host = parts.getOrElse(1) { "" }
+            val username = authority.substringBeforeLast("@").takeIf { it.isNotBlank() }
+            val host = authority.substringAfterLast("@").takeIf { it.isNotBlank() } ?: ""
             Pair(username, host)
         } else {
             Pair(null, authority)
