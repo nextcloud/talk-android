@@ -91,19 +91,25 @@ private data class MentionChipModel(
 private data class MentionRichText(val annotated: AnnotatedString, val inlineContent: Map<String, InlineTextContent>)
 
 @Composable
-fun MentionEnrichedText(message: ChatMessageUi, modifier: Modifier = Modifier, textStyle: TextStyle) {
+fun MentionEnrichedText(
+    message: ChatMessageUi,
+    modifier: Modifier = Modifier,
+    textStyle: TextStyle,
+    enableLinks: Boolean = true
+) {
     var isMultilineLayout by remember(message.id, message.message) {
         mutableStateOf(message.message.contains("\n") || message.message.contains("\r"))
     }
     val linkColor = MaterialTheme.colorScheme.primary
     val codeBackground = MaterialTheme.colorScheme.surfaceVariant
-    val richText = remember(message, isMultilineLayout, linkColor, codeBackground, textStyle) {
+    val richText = remember(message, isMultilineLayout, linkColor, codeBackground, textStyle, enableLinks) {
         buildMentionRichText(
             message = message,
             linkColor = linkColor,
             codeBackground = codeBackground,
             textStyle = textStyle,
-            isMultilineLayout = isMultilineLayout
+            isMultilineLayout = isMultilineLayout,
+            enableLinks = enableLinks
         )
     }
     val resolvedTextStyle = if (richText.inlineContent.isEmpty()) {
@@ -131,7 +137,8 @@ private fun buildMentionRichText(
     linkColor: Color,
     codeBackground: Color,
     textStyle: TextStyle,
-    isMultilineLayout: Boolean
+    isMultilineLayout: Boolean,
+    enableLinks: Boolean
 ): MentionRichText {
     val inlineContent = linkedMapOf<String, InlineTextContent>()
     var mentionCounter = 0
@@ -178,11 +185,11 @@ private fun buildMentionRichText(
                 token.startsWith("[") -> {
                     val textPart = token.substringAfter("[").substringBefore("]")
                     val url = token.substringAfter("(").substringBefore(")")
-                    appendLinkedToken(textPart, url, linkColor)
+                    appendLinkedToken(textPart, url, linkColor, enableLinks)
                 }
 
-                token.startsWith("http") -> appendLinkedToken(token, token, linkColor)
-                token.startsWith(WWW_PREFIX) -> appendLinkedToken(token, "https://$token", linkColor)
+                token.startsWith("http") -> appendLinkedToken(token, token, linkColor, enableLinks)
+                token.startsWith(WWW_PREFIX) -> appendLinkedToken(token, "https://$token", linkColor, enableLinks)
             }
 
             lastIndex = range.last + 1
@@ -202,11 +209,18 @@ private fun AnnotatedString.Builder.appendStyledToken(text: String, style: SpanS
     addStyle(style, start, length)
 }
 
-private fun AnnotatedString.Builder.appendLinkedToken(text: String, url: String, linkColor: Color) {
+private fun AnnotatedString.Builder.appendLinkedToken(
+    text: String,
+    url: String,
+    linkColor: Color,
+    enableLinks: Boolean
+) {
     val start = length
     append(text)
-    addStyle(SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline), start, length)
-    addLink(LinkAnnotation.Url(url), start, length)
+    if (enableLinks) {
+        addStyle(SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline), start, length)
+        addLink(LinkAnnotation.Url(url), start, length)
+    }
 }
 
 private fun AnnotatedString.Builder.appendFallbackParameter(

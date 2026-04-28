@@ -139,6 +139,8 @@ private fun shouldShowTimeNextToContent(
 
 private val mentionChipTypes = setOf("user", "guest", "call", "user-group", "email", "circle")
 
+private val parentMessageLinkRegex = Regex("""(\[[^\]]+]\([^)]*\)|(?:https?://|www\.)\S+)""")
+
 private fun ChatMessageUi.hasMentionChips(): Boolean =
     messageParameters.any { (key, parameter) ->
         message.contains("{$key}") && parameter["type"] in mentionChipTypes
@@ -674,9 +676,13 @@ fun CommonMessageQuote(message: ChatMessageUi) {
                 fontSize = authorTextSize,
                 color = colorResource(R.color.no_emphasis_text)
             )
+
+            val hasParentLink = parentMessageLinkRegex.containsMatchIn(message.message)
+
             EnrichedText(
                 message,
-                Modifier.padding(start = 10.dp)
+                Modifier.padding(start = 10.dp),
+                !hasParentLink
             )
         }
     }
@@ -763,7 +769,7 @@ fun ThreadTitle(
 }
 
 @Composable
-fun EnrichedText(message: ChatMessageUi, modifier: Modifier) {
+fun EnrichedText(message: ChatMessageUi, modifier: Modifier, enableLinks: Boolean = true) {
     MentionEnrichedText(
         message = message,
         modifier = modifier,
@@ -771,7 +777,8 @@ fun EnrichedText(message: ChatMessageUi, modifier: Modifier) {
             fontSize = regularTextSize,
             color = colorScheme.onSurface,
             lineHeight = regularTextSize * LINE_SPACING
-        )
+        ),
+        enableLinks = enableLinks
     )
 }
 
