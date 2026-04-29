@@ -268,7 +268,7 @@ dependencies {
     implementation("com.github.ddB0515.FlexibleAdapter:flexible-adapter-ui:5.1.1")
     implementation("org.apache.commons:commons-lang3:3.20.0")
     implementation("com.google.code.findbugs:jsr305:3.0.2")
-    implementation("joda-time:joda-time:2.14.1")
+    implementation("joda-time:joda-time:2.14.2")
     implementation("io.coil-kt:coil:$coilKtVersion")
     implementation("io.coil-kt:coil-gif:$coilKtVersion")
     implementation("io.coil-kt:coil-svg:$coilKtVersion")
