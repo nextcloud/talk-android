@@ -58,8 +58,10 @@ import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import org.greenrobot.eventbus.EventBus
 
-private val messageTokenRegex =
-    Regex("""(\{[^{}]+\}|\*\*.*?\*\*|\*.*?\*|`.*?`|\[.*?]\(.*?\)|https?://\S+)""")
+val messageTokenRegex = Regex(
+    """(\{[^{}]+\}|\*\*.*?\*\*|\*.*?\*|`.*?`|\[.*?]\(.*?\)|https?://[^\s)]+|""" +
+        """www\.[^\s)]+|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(?:/[^\s)]*)?)"""
+)
 
 private val mentionParameterTypes = setOf("user", "guest", "call", "user-group", "email", "circle")
 
@@ -68,6 +70,7 @@ private val mentionIconSize = 20.dp
 
 private const val MIN_CHIP_LABEL_LENGTH = 4
 private const val MAX_CHIP_LABEL_LENGTH = 22
+private const val WWW_PREFIX = "www."
 private const val CHIP_BASE_WIDTH_EM = 2.45f
 private const val CHIP_CHAR_WIDTH_EM = 0.56f
 private const val CHIP_HEIGHT_EM = 1.75f
@@ -90,19 +93,25 @@ private data class MentionChipModel(
 private data class MentionRichText(val annotated: AnnotatedString, val inlineContent: Map<String, InlineTextContent>)
 
 @Composable
-fun MentionEnrichedText(message: ChatMessageUi, modifier: Modifier = Modifier, textStyle: TextStyle) {
+fun MentionEnrichedText(
+    message: ChatMessageUi,
+    modifier: Modifier = Modifier,
+    textStyle: TextStyle,
+    enableLinks: Boolean = true
+) {
     var isMultilineLayout by remember(message.id, message.message) {
         mutableStateOf(message.message.contains("\n") || message.message.contains("\r"))
     }
     val linkColor = MaterialTheme.colorScheme.primary
     val codeBackground = MaterialTheme.colorScheme.surfaceVariant
-    val richText = remember(message, isMultilineLayout, linkColor, codeBackground, textStyle) {
+    val richText = remember(message, isMultilineLayout, linkColor, codeBackground, textStyle, enableLinks) {
         buildMentionRichText(
             message = message,
             linkColor = linkColor,
             codeBackground = codeBackground,
             textStyle = textStyle,
-            isMultilineLayout = isMultilineLayout
+            isMultilineLayout = isMultilineLayout,
+            enableLinks = enableLinks
         )
     }
     val resolvedTextStyle = if (richText.inlineContent.isEmpty()) {
@@ -125,12 +134,14 @@ fun MentionEnrichedText(message: ChatMessageUi, modifier: Modifier = Modifier, t
     )
 }
 
+@Suppress("LongParameterList")
 private fun buildMentionRichText(
     message: ChatMessageUi,
     linkColor: Color,
     codeBackground: Color,
     textStyle: TextStyle,
-    isMultilineLayout: Boolean
+    isMultilineLayout: Boolean,
+    enableLinks: Boolean
 ): MentionRichText {
     val inlineContent = linkedMapOf<String, InlineTextContent>()
     var mentionCounter = 0
@@ -177,10 +188,14 @@ private fun buildMentionRichText(
                 token.startsWith("[") -> {
                     val textPart = token.substringAfter("[").substringBefore("]")
                     val url = token.substringAfter("(").substringBefore(")")
-                    appendLinkedToken(textPart, url, linkColor)
+                    appendLinkedToken(textPart, url, linkColor, enableLinks)
                 }
 
-                token.startsWith("http") -> appendLinkedToken(token, token, linkColor)
+                token.startsWith("http") -> appendLinkedToken(token, token, linkColor, enableLinks)
+                token.startsWith(WWW_PREFIX) -> appendLinkedToken(token, "https://$token", linkColor, enableLinks)
+                token.matches(
+                    Regex("""(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}.*""")
+                ) -> appendLinkedToken(token, "https://$token", linkColor, enableLinks)
             }
 
             lastIndex = range.last + 1
@@ -200,11 +215,18 @@ private fun AnnotatedString.Builder.appendStyledToken(text: String, style: SpanS
     addStyle(style, start, length)
 }
 
-private fun AnnotatedString.Builder.appendLinkedToken(text: String, url: String, linkColor: Color) {
+private fun AnnotatedString.Builder.appendLinkedToken(
+    text: String,
+    url: String,
+    linkColor: Color,
+    enableLinks: Boolean
+) {
     val start = length
     append(text)
-    addStyle(SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline), start, length)
-    addLink(LinkAnnotation.Url(url), start, length)
+    if (enableLinks) {
+        addStyle(SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline), start, length)
+        addLink(LinkAnnotation.Url(url), start, length)
+    }
 }
 
 private fun AnnotatedString.Builder.appendFallbackParameter(
