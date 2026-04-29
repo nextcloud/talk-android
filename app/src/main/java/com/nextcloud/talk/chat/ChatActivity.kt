@@ -2686,6 +2686,7 @@ class ChatActivity :
         }
     }
 
+    // this is triggered too often when scrolling. Must be made sure it's triggered only once.
     private fun loadMoreMessagesCompose() {
         chatViewModel.loadMoreMessagesCompose()
     }

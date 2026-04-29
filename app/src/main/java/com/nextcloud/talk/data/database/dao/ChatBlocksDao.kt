@@ -76,8 +76,29 @@ interface ChatBlocksDao {
 
     @Transaction
     suspend fun replaceConnectedChatBlocks(connectedBlocks: List<ChatBlockEntity>, mergedBlock: ChatBlockEntity) {
-        deleteChatBlocks(connectedBlocks)
-        upsertChatBlock(mergedBlock)
+        val newestConnectedBlock = connectedBlocks.maxByOrNull { it.newestMessageId }
+
+        if (newestConnectedBlock == null) {
+            upsertChatBlock(mergedBlock)
+            return
+        }
+
+        val updatedBlock = newestConnectedBlock.copy(
+            internalConversationId = mergedBlock.internalConversationId,
+            accountId = mergedBlock.accountId,
+            token = mergedBlock.token,
+            threadId = mergedBlock.threadId,
+            oldestMessageId = mergedBlock.oldestMessageId,
+            newestMessageId = mergedBlock.newestMessageId,
+            hasHistory = mergedBlock.hasHistory
+        )
+
+        upsertChatBlock(updatedBlock)
+
+        val blocksToDelete = connectedBlocks.filter { it.id != updatedBlock.id }
+        if (blocksToDelete.isNotEmpty()) {
+            deleteChatBlocks(blocksToDelete)
+        }
     }
 
     @Query(

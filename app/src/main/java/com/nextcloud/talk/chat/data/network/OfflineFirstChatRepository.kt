@@ -534,7 +534,6 @@ class OfflineFirstChatRepository @Inject constructor(
             newestMessageId = newestMessageIdForNewChatBlock,
             hasHistory = hasHistory
         )
-        chatBlocksDao.upsertChatBlock(newChatBlock)
         updateBlocks(newChatBlock)
     }
 
@@ -667,6 +666,8 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     private suspend fun updateBlocks(chatBlock: ChatBlockEntity) {
+        chatBlocksDao.upsertChatBlock(chatBlock)
+
         val connectedChatBlocks =
             chatBlocksDao.getConnectedChatBlocks(
                 internalConversationId = internalConversationId,
