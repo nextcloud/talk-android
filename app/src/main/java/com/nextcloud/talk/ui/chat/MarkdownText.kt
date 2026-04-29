@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import coil.imageLoader
@@ -67,7 +68,8 @@ fun MarkdownText(
     message: ChatMessageUi,
     textColor: Color,
     modifier: Modifier = Modifier,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
+    textSizeSp: Float = TEXT_SIZE_SP
 ) {
     val context = LocalContext.current
     val textColorArgb = textColor.toArgb()
@@ -89,7 +91,13 @@ fun MarkdownText(
     val onLongClickState = rememberUpdatedState(onMessageLongClick)
 
     if (LocalInspectionMode.current) {
-        Text(text = message.plainMessage, color = textColor, modifier = modifier, maxLines = maxLines)
+        Text(
+            text = message.plainMessage,
+            color = textColor,
+            modifier = modifier,
+            maxLines = maxLines,
+            fontSize = textSizeSp.sp
+        )
     } else {
         AndroidView(
             modifier = modifier,
@@ -117,7 +125,7 @@ fun MarkdownText(
             },
             update = { textView ->
                 textView.setTextColor(textColorArgb)
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TEXT_SIZE_SP)
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeSp)
                 textView.maxLines = maxLines
                 textView.setLineSpacing(0f, textView.textSize * LINE_HEIGHT_MULTIPLIER / textView.paint.fontSpacing)
                 val markwon = MessageUtils.buildMarkwon(context, textColorArgb)
