@@ -12,6 +12,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -72,6 +73,33 @@ interface ChatBlocksDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatBlock(chatBlock: ChatBlockEntity)
+
+    @Transaction
+    suspend fun replaceConnectedChatBlocks(connectedBlocks: List<ChatBlockEntity>, mergedBlock: ChatBlockEntity) {
+        val newestConnectedBlock = connectedBlocks.maxByOrNull { it.newestMessageId }
+
+        if (newestConnectedBlock == null) {
+            upsertChatBlock(mergedBlock)
+            return
+        }
+
+        val updatedBlock = newestConnectedBlock.copy(
+            internalConversationId = mergedBlock.internalConversationId,
+            accountId = mergedBlock.accountId,
+            token = mergedBlock.token,
+            threadId = mergedBlock.threadId,
+            oldestMessageId = mergedBlock.oldestMessageId,
+            newestMessageId = mergedBlock.newestMessageId,
+            hasHistory = mergedBlock.hasHistory
+        )
+
+        upsertChatBlock(updatedBlock)
+
+        val blocksToDelete = connectedBlocks.filter { it.id != updatedBlock.id }
+        if (blocksToDelete.isNotEmpty()) {
+            deleteChatBlocks(blocksToDelete)
+        }
+    }
 
     @Query(
         """
