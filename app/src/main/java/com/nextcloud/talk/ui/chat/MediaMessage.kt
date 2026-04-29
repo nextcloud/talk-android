@@ -81,8 +81,11 @@ fun MediaMessage(
                 val resourceName = context.resources.getResourceEntryName(typeContent.drawableResourceId)
                 val isGif = MimetypeUtils.isGif(typeContent.mimeType)
                 val showPlayButton = !typeContent.previewUrl.isNullOrEmpty() &&
-                    (resourceName.contains("video") || resourceName.contains("audio") ||
-                        (isGif && !typeContent.animateGif))
+                    (
+                        resourceName.contains("video") ||
+                            resourceName.contains("audio") ||
+                            (isGif && !typeContent.animateGif)
+                        )
 
                 Box(modifier = Modifier.fillMaxWidth()) {
                     val loadedImage = remember(typeContent.previewUrl) {
