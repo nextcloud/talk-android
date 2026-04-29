@@ -71,7 +71,10 @@
                 android:minHeight="@dimen/min_size_clickable_area"
                 android:paddingHorizontal="@dimen/zero"
                 android:textAlignment="viewStart"
-                android:hint="@string/nc_hint_enter_a_message" />
+                android:hint="@string/nc_hint_enter_a_message"
+                android:scrollbars="vertical"
+                android:scrollbarStyle="insideInset"
+                android:isScrollContainer="true"/>
 
             <TextView
                 android:id="@+id/slideToCancelDescription"
