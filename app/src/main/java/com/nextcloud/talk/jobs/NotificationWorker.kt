@@ -109,6 +109,7 @@ import java.security.PrivateKey
 import java.util.concurrent.TimeUnit
 import java.util.function.Consumer
 import java.util.zip.CRC32
+import javax.crypto.BadPaddingException
 import javax.crypto.Cipher
 import javax.crypto.NoSuchPaddingException
 import javax.inject.Inject
@@ -412,9 +413,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     base64DecodedSubject
                 )
                 if (signatureVerification.signatureValid) {
-                    val cipher = Cipher.getInstance("RSA/None/PKCS1Padding")
-                    cipher.init(Cipher.DECRYPT_MODE, privateKey)
-                    val decryptedSubject = cipher.doFinal(base64DecodedSubject)
+                    val decryptedSubject = decryptSubject(privateKey, base64DecodedSubject)
 
                     pushMessage = LoganSquare.parse(
                         String(decryptedSubject),
@@ -432,6 +431,18 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             Log.e(TAG, "Error occurred while initializing decoded data ", e)
         }
     }
+
+    private fun decryptSubject(privateKey: PrivateKey, base64DecodedSubject: ByteArray): ByteArray =
+        try {
+            val cipher = Cipher.getInstance("RSA/None/PKCS1Padding")
+            cipher.init(Cipher.DECRYPT_MODE, privateKey)
+            cipher.doFinal(base64DecodedSubject)
+        } catch (e: BadPaddingException) {
+            Log.d(TAG, "PKCS1 padding failed, trying OAEP", e)
+            val cipher = Cipher.getInstance("RSA/ECB/OAEPPadding")
+            cipher.init(Cipher.DECRYPT_MODE, privateKey)
+            cipher.doFinal(base64DecodedSubject)
+        }
 
     private fun isTalkNotification() = SPREED_APP == pushMessage.app
 
