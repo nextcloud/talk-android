@@ -119,6 +119,17 @@ interface ChatMessageRepository : LifecycleAwareManager {
         referenceId: String
     ): Flow<Result<ChatMessage?>>
 
+    @Suppress("LongParameterList")
+    suspend fun addUploadPlaceholderMessage(
+        localFileUri: String,
+        caption: String,
+        mimeType: String?,
+        fileSize: Long,
+        referenceId: String
+    ): Flow<Result<ChatMessage?>>
+
+    suspend fun deleteTempMessageByReferenceId(referenceId: String)
+
     suspend fun editChatMessage(credentials: String, url: String, text: String): Flow<Result<ChatOverallSingleMessage>>
 
     suspend fun editTempChatMessage(message: ChatMessage, editedMessageText: String): Flow<Boolean>

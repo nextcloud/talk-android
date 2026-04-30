@@ -10,6 +10,7 @@ package com.nextcloud.talk.chat.viewmodels
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -37,6 +38,8 @@ import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
+import androidx.lifecycle.asFlow
+import androidx.work.WorkManager
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -105,7 +108,9 @@ import java.io.IOException
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.util.UUID
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 @Suppress("TooManyFunctions", "LongParameterList")
 class ChatViewModel @AssistedInject constructor(
@@ -149,6 +154,21 @@ class ChatViewModel @AssistedInject constructor(
     var messageDraft: MessageDraft = MessageDraft()
     var hiddenUpcomingEvent: String? = null
     lateinit var participantPermissions: ParticipantPermissions
+
+    private val _uploadProgressMap = MutableStateFlow<Map<String, Int>>(emptyMap())
+    val uploadProgressMap: StateFlow<Map<String, Int>> = _uploadProgressMap
+
+    // Maps referenceId -> fileUri for cancellation support
+    private val uploadReferenceToUri = mutableMapOf<String, String>()
+
+    fun cancelUpload(referenceId: String) {
+        val fileUri = uploadReferenceToUri.remove(referenceId) ?: return
+        WorkManager.getInstance(NextcloudTalkApplication.sharedApplication!!).cancelUniqueWork(fileUri)
+        viewModelScope.launch {
+            chatRepository.deleteTempMessageByReferenceId(referenceId)
+        }
+        _uploadProgressMap.update { it - referenceId }
+    }
 
     fun getChatRepository(): ChatMessageRepository = chatRepository
 
@@ -1444,21 +1464,80 @@ class ChatViewModel @AssistedInject constructor(
             metaDataMap["caption"] = caption
         }
 
+        val referenceId = UUID.randomUUID().toString().replace("-", "")
+        metaDataMap["referenceId"] = referenceId
+
         val metaData = Gson().toJson(metaDataMap)
 
         room = if (roomToken == "") chatRoomToken else roomToken
 
         try {
             require(fileUri.isNotEmpty())
-            UploadAndShareFilesWorker.upload(
+
+            if (!isVoiceMessage) {
+                val (fileName, mimeType, fileSize) = resolveFileInfo(fileUri)
+                viewModelScope.launch {
+                    chatRepository.addUploadPlaceholderMessage(
+                        localFileUri = fileUri,
+                        caption = caption.ifEmpty { fileName },
+                        mimeType = mimeType,
+                        fileSize = fileSize,
+                        referenceId = referenceId
+                    ).collect {}
+                }
+            }
+
+            val internalConversationId = "${currentUser.id}@$chatRoomToken"
+            val workerId = UploadAndShareFilesWorker.upload(
                 fileUri,
                 room,
                 displayName,
-                metaData
+                metaData,
+                referenceId,
+                internalConversationId
             )
+
+            if (!isVoiceMessage) {
+                uploadReferenceToUri[referenceId] = fileUri
+                observeUploadProgress(workerId, referenceId)
+            }
         } catch (e: IllegalArgumentException) {
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
         }
+    }
+
+    private fun resolveFileInfo(fileUri: String): Triple<String, String?, Long> {
+        val uri = fileUri.toUri()
+        val mimeType = NextcloudTalkApplication.sharedApplication!!.contentResolver.getType(uri)
+        val cursor = NextcloudTalkApplication.sharedApplication!!.contentResolver.query(uri, null, null, null, null)
+        cursor?.use {
+            val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            val sizeIndex = it.getColumnIndex(OpenableColumns.SIZE)
+            if (it.moveToFirst()) {
+                val name = if (nameIndex >= 0) it.getString(nameIndex).orEmpty() else uri.lastPathSegment.orEmpty()
+                val size = if (sizeIndex >= 0) it.getLong(sizeIndex) else 0L
+                return Triple(name, mimeType, size)
+            }
+        }
+        return Triple(uri.lastPathSegment.orEmpty(), mimeType, 0L)
+    }
+
+    private fun observeUploadProgress(workerId: UUID, referenceId: String) {
+        WorkManager.getInstance(NextcloudTalkApplication.sharedApplication!!)
+            .getWorkInfoByIdLiveData(workerId)
+            .asFlow()
+            .onEach { workInfo ->
+                if (workInfo == null) return@onEach
+                val progress = workInfo.progress.getInt(UploadAndShareFilesWorker.PROGRESS_KEY, -1)
+                if (progress >= 0) {
+                    _uploadProgressMap.update { it + (referenceId to progress) }
+                }
+                if (workInfo.state.isFinished) {
+                    _uploadProgressMap.update { it - referenceId }
+                    uploadReferenceToUri.remove(referenceId)
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     fun postToRecordTouchObserver(float: Float) {

@@ -15,7 +15,6 @@ import at.bitfire.dav4jvm.exception.HttpException
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.dagger.modules.RestModule
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.FileUtils
 import io.reactivex.Observable
@@ -64,12 +63,6 @@ class FileUploader(
             .observeOn(AndroidSchedulers.mainThread())
             .flatMap { response ->
                 if (response.isSuccessful) {
-                    ShareOperationWorker.shareFile(
-                        roomToken,
-                        currentUser,
-                        remotePath,
-                        metaData
-                    )
                     FileUtils.copyFileToCache(context, sourceFileUri, fileName)
                     Observable.just(true)
                 } else {
