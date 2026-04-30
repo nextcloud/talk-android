@@ -53,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -416,7 +417,7 @@ fun UnreadMessagesPopup(unreadCount: Int, onClick: () -> Unit, modifier: Modifie
         modifier = modifier
     ) {
         Text(
-            text = "$unreadCount new message${if (unreadCount > 1) "s" else ""}",
+            text = pluralStringResource(R.plurals.nc_new_messages_count, unreadCount, unreadCount),
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
             color = colorScheme.onSecondaryContainer
         )
@@ -471,7 +472,7 @@ fun UnreadMessagesMarker() {
         )
 
         Text(
-            text = "Unread messages",
+            text = stringResource(R.string.nc_new_messages),
             modifier = Modifier.padding(horizontal = 12.dp),
             fontSize = 12.sp,
             color = colorScheme.onSurfaceVariant

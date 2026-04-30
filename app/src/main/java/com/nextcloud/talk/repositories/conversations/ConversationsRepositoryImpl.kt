@@ -147,6 +147,12 @@ class ConversationsRepositoryImpl(private val api: NcApi, private val coroutineA
     override suspend fun unbanActor(credentials: String, url: String): GenericOverall =
         coroutineApi.unbanActor(credentials, url)
 
+    override suspend fun markConversationAsRead(credentials: String, url: String, messageId: Int?): GenericOverall =
+        coroutineApi.setChatReadMarker(credentials, url, messageId)
+
+    override suspend fun markConversationAsUnread(credentials: String, url: String): GenericOverall =
+        coroutineApi.markRoomAsUnread(credentials, url)
+
     companion object {
         const val STATUS_CODE_OK = 200
     }

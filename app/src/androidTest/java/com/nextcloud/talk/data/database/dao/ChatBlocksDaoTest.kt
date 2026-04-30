@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -323,6 +324,96 @@ class ChatBlocksDaoTest {
             )
 
             assertEquals(2, resultsForThreadId123.first().size)
+        }
+
+    @Test
+    fun testReplaceConnectedChatBlocks() =
+        runTest {
+            val user = createUserEntity("account1", "Account 1")
+            usersDao.saveUser(user)
+            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
+
+            conversationsDao.upsertConversations(
+                account1.id,
+                listOf(
+                    createConversationEntity(
+                        accountId = account1.id,
+                        token = "abc",
+                        roomName = "Conversation One"
+                    )
+                )
+            )
+
+            val conversation = conversationsDao.getConversationsForUser(account1.id).first()[0]
+
+            val blockA = ChatBlockEntity(
+                internalConversationId = conversation.internalId,
+                accountId = conversation.accountId,
+                token = conversation.token,
+                threadId = null,
+                oldestMessageId = 10,
+                newestMessageId = 20,
+                hasHistory = true
+            )
+            val blockB = ChatBlockEntity(
+                internalConversationId = conversation.internalId,
+                accountId = conversation.accountId,
+                token = conversation.token,
+                threadId = null,
+                oldestMessageId = 18,
+                newestMessageId = 30,
+                hasHistory = true
+            )
+            val blockC = ChatBlockEntity(
+                internalConversationId = conversation.internalId,
+                accountId = conversation.accountId,
+                token = conversation.token,
+                threadId = null,
+                oldestMessageId = 29,
+                newestMessageId = 35,
+                hasHistory = false
+            )
+
+            chatBlocksDao.upsertChatBlock(blockA)
+            chatBlocksDao.upsertChatBlock(blockB)
+            chatBlocksDao.upsertChatBlock(blockC)
+
+            val connectedBlocks =
+                chatBlocksDao.getConnectedChatBlocks(
+                    internalConversationId = conversation.internalId,
+                    threadId = null,
+                    oldestMessageId = 10,
+                    newestMessageId = 35
+                ).first()
+            assertEquals(3, connectedBlocks.size)
+
+            val mergedBlock = ChatBlockEntity(
+                internalConversationId = conversation.internalId,
+                accountId = conversation.accountId,
+                token = conversation.token,
+                threadId = null,
+                oldestMessageId = 10,
+                newestMessageId = 40,
+                hasHistory = false
+            )
+
+            chatBlocksDao.replaceConnectedChatBlocks(connectedBlocks, mergedBlock)
+
+            val persistedLatest = chatBlocksDao.getLatestChatBlock(conversation.internalId, null).first()
+            assertNotNull(persistedLatest)
+            assertEquals(mergedBlock.oldestMessageId, persistedLatest!!.oldestMessageId)
+            assertEquals(mergedBlock.newestMessageId, persistedLatest.newestMessageId)
+            assertEquals(mergedBlock.hasHistory, persistedLatest.hasHistory)
+
+            assertEquals(
+                1,
+                chatBlocksDao.getConnectedChatBlocks(
+                    internalConversationId = conversation.internalId,
+                    threadId = null,
+                    oldestMessageId = 10,
+                    newestMessageId = 40
+                ).first().size
+            )
         }
 
     private fun createUserEntity(userId: String, userName: String) =

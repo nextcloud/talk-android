@@ -2686,6 +2686,7 @@ class ChatActivity :
         }
     }
 
+    // this is triggered too often when scrolling. Must be made sure it's triggered only once.
     private fun loadMoreMessagesCompose() {
         chatViewModel.loadMoreMessagesCompose()
     }
@@ -3451,21 +3452,27 @@ class ChatActivity :
         )
     }
 
-    fun markAsUnread(chatMessage: ChatMessage?) {
-        if (chatMessage!!.previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
-            // previousMessageId is taken to mark chat as unread even when "chat-unread" capability is not available
-            // It should be checked if "chat-unread" capability is available and then use
-            // https://nextcloud-talk.readthedocs.io/en/latest/chat/#mark-chat-as-unread
-            chatViewModel.setChatReadMessage(
-                credentials!!,
-                ApiUtils.getUrlForChatReadMarker(
-                    ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1)),
-                    conversationUser?.baseUrl!!,
-                    roomToken
-                ),
-                chatMessage.previousMessageId
-            )
+    fun markAsUnread(chatMessage: ChatMessage) {
+        val items = chatViewModel.uiState.value.items
+        val selectedIndex = items.indexOfFirst {
+            (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id == chatMessage.jsonMessageId
         }
+        val lastReadMessage = if (selectedIndex in 0 until items.size - 1) {
+            (selectedIndex + 1 until items.size)
+                .firstNotNullOfOrNull { (items[it] as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id }
+                ?: 0
+        } else {
+            0
+        }
+        chatViewModel.setChatReadMessage(
+            credentials!!,
+            ApiUtils.getUrlForChatReadMarker(
+                ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1)),
+                conversationUser.baseUrl!!,
+                roomToken
+            ),
+            lastReadMessage
+        )
     }
 
     fun copyMessage(message: ChatMessage?) {
@@ -3712,10 +3719,7 @@ class ChatActivity :
             // delete
             ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() ||
             // forward
-            message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
-            // mark as unread
-            ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType() &&
-            BuildConfig.DEBUG
+            ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType()
 
     private fun isShowMessageDeletionButton(message: ChatMessage): Boolean {
         val isUserAllowedByPrivileges = userAllowedByPrivilages(message)
@@ -3975,7 +3979,6 @@ class ChatActivity :
         private const val FULLY_OPAQUE_INT: Int = 255
         private const val SEMI_TRANSPARENT_INT: Int = 99
         private const val VOICE_MESSAGE_SEEKBAR_BASE = 1000
-        private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
         private const val TOOLBAR_AVATAR_RATIO = 1.5
         private const val STATUS_SIZE_IN_DP = 9f
         private const val HTTP_BAD_REQUEST = 400

@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.chat.ui.model
 
+import android.provider.Settings
 import androidx.compose.runtime.Stable
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -15,7 +16,9 @@ import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DrawableUtils
+import com.nextcloud.talk.utils.MimetypeUtils
 import java.time.LocalDate
 
 // immutable class for chat message UI. only val, no vars!
@@ -54,7 +57,12 @@ sealed interface MessageTypeContent {
 
     data class LinkPreview(val url: String) : MessageTypeContent
 
-    data class Media(val previewUrl: String?, val drawableResourceId: Int) : MessageTypeContent
+    data class Media(
+        val previewUrl: String?,
+        val drawableResourceId: Int,
+        val mimeType: String,
+        val animateGif: Boolean = false
+    ) : MessageTypeContent
 
     data class Geolocation(val id: String, val name: String, val lat: Double, val lon: Double) : MessageTypeContent
 
@@ -170,18 +178,14 @@ fun resolveStatusIcon(
     lastCommonReadMessageId: Int,
     isTemporary: Boolean,
     sendStatus: SendStatus?
-): MessageStatusIcon {
-    val status = if (sendStatus == SendStatus.FAILED) {
-        MessageStatusIcon.FAILED
-    } else if (isTemporary) {
-        MessageStatusIcon.SENDING
-    } else if (jsonMessageId <= lastCommonReadMessageId) {
-        MessageStatusIcon.READ
-    } else {
-        MessageStatusIcon.SENT
+): MessageStatusIcon =
+    when {
+        sendStatus == SendStatus.FAILED -> MessageStatusIcon.FAILED
+        sendStatus == SendStatus.SENT_PENDING_ACK -> MessageStatusIcon.SENT
+        isTemporary -> MessageStatusIcon.SENDING
+        jsonMessageId <= lastCommonReadMessageId -> MessageStatusIcon.READ
+        else -> MessageStatusIcon.SENT
     }
-    return status
-}
 
 fun getMessageTypeContent(user: User, message: ChatMessage): MessageTypeContent? =
     if (message.isSystemMessage) {
@@ -203,14 +207,50 @@ fun getMessageTypeContent(user: User, message: ChatMessage): MessageTypeContent?
     }
 
 fun getMediaContent(user: User, message: ChatMessage): MessageTypeContent.Media {
-    val previewUrl = getPreviewImageUrl(user, message)
     val mimetype = message.fileParameters.mimetype
     val drawableResourceId = DrawableUtils.getDrawableResourceIdForMimeType(mimetype)
 
+    val animateGif = shouldAnimateGif(user, message, mimetype)
+    val previewUrl = if (animateGif) {
+        ApiUtils.getUrlForFileDownload(
+            user.baseUrl!!,
+            user.userId!!,
+            message.fileParameters.path
+        )
+    } else {
+        getPreviewImageUrl(user, message)
+    }
+
     return MessageTypeContent.Media(
-        previewUrl,
-        drawableResourceId
+        previewUrl = previewUrl,
+        drawableResourceId = drawableResourceId,
+        mimeType = mimetype,
+        animateGif = animateGif
     )
+}
+
+private fun shouldAnimateGif(user: User, message: ChatMessage, mimetype: String): Boolean {
+    val fileSize = message.fileParameters.size
+    val spreedCapabilities = user.capabilities?.spreedCapability
+    return MimetypeUtils.isGif(mimetype) &&
+        fileSize != null &&
+        message.fileParameters.path.isNotEmpty() &&
+        spreedCapabilities != null &&
+        fileSize <= CapabilitiesUtil.getMaxGifSize(spreedCapabilities) &&
+        !isReduceAnimationsEnabled()
+}
+
+/**
+ * Returns true if the user has the accessibility option
+ * for Remove/Reduce animations turned on
+ */
+private fun isReduceAnimationsEnabled(): Boolean {
+    val context = sharedApplication ?: return false
+    return Settings.Global.getFloat(
+        context.contentResolver,
+        Settings.Global.ANIMATOR_DURATION_SCALE,
+        1f
+    ) == 0f
 }
 
 fun getPreviewImageUrl(user: User, message: ChatMessage): String? {

@@ -54,4 +54,8 @@ interface ConversationsRepository {
     suspend fun markConversationAsImportant(credentials: String, baseUrl: String, roomToken: String): GenericOverall
 
     suspend fun markConversationAsUnImportant(credentials: String, baseUrl: String, roomToken: String): GenericOverall
+
+    suspend fun markConversationAsRead(credentials: String, url: String, messageId: Int?): GenericOverall
+
+    suspend fun markConversationAsUnread(credentials: String, url: String): GenericOverall
 }

@@ -343,7 +343,7 @@
     <string name="nc_mark_conversation_as_insensitive">Pokalbio žymėjimas kaip jautraus atžymėtas</string>
     <string name="nc_mark_conversation_as_sensitive">Pokalbis pažymėtas kaip jautrus</string>
     <string name="nc_mark_conversation_as_unimportant">Pokalbis nebepažymėtas kaip svarbus</string>
-    <string name="nc_meeting_ended">Susirinkimas baigėsi</string>
+    <string name="nc_meeting_ended">Susitikimas baigėsi</string>
     <string name="nc_message_added_to_notes">Pranešimas pridėtas prie užrašų</string>
     <string name="nc_message_failed">Nepavyko</string>
     <string name="nc_message_failed_to_send">Nepavyko išsiųsti pranešimo:</string>
@@ -411,6 +411,7 @@
     <string name="nc_promote">Paaukštinti į moderatorius</string>
     <string name="nc_public_call_status">Viešas pokalbis</string>
     <string name="nc_push_disabled">\"Push\" pranešimai yra išjungti</string>
+    <string name="nc_push_notification_error">Atsiprašome, įvyko klaida, klaida - %1$s </string>
     <string name="nc_push_notification_fetch_error">Atsiprašome, kažkas įvyko netinkamai, nepavyko gauti bandomojo „push“ pranešimo</string>
     <string name="nc_push_notification_message">Pranešimas išsiųstas sėkmingai. Dabar šiame įrenginyje turėtumėte gauti pranešimą su pavadinimu „Push pranešimų testavimas“</string>
     <string name="nc_remind">Priminti vėliau</string>
@@ -424,7 +425,7 @@
     <string name="nc_reply">Atsakyti</string>
     <string name="nc_reply_privately">Atsakyti privačiai</string>
     <string name="nc_reschedule_message_with_notification">Perkelti į kitą datą su pranešimu</string>
-    <string name="nc_reschedule_message_without_notification">Reschedule without notification</string>
+    <string name="nc_reschedule_message_without_notification">Perkelti į kitą datą be pranešimo</string>
     <string name="nc_room_retention">Kambarys sėkmingai užsakytas</string>
     <string name="nc_save_message">Išsaugoti</string>
     <string name="nc_save_success">Sėkmingai išsaugota</string>
@@ -545,7 +546,7 @@
     <string name="nc_share_this_location">Bendrinti šią vietą</string>
     <string name="nc_share_to_choose_account">Parinkti paskyrą</string>
     <string name="nc_shared_items">Bendrinami elementai</string>
-    <string name="nc_shared_items_deck_card">„Deck“ kortelė</string>
+    <string name="nc_shared_items_deck_card">Darbų kortelė</string>
     <string name="nc_shared_items_description">Paveikslai, failai, balso žinutės…</string>
     <string name="nc_shared_items_empty">Nėra bendrinamų elementų</string>
     <string name="nc_shared_items_location">Vieta</string>
@@ -705,7 +706,7 @@
     <string name="started_a_call">pradėjo pokalbį</string>
     <string name="status_message">Būsenos žinutė</string>
     <string name="status_reverted">Būklė Atkurta</string>
-    <string name="switch_to_breakout_room">Pereiti į atskirą kambarį</string>
+    <string name="switch_to_breakout_room">Pereiti į grupinio darbo kambarį</string>
     <string name="switch_to_main_room">Pereiti į pagrindinį kambarį</string>
     <string name="take_photo">Fotografuoti</string>
     <string name="take_photo_error_deleting_picture">Klaida fotografuojant</string>
@@ -775,6 +776,12 @@
     <string name="userinfo_no_info_text">Pridėkite vardą, nuotrauką ir kontaktinę informaciją savo profilio puslapyje.</string>
     <string name="video_call">Vaizdo skambutis</string>
     <string name="whats_your_status">Kokia jūsų būsena?</string>
+    <plurals name="nc_new_messages_count">
+        <item quantity="one">%d nauja žinutė</item>
+        <item quantity="few">%d naujos žinutės</item>
+        <item quantity="many">%d naujų žinučių</item>
+        <item quantity="other">%d naujų žinučių</item>
+    </plurals>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Peržiūrėti %d panašų pranešimą</item>
         <item quantity="few">Peržiūrėti %d panašius pranešimus</item>

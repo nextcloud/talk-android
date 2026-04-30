@@ -534,7 +534,6 @@ class OfflineFirstChatRepository @Inject constructor(
             newestMessageId = newestMessageIdForNewChatBlock,
             hasHistory = hasHistory
         )
-        chatBlocksDao.upsertChatBlock(newChatBlock)
         updateBlocks(newChatBlock)
     }
 
@@ -667,6 +666,8 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     private suspend fun updateBlocks(chatBlock: ChatBlockEntity) {
+        chatBlocksDao.upsertChatBlock(chatBlock)
+
         val connectedChatBlocks =
             chatBlocksDao.getConnectedChatBlocks(
                 internalConversationId = internalConversationId,
@@ -691,9 +692,6 @@ class OfflineFirstChatRepository @Inject constructor(
             val hasHistory = !hasNoHistory
             Log.d(TAG, "hasHistory = $hasHistory")
 
-            chatBlocksDao.deleteChatBlocks(connectedChatBlocks)
-            Log.d(TAG, "These chat blocks were deleted")
-
             val newChatBlock = ChatBlockEntity(
                 internalConversationId = internalConversationId,
                 accountId = conversationModel.accountId,
@@ -703,7 +701,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 newestMessageId = newestIdFromDbChatBlocks,
                 hasHistory = hasHistory
             )
-            chatBlocksDao.upsertChatBlock(newChatBlock)
+            chatBlocksDao.replaceConnectedChatBlocks(connectedChatBlocks, newChatBlock)
             Log.d(TAG, "A new chat block was created that covers all the range of the found chatblocks")
             Log.d(TAG, "new chatBlock - oldest MessageId: $oldestIdFromDbChatBlocks")
             Log.d(TAG, "new chatBlock - newest MessageId: $newestIdFromDbChatBlocks")

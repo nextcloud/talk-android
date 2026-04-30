@@ -92,6 +92,7 @@ fun ChatMessageView(
     }
 
     CompositionLocalProvider(
+        LocalMessageLongClickHandler provides { id -> callbacks.onLongClick?.invoke(id) ?: Unit },
         LocalReactionClickHandler provides callbacks.onReactionClick,
         LocalReactionLongClickHandler provides callbacks.onReactionLongClick,
         LocalOpenThreadHandler provides callbacks.onOpenThreadClick,
@@ -234,7 +235,8 @@ private fun ChatMessageViewMediaPreview() {
         val uiMessage = createBaseMessage(
             MessageTypeContent.Media(
                 previewUrl = null,
-                drawableResourceId = R.drawable.ic_mimetype_image
+                drawableResourceId = R.drawable.ic_mimetype_image,
+                mimeType = ""
             )
         )
         ChatMessageView(message = uiMessage)
@@ -248,7 +250,8 @@ private fun ChatMessageViewMediaPreviewWithoutCaption() {
         val uiMessage = createBaseMessageWithoutCaption(
             MessageTypeContent.Media(
                 previewUrl = null,
-                drawableResourceId = R.drawable.ic_mimetype_image
+                drawableResourceId = R.drawable.ic_mimetype_image,
+                mimeType = ""
             )
         )
         ChatMessageView(message = uiMessage)

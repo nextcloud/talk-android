@@ -59,6 +59,10 @@ class MessageInput : FrameLayout {
         LayoutInflater.from(context).inflate(R.layout.view_message_input, this, true)
 
         inputEditText = findViewById(R.id.messageInput)
+        val displayMetrics = resources.displayMetrics
+        val screenHeight = displayMetrics.heightPixels
+        inputEditText.maxHeight = screenHeight / 2
+
         attachmentButton = findViewById(R.id.attachmentButton)
         messageSendButton = findViewById(R.id.messageSendButton)
         audioRecordDuration = findViewById(R.id.audioRecordDuration)

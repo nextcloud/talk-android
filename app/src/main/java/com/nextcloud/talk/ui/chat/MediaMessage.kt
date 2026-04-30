@@ -31,6 +31,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.contacts.load
+import com.nextcloud.talk.utils.MimetypeUtils
 
 private const val FILE_PLACEHOLDER_MESSAGE = "{file}"
 
@@ -78,15 +79,21 @@ fun MediaMessage(
             Column {
                 val context = LocalContext.current
                 val resourceName = context.resources.getResourceEntryName(typeContent.drawableResourceId)
+                val isGif = MimetypeUtils.isGif(typeContent.mimeType)
                 val showPlayButton = !typeContent.previewUrl.isNullOrEmpty() &&
-                    (resourceName.contains("video") || resourceName.contains("audio"))
+                    (
+                        resourceName.contains("video") ||
+                            resourceName.contains("audio") ||
+                            (isGif && !typeContent.animateGif)
+                        )
 
                 Box(modifier = Modifier.fillMaxWidth()) {
                     val loadedImage = remember(typeContent.previewUrl) {
                         load(
                             imageUri = typeContent.previewUrl,
                             context = context,
-                            errorPlaceholderImage = typeContent.drawableResourceId
+                            errorPlaceholderImage = typeContent.drawableResourceId,
+                            animated = typeContent.animateGif
                         )
                     }
 
