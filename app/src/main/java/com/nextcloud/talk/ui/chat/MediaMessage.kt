@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -28,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
+import com.nextcloud.talk.chat.data.model.FileParameters
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.contacts.load
@@ -38,15 +40,19 @@ private const val FILE_PLACEHOLDER_MESSAGE = "{file}"
 private val mediaRadiusBig = 8.dp
 private val mediaRadiusSmall = 2.dp
 
-@Suppress("Detekt.LongMethod")
+@Suppress("Detekt.LongMethod", "LongParameterList")
 @Composable
 fun MediaMessage(
     typeContent: MessageTypeContent.Media,
     message: ChatMessageUi,
     isOneToOneConversation: Boolean = false,
     conversationThreadId: Long? = null,
+    chatViewDownloadingFileState: List<String>,
     onImageClick: (Int) -> Unit
 ) {
+    val fileParameters =
+        remember { FileParameters(message.messageParameters as HashMap<String?, HashMap<String?, String?>>?) }
+
     val captionText = message.message.takeUnless { it == FILE_PLACEHOLDER_MESSAGE }
     val hasCaption = captionText != null
     val mediaInset = 4.dp
@@ -116,6 +122,15 @@ fun MediaMessage(
                                 .align(Alignment.Center)
                                 .size(48.dp),
                             tint = Color.White
+                        )
+                    }
+
+                    if (chatViewDownloadingFileState.contains(fileParameters.id)) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .align(Alignment.Center),
+                            strokeWidth = 2.dp
                         )
                     }
                 }
