@@ -434,12 +434,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun decryptSubject(privateKey: PrivateKey, base64DecodedSubject: ByteArray): ByteArray =
         try {
-            val cipher = Cipher.getInstance("RSA/None/PKCS1Padding")
+            val cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding")
             cipher.init(Cipher.DECRYPT_MODE, privateKey)
             cipher.doFinal(base64DecodedSubject)
         } catch (e: BadPaddingException) {
-            Log.d(TAG, "PKCS1 padding failed, trying OAEP", e)
-            val cipher = Cipher.getInstance("RSA/ECB/OAEPPadding")
+            Log.d(TAG, "OAEP padding failed, trying PKCS1 for compatibility", e)
+            val cipher = Cipher.getInstance("RSA/None/PKCS1Padding")
             cipher.init(Cipher.DECRYPT_MODE, privateKey)
             cipher.doFinal(base64DecodedSubject)
         }
