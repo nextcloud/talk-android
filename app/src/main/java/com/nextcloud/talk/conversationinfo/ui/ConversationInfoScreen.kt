@@ -627,6 +627,9 @@ private fun ParticipantsSectionHeader(state: ConversationInfoUiState, callbacks:
 private sealed class ParticipantAvatarContent {
     data class Url(val url: String) : ParticipantAvatarContent()
     data class Res(@DrawableRes val resId: Int) : ParticipantAvatarContent()
+
+    /** Renders the icon on a themed surfaceVariant background circle (equivalent to themePlaceholderAvatar). */
+    data class ThemedRes(@DrawableRes val resId: Int) : ParticipantAvatarContent()
     data class FirstLetter(val letter: String) : ParticipantAvatarContent()
 }
 
@@ -651,9 +654,9 @@ private fun buildParticipantAvatarContent(
                     true
                 )
             )
-        Participant.ActorType.GROUPS -> ParticipantAvatarContent.Res(R.drawable.ic_avatar_group)
-        Participant.ActorType.CIRCLES -> ParticipantAvatarContent.Res(R.drawable.ic_avatar_team_small)
-        Participant.ActorType.PHONES -> ParticipantAvatarContent.Res(R.drawable.ic_phone_small)
+        Participant.ActorType.GROUPS -> ParticipantAvatarContent.ThemedRes(R.drawable.ic_avatar_group_small)
+        Participant.ActorType.CIRCLES -> ParticipantAvatarContent.ThemedRes(R.drawable.ic_avatar_team_small)
+        Participant.ActorType.PHONES -> ParticipantAvatarContent.ThemedRes(R.drawable.ic_phone_small)
         Participant.ActorType.GUESTS, Participant.ActorType.EMAILS -> {
             val name = participant.displayName
             if (!name.isNullOrBlank()) {
@@ -724,6 +727,21 @@ private fun ParticipantAvatarImage(
                 contentScale = ContentScale.Crop,
                 modifier = modifier.clip(CircleShape)
             )
+        }
+        is ParticipantAvatarContent.ThemedRes -> {
+            Box(
+                modifier = modifier
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(avatarContent.resId),
+                    contentDescription = stringResource(R.string.avatar),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
         is ParticipantAvatarContent.FirstLetter -> {
             Box(
@@ -814,22 +832,25 @@ private fun participantEffectiveStatus(participant: Participant): String {
 
 @Composable
 private fun ParticipantNameRow(displayName: String, roleLabel: String, nameColor: Color) {
-    Row(verticalAlignment = Alignment.Bottom) {
+    Row {
         Text(
             text = displayName,
             style = MaterialTheme.typography.bodyLarge,
             color = nameColor,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f, fill = false)
+            modifier = Modifier
+                .weight(1f, fill = false)
+                .alignByBaseline()
         )
         if (roleLabel.isNotEmpty()) {
             Text(
                 text = " ($roleLabel)",
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.alignByBaseline()
             )
         }
     }
@@ -1039,6 +1060,15 @@ private fun previewState(): ConversationInfoUiState {
         ),
         isOnline = false
     )
+    val dave = ParticipantModel(
+        participant = Participant(
+            actorType = Participant.ActorType.CIRCLES,
+            actorId = "eng-circle",
+            displayName = "Engineering Circle",
+            type = Participant.ParticipantType.USER
+        ),
+        isOnline = false
+    )
     return ConversationInfoUiState(
         isLoading = false,
         displayName = "Jane Doe",
@@ -1075,7 +1105,7 @@ private fun previewState(): ConversationInfoUiState {
         isConversationLocked = false,
         showLockConversation = true,
         showParticipants = true,
-        participants = listOf(alice, bob, carol),
+        participants = listOf(alice, bob, carol, dave),
         showAddParticipants = true,
         showListBans = true,
         showArchiveConversation = true,
