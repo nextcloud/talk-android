@@ -46,7 +46,11 @@ data class DecryptedPushMessage(
     @JsonIgnore
     var notificationUser: NotificationUser?,
 
-    @JsonIgnore
+    /**
+     * /!\ It is overridden by common NC notifications, just used
+     * for internal notifications
+     */
+    @JsonField(name = ["text"])
     var text: String?,
 
     @JsonIgnore

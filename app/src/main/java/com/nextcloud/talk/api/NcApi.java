@@ -27,6 +27,7 @@ import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.participants.TalkBanOverall;
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
+import com.nextcloud.talk.models.json.push.VapidOverall;
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall;
 import com.nextcloud.talk.models.json.reminder.ReminderOverall;
 import com.nextcloud.talk.models.json.search.ContactsByNumberOverall;
@@ -270,6 +271,32 @@ public interface NcApi {
     @GET
     Observable<Status> getServerStatus(@Url String url);
 
+    @GET
+    Observable<VapidOverall> getVapidKey(
+        @Header("Authorization") String authorization,
+        @Url String url);
+
+    @FormUrlEncoded
+    @POST
+    Observable<Response<GenericOverall>> registerWebPush(
+        @Header("Authorization") String authorization,
+        @Url String url,
+        @Field("endpoint") String endpoint,
+        @Field("uaPublicKey") String uaPublicKey,
+        @Field("auth") String auth,
+        @Field("appTypes") String appTypes);
+
+    @FormUrlEncoded
+    @POST
+    Observable<Response<GenericOverall>> activateWebPush(
+        @Header("Authorization") String authorization,
+        @Url String url,
+        @Field("activationToken") String activationToken);
+
+    @DELETE
+    Observable<GenericOverall> unregisterWebPush(
+        @Header("Authorization") String authorization,
+        @Url String url);
 
     /*
         QueryMap items are as follows:

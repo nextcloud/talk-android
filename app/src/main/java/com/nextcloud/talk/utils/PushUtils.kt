@@ -157,6 +157,7 @@ class PushUtils {
         return result.toString()
     }
 
+    @Suppress("ReturnCount")
     fun generateRsa2048KeyPair(): Int {
         if (!publicKeyFile.exists() && !privateKeyFile.exists()) {
             var keyGen: KeyPairGenerator? = null
@@ -221,6 +222,7 @@ class PushUtils {
         user: User
     ) {
         val credentials = ApiUtils.getCredentials(user.username, user.token)
+        Log.d(TAG, "Registering proxy push with ${user.userId}'s server.")
         ncApi.registerDeviceForNotificationsWithNextcloud(
             credentials,
             ApiUtils.getUrlNextcloudPush(user.baseUrl!!),

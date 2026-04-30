@@ -305,7 +305,10 @@ class ConversationsListActivity : BaseActivity() {
         // handle notification permission on API level >= 33
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             !platformPermissionUtil.isPostNotificationsPermissionGranted() &&
-            ClosedInterfaceImpl().isGooglePlayServicesAvailable
+            (
+                ClosedInterfaceImpl().isGooglePlayServicesAvailable ||
+                    appPreferences.useUnifiedPush
+                )
         ) {
             requestPermissions(
                 arrayOf(Manifest.permission.POST_NOTIFICATIONS),

@@ -53,7 +53,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.callnotification.CallNotificationActivity
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
-import com.nextcloud.talk.models.SignatureVerification
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -139,7 +139,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private lateinit var credentials: String
     private lateinit var ncApi: NcApi
     private lateinit var pushMessage: DecryptedPushMessage
-    private lateinit var signatureVerification: SignatureVerification
+    private lateinit var user: User
     private var context: Context? = null
     private var conversationType: String? = "one2one"
     private lateinit var notificationManager: NotificationManagerCompat
@@ -164,12 +164,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         Log.d(TAG, "pushMessage.timestamp: " + pushMessage.timestamp)
 
         if (pushMessage.delete) {
-            cancelNotification(context, signatureVerification.user!!, pushMessage.notificationId)
+            cancelNotification(context, user, pushMessage.notificationId)
         } else if (pushMessage.deleteAll) {
-            cancelAllNotificationsForAccount(context, signatureVerification.user!!)
+            cancelAllNotificationsForAccount(context, user)
         } else if (pushMessage.deleteMultiple) {
             for (notificationId in pushMessage.notificationIds!!) {
-                cancelNotification(context, signatureVerification.user!!, notificationId)
+                cancelNotification(context, user, notificationId)
             }
         } else if (isTalkNotification()) {
             Log.d(TAG, "pushMessage.type: " + pushMessage.type)
@@ -182,9 +182,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         } else if (isAdminTalkNotification()) {
             Log.d(TAG, "pushMessage.type: " + pushMessage.type)
             when (pushMessage.type) {
-                TYPE_ADMIN_NOTIFICATIONS -> handleTestPushMessage()
+                TYPE_ADMIN_NOTIFICATIONS -> handleInternalPushMessage()
                 else -> Log.e(TAG, pushMessage.type + " is not handled")
             }
+        } else if (isInternal()) {
+            handleInternalPushMessage()
         } else {
             Log.d(TAG, "a pushMessage that is not for spreed was received.")
         }
@@ -192,7 +194,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return Result.success()
     }
 
-    private fun handleTestPushMessage() {
+    private fun handleInternalPushMessage() {
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = getIntentFlags()
         showNotification(intent, null)
@@ -207,20 +209,20 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val mainActivityIntent = Intent(context, MainActivity::class.java)
         mainActivityIntent.flags = getIntentFlags()
         val bundle = Bundle()
-        bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
+        bundle.putLong(KEY_INTERNAL_USER_ID, user.id!!)
         bundle.putBoolean(KEY_REMOTE_TALK_SHARE, true)
         mainActivityIntent.putExtras(bundle)
         getNcDataAndShowNotification(mainActivityIntent)
     }
 
     private fun handleCallPushMessage() {
-        val userBeingCalled = userManager.getUserWithId(signatureVerification.user!!.id!!).blockingGet()
+        val userBeingCalled = userManager.getUserWithId(user.id!!).blockingGet()
 
         fun createBundle(conversation: ConversationModel): Bundle {
             val bundle = Bundle()
             bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
             bundle.putInt(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
-            bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
+            bundle.putLong(KEY_INTERNAL_USER_ID, user.id!!)
             bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, true)
 
             val isOneToOneCall = conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
@@ -308,7 +310,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
             val soundUri = getCallRingtoneUri(applicationContext, appPreferences)
             val notificationChannelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
-            val uri = signatureVerification.user!!.baseUrl!!.toUri()
+            val uri = user.baseUrl!!.toUri()
             val baseUrl = uri.host
 
             val callerPersonBuilder = Person.Builder()
@@ -316,7 +318,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 .setImportant(true)
             if (conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
                 val avatarUrl = ApiUtils.getUrlForAvatar(
-                    signatureVerification.user!!.baseUrl!!,
+                    user.baseUrl!!,
                     conversation.name,
                     false,
                     darkMode = DisplayUtils.isDarkModeOn(applicationContext)
@@ -354,7 +356,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
             sendNotification(pushMessage.timestamp.toInt(), notification)
 
-            checkIfCallIsActive(signatureVerification, conversation)
+            checkIfCallIsActive(conversation)
         }
 
         chatNetworkDataSource?.getRoom(userBeingCalled, roomToken = pushMessage.id!!)
@@ -382,10 +384,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     private fun initNcApiAndCredentials() {
-        credentials = ApiUtils.getCredentials(
-            signatureVerification.user!!.username,
-            signatureVerification.user!!.token
-        )!!
+        credentials = user.getCredentials()
         ncApi = retrofit!!.newBuilder().client(
             okHttpClient!!.newBuilder().cookieJar(
                 JavaNetCookieJar(
@@ -399,15 +398,24 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     @Suppress("TooGenericExceptionCaught", "NestedBlockDepth", "ComplexMethod", "LongMethod")
     private fun initDecryptedData(inputData: Data) {
-        val subject = inputData.getString(BundleKeys.KEY_NOTIFICATION_SUBJECT)
-        val signature = inputData.getString(BundleKeys.KEY_NOTIFICATION_SIGNATURE)
         try {
+            if (inputData.hasKeyWithValueOfType(BundleKeys.KEY_NOTIFICATION_CLEARTEXT_SUBJECT, String::class.java)) {
+                val subject = inputData.getString(BundleKeys.KEY_NOTIFICATION_CLEARTEXT_SUBJECT)
+                val id = inputData.getLong(BundleKeys.KEY_NOTIFICATION_USER_ID, -1)
+                user = userManager.getUserWithId(id).blockingGet()
+                pushMessage = LoganSquare.parse(subject, DecryptedPushMessage::class.java)
+                return
+            }
+
+            val subject = inputData.getString(BundleKeys.KEY_NOTIFICATION_SUBJECT)
+            val signature = inputData.getString(BundleKeys.KEY_NOTIFICATION_SIGNATURE)
+
             val base64DecodedSubject = Base64.decode(subject, Base64.DEFAULT)
             val base64DecodedSignature = Base64.decode(signature, Base64.DEFAULT)
             val pushUtils = PushUtils()
             val privateKey = pushUtils.readKeyFromFile(false) as PrivateKey
             try {
-                signatureVerification = pushUtils.verifySignature(
+                val signatureVerification = pushUtils.verifySignature(
                     base64DecodedSignature,
                     base64DecodedSubject
                 )
@@ -420,6 +428,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                         String(decryptedSubject),
                         DecryptedPushMessage::class.java
                     )
+                    user = signatureVerification.user!!
                 }
             } catch (e: NoSuchAlgorithmException) {
                 Log.e(TAG, "No proper algorithm to decrypt the message ", e)
@@ -434,17 +443,16 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     private fun isTalkNotification() = SPREED_APP == pushMessage.app
+    private fun isInternal() = INTERNAL == pushMessage.app
 
     private fun isAdminTalkNotification() = ADMIN_NOTIFICATION_TALK == pushMessage.app
 
     private fun getNcDataAndShowNotification(intent: Intent) {
-        val user = signatureVerification.user
-
         // see https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md
         ncApi.getNcNotification(
             credentials,
             ApiUtils.getUrlForNcNotificationWithId(
-                user!!.baseUrl!!,
+                user.baseUrl!!,
                 pushMessage.notificationId.toString()
             )
         )
@@ -566,7 +574,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             val mimetype = param["mimetype"].orEmpty()
             val fileId = param["id"]
             if (mimetype.startsWith("image/") && fileId != null) {
-                val baseUrl = signatureVerification.user!!.baseUrl!!
+                val baseUrl = user.baseUrl!!
                 val px = context!!.resources.displayMetrics.widthPixels
                 imagePreviewUrl = ApiUtils.getUrlForFilePreviewWithFileId(baseUrl, fileId, px)
                 imageMimeType = mimetype
@@ -594,9 +602,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         if (pushMessage.type == TYPE_CHAT || pushMessage.type == TYPE_ROOM) {
             val token = pushMessage.id
-            val user = signatureVerification.user
             val displayName = pushMessage.subject
-            if (token != null && user != null && displayName.isNotEmpty()) {
+            if (token != null && displayName.isNotEmpty()) {
                 kotlinx.coroutines.runBlocking {
                     com.nextcloud.talk.conversationlist.DirectShareHelper.reportIncomingMessage(
                         context!!,
@@ -610,7 +617,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
 
         val pendingIntent = createUniquePendingIntent(intent)
-        val uri = signatureVerification.user!!.baseUrl!!.toUri()
+        val uri = user.baseUrl!!.toUri()
         val baseUrl = uri.host
 
         var contentTitle: CharSequence? = ""
@@ -639,11 +646,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             notificationBuilder.setLargeIcon(getLargeIcon())
         }
 
-        val activeStatusBarNotification = findNotificationForRoom(
-            context,
-            signatureVerification.user!!,
-            pushMessage.id!!
-        )
+        val activeStatusBarNotification = pushMessage.id?.let {
+            findNotificationForRoom(
+                context,
+                user,
+                it
+            )
+        }
 
         // NOTE - systemNotificationId is an internal ID used on the device only.
         // It is NOT the same as the notification ID used in communication with the server.
@@ -692,7 +701,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setColor(context!!.resources.getColor(R.color.colorPrimary, null))
 
         val notificationInfoBundle = Bundle()
-        notificationInfoBundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
+        notificationInfoBundle.putLong(KEY_INTERNAL_USER_ID, user.id!!)
         // could be an ID or a TOKEN
         notificationInfoBundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
         notificationInfoBundle.putLong(KEY_NOTIFICATION_ID, pushMessage.notificationId!!)
@@ -717,7 +726,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
 
         notificationBuilder.setContentIntent(pendingIntent)
-        val groupName = signatureVerification.user!!.id.toString() + "@" + pushMessage.id
+        val groupName = user.id.toString() + "@" + pushMessage.id
         notificationBuilder.setGroup(calculateCRC32(groupName).toString())
         return notificationBuilder
     }
@@ -803,12 +812,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             )
         }
         val person = Person.Builder()
-            .setKey(signatureVerification.user!!.id.toString() + "@" + notificationUser.id)
+            .setKey(user.id.toString() + "@" + notificationUser.id)
             .setName(EmojiCompat.get().process(notificationUser.name!!))
             .setBot("bot" == userType)
 
         if ("user" == userType || "guest" == userType) {
-            val baseUrl = signatureVerification.user!!.baseUrl
+            val baseUrl = user.baseUrl
             val avatarUrl = if ("user" == userType) {
                 ApiUtils.getUrlForAvatar(
                     baseUrl!!,
@@ -830,7 +839,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         // NOTE - systemNotificationId is an internal ID used on the device only.
         // It is NOT the same as the notification ID used in communication with the server.
         actualIntent.putExtra(KEY_SYSTEM_NOTIFICATION_ID, systemNotificationId)
-        actualIntent.putExtra(KEY_INTERNAL_USER_ID, signatureVerification.user?.id)
+        actualIntent.putExtra(KEY_INTERNAL_USER_ID, user.id)
         actualIntent.putExtra(KEY_ROOM_TOKEN, pushMessage.id)
         actualIntent.putExtra(KEY_MESSAGE_ID, messageId)
 
@@ -1019,13 +1028,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         notificationManager.cancel(notificationId)
     }
 
-    private fun checkIfCallIsActive(signatureVerification: SignatureVerification, conversation: ConversationModel) {
+    private fun checkIfCallIsActive(conversation: ConversationModel) {
         Log.d(TAG, "checkIfCallIsActive")
         var hasParticipantsInCall = true
         var inCallOnDifferentDevice = false
 
         val apiVersion = ApiUtils.getConversationApiVersion(
-            signatureVerification.user!!,
+            user,
             intArrayOf(ApiUtils.API_V4, 1)
         )
 
@@ -1035,7 +1044,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             credentials,
             ApiUtils.getUrlForCall(
                 apiVersion,
-                signatureVerification.user!!.baseUrl!!,
+                user.baseUrl!!,
                 pushMessage.id!!
             )
         )
@@ -1053,7 +1062,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     hasParticipantsInCall = participantList.isNotEmpty()
                     if (hasParticipantsInCall) {
                         for (participant in participantList) {
-                            if (participant.actorId == signatureVerification.user!!.userId &&
+                            if (participant.actorId == user.userId &&
                                 participant.actorType == Participant.ActorType.USERS
                             ) {
                                 inCallOnDifferentDevice = true
@@ -1149,7 +1158,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         intent.flags = getIntentFlags()
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
-        bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
+        bundle.putLong(KEY_INTERNAL_USER_ID, user.id!!)
         bundle.putBoolean(KEY_OPENED_VIA_NOTIFICATION, true)
         intent.putExtras(bundle)
         return intent
@@ -1179,6 +1188,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         private const val TYPE_REMINDER = "reminder"
         private const val TYPE_ADMIN_NOTIFICATIONS = "admin_notifications"
         private const val SPREED_APP = "spreed"
+        private const val INTERNAL = "internal"
         private const val ADMIN_NOTIFICATION_TALK = "admin_notification_talk"
         private const val TIMER_START = 1
         private const val TIMER_COUNT = 12
