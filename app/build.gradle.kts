@@ -177,6 +177,13 @@ configurations.configureEach {
     exclude(group = "com.google.firebase", module = "firebase-analytics")
     exclude(group = "com.google.firebase", module = "firebase-measurement-connector")
     exclude(group = "org.jetbrains", module = "annotations-java5") // via prism4j, already using annotations explicitly
+
+    // com.google.crypto.tink (pulled in by org.unifiedpush.android:connector) transitively depends on
+    // protobuf-java, which conflicts with protobuf-javalite used by com.google.mediapipe:tasks-core,
+    // pulled by com.google.mediapipe:tasks-vision
+    //
+    // To analyse the dependencies:
+    // `./gradlew :app:dependencyInsight --configuration genericDebugRuntimeClasspath --dependency com.google.protobuf:protobuf-java`
     val protobufJava = "com.google.protobuf:protobuf-java:4.28.2"
     resolutionStrategy {
         force(protobufJava)
