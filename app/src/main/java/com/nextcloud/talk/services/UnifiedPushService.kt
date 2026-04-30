@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2026 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2017-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -22,7 +22,7 @@ import org.unifiedpush.android.connector.PushService
 import org.unifiedpush.android.connector.data.PushEndpoint
 import org.unifiedpush.android.connector.data.PushMessage
 
-class UnifiedPushService: PushService() {
+class UnifiedPushService : PushService() {
     override fun onNewEndpoint(endpoint: PushEndpoint, instance: String) {
         Log.d(TAG, "New endpoint for $instance")
         val endpointBA = endpoint.toByteArray() ?: run {

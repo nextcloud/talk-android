@@ -157,6 +157,7 @@ class PushUtils {
         return result.toString()
     }
 
+    @Suppress("ReturnCount")
     fun generateRsa2048KeyPair(): Int {
         if (!publicKeyFile.exists() && !privateKeyFile.exists()) {
             var keyGen: KeyPairGenerator? = null

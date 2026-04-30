@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2025 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2017-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -40,10 +40,7 @@ object UnifiedPushUtils {
      * @param callback: run with the push service name if available
      */
     @JvmStatic
-    fun useDefaultDistributor(
-        activity: Activity,
-        callback: (String?) -> Unit
-    ) {
+    fun useDefaultDistributor(activity: Activity, callback: (String?) -> Unit) {
         Log.d(TAG, "Using default UnifiedPush distributor")
         UnifiedPush.tryUseDefaultDistributor(activity) { res ->
             if (res) {
@@ -79,10 +76,7 @@ object UnifiedPushUtils {
      * @param callback: run with the push service name if available
      */
     @JvmStatic
-    fun pickDistributor(
-        activity: Activity,
-        callback: (String?) -> Unit
-    ) {
+    fun pickDistributor(activity: Activity, callback: (String?) -> Unit) {
         Log.d(TAG, "Picking another UnifiedPush distributor")
         UnifiedPush.tryPickDistributor(activity as Context) { res ->
             if (res) {
@@ -98,9 +92,7 @@ object UnifiedPushUtils {
      * Disable UnifiedPush and try to register with proxy push again
      */
     @JvmStatic
-    fun disableExternalUnifiedPush(
-        context: Context
-    ) {
+    fun disableExternalUnifiedPush(context: Context) {
         UnifiedPush.unregister(context)
         enqueuePushWorker(context, false, "disableExternalUnifiedPush")
     }

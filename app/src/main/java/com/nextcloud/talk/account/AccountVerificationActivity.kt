@@ -357,7 +357,7 @@ class AccountVerificationActivity : BaseActivity() {
                             """
                             ${binding.progressText.text}
                             ${resources!!.getString(R.string.nc_capabilities_failed)}
-                        """.trimIndent()
+                            """.trimIndent()
                     }
                     abortVerification()
                 } else {
@@ -371,7 +371,7 @@ class AccountVerificationActivity : BaseActivity() {
                             """
                             ${binding.progressText.text}
                             ${resources!!.getString(R.string.nc_push_disabled)}
-                        """.trimIndent()
+                            """.trimIndent()
                     }
                 }
                 fetchAndStoreExternalSignalingSettings()
@@ -383,7 +383,7 @@ class AccountVerificationActivity : BaseActivity() {
                             """
                             ${binding.progressText.text}
                             ${resources!!.getString(R.string.nc_external_server_failed)}
-                        """.trimIndent()
+                            """.trimIndent()
                     }
                 }
                 proceedWithLogin()
@@ -414,7 +414,8 @@ class AccountVerificationActivity : BaseActivity() {
             eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
         } else if (userManager.users.blockingGet().size == 1 &&
             UnifiedPush.getDistributors(context).isNotEmpty() &&
-            userManager.getUserWithId(internalAccountId).blockingGet().hasWebPushCapability) {
+            userManager.getUserWithId(internalAccountId).blockingGet().hasWebPushCapability
+        ) {
             useUnifiedPushIntroduced()
         } else {
             Log.w(TAG, "Skipping push registration.")

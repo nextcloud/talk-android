@@ -1,9 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
- * SPDX-FileCopyrightText: 2022 Marcel Hibbe <dev@mhibbe.de>
- * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
+ * SPDX-FileCopyrightText: 2017-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.jobs
@@ -39,21 +37,20 @@ import retrofit2.Retrofit
 import javax.inject.Inject
 
 /**
- * Can be used for 4 different things:
+ * Can be used for 5 different things:
  * - if inputData contains [USER_ID] and [ACTIVATION_TOKEN]: activate web push for user (on server) and unregister
  * for proxy push (on server) (received from [com.nextcloud.talk.services.UnifiedPushService])
  * - if inputData contains [USER_ID] and [UNIFIEDPUSH_ENDPOINT]: register for web push (on server)
  * (received from [com.nextcloud.talk.services.UnifiedPushService])
+ * - if inputData contains [USER_ID] and [UNREGISTER_WEBPUSH]: unregister web push for user (on server)
  * - if inputData contains [USE_UNIFIEDPUSH] or if [AppPreferences.getUseUnifiedPush]: get the server VAPID key and
  * register for UnifiedPush to the distributor (on device)
  * - if [AppPreferences.getUseUnifiedPush] is false: unregister UnifiedPush (on device) and unregister for web push
  * (on server), then register for proxy push (on server)
  */
 @AutoInjector(NextcloudTalkApplication::class)
-class PushRegistrationWorker(
-    context: Context,
-    workerParams: WorkerParameters
-): Worker(context, workerParams) {
+@Suppress("TooManyFunctions")
+class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
     @Inject
     lateinit var retrofit: Retrofit
 
@@ -96,7 +93,7 @@ class PushRegistrationWorker(
         if (userId != -1L && activationToken != null) {
             Log.d(TAG, "PushRegistrationWorker called via $origin (webPushActivationWork)")
             webPushActivationWork(userId, activationToken)
-        } else  if (userId != -1L && pushEndpoint != null) {
+        } else if (userId != -1L && pushEndpoint != null) {
             Log.d(TAG, "PushRegistrationWorker called via $origin (webPushWork)")
             webPushWork(userId, pushEndpoint)
         } else if (userId != -1L && unregisterWebPush) {
@@ -228,25 +225,27 @@ class PushRegistrationWorker(
             }
     }
 
-    private fun defaultUseUnifiedPush(): Boolean = preferences.useUnifiedPush &&
-        // If this is the first registration, we have never called [UnifiedPush.register]
-        // because it happens after this function
-        // => we can't be acked by the distributor yet, [UnifiedPush.getAckDistributor] == null
-        // So we check the SavedDistributor instead
-        UnifiedPush.getSavedDistributor(applicationContext).also {
-            // It is null if the distributor has unregistered all the accounts,
-            // or if it has been uninstalled from the system
-            if (it == null) {
-                Log.d(TAG, "No saved distributor found: disabling UnifiedPush")
-                preferences.useUnifiedPush = false
-                if (inputData.keyValueMap.any { (key, _) ->
-                    RESTART_ON_DISTRIB_UNINSTALL.contains(key)
-                }) {
-                    enqueueWorkerWithoutData("defaultUseDistributor")
-                    enqueueNotifUnifiedPushDisabled()
+    private fun defaultUseUnifiedPush(): Boolean =
+        preferences.useUnifiedPush &&
+            // If this is the first registration, we have never called [UnifiedPush.register]
+            // because it happens after this function
+            // => we can't be acked by the distributor yet, [UnifiedPush.getAckDistributor] == null
+            // So we check the SavedDistributor instead
+            UnifiedPush.getSavedDistributor(applicationContext).also {
+                // It is null if the distributor has unregistered all the accounts,
+                // or if it has been uninstalled from the system
+                if (it == null) {
+                    Log.d(TAG, "No saved distributor found: disabling UnifiedPush")
+                    preferences.useUnifiedPush = false
+                    if (inputData.keyValueMap.any { (key, _) ->
+                            RESTART_ON_DISTRIB_UNINSTALL.contains(key)
+                        }
+                    ) {
+                        enqueueWorkerWithoutData("defaultUseDistributor")
+                        enqueueNotifUnifiedPushDisabled()
+                    }
                 }
-            }
-        } != null
+            } != null
 
     /**
      * Run the default worker, to use FCM if available
@@ -304,8 +303,8 @@ class PushRegistrationWorker(
     /**
      * Unregister on NC server and NC proxy
      */
-    private fun unregisterProxyPush(user: User): Observable<Void> {
-        return if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
+    private fun unregisterProxyPush(user: User): Observable<Void> =
+        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
             Log.d(TAG, "Unregistering proxy push for ${user.userId}")
             ncApi.unregisterDeviceForNotificationsWithNextcloud(
                 user.getCredentials(),
@@ -322,17 +321,14 @@ class PushRegistrationWorker(
         } else {
             Observable.empty()
         }
-    }
 
     /**
      * Register web push with the unifiedpush endpoint, if the server supports web push
      *
      * @return `Observable<Pair<User, Boolean>>`, true if registration succeed, false if server doesn't support web push
      */
-    private fun registerWebPushForAccount(
-        user: User,
-        pushEndpoint: PushEndpoint
-    ): Observable<Pair<User, Boolean>> {
+    @Suppress("ReturnCount")
+    private fun registerWebPushForAccount(user: User, pushEndpoint: PushEndpoint): Observable<Pair<User, Boolean>> {
         if (user.hasWebPushCapability) {
             Log.d(TAG, "Registering web push for ${user.userId}")
             if (user.userId == null || user.baseUrl == null) {
@@ -353,16 +349,19 @@ class PushRegistrationWorker(
                 "talk"
             ).map { r ->
                 return@map when (r.code()) {
-                    200 -> {
+                    HTTP_OK -> {
                         Log.d(TAG, "Web push registration for ${user.userId} was already registered and activated\n")
                         user to true
                     }
-                    201 -> {
+                    HTTP_CREATED -> {
                         Log.d(TAG, "New web push registration for ${user.userId}")
                         user to true
                     }
                     else -> {
-                        Log.d(TAG, "An error occurred while registering web push for ${user.userId} (status=${r.code()})")
+                        Log.d(
+                            TAG,
+                            "An error occurred while registering web push for ${user.userId} (status=${r.code()})"
+                        )
                         user to false
                     }
                 }
@@ -373,10 +372,7 @@ class PushRegistrationWorker(
         }
     }
 
-    private fun activateWebPushForAccount(
-        user: User,
-        activationToken: String
-    ) : Observable<Boolean> {
+    private fun activateWebPushForAccount(user: User, activationToken: String): Observable<Boolean> {
         Log.d(TAG, "Activating web push for ${user.userId}")
         if (user.userId == null || user.baseUrl == null) {
             Log.w(TAG, "Null userId or baseUrl (userId=${user.userId}, baseUrl=${user.baseUrl}")
@@ -388,11 +384,11 @@ class PushRegistrationWorker(
             activationToken
         ).map { r ->
             return@map when (r.code()) {
-                200 -> {
+                HTTP_OK -> {
                     Log.d(TAG, "Web push registration for ${user.userId} was already activated\n")
                     true
                 }
-                202 -> {
+                HTTP_CREATED -> {
                     Log.d(TAG, "Web push registration for ${user.userId} activated")
                     true
                 }
@@ -404,9 +400,7 @@ class PushRegistrationWorker(
         }
     }
 
-    private fun unregisterWebPushForAccount(
-        user: User
-    ) : Observable<Boolean> {
+    private fun unregisterWebPushForAccount(user: User): Observable<Boolean> {
         Log.d(TAG, "Unregistering web push for ${user.userId}")
         if (user.userId == null || user.baseUrl == null) {
             Log.w(TAG, "Null userId or baseUrl (userId=${user.userId}, baseUrl=${user.baseUrl}")
@@ -416,7 +410,6 @@ class PushRegistrationWorker(
             user.getCredentials(),
             ApiUtils.getUrlForWebPush(user.baseUrl!!)
         ).map { true }
-
     }
 
     /**
@@ -426,16 +419,15 @@ class PushRegistrationWorker(
      *
      * @return `Observable<Pair<User, Boolean>>`, true if registration succeed, false if server doesn't support web push
      */
-    private fun registerUnifiedPushForAccount(
-        user: User
-    ): Observable<Pair<User, Boolean>> {
+    @Suppress("ReturnCount")
+    private fun registerUnifiedPushForAccount(user: User): Observable<Pair<User, Boolean>> {
         if (user.hasWebPushCapability) {
             Log.d(TAG, "Registering UnifiedPush for ${user.userId} (${user.id})")
             if (user.userId == null || user.baseUrl == null) {
                 Log.w(TAG, "Null userId or baseUrl (userId=${user.userId}, baseUrl=${user.baseUrl}")
                 return Observable.empty()
             }
-            return ncApi.getVapidKey(user.getCredentials(),ApiUtils.getUrlForVapid(user.baseUrl!!))
+            return ncApi.getVapidKey(user.getCredentials(), ApiUtils.getUrlForVapid(user.baseUrl!!))
                 .flatMap { ocs ->
                     ocs.ocs?.data?.vapid?.let { vapid ->
                         UnifiedPush.register(
@@ -464,6 +456,8 @@ class PushRegistrationWorker(
         const val USE_UNIFIEDPUSH = "use_unifiedpush"
         const val UNIFIEDPUSH_ENDPOINT = "unifiedpush_endpoint"
         const val UNREGISTER_WEBPUSH = "unregister_webpush"
+        private const val HTTP_OK: Int = 200
+        private const val HTTP_CREATED: Int = 201
 
         /**
          * If any of these actions are present when we observe the distributor is uninstalled,

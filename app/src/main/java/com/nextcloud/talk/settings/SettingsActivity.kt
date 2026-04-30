@@ -325,10 +325,9 @@ class SettingsActivity :
         setupServerNotificationAppCheck()
     }
 
-    private fun showUnifiedPushToggle(): Boolean {
-        return UnifiedPush.getDistributors(this).isNotEmpty() &&
+    private fun showUnifiedPushToggle(): Boolean =
+        UnifiedPush.getDistributors(this).isNotEmpty() &&
             userManager.users.blockingGet().all { it.hasWebPushCapability }
-    }
 
     private fun setupUnifiedPushSettings() {
         // If any user doesn't support web push, or there is no UnifiedPush
