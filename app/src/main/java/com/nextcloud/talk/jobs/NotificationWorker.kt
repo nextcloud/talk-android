@@ -318,7 +318,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 .setImportant(true)
             if (conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
                 val avatarUrl = ApiUtils.getUrlForAvatar(
-                    signatureVerification.user!!.baseUrl!!,
+                    user.baseUrl!!,
                     conversation.name,
                     false,
                     darkMode = DisplayUtils.isDarkModeOn(applicationContext)
@@ -602,9 +602,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         if (pushMessage.type == TYPE_CHAT || pushMessage.type == TYPE_ROOM) {
             val token = pushMessage.id
-            val user = signatureVerification.user
             val displayName = pushMessage.subject
-            if (token != null && user != null && displayName.isNotEmpty()) {
+            if (token != null && displayName.isNotEmpty()) {
                 kotlinx.coroutines.runBlocking {
                     com.nextcloud.talk.conversationlist.DirectShareHelper.reportIncomingMessage(
                         context!!,
