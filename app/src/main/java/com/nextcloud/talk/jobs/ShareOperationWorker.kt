@@ -67,7 +67,8 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
                 filePath,
                 roomToken,
                 "10",
-                metaData
+                metaData,
+                "" // no reference id
             )
                 .subscribeOn(Schedulers.io())
                 .blockingSubscribe(

@@ -169,6 +169,7 @@ import com.nextcloud.talk.ui.chat.ChatMessageCallbacks
 import com.nextcloud.talk.ui.chat.ChatView
 import com.nextcloud.talk.ui.chat.ChatViewCallbacks
 import com.nextcloud.talk.ui.chat.ChatViewState
+import com.nextcloud.talk.ui.chat.LocalUploadProgressProvider
 import com.nextcloud.talk.ui.dialog.DateTimeCompose
 import com.nextcloud.talk.ui.dialog.GetPinnedOptionsDialog
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
@@ -876,10 +877,13 @@ class ChatActivity :
 
                 SideEffect { chatListState = listState }
 
+                val uploadProgressMap by chatViewModel.uploadProgressMap.collectAsStateWithLifecycle()
+
                 CompositionLocalProvider(
                     LocalViewThemeUtils provides viewThemeUtils,
                     LocalMessageUtils provides messageUtils,
-                    LocalOpenGraphFetcher provides { url -> chatViewModel.fetchOpenGraph(url) }
+                    LocalOpenGraphFetcher provides { url -> chatViewModel.fetchOpenGraph(url) },
+                    LocalUploadProgressProvider provides { refId -> uploadProgressMap[refId] }
                 ) {
                     val isOneToOneConversation by remember { mutableStateOf(uiState.isOneToOneConversation) }
                     Log.d(TAG, "isOneToOneConversation=" + isOneToOneConversation)
@@ -938,7 +942,8 @@ class ChatActivity :
                                 onSystemMessageExpandClick = { messageId ->
                                     chatViewModel.toggleSystemMessageCollapse(messageId)
                                 },
-                                onAvatarClick = { messageId -> chatViewModel.showProfileSheet(messageId.toLong()) }
+                                onAvatarClick = { messageId -> chatViewModel.showProfileSheet(messageId.toLong()) },
+                                onCancelUpload = { referenceId -> chatViewModel.cancelUpload(referenceId) }
                             )
                         ),
                         listState = listState
