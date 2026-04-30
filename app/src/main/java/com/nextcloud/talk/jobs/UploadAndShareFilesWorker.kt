@@ -26,16 +26,21 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import at.bitfire.dav4jvm.DavResource
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.dagger.modules.RestModule
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachmentData
 import com.nextcloud.talk.upload.chunked.ChunkedFileUploader
 import com.nextcloud.talk.upload.chunked.OnDataTransferProgressListener
 import com.nextcloud.talk.upload.normal.FileUploader
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.NotificationUtils
@@ -45,9 +50,16 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import kotlinx.coroutines.runBlocking
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
+import okhttp3.RequestBody
+import okhttp3.Response
 import java.io.File
+import java.io.IOException
+import java.util.UUID
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -60,6 +72,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
     @Inject
     lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var ncApiCoroutines: NcApiCoroutines
 
     @Inject
     lateinit var currentUserProvider: CurrentUserProviderOld
@@ -107,9 +122,12 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             file = FileUtils.getFileFromUri(context, sourceFileUri)
             val remotePath = getRemotePath(currentUser)
 
+            val useConversationSubfolders = CapabilitiesUtil.hasConversationSubfoldersForAttachments(
+                currentUser.capabilities!!.spreedCapability!!
+            )
             initNotificationSetup()
             file?.let { isChunkedUploading = it.length() > CHUNK_UPLOAD_THRESHOLD_SIZE }
-            val uploadSuccess: Boolean = uploadFile(sourceFileUri, metaData, remotePath)
+            val uploadSuccess: Boolean = uploadFile(sourceFileUri, metaData, remotePath, useConversationSubfolders)
 
             if (uploadSuccess) {
                 cancelNotification()
@@ -129,24 +147,134 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         }
     }
 
-    private fun uploadFile(sourceFileUri: Uri, metaData: String?, remotePath: String): Boolean =
+    private fun uploadFile(
+        sourceFileUri: Uri,
+        metaData: String?,
+        remotePath: String,
+        useConversationSubfolders: Boolean
+    ): Boolean =
         if (file == null) {
             false
+        } else if (useConversationSubfolders) {
+            uploadUsingConversationSubfolders(sourceFileUri, metaData)
         } else if (isChunkedUploading) {
             Log.d(TAG, "starting chunked upload because size is " + file!!.length())
-
             initNotificationWithPercentage()
             val mimeType = context.contentResolver.getType(sourceFileUri)?.toMediaTypeOrNull()
-
-            chunkedFileUploader = ChunkedFileUploader(okHttpClient, currentUser, roomToken, metaData, this)
+            chunkedFileUploader = ChunkedFileUploader(
+                okHttpClient,
+                currentUser,
+                roomToken,
+                metaData,
+                this,
+                ncApiCoroutines,
+                useConversationSubfolders
+            )
             chunkedFileUploader!!.upload(file!!, mimeType, remotePath)
         } else {
             Log.d(TAG, "starting normal upload (not chunked) of $fileName")
-
             FileUploader(okHttpClient, context, currentUser, roomToken, ncApi, file!!)
                 .upload(sourceFileUri, fileName, remotePath, metaData)
                 .blockingFirst()
         }
+
+    private fun uploadUsingConversationSubfolders(sourceFileUri: Uri, metaData: String?): Boolean =
+        runBlocking {
+            val credentials = ApiUtils.getCredentials(
+                currentUser.username,
+                currentUser.token
+            ) ?: return@runBlocking false
+            val uploadId = UUID.randomUUID().toString()
+            val probeResponse = ncApiCoroutines.probeConversationAttachmentFolder(
+                credentials,
+                ApiUtils.getUrlForChatAttachmentFolder(ApiUtils.API_V1, currentUser.baseUrl, roomToken),
+                (listOf(fileName))
+            )
+            val draftFolderPath = probeResponse.ocs?.data?.folder?.trimEnd('/')
+            if (draftFolderPath.isNullOrEmpty()) {
+                Log.e(TAG, "Draft folder path missing in probe response")
+                return@runBlocking false
+            }
+            val predictedName = resolveFinalFileName(fileName, probeResponse.ocs?.data!!)
+            val tempRemotePath = "$draftFolderPath/$uploadId-0-$fileName"
+
+            val uploadSuccess = if (isChunkedUploading) {
+                initNotificationWithPercentage()
+                val mimeType = context.contentResolver.getType(sourceFileUri)?.toMediaTypeOrNull()
+                chunkedFileUploader = ChunkedFileUploader(
+                    okHttpClient,
+                    currentUser,
+                    roomToken,
+                    metaData,
+                    this@UploadAndShareFilesWorker,
+                    ncApiCoroutines,
+                    true
+                )
+                chunkedFileUploader!!.upload(file!!, mimeType, tempRemotePath)
+            } else {
+                uploadFileToDraftPathUsingWebDav(sourceFileUri, tempRemotePath)
+            }
+
+            if (!uploadSuccess) {
+                return@runBlocking false
+            }
+
+            runCatching {
+                ncApiCoroutines.postConversationAttachment(
+                    credentials,
+                    ApiUtils.getUrlForChatAttachment(ApiUtils.API_V1, currentUser.baseUrl, roomToken),
+                    tempRemotePath,
+                    uploadId,
+                    predictedName,
+                    metaData
+                )
+            }
+                .onFailure { Log.e(TAG, "Failed to finalize uploaded attachment", it) }
+                .isSuccess
+        }
+
+    private fun resolveFinalFileName(originalName: String, probeData: ChatProbeAttachmentData): String =
+        probeData.renames?.get(originalName) ?: originalName
+
+    private fun uploadFileToDraftPathUsingWebDav(sourceFileUri: Uri, remotePath: String): Boolean =
+        runCatching {
+            val mimeType = context.contentResolver.getType(sourceFileUri)?.toMediaTypeOrNull()
+            val requestBody = RequestBody.create(mimeType, file!!)
+            val uploadUrl = ApiUtils.getUrlForFileUpload(
+                currentUser.baseUrl!!,
+                currentUser.userId!!,
+                remotePath
+            )
+            val davResource = DavResource(
+                createWebDavClientWithAuth(),
+                uploadUrl.toHttpUrlOrNull()!!
+            )
+            davResource.put(requestBody) { response: Response ->
+                if (!response.isSuccessful) {
+                    throw IOException("Failed to upload file to draft folder. response code: ${response.code}")
+                }
+            }
+            FileUtils.copyFileToCache(context, sourceFileUri, fileName)
+            true
+        }
+            .onFailure { Log.e(TAG, "Failed to upload draft attachment via WebDAV", it) }
+            .getOrDefault(false)
+
+    private fun createWebDavClientWithAuth(): OkHttpClient =
+        okHttpClient.newBuilder()
+            .followRedirects(false)
+            .followSslRedirects(false)
+            .protocols(listOf(Protocol.HTTP_1_1))
+            .authenticator(
+                RestModule.HttpAuthenticator(
+                    ApiUtils.getCredentials(
+                        currentUser.username,
+                        currentUser.token
+                    )!!,
+                    "Authorization"
+                )
+            )
+            .build()
 
     private fun getRemotePath(currentUser: User): String {
         val remotePath = CapabilitiesUtil.getAttachmentFolder(

@@ -12,6 +12,8 @@ import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
+import com.nextcloud.talk.models.json.chatpostattachment.ChatPostAttachmentOverall
+import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachmentFolderOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -463,4 +465,24 @@ interface NcApiCoroutines {
     // Url is: /api/{apiVersion}/chat/{token}/read
     @DELETE
     suspend fun markRoomAsUnread(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
+
+    @FormUrlEncoded
+    @POST
+    suspend fun probeConversationAttachmentFolder(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("fileNames") fileName: List<String>
+    ): ChatProbeAttachmentFolderOverall
+
+    @Suppress("LongParameterList")
+    @FormUrlEncoded
+    @POST
+    suspend fun postConversationAttachment(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("filePath") filePath: String,
+        @Field("referenceId") referenceId: String,
+        @Field("fileName") fileName: String,
+        @Field("talkMetaData") talkMetaData: String?
+    ): ChatPostAttachmentOverall
 }
