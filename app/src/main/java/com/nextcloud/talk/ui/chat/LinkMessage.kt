@@ -7,6 +7,9 @@
 
 package com.nextcloud.talk.ui.chat
 
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -62,7 +65,7 @@ fun LinkMessage(
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                 )
                 openGraphObject?.let { og ->
-                    LinkPreviewCard(og)
+                    LinkPreviewCard(og, url = og.link?.takeIf { it.isNotBlank() } ?: typeContent.url)
                 }
             }
         }
@@ -70,13 +73,17 @@ fun LinkMessage(
 }
 
 @Composable
-private fun LinkPreviewCard(og: OpenGraphObject) {
+private fun LinkPreviewCard(og: OpenGraphObject, url: String) {
+    val context = LocalContext.current
     Surface(
         shape = MaterialTheme.shapes.small,
         tonalElevation = 1.dp,
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 8.dp, end = 8.dp, bottom = 8.dp, top = 4.dp)
+            .clickable(enabled = url.isNotBlank()) {
+                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            }
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             Text(
@@ -108,7 +115,7 @@ private fun LinkPreviewCard(og: OpenGraphObject) {
             og.thumb?.takeIf { it.isNotBlank() }?.let { thumbUrl ->
                 val loadedImage = load(
                     imageUri = thumbUrl,
-                    context = LocalContext.current,
+                    context = context,
                     errorPlaceholderImage = R.drawable.ic_mimetype_image
                 )
                 AsyncImage(
