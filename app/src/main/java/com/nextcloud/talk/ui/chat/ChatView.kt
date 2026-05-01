@@ -35,6 +35,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -352,21 +353,13 @@ fun ChatView(
         }
 
         // Sticky date header
-        Surface(
+        DateHeaderLabel(
+            text = stickyDateHeaderText,
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .padding(top = 12.dp)
-                .alpha(stickyDateHeaderAlpha),
-            shape = RoundedCornerShape(16.dp),
-            color = colorScheme.secondaryContainer,
-            tonalElevation = 2.dp
-        ) {
-            Text(
-                stickyDateHeaderText,
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                color = colorScheme.onSecondaryContainer
-            )
-        }
+                .padding(top = 2.dp)
+                .alpha(stickyDateHeaderAlpha)
+        )
 
         // Unread messages popup
         if (showUnreadPopup.value) {
@@ -435,32 +428,26 @@ fun UnreadMessagesPopup(unreadCount: Int, onClick: () -> Unit, modifier: Modifie
 }
 
 @Composable
-fun DateHeader(date: LocalDate) {
-    val viewThemeUtils = LocalViewThemeUtils.current
-    val colorScheme = viewThemeUtils.getColorScheme(LocalContext.current)
+fun DateHeaderLabel(text: String, modifier: Modifier = Modifier) {
+    Text(
+        text = text,
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh, RoundedCornerShape(12.dp))
+            .padding(horizontal = 12.dp, vertical = 4.dp),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurface
+    )
+}
 
+@Composable
+fun DateHeader(date: LocalDate) {
     val text = when (date) {
         LocalDate.now() -> stringResource(R.string.nc_date_header_today)
         LocalDate.now().minusDays(1) -> stringResource(R.string.nc_date_header_yesterday)
         else -> date.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"))
     }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text,
-            modifier = Modifier
-                .background(
-                    colorScheme.secondaryContainer,
-                    RoundedCornerShape(12.dp)
-                )
-                .padding(horizontal = 12.dp, vertical = 6.dp),
-            fontSize = 12.sp,
-            color = colorScheme.onSecondaryContainer
-        )
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        DateHeaderLabel(text = text)
     }
 }
 
