@@ -268,18 +268,25 @@ class OfflineFirstChatRepository @Inject constructor(
             delay(INSURANCE_REQUEST_DELAY)
             Log.d(TAG, "execute insurance request with latestKnownMessageIdFromSync: $latestKnownMessageIdFromSync")
 
-            var fieldMap = getFieldMap(
-                lookIntoFuture = true,
-                timeout = 0,
-                includeLastKnown = false,
-                lastKnown = latestKnownMessageIdFromSync.toInt(),
-                limit = 200
-            )
-            val networkParams = Bundle()
-            networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
-
-            getAndPersistMessages(networkParams)
+            fetchNewMessages()
         }
+    }
+
+    /**
+     * Fetches messages newer than latest known message
+     */
+    private suspend fun fetchNewMessages() {
+        var fieldMap = getFieldMap(
+            lookIntoFuture = true,
+            timeout = 0,
+            includeLastKnown = false,
+            lastKnown = latestKnownMessageIdFromSync.toInt(),
+            limit = 200
+        )
+        val networkParams = Bundle()
+        networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+
+        getAndPersistMessages(networkParams)
     }
 
     override suspend fun loadMoreMessages(
@@ -536,6 +543,16 @@ class OfflineFirstChatRepository @Inject constructor(
         )
         updateBlocks(newChatBlock)
     }
+
+    /**
+     * Returns true if all system messages do not require translation.
+     * Ignores other message types.
+     */
+    private fun isUntranslatedSystemMessage(messagesJson: List<ChatMessageJson>): Boolean =
+        messagesJson.all {
+            it.systemMessageType == ChatMessage.SystemMessageType.DUMMY ||
+                it.systemMessageType in ChatMessage.SYSTEM_MESSAGE_TYPE_UNTRANSLATED
+        }
 
     private suspend fun handleSystemMessagesThatAffectDatabase(messagesJson: List<ChatMessageJson>) {
         var hasPinnedMessageChange = false
@@ -953,10 +970,18 @@ class OfflineFirstChatRepository @Inject constructor(
         }
 
     override suspend fun onSignalingChatMessageReceived(chatMessages: List<ChatMessageJson>) {
+        // check if we need to get user specific data from the backend
+        if (!isUntranslatedSystemMessage(chatMessages) ||
+            chatMessages.any { it.messageParameters?.containsKey("file") == true }) {
+            Log.d(TAG, "onSignalingChatMessageReceived force data refresh")
+            fetchNewMessages()
+            return
+        }
+
         persistChatMessagesAndHandleSystemMessages(chatMessages, emitOnIncoming = true)
 
         // we assume that the signaling messages are on top of the latest chatblock and include them inside it.
-        // If for whatever reason the assume was not correct and there would be messages in between, the
+        // If for whatever reason the assumption was not correct and there would be messages in between, the
         // insurance request should fix this by adding the missing messages and updating the chatblocks.
         val latestChatBlock = chatBlocksDao.getLatestChatBlock(internalConversationId, threadId)
         latestChatBlock.first()?.apply {
