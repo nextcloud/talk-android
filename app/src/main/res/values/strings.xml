@@ -415,7 +415,6 @@ How to translate with transifex:
     <string name="nc_attendee_pin">Pin: %1$s</string>
 
     <!-- User Status -->
-    <string name="set_status">Set status</string>
     <string name="online_status">Online status</string>
     <string name="status_message">Status message</string>
     <string name="whats_your_status">What is your status?</string>
