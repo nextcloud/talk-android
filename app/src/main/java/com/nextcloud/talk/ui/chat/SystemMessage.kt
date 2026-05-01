@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,9 +25,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,8 +35,10 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.utils.DateUtils
 
-private const val AUTHOR_TEXT_SIZE = 12
 private const val TIME_TEXT_SIZE = 12
+
+private val systemMessageTextStyle
+    @Composable get() = MaterialTheme.typography.bodyMedium
 
 @Composable
 fun SystemMessage(message: ChatMessageUi) {
@@ -44,10 +48,12 @@ fun SystemMessage(message: ChatMessageUi) {
             if (message.isExpandableParent) {
                 ExpandableSystemMessage(message = message)
             } else {
+                val (annotated, inlineContent) = buildSystemMessageContent(message, systemMessageTextStyle)
                 Text(
-                    buildStyledMessage(message.plainMessage, message.messageParameters),
-                    fontSize = AUTHOR_TEXT_SIZE.sp,
+                    annotated,
+                    style = systemMessageTextStyle,
                     color = colorScheme.onSurface,
+                    inlineContent = inlineContent,
                     modifier = Modifier
                         .padding(8.dp)
                         .align(Alignment.Center)
@@ -66,35 +72,11 @@ fun SystemMessage(message: ChatMessageUi) {
     }
 }
 
-private val placeholderPattern = Regex("\\{(\\w+)\\}")
-private val actorTypes = setOf("user", "guest", "call", "email", "user-group", "circle")
-
-private fun buildStyledMessage(
-    plainMessage: String,
-    messageParameters: Map<String, Map<String, String>>
-): androidx.compose.ui.text.AnnotatedString =
-    buildAnnotatedString {
-        var lastEnd = 0
-        for (match in placeholderPattern.findAll(plainMessage)) {
-            if (match.range.first > lastEnd) {
-                append(plainMessage.substring(lastEnd, match.range.first))
-            }
-            val params = messageParameters[match.groupValues[1]]
-            val resolved = if (params != null) {
-                val name = params["name"].orEmpty()
-                if (params["type"] in actorTypes) "@$name" else name
-            } else {
-                match.value
-            }
-            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(resolved) }
-            lastEnd = match.range.last + 1
-        }
-        if (lastEnd < plainMessage.length) append(plainMessage.substring(lastEnd))
-    }
-
 @Composable
 private fun ExpandableSystemMessage(message: ChatMessageUi) {
     val chevronRes = if (message.isExpanded) R.drawable.ic_keyboard_arrow_up else R.drawable.ic_keyboard_arrow_down
+    val textStyle = systemMessageTextStyle
+    val (annotated, inlineContent) = buildSystemMessageContent(message, textStyle)
 
     Column(
         modifier = Modifier
@@ -112,9 +94,10 @@ private fun ExpandableSystemMessage(message: ChatMessageUi) {
                 tint = colorScheme.onSurfaceVariant
             )
             Text(
-                buildStyledMessage(message.plainMessage, message.messageParameters),
-                fontSize = AUTHOR_TEXT_SIZE.sp,
-                color = colorScheme.onSurface
+                annotated,
+                style = textStyle,
+                color = colorScheme.onSurface,
+                inlineContent = inlineContent
             )
         }
         if (!message.isExpanded) {
@@ -124,9 +107,50 @@ private fun ExpandableSystemMessage(message: ChatMessageUi) {
                     message.expandableChildrenAmount,
                     message.expandableChildrenAmount
                 ),
-                fontSize = (AUTHOR_TEXT_SIZE - 1).sp,
+                style = MaterialTheme.typography.bodyMedium,
                 color = colorScheme.onSurfaceVariant
             )
         }
     }
+}
+
+private val placeholderPattern = Regex("\\{(\\w+)\\}")
+
+private fun buildSystemMessageContent(
+    message: ChatMessageUi,
+    textStyle: TextStyle
+): Pair<androidx.compose.ui.text.AnnotatedString, Map<String, InlineTextContent>> {
+    val inlineContent = linkedMapOf<String, InlineTextContent>()
+    var mentionCounter = 0
+    val annotated = buildAnnotatedString {
+        var lastEnd = 0
+        for (match in placeholderPattern.findAll(message.plainMessage)) {
+            if (match.range.first > lastEnd) {
+                append(message.plainMessage.substring(lastEnd, match.range.first))
+            }
+            val key = match.groupValues[1]
+            val mention = parseMentionChipModel(
+                key = key,
+                messageParameters = message.messageParameters,
+                activeUserId = message.activeUserId,
+                activeUserBaseUrl = message.activeUserBaseUrl,
+                roomToken = message.roomToken
+            )
+            if (mention != null) {
+                val inlineId = "sysmsg-${message.id}-$mentionCounter"
+                mentionCounter++
+                appendMentionChip(inlineId, mention, inlineContent, textStyle, isMultilineLayout = false)
+            } else {
+                val name = message.messageParameters[key]?.get("name") ?: match.value
+                val start = length
+                append(name)
+                addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, length)
+            }
+            lastEnd = match.range.last + 1
+        }
+        if (lastEnd < message.plainMessage.length) {
+            append(message.plainMessage.substring(lastEnd))
+        }
+    }
+    return annotated to inlineContent
 }

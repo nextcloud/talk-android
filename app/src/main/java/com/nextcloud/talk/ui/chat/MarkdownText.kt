@@ -42,17 +42,14 @@ import androidx.core.content.ContextCompat
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
-import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
-import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.message.MessageUtils
 import org.greenrobot.eventbus.EventBus
 import java.lang.ref.WeakReference
 import kotlin.math.roundToInt
 
-private val mentionParamTypes = setOf("user", "guest", "call", "user-group", "email", "circle")
 private const val TEXT_SIZE_SP = 16f
 private const val LINE_HEIGHT_MULTIPLIER = 1.4f
 private const val AVATAR_SIZE_DP = 20f
@@ -168,7 +165,7 @@ fun MarkdownText(
 private fun resolveNonMentionParams(message: ChatMessageUi): String {
     var result = message.plainMessage
     for ((key, params) in message.messageParameters) {
-        if (params["type"] in mentionParamTypes) continue
+        if (params["type"] in mentionParameterTypes) continue
         if (params["type"] == "file") continue
         val token = "{$key}"
         if (result.contains(token)) {
@@ -215,7 +212,7 @@ private fun applyMentionChips(
     var hasClickableChips = false
     for ((key, params) in message.messageParameters) {
         val type = params["type"] ?: continue
-        if (type !in mentionParamTypes) continue
+        if (type !in mentionParameterTypes) continue
         val name = params["name"].orEmpty()
         val rawId = params["id"].orEmpty()
         val server = params["server"]
@@ -225,8 +222,27 @@ private fun applyMentionChips(
         val mentionId = if (isFederated) "$rawId@$server" else rawId
         val bgColor = if (isSelfMention) selfChipBgColor else chipBgColor
         val fgColor = if (isSelfMention) selfChipTextColor else chipTextColor
-        val avatarUrl = resolveMentionAvatarUrl(message, rawId, name, type, mentionId, isFederated)
-        val fallbackIconRes = resolveFallbackIcon(type, name, isSelfMention)
+        val avatarUrl = resolveMentionAvatarUrl(
+            rawId = rawId,
+            name = name,
+            type = type,
+            mentionId = mentionId,
+            isFederated = isFederated,
+            activeUserBaseUrl = message.activeUserBaseUrl,
+            roomToken = message.roomToken
+        )
+        val fallbackIconRes = resolveMentionFallbackIcon(
+            MentionChipModel(
+                id = mentionId,
+                rawId = rawId,
+                name = name,
+                type = type,
+                isFederated = isFederated,
+                isSelfMention = isSelfMention,
+                isClickableUserMention = isClickable,
+                avatarUrl = avatarUrl
+            )
+        )
         val fallbackDrawable = ContextCompat.getDrawable(context, fallbackIconRes)?.mutate() ?: continue
         val token = "{$key}"
         var searchFrom = 0
@@ -264,45 +280,6 @@ private fun applyMentionChips(
     }
     return hasClickableChips
 }
-
-@Suppress("LongParameterList")
-private fun resolveMentionAvatarUrl(
-    message: ChatMessageUi,
-    rawId: String,
-    name: String,
-    type: String,
-    mentionId: String,
-    isFederated: Boolean
-): String? {
-    val baseUrl = message.activeUserBaseUrl ?: return null
-    return when {
-        isFederated && !message.roomToken.isNullOrEmpty() -> ApiUtils.getUrlForFederatedAvatar(
-            baseUrl = baseUrl,
-            token = message.roomToken,
-            cloudId = mentionId,
-            darkTheme = 0,
-            requestBigSize = false
-        )
-        type == "guest" || type == "email" -> ApiUtils.getUrlForGuestAvatar(
-            baseUrl = baseUrl,
-            name = name,
-            requestBigSize = true
-        )
-        type == "call" || type == "user-group" || type == "circle" -> null
-        rawId.isNotEmpty() -> ApiUtils.getUrlForAvatar(baseUrl, rawId, false, false)
-        else -> null
-    }
-}
-
-private fun resolveFallbackIcon(type: String, name: String, isSelfMention: Boolean): Int =
-    when {
-        type == "call" && name.startsWith("+") -> R.drawable.icon_circular_phone
-        type == "call" -> R.drawable.ic_circular_group_mentions
-        type == "user-group" -> R.drawable.ic_circular_group_mentions
-        type == "circle" -> R.drawable.icon_circular_team
-        isSelfMention -> R.drawable.mention_chip
-        else -> R.drawable.accent_circle
-    }
 
 private class MentionClickSpan(private val mentionId: String) : ClickableSpan() {
     override fun onClick(widget: View) {
