@@ -229,7 +229,10 @@ How to translate with transifex:
     <string name="nc_diagnosis_gplay_available_no" translatable="false">Google Play services are not available. Notifications are not supported</string>
     <string name="nc_diagnosis_gplay_available_no_short" translatable="false">Google Play services are not available.</string>
     <string name="nc_diagnosis_unifiedpush_available_title" translatable="false">UnifiedPush services</string>
-    <string name="nc_diagnosis_unifiedpush_available_n" translatable="false">%d service(s) available</string>
+    <plurals name="nc_diagnosis_unifiedpush_available_n" translatable="false">
+        <item quantity="one">%d service available</item>
+        <item quantity="other">%d services available</item>
+    </plurals>
     <string name="nc_diagnosis_offer_unifiedpush" translatable="false">Offer UnifiedPush</string>
     <string name="nc_diagnosis_use_unifiedpush" translatable="false">Use UnifiedPush</string>
     <string name="nc_diagnosis_unifiedpush_service" translatable="false">UnifiedPush service</string>
@@ -412,7 +415,6 @@ How to translate with transifex:
     <string name="nc_attendee_pin">Pin: %1$s</string>
 
     <!-- User Status -->
-    <string name="set_status">Set status</string>
     <string name="online_status">Online status</string>
     <string name="status_message">Status message</string>
     <string name="whats_your_status">What is your status?</string>
@@ -484,8 +486,10 @@ How to translate with transifex:
     <string name="nc_formatted_message_you">You: %1$s</string>
     <string name="nc_draft_prefix">Draft: %1$s</string>
     <string name="nc_message_sent">Message sent</string>
+    <string name="nc_message_read">Message read</string>
+    <string name="nc_message_sending">Sending message</string>
     <string name="nc_message_added_to_notes">Message added to notes</string>
-    <string name="nc_message_failed">Failed</string>
+    <string name="nc_message_failed">Failed to send message</string>
     <string name="nc_message_failed_to_send">Failed to send message:</string>
     <string name="nc_add_attachment">Add attachment</string>
     <string name="emoji_category_recent">Recent</string>

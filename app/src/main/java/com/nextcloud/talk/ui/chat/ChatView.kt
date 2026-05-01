@@ -403,7 +403,7 @@ fun ChatView(
             ) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = "Scroll to newest",
+                    contentDescription = stringResource(R.string.scroll_to_bottom),
                     modifier = Modifier
                         .size(44.dp)
                         .padding(8.dp),
