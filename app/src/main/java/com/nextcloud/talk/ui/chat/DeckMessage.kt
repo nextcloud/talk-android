@@ -51,7 +51,7 @@ fun DeckMessage(
                         Icon(
                             painter = painterResource(R.drawable.deck),
                             tint = colorScheme.onSurface,
-                            contentDescription = ""
+                            contentDescription = null
                         )
                         Spacer(modifier = Modifier.padding(start = 8.dp))
                         Text(

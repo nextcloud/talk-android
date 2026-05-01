@@ -183,7 +183,7 @@ fun BackgroundVoiceMessageCardContent(
                     IconButton(onClick = onClosed) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.ic_baseline_close_24),
-                            contentDescription = "contentDescription",
+                            contentDescription = stringResource(R.string.close),
                             modifier = Modifier
                                 .size(24.dp)
                                 .padding(2.dp),

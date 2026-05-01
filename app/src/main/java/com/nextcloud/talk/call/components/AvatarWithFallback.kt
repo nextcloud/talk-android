@@ -19,8 +19,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.ParticipantUiState
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.ApiUtils
@@ -40,7 +42,7 @@ fun AvatarWithFallback(participant: ParticipantUiState, displayName: String, mod
         if (avatarUrl.isNotEmpty()) {
             AsyncImage(
                 model = avatarUrl,
-                contentDescription = "Avatar",
+                contentDescription = stringResource(R.string.avatar),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxSize()
