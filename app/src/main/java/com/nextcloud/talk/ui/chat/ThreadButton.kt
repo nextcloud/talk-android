@@ -44,7 +44,7 @@ fun ThreadButtonComposable(replyAmount: Int = 0, onButtonClick: () -> Unit = {})
         modifier = Modifier
             .padding(0.dp)
             .height(24.dp),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, colorResource(R.color.nc_incoming_text_default)),
         contentPadding = PaddingValues(0.dp),
         colors = ButtonDefaults.outlinedButtonColors(

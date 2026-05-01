@@ -31,9 +31,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -86,7 +88,9 @@ private const val ANIMATED_BLINK = 500
 private val bubbleRadiusBig = 10.dp
 private val bubbleRadiusSmall = 2.dp
 
-private val reactionRadius = 8.dp
+private val reactionRadius = 50.dp
+private val reactionChipHeight = 28.dp
+private val reactionOverlap = reactionChipHeight / 2
 
 internal val LocalReactionClickHandler = compositionLocalOf<(Int, String) -> Unit> { { _, _ -> } }
 internal val LocalReactionLongClickHandler = compositionLocalOf<(Int) -> Unit> { {} }
@@ -281,6 +285,9 @@ private fun MessageBubbleWithReactions(
         .defaultMinSize(60.dp, 40.dp)
         .widthIn(60.dp, 280.dp)
 
+    val hasReactionsOrThread = uiMessage.reactions.isNotEmpty() ||
+        isFirstMessageOfThreadInNormalChat(uiMessage, conversationThreadId)
+
     Column(horizontalAlignment = if (incoming) Alignment.Start else Alignment.End) {
         if (incoming && isOneToOneConversation && !uiMessage.isGrouped) {
             Text(
@@ -306,6 +313,15 @@ private fun MessageBubbleWithReactions(
                 content = content
             )
         }
+        if (hasReactionsOrThread) {
+            PinnedReactionsRow(
+                uiMessage = uiMessage,
+                conversationThreadId = conversationThreadId,
+                modifier = Modifier
+                    .offset(y = -reactionOverlap)
+                    .padding(horizontal = 8.dp)
+            )
+        }
     }
 }
 
@@ -327,9 +343,6 @@ private fun MessageBubbleContent(
         Modifier
     }
 
-    val hasReactionsOrThread = uiMessage.reactions.isNotEmpty() ||
-        isFirstMessageOfThreadInNormalChat(uiMessage, conversationThreadId)
-
     Column(
         modifier = bubbleContentModifier,
         verticalArrangement = Arrangement.Center
@@ -345,16 +358,7 @@ private fun MessageBubbleContent(
             metadataLayoutMode = metadataLayoutMode,
             captionText = captionText,
             showInlineMetadata = showInlineMetadata,
-            suppressMetadata = hasReactionsOrThread,
             content = content
-        )
-        MessageReactions(
-            uiMessage = uiMessage,
-            conversationThreadId = conversationThreadId,
-            fillWidth = metadataLayoutMode == MetadataLayoutMode.BELOW ||
-                metadataLayoutMode == MetadataLayoutMode.OVERLAY ||
-                metadataLayoutMode == MetadataLayoutMode.CAPTION,
-            addHorizontalPadding = !includePadding
         )
     }
 }
@@ -458,57 +462,36 @@ private fun BoxScope.OverlayMetadataBadge(uiMessage: ChatMessageUi) {
 }
 
 @Composable
-private fun MessageReactions(
-    uiMessage: ChatMessageUi,
-    conversationThreadId: Long?,
-    fillWidth: Boolean = false,
-    addHorizontalPadding: Boolean = false
-) {
+private fun PinnedReactionsRow(uiMessage: ChatMessageUi, conversationThreadId: Long?, modifier: Modifier = Modifier) {
     val showThreadButton = isFirstMessageOfThreadInNormalChat(uiMessage, conversationThreadId)
-    if (!showThreadButton && uiMessage.reactions.isEmpty()) {
-        return
-    }
+    if (!showThreadButton && uiMessage.reactions.isEmpty()) return
 
     val onReactionClick = LocalReactionClickHandler.current
     val onReactionLongClick = LocalReactionLongClickHandler.current
     val onOpenThread = LocalOpenThreadHandler.current
 
     Row(
-        modifier = run {
-            var mod = Modifier as Modifier
-            if (fillWidth) mod = mod.fillMaxWidth()
-            if (addHorizontalPadding) mod = mod.padding(horizontal = 10.dp)
-            mod.padding(top = 6.dp, bottom = 5.dp)
-        },
+        modifier = modifier
+            .horizontalScroll(rememberScrollState())
+            .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = if (fillWidth) {
-                Modifier.weight(1f).horizontalScroll(rememberScrollState())
-            } else {
-                Modifier.horizontalScroll(rememberScrollState())
-            },
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (showThreadButton) {
-                ThreadButtonComposable(
-                    replyAmount = uiMessage.threadReplies,
-                    onButtonClick = { onOpenThread(uiMessage.id) }
-                )
-            }
-            uiMessage.reactions.forEach { reaction ->
-                MessageReactionChip(
-                    messageId = uiMessage.id,
-                    incoming = uiMessage.incoming,
-                    reaction = reaction,
-                    onReactionClick = onReactionClick,
-                    onReactionLongClick = onReactionLongClick
-                )
-            }
+        if (showThreadButton) {
+            ThreadButtonComposable(
+                replyAmount = uiMessage.threadReplies,
+                onButtonClick = { onOpenThread(uiMessage.id) }
+            )
         }
-        MessageMetadata(uiMessage)
+        uiMessage.reactions.forEach { reaction ->
+            MessageReactionChip(
+                messageId = uiMessage.id,
+                incoming = uiMessage.incoming,
+                reaction = reaction,
+                onReactionClick = onReactionClick,
+                onReactionLongClick = onReactionLongClick
+            )
+        }
     }
 }
 
@@ -524,8 +507,10 @@ private fun MessageReactionChip(
 
     val backgroundColor = if (reaction.isSelfReaction) {
         themedColors.primaryContainer
-    } else {
+    } else if (incoming) {
         colorResource(R.color.bg_message_list_incoming_bubble)
+    } else {
+        themedColors.surfaceVariant
     }
     val borderColor = if (reaction.isSelfReaction) {
         themedColors.primary
@@ -546,18 +531,19 @@ private fun MessageReactionChip(
                 onClick = { onReactionClick(messageId, reaction.emoji) },
                 onLongClick = { onReactionLongClick(messageId) }
             )
-            .padding(start = 8.dp, top = 4.dp, end = 8.dp, bottom = 4.dp),
+            .padding(start = 8.dp, top = 2.dp, end = 8.dp, bottom = 2.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = reaction.emoji,
-            color = textColor
+            color = textColor,
+            fontSize = 13.sp
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = reaction.amount.toString(),
             color = textColor,
-            fontSize = authorTextSize
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
