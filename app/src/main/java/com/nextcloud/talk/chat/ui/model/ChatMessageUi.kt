@@ -48,7 +48,8 @@ data class ChatMessageUi(
     val parentMessage: ChatMessageUi? = null,
     val replyable: Boolean = false,
     val isGrouped: Boolean = false,
-    val isGroupedWithNext: Boolean = false
+    val isGroupedWithNext: Boolean = false,
+    val isSilent: Boolean = false
 )
 
 data class MessageReactionUi(val emoji: String, val amount: Int, val isSelfReaction: Boolean)
@@ -137,7 +138,8 @@ fun ChatMessage.toUiModel(
         ),
         replyable = replyable,
         isGrouped = isGrouped,
-        isGroupedWithNext = isGroupedWithNext
+        isGroupedWithNext = isGroupedWithNext,
+        isSilent = silent
     )
 
 private fun ChatMessage.normalizeMessageParameters(): Map<String, Map<String, String>> =
