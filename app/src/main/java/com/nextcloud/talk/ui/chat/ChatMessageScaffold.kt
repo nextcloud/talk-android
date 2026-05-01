@@ -794,7 +794,9 @@ internal fun resolveMarkdownSource(message: ChatMessageUi): String {
 
 @Composable
 fun EnrichedText(message: ChatMessageUi, modifier: Modifier, maxLines: Int = Int.MAX_VALUE) {
-    val isSingleEmoji = message.messageParameters.isEmpty() &&
+    val isInspectionMode = LocalInspectionMode.current
+    val isSingleEmoji = !isInspectionMode &&
+        message.messageParameters.isEmpty() &&
         TextMatchers.isMessageWithSingleEmoticonOnly(message.plainMessage)
     val fontSize = if (isSingleEmoji) regularTextSize * SINGLE_EMOJI_SIZE_MULTIPLIER else regularTextSize
 
