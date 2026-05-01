@@ -858,6 +858,80 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
+    @Suppress("Detekt.TooGenericExceptionCaught", "LongMethod")
+    override suspend fun addUploadPlaceholderMessage(
+        localFileUri: String,
+        caption: String,
+        mimeType: String?,
+        fileSize: Long,
+        referenceId: String
+    ): Flow<Result<ChatMessage?>> =
+        flow {
+            try {
+                val currentTimeMillis = System.currentTimeMillis()
+
+                // Use the first 15 hex chars so the value always fits in a signed Long.
+                // Use referenceId.hashCode() as the placeholder id so that:
+                // 1. It is unique per file even when multiple files are selected simultaneously
+                // 2. It fits in an Int, so it survives the Long→Int cast in ChatMessageUi.id without
+                //    truncation, keeping DB lookups consistent when the message is tapped.
+                // 3. It is always positive, because getMessagesEqualOrNewerThan expects it to be larger
+                // than oldestMessageId
+                @Suppress("MagicNumber")
+                val placeholderId = (referenceId.hashCode().toLong() and 0x7FFF_FFFFL)
+
+                Log.d(
+                    TAG,
+                    "addUploadPlaceholderMessage: referenceId=$referenceId " +
+                        "placeholderId=$placeholderId caption=$caption"
+                )
+
+                val fileParams = hashMapOf<String?, String?>(
+                    "type" to "file",
+                    "name" to caption,
+                    "mimetype" to (mimeType ?: ""),
+                    "size" to fileSize.toString(),
+                    "path" to localFileUri
+                )
+                val messageParameters = hashMapOf<String?, HashMap<String?, String?>>(
+                    "file" to fileParams
+                )
+
+                val entity = ChatMessageEntity(
+                    internalId = "$internalConversationId@_temp_$referenceId",
+                    internalConversationId = internalConversationId,
+                    id = placeholderId,
+                    threadId = threadId,
+                    message = "{file}",
+                    deleted = false,
+                    token = conversationModel.token,
+                    actorId = currentUser.userId!!,
+                    actorType = EnumActorTypeConverter().convertToString(Participant.ActorType.USERS),
+                    accountId = currentUser.id!!,
+                    messageParameters = messageParameters,
+                    messageType = "comment",
+                    parentMessageId = null,
+                    systemMessageType = ChatMessage.SystemMessageType.DUMMY,
+                    replyable = false,
+                    timestamp = currentTimeMillis / MILLIES,
+                    expirationTimestamp = 0,
+                    actorDisplayName = currentUser.displayName!!,
+                    referenceId = referenceId,
+                    isTemporary = true,
+                    sendStatus = SendStatus.PENDING,
+                    silent = false
+                )
+                chatDao.upsertChatMessage(entity)
+            } catch (e: Exception) {
+                Log.e(TAG, "addUploadPlaceholderMessage failed for referenceId=$referenceId", e)
+                emit(Result.failure(e))
+            }
+        }
+
+    override suspend fun deleteTempMessageByReferenceId(referenceId: String) {
+        chatDao.deleteTempChatMessages(internalConversationId, listOf(referenceId))
+    }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun editChatMessage(
         credentials: String,

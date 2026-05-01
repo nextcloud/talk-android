@@ -30,7 +30,6 @@ import com.nextcloud.talk.filebrowser.models.properties.OCId
 import com.nextcloud.talk.filebrowser.models.properties.OCSize
 import com.nextcloud.talk.dagger.modules.RestModule
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.FileUtils
@@ -303,14 +302,7 @@ class ChunkedFileUploader(
             destinationUri.toHttpUrlOrNull()!!,
             true
         ) { response: Response ->
-            if (response.isSuccessful) {
-                ShareOperationWorker.shareFile(
-                    roomToken,
-                    currentUser,
-                    targetPath,
-                    metaData
-                )
-            } else {
+            if (!response.isSuccessful) {
                 throw IOException("Failed to assemble chunks. response code: " + response.code)
             }
         }

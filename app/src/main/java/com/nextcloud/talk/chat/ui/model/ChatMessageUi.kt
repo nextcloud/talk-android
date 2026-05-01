@@ -48,7 +48,8 @@ data class ChatMessageUi(
     val parentMessage: ChatMessageUi? = null,
     val replyable: Boolean = false,
     val isGrouped: Boolean = false,
-    val isGroupedWithNext: Boolean = false
+    val isGroupedWithNext: Boolean = false,
+    val referenceId: String? = null
 )
 
 data class MessageReactionUi(val emoji: String, val amount: Int, val isSelfReaction: Boolean)
@@ -64,6 +65,13 @@ sealed interface MessageTypeContent {
         val drawableResourceId: Int,
         val mimeType: String,
         val animateGif: Boolean = false
+    ) : MessageTypeContent
+
+    data class UploadingMedia(
+        val localFileUri: String,
+        val caption: String,
+        val mimeType: String?,
+        val drawableResourceId: Int
     ) : MessageTypeContent
 
     data class Geolocation(val id: String, val name: String, val lat: Double, val lon: Double) : MessageTypeContent
@@ -137,7 +145,8 @@ fun ChatMessage.toUiModel(
         ),
         replyable = replyable,
         isGrouped = isGrouped,
-        isGroupedWithNext = isGroupedWithNext
+        isGroupedWithNext = isGroupedWithNext,
+        referenceId = referenceId
     )
 
 private fun ChatMessage.normalizeMessageParameters(): Map<String, Map<String, String>> =
@@ -196,6 +205,8 @@ fun getMessageTypeContent(user: User, message: ChatMessage): MessageTypeContent?
         MessageTypeContent.SystemMessage
     } else if (message.isVoiceMessage) {
         getVoiceContent(message)
+    } else if (message.hasFileAttachment && message.isTemporary) {
+        getUploadingMediaContent(message)
     } else if (message.hasFileAttachment) {
         getMediaContent(user, message)
     } else if (message.hasGeoLocation) {
@@ -209,6 +220,17 @@ fun getMessageTypeContent(user: User, message: ChatMessage): MessageTypeContent?
             ?.let { MessageTypeContent.LinkPreview(url = it) }
             ?: MessageTypeContent.RegularText
     }
+
+fun getUploadingMediaContent(message: ChatMessage): MessageTypeContent.UploadingMedia {
+    val mimetype = message.fileParameters.mimetype
+    val drawableResourceId = DrawableUtils.getDrawableResourceIdForMimeType(mimetype)
+    return MessageTypeContent.UploadingMedia(
+        localFileUri = message.fileParameters.path.orEmpty(),
+        caption = message.fileParameters.name.orEmpty(),
+        mimeType = mimetype.takeIf { !it.isNullOrEmpty() },
+        drawableResourceId = drawableResourceId
+    )
+}
 
 fun getMediaContent(user: User, message: ChatMessage): MessageTypeContent.Media {
     val mimetype = message.fileParameters.mimetype
