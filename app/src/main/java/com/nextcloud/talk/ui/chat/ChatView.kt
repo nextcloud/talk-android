@@ -97,17 +97,8 @@ class ChatViewCallbacks(
     val onLoadMore: (() -> Unit?)? = null,
     val advanceLocalLastReadMessageIfNeeded: ((Int) -> Unit?)? = null,
     val updateRemoteLastReadMessageIfNeeded: (() -> Unit?)? = null,
-    val onLongClick: ((Int) -> Unit?)? = null,
-    val onFileClick: (Int) -> Unit = {},
-    val onPollClick: (String, String) -> Unit = { _, _ -> },
-    val onVoicePlayPauseClick: (Int) -> Unit = {},
-    val onVoiceSeek: (Int, Int) -> Unit = { _, _ -> },
-    val onVoiceSpeedClick: (Int) -> Unit = {},
-    val onReactionClick: (Int, String) -> Unit = { _, _ -> },
-    val onReactionLongClick: (Int) -> Unit = {},
-    val onOpenThreadClick: (Int) -> Unit = {},
     val onLoadQuotedMessageClick: (Int) -> Unit = {},
-    val onSwipeReply: ((Int) -> Unit)? = null
+    val messageCallbacks: ChatMessageCallbacks = ChatMessageCallbacks()
 )
 
 @Suppress("Detekt.LongMethod", "Detekt.ComplexMethod")
@@ -321,17 +312,18 @@ fun ChatView(
                                     hasChatPermission = state.hasChatPermission
                                 ),
                                 callbacks = ChatMessageCallbacks(
-                                    onLongClick = callbacks.onLongClick,
-                                    onSwipeReply = callbacks.onSwipeReply,
-                                    onFileClick = callbacks.onFileClick,
-                                    onPollClick = callbacks.onPollClick,
-                                    onVoicePlayPauseClick = callbacks.onVoicePlayPauseClick,
-                                    onVoiceSeek = callbacks.onVoiceSeek,
-                                    onVoiceSpeedClick = callbacks.onVoiceSpeedClick,
-                                    onReactionClick = callbacks.onReactionClick,
-                                    onReactionLongClick = callbacks.onReactionLongClick,
-                                    onOpenThreadClick = callbacks.onOpenThreadClick,
-                                    onQuotedMessageClick = handleQuotedMessageClick
+                                    onLongClick = callbacks.messageCallbacks.onLongClick,
+                                    onSwipeReply = callbacks.messageCallbacks.onSwipeReply,
+                                    onFileClick = callbacks.messageCallbacks.onFileClick,
+                                    onPollClick = callbacks.messageCallbacks.onPollClick,
+                                    onVoicePlayPauseClick = callbacks.messageCallbacks.onVoicePlayPauseClick,
+                                    onVoiceSeek = callbacks.messageCallbacks.onVoiceSeek,
+                                    onVoiceSpeedClick = callbacks.messageCallbacks.onVoiceSpeedClick,
+                                    onReactionClick = callbacks.messageCallbacks.onReactionClick,
+                                    onReactionLongClick = callbacks.messageCallbacks.onReactionLongClick,
+                                    onOpenThreadClick = callbacks.messageCallbacks.onOpenThreadClick,
+                                    onQuotedMessageClick = handleQuotedMessageClick,
+                                    onSystemMessageExpandClick = callbacks.messageCallbacks.onSystemMessageExpandClick
                                 )
                             )
                         }
