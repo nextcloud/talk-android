@@ -342,14 +342,14 @@
     <string name="nc_mark_conversation_as_unimportant">Görüşmenin önemli işareti kaldırıldı</string>
     <string name="nc_meeting_ended">Toplantı sona erdi</string>
     <string name="nc_message_added_to_notes">İleti notlara eklendi</string>
-    <string name="nc_message_failed">Tamamlanamadı</string>
+    <string name="nc_message_failed">İleti gönderilemedi</string>
     <string name="nc_message_failed_to_send">İleti gönderilemedi.</string>
     <string name="nc_message_offline">Çevrim dışı</string>
     <string name="nc_message_quote_cancel_reply">Yanıtı iptal et</string>
     <string name="nc_message_read">İleti okundu</string>
     <string name="nc_message_scheduled">İleti zamanlandı</string>
     <string name="nc_message_scheduled_at">İleti %1$s için zamanlandı</string>
-    <string name="nc_message_sending">Gönderiliyor</string>
+    <string name="nc_message_sending">İleti gönderiliyor</string>
     <string name="nc_message_sent">İleti gönderildi</string>
     <string name="nc_microphone_enabled_audio_recording">Mikrofon açık ve ses kaydediliyor</string>
     <string name="nc_microphone_permission_hint">Sesli iletişim kurabilmek için \"Mikrofon\" için erişme izni verin.</string>

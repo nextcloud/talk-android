@@ -345,14 +345,14 @@
     <string name="nc_mark_conversation_as_unimportant">Conversation unmarked as important</string>
     <string name="nc_meeting_ended">Meeting ended</string>
     <string name="nc_message_added_to_notes">Message added to notes</string>
-    <string name="nc_message_failed">Failed</string>
+    <string name="nc_message_failed">Failed to send message</string>
     <string name="nc_message_failed_to_send">Failed to send message:</string>
     <string name="nc_message_offline">Offline</string>
     <string name="nc_message_quote_cancel_reply">Cancel reply</string>
     <string name="nc_message_read">Message read</string>
     <string name="nc_message_scheduled">Message scheduled</string>
     <string name="nc_message_scheduled_at">Message scheduled for %1$s</string>
-    <string name="nc_message_sending">Sending</string>
+    <string name="nc_message_sending">Sending message</string>
     <string name="nc_message_sent">Message sent</string>
     <string name="nc_microphone_enabled_audio_recording">Microphone is enabled and audio is recording</string>
     <string name="nc_microphone_permission_hint">To enable voice communication please grant \"Microphone\" permission.</string>

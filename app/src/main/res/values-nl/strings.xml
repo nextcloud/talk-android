@@ -341,12 +341,11 @@ Kies er eentje van een provider.</string>
     <string name="nc_mark_conversation_as_unimportant">Gesprek niet gemarkeerd als belangrijk</string>
     <string name="nc_meeting_ended">Vergadering is beëindigd</string>
     <string name="nc_message_added_to_notes">Bericht toegevoegd aan notities</string>
-    <string name="nc_message_failed">Mislukt</string>
     <string name="nc_message_failed_to_send">Fout bij versturen bericht:</string>
     <string name="nc_message_offline">Offline</string>
     <string name="nc_message_quote_cancel_reply">Antwoord annuleren</string>
     <string name="nc_message_read">Bericht gelezen</string>
-    <string name="nc_message_sending">Verzenden</string>
+    <string name="nc_message_sending">Versturen bericht</string>
     <string name="nc_message_sent">Bericht verstuurd</string>
     <string name="nc_microphone_enabled_audio_recording">Microfoon is ingeschakeld en audio wordt opgenomen</string>
     <string name="nc_microphone_permission_hint">Om videogesprekken te houden, verleen \"Microfoon\" machtiging.</string>

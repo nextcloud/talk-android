@@ -345,14 +345,14 @@
     <string name="nc_mark_conversation_as_unimportant">Vestlus on märgitud mitteoluliseks</string>
     <string name="nc_meeting_ended">Kohtumine on lõppenud</string>
     <string name="nc_message_added_to_notes">Teade on lisatud märkmetesse</string>
-    <string name="nc_message_failed">Ebaõnnestus</string>
+    <string name="nc_message_failed">Sõnumi saatmine ei õnnestu</string>
     <string name="nc_message_failed_to_send">Sõnumi saatmine ei õnnestunud:</string>
     <string name="nc_message_offline">Pole võrgus</string>
     <string name="nc_message_quote_cancel_reply">Katkesta vastamine</string>
     <string name="nc_message_read">Sõnum on loetud</string>
     <string name="nc_message_scheduled">Sõnum on ajastatud</string>
     <string name="nc_message_scheduled_at">Sõnumi saatmine on ajastatud: %1$s</string>
-    <string name="nc_message_sending">Saatmisel</string>
+    <string name="nc_message_sending">Saadan sõnumit</string>
     <string name="nc_message_sent">Sõnum on saadetud</string>
     <string name="nc_microphone_enabled_audio_recording">Mikrofon on lülitatud sisse ja heli on salvestamisel</string>
     <string name="nc_microphone_permission_hint">Et saaksid suhtlemisel kasutada heliedastust, palun luba rakendusel kasutada mikrofoni.</string>

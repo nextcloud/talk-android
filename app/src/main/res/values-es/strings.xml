@@ -342,14 +342,13 @@
     <string name="nc_mark_conversation_as_unimportant">Se le ha quitado la marca de importante a la conversación</string>
     <string name="nc_meeting_ended">La reunión ha finalizado</string>
     <string name="nc_message_added_to_notes">El mensaje se agregó a las notas</string>
-    <string name="nc_message_failed">Falló</string>
     <string name="nc_message_failed_to_send">Fallo al enviar el mensaje</string>
     <string name="nc_message_offline">Fuera de línea</string>
     <string name="nc_message_quote_cancel_reply">Cancelar respuesta</string>
     <string name="nc_message_read">Mensajes leídos</string>
     <string name="nc_message_scheduled">Mensaje programado</string>
     <string name="nc_message_scheduled_at">Mensaje programado a %1$s</string>
-    <string name="nc_message_sending">Enviando</string>
+    <string name="nc_message_sending">Enviando mensaje</string>
     <string name="nc_message_sent">Mensaje enviado</string>
     <string name="nc_microphone_enabled_audio_recording">El micrófono se encuentra habilitado y se está grabando el audio</string>
     <string name="nc_microphone_permission_hint">Para habilitar la comunicación por voz, por favor, otorgue el permiso \"Micrófono\".</string>

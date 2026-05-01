@@ -342,14 +342,13 @@
     <string name="nc_mark_conversation_as_unimportant">Mazungumzo hayajatiwa alama kuwa muhimu</string>
     <string name="nc_meeting_ended">Mkutano umeisha</string>
     <string name="nc_message_added_to_notes">Ujumbe umeongezwa katika kumbukumbu</string>
-    <string name="nc_message_failed">Imeshindwa</string>
     <string name="nc_message_failed_to_send">Imeshindwa kutuma ujumbe</string>
     <string name="nc_message_offline">Nje ya mtandao</string>
     <string name="nc_message_quote_cancel_reply">Ghairi jibu</string>
     <string name="nc_message_read">Usomaji wa ujumbe</string>
     <string name="nc_message_scheduled">Ujumbe umeratibiwa</string>
     <string name="nc_message_scheduled_at">Ujumbe umeratibiwa kwa %1$s</string>
-    <string name="nc_message_sending">Inatuma</string>
+    <string name="nc_message_sending">Kutuma ujumbe</string>
     <string name="nc_message_sent">Ujumbe umetumwa</string>
     <string name="nc_microphone_enabled_audio_recording">Maikrofoni imewashwa na sauti inarekodiwa</string>
     <string name="nc_microphone_permission_hint">Ili kuwezesha mawasiliano ya sauti tafadhali toa ruhusa ya \"Mikrofoni\".</string>

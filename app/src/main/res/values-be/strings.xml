@@ -343,14 +343,12 @@
     <string name="nc_mark_conversation_as_unimportant">Пазнака важнасці размовы скасавана</string>
     <string name="nc_meeting_ended">Сустрэча завершана</string>
     <string name="nc_message_added_to_notes">Паведамленне дададзена ў нататкі</string>
-    <string name="nc_message_failed">Не ўдалося</string>
     <string name="nc_message_failed_to_send">Не атрымалася адправіць паведамленне:</string>
     <string name="nc_message_offline">Па-за сеткай</string>
     <string name="nc_message_quote_cancel_reply">Скасаваць адказ</string>
     <string name="nc_message_read">Паведамленне прачытана</string>
     <string name="nc_message_scheduled">Паведамленне запланавана</string>
     <string name="nc_message_scheduled_at">Паведамленне запланавана на %1$s</string>
-    <string name="nc_message_sending">Адпраўка</string>
     <string name="nc_message_sent">Паведамленне адпраўлена</string>
     <string name="nc_microphone_enabled_audio_recording">Мікрафон уключаны, і гук запісваецца</string>
     <string name="nc_microphone_permission_hint">Каб уключыць галасавую сувязь, дайце дазвол на доступ да мікрафона.</string>

@@ -251,6 +251,7 @@
     <string name="nc_diagnosis_dialog_open_checklist">Atidaryti trikčių šalinimo kontrolinį sąrašą</string>
     <string name="nc_diagnosis_dialog_open_diagnosis">Atidaryti diagnostikos langą</string>
     <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Atidaryti dontkillmyapp.com</string>
+    <string name="nc_dialog_introduce_unifiedpush_selection">Ketinate pasirinkti numatytąją pranešimų siuntimo paslaugą</string>
     <string name="nc_dialog_invalid_password">Neteisingas slaptažodis</string>
     <string name="nc_dialog_maintenance_mode_description">Serveris šiuo metu veikia priežiūros režimu.</string>
     <string name="nc_dialog_outdated_client">Programėlė yra pasenusi</string>
@@ -345,14 +346,13 @@
     <string name="nc_mark_conversation_as_unimportant">Pokalbis nebepažymėtas kaip svarbus</string>
     <string name="nc_meeting_ended">Susitikimas baigėsi</string>
     <string name="nc_message_added_to_notes">Pranešimas pridėtas prie užrašų</string>
-    <string name="nc_message_failed">Nepavyko</string>
     <string name="nc_message_failed_to_send">Nepavyko išsiųsti pranešimo:</string>
     <string name="nc_message_offline">Neprisijungęs</string>
     <string name="nc_message_quote_cancel_reply">Atšaukti atsakymą</string>
     <string name="nc_message_read">Pranešimas perskaitytas</string>
     <string name="nc_message_scheduled">Žinutė suplanuota</string>
     <string name="nc_message_scheduled_at">Žinutė suplanuota - %1$s</string>
-    <string name="nc_message_sending">Siunčiama</string>
+    <string name="nc_message_sending">Siunčiamas pranešimas</string>
     <string name="nc_message_sent">Žinutė išsiųsta</string>
     <string name="nc_microphone_enabled_audio_recording">Mikrofonas įjungtas ir garsas įrašomas</string>
     <string name="nc_microphone_permission_hint">Norėdami įjungti balso ryšį, suteikite leidimą naudoti mikrofoną.</string>
@@ -517,11 +517,14 @@
     <string name="nc_settings_remove">Šalinti</string>
     <string name="nc_settings_remove_account">Šalinti paskyrą</string>
     <string name="nc_settings_remove_confirmation">Patvirtinkite savo ketinimą pašalinti esamą paskyrą.</string>
+    <string name="nc_settings_screen_enable_unifiedpush_desc">Gaukite tiesioginius pranešimus naudodami išorinę „UnifiedPush“ paslaugą</string>
+    <string name="nc_settings_screen_enable_unifiedpush_title">Įjungti „UnifiedPush“</string>
     <string name="nc_settings_screen_lock_desc">Užrakinti %1$s naudojant Android ekrano užraktą ar palaikomą biometrinį metodą</string>
     <string name="nc_settings_screen_lock_timeout_title">Ekrano užrakto neaktyvumo skirtasis laikas</string>
     <string name="nc_settings_screen_lock_title">Ekrano užraktas</string>
     <string name="nc_settings_screen_security_desc">Neleidžia daryti ekrano kopijų paskiausiųjų sąraše ir programėlės viduje</string>
     <string name="nc_settings_screen_security_title">Ekrano saugumas</string>
+    <string name="nc_settings_screen_unifiedpush_service_title">„UnifiedPush“  paslauga</string>
     <string name="nc_settings_server_almost_eol">Serverio versija yra labai sena ir nebus palaikoma kitame leidime!</string>
     <string name="nc_settings_server_eol">Serverio versija per sena ir ši „Android“ programėlės versija jos nepalaiko.</string>
     <string name="nc_settings_server_eol_title">Nepalaikomas serveris</string>
@@ -748,6 +751,7 @@
     <string name="unarchive_hint">Kai pokalbis bus išimtas iš archyvo, jis vėl bus rodomas pagal numatytuosius nustatymus.</string>
     <string name="unarchived_conversation">Išarchyvuota %1$s</string>
     <string name="unban">Panaikinti blokavimą</string>
+    <string name="unifiedpush">„UnifiedPush“</string>
     <string name="unpin_message">Atsegti pranešimą</string>
     <string name="unread">Neskaityta</string>
     <string name="until_unpin">Kol nebus atsegta</string>
