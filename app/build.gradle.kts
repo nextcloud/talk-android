@@ -312,7 +312,7 @@ dependencies {
     implementation("io.noties.markwon:ext-tables:$markwonVersion")
 
     // Computer Vision - for background effects during video calls
-    implementation("com.google.mediapipe:tasks-vision:0.10.26")
+    implementation("com.google.mediapipe:tasks-vision:0.20230731")
     implementation("io.github.crow-misia.libyuv:libyuv-android:0.43.2")
 
     // Avatar picker
