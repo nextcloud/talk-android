@@ -170,16 +170,18 @@ fun buildMentionInlineContent(
     val width = estimateMentionChipWidthInEm(mention.name, fontSizeSp)
     val heightDp = if (isMultilineLayout) CHIP_MULTILINE_HEIGHT_DP else CHIP_SINGLE_LINE_HEIGHT_DP
     val heightEm = heightDp / fontSizeSp
+    val verticalAlign = if (isMultilineLayout) PlaceholderVerticalAlign.Bottom else PlaceholderVerticalAlign.Center
+    val boxAlignment = if (isMultilineLayout) Alignment.BottomStart else Alignment.CenterStart
     return InlineTextContent(
         placeholder = Placeholder(
             width = width.em,
             height = heightEm.em,
-            placeholderVerticalAlign = PlaceholderVerticalAlign.Bottom
+            placeholderVerticalAlign = verticalAlign
         )
     ) { _ ->
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomStart
+            contentAlignment = boxAlignment
         ) {
             MentionChip(
                 mention = mention,
