@@ -267,7 +267,11 @@ class DiagnosisActivity : BaseActivity() {
         }
         addDiagnosisEntry(
             key = getString(R.string.nc_diagnosis_unifiedpush_available_title),
-            value = getString(R.string.nc_diagnosis_unifiedpush_available_n).format(nUnifiedPushServices)
+            value = context.resources.getQuantityString(
+                R.plurals.nc_diagnosis_unifiedpush_available_n,
+                nUnifiedPushServices,
+                nUnifiedPushServices
+            )
         )
     }
 
