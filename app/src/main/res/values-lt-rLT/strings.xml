@@ -310,7 +310,7 @@
     <string name="nc_guest_access_resend_invitations_failed">Kvietimai nebuvo išsiųsti dėl klaidos.</string>
     <string name="nc_guest_access_resend_invitations_successful">Kvietimai buvo išsiųsti dar kartą.</string>
     <string name="nc_guest_access_share_link">Bendrinkite pokalbio nuorodą</string>
-    <string name="nc_hint_enter_a_message">Įveskite žinutę …</string>
+    <string name="nc_hint_enter_a_message">Įrašykite žinutę …</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Baterijos optimizavimas nėra ignoruojamas. Tai reikėtų pakeisti, kad pranešimai veiktų fone! Spustelėkite Gerai ir pasirinkite „Visos programėlės“ -> %1$s, tada „Neoptimizuoti“ arba „Leisti naudoti foną -> Neribotai“.</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignoruoti akumuliatoriaus optimizavimą</string>
     <string name="nc_important_conversation">Svarbus pokalbis</string>
