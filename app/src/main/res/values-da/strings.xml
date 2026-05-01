@@ -338,12 +338,10 @@
     <string name="nc_mark_conversation_as_unimportant">Samtale ikke markeret som vigtig</string>
     <string name="nc_meeting_ended">Mødet sluttede</string>
     <string name="nc_message_added_to_notes">Besked til føjet til noter</string>
-    <string name="nc_message_failed">Mislykkede</string>
     <string name="nc_message_failed_to_send">Kunne ikke sende besked:</string>
     <string name="nc_message_offline">Offline</string>
     <string name="nc_message_quote_cancel_reply">Annuller svar</string>
     <string name="nc_message_read">Besked læst</string>
-    <string name="nc_message_sending">Sender</string>
     <string name="nc_message_sent">Beskeden blev sendt</string>
     <string name="nc_microphone_enabled_audio_recording">Mikrofon er aktiveret og lyden optages</string>
     <string name="nc_microphone_permission_hint">For at aktivere kommunikation så tillad venligst \"Mikrofon\"</string>

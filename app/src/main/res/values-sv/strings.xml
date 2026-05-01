@@ -250,6 +250,7 @@
     <string name="nc_diagnosis_dialog_open_checklist">Öppna checklista för felsökning</string>
     <string name="nc_diagnosis_dialog_open_diagnosis">Öppna diagnosskärmen</string>
     <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Öppna dontkillmyapp.com</string>
+    <string name="nc_dialog_introduce_unifiedpush_selection">Du håller på att välja din standardtjänst för push-notiser</string>
     <string name="nc_dialog_invalid_password">Felaktigt lösenord</string>
     <string name="nc_dialog_maintenance_mode_description">Servern är för närvarande i underhållsläge.</string>
     <string name="nc_dialog_outdated_client">Appen är föråldrad</string>
@@ -344,14 +345,13 @@
     <string name="nc_mark_conversation_as_unimportant">Konversationen avmarkerades som viktig</string>
     <string name="nc_meeting_ended">Möte avslutat</string>
     <string name="nc_message_added_to_notes">Meddelande tillagt i anteckningar</string>
-    <string name="nc_message_failed">Misslyckades</string>
     <string name="nc_message_failed_to_send">Kunde inte skicka meddelande:</string>
     <string name="nc_message_offline">Frånkopplad</string>
     <string name="nc_message_quote_cancel_reply">Avbryt svar</string>
     <string name="nc_message_read">Meddelande läst</string>
     <string name="nc_message_scheduled">Meddelande schemalagt</string>
     <string name="nc_message_scheduled_at">Meddelande schemalagt till %1$s</string>
-    <string name="nc_message_sending">Skickar</string>
+    <string name="nc_message_sending">Skickar meddelande</string>
     <string name="nc_message_sent">Meddelande skickat</string>
     <string name="nc_microphone_enabled_audio_recording">Mikrofonen är aktiverad och ljud spelas in</string>
     <string name="nc_microphone_permission_hint">För att aktivera röstkommunikation ange \"Mikrofon\"-tillstånd.</string>
@@ -516,11 +516,14 @@
     <string name="nc_settings_remove">Ta bort</string>
     <string name="nc_settings_remove_account">Ta bort konto</string>
     <string name="nc_settings_remove_confirmation">Bekräfta att du vill radera aktuellt konto.</string>
+    <string name="nc_settings_screen_enable_unifiedpush_desc">Ta emot push-notiser via en extern UnifiedPush-tjänst</string>
+    <string name="nc_settings_screen_enable_unifiedpush_title">Aktivera UnifiedPush</string>
     <string name="nc_settings_screen_lock_desc">Lås %1$s med Android skärmslås eller biometrisk metod</string>
     <string name="nc_settings_screen_lock_timeout_title">Tidsgräns för skärmlås</string>
     <string name="nc_settings_screen_lock_title">Skärmlås</string>
     <string name="nc_settings_screen_security_desc">Förhindrar skärmdumpar i den senaste listan och inuti appen</string>
     <string name="nc_settings_screen_security_title">Skärmsäkerhet</string>
+    <string name="nc_settings_screen_unifiedpush_service_title">UnifiedPush-tjänst</string>
     <string name="nc_settings_server_almost_eol">Serverversionen är mycket gammal och kommer inte att stödjas i nästa version!</string>
     <string name="nc_settings_server_eol">Serverversionen är för gammal eller ej stödd av den här versionen av Android-appen</string>
     <string name="nc_settings_server_eol_title">Serverversion stöds inte</string>
@@ -746,6 +749,7 @@
     <string name="unarchive_hint">När en konversation har avarkiverats visas den som standard igen.</string>
     <string name="unarchived_conversation">Avarkiverad %1$s</string>
     <string name="unban">Tillåt</string>
+    <string name="unifiedpush">UnifiedPush</string>
     <string name="unpin_message">Ta bort fäst meddelande</string>
     <string name="unread">Oläst</string>
     <string name="until_unpin">Tills fästet tas bort</string>

@@ -251,6 +251,7 @@
     <string name="nc_diagnosis_dialog_open_checklist">Abrir lista de verificação de solução de problemas</string>
     <string name="nc_diagnosis_dialog_open_diagnosis">Abrir tela de diagnóstico</string>
     <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Abrir dontkillmyapp.com</string>
+    <string name="nc_dialog_introduce_unifiedpush_selection">Você está prestes a selecionar seu serviço de notificações push padrão</string>
     <string name="nc_dialog_invalid_password">Senha inválida</string>
     <string name="nc_dialog_maintenance_mode_description">O servidor está atualmente em modo de manutenção.</string>
     <string name="nc_dialog_outdated_client">Aplicativo está desatualizado</string>
@@ -345,14 +346,14 @@
     <string name="nc_mark_conversation_as_unimportant">Conversa desmarcada como importante</string>
     <string name="nc_meeting_ended">Reunião encerrada</string>
     <string name="nc_message_added_to_notes">Mensagem adicionada às notas</string>
-    <string name="nc_message_failed">Falhou</string>
+    <string name="nc_message_failed">Falha ao enviar a mensagem</string>
     <string name="nc_message_failed_to_send">Falha ao enviar mensagem:</string>
     <string name="nc_message_offline">Off-line</string>
     <string name="nc_message_quote_cancel_reply">Cancelar resposta</string>
     <string name="nc_message_read">Mensagem lida</string>
     <string name="nc_message_scheduled">Mensagem agendada</string>
     <string name="nc_message_scheduled_at">Mensagem agendada para %1$s</string>
-    <string name="nc_message_sending">Enviando</string>
+    <string name="nc_message_sending">Enviando mensagem</string>
     <string name="nc_message_sent">Mensagem enviada</string>
     <string name="nc_microphone_enabled_audio_recording">O microfone está ativado e o áudio está sendo gravado</string>
     <string name="nc_microphone_permission_hint">Para ativar a comunicação por voz, conceda a permissão \"Microfone\".</string>
@@ -517,11 +518,14 @@
     <string name="nc_settings_remove">Excluir</string>
     <string name="nc_settings_remove_account">Excluir conta</string>
     <string name="nc_settings_remove_confirmation">Confirme se quer realmente excluir a conta atual.</string>
+    <string name="nc_settings_screen_enable_unifiedpush_desc">Receba notificações push por meio de um serviço UnifiedPush externo</string>
+    <string name="nc_settings_screen_enable_unifiedpush_title">Ativar UnifiedPush</string>
     <string name="nc_settings_screen_lock_desc">Trancar %1$s com o bloqueio de tela do Android ou um método biométrico suportado</string>
     <string name="nc_settings_screen_lock_timeout_title">Tempo limite para bloqueio de tela</string>
     <string name="nc_settings_screen_lock_title">Bloqueio de tela</string>
     <string name="nc_settings_screen_security_desc">Impede capturas de tela na lista recente e dentro do aplicativo</string>
     <string name="nc_settings_screen_security_title">Segurança da tela</string>
+    <string name="nc_settings_screen_unifiedpush_service_title">Serviço UnifiedPush</string>
     <string name="nc_settings_server_almost_eol">A versão do servidor é muito antiga e não será suportada na próxima versão!</string>
     <string name="nc_settings_server_eol">A versão do servidor é muito antiga e não suporta esta versão do aplicativo para Android</string>
     <string name="nc_settings_server_eol_title">Servidor não suportado</string>
@@ -748,6 +752,7 @@
     <string name="unarchive_hint">Quando uma conversa for desarquivada, ela será mostrada novamente por padrão.</string>
     <string name="unarchived_conversation">%1$s desarquivado</string>
     <string name="unban">Desbanir</string>
+    <string name="unifiedpush">UnifiedPush</string>
     <string name="unpin_message">Desfixar mensagem</string>
     <string name="unread">Não lido</string>
     <string name="until_unpin">Até desfixar</string>

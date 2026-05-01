@@ -340,14 +340,13 @@
     <string name="nc_mark_conversation_as_unimportant">Conversazione non contrassegnata come importante</string>
     <string name="nc_meeting_ended">Meeting terminato</string>
     <string name="nc_message_added_to_notes">Messaggio aggiunto alle note</string>
-    <string name="nc_message_failed">Non riuscito</string>
     <string name="nc_message_failed_to_send">Invio del messaggio non riuscito:</string>
     <string name="nc_message_offline">Offline</string>
     <string name="nc_message_quote_cancel_reply">Annulla risposta</string>
     <string name="nc_message_read">Messaggio letto</string>
     <string name="nc_message_scheduled">Messaggio programmato</string>
     <string name="nc_message_scheduled_at">Messaggio programmato per %1$s</string>
-    <string name="nc_message_sending">Inviando</string>
+    <string name="nc_message_sending">Invio del messaggio</string>
     <string name="nc_message_sent">Messaggio inviato</string>
     <string name="nc_microphone_enabled_audio_recording">Il microfono è attivato e l\'audio è in registrazione.</string>
     <string name="nc_microphone_permission_hint">Per abilitare la comunicazione vocale, concedi l\'autorizzazione “Microfono”.</string>

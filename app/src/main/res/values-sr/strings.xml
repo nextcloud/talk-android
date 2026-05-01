@@ -340,12 +340,11 @@
     <string name="nc_mark_conversation_as_unimportant">Разговор више није означен као важан</string>
     <string name="nc_meeting_ended">Састанак је завршен</string>
     <string name="nc_message_added_to_notes">У белешке је додата порука</string>
-    <string name="nc_message_failed">Није успело</string>
     <string name="nc_message_failed_to_send">Није успело слање поруке:</string>
     <string name="nc_message_offline">Ван мреже</string>
     <string name="nc_message_quote_cancel_reply">Откажи одговор</string>
     <string name="nc_message_read">Порука је прочитана</string>
-    <string name="nc_message_sending">Шаље се</string>
+    <string name="nc_message_sending">Слање поруке</string>
     <string name="nc_message_sent">Порука послата</string>
     <string name="nc_microphone_enabled_audio_recording">Микрофон је укључен и снима се звук</string>
     <string name="nc_microphone_permission_hint">Ако желите да укључите аудио комуникацију, молимо вас да дате дозволу „Микрофон”</string>

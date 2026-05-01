@@ -240,11 +240,11 @@
     <string name="nc_manual">Ni nastavljeno</string>
     <string name="nc_mark_as_read">Označi kot prebrano</string>
     <string name="nc_mark_as_unread">Označi kot neprebrano</string>
-    <string name="nc_message_failed">Opravilo je spodletelo!</string>
     <string name="nc_message_failed_to_send">Pošiljanje sporočila je spodletelo:</string>
     <string name="nc_message_offline">Brez povezave</string>
     <string name="nc_message_quote_cancel_reply">Prekliči odgovor</string>
     <string name="nc_message_read">Sporočilo je prebrano</string>
+    <string name="nc_message_sending">Poteka pošiljanje sporočila</string>
     <string name="nc_message_sent">Sporočilo je poslano</string>
     <string name="nc_missed_call">Zgrešili ste klic stika %s</string>
     <string name="nc_moderator">Moderator</string>

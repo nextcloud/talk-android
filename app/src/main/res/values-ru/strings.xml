@@ -345,12 +345,11 @@
     <string name="nc_mark_conversation_as_unimportant">Обсуждение снято с пометки как важное</string>
     <string name="nc_meeting_ended">Встреча завершена</string>
     <string name="nc_message_added_to_notes">Сообщение добавлено в записки</string>
-    <string name="nc_message_failed">Не удалось</string>
     <string name="nc_message_failed_to_send">Не удалось отправить сообщение:</string>
     <string name="nc_message_offline">Не в сети</string>
     <string name="nc_message_quote_cancel_reply">Отменить ответ</string>
     <string name="nc_message_read">Сообщение прочитано</string>
-    <string name="nc_message_sending">Отправка</string>
+    <string name="nc_message_sending">Сообщение отправляется</string>
     <string name="nc_message_sent">Сообщение отправлено</string>
     <string name="nc_microphone_enabled_audio_recording">Микрофон включен, и беседа записывается</string>
     <string name="nc_microphone_permission_hint">Для включения голосовой связи предоставьте разрешение «Микрофон».</string>
