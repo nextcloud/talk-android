@@ -3781,29 +3781,12 @@ class ChatActivity :
         }*/
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(userMentionClickEvent: UserMentionClickEvent) {
         if (currentConversation?.type != ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
             currentConversation?.name != userMentionClickEvent.userId
         ) {
-            var apiVersion = 1
-            // FIXME Fix API checking with guests?
-            if (conversationUser != null) {
-                apiVersion = ApiUtils.getConversationApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V4, 1))
-            }
-
-            val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-                version = apiVersion,
-                baseUrl = conversationUser?.baseUrl!!,
-                roomType = "1",
-                invite = userMentionClickEvent.userId
-            )
-
-            chatViewModel.createRoom(
-                credentials!!,
-                retrofitBucket.url!!,
-                retrofitBucket.queryMap!!
-            )
+            joinOneToOneConversation(userMentionClickEvent.userId)
         }
     }
 

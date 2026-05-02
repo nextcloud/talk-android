@@ -875,6 +875,7 @@ How to translate with transifex:
     <string name="danger_zone">Danger zone</string>
     <string name="nc_filter">Filter conversations</string>
     <string name="mentioned">Mentioned</string>
+    <string name="mention_open_chat_with">Open chat with %1$s</string>
     <string name="unread">Unread</string>
     <string name="nc_settings_http_value" translatable="false">3128</string>
     <string name="nc_settings_direct_value" translatable="false">8080</string>
