@@ -29,7 +29,6 @@ import okhttp3.RequestBody
 import okhttp3.Response
 import java.io.File
 import java.io.IOException
-import java.io.InputStream
 
 class FileUploader(
     okHttpClient: OkHttpClient,
@@ -116,37 +115,33 @@ class FileUploader(
             .flatMap { upload(sourceFileUri, fileName, remotePath, metaData) }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    private fun createRequestBody(sourceFileUri: Uri): RequestBody? {
-        var requestBody: RequestBody? = null
+    private fun createRequestBody(sourceFileUri: Uri): RequestBody? =
         try {
-            val input: InputStream = context.contentResolver.openInputStream(sourceFileUri)!!
-            input.use {
-                val buf = ByteArray(input.available())
-                while (it.read(buf) != -1) {
-                    requestBody = RequestBody.create("application/octet-stream".toMediaTypeOrNull(), buf)
-                }
-            }
+            val bytes = context.contentResolver.openInputStream(sourceFileUri)!!.use { it.readBytes() }
+            RequestBody.create("application/octet-stream".toMediaTypeOrNull(), bytes)
         } catch (e: Exception) {
             Log.e(TAG, "failed to create RequestBody for $sourceFileUri", e)
+            null
         }
-        return requestBody
-    }
 
     private fun initHttpClient(okHttpClient: OkHttpClient, currentUser: User) {
-        val okHttpClientBuilder: OkHttpClient.Builder = okHttpClient.newBuilder()
-        okHttpClientBuilder.followRedirects(false)
-        okHttpClientBuilder.followSslRedirects(false)
-        okHttpClientBuilder.protocols(listOf(Protocol.HTTP_1_1))
-        okHttpClientBuilder.authenticator(
-            RestModule.HttpAuthenticator(
-                ApiUtils.getCredentials(
-                    currentUser.username,
-                    currentUser.token
-                )!!,
-                "Authorization"
+        val builder = OkHttpClient.Builder()
+            .followRedirects(false)
+            .followSslRedirects(false)
+            .protocols(listOf(Protocol.HTTP_1_1))
+            .sslSocketFactory(okHttpClient.sslSocketFactory, okHttpClient.x509TrustManager!!)
+            .hostnameVerifier(okHttpClient.hostnameVerifier)
+            .authenticator(
+                RestModule.HttpAuthenticator(
+                    ApiUtils.getCredentials(
+                        currentUser.username,
+                        currentUser.token
+                    )!!,
+                    "Authorization"
+                )
             )
-        )
-        this.okHttpClientNoRedirects = okHttpClientBuilder.build()
+        okHttpClient.proxy?.let { builder.proxy(it) }
+        this.okHttpClientNoRedirects = builder.build()
     }
 
     @Suppress("Detekt.ThrowsCount")
