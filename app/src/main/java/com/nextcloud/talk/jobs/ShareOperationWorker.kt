@@ -26,6 +26,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_META_DATA
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import io.reactivex.schedulers.Schedulers
+import retrofit2.HttpException
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -46,6 +47,16 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
 
     override fun doWork(): Result {
         for (filePath in filesArray) {
+            tryCreateShare(filePath)
+        }
+        return Result.success()
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun tryCreateShare(filePath: String?) {
+        for (attempt in 1..SHARE_MAX_ATTEMPTS) {
+            var succeeded = false
+            var shouldRetry = false
             ncApi.createRemoteShare(
                 credentials,
                 ApiUtils.getSharingUrl(baseUrl!!),
@@ -56,11 +67,18 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
             )
                 .subscribeOn(Schedulers.io())
                 .blockingSubscribe(
-                    {},
-                    { e -> Log.w(TAG, "error while creating RemoteShare", e) }
+                    { succeeded = true },
+                    { e ->
+                        if (e is HttpException && e.code() == HTTP_NOT_FOUND && attempt < SHARE_MAX_ATTEMPTS) {
+                            shouldRetry = true
+                        } else {
+                            Log.w(TAG, "error while creating RemoteShare", e)
+                        }
+                    }
                 )
+            if (succeeded || !shouldRetry) return
+            Thread.sleep(SHARE_RETRY_DELAY_MS)
         }
-        return Result.success()
     }
 
     init {
@@ -78,6 +96,9 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
 
     companion object {
         private val TAG = ShareOperationWorker::class.simpleName
+        private const val HTTP_NOT_FOUND = 404
+        private const val SHARE_MAX_ATTEMPTS = 4
+        private const val SHARE_RETRY_DELAY_MS = 2000L
 
         fun shareFile(roomToken: String?, currentUser: User, remotePath: String, metaData: String?) {
             val paths: MutableList<String> = ArrayList()

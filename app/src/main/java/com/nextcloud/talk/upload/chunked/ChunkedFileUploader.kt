@@ -125,7 +125,7 @@ class ChunkedFileUploader(
         }
     }
 
-    @Suppress("Detekt.ComplexMethod")
+    @Suppress("Detekt.ComplexMethod", "Detekt.ReturnCount")
     private fun getUploadedChunks(davResource: DavResource, uploadFolderUri: String): MutableList<Chunk> {
         val davResponse = DavResponse()
         val memberElements: MutableList<at.bitfire.dav4jvm.Response> = ArrayList()
@@ -145,9 +145,14 @@ class ChunkedFileUploader(
                 Unit
             }
         } catch (e: IOException) {
-            throw IOException("Error reading remote path", e)
+            // PROPFIND on Nextcloud chunked-upload folders can return unexpected responses
+            // (e.g. 200 instead of 207). Treat any failure as "no chunks uploaded yet" so
+            // we fall back to a full upload rather than aborting entirely.
+            Log.w(TAG, "PROPFIND failed — assuming no chunks on server, will upload from scratch: ${e.message}")
+            return ArrayList()
         } catch (e: DavException) {
-            throw IOException("Error reading remote path", e)
+            Log.w(TAG, "PROPFIND failed — assuming no chunks on server, will upload from scratch: ${e.message}")
+            return ArrayList()
         }
         for (memberElement in memberElements) {
             remoteFiles.add(
@@ -274,21 +279,23 @@ class ChunkedFileUploader(
     }
 
     private fun initHttpClient(okHttpClient: OkHttpClient, currentUser: User) {
-        val okHttpClientBuilder: OkHttpClient.Builder = okHttpClient.newBuilder()
-        okHttpClientBuilder.followRedirects(false)
-        okHttpClientBuilder.followSslRedirects(false)
-        // okHttpClientBuilder.readTimeout(Duration.ofMinutes(30)) // TODO set timeout
-        okHttpClientBuilder.protocols(listOf(Protocol.HTTP_1_1))
-        okHttpClientBuilder.authenticator(
-            RestModule.HttpAuthenticator(
-                ApiUtils.getCredentials(
-                    currentUser.username,
-                    currentUser.token
-                )!!,
-                "Authorization"
+        val builder = OkHttpClient.Builder()
+            .followRedirects(false)
+            .followSslRedirects(false)
+            .protocols(listOf(Protocol.HTTP_1_1))
+            .sslSocketFactory(okHttpClient.sslSocketFactory, okHttpClient.x509TrustManager!!)
+            .hostnameVerifier(okHttpClient.hostnameVerifier)
+            .authenticator(
+                RestModule.HttpAuthenticator(
+                    ApiUtils.getCredentials(
+                        currentUser.username,
+                        currentUser.token
+                    )!!,
+                    "Authorization"
+                )
             )
-        )
-        this.okHttpClientNoRedirects = okHttpClientBuilder.build()
+        okHttpClient.proxy?.let { builder.proxy(it) }
+        this.okHttpClientNoRedirects = builder.build()
     }
 
     private fun assembleChunks(uploadFolderUri: String, targetPath: String, useConversationSubfolders: Boolean) {
@@ -298,6 +305,7 @@ class ChunkedFileUploader(
             targetPath
         )
 
+        createRemoteFolder(targetPath)
         val originUri = "$uploadFolderUri/.file"
 
         DavResource(
@@ -319,6 +327,23 @@ class ChunkedFileUploader(
             } else {
                 throw IOException("Failed to assemble chunks. response code: " + response.code)
             }
+        }
+    }
+
+    private fun createRemoteFolder(targetPath: String) {
+        val folderPath = targetPath.substringBeforeLast('/')
+        if (folderPath.isEmpty() || folderPath == "/") return
+        val folderUri = ApiUtils.getUrlForFileUpload(currentUser.baseUrl!!, currentUser.userId!!, folderPath)
+        try {
+            DavResource(okHttpClientNoRedirects!!, folderUri.toHttpUrlOrNull()!!).mkCol(
+                xmlBody = null
+            ) { _ -> }
+        } catch (e: HttpException) {
+            if (e.code != METHOD_NOT_ALLOWED_CODE) {
+                Log.w(TAG, "Unexpected error creating remote folder $folderPath: ${e.code}")
+            }
+        } catch (e: IOException) {
+            Log.w(TAG, "Failed to create remote folder $folderPath", e)
         }
     }
 
