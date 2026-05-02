@@ -58,19 +58,15 @@ import com.nextcloud.talk.PhoneUtils.isPhoneNumber
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils.getUrlForAvatar
 import com.nextcloud.talk.utils.ApiUtils.getUrlForFederatedAvatar
 import com.nextcloud.talk.utils.ApiUtils.getUrlForGuestAvatar
 import com.nextcloud.talk.utils.preferences.AppPreferencesImpl
-import com.nextcloud.talk.utils.text.Spans.MentionChipSpan
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.greenrobot.eventbus.EventBus
-import third.parties.fresco.BetterImageSpan
 import java.text.DateFormat
 import java.util.Date
 import java.util.regex.Pattern
@@ -246,69 +242,6 @@ object DisplayUtils {
             imageLoader(context).enqueue(imageRequest)
         }
         return chip
-    }
-
-    fun searchAndReplaceWithMentionSpan(
-        key: String,
-        context: Context,
-        text: Spanned,
-        id: String,
-        roomToken: String?,
-        label: String,
-        type: String,
-        conversationUser: User,
-        @XmlRes chipXmlRes: Int,
-        viewThemeUtils: ViewThemeUtils,
-        isFederated: Boolean
-    ): Spannable {
-        val spannableString: Spannable = SpannableString(text)
-        val stringText = text.toString()
-        val keyWithBrackets = "{$key}"
-        val m = Pattern.compile(keyWithBrackets, Pattern.CASE_INSENSITIVE or Pattern.LITERAL or Pattern.MULTILINE)
-            .matcher(spannableString)
-        val clickableSpan: ClickableSpan = object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                EventBus.getDefault().post(UserMentionClickEvent(id))
-            }
-        }
-        var lastStartIndex = 0
-        var mentionChipSpan: MentionChipSpan
-        while (m.find()) {
-            val start = stringText.indexOf(m.group(), lastStartIndex)
-            val end = start + m.group().length
-            lastStartIndex = end
-            val drawableForChip = getDrawableForMentionChipSpan(
-                context,
-                id,
-                roomToken,
-                label,
-                conversationUser,
-                type,
-                chipXmlRes,
-                null,
-                viewThemeUtils,
-                isFederated
-            )
-            mentionChipSpan = MentionChipSpan(
-                drawableForChip,
-                BetterImageSpan.ALIGN_CENTER,
-                id,
-                label
-            )
-            spannableString.setSpan(mentionChipSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            if (chipXmlRes == R.xml.chip_you) {
-                spannableString.setSpan(
-                    viewThemeUtils.talk.themeForegroundColorSpan(context),
-                    start,
-                    end,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-            if ("user" == type && conversationUser.userId != id && !isFederated) {
-                spannableString.setSpan(clickableSpan, start, end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-            }
-        }
-        return spannableString
     }
 
     fun searchAndColor(text: Spannable, searchText: String, @ColorInt color: Int, textSize: Int): Spannable {

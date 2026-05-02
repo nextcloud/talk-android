@@ -30,6 +30,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
@@ -232,9 +237,18 @@ fun MentionChip(mention: MentionChipModel, textStyle: TextStyle, isMultilineLayo
     }
     val fallbackIcon = resolveMentionFallbackIcon(mention)
     val verticalPadding = if (isMultilineLayout) multilineChipVerticalPadding else chipVerticalPadding
+    val chipContentDescription = if (mention.isClickableUserMention) {
+        stringResource(R.string.mention_open_chat_with, mention.name)
+    } else {
+        mention.name
+    }
 
     Row(
         modifier = Modifier
+            .semantics {
+                contentDescription = chipContentDescription
+                if (mention.isClickableUserMention) role = Role.Button
+            }
             .background(backgroundColor, RoundedCornerShape(chipCornerRadius))
             .clickable(enabled = mention.isClickableUserMention) {
                 EventBus.getDefault().post(UserMentionClickEvent(mention.id))
