@@ -97,6 +97,7 @@ internal val LocalReactionLongClickHandler = compositionLocalOf<(Int) -> Unit> {
 internal val LocalOpenThreadHandler = compositionLocalOf<(Int) -> Unit> { {} }
 internal val LocalQuotedMessageClickHandler = compositionLocalOf<(Int) -> Unit> { {} }
 internal val LocalMessageLongClickHandler = compositionLocalOf<(Int) -> Unit> { {} }
+internal val LocalShowThreadButton = compositionLocalOf { true }
 
 private enum class MetadataLayoutMode {
     CAPTION,
@@ -463,7 +464,8 @@ private fun BoxScope.OverlayMetadataBadge(uiMessage: ChatMessageUi) {
 
 @Composable
 private fun PinnedReactionsRow(uiMessage: ChatMessageUi, conversationThreadId: Long?, modifier: Modifier = Modifier) {
-    val showThreadButton = isFirstMessageOfThreadInNormalChat(uiMessage, conversationThreadId)
+    val showThreadButton = isFirstMessageOfThreadInNormalChat(uiMessage, conversationThreadId) &&
+        LocalShowThreadButton.current
     if (!showThreadButton && uiMessage.reactions.isEmpty()) return
 
     val onReactionClick = LocalReactionClickHandler.current
@@ -731,6 +733,7 @@ fun ReadStatus(message: ChatMessageUi, color: Color = colorScheme.onSurfaceVaria
         MessageStatusIcon.SENDING -> painterResource(R.drawable.baseline_schedule_24)
         MessageStatusIcon.READ -> painterResource(R.drawable.ic_check_all)
         MessageStatusIcon.SENT -> painterResource(R.drawable.ic_check)
+        MessageStatusIcon.SCHEDULED -> painterResource(R.drawable.outline_schedule_24)
     }
 
     val contentDescription = when (message.statusIcon) {
@@ -738,6 +741,7 @@ fun ReadStatus(message: ChatMessageUi, color: Color = colorScheme.onSurfaceVaria
         MessageStatusIcon.SENDING -> stringResource(R.string.nc_message_sending)
         MessageStatusIcon.READ -> stringResource(R.string.nc_message_read)
         MessageStatusIcon.SENT -> stringResource(R.string.nc_message_sent)
+        MessageStatusIcon.SCHEDULED -> stringResource(R.string.nc_message_scheduled)
     }
 
     Icon(
@@ -761,19 +765,21 @@ fun ThreadTitle(
             modifier = Modifier
                 .padding(horizontal = padding, vertical = 10.dp)
         ) {
-            val threadIcon = painterResource(R.drawable.outline_forum_24)
+            val threadIcon = painterResource(message.threadTitleIconRes)
             Icon(
                 threadIcon,
                 "",
+                tint = colorScheme.onSurface,
                 modifier = Modifier
-                    .padding(end = 6.dp)
+                    .padding(top = 2.dp, end = 6.dp)
                     .size(18.dp)
-                    .align(Alignment.CenterVertically)
+                    .align(Alignment.Top)
             )
             Text(
                 text = message.threadTitle,
                 fontSize = regularTextSize,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                color = colorScheme.onSurface
             )
         }
     }

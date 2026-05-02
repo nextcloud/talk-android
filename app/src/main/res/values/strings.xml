@@ -488,6 +488,9 @@ How to translate with transifex:
     <string name="nc_message_sent">Message sent</string>
     <string name="nc_message_read">Message read</string>
     <string name="nc_message_sending">Sending message</string>
+    <string name="nc_message_scheduled">Message scheduled</string>
+    <string name="nc_scheduled_thread">Scheduled thread</string>
+    <string name="nc_reply_to_thread">Reply to thread: %1$s</string>
     <string name="nc_message_added_to_notes">Message added to notes</string>
     <string name="nc_message_failed">Failed to send message</string>
     <string name="nc_message_failed_to_send">Failed to send message:</string>
@@ -976,7 +979,6 @@ How to translate with transifex:
     <string name="nc_send_later">Send later</string>
     <string name="nc_schedule_message">Schedule message</string>
     <string name="nc_scheduled_messages">Scheduled messages</string>
-    <string name="nc_message_scheduled">Message scheduled</string>
     <string name="nc_message_scheduled_at">Message scheduled for %1$s</string>
     <string name="nc_scheduled_time">Scheduled time</string>
     <string name="nc_reschedule_message_with_notification">Reschedule with notification</string>

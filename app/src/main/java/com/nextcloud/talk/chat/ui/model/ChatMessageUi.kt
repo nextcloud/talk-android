@@ -19,7 +19,9 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.MimetypeUtils
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 
 // immutable class for chat message UI. only val, no vars!
 @Stable // Consider evaluating @Immutable once all nested types comply.
@@ -31,6 +33,7 @@ data class ChatMessageUi(
     val actorDisplayName: String,
     val isThread: Boolean,
     val threadTitle: String,
+    val threadTitleIconRes: Int = R.drawable.outline_forum_24,
     val threadReplies: Int,
     val incoming: Boolean,
     val isDeleted: Boolean,
@@ -95,7 +98,8 @@ enum class MessageStatusIcon {
     FAILED,
     SENDING,
     READ,
-    SENT
+    SENT,
+    SCHEDULED
 }
 
 // Domain model (ChatMessage) to UI model (ChatMessageUi)
@@ -148,6 +152,42 @@ fun ChatMessage.toUiModel(
         expandableChildrenAmount = expandableChildrenAmount,
         isHiddenByCollapse = hiddenByCollapse
     )
+
+fun ChatMessage.toScheduledMessageUiModel(
+    user: User,
+    roomToken: String,
+    parentMessage: ChatMessage? = null
+): ChatMessageUi {
+    val sendAtTimestamp = sendAt?.toLong() ?: timestamp
+    return ChatMessageUi(
+        id = token?.toIntOrNull() ?: token.hashCode(),
+        message = getRichText(),
+        plainMessage = message.orEmpty(),
+        renderMarkdown = renderMarkdown != false,
+        actorDisplayName = actorDisplayName.orEmpty(),
+        isThread = isThread,
+        threadTitle = threadTitle.orEmpty(),
+        threadReplies = threadReplies ?: 0,
+        incoming = false,
+        isDeleted = isDeleted,
+        avatarUrl = null,
+        statusIcon = MessageStatusIcon.SCHEDULED,
+        timestamp = sendAtTimestamp,
+        date = Instant.ofEpochSecond(sendAtTimestamp).atZone(ZoneId.systemDefault()).toLocalDate(),
+        content = getMessageTypeContent(user, this),
+        roomToken = roomToken,
+        activeUserId = user.userId,
+        activeUserBaseUrl = user.baseUrl,
+        messageParameters = normalizeMessageParameters(),
+        reactions = emptyList(),
+        isEdited = lastEditTimestamp != 0L,
+        parentMessage = parentMessage?.toScheduledMessageUiModel(user, roomToken),
+        replyable = false,
+        isGrouped = false,
+        isGroupedWithNext = false,
+        isSilent = silent
+    )
+}
 
 private fun ChatMessage.normalizeMessageParameters(): Map<String, Map<String, String>> =
     messageParameters
