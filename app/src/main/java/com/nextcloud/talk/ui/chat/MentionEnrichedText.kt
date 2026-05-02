@@ -38,14 +38,21 @@ fun MentionEnrichedText(
     message: ChatMessageUi,
     modifier: Modifier = Modifier,
     textStyle: TextStyle,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
+    highlightSearchTerm: String? = null
 ) {
     var isMultilineLayout by remember(message.id, message.message) {
         mutableStateOf(message.message.contains("\n") || message.message.contains("\r"))
     }
     val linkColor = MaterialTheme.colorScheme.primary
     val codeBackground = MaterialTheme.colorScheme.surfaceVariant
-    val richText = remember(message, isMultilineLayout, linkColor, codeBackground, textStyle) {
+    val richText = remember(
+        message,
+        isMultilineLayout,
+        linkColor,
+        codeBackground,
+        textStyle
+    ) {
         buildMentionRichText(
             message = message,
             linkColor = linkColor,
@@ -53,6 +60,9 @@ fun MentionEnrichedText(
             textStyle = textStyle,
             isMultilineLayout = isMultilineLayout
         )
+    }
+    val highlightedText = remember(richText.annotated, highlightSearchTerm, searchHighlightColor) {
+        richText.annotated.withSearchHighlight(highlightSearchTerm, searchHighlightColor)
     }
     val resolvedTextStyle = if (richText.inlineContent.isEmpty()) {
         textStyle
@@ -62,7 +72,7 @@ fun MentionEnrichedText(
 
     Text(
         modifier = modifier,
-        text = richText.annotated,
+        text = highlightedText,
         inlineContent = richText.inlineContent,
         style = resolvedTextStyle,
         maxLines = maxLines,
@@ -151,6 +161,29 @@ private fun buildMentionRichText(
     }
 
     return MentionRichText(annotated = annotated, inlineContent = inlineContent)
+}
+
+private fun AnnotatedString.withSearchHighlight(searchTerm: String?, highlightColor: Color): AnnotatedString {
+    val term = searchTerm?.trim()?.lowercase().orEmpty()
+    if (term.isEmpty()) {
+        return this
+    }
+
+    val source = text
+    val lowerSource = source.lowercase()
+    val builder = AnnotatedString.Builder(this)
+    var startIndex = 0
+    var matchIndex = lowerSource.indexOf(term, startIndex)
+    while (matchIndex != -1) {
+        builder.addStyle(
+            SpanStyle(background = highlightColor),
+            matchIndex,
+            matchIndex + term.length
+        )
+        startIndex = matchIndex + term.length
+        matchIndex = lowerSource.indexOf(term, startIndex)
+    }
+    return builder.toAnnotatedString()
 }
 
 private fun AnnotatedString.Builder.appendStyledToken(text: String, style: SpanStyle) {

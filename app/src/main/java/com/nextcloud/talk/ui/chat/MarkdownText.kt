@@ -17,6 +17,7 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
+import android.text.style.BackgroundColorSpan
 import android.text.style.ClickableSpan
 import android.text.style.ReplacementSpan
 import android.text.util.Linkify
@@ -60,14 +61,15 @@ private const val CHIP_END_PADDING_DP = 5f
 private const val CHIP_VERTICAL_PADDING_DP = 2f
 private const val CHIP_CORNER_RADIUS_DP = 16f
 
-@Suppress("LongMethod")
+@Suppress("LongMethod", "LongParameterList")
 @Composable
 fun MarkdownText(
     message: ChatMessageUi,
     textColor: Color,
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
-    textSizeSp: Float = TEXT_SIZE_SP
+    textSizeSp: Float = TEXT_SIZE_SP,
+    highlightSearchTerm: String? = null
 ) {
     val context = LocalContext.current
     val textColorArgb = textColor.toArgb()
@@ -149,6 +151,7 @@ fun MarkdownText(
                 )
                 val hasLinks = Linkify.addLinks(ssb, Linkify.WEB_URLS)
                 resolveFileParams(ssb, message)
+                applySearchHighlight(ssb, highlightSearchTerm, searchHighlightColorArgb)
                 textView.text = ssb
                 textView.setLinkTextColor(linkColorArgb)
                 val needsMovementMethod = (hasClickableChips || hasLinks) && maxLines == Int.MAX_VALUE
@@ -161,6 +164,32 @@ fun MarkdownText(
                 }
             }
         )
+    }
+}
+
+private fun applySearchHighlight(spannable: SpannableStringBuilder, searchTerm: String?, highlightColor: Int) {
+    if (searchTerm.isNullOrBlank()) {
+        return
+    }
+    val term = searchTerm.lowercase()
+    if (term.isEmpty()) {
+        return
+    }
+
+    val text = spannable.toString()
+    val lowerText = text.lowercase()
+    var startIndex = 0
+    var matchIndex = lowerText.indexOf(term, startIndex)
+    while (matchIndex != -1) {
+        val matchEnd = matchIndex + term.length
+        spannable.setSpan(
+            BackgroundColorSpan(highlightColor),
+            matchIndex,
+            matchEnd,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        startIndex = matchEnd
+        matchIndex = lowerText.indexOf(term, startIndex)
     }
 }
 

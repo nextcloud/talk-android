@@ -55,12 +55,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx2.asFlow
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -366,25 +367,31 @@ class ConversationsListViewModel @Inject constructor(
     }
 
     private fun getMessagesFlow(search: String): Flow<MessageSearchResults> =
-        searchHelper.startMessageSearch(search).subscribeOn(Schedulers.io()).asFlow()
+        flow {
+            emit(searchHelper.startMessageSearch(search))
+        }.flowOn(Dispatchers.IO)
 
     fun loadMoreMessages(context: Context) {
         viewModelScope.launch {
-            searchHelper.loadMore()
-                ?.asFlow()
-                ?.map { (messages, hasMore) ->
-                    val newEntries: List<ConversationListEntry> =
-                        messages.map { ConversationListEntry.MessageResultEntry(it) }
-                    if (hasMore) newEntries + ConversationListEntry.LoadMore else newEntries
-                }?.collect { newEntries ->
-                    searchResultEntries.update { current ->
-                        val withoutOld = current.filter { entry ->
-                            entry !is ConversationListEntry.MessageResultEntry &&
-                                entry !is ConversationListEntry.LoadMore
-                        }
-                        withoutOld + newEntries
-                    }
+            val result = withContext(Dispatchers.IO) {
+                searchHelper.loadMore()
+            } ?: return@launch
+
+            val newEntries: List<ConversationListEntry> =
+                result.messages.map { ConversationListEntry.MessageResultEntry(it) }
+            val entriesWithLoadMore = if (result.hasMore) {
+                newEntries + ConversationListEntry.LoadMore
+            } else {
+                newEntries
+            }
+
+            searchResultEntries.update { current ->
+                val withoutOld = current.filter { entry ->
+                    entry !is ConversationListEntry.MessageResultEntry &&
+                        entry !is ConversationListEntry.LoadMore
                 }
+                withoutOld + entriesWithLoadMore
+            }
         }
     }
 

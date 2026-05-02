@@ -26,6 +26,7 @@ import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
 import com.nextcloud.talk.models.json.testNotification.TestNotificationOverall
 import com.nextcloud.talk.models.json.threads.ThreadOverall
 import com.nextcloud.talk.models.json.threads.ThreadsOverall
+import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchOverall
 import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEventsOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import okhttp3.MultipartBody
@@ -450,6 +451,17 @@ interface NcApiCoroutines {
         @Url url: String,
         @Query("reaction") reaction: String?
     ): ReactionsOverall
+
+    @Suppress("LongParameterList")
+    @GET
+    suspend fun performUnifiedSearch(
+        @Header("Authorization") authorization: String?,
+        @Url url: String,
+        @Query("term") term: String,
+        @Query("from") fromUrl: String?,
+        @Query("limit") limit: Int,
+        @Query("cursor") cursor: Int
+    ): UnifiedSearchOverall
 
     // Url is: /api/{apiVersion}/chat/{token}/read
     @FormUrlEncoded

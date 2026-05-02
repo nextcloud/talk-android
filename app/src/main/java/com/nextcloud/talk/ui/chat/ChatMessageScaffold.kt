@@ -97,6 +97,7 @@ internal val LocalReactionLongClickHandler = compositionLocalOf<(Int) -> Unit> {
 internal val LocalOpenThreadHandler = compositionLocalOf<(Int) -> Unit> { {} }
 internal val LocalQuotedMessageClickHandler = compositionLocalOf<(Int) -> Unit> { {} }
 internal val LocalMessageLongClickHandler = compositionLocalOf<(Int) -> Unit> { {} }
+internal val LocalHighlightSearchTerm = compositionLocalOf<String?> { null }
 internal val LocalShowThreadButton = compositionLocalOf { true }
 
 private enum class MetadataLayoutMode {
@@ -594,6 +595,7 @@ private fun ColumnScope.CaptionWithMetadata(
     showInlineMetadata: Boolean,
     suppressMetadata: Boolean = false
 ) {
+    val highlightSearchTerm = LocalHighlightSearchTerm.current
     if (!suppressMetadata && showInlineMetadata) {
         Row(
             modifier = Modifier
@@ -605,7 +607,8 @@ private fun ColumnScope.CaptionWithMetadata(
                 uiMessage,
                 modifier = Modifier
                     .weight(1f)
-                    .padding(end = 8.dp)
+                    .padding(end = 8.dp),
+                highlightSearchTerm = highlightSearchTerm
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MessageMetadata(uiMessage)
@@ -616,7 +619,8 @@ private fun ColumnScope.CaptionWithMetadata(
             uiMessage,
             modifier = Modifier
                 // .widthIn(20.dp, 280.dp)
-                .padding(start = 8.dp, end = 8.dp)
+                .padding(start = 8.dp, end = 8.dp),
+            highlightSearchTerm = highlightSearchTerm
         )
         if (!suppressMetadata) {
             Row(
@@ -800,7 +804,12 @@ internal fun resolveMarkdownSource(message: ChatMessageUi): String {
 }
 
 @Composable
-fun EnrichedText(message: ChatMessageUi, modifier: Modifier, maxLines: Int = Int.MAX_VALUE) {
+fun EnrichedText(
+    message: ChatMessageUi,
+    modifier: Modifier,
+    maxLines: Int = Int.MAX_VALUE,
+    highlightSearchTerm: String? = null
+) {
     val isInspectionMode = LocalInspectionMode.current
     val isSingleEmoji = !isInspectionMode &&
         message.messageParameters.isEmpty() &&
@@ -813,7 +822,8 @@ fun EnrichedText(message: ChatMessageUi, modifier: Modifier, maxLines: Int = Int
             textColor = colorScheme.onSurface,
             modifier = modifier,
             maxLines = maxLines,
-            textSizeSp = fontSize.value
+            textSizeSp = fontSize.value,
+            highlightSearchTerm = highlightSearchTerm
         )
     } else {
         MentionEnrichedText(
@@ -824,7 +834,8 @@ fun EnrichedText(message: ChatMessageUi, modifier: Modifier, maxLines: Int = Int
                 color = colorScheme.onSurface,
                 lineHeight = fontSize * LINE_SPACING
             ),
-            maxLines = maxLines
+            maxLines = maxLines,
+            highlightSearchTerm = highlightSearchTerm
         )
     }
 }

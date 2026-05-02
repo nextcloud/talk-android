@@ -38,8 +38,10 @@ import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
@@ -54,6 +56,7 @@ import com.nextcloud.talk.models.json.threads.ThreadInfo
 import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEvent
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceData
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
+import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.utils.ApiUtils
@@ -95,6 +98,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -116,6 +122,7 @@ class ChatViewModel @AssistedInject constructor(
     private val threadsRepository: ThreadsRepository,
     private val conversationRepository: OfflineConversationsRepository,
     private val reactionsRepository: ReactionsRepository,
+    private val unifiedSearchRepository: UnifiedSearchRepository,
     private val mediaRecorderManager: MediaRecorderManager,
     private val audioFocusRequestManager: AudioFocusRequestManager,
     private val currentUserProvider: CurrentUserProvider,
@@ -133,12 +140,55 @@ class ChatViewModel @AssistedInject constructor(
         STOPPED
     }
 
+    enum class ChatMode {
+        // Used to observe new messages. No search features are available in this mode
+        DEFAULT_MODE,
+
+        // Used when using the search feature inside the chat. Search controls are shown
+        SEARCH_MODE,
+
+        // Might be used when clicking a quoted message or choosing a message from the message search in conversation
+        // list (only if messages is not contained in latest chat block). Search controls are not shown
+        OLD_CHATBLOCK_MODE
+    }
+
+    enum class LoadMoreDirection {
+        OLDER,
+        NEWER
+    }
+
+    data class SearchUiState(
+        val query: String = "",
+        val results: List<SearchMessageEntry> = emptyList(),
+        val selectedIndex: Int = -1,
+        val isLoading: Boolean = false,
+        val hasMore: Boolean = false,
+        val error: Boolean = false
+    ) {
+        val selectedResult: SearchMessageEntry?
+            get() = results.getOrNull(selectedIndex)
+    }
+
     @Deprecated("use currentUserFlow")
     lateinit var currentUser: User
+
+    private var messageSearchHelper: MessageSearchHelper? = null
+    private var searchRequestJob: Job? = null
+    private val contextAnchorMessageId = MutableStateFlow<Long?>(null)
+
+    private val _chatMode = MutableStateFlow(ChatMode.DEFAULT_MODE)
+    val chatMode: StateFlow<ChatMode> = _chatMode
+
+    private val _searchUiState = MutableStateFlow(SearchUiState())
+    val searchUiState: StateFlow<SearchUiState> = _searchUiState
+
+    private val _noMoreSearchResults = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val noMoreSearchResults: MutableSharedFlow<Unit> = _noMoreSearchResults
 
     private var localLastReadMessage: Int = 0
 
     private var showUnreadMessagesMarker: Boolean = true
+    private var isLoadMoreInProgress = false
 
     private val mediaPlayerManager: MediaPlayerManager = MediaPlayerManager.sharedInstance(appPreferences)
     lateinit var currentLifeCycleFlag: LifeCycleFlag
@@ -165,6 +215,8 @@ class ChatViewModel @AssistedInject constructor(
         currentLifeCycleFlag = LifeCycleFlag.PAUSED
         disposableSet.forEach { disposable -> disposable.dispose() }
         disposableSet.clear()
+        searchRequestJob?.cancel()
+        messageSearchHelper?.cancelSearch()
         mediaRecorderManager.handleOnPause()
         chatRepository.handleOnPause()
         mediaPlayerManager.handleOnPause()
@@ -351,7 +403,10 @@ class ChatViewModel @AssistedInject constructor(
         // Adding the whole conversation is just an intermediate solution as it is used in the activity.
         // For the future, only necessary vars from conversation should be in the ui state
         val conversation: ConversationModel? = null,
-        val pinnedMessage: ChatMessage? = null
+        val pinnedMessage: ChatMessage? = null,
+        val highlightedMessageId: Int? = null,
+        val highlightedSearchTerm: String? = null,
+        val highlightTriggerNonce: Long? = null
     )
 
     private val _uiState = MutableStateFlow(ChatUiState())
@@ -407,13 +462,28 @@ class ChatViewModel @AssistedInject constructor(
             }
         }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val messagesFlow: Flow<List<ChatMessage>> =
         conversationAndUserFlow
             .flatMapLatest { (conversation, user) ->
-                chatRepository
-                    .observeMessages(conversation.internalId)
-                    .distinctUntilChanged()
-                    .mapToChatMessages(user.userId!!)
+                combine(chatMode, contextAnchorMessageId) { mode, anchorMessageId ->
+                    mode to anchorMessageId
+                }
+                    .flatMapLatest { (mode, anchorMessageId) ->
+                        val messagesSource = if (mode == ChatMode.DEFAULT_MODE) {
+                            chatRepository.observeLatestMessages(conversation.internalId)
+                        } else if (anchorMessageId != null) {
+                            chatRepository.observeMessagesForAnchor(
+                                internalConversationId = conversation.internalId,
+                                anchorMessageId = anchorMessageId
+                            )
+                        } else {
+                            chatRepository.observeLatestMessages(conversation.internalId)
+                        }
+                        messagesSource
+                            .distinctUntilChanged()
+                            .mapToChatMessages(user.userId!!)
+                    }
             }
             .map { messages ->
                 messages.let(::handleSystemMessages)
@@ -449,6 +519,249 @@ class ChatViewModel @AssistedInject constructor(
         observePinnedMessage()
         observeRoomRefresh()
         observeIncomingMessages()
+    }
+
+    fun enterSearchMode() {
+        _chatMode.value = ChatMode.SEARCH_MODE
+    }
+
+    fun switchToDefaultMode() {
+        resetUnreadMarkerCache()
+        contextAnchorMessageId.value = null
+        _chatMode.value = ChatMode.DEFAULT_MODE
+        _uiState.update { it.copy(highlightedMessageId = null, highlightedSearchTerm = null) }
+    }
+
+    fun exitSearchMode() {
+        searchRequestJob?.cancel()
+        messageSearchHelper?.cancelSearch()
+        _searchUiState.value = SearchUiState()
+        switchToDefaultMode()
+    }
+
+    fun onSearchQueryChanged(query: String) {
+        _searchUiState.update { it.copy(query = query, error = false) }
+
+        if (query.length < MIN_CHARS_FOR_SEARCH) {
+            searchRequestJob?.cancel()
+            messageSearchHelper?.cancelSearch()
+            _searchUiState.update {
+                it.copy(
+                    results = emptyList(),
+                    selectedIndex = -1,
+                    isLoading = false,
+                    hasMore = false,
+                    error = false
+                )
+            }
+            return
+        }
+
+        val helper = ensureSearchHelper()
+        if (helper == null) {
+            return
+        }
+        helper.cancelSearch()
+        searchRequestJob?.cancel()
+        _searchUiState.update { it.copy(isLoading = true, error = false) }
+
+        searchRequestJob = viewModelScope.launch {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    helper.startMessageSearch(query)
+                }
+                if (_searchUiState.value.query != query) {
+                    return@launch
+                }
+
+                val navigableResults = result.messages.filter { it.messageId?.toLongOrNull() != null }
+                _searchUiState.update {
+                    it.copy(
+                        results = navigableResults,
+                        selectedIndex = if (navigableResults.isNotEmpty()) 0 else -1,
+                        isLoading = false,
+                        hasMore = result.hasMore,
+                        error = false
+                    )
+                }
+            } catch (_: CancellationException) {
+                // Ignore cancellation; request was superseded by a newer one.
+            } catch (@Suppress("Detekt.TooGenericExceptionCaught") throwable: Throwable) {
+                _searchUiState.update { state -> state.copy(isLoading = false, error = true) }
+            }
+        }
+    }
+
+    fun selectNextSearchResult() {
+        val state = _searchUiState.value
+        if (state.results.isEmpty()) return
+
+        if (state.selectedIndex >= state.results.lastIndex) {
+            if (state.hasMore) {
+                loadMoreSearchResultsAndSelectNext()
+            } else {
+                _noMoreSearchResults.tryEmit(Unit)
+            }
+            return
+        }
+
+        val nextIndex = (state.selectedIndex + 1).coerceAtMost(state.results.lastIndex)
+        _searchUiState.update { it.copy(selectedIndex = nextIndex) }
+        jumpToSearchSelection()
+    }
+
+    private fun loadMoreSearchResultsAndSelectNext() {
+        val helper = ensureSearchHelper()
+        val previousSize = _searchUiState.value.results.size
+
+        if (helper == null || _searchUiState.value.isLoading) {
+            return
+        }
+        val queryAtStart = _searchUiState.value.query
+
+        _searchUiState.update { it.copy(isLoading = true, error = false) }
+
+        searchRequestJob?.cancel()
+        searchRequestJob = viewModelScope.launch {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    helper.loadMore()
+                }
+                if (_searchUiState.value.query != queryAtStart) {
+                    return@launch
+                }
+
+                if (result == null) {
+                    _searchUiState.update { it.copy(isLoading = false) }
+                    return@launch
+                }
+
+                val navigableResults = result.messages.filter { it.messageId?.toLongOrNull() != null }
+                val nextIndex = if (navigableResults.size > previousSize) {
+                    previousSize
+                } else {
+                    _searchUiState.value.selectedIndex.coerceAtMost(navigableResults.lastIndex)
+                }
+                _searchUiState.update {
+                    it.copy(
+                        results = navigableResults,
+                        selectedIndex = nextIndex,
+                        isLoading = false,
+                        hasMore = result.hasMore,
+                        error = false
+                    )
+                }
+                if (navigableResults.isNotEmpty()) {
+                    jumpToSearchSelection()
+                }
+                if (navigableResults.size <= previousSize) {
+                    _noMoreSearchResults.tryEmit(Unit)
+                }
+            } catch (_: CancellationException) {
+                // Ignore cancellation; request was superseded.
+            } catch (@Suppress("Detekt.TooGenericExceptionCaught") throwable: Throwable) {
+                _searchUiState.update { state -> state.copy(isLoading = false, error = true) }
+            }
+        }
+    }
+
+    fun selectPreviousSearchResult() {
+        val state = _searchUiState.value
+        if (state.results.isEmpty()) return
+        val oldIndex = state.selectedIndex
+        val previousIndex = (state.selectedIndex - 1).coerceAtLeast(0)
+        if (previousIndex == oldIndex) {
+            _noMoreSearchResults.tryEmit(Unit)
+        }
+        _searchUiState.update { it.copy(selectedIndex = previousIndex) }
+        jumpToSearchSelection()
+    }
+
+    fun jumpToSearchSelection() {
+        val result = _searchUiState.value.selectedResult ?: return
+        val messageId = result.messageId?.toLongOrNull() ?: return
+        val targetThreadId = result.threadId?.toLongOrNull()?.takeIf { result.isThreadReplyResult() }
+
+        viewModelScope.launch {
+            val foundLocally = _uiState.value.items.any {
+                (it as? ChatItem.MessageItem)?.uiMessage?.id == messageId.toInt()
+            }
+            if (!foundLocally) {
+                loadMessageContextAndSwitchMode(
+                    messageId = messageId,
+                    targetThreadId = targetThreadId,
+                    mode = ChatMode.SEARCH_MODE
+                )
+            }
+            triggerMessageHighlight(messageId.toInt(), _searchUiState.value.query)
+        }
+    }
+
+    fun jumpToQuotedMessage(messageId: Long) {
+        viewModelScope.launch {
+            val foundLocally = _uiState.value.items.any {
+                (it as? ChatItem.MessageItem)?.uiMessage?.id == messageId.toInt()
+            }
+            if (!foundLocally) {
+                loadMessageContextAndSwitchMode(
+                    messageId = messageId,
+                    targetThreadId = conversationThreadId,
+                    mode = ChatMode.OLD_CHATBLOCK_MODE
+                )
+            }
+            triggerMessageHighlight(messageId.toInt())
+        }
+    }
+
+    suspend fun openMessageFromGlobalSearch(messageId: Long, threadId: Long?, searchQuery: String?) {
+        loadMessageContextAndSwitchMode(
+            messageId = messageId,
+            targetThreadId = threadId,
+            mode = ChatMode.OLD_CHATBLOCK_MODE
+        )
+        triggerMessageHighlight(messageId.toInt(), searchQuery)
+    }
+
+    private suspend fun loadMessageContextAndSwitchMode(messageId: Long, targetThreadId: Long?, mode: ChatMode) {
+        val result = chatRepository.loadMessageContext(
+            messageId = messageId,
+            limit = CONTEXT_MESSAGES_LIMIT,
+            threadId = targetThreadId
+        )
+
+        result.let {
+            resetUnreadMarkerCache()
+            contextAnchorMessageId.value = messageId
+            _chatMode.value = mode
+        }
+    }
+
+    private fun ensureSearchHelper(): MessageSearchHelper? {
+        val user = currentUserFlow.value
+        val helper = messageSearchHelper ?: user?.let {
+            MessageSearchHelper(
+                unifiedSearchRepository = unifiedSearchRepository,
+                currentUser = it,
+                fromRoom = chatRoomToken
+            )
+        }?.also { createdHelper ->
+            messageSearchHelper = createdHelper
+        }
+        return helper
+    }
+
+    private fun triggerMessageHighlight(messageId: Int, searchTerm: String? = null) {
+        _uiState.update { state ->
+            state.copy(
+                highlightedMessageId = messageId,
+                highlightedSearchTerm = searchTerm?.trim()?.takeIf { it.isNotEmpty() },
+                highlightTriggerNonce = System.nanoTime()
+            )
+        }
+    }
+
+    private fun resetUnreadMarkerCache() {
+        firstUnreadMessageId = null
     }
 
     private fun observeMediaPlayerProgressForCompose() {
@@ -604,30 +917,6 @@ class ChatViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
-    // val lastCommonReadMessageId = getLastCommonReadFlow.first()
-
-    // ------------------------------
-    // Observe messages
-    // ------------------------------
-    // private fun observeMessages() {
-    //     combine(messagesFlow, getLastCommonReadFlow) { messages, lastRead ->
-    //         messages.map {
-    //             it.toUiModel(
-    //                 it,
-    //                 lastRead,
-    //                 getParentMessage(it.parentMessageId)
-    //             )
-    //         }
-    //     }
-    //         .onEach { messages ->
-    //             val items = buildChatItems(messages, lastReadMessage)
-    //             _uiState.update { current ->
-    //                 current.copy(items = items)
-    //             }
-    //         }
-    //         .launchIn(viewModelScope)
-    // }
-
     private data class CombinedInput(
         val messages: List<ChatMessage>,
         val lastCommonRead: Int,
@@ -706,6 +995,8 @@ class ChatViewModel @AssistedInject constructor(
     ): List<ChatItem> {
         var lastDate: LocalDate? = null
         var lastExpandableParentId: Int? = null
+
+        Log.d(TAG, "buildChatItems...................")
 
         return buildList {
             if (firstUnreadMessageId == null && lastReadMessage > 0) {
@@ -1214,64 +1505,43 @@ class ChatViewModel @AssistedInject constructor(
         chatRepository.startMessagePolling(hasHighPerformanceBackend)
     }
 
-    fun loadMoreMessagesCompose() {
-        val currentItems = _uiState.value.items
+    fun loadMoreMessages(messageId: Int, direction: LoadMoreDirection) {
+        Log.d(TAG, "Compose load more, messageId: $messageId direction: $direction")
+        val user = currentUserFlow.value
+        val urlForChatting = ApiUtils.getUrlForChat(
+            1,
+            user?.baseUrl,
+            chatRoomToken
+        )
+        val credentials = ApiUtils.getCredentials(user?.username, user?.token)
 
-        val messageId = currentItems
-            .asReversed()
-            .firstNotNullOfOrNull { item ->
-                (item as? ChatItem.MessageItem)?.uiMessage?.id
+        viewModelScope.launch {
+            if (isLoadMoreInProgress) {
+                return@launch
             }
 
-        Log.d(TAG, "Compose load more, messageId: $messageId")
-
-        messageId?.let {
-            val user = currentUserFlow.value
-
-            val urlForChatting = ApiUtils.getUrlForChat(
-                1,
-                user?.baseUrl,
-                chatRoomToken
-            )
-
-            val credentials = ApiUtils.getCredentials(user?.username, user?.token)
-
-            loadMoreMessages(
-                beforeMessageId = it.toLong(),
-                withUrl = urlForChatting,
-                withCredentials = credentials!!,
-                withMessageLimit = 100,
-                roomToken = uiState.value.conversation!!.token
-            )
-        }
-    }
-
-    fun loadMoreMessages(
-        beforeMessageId: Long,
-        roomToken: String,
-        withMessageLimit: Int,
-        withCredentials: String,
-        withUrl: String
-    ) {
-        viewModelScope.launch {
+            isLoadMoreInProgress = true
             val bundle = Bundle()
-            bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
-            bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
-            chatRepository.loadMoreMessages(
-                beforeMessageId,
-                roomToken,
-                withMessageLimit,
-                withNetworkParams = bundle
-            )
+            bundle.putString(BundleKeys.KEY_CHAT_URL, urlForChatting)
+            bundle.putString(BundleKeys.KEY_CREDENTIALS, credentials!!)
+            try {
+                val directionForRepository = when (direction) {
+                    LoadMoreDirection.OLDER -> ChatMessageRepository.LoadMoreDirection.OLDER
+                    LoadMoreDirection.NEWER -> ChatMessageRepository.LoadMoreDirection.NEWER
+                }
+
+                chatRepository.loadMoreMessages(
+                    messageId.toLong(),
+                    directionForRepository,
+                    uiState.value.conversation!!.token,
+                    LOAD_MORE_MESSAGES_LIMIT,
+                    withNetworkParams = bundle
+                )
+            } finally {
+                isLoadMoreInProgress = false
+            }
         }
     }
-
-    // fun initMessagePolling(withCredentials: String, withUrl: String, roomToken: String) {
-    //     val bundle = Bundle()
-    //     bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
-    //     bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
-    //     chatRepository.initMessagePolling(roomToken, withNetworkParams = bundle)
-    // }
 
     fun deleteChatMessages(credentials: String, url: String, messageId: Int) {
         chatNetworkDataSource.deleteChatMessage(credentials, url)
@@ -1894,6 +2164,9 @@ class ChatViewModel @AssistedInject constructor(
         private const val ROOM_REFRESH_DEBOUNCE_MS = 500L
         private const val GROUPING_TIME_WINDOW_SECONDS = 300L
         private const val TIMESTAMP_TO_MILLIS = 1000L
+        private const val MIN_CHARS_FOR_SEARCH = 2
+        private const val CONTEXT_MESSAGES_LIMIT = 50
+        private const val LOAD_MORE_MESSAGES_LIMIT = 100
     }
 
     sealed class OutOfOfficeUIState {
@@ -1937,11 +2210,13 @@ class ChatViewModel @AssistedInject constructor(
                 is MessageItem -> "msg_${uiMessage.id}"
                 is DateHeaderItem -> "header_$date"
                 is UnreadMessagesMarkerItem -> "last_read_$date"
+                is LoadGapItem -> "load_gap_$anchorMessageId"
             }
 
         data class MessageItem(val uiMessage: ChatMessageUi) : ChatItem
         data class DateHeaderItem(val date: LocalDate) : ChatItem
         data class UnreadMessagesMarkerItem(val date: LocalDate) : ChatItem
+        data class LoadGapItem(val anchorMessageId: Int) : ChatItem
     }
 
     @AssistedFactory

@@ -90,13 +90,17 @@ data class ChatViewState(
     val conversationThreadId: Long? = null,
     val hasChatPermission: Boolean = true,
     val initialUnreadCount: Int = 0,
-    val initialShowUnreadPopup: Boolean = false
+    val initialShowUnreadPopup: Boolean = false,
+    val chatMode: ChatViewModel.ChatMode = ChatViewModel.ChatMode.DEFAULT_MODE,
+    val highlightedMessageId: Int? = null,
+    val highlightedSearchTerm: String? = null
 )
 
 class ChatViewCallbacks(
-    val onLoadMore: (() -> Unit?)? = null,
+    val onLoadMore: ((Int, ChatViewModel.LoadMoreDirection) -> Unit?)? = null,
     val advanceLocalLastReadMessageIfNeeded: ((Int) -> Unit?)? = null,
     val updateRemoteLastReadMessageIfNeeded: (() -> Unit?)? = null,
+    val onJumpToBottom: (() -> Unit)? = null,
     val onLoadQuotedMessageClick: (Int) -> Unit = {},
     val messageCallbacks: ChatMessageCallbacks = ChatMessageCallbacks()
 )
@@ -122,25 +126,33 @@ fun ChatView(
     }
 
     var unreadCount by remember { mutableIntStateOf(state.initialUnreadCount) }
+    val isDefaultMode = state.chatMode == ChatViewModel.ChatMode.DEFAULT_MODE
 
-    val isAtNewest by remember(listState) {
+    val isAtNewest by remember(listState, isDefaultMode) {
         derivedStateOf {
-            listState.firstVisibleItemIndex == 0 &&
+            isDefaultMode &&
+                listState.firstVisibleItemIndex == 0 &&
                 listState.firstVisibleItemScrollOffset == 0
         }
     }
 
-    val isNearNewest by remember(listState) {
+    val isNearNewest by remember(listState, isDefaultMode) {
         derivedStateOf {
-            listState.firstVisibleItemIndex <= 2
+            isDefaultMode &&
+                listState.firstVisibleItemIndex <= 2
         }
     }
 
-    val showScrollToNewest by remember { derivedStateOf { !isNearNewest } }
+    val showScrollToNewest by remember(isNearNewest, isDefaultMode) {
+        derivedStateOf { !isNearNewest || !isDefaultMode }
+    }
 
     val latestChatItems by rememberUpdatedState(state.chatItems)
     val latestOnLoadQuotedMessageClick by rememberUpdatedState(callbacks.onLoadQuotedMessageClick)
     var quoteHighlightEvent by remember { mutableStateOf<QuoteHighlightEvent?>(null) }
+    var isNewerBoundaryLoadArmed by remember(state.chatMode, state.highlightedMessageId) {
+        mutableStateOf(state.chatMode == ChatViewModel.ChatMode.DEFAULT_MODE)
+    }
 
     val handleQuotedMessageClick: (Int) -> Unit = remember(coroutineScope, listState) {
         { messageId ->
@@ -169,12 +181,15 @@ fun ChatView(
     // Track newest message and show unread popup
     LaunchedEffect(state.chatItems) {
         if (state.chatItems.isEmpty()) return@LaunchedEffect
+        if (!isDefaultMode) return@LaunchedEffect
 
         val newestId = state.chatItems.firstNotNullOfOrNull { it.messageOrNull()?.id }
         val previousNewestId = lastNewestIdRef.value
 
         val isNearBottom = listState.firstVisibleItemIndex <= 2
-        val hasNewMessage = previousNewestId != null && newestId != previousNewestId
+        val hasNewMessage = previousNewestId != null &&
+            newestId != previousNewestId &&
+            state.chatMode == ChatViewModel.ChatMode.DEFAULT_MODE
 
         if (hasNewMessage) {
             if (isNearBottom) {
@@ -202,23 +217,45 @@ fun ChatView(
             }
     }
 
-    // Load more when near end
-    LaunchedEffect(listState, state.chatItems.size) {
+    // Load older/newer messages when approaching the currently loaded block boundaries.
+    LaunchedEffect(listState, state.chatItems.size, state.chatMode) {
         snapshotFlow {
             val layoutInfo = listState.layoutInfo
+            val firstVisible = layoutInfo.visibleItemsInfo.firstOrNull()?.index ?: 0
             val total = layoutInfo.totalItemsCount
             val lastVisible = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            lastVisible to total
+            Triple(firstVisible, lastVisible, total)
         }
             .distinctUntilChanged()
-            .collect { (lastVisible, total) ->
+            .collect { (firstVisible, lastVisible, total) ->
                 if (total == 0) return@collect
 
                 val buffer = LOAD_MORE_BUFFER_ITEMS
-                val shouldLoadMore = lastVisible >= (total - 1 - buffer)
+                if (!isNewerBoundaryLoadArmed && firstVisible > buffer) {
+                    isNewerBoundaryLoadArmed = true
+                }
 
-                if (shouldLoadMore) {
-                    callbacks.onLoadMore?.invoke()
+                val shouldLoadOlder = lastVisible >= (total - 1 - buffer)
+                val shouldLoadNewer =
+                    isNewerBoundaryLoadArmed &&
+                        (
+                            state.chatMode == ChatViewModel.ChatMode.SEARCH_MODE ||
+                                state.chatMode == ChatViewModel.ChatMode.OLD_CHATBLOCK_MODE
+                            ) &&
+                        firstVisible <= buffer
+
+                val oldestLoadedMessageId = latestChatItems
+                    .asReversed()
+                    .firstNotNullOfOrNull { (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id }
+                val newestLoadedMessageId = latestChatItems
+                    .firstNotNullOfOrNull { (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id }
+
+                if (shouldLoadOlder && oldestLoadedMessageId != null) {
+                    callbacks.onLoadMore?.invoke(oldestLoadedMessageId, ChatViewModel.LoadMoreDirection.OLDER)
+                }
+
+                if (shouldLoadNewer && newestLoadedMessageId != null) {
+                    callbacks.onLoadMore?.invoke(newestLoadedMessageId, ChatViewModel.LoadMoreDirection.NEWER)
                 }
             }
     }
@@ -238,6 +275,8 @@ fun ChatView(
 
                     is ChatViewModel.ChatItem.UnreadMessagesMarkerItem ->
                         formatTime(item.date)
+
+                    else -> ""
                 }
             } ?: ""
         }
@@ -306,6 +345,13 @@ fun ChatView(
                                 highlightTriggerKey = quoteHighlightEvent
                                     ?.takeIf { it.messageId == chatItem.uiMessage.id }
                                     ?.nonce,
+                                isSelected = state.highlightedMessageId == chatItem.uiMessage.id,
+                                highlightSearchTerm =
+                                if (state.highlightedMessageId == chatItem.uiMessage.id) {
+                                    state.highlightedSearchTerm
+                                } else {
+                                    null
+                                },
                                 context = ChatMessageContext(
                                     isOneToOneConversation = state.isOneToOneConversation,
                                     conversationThreadId = state.conversationThreadId,
@@ -340,6 +386,12 @@ fun ChatView(
                             UnreadMessagesMarker()
                         }
                     }
+
+                    is ChatViewModel.ChatItem.LoadGapItem -> {
+                        Box(modifier = Modifier.padding(top = 6.dp)) {
+                            DateHeaderLabel(text = stringResource(R.string.chat_messages_load_gap))
+                        }
+                    }
                 }
             }
         }
@@ -354,10 +406,11 @@ fun ChatView(
         )
 
         // Unread messages popup
-        if (showUnreadPopup.value) {
+        if (showUnreadPopup.value && isDefaultMode) {
             UnreadMessagesPopup(
                 unreadCount = unreadCount,
                 onClick = {
+                    callbacks.onJumpToBottom?.invoke()
                     coroutineScope.launch { listState.scrollToItem(0) }
                     unreadCount = 0
                     showUnreadPopup.value = false
@@ -379,6 +432,7 @@ fun ChatView(
         ) {
             Surface(
                 onClick = {
+                    callbacks.onJumpToBottom?.invoke()
                     coroutineScope.launch { listState.scrollToItem(0) }
                     unreadCount = 0
                 },

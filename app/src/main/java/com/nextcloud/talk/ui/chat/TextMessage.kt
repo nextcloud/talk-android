@@ -15,7 +15,12 @@ import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 
 @Composable
-fun TextMessage(uiMessage: ChatMessageUi, isOneToOneConversation: Boolean = false, conversationThreadId: Long? = null) {
+fun TextMessage(
+    uiMessage: ChatMessageUi,
+    isOneToOneConversation: Boolean = false,
+    conversationThreadId: Long? = null,
+    highlightSearchTerm: String? = null
+) {
     MessageScaffold(
         uiMessage = uiMessage,
         conversationThreadId = conversationThreadId,
@@ -23,7 +28,8 @@ fun TextMessage(uiMessage: ChatMessageUi, isOneToOneConversation: Boolean = fals
         content = {
             EnrichedText(
                 uiMessage,
-                Modifier.padding(start = 0.dp)
+                Modifier.padding(start = 0.dp),
+                highlightSearchTerm = highlightSearchTerm
             )
         }
     )

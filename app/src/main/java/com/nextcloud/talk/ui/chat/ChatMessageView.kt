@@ -70,11 +70,13 @@ class ChatMessageCallbacks(
     val onSystemMessageExpandClick: (Int) -> Unit = {}
 )
 
-@Suppress("Detekt.LongMethod", "Detekt.CyclomaticComplexMethod")
+@Suppress("Detekt.LongParameterList", "Detekt.LongMethod", "Detekt.CyclomaticComplexMethod")
 @Composable
 fun ChatMessageView(
     message: ChatMessageUi,
     highlightTriggerKey: Long? = null,
+    isSelected: Boolean = false,
+    highlightSearchTerm: String? = null,
     context: ChatMessageContext = ChatMessageContext(),
     callbacks: ChatMessageCallbacks = ChatMessageCallbacks()
 ) {
@@ -99,7 +101,8 @@ fun ChatMessageView(
         LocalReactionClickHandler provides callbacks.onReactionClick,
         LocalReactionLongClickHandler provides callbacks.onReactionLongClick,
         LocalOpenThreadHandler provides callbacks.onOpenThreadClick,
-        LocalQuotedMessageClickHandler provides callbacks.onQuotedMessageClick
+        LocalQuotedMessageClickHandler provides callbacks.onQuotedMessageClick,
+        LocalHighlightSearchTerm provides highlightSearchTerm
     ) {
         SwipeToReplyContainer(
             replyable = message.replyable && context.hasChatPermission,
@@ -126,7 +129,8 @@ fun ChatMessageView(
                         TextMessage(
                             uiMessage = message,
                             isOneToOneConversation = context.isOneToOneConversation,
-                            conversationThreadId = context.conversationThreadId
+                            conversationThreadId = context.conversationThreadId,
+                            highlightSearchTerm = highlightSearchTerm
                         )
                     }
 
@@ -197,7 +201,14 @@ fun ChatMessageView(
                         Log.d("ChatView", "Unknown message type: ${'$'}content")
                     }
                 }
-                if (highlightAlpha.value > 0f) {
+                val useContainerHighlight = highlightSearchTerm.isNullOrBlank()
+                if (isSelected && useContainerHighlight) {
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = QUOTE_HIGHLIGHT_INITIAL_ALPHA))
+                    )
+                } else if (highlightAlpha.value > 0f && useContainerHighlight) {
                     Box(
                         modifier = Modifier
                             .matchParentSize()

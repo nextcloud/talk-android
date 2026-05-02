@@ -96,6 +96,13 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
         threadId: Long?
     ): Flow<List<ChatMessageEntity>> = flowOf()
 
+    override fun getMessagesInRange(
+        internalConversationId: String,
+        threadId: Long?,
+        oldestMessageId: Long,
+        newestMessageId: Long
+    ): Flow<List<ChatMessageEntity>> = flowOf()
+
     override fun getMessagesForConversationBefore(
         internalConversationId: String,
         messageId: Long,

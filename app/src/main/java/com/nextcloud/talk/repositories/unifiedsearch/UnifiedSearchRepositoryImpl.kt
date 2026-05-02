@@ -7,22 +7,21 @@
  */
 package com.nextcloud.talk.repositories.unifiedsearch
 
-import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchEntry
 import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchResponseData
-import io.reactivex.Observable
 
-class UnifiedSearchRepositoryImpl(private val api: NcApi) : UnifiedSearchRepository {
+class UnifiedSearchRepositoryImpl(private val api: NcApiCoroutines) : UnifiedSearchRepository {
 
-    override fun searchMessages(
+    override suspend fun searchMessages(
         credentials: String?,
         url: String,
         searchTerm: String,
         cursor: Int,
         limit: Int
-    ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> {
-        val apiObservable = api.performUnifiedSearch(
+    ): UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry> {
+        val result = api.performUnifiedSearch(
             credentials,
             url,
             searchTerm,
@@ -30,18 +29,19 @@ class UnifiedSearchRepositoryImpl(private val api: NcApi) : UnifiedSearchReposit
             limit,
             cursor
         )
-        return apiObservable.map { mapToMessageResults(it.ocs?.data!!, searchTerm, limit) }
+        return mapToMessageResults(result.ocs?.data!!, searchTerm, limit)
     }
 
-    override fun searchInRoom(
+    @Suppress("LongParameterList")
+    override suspend fun searchInRoom(
         credentials: String?,
         url: String,
         roomToken: String,
         searchTerm: String,
         cursor: Int,
         limit: Int
-    ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> {
-        val apiObservable = api.performUnifiedSearch(
+    ): UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry> {
+        val result = api.performUnifiedSearch(
             credentials,
             url,
             searchTerm,
@@ -49,7 +49,7 @@ class UnifiedSearchRepositoryImpl(private val api: NcApi) : UnifiedSearchReposit
             limit,
             cursor
         )
-        return apiObservable.map { mapToMessageResults(it.ocs?.data!!, searchTerm, limit) }
+        return mapToMessageResults(result.ocs?.data!!, searchTerm, limit)
     }
 
     private fun fromUrlForRoom(roomToken: String) = "/call/$roomToken"

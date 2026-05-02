@@ -21,18 +21,18 @@ import kotlinx.coroutines.flow.Flow
 @Suppress("TooManyFunctions")
 interface ChatMessageRepository : LifecycleAwareManager {
 
+    enum class LoadMoreDirection {
+        OLDER,
+        NEWER
+    }
+
+    data class MessagesRange(val oldestMessageId: Long, val newestMessageId: Long)
+
     /**
      * Stream of a list of messages to be handled using the associated boolean
      * false for past messages, true for future messages.
      */
-    val messageFlow:
-        Flow<
-            Triple<
-                Boolean,
-                Boolean,
-                List<ChatMessage>
-                >
-            >
+    val messageFlow: Flow<Triple<Boolean, Boolean, List<ChatMessage>>>
 
     val updateMessageFlow: Flow<ChatMessage>
 
@@ -68,11 +68,12 @@ interface ChatMessageRepository : LifecycleAwareManager {
      * [withNetworkParams] credentials and url
      */
     suspend fun loadMoreMessages(
-        beforeMessageId: Long,
+        anchorMessageId: Long,
+        direction: LoadMoreDirection,
         roomToken: String,
         withMessageLimit: Int,
         withNetworkParams: Bundle
-    )
+    ): MessagesRange?
 
     /**
      * Gets a individual message.
@@ -160,5 +161,9 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     suspend fun onSignalingChatMessageReceived(chatMessages: List<ChatMessageJson>)
 
-    fun observeMessages(internalConversationId: String): Flow<List<ChatMessageEntity>>
+    fun observeLatestMessages(internalConversationId: String): Flow<List<ChatMessageEntity>>
+
+    fun observeMessagesForAnchor(internalConversationId: String, anchorMessageId: Long): Flow<List<ChatMessageEntity>>
+
+    suspend fun loadMessageContext(messageId: Long, limit: Int, threadId: Long? = null): Result<MessagesRange>
 }

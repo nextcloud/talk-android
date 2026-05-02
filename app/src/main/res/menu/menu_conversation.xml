@@ -52,6 +52,25 @@
         android:orderInCategory="3"
         android:title="@string/nc_search"
         android:visible="false"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView"
+        tools:visible="true" />
+
+    <item
+        android:id="@+id/conversation_search_previous"
+        android:icon="@drawable/ic_keyboard_arrow_up"
+        android:orderInCategory="31"
+        android:title="@string/message_search_previous_result"
+        android:visible="false"
+        app:showAsAction="ifRoom"
+        tools:visible="true" />
+
+    <item
+        android:id="@+id/conversation_search_next"
+        android:icon="@drawable/ic_keyboard_arrow_down"
+        android:orderInCategory="32"
+        android:title="@string/message_search_next_result"
+        android:visible="false"
         app:showAsAction="ifRoom"
         tools:visible="true" />
 

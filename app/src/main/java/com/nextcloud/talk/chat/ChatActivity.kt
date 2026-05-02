@@ -44,6 +44,7 @@ import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -60,7 +61,9 @@ import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.widget.SearchView
 import androidx.cardview.widget.CardView
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
@@ -69,6 +72,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -134,7 +138,6 @@ import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.location.LocationPickerActivity
-import com.nextcloud.talk.messagesearch.MessageSearchActivity
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
@@ -213,11 +216,15 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -232,6 +239,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 @Suppress("TooManyFunctions", "LargeClass", "LongMethod")
@@ -313,19 +321,6 @@ class ChatActivity :
         }
     }
 
-    private val startMessageSearchForResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            executeIfResultOk(it) { intent ->
-                runBlocking {
-                    val messageId = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_MESSAGE_ID)
-                    val threadId = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_THREAD_ID)
-                    messageId?.let {
-                        // Message search jump handling is pending for this path.
-                    }
-                }
-            }
-        }
-
     private val startPickCameraIntentForResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
@@ -380,6 +375,13 @@ class ChatActivity :
     private var conversationVoiceCallMenuItem: MenuItem? = null
     private var conversationVideoMenuItem: MenuItem? = null
     private var eventConversationMenuItem: MenuItem? = null
+    private var searchView: SearchView? = null
+    private var lastHandledHighlightNonce: Long? = null
+    private var pendingHighlightedMessageId: Long? = null
+    private var lastNoMoreResultsToastTime: Long = 0L
+    private var pendingHighlightRetryJob: Job? = null
+    private var centerSelectedMessageJob: Job? = null
+    private var chatListComposeScope: CoroutineScope? = null
 
     var webSocketInstance: WebSocketInstance? = null
     var signalingMessageSender: SignalingMessageSender? = null
@@ -393,11 +395,20 @@ class ChatActivity :
     lateinit var participantPermissions: ParticipantPermissions
 
     private var videoURI: Uri? = null
+    private var pendingTargetMessageId: Long? = null
+    private var pendingTargetThreadId: Long? = null
+    private var pendingTargetSearchQuery: String? = null
 
     private lateinit var pickMultipleMedia: ActivityResultLauncher<PickVisualMediaRequest>
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
+            if (chatViewModel.chatMode.value == ChatViewModel.ChatMode.SEARCH_MODE) {
+                chatViewModel.exitSearchMode()
+                invalidateOptionsMenu()
+                return
+            }
+
             if (!openedViaNotification && isChatThread()) {
                 isEnabled = false
                 onBackPressedDispatcher.onBackPressed()
@@ -543,6 +554,19 @@ class ChatActivity :
 
                     initObservers()
 
+                    pendingTargetMessageId?.let { messageId ->
+                        lifecycleScope.launch {
+                            chatViewModel.openMessageFromGlobalSearch(
+                                messageId = messageId,
+                                threadId = pendingTargetThreadId,
+                                searchQuery = pendingTargetSearchQuery
+                            )
+                        }
+                        pendingTargetMessageId = null
+                        pendingTargetThreadId = null
+                        pendingTargetSearchQuery = null
+                    }
+
                     pickMultipleMedia = registerForActivityResult(
                         ActivityResultContracts.PickMultipleVisualMedia(MAX_AMOUNT_MEDIA_FILE_PICKER)
                     ) { uris ->
@@ -583,14 +607,103 @@ class ChatActivity :
 
     private var chatListState: LazyListState? = null
 
-    private fun scrollToMessageById(messageId: Long) {
+    private fun scrollToMessageById(messageId: Long, logMiss: Boolean = true): Boolean {
         val items = chatViewModel.uiState.value.items
         val targetIndex = items.indexOfFirst { item ->
             (item as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id == messageId.toInt()
         }
-        if (targetIndex >= 0) {
-            lifecycleScope.launch {
-                chatListState?.scrollToItem(targetIndex)
+        val listState = chatListState
+        val composeScope = chatListComposeScope
+        val isReadyToScroll = targetIndex >= 0 && listState != null && composeScope != null
+
+        if (isReadyToScroll) {
+            logSearchNavigation("scroll hit messageId=$messageId index=$targetIndex")
+            centerSelectedMessageJob?.cancel()
+            val readyListState = requireNotNull(listState)
+            val readyComposeScope = requireNotNull(composeScope)
+            centerSelectedMessageJob = readyComposeScope.launch {
+                stabilizeHighlightedMessagePosition(
+                    listState = readyListState,
+                    messageId = messageId,
+                    initialIndex = targetIndex
+                )
+            }
+        } else if (targetIndex >= 0 && listState != null) {
+            if (logMiss) {
+                logSearchNavigation("scroll miss messageId=$messageId reason=composeScope-null")
+            }
+        } else if (targetIndex >= 0) {
+            if (logMiss) {
+                logSearchNavigation("scroll miss messageId=$messageId reason=listState-null")
+            }
+        } else if (logMiss) {
+            logSearchNavigation("scroll miss messageId=$messageId items=${items.size}")
+        }
+
+        return isReadyToScroll
+    }
+
+    private suspend fun centerItemInViewportIfVisible(listState: LazyListState, index: Int) {
+        val layoutInfo = listState.layoutInfo
+        val target = layoutInfo.visibleItemsInfo.firstOrNull { it.index == index } ?: return
+        val viewportCenter = (layoutInfo.viewportStartOffset + layoutInfo.viewportEndOffset) / 2f
+        val itemCenter = target.offset + (target.size / 2f)
+        val distanceToCenter = itemCenter - viewportCenter
+
+        if (abs(distanceToCenter) > SEARCH_CENTER_TOLERANCE_PX) {
+            listState.scrollBy(distanceToCenter)
+        }
+    }
+
+    private suspend fun stabilizeHighlightedMessagePosition(
+        listState: LazyListState,
+        messageId: Long,
+        initialIndex: Int
+    ) {
+        var targetIndex = initialIndex
+        repeat(SEARCH_CENTER_STABILIZE_ATTEMPTS) { attempt ->
+            if (chatViewModel.uiState.value.highlightedMessageId != messageId.toInt()) {
+                return
+            }
+
+            if (targetIndex < 0) {
+                return
+            }
+
+            val isVisible = listState.layoutInfo.visibleItemsInfo.any { it.index == targetIndex }
+            if (!isVisible) {
+                listState.scrollToItem(index = targetIndex)
+            }
+            centerItemInViewportIfVisible(listState, targetIndex)
+
+            if (attempt < SEARCH_CENTER_STABILIZE_ATTEMPTS - 1) {
+                delay(SEARCH_CENTER_STABILIZE_DELAY_MS)
+                targetIndex = chatViewModel.uiState.value.items.indexOfFirst { item ->
+                    (item as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id == messageId.toInt()
+                }
+            }
+        }
+    }
+
+    private fun schedulePendingHighlightRetry(messageId: Long) {
+        pendingHighlightRetryJob?.cancel()
+        pendingHighlightRetryJob = lifecycleScope.launch {
+            repeat(SEARCH_PENDING_SCROLL_RETRY_MAX) { attempt ->
+                if (pendingHighlightedMessageId != messageId) {
+                    return@launch
+                }
+
+                if (scrollToMessageById(messageId, logMiss = false)) {
+                    logSearchNavigation("pending retry resolved messageId=$messageId attempt=${attempt + 1}")
+                    pendingHighlightedMessageId = null
+                    return@launch
+                }
+
+                delay(SEARCH_PENDING_SCROLL_RETRY_DELAY_MS)
+            }
+
+            if (pendingHighlightedMessageId == messageId) {
+                logSearchNavigation("pending retry timeout messageId=$messageId")
             }
         }
     }
@@ -599,12 +712,17 @@ class ChatActivity :
         binding.messagesListViewCompose.setContent {
             MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
                 val uiState by chatViewModel.uiState.collectAsStateWithLifecycle()
+                val chatMode by chatViewModel.chatMode.collectAsStateWithLifecycle()
                 currentConversation = uiState.conversation
 
                 binding.messagesListViewCompose.visibility = View.VISIBLE
 
                 val listState = rememberLazyListState()
-                SideEffect { chatListState = listState }
+                val composeScope = rememberCoroutineScope()
+                SideEffect {
+                    chatListState = listState
+                    chatListComposeScope = composeScope
+                }
 
                 CompositionLocalProvider(
                     LocalViewThemeUtils provides viewThemeUtils,
@@ -619,11 +737,15 @@ class ChatActivity :
                             chatItems = uiState.items,
                             isOneToOneConversation = isOneToOneConversation,
                             conversationThreadId = conversationThreadId,
+                            chatMode = chatMode,
+                            highlightedMessageId = uiState.highlightedMessageId,
+                            highlightedSearchTerm = uiState.highlightedSearchTerm,
                             hasChatPermission = this::participantPermissions.isInitialized &&
                                 participantPermissions.hasChatPermission()
                         ),
                         callbacks = ChatViewCallbacks(
-                            onLoadMore = { loadMoreMessagesCompose() },
+                            onLoadMore = { messageId, direction -> loadMoreMessages(messageId, direction) },
+                            onJumpToBottom = { chatViewModel.switchToDefaultMode() },
                             advanceLocalLastReadMessageIfNeeded = { advanceLocalLastReadMessageIfNeeded(it) },
                             updateRemoteLastReadMessageIfNeeded = { updateRemoteLastReadMessageIfNeeded() },
                             onLoadQuotedMessageClick = { messageId -> onLoadQuotedMessage(messageId) },
@@ -669,10 +791,7 @@ class ChatActivity :
     }
 
     private fun onLoadQuotedMessage(messageId: Int) {
-        // Loading and displaying surrounding messages for quotes is pending; replace flow from latestChatBlock with
-        //  other flow
-        Log.d(TAG, "TODO: Load quoted message with id: $messageId")
-        Toast.makeText(this, R.string.quoted_message_too_old, Toast.LENGTH_LONG).show()
+        chatViewModel.jumpToQuotedMessage(messageId.toLong())
     }
 
     private fun onVoicePlayPauseClickCompose(messageId: Int) {
@@ -816,6 +935,12 @@ class ChatActivity :
         voiceOnly = extras?.getBoolean(KEY_CALL_VOICE_ONLY, false) == true
 
         focusInput = extras?.getBoolean(BundleKeys.KEY_FOCUS_INPUT) == true
+
+        pendingTargetMessageId = extras?.getString(BundleKeys.KEY_MESSAGE_ID)?.toLongOrNull()?.takeIf { it > 0L }
+            ?: extras?.getLong(BundleKeys.KEY_MESSAGE_ID)?.takeIf { it > 0L }
+        pendingTargetThreadId = extras?.getString(BundleKeys.KEY_THREAD_ID)?.toLongOrNull()?.takeIf { it > 0L }
+            ?: extras?.getLong(BundleKeys.KEY_THREAD_ID)?.takeIf { it > 0L }
+        pendingTargetSearchQuery = extras?.getString(BundleKeys.KEY_SEARCH_QUERY)
     }
 
     override fun onStart() {
@@ -841,7 +966,87 @@ class ChatActivity :
     @SuppressLint("SetTextI18n", "ResourceAsColor")
     @Suppress("LongMethod")
     private fun initObservers() {
+        data class SearchObserverState(
+            val selectedIndex: Int,
+            val resultsCount: Int,
+            val hasError: Boolean,
+            val isLoading: Boolean
+        )
+
         Log.d(TAG, "initObservers Called")
+
+        lifecycleScope.launch {
+            chatViewModel.chatMode.collectLatest {
+                invalidateOptionsMenu()
+                updateSearchLoadingIndicator(
+                    isLoading = it == ChatViewModel.ChatMode.SEARCH_MODE && chatViewModel.searchUiState.value.isLoading
+                )
+            }
+        }
+
+        lifecycleScope.launch {
+            chatViewModel.searchUiState
+                .map {
+                    SearchObserverState(
+                        selectedIndex = it.selectedIndex,
+                        resultsCount = it.results.size,
+                        hasError = it.error,
+                        isLoading = it.isLoading
+                    )
+                }
+                .distinctUntilChanged()
+                .collectLatest { state ->
+                    val inSearchMode = chatViewModel.chatMode.value == ChatViewModel.ChatMode.SEARCH_MODE
+                    updateSearchLoadingIndicator(
+                        isLoading = inSearchMode && state.isLoading
+                    )
+                    if (inSearchMode && state.hasError) {
+                        Toast.makeText(this@ChatActivity, R.string.nc_common_error_sorry, Toast.LENGTH_SHORT).show()
+                    }
+                }
+        }
+
+        lifecycleScope.launch {
+            chatViewModel.noMoreSearchResults.collect {
+                val inSearchMode = chatViewModel.chatMode.value == ChatViewModel.ChatMode.SEARCH_MODE
+                val now = System.currentTimeMillis()
+                if (inSearchMode && now - lastNoMoreResultsToastTime >= NO_MORE_RESULTS_TOAST_THROTTLE_MS) {
+                    lastNoMoreResultsToastTime = now
+                    Toast.makeText(
+                        this@ChatActivity,
+                        R.string.message_search_no_more_results,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            chatViewModel.uiState.collectLatest { state ->
+                val nonce = state.highlightTriggerNonce
+                val messageId = state.highlightedMessageId
+                if (nonce != null && messageId != null && nonce != lastHandledHighlightNonce) {
+                    lastHandledHighlightNonce = nonce
+                    val wasScrolled = scrollToMessageById(messageId.toLong())
+                    pendingHighlightedMessageId = if (wasScrolled) null else messageId.toLong()
+                    if (!wasScrolled) {
+                        schedulePendingHighlightRetry(messageId.toLong())
+                    }
+                    logSearchNavigation(
+                        "highlight nonce=$nonce messageId=$messageId wasScrolled=$wasScrolled " +
+                            "pending=$pendingHighlightedMessageId"
+                    )
+                }
+
+                pendingHighlightedMessageId?.let { pendingMessageId ->
+                    if (scrollToMessageById(pendingMessageId)) {
+                        logSearchNavigation("pending resolved messageId=$pendingMessageId")
+                        pendingHighlightedMessageId = null
+                        pendingHighlightRetryJob?.cancel()
+                    }
+                }
+            }
+        }
 
         chatViewModel.getCapabilitiesViewState.observe(this) { state ->
             when (state) {
@@ -1487,6 +1692,7 @@ class ChatActivity :
         supportActionBar?.setIcon(resources!!.getColor(R.color.transparent, null).toDrawable())
         setActionBarTitle()
         viewThemeUtils.material.themeToolbar(binding.chatToolbar)
+        viewThemeUtils.material.colorProgressBar(binding.searchLoadingIndicator, ColorRole.PRIMARY)
     }
 
     private fun setUpWaveform(message: ChatMessage, thenPlay: Boolean = true, backgroundPlayAllowed: Boolean = false) {
@@ -1615,6 +1821,14 @@ class ChatActivity :
 
                 private fun setIcon(drawable: Drawable?) {
                     supportActionBar?.let {
+                        val toolbarAvatar = binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_avatar)
+                        val toolbarStatus = binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_status)
+                        val avatarContainer =
+                            binding.chatToolbar.findViewById<FrameLayout>(R.id.chat_toolbar_avatar_container)
+                        if (toolbarAvatar == null || toolbarStatus == null || avatarContainer == null) {
+                            return
+                        }
+
                         val avatarSize = (it.height / TOOLBAR_AVATAR_RATIO).roundToInt()
                         val size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, context)
                         if (drawable != null && avatarSize > 0) {
@@ -1627,14 +1841,10 @@ class ChatActivity :
                                 binding.chatToolbar.context
                             )
                             viewThemeUtils.talk.themeStatusDrawable(context, status)
-                            binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_avatar)
-                                .setImageDrawable(bitmap.toDrawable(resources))
-                            binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_status)
-                                .setImageDrawable(status)
-                            binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_status).contentDescription =
-                                currentConversation?.status
-                            binding.chatToolbar.findViewById<FrameLayout>(R.id.chat_toolbar_avatar_container)
-                                .visibility = View.VISIBLE
+                            toolbarAvatar.setImageDrawable(bitmap.toDrawable(resources))
+                            toolbarStatus.setImageDrawable(status)
+                            toolbarStatus.contentDescription = currentConversation?.status
+                            avatarContainer.visibility = View.VISIBLE
                         } else {
                             Log.d(TAG, "loadAvatarForStatusBar avatarSize <= 0")
                         }
@@ -2497,6 +2707,10 @@ class ChatActivity :
 
     private fun setActionBarTitle() {
         val title = binding.chatToolbar.findViewById<TextView>(R.id.chat_toolbar_title)
+        if (title == null) {
+            Log.w(TAG, "setActionBarTitle: title view not found, skipping")
+            return
+        }
         viewThemeUtils.platform.colorTextView(title, ColorRole.ON_SURFACE)
 
         title.text =
@@ -2550,6 +2764,14 @@ class ChatActivity :
             statusMessageView.visibility = View.VISIBLE
         } else {
             statusMessageView.visibility = View.GONE
+        }
+    }
+
+    private fun updateToolbarForSearchMode(isSearchMode: Boolean) {
+        if (isSearchMode) {
+            binding.chatToolbar.setOnClickListener(null)
+        } else {
+            binding.chatToolbar.setOnClickListener { _ -> showConversationInfoScreen() }
         }
     }
 
@@ -2693,8 +2915,8 @@ class ChatActivity :
     }
 
     // this is triggered too often when scrolling. Must be made sure it's triggered only once.
-    private fun loadMoreMessagesCompose() {
-        chatViewModel.loadMoreMessagesCompose()
+    private fun loadMoreMessages(messageId: Int, direction: ChatViewModel.LoadMoreDirection) {
+        chatViewModel.loadMoreMessages(messageId, direction)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -2723,6 +2945,36 @@ class ChatActivity :
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         super.onPrepareOptionsMenu(menu)
 
+        val inSearchMode = chatViewModel.chatMode.value == ChatViewModel.ChatMode.SEARCH_MODE
+        updateToolbarForSearchMode(inSearchMode)
+
+        val searchItem = menu.findItem(R.id.conversation_search)
+        val previousSearchItem = menu.findItem(R.id.conversation_search_previous)
+        val nextSearchItem = menu.findItem(R.id.conversation_search_next)
+
+        if (inSearchMode) {
+            val searchState = chatViewModel.searchUiState.value
+            conversationVoiceCallMenuItem?.isVisible = false
+            conversationVideoMenuItem?.isVisible = false
+            menu.findItem(R.id.shared_items)?.isVisible = false
+            menu.findItem(R.id.conversation_go_to_file)?.isVisible = false
+            menu.findItem(R.id.conversation_info)?.isVisible = false
+            menu.findItem(R.id.show_threads)?.isVisible = false
+            menu.findItem(R.id.thread_notifications)?.isVisible = false
+            menu.findItem(R.id.conversation_scheduled_messages)?.isVisible = false
+            menu.findItem(R.id.conversation_event)?.isVisible = false
+
+            searchItem?.isVisible = true
+            previousSearchItem?.isVisible = true
+            nextSearchItem?.isVisible = true
+            configureSearchActionView(searchItem)
+            return true
+        }
+
+        previousSearchItem?.isVisible = false
+        nextSearchItem?.isVisible = false
+        searchItem?.collapseActionView()
+
         if (this::spreedCapabilities.isInitialized) {
             if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.READ_ONLY_ROOMS)) {
                 checkShowCallButtons()
@@ -2732,7 +2984,6 @@ class ChatActivity :
                 hasScheduledMessages &&
                 !ConversationUtils.isNoteToSelfConversation(currentConversation)
 
-            val searchItem = menu.findItem(R.id.conversation_search)
             searchItem.isVisible =
                 hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.UNIFIED_SEARCH) &&
                 currentConversation!!.remoteServer.isNullOrEmpty() &&
@@ -2832,6 +3083,16 @@ class ChatActivity :
 
             R.id.conversation_search -> {
                 startMessageSearch()
+                true
+            }
+
+            R.id.conversation_search_previous -> {
+                chatViewModel.selectNextSearchResult()
+                true
+            }
+
+            R.id.conversation_search_next -> {
+                chatViewModel.selectPreviousSearchResult()
                 true
             }
 
@@ -3189,10 +3450,71 @@ class ChatActivity :
     }
 
     private fun startMessageSearch() {
-        val intent = Intent(this, MessageSearchActivity::class.java)
-        intent.putExtra(KEY_CONVERSATION_NAME, currentConversation?.displayName)
-        intent.putExtra(KEY_ROOM_TOKEN, roomToken)
-        startMessageSearchForResult.launch(intent)
+        chatViewModel.enterSearchMode()
+        invalidateOptionsMenu()
+    }
+
+    private fun updateSearchLoadingIndicator(isLoading: Boolean) {
+        binding.searchLoadingIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun configureSearchActionView(searchItem: MenuItem?) {
+        val actionView = searchItem?.actionView as? SearchView ?: return
+        searchView = actionView
+        searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem): Boolean = true
+
+            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                if (chatViewModel.chatMode.value == ChatViewModel.ChatMode.SEARCH_MODE) {
+                    chatViewModel.exitSearchMode()
+                    invalidateOptionsMenu()
+                }
+                return true
+            }
+        })
+        searchItem.expandActionView()
+        actionView.queryHint = getString(R.string.message_search_hint)
+        actionView.isIconified = false
+        actionView.maxWidth = Int.MAX_VALUE
+        actionView.requestFocus()
+        window.decorView.post {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.showSoftInput(actionView.findFocus(), InputMethodManager.SHOW_IMPLICIT)
+        }
+
+        val currentQuery = chatViewModel.searchUiState.value.query
+        if (actionView.query.toString() != currentQuery) {
+            actionView.setQuery(currentQuery, false)
+        }
+
+        actionView.setOnCloseListener {
+            chatViewModel.exitSearchMode()
+            invalidateOptionsMenu()
+            true
+        }
+
+        actionView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                chatViewModel.onSearchQueryChanged(query.orEmpty())
+                chatViewModel.jumpToSearchSelection()
+                actionView.clearFocus()
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(actionView.windowToken, 0)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                chatViewModel.onSearchQueryChanged(newText.orEmpty())
+                return true
+            }
+        })
+    }
+
+    private fun logSearchNavigation(message: String) {
+        if (!BuildConfig.DEBUG) {
+            return
+        }
+        Log.d(TAG, "search-nav: $message")
     }
 
     private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
@@ -3997,6 +4319,7 @@ class ChatActivity :
         private const val ACTOR_TYPE = "users"
         const val CONVERSATION_INTERNAL_ID = "CONVERSATION_INTERNAL_ID"
         const val NO_OFFLINE_MESSAGES_FOUND = "NO_OFFLINE_MESSAGES_FOUND"
+        private const val NO_MORE_RESULTS_TOAST_THROTTLE_MS: Long = 2000
         const val VOICE_MESSAGE_CONTINUOUS_BEFORE = -5
         const val VOICE_MESSAGE_CONTINUOUS_AFTER = 5
         const val VOICE_MESSAGE_PLAY_ADD_THRESHOLD = 0.1
@@ -4005,5 +4328,10 @@ class ChatActivity :
         const val ZERO_INDEX = 0
         const val ONE_INDEX = 1
         const val MAX_AMOUNT_MEDIA_FILE_PICKER = 10
+        private const val SEARCH_PENDING_SCROLL_RETRY_MAX = 20
+        private const val SEARCH_PENDING_SCROLL_RETRY_DELAY_MS = 250L
+        private const val SEARCH_CENTER_TOLERANCE_PX = 2f
+        private const val SEARCH_CENTER_STABILIZE_ATTEMPTS = 8
+        private const val SEARCH_CENTER_STABILIZE_DELAY_MS = 200L
     }
 }
