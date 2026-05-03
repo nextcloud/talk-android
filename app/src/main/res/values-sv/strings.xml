@@ -96,6 +96,7 @@
     <string name="marked_as_unread">Markerade konversationen %1$s som oläst</string>
     <string name="media_message_content_description">Förhandsvisa fil</string>
     <string name="media_message_content_play">Spela upp mediefil</string>
+    <string name="mention_open_chat_with">Öppna chatt med %1$s</string>
     <string name="mentioned">Omnämnd</string>
     <string name="menu_item_sort_by_date_newest_first">Nyast först</string>
     <string name="menu_item_sort_by_date_oldest_first">Äldst först</string>
@@ -345,6 +346,7 @@
     <string name="nc_mark_conversation_as_unimportant">Konversationen avmarkerades som viktig</string>
     <string name="nc_meeting_ended">Möte avslutat</string>
     <string name="nc_message_added_to_notes">Meddelande tillagt i anteckningar</string>
+    <string name="nc_message_failed">Kunde inte skicka meddelandet</string>
     <string name="nc_message_failed_to_send">Kunde inte skicka meddelande:</string>
     <string name="nc_message_offline">Frånkopplad</string>
     <string name="nc_message_quote_cancel_reply">Avbryt svar</string>
@@ -701,6 +703,7 @@
     <string name="shared_items_voice">Röst</string>
     <string name="show_ban_reason">Visa orsak till blockering</string>
     <string name="show_banned_participants">Visa blockerade deltagare</string>
+    <string name="silent_message_hint">Tyst meddelande</string>
     <string name="starred">Favorit</string>
     <string name="startCallForbidden">Du får inte starta ett samtal</string>
     <string name="start_thread">Skapa en tråd</string>
