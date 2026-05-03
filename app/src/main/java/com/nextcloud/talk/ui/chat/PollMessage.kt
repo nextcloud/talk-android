@@ -9,9 +9,13 @@ package com.nextcloud.talk.ui.chat
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -26,7 +30,8 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 
-private const val AUTHOR_TEXT_SIZE = 12
+private val headerTextSize = 16.sp
+private val headerIconSize = 18.dp
 
 @Composable
 fun PollMessage(
@@ -42,26 +47,34 @@ fun PollMessage(
         conversationThreadId = conversationThreadId,
         forceTimeBelow = true,
         content = {
-            Column {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_baseline_bar_chart_24),
-                        tint = colorScheme.onSurface,
-                        contentDescription = null
-                    )
-                    Text(
-                        typeContent.pollName,
-                        fontSize = AUTHOR_TEXT_SIZE.sp,
-                        color = colorScheme.onSurface,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 4.dp)
-                    )
-                }
-
-                TextButtonNoStyling(stringResource(R.string.message_poll_tap_to_open)) {
-                    onPollClick(typeContent.pollId, typeContent.pollName)
+            Surface(
+                shape = MaterialTheme.shapes.small,
+                tonalElevation = 1.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp, top = 4.dp)
+            ) {
+                Column(modifier = Modifier.padding(8.dp)) {
+                    Row {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_baseline_bar_chart_24),
+                            tint = colorScheme.onSurface,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(top = 2.dp, end = 6.dp)
+                                .size(headerIconSize)
+                                .align(Alignment.Top)
+                        )
+                        Text(
+                            typeContent.pollName,
+                            fontSize = headerTextSize,
+                            color = colorScheme.onSurface,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                    TextButtonNoStyling(stringResource(R.string.message_poll_tap_to_open)) {
+                        onPollClick(typeContent.pollId, typeContent.pollName)
+                    }
                 }
             }
         }
@@ -73,7 +86,7 @@ private fun TextButtonNoStyling(text: String, onClick: () -> Unit) {
     TextButton(onClick = onClick) {
         Text(
             text,
-            fontSize = AUTHOR_TEXT_SIZE.sp
+            fontSize = headerTextSize
         )
     }
 }

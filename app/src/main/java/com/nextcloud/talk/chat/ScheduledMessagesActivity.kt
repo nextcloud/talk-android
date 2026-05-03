@@ -11,17 +11,15 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Bundle
-import android.text.util.Linkify
-import android.util.Patterns
-import android.widget.TextView
 import androidx.activity.compose.setContent
+import androidx.annotation.DrawableRes
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -35,11 +33,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -53,29 +51,30 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -91,29 +90,40 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.ui.model.MessageTypeContent
+import com.nextcloud.talk.chat.ui.model.toScheduledMessageUiModel
 import com.nextcloud.talk.chat.viewmodels.ScheduledMessagesViewModel
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.models.json.chat.ChatUtils
-import com.nextcloud.talk.models.json.opengraph.OpenGraphObject
-import com.nextcloud.talk.models.json.opengraph.Reference
+import com.nextcloud.talk.ui.chat.ChatMessageCallbacks
+import com.nextcloud.talk.ui.chat.ChatMessageContext
+import com.nextcloud.talk.ui.chat.ChatMessageView
+import com.nextcloud.talk.ui.chat.DateHeader
+import com.nextcloud.talk.ui.chat.DateHeaderLabel
+import com.nextcloud.talk.ui.chat.LocalShowThreadButton
+import com.nextcloud.talk.ui.chat.formatTime
+import com.nextcloud.talk.ui.theme.LocalMessageUtils
+import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
-import com.nextcloud.talk.utils.message.MessageUtils
 import com.vanniktech.emoji.EmojiEditText
 import com.vanniktech.emoji.EmojiPopup
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import java.time.Instant
-import java.time.LocalDate
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 import javax.inject.Inject
+
+private const val SCHEDULED_THREAD_ID = -1L
+
+private const val STICKY_HEADER_SCROLL_DELAY = 1200L
 
 @AutoInjector(NextcloudTalkApplication::class)
 @Suppress("LongMethod", "LargeClass", "TooManyFunctions", "COMPOSE_APPLIER_CALL_MISMATCH")
@@ -166,38 +176,45 @@ class ScheduledMessagesActivity : BaseActivity() {
                 scheduledMessagesViewModel.loadCurrentUser()
             }
             MaterialTheme(colorScheme = colorScheme) {
-                ColoredStatusBar()
-                currentUser?.let { user ->
-                    ScheduledMessagesScreen(
-                        conversationName = conversationName,
-                        scheduledMessagesViewModel = scheduledMessagesViewModel,
-                        dateUtils = dateUtils,
-                        viewThemeUtils = viewThemeUtils,
-                        onBack = { finish() },
-                        onLoadScheduledMessages = { loadScheduledMessages(user) },
-                        onSendNow = { message ->
-                            sendNow(message, user)
-                        },
-                        onReschedule = { message, sendAt, sendWithoutNotification ->
-                            reschedule(message, sendAt, sendWithoutNotification, user)
-                        },
-                        onEdit = { message, sendAt ->
-                            edit(message, sendAt, user)
-                        },
-                        onDeleteScheduledMessage = { message -> deleteScheduledMessage(message, user) },
-                        onOpenParentMessage = { messageId ->
-                            openParentMessage(messageId)
-                        },
-                        onOpenThread = { threadId ->
-                            openThread(threadId)
-                        },
-                        threadTitle = threadTitle,
-                        isThreadView = isThreadView,
-                        onCopyScheduledMessage = { message ->
-                            copyScheduledMessage(message)
-                        }
-                    )
-                }
+                CompositionLocalProvider(
+                    LocalViewThemeUtils provides viewThemeUtils,
+                    LocalMessageUtils provides messageUtils,
+                    LocalShowThreadButton provides false
+                ) {
+                    ColoredStatusBar()
+                    currentUser?.let { user ->
+                        ScheduledMessagesScreen(
+                            user = user,
+                            conversationName = conversationName,
+                            scheduledMessagesViewModel = scheduledMessagesViewModel,
+                            dateUtils = dateUtils,
+                            viewThemeUtils = viewThemeUtils,
+                            onBack = { finish() },
+                            onLoadScheduledMessages = { loadScheduledMessages(user) },
+                            onSendNow = { message ->
+                                sendNow(message, user)
+                            },
+                            onReschedule = { message, sendAt, sendWithoutNotification ->
+                                reschedule(message, sendAt, sendWithoutNotification, user)
+                            },
+                            onEdit = { message, sendAt ->
+                                edit(message, sendAt, user)
+                            },
+                            onDeleteScheduledMessage = { message -> deleteScheduledMessage(message, user) },
+                            onOpenParentMessage = { messageId ->
+                                openParentMessage(messageId)
+                            },
+                            onOpenThread = { threadId ->
+                                openThread(threadId)
+                            },
+                            threadTitle = threadTitle,
+                            isThreadView = isThreadView,
+                            onCopyScheduledMessage = { message ->
+                                copyScheduledMessage(message)
+                            }
+                        )
+                    }
+                } // CompositionLocalProvider
             }
         }
     }
@@ -297,6 +314,7 @@ class ScheduledMessagesActivity : BaseActivity() {
     @Suppress("LongParameterList", "LongMethod")
     @Composable
     private fun ScheduledMessagesScreen(
+        user: User,
         conversationName: String,
         scheduledMessagesViewModel: ScheduledMessagesViewModel,
         dateUtils: DateUtils,
@@ -392,16 +410,16 @@ class ScheduledMessagesActivity : BaseActivity() {
                         Column {
                             Text(
                                 text = stringResource(R.string.nc_scheduled_messages),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
+                                fontSize = 18.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
-                            val title = if (isThreadView) threadTitle else conversationName
+                            val subTitle = if (isThreadView) threadTitle else conversationName
                             Text(
-                                text = stringResource(
-                                    R.string.nc_in_conversation,
-                                    title
-                                ),
-                                style = MaterialTheme.typography.titleMedium
+                                text = stringResource(R.string.nc_in_conversation, subTitle),
+                                fontSize = 12.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     },
@@ -429,10 +447,6 @@ class ScheduledMessagesActivity : BaseActivity() {
                             .parentMessages
                             .collectAsStateWithLifecycle()
 
-                        val linkPreviews by scheduledMessagesViewModel
-                            .linkPreviews
-                            .collectAsStateWithLifecycle()
-
                         val visibleMessages = remember(state.messages, isThreadView, threadId) {
                             if (isThreadView) {
                                 state.messages.filter { it.threadId == threadId }
@@ -453,7 +467,6 @@ class ScheduledMessagesActivity : BaseActivity() {
                             }
                         } else {
                             val zone = remember { ZoneId.systemDefault() }
-                            val today = remember { LocalDate.now(zone) }
 
                             val sortedMessages = remember(visibleMessages) {
                                 visibleMessages
@@ -466,85 +479,168 @@ class ScheduledMessagesActivity : BaseActivity() {
                                     Instant.ofEpochSecond(sendAtSec).atZone(zone).toLocalDate()
                                 }
                             }
-                            LazyColumn(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxWidth(),
-                                reverseLayout = false
-                            ) {
-                                val datesInOrder = grouped.keys.sorted()
 
-                                datesInOrder.forEach { date ->
-                                    item(key = "header_$date") {
-                                        ScheduledDayHeader(
-                                            text = buildHeaderText(today = today, date = date)
-                                        )
-                                    }
+                            val listState = rememberLazyListState()
 
-                                    items(
-                                        items = grouped[date].orEmpty(),
-                                        key = { it.token ?: "" }
-                                    ) { message ->
-
-                                        LaunchedEffect(message.token, message.message) {
-                                            val extractedLink = extractUrlForPreview(message)
-                                            if (extractedLink != null) {
-                                                scheduledMessagesViewModel.requestLinkPreview(
-                                                    messageToken = message.token,
-                                                    extractedLink = extractedLink
-                                                )
-                                            }
-                                        }
-
-                                        val parentId = message.parentMessageId
-                                        val shouldShowParentPreview = !isThreadView ||
-                                            (parentId != null && parentId != message.threadId)
-                                        LaunchedEffect(parentId, shouldShowParentPreview) {
-                                            if (parentId != null && shouldShowParentPreview) {
-                                                scheduledMessagesViewModel.requestParentMessage(
-                                                    token = roomToken,
-                                                    parentMessageId = parentId,
-                                                    threadId = message.threadId
-                                                )
-                                            }
-                                        }
-                                        val parentMessage = if (shouldShowParentPreview) {
-                                            parentId?.let { parentMessages[it] }
-                                        } else {
-                                            null
-                                        }
-
-                                        val linkPreview = message.token?.let { linkPreviews[it] }
-                                        ScheduledMessageBubble(
-                                            message = message,
-                                            parentMessage = parentMessage,
-                                            linkPreview = linkPreview,
-                                            dateUtils = dateUtils,
-                                            viewThemeUtils = viewThemeUtils,
-                                            onClick = {
-                                                val parentId = message.parentMessageId
-                                                val isThreadMessage = (message.threadId ?: 0L) > 0
-
-                                                if (isThreadMessage && !isThreadView) {
-                                                    return@ScheduledMessageBubble
-                                                }
-
-                                                if (isThreadView && parentId != null) {
-                                                    openThreadParentMessage(parentId, message.threadId)
-                                                }
-
-                                                if (parentId != null && !isThreadView) {
-                                                    onOpenParentMessage(parentId)
-                                                }
-                                            },
-                                            onLongPress = {
-                                                selectedMessage = message
-                                                showActionsSheet = true
-                                            },
-                                            isThreadView = isThreadView
-                                        )
+                            val keyToDate = remember(grouped) {
+                                buildMap {
+                                    grouped.forEach { (date, messages) ->
+                                        put("header_$date", date)
+                                        messages.forEach { msg -> put(msg.token ?: "", date) }
                                     }
                                 }
+                            }
+
+                            val isNearTop by remember(listState) {
+                                derivedStateOf { listState.firstVisibleItemIndex <= 2 }
+                            }
+
+                            val stickyDateHeaderText by remember(listState, keyToDate) {
+                                derivedStateOf {
+                                    val firstKey = listState.layoutInfo.visibleItemsInfo.firstOrNull()?.key
+                                    firstKey?.let { keyToDate[it] }?.let { formatTime(it) } ?: ""
+                                }
+                            }
+
+                            var stickyDateHeader by remember { mutableStateOf(false) }
+
+                            LaunchedEffect(listState, isNearTop) {
+                                if (!isNearTop) {
+                                    snapshotFlow { listState.isScrollInProgress }
+                                        .collectLatest { scrolling ->
+                                            if (scrolling) {
+                                                stickyDateHeader = true
+                                            } else {
+                                                delay(STICKY_HEADER_SCROLL_DELAY)
+                                                stickyDateHeader = false
+                                            }
+                                        }
+                                } else {
+                                    stickyDateHeader = false
+                                }
+                            }
+
+                            val stickyDateHeaderAlpha by animateFloatAsState(
+                                targetValue = if (stickyDateHeader && stickyDateHeaderText.isNotEmpty()) 1f else 0f,
+                                animationSpec = tween(durationMillis = if (stickyDateHeader) 500 else 1000),
+                                label = ""
+                            )
+
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                            ) {
+                                LazyColumn(
+                                    state = listState,
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentPadding = PaddingValues(horizontal = 16.dp),
+                                    reverseLayout = false
+                                ) {
+                                    val datesInOrder = grouped.keys.sorted()
+
+                                    datesInOrder.forEach { date ->
+                                        item(key = "header_$date") {
+                                            Box(modifier = Modifier.padding(vertical = 6.dp)) {
+                                                DateHeader(date)
+                                            }
+                                        }
+
+                                        items(
+                                            items = grouped[date].orEmpty(),
+                                            key = { it.token ?: "" }
+                                        ) { message ->
+
+                                            val parentId = message.parentMessageId
+                                            val shouldShowParentPreview = !isThreadView ||
+                                                (parentId != null && parentId != message.threadId)
+                                            LaunchedEffect(parentId, shouldShowParentPreview) {
+                                                if (parentId != null && shouldShowParentPreview) {
+                                                    scheduledMessagesViewModel.requestParentMessage(
+                                                        token = roomToken,
+                                                        parentMessageId = parentId,
+                                                        threadId = message.threadId
+                                                    )
+                                                }
+                                            }
+                                            val parentMessage = if (shouldShowParentPreview) {
+                                                parentId?.let { parentMessages[it] }
+                                            } else {
+                                                null
+                                            }
+
+                                            val delayedThreadLabel =
+                                                stringResource(R.string.nc_scheduled_thread)
+                                            val replyToThreadLabel = stringResource(
+                                                R.string.nc_reply_to_thread,
+                                                message.threadTitle.orEmpty()
+                                            )
+                                            val uiMessage = remember(
+                                                message,
+                                                parentMessage,
+                                                delayedThreadLabel,
+                                                replyToThreadLabel
+                                            ) {
+                                                val base =
+                                                    message.toScheduledMessageUiModel(user, roomToken, parentMessage)
+                                                val isThreadReply =
+                                                    !isThreadView && (message.threadId ?: 0L) > 0
+                                                when {
+                                                    SCHEDULED_THREAD_ID == message.threadId -> base.copy(
+                                                        isThread = true,
+                                                        threadTitle = delayedThreadLabel,
+                                                        content = MessageTypeContent.RegularText
+                                                    )
+
+                                                    isThreadReply -> base.copy(
+                                                        isThread = true,
+                                                        threadTitle = replyToThreadLabel,
+                                                        threadTitleIconRes = R.drawable.ic_reply
+                                                    )
+
+                                                    else -> base
+                                                }
+                                            }
+                                            Box(modifier = Modifier.padding(bottom = 2.dp)) {
+                                                ChatMessageView(
+                                                    message = uiMessage,
+                                                    context = ChatMessageContext(
+                                                        hasChatPermission = false,
+                                                        conversationThreadId = if (isThreadView) threadId else null
+                                                    ),
+                                                    callbacks = ChatMessageCallbacks(
+                                                        onLongClick = { _ ->
+                                                            selectedMessage = message
+                                                            showActionsSheet = true
+                                                        },
+                                                        onQuotedMessageClick = { _ ->
+                                                            val msgParentId = message.parentMessageId
+                                                            val isThreadMessage = (message.threadId ?: 0L) > 0
+                                                            when {
+                                                                isThreadMessage && !isThreadView -> Unit
+                                                                isThreadView && msgParentId != null ->
+                                                                    openThreadParentMessage(
+                                                                        msgParentId,
+                                                                        message.threadId
+                                                                    )
+
+                                                                msgParentId != null -> onOpenParentMessage(msgParentId)
+                                                            }
+                                                        }
+                                                    )
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+
+                                DateHeaderLabel(
+                                    text = stickyDateHeaderText,
+                                    modifier = Modifier
+                                        .align(Alignment.TopCenter)
+                                        .padding(top = 2.dp)
+                                        .alpha(stickyDateHeaderAlpha)
+                                )
                             }
                         }
                     }
@@ -552,6 +648,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                     is ScheduledMessagesViewModel.GetScheduledMessagesErrorState -> {
                         ShowErrorText(isOnline)
                     }
+
                     else -> Spacer(modifier = Modifier.weight(1f))
                 }
 
@@ -685,33 +782,6 @@ class ScheduledMessagesActivity : BaseActivity() {
     }
 
     @Composable
-    private fun ScheduledDayHeader(text: String) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp, bottom = 6.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.labelMedium
-            )
-        }
-    }
-
-    private fun buildHeaderText(today: LocalDate, date: LocalDate): String {
-        val days = ChronoUnit.DAYS.between(today, date).toInt()
-        val format = DateTimeFormatter.ofPattern("d MMMM")
-
-        return when (days) {
-            INT_0 -> "Today, ${date.format(format)}"
-            INT_1 -> "Tomorrow, ${date.format(format)}"
-            in INT_2..INT_6 -> "In $days days, ${date.format(format)}"
-            else -> date.format(format)
-        }
-    }
-
-    @Composable
     private fun ShowErrorText(isOnline: Boolean) {
         if (isOnline) {
             Box(
@@ -723,242 +793,6 @@ class ScheduledMessagesActivity : BaseActivity() {
                     modifier = Modifier
                         .padding(24.dp)
                 )
-            }
-        }
-    }
-
-    @Suppress("ReturnCount")
-    private fun extractUrlForPreview(message: ChatMessage): String? {
-        val existingExtractedUrl = message.extractedUrlToPreview?.trim()
-        if (!existingExtractedUrl.isNullOrBlank()) {
-            return existingExtractedUrl
-        }
-
-        val messageText = ChatUtils.getParsedMessage(message.message, message.messageParameters).orEmpty()
-        val matcher = Patterns.WEB_URL.matcher(messageText)
-        while (matcher.find()) {
-            val link = matcher.group()?.trim().orEmpty()
-            if (link.startsWith("http://") || link.startsWith("https://")) {
-                return link
-            }
-        }
-        return null
-    }
-
-    @Composable
-    @Suppress("LongMethod", "LongParameterList")
-    private fun ScheduledMessageBubble(
-        message: ChatMessage,
-        parentMessage: ChatMessage?,
-        linkPreview: Reference?,
-        dateUtils: DateUtils,
-        viewThemeUtils: com.nextcloud.talk.ui.theme.ViewThemeUtils,
-        onClick: () -> Unit,
-        onLongPress: () -> Unit,
-        isThreadView: Boolean
-    ) {
-        val context = LocalContext.current
-        val scheduledAt = message.sendAt?.toLong() ?: message.timestamp
-        val timeText = dateUtils.getLocalTimeStringFromTimestamp(scheduledAt)
-        val text = ChatUtils.getParsedMessage(message.message, message.messageParameters).orEmpty()
-
-        val messageTextColor = LocalContentColor.current.toArgb()
-
-        val bubbleColor = remember(context, message.isDeleted, viewThemeUtils) {
-            Color(viewThemeUtils.talk.getOutgoingMessageBubbleColor(context, message.isDeleted, false))
-        }
-
-        val isClickable = remember(message.threadTitle, parentMessage, message.threadId, isThreadView) {
-            val isThreadMessage = (message.threadId ?: 0L) > 0
-            when {
-                isThreadMessage -> isThreadView
-                else -> !message.threadTitle.isNullOrBlank() || parentMessage != null
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.End
-        ) {
-            Surface(
-                color = bubbleColor,
-                shape = MaterialTheme.shapes.medium,
-                tonalElevation = 1.dp,
-                modifier = Modifier
-                    .width(IntrinsicSize.Max)
-                    .then(
-                        if (isClickable) {
-                            Modifier.combinedClickable(
-                                onClick = onClick,
-                                onLongClick = onLongPress
-                            )
-                        } else {
-                            Modifier.combinedClickable(
-                                onClick = {},
-                                onLongClick = onLongPress
-                            )
-                        }
-                    )
-            ) {
-                val strokeColor = MaterialTheme.colorScheme.primary
-                Column(modifier = Modifier.padding(8.dp)) {
-                    parentMessage?.let { parent ->
-                        if (!isThreadView && !message.threadTitle.isNullOrBlank()) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.outline_forum_24),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text(
-                                    text = message.threadTitle!!,
-                                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
-                                )
-                            }
-                        }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 4.dp)
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(MaterialTheme.colorScheme.background, MaterialTheme.shapes.small)
-                                .drawBehind {
-                                    val strokeWidth = 3.dp.toPx()
-                                    drawLine(
-                                        color = strokeColor,
-                                        start = Offset(strokeWidth / 2, 0f),
-                                        end = Offset(strokeWidth / 2, size.height),
-                                        strokeWidth = strokeWidth
-                                    )
-                                }
-                                .padding(start = 12.dp, top = 4.dp, bottom = 4.dp, end = 8.dp)
-                        ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = parent.actorDisplayName ?: "Unknown",
-                                    style = MaterialTheme.typography.labelSmall.copy(
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                )
-                                val parentMessage = ChatUtils.getParsedMessage(
-                                    parent.message,
-                                    parent.messageParameters
-                                ).orEmpty()
-
-                                AndroidView(
-                                    factory = { androidContext ->
-                                        TextView(androidContext).apply {
-                                            setOnClickListener {
-                                                if (isClickable) {
-                                                    onClick()
-                                                }
-                                            }
-                                            setOnLongClickListener {
-                                                onLongPress()
-                                                true
-                                            }
-                                        }
-                                    },
-                                    update = { textView ->
-                                        textView.setTextColor(messageTextColor)
-                                        textView.text = MessageUtils(context).getRenderedMarkdownText(
-                                            context,
-                                            parentMessage,
-                                            messageTextColor
-                                        )
-                                    }
-                                )
-                            }
-                        }
-                    }
-                    val messageTextColor = LocalContentColor.current.toArgb()
-                    val chatMessage = ChatUtils.getParsedMessage(
-                        message.message,
-                        message.messageParameters
-                    ).orEmpty()
-
-                    AndroidView(
-                        factory = { androidContext ->
-                            TextView(androidContext).apply {
-                                movementMethod = NoLongClickMovementMethod.instance
-                                linksClickable = true
-                                setOnLongClickListener {
-                                    onLongPress()
-                                    true
-                                }
-                            }
-                        },
-                        update = { textView ->
-                            textView.setTextColor(messageTextColor)
-                            textView.text = MessageUtils(context).getRenderedMarkdownText(
-                                context,
-                                chatMessage,
-                                messageTextColor
-                            )
-                            Linkify.addLinks(textView, Linkify.ALL)
-                        }
-                    )
-                    LinkPreview(linkPreview)
-
-                    Spacer(Modifier.height(4.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(text = timeText, style = MaterialTheme.typography.labelSmall)
-                        if (message.silent) {
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_baseline_notifications_off_24),
-                                contentDescription = null,
-                                modifier = Modifier.size(12.dp)
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    @Composable
-    private fun LinkPreview(linkPreview: Reference?) {
-        val openGraphObject = linkPreview?.openGraphObject ?: return
-
-        Surface(
-            shape = MaterialTheme.shapes.small,
-            tonalElevation = 1.dp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)
-        ) {
-            Column(modifier = Modifier.padding(8.dp)) {
-                Text(
-                    text = openGraphObject.name,
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                openGraphObject.description?.takeIf { it.isNotBlank() }?.let { description ->
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.bodySmall,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                openGraphObject.link?.takeIf { it.isNotBlank() }?.let { link ->
-                    Text(
-                        text = link,
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
             }
         }
     }
@@ -1131,54 +965,54 @@ class ScheduledMessagesActivity : BaseActivity() {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .padding(horizontal = 24.dp, vertical = 12.dp)
             ) {
                 Text(
                     text = stringResource(R.string.nc_scheduled_time),
-                    fontSize = 13.sp,
-                    color = colorResource(R.color.no_emphasis_text)
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = scheduledTime,
-                    fontSize = 13.sp,
-                    color = colorResource(R.color.no_emphasis_text)
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
             ActionRow(
-                icon = ImageVector.vectorResource(R.drawable.ic_content_copy),
+                iconRes = R.drawable.ic_content_copy,
                 text = stringResource(R.string.nc_copy_message),
                 onClick = onCopy
             )
             ActionRow(
-                icon = ImageVector.vectorResource(R.drawable.outline_schedule_send_24),
+                iconRes = R.drawable.outline_schedule_send_24,
                 text = stringResource(R.string.nc_reschedule_message_with_notification),
                 onClick = onRescheduleWithNotification
             )
             ActionRow(
-                icon = ImageVector.vectorResource(R.drawable.outline_schedule_send_24),
+                iconRes = R.drawable.outline_schedule_send_24,
                 text = stringResource(R.string.nc_reschedule_message_without_notification),
                 onClick = onRescheduleWithoutNotification
             )
             ActionRow(
-                icon = ImageVector.vectorResource(R.drawable.ic_send_24px),
+                iconRes = R.drawable.ic_send_24px,
                 text = stringResource(R.string.nc_send_now),
                 onClick = onSendNow
             )
             if (showOpenThreadAction && !isThreadView) {
                 ActionRow(
-                    icon = ImageVector.vectorResource(R.drawable.outline_forum_24),
+                    iconRes = R.drawable.outline_forum_24,
                     text = stringResource(R.string.open_thread),
                     onClick = onOpenThread
                 )
             }
             ActionRow(
-                icon = ImageVector.vectorResource(R.drawable.ic_edit),
+                iconRes = R.drawable.ic_edit,
                 text = stringResource(R.string.nc_edit),
                 onClick = onEdit
             )
             ActionRow(
-                icon = ImageVector.vectorResource(R.drawable.trashbin),
+                iconRes = R.drawable.trashbin,
                 text = stringResource(R.string.nc_delete),
                 onClick = onDelete
             )
@@ -1204,28 +1038,28 @@ class ScheduledMessagesActivity : BaseActivity() {
     }
 
     @Composable
-    private fun ActionRow(icon: ImageVector, text: String, onClick: () -> Unit) {
+    private fun ActionRow(@DrawableRes iconRes: Int, text: String, onClick: () -> Unit) {
         TextButton(
             onClick = onClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp)
+                .height(dimensionResource(R.dimen.bottom_sheet_item_height)),
+            shape = RectangleShape,
+            contentPadding = PaddingValues(horizontal = dimensionResource(R.dimen.standard_dialog_padding)),
+            colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp),
-                    tint = colorResource(R.color.high_emphasis_menu_icon)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(text = text, modifier = Modifier.weight(1f), color = colorResource(R.color.no_emphasis_text))
-            }
+            Icon(
+                painter = painterResource(iconRes),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.standard_dialog_padding)))
+            Text(
+                text = text,
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Start
+            )
         }
     }
 
@@ -1239,7 +1073,7 @@ class ScheduledMessagesActivity : BaseActivity() {
     private fun PreviewActionRow() {
         val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
         MaterialTheme(colorScheme = colorScheme) {
-            ActionRow(icon = ImageVector.vectorResource(R.drawable.ic_edit), text = "Edit", onClick = {})
+            ActionRow(iconRes = R.drawable.ic_edit, text = "Edit", onClick = {})
         }
     }
 
@@ -1273,16 +1107,6 @@ class ScheduledMessagesActivity : BaseActivity() {
         }
     }
 
-    @Preview(name = "LTR", showBackground = true)
-    @Preview(name = "RTL / Arabic", locale = "ar", showBackground = true)
-    @Composable
-    private fun ScheduledDayHeaderPreview() {
-        val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
-        MaterialTheme(colorScheme = colorScheme) {
-            ScheduledDayHeader(text = "Tomorrow, 25 Feb")
-        }
-    }
-
     @Preview(name = "Light Mode", showBackground = true)
     @Preview(
         name = "Dark Mode",
@@ -1295,30 +1119,6 @@ class ScheduledMessagesActivity : BaseActivity() {
         val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
         MaterialTheme(colorScheme = colorScheme) {
             ShowErrorText(isOnline = true)
-        }
-    }
-
-    @Preview(name = "Light Mode")
-    @Preview(
-        name = "Dark Mode",
-        uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
-    )
-    @Preview(name = "RTL / Arabic", locale = "ar")
-    @Composable
-    private fun LinkPreviewPreview() {
-        val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
-        MaterialTheme(colorScheme = colorScheme) {
-            LinkPreview(
-                linkPreview = Reference(
-                    openGraphObject = OpenGraphObject(
-                        id = "1",
-                        name = "Nextcloud Talk",
-                        description = "Open source, self-hosted team collaboration",
-                        link = "https://nextcloud.com/talk"
-                    ),
-                    accessible = true
-                )
-            )
         }
     }
 
@@ -1351,10 +1151,6 @@ class ScheduledMessagesActivity : BaseActivity() {
         const val CONVERSATION_NAME = "conversation_name"
         const val THREAD_ID = "thread_id"
         const val THREAD_TITLE = "thread_title"
-        const val INT_2: Int = 2
-        const val INT_6: Int = 6
-        const val INT_0: Int = 0
-        const val INT_1: Int = 1
         const val INT_24: Int = 24
         const val INT_20: Int = 20
     }

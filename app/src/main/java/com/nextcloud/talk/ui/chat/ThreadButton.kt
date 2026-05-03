@@ -19,8 +19,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,7 +30,13 @@ import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
 
 @Composable
-fun ThreadButtonComposable(replyAmount: Int = 0, onButtonClick: () -> Unit = {}) {
+fun ThreadButtonComposable(replyAmount: Int = 0, incoming: Boolean = true, onButtonClick: () -> Unit = {}) {
+    val themedColors = LocalViewThemeUtils.current.getColorScheme(LocalContext.current)
+    val backgroundColor = if (incoming) {
+        colorResource(R.color.bg_message_list_incoming_bubble)
+    } else {
+        themedColors.surfaceVariant
+    }
     val replyAmountText = if (replyAmount == 0) {
         stringResource(R.string.thread_reply)
     } else {
@@ -45,10 +53,10 @@ fun ThreadButtonComposable(replyAmount: Int = 0, onButtonClick: () -> Unit = {})
             .padding(0.dp)
             .height(24.dp),
         shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, colorResource(R.color.nc_incoming_text_default)),
+        border = BorderStroke(1.5.dp, themedColors.surface),
         contentPadding = PaddingValues(0.dp),
         colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = colorResource(R.color.bg_message_list_incoming_bubble),
+            containerColor = backgroundColor,
             contentColor = colorResource(R.color.nc_incoming_text_default)
         )
     ) {
