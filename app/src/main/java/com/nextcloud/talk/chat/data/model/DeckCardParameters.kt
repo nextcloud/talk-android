@@ -8,7 +8,7 @@
 package com.nextcloud.talk.chat.data.model
 
 class DeckCardParameters(messageParameters: HashMap<String?, HashMap<String?, String?>>?) :
-    RichObjectParameters(messageParameters, "deck-card") {
+    RichObjectParameters(messageParameters, "object") {
 
     val id = string("id")
     val name = string("name")

@@ -155,7 +155,7 @@ data class ChatMessage(
     val hasFileAttachment get() = messageParameters?.containsKey("file") == true
     val hasGeoLocation get() = messageParameters?.get("object")?.get("type") == "geo-location"
     val hasPoll get() = messageParameters?.get("object")?.get("type") == "talk-poll"
-    val hasDeckCard get() = messageParameters?.containsKey("deck-card") == true
+    val hasDeckCard get() = messageParameters?.get("object")?.get("type") == "deck-card"
 
     val isSystemMessage = systemMessageType?.let { it != SystemMessageType.DUMMY } ?: false
 

@@ -482,6 +482,7 @@ private fun PinnedReactionsRow(uiMessage: ChatMessageUi, conversationThreadId: L
         if (showThreadButton) {
             ThreadButtonComposable(
                 replyAmount = uiMessage.threadReplies,
+                incoming = uiMessage.incoming,
                 onButtonClick = { onOpenThread(uiMessage.id) }
             )
         }

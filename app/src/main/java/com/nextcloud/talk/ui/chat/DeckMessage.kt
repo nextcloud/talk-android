@@ -9,12 +9,16 @@ package com.nextcloud.talk.ui.chat
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
@@ -25,7 +29,8 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 
-private const val AUTHOR_TEXT_SIZE = 12
+private val HEADER_TEXT_SIZE = 16.sp
+private val HEADER_ICON_SIZE = 18.dp
 
 @Composable
 fun DeckMessage(
@@ -40,32 +45,43 @@ fun DeckMessage(
         conversationThreadId = conversationThreadId,
         forceTimeBelow = true,
         content = {
-            Column {
-                if (typeContent.cardName.isNotEmpty()) {
-                    val cardDescription = String.format(
-                        LocalResources.current.getString(R.string.deck_card_description),
-                        typeContent.stackName,
-                        typeContent.boardName
-                    )
-                    Row {
-                        Icon(
-                            painter = painterResource(R.drawable.deck),
-                            tint = colorScheme.onSurface,
-                            contentDescription = null
-                        )
-                        Spacer(modifier = Modifier.padding(start = 8.dp))
+            if (typeContent.cardName.isNotEmpty()) {
+                val cardDescription = String.format(
+                    LocalResources.current.getString(R.string.deck_card_description),
+                    typeContent.stackName,
+                    typeContent.boardName
+                )
+                Surface(
+                    shape = MaterialTheme.shapes.small,
+                    tonalElevation = 1.dp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp, top = 4.dp)
+                ) {
+                    Column(modifier = Modifier.padding(8.dp)) {
+                        Row {
+                            Icon(
+                                painter = painterResource(R.drawable.deck),
+                                tint = colorScheme.onSurface,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .padding(top = 2.dp, end = 6.dp)
+                                    .size(HEADER_ICON_SIZE)
+                                    .align(Alignment.Top)
+                            )
+                            Text(
+                                text = typeContent.cardName,
+                                fontSize = HEADER_TEXT_SIZE,
+                                color = colorScheme.onSurface,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
                         Text(
-                            text = typeContent.cardName,
-                            fontSize = AUTHOR_TEXT_SIZE.sp,
+                            text = cardDescription,
                             color = colorScheme.onSurface,
-                            fontWeight = FontWeight.Bold
+                            fontSize = HEADER_TEXT_SIZE
                         )
                     }
-                    Text(
-                        text = cardDescription,
-                        color = colorScheme.onSurface,
-                        fontSize = AUTHOR_TEXT_SIZE.sp
-                    )
                 }
             }
         }
