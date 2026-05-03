@@ -7,6 +7,9 @@
 
 package com.nextcloud.talk.ui.chat
 
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,6 +43,8 @@ fun DeckMessage(
     isOneToOneConversation: Boolean = false,
     conversationThreadId: Long? = null
 ) {
+    val context = LocalContext.current
+
     MessageScaffold(
         uiMessage = message,
         isOneToOneConversation = isOneToOneConversation,
@@ -57,6 +63,11 @@ fun DeckMessage(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 8.dp, end = 8.dp, bottom = 8.dp, top = 4.dp)
+                        .clickable(enabled = typeContent.cardLink.isNotBlank()) {
+                            runCatching {
+                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(typeContent.cardLink)))
+                            }
+                        }
                 ) {
                     Column(modifier = Modifier.padding(8.dp)) {
                         Row {
