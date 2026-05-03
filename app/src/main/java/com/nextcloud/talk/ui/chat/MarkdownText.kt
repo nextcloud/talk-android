@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextPaint
+import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ReplacementSpan
@@ -124,6 +125,7 @@ fun MarkdownText(
                 textView.setTextColor(textColorArgb)
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeSp)
                 textView.maxLines = maxLines
+                textView.ellipsize = if (maxLines != Int.MAX_VALUE) TextUtils.TruncateAt.END else null
                 textView.setLineSpacing(0f, textView.textSize * LINE_HEIGHT_MULTIPLIER / textView.paint.fontSpacing)
                 val markwon = MessageUtils.buildMarkwon(context, textColorArgb)
                 markwon.setMarkdown(textView, resolveNonMentionParams(message))
@@ -149,7 +151,7 @@ fun MarkdownText(
                 resolveFileParams(ssb, message)
                 textView.text = ssb
                 textView.setLinkTextColor(linkColorArgb)
-                val needsMovementMethod = hasClickableChips || hasLinks
+                val needsMovementMethod = (hasClickableChips || hasLinks) && maxLines == Int.MAX_VALUE
                 if (needsMovementMethod) {
                     textView.movementMethod = LinkMovementMethod.getInstance()
                     textView.setOnTouchListener(textView.tag as? View.OnTouchListener)
