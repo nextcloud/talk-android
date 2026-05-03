@@ -308,7 +308,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         private const val ROOM_TOKEN = "ROOM_TOKEN"
         private const val CONVERSATION_NAME = "CONVERSATION_NAME"
         private const val META_DATA = "META_DATA"
-        private const val CHUNK_UPLOAD_THRESHOLD_SIZE: Long = 1024000
+        private const val CHUNK_UPLOAD_THRESHOLD_SIZE: Long = 20 * 1024 * 1024
         private const val NOTIFICATION_FILE_NAME_MAX_LENGTH = 20
         private const val THREE_DOTS = "…"
         private const val HUNDRED_PERCENT = 100
