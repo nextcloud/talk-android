@@ -346,6 +346,7 @@
     <string name="nc_mark_conversation_as_unimportant">Pokalbis nebepažymėtas kaip svarbus</string>
     <string name="nc_meeting_ended">Susitikimas baigėsi</string>
     <string name="nc_message_added_to_notes">Pranešimas pridėtas prie užrašų</string>
+    <string name="nc_message_failed">Nepavyko išsiųsti pranešimo</string>
     <string name="nc_message_failed_to_send">Nepavyko išsiųsti pranešimo:</string>
     <string name="nc_message_offline">Neprisijungęs</string>
     <string name="nc_message_quote_cancel_reply">Atšaukti atsakymą</string>

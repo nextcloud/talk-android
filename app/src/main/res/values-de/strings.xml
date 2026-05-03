@@ -704,6 +704,7 @@
     <string name="shared_items_voice">Sprachnachrichten</string>
     <string name="show_ban_reason">Sperrgrund anzeigen</string>
     <string name="show_banned_participants">Gesperrte Teilnehmer anzeigen</string>
+    <string name="silent_message_hint">Stille Nachricht</string>
     <string name="starred">Favorit</string>
     <string name="startCallForbidden">Sie dürfen keinen Anruf zu tätigen</string>
     <string name="start_thread">Ein Thema erstellen</string>

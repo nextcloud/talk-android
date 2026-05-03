@@ -231,6 +231,7 @@
     <string name="nc_message_failed_to_send">Неуспешно изпращане на съобщение:</string>
     <string name="nc_message_quote_cancel_reply">Отказ на отговор</string>
     <string name="nc_message_read">Съобщението е прочетено</string>
+    <string name="nc_message_sending">Изпращане на съобщение</string>
     <string name="nc_message_sent">Съобщението е изпратено</string>
     <string name="nc_missed_call">Пропуснахте обаждане от %s</string>
     <string name="nc_moderator">Модератор</string>

@@ -349,6 +349,7 @@
     <string name="nc_message_read">Паведамленне прачытана</string>
     <string name="nc_message_scheduled">Паведамленне запланавана</string>
     <string name="nc_message_scheduled_at">Паведамленне запланавана на %1$s</string>
+    <string name="nc_message_sending">Адпраўка паведамлення</string>
     <string name="nc_message_sent">Паведамленне адпраўлена</string>
     <string name="nc_microphone_enabled_audio_recording">Мікрафон уключаны, і гук запісваецца</string>
     <string name="nc_microphone_permission_hint">Каб уключыць галасавую сувязь, дайце дазвол на доступ да мікрафона.</string>
