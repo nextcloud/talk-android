@@ -97,6 +97,7 @@
     <string name="marked_as_unread">Marcáladh comhrá %1$s mar neamhléite</string>
     <string name="media_message_content_description">Réamhamharc comhaid</string>
     <string name="media_message_content_play">Seinn comhad meán</string>
+    <string name="mention_open_chat_with">Oscail comhrá le %1$s</string>
     <string name="mentioned">Luaite</string>
     <string name="menu_item_sort_by_date_newest_first">Is nua ar dtús</string>
     <string name="menu_item_sort_by_date_oldest_first">Is sine ar dtús</string>
@@ -251,6 +252,7 @@
     <string name="nc_diagnosis_dialog_open_checklist">Oscail seicliosta fabhtcheartaithe</string>
     <string name="nc_diagnosis_dialog_open_diagnosis">Oscail scáileán diagnóis</string>
     <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Oscail dontkillmyapp.com</string>
+    <string name="nc_dialog_introduce_unifiedpush_selection">Tá tú ar tí do sheirbhís bhrú réamhshocraithe a roghnú</string>
     <string name="nc_dialog_invalid_password">Pasfhocal neamhbhailí</string>
     <string name="nc_dialog_maintenance_mode_description">Tá an freastalaí i mód cothabhála faoi láthair.</string>
     <string name="nc_dialog_outdated_client">Tá an feidhmchlár as dáta</string>
@@ -517,11 +519,14 @@
     <string name="nc_settings_remove">Bain</string>
     <string name="nc_settings_remove_account">Bain cuntas</string>
     <string name="nc_settings_remove_confirmation">Deimhnigh do rún an cuntas reatha a bhaint le do thoil.</string>
+    <string name="nc_settings_screen_enable_unifiedpush_desc">Faigh fógraí brú le seirbhís sheachtrach UnifiedPush</string>
+    <string name="nc_settings_screen_enable_unifiedpush_title">Cumasaigh UnifiedPush</string>
     <string name="nc_settings_screen_lock_desc">Glasáil %1$s le glas scáileáin Android nó modh bithmhéadrach a dtacaítear leis</string>
     <string name="nc_settings_screen_lock_timeout_title">Teorainn ama neamhghníomhaíochta an ghlais scáileáin</string>
     <string name="nc_settings_screen_lock_title">Glasáil scáileáin</string>
     <string name="nc_settings_screen_security_desc">Cosc ar screenshots sa liosta le déanaí agus taobh istigh den aip</string>
     <string name="nc_settings_screen_security_title">Slándáil scáileáin</string>
+    <string name="nc_settings_screen_unifiedpush_service_title">Seirbhís UnifiedPush</string>
     <string name="nc_settings_server_almost_eol">Tá leagan an fhreastalaí an-sean agus ní thacófar leis sa chéad eisiúint eile!</string>
     <string name="nc_settings_server_eol">Tá leagan an fhreastalaí ró-shean agus ní thacaíonn an leagan seo den aip Android leis</string>
     <string name="nc_settings_server_eol_title">Freastalaí nach dtacaítear leis</string>
@@ -700,6 +705,7 @@
     <string name="shared_items_voice">Guth</string>
     <string name="show_ban_reason">Taispeáin Cúis Toirmeasc</string>
     <string name="show_banned_participants">Taispeáin rannpháirtithe toirmiscthe</string>
+    <string name="silent_message_hint">Teachtaireacht chiúin</string>
     <string name="starred">is fearr leat</string>
     <string name="startCallForbidden">Níl cead agat glao a thosú</string>
     <string name="start_thread">Cruthaigh snáithe</string>
@@ -748,6 +754,7 @@
     <string name="unarchive_hint">Nuair a bheidh comhrá gan chartlannú, taispeánfar arís é de réir réamhshocraithe.</string>
     <string name="unarchived_conversation">Gan chartlann %1$s</string>
     <string name="unban">Dícosc</string>
+    <string name="unifiedpush">UnifiedBrush</string>
     <string name="unpin_message">Bain teachtaireacht den bhiorán </string>
     <string name="unread">Neamhléite</string>
     <string name="until_unpin">Go dtí go ndíphionálfar</string>

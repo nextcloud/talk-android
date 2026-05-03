@@ -97,6 +97,7 @@
     <string name="marked_as_unread">%1$s pokalbis pažymėtas kaip neperskaitytas</string>
     <string name="media_message_content_description">Failo peržiūra</string>
     <string name="media_message_content_play">Paleisti medijos failą</string>
+    <string name="mention_open_chat_with">Atverti pokalbį su %1$s</string>
     <string name="mentioned">Paminėta</string>
     <string name="menu_item_sort_by_date_newest_first">Naujausi pirmi</string>
     <string name="menu_item_sort_by_date_oldest_first">Seniausi pirmi</string>
@@ -704,6 +705,7 @@
     <string name="shared_items_voice">Balsas</string>
     <string name="show_ban_reason">Rodyti blokavimo priežastį</string>
     <string name="show_banned_participants">Rodyti užblokuotus dalyvius</string>
+    <string name="silent_message_hint">Tyli žinutė</string>
     <string name="starred">Mėgstamas</string>
     <string name="startCallForbidden">Jums neleidžiama pradėti skambučio</string>
     <string name="start_thread">Sukurti temą</string>
