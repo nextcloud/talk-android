@@ -5,6 +5,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+@file:Suppress("TooManyFunctions")
+
 package com.nextcloud.talk.conversationinfoedit.ui
 
 import android.content.res.Configuration
@@ -59,6 +61,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -114,7 +117,8 @@ private fun ConversationInfoEditTopBar(uiState: ConversationInfoEditUiState, cal
         title = {
             Text(
                 text = stringResource(R.string.nc_conversation_menu_conversation_info),
-                maxLines = 1
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(

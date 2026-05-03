@@ -736,6 +736,12 @@ fun ReadStatus(message: ChatMessageUi, color: Color = colorScheme.onSurfaceVaria
         MessageStatusIcon.SENT -> painterResource(R.drawable.ic_check)
         MessageStatusIcon.SCHEDULED -> painterResource(R.drawable.outline_schedule_24)
     }
+    val contentDescription = when (message.statusIcon) {
+        MessageStatusIcon.FAILED -> stringResource(R.string.nc_message_failed)
+        MessageStatusIcon.SENDING -> stringResource(R.string.nc_message_sending)
+        MessageStatusIcon.READ -> stringResource(R.string.nc_message_read)
+        MessageStatusIcon.SENT -> stringResource(R.string.nc_message_sent)
+    }
 
     val contentDescription = when (message.statusIcon) {
         MessageStatusIcon.FAILED -> stringResource(R.string.nc_message_failed)
