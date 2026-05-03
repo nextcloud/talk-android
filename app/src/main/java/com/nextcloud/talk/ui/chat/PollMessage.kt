@@ -30,8 +30,8 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 
-private val HEADER_TEXT_SIZE = 16.sp
-private val HEADER_ICON_SIZE = 18.dp
+private val headerTextSize = 16.sp
+private val headerIconSize = 18.dp
 
 @Composable
 fun PollMessage(
@@ -62,12 +62,12 @@ fun PollMessage(
                             contentDescription = null,
                             modifier = Modifier
                                 .padding(top = 2.dp, end = 6.dp)
-                                .size(HEADER_ICON_SIZE)
+                                .size(headerIconSize)
                                 .align(Alignment.Top)
                         )
                         Text(
                             typeContent.pollName,
-                            fontSize = HEADER_TEXT_SIZE,
+                            fontSize = headerTextSize,
                             color = colorScheme.onSurface,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -86,7 +86,7 @@ private fun TextButtonNoStyling(text: String, onClick: () -> Unit) {
     TextButton(onClick = onClick) {
         Text(
             text,
-            fontSize = HEADER_TEXT_SIZE
+            fontSize = headerTextSize
         )
     }
 }

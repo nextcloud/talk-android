@@ -29,8 +29,8 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 
-private val HEADER_TEXT_SIZE = 16.sp
-private val HEADER_ICON_SIZE = 18.dp
+private val headerTextSize = 16.sp
+private val headerIconSize = 18.dp
 
 @Composable
 fun DeckMessage(
@@ -66,12 +66,12 @@ fun DeckMessage(
                                 contentDescription = null,
                                 modifier = Modifier
                                     .padding(top = 2.dp, end = 6.dp)
-                                    .size(HEADER_ICON_SIZE)
+                                    .size(headerIconSize)
                                     .align(Alignment.Top)
                             )
                             Text(
                                 text = typeContent.cardName,
-                                fontSize = HEADER_TEXT_SIZE,
+                                fontSize = headerTextSize,
                                 color = colorScheme.onSurface,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -79,7 +79,7 @@ fun DeckMessage(
                         Text(
                             text = cardDescription,
                             color = colorScheme.onSurface,
-                            fontSize = HEADER_TEXT_SIZE
+                            fontSize = headerTextSize
                         )
                     }
                 }

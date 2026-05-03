@@ -123,6 +123,8 @@ import javax.inject.Inject
 
 private const val SCHEDULED_THREAD_ID = -1L
 
+private const val STICKY_HEADER_SCROLL_DELAY = 1200L
+
 @AutoInjector(NextcloudTalkApplication::class)
 @Suppress("LongMethod", "LargeClass", "TooManyFunctions", "COMPOSE_APPLIER_CALL_MISMATCH")
 class ScheduledMessagesActivity : BaseActivity() {
@@ -509,7 +511,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                                             if (scrolling) {
                                                 stickyDateHeader = true
                                             } else {
-                                                delay(1200L)
+                                                delay(STICKY_HEADER_SCROLL_DELAY)
                                                 stickyDateHeader = false
                                             }
                                         }
