@@ -314,6 +314,7 @@
     <string name="nc_message_failed_to_send">No s\'ha pogut enviar el missatge:</string>
     <string name="nc_message_quote_cancel_reply">Cancel·la la resposta</string>
     <string name="nc_message_read">Missatge llegit</string>
+    <string name="nc_message_sending">S\'està enviant el missatge</string>
     <string name="nc_message_sent">Missatge enviat</string>
     <string name="nc_microphone_permission_hint">Per a habilitar la comunicació per veu, concediu el permís de \"Micròfon\".</string>
     <string name="nc_missed_call">Teniu una trucada perduda de %s</string>

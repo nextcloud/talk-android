@@ -351,6 +351,7 @@
     <string name="nc_message_read">Zpráva přečtena</string>
     <string name="nc_message_scheduled">Zpráva naplánována</string>
     <string name="nc_message_scheduled_at">Zpráva naplánována pro %1$s</string>
+    <string name="nc_message_sending">Odesílání zprávy</string>
     <string name="nc_message_sent">Zpráva odeslána</string>
     <string name="nc_microphone_enabled_audio_recording">Mikrofon je povolený a zvuk se nahrává</string>
     <string name="nc_microphone_permission_hint">Pro zapnutí hlasové komunikace udělte oprávnění „Mikrofon“ .</string>
