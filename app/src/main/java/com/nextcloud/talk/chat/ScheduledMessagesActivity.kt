@@ -12,20 +12,20 @@ import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,7 +45,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.darkColorScheme
@@ -60,16 +60,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import com.nextcloud.talk.chat.ui.model.MessageTypeContent
-import com.nextcloud.talk.chat.ui.model.toScheduledMessageUiModel
-import com.nextcloud.talk.ui.chat.ChatMessageCallbacks
-import com.nextcloud.talk.ui.chat.ChatMessageContext
-import com.nextcloud.talk.ui.chat.ChatMessageView
-import com.nextcloud.talk.ui.chat.LocalShowThreadButton
-import com.nextcloud.talk.ui.chat.DateHeader
-import com.nextcloud.talk.ui.chat.DateHeaderLabel
-import com.nextcloud.talk.ui.chat.formatTime
-import androidx.annotation.DrawableRes
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -85,7 +75,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextRange
-
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -101,12 +90,21 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.ui.model.MessageTypeContent
+import com.nextcloud.talk.chat.ui.model.toScheduledMessageUiModel
 import com.nextcloud.talk.chat.viewmodels.ScheduledMessagesViewModel
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.models.json.chat.ChatUtils
+import com.nextcloud.talk.ui.chat.ChatMessageCallbacks
+import com.nextcloud.talk.ui.chat.ChatMessageContext
+import com.nextcloud.talk.ui.chat.ChatMessageView
+import com.nextcloud.talk.ui.chat.DateHeader
+import com.nextcloud.talk.ui.chat.DateHeaderLabel
+import com.nextcloud.talk.ui.chat.LocalShowThreadButton
+import com.nextcloud.talk.ui.chat.formatTime
 import com.nextcloud.talk.ui.theme.LocalMessageUtils
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
@@ -117,9 +115,9 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import com.vanniktech.emoji.EmojiEditText
 import com.vanniktech.emoji.EmojiPopup
-import java.time.Instant
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import java.time.Instant
 import java.time.ZoneId
 import javax.inject.Inject
 
@@ -181,39 +179,39 @@ class ScheduledMessagesActivity : BaseActivity() {
                     LocalMessageUtils provides messageUtils,
                     LocalShowThreadButton provides false
                 ) {
-                ColoredStatusBar()
-                currentUser?.let { user ->
-                    ScheduledMessagesScreen(
-                        user = user,
-                        conversationName = conversationName,
-                        scheduledMessagesViewModel = scheduledMessagesViewModel,
-                        dateUtils = dateUtils,
-                        viewThemeUtils = viewThemeUtils,
-                        onBack = { finish() },
-                        onLoadScheduledMessages = { loadScheduledMessages(user) },
-                        onSendNow = { message ->
-                            sendNow(message, user)
-                        },
-                        onReschedule = { message, sendAt, sendWithoutNotification ->
-                            reschedule(message, sendAt, sendWithoutNotification, user)
-                        },
-                        onEdit = { message, sendAt ->
-                            edit(message, sendAt, user)
-                        },
-                        onDeleteScheduledMessage = { message -> deleteScheduledMessage(message, user) },
-                        onOpenParentMessage = { messageId ->
-                            openParentMessage(messageId)
-                        },
-                        onOpenThread = { threadId ->
-                            openThread(threadId)
-                        },
-                        threadTitle = threadTitle,
-                        isThreadView = isThreadView,
-                        onCopyScheduledMessage = { message ->
-                            copyScheduledMessage(message)
-                        }
-                    )
-                }
+                    ColoredStatusBar()
+                    currentUser?.let { user ->
+                        ScheduledMessagesScreen(
+                            user = user,
+                            conversationName = conversationName,
+                            scheduledMessagesViewModel = scheduledMessagesViewModel,
+                            dateUtils = dateUtils,
+                            viewThemeUtils = viewThemeUtils,
+                            onBack = { finish() },
+                            onLoadScheduledMessages = { loadScheduledMessages(user) },
+                            onSendNow = { message ->
+                                sendNow(message, user)
+                            },
+                            onReschedule = { message, sendAt, sendWithoutNotification ->
+                                reschedule(message, sendAt, sendWithoutNotification, user)
+                            },
+                            onEdit = { message, sendAt ->
+                                edit(message, sendAt, user)
+                            },
+                            onDeleteScheduledMessage = { message -> deleteScheduledMessage(message, user) },
+                            onOpenParentMessage = { messageId ->
+                                openParentMessage(messageId)
+                            },
+                            onOpenThread = { threadId ->
+                                openThread(threadId)
+                            },
+                            threadTitle = threadTitle,
+                            isThreadView = isThreadView,
+                            onCopyScheduledMessage = { message ->
+                                copyScheduledMessage(message)
+                            }
+                        )
+                    }
                 } // CompositionLocalProvider
             }
         }
@@ -591,11 +589,13 @@ class ScheduledMessagesActivity : BaseActivity() {
                                                         threadTitle = delayedThreadLabel,
                                                         content = MessageTypeContent.RegularText
                                                     )
+
                                                     isThreadReply -> base.copy(
                                                         isThread = true,
                                                         threadTitle = replyToThreadLabel,
                                                         threadTitleIconRes = R.drawable.ic_reply
                                                     )
+
                                                     else -> base
                                                 }
                                             }
@@ -621,6 +621,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                                                                         msgParentId,
                                                                         message.threadId
                                                                     )
+
                                                                 msgParentId != null -> onOpenParentMessage(msgParentId)
                                                             }
                                                         }
@@ -645,6 +646,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                     is ScheduledMessagesViewModel.GetScheduledMessagesErrorState -> {
                         ShowErrorText(isOnline)
                     }
+
                     else -> Spacer(modifier = Modifier.weight(1f))
                 }
 
