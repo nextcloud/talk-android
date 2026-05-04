@@ -12,7 +12,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
@@ -83,7 +87,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val viewThemeUti
         val filteredActions = actions.filter { allowedAppIds.contains(it.appId) }
         val items = filteredActions.map { configureActionListItem(it) }
 
-        MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
+        val dialog = MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
             cornerRadius(res = R.dimen.corner_radius)
             viewThemeUtils.material.colorBottomSheetBackground(this.view)
 
@@ -99,6 +103,23 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val viewThemeUti
                 }
             }
         }
+        val sheetView = dialog.view.parent as? View ?: dialog.view
+
+        val initialBottomPadding = sheetView.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(sheetView) { view, insets ->
+            val bottomInset = insets.getInsets(
+                WindowInsetsCompat.Type.navigationBars()
+            ).bottom
+
+            view.updatePadding(
+                bottom = initialBottomPadding + bottomInset
+            )
+
+            insets
+        }
+
+        ViewCompat.requestApplyInsets(sheetView)
     }
 
     private fun configureActionListItem(action: HoverCardAction): BasicListItemWithImage {
