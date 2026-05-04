@@ -99,6 +99,7 @@ internal val LocalQuotedMessageClickHandler = compositionLocalOf<(Int) -> Unit> 
 internal val LocalMessageLongClickHandler = compositionLocalOf<(Int) -> Unit> { {} }
 internal val LocalHighlightSearchTerm = compositionLocalOf<String?> { null }
 internal val LocalShowThreadButton = compositionLocalOf { true }
+internal val LocalAvatarClickHandler = compositionLocalOf<(Int) -> Unit> { {} }
 
 private enum class MetadataLayoutMode {
     CAPTION,
@@ -246,6 +247,7 @@ fun MessageScaffold(
 
 @Composable
 private fun RowScope.MessageLeadingDecoration(uiMessage: ChatMessageUi, isOneToOneConversation: Boolean) {
+    val onAvatarClick = LocalAvatarClickHandler.current
     if (uiMessage.incoming && isOneToOneConversation && !uiMessage.isGrouped) {
         val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
         val avatarContext = LocalContext.current
@@ -259,6 +261,9 @@ private fun RowScope.MessageLeadingDecoration(uiMessage: ChatMessageUi, isOneToO
                 .size(48.dp)
                 .align(Alignment.Top)
                 .padding(end = 8.dp)
+                .combinedClickable(
+                    onClick = { onAvatarClick(uiMessage.id) }
+                )
         )
     } else if (uiMessage.incoming && isOneToOneConversation) {
         Spacer(Modifier.width(48.dp))

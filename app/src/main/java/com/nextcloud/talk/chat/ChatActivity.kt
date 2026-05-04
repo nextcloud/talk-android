@@ -175,6 +175,8 @@ import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.GetPinnedOptionsDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
+import com.nextcloud.talk.chat.ui.ShowReactionsModalBottomSheet
+import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.TempMessageActionsDialog
 import com.nextcloud.talk.ui.theme.LocalMessageUtils
 import com.nextcloud.talk.ui.theme.LocalOpenGraphFetcher
@@ -785,7 +787,8 @@ class ChatActivity :
                                 onOpenThreadClick = { messageId -> openThread(messageId.toLong()) },
                                 onSystemMessageExpandClick = { messageId ->
                                     chatViewModel.toggleSystemMessageCollapse(messageId)
-                                }
+                                },
+                                onAvatarClick = { messageId -> onAvatarClickCompose(messageId) }
                             )
                         ),
                         listState = listState
@@ -895,6 +898,13 @@ class ChatActivity :
                     setUpWaveform(message)
                 }
             }
+        }
+    }
+
+    private fun onAvatarClickCompose(messageId: Int) {
+        lifecycleScope.launch {
+            val message = chatViewModel.getMessageById(messageId.toLong()).first()
+            ProfileBottomSheet(ncApi, conversationUser, viewThemeUtils).showFor(message, this@ChatActivity)
         }
     }
 
