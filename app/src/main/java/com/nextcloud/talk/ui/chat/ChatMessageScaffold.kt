@@ -808,8 +808,12 @@ internal fun resolveMarkdownSource(message: ChatMessageUi): String {
 }
 
 @Composable
-fun EnrichedText(message: ChatMessageUi, modifier: Modifier, enableLinks: Boolean = true,maxLines: Int = Int
-    .MAX_VALUE) {
+fun EnrichedText(
+    message: ChatMessageUi,
+    modifier: Modifier,
+    enableLinks: Boolean = true,
+    maxLines: Int = Int.MAX_VALUE
+) {
     val isInspectionMode = LocalInspectionMode.current
     val isSingleEmoji = !isInspectionMode &&
         message.messageParameters.isEmpty() &&
