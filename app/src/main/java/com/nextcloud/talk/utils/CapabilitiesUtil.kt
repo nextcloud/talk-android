@@ -64,7 +64,8 @@ enum class SpreedFeatures(val value: String) {
     THREADS("threads"),
     PINNED_MESSAGES("pinned-messages"),
     SCHEDULED_MESSAGES("scheduled-messages"),
-    REACT_PERMISSION("react-permission")
+    REACT_PERMISSION("react-permission"),
+    CONVERSATION_PRESETS("conversation-presets")
 }
 
 @Suppress("TooManyFunctions")

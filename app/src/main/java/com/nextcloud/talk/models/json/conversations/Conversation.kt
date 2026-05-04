@@ -177,5 +177,9 @@ data class Conversation(
     var lastPinnedId: Long? = null,
 
     @JsonField(name = ["hiddenPinnedId"])
-    var hiddenPinnedId: Long? = null
+    var hiddenPinnedId: Long? = null,
+
+    // https://nextcloud-talk.readthedocs.io/en/latest/constants/#conversation-attributes)
+    @JsonField(name = ["attributes"])
+    var attributes: Int? = null
 ) : Parcelable

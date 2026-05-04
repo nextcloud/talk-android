@@ -67,6 +67,7 @@ fun ConversationModel.asEntity() =
         messageDraft = messageDraft,
         hiddenPinnedId = hiddenPinnedId,
         lastPinnedId = lastPinnedId,
+        attributes = attributes,
         hiddenUpcomingEvent = hiddenUpcomingEvent
     )
 
@@ -125,6 +126,7 @@ fun ConversationEntity.toDomainModel() =
         messageDraft = messageDraft,
         hiddenPinnedId = hiddenPinnedId,
         lastPinnedId = lastPinnedId,
+        attributes = attributes,
         hiddenUpcomingEvent = hiddenUpcomingEvent
     )
 
@@ -180,5 +182,6 @@ fun Conversation.asEntity(accountId: Long) =
         hasSensitive = hasSensitive,
         hasImportant = hasImportant,
         hiddenPinnedId = hiddenPinnedId,
-        lastPinnedId = lastPinnedId
+        lastPinnedId = lastPinnedId,
+        attributes = attributes
     )

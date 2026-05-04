@@ -21,6 +21,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,6 +42,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Chat
+import androidx.compose.material.icons.outlined.VolumeUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -69,7 +73,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import com.nextcloud.talk.utils.DisplayUtils
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -94,7 +97,9 @@ import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationVie
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.PickImage
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 import javax.inject.Inject
@@ -219,6 +224,15 @@ fun ConversationCreationScreen(
                 }
 
                 ConversationNameAndDescription(conversationCreationViewModel)
+
+                if (
+                    CapabilitiesUtil.hasSpreedFeatureCapability(
+                        conversationCreationViewModel.currentUser.capabilities?.spreedCapability!!,
+                        SpreedFeatures.CONVERSATION_PRESETS
+                    )
+                ) {
+                    ConversationPresets(conversationCreationViewModel)
+                }
                 AddParticipants(launcher, context, conversationCreationViewModel)
                 RoomCreationOptions(conversationCreationViewModel)
                 CreateConversation(conversationCreationViewModel, context)
@@ -365,6 +379,87 @@ fun ConversationNameAndDescription(conversationCreationViewModel: ConversationCr
 @Suppress("LongMethod")
 @SuppressLint("SuspiciousIndentation")
 @Composable
+fun ConversationPresets(conversationCreationViewModel: ConversationCreationViewModel) {
+    val preset by conversationCreationViewModel.conversationPreset
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        SelectableCard(
+            modifier = Modifier.weight(1f),
+            title = stringResource(R.string.default_room),
+            subtitle = stringResource(R.string.default_room_preset),
+            icon = Icons.Outlined.Chat,
+            isSelected = preset == "default",
+            onClick = { conversationCreationViewModel.conversationPreset.value = "default" }
+        )
+
+        SelectableCard(
+            modifier = Modifier.weight(1f),
+            title = stringResource(R.string.voice_room),
+            subtitle = stringResource(R.string.voice_room_preset),
+            icon = Icons.Outlined.VolumeUp,
+            isSelected = preset == "voiceroom",
+            onClick = { conversationCreationViewModel.conversationPreset.value = "voiceroom" }
+        )
+    }
+}
+
+@Composable
+fun SelectableCard(
+    modifier: Modifier = Modifier,
+    title: String,
+    subtitle: String,
+    icon: ImageVector,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val borderColor = if (isSelected) Color.LightGray else Color.Transparent
+    val borderWidth = 1.dp
+
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .clickable { onClick() }
+            .border(
+                width = borderWidth,
+                color = borderColor,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .padding(16.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp)
+            )
+            Text(
+                text = title,
+                fontWeight = FontWeight.Bold,
+                fontSize = 15.sp
+            )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            text = subtitle,
+            fontSize = 13.sp,
+            lineHeight = 18.sp
+        )
+    }
+}
+
+@Suppress("LongMethod")
+@SuppressLint("SuspiciousIndentation")
+@Composable
 fun AddParticipants(
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     context: Context,
@@ -469,7 +564,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
         color = MaterialTheme.colorScheme.primary,
         modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp)
     )
-    ConversationOptions(
+    ConversationOption(
         icon = R.drawable.ic_avatar_link,
         text = R.string.nc_guest_access_allow_title,
         switch = {
@@ -484,7 +579,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
     )
 
     if (isGuestsAllowed && !isPasswordSet) {
-        ConversationOptions(
+        ConversationOption(
             icon = R.drawable.baseline_lock_open_24,
             text = R.string.nc_set_password,
             conversationCreationViewModel = conversationCreationViewModel
@@ -492,14 +587,14 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
     }
 
     if (isGuestsAllowed && isPasswordSet) {
-        ConversationOptions(
+        ConversationOption(
             icon = R.drawable.ic_lock_grey600_24px,
             text = R.string.nc_change_password,
             conversationCreationViewModel = conversationCreationViewModel
         )
     }
 
-    ConversationOptions(
+    ConversationOption(
         icon = R.drawable.baseline_format_list_bulleted_24,
         text = R.string.nc_open_conversation_to_registered_users,
         switch = {
@@ -514,7 +609,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
     )
 
     if (isConversationAvailableForRegisteredUsers) {
-        ConversationOptions(
+        ConversationOption(
             text = R.string.nc_open_to_guest_app_users,
             switch = {
                 Switch(
@@ -530,7 +625,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
 }
 
 @Composable
-fun ConversationOptions(
+fun ConversationOption(
     icon: Int? = null,
     text: Int,
     switch: @Composable (() -> Unit)? = null,
@@ -721,7 +816,8 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
                 conversationCreationViewModel.createRoomAndAddParticipants(
                     roomType = CompanionClass.ROOM_TYPE_GROUP,
                     conversationName = conversationCreationViewModel.roomName.value,
-                    participants = selectedParticipants.toSet()
+                    participants = selectedParticipants.toSet(),
+                    preset = conversationCreationViewModel.conversationPreset.value
                 ) { roomToken ->
                     val bundle = Bundle()
                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)

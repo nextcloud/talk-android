@@ -857,6 +857,10 @@ How to translate with transifex:
     <!-- Breakout rooms -->
     <string name="switch_to_main_room">Switch to main room</string>
     <string name="switch_to_breakout_room">Switch to breakout room</string>
+    <string name="default_room">Default</string>
+    <string name="voice_room">Voice room</string>
+    <string name="default_room_preset">Send messages, create threads, and start voice and video calls</string>
+    <string name="voice_room_preset">Directly join the call, ideal for catch-ups or spontaneous meetings</string>
 
     <!-- Invitations -->
     <string name="nc_invitations">Invitations</string>

@@ -100,6 +100,8 @@ data class ConversationEntity(
     @ColumnInfo(name = "hasImportant") var hasImportant: Boolean = false,
     @ColumnInfo(name = "hiddenPinnedId") var hiddenPinnedId: Long? = null,
     @ColumnInfo(name = "lastPinnedId") var lastPinnedId: Long? = null,
+    @ColumnInfo(name = "attributes") var attributes: Int? = null,
+
     // local-only field
     @ColumnInfo(name = "messageDraft") var messageDraft: MessageDraft? = MessageDraft(),
     // local-only field

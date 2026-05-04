@@ -121,6 +121,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.ui.ShowReactionsModalBottomSheet
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
@@ -140,6 +141,7 @@ import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.location.LocationPickerActivity
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.domain.ConversationModel.Companion.checkIfVoiceRoom
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -157,8 +159,8 @@ import com.nextcloud.talk.translate.ui.TranslateActivity
 import com.nextcloud.talk.ui.PinnedMessageView
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.ui.StatusDrawable
-import com.nextcloud.talk.ui.chat.ChatView
 import com.nextcloud.talk.ui.chat.ChatMessageCallbacks
+import com.nextcloud.talk.ui.chat.ChatView
 import com.nextcloud.talk.ui.chat.ChatViewCallbacks
 import com.nextcloud.talk.ui.chat.ChatViewState
 import com.nextcloud.talk.ui.dialog.DateTimeCompose
@@ -166,7 +168,6 @@ import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.GetPinnedOptionsDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
-import com.nextcloud.talk.chat.ui.ShowReactionsModalBottomSheet
 import com.nextcloud.talk.ui.dialog.TempMessageActionsDialog
 import com.nextcloud.talk.ui.theme.LocalMessageUtils
 import com.nextcloud.talk.ui.theme.LocalOpenGraphFetcher
@@ -1201,6 +1202,10 @@ class ChatActivity :
                     logConversationInfos("joinRoomWithPassword#onNext")
 
                     setupWebsocket()
+
+                    if (currentConversation.checkIfVoiceRoom()) {
+                        startACall(false, true)
+                    }
 
                     if (startCallFromNotification) {
                         startCallFromNotification = false
@@ -3894,7 +3899,6 @@ class ChatActivity :
 
             if (noteToSelfConversation != null) {
                 var shareUri: Uri? = null
-                val data: HashMap<String, String>?
                 var metaData = ""
                 var objectId = ""
                 if (message.hasFileAttachment) {
