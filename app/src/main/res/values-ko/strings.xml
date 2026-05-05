@@ -166,6 +166,7 @@
     <string name="nc_edit_icon">편집</string>
     <string name="nc_edit_message">편집</string>
     <string name="nc_edit_message_text">메시지 편집</string>
+    <string name="nc_event_schedule">예정</string>
     <string name="nc_expire_message_eight_hours">8시간</string>
     <string name="nc_expire_message_four_weeks">4주</string>
     <string name="nc_expire_message_off">꺼짐</string>

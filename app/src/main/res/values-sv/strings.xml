@@ -425,6 +425,7 @@
     <string name="nc_rename_confirm">Döp om</string>
     <string name="nc_reply">Svara</string>
     <string name="nc_reply_privately">Svara privat</string>
+    <string name="nc_reply_to_thread">Svara i tråd: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Ändra schemaläggning med avisering</string>
     <string name="nc_reschedule_message_without_notification">Ändra schemaläggning utan avisering</string>
     <string name="nc_room_retention">Rummet har behållits framgångsrikt</string>
@@ -435,6 +436,7 @@
     <string name="nc_schedule_message_without_notification">Skicka senare utan avisering</string>
     <string name="nc_scheduled_messages">Schemalagda meddelanden</string>
     <string name="nc_scheduled_messages_empty">Inga schemalagda meddelanden</string>
+    <string name="nc_scheduled_thread">Schemalagd tråd</string>
     <string name="nc_scheduled_time">Schemalagd tid</string>
     <string name="nc_screen_lock_timeout_30">30 sekunder</string>
     <string name="nc_screen_lock_timeout_300">5 minuter</string>
