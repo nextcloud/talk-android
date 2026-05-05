@@ -97,6 +97,7 @@
     <string name="marked_as_unread">將對話 %1$s 標記為未讀</string>
     <string name="media_message_content_description">檔案預覽</string>
     <string name="media_message_content_play">播放媒體檔案</string>
+    <string name="mention_open_chat_with">使用 %1$s 開啟聊天</string>
     <string name="mentioned">已提及</string>
     <string name="menu_item_sort_by_date_newest_first">新的在前</string>
     <string name="menu_item_sort_by_date_oldest_first">舊的在前</string>
@@ -251,6 +252,7 @@
     <string name="nc_diagnosis_dialog_open_checklist">開啟疑難排解檢查表</string>
     <string name="nc_diagnosis_dialog_open_diagnosis">開啟診斷畫面</string>
     <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">開啟 dontkillmyapp.com</string>
+    <string name="nc_dialog_introduce_unifiedpush_selection">您將要選取預設推播服務</string>
     <string name="nc_dialog_invalid_password">無效的密碼</string>
     <string name="nc_dialog_maintenance_mode_description">伺服器目前正處於維護模式。</string>
     <string name="nc_dialog_outdated_client">應用程式已過時</string>
@@ -424,6 +426,7 @@
     <string name="nc_rename_confirm">重新命名</string>
     <string name="nc_reply">回覆</string>
     <string name="nc_reply_privately">私下回覆</string>
+    <string name="nc_reply_to_thread">回覆至討論串：%1$s</string>
     <string name="nc_reschedule_message_with_notification">重新安排並通知</string>
     <string name="nc_reschedule_message_without_notification">重新安排而不另行通知</string>
     <string name="nc_room_retention">聊天室已成功保留</string>
@@ -434,6 +437,7 @@
     <string name="nc_schedule_message_without_notification">稍後傳送且不傳送通知</string>
     <string name="nc_scheduled_messages">已排定的訊息</string>
     <string name="nc_scheduled_messages_empty">沒有安排好要傳送的訊息</string>
+    <string name="nc_scheduled_thread">排定討論串</string>
     <string name="nc_scheduled_time">排定時間</string>
     <string name="nc_screen_lock_timeout_30">30秒</string>
     <string name="nc_screen_lock_timeout_300">5分鐘</string>
@@ -517,11 +521,14 @@
     <string name="nc_settings_remove">移除</string>
     <string name="nc_settings_remove_account">移除帳號</string>
     <string name="nc_settings_remove_confirmation">請確認 是否要清除目前的帳號</string>
+    <string name="nc_settings_screen_enable_unifiedpush_desc">使用外部 UnifiedPush 服務接收推播通知</string>
+    <string name="nc_settings_screen_enable_unifiedpush_title">啟用 UnifiedPush</string>
     <string name="nc_settings_screen_lock_desc">使用 Android 螢幕鎖定或支援的生物辨識方法鎖定 %1$s</string>
     <string name="nc_settings_screen_lock_timeout_title">螢幕鎖定不活躍逾時</string>
     <string name="nc_settings_screen_lock_title">螢幕鎖定</string>
     <string name="nc_settings_screen_security_desc">避免在最近清單與應用程式內截圖</string>
     <string name="nc_settings_screen_security_title">螢幕安全</string>
+    <string name="nc_settings_screen_unifiedpush_service_title">UnifiedPush 服務</string>
     <string name="nc_settings_server_almost_eol">伺服器版本非常舊，下一個版本將不支援！</string>
     <string name="nc_settings_server_eol">伺服器版本太舊了，此版本的 Android 應用程式不支援</string>
     <string name="nc_settings_server_eol_title">不支援的伺服器</string>
@@ -700,6 +707,7 @@
     <string name="shared_items_voice">語音</string>
     <string name="show_ban_reason">顯示封鎖理由</string>
     <string name="show_banned_participants">顯示已封鎖的參與者</string>
+    <string name="silent_message_hint">靜音訊息</string>
     <string name="starred">收藏</string>
     <string name="startCallForbidden">您不被允許開始通話</string>
     <string name="start_thread">建立討論串</string>
@@ -748,6 +756,7 @@
     <string name="unarchive_hint">對話取消存檔後，預設會再次顯示。</string>
     <string name="unarchived_conversation">已解除封存 %1$s</string>
     <string name="unban">取消封鎖</string>
+    <string name="unifiedpush">UnifiedPush</string>
     <string name="unpin_message">取消釘選訊息</string>
     <string name="unread">未讀</string>
     <string name="until_unpin">直到取消釘選</string>

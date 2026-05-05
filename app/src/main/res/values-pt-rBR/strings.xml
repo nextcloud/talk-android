@@ -97,6 +97,7 @@
     <string name="marked_as_unread">Conversa %1$s marcada como não lida</string>
     <string name="media_message_content_description">Visualização do arquivo</string>
     <string name="media_message_content_play">Reproduzir arquivo de mídia</string>
+    <string name="mention_open_chat_with">Abrir bate-papo com %1$s</string>
     <string name="mentioned">Mencionado</string>
     <string name="menu_item_sort_by_date_newest_first">Mais novo primeiro</string>
     <string name="menu_item_sort_by_date_oldest_first">Mais antigo primeiro</string>
@@ -425,6 +426,7 @@
     <string name="nc_rename_confirm">Renomear</string>
     <string name="nc_reply">Responder</string>
     <string name="nc_reply_privately">Responder privadamente</string>
+    <string name="nc_reply_to_thread">Responder ao fio %1$s</string>
     <string name="nc_reschedule_message_with_notification">Reagendar com notificação</string>
     <string name="nc_reschedule_message_without_notification">Reagendar sem notificação</string>
     <string name="nc_room_retention">A sala é mantida com sucesso</string>
@@ -435,6 +437,7 @@
     <string name="nc_schedule_message_without_notification">Enviar mais tarde sem notificação</string>
     <string name="nc_scheduled_messages">Mensagens agendadas</string>
     <string name="nc_scheduled_messages_empty">Nenhuma mensagem agendada</string>
+    <string name="nc_scheduled_thread">Fio agendado</string>
     <string name="nc_scheduled_time">Horário agendado</string>
     <string name="nc_screen_lock_timeout_30">30 segundos</string>
     <string name="nc_screen_lock_timeout_300">5 minutos</string>
@@ -704,6 +707,7 @@
     <string name="shared_items_voice">Voz</string>
     <string name="show_ban_reason">Mostrar motivo do banimento</string>
     <string name="show_banned_participants">Mostrar participantes banidos</string>
+    <string name="silent_message_hint">Mensagem silenciosa</string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">Você não tem permissão para iniciar uma chamada</string>
     <string name="start_thread">Criar um fio</string>
