@@ -426,6 +426,7 @@
     <string name="nc_rename_confirm">Pervadinti</string>
     <string name="nc_reply">Atsakyti</string>
     <string name="nc_reply_privately">Atsakyti privačiai</string>
+    <string name="nc_reply_to_thread">Atsakyti temoje: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Perkelti į kitą datą su pranešimu</string>
     <string name="nc_reschedule_message_without_notification">Perkelti į kitą datą be pranešimo</string>
     <string name="nc_room_retention">Kambarys sėkmingai užsakytas</string>
@@ -436,6 +437,7 @@
     <string name="nc_schedule_message_without_notification">Siųsti vėliau be pranešimo</string>
     <string name="nc_scheduled_messages">Iš anksto suplanuoti pranešimai</string>
     <string name="nc_scheduled_messages_empty">Nėra suplanuotų pranešimų</string>
+    <string name="nc_scheduled_thread">Suplanuota tema</string>
     <string name="nc_scheduled_time">Numatytas laikas</string>
     <string name="nc_screen_lock_timeout_30">30 sekundžių</string>
     <string name="nc_screen_lock_timeout_300">5 minutės</string>
