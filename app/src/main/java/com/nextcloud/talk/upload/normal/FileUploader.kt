@@ -39,8 +39,7 @@ class FileUploader(
     val roomToken: String,
     val ncApi: NcApi,
     val file: File,
-    val ncApiCoroutines: NcApiCoroutines,
-    val conversationSubfolders: Boolean
+    val ncApiCoroutines: NcApiCoroutines
 ) {
 
     private var okHttpClientNoRedirects: OkHttpClient? = null
@@ -51,7 +50,7 @@ class FileUploader(
     }
 
     suspend fun uploadToConversationSubfolder(sourceFileUri: Uri, target: String): Boolean {
-        val response = requireNotNull(ncApiCoroutines) { "NcApiCoroutines is required" }.uploadFile(
+        val response = ncApiCoroutines.uploadFile(
             currentUser.getCredentials(),
             ApiUtils.getUrlForFileUpload(
                 currentUser.baseUrl!!,

@@ -182,8 +182,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 roomToken,
                 ncApi,
                 file!!,
-                ncApiCoroutines,
-                useConversationSubfolders
+                ncApiCoroutines
             )
                 .upload(sourceFileUri, fileName, remotePath, metaData)
                 .blockingFirst()
@@ -228,7 +227,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 )
                 chunkedFileUploader!!.upload(file!!, mimeType, tempRemotePath)
             } else {
-                FileUploader(okHttpClient, context, currentUser, roomToken, ncApi, file!!, ncApiCoroutines, true)
+                FileUploader(okHttpClient, context, currentUser, roomToken, ncApi, file!!, ncApiCoroutines)
                     .uploadToConversationSubfolder(sourceFileUri, tempRemotePath)
             }
 
