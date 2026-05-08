@@ -38,7 +38,7 @@
     <string name="clear_status_message_after">Eemalda olekuteade pärast</string>
     <string name="close">Sulge</string>
     <string name="close_icon">Sulgemise ikoon</string>
-    <string name="connection_established">Saadi ühendus</string>
+    <string name="connection_established">Ühendus on loodud</string>
     <string name="connection_lost">Puudub ühendus serveriga</string>
     <string name="connection_lost_sent_messages_are_queued">Ühendus on katkenud - saadetud sõnumid on edasisaatmise ootejärjekorras</string>
     <string name="continuous_voice_message_recording">Häälsõnumi pidevaks salvestamiseks lukusta salvestamine</string>
@@ -97,6 +97,7 @@
     <string name="marked_as_unread">„%1$s“ vestlus on märgitud mitteloetuks</string>
     <string name="media_message_content_description">Faili eelvaade</string>
     <string name="media_message_content_play">Esita meediafaili</string>
+    <string name="mention_open_chat_with">Ava vestlus rakendusega %1$s</string>
     <string name="mentioned">Mainitud</string>
     <string name="menu_item_sort_by_date_newest_first">Uuemad eespool</string>
     <string name="menu_item_sort_by_date_oldest_first">Vanemad eespool</string>
@@ -251,6 +252,7 @@
     <string name="nc_diagnosis_dialog_open_checklist">Ava veaotsingu kontrollnimekiri</string>
     <string name="nc_diagnosis_dialog_open_diagnosis">Ava diagnostikavaade</string>
     <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Ava dontkillmyapp.com</string>
+    <string name="nc_dialog_introduce_unifiedpush_selection">Sa oled valimas vaikimisi kasutatavat tõuketeenust</string>
     <string name="nc_dialog_invalid_password">Vale salasõna</string>
     <string name="nc_dialog_maintenance_mode_description">Server on hetkel hooldusrežiimis.</string>
     <string name="nc_dialog_outdated_client">Rakendus on aegunud</string>
@@ -391,7 +393,7 @@
     <string name="nc_ok">OK</string>
     <string name="nc_ongoing_meeting">Pooleliolev kohtumine</string>
     <string name="nc_open_conversation_to_registered_users">Ava vestlus registreeritud kasutajatele</string>
-    <string name="nc_open_to_guest_app_users">Lisaks ava ka külalisrakenduse kasutajatele</string>
+    <string name="nc_open_to_guest_app_users">Lisaks ava ka rakenduse külaliskasutajatele</string>
     <string name="nc_owner">Omanik</string>
     <string name="nc_participants">Osalejad</string>
     <string name="nc_participants_add">Lisa osalejaid</string>
@@ -424,6 +426,7 @@
     <string name="nc_rename_confirm">Muuda nime</string>
     <string name="nc_reply">Vasta</string>
     <string name="nc_reply_privately">Vasta privaatselt</string>
+    <string name="nc_reply_to_thread">Vastus jutulõnga: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Muuda ajastamist koos teavitusega</string>
     <string name="nc_reschedule_message_without_notification">Muuda ajastamist ilma teavituseta</string>
     <string name="nc_room_retention">Jututoa allesjätmine õnnestus</string>
@@ -434,6 +437,7 @@
     <string name="nc_schedule_message_without_notification">Saada hiljem ilma teavituseta</string>
     <string name="nc_scheduled_messages">Ajastatud sõnumid</string>
     <string name="nc_scheduled_messages_empty">Ajastatud sõnumeid pole</string>
+    <string name="nc_scheduled_thread">Ajastatud jutulõng</string>
     <string name="nc_scheduled_time">Plaanitud aeg</string>
     <string name="nc_screen_lock_timeout_30">30 sekundit</string>
     <string name="nc_screen_lock_timeout_300">5 minutit</string>
@@ -517,11 +521,14 @@
     <string name="nc_settings_remove">Eemalda</string>
     <string name="nc_settings_remove_account">Eemalda konto</string>
     <string name="nc_settings_remove_confirmation">Palun kinnita oma praeguse kasutajakonto eemaldamise soovi</string>
+    <string name="nc_settings_screen_enable_unifiedpush_desc">See rakendus saab tõuketeateid välise UnifiedPushi teenuse abil</string>
+    <string name="nc_settings_screen_enable_unifiedpush_title">Võta UnifiedPush kasutusele</string>
     <string name="nc_settings_screen_lock_desc">Kasuta %1$s rakenduse lukustamiseks Androidi ekraanilukustust või biomeetrilise tuvastuse meetodeid</string>
     <string name="nc_settings_screen_lock_timeout_title">Ekraani jõudeoleku kestus ekraanilukustuse käivitamiseks</string>
     <string name="nc_settings_screen_lock_title">Ekraanilukustus</string>
     <string name="nc_settings_screen_security_desc">Keela ekraanipiltide tegemine hiljutiste rakenduste loendist ja rakenduse sisevaadetest</string>
     <string name="nc_settings_screen_security_title">Ekraaniturvalisus</string>
+    <string name="nc_settings_screen_unifiedpush_service_title">UnifiedPushi tõuketeenus</string>
     <string name="nc_settings_server_almost_eol">Kasutatav serveri versioon on väga vana ning selle rakenduse järgmine versioon seda ei toeta!</string>
     <string name="nc_settings_server_eol">Kasutatav serveri versioon on liiga vana ning selle rakenduse see versioon seda ei toeta!</string>
     <string name="nc_settings_server_eol_title">Mittetoetatud server</string>
@@ -690,7 +697,7 @@
     <string name="set_status">Määra olek</string>
     <string name="set_status_message">Sisesta olekuteade</string>
     <string name="share">Jaga</string>
-    <string name="share_link_to_conversation">Liitu „%1$s“ vestkusega: %2$s</string>
+    <string name="share_link_to_conversation">Liitu „%1$s“ vestlusega: %2$s</string>
     <string name="shared_items_audio">Helid</string>
     <string name="shared_items_file">Fail</string>
     <string name="shared_items_media">Meedia</string>
@@ -698,8 +705,9 @@
     <string name="shared_items_poll">Küsitlus</string>
     <string name="shared_items_recording">Kõnesalvestus</string>
     <string name="shared_items_voice">Hääl</string>
-    <string name="show_ban_reason">Näita suhtluskeelu seadmise põhjus</string>
+    <string name="show_ban_reason">Näita suhtluskeelu seadmise põhjust</string>
     <string name="show_banned_participants">Näita suhtluskeelu saanud osalejaid</string>
+    <string name="silent_message_hint">Vaikne sõnum</string>
     <string name="starred">Lemmik</string>
     <string name="startCallForbidden">Sul pole luba kõne algatamiseks</string>
     <string name="start_thread">Alusta jutulõnga</string>
@@ -748,6 +756,7 @@
     <string name="unarchive_hint">Kui vestlus on arhiivist välja võetud, siis on ta jälle vaikimisi näha.</string>
     <string name="unarchived_conversation">%1$s on arhiivist välja võetud</string>
     <string name="unban">Eemalda suhtluskeeld</string>
+    <string name="unifiedpush">UnifiedPush</string>
     <string name="unpin_message">Lõpeta sõnumi esiletõstmine</string>
     <string name="unread">Lugemata</string>
     <string name="until_unpin">Kuni esiletõstmise lõpetamiseni</string>

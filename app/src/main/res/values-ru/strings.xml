@@ -97,6 +97,7 @@
     <string name="marked_as_unread">Отметить обсуждение %1$s непрочитанным</string>
     <string name="media_message_content_description">Предпросмотр файла</string>
     <string name="media_message_content_play">Воспроизвести медиа файл</string>
+    <string name="mention_open_chat_with">Открыть чат с %1$s</string>
     <string name="mentioned">Упомянул</string>
     <string name="menu_item_sort_by_date_newest_first">Самый новый первый</string>
     <string name="menu_item_sort_by_date_oldest_first">Самый старый первый</string>
@@ -251,6 +252,7 @@
     <string name="nc_diagnosis_dialog_open_checklist">Открыть контрольный список устранения неполадок</string>
     <string name="nc_diagnosis_dialog_open_diagnosis">Открыть экран диагностики</string>
     <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Открыть dontkillmyapp.com</string>
+    <string name="nc_dialog_introduce_unifiedpush_selection">Вы собираетесь выбрать службу push-уведомлений по умолчанию</string>
     <string name="nc_dialog_invalid_password">Неверный пароль</string>
     <string name="nc_dialog_maintenance_mode_description">В настоящее время сервер находится в режиме технического обслуживания.</string>
     <string name="nc_dialog_outdated_client">Приложение устарело</string>
@@ -345,10 +347,13 @@
     <string name="nc_mark_conversation_as_unimportant">Обсуждение снято с пометки как важное</string>
     <string name="nc_meeting_ended">Встреча завершена</string>
     <string name="nc_message_added_to_notes">Сообщение добавлено в записки</string>
+    <string name="nc_message_failed">Не удалось отправить сообщение</string>
     <string name="nc_message_failed_to_send">Не удалось отправить сообщение:</string>
     <string name="nc_message_offline">Не в сети</string>
     <string name="nc_message_quote_cancel_reply">Отменить ответ</string>
     <string name="nc_message_read">Сообщение прочитано</string>
+    <string name="nc_message_scheduled">Сообщение запланировано</string>
+    <string name="nc_message_scheduled_at">Сообщение запланировано на %1$s</string>
     <string name="nc_message_sending">Сообщение отправляется</string>
     <string name="nc_message_sent">Сообщение отправлено</string>
     <string name="nc_microphone_enabled_audio_recording">Микрофон включен, и беседа записывается</string>
@@ -365,6 +370,8 @@
     <string name="nc_no_open_conversations_headline">Нет открытых обсуждений</string>
     <string name="nc_no_open_conversations_text">Нет открытых обсуждений, к которым можно присоединиться. Либо открытых обсуждений не существует, либо вы уже присоединились ко всем.</string>
     <string name="nc_no_proxy">Без прокси-сервера</string>
+    <string name="nc_no_search_results_headline">Нет результатов по вашему запросу</string>
+    <string name="nc_no_search_results_text">Пожалуйста, проверьте поисковый запрос или попробуйте использовать другой.</string>
     <string name="nc_not_allowed_to_activate_audio">Вам запрещено активировать аудио!</string>
     <string name="nc_not_allowed_to_activate_video">Вам запрещено активировать видео!</string>
     <string name="nc_not_now">Не сейчас</string>
@@ -406,6 +413,7 @@
     <string name="nc_promote">Назначить модератором</string>
     <string name="nc_public_call_status">Открытое обсуждение</string>
     <string name="nc_push_disabled">Всплывающие уведомления отключены</string>
+    <string name="nc_push_notification_error">Что-то пошло не так, ошибка %1$s</string>
     <string name="nc_push_notification_fetch_error">Что-то пошло не так, не могу получить тестовое пуш-сообщение</string>
     <string name="nc_push_notification_message">Пуш-сообщение отправлено успешно. Вы теперь должны получить сообщение на этом устройстве с заголовком \"Тестирование пуш-сообщений\"</string>
     <string name="nc_remind">Напомнить позже</string>
@@ -418,6 +426,9 @@
     <string name="nc_rename_confirm">Переименовать</string>
     <string name="nc_reply">Ответить</string>
     <string name="nc_reply_privately">Ответить личным сообщением</string>
+    <string name="nc_reply_to_thread">Ответ в теме: %1$s</string>
+    <string name="nc_reschedule_message_with_notification">Перенос с уведомлением</string>
+    <string name="nc_reschedule_message_without_notification">Перенос без уведомления</string>
     <string name="nc_room_retention">Комната сохранена успешно</string>
     <string name="nc_save_message">Сохранить</string>
     <string name="nc_save_success">Сохранено успешно</string>
@@ -425,6 +436,8 @@
     <string name="nc_schedule_message_title">Запланировать сообщение</string>
     <string name="nc_schedule_message_without_notification">Отправить позже без уведомления</string>
     <string name="nc_scheduled_messages">Запланированные сообщения</string>
+    <string name="nc_scheduled_messages_empty">Нет запланированных сообщений</string>
+    <string name="nc_scheduled_thread">Запланированная тема</string>
     <string name="nc_scheduled_time">Запланированное время</string>
     <string name="nc_screen_lock_timeout_30">30 секунд</string>
     <string name="nc_screen_lock_timeout_300">5 минут</string>
@@ -437,6 +450,7 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Поиск</string>
     <string name="nc_search_clear">Очистить поиск</string>
+    <string name="nc_search_location">Поиск местоположения</string>
     <string name="nc_select_an_account">Выберите учётную запись</string>
     <string name="nc_send_edit_message">Обновить сообщение</string>
     <string name="nc_send_later">Отправить позже</string>
@@ -507,11 +521,14 @@
     <string name="nc_settings_remove">Удалить</string>
     <string name="nc_settings_remove_account">Удалить учётную запись</string>
     <string name="nc_settings_remove_confirmation">Пожалуйста, подтвердите удаление текущего аккаунта.</string>
+    <string name="nc_settings_screen_enable_unifiedpush_desc">Получайте push-уведомления с помощью внешнего сервиса UnifiedPush</string>
+    <string name="nc_settings_screen_enable_unifiedpush_title">Включить UnifiedPush</string>
     <string name="nc_settings_screen_lock_desc">Блокировать %1$s вместе с блокировкой экрана Android или поддерживаемого биометрического метода</string>
     <string name="nc_settings_screen_lock_timeout_title">Задержка блокирования экрана при бездействии</string>
     <string name="nc_settings_screen_lock_title">Блокировка экрана</string>
     <string name="nc_settings_screen_security_desc">Предотвращает сохранение скриншотов внутри приложения и в списке недавних приложений</string>
     <string name="nc_settings_screen_security_title">Безопасность экрана</string>
+    <string name="nc_settings_screen_unifiedpush_service_title">UnifiedPush сервис</string>
     <string name="nc_settings_server_almost_eol">Версия сервера очень старая и не будет поддерживаться в следующем релизе!</string>
     <string name="nc_settings_server_eol">Версия сервера слишком старая и не поддерживается данной версией приложения Android</string>
     <string name="nc_settings_server_eol_title">Неподдерживаемый сервер</string>
@@ -541,6 +558,7 @@
     <string name="nc_shared_items_empty">Нет общих элементов</string>
     <string name="nc_shared_items_location">Местоположение</string>
     <string name="nc_shared_location">Опубликованы сведения о местоположении</string>
+    <string name="nc_show_ecosystem_description">Предложения приложений Nextcloud в диалоговом окне выбора учётной записи</string>
     <string name="nc_show_ecosystem_title">Показать переключатель приложений</string>
     <string name="nc_show_notification_warning_description">Периодически предупреждать о некорректной настройке уведомлений</string>
     <string name="nc_show_notification_warning_title">Периодически выводить предупреждение об уведомлениях</string>
@@ -553,6 +571,7 @@
     <string name="nc_test_results">Результаты теста</string>
     <string name="nc_today_meeting">Сегодня в %1$s</string>
     <string name="nc_tomorrow_meeting">Завтра в %1$s</string>
+    <string name="nc_upcoming_event_dismissed">Предстоящий звонок можно просмотреть в информации о разговоре</string>
     <string name="nc_upload_choose_local_files">Выберите файлы</string>
     <string name="nc_upload_confirm_send_multiple">Отправить эти файлы %1$s?</string>
     <string name="nc_upload_confirm_send_single">Отправить этот файл %1$s?</string>
@@ -579,6 +598,7 @@
     <string name="no_conversations_archived">Нет архивированных обсуждений</string>
     <string name="no_offline_messages_saved">Нет сохраненных оффлайн сообщений</string>
     <string name="no_phone_book_integration_due_to_permissions">Отсутствуют разрешения на интеграцию номера телефона</string>
+    <string name="no_scheduled_messages_offline">Нет соединения с сервером. Не удалось загрузить запланированные сообщения</string>
     <string name="notification_all_messages">Все сообщения</string>
     <string name="notification_mention_only">\@-только упоминания</string>
     <string name="notification_off">Отключить</string>
@@ -594,9 +614,17 @@
     <string name="open_thread">Перейти в тему</string>
     <string name="pin_24hr">Закрепить на 24 часа</string>
     <string name="pin_30_days">Закрепить на 30 дней</string>
+    <string name="pin_7_days">Закрепить на 7 дней</string>
+    <string name="pin_indefinitely">Закрепить на неопределённый срок</string>
     <string name="pin_message">Закрепить сообщение</string>
     <string name="pinned">Закреплено</string>
+    <string name="pinned_by_author">%1$s (прикреплено %2$s)</string>
+    <string name="pinned_by_you">%1$s (закреплено вами)</string>
     <string name="pinned_dismiss">Скрыть</string>
+    <string name="pinned_go_to_message">Перейти к сообщению</string>
+    <string name="pinned_indefinitely">Закреплено на неопределённый срок</string>
+    <string name="pinned_message_options">Параметры сообщения</string>
+    <string name="pinned_until">Закреплено до</string>
     <string name="play_pause_voice_message">Воспроизведение/пауза голосового сообщения</string>
     <string name="playback_speed_control">Управление скоростью вопроизведения</string>
     <string name="please_continue_the_login_process_in_the_browser">Продолжите вход в браузере</string>
@@ -618,7 +646,9 @@
     <string name="polls_voted_hidden_success">Голос отправлен</string>
     <string name="previously_set">Установлено ранее</string>
     <string name="qr_code_error">QR код не может быть прочитан</string>
+    <string name="quoted_message_too_old">Это сообщение слишком старое, чтобы его можно было показать</string>
     <string name="raise_hand">Поднять руку</string>
+    <string name="reaction_forbidden">Вам не разрешено добавлять или удалять реакции в этом разговоре</string>
     <string name="reactions_tab_all">Все</string>
     <string name="read_storage_no_permission">Общий доступ к файлам из хранилища невозможен без разрешений</string>
     <string name="recent_threads">Недавние темы</string>
@@ -677,6 +707,7 @@
     <string name="shared_items_voice">Голосовая почта</string>
     <string name="show_ban_reason">Показать причину блокировки</string>
     <string name="show_banned_participants">Показать заблокированных участников</string>
+    <string name="silent_message_hint">Беззвучное сообщение</string>
     <string name="starred">Избранное</string>
     <string name="startCallForbidden">Вам не разрешено звонить</string>
     <string name="start_thread">Создать тему</string>
@@ -725,6 +756,7 @@
     <string name="unarchive_hint">После разархивирования обсуждения оно будет видимо по умолчанию</string>
     <string name="unarchived_conversation">Разархивировано %1$s</string>
     <string name="unban">Разбанить</string>
+    <string name="unifiedpush">UnifiedPush</string>
     <string name="unpin_message">Открепить сообщение</string>
     <string name="unread">Непрочитанное</string>
     <string name="until_unpin">До открепления</string>
@@ -734,6 +766,7 @@
     <string name="user_absence_replacement">Замена:</string>
     <string name="user_avatar">Изображение профиля</string>
     <string name="user_info_address">Адрес</string>
+    <string name="user_info_biography">Биография</string>
     <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Полное имя</string>
     <string name="user_info_email">Эл. почта</string>
@@ -752,6 +785,12 @@
     <string name="userinfo_no_info_text">На странице профиля укажите своё имя, добавьте изображение и подробные сведения</string>
     <string name="video_call">Видеозвонок</string>
     <string name="whats_your_status">Какой у вас статус?</string>
+    <plurals name="nc_new_messages_count">
+        <item quantity="one">%d новое сообщение</item>
+        <item quantity="few">%d новых сообщений</item>
+        <item quantity="many">%d новых сообщений</item>
+        <item quantity="other">%d новых сообщений</item>
+    </plurals>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Посмотреть %d похожее сообщение</item>
         <item quantity="few">Посмотреть %d похожих сообщения</item>
