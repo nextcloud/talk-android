@@ -7,17 +7,17 @@
  */
 package com.nextcloud.talk.messagesearch
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -55,6 +55,7 @@ class MessageSearchViewModel @Inject constructor(
         get() = _state
 
     private var currentUser: User = currentUserProvider.currentUser.blockingGet()
+    private var searchJob: Job? = null
 
     fun initialize(roomToken: String) {
         messageSearchHelper = MessageSearchHelper(
@@ -64,26 +65,33 @@ class MessageSearchViewModel @Inject constructor(
         )
     }
 
-    @SuppressLint("CheckResult") // handled by helper
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun onQueryTextChange(newText: String) {
         if (newText.length >= MIN_CHARS_FOR_SEARCH) {
             _state.value = LoadingState
-            messageSearchHelper.cancelSearch()
-            messageSearchHelper.startMessageSearch(newText)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onReceiveResults, this::onError)
+            searchJob?.cancel()
+            searchJob = viewModelScope.launch {
+                try {
+                    val results = messageSearchHelper.startMessageSearch(newText)
+                    onReceiveResults(results)
+                } catch (e: Exception) {
+                    onError(e)
+                }
+            }
         }
     }
 
-    @SuppressLint("CheckResult") // handled by helper
     fun loadMore() {
         _state.value = LoadingState
-        messageSearchHelper.cancelSearch()
-        messageSearchHelper.loadMore()
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(this::onReceiveResults)
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            try {
+                val results = messageSearchHelper.loadMore()
+                results?.let { onReceiveResults(it) }
+            } catch (e: Exception) {
+                onError(e)
+            }
+        }
     }
 
     private fun onReceiveResults(results: MessageSearchHelper.MessageSearchResults) {
@@ -96,7 +104,6 @@ class MessageSearchViewModel @Inject constructor(
 
     private fun onError(throwable: Throwable) {
         Log.e(TAG, "onError:", throwable)
-        messageSearchHelper.cancelSearch()
         _state.value = ErrorState
     }
 

@@ -44,7 +44,6 @@ import com.nextcloud.talk.conversation.RenameConversationDialogFragment
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
-import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationlist.ui.ConversationOpsAction
 import com.nextcloud.talk.conversationlist.ui.ConversationsListScreen
 import com.nextcloud.talk.conversationlist.ui.ConversationsListScreenCallbacks
@@ -134,7 +133,6 @@ class ConversationsListActivity : BaseActivity() {
     lateinit var contactsViewModel: ContactsViewModel
 
     lateinit var conversationsListViewModel: ConversationsListViewModel
-    lateinit var contextChatViewModel: ContextChatViewModel
 
     private var currentUser: User? = null
     private val snackbarHostState = SnackbarHostState()
@@ -181,7 +179,6 @@ class ConversationsListActivity : BaseActivity() {
         currentUser = currentUserProviderOld.currentUser.blockingGet()
 
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
-        contextChatViewModel = ViewModelProvider(this, viewModelFactory)[ContextChatViewModel::class.java]
 
         setSupportActionBar(null)
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
@@ -516,14 +513,19 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     private fun showContextChatForMessage(result: SearchMessageEntry) {
-        contextChatViewModel.getContextForChatMessages(
-            credentials = credentials ?: "",
-            baseUrl = currentUser?.baseUrl ?: "",
-            token = result.conversationToken,
-            threadId = result.threadId,
-            messageId = result.messageId ?: "",
-            title = result.title
-        )
+        val messageId = result.messageId?.toLongOrNull()?.takeIf { it > 0L }
+        if (messageId == null) {
+            showSnackbar(getString(R.string.nc_common_error_sorry))
+            return
+        }
+        val threadId = result.threadId?.toLongOrNull()?.takeIf { it > 0L }
+        val intent = Intent(context, ChatActivity::class.java).apply {
+            putExtra(KEY_ROOM_TOKEN, result.conversationToken)
+            putExtra(BundleKeys.KEY_MESSAGE_ID, messageId)
+            putExtra(BundleKeys.KEY_SEARCH_QUERY, result.searchTerm)
+            threadId?.let { putExtra(BundleKeys.KEY_THREAD_ID, it) }
+        }
+        startActivity(intent)
     }
 
     fun filterConversation() {

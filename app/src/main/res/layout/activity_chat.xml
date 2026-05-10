@@ -90,6 +90,13 @@
 
         </com.google.android.material.appbar.MaterialToolbar>
 
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/search_loading_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:indeterminate="true"
+            android:visibility="gone" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <RelativeLayout

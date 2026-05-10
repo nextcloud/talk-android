@@ -43,6 +43,8 @@ import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.UsersRepositoryImpl
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.repositories.reactions.ReactionsRepositoryImpl
+import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
+import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepositoryImpl
 import com.nextcloud.talk.ui.theme.MaterialSchemesProviderImpl
@@ -168,6 +170,9 @@ class ComposePreviewUtils private constructor(context: Context) {
     val reactionsRepository: ReactionsRepository
         get() = ReactionsRepositoryImpl(ncApiCoroutines, chatMessagesDao)
 
+    val unifiedSearchRepository: UnifiedSearchRepository
+        get() = UnifiedSearchRepositoryImpl(ncApiCoroutines)
+
     val mediaRecorderManager: MediaRecorderManager
         get() = MediaRecorderManager()
 
@@ -185,6 +190,7 @@ class ComposePreviewUtils private constructor(context: Context) {
             threadsRepository = threadsRepository,
             conversationRepository = conversationRepository,
             reactionsRepository = reactionsRepository,
+            unifiedSearchRepository = unifiedSearchRepository,
             mediaRecorderManager = mediaRecorderManager,
             audioFocusRequestManager = audioFocusRequestManager,
             currentUserProvider = currentUserProvider,

@@ -112,6 +112,7 @@ class OfflineFirstChatRepository @Inject constructor(
     private var itIsPaused = false
 
     lateinit var internalConversationId: String
+    private lateinit var roomToken: String
     private lateinit var conversationModel: ConversationModel
     private lateinit var credentials: String
     private lateinit var urlForChatting: String
@@ -129,6 +130,7 @@ class OfflineFirstChatRepository @Inject constructor(
         threadId: Long?
     ) {
         this.currentUser = currentUser
+        this.roomToken = roomToken
 
         internalConversationId = currentUser.id.toString() + "@" + roomToken
         this.credentials = credentials
@@ -283,24 +285,34 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     override suspend fun loadMoreMessages(
-        beforeMessageId: Long,
+        anchorMessageId: Long,
+        direction: ChatMessageRepository.LoadMoreDirection,
         roomToken: String,
         withMessageLimit: Int,
         withNetworkParams: Bundle
-    ) {
-        Log.d(TAG, "---- loadMoreMessages for $beforeMessageId ------------")
+    ): ChatMessageRepository.MessagesRange? {
+        Log.d(TAG, "---- loadMoreMessages for $anchorMessageId ($direction) ------------")
+
+        val lookIntoFuture = direction == ChatMessageRepository.LoadMoreDirection.NEWER
 
         val fieldMap = getFieldMap(
-            lookIntoFuture = false,
+            lookIntoFuture = lookIntoFuture,
             timeout = 0,
-            includeLastKnown = false,
-            lastKnown = beforeMessageId.toInt(),
+            includeLastKnown = true,
+            lastKnown = anchorMessageId.toInt(),
             limit = withMessageLimit
         )
         withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
 
         Log.d(TAG, "Starting online request for loadMoreMessages")
         getAndPersistMessages(withNetworkParams)
+
+        return getBlockOfMessage(anchorMessageId.toInt())?.let {
+            ChatMessageRepository.MessagesRange(
+                oldestMessageId = it.oldestMessageId,
+                newestMessageId = it.newestMessageId
+            )
+        }
     }
 
     @Suppress("LongParameterList")
@@ -355,6 +367,51 @@ class OfflineFirstChatRepository @Inject constructor(
             )
         }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    override suspend fun loadMessageContext(
+        messageId: Long,
+        limit: Int,
+        threadId: Long?
+    ): Result<ChatMessageRepository.MessagesRange> =
+        runCatching {
+            val messages = network.getContextForChatMessage(
+                credentials = credentials,
+                baseUrl = currentUser.baseUrl!!,
+                token = roomToken,
+                messageId = messageId.toString(),
+                limit = limit,
+                threadId = threadId?.toInt()
+            )
+
+            val filteredMessages = if (threadId == null) {
+                messages.filter { !it.hasThread || it.threadId == it.id }
+            } else {
+                messages
+            }
+
+            require(filteredMessages.isNotEmpty()) { "No context messages returned" }
+
+            val persisted = persistChatMessagesAndHandleSystemMessages(filteredMessages)
+            val oldestId = persisted.minOf { it.id }
+            val newestId = persisted.maxOf { it.id }
+
+            val block = ChatBlockEntity(
+                internalConversationId = internalConversationId,
+                accountId = currentUser.id!!,
+                token = roomToken,
+                threadId = this.threadId,
+                oldestMessageId = oldestId,
+                newestMessageId = newestId,
+                hasHistory = true
+            )
+            updateBlocks(block)
+
+            ChatMessageRepository.MessagesRange(
+                oldestMessageId = oldestId,
+                newestMessageId = newestId
+            )
+        }
+
     override fun observeParentMessages(parentIds: List<Long>): Flow<List<ChatMessage>> =
         chatDao.getMessagesFromIds(parentIds)
             .map { entities -> entities.map { it.toDomainModel() } }
@@ -381,7 +438,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 val messages = network.getContextForChatMessage(
                     credentials = credentials,
                     baseUrl = currentUser.baseUrl!!,
-                    token = conversationModel.token,
+                    token = roomToken,
                     messageId = id.toString(),
                     limit = 1,
                     threadId = null
@@ -990,7 +1047,7 @@ class OfflineFirstChatRepository @Inject constructor(
         return chatMessageEntities
     }
 
-    override fun observeMessages(internalConversationId: String): Flow<List<ChatMessageEntity>> =
+    override fun observeLatestMessages(internalConversationId: String): Flow<List<ChatMessageEntity>> =
         chatBlocksDao
             .getLatestChatBlock(internalConversationId, threadId)
             .distinctUntilChanged()
@@ -1003,6 +1060,31 @@ class OfflineFirstChatRepository @Inject constructor(
                         internalConversationId = internalConversationId,
                         threadId = threadId,
                         oldestMessageId = latestBlock.oldestMessageId
+                    )
+                }
+            }
+
+    override fun observeMessagesForAnchor(
+        internalConversationId: String,
+        anchorMessageId: Long
+    ): Flow<List<ChatMessageEntity>> =
+        chatBlocksDao
+            .getChatBlocksContainingMessageId(
+                internalConversationId = internalConversationId,
+                threadId = threadId,
+                messageId = anchorMessageId
+            )
+            .distinctUntilChanged()
+            .flatMapLatest { blocks ->
+                val block = blocks.firstOrNull()
+                if (block == null) {
+                    flowOf(emptyList())
+                } else {
+                    chatDao.getMessagesInRange(
+                        internalConversationId = internalConversationId,
+                        threadId = threadId,
+                        oldestMessageId = block.oldestMessageId,
+                        newestMessageId = block.newestMessageId
                     )
                 }
             }

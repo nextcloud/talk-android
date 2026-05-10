@@ -19,7 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -137,9 +137,9 @@ fun ConversationList(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = contentBottomPadding)
         ) {
-            items(
+            itemsIndexed(
                 items = entries,
-                key = { entry ->
+                key = { index, entry ->
                     when (entry) {
                         is ConversationListEntry.Header ->
                             "header_${entry.title}"
@@ -149,12 +149,13 @@ fun ConversationList(
                             "msg_${entry.result.conversationToken}_" +
                                 "${entry.result.messageId ?: entry.result.messageExcerpt.take(MSG_KEY_EXCERPT_LENGTH)}"
                         is ConversationListEntry.ContactEntry ->
-                            "contact_${entry.participant.actorId}_${entry.participant.actorType}"
+                            // Contacts can legitimately appear multiple times in search results.
+                            "contact_${entry.participant.actorId}_${entry.participant.actorType}_$index"
                         ConversationListEntry.LoadMore ->
                             "load_more"
                     }
                 }
-            ) { entry ->
+            ) { _, entry ->
                 when (entry) {
                     is ConversationListEntry.Header ->
                         ConversationSectionHeader(title = entry.title)

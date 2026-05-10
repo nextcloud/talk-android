@@ -210,6 +210,24 @@ interface ChatMessagesDao {
         """
         SELECT *
         FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND isTemporary = 0
+        AND (:threadId IS NULL OR threadId = :threadId)
+        AND id BETWEEN :oldestMessageId AND :newestMessageId
+        ORDER BY timestamp ASC, id ASC
+        """
+    )
+    fun getMessagesInRange(
+        internalConversationId: String,
+        threadId: Long?,
+        oldestMessageId: Long,
+        newestMessageId: Long
+    ): Flow<List<ChatMessageEntity>>
+
+    @Query(
+        """
+        SELECT *
+        FROM ChatMessages
         WHERE internalConversationId = :internalConversationId 
         AND isTemporary = 0
         AND id < :messageId
