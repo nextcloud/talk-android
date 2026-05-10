@@ -326,7 +326,6 @@ fun ChatView(
             verticalArrangement = Arrangement.spacedBy(2.dp),
             contentPadding = PaddingValues(bottom = 20.dp),
             modifier = Modifier
-                .padding(start = 12.dp, end = 12.dp)
                 .fillMaxSize()
         ) {
             items(
@@ -346,12 +345,7 @@ fun ChatView(
                                     ?.takeIf { it.messageId == chatItem.uiMessage.id }
                                     ?.nonce,
                                 isSelected = state.highlightedMessageId == chatItem.uiMessage.id,
-                                highlightSearchTerm =
-                                if (state.highlightedMessageId == chatItem.uiMessage.id) {
-                                    state.highlightedSearchTerm
-                                } else {
-                                    null
-                                },
+                                highlightSearchTerm = state.highlightedSearchTerm,
                                 context = ChatMessageContext(
                                     isOneToOneConversation = state.isOneToOneConversation,
                                     conversationThreadId = state.conversationThreadId,
@@ -376,19 +370,19 @@ fun ChatView(
                     }
 
                     is ChatViewModel.ChatItem.DateHeaderItem -> {
-                        Box(modifier = Modifier.padding(top = 6.dp)) {
+                        Box(modifier = Modifier.padding(top = 6.dp, start = 12.dp, end = 12.dp)) {
                             DateHeader(chatItem.date)
                         }
                     }
 
                     is ChatViewModel.ChatItem.UnreadMessagesMarkerItem -> {
-                        Box(modifier = Modifier.padding(top = 6.dp)) {
+                        Box(modifier = Modifier.padding(top = 6.dp, start = 12.dp, end = 12.dp)) {
                             UnreadMessagesMarker()
                         }
                     }
 
                     is ChatViewModel.ChatItem.LoadGapItem -> {
-                        Box(modifier = Modifier.padding(top = 6.dp)) {
+                        Box(modifier = Modifier.padding(top = 6.dp, start = 12.dp, end = 12.dp)) {
                             DateHeaderLabel(text = stringResource(R.string.chat_messages_load_gap))
                         }
                     }

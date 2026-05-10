@@ -14,6 +14,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -23,6 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
@@ -110,6 +113,7 @@ fun ChatMessageView(
         ) {
             Box(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .combinedClickable(
                         interactionSource = interactionSource,
                         indication = ripple(),
@@ -124,6 +128,7 @@ fun ChatMessageView(
                         onLongClick = { callbacks.onLongClick?.invoke(message.id) }
                     )
             ) {
+                Box(modifier = Modifier.padding(horizontal = 12.dp)) {
                 when (val content = message.content) {
                     MessageTypeContent.RegularText -> {
                         TextMessage(
@@ -201,7 +206,8 @@ fun ChatMessageView(
                         Log.d("ChatView", "Unknown message type: ${'$'}content")
                     }
                 }
-                val useContainerHighlight = highlightSearchTerm.isNullOrBlank()
+                }
+                val useContainerHighlight = highlightSearchTerm.isNullOrBlank() || isSelected
                 if (isSelected && useContainerHighlight) {
                     Box(
                         modifier = Modifier

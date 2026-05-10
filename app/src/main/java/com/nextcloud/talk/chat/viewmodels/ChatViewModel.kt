@@ -584,6 +584,9 @@ class ChatViewModel @AssistedInject constructor(
                         error = false
                     )
                 }
+                if (navigableResults.isNotEmpty()) {
+                    jumpToSearchSelection()
+                }
             } catch (_: CancellationException) {
                 // Ignore cancellation; request was superseded by a newer one.
             } catch (@Suppress("Detekt.TooGenericExceptionCaught") throwable: Throwable) {
