@@ -129,83 +129,83 @@ fun ChatMessageView(
                     )
             ) {
                 Box(modifier = Modifier.padding(horizontal = 12.dp)) {
-                when (val content = message.content) {
-                    MessageTypeContent.RegularText -> {
-                        TextMessage(
-                            uiMessage = message,
-                            isOneToOneConversation = context.isOneToOneConversation,
-                            conversationThreadId = context.conversationThreadId,
-                            highlightSearchTerm = highlightSearchTerm
-                        )
-                    }
+                    when (val content = message.content) {
+                        MessageTypeContent.RegularText -> {
+                            TextMessage(
+                                uiMessage = message,
+                                isOneToOneConversation = context.isOneToOneConversation,
+                                conversationThreadId = context.conversationThreadId,
+                                highlightSearchTerm = highlightSearchTerm
+                            )
+                        }
 
-                    MessageTypeContent.SystemMessage -> {
-                        SystemMessage(message)
-                    }
+                        MessageTypeContent.SystemMessage -> {
+                            SystemMessage(message)
+                        }
 
-                    is MessageTypeContent.Media -> {
-                        MediaMessage(
-                            typeContent = content,
-                            message = message,
-                            isOneToOneConversation = context.isOneToOneConversation,
-                            conversationThreadId = context.conversationThreadId,
-                            onImageClick = callbacks.onFileClick
-                        )
-                    }
+                        is MessageTypeContent.Media -> {
+                            MediaMessage(
+                                typeContent = content,
+                                message = message,
+                                isOneToOneConversation = context.isOneToOneConversation,
+                                conversationThreadId = context.conversationThreadId,
+                                onImageClick = callbacks.onFileClick
+                            )
+                        }
 
-                    is MessageTypeContent.LinkPreview -> {
-                        LinkMessage(
-                            typeContent = content,
-                            message = message,
-                            isOneToOneConversation = context.isOneToOneConversation,
-                            conversationThreadId = context.conversationThreadId
-                        )
-                    }
+                        is MessageTypeContent.LinkPreview -> {
+                            LinkMessage(
+                                typeContent = content,
+                                message = message,
+                                isOneToOneConversation = context.isOneToOneConversation,
+                                conversationThreadId = context.conversationThreadId
+                            )
+                        }
 
-                    is MessageTypeContent.Geolocation -> {
-                        GeolocationMessage(
-                            typeContent = content,
-                            message = message,
-                            isOneToOneConversation = context.isOneToOneConversation,
-                            conversationThreadId = context.conversationThreadId
-                        )
-                    }
+                        is MessageTypeContent.Geolocation -> {
+                            GeolocationMessage(
+                                typeContent = content,
+                                message = message,
+                                isOneToOneConversation = context.isOneToOneConversation,
+                                conversationThreadId = context.conversationThreadId
+                            )
+                        }
 
-                    is MessageTypeContent.Voice -> {
-                        VoiceMessage(
-                            typeContent = content,
-                            message = message,
-                            isOneToOneConversation = context.isOneToOneConversation,
-                            conversationThreadId = context.conversationThreadId,
-                            onPlayPauseClick = callbacks.onVoicePlayPauseClick,
-                            onSeek = callbacks.onVoiceSeek,
-                            onSpeedClick = callbacks.onVoiceSpeedClick
-                        )
-                    }
+                        is MessageTypeContent.Voice -> {
+                            VoiceMessage(
+                                typeContent = content,
+                                message = message,
+                                isOneToOneConversation = context.isOneToOneConversation,
+                                conversationThreadId = context.conversationThreadId,
+                                onPlayPauseClick = callbacks.onVoicePlayPauseClick,
+                                onSeek = callbacks.onVoiceSeek,
+                                onSpeedClick = callbacks.onVoiceSpeedClick
+                            )
+                        }
 
-                    is MessageTypeContent.Poll -> {
-                        PollMessage(
-                            typeContent = content,
-                            message = message,
-                            isOneToOneConversation = context.isOneToOneConversation,
-                            conversationThreadId = context.conversationThreadId,
-                            onPollClick = callbacks.onPollClick
-                        )
-                    }
+                        is MessageTypeContent.Poll -> {
+                            PollMessage(
+                                typeContent = content,
+                                message = message,
+                                isOneToOneConversation = context.isOneToOneConversation,
+                                conversationThreadId = context.conversationThreadId,
+                                onPollClick = callbacks.onPollClick
+                            )
+                        }
 
-                    is MessageTypeContent.Deck -> {
-                        DeckMessage(
-                            typeContent = content,
-                            message = message,
-                            isOneToOneConversation = context.isOneToOneConversation,
-                            conversationThreadId = context.conversationThreadId
-                        )
-                    }
+                        is MessageTypeContent.Deck -> {
+                            DeckMessage(
+                                typeContent = content,
+                                message = message,
+                                isOneToOneConversation = context.isOneToOneConversation,
+                                conversationThreadId = context.conversationThreadId
+                            )
+                        }
 
-                    else -> {
-                        Log.d("ChatView", "Unknown message type: ${'$'}content")
+                        else -> {
+                            Log.d("ChatView", "Unknown message type: ${'$'}content")
+                        }
                     }
-                }
                 }
                 val useContainerHighlight = highlightSearchTerm.isNullOrBlank() || isSelected
                 if (isSelected && useContainerHighlight) {

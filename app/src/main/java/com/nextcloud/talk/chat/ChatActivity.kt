@@ -3476,6 +3476,7 @@ class ChatActivity :
         actionView.queryHint = getString(R.string.message_search_hint)
         actionView.isIconified = false
         actionView.maxWidth = Int.MAX_VALUE
+        viewThemeUtils.talk.themeSearchView(actionView)
         actionView.requestFocus()
         window.decorView.post {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
