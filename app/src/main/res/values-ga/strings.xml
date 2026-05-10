@@ -426,6 +426,7 @@
     <string name="nc_rename_confirm">Athainmnigh</string>
     <string name="nc_reply">Freagra</string>
     <string name="nc_reply_privately">Freagair go príobháideach</string>
+    <string name="nc_reply_to_thread">Freagra ar an snáithe: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Athsceidealú le fógra</string>
     <string name="nc_reschedule_message_without_notification">Ath-sceidealú gan fógra</string>
     <string name="nc_room_retention">Coinníodh an seomra go rathúil</string>
@@ -436,6 +437,7 @@
     <string name="nc_schedule_message_without_notification">Seol níos déanaí gan fógra</string>
     <string name="nc_scheduled_messages">Teachtaireachtaí sceidealaithe</string>
     <string name="nc_scheduled_messages_empty">Gan aon teachtaireachtaí sceidealaithe</string>
+    <string name="nc_scheduled_thread">Snáithe sceidealaithe</string>
     <string name="nc_scheduled_time">Am sceidealta</string>
     <string name="nc_screen_lock_timeout_30">30 soicind</string>
     <string name="nc_screen_lock_timeout_300">5 nóiméad</string>
