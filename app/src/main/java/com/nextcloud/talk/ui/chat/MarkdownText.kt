@@ -60,6 +60,9 @@ private const val CHIP_START_PADDING_DP = 2f
 private const val CHIP_END_PADDING_DP = 5f
 private const val CHIP_VERTICAL_PADDING_DP = 2f
 private const val CHIP_CORNER_RADIUS_DP = 16f
+private const val MESSAGE_LINKIFY_MASK = Linkify.WEB_URLS or
+    Linkify.PHONE_NUMBERS or
+    Linkify.EMAIL_ADDRESSES
 
 @Suppress("LongMethod", "LongParameterList")
 @Composable
@@ -149,7 +152,7 @@ fun MarkdownText(
                     avatarSizePx = avatarSizePx,
                     avatarGapPx = avatarGapPx
                 )
-                val hasLinks = Linkify.addLinks(ssb, Linkify.WEB_URLS)
+                val hasLinks = Linkify.addLinks(ssb, MESSAGE_LINKIFY_MASK)
                 resolveFileParams(ssb, message)
                 applySearchHighlight(ssb, highlightSearchTerm, searchHighlightColorArgb)
                 textView.text = ssb
