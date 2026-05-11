@@ -97,6 +97,7 @@
     <string name="marked_as_unread">%1$s beszélgetés olvasatlanként jelölése</string>
     <string name="media_message_content_description">Fájl előnézete</string>
     <string name="media_message_content_play">Médiafájl lejátszása</string>
+    <string name="mention_open_chat_with">Csevegés megnyitása ezzel: %1$s</string>
     <string name="mentioned">Említett</string>
     <string name="menu_item_sort_by_date_newest_first">Legújabb elöl</string>
     <string name="menu_item_sort_by_date_oldest_first">Régebbiek elöl</string>
@@ -251,6 +252,7 @@
     <string name="nc_diagnosis_dialog_open_checklist">Hibaelhárítási ellenőrzőlista megnyitása</string>
     <string name="nc_diagnosis_dialog_open_diagnosis">Diagnosztikai képernyő megnyitása</string>
     <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">A dontkillmyapp.com megnyitása</string>
+    <string name="nc_dialog_introduce_unifiedpush_selection">Az alapértelmezett push-szolgáltatást készül kiválasztani</string>
     <string name="nc_dialog_invalid_password">Érvénytelen jelszó</string>
     <string name="nc_dialog_maintenance_mode_description">A kiszolgáló jelenleg karbantartási módban van.</string>
     <string name="nc_dialog_outdated_client">Az alkalmazás elavult</string>
@@ -345,6 +347,7 @@
     <string name="nc_mark_conversation_as_unimportant">Beszélgetés fontosnak jelölésének visszavonása</string>
     <string name="nc_meeting_ended">A találkozó véget ért</string>
     <string name="nc_message_added_to_notes">Üzenet hozzáadva a jegyzetekhez</string>
+    <string name="nc_message_failed">Nem sikerült elküldeni az üzenetet</string>
     <string name="nc_message_failed_to_send">Nem sikerült elküldeni az üzenetet:</string>
     <string name="nc_message_offline">Nincs kapcsolat</string>
     <string name="nc_message_quote_cancel_reply">Válasz elvetése</string>
@@ -410,6 +413,7 @@
     <string name="nc_promote">Kinevezés moderátorrá</string>
     <string name="nc_public_call_status">Nyilvános beszélgetés</string>
     <string name="nc_push_disabled">Leküldéses értesítések kikapcsolva</string>
+    <string name="nc_push_notification_error">Sajnos valamilyen hiba történt, a hiba: %1$s</string>
     <string name="nc_push_notification_fetch_error">Sajnos valamilyen hiba történt, a leküldéses tesztüzenet nem kérhető le</string>
     <string name="nc_push_notification_message">A leküldéses értesítés sikeresen elküldve. Kapnia kellene egy „Leküldéses értesítések tesztelése” című üzenetet ezen az eszközön.</string>
     <string name="nc_remind">Emlékeztessen később</string>
@@ -422,6 +426,7 @@
     <string name="nc_rename_confirm">Átnevezés</string>
     <string name="nc_reply">Válasz</string>
     <string name="nc_reply_privately">Válasz privátban</string>
+    <string name="nc_reply_to_thread">Válasz a szálra: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Újraütemezés értesítéssel</string>
     <string name="nc_reschedule_message_without_notification">Újraütemezés értesítés nélkül</string>
     <string name="nc_room_retention">A szoba sikeresen megtartva</string>
@@ -432,6 +437,7 @@
     <string name="nc_schedule_message_without_notification">Küldés később értesítés nélkül</string>
     <string name="nc_scheduled_messages">Ütemezett üzenetek</string>
     <string name="nc_scheduled_messages_empty">Nincsenek ütemezett üzenetek</string>
+    <string name="nc_scheduled_thread">Ütemezett szál</string>
     <string name="nc_scheduled_time">Ütemezett időpont</string>
     <string name="nc_screen_lock_timeout_30">30 másodperc</string>
     <string name="nc_screen_lock_timeout_300">5 perc</string>
@@ -515,11 +521,14 @@
     <string name="nc_settings_remove">Eltávolítás</string>
     <string name="nc_settings_remove_account">Fiók eltávolítása</string>
     <string name="nc_settings_remove_confirmation">Erősítse meg szándékát, hogy eltávolítja a jelenlegi fiókot.</string>
+    <string name="nc_settings_screen_enable_unifiedpush_desc">Push-értesítések fogadása külső UnifiedPush szolgáltatással</string>
+    <string name="nc_settings_screen_enable_unifiedpush_title">UnifiedPush engedélyezése</string>
     <string name="nc_settings_screen_lock_desc">A(z) %1$s zárolása az androidos képernyőzárral, vagy támogatott biometrikus eljárással</string>
     <string name="nc_settings_screen_lock_timeout_title">Képernyő zárolása ennyi tétlenség után</string>
     <string name="nc_settings_screen_lock_title">Képernyőzár</string>
     <string name="nc_settings_screen_security_desc">Megakadályozza a képernyőképek készítését az alkalmazáson belül és a nemrég használt alkalmazások közt</string>
     <string name="nc_settings_screen_security_title">Képernyőbiztonság</string>
+    <string name="nc_settings_screen_unifiedpush_service_title">UnifiedPush szolgáltatás</string>
     <string name="nc_settings_server_almost_eol">A kiszolgáló verziója nagyon régi, és nem lesz támogatott a következő kiadásban!</string>
     <string name="nc_settings_server_eol">A kiszolgáló verziója túl régi, és az androidos alkalmazás ezen verziója nem támogatja</string>
     <string name="nc_settings_server_eol_title">Nem támogatott kiszolgáló</string>
@@ -698,6 +707,7 @@
     <string name="shared_items_voice">Hang</string>
     <string name="show_ban_reason">Kitiltás okának megjelenítése</string>
     <string name="show_banned_participants">Kitiltott résztvevők megjelenítése</string>
+    <string name="silent_message_hint">Csendes üzenet</string>
     <string name="starred">Kedvenc</string>
     <string name="startCallForbidden">Nincs jogosultsága hívást indítani</string>
     <string name="start_thread">Szál létrehozása</string>
@@ -746,6 +756,7 @@
     <string name="unarchive_hint">Ha egy beszélgetés archiválása vissza lesz vonva, akkor újból alapértelmezetten látszódni fog.</string>
     <string name="unarchived_conversation">A(z) %1$s archiválása visszavonva</string>
     <string name="unban">Kitiltás visszavonása</string>
+    <string name="unifiedpush">UnifiedPush</string>
     <string name="unpin_message">Üzenet kitűzésének megszüntetése</string>
     <string name="unread">Olvasatlan</string>
     <string name="until_unpin">Kitűzés megszüntetéséig</string>
@@ -774,6 +785,10 @@
     <string name="userinfo_no_info_text">Adja meg a nevét, profilképét és kapcsolati adatait a profil oldalán.</string>
     <string name="video_call">Videóhívás</string>
     <string name="whats_your_status">Mi az állapota?</string>
+    <plurals name="nc_new_messages_count">
+        <item quantity="one">%dúj üzenet</item>
+        <item quantity="other">%dúj üzenet </item>
+    </plurals>
     <plurals name="see_similar_system_messages">
         <item quantity="one">%d hasonló üzenet megtekintése</item>
         <item quantity="other">%d hasonló üzenet megtekintése</item>
