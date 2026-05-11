@@ -117,7 +117,7 @@ import javax.inject.Inject
 
 @SuppressLint("StringFormatInvalid")
 @AutoInjector(NextcloudTalkApplication::class)
-@Suppress("LargeClass", "TooManyFunctions")
+@Suppress("LargeClass", "TooManyFunctions", "NestedBlockDepth")
 class ConversationsListActivity : BaseActivity() {
 
     @Inject
