@@ -44,7 +44,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
-import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversation.RenameConversationDialogFragment
 import com.nextcloud.talk.conversationlist.ui.ConversationOpsAction
 import com.nextcloud.talk.conversationlist.ui.ConversationsListScreen
