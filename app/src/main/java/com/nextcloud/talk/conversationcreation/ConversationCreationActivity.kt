@@ -408,7 +408,7 @@ fun ConversationPresets(conversationCreationViewModel: ConversationCreationViewM
     }
 }
 
-@Suppress("TooManyParameters")
+@Suppress("LongParameterList")
 @Composable
 fun SelectableCard(
     modifier: Modifier = Modifier,
