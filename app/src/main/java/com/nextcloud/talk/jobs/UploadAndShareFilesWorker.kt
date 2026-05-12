@@ -26,16 +26,14 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import at.bitfire.dav4jvm.DavResource
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.dagger.modules.RestModule
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.chatpostattachment.PostConversationAttachmentResponse
+import com.nextcloud.talk.models.json.chatpostattachment.PostConversationAttachmentRequest
 import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachmentData
 import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ProbeConversationAttachmentRequest
 import com.nextcloud.talk.upload.chunked.ChunkedFileUploader
@@ -53,14 +51,9 @@ import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import kotlinx.coroutines.runBlocking
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
-import okhttp3.Protocol
-import okhttp3.RequestBody
-import okhttp3.Response
 import java.io.File
-import java.io.IOException
 import java.util.UUID
 import javax.inject.Inject
 
@@ -235,7 +228,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 return@runBlocking false
             }
 
-            val params = PostConversationAttachmentResponse().apply {
+            val params = PostConversationAttachmentRequest().apply {
                 filePath = tempRemotePath
                 referenceId = uploadId
                 talkMetaData = metaData
@@ -255,46 +248,6 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
     private fun resolveFinalFileName(originalName: String, probeData: ChatProbeAttachmentData): String =
         probeData.renames?.get(originalName) ?: originalName
-
-    private fun uploadFileToDraftPathUsingWebDav(sourceFileUri: Uri, remotePath: String): Boolean =
-        runCatching {
-            val mimeType = context.contentResolver.getType(sourceFileUri)?.toMediaTypeOrNull()
-            val requestBody = RequestBody.create(mimeType, file!!)
-            val uploadUrl = ApiUtils.getUrlForFileUpload(
-                currentUser.baseUrl!!,
-                currentUser.userId!!,
-                remotePath
-            )
-            val davResource = DavResource(
-                createWebDavClientWithAuth(),
-                uploadUrl.toHttpUrlOrNull()!!
-            )
-            davResource.put(requestBody) { response: Response ->
-                if (!response.isSuccessful) {
-                    throw IOException("Failed to upload file to draft folder. response code: ${response.code}")
-                }
-            }
-            FileUtils.copyFileToCache(context, sourceFileUri, fileName)
-            true
-        }
-            .onFailure { Log.e(TAG, "Failed to upload draft attachment via WebDAV", it) }
-            .getOrDefault(false)
-
-    private fun createWebDavClientWithAuth(): OkHttpClient =
-        okHttpClient.newBuilder()
-            .followRedirects(false)
-            .followSslRedirects(false)
-            .protocols(listOf(Protocol.HTTP_1_1))
-            .authenticator(
-                RestModule.HttpAuthenticator(
-                    ApiUtils.getCredentials(
-                        currentUser.username,
-                        currentUser.token
-                    )!!,
-                    "Authorization"
-                )
-            )
-            .build()
 
     private fun getRemotePath(currentUser: User): String {
         val remotePath = CapabilitiesUtil.getAttachmentFolder(

@@ -13,7 +13,7 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.chatpostattachment.ChatPostAttachmentOverall
-import com.nextcloud.talk.models.json.chatpostattachment.PostConversationAttachmentResponse
+import com.nextcloud.talk.models.json.chatpostattachment.PostConversationAttachmentRequest
 import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachmentFolderOverall
 import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ProbeConversationAttachmentRequest
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -491,7 +491,7 @@ interface NcApiCoroutines {
     suspend fun postConversationAttachment(
         @Header("Authorization") authorization: String,
         @Url url: String,
-        @Body body: PostConversationAttachmentResponse
+        @Body body: PostConversationAttachmentRequest
     ): ChatPostAttachmentOverall
 
     @PUT

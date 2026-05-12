@@ -11,7 +11,7 @@ import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 
 @JsonObject
-class PostConversationAttachmentResponse {
+class PostConversationAttachmentRequest {
 
     @JsonField(name = ["filePath"])
     var filePath: String? = null

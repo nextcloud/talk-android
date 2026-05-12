@@ -112,7 +112,6 @@ object CapabilitiesUtil {
         return spreedCapabilities.features?.contains(spreedFeatures.value) == true
     }
 
-    @JvmStatic
     fun hasConversationSubfoldersForAttachments(spreedCapabilities: SpreedCapability): Boolean {
         if (spreedCapabilities.config?.containsKey("attachments") == true) {
             val map = spreedCapabilities.config!!["attachments"]
