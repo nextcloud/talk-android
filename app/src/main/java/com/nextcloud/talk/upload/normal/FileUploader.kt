@@ -13,6 +13,7 @@ import android.util.Log
 import at.bitfire.dav4jvm.DavResource
 import at.bitfire.dav4jvm.exception.HttpException
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.dagger.modules.RestModule
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.ShareOperationWorker
@@ -37,7 +38,8 @@ class FileUploader(
     val currentUser: User,
     val roomToken: String,
     val ncApi: NcApi,
-    val file: File
+    val file: File,
+    val ncApiCoroutines: NcApiCoroutines
 ) {
 
     private var okHttpClientNoRedirects: OkHttpClient? = null
@@ -45,6 +47,19 @@ class FileUploader(
 
     init {
         initHttpClient(okHttpClient, currentUser)
+    }
+
+    suspend fun uploadToConversationSubfolder(sourceFileUri: Uri, target: String): Boolean {
+        val response = ncApiCoroutines.uploadFile(
+            currentUser.getCredentials(),
+            ApiUtils.getUrlForFileUpload(
+                currentUser.baseUrl!!,
+                currentUser.userId!!,
+                target
+            ),
+            createRequestBody(sourceFileUri) ?: return false
+        )
+        return response.isSuccessful
     }
 
     fun upload(sourceFileUri: Uri, fileName: String, remotePath: String, metaData: String?): Observable<Boolean> =

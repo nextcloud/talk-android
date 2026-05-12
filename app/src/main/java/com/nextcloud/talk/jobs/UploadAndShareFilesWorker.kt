@@ -30,12 +30,17 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.chatpostattachment.PostConversationAttachmentRequest
+import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachmentData
+import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ProbeConversationAttachmentRequest
 import com.nextcloud.talk.upload.chunked.ChunkedFileUploader
 import com.nextcloud.talk.upload.chunked.OnDataTransferProgressListener
 import com.nextcloud.talk.upload.normal.FileUploader
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.NotificationUtils
@@ -45,9 +50,11 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import java.io.File
+import java.util.UUID
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -60,6 +67,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
     @Inject
     lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var ncApiCoroutines: NcApiCoroutines
 
     @Inject
     lateinit var currentUserProvider: CurrentUserProviderOld
@@ -107,9 +117,12 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             file = FileUtils.getFileFromUri(context, sourceFileUri)
             val remotePath = getRemotePath(currentUser)
 
+            val useConversationSubfolders = CapabilitiesUtil.hasConversationSubfoldersForAttachments(
+                currentUser.capabilities!!.spreedCapability!!
+            )
             initNotificationSetup()
             file?.let { isChunkedUploading = it.length() > CHUNK_UPLOAD_THRESHOLD_SIZE }
-            val uploadSuccess: Boolean = uploadFile(sourceFileUri, metaData, remotePath)
+            val uploadSuccess: Boolean = uploadFile(sourceFileUri, metaData, remotePath, useConversationSubfolders)
 
             if (uploadSuccess) {
                 cancelNotification()
@@ -129,24 +142,112 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         }
     }
 
-    private fun uploadFile(sourceFileUri: Uri, metaData: String?, remotePath: String): Boolean =
+    private fun uploadFile(
+        sourceFileUri: Uri,
+        metaData: String?,
+        remotePath: String,
+        useConversationSubfolders: Boolean
+    ): Boolean =
         if (file == null) {
             false
+        } else if (useConversationSubfolders) {
+            uploadUsingConversationSubfolders(sourceFileUri, metaData)
         } else if (isChunkedUploading) {
             Log.d(TAG, "starting chunked upload because size is " + file!!.length())
-
             initNotificationWithPercentage()
             val mimeType = context.contentResolver.getType(sourceFileUri)?.toMediaTypeOrNull()
-
-            chunkedFileUploader = ChunkedFileUploader(okHttpClient, currentUser, roomToken, metaData, this)
+            chunkedFileUploader = ChunkedFileUploader(
+                okHttpClient,
+                currentUser,
+                roomToken,
+                metaData,
+                this,
+                ncApiCoroutines,
+                useConversationSubfolders
+            )
             chunkedFileUploader!!.upload(file!!, mimeType, remotePath)
         } else {
             Log.d(TAG, "starting normal upload (not chunked) of $fileName")
-
-            FileUploader(okHttpClient, context, currentUser, roomToken, ncApi, file!!)
+            FileUploader(
+                okHttpClient,
+                context,
+                currentUser,
+                roomToken,
+                ncApi,
+                file!!,
+                ncApiCoroutines
+            )
                 .upload(sourceFileUri, fileName, remotePath, metaData)
                 .blockingFirst()
         }
+
+    private fun uploadUsingConversationSubfolders(sourceFileUri: Uri, metaData: String?): Boolean =
+        runBlocking {
+            val credentials = ApiUtils.getCredentials(
+                currentUser.username,
+                currentUser.token
+            ) ?: return@runBlocking false
+            val uploadId = UUID.randomUUID().toString()
+            val fileNames = ProbeConversationAttachmentRequest().apply {
+                fileNames = listOf(fileName)
+            }
+
+            val probeResponse = ncApiCoroutines.probeConversationAttachmentFolder(
+                credentials,
+                ApiUtils.getUrlForChatAttachmentFolder(ApiUtils.API_V1, currentUser.baseUrl, roomToken),
+                fileNames
+            )
+
+            val draftFolderPath = probeResponse.ocs?.data?.folder
+            if (draftFolderPath.isNullOrEmpty()) {
+                Log.e(TAG, "Draft folder path missing in probe response")
+                return@runBlocking false
+            }
+            val predictedName = resolveFinalFileName(fileName, probeResponse.ocs?.data!!)
+            val tempRemotePath = "/$draftFolderPath/$uploadId-$fileName"
+
+            val uploadSuccess = if (isChunkedUploading) {
+                initNotificationWithPercentage()
+                val mimeType = context.contentResolver.getType(sourceFileUri)?.toMediaTypeOrNull()
+                chunkedFileUploader = ChunkedFileUploader(
+                    okHttpClient,
+                    currentUser,
+                    roomToken,
+                    metaData,
+                    this@UploadAndShareFilesWorker,
+                    ncApiCoroutines,
+                    true
+                )
+                chunkedFileUploader!!.upload(file!!, mimeType, tempRemotePath)
+            } else {
+                FileUploader(okHttpClient, context, currentUser, roomToken, ncApi, file!!, ncApiCoroutines)
+                    .uploadToConversationSubfolder(sourceFileUri, tempRemotePath)
+            }
+
+            if (!uploadSuccess) {
+                return@runBlocking false
+            }
+
+            val params = PostConversationAttachmentRequest().apply {
+                filePath = tempRemotePath
+                referenceId = uploadId
+                talkMetaData = metaData
+                fileName = predictedName
+            }
+
+            runCatching {
+                ncApiCoroutines.postConversationAttachment(
+                    credentials,
+                    ApiUtils.getUrlForChatAttachment(ApiUtils.API_V1, currentUser.baseUrl, roomToken),
+                    params
+                )
+            }
+                .onFailure { Log.e(TAG, "Failed to finalize uploaded attachment", it) }
+                .isSuccess
+        }
+
+    private fun resolveFinalFileName(originalName: String, probeData: ChatProbeAttachmentData): String =
+        probeData.renames?.get(originalName) ?: originalName
 
     private fun getRemotePath(currentUser: User): String {
         val remotePath = CapabilitiesUtil.getAttachmentFolder(

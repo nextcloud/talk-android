@@ -113,6 +113,16 @@ object CapabilitiesUtil {
         return spreedCapabilities.features?.contains(spreedFeatures.value) == true
     }
 
+    fun hasConversationSubfoldersForAttachments(spreedCapabilities: SpreedCapability): Boolean {
+        if (spreedCapabilities.config?.containsKey("attachments") == true) {
+            val map = spreedCapabilities.config!!["attachments"]
+            if (map?.containsKey("conversation-subfolders") == true) {
+                return map["conversation-subfolders"].toString().toBoolean()
+            }
+        }
+        return false
+    }
+
     fun isSharedItemsAvailable(spreedCapabilities: SpreedCapability): Boolean =
         hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA)
 

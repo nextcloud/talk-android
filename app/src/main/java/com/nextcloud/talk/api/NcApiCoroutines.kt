@@ -12,6 +12,10 @@ import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
+import com.nextcloud.talk.models.json.chatpostattachment.ChatPostAttachmentOverall
+import com.nextcloud.talk.models.json.chatpostattachment.PostConversationAttachmentRequest
+import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachmentFolderOverall
+import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ProbeConversationAttachmentRequest
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -475,4 +479,25 @@ interface NcApiCoroutines {
     // Url is: /api/{apiVersion}/chat/{token}/read
     @DELETE
     suspend fun markRoomAsUnread(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
+
+    @POST
+    suspend fun probeConversationAttachmentFolder(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Body request: ProbeConversationAttachmentRequest
+    ): ChatProbeAttachmentFolderOverall
+
+    @POST
+    suspend fun postConversationAttachment(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Body body: PostConversationAttachmentRequest
+    ): ChatPostAttachmentOverall
+
+    @PUT
+    suspend fun uploadFile(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Body body: RequestBody
+    ): Response<GenericOverall>
 }
