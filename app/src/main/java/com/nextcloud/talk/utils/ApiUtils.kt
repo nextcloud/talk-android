@@ -281,7 +281,8 @@ object ApiUtils {
         baseUrl: String? = null,
         source: String? = null,
         invite: String? = null,
-        conversationName: String? = null
+        conversationName: String? = null,
+        preset: String? = null
     ): RetrofitBucket {
         val retrofitBucket = RetrofitBucket()
         retrofitBucket.url = getUrlForRooms(version, baseUrl)
@@ -289,6 +290,7 @@ object ApiUtils {
         queryMap["roomType"] = roomType
         invite?.let { queryMap["invite"] = it }
         source?.let { queryMap["source"] = it }
+        preset?.let { queryMap["preset"] = it }
         conversationName?.let { queryMap["roomName"] = it }
         retrofitBucket.queryMap = queryMap
         return retrofitBucket

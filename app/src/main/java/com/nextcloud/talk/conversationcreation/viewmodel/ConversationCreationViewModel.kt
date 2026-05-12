@@ -66,6 +66,7 @@ class ConversationCreationViewModel @Inject constructor(
     val conversationDescription: StateFlow<String> = _conversationDescription
     var isGuestsAllowed = mutableStateOf(false)
     var isConversationAvailableForRegisteredUsers = mutableStateOf(false)
+    val conversationPreset = mutableStateOf("default")
     var openForGuestAppUsers = mutableStateOf(false)
     private val addParticipantsViewState = MutableStateFlow<AddParticipantsUiState>(AddParticipantsUiState.None)
     private val allowGuestsResult = MutableStateFlow<AllowGuestsUiState>(AllowGuestsUiState.None)
@@ -85,6 +86,7 @@ class ConversationCreationViewModel @Inject constructor(
     fun createRoomAndAddParticipants(
         roomType: String,
         conversationName: String,
+        preset: String = "default",
         participants: Set<AutocompleteUser>,
         onRoomCreated: (String) -> Unit
     ) {
@@ -103,6 +105,7 @@ class ConversationCreationViewModel @Inject constructor(
                     version = apiVersion,
                     baseUrl = _currentUser.baseUrl,
                     roomType = roomType,
+                    preset = preset,
                     conversationName = conversationName
                 )
                 val roomResult = repository.createRoom(

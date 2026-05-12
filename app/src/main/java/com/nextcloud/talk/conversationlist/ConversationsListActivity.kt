@@ -14,6 +14,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -40,10 +41,10 @@ import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.conversation.RenameConversationDialogFragment
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
+import com.nextcloud.talk.conversation.RenameConversationDialogFragment
 import com.nextcloud.talk.conversationlist.ui.ConversationOpsAction
 import com.nextcloud.talk.conversationlist.ui.ConversationsListScreen
 import com.nextcloud.talk.conversationlist.ui.ConversationsListScreenCallbacks
@@ -60,6 +61,7 @@ import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.domain.ConversationModel.Companion.checkIfVoiceRoom
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.settings.SettingsActivity
@@ -86,17 +88,21 @@ import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_FLAG
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_TEXT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_BREAKOUT_ROOM
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_TO_NOTIFICATION_CATEGORY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
-import android.text.TextUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -111,7 +117,7 @@ import javax.inject.Inject
 
 @SuppressLint("StringFormatInvalid")
 @AutoInjector(NextcloudTalkApplication::class)
-@Suppress("LargeClass", "TooManyFunctions")
+@Suppress("LargeClass", "TooManyFunctions", "NestedBlockDepth")
 class ConversationsListActivity : BaseActivity() {
 
     @Inject
@@ -685,6 +691,8 @@ class ConversationsListActivity : BaseActivity() {
                 } else {
                     showSnackbar(getString(R.string.send_to_forbidden))
                 }
+            } else if (conversation.checkIfVoiceRoom()) {
+                startACall(false, true)
             } else {
                 openConversation()
             }
@@ -921,6 +929,79 @@ class ConversationsListActivity : BaseActivity() {
         return settingsOfUserAreWrong &&
             shouldShowNotificationWarningByUserChoice() &&
             ClosedInterfaceImpl().isGooglePlayServicesAvailable
+    }
+
+    fun isOneToOneConversation() =
+        selectedConversation != null &&
+            selectedConversation?.type != null &&
+            selectedConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+
+    private fun getIntentForCall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean): Intent? {
+        selectedConversation?.let {
+            val pp = ParticipantPermissions(currentUser?.capabilities?.spreedCapability, it)
+
+            val bundle = Bundle()
+            bundle.putString(KEY_ROOM_TOKEN, it.token)
+            bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, "")
+            bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, currentUser?.baseUrl!!)
+            bundle.putString(KEY_CONVERSATION_NAME, it.displayName)
+            bundle.putInt(KEY_RECORDING_STATE, it.callRecording)
+            bundle.putBoolean(KEY_IS_MODERATOR, ConversationUtils.isParticipantOwnerOrModerator(it))
+            bundle.putBoolean(
+                BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO,
+                pp.canPublishAudio()
+            )
+            bundle.putBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE, isOneToOneConversation())
+            bundle.putBoolean(
+                BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO,
+                pp.canPublishVideo()
+            )
+
+            if (isVoiceOnlyCall) {
+                bundle.putBoolean(KEY_CALL_VOICE_ONLY, true)
+            }
+            if (callWithoutNotification) {
+                bundle.putBoolean(BundleKeys.KEY_CALL_WITHOUT_NOTIFICATION, true)
+            }
+
+            if (it.objectType == ConversationEnums.ObjectType.ROOM) {
+                bundle.putBoolean(KEY_IS_BREAKOUT_ROOM, true)
+            }
+
+            val callIntent = Intent(this, CallActivity::class.java)
+            callIntent.putExtras(bundle)
+            return callIntent
+        }
+
+        return null
+    }
+
+    private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
+        selectedConversation?.let {
+            val bundle = Bundle()
+            bundle.putString(KEY_ROOM_TOKEN, selectedConversation!!.token)
+            bundle.putString(KEY_SHARED_TEXT, textToPaste)
+            if (selectedMessageId != null) {
+                bundle.putString(BundleKeys.KEY_MESSAGE_ID, selectedMessageId)
+                selectedMessageId = null
+            }
+
+            val chatIntent = Intent(context, ChatActivity::class.java)
+            chatIntent.putExtras(bundle)
+
+            if (currentUser != null) {
+                val pp = ParticipantPermissions(currentUser?.capabilities?.spreedCapability, it)
+                if (!pp.canStartCall() && selectedConversation?.hasCall == false) {
+                    Log.e(TAG, "Error starting call from conversations list: call is forbidden")
+                } else {
+                    ApplicationWideCurrentRoomHolder.getInstance().isDialing = true
+                    val callIntent = getIntentForCall(isVoiceOnlyCall, callWithoutNotification)
+                    if (callIntent != null) {
+                        startActivities(arrayOf(chatIntent, callIntent))
+                    }
+                }
+            }
+        }
     }
 
     private fun openConversation(textToPaste: String? = "") {

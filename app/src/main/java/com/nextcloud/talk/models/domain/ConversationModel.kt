@@ -66,6 +66,7 @@ data class ConversationModel(
     var hasImportant: Boolean = false,
     var lastPinnedId: Long? = null,
     var hiddenPinnedId: Long? = null,
+    var attributes: Int? = null,
 
     // attributes that don't come from API. This should be changed?!
     var password: String? = null,
@@ -74,6 +75,11 @@ data class ConversationModel(
 ) {
 
     companion object {
+        fun ConversationModel?.checkIfVoiceRoom(): Boolean =
+            this?.attributes?.let {
+                it and ConversationEnums.Preset.VOICE_ROOM.ordinal != 0
+            } ?: false
+
         @Suppress("LongMethod")
         fun mapToConversationModel(conversation: Conversation, user: User): ConversationModel =
             ConversationModel(
@@ -136,7 +142,8 @@ data class ConversationModel(
                 hasSensitive = conversation.hasSensitive,
                 hasImportant = conversation.hasImportant,
                 lastPinnedId = conversation.lastPinnedId,
-                hiddenPinnedId = conversation.hiddenPinnedId
+                hiddenPinnedId = conversation.hiddenPinnedId,
+                attributes = conversation.attributes
             )
     }
 }

@@ -49,4 +49,9 @@ class ConversationEnums {
         PHONE_PERSIST,
         INSTANT_MEETING
     }
+
+    enum class Preset {
+        DEFAULT,
+        VOICE_ROOM
+    }
 }

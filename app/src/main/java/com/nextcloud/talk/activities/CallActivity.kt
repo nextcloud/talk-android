@@ -41,7 +41,6 @@ import android.view.OrientationEventListener
 import android.view.View
 import android.view.View.OnTouchListener
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.NotificationManagerCompat
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +49,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
@@ -78,6 +78,7 @@ import com.nextcloud.talk.camera.BackgroundBlurFrameProcessor
 import com.nextcloud.talk.camera.BlurBackgroundViewModel
 import com.nextcloud.talk.camera.BlurBackgroundViewModel.BackgroundBlurOn
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallActivityBinding
 import com.nextcloud.talk.events.ConfigurationChangeEvent
@@ -85,6 +86,8 @@ import com.nextcloud.talk.events.NetworkEvent
 import com.nextcloud.talk.events.ProximitySensorEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.models.ExternalSignalingServer
+import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.domain.ConversationModel.Companion.checkIfVoiceRoom
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -121,10 +124,10 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_WITHOUT_NOTIFICATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_PASSWORD
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_TIMESTAMP
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_BREAKOUT_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MODIFIED_BASE_URL
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_TIMESTAMP
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
@@ -364,6 +367,7 @@ class CallActivity : CallBaseActivity() {
     private var reactionAnimator: ReactionAnimator? = null
     private var othersInCall = false
     private var isOneToOneConversation = false
+    private var currentConversation: Conversation? = null
 
     private lateinit var micInputAudioRecorder: AudioRecord
     private var micInputAudioRecordThread: Thread? = null
@@ -629,6 +633,7 @@ class CallActivity : CallBaseActivity() {
 
                         override fun onNext(roomOverall: RoomOverall) {
                             val conversation = roomOverall.ocs!!.data
+                            currentConversation = conversation
                             if (conversation?.recordingConsentRequired == 1) {
                                 askForRecordingConsent()
                             } else {
@@ -1553,6 +1558,7 @@ class CallActivity : CallBaseActivity() {
 
                     override fun onNext(roomOverall: RoomOverall) {
                         val conversation = roomOverall.ocs!!.data
+                        currentConversation = conversation
                         callRecordingViewModel!!.setRecordingState(conversation!!.callRecording)
                         callSession = conversation.sessionId
                         Log.d(TAG, " new callSession by joinRoom= $callSession")
@@ -1605,6 +1611,7 @@ class CallActivity : CallBaseActivity() {
 
                     override fun onNext(roomOverall: RoomOverall) {
                         val conversation = roomOverall.ocs!!.data
+                        currentConversation = conversation
                         callRecordingViewModel!!.setRecordingState(conversation!!.callRecording)
                         callSession = conversation.sessionId
 
@@ -2037,7 +2044,15 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
-                    if (switchToRoomToken.isNotEmpty()) {
+                    val conversationModel = currentConversation?.let {
+                        ConversationModel.mapToConversationModel(it, conversationUser)
+                    }
+
+                    if (conversationModel?.checkIfVoiceRoom() == true) {
+                        val intent = Intent(context, ConversationsListActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else if (switchToRoomToken.isNotEmpty()) {
                         val intent = Intent(context, ChatActivity::class.java)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         val bundle = Bundle()
