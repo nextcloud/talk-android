@@ -33,6 +33,7 @@
     <string name="call_without_notification">Звонок без уведомления</string>
     <string name="camera_permission_granted">Разрешение на камеру получено. Пожалуйста, выберите камеру снова.</string>
     <string name="cancel_login">Отменить вход</string>
+    <string name="chat_messages_load_gap">Некоторые сообщения не могут быть загружены</string>
     <string name="choose_avatar_from_cloud">Выберите аватар из облака</string>
     <string name="clear_status_message">Очистить сообщение о статусе</string>
     <string name="clear_status_message_after">Очищать статус после</string>
@@ -113,6 +114,9 @@
     <string name="message_search_begin_empty">Ничего не найдено</string>
     <string name="message_search_begin_typing">Начните печатать для поиска …</string>
     <string name="message_search_hint">Поиск …</string>
+    <string name="message_search_next_result">Следующий результат поиска</string>
+    <string name="message_search_no_more_results">Больше сообщений не найдено</string>
+    <string name="message_search_previous_result">Предыдущий результат поиска</string>
     <string name="messages">Сообщения</string>
     <string name="mute_all_notifications">Без уведомлений</string>
     <string name="nc_Server_account_imported">Выбранная учётная запись теперь доступна</string>

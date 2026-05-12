@@ -33,6 +33,7 @@
     <string name="call_without_notification">Kõne ilma teavituseta</string>
     <string name="camera_permission_granted">Õigused kaamera kasutamiseks on nüüd olemas. Palun vali kaamera uuesti.</string>
     <string name="cancel_login">Katkesta sisselogimine</string>
+    <string name="chat_messages_load_gap">Mõnede sõnumite laadimine ei õnnestunud</string>
     <string name="choose_avatar_from_cloud">Vali tunnuspilt pilvest</string>
     <string name="clear_status_message">Eemalda olekuteade</string>
     <string name="clear_status_message_after">Eemalda olekuteade pärast</string>
@@ -113,6 +114,9 @@
     <string name="message_search_begin_empty">Otsingul pole tulemusi</string>
     <string name="message_search_begin_typing">Otsimiseks alusta kirjutamist…</string>
     <string name="message_search_hint">Otsi…</string>
+    <string name="message_search_next_result">Järgmine otsingutulemus</string>
+    <string name="message_search_no_more_results">Rohkem sõnumeid ei leidu</string>
+    <string name="message_search_previous_result">Eelmine otsingutulemus</string>
     <string name="messages">Sõnumid</string>
     <string name="mute_all_notifications">Sellega summutad teavitused</string>
     <string name="nc_Server_account_imported">Valitud kasutajakonto on nüüd imporditud ja saadaval</string>

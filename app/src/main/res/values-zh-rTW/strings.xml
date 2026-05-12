@@ -33,6 +33,7 @@
     <string name="call_without_notification">通話而不通知</string>
     <string name="camera_permission_granted">已獲取相機權限，請重新選擇相機或影像來源。</string>
     <string name="cancel_login">取消登入</string>
+    <string name="chat_messages_load_gap">無法載入部份訊息</string>
     <string name="choose_avatar_from_cloud">從雲端選擇頭像</string>
     <string name="clear_status_message">清空狀態訊息</string>
     <string name="clear_status_message_after">在……之後清空狀態訊息</string>
@@ -113,6 +114,9 @@
     <string name="message_search_begin_empty">無搜尋結果</string>
     <string name="message_search_begin_typing">輸入文字以搜尋 …</string>
     <string name="message_search_hint">搜尋 …</string>
+    <string name="message_search_next_result">下一個搜尋結果</string>
+    <string name="message_search_no_more_results">找不到更多訊息</string>
+    <string name="message_search_previous_result">前一個搜尋結果</string>
     <string name="messages">訊息</string>
     <string name="mute_all_notifications">靜音所有通知</string>
     <string name="nc_Server_account_imported">選擇已匯入且可用的帳號</string>
