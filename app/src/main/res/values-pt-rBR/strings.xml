@@ -33,6 +33,7 @@
     <string name="call_without_notification">Chamada sem notificação</string>
     <string name="camera_permission_granted">Permissão da câmera concedida. Por favor, escolha a câmera novamente.</string>
     <string name="cancel_login">Cancelar Login</string>
+    <string name="chat_messages_load_gap">Não foi possível carregar algumas mensagens</string>
     <string name="choose_avatar_from_cloud">Escolher o avatar da nuvem</string>
     <string name="clear_status_message">Limpar mensagem de status</string>
     <string name="clear_status_message_after">Limpar mensagem de status após</string>
@@ -113,6 +114,9 @@
     <string name="message_search_begin_empty">Nenhum resultado encontrado</string>
     <string name="message_search_begin_typing">Comece a digitar para pesquisar …</string>
     <string name="message_search_hint">Pesquisar …</string>
+    <string name="message_search_next_result">Próximo resultado da pesquisa</string>
+    <string name="message_search_no_more_results">Não foram encontradas mais mensagens</string>
+    <string name="message_search_previous_result">Resultado anterior da pesquisa</string>
     <string name="messages">Mensagens</string>
     <string name="mute_all_notifications">Silenciar todas as notificações</string>
     <string name="nc_Server_account_imported">A conta selecionada agora está importada e disponível</string>
@@ -426,7 +430,7 @@
     <string name="nc_rename_confirm">Renomear</string>
     <string name="nc_reply">Responder</string>
     <string name="nc_reply_privately">Responder privadamente</string>
-    <string name="nc_reply_to_thread">Responder ao fio %1$s</string>
+    <string name="nc_reply_to_thread">Responder ao fio: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Reagendar com notificação</string>
     <string name="nc_reschedule_message_without_notification">Reagendar sem notificação</string>
     <string name="nc_room_retention">A sala é mantida com sucesso</string>
@@ -786,9 +790,9 @@
     <string name="video_call">Videochamada</string>
     <string name="whats_your_status">Qual é o seu status?</string>
     <plurals name="nc_new_messages_count">
-        <item quantity="one">%d new message</item>
-        <item quantity="many">%d new messages</item>
-        <item quantity="other">%dnovas mensagens</item>
+        <item quantity="one">%d nova mensagem</item>
+        <item quantity="many">%d de novas mensagens</item>
+        <item quantity="other">%d novas mensagens</item>
     </plurals>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Veja %d mensagem semelhante</item>
