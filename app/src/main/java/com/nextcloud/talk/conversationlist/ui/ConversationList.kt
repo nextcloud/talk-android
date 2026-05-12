@@ -7,6 +7,7 @@
 package com.nextcloud.talk.conversationlist.ui
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,7 +32,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -225,18 +225,9 @@ fun ConversationList(
 /** Possible swipe states for conversation row actions. */
 private enum class SwipeValue { Settled, StartToEnd, EndToStart }
 
-/**
- * Wraps [content] with horizontal swipe actions:
- *  - Swipe right (StartToEnd): mark read / unread — easy trigger (~15 % of width).
- *    The StartToEnd anchor sits at 30 % of the component width; with a 50 % positional
- *    threshold the gesture fires after ~15 % of total width.
- *  - Swipe left (EndToStart): leave room — destructive, requires ≥ 50 % of width.
- *    The EndToStart anchor sits at full component width; with a 50 % positional threshold
- *    the gesture fires after exactly 50 % of total width.
- *
- * Haptic feedback matching swipe-to-reply fires the moment the threshold is crossed.
- * The item always springs back to [SwipeValue.Settled] after release.
- */
+private const val POP_SCALE_PEAK = 1.35f
+
+@Suppress("LongMethod")
 @Composable
 private fun SwipeableConversationItem(
     model: ConversationModel,
@@ -249,6 +240,10 @@ private fun SwipeableConversationItem(
     val coroutineScope = rememberCoroutineScope()
 
     val offsetX = remember { Animatable(0f) }
+    val popScale = remember { Animatable(1f) }
+    val popAnimationSpec = remember {
+        spring<Float>(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium)
+    }
     var itemWidth by remember { mutableIntStateOf(0) }
     var hapticFiredRight by remember { mutableStateOf(false) }
     var hapticFiredLeft by remember { mutableStateOf(false) }
@@ -260,6 +255,18 @@ private fun SwipeableConversationItem(
                 offsetX.value < -1f -> SwipeValue.EndToStart
                 else -> SwipeValue.Settled
             }
+        }
+    }
+    val startToEndProgress by remember {
+        derivedStateOf {
+            val threshold = itemWidth * 0.20f
+            if (threshold > 0f) (offsetX.value / threshold).coerceIn(0f, 1f) else 0f
+        }
+    }
+    val endToStartProgress by remember {
+        derivedStateOf {
+            val threshold = itemWidth * 0.40f
+            if (threshold > 0f) (-offsetX.value / threshold).coerceIn(0f, 1f) else 0f
         }
     }
 
@@ -287,6 +294,7 @@ private fun SwipeableConversationItem(
                     if (dragStart != null && horizontalStarted) {
                         hapticFiredRight = false
                         hapticFiredLeft = false
+                        coroutineScope.launch { popScale.snapTo(1f) }
                         horizontalDrag(dragStart.id) { change ->
                             val delta = change.position.x - change.previousPosition.x
                             val newOffset = (offsetX.value + delta).coerceIn(endToStartLimit, startToEndLimit)
@@ -294,10 +302,18 @@ private fun SwipeableConversationItem(
                             if (!hapticFiredRight && startToEndThreshold > 0 && newOffset >= startToEndThreshold) {
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                 hapticFiredRight = true
+                                coroutineScope.launch {
+                                    popScale.snapTo(POP_SCALE_PEAK)
+                                    popScale.animateTo(1f, popAnimationSpec)
+                                }
                             }
                             if (!hapticFiredLeft && endToStartThreshold < 0 && newOffset <= endToStartThreshold) {
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                 hapticFiredLeft = true
+                                coroutineScope.launch {
+                                    popScale.snapTo(POP_SCALE_PEAK)
+                                    popScale.animateTo(1f, popAnimationSpec)
+                                }
                             }
                             change.consume()
                         }
@@ -317,7 +333,13 @@ private fun SwipeableConversationItem(
                 }
             }
     ) {
-        SwipeBackground(modifier = Modifier.matchParentSize(), swipeDirection = swipeDirection, model = currentModel)
+        SwipeBackground(
+            modifier = Modifier.matchParentSize(),
+            swipeDirection = swipeDirection,
+            model = currentModel,
+            progress = if (swipeDirection == SwipeValue.StartToEnd) startToEndProgress else endToStartProgress,
+            popScale = popScale.value
+        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -330,31 +352,37 @@ private fun SwipeableConversationItem(
 }
 
 @Composable
-private fun SwipeBackground(modifier: Modifier = Modifier, swipeDirection: SwipeValue, model: ConversationModel) {
-    val markAsReadLabel = stringResource(R.string.nc_mark_as_read)
-    val markAsUnreadLabel = stringResource(R.string.nc_mark_as_unread)
-    val leaveLabel = stringResource(R.string.nc_leave)
-
+private fun SwipeBackground(
+    modifier: Modifier = Modifier,
+    swipeDirection: SwipeValue,
+    model: ConversationModel,
+    progress: Float,
+    popScale: Float
+) {
     when (swipeDirection) {
         SwipeValue.StartToEnd -> {
-            val iconRes = if (model.unreadMessages > 0) {
-                R.drawable.ic_mark_chat_read_24px
-            } else {
-                R.drawable.ic_mark_chat_unread_24px
-            }
-            val label = if (model.unreadMessages > 0) markAsReadLabel else markAsUnreadLabel
+            val iconColor = MaterialTheme.colorScheme.onPrimaryContainer
             Box(
                 modifier = modifier
                     .background(MaterialTheme.colorScheme.primaryContainer)
                     .padding(horizontal = 24.dp),
                 contentAlignment = Alignment.CenterStart
             ) {
-                Icon(
-                    painter = painterResource(iconRes),
-                    contentDescription = label,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(24.dp)
-                )
+                if (model.unreadMessages > 0) {
+                    ReadIcon(
+                        progress = progress,
+                        popScale = popScale,
+                        color = iconColor,
+                        modifier = Modifier.size(24.dp)
+                    )
+                } else {
+                    UnreadIcon(
+                        progress = progress,
+                        popScale = popScale,
+                        color = iconColor,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
         }
         SwipeValue.EndToStart -> {
@@ -364,10 +392,10 @@ private fun SwipeBackground(modifier: Modifier = Modifier, swipeDirection: Swipe
                     .padding(horizontal = 24.dp),
                 contentAlignment = Alignment.CenterEnd
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_exit_to_app_black_24dp),
-                    contentDescription = leaveLabel,
-                    tint = MaterialTheme.colorScheme.onError,
+                LeaveIcon(
+                    progress = progress,
+                    popScale = popScale,
+                    color = MaterialTheme.colorScheme.onError,
                     modifier = Modifier.size(24.dp)
                 )
             }
