@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.Placeholder
@@ -176,7 +177,7 @@ fun buildMentionInlineContent(
     val heightDp = if (isMultilineLayout) CHIP_MULTILINE_HEIGHT_DP else CHIP_SINGLE_LINE_HEIGHT_DP
     val heightEm = heightDp / fontSizeSp
     val verticalAlign = if (isMultilineLayout) PlaceholderVerticalAlign.Bottom else PlaceholderVerticalAlign.Center
-    val boxAlignment = if (isMultilineLayout) Alignment.BottomStart else Alignment.CenterStart
+    val boxAlignment = if (isMultilineLayout) Alignment.BottomStart else Alignment.Center
     return InlineTextContent(
         placeholder = Placeholder(
             width = width.em,
@@ -251,7 +252,8 @@ fun MentionChip(mention: MentionChipModel, textStyle: TextStyle, isMultilineLayo
                 contentDescription = chipContentDescription
                 if (mention.isClickableUserMention) role = Role.Button
             }
-            .background(backgroundColor, RoundedCornerShape(chipCornerRadius))
+            .clip(RoundedCornerShape(chipCornerRadius))
+            .background(backgroundColor)
             .clickable(enabled = mention.isClickableUserMention) {
                 EventBus.getDefault().post(UserMentionClickEvent(mention.id))
             }
