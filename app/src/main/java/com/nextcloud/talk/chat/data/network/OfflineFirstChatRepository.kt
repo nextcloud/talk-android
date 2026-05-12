@@ -1029,7 +1029,8 @@ class OfflineFirstChatRepository @Inject constructor(
     override suspend fun onSignalingChatMessageReceived(chatMessages: List<ChatMessageJson>) {
         // check if we need to get user specific data from the backend
         if (!isUntranslatedSystemMessage(chatMessages) ||
-            chatMessages.any { it.messageParameters?.containsKey("file") == true }) {
+            chatMessages.any { it.messageParameters?.containsKey("file") == true }
+        ) {
             Log.d(TAG, "onSignalingChatMessageReceived force data refresh")
             fetchNewMessages()
             return

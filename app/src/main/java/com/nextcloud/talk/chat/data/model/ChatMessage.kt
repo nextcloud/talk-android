@@ -331,7 +331,7 @@ data class ChatMessage(
             SystemMessageType.MESSAGE_DELETED,
             SystemMessageType.MESSAGE_EDITED,
             SystemMessageType.THREAD_CREATED,
-            SystemMessageType.THREAD_RENAMED,
+            SystemMessageType.THREAD_RENAMED
         )
 
         private const val REGEX_STRING_DEFAULT =
