@@ -73,6 +73,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.RECORDIN
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.RECORDING_STARTED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.RECORDING_STOPPED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.THREAD_CREATED
+import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.THREAD_RENAMED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.USER_ADDED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.USER_REMOVED
 
@@ -147,6 +148,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "federated_user_removed" -> FEDERATED_USER_REMOVED
             "phone_added" -> PHONE_ADDED
             "thread_created" -> THREAD_CREATED
+            "thread_renamed" -> THREAD_RENAMED
             "message_pinned" -> MESSAGE_PINNED
             "message_unpinned" -> MESSAGE_UNPINNED
             else -> DUMMY
