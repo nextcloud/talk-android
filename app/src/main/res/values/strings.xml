@@ -480,8 +480,6 @@ How to translate with transifex:
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">You: %1$s</string>
     <string name="nc_draft_prefix">Draft: %1$s</string>
-    <string name="nc_message_read">Message read</string>
-    <string name="nc_message_sending">Message sending</string>
     <string name="nc_message_sent">Message sent</string>
     <string name="nc_message_read">Message read</string>
     <string name="nc_message_sending">Sending message</string>
