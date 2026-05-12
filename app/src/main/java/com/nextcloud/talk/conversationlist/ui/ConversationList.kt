@@ -6,7 +6,14 @@
  */
 package com.nextcloud.talk.conversationlist.ui
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.awaitHorizontalTouchSlopOrCancellation
+import androidx.compose.foundation.gestures.horizontalDrag
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,6 +21,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,22 +31,32 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,6 +67,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -59,6 +78,8 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.ApiUtils
+import kotlin.math.abs
+import kotlin.math.roundToInt
 
 private const val MSG_KEY_EXCERPT_LENGTH = 20
 
@@ -87,7 +108,8 @@ fun ConversationList(
     onScrollStopped: (lastVisibleIndex: Int) -> Unit = {},
     listState: LazyListState = rememberLazyListState(),
     /** Extra bottom padding added as LazyColumn contentPadding so the last item is reachable above the nav bar. */
-    contentBottomPadding: Dp = 0.dp
+    contentBottomPadding: Dp = 0.dp,
+    onSwipeConversation: (ConversationOpsAction, ConversationModel) -> Unit = { _, _ -> }
 ) {
     var prevIndex by remember { mutableIntStateOf(listState.firstVisibleItemIndex) }
     var prevOffset by remember { mutableIntStateOf(listState.firstVisibleItemScrollOffset) }
@@ -161,15 +183,20 @@ fun ConversationList(
                         ConversationSectionHeader(title = entry.title)
 
                     is ConversationListEntry.ConversationEntry ->
-                        ConversationListItem(
+                        SwipeableConversationItem(
                             model = entry.model,
-                            currentUser = currentUser,
-                            callbacks = ConversationListItemCallbacks(
-                                onClick = { onConversationClick(entry.model) },
-                                onLongClick = { onConversationLongClick(entry.model) }
-                            ),
-                            searchQuery = searchQuery
-                        )
+                            onSwipe = { action -> onSwipeConversation(action, entry.model) }
+                        ) {
+                            ConversationListItem(
+                                model = entry.model,
+                                currentUser = currentUser,
+                                callbacks = ConversationListItemCallbacks(
+                                    onClick = { onConversationClick(entry.model) },
+                                    onLongClick = { onConversationLongClick(entry.model) }
+                                ),
+                                searchQuery = searchQuery
+                            )
+                        }
 
                     is ConversationListEntry.MessageResultEntry ->
                         MessageResultListItem(
@@ -192,6 +219,160 @@ fun ConversationList(
                 }
             }
         }
+    }
+}
+
+/** Possible swipe states for conversation row actions. */
+private enum class SwipeValue { Settled, StartToEnd, EndToStart }
+
+/**
+ * Wraps [content] with horizontal swipe actions:
+ *  - Swipe right (StartToEnd): mark read / unread — easy trigger (~15 % of width).
+ *    The StartToEnd anchor sits at 30 % of the component width; with a 50 % positional
+ *    threshold the gesture fires after ~15 % of total width.
+ *  - Swipe left (EndToStart): leave room — destructive, requires ≥ 50 % of width.
+ *    The EndToStart anchor sits at full component width; with a 50 % positional threshold
+ *    the gesture fires after exactly 50 % of total width.
+ *
+ * Haptic feedback matching swipe-to-reply fires the moment the threshold is crossed.
+ * The item always springs back to [SwipeValue.Settled] after release.
+ */
+@Composable
+private fun SwipeableConversationItem(
+    model: ConversationModel,
+    onSwipe: (ConversationOpsAction) -> Unit,
+    content: @Composable () -> Unit
+) {
+    val currentModel by rememberUpdatedState(model)
+    val currentOnSwipe by rememberUpdatedState(onSwipe)
+    val haptic = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+
+    val offsetX = remember { Animatable(0f) }
+    var itemWidth by remember { mutableIntStateOf(0) }
+    var hapticFiredRight by remember { mutableStateOf(false) }
+    var hapticFiredLeft by remember { mutableStateOf(false) }
+
+    val swipeDirection by remember {
+        derivedStateOf {
+            when {
+                offsetX.value > 1f -> SwipeValue.StartToEnd
+                offsetX.value < -1f -> SwipeValue.EndToStart
+                else -> SwipeValue.Settled
+            }
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .onSizeChanged { size -> itemWidth = size.width }
+            .pointerInput(Unit) {
+                awaitEachGesture {
+                    val startToEndThreshold = itemWidth * 0.20f
+                    val startToEndLimit = itemWidth * 0.3f
+                    val endToStartThreshold = -itemWidth * 0.40f
+                    val endToStartLimit = -itemWidth.toFloat()
+
+                    val down = awaitFirstDown(requireUnconsumed = false)
+                    var horizontalStarted = false
+                    val dragStart = awaitHorizontalTouchSlopOrCancellation(down.id) { change, _ ->
+                        val dx = abs(change.position.x - change.previousPosition.x)
+                        val dy = abs(change.position.y - change.previousPosition.y)
+                        if (dx > dy) {
+                            change.consume()
+                            horizontalStarted = true
+                        }
+                    }
+                    if (dragStart != null && horizontalStarted) {
+                        hapticFiredRight = false
+                        hapticFiredLeft = false
+                        horizontalDrag(dragStart.id) { change ->
+                            val delta = change.position.x - change.previousPosition.x
+                            val newOffset = (offsetX.value + delta).coerceIn(endToStartLimit, startToEndLimit)
+                            coroutineScope.launch { offsetX.snapTo(newOffset) }
+                            if (!hapticFiredRight && startToEndThreshold > 0 && newOffset >= startToEndThreshold) {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                hapticFiredRight = true
+                            }
+                            if (!hapticFiredLeft && endToStartThreshold < 0 && newOffset <= endToStartThreshold) {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                hapticFiredLeft = true
+                            }
+                            change.consume()
+                        }
+                        val finalOffset = offsetX.value
+                        if (hapticFiredRight && finalOffset >= startToEndThreshold) {
+                            val action = if (currentModel.unreadMessages > 0) {
+                                ConversationOpsAction.MarkAsRead
+                            } else {
+                                ConversationOpsAction.MarkAsUnread
+                            }
+                            currentOnSwipe(action)
+                        } else if (hapticFiredLeft && finalOffset <= endToStartThreshold) {
+                            currentOnSwipe(ConversationOpsAction.Leave)
+                        }
+                        coroutineScope.launch { offsetX.animateTo(0f, spring()) }
+                    }
+                }
+            }
+    ) {
+        SwipeBackground(modifier = Modifier.matchParentSize(), swipeDirection = swipeDirection, model = currentModel)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .offset { IntOffset(offsetX.value.roundToInt(), 0) }
+                .background(MaterialTheme.colorScheme.surface)
+        ) {
+            content()
+        }
+    }
+}
+
+@Composable
+private fun SwipeBackground(modifier: Modifier = Modifier, swipeDirection: SwipeValue, model: ConversationModel) {
+    val markAsReadLabel = stringResource(R.string.nc_mark_as_read)
+    val markAsUnreadLabel = stringResource(R.string.nc_mark_as_unread)
+    val leaveLabel = stringResource(R.string.nc_leave)
+
+    when (swipeDirection) {
+        SwipeValue.StartToEnd -> {
+            val iconRes = if (model.unreadMessages > 0) {
+                R.drawable.ic_mark_chat_read_24px
+            } else {
+                R.drawable.ic_mark_chat_unread_24px
+            }
+            val label = if (model.unreadMessages > 0) markAsReadLabel else markAsUnreadLabel
+            Box(
+                modifier = modifier
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .padding(horizontal = 24.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Icon(
+                    painter = painterResource(iconRes),
+                    contentDescription = label,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+        SwipeValue.EndToStart -> {
+            Box(
+                modifier = modifier
+                    .background(MaterialTheme.colorScheme.error)
+                    .padding(horizontal = 24.dp),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_exit_to_app_black_24dp),
+                    contentDescription = leaveLabel,
+                    tint = MaterialTheme.colorScheme.onError,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+        SwipeValue.Settled -> {}
     }
 }
 

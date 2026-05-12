@@ -309,7 +309,8 @@ fun ConversationsListScreen(
                                     onScrollChanged = callbacks.onScrollChanged,
                                     onScrollStopped = callbacks.onScrollStopped,
                                     listState = lazyListState,
-                                    contentBottomPadding = paddingValues.calculateBottomPadding()
+                                    contentBottomPadding = paddingValues.calculateBottomPadding(),
+                                    onSwipeConversation = callbacks.onConversationOpsAction
                                 )
                         }
                         // Empty-state overlay (centered; handles its own visibility)
