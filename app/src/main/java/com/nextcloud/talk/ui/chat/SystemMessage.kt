@@ -19,6 +19,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -42,31 +44,50 @@ private val systemMessageTextStyle
 
 @Composable
 fun SystemMessage(message: ChatMessageUi) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        val timeString = DateUtils(LocalContext.current).getLocalTimeStringFromTimestamp(message.timestamp)
+    val timeString = DateUtils(LocalContext.current).getLocalTimeStringFromTimestamp(message.timestamp)
+    if (message.isExpandableParent) {
         Box(modifier = Modifier.fillMaxWidth()) {
-            if (message.isExpandableParent) {
-                ExpandableSystemMessage(message = message)
-            } else {
-                val (annotated, inlineContent) = buildSystemMessageContent(message, systemMessageTextStyle)
-                Text(
-                    annotated,
-                    style = systemMessageTextStyle,
-                    color = colorScheme.onSurface,
-                    inlineContent = inlineContent,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .align(Alignment.Center)
-                )
-            }
+            ExpandableSystemMessage(message = message)
             Text(
                 timeString,
                 fontSize = TIME_TEXT_SIZE.sp,
                 color = colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.End,
                 modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(end = 8.dp)
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 8.dp, bottom = 4.dp)
+            )
+        }
+    } else {
+        val textStyle = systemMessageTextStyle
+        val addLineBreaks = remember(message.id, message.plainMessage) { mutableStateOf(false) }
+        val (annotated, inlineContent) = remember(message, textStyle, addLineBreaks.value) {
+            buildSystemMessageContent(message, textStyle, addLineBreaks.value)
+        }
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                annotated,
+                style = systemMessageTextStyle,
+                color = colorScheme.onSurface,
+                inlineContent = inlineContent,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 64.dp, vertical = 4.dp)
+                    .align(Alignment.Center),
+                onTextLayout = { result ->
+                    if (!addLineBreaks.value && result.lineCount > 1) {
+                        addLineBreaks.value = true
+                    }
+                }
+            )
+            Text(
+                timeString,
+                fontSize = TIME_TEXT_SIZE.sp,
+                color = colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 8.dp, bottom = 4.dp)
             )
         }
     }
@@ -81,7 +102,7 @@ private fun ExpandableSystemMessage(message: ChatMessageUi) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(start = 8.dp, top = 8.dp, bottom = 8.dp, end = 56.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -118,7 +139,8 @@ private val placeholderPattern = Regex("\\{(\\w+)\\}")
 
 private fun buildSystemMessageContent(
     message: ChatMessageUi,
-    textStyle: TextStyle
+    textStyle: TextStyle,
+    addLineBreaks: Boolean = false
 ): Pair<androidx.compose.ui.text.AnnotatedString, Map<String, InlineTextContent>> {
     val inlineContent = linkedMapOf<String, InlineTextContent>()
     var mentionCounter = 0
@@ -140,6 +162,7 @@ private fun buildSystemMessageContent(
                 val inlineId = "sysmsg-${message.id}-$mentionCounter"
                 mentionCounter++
                 appendMentionChip(inlineId, mention, inlineContent, textStyle, isMultilineLayout = false)
+                if (addLineBreaks) append("\n")
             } else {
                 val name = message.messageParameters[key]?.get("name") ?: match.value
                 val start = length

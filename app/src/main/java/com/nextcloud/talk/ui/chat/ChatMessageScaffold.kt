@@ -139,7 +139,7 @@ private val mentionChipTypes = setOf("user", "guest", "call", "user-group", "ema
 
 private fun ChatMessageUi.hasMentionChips(): Boolean =
     messageParameters.any { (key, parameter) ->
-        message.contains("{$key}") && parameter["type"] in mentionChipTypes
+        plainMessage.contains("{$key}") && parameter["type"] in mentionChipTypes
     }
 
 @Suppress("Detekt.LongMethod", "LongParameterList")
