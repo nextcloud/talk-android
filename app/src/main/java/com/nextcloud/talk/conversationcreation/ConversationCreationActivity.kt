@@ -652,6 +652,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
 }
 
 @Composable
+@Suppress("LongMethod", "LongParameterList")
 fun ConversationOptions(
     icon: Int? = null,
     text: Int,
