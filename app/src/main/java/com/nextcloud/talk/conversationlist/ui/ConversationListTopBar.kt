@@ -44,6 +44,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -90,7 +91,8 @@ data class ConversationListTopBarState(
     val avatarUrl: String?,
     val credentials: String,
     val showFilterActive: Boolean,
-    val showThreadsButton: Boolean
+    val showThreadsButton: Boolean,
+    val isSearchLoading: Boolean = false
 )
 
 @Suppress("LongParameterList")
@@ -133,6 +135,7 @@ fun ConversationListTopBar(
             )
             is TopBarMode.SearchActive -> TopBarSearchActiveContent(
                 query = mode.query,
+                isLoading = state.isSearchLoading,
                 onQueryChange = actions.onSearchQueryChange,
                 onSearchClose = actions.onSearchClose,
                 focusRequester = focusRequester
@@ -256,6 +259,7 @@ private fun IdleSearchBarActions(
 @Composable
 private fun TopBarSearchActiveContent(
     query: String,
+    isLoading: Boolean,
     onQueryChange: (String) -> Unit,
     onSearchClose: () -> Unit,
     focusRequester: FocusRequester
@@ -301,7 +305,14 @@ private fun TopBarSearchActiveContent(
             ),
             windowInsets = WindowInsets(0)
         )
-        HorizontalDivider()
+        if (isLoading) {
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.primary
+            )
+        } else {
+            HorizontalDivider()
+        }
     }
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
 }
