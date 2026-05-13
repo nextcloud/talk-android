@@ -53,6 +53,7 @@
     <string name="danger_zone">Gefahrenzone</string>
     <string name="deck_card_description">%1$s in %2$s</string>
     <string name="default_room">Standard</string>
+    <string name="default_room_preset">Nachrichten senden, Themen erstellen und Sprach- sowie Videoanrufe starten</string>
     <string name="delete_avatar">Avatar löschen</string>
     <string name="delete_voice_recording">Sprachaufnahme löschen</string>
     <string name="deleted_conversation">Unterhaltung %1$s gelöscht</string>
@@ -790,6 +791,7 @@
     <string name="userinfo_no_info_text">Fügen Sie Name, Bild und Kontaktdaten auf Ihrer Profilseite hinzu.</string>
     <string name="video_call">Videoanruf</string>
     <string name="voice_room">Sprachraum</string>
+    <string name="voice_room_preset">Direkt am Anruf teilnehmen, ideal für Nachholtermine oder spontane Treffen</string>
     <string name="whats_your_status">Wie ist Ihr Status?</string>
     <plurals name="nc_new_messages_count">
         <item quantity="one">%d neue Nachricht</item>
