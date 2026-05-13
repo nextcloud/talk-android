@@ -51,6 +51,7 @@
     <string name="custom">Custom</string>
     <string name="danger_zone">Danger zone</string>
     <string name="deck_card_description">%1$s in %2$s</string>
+    <string name="default_room">ຄ່າເລີ່ມຕົ້ນ</string>
     <string name="delete_avatar">Delete avatar</string>
     <string name="delete_voice_recording">Delete voice recording</string>
     <string name="deleted_conversation">Deleted conversation %1$s</string>

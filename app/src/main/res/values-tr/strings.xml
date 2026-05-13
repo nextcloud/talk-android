@@ -51,6 +51,7 @@
     <string name="custom">Özel</string>
     <string name="danger_zone">Tehlikeli bölge</string>
     <string name="deck_card_description">%1$s, %2$s içinde</string>
+    <string name="default_room">Varsayılan</string>
     <string name="delete_avatar">Avatarı sil</string>
     <string name="delete_voice_recording">Ses kaydını sil</string>
     <string name="deleted_conversation">%1$s görüşmesi silindi</string>
@@ -770,6 +771,7 @@
     <string name="userinfo_no_info_headline">Herhangi bir kişisel bilgi ayarlanmamış</string>
     <string name="userinfo_no_info_text">Profil sayfanızdan ad, görsel ve iletişim bilgilerinizi ekleyin.</string>
     <string name="video_call">Görüntülü çağrı</string>
+    <string name="voice_room">Konuşma odası</string>
     <string name="whats_your_status">Durumunuz nedir?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">%d benzer iletiye bakın</item>

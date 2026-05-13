@@ -51,6 +51,7 @@
     <string name="custom">Brugerdefineret</string>
     <string name="danger_zone">Farezone</string>
     <string name="deck_card_description">%1$s i %2$s</string>
+    <string name="default_room">Standard</string>
     <string name="delete_avatar">Slet avatar</string>
     <string name="delete_voice_recording">Slet stemmeoptagelse</string>
     <string name="deleted_conversation">Slettede samtale %1$s</string>

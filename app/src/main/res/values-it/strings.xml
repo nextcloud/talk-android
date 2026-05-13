@@ -51,6 +51,7 @@
     <string name="custom">Personalizzato</string>
     <string name="danger_zone">Zona pericolosa</string>
     <string name="deck_card_description">%1$s in %2$s</string>
+    <string name="default_room">Predefinito</string>
     <string name="delete_avatar">Elimina avatar</string>
     <string name="delete_voice_recording">Elimina registrazione vocale</string>
     <string name="deleted_conversation">Eliminata conversazione %1$s</string>

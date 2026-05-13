@@ -37,6 +37,7 @@
     <string name="create_issue">問題を作成する</string>
     <string name="custom">カスタム</string>
     <string name="danger_zone">危険区域</string>
+    <string name="default_room">デフォルト</string>
     <string name="delete_avatar">アバターを削除</string>
     <string name="deleted_conversation">会話%1$sは削除済みです</string>
     <string name="dnd">取り込み中</string>

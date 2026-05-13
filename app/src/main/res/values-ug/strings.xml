@@ -51,6 +51,7 @@
     <string name="custom">خاس</string>
     <string name="danger_zone">خەتەر رايونى</string>
     <string name="deck_card_description">%2$s  دىكى%1$s</string>
+    <string name="default_room">كۆڭۈلدىكى</string>
     <string name="delete_avatar">باش سۈرىتىنى ئۆچۈرۈڭ</string>
     <string name="delete_voice_recording">ئاۋاز خاتىرسىنى ئۆچۈر</string>
     <string name="deleted_conversation">ئۆچۈرۈلگەن سۆھبەت%1$s</string>

@@ -51,6 +51,7 @@
     <string name="custom">Custom</string>
     <string name="danger_zone">Danger zone</string>
     <string name="deck_card_description">%1$s in %2$s</string>
+    <string name="default_room">Default</string>
     <string name="delete_avatar">Delete avatar</string>
     <string name="delete_voice_recording">Delete voice recording</string>
     <string name="deleted_conversation">Deleted conversation %1$s</string>
@@ -775,6 +776,7 @@
     <string name="userinfo_no_info_headline">No personal info set</string>
     <string name="userinfo_no_info_text">Add name, picture and contact details on your profile page.</string>
     <string name="video_call">Video call</string>
+    <string name="voice_room">Voice room</string>
     <string name="whats_your_status">What is your status?</string>
     <plurals name="nc_new_messages_count">
         <item quantity="one">%d new message</item>

@@ -51,6 +51,7 @@
     <string name="custom">Tinkinta</string>
     <string name="danger_zone">Pavojinga zona</string>
     <string name="deck_card_description">%1$s per %2$s</string>
+    <string name="default_room">Numatytasis</string>
     <string name="delete_avatar">Ištrinti avatarą</string>
     <string name="delete_voice_recording">Ištrinti balso įrašą</string>
     <string name="deleted_conversation">Ištrintas %1$s pokalbis</string>
@@ -784,6 +785,7 @@
     <string name="userinfo_no_info_headline">Asmeninės informacijos nėra</string>
     <string name="userinfo_no_info_text">Pridėkite vardą, nuotrauką ir kontaktinę informaciją savo profilio puslapyje.</string>
     <string name="video_call">Vaizdo skambutis</string>
+    <string name="voice_room">Bendravimo kambarys</string>
     <string name="whats_your_status">Kokia jūsų būsena?</string>
     <plurals name="nc_new_messages_count">
         <item quantity="one">%d nauja žinutė</item>

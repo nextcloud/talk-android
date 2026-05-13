@@ -51,6 +51,7 @@
     <string name="custom">Egyéni</string>
     <string name="danger_zone">Veszélyes területet</string>
     <string name="deck_card_description">%1$s itt: %2$s</string>
+    <string name="default_room">Alapértelmezett</string>
     <string name="delete_avatar">Profilkép törlése</string>
     <string name="delete_voice_recording">Hangfelvétel törlése</string>
     <string name="deleted_conversation">%1$s beszélgetés törlése</string>
@@ -784,6 +785,7 @@
     <string name="userinfo_no_info_headline">Nincs személyes információ beállítva</string>
     <string name="userinfo_no_info_text">Adja meg a nevét, profilképét és kapcsolati adatait a profil oldalán.</string>
     <string name="video_call">Videóhívás</string>
+    <string name="voice_room">Hangos szoba</string>
     <string name="whats_your_status">Mi az állapota?</string>
     <plurals name="nc_new_messages_count">
         <item quantity="one">%dúj üzenet</item>

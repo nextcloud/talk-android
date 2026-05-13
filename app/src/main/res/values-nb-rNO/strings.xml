@@ -42,6 +42,7 @@
     <string name="create_issue">Opprett problem</string>
     <string name="custom">Egendefinert</string>
     <string name="danger_zone">Faresone</string>
+    <string name="default_room">Forvalg</string>
     <string name="delete_avatar">Slett data</string>
     <string name="deleted_conversation">Slettet samtale %1$s</string>
     <string name="dnd">Ikke forstyrr</string>

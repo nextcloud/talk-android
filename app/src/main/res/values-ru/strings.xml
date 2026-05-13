@@ -52,6 +52,7 @@
     <string name="custom">Задать</string>
     <string name="danger_zone">Опасная зона</string>
     <string name="deck_card_description">%1$s в %2$s</string>
+    <string name="default_room">По умолчанию</string>
     <string name="delete_avatar">Удалить аватар</string>
     <string name="delete_voice_recording">Удалить голосовую запись</string>
     <string name="deleted_conversation">Удалённое обсуждение %1$s</string>
@@ -788,6 +789,7 @@
     <string name="userinfo_no_info_headline">Личная информация не указана</string>
     <string name="userinfo_no_info_text">На странице профиля укажите своё имя, добавьте изображение и подробные сведения</string>
     <string name="video_call">Видеозвонок</string>
+    <string name="voice_room">Голосовой чат</string>
     <string name="whats_your_status">Какой у вас статус?</string>
     <plurals name="nc_new_messages_count">
         <item quantity="one">%d новое сообщение</item>

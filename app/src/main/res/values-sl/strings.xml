@@ -31,6 +31,7 @@
     <string name="create_conversation">Ustvari pogovor</string>
     <string name="custom">Po meri</string>
     <string name="danger_zone">Nevarno območje</string>
+    <string name="default_room">Privzeto</string>
     <string name="delete_avatar">Izbriši podobo</string>
     <string name="dnd">Ne moti</string>
     <string name="dontClear">Ne počisti</string>
