@@ -108,8 +108,7 @@ class ConversationsListViewModel @Inject constructor(
 
     sealed class ConversationReadUnreadUiState {
         data object None : ConversationReadUnreadUiState()
-        data class Success(val conversationDisplayName: String, val isMarkedRead: Boolean) :
-            ConversationReadUnreadUiState()
+        data object Success : ConversationReadUnreadUiState()
         data object Error : ConversationReadUnreadUiState()
     }
 
@@ -582,6 +581,8 @@ class ConversationsListViewModel @Inject constructor(
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun markConversationAsRead(conversation: ConversationModel) {
+        val original = conversation.copy()
+        val optimistic = conversation.copy(unreadMessages = 0, unreadMention = false, unreadMentionDirect = false)
         val messageId = if (conversation.remoteServer.isNullOrEmpty()) conversation.lastMessage?.id?.toInt() else null
         val apiVersion = ApiUtils.getChatApiVersion(
             currentUser.capabilities?.spreedCapability!!,
@@ -589,12 +590,18 @@ class ConversationsListViewModel @Inject constructor(
         )
         val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                repository.updateConversationLocallyAndEmit(currentUser, optimistic)
+            }
             try {
                 withContext(Dispatchers.IO) {
                     withRetry(1) { conversationsRepository.markConversationAsRead(credentials, url, messageId) }
                 }
-                _readUnreadState.value = ConversationReadUnreadUiState.Success(conversation.displayName, true)
+                _readUnreadState.value = ConversationReadUnreadUiState.Success
             } catch (e: Exception) {
+                withContext(Dispatchers.IO) {
+                    repository.updateConversationLocallyAndEmit(currentUser, original)
+                }
                 _readUnreadState.value = ConversationReadUnreadUiState.Error
             }
         }
@@ -602,18 +609,26 @@ class ConversationsListViewModel @Inject constructor(
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun markConversationAsUnread(conversation: ConversationModel) {
+        val original = conversation.copy()
+        val optimistic = conversation.copy(unreadMessages = 1)
         val apiVersion = ApiUtils.getChatApiVersion(
             currentUser.capabilities?.spreedCapability!!,
             intArrayOf(ApiUtils.API_V1)
         )
         val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                repository.updateConversationLocallyAndEmit(currentUser, optimistic)
+            }
             try {
                 withContext(Dispatchers.IO) {
                     withRetry(1) { conversationsRepository.markConversationAsUnread(credentials, url) }
                 }
-                _readUnreadState.value = ConversationReadUnreadUiState.Success(conversation.displayName, false)
+                _readUnreadState.value = ConversationReadUnreadUiState.Success
             } catch (e: Exception) {
+                withContext(Dispatchers.IO) {
+                    repository.updateConversationLocallyAndEmit(currentUser, original)
+                }
                 _readUnreadState.value = ConversationReadUnreadUiState.Error
             }
         }

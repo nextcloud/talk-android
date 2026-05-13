@@ -308,8 +308,6 @@ How to translate with transifex:
 
     <string name="added_to_favorites">Added conversation %1$s to favorites</string>
     <string name="removed_from_favorites">Removed conversation %1$s from favorites</string>
-    <string name="marked_as_unread">Marked conversation %1$s as unread</string>
-    <string name="marked_as_read">Marked conversation %1$s as read</string>
     <string name="deleted_conversation">Deleted conversation %1$s</string>
     <string name="left_conversation">You left the conversation %1$s</string>
     <string name="renamed_conversation">Conversation %1$s was renamed</string>

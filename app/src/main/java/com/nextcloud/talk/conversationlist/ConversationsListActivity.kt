@@ -462,9 +462,6 @@ class ConversationsListActivity : BaseActivity() {
             conversationsListViewModel.readUnreadState.collect { state ->
                 when (state) {
                     is ConversationsListViewModel.ConversationReadUnreadUiState.Success -> {
-                        fetchRooms()
-                        val resId = if (state.isMarkedRead) R.string.marked_as_read else R.string.marked_as_unread
-                        showSnackbar(String.format(resources.getString(resId), state.conversationDisplayName))
                         conversationsListViewModel.resetReadUnreadState()
                     }
                     is ConversationsListViewModel.ConversationReadUnreadUiState.Error -> {
