@@ -31,6 +31,7 @@
     <string name="create_conversation">ایجاد گفتگو</string>
     <string name="custom">Custom</string>
     <string name="danger_zone">Danger zone</string>
+    <string name="default_room">پیش‌فرض</string>
     <string name="delete_avatar">آواتار را پاک کن</string>
     <string name="dnd">مزاحم نشوید</string>
     <string name="dontClear">پاک نکن</string>

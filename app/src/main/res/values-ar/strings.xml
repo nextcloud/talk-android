@@ -48,6 +48,7 @@
     <string name="custom">مخصص</string>
     <string name="danger_zone">منطقة خطر</string>
     <string name="deck_card_description">%1$s في %2$s</string>
+    <string name="default_room">التلقائي</string>
     <string name="delete_avatar">إمسح صورة الملف الشخصي الرمزية</string>
     <string name="deleted_conversation">محادثة محذوفة %1$s</string>
     <string name="dnd">الرجاء عدم الإزعاج</string>

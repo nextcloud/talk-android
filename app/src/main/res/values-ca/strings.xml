@@ -50,6 +50,7 @@
     <string name="custom">Personalitzat</string>
     <string name="danger_zone">Zona perillosa</string>
     <string name="deck_card_description">%1$s en %2$s</string>
+    <string name="default_room">Per defecte</string>
     <string name="delete_avatar">Suprimeix l\'avatar</string>
     <string name="deleted_conversation">Conversa suprimida %1$s</string>
     <string name="dnd">No molesteu</string>

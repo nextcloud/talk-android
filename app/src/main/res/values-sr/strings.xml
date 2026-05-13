@@ -51,6 +51,7 @@
     <string name="custom">Прилагођено</string>
     <string name="danger_zone">Зона опасности</string>
     <string name="deck_card_description">%1$s у %2$s</string>
+    <string name="default_room">Подразумевано</string>
     <string name="delete_avatar">Обриши аватар</string>
     <string name="delete_voice_recording">Обриши снимак гласа</string>
     <string name="deleted_conversation">Разговор %1$s је обрисан</string>

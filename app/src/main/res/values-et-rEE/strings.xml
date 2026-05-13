@@ -52,6 +52,7 @@
     <string name="custom">Kohandatud</string>
     <string name="danger_zone">Ohtlik - siin ole ettevaatlik</string>
     <string name="deck_card_description">%1$s:  %2$s</string>
+    <string name="default_room">Vaikimisi</string>
     <string name="delete_avatar">Kustuta tunnuspilt</string>
     <string name="delete_voice_recording">Kustuta helisalvestis</string>
     <string name="deleted_conversation">%1$s vestlus on kustutatud</string>
@@ -788,6 +789,7 @@
     <string name="userinfo_no_info_headline">Isiklikud andmed on kirjeldamata</string>
     <string name="userinfo_no_info_text">Lisa oma profiili lehele nimi, pilt ja kontaktteave. </string>
     <string name="video_call">Videokõne</string>
+    <string name="voice_room">Jututuba häälkõnede jaoks</string>
     <string name="whats_your_status">Mis on su staatus?</string>
     <plurals name="nc_new_messages_count">
         <item quantity="one">%d uus sõnum</item>

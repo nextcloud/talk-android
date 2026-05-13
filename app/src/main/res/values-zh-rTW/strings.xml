@@ -52,6 +52,7 @@
     <string name="custom">自訂</string>
     <string name="danger_zone">危險區域</string>
     <string name="deck_card_description">%2$s 中的 %1$s</string>
+    <string name="default_room">預設</string>
     <string name="delete_avatar">刪除頭像</string>
     <string name="delete_voice_recording">刪除語音錄音</string>
     <string name="deleted_conversation">已刪除對話 %1$s</string>
@@ -788,6 +789,7 @@
     <string name="userinfo_no_info_headline">未設定個人資訊</string>
     <string name="userinfo_no_info_text">在您的個人檔案中新增名字、大頭照和聯絡資訊。</string>
     <string name="video_call">視訊連線</string>
+    <string name="voice_room">語音聊天室</string>
     <string name="whats_your_status">您目前的狀態是什麼呢？</string>
     <plurals name="nc_new_messages_count">
         <item quantity="other">%d 則新訊息</item>

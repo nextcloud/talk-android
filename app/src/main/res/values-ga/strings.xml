@@ -51,6 +51,7 @@
     <string name="custom">Saincheaptha</string>
     <string name="danger_zone">Crios contúirte</string>
     <string name="deck_card_description">%1$s i %2$s</string>
+    <string name="default_room">Réamhshocrú</string>
     <string name="delete_avatar">Scrios an avatar</string>
     <string name="delete_voice_recording">Scrios taifeadadh gutha</string>
     <string name="deleted_conversation">Scriosadh comhrá %1$s</string>
@@ -784,6 +785,7 @@
     <string name="userinfo_no_info_headline">Níl aon tacar faisnéise pearsanta ann</string>
     <string name="userinfo_no_info_text">Cuir ainm, pictiúr agus sonraí teagmhála ar do leathanach próifíle.</string>
     <string name="video_call">Glao físe</string>
+    <string name="voice_room">Seomra gutha</string>
     <string name="whats_your_status">Cad é do stádas?</string>
     <plurals name="nc_new_messages_count">
         <item quantity="one">%d teachtaireacht nua</item>

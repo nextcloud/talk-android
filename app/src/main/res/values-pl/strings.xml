@@ -51,6 +51,7 @@
     <string name="custom">Dowolnie</string>
     <string name="danger_zone">Strefa niebezpieczeństwa</string>
     <string name="deck_card_description">%1$s w %2$s</string>
+    <string name="default_room">Domyślny</string>
     <string name="delete_avatar">Usuń awatar</string>
     <string name="delete_voice_recording">Usuń nagranie głosowe</string>
     <string name="deleted_conversation">Usunięto rozmowę %1$s</string>
@@ -774,6 +775,7 @@
     <string name="userinfo_no_info_headline">Brak informacji osobistych</string>
     <string name="userinfo_no_info_text">Dodaj nazwę, zdjęcie profilowe i dane kontaktowe do swojego profilu.</string>
     <string name="video_call">Rozmowa wideo</string>
+    <string name="voice_room">Pokój głosowy</string>
     <string name="whats_your_status">Jaki jest Twój status?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Zobacz %d podobną wiadomość</item>

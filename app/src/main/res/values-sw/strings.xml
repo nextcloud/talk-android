@@ -51,6 +51,7 @@
     <string name="custom">Mteja</string>
     <string name="danger_zone">Eneo la hatari</string>
     <string name="deck_card_description">%1$s katika %2$s</string>
+    <string name="default_room">Chaguo msingi</string>
     <string name="delete_avatar">Futa avata</string>
     <string name="delete_voice_recording">Futa urekodiji wa sauti</string>
     <string name="deleted_conversation">Mazungumzo yaliyofutwa %1$s</string>

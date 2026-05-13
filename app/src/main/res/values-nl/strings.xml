@@ -51,6 +51,7 @@
     <string name="custom">Aangepast</string>
     <string name="danger_zone">Gevarenzone</string>
     <string name="deck_card_description">%1$s in %2$s</string>
+    <string name="default_room">Standaard</string>
     <string name="delete_avatar">Verwijder avatar</string>
     <string name="delete_voice_recording">Verwijder stemopname</string>
     <string name="deleted_conversation">Gesprek %1$s verwijderd</string>
@@ -417,6 +418,10 @@ Kies er eentje van een provider.</string>
     <string name="nc_room_retention">De ruimte is met succes gereserveerd</string>
     <string name="nc_save_message">Opslaan</string>
     <string name="nc_save_success">Succesvol opgeslagen</string>
+    <string name="nc_schedule_message">Bericht plannen</string>
+    <string name="nc_schedule_message_title">Bericht plannen</string>
+    <string name="nc_scheduled_messages">Geplande berichten</string>
+    <string name="nc_scheduled_time">Geplande tijd</string>
     <string name="nc_screen_lock_timeout_30">30 seconden</string>
     <string name="nc_screen_lock_timeout_300">5 minuten</string>
     <string name="nc_screen_lock_timeout_60">1 minuut</string>
@@ -590,6 +595,7 @@ Kies er eentje van een provider.</string>
     <string name="pin_indefinitely">Pin onbeperkt</string>
     <string name="pin_message">Pin bericht</string>
     <string name="pinned">Gepind</string>
+    <string name="pinned_by_you">%1$s (door jou vastgemaakt)</string>
     <string name="pinned_dismiss">Wijs af</string>
     <string name="pinned_indefinitely">Onbeperkt gepind</string>
     <string name="pinned_message_options">Berichtopties</string>
@@ -746,6 +752,7 @@ Kies er eentje van een provider.</string>
     <string name="userinfo_no_info_headline">Geen persoonlijke informatie ingesteld</string>
     <string name="userinfo_no_info_text">Voeg naam, foto en contactgegevens toe op je profielpagina.</string>
     <string name="video_call">Videogesprek</string>
+    <string name="voice_room">Spraak room</string>
     <string name="whats_your_status">Wat is jouw status?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Zie %d gelijke bericht</item>

@@ -27,6 +27,7 @@
     <string name="create_conversation">Δημιουργία συνομιλίας</string>
     <string name="custom">Προσαρμοσμένο</string>
     <string name="danger_zone">Επικίνδυνη ζώνη</string>
+    <string name="default_room">Προεπιλογή</string>
     <string name="delete_avatar">Διαγραφή εικόνας προφίλ</string>
     <string name="dnd">Μην ενοχλείτε</string>
     <string name="dontClear">Να μη γίνεται εκκαθάριση</string>

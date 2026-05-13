@@ -27,6 +27,7 @@
     <string name="create_conversation">Създаване на разговор</string>
     <string name="custom">Персонализиран</string>
     <string name="danger_zone">Зона на опасност</string>
+    <string name="default_room">По подразбиране</string>
     <string name="delete_avatar">Изтриване на аватар</string>
     <string name="dnd">Не безпокойте</string>
     <string name="dontClear">Да не се изчиства</string>

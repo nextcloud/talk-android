@@ -28,6 +28,7 @@
     <string name="create_conversation">Luo keskustelu</string>
     <string name="custom">Omavalintainen</string>
     <string name="danger_zone">Vaaravyöhyke</string>
+    <string name="default_room">Oletus</string>
     <string name="dnd">Älä häiritse</string>
     <string name="dontClear">Älä tyhjennä</string>
     <string name="ecosystem_apps_files">Tiedostot</string>

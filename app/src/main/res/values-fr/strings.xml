@@ -51,6 +51,7 @@
     <string name="custom">Personnalisé</string>
     <string name="danger_zone">Zone de danger</string>
     <string name="deck_card_description">%1$s dans %2$s</string>
+    <string name="default_room">Défaut</string>
     <string name="delete_avatar">Supprimer l\'avatar</string>
     <string name="delete_voice_recording">Supprimer l\'enregistrement vocal</string>
     <string name="deleted_conversation">La conversation %1$s a été supprimée</string>
@@ -773,6 +774,7 @@
     <string name="userinfo_no_info_headline">Aucunes informations personnelles renseignées</string>
     <string name="userinfo_no_info_text">Ajoutez vos nom, photo et coordonnées sur votre page de profil.</string>
     <string name="video_call">Appel vidéo</string>
+    <string name="voice_room">Salon vocal</string>
     <string name="whats_your_status">Quel est votre statut ?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Voir %d message similaire</item>

@@ -37,6 +37,7 @@
     <string name="create_issue">Sortu arazoa</string>
     <string name="custom">Pertsonalizatua</string>
     <string name="danger_zone">Arrisku eremua</string>
+    <string name="default_room">Lehenetsia</string>
     <string name="delete_avatar">Ezabatu avatarra</string>
     <string name="deleted_conversation"> %1$s elkarrizketa ezabatu da</string>
     <string name="dnd">Ez molestatu</string>

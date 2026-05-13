@@ -28,6 +28,7 @@
     <string name="create_conversation">대화 만들기</string>
     <string name="custom">사용자 정의</string>
     <string name="danger_zone">위험 지역</string>
+    <string name="default_room">디폴트</string>
     <string name="delete_avatar">아바타 삭제</string>
     <string name="dnd">방해 없음</string>
     <string name="dontClear">지우지 않음</string>

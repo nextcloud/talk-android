@@ -51,6 +51,7 @@
     <string name="custom">Власне</string>
     <string name="danger_zone">Небезпечна зона</string>
     <string name="deck_card_description">%1$s в %2$s</string>
+    <string name="default_room">Типово</string>
     <string name="delete_avatar">Вилучити світлину</string>
     <string name="delete_voice_recording">Видалити запис голосу</string>
     <string name="deleted_conversation">Видалено розмову %1$s</string>

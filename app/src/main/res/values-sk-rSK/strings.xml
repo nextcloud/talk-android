@@ -51,6 +51,7 @@
     <string name="custom">Vlastný</string>
     <string name="danger_zone">Nebezpečná oblasť</string>
     <string name="deck_card_description">%1$s v %2$s</string>
+    <string name="default_room">Predvolené</string>
     <string name="delete_avatar">Zmazať avatara</string>
     <string name="delete_voice_recording">Odstrániť hlasový záznam</string>
     <string name="deleted_conversation">Odstránená konverzácia %1$s</string>
@@ -745,6 +746,7 @@
     <string name="userinfo_no_info_headline">Osobné informácie neboli nastavené</string>
     <string name="userinfo_no_info_text">Pridaj meno, obrázok a kontakt na profilovú stránku.</string>
     <string name="video_call">Videohovor</string>
+    <string name="voice_room">Hlasová miestnosť</string>
     <string name="whats_your_status">Aký je váš stav?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Zobraziť %d podobnú správu</item>
