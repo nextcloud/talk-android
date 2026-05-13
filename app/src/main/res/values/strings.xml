@@ -306,8 +306,6 @@ How to translate with transifex:
     <string name="nc_open_to_guest_app_users">Also open to guest app users</string>
     <string name="nc_new_conversation_visibility">Visibility</string>
 
-    <string name="added_to_favorites">Added conversation %1$s to favorites</string>
-    <string name="removed_from_favorites">Removed conversation %1$s from favorites</string>
     <string name="deleted_conversation">Deleted conversation %1$s</string>
     <string name="left_conversation">You left the conversation %1$s</string>
     <string name="renamed_conversation">Conversation %1$s was renamed</string>

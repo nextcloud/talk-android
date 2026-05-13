@@ -472,6 +472,21 @@ class ConversationsListActivity : BaseActivity() {
                 }
             }
         }
+
+        lifecycleScope.launch {
+            conversationsListViewModel.favoriteState.collect { state ->
+                when (state) {
+                    is ConversationsListViewModel.FavoriteUiState.Success -> {
+                        conversationsListViewModel.resetFavoriteState()
+                    }
+                    is ConversationsListViewModel.FavoriteUiState.Error -> {
+                        showSnackbar(resources.getString(R.string.nc_common_error_sorry))
+                        conversationsListViewModel.resetFavoriteState()
+                    }
+                    ConversationsListViewModel.FavoriteUiState.None -> { /* no-op */ }
+                }
+            }
+        }
     }
 
     private fun handleNoteToSelfShortcut(noteToSelfAvailable: Boolean, noteToSelfToken: String) {
@@ -1093,38 +1108,12 @@ class ConversationsListActivity : BaseActivity() {
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught", "TooGenericExceptionCaught")
     private fun addConversationToFavorites(conversation: ConversationModel) {
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser!!, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-        val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser?.baseUrl!!, conversation.token)
-        lifecycleScope.launch {
-            try {
-                withContext(Dispatchers.IO) { ncApiCoroutines.addConversationToFavorites(credentials!!, url) }
-                fetchRooms()
-                showSnackbar(
-                    String.format(resources.getString(R.string.added_to_favorites), conversation.displayName)
-                )
-            } catch (e: Exception) {
-                showSnackbar(resources.getString(R.string.nc_common_error_sorry))
-            }
-        }
+        conversationsListViewModel.addConversationToFavorites(conversation)
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught", "TooGenericExceptionCaught")
     private fun removeConversationFromFavorites(conversation: ConversationModel) {
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser!!, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-        val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser?.baseUrl!!, conversation.token)
-        lifecycleScope.launch {
-            try {
-                withContext(Dispatchers.IO) { ncApiCoroutines.removeConversationFromFavorites(credentials!!, url) }
-                fetchRooms()
-                showSnackbar(
-                    String.format(resources.getString(R.string.removed_from_favorites), conversation.displayName)
-                )
-            } catch (e: Exception) {
-                showSnackbar(resources.getString(R.string.nc_common_error_sorry))
-            }
-        }
+        conversationsListViewModel.removeConversationFromFavorites(conversation)
     }
 
     private fun markConversationAsUnread(conversation: ConversationModel) {
