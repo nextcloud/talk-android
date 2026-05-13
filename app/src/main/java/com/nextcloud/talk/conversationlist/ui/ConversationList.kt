@@ -227,6 +227,12 @@ private enum class SwipeValue { Settled, StartToEnd, EndToStart }
 
 private const val POP_SCALE_PEAK = 1.35f
 
+private const val DESTRUCTIVE_SWIPE_THRESHOLD = 0.40f
+
+private const val NON_DESTRUCTIVE_SWIPE_THRESHOLD = 0.20f
+
+private const val NON_DESTRUCTIVE_SWIPE_END_LIMIT = 0.3f
+
 @Suppress("LongMethod")
 @Composable
 private fun SwipeableConversationItem(
@@ -259,13 +265,13 @@ private fun SwipeableConversationItem(
     }
     val startToEndProgress by remember {
         derivedStateOf {
-            val threshold = itemWidth * 0.20f
+            val threshold = itemWidth * NON_DESTRUCTIVE_SWIPE_THRESHOLD
             if (threshold > 0f) (offsetX.value / threshold).coerceIn(0f, 1f) else 0f
         }
     }
     val endToStartProgress by remember {
         derivedStateOf {
-            val threshold = itemWidth * 0.40f
+            val threshold = itemWidth * DESTRUCTIVE_SWIPE_THRESHOLD
             if (threshold > 0f) (-offsetX.value / threshold).coerceIn(0f, 1f) else 0f
         }
     }
@@ -276,9 +282,9 @@ private fun SwipeableConversationItem(
             .onSizeChanged { size -> itemWidth = size.width }
             .pointerInput(Unit) {
                 awaitEachGesture {
-                    val startToEndThreshold = itemWidth * 0.20f
-                    val startToEndLimit = itemWidth * 0.3f
-                    val endToStartThreshold = -itemWidth * 0.40f
+                    val startToEndThreshold = itemWidth * NON_DESTRUCTIVE_SWIPE_THRESHOLD
+                    val startToEndLimit = itemWidth * NON_DESTRUCTIVE_SWIPE_END_LIMIT
+                    val endToStartThreshold = -itemWidth * DESTRUCTIVE_SWIPE_THRESHOLD
                     val endToStartLimit = -itemWidth.toFloat()
 
                     val down = awaitFirstDown(requireUnconsumed = false)

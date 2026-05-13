@@ -24,7 +24,8 @@ private const val LEAVE_ARROW_MAX_DX = 2f
 internal fun LeaveIcon(progress: Float, popScale: Float, color: Color, modifier: Modifier = Modifier) {
     val doorPath = remember {
         PathParser().parsePathString(
-            "M19,3H5c-1.11,0 -2,0.9 -2,2v4h2V5h14v14H5v-4H3v4c0,1.1 0.89,2 2,2h14c1.1,0 2,-0.9 2,-2V5c0,-1.1 -0.9,-2 -2,-2z"
+            "M19,3H5c-1.11,0 -2,0.9 -2,2v4h2V5h14v14H5v-4H3v4c0,1.1 0.89,2 2,2h14c1.1,0 2,-0.9 2,-2V5c0," +
+                "-1.1 -0.9,-2 -2,-2z"
         ).toPath()
     }
     val arrowPath = remember {
