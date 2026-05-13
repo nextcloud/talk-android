@@ -275,10 +275,12 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     /**
-     * Fetches messages newer than latest known message
+     * Fetches messages newer than latest known message.
+     *
+     * @return `true` if at least one new message was received and persisted.
      */
-    private suspend fun fetchNewMessages() {
-        var fieldMap = getFieldMap(
+    override suspend fun fetchNewMessages(): Boolean {
+        val fieldMap = getFieldMap(
             lookIntoFuture = true,
             timeout = 0,
             includeLastKnown = false,
@@ -288,7 +290,7 @@ class OfflineFirstChatRepository @Inject constructor(
         val networkParams = Bundle()
         networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
 
-        getAndPersistMessages(networkParams)
+        return getAndPersistMessages(networkParams)
     }
 
     override suspend fun loadMoreMessages(
@@ -497,7 +499,7 @@ class OfflineFirstChatRepository @Inject constructor(
             emit(ChatPullResult.Error(IllegalStateException("All attempts failed")))
         }.flowOn(Dispatchers.IO)
 
-    private suspend fun getAndPersistMessages(bundle: Bundle) {
+    private suspend fun getAndPersistMessages(bundle: Bundle): Boolean {
         if (!networkMonitor.isOnline.value) {
             Log.d(TAG, "Device is offline, can't load chat messages from server")
         }
@@ -536,21 +538,26 @@ class OfflineFirstChatRepository @Inject constructor(
                         lookIntoFuture,
                         hasHistory
                     )
+                    return true
                 } else {
                     Log.d(TAG, "No new messages to update")
+                    return false
                 }
             }
 
             is ChatPullResult.NotModified -> {
                 Log.d(TAG, "Server returned NOT_MODIFIED, nothing to update")
+                return false
             }
 
             is ChatPullResult.PreconditionFailed -> {
                 Log.d(TAG, "Server returned PRECONDITION_FAILED, nothing to update")
+                return false
             }
 
             is ChatPullResult.Error -> {
                 Log.e(TAG, "Error pulling messages from server", result.throwable)
+                return false
             }
         }
     }

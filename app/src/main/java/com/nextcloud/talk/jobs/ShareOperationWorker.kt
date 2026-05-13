@@ -26,6 +26,8 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_META_DATA
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -49,6 +51,7 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
         for (filePath in filesArray) {
             tryCreateShare(filePath)
         }
+        roomToken?.let { _shareCompletedFlow.tryEmit(it) }
         return Result.success()
     }
 
@@ -99,6 +102,9 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
         private const val HTTP_NOT_FOUND = 404
         private const val SHARE_MAX_ATTEMPTS = 4
         private const val SHARE_RETRY_DELAY_MS = 2000L
+
+        private val _shareCompletedFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
+        val shareCompletedFlow: SharedFlow<String> = _shareCompletedFlow
 
         fun shareFile(roomToken: String?, currentUser: User, remotePath: String, metaData: String?) {
             val paths: MutableList<String> = ArrayList()

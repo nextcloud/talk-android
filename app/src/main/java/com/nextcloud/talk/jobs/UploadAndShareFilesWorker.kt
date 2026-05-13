@@ -50,6 +50,9 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -126,6 +129,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
             if (uploadSuccess) {
                 cancelNotification()
+                _uploadCompletedFlow.tryEmit(roomToken)
                 return Result.success()
             } else if (isStopped) {
                 // since work is cancelled the result would be ignored anyways
@@ -415,6 +419,17 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         private const val HUNDRED_PERCENT = 100
         private const val ZERO_PERCENT = 0
         const val REQUEST_PERMISSION = 3123
+
+        private val _uploadCompletedFlow: MutableSharedFlow<String> = MutableSharedFlow(
+            replay = 1,
+            extraBufferCapacity = 1
+        )
+        val uploadCompletedFlow: SharedFlow<String> = _uploadCompletedFlow
+
+        @OptIn(ExperimentalCoroutinesApi::class)
+        fun clearUploadCompletedReplay() {
+            _uploadCompletedFlow.resetReplayCache()
+        }
 
         fun requestStoragePermission(activity: Activity) {
             when {
