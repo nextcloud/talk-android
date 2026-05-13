@@ -8,6 +8,8 @@ package com.nextcloud.talk.conversationlist.viewmodels
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -330,31 +332,66 @@ class ConversationsListViewModel @Inject constructor(
 
                 if (localConvs.isNotEmpty()) {
                     entries.add(ConversationListEntry.Header(conversationsTitle))
-                    localConvs.forEach { entries.add(ConversationListEntry.ConversationEntry(it)) }
+
+                    val pattern = """\b${Regex.escape(filter)}\b""".toRegex(RegexOption.IGNORE_CASE)
+
+                    processOrderAndAdd(
+                        localConvs,
+                        firstPredicate = { it.name.trim().equals(filter, ignoreCase = true) },
+                        secondPredicate = { it.name.contains(pattern) },
+                        addAction = {
+                            entries.add(ConversationListEntry.ConversationEntry(it))
+                        }
+                    )
                 }
                 if (openConvs.isNotEmpty()) {
                     entries.add(ConversationListEntry.Header(openConversationsTitle))
-                    openConvs.forEach { conv ->
-                        entries.add(
-                            ConversationListEntry.ConversationEntry(
-                                ConversationModel.mapToConversationModel(conv, currentUser)
+
+                    val pattern = """\b${Regex.escape(filter)}\b""".toRegex(RegexOption.IGNORE_CASE)
+
+                    processOrderAndAdd(
+                        openConvs,
+                        firstPredicate = { it.name.trim().equals(filter, ignoreCase = true) },
+                        secondPredicate = { it.name.contains(pattern) },
+                        addAction = { conv ->
+                            entries.add(
+                                ConversationListEntry.ConversationEntry(
+                                    ConversationModel.mapToConversationModel(conv, currentUser)
+                                )
                             )
-                        )
-                    }
+                        }
+                    )
                 }
                 if (contacts.isNotEmpty()) {
                     entries.add(ConversationListEntry.Header(usersTitle))
-                    contacts.forEach { autocompleteUser ->
-                        val participant = Participant()
-                        participant.actorId = autocompleteUser.id
-                        participant.actorType = actorTypeConverter.getFromString(autocompleteUser.source)
-                        participant.displayName = autocompleteUser.label
-                        entries.add(ConversationListEntry.ContactEntry(participant))
-                    }
+
+                    val pattern = """\b${Regex.escape(filter)}\b""".toRegex(RegexOption.IGNORE_CASE)
+
+                    processOrderAndAdd(
+                        contacts,
+                        firstPredicate = { it.label?.trim().equals(filter, ignoreCase = true) },
+                        secondPredicate = { it.label?.contains(pattern) ?: false },
+                        addAction = { autocompleteUser ->
+                            val participant = Participant()
+                            participant.actorId = autocompleteUser.id
+                            participant.actorType = actorTypeConverter.getFromString(autocompleteUser.source)
+                            participant.displayName = autocompleteUser.label
+                            entries.add(ConversationListEntry.ContactEntry(participant))
+                        }
+                    )
                 }
                 if (messages.isNotEmpty()) {
                     entries.add(ConversationListEntry.Header(messagesTitle))
-                    messages.forEach { msg -> entries.add(ConversationListEntry.MessageResultEntry(msg)) }
+
+                    val pattern = """\b${Regex.escape(filter)}\b""".toRegex(RegexOption.IGNORE_CASE)
+
+                    processOrderAndAdd(
+                        messages,
+                        firstPredicate = {
+                            it.messageExcerpt.toLowerCase(Locale.current).contains(pattern)
+                        },
+                        addAction = { msg -> entries.add(ConversationListEntry.MessageResultEntry(msg)) }
+                    )
                 }
                 if (hasMore) entries.add(ConversationListEntry.LoadMore)
 
@@ -364,6 +401,32 @@ class ConversationsListViewModel @Inject constructor(
                 _isSearchLoadingFlow.value = false
             }
         }
+    }
+
+    private fun <T> processOrderAndAdd(
+        list: List<T>,
+        firstPredicate: (T) -> Boolean,
+        secondPredicate: ((T) -> Boolean)? = null,
+        addAction: (T) -> Unit
+    ) {
+        val predicateOneAndInverse = list.split(firstPredicate)
+        predicateOneAndInverse.first.forEach(addAction)
+
+        secondPredicate?.let {
+            val predicateTwoAndInverse = predicateOneAndInverse.second.split(secondPredicate)
+            predicateTwoAndInverse.first.forEach(addAction)
+
+            predicateTwoAndInverse.second.forEach(addAction)
+        } ?: {
+            predicateOneAndInverse.second.forEach(addAction)
+        }
+    }
+
+    private inline fun <T> Iterable<T>.split(predicate: (T) -> Boolean): Pair<List<T>, List<T>> {
+        return Pair(
+            this.filter(predicate),
+            this.filterNot(predicate)
+        )
     }
 
     private fun getMessagesFlow(search: String): Flow<MessageSearchResults> =
