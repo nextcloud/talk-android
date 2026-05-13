@@ -821,7 +821,7 @@ class ChatActivity :
                 if (layoutInfo.totalItemsCount == 0) {
                     emptyList()
                 } else {
-                    visibleItemsInfo.toMutableList().map { it.key as String }
+                    visibleItemsInfo.mapNotNull { it.key as? String }
                 }
             }
         }.value.mapNotNull { key ->
