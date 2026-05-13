@@ -76,7 +76,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
 
         val fileSize = message.fileParameters.size
 
-        Log.d("Julius", "OpenWhenDownloaded: ${openWhenDownloadState.value}")
         openFile(
             FileInfo(fileId, fileName, fileSize, path, link, mimetype),
             openWhenDownloadState,
