@@ -60,9 +60,14 @@ private const val CHIP_START_PADDING_DP = 2f
 private const val CHIP_END_PADDING_DP = 5f
 private const val CHIP_VERTICAL_PADDING_DP = 2f
 private const val CHIP_CORNER_RADIUS_DP = 16f
-private const val MESSAGE_LINKIFY_MASK = Linkify.WEB_URLS or
-    Linkify.PHONE_NUMBERS or
+
+private const val MESSAGE_LINKIFY_MASK = Linkify.PHONE_NUMBERS or
     Linkify.EMAIL_ADDRESSES
+
+val validLinkRegex = Regex(
+    """(?<!\w)https://(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+(?:/[^\s)]*)?""",
+    RegexOption.IGNORE_CASE
+)
 
 @Suppress("LongMethod", "LongParameterList")
 @Composable
@@ -152,7 +157,11 @@ fun MarkdownText(
                     avatarSizePx = avatarSizePx,
                     avatarGapPx = avatarGapPx
                 )
-                val hasLinks = Linkify.addLinks(ssb, MESSAGE_LINKIFY_MASK)
+
+
+                val hasLinks = Linkify.addLinks(ssb, validLinkRegex.toPattern(), null) ||
+                            Linkify.addLinks(ssb, MESSAGE_LINKIFY_MASK)
+
                 resolveFileParams(ssb, message)
                 applySearchHighlight(ssb, highlightSearchTerm, searchHighlightColorArgb)
                 textView.text = ssb
