@@ -148,8 +148,6 @@ private fun buildMentionRichText(
                     val url = token.substringAfter("(").substringBefore(")")
                     appendLinkedToken(textPart, url, linkColor)
                 }
-
-                token.startsWith("http") -> appendLinkedToken(token, token, linkColor)
             }
 
             lastIndex = range.last + 1

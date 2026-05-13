@@ -240,7 +240,18 @@ fun resolveStatusIcon(
         else -> MessageStatusIcon.SENT
     }
 
+
+private val validHttpsLinkRegex = Regex(
+    """(?<!\w)https://(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+(?:/[^\s)]*)?""",
+    RegexOption.IGNORE_CASE
+)
+
+private fun String.hasValidHttpsLink(): Boolean =
+    validHttpsLinkRegex.containsMatchIn(this)
+
 fun getMessageTypeContent(user: User, message: ChatMessage): MessageTypeContent? =
+
+
     if (message.isSystemMessage) {
         MessageTypeContent.SystemMessage
     } else if (message.isVoiceMessage) {
@@ -254,9 +265,14 @@ fun getMessageTypeContent(user: User, message: ChatMessage): MessageTypeContent?
     } else if (message.hasDeckCard) {
         getDeckContent(message)
     } else {
-        message.extractLinkPreviewUrl(user)
-            ?.let { MessageTypeContent.LinkPreview(url = it) }
-            ?: MessageTypeContent.RegularText
+        if(message.message.orEmpty().hasValidHttpsLink()) {
+            message.extractLinkPreviewUrl(user)
+                ?.takeIf { it.hasValidHttpsLink() }
+                ?.let { MessageTypeContent.LinkPreview(url = it) }
+        }else{
+            MessageTypeContent.RegularText
+        }
+
     }
 
 fun getMediaContent(user: User, message: ChatMessage): MessageTypeContent.Media {
