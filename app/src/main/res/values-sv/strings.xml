@@ -52,6 +52,7 @@
     <string name="danger_zone">Riskzon</string>
     <string name="deck_card_description">%1$s i %2$s</string>
     <string name="default_room">Förvald</string>
+    <string name="default_room_preset">Skicka meddelanden, skapa trådar och starta röst- och videosamtal</string>
     <string name="delete_avatar">Ta bort avatar</string>
     <string name="delete_voice_recording">Ta bort röstinspelning</string>
     <string name="deleted_conversation">Raderade konversationen %1$s</string>
@@ -788,6 +789,7 @@
     <string name="userinfo_no_info_text">Lägg till namn, bild och kontaktuppgifter på din profilsida.</string>
     <string name="video_call">Videosamtal</string>
     <string name="voice_room">Ljudrum</string>
+    <string name="voice_room_preset">Gå direkt med i samtalet, perfekt för avstämningar eller spontana möten</string>
     <string name="whats_your_status">Vad är din status?</string>
     <plurals name="nc_new_messages_count">
         <item quantity="one">%d nytt meddelande</item>

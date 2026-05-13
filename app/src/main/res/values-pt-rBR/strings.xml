@@ -53,6 +53,7 @@
     <string name="danger_zone">Zona de perigo</string>
     <string name="deck_card_description">%1$s em %2$s</string>
     <string name="default_room">Padrão</string>
+    <string name="default_room_preset">Envie mensagens, crie fios e incie chamadas por voz e vídeo</string>
     <string name="delete_avatar">Excluir avatar</string>
     <string name="delete_voice_recording">Excluir gravação de voz</string>
     <string name="deleted_conversation">Conversa %1$s excluída</string>
@@ -790,6 +791,7 @@
     <string name="userinfo_no_info_text">Adicione nome, foto e detalhes de contato em sua página de perfil.</string>
     <string name="video_call">Videochamada</string>
     <string name="voice_room">Sala de voz</string>
+    <string name="voice_room_preset">Entre diretamente na chamada, ideal para colocar o papo em dia ou reuniões espontâneas</string>
     <string name="whats_your_status">Qual é o seu status?</string>
     <plurals name="nc_new_messages_count">
         <item quantity="one">%d nova mensagem</item>

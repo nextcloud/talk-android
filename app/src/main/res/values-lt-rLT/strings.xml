@@ -33,6 +33,7 @@
     <string name="call_without_notification">Skambinti be įspėjimo</string>
     <string name="camera_permission_granted">Kameros leidimas suteiktas. Pasirinkite kamerą dar kartą.</string>
     <string name="cancel_login">Atsisakyti prisijungimo</string>
+    <string name="chat_messages_load_gap">Kai kurių pranešimų nepavyko įkelti</string>
     <string name="choose_avatar_from_cloud">Pasirinkite avatarą iš debesies</string>
     <string name="clear_status_message">Išvalyti būsenos žinutę</string>
     <string name="clear_status_message_after">Išvalyti būsenos žinutę po</string>
@@ -52,6 +53,7 @@
     <string name="danger_zone">Pavojinga zona</string>
     <string name="deck_card_description">%1$s per %2$s</string>
     <string name="default_room">Numatytasis</string>
+    <string name="default_room_preset">Kai kurių pranešimų įkelti</string>
     <string name="delete_avatar">Ištrinti avatarą</string>
     <string name="delete_voice_recording">Ištrinti balso įrašą</string>
     <string name="deleted_conversation">Ištrintas %1$s pokalbis</string>
@@ -114,6 +116,9 @@
     <string name="message_search_begin_empty">Nėra paieškos rezultatų</string>
     <string name="message_search_begin_typing">Rašykite norėdami atlikti paiešką…</string>
     <string name="message_search_hint">Ieškoti…</string>
+    <string name="message_search_next_result">Kitas paieškos rezultatas</string>
+    <string name="message_search_no_more_results">Daugiau pranešimų nerasta</string>
+    <string name="message_search_previous_result">Ankstesnis paieškos rezultatas</string>
     <string name="messages">Žinutės</string>
     <string name="mute_all_notifications">Išjungti visus pranešimus</string>
     <string name="nc_Server_account_imported">Dabar, pasirinkta paskyra yra importuota ir prieinama</string>
@@ -786,6 +791,7 @@
     <string name="userinfo_no_info_text">Pridėkite vardą, nuotrauką ir kontaktinę informaciją savo profilio puslapyje.</string>
     <string name="video_call">Vaizdo skambutis</string>
     <string name="voice_room">Bendravimo kambarys</string>
+    <string name="voice_room_preset">Prisijunkite tiesiogiai prie skambučio – idealiai tinka naujiems pokalbiams ar spontaniškiems susitikimams</string>
     <string name="whats_your_status">Kokia jūsų būsena?</string>
     <plurals name="nc_new_messages_count">
         <item quantity="one">%d nauja žinutė</item>

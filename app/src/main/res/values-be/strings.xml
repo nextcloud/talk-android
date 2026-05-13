@@ -51,6 +51,7 @@
     <string name="custom">Уласны</string>
     <string name="danger_zone">Небяспечная зона</string>
     <string name="deck_card_description">%1$s у %2$s</string>
+    <string name="default_room">Прадвызначаныя</string>
     <string name="delete_avatar">Выдаліць аватар</string>
     <string name="delete_voice_recording">Выдаліць галасавы запіс</string>
     <string name="deleted_conversation">Выдалена размова %1$s</string>
