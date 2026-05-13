@@ -7,6 +7,7 @@
 package com.nextcloud.talk.conversationlist.ui
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
@@ -40,19 +41,23 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.AwaitPointerEventScope
+import androidx.compose.ui.input.pointer.PointerId
+import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
@@ -109,7 +114,8 @@ fun ConversationList(
     listState: LazyListState = rememberLazyListState(),
     /** Extra bottom padding added as LazyColumn contentPadding so the last item is reachable above the nav bar. */
     contentBottomPadding: Dp = 0.dp,
-    onSwipeConversation: (ConversationOpsAction, ConversationModel) -> Unit = { _, _ -> }
+    onSwipeConversation: (ConversationOpsAction, ConversationModel) -> Unit = { _, _ -> },
+    isOnline: Boolean = true
 ) {
     var prevIndex by remember { mutableIntStateOf(listState.firstVisibleItemIndex) }
     var prevOffset by remember { mutableIntStateOf(listState.firstVisibleItemScrollOffset) }
@@ -165,14 +171,18 @@ fun ConversationList(
                     when (entry) {
                         is ConversationListEntry.Header ->
                             "header_${entry.title}"
+
                         is ConversationListEntry.ConversationEntry ->
                             "conv_${entry.model.token}"
+
                         is ConversationListEntry.MessageResultEntry ->
                             "msg_${entry.result.conversationToken}_" +
                                 "${entry.result.messageId ?: entry.result.messageExcerpt.take(MSG_KEY_EXCERPT_LENGTH)}"
+
                         is ConversationListEntry.ContactEntry ->
                             // Contacts can legitimately appear multiple times in search results.
                             "contact_${entry.participant.actorId}_${entry.participant.actorType}_$index"
+
                         ConversationListEntry.LoadMore ->
                             "load_more"
                     }
@@ -185,7 +195,8 @@ fun ConversationList(
                     is ConversationListEntry.ConversationEntry ->
                         SwipeableConversationItem(
                             model = entry.model,
-                            onSwipe = { action -> onSwipeConversation(action, entry.model) }
+                            onSwipe = { action -> onSwipeConversation(action, entry.model) },
+                            enabled = isOnline
                         ) {
                             ConversationListItem(
                                 model = entry.model,
@@ -233,26 +244,41 @@ private const val NON_DESTRUCTIVE_SWIPE_THRESHOLD = 0.20f
 
 private const val NON_DESTRUCTIVE_SWIPE_END_LIMIT = 0.3f
 
-@Suppress("LongMethod")
+private val swipePopAnimationSpec = spring<Float>(
+    dampingRatio = Spring.DampingRatioMediumBouncy,
+    stiffness = Spring.StiffnessMedium
+)
+
+private class SwipeParams(
+    val coroutineScope: CoroutineScope,
+    val haptic: HapticFeedback,
+    val offsetX: Animatable<Float, AnimationVector1D>,
+    val popScale: Animatable<Float, AnimationVector1D>,
+    val getModel: () -> ConversationModel,
+    val onSwipe: (ConversationOpsAction) -> Unit
+)
+
+private data class SwipeThresholds(
+    val startToEndThreshold: Float,
+    val startToEndLimit: Float,
+    val endToStartThreshold: Float,
+    val endToStartLimit: Float
+)
+
 @Composable
 private fun SwipeableConversationItem(
     model: ConversationModel,
     onSwipe: (ConversationOpsAction) -> Unit,
+    enabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val currentModel by rememberUpdatedState(model)
     val currentOnSwipe by rememberUpdatedState(onSwipe)
     val haptic = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
-
     val offsetX = remember { Animatable(0f) }
     val popScale = remember { Animatable(1f) }
-    val popAnimationSpec = remember {
-        spring<Float>(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium)
-    }
     var itemWidth by remember { mutableIntStateOf(0) }
-    var hapticFiredRight by remember { mutableStateOf(false) }
-    var hapticFiredLeft by remember { mutableStateOf(false) }
 
     val swipeDirection by remember {
         derivedStateOf {
@@ -276,67 +302,14 @@ private fun SwipeableConversationItem(
         }
     }
 
+    val swipeParams = SwipeParams(coroutineScope, haptic, offsetX, popScale, { currentModel }, { currentOnSwipe(it) })
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .onSizeChanged { size -> itemWidth = size.width }
-            .pointerInput(Unit) {
-                awaitEachGesture {
-                    val startToEndThreshold = itemWidth * NON_DESTRUCTIVE_SWIPE_THRESHOLD
-                    val startToEndLimit = itemWidth * NON_DESTRUCTIVE_SWIPE_END_LIMIT
-                    val endToStartThreshold = -itemWidth * DESTRUCTIVE_SWIPE_THRESHOLD
-                    val endToStartLimit = -itemWidth.toFloat()
-
-                    val down = awaitFirstDown(requireUnconsumed = false)
-                    var horizontalStarted = false
-                    val dragStart = awaitHorizontalTouchSlopOrCancellation(down.id) { change, _ ->
-                        val dx = abs(change.position.x - change.previousPosition.x)
-                        val dy = abs(change.position.y - change.previousPosition.y)
-                        if (dx > dy) {
-                            change.consume()
-                            horizontalStarted = true
-                        }
-                    }
-                    if (dragStart != null && horizontalStarted) {
-                        hapticFiredRight = false
-                        hapticFiredLeft = false
-                        coroutineScope.launch { popScale.snapTo(1f) }
-                        horizontalDrag(dragStart.id) { change ->
-                            val delta = change.position.x - change.previousPosition.x
-                            val newOffset = (offsetX.value + delta).coerceIn(endToStartLimit, startToEndLimit)
-                            coroutineScope.launch { offsetX.snapTo(newOffset) }
-                            if (!hapticFiredRight && startToEndThreshold > 0 && newOffset >= startToEndThreshold) {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                hapticFiredRight = true
-                                coroutineScope.launch {
-                                    popScale.snapTo(POP_SCALE_PEAK)
-                                    popScale.animateTo(1f, popAnimationSpec)
-                                }
-                            }
-                            if (!hapticFiredLeft && endToStartThreshold < 0 && newOffset <= endToStartThreshold) {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                hapticFiredLeft = true
-                                coroutineScope.launch {
-                                    popScale.snapTo(POP_SCALE_PEAK)
-                                    popScale.animateTo(1f, popAnimationSpec)
-                                }
-                            }
-                            change.consume()
-                        }
-                        val finalOffset = offsetX.value
-                        if (hapticFiredRight && finalOffset >= startToEndThreshold) {
-                            val action = if (currentModel.unreadMessages > 0) {
-                                ConversationOpsAction.MarkAsRead
-                            } else {
-                                ConversationOpsAction.MarkAsUnread
-                            }
-                            currentOnSwipe(action)
-                        } else if (hapticFiredLeft && finalOffset <= endToStartThreshold) {
-                            currentOnSwipe(ConversationOpsAction.Leave)
-                        }
-                        coroutineScope.launch { offsetX.animateTo(0f, spring()) }
-                    }
-                }
+            .pointerInput(enabled) {
+                if (!enabled) return@pointerInput
+                awaitSwipeGesture({ itemWidth }, swipeParams)
             }
     ) {
         SwipeBackground(
@@ -356,6 +329,73 @@ private fun SwipeableConversationItem(
         }
     }
 }
+
+private suspend fun PointerInputScope.awaitSwipeGesture(getItemWidth: () -> Int, params: SwipeParams) {
+    awaitEachGesture {
+        val width = getItemWidth()
+        val thresholds = SwipeThresholds(
+            startToEndThreshold = width * NON_DESTRUCTIVE_SWIPE_THRESHOLD,
+            startToEndLimit = width * NON_DESTRUCTIVE_SWIPE_END_LIMIT,
+            endToStartThreshold = -width * DESTRUCTIVE_SWIPE_THRESHOLD,
+            endToStartLimit = -width.toFloat()
+        )
+        val down = awaitFirstDown(requireUnconsumed = false)
+        var horizontalStarted = false
+        val dragStart = awaitHorizontalTouchSlopOrCancellation(down.id) { change, _ ->
+            val dx = abs(change.position.x - change.previousPosition.x)
+            val dy = abs(change.position.y - change.previousPosition.y)
+            if (dx > dy) {
+                change.consume()
+                horizontalStarted = true
+            }
+        }
+        if (dragStart == null || !horizontalStarted) return@awaitEachGesture
+        handleConfirmedSwipeDrag(dragStart.id, params, thresholds)
+    }
+}
+
+private suspend fun AwaitPointerEventScope.handleConfirmedSwipeDrag(
+    dragId: PointerId,
+    params: SwipeParams,
+    thresholds: SwipeThresholds
+) {
+    var hapticFiredRight = false
+    var hapticFiredLeft = false
+    params.coroutineScope.launch { params.popScale.snapTo(1f) }
+    horizontalDrag(dragId) { change ->
+        val delta = change.position.x - change.previousPosition.x
+        val newOffset = (params.offsetX.value + delta).coerceIn(thresholds.endToStartLimit, thresholds.startToEndLimit)
+        params.coroutineScope.launch { params.offsetX.snapTo(newOffset) }
+        if (!hapticFiredRight && thresholds.startToEndThreshold > 0 && newOffset >= thresholds.startToEndThreshold) {
+            params.haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            hapticFiredRight = true
+            params.coroutineScope.launch {
+                params.popScale.snapTo(POP_SCALE_PEAK)
+                params.popScale.animateTo(1f, swipePopAnimationSpec)
+            }
+        }
+        if (!hapticFiredLeft && thresholds.endToStartThreshold < 0 && newOffset <= thresholds.endToStartThreshold) {
+            params.haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            hapticFiredLeft = true
+            params.coroutineScope.launch {
+                params.popScale.snapTo(POP_SCALE_PEAK)
+                params.popScale.animateTo(1f, swipePopAnimationSpec)
+            }
+        }
+        change.consume()
+    }
+    val finalOffset = params.offsetX.value
+    when {
+        hapticFiredRight && finalOffset >= thresholds.startToEndThreshold ->
+            params.onSwipe(resolveReadUnreadAction(params.getModel()))
+        hapticFiredLeft && finalOffset <= thresholds.endToStartThreshold ->
+            params.onSwipe(ConversationOpsAction.Leave)
+    }
+    params.coroutineScope.launch { params.offsetX.animateTo(0f, spring()) }
+}
+
+private fun resolveReadUnreadAction(model: ConversationModel): ConversationOpsAction =
+    if (model.unreadMessages > 0) ConversationOpsAction.MarkAsRead else ConversationOpsAction.MarkAsUnread
 
 @Composable
 private fun SwipeBackground(
@@ -391,6 +431,7 @@ private fun SwipeBackground(
                 }
             }
         }
+
         SwipeValue.EndToStart -> {
             Box(
                 modifier = modifier
@@ -406,6 +447,7 @@ private fun SwipeBackground(
                 )
             }
         }
+
         SwipeValue.Settled -> {}
     }
 }
