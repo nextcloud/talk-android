@@ -127,6 +127,12 @@ class OfflineFirstConversationsRepository @Inject constructor(
         dao.updateConversation(entity)
     }
 
+    override suspend fun updateConversationLocallyAndEmit(user: User, conversation: ConversationModel) {
+        dao.updateConversation(conversation.asEntity())
+        val updatedList = getListOfConversations(user.id!!)
+        _roomListFlow.emit(updatedList)
+    }
+
     override suspend fun getLocallyStoredConversation(user: User, roomToken: String): ConversationModel? {
         val id = user.id!!
         return getConversation(id, roomToken)

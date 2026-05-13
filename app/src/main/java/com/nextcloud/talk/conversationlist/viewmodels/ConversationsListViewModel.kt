@@ -108,13 +108,21 @@ class ConversationsListViewModel @Inject constructor(
 
     sealed class ConversationReadUnreadUiState {
         data object None : ConversationReadUnreadUiState()
-        data class Success(val conversationDisplayName: String, val isMarkedRead: Boolean) :
-            ConversationReadUnreadUiState()
+        data object Success : ConversationReadUnreadUiState()
         data object Error : ConversationReadUnreadUiState()
     }
 
     private val _readUnreadState = MutableStateFlow<ConversationReadUnreadUiState>(ConversationReadUnreadUiState.None)
     val readUnreadState: StateFlow<ConversationReadUnreadUiState> = _readUnreadState.asStateFlow()
+
+    sealed class FavoriteUiState {
+        data object None : FavoriteUiState()
+        data object Success : FavoriteUiState()
+        data object Error : FavoriteUiState()
+    }
+
+    private val _favoriteState = MutableStateFlow<FavoriteUiState>(FavoriteUiState.None)
+    val favoriteState: StateFlow<FavoriteUiState> = _favoriteState.asStateFlow()
 
     object GetRoomsStartState : ViewState
     class GetRoomsErrorState(val throwable: Throwable) : ViewState
@@ -582,6 +590,8 @@ class ConversationsListViewModel @Inject constructor(
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun markConversationAsRead(conversation: ConversationModel) {
+        val original = conversation.copy()
+        val optimistic = conversation.copy(unreadMessages = 0, unreadMention = false, unreadMentionDirect = false)
         val messageId = if (conversation.remoteServer.isNullOrEmpty()) conversation.lastMessage?.id?.toInt() else null
         val apiVersion = ApiUtils.getChatApiVersion(
             currentUser.capabilities?.spreedCapability!!,
@@ -589,12 +599,18 @@ class ConversationsListViewModel @Inject constructor(
         )
         val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                repository.updateConversationLocallyAndEmit(currentUser, optimistic)
+            }
             try {
                 withContext(Dispatchers.IO) {
                     withRetry(1) { conversationsRepository.markConversationAsRead(credentials, url, messageId) }
                 }
-                _readUnreadState.value = ConversationReadUnreadUiState.Success(conversation.displayName, true)
+                _readUnreadState.value = ConversationReadUnreadUiState.Success
             } catch (e: Exception) {
+                withContext(Dispatchers.IO) {
+                    repository.updateConversationLocallyAndEmit(currentUser, original)
+                }
                 _readUnreadState.value = ConversationReadUnreadUiState.Error
             }
         }
@@ -602,19 +618,79 @@ class ConversationsListViewModel @Inject constructor(
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun markConversationAsUnread(conversation: ConversationModel) {
+        val original = conversation.copy()
+        val optimistic = conversation.copy(unreadMessages = 1)
         val apiVersion = ApiUtils.getChatApiVersion(
             currentUser.capabilities?.spreedCapability!!,
             intArrayOf(ApiUtils.API_V1)
         )
         val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                repository.updateConversationLocallyAndEmit(currentUser, optimistic)
+            }
             try {
                 withContext(Dispatchers.IO) {
                     withRetry(1) { conversationsRepository.markConversationAsUnread(credentials, url) }
                 }
-                _readUnreadState.value = ConversationReadUnreadUiState.Success(conversation.displayName, false)
+                _readUnreadState.value = ConversationReadUnreadUiState.Success
             } catch (e: Exception) {
+                withContext(Dispatchers.IO) {
+                    repository.updateConversationLocallyAndEmit(currentUser, original)
+                }
                 _readUnreadState.value = ConversationReadUnreadUiState.Error
+            }
+        }
+    }
+
+    fun resetFavoriteState() {
+        _favoriteState.value = FavoriteUiState.None
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun addConversationToFavorites(conversation: ConversationModel) {
+        val original = conversation.copy()
+        val optimistic = conversation.copy(favorite = true)
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+        val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser.baseUrl, conversation.token)
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                repository.updateConversationLocallyAndEmit(currentUser, optimistic)
+            }
+            try {
+                withContext(Dispatchers.IO) {
+                    withRetry(1) { conversationsRepository.addConversationToFavorites(credentials, url) }
+                }
+                _favoriteState.value = FavoriteUiState.Success
+            } catch (e: Exception) {
+                withContext(Dispatchers.IO) {
+                    repository.updateConversationLocallyAndEmit(currentUser, original)
+                }
+                _favoriteState.value = FavoriteUiState.Error
+            }
+        }
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun removeConversationFromFavorites(conversation: ConversationModel) {
+        val original = conversation.copy()
+        val optimistic = conversation.copy(favorite = false)
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+        val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser.baseUrl, conversation.token)
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                repository.updateConversationLocallyAndEmit(currentUser, optimistic)
+            }
+            try {
+                withContext(Dispatchers.IO) {
+                    withRetry(1) { conversationsRepository.removeConversationFromFavorites(credentials, url) }
+                }
+                _favoriteState.value = FavoriteUiState.Success
+            } catch (e: Exception) {
+                withContext(Dispatchers.IO) {
+                    repository.updateConversationLocallyAndEmit(currentUser, original)
+                }
+                _favoriteState.value = FavoriteUiState.Error
             }
         }
     }

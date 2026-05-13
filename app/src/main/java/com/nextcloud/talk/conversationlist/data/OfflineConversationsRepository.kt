@@ -44,6 +44,8 @@ interface OfflineConversationsRepository {
 
     suspend fun updateConversation(conversationModel: ConversationModel)
 
+    suspend fun updateConversationLocallyAndEmit(user: User, conversation: ConversationModel)
+
     @Deprecated("use observeConversation")
     suspend fun getLocallyStoredConversation(user: User, roomToken: String): ConversationModel?
 

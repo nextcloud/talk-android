@@ -153,6 +153,12 @@ class ConversationsRepositoryImpl(private val api: NcApi, private val coroutineA
     override suspend fun markConversationAsUnread(credentials: String, url: String): GenericOverall =
         coroutineApi.markRoomAsUnread(credentials, url)
 
+    override suspend fun addConversationToFavorites(credentials: String, url: String): GenericOverall =
+        coroutineApi.addConversationToFavorites(credentials, url)
+
+    override suspend fun removeConversationFromFavorites(credentials: String, url: String): GenericOverall =
+        coroutineApi.removeConversationFromFavorites(credentials, url)
+
     companion object {
         const val STATUS_CODE_OK = 200
     }

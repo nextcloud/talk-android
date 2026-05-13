@@ -58,4 +58,8 @@ interface ConversationsRepository {
     suspend fun markConversationAsRead(credentials: String, url: String, messageId: Int?): GenericOverall
 
     suspend fun markConversationAsUnread(credentials: String, url: String): GenericOverall
+
+    suspend fun addConversationToFavorites(credentials: String, url: String): GenericOverall
+
+    suspend fun removeConversationFromFavorites(credentials: String, url: String): GenericOverall
 }
