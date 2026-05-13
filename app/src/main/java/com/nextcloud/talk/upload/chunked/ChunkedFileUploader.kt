@@ -279,7 +279,7 @@ class ChunkedFileUploader(
     }
 
     private fun initHttpClient(okHttpClient: OkHttpClient, currentUser: User) {
-        val builder = OkHttpClient.Builder()
+        val builder = okHttpClient.newBuilder()
             .followRedirects(false)
             .followSslRedirects(false)
             .protocols(listOf(Protocol.HTTP_1_1))

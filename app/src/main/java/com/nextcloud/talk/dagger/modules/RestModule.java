@@ -240,19 +240,32 @@ public class RestModule {
 
     public static class HeadersInterceptor implements Interceptor {
 
+        private static final String OCS_V1_PATH = "/ocs/v1.php";
+        private static final String OCS_V2_PATH = "/ocs/v2.php";
+
         @NonNull
         @Override
         public Response intercept(@NonNull Chain chain) throws IOException {
             Request original = chain.request();
-            Request request = original.newBuilder()
+            Request.Builder requestBuilder = original.newBuilder()
                 .header("User-Agent", ApiUtils.getUserAgent())
-                .header("Accept", "application/json")
-                .header("OCS-APIRequest", "true")
                 .header("ngrok-skip-browser-warning", "true")
-                .method(original.method(), original.body())
-                .build();
+                .method(original.method(), original.body());
+
+            if (isOcsEndpoint(original)) {
+                requestBuilder
+                    .header("Accept", "application/json")
+                    .header("OCS-APIRequest", "true");
+            }
+
+            Request request = requestBuilder.build();
 
             return chain.proceed(request);
+        }
+
+        private boolean isOcsEndpoint(@NonNull Request request) {
+            String path = request.url().encodedPath();
+            return path.contains(OCS_V1_PATH) || path.contains(OCS_V2_PATH);
         }
     }
 
