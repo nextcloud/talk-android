@@ -224,7 +224,8 @@ fun ConversationsListScreen(
                             avatarUrl = avatarUrl,
                             credentials = state.credentials,
                             showFilterActive = showFilterActive,
-                            showThreadsButton = showThreadsButton
+                            showThreadsButton = showThreadsButton,
+                            isSearchLoading = isSearchLoading
                         ),
                         actions = ConversationListTopBarActions(
                             onSearchQueryChange = { viewModel.setSearchQuery(it) },
