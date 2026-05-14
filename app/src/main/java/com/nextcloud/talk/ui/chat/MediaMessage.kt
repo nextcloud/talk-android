@@ -10,6 +10,7 @@ package com.nextcloud.talk.ui.chat
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,6 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -30,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.FileParameters
+import com.nextcloud.talk.chat.data.model.decodeBlurhashPlaceholder
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.contacts.load
@@ -93,21 +97,36 @@ fun MediaMessage(
                             (isGif && !typeContent.animateGif)
                         )
 
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    val loadedImage = remember(typeContent.previewUrl) {
-                        load(
-                            imageUri = typeContent.previewUrl,
-                            context = context,
-                            errorPlaceholderImage = typeContent.drawableResourceId,
-                            animated = typeContent.animateGif
-                        )
-                    }
+                val blurhashPainter = remember(typeContent.blurhash, typeContent.width, typeContent.height) {
+                    decodeBlurhashPlaceholder(typeContent.blurhash, typeContent.width, typeContent.height)
+                        ?.asImageBitmap()
+                        ?.let { BitmapPainter(it) }
+                }
+                val aspectRatio = remember(typeContent.width, typeContent.height) {
+                    val w = typeContent.width
+                    val h = typeContent.height
+                    if (w != null && h != null && w > 0 && h > 0) w.toFloat() / h else null
+                }
+                val loadedImage = remember(typeContent.previewUrl) {
+                    load(
+                        imageUri = typeContent.previewUrl,
+                        context = context,
+                        errorPlaceholderImage = typeContent.drawableResourceId,
+                        animated = typeContent.animateGif
+                    )
+                }
+                val fallbackPainter = painterResource(typeContent.drawableResourceId)
 
+                Box(modifier = Modifier.fillMaxWidth()) {
                     AsyncImage(
                         model = loadedImage,
                         contentDescription = stringResource(R.string.media_message_content_description),
+                        placeholder = blurhashPainter ?: fallbackPainter,
+                        error = blurhashPainter ?: fallbackPainter,
+                        fallback = blurhashPainter ?: fallbackPainter,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .then(if (aspectRatio != null) Modifier.aspectRatio(aspectRatio) else Modifier)
                             .padding(mediaInset)
                             .clip(mediaShape)
                             .clickable { onImageClick(message.id) },
