@@ -24,6 +24,7 @@ import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.participants.TalkBanOverall
 import com.nextcloud.talk.models.json.profile.ProfileOverall
+import com.nextcloud.talk.models.json.hovercard.HoverCardOverall
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.models.json.status.StatusOverall
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
@@ -448,6 +449,9 @@ interface NcApiCoroutines {
         @Url url: String,
         @Query("reaction") reaction: String
     ): GenericOverall
+
+    @GET
+    suspend fun hoverCard(@Header("Authorization") authorization: String, @Url url: String): HoverCardOverall
 
     @GET
     suspend fun getReactions(
