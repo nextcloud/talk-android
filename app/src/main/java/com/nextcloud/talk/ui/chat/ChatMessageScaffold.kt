@@ -46,7 +46,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
+import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
@@ -87,6 +91,9 @@ private const val ANIMATED_BLINK = 500
 
 private val bubbleRadiusBig = 10.dp
 private val bubbleRadiusSmall = 2.dp
+private val quoteThumbnailSize = 40.dp
+private val quoteIconContainerRadius = 8.dp
+private val quoteIconSize = 24.dp
 
 private val reactionRadius = 50.dp
 private val reactionChipHeight = 28.dp
@@ -689,18 +696,122 @@ fun CommonMessageQuote(message: ChatMessageUi) {
             }
             .padding(start = 12.dp, top = 4.dp, end = 4.dp, bottom = 4.dp)
     ) {
-        Column {
-            Text(
-                message.actorDisplayName,
-                fontSize = authorTextSize,
-                color = colorResource(R.color.no_emphasis_text)
+        when (val c = message.content) {
+            is MessageTypeContent.Media -> QuoteMediaRow(message, c)
+            is MessageTypeContent.Voice -> QuoteIconRow(
+                actorDisplayName = message.actorDisplayName,
+                iconRes = R.drawable.ic_baseline_mic_24,
+                label = stringResource(R.string.nc_voice_message)
             )
-            EnrichedText(
-                message = message,
-                modifier = Modifier.padding(end = 4.dp),
-                maxLines = 4
+            is MessageTypeContent.Poll -> QuoteIconRow(
+                actorDisplayName = message.actorDisplayName,
+                iconRes = R.drawable.ic_baseline_bar_chart_24,
+                label = c.pollName
+            )
+            is MessageTypeContent.Deck -> QuoteIconRow(
+                actorDisplayName = message.actorDisplayName,
+                iconRes = R.drawable.deck,
+                label = c.cardName
+            )
+            is MessageTypeContent.Geolocation -> QuoteIconRow(
+                actorDisplayName = message.actorDisplayName,
+                iconRes = R.drawable.baseline_location_pin_24,
+                label = c.name
+            )
+            else -> QuoteTextContent(message)
+        }
+    }
+}
+
+@Composable
+private fun QuoteTextContent(message: ChatMessageUi) {
+    Column {
+        Text(
+            message.actorDisplayName,
+            fontSize = authorTextSize,
+            color = colorResource(R.color.no_emphasis_text)
+        )
+        EnrichedText(
+            message = message,
+            modifier = Modifier.padding(end = 4.dp),
+            maxLines = 4
+        )
+    }
+}
+
+@Composable
+private fun QuoteMediaRow(message: ChatMessageUi, content: MessageTypeContent.Media) {
+    val label = message.messageParameters.values
+        .find { it["type"] == "file" }
+        ?.get("name")
+        ?: message.plainMessage
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .size(quoteThumbnailSize)
+                .clip(RoundedCornerShape(quoteIconContainerRadius))
+                .background(colorScheme.surfaceVariant),
+            contentAlignment = Alignment.Center
+        ) {
+            if (content.previewUrl != null) {
+                AsyncImage(
+                    model = content.previewUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.matchParentSize(),
+                    error = painterResource(content.drawableResourceId)
+                )
+            } else {
+                Icon(
+                    painter = painterResource(content.drawableResourceId),
+                    contentDescription = null,
+                    tint = colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(quoteIconSize)
+                )
+            }
+        }
+        QuoteIconRowText(author = message.actorDisplayName, label = label)
+    }
+}
+
+@Composable
+private fun QuoteIconRow(actorDisplayName: String, iconRes: Int, label: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .size(quoteThumbnailSize)
+                .clip(RoundedCornerShape(quoteIconContainerRadius))
+                .background(colorScheme.surfaceVariant),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(iconRes),
+                contentDescription = null,
+                tint = colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(quoteIconSize)
             )
         }
+        QuoteIconRowText(author = actorDisplayName, label = label)
+    }
+}
+
+@Composable
+private fun QuoteIconRowText(author: String, label: String) {
+    Column {
+        Text(
+            author,
+            fontSize = authorTextSize,
+            color = colorResource(R.color.no_emphasis_text)
+        )
+        Text(
+            label,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.labelMedium,
+            color = colorScheme.onSurfaceVariant
+        )
     }
 }
 

@@ -656,6 +656,7 @@ How to translate with transifex:
     <string name="nc_share_to_choose_account">Choose account</string>
 
     <!-- voice messages -->
+    <string name="nc_voice_message">Voice message</string>
     <string name="nc_voice_message_filename">Talk recording from %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Hold to record, release to send.</string>
     <string name="nc_description_record_voice">Record voice message</string>
