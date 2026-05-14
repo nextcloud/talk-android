@@ -40,7 +40,7 @@ val workVersion = "2.11.2"
 val espressoVersion = "3.7.0"
 val androidxTestVersion = "1.5.0"
 val media3Version = "1.10.1"
-val coroutinesVersion = "1.10.2"
+val coroutinesVersion = "1.11.0"
 val mockitoKotlinVersion = "6.3.0"
 
 android {
@@ -360,7 +360,7 @@ dependencies {
 
     androidTestImplementation("androidx.test:core:1.7.0")
 
-    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
     androidTestImplementation("androidx.test:core-ktx:1.7.0")
     androidTestImplementation("org.mockito:mockito-android:5.22.0")
     androidTestImplementation("androidx.work:work-testing:$workVersion")
