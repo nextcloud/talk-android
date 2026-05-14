@@ -299,6 +299,17 @@ class ChatViewModel @AssistedInject constructor(
         _reactionsSheetMessageId.value = null
     }
 
+    private val _profileSheetMessageId = MutableStateFlow<Long?>(null)
+    val profileSheetMessageId: StateFlow<Long?> = _profileSheetMessageId
+
+    fun showProfileSheet(messageId: Long) {
+        _profileSheetMessageId.value = messageId
+    }
+
+    fun dismissProfileSheet() {
+        _profileSheetMessageId.value = null
+    }
+
     val getLastCommonReadFlow = chatRepository.lastCommonReadFlow
 
     sealed interface ViewState

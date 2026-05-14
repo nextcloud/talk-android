@@ -128,6 +128,7 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.model.FileParameters
+import com.nextcloud.talk.chat.ui.ProfileModalBottomSheet
 import com.nextcloud.talk.chat.ui.ShowReactionsModalBottomSheet
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
@@ -785,7 +786,8 @@ class ChatActivity :
                                 onOpenThreadClick = { messageId -> openThread(messageId.toLong()) },
                                 onSystemMessageExpandClick = { messageId ->
                                     chatViewModel.toggleSystemMessageCollapse(messageId)
-                                }
+                                },
+                                onAvatarClick = { messageId -> chatViewModel.showProfileSheet(messageId.toLong()) }
                             )
                         ),
                         listState = listState
@@ -809,6 +811,24 @@ class ChatActivity :
                         )
                     }
                 }
+
+                val profileSheetMessageId by chatViewModel.profileSheetMessageId.collectAsStateWithLifecycle()
+                val profileSheetMessage by produceState<ChatMessage?>(null, profileSheetMessageId) {
+                    value = profileSheetMessageId?.let { id -> chatViewModel.getMessageById(id).first() }
+                }
+                profileSheetMessage
+                    ?.takeIf { it.actorType != Participant.ActorType.FEDERATED.toString() }
+                    ?.let { msg ->
+                        conversationUser?.let { user ->
+                            ProfileModalBottomSheet(
+                                actorId = msg.actorId!!,
+                                user = user,
+                                ncApiCoroutines = ncApiCoroutines,
+                                onTalkTo = { actorId -> startDirectChat(actorId) },
+                                onDismiss = { chatViewModel.dismissProfileSheet() }
+                            )
+                        }
+                    }
             }
         }
     }
@@ -894,6 +914,36 @@ class ChatActivity :
                 downloadFileToCache(message, true) {
                     setUpWaveform(message)
                 }
+            }
+        }
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private fun startDirectChat(actorId: String) {
+        lifecycleScope.launch {
+            try {
+                val user = conversationUser ?: return@launch
+                val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, 1))
+                val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
+                    version = apiVersion,
+                    baseUrl = user.baseUrl!!,
+                    roomType = "1",
+                    invite = actorId
+                )
+                val roomOverall = ncApiCoroutines.createRoom(
+                    ApiUtils.getCredentials(user.username, user.token),
+                    retrofitBucket.url,
+                    retrofitBucket.queryMap
+                )
+                val bundle = Bundle()
+                bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
+                val chatIntent = Intent(this@ChatActivity, ChatActivity::class.java)
+                chatIntent.putExtras(bundle)
+                chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(chatIntent)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to start direct chat with $actorId", e)
+                Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
             }
         }
     }

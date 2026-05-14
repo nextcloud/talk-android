@@ -71,7 +71,8 @@ data class ChatMessageCallbacks(
     val onReactionLongClick: (Int) -> Unit = {},
     val onOpenThreadClick: (Int) -> Unit = {},
     val onQuotedMessageClick: (Int) -> Unit = {},
-    val onSystemMessageExpandClick: (Int) -> Unit = {}
+    val onSystemMessageExpandClick: (Int) -> Unit = {},
+    val onAvatarClick: (Int) -> Unit = {}
 )
 
 @Suppress("Detekt.LongParameterList", "Detekt.LongMethod", "Detekt.CyclomaticComplexMethod")
@@ -106,7 +107,8 @@ fun ChatMessageView(
         LocalReactionLongClickHandler provides callbacks.onReactionLongClick,
         LocalOpenThreadHandler provides callbacks.onOpenThreadClick,
         LocalQuotedMessageClickHandler provides callbacks.onQuotedMessageClick,
-        LocalHighlightSearchTerm provides highlightSearchTerm
+        LocalHighlightSearchTerm provides highlightSearchTerm,
+        LocalAvatarClickHandler provides callbacks.onAvatarClick
     ) {
         SwipeToReplyContainer(
             replyable = message.replyable && context.hasChatPermission,
