@@ -71,6 +71,7 @@ private fun iconResForAppId(appId: String?): Int? =
         else -> null
     }
 
+@Suppress("TooGenericExceptionCaught")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileModalBottomSheet(
@@ -80,32 +81,7 @@ fun ProfileModalBottomSheet(
     onTalkTo: (actorId: String) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState()
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-    ) {
-        ProfileSheetContent(
-            actorId = actorId,
-            user = user,
-            ncApiCoroutines = ncApiCoroutines,
-            onTalkTo = onTalkTo,
-            onDismiss = onDismiss
-        )
-    }
-}
-
-@Suppress("TooGenericExceptionCaught")
-@Composable
-internal fun ProfileSheetContent(
-    actorId: String,
-    user: User,
-    ncApiCoroutines: NcApiCoroutines,
-    onTalkTo: (actorId: String) -> Unit,
-    onDismiss: () -> Unit
-) {
-    var displayName by remember { mutableStateOf("") }
+    var displayName by remember { mutableStateOf<String?>(null) }
     var actions by remember { mutableStateOf<List<HoverCardAction>>(emptyList()) }
     val context = LocalContext.current
     val credentials = remember(user) { ApiUtils.getCredentials(user.username, user.token) }
@@ -116,22 +92,31 @@ internal fun ProfileSheetContent(
                 credentials!!,
                 ApiUtils.getUrlForHoverCard(user.baseUrl!!, actorId)
             )
-            displayName = result.ocs!!.data!!.displayName!!
             actions = result.ocs!!.data!!.actions!!.filter { allowedAppIds.contains(it.appId) }
+            displayName = result.ocs!!.data!!.displayName!!
         } catch (e: Exception) {
             Log.e(TAG, "Failed to load hover card for $actorId", e)
             onDismiss()
         }
     }
 
-    ProfileSheetLayout(
-        displayName = displayName,
-        actions = actions,
-        onActionClick = { action ->
-            onDismiss()
-            handleAction(action, actorId, context, onTalkTo)
+    if (displayName != null) {
+        val sheetState = rememberModalBottomSheetState()
+        ModalBottomSheet(
+            onDismissRequest = onDismiss,
+            sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+        ) {
+            ProfileSheetLayout(
+                displayName = displayName!!,
+                actions = actions,
+                onActionClick = { action ->
+                    onDismiss()
+                    handleAction(action, actorId, context, onTalkTo)
+                }
+            )
         }
-    )
+    }
 }
 
 @Composable

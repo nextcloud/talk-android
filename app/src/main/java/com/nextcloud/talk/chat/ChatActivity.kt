@@ -817,11 +817,12 @@ class ChatActivity :
                     value = profileSheetMessageId?.let { id -> chatViewModel.getMessageById(id).first() }
                 }
                 profileSheetMessage
-                    ?.takeIf { it.actorType != Participant.ActorType.FEDERATED.toString() }
+                    ?.takeIf { it.actorType.equals("users") }
                     ?.let { msg ->
+                        val actorId = msg.actorId ?: return@let
                         conversationUser?.let { user ->
                             ProfileModalBottomSheet(
-                                actorId = msg.actorId!!,
+                                actorId = actorId,
                                 user = user,
                                 ncApiCoroutines = ncApiCoroutines,
                                 onTalkTo = { actorId -> startDirectChat(actorId) },
@@ -927,7 +928,7 @@ class ChatActivity :
                 val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
                     version = apiVersion,
                     baseUrl = user.baseUrl!!,
-                    roomType = "1",
+                    roomType = ROOM_TYPE_ONE_TO_ONE,
                     invite = actorId
                 )
                 val roomOverall = ncApiCoroutines.createRoom(
