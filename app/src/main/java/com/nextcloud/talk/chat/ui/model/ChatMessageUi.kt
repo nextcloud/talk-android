@@ -71,7 +71,10 @@ sealed interface MessageTypeContent {
         val previewUrl: String?,
         val drawableResourceId: Int,
         val mimeType: String,
-        val animateGif: Boolean = false
+        val animateGif: Boolean = false,
+        val blurhash: String? = null,
+        val width: Int? = null,
+        val height: Int? = null
     ) : MessageTypeContent
 
     data class Geolocation(val id: String, val name: String, val lat: Double, val lon: Double) : MessageTypeContent
@@ -278,7 +281,10 @@ fun getMediaContent(user: User, message: ChatMessage): MessageTypeContent.Media 
         previewUrl = previewUrl,
         drawableResourceId = drawableResourceId,
         mimeType = mimetype,
-        animateGif = animateGif
+        animateGif = animateGif,
+        blurhash = message.fileParameters.blurhash,
+        width = message.fileParameters.width,
+        height = message.fileParameters.height
     )
 }
 
