@@ -365,7 +365,7 @@ class ConversationsListViewModel @Inject constructor(
                 if (contacts.isNotEmpty()) {
                     entries.add(ConversationListEntry.Header(usersTitle))
 
-                    val pattern = """\b${Regex.escape(filter)}\b""".toRegex(RegexOption.IGNORE_CASE)
+                    val pattern = """\s*${Regex.escape(filter)}\s*""".toRegex(RegexOption.IGNORE_CASE)
 
                     processOrderAndAdd(
                         contacts,
@@ -403,31 +403,35 @@ class ConversationsListViewModel @Inject constructor(
         }
     }
 
+    // I made this function to order any arbitrary list according to
+    // [meets predicate 1][meets predicate 2]?[the rest]
+    // and applying a unit function upon the result of these reorderings
     private fun <T> processOrderAndAdd(
         list: List<T>,
         firstPredicate: (T) -> Boolean,
         secondPredicate: ((T) -> Boolean)? = null,
         addAction: (T) -> Unit
     ) {
-        val predicateOneAndInverse = list.split(firstPredicate)
-        predicateOneAndInverse.first.forEach(addAction)
+        val result = mutableListOf<T>()
+
+        val (firstPredicate, remainingFirst) = list.split(firstPredicate)
+        result.addAll(firstPredicate)
 
         secondPredicate?.let {
-            val predicateTwoAndInverse = predicateOneAndInverse.second.split(secondPredicate)
-            predicateTwoAndInverse.first.forEach(addAction)
-
-            predicateTwoAndInverse.second.forEach(addAction)
+            val (secondPredicate, remainingSecond) = remainingFirst.split(secondPredicate)
+            result.addAll(secondPredicate + remainingSecond)
         } ?: {
-            predicateOneAndInverse.second.forEach(addAction)
+            result.addAll(remainingFirst)
         }
+
+        result.forEach(addAction)
     }
 
-    private inline fun <T> Iterable<T>.split(predicate: (T) -> Boolean): Pair<List<T>, List<T>> {
-        return Pair(
+    private inline fun <T> Iterable<T>.split(predicate: (T) -> Boolean): Pair<List<T>, List<T>> =
+        Pair(
             this.filter(predicate),
             this.filterNot(predicate)
         )
-    }
 
     private fun getMessagesFlow(search: String): Flow<MessageSearchResults> =
         flow {
