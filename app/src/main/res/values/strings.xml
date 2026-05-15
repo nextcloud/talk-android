@@ -893,6 +893,7 @@ How to translate with transifex:
     <string name="custom">Custom</string>
     <string name="set">Set</string>
     <string name="calendar">Calendar</string>
+    <string name="join_call">Join call</string>
     <string name="video_call">Video call</string>
     <string name="audio_call">Audio call</string>
     <string name="started_a_call">started a call</string>
