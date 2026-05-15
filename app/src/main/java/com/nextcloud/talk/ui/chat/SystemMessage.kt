@@ -45,9 +45,10 @@ private val systemMessageTextStyle
 @Composable
 fun SystemMessage(message: ChatMessageUi) {
     val timeString = DateUtils(LocalContext.current).getLocalTimeStringFromTimestamp(message.timestamp)
+    val highlightSearchTerm = LocalHighlightSearchTerm.current
     if (message.isExpandableParent) {
         Box(modifier = Modifier.fillMaxWidth()) {
-            ExpandableSystemMessage(message = message)
+            ExpandableSystemMessage(message = message, highlightSearchTerm = highlightSearchTerm)
             Text(
                 timeString,
                 fontSize = TIME_TEXT_SIZE.sp,
@@ -64,9 +65,12 @@ fun SystemMessage(message: ChatMessageUi) {
         val (annotated, inlineContent) = remember(message, textStyle, addLineBreaks.value) {
             buildSystemMessageContent(message, textStyle, addLineBreaks.value)
         }
+        val highlightedAnnotated = remember(annotated, highlightSearchTerm) {
+            annotated.withSearchHighlight(highlightSearchTerm)
+        }
         Box(modifier = Modifier.fillMaxWidth()) {
             Text(
-                annotated,
+                highlightedAnnotated,
                 style = systemMessageTextStyle,
                 color = colorScheme.onSurface,
                 inlineContent = inlineContent,
@@ -94,10 +98,13 @@ fun SystemMessage(message: ChatMessageUi) {
 }
 
 @Composable
-private fun ExpandableSystemMessage(message: ChatMessageUi) {
+private fun ExpandableSystemMessage(message: ChatMessageUi, highlightSearchTerm: String?) {
     val chevronRes = if (message.isExpanded) R.drawable.ic_keyboard_arrow_up else R.drawable.ic_keyboard_arrow_down
     val textStyle = systemMessageTextStyle
     val (annotated, inlineContent) = buildSystemMessageContent(message, textStyle)
+    val highlightedAnnotated = remember(annotated, highlightSearchTerm) {
+        annotated.withSearchHighlight(highlightSearchTerm)
+    }
 
     Column(
         modifier = Modifier
@@ -115,7 +122,7 @@ private fun ExpandableSystemMessage(message: ChatMessageUi) {
                 tint = colorScheme.onSurfaceVariant
             )
             Text(
-                annotated,
+                highlightedAnnotated,
                 style = textStyle,
                 color = colorScheme.onSurface,
                 inlineContent = inlineContent

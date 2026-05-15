@@ -882,6 +882,8 @@ fun ThreadTitle(
     padding: androidx.compose.ui.unit.Dp = 0.dp
 ) {
     if (isFirstMessageOfThreadInNormalChat(message, conversationThreadId)) {
+        val highlightSearchTerm = LocalHighlightSearchTerm.current
+        val highlightedText = rememberSearchHighlightedText(message.threadTitle, highlightSearchTerm)
         Row(
             modifier = Modifier
                 .padding(horizontal = padding, vertical = 10.dp)
@@ -897,7 +899,7 @@ fun ThreadTitle(
                     .align(Alignment.Top)
             )
             Text(
-                text = message.threadTitle,
+                text = highlightedText,
                 fontSize = regularTextSize,
                 fontWeight = FontWeight.SemiBold,
                 color = colorScheme.onSurface

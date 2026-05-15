@@ -35,6 +35,7 @@ import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.contacts.load
 import com.nextcloud.talk.models.json.opengraph.OpenGraphObject
 import com.nextcloud.talk.ui.theme.LocalOpenGraphFetcher
+import androidx.core.net.toUri
 
 private val previewImageHeight = 120.dp
 private const val HTTPS_PREFIX = "https://"
@@ -47,6 +48,7 @@ fun LinkMessage(
     conversationThreadId: Long? = null
 ) {
     val fetchOpenGraph = LocalOpenGraphFetcher.current
+    val highlightSearchTerm = LocalHighlightSearchTerm.current
     val openGraphObject by produceState<OpenGraphObject?>(initialValue = null, key1 = typeContent.url) {
         if (typeContent.url.isNotEmpty()) {
             value = fetchOpenGraph(typeContent.url)
@@ -62,10 +64,15 @@ fun LinkMessage(
             Column {
                 EnrichedText(
                     message,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                    highlightSearchTerm = highlightSearchTerm
                 )
                 openGraphObject?.let { og ->
-                    LinkPreviewCard(og, url = og.link?.takeIf { it.isNotBlank() } ?: typeContent.url)
+                    LinkPreviewCard(
+                        og = og,
+                        url = og.link?.takeIf { it.isNotBlank() } ?: typeContent.url,
+                        highlightSearchTerm = highlightSearchTerm
+                    )
                 }
             }
         }
@@ -73,7 +80,7 @@ fun LinkMessage(
 }
 
 @Composable
-private fun LinkPreviewCard(og: OpenGraphObject, url: String) {
+private fun LinkPreviewCard(og: OpenGraphObject, url: String, highlightSearchTerm: String?) {
     val context = LocalContext.current
     Surface(
         shape = MaterialTheme.shapes.small,
@@ -82,53 +89,73 @@ private fun LinkPreviewCard(og: OpenGraphObject, url: String) {
             .fillMaxWidth()
             .padding(start = 8.dp, end = 8.dp, bottom = 8.dp, top = 4.dp)
             .clickable(enabled = url.isNotBlank()) {
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
             }
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            Text(
-                text = og.name,
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+            LinkPreviewTexts(
+                og = og,
+                highlightSearchTerm = highlightSearchTerm
             )
-            og.description?.takeIf { it.isNotBlank() }?.let { description ->
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(top = 2.dp)
-                )
-            }
-            og.link?.takeIf { it.isNotBlank() }?.let { link ->
-                Text(
-                    text = link.removePrefix(HTTPS_PREFIX),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(top = 2.dp)
-                )
-            }
-            og.thumb?.takeIf { it.isNotBlank() }?.let { thumbUrl ->
-                val loadedImage = load(
-                    imageUri = thumbUrl,
-                    context = context,
-                    errorPlaceholderImage = R.drawable.ic_mimetype_image
-                )
-                AsyncImage(
-                    model = loadedImage,
-                    contentDescription = stringResource(R.string.nc_sent_an_image),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 6.dp)
-                        .height(previewImageHeight)
-                        .clip(MaterialTheme.shapes.small),
-                    contentScale = ContentScale.Crop
-                )
-            }
+            LinkPreviewImage(thumbUrl = og.thumb, context = context)
         }
+    }
+}
+
+@Composable
+private fun LinkPreviewTexts(og: OpenGraphObject, highlightSearchTerm: String?) {
+    val highlightedName = rememberSearchHighlightedText(og.name, highlightSearchTerm)
+    val highlightedDescription = rememberSearchHighlightedText(og.description.orEmpty(), highlightSearchTerm)
+    val highlightedLink = rememberSearchHighlightedText(
+        og.link?.removePrefix(HTTPS_PREFIX).orEmpty(),
+        highlightSearchTerm
+    )
+
+    Text(
+        text = highlightedName,
+        style = MaterialTheme.typography.labelMedium,
+        fontWeight = FontWeight.Bold,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis
+    )
+    og.description?.takeIf { it.isNotBlank() }?.let {
+        Text(
+            text = highlightedDescription,
+            style = MaterialTheme.typography.bodySmall,
+            maxLines = 3,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(top = 2.dp)
+        )
+    }
+    og.link?.takeIf { it.isNotBlank() }?.let {
+        Text(
+            text = highlightedLink,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.primary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(top = 2.dp)
+        )
+    }
+}
+
+@Composable
+private fun LinkPreviewImage(thumbUrl: String?, context: android.content.Context) {
+    thumbUrl?.takeIf { it.isNotBlank() }?.let {
+        val loadedImage = load(
+            imageUri = it,
+            context = context,
+            errorPlaceholderImage = R.drawable.ic_mimetype_image
+        )
+        AsyncImage(
+            model = loadedImage,
+            contentDescription = stringResource(R.string.nc_sent_an_image),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 6.dp)
+                .height(previewImageHeight)
+                .clip(MaterialTheme.shapes.small),
+            contentScale = ContentScale.Crop
+        )
     }
 }

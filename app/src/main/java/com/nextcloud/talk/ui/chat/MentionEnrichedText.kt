@@ -61,8 +61,8 @@ fun MentionEnrichedText(
             isMultilineLayout = isMultilineLayout
         )
     }
-    val highlightedText = remember(richText.annotated, highlightSearchTerm, searchHighlightColor) {
-        richText.annotated.withSearchHighlight(highlightSearchTerm, searchHighlightColor)
+    val highlightedText = remember(richText.annotated, highlightSearchTerm) {
+        richText.annotated.withSearchHighlight(highlightSearchTerm)
     }
     val resolvedTextStyle = if (richText.inlineContent.isEmpty()) {
         textStyle
@@ -161,29 +161,6 @@ private fun buildMentionRichText(
     }
 
     return MentionRichText(annotated = annotated, inlineContent = inlineContent)
-}
-
-private fun AnnotatedString.withSearchHighlight(searchTerm: String?, highlightColor: Color): AnnotatedString {
-    val term = searchTerm?.trim()?.lowercase().orEmpty()
-    if (term.isEmpty()) {
-        return this
-    }
-
-    val source = text
-    val lowerSource = source.lowercase()
-    val builder = AnnotatedString.Builder(this)
-    var startIndex = 0
-    var matchIndex = lowerSource.indexOf(term, startIndex)
-    while (matchIndex != -1) {
-        builder.addStyle(
-            SpanStyle(background = highlightColor),
-            matchIndex,
-            matchIndex + term.length
-        )
-        startIndex = matchIndex + term.length
-        matchIndex = lowerSource.indexOf(term, startIndex)
-    }
-    return builder.toAnnotatedString()
 }
 
 private fun AnnotatedString.Builder.appendStyledToken(text: String, style: SpanStyle) {

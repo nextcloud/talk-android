@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
+import androidx.core.net.toUri
 
 private val headerTextSize = 16.sp
 private val headerIconSize = 18.dp
@@ -44,6 +45,7 @@ fun DeckMessage(
     conversationThreadId: Long? = null
 ) {
     val context = LocalContext.current
+    val highlightSearchTerm = LocalHighlightSearchTerm.current
 
     MessageScaffold(
         uiMessage = message,
@@ -57,6 +59,8 @@ fun DeckMessage(
                     typeContent.stackName,
                     typeContent.boardName
                 )
+                val highlightedCardName = rememberSearchHighlightedText(typeContent.cardName, highlightSearchTerm)
+                val highlightedCardDescription = rememberSearchHighlightedText(cardDescription, highlightSearchTerm)
                 Surface(
                     shape = MaterialTheme.shapes.small,
                     tonalElevation = 1.dp,
@@ -65,7 +69,7 @@ fun DeckMessage(
                         .padding(start = 8.dp, end = 8.dp, bottom = 8.dp, top = 4.dp)
                         .clickable(enabled = typeContent.cardLink.isNotBlank()) {
                             runCatching {
-                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(typeContent.cardLink)))
+                                context.startActivity(Intent(Intent.ACTION_VIEW, typeContent.cardLink.toUri()))
                             }
                         }
                 ) {
@@ -81,14 +85,14 @@ fun DeckMessage(
                                     .align(Alignment.Top)
                             )
                             Text(
-                                text = typeContent.cardName,
+                                text = highlightedCardName,
                                 fontSize = headerTextSize,
                                 color = colorScheme.onSurface,
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
                         Text(
-                            text = cardDescription,
+                            text = highlightedCardDescription,
                             color = colorScheme.onSurface,
                             fontSize = headerTextSize
                         )
