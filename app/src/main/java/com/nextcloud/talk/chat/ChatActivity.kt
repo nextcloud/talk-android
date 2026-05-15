@@ -23,6 +23,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.database.Cursor
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.location.LocationManager
 import android.net.Uri
@@ -66,8 +67,11 @@ import androidx.cardview.widget.CardView
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.unit.dp
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -84,6 +88,7 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
@@ -1816,16 +1821,24 @@ class ChatActivity :
         supportActionBar?.setIcon(resources!!.getColor(R.color.transparent, null).toDrawable())
         setActionBarTitle()
         viewThemeUtils.material.themeToolbar(binding.chatToolbar)
+        val toolbarBackgroundColorInt = (binding.chatToolbar.background as? ColorDrawable)?.color
         binding.searchLoadingIndicatorComposeView.setContent {
             MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
                 val isLoading by searchLoadingState
-                if (isLoading) {
-                    LinearProgressIndicator(
-                        modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                } else {
-                    HorizontalDivider()
+                val appBarBackgroundColor = toolbarBackgroundColorInt?.let(::Color) ?: MaterialTheme.colorScheme.surface
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(4.dp)
+                        .background(appBarBackgroundColor)
+                ) {
+                    if (isLoading) {
+                        LinearProgressIndicator(
+                            modifier = Modifier.fillMaxWidth(),
+                            color = MaterialTheme.colorScheme.primary,
+                            trackColor = appBarBackgroundColor
+                        )
+                    }
                 }
             }
         }
