@@ -961,25 +961,6 @@ fun EnrichedText(
 fun isFirstMessageOfThreadInNormalChat(message: ChatMessageUi, conversationThreadId: Long?): Boolean =
     conversationThreadId == null && message.isThread
 
-@Composable
-private fun Modifier.withCustomAnimation(incoming: Boolean, shape: RoundedCornerShape): Modifier {
-    val infiniteTransition = rememberInfiniteTransition()
-    val borderColor by infiniteTransition.animateColor(
-        initialValue = colorScheme.primary,
-        targetValue = colorScheme.background,
-        animationSpec = infiniteRepeatable(
-            animation = tween(ANIMATED_BLINK, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-
-    return this.border(
-        width = 4.dp,
-        color = borderColor,
-        shape = shape
-    )
-}
-
 @Preview(showBackground = true, name = "Incoming Message")
 @Preview(
     showBackground = true,
