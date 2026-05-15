@@ -132,7 +132,7 @@ class DialogBanListFragment(val roomToken: String) : DialogFragment() {
     }
 
     private fun initListeners() {
-        binding.closeBtn.setOnClickListener { dismiss() }
+        binding.closeBtn.setOnClickListener { parentFragmentManager.popBackStack() }
     }
 
     private fun getBanList() {
