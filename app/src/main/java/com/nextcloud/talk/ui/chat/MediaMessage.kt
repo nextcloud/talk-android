@@ -8,7 +8,7 @@
 package com.nextcloud.talk.ui.chat
 
 import android.util.Log
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -150,6 +150,7 @@ fun MediaMessage(
                 val fallbackPainter = painterResource(typeContent.drawableResourceId)
 
                 Box(modifier = Modifier.fillMaxWidth()) {
+                    val messageLongClickHandler = LocalMessageLongClickHandler.current
                     AsyncImage(
                         model = loadedImage,
                         contentDescription = stringResource(R.string.media_message_content_description),
@@ -161,7 +162,10 @@ fun MediaMessage(
                             .then(if (aspectRatio != null) Modifier.aspectRatio(aspectRatio) else Modifier)
                             .padding(mediaInset)
                             .clip(mediaShape)
-                            .clickable { onImageClick(message.id) },
+                            .combinedClickable(
+                                onClick = { onImageClick(message.id) },
+                                onLongClick = { messageLongClickHandler(message.id) }
+                            ),
                         contentScale = ContentScale.FillWidth,
                         onError = { state ->
                             val cause = state.result.throwable
