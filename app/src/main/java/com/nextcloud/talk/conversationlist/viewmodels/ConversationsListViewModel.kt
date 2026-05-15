@@ -6,10 +6,9 @@
  */
 package com.nextcloud.talk.conversationlist.viewmodels
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -302,6 +301,7 @@ class ConversationsListViewModel @Inject constructor(
         }
     }
 
+    @SuppressLint("DefaultLocale")
     @Suppress("LongMethod")
     fun getSearchQuery(context: Context, filter: String) {
         // Rotation / display-off guard: if the composition restarts (config change) the
@@ -388,7 +388,7 @@ class ConversationsListViewModel @Inject constructor(
                     processOrderAndAdd(
                         messages,
                         firstPredicate = {
-                            it.messageExcerpt.toLowerCase(Locale.current).contains(pattern)
+                            it.messageExcerpt.contains(pattern)
                         },
                         addAction = { msg -> entries.add(ConversationListEntry.MessageResultEntry(msg)) }
                     )
@@ -403,7 +403,7 @@ class ConversationsListViewModel @Inject constructor(
         }
     }
 
-    // I made this function to order any arbitrary list according to
+    // This function orders any arbitrary list according to
     // [meets predicate 1][meets predicate 2]?[the rest]
     // and applying a unit function upon the result of these reorderings
     private fun <T> processOrderAndAdd(
@@ -414,24 +414,18 @@ class ConversationsListViewModel @Inject constructor(
     ) {
         val result = mutableListOf<T>()
 
-        val (firstPredicate, remainingFirst) = list.split(firstPredicate)
+        val (firstPredicate, remainingFirst) = list.partition(firstPredicate)
         result.addAll(firstPredicate)
 
-        secondPredicate?.let {
-            val (secondPredicate, remainingSecond) = remainingFirst.split(secondPredicate)
+        if (secondPredicate != null) {
+            val (secondPredicate, remainingSecond) = remainingFirst.partition(secondPredicate)
             result.addAll(secondPredicate + remainingSecond)
-        } ?: {
+        } else {
             result.addAll(remainingFirst)
         }
 
         result.forEach(addAction)
     }
-
-    private inline fun <T> Iterable<T>.split(predicate: (T) -> Boolean): Pair<List<T>, List<T>> =
-        Pair(
-            this.filter(predicate),
-            this.filterNot(predicate)
-        )
 
     private fun getMessagesFlow(search: String): Flow<MessageSearchResults> =
         flow {
