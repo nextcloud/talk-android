@@ -1121,6 +1121,12 @@ class ChatActivity :
         }
 
         lifecycleScope.launch {
+            chatViewModel.isLoadingFlow.collectLatest { isLoading ->
+                updateSearchLoadingIndicator(isLoading)
+            }
+        }
+
+        lifecycleScope.launch {
             chatViewModel.noMoreSearchResults.collect {
                 val inSearchMode = chatViewModel.chatMode.value == ChatViewModel.ChatMode.SEARCH_MODE
                 val now = System.currentTimeMillis()

@@ -35,6 +35,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
@@ -107,6 +108,11 @@ class OfflineFirstChatRepository @Inject constructor(
         get() = _incomingMessageFlow
 
     private val _incomingMessageFlow: MutableSharedFlow<Unit> = MutableSharedFlow()
+
+    override val isLoadingFlow: Flow<Boolean>
+        get() = _isLoadingFlow
+
+    private val _isLoadingFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     private var newXChatLastCommonRead: Int? = null
     private var itIsPaused = false
@@ -500,65 +506,72 @@ class OfflineFirstChatRepository @Inject constructor(
         }.flowOn(Dispatchers.IO)
 
     private suspend fun getAndPersistMessages(bundle: Bundle): Boolean {
-        if (!networkMonitor.isOnline.value) {
-            Log.d(TAG, "Device is offline, can't load chat messages from server")
-        }
-
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
-        val queriedMessageId = fieldMap["lastKnownMessageId"]
-        val lookIntoFuture = fieldMap["lookIntoFuture"] == 1
+        val isLongPoll = (fieldMap["timeout"] ?: 0) > 0
+        if (!isLongPoll) _isLoadingFlow.value = true
+        try {
+            if (!networkMonitor.isOnline.value) {
+                Log.d(TAG, "Device is offline, can't load chat messages from server")
+            }
 
-        val result = pullMessagesFlow(bundle).first()
+            val queriedMessageId = fieldMap["lastKnownMessageId"]
+            val lookIntoFuture = fieldMap["lookIntoFuture"] == 1
 
-        when (result) {
-            is ChatPullResult.Success -> {
-                newXChatLastCommonRead = result.lastCommonRead
-                updateUiForLastCommonRead()
+            val result = pullMessagesFlow(bundle).first()
 
-                val hasHistory = getHasHistory(HTTP_CODE_OK, lookIntoFuture)
+            when (result) {
+                is ChatPullResult.Success -> {
+                    newXChatLastCommonRead = result.lastCommonRead
+                    updateUiForLastCommonRead()
 
-                Log.d(
-                    TAG,
-                    "internalConv=$internalConversationId statusCode=${HTTP_CODE_OK} lookIntoFuture=$lookIntoFuture " +
-                        "hasHistory=$hasHistory queriedMessageId=$queriedMessageId"
-                )
+                    val hasHistory = getHasHistory(HTTP_CODE_OK, lookIntoFuture)
 
-                val blockContainingQueriedMessage: ChatBlockEntity? = getBlockOfMessage(queriedMessageId)
+                    Log.d(
+                        TAG,
+                        "internalConv=$internalConversationId statusCode=${HTTP_CODE_OK} " +
+                            "lookIntoFuture=$lookIntoFuture hasHistory=$hasHistory " +
+                            "queriedMessageId=$queriedMessageId"
+                    )
 
-                blockContainingQueriedMessage?.takeIf { !hasHistory }?.apply {
-                    this.hasHistory = false
-                    chatBlocksDao.upsertChatBlock(this)
-                    Log.d(TAG, "End of chat reached, set hasHistory=false")
+                    val blockContainingQueriedMessage: ChatBlockEntity? = getBlockOfMessage(queriedMessageId)
+
+                    blockContainingQueriedMessage?.takeIf { !hasHistory }?.apply {
+                        this.hasHistory = false
+                        chatBlocksDao.upsertChatBlock(this)
+                        Log.d(TAG, "End of chat reached, set hasHistory=false")
+                    }
+
+                    if (result.messages.isNotEmpty()) {
+                        updateMessagesData(
+                            result.messages,
+                            blockContainingQueriedMessage,
+                            lookIntoFuture,
+                            hasHistory
+                        )
+                        return true
+                    } else {
+                        Log.d(TAG, "No new messages to update")
+                        return false
+                    }
                 }
 
-                if (result.messages.isNotEmpty()) {
-                    updateMessagesData(
-                        result.messages,
-                        blockContainingQueriedMessage,
-                        lookIntoFuture,
-                        hasHistory
-                    )
-                    return true
-                } else {
-                    Log.d(TAG, "No new messages to update")
+                is ChatPullResult.NotModified -> {
+                    Log.d(TAG, "Server returned NOT_MODIFIED, nothing to update")
+                    return false
+                }
+
+                is ChatPullResult.PreconditionFailed -> {
+                    Log.d(TAG, "Server returned PRECONDITION_FAILED, nothing to update")
+                    return false
+                }
+
+                is ChatPullResult.Error -> {
+                    Log.e(TAG, "Error pulling messages from server", result.throwable)
                     return false
                 }
             }
-
-            is ChatPullResult.NotModified -> {
-                Log.d(TAG, "Server returned NOT_MODIFIED, nothing to update")
-                return false
-            }
-
-            is ChatPullResult.PreconditionFailed -> {
-                Log.d(TAG, "Server returned PRECONDITION_FAILED, nothing to update")
-                return false
-            }
-
-            is ChatPullResult.Error -> {
-                Log.e(TAG, "Error pulling messages from server", result.throwable)
-                return false
-            }
+        } finally {
+            if (!isLongPoll) _isLoadingFlow.value = false
         }
     }
 
