@@ -841,10 +841,10 @@ class ChatActivity :
                 val messageActionsMessage by produceState<ChatMessage?>(null, messageActionsMessageId) {
                     value = messageActionsMessageId?.let { id -> chatViewModel.getMessageById(id).first() }
                 }
+                val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
                 messageActionsMessage?.let { msg ->
                     if (msg.isTemporary) {
                         val sendingFailed = msg.sendStatus == SendStatus.FAILED
-                        val isOnline = networkMonitor.isOnline.value
                         TempMessageActionsBottomSheet(
                             showResend = sendingFailed && isOnline,
                             showEdit = sendingFailed || !isOnline,
@@ -871,7 +871,7 @@ class ChatActivity :
                                     hasChatPermission = participantPermissions.hasChatPermission(),
                                     hasReactPermission = participantPermissions.hasReactPermission(),
                                     spreedCapabilities = spreedCapabilities,
-                                    isOnline = networkMonitor.isOnline.value,
+                                    isOnline = isOnline,
                                     dateUtils = dateUtils,
                                     conversationThreadId = conversationThreadId
                                 ),
