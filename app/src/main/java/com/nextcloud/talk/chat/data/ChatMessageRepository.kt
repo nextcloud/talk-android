@@ -44,6 +44,8 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     val incomingMessageFlow: Flow<Unit>
 
+    val isLoadingFlow: Flow<Boolean>
+
     // /**
     //  * Used for informing the user of the underlying processing behind offline support, [String] is the key
     //  * which is handled in a switch statement in ChatActivity.

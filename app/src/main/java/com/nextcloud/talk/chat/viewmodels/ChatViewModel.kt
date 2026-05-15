@@ -314,6 +314,8 @@ class ChatViewModel @AssistedInject constructor(
 
     val getLastCommonReadFlow = chatRepository.lastCommonReadFlow
 
+    val isLoadingFlow = chatRepository.isLoadingFlow
+
     sealed interface ViewState
 
     object GetReminderStartState : ViewState

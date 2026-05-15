@@ -90,12 +90,10 @@
 
         </com.google.android.material.appbar.MaterialToolbar>
 
-        <com.google.android.material.progressindicator.LinearProgressIndicator
-            android:id="@+id/search_loading_indicator"
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/search_loading_indicator_compose_view"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:indeterminate="true"
-            android:visibility="gone" />
+            android:layout_height="wrap_content" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

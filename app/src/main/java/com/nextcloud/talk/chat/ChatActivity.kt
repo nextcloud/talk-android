@@ -23,6 +23,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.database.Cursor
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.location.LocationManager
 import android.net.Uri
@@ -66,8 +67,15 @@ import androidx.cardview.widget.CardView
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.unit.dp
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -80,6 +88,7 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
@@ -304,6 +313,7 @@ class ChatActivity :
 
     private var overflowMenuHostView: ComposeView? = null
     private var isThreadMenuExpanded by mutableStateOf(false)
+    private val searchLoadingState = mutableStateOf(false)
 
     private val startSelectContactForResult = registerForActivityResult(
         ActivityResultContracts
@@ -1116,6 +1126,12 @@ class ChatActivity :
         }
 
         lifecycleScope.launch {
+            chatViewModel.isLoadingFlow.collectLatest { isLoading ->
+                updateSearchLoadingIndicator(isLoading)
+            }
+        }
+
+        lifecycleScope.launch {
             chatViewModel.noMoreSearchResults.collect {
                 val inSearchMode = chatViewModel.chatMode.value == ChatViewModel.ChatMode.SEARCH_MODE
                 val now = System.currentTimeMillis()
@@ -1805,7 +1821,27 @@ class ChatActivity :
         supportActionBar?.setIcon(resources!!.getColor(R.color.transparent, null).toDrawable())
         setActionBarTitle()
         viewThemeUtils.material.themeToolbar(binding.chatToolbar)
-        viewThemeUtils.material.colorProgressBar(binding.searchLoadingIndicator, ColorRole.PRIMARY)
+        val toolbarBackgroundColorInt = (binding.chatToolbar.background as? ColorDrawable)?.color
+        binding.searchLoadingIndicatorComposeView.setContent {
+            MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
+                val isLoading by searchLoadingState
+                val appBarBackgroundColor = toolbarBackgroundColorInt?.let(::Color) ?: MaterialTheme.colorScheme.surface
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(4.dp)
+                        .background(appBarBackgroundColor)
+                ) {
+                    if (isLoading) {
+                        LinearProgressIndicator(
+                            modifier = Modifier.fillMaxWidth(),
+                            color = MaterialTheme.colorScheme.primary,
+                            trackColor = appBarBackgroundColor
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun setUpWaveform(message: ChatMessage, thenPlay: Boolean = true, backgroundPlayAllowed: Boolean = false) {
@@ -3567,7 +3603,7 @@ class ChatActivity :
     }
 
     private fun updateSearchLoadingIndicator(isLoading: Boolean) {
-        binding.searchLoadingIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
+        searchLoadingState.value = isLoading
     }
 
     private fun configureSearchActionView(searchItem: MenuItem?) {
