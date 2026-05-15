@@ -489,7 +489,6 @@ How to translate with transifex:
     <string name="nc_message_failed">Failed to send message</string>
     <string name="nc_message_failed_to_send">Failed to send message:</string>
     <string name="nc_add_attachment">Add attachment</string>
-    <string name="emoji_category_recent">Recent</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">See %d similar message</item>
         <item quantity="other">See %d similar messages</item>
@@ -732,7 +731,6 @@ How to translate with transifex:
     <!-- Non-translatable strings -->
     <string name="tooManyUnreadMessages" translatable="false">999+</string>
 
-    <string name="nc_action_open_main_menu">Open main menu</string>
     <string name="failed_to_save">Failed to save %1$s</string>
     <string name="selected_list_item">Selected</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -868,7 +866,6 @@ How to translate with transifex:
     <string name="nc_not_allowed_to_activate_audio">You are not allowed to activate audio!</string>
     <string name="nc_not_allowed_to_activate_video">You are not allowed to activate video!</string>
     <string name="scroll_to_bottom">Scroll to bottom</string>
-    <string name="quoted_message_too_old">This message is too old to be shown</string>
     <string name="translate">Translate</string>
     <string name="translation">Translation</string>
     <string name="translation_from">From</string>
@@ -903,16 +900,13 @@ How to translate with transifex:
     <string name="nc_caption">Caption</string>
     <string name="languages_error_title">Retrieval failed</string>
     <string name="languages_error_message">Languages could not be retrieved</string>
-    <string name="edit_message_icon_description">Edit message</string>
     <string name="nc_edit_message">Edit</string>
     <string name="nc_send_edit_message">Update message</string>
-    <string name="nc_clear_edit_message">Cancel editing</string>
     <string name="edit_error_24_hours_old_message">Messages older than 24 hours can not be edited</string>
     <string name="conversation_is_read_only">Conversation is read only</string>
     <string name="nc_edit_message_text">Edit message</string>
     <string name="hint_edited_message">(edited)</string>
     <string name="silent_message_hint">Silent message</string>
-    <string name="nc_conversation_not_found">Conversation not found</string>
     <string name="add_to_notes">Add to Notes</string>
     <string name="nc_edited_by_admin">Edited by admin</string>
     <string name="nc_clear_edit_button">Cancel editing</string>
