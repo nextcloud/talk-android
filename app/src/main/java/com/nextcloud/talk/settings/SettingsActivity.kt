@@ -15,6 +15,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.KeyguardManager
+import android.app.NotificationManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -322,6 +323,7 @@ class SettingsActivity :
         setupUnifiedPushSettings()
         setupNotificationSoundsSettings()
         setupNotificationPermissionSettings()
+        setupFullScreenIntentPermissionSetting()
         setupServerNotificationAppCheck()
     }
 
@@ -482,6 +484,37 @@ class SettingsActivity :
                 binding.settingsGplayNotAvailable.visibility = View.VISIBLE
                 binding.settingsPushNotAvailable.visibility = View.GONE
             }
+        }
+    }
+
+    private fun setupFullScreenIntentPermissionSetting() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            if (notificationManager.canUseFullScreenIntent()) {
+                binding.fullScreenIntentPermissionSubtitle.text =
+                    resources.getString(R.string.full_screen_intent_permission_granted)
+                binding.fullScreenIntentPermissionSubtitle.setTextColor(
+                    resources.getColor(R.color.high_emphasis_text, null)
+                )
+            } else {
+                binding.fullScreenIntentPermissionSubtitle.text =
+                    resources.getString(R.string.full_screen_intent_permission_not_granted)
+                binding.fullScreenIntentPermissionSubtitle.setTextColor(
+                    resources.getColor(R.color.nc_darkRed, null)
+                )
+
+                if (openedByNotificationWarning) {
+                    DrawableUtils.blinkDrawable(binding.settingsFullScreenIntentWrapper.background)
+                }
+            }
+            binding.settingsFullScreenIntentWrapper.setOnClickListener {
+                val intent = Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT).apply {
+                    data = "package:$packageName".toUri()
+                }
+                startActivity(intent)
+            }
+        } else {
+            binding.settingsFullScreenIntentWrapper.visibility = View.GONE
         }
     }
 
