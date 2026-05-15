@@ -37,6 +37,7 @@ import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
+import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.models.MessageDraft
@@ -83,6 +84,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -1200,6 +1202,50 @@ class ChatViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
+    private fun observeShareCompleted() {
+        ShareOperationWorker.shareCompletedFlow
+            .filter { it == chatRoomToken }
+            .onEach {
+                Log.d(TAG, "Share completed for room $chatRoomToken — fetching new messages immediately")
+                fetchNewMessagesWithRetry()
+            }
+            .launchIn(viewModelScope)
+
+        UploadAndShareFilesWorker.uploadCompletedFlow
+            .filter { it == chatRoomToken }
+            .onEach {
+                Log.d(TAG, "Upload completed for room $chatRoomToken — fetching new messages immediately")
+                UploadAndShareFilesWorker.clearUploadCompletedReplay()
+                fetchNewMessagesWithRetry()
+            }
+            .launchIn(viewModelScope)
+    }
+
+    /**
+     * Retries [ChatMessageRepository.fetchNewMessages] up to [POST_UPLOAD_FETCH_MAX_ATTEMPTS] times,
+     * waiting [POST_UPLOAD_FETCH_RETRY_DELAY_MS] ms between attempts.  Stops as soon as at least one
+     * new message is received so that the happy-path (server responds quickly) has no unnecessary
+     * delay, while a slow server still gets a few extra chances before we fall back to the regular
+     * insurance-request cycle.
+     */
+    private suspend fun fetchNewMessagesWithRetry() {
+        repeat(POST_UPLOAD_FETCH_MAX_ATTEMPTS) { attempt ->
+            if (attempt > 0) {
+                Log.d(
+                    TAG,
+                    "fetchNewMessagesWithRetry: attempt ${attempt + 1}, " +
+                        "waiting ${POST_UPLOAD_FETCH_RETRY_DELAY_MS}ms"
+                )
+                delay(POST_UPLOAD_FETCH_RETRY_DELAY_MS)
+            }
+            val gotMessages = chatRepository.fetchNewMessages()
+            if (gotMessages) {
+                Log.d(TAG, "fetchNewMessagesWithRetry: new messages received on attempt ${attempt + 1}")
+                return
+            }
+        }
+        Log.d(TAG, "fetchNewMessagesWithRetry: no new messages after $POST_UPLOAD_FETCH_MAX_ATTEMPTS attempts")
+    }
     private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
         fun shouldRemoveMessage(currentMessage: MutableMap.MutableEntry<Int, ChatMessage>): Boolean =
             isInfoMessageAboutDeletion(currentMessage) ||
@@ -1289,6 +1335,7 @@ class ChatViewModel @AssistedInject constructor(
 
         observeConversationAndUserFirstTime()
         observeConversationAndUserEveryTime()
+        observeShareCompleted()
     }
 
     fun ConversationModel?.isOneToOneConversation(): Boolean =
@@ -2181,6 +2228,8 @@ class ChatViewModel @AssistedInject constructor(
         private const val MIN_CHARS_FOR_SEARCH = 2
         private const val CONTEXT_MESSAGES_LIMIT = 50
         private const val LOAD_MORE_MESSAGES_LIMIT = 100
+        private const val POST_UPLOAD_FETCH_MAX_ATTEMPTS = 4
+        private const val POST_UPLOAD_FETCH_RETRY_DELAY_MS = 1_500L
     }
 
     sealed class OutOfOfficeUIState {

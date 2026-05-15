@@ -61,6 +61,16 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun startMessagePolling(hasHighPerformanceBackend: Boolean)
 
     /**
+     * Performs a one-time non-blocking fetch of messages newer than the latest known message.
+     * Use this to immediately refresh chat after local actions (e.g. file share) that create
+     * server-side messages which would otherwise only appear after the next insurance-request cycle.
+     *
+     * @return `true` if at least one new message was received, `false` when the server returned
+     *         304 Not Modified or an empty message list.
+     */
+    suspend fun fetchNewMessages(): Boolean
+
+    /**
      * Loads messages from local storage. If the messages are not found, then it
      * synchronizes the database with the server, before retrying exactly once. Only
      * emits to [messageFlow] if the message list is not empty.

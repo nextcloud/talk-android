@@ -483,13 +483,7 @@ class ChatActivity :
 
         override fun onChatMessagesReceived(chatMessages: List<ChatMessageJson>) {
             chatViewModel.onSignalingChatMessageReceived(chatMessages)
-
-            Log.d(
-                TAG,
-                "received message in ChatActivity. This is the chat message received via HPB. It would be " +
-                    "nicer to receive it in the ViewModel or Repository directly. " +
-                    "Otherwise it needs to be passed into it from here..."
-            )
+            Log.d(TAG, "received signaling message in ChatActivity")
         }
     }
 

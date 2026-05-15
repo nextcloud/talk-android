@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.ui.chat
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +19,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.network.HttpException
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.FileParameters
 import com.nextcloud.talk.chat.data.model.decodeBlurhashPlaceholder
@@ -38,13 +45,18 @@ import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.contacts.load
 import com.nextcloud.talk.utils.MimetypeUtils
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private const val FILE_PLACEHOLDER_MESSAGE = "{file}"
+private const val PREVIEW_MAX_RETRIES = 3
+private const val PREVIEW_RETRY_DELAY_MS = 2_000L
+private const val TAG = "MediaMessage"
 
 private val mediaRadiusBig = 8.dp
 private val mediaRadiusSmall = 2.dp
 
-@Suppress("Detekt.LongMethod", "LongParameterList")
+@Suppress("Detekt.LongMethod", "LongParameterList", "CyclomaticComplexMethod")
 @Composable
 fun MediaMessage(
     typeContent: MessageTypeContent.Media,
@@ -88,6 +100,7 @@ fun MediaMessage(
         content = {
             Column {
                 val context = LocalContext.current
+                val scope = rememberCoroutineScope()
                 val resourceName = context.resources.getResourceEntryName(typeContent.drawableResourceId)
                 val isGif = MimetypeUtils.isGif(typeContent.mimeType)
                 val showPlayButton = !typeContent.previewUrl.isNullOrEmpty() &&
@@ -96,6 +109,19 @@ fun MediaMessage(
                             resourceName.contains("audio") ||
                             (isGif && !typeContent.animateGif)
                         )
+
+                var retryCount by remember(typeContent.previewUrl) { mutableIntStateOf(0) }
+                var retryPending by remember(typeContent.previewUrl) { mutableStateOf(false) }
+                val retryAwarePreviewUrl = remember(typeContent.previewUrl, retryCount) {
+                    typeContent.previewUrl?.let { previewUrl ->
+                        if (retryCount == 0) {
+                            previewUrl
+                        } else {
+                            val delimiter = if (previewUrl.contains("?")) "&" else "?"
+                            "$previewUrl${delimiter}retryAttempt=$retryCount"
+                        }
+                    }
+                }
 
                 val blurhashPainter = remember(typeContent.blurhash, typeContent.width, typeContent.height) {
                     decodeBlurhashPlaceholder(typeContent.blurhash, typeContent.width, typeContent.height)
@@ -107,9 +133,9 @@ fun MediaMessage(
                     val h = typeContent.height
                     if (w != null && h != null && w > 0 && h > 0) w.toFloat() / h else null
                 }
-                val loadedImage = remember(typeContent.previewUrl) {
+                val loadedImage = remember(retryAwarePreviewUrl) {
                     load(
-                        imageUri = typeContent.previewUrl,
+                        imageUri = retryAwarePreviewUrl,
                         context = context,
                         errorPlaceholderImage = typeContent.drawableResourceId,
                         animated = typeContent.animateGif
@@ -130,7 +156,30 @@ fun MediaMessage(
                             .padding(mediaInset)
                             .clip(mediaShape)
                             .clickable { onImageClick(message.id) },
-                        contentScale = ContentScale.FillWidth
+                        contentScale = ContentScale.FillWidth,
+                        onError = { state ->
+                            val cause = state.result.throwable
+                            val isServerError = cause is HttpException && cause.response.code in 500..599
+                            if (
+                                isServerError &&
+                                !typeContent.previewUrl.isNullOrEmpty() &&
+                                retryCount < PREVIEW_MAX_RETRIES &&
+                                !retryPending
+                            ) {
+                                retryPending = true
+                                scope.launch {
+                                    Log.d(
+                                        TAG,
+                                        "Preview returned HTTP ${(cause as HttpException).response.code}, " +
+                                            "scheduling retry ${retryCount + 1}/$PREVIEW_MAX_RETRIES " +
+                                            "for ${typeContent.previewUrl}"
+                                    )
+                                    delay(PREVIEW_RETRY_DELAY_MS)
+                                    retryCount++
+                                    retryPending = false
+                                }
+                            }
+                        }
                     )
 
                     if (showPlayButton) {
