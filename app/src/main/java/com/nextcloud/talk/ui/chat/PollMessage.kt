@@ -41,6 +41,9 @@ fun PollMessage(
     conversationThreadId: Long? = null,
     onPollClick: (pollId: String, pollName: String) -> Unit = { _, _ -> }
 ) {
+    val highlightSearchTerm = LocalHighlightSearchTerm.current
+    val highlightedPollName = rememberSearchHighlightedText(typeContent.pollName, highlightSearchTerm)
+
     MessageScaffold(
         uiMessage = message,
         isOneToOneConversation = isOneToOneConversation,
@@ -66,7 +69,7 @@ fun PollMessage(
                                 .align(Alignment.Top)
                         )
                         Text(
-                            typeContent.pollName,
+                            text = highlightedPollName,
                             fontSize = headerTextSize,
                             color = colorScheme.onSurface,
                             fontWeight = FontWeight.SemiBold

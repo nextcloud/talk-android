@@ -82,6 +82,7 @@ fun GeolocationContent(
     conversationThreadId: Long? = null
 ) {
     val context = LocalContext.current
+    val highlightSearchTerm = LocalHighlightSearchTerm.current
 
     Column {
         val latitude = typeContent.lat
@@ -111,8 +112,9 @@ fun GeolocationContent(
         }
         typeContent.name.let { name ->
             if (name.isNotEmpty()) {
+                val highlightedName = rememberSearchHighlightedText(name, highlightSearchTerm)
                 Text(
-                    text = name,
+                    text = highlightedName,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     color = colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium

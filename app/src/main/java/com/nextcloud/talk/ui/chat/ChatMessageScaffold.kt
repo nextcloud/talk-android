@@ -882,6 +882,8 @@ fun ThreadTitle(
     padding: androidx.compose.ui.unit.Dp = 0.dp
 ) {
     if (isFirstMessageOfThreadInNormalChat(message, conversationThreadId)) {
+        val highlightSearchTerm = LocalHighlightSearchTerm.current
+        val highlightedText = rememberSearchHighlightedText(message.threadTitle, highlightSearchTerm)
         Row(
             modifier = Modifier
                 .padding(horizontal = padding, vertical = 10.dp)
@@ -897,7 +899,7 @@ fun ThreadTitle(
                     .align(Alignment.Top)
             )
             Text(
-                text = message.threadTitle,
+                text = highlightedText,
                 fontSize = regularTextSize,
                 fontWeight = FontWeight.SemiBold,
                 color = colorScheme.onSurface
@@ -958,25 +960,6 @@ fun EnrichedText(
 
 fun isFirstMessageOfThreadInNormalChat(message: ChatMessageUi, conversationThreadId: Long?): Boolean =
     conversationThreadId == null && message.isThread
-
-@Composable
-private fun Modifier.withCustomAnimation(incoming: Boolean, shape: RoundedCornerShape): Modifier {
-    val infiniteTransition = rememberInfiniteTransition()
-    val borderColor by infiniteTransition.animateColor(
-        initialValue = colorScheme.primary,
-        targetValue = colorScheme.background,
-        animationSpec = infiniteRepeatable(
-            animation = tween(ANIMATED_BLINK, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-
-    return this.border(
-        width = 4.dp,
-        color = borderColor,
-        shape = shape
-    )
-}
 
 @Preview(showBackground = true, name = "Incoming Message")
 @Preview(
