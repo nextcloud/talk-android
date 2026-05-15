@@ -64,11 +64,12 @@ import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
+import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.CIRCLES
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
-import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEvent
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
@@ -79,9 +80,9 @@ import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.ShareUtils
+import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -524,6 +525,15 @@ class ConversationInfoActivity : BaseActivity() {
                     if (workInfo != null) {
                         when (workInfo.state) {
                             WorkInfo.State.SUCCEEDED -> {
+                                conversationUser?.id?.let { userId ->
+                                    ShortcutManagerHelper.disableConversationShortcut(
+                                        context,
+                                        conversationToken,
+                                        userId,
+                                        context.resources.getString(R.string.nc_shortcut_conversation_deleted)
+                                    )
+                                }
+
                                 startActivity(
                                     Intent(context, MainActivity::class.java).apply {
                                         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -578,6 +588,16 @@ class ConversationInfoActivity : BaseActivity() {
             WorkManager.getInstance(context).enqueue(
                 OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java).setInputData(it).build()
             )
+
+            conversationUser?.id?.let { userId ->
+                ShortcutManagerHelper.disableConversationShortcut(
+                    context,
+                    conversationToken,
+                    userId,
+                    context.resources.getString(R.string.nc_shortcut_conversation_deleted)
+                )
+            }
+
             startActivity(
                 Intent(context, MainActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) }
             )

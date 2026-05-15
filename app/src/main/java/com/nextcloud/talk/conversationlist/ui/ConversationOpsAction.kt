@@ -15,6 +15,7 @@ sealed class ConversationOpsAction {
     object ShareLink : ConversationOpsAction()
     object Rename : ConversationOpsAction()
     object ToggleArchive : ConversationOpsAction()
+    object AddToHomeScreen : ConversationOpsAction()
     object Leave : ConversationOpsAction()
     object Delete : ConversationOpsAction()
 }
