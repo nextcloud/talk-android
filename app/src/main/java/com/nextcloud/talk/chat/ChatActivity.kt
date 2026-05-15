@@ -3094,8 +3094,7 @@ class ChatActivity :
             }
 
             scheduledMessagesMenuItem?.isVisible = networkMonitor.isOnline.value &&
-                hasScheduledMessages &&
-                !ConversationUtils.isNoteToSelfConversation(currentConversation)
+                hasScheduledMessages
 
             searchItem.isVisible =
                 hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.UNIFIED_SEARCH) &&
