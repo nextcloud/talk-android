@@ -139,19 +139,29 @@ class ConversationsListViewModel @Inject constructor(
             _getRoomsViewState.value = GetRoomsErrorState(it)
         }
 
-    private val _isShimmerVisible = MutableStateFlow(true)
+    private val _isLoadingRooms = MutableStateFlow(true)
 
     /**
-     * Drives the shimmer skeleton visibility. Set to false as soon as the first room-list
-     * emission arrives (same subscription as [getRoomsStateFlow] so it hides in the same
-     * coroutine step that populates [conversationListEntriesFlow].
+     * True while a [getRooms] call is in progress (from start until the fetch-Job completes,
+     * i.e. after both the local-DB and the network-sync emissions have been produced).
      */
-    val isShimmerVisible: StateFlow<Boolean> = _isShimmerVisible.asStateFlow()
+    val isLoadingRooms: StateFlow<Boolean> = _isLoadingRooms.asStateFlow()
 
     val getRoomsStateFlow = repository
         .roomListFlow
-        .onEach { _isShimmerVisible.value = false }
         .stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
+
+    /**
+     * Drives the shimmer skeleton visibility. Visible while rooms are still being loaded for
+     * the first time (no data in the list yet). Hidden as soon as either the room list is
+     * non-empty or the loading job has fully completed.
+     */
+    val isShimmerVisible: StateFlow<Boolean> = combine(
+        _isLoadingRooms,
+        getRoomsStateFlow
+    ) { isLoading, rooms ->
+        isLoading && rooms.isEmpty()
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     private val _federationInvitationHintVisible = MutableStateFlow(false)
     val federationInvitationHintVisible: StateFlow<Boolean> = _federationInvitationHintVisible.asStateFlow()
@@ -406,7 +416,12 @@ class ConversationsListViewModel @Inject constructor(
     fun getRooms(user: User) {
         val startNanoTime = System.nanoTime()
         Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
-        repository.getRooms(user)
+        _isLoadingRooms.value = true
+        val job = repository.getRooms(user)
+        viewModelScope.launch {
+            job.join()
+            _isLoadingRooms.value = false
+        }
     }
 
     fun checkIfThreadsExist() {

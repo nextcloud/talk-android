@@ -384,16 +384,20 @@ class ConversationsListActivity : BaseActivity() {
     private fun initObservers() {
         conversationsListViewModel.getRoomsViewState.observe(this) { state ->
             when (state) {
-                is ConversationsListViewModel.GetRoomsSuccessState -> {
-                    isRefreshingState.value = false
-                }
-
                 is ConversationsListViewModel.GetRoomsErrorState -> {
                     isRefreshingState.value = false
                     handleHttpExceptions(state.throwable)
                 }
 
                 else -> {}
+            }
+        }
+
+        lifecycleScope.launch {
+            conversationsListViewModel.isLoadingRooms.collect { isLoading ->
+                if (!isLoading) {
+                    isRefreshingState.value = false
+                }
             }
         }
 
