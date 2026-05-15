@@ -66,8 +66,12 @@ import androidx.cardview.widget.CardView
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -304,6 +308,7 @@ class ChatActivity :
 
     private var overflowMenuHostView: ComposeView? = null
     private var isThreadMenuExpanded by mutableStateOf(false)
+    private val searchLoadingState = mutableStateOf(false)
 
     private val startSelectContactForResult = registerForActivityResult(
         ActivityResultContracts
@@ -1805,7 +1810,19 @@ class ChatActivity :
         supportActionBar?.setIcon(resources!!.getColor(R.color.transparent, null).toDrawable())
         setActionBarTitle()
         viewThemeUtils.material.themeToolbar(binding.chatToolbar)
-        viewThemeUtils.material.colorProgressBar(binding.searchLoadingIndicator, ColorRole.PRIMARY)
+        binding.searchLoadingIndicatorComposeView.setContent {
+            MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
+                val isLoading by searchLoadingState
+                if (isLoading) {
+                    LinearProgressIndicator(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                } else {
+                    HorizontalDivider()
+                }
+            }
+        }
     }
 
     private fun setUpWaveform(message: ChatMessage, thenPlay: Boolean = true, backgroundPlayAllowed: Boolean = false) {
@@ -3568,7 +3585,7 @@ class ChatActivity :
     }
 
     private fun updateSearchLoadingIndicator(isLoading: Boolean) {
-        binding.searchLoadingIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
+        searchLoadingState.value = isLoading
     }
 
     private fun configureSearchActionView(searchItem: MenuItem?) {
