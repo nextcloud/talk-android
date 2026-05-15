@@ -8,7 +8,7 @@
 package com.nextcloud.talk.ui.chat
 
 import android.util.Log
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -69,7 +69,13 @@ fun MediaMessage(
     val fileParameters =
         remember { FileParameters(message.messageParameters as HashMap<String?, HashMap<String?, String?>>?) }
 
-    val captionText = message.message.takeUnless { it == FILE_PLACEHOLDER_MESSAGE }
+    val hasExplicitCaption = message.plainMessage != FILE_PLACEHOLDER_MESSAGE
+    val hasPreview = !typeContent.previewUrl.isNullOrEmpty()
+    val captionText = when {
+        hasExplicitCaption -> message.message
+        !hasPreview -> message.message
+        else -> null
+    }
     val hasCaption = captionText != null
     val mediaInset = 4.dp
     val mediaShape = remember(message.incoming) {
@@ -144,6 +150,7 @@ fun MediaMessage(
                 val fallbackPainter = painterResource(typeContent.drawableResourceId)
 
                 Box(modifier = Modifier.fillMaxWidth()) {
+                    val messageLongClickHandler = LocalMessageLongClickHandler.current
                     AsyncImage(
                         model = loadedImage,
                         contentDescription = stringResource(R.string.media_message_content_description),
@@ -155,7 +162,10 @@ fun MediaMessage(
                             .then(if (aspectRatio != null) Modifier.aspectRatio(aspectRatio) else Modifier)
                             .padding(mediaInset)
                             .clip(mediaShape)
-                            .clickable { onImageClick(message.id) },
+                            .combinedClickable(
+                                onClick = { onImageClick(message.id) },
+                                onLongClick = { messageLongClickHandler(message.id) }
+                            ),
                         contentScale = ContentScale.FillWidth,
                         onError = { state ->
                             val cause = state.result.throwable
