@@ -53,6 +53,7 @@
     <string name="danger_zone">Ohtlik - siin ole ettevaatlik</string>
     <string name="deck_card_description">%1$s:  %2$s</string>
     <string name="default_room">Vaikimisi</string>
+    <string name="default_room_preset">Saada sõnumeid, koosta jutulõngu ja helista tava- või videokõnena.</string>
     <string name="delete_avatar">Kustuta tunnuspilt</string>
     <string name="delete_voice_recording">Kustuta helisalvestis</string>
     <string name="deleted_conversation">%1$s vestlus on kustutatud</string>
@@ -679,7 +680,7 @@
     <string name="save">Salvesta</string>
     <string name="scan_qr_code">Skaneeri QR-koodi</string>
     <string name="scope_federated_description">Sünkrooni vaid usaldusväärsetesse serveritesse</string>
-    <string name="scope_federated_title">Federated</string>
+    <string name="scope_federated_title">Liitpilves</string>
     <string name="scope_local_description">Nähtav vaid selle serveri kasutajatele ja külalistele</string>
     <string name="scope_local_title">Kohalik</string>
     <string name="scope_private_description">Nähtav vaid osalejatele, kes on läbi teinud tuvastamise telefoninumbri alusel kasutades Nextcloud Talk rakendust</string>
@@ -782,7 +783,7 @@
     <string name="user_info_profile_enable">Võta profiil kasutusele</string>
     <string name="user_info_pronouns">Asesõnad pöördumisel</string>
     <string name="user_info_role">Roll</string>
-    <string name="user_info_twitter">Twitter</string>
+    <string name="user_info_twitter">X/Twitter</string>
     <string name="user_info_website">Veebileht</string>
     <string name="user_status">Staatus</string>
     <string name="userinfo_error_text">Kasutaja isiklike andmete laadimine ei õnnestunud.</string>
@@ -790,6 +791,7 @@
     <string name="userinfo_no_info_text">Lisa oma profiili lehele nimi, pilt ja kontaktteave. </string>
     <string name="video_call">Videokõne</string>
     <string name="voice_room">Jututuba häälkõnede jaoks</string>
+    <string name="voice_room_preset">Liitumine kõnega otse, ideaalne jätkusündmuste ja spontaansete kohtumiste jaoks.</string>
     <string name="whats_your_status">Mis on su staatus?</string>
     <plurals name="nc_new_messages_count">
         <item quantity="one">%d uus sõnum</item>
