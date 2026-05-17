@@ -312,6 +312,17 @@ class ChatViewModel @AssistedInject constructor(
         _profileSheetMessageId.value = null
     }
 
+    private val _messageActionsMessageId = MutableStateFlow<Long?>(null)
+    val messageActionsMessageId: StateFlow<Long?> = _messageActionsMessageId
+
+    fun showMessageActions(messageId: Long) {
+        _messageActionsMessageId.value = messageId
+    }
+
+    fun dismissMessageActions() {
+        _messageActionsMessageId.value = null
+    }
+
     val getLastCommonReadFlow = chatRepository.lastCommonReadFlow
 
     val isLoadingFlow = chatRepository.isLoadingFlow

@@ -137,8 +137,12 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.model.FileParameters
+import com.nextcloud.talk.chat.ui.MessageActionsBottomSheet
 import com.nextcloud.talk.chat.ui.ProfileModalBottomSheet
 import com.nextcloud.talk.chat.ui.ShowReactionsModalBottomSheet
+import com.nextcloud.talk.chat.ui.TempMessageActionsBottomSheet
+import com.nextcloud.talk.chat.ui.buildMessageActionsState
+import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
@@ -183,9 +187,7 @@ import com.nextcloud.talk.ui.chat.ChatViewState
 import com.nextcloud.talk.ui.dialog.DateTimeCompose
 import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.GetPinnedOptionsDialog
-import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
-import com.nextcloud.talk.ui.dialog.TempMessageActionsDialog
 import com.nextcloud.talk.ui.theme.LocalMessageUtils
 import com.nextcloud.talk.ui.theme.LocalOpenGraphFetcher
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
@@ -834,6 +836,87 @@ class ChatActivity :
                             )
                         }
                     }
+
+                val messageActionsMessageId by chatViewModel.messageActionsMessageId.collectAsStateWithLifecycle()
+                val messageActionsMessage by produceState<ChatMessage?>(null, messageActionsMessageId) {
+                    value = messageActionsMessageId?.let { id -> chatViewModel.getMessageById(id).first() }
+                }
+                val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
+                messageActionsMessage?.let { msg ->
+                    if (msg.isTemporary) {
+                        val sendingFailed = msg.sendStatus == SendStatus.FAILED
+                        TempMessageActionsBottomSheet(
+                            showResend = sendingFailed && isOnline,
+                            showEdit = sendingFailed || !isOnline,
+                            showDelete = sendingFailed || !isOnline,
+                            onResend = {
+                                chatViewModel.resendMessage(
+                                    conversationUser!!.getCredentials(),
+                                    ApiUtils.getUrlForChat(chatApiVersion, conversationUser!!.baseUrl!!, roomToken),
+                                    msg
+                                )
+                            },
+                            onEdit = { messageInputViewModel.edit(msg) },
+                            onDelete = { chatViewModel.deleteTempMessage(msg) },
+                            onCopy = { copyMessage(msg) },
+                            onDismiss = { chatViewModel.dismissMessageActions() }
+                        )
+                    } else {
+                        conversationUser?.let { user ->
+                            MessageActionsBottomSheet(
+                                actionsState = buildMessageActionsState(
+                                    message = msg,
+                                    user = user,
+                                    conversation = currentConversation,
+                                    hasChatPermission = participantPermissions.hasChatPermission(),
+                                    hasReactPermission = participantPermissions.hasReactPermission(),
+                                    spreedCapabilities = spreedCapabilities,
+                                    isOnline = isOnline,
+                                    dateUtils = dateUtils,
+                                    conversationThreadId = conversationThreadId
+                                ),
+                                onEmojiClick = { emoji ->
+                                    if (msg.reactionsSelf?.contains(emoji) == true) {
+                                        chatViewModel.deleteReaction(roomToken, msg, emoji)
+                                    } else {
+                                        chatViewModel.addReaction(roomToken, msg, emoji)
+                                    }
+                                },
+                                onReply = {
+                                    if (msg.isThread && conversationThreadId == null) {
+                                        openThread(msg)
+                                    } else {
+                                        messageInputViewModel.reply(msg)
+                                    }
+                                },
+                                onReplyPrivately = { replyPrivately(msg) },
+                                onOpenThread = { msg.threadId?.let { openThread(it) } },
+                                onForward = { forwardMessage(msg) },
+                                onEdit = { messageInputViewModel.edit(msg) },
+                                onCopy = { copyMessage(msg) },
+                                onMarkAsUnread = { markAsUnread(msg) },
+                                onRemind = { remindMeLater(msg) },
+                                onPin = { pinMessage(msg) },
+                                onUnpin = { unPinMessage(msg) },
+                                onTranslate = { translateMessage(msg) },
+                                onShareToNote = { shareToNotes(msg) },
+                                onShare = {
+                                    if (msg.getCalculateMessageType() ==
+                                        ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE
+                                    ) {
+                                        checkIfSharable(msg)
+                                    } else {
+                                        msg.message?.let { shareMessageText(it) }
+                                    }
+                                },
+                                onSave = { checkIfSaveable(msg) },
+                                onOpenInFiles = { openInFilesApp(msg) },
+                                onDelete = { deleteMessage(msg) },
+                                onDismiss = { chatViewModel.dismissMessageActions() }
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -3776,24 +3859,8 @@ class ChatActivity :
     }
 
     private fun openMessageActionsDialog(message: ChatMessage) {
-        if (message.isTemporary) {
-            TempMessageActionsDialog(
-                this,
-                message
-            ).show()
-        } else if (hasVisibleItems(message) &&
-            !isSystemMessage(message)
-        ) {
-            MessageActionsDialog(
-                this,
-                message,
-                conversationUser,
-                currentConversation,
-                isShowMessageDeletionButton(message),
-                participantPermissions.hasChatPermission(),
-                participantPermissions.hasReactPermission(),
-                spreedCapabilities
-            ).show()
+        if (message.isTemporary || (hasVisibleItems(message) && !isSystemMessage(message))) {
+            chatViewModel.showMessageActions(message.jsonMessageId.toLong())
         }
     }
 

@@ -17,6 +17,8 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.withSign
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.set
 
 private const val BLURHASH_CHARS =
     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#\$%*+,-.:;=?@[]^_{|}~"
@@ -137,10 +139,10 @@ internal object BlurHashDecoder {
             return Color.rgb(linearToSrgb(r), linearToSrgb(g), linearToSrgb(b))
         }
 
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val bitmap = createBitmap(width, height)
         for (y in 0 until height) {
             for (x in 0 until width) {
-                bitmap.setPixel(x, y, computePixel(x, y))
+                bitmap[x, y] = computePixel(x, y)
             }
         }
         return bitmap
