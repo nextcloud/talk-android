@@ -78,12 +78,18 @@ class ParticipantHandler(
     }
 
     private fun handleStreamChange(mediaStream: MediaStream?) {
-        val hasAtLeastOneVideoStream = mediaStream?.videoTracks?.isNotEmpty() == true
+        val audioTrackCount = mediaStream?.audioTracks?.size ?: 0
+        val videoTrackCount = mediaStream?.videoTracks?.size ?: 0
+        val hasAudioTracks = audioTrackCount > 0
+        val hasVideoTracks = videoTrackCount > 0
+
+        Log.d(TAG, "handleStreamChange: ${_uiState.value.nick} - audioTracks=$audioTrackCount, videoTracks=$videoTrackCount, isAudioEnabled=$hasAudioTracks, isStreamEnabled=$hasVideoTracks")
 
         _uiState.update {
             it.copy(
                 mediaStream = mediaStream,
-                isStreamEnabled = hasAtLeastOneVideoStream
+                isAudioEnabled = hasAudioTracks,
+                isStreamEnabled = hasVideoTracks
             )
         }
     }
@@ -100,13 +106,16 @@ class ParticipantHandler(
     }
 
     private fun handleIceConnectionStateChange(iceConnectionState: IceConnectionState?) {
-        Log.d(TAG, "handleIceConnectionStateChange " + _uiState.value.nick + " " + iceConnectionState)
+        Log.d(TAG, "handleIceConnectionStateChange: ${_uiState.value.nick} (${_uiState.value.sessionKey}) - state=$iceConnectionState")
 
         if (iceConnectionState == IceConnectionState.NEW ||
             iceConnectionState == IceConnectionState.CHECKING
         ) {
-            _uiState.update { it.copy(isAudioEnabled = false) }
-            _uiState.update { it.copy(isStreamEnabled = false) }
+            val hasAudioTracks = peerConnection?.stream?.audioTracks?.isNotEmpty() == true
+            val hasVideoTracks = peerConnection?.stream?.videoTracks?.isNotEmpty() == true
+            Log.d(TAG, "   → ICE not connected yet, hasAudioTracks=$hasAudioTracks, hasVideoTracks=$hasVideoTracks")
+            _uiState.update { it.copy(isAudioEnabled = hasAudioTracks) }
+            _uiState.update { it.copy(isStreamEnabled = hasVideoTracks) }
         }
 
         _uiState.update { it.copy(isConnected = isConnected(iceConnectionState)) }
@@ -114,18 +123,22 @@ class ParticipantHandler(
 
     private val dataChannelMessageListener: DataChannelMessageListener = object : DataChannelMessageListener {
         override fun onAudioOn() {
+            Log.d(TAG, "onAudioOn: ${_uiState.value.nick} (sessionId=${_uiState.value.sessionKey})")
             _uiState.update { it.copy(isAudioEnabled = true) }
         }
 
         override fun onAudioOff() {
+            Log.d(TAG, "onAudioOff: ${_uiState.value.nick} (sessionId=${_uiState.value.sessionKey})")
             _uiState.update { it.copy(isAudioEnabled = false) }
         }
 
         override fun onVideoOn() {
+            Log.d(TAG, "onVideoOn: ${_uiState.value.nick} (sessionId=${_uiState.value.sessionKey})")
             _uiState.update { it.copy(isStreamEnabled = true) }
         }
 
         override fun onVideoOff() {
+            Log.d(TAG, "onVideoOff: ${_uiState.value.nick} (sessionId=${_uiState.value.sessionKey})")
             _uiState.update { it.copy(isStreamEnabled = false) }
         }
 
