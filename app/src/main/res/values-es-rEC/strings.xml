@@ -34,8 +34,6 @@
     <string name="dontClear">No borrar</string>
     <string name="ecosystem_apps_files">Archivo</string>
     <string name="edit">Editar</string>
-    <string name="edit_message_icon_description">Editar mensaje</string>
-    <string name="emoji_category_recent">Reciente</string>
     <string name="encrypted">Cifrado</string>
     <string name="end_call_for_everyone">Finalizar llamada para todos</string>
     <string name="error_loading_chats">Hubo un problema al cargar tus chats</string>
@@ -70,7 +68,6 @@
     <string name="nc_account_chooser_active_user">Usuario activo</string>
     <string name="nc_account_chooser_add_account">Agregar cuenta</string>
     <string name="nc_account_scheduled_for_deletion">La cuenta está calendarizada para ser borrada, y no puede ser modificada</string>
-    <string name="nc_action_open_main_menu">Abrir menú principal</string>
     <string name="nc_add_attachment">Agregar adjunto</string>
     <string name="nc_add_emojis">Agregar emojis</string>
     <string name="nc_add_file">Agregar a la conversación</string>
@@ -109,7 +106,6 @@
     <string name="nc_change_cert_auth">Cambiar el certificado de atuenticación</string>
     <string name="nc_change_password">Cambiar contraseña</string>
     <string name="nc_clear_edit_button">Cancelar edición</string>
-    <string name="nc_clear_edit_message">Cancelar edición</string>
     <string name="nc_clear_history">Borrar todos los mensajes</string>
     <string name="nc_clear_history_success">Todos los mensajes se han eliminado</string>
     <string name="nc_clear_history_warning">¿Realmente quieres borrar todos los mensajes de esta conversación?</string>
@@ -135,7 +131,6 @@
     <string name="nc_conversation_menu_conversation_info">Información de la conversación</string>
     <string name="nc_conversation_menu_video_call">Video llamada</string>
     <string name="nc_conversation_menu_voice_call">Llamada de voz</string>
-    <string name="nc_conversation_not_found">Conversación no encontrada</string>
     <string name="nc_conversation_settings">Configuración de la conversación</string>
     <string name="nc_conversations_empty">Únete a la conversación o incia una nueva</string>
     <string name="nc_conversations_empty_details">¡Saluda a tus amigos y colegas!</string>
@@ -152,17 +147,6 @@
     <string name="nc_demote">Degradar de moderador</string>
     <string name="nc_description_record_voice">Grabar mensaje de voz</string>
     <string name="nc_description_send_message_button">Enviar mensaje</string>
-    <string name="nc_diagnose_account_category_title">Cuenta actual</string>
-    <string name="nc_diagnose_account_server">Servidor</string>
-    <string name="nc_diagnose_account_user_name">Usuario</string>
-    <string name="nc_diagnose_android_version_title">Versión de Android</string>
-    <string name="nc_diagnose_app_category_title">Aplicación</string>
-    <string name="nc_diagnose_app_name_title">Nombre de la aplicación</string>
-    <string name="nc_diagnose_app_users_amount">Usuarios registrados</string>
-    <string name="nc_diagnose_battery_optimization_title">Configuración de la batería</string>
-    <string name="nc_diagnose_device_name_title">Dispositivo</string>
-    <string name="nc_diagnose_signaling_mode_extern">Externo</string>
-    <string name="nc_diagnose_signaling_mode_intern">Interna</string>
     <string name="nc_dialog_invalid_password">Contraseña inválida</string>
     <string name="nc_dialog_maintenance_mode_description">El servidor está actualmente en modo de mantenimiento.</string>
     <string name="nc_dialog_outdated_client">La aplicación está desactualizada</string>
@@ -273,7 +257,6 @@
     <string name="nc_pip_microphone_mute">Silenciar micrófono</string>
     <string name="nc_pip_microphone_unmute">Habilitar micrófono</string>
     <string name="nc_plain_old_messages">Mensajes</string>
-    <string name="nc_privacy">Privacidad</string>
     <string name="nc_profile_personal_info_title">Información personal</string>
     <string name="nc_promote">Promover a moderador</string>
     <string name="nc_push_disabled">Notificaciones push deshabilitadas</string>
@@ -458,7 +441,6 @@
     <string name="scope_private_title">Privado</string>
     <string name="scope_published_description">Sincronizar con servidores de confianza y la libreta de direcciones global y pública</string>
     <string name="scope_published_title">Publicado</string>
-    <string name="scope_toggle">Alternar ámbito</string>
     <string name="scope_toggle_description">Cambiar nivel de privacidad de %1$s</string>
     <string name="scroll_to_bottom">Desplazarse hasta abajo</string>
     <string name="secondsAgo">hace segundos</string>
@@ -470,7 +452,6 @@
     <string name="send_without_notification">Enviar sin notificación</string>
     <string name="set">Establecer</string>
     <string name="set_avatar_from_camera">Establecer avatar desde la cámara</string>
-    <string name="set_status">Establecer estado</string>
     <string name="set_status_message">Establecer mensaje de estado</string>
     <string name="share">Compartir</string>
     <string name="shared_items_audio">Audio</string>

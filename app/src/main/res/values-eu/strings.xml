@@ -3,7 +3,6 @@
     <string name= "nc_edit">Aldatu</string>
     <string name="add_participants">Gehitu</string>
     <string name="add_to_notes">Gehitu oharretara</string>
-    <string name="added_to_favorites">%1$s elkarrizketa gogokoetara gehitu da</string>
     <string name="appbar_search_in">Bilatu %s(e)n</string>
     <string name="appear_offline">Lineaz kanpo agertzen da</string>
     <string name="archive_conversation">Artxibatu elkarrizketa</string>
@@ -46,8 +45,6 @@
     <string name="ecosystem_apps_more">Gehiago</string>
     <string name="ecosystem_apps_notes">Oharrak</string>
     <string name="edit">Editatu</string>
-    <string name="edit_message_icon_description">Editatu mezua</string>
-    <string name="emoji_category_recent">Azkenak</string>
     <string name="encrypted">Zifratua</string>
     <string name="end_call">Amaitu deia</string>
     <string name="end_call_for_everyone">Amaitu deia denontzat</string>
@@ -70,8 +67,6 @@
     <string name="lock_conversation">Blokeatu elkarrizketa</string>
     <string name="lock_symbol">Blokeo sinboloa</string>
     <string name="lower_hand">Jaitsi eskua</string>
-    <string name="marked_as_read">Markatu %1$s elkarrizketa irakurrita gisa</string>
-    <string name="marked_as_unread">Markatu %1$s elkarrizketa ez irakurrita gisa</string>
     <string name="mentioned">Aipatuta</string>
     <string name="menu_item_sort_by_date_newest_first">Berrienak lehenengo </string>
     <string name="menu_item_sort_by_date_oldest_first">Zaharrenak lehenengo</string>
@@ -91,7 +86,6 @@
     <string name="nc_account_chooser_active_user">Erabiltzaile aktiboa</string>
     <string name="nc_account_chooser_add_account">Gehitu kontua</string>
     <string name="nc_account_scheduled_for_deletion">Kontua ezabatzeko programatuta dago eta ezin da harekin operatu</string>
-    <string name="nc_action_open_main_menu">Ireki menu nagusia</string>
     <string name="nc_add_attachment">Gehitu eranskina</string>
     <string name="nc_add_emojis">Gehitu emojiak</string>
     <string name="nc_add_file">Gehitu elkarrizketara</string>
@@ -133,7 +127,6 @@
     <string name="nc_change_cert_auth">Aldatu autentifikazio ziurtagiria</string>
     <string name="nc_change_password">Aldatu pasahitza</string>
     <string name="nc_clear_edit_button">Utzi editatzeari</string>
-    <string name="nc_clear_edit_message">Utzi editatzeari</string>
     <string name="nc_clear_history">Ezabatu mezu guztiak</string>
     <string name="nc_clear_history_success">Mezu guztiak ezabatu dira</string>
     <string name="nc_clear_history_warning">Ziur zaude elkarrizketa honen mezu guztiak ezabatu nahi dituzula?</string>
@@ -159,7 +152,6 @@
     <string name="nc_conversation_menu_conversation_info">Elkarrizketen informazioa</string>
     <string name="nc_conversation_menu_video_call">Bideo-deia</string>
     <string name="nc_conversation_menu_voice_call">Ahots-deia</string>
-    <string name="nc_conversation_not_found">Ez da elkarrizketa aurkitu</string>
     <string name="nc_conversation_settings">Elkarrizketaren ezarpenak</string>
     <string name="nc_conversations_empty">Batu elkarrizketa batera edo hasi berri bat</string>
     <string name="nc_conversations_empty_details">Esan kaixo zure lagun eta lankideei!</string>
@@ -178,24 +170,6 @@
     <string name="nc_demote">Moderatzailetik degradatua</string>
     <string name="nc_description_record_voice">Grabatu ahots mezua</string>
     <string name="nc_description_send_message_button">Bidali mezua</string>
-    <string name="nc_diagnose_account_category_title">Uneko kontua</string>
-    <string name="nc_diagnose_account_server">Zerbitzaria</string>
-    <string name="nc_diagnose_account_user_name">Erabiltzailea</string>
-    <string name="nc_diagnose_android_version_title">Android bertsioa</string>
-    <string name="nc_diagnose_app_category_title">Aplikazioa</string>
-    <string name="nc_diagnose_app_name_title">Aplikazioaren izena</string>
-    <string name="nc_diagnose_app_users_amount">Erregistratutako erabiltzaileak</string>
-    <string name="nc_diagnose_app_version_title">Aplikazioaren bertsioa</string>
-    <string name="nc_diagnose_battery_optimization_title">Bateria ezarpenak</string>
-    <string name="nc_diagnose_device_name_title">Gailua</string>
-    <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Ireki dontkillmyapp.com</string>
-    <string name="nc_diagnose_meta_category_title">Meta informazioa</string>
-    <string name="nc_diagnose_notification_permission">Jakinarazpen baimenak</string>
-    <string name="nc_diagnose_phone_category_title">Telefonoa</string>
-    <string name="nc_diagnose_server_version">Zerbitzariaren bertsioa</string>
-    <string name="nc_diagnose_signaling_mode_extern">Kanpokoa</string>
-    <string name="nc_diagnose_signaling_mode_intern">Barnekoa</string>
-    <string name="nc_diagnose_signaling_mode_title">Seinalizazio modua</string>
     <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Ireki dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Pasahitz baliogabea</string>
     <string name="nc_dialog_maintenance_mode_description">Zerbitzaria mantentze moduan dago.</string>
@@ -273,7 +247,6 @@
     <string name="nc_mark_as_read">Markatu irakurritako gisa</string>
     <string name="nc_mark_as_unread">Markatu ez irakurritako gisa</string>
     <string name="nc_message_failed_to_send">Mezua bidaltzeak huts egin du:</string>
-    <string name="nc_message_offline">Lineaz kanpo</string>
     <string name="nc_message_quote_cancel_reply">Utzi erantzuna bertan behera</string>
     <string name="nc_message_read">Mezua irakurrita</string>
     <string name="nc_message_sending">Mezua bidaltzen</string>
@@ -323,7 +296,6 @@
     <string name="nc_pip_microphone_mute">Mututu mikrofonoa</string>
     <string name="nc_pip_microphone_unmute">Gaitu mikrofonoa</string>
     <string name="nc_plain_old_messages">Mezuak</string>
-    <string name="nc_privacy">Pribatutasuna</string>
     <string name="nc_profile_personal_info_title">Informazio pertsonala</string>
     <string name="nc_promote">Moderatzaile bihurtu zara</string>
     <string name="nc_public_call_status">Elkarrizketa publikoa</string>
@@ -380,7 +352,6 @@
     <string name="nc_settings_advanced_title">Aurreratua</string>
     <string name="nc_settings_appearance">Itxura</string>
     <string name="nc_settings_call_ringtone">Deiak</string>
-    <string name="nc_settings_diagnose_title">Diagnostikoa</string>
     <string name="nc_settings_diagnosis_title">Diagnostikoa</string>
     <string name="nc_settings_incognito_keyboard_desc">Teklatuaren ikasketa pertsonalizatua desgaitzen du (bermerik gabe)</string>
     <string name="nc_settings_incognito_keyboard_title">Teklatu ezkutua</string>
@@ -511,7 +482,6 @@
     <string name="recording_consent_for_conversation_title">Grabatzeko baimena</string>
     <string name="recording_consent_title">Baliteke deia grabatzea.</string>
     <string name="recording_settings_title">Grabatzea</string>
-    <string name="removed_from_favorites">%1$s elkarrizketa gogokoetatik kendu da</string>
     <string name="renamed_conversation"> %1$s elkarrizketa kendu da</string>
     <string name="reset_status">Berrezarri egoera</string>
     <string name="restrict_join_other_room_while_call">Ezin da beste geletan sartu dei batean ari zaren bitartean</string>
@@ -525,7 +495,6 @@
     <string name="scope_private_title">Pribatua</string>
     <string name="scope_published_description">Sinkronizatu zerbitzari fidagarriekin eta helbide liburu publiko eta globalarekin</string>
     <string name="scope_published_title">Argitaratuta</string>
-    <string name="scope_toggle">Irismen etengailua</string>
     <string name="scope_toggle_description">Aldatu %1$s(r)en pribatutasun maila</string>
     <string name="scroll_to_bottom">Korritu beherantz</string>
     <string name="secondsAgo">segundu lehenago</string>
@@ -537,7 +506,6 @@
     <string name="send_without_notification">Bidali jakinarazpenik gabe</string>
     <string name="set">Ezarri</string>
     <string name="set_avatar_from_camera">Ezarri avatarra kameraren bidez</string>
-    <string name="set_status">Ezarri egoera</string>
     <string name="set_status_message">Ezarri egoera-mezua</string>
     <string name="share">Partekatu</string>
     <string name="shared_items_audio">Audioa</string>

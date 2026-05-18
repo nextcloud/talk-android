@@ -39,8 +39,6 @@
     <string name="ecosystem_apps_more">Več</string>
     <string name="ecosystem_apps_notes">Beležke</string>
     <string name="edit">Uredi</string>
-    <string name="edit_message_icon_description">Uredi sporočilo</string>
-    <string name="emoji_category_recent">Nedavno</string>
     <string name="encrypted">Šifrirano</string>
     <string name="end_call">Končaj klic</string>
     <string name="end_call_for_everyone">Končaj klic za vse</string>
@@ -77,7 +75,6 @@
     <string name="nc_account_chooser_active_user">Dejavni uporabnik</string>
     <string name="nc_account_chooser_add_account">Dodaj račun</string>
     <string name="nc_account_scheduled_for_deletion">Račun je pripravljen za brisanje in ga ni mogoče spreminjati</string>
-    <string name="nc_action_open_main_menu">Odpri glavni meni</string>
     <string name="nc_add_attachment">Dodaj prilogo</string>
     <string name="nc_add_emojis">Vstavi izrazno ikono</string>
     <string name="nc_add_file">Dodaj v pogovor</string>
@@ -116,7 +113,6 @@
     <string name="nc_change_cert_auth">Spremeni potrdilo za overitev</string>
     <string name="nc_change_password">Spremeni geslo</string>
     <string name="nc_clear_edit_button">Prekliči urejanje</string>
-    <string name="nc_clear_edit_message">Prekliči urejanje</string>
     <string name="nc_clear_history">Izbriši vsa sporočila</string>
     <string name="nc_clear_history_success">Vsa sporočilo so izbrisana</string>
     <string name="nc_clear_history_warning">Ali res želite izbrisati vsa sporočila tega pogovora?</string>
@@ -160,18 +156,6 @@
     <string name="nc_demote">Ponižaj iz moderatorja</string>
     <string name="nc_description_record_voice">Posnemi glasovno sporočilo</string>
     <string name="nc_description_send_message_button">Pošlji sporočilo</string>
-    <string name="nc_diagnose_account_category_title">Trenutni račun</string>
-    <string name="nc_diagnose_account_server">Strežnik</string>
-    <string name="nc_diagnose_account_user_name">Uporabnik</string>
-    <string name="nc_diagnose_android_version_title">Različica Android</string>
-    <string name="nc_diagnose_app_category_title">Program</string>
-    <string name="nc_diagnose_app_name_title">Ime programa</string>
-    <string name="nc_diagnose_app_users_amount">Vpisani uporabniki</string>
-    <string name="nc_diagnose_battery_optimization_title">Nastavitve baterije</string>
-    <string name="nc_diagnose_device_name_title">Naprava</string>
-    <string name="nc_diagnose_phone_category_title">Telefon</string>
-    <string name="nc_diagnose_signaling_mode_extern">Zunanja</string>
-    <string name="nc_diagnose_signaling_mode_intern">Notranji</string>
     <string name="nc_dialog_invalid_password">Neveljavno geslo</string>
     <string name="nc_dialog_outdated_client_option_update">Posodobi</string>
     <string name="nc_dialog_reauth_or_delete">Ali želite ponovno overiti ali odstraniti račun?</string>
@@ -242,7 +226,6 @@
     <string name="nc_mark_as_read">Označi kot prebrano</string>
     <string name="nc_mark_as_unread">Označi kot neprebrano</string>
     <string name="nc_message_failed_to_send">Pošiljanje sporočila je spodletelo:</string>
-    <string name="nc_message_offline">Brez povezave</string>
     <string name="nc_message_quote_cancel_reply">Prekliči odgovor</string>
     <string name="nc_message_read">Sporočilo je prebrano</string>
     <string name="nc_message_sending">Poteka pošiljanje sporočila</string>
@@ -285,7 +268,6 @@
     <string name="nc_pip_microphone_mute">Utišaj mikrofon</string>
     <string name="nc_pip_microphone_unmute">Omogoči mikrofon</string>
     <string name="nc_plain_old_messages">Sporočila</string>
-    <string name="nc_privacy">Zasebnost</string>
     <string name="nc_profile_personal_info_title">Osebni podatki</string>
     <string name="nc_promote">Povišaj v vlogo moderatorja</string>
     <string name="nc_public_call_status">Javni pogovor</string>
@@ -475,7 +457,6 @@
     <string name="scope_private_title">Zasebno</string>
     <string name="scope_published_description">Usklajuj z varnimi strežniki in splošnimi in javnimi imeniki</string>
     <string name="scope_published_title">Objavljeno</string>
-    <string name="scope_toggle">Preklop obsega</string>
     <string name="scope_toggle_description">Spremeni pravila zasebnosti za %1$s</string>
     <string name="scroll_to_bottom">Podrsaj do dna</string>
     <string name="secondsAgo">pred nekaj sekundami</string>
@@ -487,7 +468,6 @@
     <string name="send_without_notification">Pošlji brez obvestila</string>
     <string name="set">Nastavi</string>
     <string name="set_avatar_from_camera">Nastavi sličico s kamero</string>
-    <string name="set_status">Nastavi stanje</string>
     <string name="set_status_message">Nastavi sporočilo stanja</string>
     <string name="share">Souporaba</string>
     <string name="shared_items_audio">Zvočni posnetek</string>

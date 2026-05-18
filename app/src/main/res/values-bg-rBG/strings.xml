@@ -35,8 +35,6 @@
     <string name="ecosystem_apps_more">Повече </string>
     <string name="ecosystem_apps_notes">Бележки</string>
     <string name="edit">Променяне</string>
-    <string name="edit_message_icon_description">Редактиране на съобщение</string>
-    <string name="emoji_category_recent">Скорошни</string>
     <string name="encrypted">Криптиран</string>
     <string name="end_call_for_everyone">Прекратяване на разговора за всички</string>
     <string name="error_loading_chats">Имаше проблем със зареждането на вашите чатове</string>
@@ -69,7 +67,6 @@
     <string name="nc_account_chooser_active_user">Активен потребител</string>
     <string name="nc_account_chooser_add_account">Добавяне на регистрация</string>
     <string name="nc_account_scheduled_for_deletion">Профилът е планиран за изтриване и не може да бъде променен</string>
-    <string name="nc_action_open_main_menu">Отворяне на главното меню</string>
     <string name="nc_add_attachment">Добавяне на прикачен файл</string>
     <string name="nc_add_emojis">Добавяне на емотикони</string>
     <string name="nc_add_file">Добави към разговор</string>
@@ -108,7 +105,6 @@
     <string name="nc_change_cert_auth">Променете сертификата за удостоверяване</string>
     <string name="nc_change_password">Промяна на парола</string>
     <string name="nc_clear_edit_button">Отказ на редактирането</string>
-    <string name="nc_clear_edit_message">Отказ на редактирането</string>
     <string name="nc_clear_history">Изтриване на всички съобщения</string>
     <string name="nc_clear_history_success">Всички съобщения бяха изтрити </string>
     <string name="nc_clear_history_warning">Сигурни ли сте, че искате да изтриете всички съобщения в този разговор?</string>
@@ -133,7 +129,6 @@
     <string name="nc_conversation_menu_conversation_info">Информация за разговор</string>
     <string name="nc_conversation_menu_video_call">Видео разговор</string>
     <string name="nc_conversation_menu_voice_call">Гласово обаждане</string>
-    <string name="nc_conversation_not_found">Разговорът не е намерен</string>
     <string name="nc_conversation_settings">Настройки за разговор</string>
     <string name="nc_conversations_empty">Присъединяване към разговор или започване на нов</string>
     <string name="nc_conversations_empty_details">Поздравете приятелите и колегите си!</string>
@@ -150,18 +145,6 @@
     <string name="nc_demote">Понижаване от модератор</string>
     <string name="nc_description_record_voice">Запис на гласово съобщение</string>
     <string name="nc_description_send_message_button">Изпрати съобщение</string>
-    <string name="nc_diagnose_account_category_title">Текущ профил</string>
-    <string name="nc_diagnose_account_server">Сървър</string>
-    <string name="nc_diagnose_account_user_name">Потребител</string>
-    <string name="nc_diagnose_android_version_title">Версия на Android</string>
-    <string name="nc_diagnose_app_category_title">Приложение</string>
-    <string name="nc_diagnose_app_name_title">Име на приложението</string>
-    <string name="nc_diagnose_app_users_amount">Регистрирани потребители</string>
-    <string name="nc_diagnose_battery_optimization_title">Настройки на батерията</string>
-    <string name="nc_diagnose_device_name_title">Устройство</string>
-    <string name="nc_diagnose_phone_category_title">Телефон</string>
-    <string name="nc_diagnose_signaling_mode_extern">Външен</string>
-    <string name="nc_diagnose_signaling_mode_intern">Вътрешна</string>
     <string name="nc_dialog_invalid_password">Невалидна парола</string>
     <string name="nc_dialog_outdated_client_option_update">Обновяване</string>
     <string name="nc_dialog_reauth_or_delete">Искате ли да разрешите повторно този профил или да го изтриете?</string>
@@ -272,7 +255,6 @@
     <string name="nc_pip_microphone_mute">Изключване на микрофона</string>
     <string name="nc_pip_microphone_unmute">Активиране на микрофона</string>
     <string name="nc_plain_old_messages">Съобщения</string>
-    <string name="nc_privacy">Защита на лични данни</string>
     <string name="nc_profile_personal_info_title">Лични данни</string>
     <string name="nc_promote">Повишаване до модератор</string>
     <string name="nc_push_disabled">Push/насочените/ известия са деактивирани</string>
@@ -459,7 +441,6 @@
     <string name="scope_private_title">Лично</string>
     <string name="scope_published_description">Синхронизиране с доверени сървъри и с глобалната и публичната адресна книга</string>
     <string name="scope_published_title">Публикувано</string>
-    <string name="scope_toggle">Превключване на обхват</string>
     <string name="scope_toggle_description">Промяна на нивото на поверителност на %1$s</string>
     <string name="scroll_to_bottom">Превъртане до долу</string>
     <string name="secondsAgo">преди секунди</string>
@@ -471,7 +452,6 @@
     <string name="send_without_notification">Изпращане без известие</string>
     <string name="set">Да се зададе</string>
     <string name="set_avatar_from_camera">Задаване на аватар от камерата</string>
-    <string name="set_status">Задаване на състояние</string>
     <string name="set_status_message">Задай състояние</string>
     <string name="share">Споделяне</string>
     <string name="shared_items_audio">Аудио</string>
