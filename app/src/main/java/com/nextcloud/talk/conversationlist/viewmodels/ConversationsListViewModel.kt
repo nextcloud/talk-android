@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.conversationlist.viewmodels
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -318,6 +319,7 @@ class ConversationsListViewModel @Inject constructor(
         }
     }
 
+    @SuppressLint("DefaultLocale")
     @Suppress("LongMethod")
     fun getSearchQuery(context: Context, filter: String) {
         // Rotation / display-off guard: if the composition restarts (config change) the
@@ -348,31 +350,66 @@ class ConversationsListViewModel @Inject constructor(
 
                 if (localConvs.isNotEmpty()) {
                     entries.add(ConversationListEntry.Header(conversationsTitle))
-                    localConvs.forEach { entries.add(ConversationListEntry.ConversationEntry(it)) }
+
+                    val pattern = """\b${Regex.escape(filter)}\b""".toRegex(RegexOption.IGNORE_CASE)
+
+                    processOrderAndAdd(
+                        localConvs,
+                        firstPredicate = { it.name.trim().equals(filter, ignoreCase = true) },
+                        secondPredicate = { it.name.contains(pattern) },
+                        addAction = {
+                            entries.add(ConversationListEntry.ConversationEntry(it))
+                        }
+                    )
                 }
                 if (openConvs.isNotEmpty()) {
                     entries.add(ConversationListEntry.Header(openConversationsTitle))
-                    openConvs.forEach { conv ->
-                        entries.add(
-                            ConversationListEntry.ConversationEntry(
-                                ConversationModel.mapToConversationModel(conv, currentUser)
+
+                    val pattern = """\b${Regex.escape(filter)}\b""".toRegex(RegexOption.IGNORE_CASE)
+
+                    processOrderAndAdd(
+                        openConvs,
+                        firstPredicate = { it.name.trim().equals(filter, ignoreCase = true) },
+                        secondPredicate = { it.name.contains(pattern) },
+                        addAction = { conv ->
+                            entries.add(
+                                ConversationListEntry.ConversationEntry(
+                                    ConversationModel.mapToConversationModel(conv, currentUser)
+                                )
                             )
-                        )
-                    }
+                        }
+                    )
                 }
                 if (contacts.isNotEmpty()) {
                     entries.add(ConversationListEntry.Header(usersTitle))
-                    contacts.forEach { autocompleteUser ->
-                        val participant = Participant()
-                        participant.actorId = autocompleteUser.id
-                        participant.actorType = actorTypeConverter.getFromString(autocompleteUser.source)
-                        participant.displayName = autocompleteUser.label
-                        entries.add(ConversationListEntry.ContactEntry(participant))
-                    }
+
+                    val pattern = """\s*${Regex.escape(filter)}\s*""".toRegex(RegexOption.IGNORE_CASE)
+
+                    processOrderAndAdd(
+                        contacts,
+                        firstPredicate = { it.label?.trim().equals(filter, ignoreCase = true) },
+                        secondPredicate = { it.label?.contains(pattern) ?: false },
+                        addAction = { autocompleteUser ->
+                            val participant = Participant()
+                            participant.actorId = autocompleteUser.id
+                            participant.actorType = actorTypeConverter.getFromString(autocompleteUser.source)
+                            participant.displayName = autocompleteUser.label
+                            entries.add(ConversationListEntry.ContactEntry(participant))
+                        }
+                    )
                 }
                 if (messages.isNotEmpty()) {
                     entries.add(ConversationListEntry.Header(messagesTitle))
-                    messages.forEach { msg -> entries.add(ConversationListEntry.MessageResultEntry(msg)) }
+
+                    val pattern = """\b${Regex.escape(filter)}\b""".toRegex(RegexOption.IGNORE_CASE)
+
+                    processOrderAndAdd(
+                        messages,
+                        firstPredicate = {
+                            it.messageExcerpt.contains(pattern)
+                        },
+                        addAction = { msg -> entries.add(ConversationListEntry.MessageResultEntry(msg)) }
+                    )
                 }
                 if (hasMore) entries.add(ConversationListEntry.LoadMore)
 
@@ -382,6 +419,30 @@ class ConversationsListViewModel @Inject constructor(
                 _isSearchLoadingFlow.value = false
             }
         }
+    }
+
+    // This function orders any arbitrary list according to
+    // [meets predicate 1][meets predicate 2]?[the rest]
+    // and applying a unit function upon the result of these reorderings
+    private fun <T> processOrderAndAdd(
+        list: List<T>,
+        firstPredicate: (T) -> Boolean,
+        secondPredicate: ((T) -> Boolean)? = null,
+        addAction: (T) -> Unit
+    ) {
+        val result = mutableListOf<T>()
+
+        val (firstPredicate, remainingFirst) = list.partition(firstPredicate)
+        result.addAll(firstPredicate)
+
+        if (secondPredicate != null) {
+            val (secondPredicate, remainingSecond) = remainingFirst.partition(secondPredicate)
+            result.addAll(secondPredicate + remainingSecond)
+        } else {
+            result.addAll(remainingFirst)
+        }
+
+        result.forEach(addAction)
     }
 
     private fun getMessagesFlow(search: String): Flow<MessageSearchResults> =
