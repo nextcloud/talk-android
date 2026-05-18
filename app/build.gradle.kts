@@ -184,7 +184,7 @@ configurations.configureEach {
     //
     // To analyse the dependencies:
     // `./gradlew :app:dependencyInsight --configuration genericDebugRuntimeClasspath --dependency com.google.protobuf:protobuf-java`
-    val protobufJava = "com.google.protobuf:protobuf-java:4.28.2"
+    val protobufJava = "com.google.protobuf:protobuf-java:4.34.1"
     resolutionStrategy {
         force(protobufJava)
         dependencySubstitution {
@@ -377,6 +377,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
 
     testImplementation("org.junit.vintage:junit-vintage-engine:6.0.3") // DO NOT REMOVE
+    testImplementation("com.google.crypto.tink:tink:1.20.0")
     testImplementation("androidx.room:room-testing:$roomVersion")
     testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
     testImplementation("com.google.dagger:hilt-android-testing:2.59.2")
