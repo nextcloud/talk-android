@@ -720,7 +720,7 @@ class ConversationsListActivity : BaseActivity() {
                     showSnackbar(getString(R.string.send_to_forbidden))
                 }
             } else if (conversation.checkIfVoiceRoom()) {
-                startACall(false, true)
+                showStartCallDialog()
             } else {
                 openConversation()
             }
@@ -1212,6 +1212,28 @@ class ConversationsListActivity : BaseActivity() {
         viewThemeUtils.platform.colorTextButtons(
             dialog.getButton(AlertDialog.BUTTON_POSITIVE),
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
+    }
+
+    fun showStartCallDialog() {
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.ic_call_black_24dp))
+            .setTitle(R.string.join_call)
+            .setPositiveButton(R.string.video_call) { _, _ ->
+                startACall(isVoiceOnlyCall = false, callWithoutNotification = false)
+            }
+            .setNegativeButton(R.string.audio_call) { _, _ ->
+                startACall(isVoiceOnlyCall = true, callWithoutNotification = false)
+            }
+            .setNeutralButton(R.string.nc_cancel) { _, _ -> }
+
+        viewThemeUtils.dialog
+            .colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
         )
     }
 
