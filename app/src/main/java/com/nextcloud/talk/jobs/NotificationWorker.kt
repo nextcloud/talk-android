@@ -30,6 +30,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.drawable.IconCompat
 import androidx.core.app.RemoteInput
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -76,7 +79,6 @@ import com.nextcloud.talk.utils.NotificationUtils.cancelAllNotificationsForAccou
 import com.nextcloud.talk.utils.NotificationUtils.cancelNotification
 import com.nextcloud.talk.utils.NotificationUtils.findNotificationForRoom
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
-import com.nextcloud.talk.utils.NotificationUtils.loadAvatarSync
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.PushUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -680,6 +682,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 }
                 addReplyAction(notificationBuilder, systemNotificationId)
                 addMarkAsReadAction(notificationBuilder, systemNotificationId)
+                pushConversationShortcut(notificationBuilder)
             }
         }
 
@@ -782,16 +785,42 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     private fun styleImageNotification(notificationBuilder: NotificationCompat.Builder) {
+        val notificationUser = pushMessage.notificationUser
+        val senderName = notificationUser?.name ?: ""
+        val conversationTitle = pushMessage.subject.ifEmpty { senderName }
+
+        val avatarBitmap = loadSenderAvatar(notificationUser)
+        if (avatarBitmap != null) {
+            notificationBuilder.setLargeIcon(avatarBitmap)
+        }
+
         val bitmap = loadImageBitmapSync(imagePreviewUrl!!)
         if (bitmap != null) {
-            notificationBuilder
-                .setLargeIcon(bitmap)
-                .setStyle(
-                    NotificationCompat.BigPictureStyle()
-                        .bigPicture(bitmap)
-                        .bigLargeIcon(null as Bitmap?)
-                )
+            notificationBuilder.setStyle(
+                NotificationCompat.BigPictureStyle()
+                    .bigPicture(bitmap)
+                    .bigLargeIcon(avatarBitmap)
+                    .setBigContentTitle(conversationTitle)
+            )
         }
+    }
+
+    private fun loadSenderAvatar(notificationUser: NotificationUser?): Bitmap? {
+        val userType = notificationUser?.type
+        if (userType != "user" && userType != "guest") return null
+
+        val baseUrl = signatureVerification.user!!.baseUrl
+        val avatarUrl = if ("user" == userType) {
+            ApiUtils.getUrlForAvatar(
+                baseUrl!!,
+                notificationUser.id,
+                false,
+                darkMode = DisplayUtils.isDarkModeOn(context!!)
+            )
+        } else {
+            ApiUtils.getUrlForGuestAvatar(baseUrl!!, notificationUser.name, false)
+        }
+        return NotificationUtils.loadAvatarBitmapSync(avatarUrl, context!!)
     }
 
     private fun loadImageBitmapSync(imageUrl: String): Bitmap? {
@@ -839,12 +868,57 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             } else {
                 ApiUtils.getUrlForGuestAvatar(baseUrl!!, notificationUser.name, false)
             }
-            person.setIcon(loadAvatarSync(avatarUrl, context!!))
+            val avatarBitmap = NotificationUtils.loadAvatarBitmapSync(avatarUrl, context!!)
+            if (avatarBitmap != null) {
+                person.setIcon(IconCompat.createWithBitmap(avatarBitmap))
+                notificationBuilder.setLargeIcon(avatarBitmap)
+            }
         }
-        notificationBuilder.setStyle(getStyle(person.build(), style))
+        val deviceUser = Person.Builder()
+            .setKey(signatureVerification.user!!.id.toString() + "@" + signatureVerification.user!!.userId)
+            .setName(signatureVerification.user!!.displayName ?: signatureVerification.user!!.userId ?: "You")
+            .build()
+        notificationBuilder.setStyle(getStyle(deviceUser, person.build(), style))
     }
 
-    private fun buildIntentForAction(cls: Class<*>, systemNotificationId: Int, messageId: Int): PendingIntent {
+    private fun pushConversationShortcut(notificationBuilder: NotificationCompat.Builder) {
+        val notificationUser = pushMessage.notificationUser ?: return
+        val roomToken = pushMessage.id ?: return
+
+        val shortcutId = "conversation_${signatureVerification.user!!.id}_$roomToken"
+
+        val personBuilder = Person.Builder()
+            .setKey(signatureVerification.user!!.id.toString() + "@" + notificationUser.id)
+            .setName(EmojiCompat.get().process(notificationUser.name!!))
+
+        val avatarBitmap = loadSenderAvatar(notificationUser)
+        if (avatarBitmap != null) {
+            personBuilder.setIcon(IconCompat.createWithBitmap(avatarBitmap))
+        }
+
+        val intent = Intent(context, MainActivity::class.java).apply {
+            action = Intent.ACTION_VIEW
+            putExtra(KEY_ROOM_TOKEN, roomToken)
+            putExtra(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id)
+        }
+
+        val shortcut = ShortcutInfoCompat.Builder(context!!, shortcutId)
+            .setShortLabel(pushMessage.subject.ifEmpty { notificationUser.name ?: "Chat" })
+            .setLongLived(true)
+            .setIntent(intent)
+            .setPerson(personBuilder.build())
+            .build()
+
+        ShortcutManagerCompat.pushDynamicShortcut(context!!, shortcut)
+        notificationBuilder.setShortcutId(shortcutId)
+    }
+
+    private fun buildIntentForAction(
+        cls: Class<*>,
+        systemNotificationId: Int,
+        messageId: Int,
+        mutable: Boolean = true
+    ): PendingIntent {
         val actualIntent = Intent(context, cls)
 
         // NOTE - systemNotificationId is an internal ID used on the device only.
@@ -855,7 +929,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         actualIntent.putExtra(KEY_MESSAGE_ID, messageId)
 
         val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            val mutabilityFlag = if (mutable) PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_IMMUTABLE
+            mutabilityFlag or PendingIntent.FLAG_UPDATE_CURRENT
         } else {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
@@ -874,7 +949,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             val pendingIntent = buildIntentForAction(
                 MarkAsReadReceiver::class.java,
                 systemNotificationId,
-                messageId
+                messageId,
+                mutable = false
             )
             val markAsReadAction = NotificationCompat.Action.Builder(
                 R.drawable.ic_mark_chat_read_24px,
@@ -984,9 +1060,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         notificationBuilder.addAction(shareRecordingAction)
     }
 
-    private fun getStyle(person: Person, style: NotificationCompat.MessagingStyle?): NotificationCompat.MessagingStyle {
-        val newStyle = NotificationCompat.MessagingStyle(person)
-        newStyle.conversationTitle = pushMessage.subject
+    private fun getStyle(
+        deviceUser: Person,
+        sender: Person,
+        style: NotificationCompat.MessagingStyle?
+    ): NotificationCompat.MessagingStyle {
+        val newStyle = NotificationCompat.MessagingStyle(deviceUser)
+        newStyle.conversationTitle = pushMessage.subject.ifEmpty { sender.name }
         newStyle.isGroupConversation = "one2one" != conversationType
         style?.messages?.forEach(
             Consumer { message: NotificationCompat.MessagingStyle.Message ->
@@ -999,7 +1079,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 )
             }
         )
-        newStyle.addMessage(pushMessage.text, pushMessage.timestamp, person)
+        newStyle.addMessage(pushMessage.text, pushMessage.timestamp, sender)
         return newStyle
     }
 
