@@ -746,6 +746,8 @@ class ChatActivity :
                     LocalMessageUtils provides messageUtils,
                     LocalOpenGraphFetcher provides { url -> chatViewModel.fetchOpenGraph(url) }
                 ) {
+                    val currentlyPlayingId by chatViewModel.currentlyPlayedMessageId.collectAsState(null)
+
                     val isOneToOneConversation = uiState.isOneToOneConversation
                     Log.d(TAG, "isOneToOneConversation=" + isOneToOneConversation)
 
@@ -765,6 +767,7 @@ class ChatActivity :
                         state = ChatViewState(
                             chatItems = uiState.items,
                             isOneToOneConversation = isOneToOneConversation,
+                            currentlyPlayingVoiceMessageId = currentlyPlayingId,
                             conversationThreadId = conversationThreadId,
                             chatMode = chatMode,
                             highlightedMessageId = uiState.highlightedMessageId,
