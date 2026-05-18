@@ -36,8 +36,6 @@
     <string name="ecosystem_apps_more">더 보기</string>
     <string name="ecosystem_apps_notes">메모</string>
     <string name="edit">편집</string>
-    <string name="edit_message_icon_description">메시지 편집</string>
-    <string name="emoji_category_recent">최근 항목</string>
     <string name="encrypted">암호화</string>
     <string name="end_call_for_everyone">모든 이들에 대해 통화 끝내기</string>
     <string name="error_loading_chats">당신의 채팅을 불러들이는데 문제가 생겼습니다.</string>
@@ -73,7 +71,6 @@
     <string name="nc_account_chooser_active_user">활성 사용자</string>
     <string name="nc_account_chooser_add_account">계정 추가</string>
     <string name="nc_account_scheduled_for_deletion">이 계정이 삭제 예정이며 변경할 수 없음</string>
-    <string name="nc_action_open_main_menu">메인메뉴 열기</string>
     <string name="nc_add_attachment">첨부파일 추가</string>
     <string name="nc_add_emojis">이모티콘 추가</string>
     <string name="nc_add_file">대화에 추가</string>
@@ -105,7 +102,6 @@
     <string name="nc_change_cert_auth">인증서 변경</string>
     <string name="nc_change_password">암호 변경</string>
     <string name="nc_clear_edit_button">수정 취소</string>
-    <string name="nc_clear_edit_message">수정 취소</string>
     <string name="nc_clear_history">모든 메시지 삭제</string>
     <string name="nc_clear_history_success">모든 메시지가 삭제되었습니다.</string>
     <string name="nc_clear_history_warning">이 대화에서 모든 메시지를 삭제하시겠습니까?</string>
@@ -146,17 +142,6 @@
     <string name="nc_demote">중재자 권한 제거</string>
     <string name="nc_description_record_voice">음성 메시지 녹음</string>
     <string name="nc_description_send_message_button">메시지 보내기</string>
-    <string name="nc_diagnose_account_category_title">현재 계정</string>
-    <string name="nc_diagnose_account_server">서버</string>
-    <string name="nc_diagnose_account_user_name">사용자</string>
-    <string name="nc_diagnose_android_version_title">안드로이드 버전</string>
-    <string name="nc_diagnose_app_category_title">앱</string>
-    <string name="nc_diagnose_app_name_title">앱 이름</string>
-    <string name="nc_diagnose_app_users_amount">등록된 사용자</string>
-    <string name="nc_diagnose_battery_optimization_title">배터리 설정</string>
-    <string name="nc_diagnose_device_name_title">장치</string>
-    <string name="nc_diagnose_signaling_mode_extern">외부</string>
-    <string name="nc_diagnose_signaling_mode_intern">내부</string>
     <string name="nc_dialog_invalid_password">잘못된 암호</string>
     <string name="nc_dialog_outdated_client_option_update">업데이트</string>
     <string name="nc_dialog_reauth_or_delete">이 계정을 재인증하거나 삭제하시겠습니까?</string>
@@ -226,7 +211,6 @@
     <string name="nc_mark_as_read">읽은 것으로 표시</string>
     <string name="nc_mark_as_unread">읽지 않은 것으로 표시</string>
     <string name="nc_message_failed_to_send">메시지 전송을 실패하였습니다:</string>
-    <string name="nc_message_offline">오프라인</string>
     <string name="nc_message_quote_cancel_reply">응답 취소</string>
     <string name="nc_message_read">메시지 읽음</string>
     <string name="nc_message_sending">메시지 보내는 중</string>
@@ -269,7 +253,6 @@
     <string name="nc_pip_microphone_mute">음소거 마이크</string>
     <string name="nc_pip_microphone_unmute">마이크 활성화</string>
     <string name="nc_plain_old_messages">메시지</string>
-    <string name="nc_privacy">개인 정보 취급 방침</string>
     <string name="nc_profile_personal_info_title">개인 정보</string>
     <string name="nc_promote">중재자 권한 부여</string>
     <string name="nc_push_disabled">푸시 알림이 비활성화됨</string>
@@ -450,7 +433,6 @@
     <string name="scope_private_title">비공개</string>
     <string name="scope_published_description">신뢰할 수 있는 서버와 전역 및 개인 연락처에 동기화</string>
     <string name="scope_published_title">발행됨</string>
-    <string name="scope_toggle">범위 전환</string>
     <string name="scope_toggle_description">%1$s의 프라이버시 수준에 대한 변경</string>
     <string name="scroll_to_bottom">아래로 스크롤</string>
     <string name="secondsAgo">초 전</string>
@@ -462,7 +444,6 @@
     <string name="send_without_notification">알림 없이 전송</string>
     <string name="set">설정</string>
     <string name="set_avatar_from_camera">카메라에서 아바타를 설정하다</string>
-    <string name="set_status">상태 설정</string>
     <string name="set_status_message">상태 메시지 설정</string>
     <string name="share">공유</string>
     <string name="shared_items_audio">오디오</string>

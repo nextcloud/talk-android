@@ -3,7 +3,6 @@
     <string name= "nc_edit">ویرایش</string>
     <string name="add_participants">افزودن</string>
     <string name="add_to_notes">افزودن به یادداشت‌ها</string>
-    <string name="added_to_favorites">گفتگوی %1$sبه علاقه‌مندی‌ها افزوده شد</string>
     <string name="appbar_search_in">جستجو در %s</string>
     <string name="appear_offline">نمایش آفلاین</string>
     <string name="archived">Archived</string>
@@ -39,8 +38,6 @@
     <string name="ecosystem_apps_more">بیشتر</string>
     <string name="ecosystem_apps_notes">یادداشت‌ها</string>
     <string name="edit">ویرایش</string>
-    <string name="edit_message_icon_description">Edit message</string>
-    <string name="emoji_category_recent">اخیر</string>
     <string name="encrypted">Encrypted</string>
     <string name="end_call_for_everyone">End call for everyone</string>
     <string name="fifteenMinutes">۱۵ دقیقه</string>
@@ -71,7 +68,6 @@
     <string name="nc_account_chooser_active_user">کاربر فعال</string>
     <string name="nc_account_chooser_add_account">افزودن حساب کاربری</string>
     <string name="nc_account_scheduled_for_deletion">حساب برای حذف برنامه ریزی شده است و قابل تغییر نیست</string>
-    <string name="nc_action_open_main_menu">باز کردن منوی اصلی</string>
     <string name="nc_add_attachment">افزودن پیوست</string>
     <string name="nc_add_emojis">افزودن صورتک</string>
     <string name="nc_add_file">افزودن به مکالمه</string>
@@ -103,7 +99,6 @@
     <string name="nc_change_cert_auth">گواهی تأیید اعتبار را تغییر دهید</string>
     <string name="nc_change_password">تغییر گذرواژه</string>
     <string name="nc_clear_edit_button">Cancel editing</string>
-    <string name="nc_clear_edit_message">Cancel editing</string>
     <string name="nc_clear_history">حذف تمام پیام‌ها</string>
     <string name="nc_clear_history_success">تمام پیام‌ها حذف شدند</string>
     <string name="nc_clear_history_warning">آیا واقعا می‌خواهید تمام پیام‌ها را در این مکالمه حذف کنید؟</string>
@@ -142,18 +137,6 @@
     <string name="nc_demote">تنزل مقام از مدیر</string>
     <string name="nc_description_record_voice">ضبط پیام صوتی</string>
     <string name="nc_description_send_message_button">فرستادن پیام</string>
-    <string name="nc_diagnose_account_category_title">حساب جاری</string>
-    <string name="nc_diagnose_account_server">سرور</string>
-    <string name="nc_diagnose_account_user_name">کاربر</string>
-    <string name="nc_diagnose_android_version_title">نسخه اندروید</string>
-    <string name="nc_diagnose_app_category_title">کاره</string>
-    <string name="nc_diagnose_app_name_title">نام کاره</string>
-    <string name="nc_diagnose_app_users_amount">Registered users</string>
-    <string name="nc_diagnose_battery_optimization_title">تنظیمات باتری</string>
-    <string name="nc_diagnose_device_name_title">افزاره</string>
-    <string name="nc_diagnose_phone_category_title">تلفن</string>
-    <string name="nc_diagnose_signaling_mode_extern">خارجی</string>
-    <string name="nc_diagnose_signaling_mode_intern">داخلی</string>
     <string name="nc_dialog_invalid_password">گذرواژه نادرست</string>
     <string name="nc_dialog_outdated_client">برنامه، قدیمی شده است</string>
     <string name="nc_dialog_outdated_client_option_update">به‌روز رسانی</string>
@@ -208,7 +191,6 @@
     <string name="nc_mark_as_read">علامت به عنوان خوانده‌شده</string>
     <string name="nc_mark_as_unread">علامت به عنوان خوانده‌نشده</string>
     <string name="nc_message_failed_to_send">ناتوانی در فرستادن پیام:</string>
-    <string name="nc_message_offline">آفلاین</string>
     <string name="nc_message_quote_cancel_reply">لغو پاسخ</string>
     <string name="nc_message_read">پیام، خوانده شد</string>
     <string name="nc_message_sending">Sending message</string>
@@ -248,7 +230,6 @@
     <string name="nc_pip_microphone_mute">بی‌صدا کردن میکروفن</string>
     <string name="nc_pip_microphone_unmute">فعال کردن میکروفن</string>
     <string name="nc_plain_old_messages">پیام‌ها</string>
-    <string name="nc_privacy">حریم خصوصی</string>
     <string name="nc_profile_personal_info_title">مشخصات شخصی</string>
     <string name="nc_promote">ترفیع به مدیر</string>
     <string name="nc_push_disabled">دریافت اعلانات غیرفعال است</string>
@@ -399,7 +380,6 @@
     <string name="send_email">فرستادن رایانامه</string>
     <string name="send_to">فرستادن به</string>
     <string name="set">تنظیم</string>
-    <string name="set_status">تنظیم وضعیت</string>
     <string name="set_status_message">تنظیم پیام وضعیت</string>
     <string name="share">هم‌رسانی</string>
     <string name="shared_items_audio">صدا</string>

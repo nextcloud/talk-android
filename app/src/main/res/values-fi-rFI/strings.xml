@@ -35,8 +35,6 @@
     <string name="ecosystem_apps_more">Lisää</string>
     <string name="ecosystem_apps_notes">Muistiinpanot</string>
     <string name="edit">Muokkaa</string>
-    <string name="edit_message_icon_description">Muokkaa viestiä</string>
-    <string name="emoji_category_recent">Viimeaikaiset</string>
     <string name="encrypted">Salattu</string>
     <string name="end_call">Lopeta puhelu</string>
     <string name="end_call_for_everyone">Päätä puhelu kaikkien osalta</string>
@@ -69,7 +67,6 @@
     <string name="nc_account_chooser_active_user">Aktiivinen käyttäjä</string>
     <string name="nc_account_chooser_add_account">Lisää tili</string>
     <string name="nc_account_scheduled_for_deletion">Tili on aikataulutettu poistettavaksi, joten tiliä ei voi muuttaa</string>
-    <string name="nc_action_open_main_menu">Avaa päävalikko</string>
     <string name="nc_add_attachment">Lisää liite</string>
     <string name="nc_add_emojis">Lisää emoji</string>
     <string name="nc_add_file">Lisää keskusteluun</string>
@@ -92,7 +89,6 @@
     <string name="nc_change_cert_auth">Vaihda tunnistautumisvarmenne</string>
     <string name="nc_change_password">Vaihda salasana</string>
     <string name="nc_clear_edit_button">Peruuta muokkaus</string>
-    <string name="nc_clear_edit_message">Peruuta muokkaus</string>
     <string name="nc_clear_history">Poista kaikki viestit</string>
     <string name="nc_clear_history_success">Kaikki viestit poistettiin</string>
     <string name="nc_clear_history_warning">Haluatko varmasti poistaa kaikki viestit tästä keskustelusta?</string>
@@ -116,7 +112,6 @@
     <string name="nc_conversation_menu_conversation_info">Keskustelun tiedot</string>
     <string name="nc_conversation_menu_video_call">Videopuhelu</string>
     <string name="nc_conversation_menu_voice_call">Äänipuhelu</string>
-    <string name="nc_conversation_not_found">Keskustelua ei löydy</string>
     <string name="nc_conversation_settings">Keskustelun asetukset</string>
     <string name="nc_conversations_empty">Liity keskusteluun tai aloita uusi</string>
     <string name="nc_conversations_empty_details">Sano hei ystävillesi ja työkavereillesi!</string>
@@ -133,18 +128,6 @@
     <string name="nc_demote">Alenna moderaattorista</string>
     <string name="nc_description_record_voice">Äänitä ääniviesti</string>
     <string name="nc_description_send_message_button">Lähetä viesti</string>
-    <string name="nc_diagnose_account_category_title">Nykyinen tili</string>
-    <string name="nc_diagnose_account_server">Palvelin</string>
-    <string name="nc_diagnose_account_user_name">Käyttäjä</string>
-    <string name="nc_diagnose_android_version_title">Android-versio</string>
-    <string name="nc_diagnose_app_category_title">Sovellus</string>
-    <string name="nc_diagnose_app_name_title">Sovelluksen nimi</string>
-    <string name="nc_diagnose_app_users_amount">Rekisteröityneet käyttäjät</string>
-    <string name="nc_diagnose_battery_optimization_title">Akkuasetukset</string>
-    <string name="nc_diagnose_device_name_title">Laite</string>
-    <string name="nc_diagnose_phone_category_title">Puhelin</string>
-    <string name="nc_diagnose_signaling_mode_extern">Ulkoinen</string>
-    <string name="nc_diagnose_signaling_mode_intern">Sisäinen</string>
     <string name="nc_dialog_invalid_password">Virheellinen salasana</string>
     <string name="nc_dialog_outdated_client_option_update">Päivitä</string>
     <string name="nc_dialog_reauth_or_delete">Haluatko valtuuttaa tämän tilin uudelleen vai poistaa tilin?</string>
@@ -203,7 +186,6 @@
     <string name="nc_mark_as_read">Merkitse luetuksi</string>
     <string name="nc_mark_as_unread">Merkitse lukemattomaksi</string>
     <string name="nc_message_failed_to_send">Viestin lähettäminen epäonnistui:</string>
-    <string name="nc_message_offline">Poissa</string>
     <string name="nc_message_quote_cancel_reply">Peruuta vastaus</string>
     <string name="nc_message_read">Viesti luettu</string>
     <string name="nc_message_sending">Lähetetään viestiä</string>
@@ -238,7 +220,6 @@
     <string name="nc_pip_microphone_mute">Mykistä mikrofoni</string>
     <string name="nc_pip_microphone_unmute">Käytä mikrofonia</string>
     <string name="nc_plain_old_messages">Viestit</string>
-    <string name="nc_privacy">Yksityisyys</string>
     <string name="nc_profile_personal_info_title">Henkilökohtaiset tiedot</string>
     <string name="nc_promote">Ylennä moderaattoriksi</string>
     <string name="nc_public_call_status">Julkinen keskustelu</string>
@@ -398,7 +379,6 @@
     <string name="send_to_three_dots">Lähetä…</string>
     <string name="send_without_notification">Lähetä ilman ilmoitusta</string>
     <string name="set">Aseta</string>
-    <string name="set_status">Aseta tilatieto</string>
     <string name="set_status_message">Aseta tilaviesti</string>
     <string name="share">Jaa</string>
     <string name="shared_items_audio">Ääni</string>

@@ -35,8 +35,6 @@
     <string name="ecosystem_apps_more">Περισσότερα</string>
     <string name="ecosystem_apps_notes">Σημειώσεις</string>
     <string name="edit">Επεξεργασία</string>
-    <string name="edit_message_icon_description">Επεξεργασία μηνύματος</string>
-    <string name="emoji_category_recent">Πρόσφατα</string>
     <string name="encrypted">Κρυπτογραφημένο</string>
     <string name="end_call">Τερματισμός κλήσης</string>
     <string name="end_call_for_everyone">Τερματισμός κλήσης για όλους</string>
@@ -71,7 +69,6 @@
     <string name="nc_account_chooser_active_user">Ενεργός χρήστης</string>
     <string name="nc_account_chooser_add_account">Προσθήκη λογαριασμού</string>
     <string name="nc_account_scheduled_for_deletion">Ο λογαριασμός προγραμματίστηκε να διαγραφή και δεν μπορεί να αλλάξει</string>
-    <string name="nc_action_open_main_menu">Άνοιγμα κυρίως μενού</string>
     <string name="nc_add_attachment">Προσθήκη συνημμένου</string>
     <string name="nc_add_emojis">Προσθήκη emojis</string>
     <string name="nc_add_file">Προσθήκη στη συζήτηση</string>
@@ -100,7 +97,6 @@
     <string name="nc_change_cert_auth">Αλλαγή πιστοποιητικού πιστοποίησης</string>
     <string name="nc_change_password">Αλλαγή συνθηματικού</string>
     <string name="nc_clear_edit_button">Ακύρωση επεξεργασίας</string>
-    <string name="nc_clear_edit_message">Ακύρωση επεξεργασίας</string>
     <string name="nc_clear_history">Διαγραφή όλων των μηνυμάτων</string>
     <string name="nc_clear_history_success">Όλα τα μηνύματα διαγράφηκαν</string>
     <string name="nc_clear_history_warning">Θέλετε πραγματικά να διαγράψετε όλα τα μηνύματα σε αυτήν τη συνομιλία;</string>
@@ -125,14 +121,12 @@
     <string name="nc_conversation_menu_conversation_info">Πληροφορίες συνομιλίας</string>
     <string name="nc_conversation_menu_video_call">Κλήση βίντεο</string>
     <string name="nc_conversation_menu_voice_call">Κλήση ήχου</string>
-    <string name="nc_conversation_not_found">Η συζήτηση δεν βρέθηκε</string>
     <string name="nc_conversation_settings">Ρυθμίσεις συνομιλίας</string>
     <string name="nc_conversations_empty">Συμμετέχετε σε συνομιλία ή ξεκινήστε μια νέα</string>
     <string name="nc_conversations_empty_details">Πείτε γειά σε φίλους και συνεργάτες!</string>
     <string name="nc_copy_message">Αντιγραφή</string>
     <string name="nc_create_new_conversation">Δημιουργία νέας συνομιλίας</string>
     <string name="nc_create_poll">Δημιουργία ψηφοφορίας</string>
-    <string name="nc_current_user">Εσείς:</string>
     <string name="nc_date_header_today">Σήμερα</string>
     <string name="nc_date_header_yesterday">Χθές</string>
     <string name="nc_delete">Διαγραφή</string>
@@ -145,17 +139,6 @@
     <string name="nc_demote">Υποβάθμιση από συντονιστή</string>
     <string name="nc_description_record_voice">Εγγραφή φωνητικού μηνύματος</string>
     <string name="nc_description_send_message_button">Αποστολή μηνύματος</string>
-    <string name="nc_diagnose_account_category_title">Τρέχον λογαριασμός</string>
-    <string name="nc_diagnose_account_server">Διακομιστής</string>
-    <string name="nc_diagnose_account_user_name">Χρήστης</string>
-    <string name="nc_diagnose_android_version_title">Έκδοση Android</string>
-    <string name="nc_diagnose_app_category_title">Εφαρμογή</string>
-    <string name="nc_diagnose_app_name_title">Όνομα εφαρμογής</string>
-    <string name="nc_diagnose_battery_optimization_title">Ρυθμίσεις μπαταρίας</string>
-    <string name="nc_diagnose_device_name_title">Συσκευή</string>
-    <string name="nc_diagnose_phone_category_title">Τηλέφωνο</string>
-    <string name="nc_diagnose_signaling_mode_extern">Εξωτερικό</string>
-    <string name="nc_diagnose_signaling_mode_intern">Εσωτερικό</string>
     <string name="nc_dialog_invalid_password">Λανθασμένο συνθηματικό</string>
     <string name="nc_dialog_outdated_client_option_update">Ενημέρωση</string>
     <string name="nc_dialog_reauth_or_delete">Θέλετε να εξουσιοδοτήσετε εκ νέου ή να διαγράψετε αυτόν τον λογαριασμό;</string>
@@ -219,7 +202,6 @@
     <string name="nc_manual">Δεν ορίστηκε</string>
     <string name="nc_mark_as_read">Σήμανση ως αναγνωσμένο</string>
     <string name="nc_mark_as_unread">επισήμανση ως μή-αναγνωσμένο</string>
-    <string name="nc_message_offline">Εκτός σύνδεσης</string>
     <string name="nc_message_quote_cancel_reply">Ακύρωση απάντησης</string>
     <string name="nc_message_read">Το μήνυμα διαβάστηκε</string>
     <string name="nc_message_sending">Αποστολή μηνύματος</string>
@@ -255,7 +237,6 @@
     <string name="nc_phone_book_integration_account_not_found">Δεν βρέθηκε λογαριασμός</string>
     <string name="nc_phone_book_integration_chat_via">Συνομιλία μέσω %s</string>
     <string name="nc_plain_old_messages">Μηνύματα</string>
-    <string name="nc_privacy">Ιδιωτικότητα</string>
     <string name="nc_profile_personal_info_title">Προσωπικές πληροφορίες</string>
     <string name="nc_promote">Προαγωγή από συντονιστή</string>
     <string name="nc_public_call_status">Δημόσια συνομιλία</string>
@@ -445,7 +426,6 @@
     <string name="send_to_three_dots">Αποστολή σε …</string>
     <string name="send_without_notification">Αποστολή χωρίς ειδοποίηση</string>
     <string name="set">Ορισμός</string>
-    <string name="set_status">Ορισμός κατάστασης</string>
     <string name="set_status_message">Ορισμός μηνύματος κατάστασης</string>
     <string name="share">Διαμοιρασμός</string>
     <string name="shared_items_audio">Ήχος</string>

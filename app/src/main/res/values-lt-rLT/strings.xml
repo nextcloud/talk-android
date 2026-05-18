@@ -3,7 +3,6 @@
     <string name= "nc_edit">Redaguoti</string>
     <string name="add_participants">Pridėti</string>
     <string name="add_to_notes">Pridėti į Užrašus</string>
-    <string name="added_to_favorites">%1$s pokalbis įtrauktas į mėgstamiausius</string>
     <string name="appbar_search_in">Ieškoti %s</string>
     <string name="appear_offline">Atrodyti atsijungusiu</string>
     <string name="archive_conversation">Archyvuoti pokalbį</string>
@@ -64,8 +63,6 @@
     <string name="ecosystem_apps_notes">Užrašai</string>
     <string name="edit">Taisyti</string>
     <string name="edit_error_24_hours_old_message">Pranešimų, kurių senumas viršija 24 valandas, redaguoti negalima</string>
-    <string name="edit_message_icon_description">Redaguoti laišką</string>
-    <string name="emoji_category_recent">Paskiausi</string>
     <string name="encrypted">Užšifruota</string>
     <string name="end_call">Baigti pokalbį</string>
     <string name="end_call_for_everyone">Baigti pokalbį visiems</string>
@@ -96,8 +93,6 @@
     <string name="lock_conversation">Užrakinti pokalbį</string>
     <string name="lock_symbol">Užrakto simbolis</string>
     <string name="lower_hand">Nuleisti ranką</string>
-    <string name="marked_as_read">%1$s pokalbis pažymėtas kaip perskaitytas</string>
-    <string name="marked_as_unread">%1$s pokalbis pažymėtas kaip neperskaitytas</string>
     <string name="media_message_content_description">Failo peržiūra</string>
     <string name="media_message_content_play">Paleisti medijos failą</string>
     <string name="mention_open_chat_with">Atverti pokalbį su %1$s</string>
@@ -126,7 +121,6 @@
     <string name="nc_account_chooser_active_user">Aktyvus vartotojas</string>
     <string name="nc_account_chooser_add_account">Pridėti paskyrą</string>
     <string name="nc_account_scheduled_for_deletion">Paskyra yra suplanuota ištrynimui ir negali būti pakeista</string>
-    <string name="nc_action_open_main_menu">Atverti pagrindinį meniu</string>
     <string name="nc_add_attachment">Pridėti priedą</string>
     <string name="nc_add_emojis">Pridėti emociukų</string>
     <string name="nc_add_file">Pridėti į pokalbį</string>
@@ -169,7 +163,6 @@
     <string name="nc_change_cert_auth">Keisti tapatybės nustatymo liudijimą</string>
     <string name="nc_change_password">Pakeisti slaptažodį</string>
     <string name="nc_clear_edit_button">Atšaukti redagavimą</string>
-    <string name="nc_clear_edit_message">Atšaukti redagavimą</string>
     <string name="nc_clear_history">Ištrinti visas žinutes</string>
     <string name="nc_clear_history_success">Visos žinutės buvo ištrintos</string>
     <string name="nc_clear_history_warning">Ar tikrai norite ištrinti visas šiame pokalbyje esančias žinutes?</string>
@@ -195,14 +188,12 @@
     <string name="nc_conversation_menu_conversation_info">Pokalbio informacija</string>
     <string name="nc_conversation_menu_video_call">Vaizdo skambutis</string>
     <string name="nc_conversation_menu_voice_call">Balso skambutis</string>
-    <string name="nc_conversation_not_found">Pokalbis nerastas</string>
     <string name="nc_conversation_settings">Pokalbio nustatymai</string>
     <string name="nc_conversations_empty">Prisijunkite prie pokalbio arba pradėkite naują</string>
     <string name="nc_conversations_empty_details">Pasisveikinkite su savo draugais ir kolegomis!</string>
     <string name="nc_copy_message">Kopijuoti</string>
     <string name="nc_create_new_conversation">Sukurti naują pokalbį</string>
     <string name="nc_create_poll">Sukurti apklausą</string>
-    <string name="nc_current_user">Jūs:</string>
     <string name="nc_date_header_today">Šiandien</string>
     <string name="nc_date_header_yesterday">Vakar</string>
     <string name="nc_delete">Ištrinti</string>
@@ -216,45 +207,6 @@
     <string name="nc_demote">Pašalinti iš moderatorių</string>
     <string name="nc_description_record_voice">Įrašyti balso pranešimą</string>
     <string name="nc_description_send_message_button">Siųsti žinutę</string>
-    <string name="nc_diagnose_account_category_title">Dabartinė paskyra</string>
-    <string name="nc_diagnose_account_server">Serveris</string>
-    <string name="nc_diagnose_account_server_notification_app">Ar įdiegta serverio pranešimų programėlė?</string>
-    <string name="nc_diagnose_account_user_name">Naudotojas</string>
-    <string name="nc_diagnose_account_user_status_enabled">Ar įjungta vartotojo būsena?</string>
-    <string name="nc_diagnose_android_version_title">Android versija</string>
-    <string name="nc_diagnose_app_category_title">Programėlė</string>
-    <string name="nc_diagnose_app_name_title">Programėlės pavadinimas</string>
-    <string name="nc_diagnose_app_users_amount">Registruoti vartotojai</string>
-    <string name="nc_diagnose_app_version_title">Programėlės versija</string>
-    <string name="nc_diagnose_battery_optimization_ignored">Baterijos optimizavimas ignoruojamas, viskas gerai</string>
-    <string name="nc_diagnose_battery_optimization_not_ignored">Įjungtas akumuliatoriaus optimizavimas, kuris gali sukelti problemų. Turėtumėte išjungti akumuliatoriaus optimizavimą!</string>
-    <string name="nc_diagnose_battery_optimization_title">Akumuliatoriaus nustatymai</string>
-    <string name="nc_diagnose_device_name_title">Įrenginys</string>
-    <string name="nc_diagnose_dialog_open_checklist">Atidaryti trikčių šalinimo kontrolinį sąrašą</string>
-    <string name="nc_diagnose_dialog_open_diagnose">Atidaryti diagnostikos langą</string>
-    <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Atidaryti dontkillmyapp.com</string>
-    <string name="nc_diagnose_firebase_push_token_latest_fetch">Naujausias „Firebase“ „push“ žymės gavimas</string>
-    <string name="nc_diagnose_firebase_push_token_latest_generated">Naujausias „Firebase“ „push“ žymės sukūrimas</string>
-    <string name="nc_diagnose_firebase_push_token_missing">Nenustatyta „Firebase“ „push“ žymė. Prašome pateikti pranešimą apie klaidą.</string>
-    <string name="nc_diagnose_firebase_push_token_title">„Firebase“ „push“ žymė</string>
-    <string name="nc_diagnose_gplay_available_no">„Google Play“ paslaugos neprieinamos. Pranešimai nepalaikomi</string>
-    <string name="nc_diagnose_gplay_available_title">„Google Play“ paslaugos</string>
-    <string name="nc_diagnose_gplay_available_yes">„Google Play“ paslaugos yra prieinamos</string>
-    <string name="nc_diagnose_latest_push_registration_at_push_proxy">Paskutinė „push“ registracija „push“ tarpiniame serveryje</string>
-    <string name="nc_diagnose_latest_push_registration_at_push_proxy_fail">Dar neregistruotas „push“ tarpiniame serveryje</string>
-    <string name="nc_diagnose_latest_push_registration_at_server">Naujausia „push“ registracija serveryje</string>
-    <string name="nc_diagnose_latest_push_registration_at_server_fail">Dar neregistruota serveryje</string>
-    <string name="nc_diagnose_meta_category_title">Metainformacija</string>
-    <string name="nc_diagnose_meta_system_report_date">Sistemos ataskaitos generavimas</string>
-    <string name="nc_diagnose_notification_calls_channel_permission">Ar įjungtas skambučių pranešimų kanalas?</string>
-    <string name="nc_diagnose_notification_messages_channel_permission">Ar įjungtas pranešimų kanalas?</string>
-    <string name="nc_diagnose_notification_permission">Pranešimų leidimai</string>
-    <string name="nc_diagnose_phone_category_title">Telefonas</string>
-    <string name="nc_diagnose_server_talk_version">Serverio „Talk“ versija</string>
-    <string name="nc_diagnose_server_version">Serverio versija</string>
-    <string name="nc_diagnose_signaling_mode_extern">Išorinis</string>
-    <string name="nc_diagnose_signaling_mode_intern">Vidinis</string>
-    <string name="nc_diagnose_signaling_mode_title">Signalinio ryšio režimas</string>
     <string name="nc_diagnosis_dialog_open_checklist">Atidaryti trikčių šalinimo kontrolinį sąrašą</string>
     <string name="nc_diagnosis_dialog_open_diagnosis">Atidaryti diagnostikos langą</string>
     <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Atidaryti dontkillmyapp.com</string>
@@ -347,15 +299,10 @@
     <string name="nc_manual">Nenustatyta</string>
     <string name="nc_mark_as_read">Žymėti kaip skaitytą</string>
     <string name="nc_mark_as_unread">Žymėti kaip neskaitytą</string>
-    <string name="nc_mark_conversation_as_important">Pokalbis pažymėtas kaip svarbus</string>
-    <string name="nc_mark_conversation_as_insensitive">Pokalbio žymėjimas kaip jautraus atžymėtas</string>
-    <string name="nc_mark_conversation_as_sensitive">Pokalbis pažymėtas kaip jautrus</string>
-    <string name="nc_mark_conversation_as_unimportant">Pokalbis nebepažymėtas kaip svarbus</string>
     <string name="nc_meeting_ended">Susitikimas baigėsi</string>
     <string name="nc_message_added_to_notes">Pranešimas pridėtas prie užrašų</string>
     <string name="nc_message_failed">Nepavyko išsiųsti pranešimo</string>
     <string name="nc_message_failed_to_send">Nepavyko išsiųsti pranešimo:</string>
-    <string name="nc_message_offline">Neprisijungęs</string>
     <string name="nc_message_quote_cancel_reply">Atšaukti atsakymą</string>
     <string name="nc_message_read">Pranešimas perskaitytas</string>
     <string name="nc_message_scheduled">Žinutė suplanuota</string>
@@ -414,7 +361,6 @@
     <string name="nc_pip_microphone_mute">Išjungti mikrofoną</string>
     <string name="nc_pip_microphone_unmute">Įjungti mikrofoną</string>
     <string name="nc_plain_old_messages">Žinutės</string>
-    <string name="nc_privacy">Privatumas</string>
     <string name="nc_profile_personal_info_title">Asmeninė informacija</string>
     <string name="nc_promote">Paaukštinti į moderatorius</string>
     <string name="nc_public_call_status">Viešas pokalbis</string>
@@ -472,7 +418,7 @@
     <string name="nc_sent_an_audio_you">Jūs išsiuntėte garso įrašą.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s išsiuntė paveikslą.</string>
     <string name="nc_sent_an_image_you">Jūs išsiuntėte paveikslą.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s išsiuntė „Deck“ kortelę</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s išsiuntė darbų kortelę</string>
     <string name="nc_server_connect">Patikrinkite serverio ryšį</string>
     <string name="nc_server_db_upgrade_needed">Atnaujinkite savo %1$s duomenų bazę</string>
     <string name="nc_server_failed_to_import_account">Nepavyko importuoti pasirinktą paskyrą</string>
@@ -495,8 +441,6 @@
     <string name="nc_settings_appearance">Išvaizda</string>
     <string name="nc_settings_call_ringtone">Skambučiai</string>
     <string name="nc_settings_contact_admin_of">Prašome susisiekti su administratoriumi</string>
-    <string name="nc_settings_diagnose_subtitle">Atidarykite diagnostikos ekraną, kad patikrintumėte nustatymus arba sukurtumėte klaidos ataskaitą</string>
-    <string name="nc_settings_diagnose_title">Diagnozė</string>
     <string name="nc_settings_diagnosis_subtitle">Atidarykite diagnostikos langą, kad patikrintumėte nustatymus arba sukurtumėte pranešimą apie klaidą</string>
     <string name="nc_settings_diagnosis_title">Diagnozė</string>
     <string name="nc_settings_incognito_keyboard_desc">Nurodo klaviatūrai išjungti individualizuotą mokymąsi (be garantijų)</string>
@@ -652,7 +596,6 @@
     <string name="polls_voted_hidden_success">Balsavimas pateiktas</string>
     <string name="previously_set">Anksčiau nustatyta</string>
     <string name="qr_code_error">Nepavyko nuskaityti QR kodo</string>
-    <string name="quoted_message_too_old">Šis pranešimas per senas, kad būtų rodomas</string>
     <string name="raise_hand">Pakelti ranką</string>
     <string name="reaction_forbidden">Šiame pokalbyje jums neleidžiama pridėti ar pašalinti reakcijų</string>
     <string name="reactions_tab_all">Visos</string>
@@ -672,7 +615,6 @@
     <string name="recording_consent_for_conversation_title">Sutikimas dėl įrašymo</string>
     <string name="recording_consent_title">Skambutis gali būti įrašomas.</string>
     <string name="recording_settings_title">Įrašymas</string>
-    <string name="removed_from_favorites">%1$s pokalbis pašalintas iš mėgstamiausių</string>
     <string name="renamed_conversation">%1$s pokalbis buvo pervadintas</string>
     <string name="resend_message">Siųsti iš naujo</string>
     <string name="reset_status">Atstatyti būseną</string>
@@ -687,7 +629,6 @@
     <string name="scope_private_title">Privatus</string>
     <string name="scope_published_description">Sinchronizuoti į patikimus serverius ir į visuotinę bei viešą adresų knygą</string>
     <string name="scope_published_title">Paskelbtas</string>
-    <string name="scope_toggle">Apimties jungiklis</string>
     <string name="scope_toggle_description">Pakeiskite %1$s privatumo lygį</string>
     <string name="scroll_to_bottom">Slinkti į apačią</string>
     <string name="search_icon">Paieškos piktograma</string>
@@ -700,7 +641,6 @@
     <string name="send_without_notification">Siųsti be pranešimo</string>
     <string name="set">Nustatyti</string>
     <string name="set_avatar_from_camera">Nustatyti avatarą iš kameros</string>
-    <string name="set_status">Nustatyti būseną</string>
     <string name="set_status_message">Nustatyti būsenos žinutę</string>
     <string name="share">Bendrinti</string>
     <string name="share_link_to_conversation">Prisijunkite prie %1$s pokalbio %2$s</string>

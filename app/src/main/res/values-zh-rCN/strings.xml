@@ -2,7 +2,6 @@
   <resources>
     <string name= "nc_edit">编辑</string>
     <string name="add_participants">添加</string>
-    <string name="added_to_favorites">对话%1$s已添加至收藏</string>
     <string name="appbar_search_in">搜索位置 %s</string>
     <string name="appear_offline">显示为离线</string>
     <string name="archive_conversation">存档对话</string>
@@ -43,8 +42,6 @@
     <string name="ecosystem_apps_more">更多</string>
     <string name="ecosystem_apps_notes">附注</string>
     <string name="edit">编辑</string>
-    <string name="edit_message_icon_description">编辑消息</string>
-    <string name="emoji_category_recent">最近</string>
     <string name="encrypted">已加密</string>
     <string name="end_call">结束通话</string>
     <string name="end_call_for_everyone">为所有人结束通话</string>
@@ -64,8 +61,6 @@
     <string name="lock_conversation">锁定对话</string>
     <string name="lock_symbol">锁定头像</string>
     <string name="lower_hand">放下手 </string>
-    <string name="marked_as_read">已将对话%1$s标记为已读</string>
-    <string name="marked_as_unread">已将对话%1$s标记为未读</string>
     <string name="mentioned">已提及</string>
     <string name="menu_item_sort_by_date_newest_first">从新到旧</string>
     <string name="menu_item_sort_by_date_oldest_first">从旧到新</string>
@@ -86,7 +81,6 @@
     <string name="nc_account_chooser_active_user">活跃用户</string>
     <string name="nc_account_chooser_add_account">添加账号</string>
     <string name="nc_account_scheduled_for_deletion">此账号已计划删除，且无法更改</string>
-    <string name="nc_action_open_main_menu">打开主菜单</string>
     <string name="nc_add_attachment">添加附件</string>
     <string name="nc_add_emojis">添加 emoji</string>
     <string name="nc_add_file">添加到对话</string>
@@ -127,7 +121,6 @@
     <string name="nc_change_cert_auth">更换验证证书</string>
     <string name="nc_change_password">更改密码</string>
     <string name="nc_clear_edit_button">取消编辑</string>
-    <string name="nc_clear_edit_message">取消编辑</string>
     <string name="nc_clear_history">删除所有消息</string>
     <string name="nc_clear_history_success">已删除所有消息</string>
     <string name="nc_clear_history_warning">你真想删除对话中的所有信息吗?</string>
@@ -153,14 +146,12 @@
     <string name="nc_conversation_menu_conversation_info">对话信息</string>
     <string name="nc_conversation_menu_video_call">视频通话</string>
     <string name="nc_conversation_menu_voice_call">语音通话</string>
-    <string name="nc_conversation_not_found">没有找到对话</string>
     <string name="nc_conversation_settings">对话设置</string>
     <string name="nc_conversations_empty">加入一个对话或开始一个新的对话</string>
     <string name="nc_conversations_empty_details">跟你的朋友和同事打个招呼！</string>
     <string name="nc_copy_message">复制</string>
     <string name="nc_create_new_conversation">创建一个新对话</string>
     <string name="nc_create_poll">创建投票</string>
-    <string name="nc_current_user">您：</string>
     <string name="nc_date_header_today">今天</string>
     <string name="nc_date_header_yesterday">昨天</string>
     <string name="nc_delete">删除</string>
@@ -173,17 +164,6 @@
     <string name="nc_demote">取消主持人资格</string>
     <string name="nc_description_record_voice">录制语音消息 </string>
     <string name="nc_description_send_message_button">发送消息</string>
-    <string name="nc_diagnose_account_category_title">当前账号</string>
-    <string name="nc_diagnose_account_server">服务器</string>
-    <string name="nc_diagnose_account_user_name">用户</string>
-    <string name="nc_diagnose_android_version_title">安卓版本</string>
-    <string name="nc_diagnose_app_category_title">应用</string>
-    <string name="nc_diagnose_app_name_title">应用的名称</string>
-    <string name="nc_diagnose_battery_optimization_title">电池设置</string>
-    <string name="nc_diagnose_device_name_title">设备</string>
-    <string name="nc_diagnose_phone_category_title">电话</string>
-    <string name="nc_diagnose_signaling_mode_extern">外部</string>
-    <string name="nc_diagnose_signaling_mode_intern">内部</string>
     <string name="nc_dialog_invalid_password">无效的密码</string>
     <string name="nc_dialog_maintenance_mode_description">服务器目前处于维护模式</string>
     <string name="nc_dialog_outdated_client">应用版本已过期</string>
@@ -262,7 +242,6 @@
     <string name="nc_mark_as_read">标为已读</string>
     <string name="nc_mark_as_unread">标为未读</string>
     <string name="nc_message_failed_to_send">消息发送失败：</string>
-    <string name="nc_message_offline">离线</string>
     <string name="nc_message_quote_cancel_reply">取消回复</string>
     <string name="nc_message_read">消息已读</string>
     <string name="nc_message_sending">正在发送消息</string>
@@ -312,7 +291,6 @@
     <string name="nc_pip_microphone_mute">将麦克风静音</string>
     <string name="nc_pip_microphone_unmute">启用麦克风</string>
     <string name="nc_plain_old_messages">消息</string>
-    <string name="nc_privacy">隐私</string>
     <string name="nc_profile_personal_info_title">个人信息</string>
     <string name="nc_promote">设置为主持人</string>
     <string name="nc_public_call_status">公开对话</string>
@@ -375,7 +353,6 @@
     <string name="nc_settings_advanced_title">高级</string>
     <string name="nc_settings_appearance">外观</string>
     <string name="nc_settings_call_ringtone">通话</string>
-    <string name="nc_settings_diagnose_title">诊断</string>
     <string name="nc_settings_diagnosis_title">诊断</string>
     <string name="nc_settings_incognito_keyboard_desc">要求输入法禁用个性化学习（不保证键盘会执行）</string>
     <string name="nc_settings_incognito_keyboard_title">无痕键盘</string>
@@ -512,7 +489,6 @@
     <string name="recording_consent_for_conversation_title">录制许可</string>
     <string name="recording_consent_title">通话可能被录制</string>
     <string name="recording_settings_title">录音</string>
-    <string name="removed_from_favorites">对话%1$s已从收藏中移除</string>
     <string name="renamed_conversation">对话%1$s已重命名</string>
     <string name="reset_status">重置状态</string>
     <string name="restrict_join_other_room_while_call">在通话时无法加入其他房间</string>
@@ -526,7 +502,6 @@
     <string name="scope_private_title">私有</string>
     <string name="scope_published_description">同步到受信任的服务器、全局和公共地址簿</string>
     <string name="scope_published_title">已发布</string>
-    <string name="scope_toggle">范围切换</string>
     <string name="scope_toggle_description">更改 %1$s 的隐私级别</string>
     <string name="scroll_to_bottom">滚动到底部</string>
     <string name="secondsAgo">几秒前</string>
@@ -538,7 +513,6 @@
     <string name="send_without_notification">发送而不通知</string>
     <string name="set">设置</string>
     <string name="set_avatar_from_camera">从摄像头设置头像</string>
-    <string name="set_status">设定状态</string>
     <string name="set_status_message">设置状态消息</string>
     <string name="share">分享</string>
     <string name="shared_items_audio">音频</string>

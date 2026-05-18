@@ -28,7 +28,6 @@
     <string name="ecosystem_apps_more">Prus</string>
     <string name="ecosystem_apps_notes">Notas</string>
     <string name="edit">Modìfica</string>
-    <string name="emoji_category_recent">Reghente</string>
     <string name="encrypted">Tzifradu</string>
     <string name="failed_to_save">No at fatu a sarvare %1$s</string>
     <string name="fifteenMinutes">15 minutos</string>
@@ -57,7 +56,6 @@
     <string name="nc_account_chooser_active_user">Utèntzia ativa</string>
     <string name="nc_account_chooser_add_account">Agiunghe contu</string>
     <string name="nc_account_scheduled_for_deletion">Su contu at a èssere cantzelladu e non si podet cambiare</string>
-    <string name="nc_action_open_main_menu">Aberi su menu printzipale</string>
     <string name="nc_add_attachment">Agiunghe alligongiadu</string>
     <string name="nc_add_emojis">Agiunghe carigheddas</string>
     <string name="nc_add_file">Agiunghe a sa resonada</string>
@@ -108,7 +106,6 @@
     <string name="nc_conversation_menu_conversation_info">Informatziones de resonada</string>
     <string name="nc_conversation_menu_video_call">Mutida de vìdeu</string>
     <string name="nc_conversation_menu_voice_call">Mutida de boghe</string>
-    <string name="nc_conversation_not_found">Resonada no agatada</string>
     <string name="nc_conversation_settings">Cunfiguratzione de sa resonada</string>
     <string name="nc_conversations_empty">Intra in una resonada o cumintza•nde una noa</string>
     <string name="nc_conversations_empty_details">Saluda a sa gente!</string>
@@ -125,17 +122,6 @@
     <string name="nc_demote">Lea·ssi su permissu de moderare</string>
     <string name="nc_description_record_voice">Registra messàgiu de boghe</string>
     <string name="nc_description_send_message_button">Imbia messàgiu</string>
-    <string name="nc_diagnose_account_category_title">Contu atuale</string>
-    <string name="nc_diagnose_account_server">Serbidore</string>
-    <string name="nc_diagnose_account_user_name">Utente</string>
-    <string name="nc_diagnose_android_version_title">Versione Android</string>
-    <string name="nc_diagnose_app_category_title">Aplicatzione</string>
-    <string name="nc_diagnose_app_name_title">Nùmene de s\'aplicatzione</string>
-    <string name="nc_diagnose_battery_optimization_title">Cunfiguratzione de sa bateria</string>
-    <string name="nc_diagnose_device_name_title">Dispositivu</string>
-    <string name="nc_diagnose_phone_category_title">Telèfonu</string>
-    <string name="nc_diagnose_signaling_mode_extern">De foras</string>
-    <string name="nc_diagnose_signaling_mode_intern">Internu</string>
     <string name="nc_dialog_invalid_password">Crae non bàlida</string>
     <string name="nc_dialog_outdated_client_option_update">Agiorna</string>
     <string name="nc_dialog_reauth_or_delete">Boles torrare a autorizare o cantzellare custu contu?</string>
@@ -215,7 +201,6 @@
     <string name="nc_phone_book_integration_account_not_found">Contu no agatadu</string>
     <string name="nc_phone_book_integration_chat_via">Tzarrada via %s</string>
     <string name="nc_plain_old_messages">Messàgios</string>
-    <string name="nc_privacy">Riservadesa</string>
     <string name="nc_profile_personal_info_title">Informatziones personales</string>
     <string name="nc_promote">Approva a moderadore</string>
     <string name="nc_push_disabled">Notìficas push disativadas</string>
@@ -362,7 +347,6 @@
     <string name="scope_private_title">Privadu</string>
     <string name="scope_published_description">Sincroniza cun serbidores seguros e sa rubrica globale e pùblica</string>
     <string name="scope_published_title">Publicadu</string>
-    <string name="scope_toggle">Càmbiu de àmbitu</string>
     <string name="scope_toggle_description">Càmbia su livellu de riservadesa de %1$s</string>
     <string name="scroll_to_bottom">Iscurre a bàsciu</string>
     <string name="secondsAgo">segundos a immoe</string>
@@ -371,7 +355,6 @@
     <string name="send_to">Imbia a</string>
     <string name="send_to_three_dots">Imbia a …</string>
     <string name="set">Cunfigura</string>
-    <string name="set_status">Cunfigura un\'istadu</string>
     <string name="set_status_message">Cunfigura su messàgiu de istadu</string>
     <string name="share">Cumpartzi</string>
     <string name="shared_items_audio">Àudio</string>
