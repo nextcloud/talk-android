@@ -219,9 +219,14 @@ fun AnnotatedString.Builder.appendBoldToken(text: String) {
     addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, length)
 }
 
-
+@Suppress("LongMethod")
 @Composable
-fun MentionChip(mention: MentionChipModel, textStyle: TextStyle, isMultilineLayout: Boolean, onDisabledMentionClick: (() -> Unit)? = null) {
+fun MentionChip(
+    mention: MentionChipModel,
+    textStyle: TextStyle,
+    isMultilineLayout: Boolean,
+    onDisabledMentionClick: (() -> Unit)? = null
+) {
     val context = LocalContext.current
     val viewThemeUtils = LocalViewThemeUtils.current
     val density = LocalDensity.current
@@ -250,7 +255,6 @@ fun MentionChip(mention: MentionChipModel, textStyle: TextStyle, isMultilineLayo
     } else {
         mention.name
     }
-
 
     val clickModifier = when {
         mention.isClickableUserMention -> Modifier.clickable {

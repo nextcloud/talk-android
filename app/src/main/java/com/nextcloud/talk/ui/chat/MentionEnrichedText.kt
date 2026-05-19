@@ -127,7 +127,14 @@ private fun buildMentionRichText(
                     } else {
                         val inlineId = "mention-${message.id}-$mentionCounter"
                         mentionCounter += 1
-                        appendMentionChip(inlineId, mention, inlineContent, textStyle, isMultilineLayout, onDisabledMentionClick)
+                        appendMentionChip(
+                            inlineId,
+                            mention,
+                            inlineContent,
+                            textStyle,
+                            isMultilineLayout,
+                            onDisabledMentionClick
+                        )
                     }
                 }
 
