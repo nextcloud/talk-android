@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -34,7 +35,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.Placeholder
@@ -88,7 +88,8 @@ fun parseMentionChipModel(
     messageParameters: Map<String, Map<String, String>>,
     activeUserId: String?,
     activeUserBaseUrl: String?,
-    roomToken: String?
+    roomToken: String?,
+    enableMentionClicks: Boolean = true
 ): MentionChipModel? =
     messageParameters[key]
         ?.takeIf { it["type"] in mentionParameterTypes }
@@ -117,7 +118,7 @@ fun parseMentionChipModel(
                 type = type,
                 isFederated = isFederated,
                 isSelfMention = isSelfMention,
-                isClickableUserMention = type == "user" && !isSelfMention && !isFederated,
+                isClickableUserMention = enableMentionClicks && type == "user" && !isSelfMention && !isFederated,
                 avatarUrl = avatarUrl
             )
         }
@@ -170,7 +171,8 @@ fun estimateMentionChipWidthInEm(label: String, fontSizeSp: Float): Float {
 fun buildMentionInlineContent(
     mention: MentionChipModel,
     textStyle: TextStyle,
-    isMultilineLayout: Boolean
+    isMultilineLayout: Boolean,
+    onDisabledMentionClick: (() -> Unit)? = null
 ): InlineTextContent {
     val fontSizeSp = if (textStyle.fontSize.isSpecified) textStyle.fontSize.value else CHIP_FALLBACK_FONT_SIZE_SP
     val width = estimateMentionChipWidthInEm(mention.name, fontSizeSp)
@@ -192,7 +194,8 @@ fun buildMentionInlineContent(
             MentionChip(
                 mention = mention,
                 textStyle = textStyle,
-                isMultilineLayout = isMultilineLayout
+                isMultilineLayout = isMultilineLayout,
+                onDisabledMentionClick = onDisabledMentionClick
             )
         }
     }
@@ -203,9 +206,10 @@ fun AnnotatedString.Builder.appendMentionChip(
     mention: MentionChipModel,
     inlineContent: MutableMap<String, InlineTextContent>,
     textStyle: TextStyle,
-    isMultilineLayout: Boolean
+    isMultilineLayout: Boolean,
+    onDisabledMentionClick: (() -> Unit)? = null
 ) {
-    inlineContent[inlineId] = buildMentionInlineContent(mention, textStyle, isMultilineLayout)
+    inlineContent[inlineId] = buildMentionInlineContent(mention, textStyle, isMultilineLayout, onDisabledMentionClick)
     appendInlineContent(inlineId, "@${mention.name}")
 }
 
@@ -215,8 +219,9 @@ fun AnnotatedString.Builder.appendBoldToken(text: String) {
     addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, length)
 }
 
+
 @Composable
-fun MentionChip(mention: MentionChipModel, textStyle: TextStyle, isMultilineLayout: Boolean) {
+fun MentionChip(mention: MentionChipModel, textStyle: TextStyle, isMultilineLayout: Boolean, onDisabledMentionClick: (() -> Unit)? = null) {
     val context = LocalContext.current
     val viewThemeUtils = LocalViewThemeUtils.current
     val density = LocalDensity.current
@@ -246,6 +251,19 @@ fun MentionChip(mention: MentionChipModel, textStyle: TextStyle, isMultilineLayo
         mention.name
     }
 
+
+    val clickModifier = when {
+        mention.isClickableUserMention -> Modifier.clickable {
+            EventBus.getDefault().post(UserMentionClickEvent(mention.id))
+        }
+
+        onDisabledMentionClick != null -> Modifier.clickable {
+            onDisabledMentionClick()
+        }
+
+        else -> Modifier
+    }
+
     Row(
         modifier = Modifier
             .semantics {
@@ -254,9 +272,7 @@ fun MentionChip(mention: MentionChipModel, textStyle: TextStyle, isMultilineLayo
             }
             .clip(RoundedCornerShape(chipCornerRadius))
             .background(backgroundColor)
-            .clickable(enabled = mention.isClickableUserMention) {
-                EventBus.getDefault().post(UserMentionClickEvent(mention.id))
-            }
+            .then(clickModifier)
             .padding(start = verticalPadding, top = verticalPadding, end = 4.dp, bottom = verticalPadding),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
