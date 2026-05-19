@@ -711,14 +711,14 @@ fun CommonMessageQuote(message: ChatMessageUi) {
                 iconRes = R.drawable.baseline_location_pin_24,
                 label = c.name
             )
-            else -> QuoteTextContent(message, onClick = {onQuotedMessageClick(message.id)} )
+            else -> QuoteTextContent(message, onClick = { onQuotedMessageClick(message.id) })
         }
     }
 }
 
 @Composable
-private fun QuoteTextContent(message: ChatMessageUi,  onClick: () -> Unit) {
-    Column ( modifier = Modifier.combinedClickable(onClick = onClick)){
+private fun QuoteTextContent(message: ChatMessageUi, onClick: () -> Unit) {
+    Column(modifier = Modifier.combinedClickable(onClick = onClick)) {
         Text(
             message.actorDisplayName,
             fontSize = authorTextSize,
