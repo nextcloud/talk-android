@@ -724,9 +724,21 @@ private fun QuoteTextContent(message: ChatMessageUi) {
             fontSize = authorTextSize,
             color = colorResource(R.color.no_emphasis_text)
         )
-        EnrichedText(
+
+        val isInspectionMode = LocalInspectionMode.current
+        val isSingleEmoji = !isInspectionMode &&
+            message.messageParameters.isEmpty() &&
+            TextMatchers.isMessageWithSingleEmoticonOnly(message.plainMessage)
+        val fontSize = if (isSingleEmoji) regularTextSize * SINGLE_EMOJI_SIZE_MULTIPLIER else regularTextSize
+
+        MentionEnrichedText(
             message = message,
             modifier = Modifier.padding(end = 4.dp),
+            textStyle = TextStyle(
+                fontSize = fontSize,
+                color = colorScheme.onSurface,
+                lineHeight = fontSize * LINE_SPACING
+            ),
             maxLines = 4
         )
     }

@@ -158,9 +158,8 @@ fun MarkdownText(
                     avatarGapPx = avatarGapPx
                 )
 
-
                 val hasLinks = Linkify.addLinks(ssb, validLinkRegex.toPattern(), null) ||
-                            Linkify.addLinks(ssb, MESSAGE_LINKIFY_MASK)
+                    Linkify.addLinks(ssb, MESSAGE_LINKIFY_MASK)
 
                 resolveFileParams(ssb, message)
                 applySearchHighlight(ssb, highlightSearchTerm, searchHighlightColorArgb)
