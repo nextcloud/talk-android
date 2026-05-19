@@ -185,9 +185,10 @@ fun MessageScaffold(
         }
     }
 
-    val showQuote = uiMessage.parentMessage?.let {
-        it.id.toLong() != conversationThreadId
-    } ?: false
+    val showQuote = !uiMessage.isDeleted &&
+        uiMessage.parentMessage?.let {
+            it.id.toLong() != conversationThreadId
+        } ?: false
 
     val showInlineMetadata = shouldShowTimeNextToContent(
         message = uiMessage,
