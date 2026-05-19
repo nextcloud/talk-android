@@ -63,6 +63,7 @@
     <string name="ecosystem_apps_notes">Notes</string>
     <string name="edit">編輯</string>
     <string name="edit_error_24_hours_old_message">無法編輯超過24小時的訊息</string>
+    <string name="emoji_more">更多表情符號</string>
     <string name="encrypted">已加密</string>
     <string name="end_call">結束通話</string>
     <string name="end_call_for_everyone">為所有人結束通話</string>
@@ -74,6 +75,9 @@
     <string name="file_list_loading">正在載入……</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4小時</string>
+    <string name="full_screen_intent_permission_granted">已允許來電通知顯示於鎖定畫面上，一切正常</string>
+    <string name="full_screen_intent_permission_not_granted">未授予「來電顯示於鎖定畫面」的權限。請授予此權限，以便來電資訊能顯示在鎖定畫面上！</string>
+    <string name="full_screen_intent_permission_title">在鎖定畫面上顯示來電</string>
     <string name="get_invitations_error">擷取擱置中的邀請失敗</string>
     <string name="gplay_available_no">Google Play 服務無法使用。不支援通知功能</string>
     <string name="hint_edited_message">（已編輯）</string>
@@ -126,6 +130,7 @@
     <string name="nc_add_file">加入到對話</string>
     <string name="nc_add_participants">新增成員</string>
     <string name="nc_add_to_favorites">加到我的最愛</string>
+    <string name="nc_add_to_home_screen">新增至主畫面</string>
     <string name="nc_all_ok_operation">完成</string>
     <string name="nc_attendee_pin">密碼：%1$s</string>
     <string name="nc_biometric_unlock">解鎖 %1$s</string>
@@ -320,6 +325,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s 不可用（尚未安裝或被管理員限制使用）</string>
     <string name="nc_nick_guest">訪客</string>
     <string name="nc_no">否</string>
+    <string name="nc_no_account_for_server">未找到此伺服器的帳號</string>
     <string name="nc_no_open_conversations_headline">沒有開放的對話</string>
     <string name="nc_no_open_conversations_text">沒有您可以加入的開放對話。\n可能是沒有開放的對話，或是您已經加入全部的開放對話。</string>
     <string name="nc_no_proxy">無proxy代理</string>
@@ -508,6 +514,8 @@
     <string name="nc_shared_items_empty">無已分享項目</string>
     <string name="nc_shared_items_location">路徑</string>
     <string name="nc_shared_location">共享的位置</string>
+    <string name="nc_shortcut_conversation_deleted">此對話不存在</string>
+    <string name="nc_shortcut_created">已建立捷徑</string>
     <string name="nc_show_ecosystem_description">帳號選擇器對話方塊中的 Nextcloud 應用程式建議</string>
     <string name="nc_show_ecosystem_title">顯示應用程式切換器</string>
     <string name="nc_show_notification_warning_description">通知未正確設定時，顯示一般警告</string>
@@ -536,6 +544,7 @@
     <string name="nc_upload_video_from_cam">錄影</string>
     <string name="nc_user">使用者</string>
     <string name="nc_video_filename">錄影來自 %1$s</string>
+    <string name="nc_voice_message">音訊訊息</string>
     <string name="nc_voice_message_filename">Talk 錄音來自 %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">按住以錄音，放開以傳送</string>
     <string name="nc_voice_message_missing_audio_permission">需要錄音權限</string>

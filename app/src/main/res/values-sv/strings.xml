@@ -62,6 +62,7 @@
     <string name="ecosystem_apps_notes">Anteckning</string>
     <string name="edit">Ändra</string>
     <string name="edit_error_24_hours_old_message">Meddelanden som är äldre än 24 timmar kan inte redigeras</string>
+    <string name="emoji_more">Fler emojier</string>
     <string name="encrypted">Krypterad</string>
     <string name="end_call">Avsluta samtal</string>
     <string name="end_call_for_everyone">Avsluta samtal för alla</string>
@@ -73,6 +74,9 @@
     <string name="file_list_loading">Läser in …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 timmar</string>
+    <string name="full_screen_intent_permission_granted">Behörighet att visa inkommande samtalsskärm över låsskärmen är beviljad, allt är bra</string>
+    <string name="full_screen_intent_permission_not_granted">Behörighet att visa inkommande samtalsskärm över låsskärmen är inte beviljad. Bevilja detta så att inkommande samtal visas på låsskärmen!</string>
+    <string name="full_screen_intent_permission_title">Visa inkommande samtal över låsskärmen</string>
     <string name="get_invitations_error">Kunde inte hämta väntande inbjudningar</string>
     <string name="gplay_available_no">Google Play-tjänster är inte tillgängliga. Aviseringar stöds inte</string>
     <string name="hint_edited_message">(redigerad)</string>
@@ -125,6 +129,7 @@
     <string name="nc_add_file">Lägg till i konversation</string>
     <string name="nc_add_participants">Lägg till deltagare</string>
     <string name="nc_add_to_favorites">Lägg till som favorit</string>
+    <string name="nc_add_to_home_screen">Lägg till på hemskärmen</string>
     <string name="nc_all_ok_operation">Ok, allt klart!</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Lås upp %1$s</string>
@@ -319,6 +324,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$sinte tillgänglig (inte installerad eller begränsad av admin)</string>
     <string name="nc_nick_guest">Gäst</string>
     <string name="nc_no">Nej</string>
+    <string name="nc_no_account_for_server">Inget konto hittades för den här servern</string>
     <string name="nc_no_open_conversations_headline">Inga öppna konversationer</string>
     <string name="nc_no_open_conversations_text">Inga öppna konversationer som du kan gå med i.\nAntingen finns det inga öppna konversationer eller så har du redan gått med i alla.</string>
     <string name="nc_no_proxy">Ingen proxy</string>
@@ -507,6 +513,8 @@
     <string name="nc_shared_items_empty">Inga delade objekt</string>
     <string name="nc_shared_items_location">Plats</string>
     <string name="nc_shared_location">Delad plats</string>
+    <string name="nc_shortcut_conversation_deleted">Den här konversationen finns inte längre</string>
+    <string name="nc_shortcut_created">Genväg skapad</string>
     <string name="nc_show_ecosystem_description">Förslag på Nextcloud-appar i kontoväljardialogen</string>
     <string name="nc_show_ecosystem_title">Visa appväxlare</string>
     <string name="nc_show_notification_warning_description">När aviseringar inte är korrekt inställda, visa en vanlig varning</string>
@@ -535,6 +543,7 @@
     <string name="nc_upload_video_from_cam">Spela in video</string>
     <string name="nc_user">Användare</string>
     <string name="nc_video_filename">Videoinspelning från %1$s</string>
+    <string name="nc_voice_message">Röstmeddelande</string>
     <string name="nc_voice_message_filename">Talk-inspelning från %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Håll ned för att spela in, släpp för att skicka.</string>
     <string name="nc_voice_message_missing_audio_permission">Tillstånd för ljudinspelning krävs</string>

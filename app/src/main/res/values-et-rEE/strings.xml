@@ -63,6 +63,7 @@
     <string name="ecosystem_apps_notes">Märkmed</string>
     <string name="edit">Muuda</string>
     <string name="edit_error_24_hours_old_message">Ööpäevast vanemaid sõnumeid ei saa muuta</string>
+    <string name="emoji_more">Täiendavad emojid</string>
     <string name="encrypted">Krüptitud</string>
     <string name="end_call">Lõpeta kõne</string>
     <string name="end_call_for_everyone">Lõpeta kõne kõigi jaoks</string>
@@ -74,6 +75,9 @@
     <string name="file_list_loading">Laadimisel...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 tundi</string>
+    <string name="full_screen_intent_permission_granted">Näed helisevat kõnet lukustusvaates, kõik on korras</string>
+    <string name="full_screen_intent_permission_not_granted">Sa ei näe helisevat kõnet lukustusvaates. Palun anna rakendusele vastavad õigused!</string>
+    <string name="full_screen_intent_permission_title">Näita helisevat kõnet lukustusvaates</string>
     <string name="get_invitations_error">Ootel kutsete laadimine ei õnnestunud</string>
     <string name="gplay_available_no">Google Play teenused pole saadaval. Teavitused pole toetatud</string>
     <string name="hint_edited_message">(muudetud)</string>
@@ -126,6 +130,7 @@
     <string name="nc_add_file">Lisa vestlusele</string>
     <string name="nc_add_participants">Lisa osalejaid</string>
     <string name="nc_add_to_favorites">Lisa lemmikutesse</string>
+    <string name="nc_add_to_home_screen">Lisa avalehel</string>
     <string name="nc_all_ok_operation">Tore, kõik on tehtud!</string>
     <string name="nc_attendee_pin">PIN-kood: %1$s</string>
     <string name="nc_biometric_unlock">Eemalda %1$s lukustus</string>
@@ -320,6 +325,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">„%1$s“ pole saadaval (kas pole paigaldatud või on peakasutaja piiranud nähtavust)</string>
     <string name="nc_nick_guest">Külaline</string>
     <string name="nc_no">Ei</string>
+    <string name="nc_no_account_for_server">Selle serveri kohta ei leidu kasutajakontot</string>
     <string name="nc_no_open_conversations_headline">Pole avalikke vestlusi</string>
     <string name="nc_no_open_conversations_text">Pole avalikke vestlusi, millega saaksid liituda.\nSee siis tähendab, et kas neid pole üldse või oled kõikide olemasolevatega juba liitunud.</string>
     <string name="nc_no_proxy">Proksiserver pole vajalik</string>
@@ -508,6 +514,8 @@
     <string name="nc_shared_items_empty">Jaosmeediat ei leidu</string>
     <string name="nc_shared_items_location">Asukoht</string>
     <string name="nc_shared_location">Jagatud asukoht</string>
+    <string name="nc_shortcut_conversation_deleted">Seda vestlust pole enam olemas</string>
+    <string name="nc_shortcut_created">Otselink on lisatud</string>
     <string name="nc_show_ecosystem_description">Nextcloudi rakenduste soovitused kasutajakonto valimisvaates</string>
     <string name="nc_show_ecosystem_title">Näita rakenduste vahetajat</string>
     <string name="nc_show_notification_warning_description">Näita tavalist hoiatust, kui teavitused pole korrektselt seadistatud</string>
@@ -536,6 +544,7 @@
     <string name="nc_upload_video_from_cam">Filmi</string>
     <string name="nc_user">Kasutaja</string>
     <string name="nc_video_filename">Videosalvestus kasutajalt %1$s</string>
+    <string name="nc_voice_message">Häälsõnum</string>
     <string name="nc_voice_message_filename">Salvestus: %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Salvestamiseks hoia nupp all ja saatmiseks vabasta nupp</string>
     <string name="nc_voice_message_missing_audio_permission">Vajalikud on õigused heli salvestamiseks</string>
