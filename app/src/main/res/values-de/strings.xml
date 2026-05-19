@@ -63,6 +63,7 @@
     <string name="ecosystem_apps_notes">Notizen</string>
     <string name="edit">Bearbeiten</string>
     <string name="edit_error_24_hours_old_message">Nachrichten, die älter als 24 Stunden sind, können nicht bearbeitet werden</string>
+    <string name="emoji_more">Weitere Emojis</string>
     <string name="encrypted">Verschlüsselt</string>
     <string name="end_call">Anruf beenden</string>
     <string name="end_call_for_everyone">Anruf für alle beenden</string>
@@ -74,6 +75,9 @@
     <string name="file_list_loading">Lade …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 Stunden</string>
+    <string name="full_screen_intent_permission_granted">Eingehender Anrufbildschirm über Sperrbildschirm zugelassen, alles in Ordnung</string>
+    <string name="full_screen_intent_permission_not_granted">Eingehender Anrufbildschirm über dem Sperrbildschirm ist nicht zugelassen. Bitte zulassen, damit eingehende Anrufe auf dem Sperrbildschirm angezeigt werden!</string>
+    <string name="full_screen_intent_permission_title">Eingehende Anrufe über dem Sperrbildschirm anzeigen</string>
     <string name="get_invitations_error">Ausstehende Einladungen konnten nicht abgerufen werden</string>
     <string name="gplay_available_no">Google Play-Dienste sind nicht verfügbar. Benachrichtigungen werden nicht unterstützt</string>
     <string name="hint_edited_message">(Bearbeitet)</string>
@@ -126,6 +130,7 @@
     <string name="nc_add_file">Zur Unterhaltung hinzufügen</string>
     <string name="nc_add_participants">Teilnehmer hinzufügen</string>
     <string name="nc_add_to_favorites">Zu Favoriten hinzufügen</string>
+    <string name="nc_add_to_home_screen">Zum Startbildschirm hinzufügen</string>
     <string name="nc_all_ok_operation">OK, alles erledigt!</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">%1$s entsperren</string>
@@ -320,6 +325,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s nicht verfügbar (nicht installiert oder von der Administration eingeschränkt)</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_no">Nein</string>
+    <string name="nc_no_account_for_server">Für diesen Server wurde kein Konto gefunden</string>
     <string name="nc_no_open_conversations_headline">Keine offenen Unterhaltungen</string>
     <string name="nc_no_open_conversations_text">Keine offenen Unterhaltungen, denen Sie beitreten können.\nEntweder existieren keine offenen Unterhaltungen oder Sie sind bereits allen offenen Unterhaltungen beigetreten.</string>
     <string name="nc_no_proxy">Kein Proxy</string>
@@ -508,6 +514,8 @@
     <string name="nc_shared_items_empty">Keine geteilten Elemente</string>
     <string name="nc_shared_items_location">Ort</string>
     <string name="nc_shared_location">Geteilter Ort</string>
+    <string name="nc_shortcut_conversation_deleted">Diese Unterhaltung existiert nicht mehr</string>
+    <string name="nc_shortcut_created">Tastaturkürzel erstellt</string>
     <string name="nc_show_ecosystem_description">Nextcloud-App-Vorschläge im Konten-Auswahldialog</string>
     <string name="nc_show_ecosystem_title">App-Umschalter anzeigen</string>
     <string name="nc_show_notification_warning_description">Wenn Benachrichtigungen nicht korrekt konfiguriert sind, zeige regelmäßig eine Warnung</string>
@@ -536,6 +544,7 @@
     <string name="nc_upload_video_from_cam">Video aufnehmen</string>
     <string name="nc_user">Benutzer</string>
     <string name="nc_video_filename">Videoaufnahme von %1$s</string>
+    <string name="nc_voice_message">Sprachnachricht</string>
     <string name="nc_voice_message_filename">Talk-Aufnahme von %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Halten zum Aufnehmen, zum Versenden loslassen.</string>
     <string name="nc_voice_message_missing_audio_permission">Erlaubnis für Audioaufnahmen ist erforderlich</string>

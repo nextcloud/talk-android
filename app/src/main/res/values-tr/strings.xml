@@ -32,6 +32,7 @@
     <string name="call_without_notification">Bildirim olmadan çağrı</string>
     <string name="camera_permission_granted">Kamera izinleri verildi. Lütfen kamerayı yeniden seçin.</string>
     <string name="cancel_login">Oturum açmaktan vazgeç</string>
+    <string name="chat_messages_load_gap">Bazı iletiler yüklenemedi</string>
     <string name="choose_avatar_from_cloud">Buluttan avatar seç</string>
     <string name="clear_status_message">Durum iletisini kaldır</string>
     <string name="clear_status_message_after">Durum iletisinin kaldırılma süresi</string>
@@ -51,6 +52,7 @@
     <string name="danger_zone">Tehlikeli bölge</string>
     <string name="deck_card_description">%1$s, %2$s içinde</string>
     <string name="default_room">Varsayılan</string>
+    <string name="default_room_preset">İletiler gönderin, konular oluşturun ve sesli veya görüntülü görüşmeler yapın</string>
     <string name="delete_avatar">Avatarı sil</string>
     <string name="delete_voice_recording">Ses kaydını sil</string>
     <string name="deleted_conversation">%1$s görüşmesi silindi</string>
@@ -61,6 +63,7 @@
     <string name="ecosystem_apps_notes">Notlar</string>
     <string name="edit">Düzenle</string>
     <string name="edit_error_24_hours_old_message">24 saatten eski iletiler düzenlenemez</string>
+    <string name="emoji_more">Daha fazla emoji</string>
     <string name="encrypted">Şifrelenmiş</string>
     <string name="end_call">Çağrıyı sonlandır</string>
     <string name="end_call_for_everyone">Çağrıyı herkes için sonlandır</string>
@@ -72,6 +75,9 @@
     <string name="file_list_loading">Yükleniyor…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 saat</string>
+    <string name="full_screen_intent_permission_granted">Kilit ekranında gelen aramaların görüntülenmesine izin veriliyor, her şey yolunda</string>
+    <string name="full_screen_intent_permission_not_granted">Kilit ekranında gelen aramaların görüntülenmesine izin verilmiyor. Gelen aramaların görüntülenmesi için lütfen izin verin!</string>
+    <string name="full_screen_intent_permission_title">Kilit ekranında gelen aramalar görüntülensin</string>
     <string name="get_invitations_error">Bekleyen davetler alınamadı</string>
     <string name="gplay_available_no">Google Play hizmetleri kullanılamıyor. Bildirimler desteklenmiyor</string>
     <string name="hint_edited_message">(düzenlendi)</string>
@@ -91,6 +97,9 @@
     <string name="lock_conversation">Görüşmeyi kilitle</string>
     <string name="lock_symbol">Kilit simgesi</string>
     <string name="lower_hand">Eli indir</string>
+    <string name="media_message_content_description">Dosya ön izlemesi</string>
+    <string name="media_message_content_play">Ortam dosyası oynat</string>
+    <string name="mention_open_chat_with">%1$s ile sohbeti aç</string>
     <string name="mentioned">Anılmış</string>
     <string name="menu_item_sort_by_date_newest_first">Yeniden eskiye</string>
     <string name="menu_item_sort_by_date_oldest_first">Eskiden yeniye</string>
@@ -106,6 +115,9 @@
     <string name="message_search_begin_empty">Aramadan bir sonuç alınamadı</string>
     <string name="message_search_begin_typing">Aramak için yazmaya başlayın…</string>
     <string name="message_search_hint">Arama…</string>
+    <string name="message_search_next_result">Sonraki arama sonucu</string>
+    <string name="message_search_no_more_results">Başka bir ileti bulunamadı</string>
+    <string name="message_search_previous_result">Önceki arama sonucu</string>
     <string name="messages">İletiler</string>
     <string name="mute_all_notifications">Tüm bildirimleri kapat</string>
     <string name="nc_Server_account_imported">Seçilmiş hesap içe aktarıldı ve kullanılabilir</string>
@@ -118,6 +130,7 @@
     <string name="nc_add_file">Görüşmeye ekle</string>
     <string name="nc_add_participants">Katılımcı ekle</string>
     <string name="nc_add_to_favorites">Sık kullanılanlara ekle</string>
+    <string name="nc_add_to_home_screen">Ana sayfaya ekle</string>
     <string name="nc_all_ok_operation">Hepsi tamam!</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">%1$s kilidini aç</string>
@@ -202,6 +215,7 @@
     <string name="nc_diagnosis_dialog_open_checklist">Sorun çözme kontrol listesini aç</string>
     <string name="nc_diagnosis_dialog_open_diagnosis">Tanılama ekranını aç</string>
     <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">dontkillmyapp.com sitesini aç</string>
+    <string name="nc_dialog_introduce_unifiedpush_selection">Varsayılan itme hizmetinizi seçmek üzeresiniz</string>
     <string name="nc_dialog_invalid_password">Parola geçersiz</string>
     <string name="nc_dialog_maintenance_mode_description">Şu anda sunucuda bakım yapılıyor.</string>
     <string name="nc_dialog_outdated_client">Uygulama sürümü çok eski</string>
@@ -215,6 +229,7 @@
     <string name="nc_dialog_save_to_storage_yes">Evet</string>
     <string name="nc_display_name_not_fetched">Görüntülenecek ad alınamadı, vazgeçiliyor</string>
     <string name="nc_display_name_not_stored">Görüntülenecek ad kaydedilemedi, vazgeçiliyor</string>
+    <string name="nc_draft_prefix">Taslak: %1$s</string>
     <string name="nc_edit_icon">Düzenle</string>
     <string name="nc_edit_message">Düzenle</string>
     <string name="nc_edit_message_text">İletiyi düzenle</string>
@@ -310,6 +325,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s kullanılamıyor (kurulmamış ya da yönetici tarafından engellenmiş)</string>
     <string name="nc_nick_guest">Konuk</string>
     <string name="nc_no">Hayır</string>
+    <string name="nc_no_account_for_server">Bu sunucu için bir hesap bulunamadı</string>
     <string name="nc_no_open_conversations_headline">Herhangi bir açık görüşme yok</string>
     <string name="nc_no_open_conversations_text">Katılabileceğiniz açık bir görüşme yok.\nHerhangi bir açık görüşme olmayabilir ya da zaten tüm görüşmelere katılmış olabilirsiniz.</string>
     <string name="nc_no_proxy">Vekil sunucu yok</string>
@@ -355,6 +371,7 @@
     <string name="nc_promote">Sorumluluğa yükselt</string>
     <string name="nc_public_call_status">Herkese açık görüşme</string>
     <string name="nc_push_disabled">Anında bildirimler kapalı</string>
+    <string name="nc_push_notification_error">Ne yazık ki bir sorun çıktı. Hata: %1$s</string>
     <string name="nc_push_notification_fetch_error">Ne yazık ki bir sorun çıktı. Deneme anında bildirimi alınamadı</string>
     <string name="nc_push_notification_message">Anında bildirim gönderildi. Bu aygıtta \'Anlık bildirimler denemesi\' konulu bir bildirim almalısınız</string>
     <string name="nc_remind">Sonra hatırlat</string>
@@ -367,6 +384,7 @@
     <string name="nc_rename_confirm">Yeniden adlandır</string>
     <string name="nc_reply">Yanıtla</string>
     <string name="nc_reply_privately">Kişisel yanıt gönder</string>
+    <string name="nc_reply_to_thread">Şu konuya yanıt: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Bildirim ile yeniden zamanla</string>
     <string name="nc_reschedule_message_without_notification">Bildirim olmadan yeniden zamanla</string>
     <string name="nc_room_retention">Oda tutuldu</string>
@@ -377,6 +395,7 @@
     <string name="nc_schedule_message_without_notification">Bildirim olmadan daha sonra gönder</string>
     <string name="nc_scheduled_messages">Zamanlanmış iletiler</string>
     <string name="nc_scheduled_messages_empty">Zamanlanmış bir ileti yok</string>
+    <string name="nc_scheduled_thread">Zamanlanmış konu</string>
     <string name="nc_scheduled_time">Zamanlama</string>
     <string name="nc_screen_lock_timeout_30">30 saniye</string>
     <string name="nc_screen_lock_timeout_300">5 dakika</string>
@@ -458,11 +477,14 @@
     <string name="nc_settings_remove">Sil</string>
     <string name="nc_settings_remove_account">Hesabı sil</string>
     <string name="nc_settings_remove_confirmation">Lütfen geçerli hesabı silmek istediğinizi onaylayın.</string>
+    <string name="nc_settings_screen_enable_unifiedpush_desc">Bir dış UnifiedPush hizmetiyle anlık bildirimler alın</string>
+    <string name="nc_settings_screen_enable_unifiedpush_title">UnifiedPush kullanılsın</string>
     <string name="nc_settings_screen_lock_desc">%1$s Android ekran kilidi ya da desteklenen biyometrik yöntem ile kilitlensin</string>
     <string name="nc_settings_screen_lock_timeout_title">Ekran kilidi zaman aşımı süresi</string>
     <string name="nc_settings_screen_lock_title">Ekran kilidi</string>
     <string name="nc_settings_screen_security_desc">Son dosyalar listesi ve uygulama ekran görüntülerinin alınmasını engeller</string>
     <string name="nc_settings_screen_security_title">Ekran güvenliği</string>
+    <string name="nc_settings_screen_unifiedpush_service_title">UnifiedPush hizmeti</string>
     <string name="nc_settings_server_almost_eol">Sunucu sürümü çok eski ve gelecek sürümde artık desteklenmeyecek</string>
     <string name="nc_settings_server_eol">Sunucu sürümü çok eski ve bu Android uygulaması tarafından desteklenmiyor</string>
     <string name="nc_settings_server_eol_title">Sunucu desteklenmiyor</string>
@@ -492,6 +514,8 @@
     <string name="nc_shared_items_empty">Paylaşılmış bir öge yok</string>
     <string name="nc_shared_items_location">Konum</string>
     <string name="nc_shared_location">Paylaşılan konum</string>
+    <string name="nc_shortcut_conversation_deleted">Bu yazışma artık yok</string>
+    <string name="nc_shortcut_created">Kısayol oluşturuldu</string>
     <string name="nc_show_ecosystem_description">Hesap seçme penceresinde Nextcloud uygulamaları önerileri</string>
     <string name="nc_show_ecosystem_title">Uygulama değiştiriciyi görüntüle</string>
     <string name="nc_show_notification_warning_description">Bildirimler doğru olarak ayarlanmamışsa standart uyarı görüntülensin</string>
@@ -520,6 +544,7 @@
     <string name="nc_upload_video_from_cam">Görüntü al</string>
     <string name="nc_user">Kullanıcı</string>
     <string name="nc_video_filename">%1$s üzerinden görüntü kaydı</string>
+    <string name="nc_voice_message">Sesli ileti</string>
     <string name="nc_voice_message_filename">%1$s Konuş kaydı (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Kaydetmek için basılı tutun, bırakarak gönderin.</string>
     <string name="nc_voice_message_missing_audio_permission">Ses kaydetme izninin verilmesi gereklidir</string>
@@ -637,6 +662,7 @@
     <string name="shared_items_voice">Ses</string>
     <string name="show_ban_reason">Yasaklama nedeni görüntülensin</string>
     <string name="show_banned_participants">Yasaklanmış katılımcıları görüntüle</string>
+    <string name="silent_message_hint">Sessiz ileti</string>
     <string name="starred">Sık kullanılanlara ekle</string>
     <string name="startCallForbidden">Bir çağrı başlatma izniniz yok</string>
     <string name="start_thread">Bir yazışma oluştur</string>
@@ -685,6 +711,7 @@
     <string name="unarchive_hint">Bir görüşme arşivden çıkarıldığında varsayılan olarak yeniden görüntülenir.</string>
     <string name="unarchived_conversation">%1$s arşivden çıkarıldı</string>
     <string name="unban">Yasaklamayı kaldır</string>
+    <string name="unifiedpush">UnifiedPush</string>
     <string name="unpin_message">İletinin sabitlemesini kaldır</string>
     <string name="unread">Okunmamış</string>
     <string name="until_unpin">Sabitleme kaldırılana kadar</string>
@@ -713,7 +740,12 @@
     <string name="userinfo_no_info_text">Profil sayfanızdan ad, görsel ve iletişim bilgilerinizi ekleyin.</string>
     <string name="video_call">Görüntülü çağrı</string>
     <string name="voice_room">Konuşma odası</string>
+    <string name="voice_room_preset">Görüşmeye doğrudan katılın, denk gelmeler veya anlık toplantılar için ideal</string>
     <string name="whats_your_status">Durumunuz nedir?</string>
+    <plurals name="nc_new_messages_count">
+        <item quantity="one">%d yeni ileti</item>
+        <item quantity="other">%d yeni ileti</item>
+    </plurals>
     <plurals name="see_similar_system_messages">
         <item quantity="one">%d benzer iletiye bakın</item>
         <item quantity="other">%d benzer iletiye bakın</item>

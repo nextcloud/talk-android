@@ -63,6 +63,7 @@
     <string name="ecosystem_apps_notes">Notas</string>
     <string name="edit">Editar</string>
     <string name="edit_error_24_hours_old_message">Mensagens mais antigas do que 24 horas não podem ser editadas</string>
+    <string name="emoji_more">Mais emojis</string>
     <string name="encrypted">Criptografado</string>
     <string name="end_call">Encerrar chamada</string>
     <string name="end_call_for_everyone">Encerrar chamada para todos</string>
@@ -74,6 +75,7 @@
     <string name="file_list_loading">Carregando …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 horas</string>
+    <string name="full_screen_intent_permission_title">Exibir chamadas de entrada em cima da tela de bloqueio</string>
     <string name="get_invitations_error">Falha ao buscar convites pendentes</string>
     <string name="gplay_available_no">Os serviços do Google Play não estão disponíveis. Notificações não são suportadas</string>
     <string name="hint_edited_message">(editado)</string>
@@ -126,6 +128,7 @@
     <string name="nc_add_file">Adicionar à conversa </string>
     <string name="nc_add_participants">Adicionar participantes</string>
     <string name="nc_add_to_favorites">Adicionar aos favoritos</string>
+    <string name="nc_add_to_home_screen">Adicionar para a página inicial</string>
     <string name="nc_all_ok_operation">OK, tudo pronto!</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">Destrancar %1$s</string>
@@ -320,6 +323,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s não está disponível (não instalado ou restrito pelo administrador)</string>
     <string name="nc_nick_guest">Convidado</string>
     <string name="nc_no">Não</string>
+    <string name="nc_no_account_for_server">Nenhuma conta encontrada neste servidor</string>
     <string name="nc_no_open_conversations_headline">Nenhuma conversa aberta</string>
     <string name="nc_no_open_conversations_text">Não há conversas abertas nas quais você possa entrar.\nOu não há conversas abertas ou você já entrou em todas elas.</string>
     <string name="nc_no_proxy">Sem proxy</string>
@@ -508,6 +512,8 @@
     <string name="nc_shared_items_empty">Nenhum item compartilhado</string>
     <string name="nc_shared_items_location">Localização</string>
     <string name="nc_shared_location">Localização compartilhada</string>
+    <string name="nc_shortcut_conversation_deleted">Esta conversa não existe mais</string>
+    <string name="nc_shortcut_created">Atalho criado</string>
     <string name="nc_show_ecosystem_description">Sugestões de aplicativos Nextcloud na caixa de diálogo de seleção de conta</string>
     <string name="nc_show_ecosystem_title">Mostrar alternador de aplicativos</string>
     <string name="nc_show_notification_warning_description">Quando as notificações não estiverem configuradas corretamente, mostre um aviso regular</string>
@@ -536,6 +542,7 @@
     <string name="nc_upload_video_from_cam">Gravar vídeo</string>
     <string name="nc_user">Usuário</string>
     <string name="nc_video_filename">Gravação de vídeo de %1$s</string>
+    <string name="nc_voice_message">Mensagem de voz</string>
     <string name="nc_voice_message_filename">Gravação de conversa de %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Segure para gravar, solte para enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">A permissão para gravação de áudio é necessária</string>
