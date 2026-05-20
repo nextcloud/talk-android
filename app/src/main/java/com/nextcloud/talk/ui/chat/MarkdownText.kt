@@ -65,7 +65,7 @@ private const val MESSAGE_LINKIFY_MASK = Linkify.PHONE_NUMBERS or
     Linkify.EMAIL_ADDRESSES
 
 val validLinkRegex = Regex(
-    """(?<!\w)https://(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+(?:/[^\s)]*)?""",
+    """(?<!\w)https?://(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+(?:/[^\s)]*)?""",
     RegexOption.IGNORE_CASE
 )
 
