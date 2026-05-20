@@ -49,6 +49,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.widget.SearchView
+import androidx.cardview.widget.CardView
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -67,6 +78,12 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.unit.dp
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.compose.ui.platform.LocalDensity
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
@@ -119,6 +136,7 @@ import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
+import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
@@ -1192,8 +1210,8 @@ class ChatActivity :
 
         pendingTargetMessageId = extras?.getString(BundleKeys.KEY_MESSAGE_ID)?.toLongOrNull()?.takeIf { it > 0L }
             ?: extras?.getLong(BundleKeys.KEY_MESSAGE_ID)?.takeIf { it > 0L }
-        pendingTargetThreadId = extras?.getString(BundleKeys.KEY_THREAD_ID)?.toLongOrNull()?.takeIf { it > 0L }
-            ?: extras?.getLong(BundleKeys.KEY_THREAD_ID)?.takeIf { it > 0L }
+        pendingTargetThreadId = extras?.getString(KEY_THREAD_ID)?.toLongOrNull()?.takeIf { it > 0L }
+            ?: extras?.getLong(KEY_THREAD_ID)?.takeIf { it > 0L }
         pendingTargetSearchQuery = extras?.getString(BundleKeys.KEY_SEARCH_QUERY)
     }
 
@@ -1332,7 +1350,6 @@ class ChatActivity :
                     currentConversation = state.conversationModel
                     chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
                     participantPermissions = ParticipantPermissions(spreedCapabilities, state.conversationModel!!)
-
                     supportFragmentManager.commit {
                         setReorderingAllowed(true) // optimizes out redundant replace operations
                         replace(R.id.fragment_container_activity_chat, messageInputFragment)
@@ -1440,7 +1457,6 @@ class ChatActivity :
             when (state) {
                 is ChatViewModel.JoinRoomSuccessState -> {
                     currentConversation = state.conversationModel
-
                     sessionIdAfterRoomJoined = currentConversation!!.sessionId
                     ApplicationWideCurrentRoomHolder.getInstance().session = currentConversation!!.sessionId
                     ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = currentConversation!!.token
