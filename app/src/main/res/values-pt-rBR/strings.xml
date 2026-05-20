@@ -75,6 +75,8 @@
     <string name="file_list_loading">Carregando …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 horas</string>
+    <string name="full_screen_intent_permission_granted">A exibição da tela de chamadas recebidas na tela de bloqueio está habilitada, tudo certo</string>
+    <string name="full_screen_intent_permission_not_granted">A exibição de chamadas recebidas na tela de bloqueio não está habilitada. Por favor, habilite essa função para que as chamadas recebidas apareçam na tela de bloqueio!</string>
     <string name="full_screen_intent_permission_title">Exibir chamadas de entrada em cima da tela de bloqueio</string>
     <string name="get_invitations_error">Falha ao buscar convites pendentes</string>
     <string name="gplay_available_no">Os serviços do Google Play não estão disponíveis. Notificações não são suportadas</string>
@@ -128,7 +130,7 @@
     <string name="nc_add_file">Adicionar à conversa </string>
     <string name="nc_add_participants">Adicionar participantes</string>
     <string name="nc_add_to_favorites">Adicionar aos favoritos</string>
-    <string name="nc_add_to_home_screen">Adicionar para a página inicial</string>
+    <string name="nc_add_to_home_screen">Adicionar para a tela inicial</string>
     <string name="nc_all_ok_operation">OK, tudo pronto!</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">Destrancar %1$s</string>

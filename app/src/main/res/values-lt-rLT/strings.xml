@@ -63,6 +63,7 @@
     <string name="ecosystem_apps_notes">Užrašai</string>
     <string name="edit">Taisyti</string>
     <string name="edit_error_24_hours_old_message">Pranešimų, kurių senumas viršija 24 valandas, redaguoti negalima</string>
+    <string name="emoji_more">Daugiau emociukų</string>
     <string name="encrypted">Užšifruota</string>
     <string name="end_call">Baigti pokalbį</string>
     <string name="end_call_for_everyone">Baigti pokalbį visiems</string>
@@ -74,6 +75,9 @@
     <string name="file_list_loading">Įkeliama…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 valandos</string>
+    <string name="full_screen_intent_permission_granted">Leidžiama rodyti gaunamo skambučio langą užrakintame ekrane, viskas gerai</string>
+    <string name="full_screen_intent_permission_not_granted">Neleidžiama rodyti skambučių ekrano užrakintame ekrane. Prašome suteikti šią teisę, kad skambučiai būtų rodomi užrakintame ekrane!</string>
+    <string name="full_screen_intent_permission_title">Rodyti gaunamus skambučius užrakintame ekrane</string>
     <string name="get_invitations_error">Nepavyko atsisiųsti laukiančių kvietimų</string>
     <string name="gplay_available_no">„Google Play“ paslaugos neprieinamos. Pranešimai nepalaikomi.</string>
     <string name="hint_edited_message">(redaguota)</string>
@@ -126,6 +130,7 @@
     <string name="nc_add_file">Pridėti į pokalbį</string>
     <string name="nc_add_participants">Pridėti dalyvių</string>
     <string name="nc_add_to_favorites">Pridėti į mėgstamus</string>
+    <string name="nc_add_to_home_screen">Pridėti prie pradinio ekrano</string>
     <string name="nc_all_ok_operation">Gerai, viskas atlikta!</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Atrakinti %1$s</string>
@@ -320,6 +325,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s nepasiekiama (neįdiegta arba administratoriaus apribota)</string>
     <string name="nc_nick_guest">Svečias</string>
     <string name="nc_no">Ne</string>
+    <string name="nc_no_account_for_server">Šio serverio paskyros nerasta</string>
     <string name="nc_no_open_conversations_headline">Jokių atvirų pokalbių</string>
     <string name="nc_no_open_conversations_text">Nėra atvirų pokalbių, prie kurių galėtumėte prisijungti.\nArba nėra atvirų pokalbių, arba jau prisijungėte prie visų.</string>
     <string name="nc_no_proxy">Be įgaliotojo serverio</string>
@@ -508,6 +514,8 @@
     <string name="nc_shared_items_empty">Nėra bendrinamų elementų</string>
     <string name="nc_shared_items_location">Vieta</string>
     <string name="nc_shared_location">Bendrinta vieta</string>
+    <string name="nc_shortcut_conversation_deleted">Šio pokalbio jau nebėra</string>
+    <string name="nc_shortcut_created">Sukurtas sparčiojo paleidimo mygtukas</string>
     <string name="nc_show_ecosystem_description">„Nextcloud“ programėlės pasiūlymai paskyros pasirinkimo dialogo lange</string>
     <string name="nc_show_ecosystem_title">Rodyti programėllių perjungiklį</string>
     <string name="nc_show_notification_warning_description">Jei pranešimai nėra tinkamai sukonfigūruoti, rodyti įprastą įspėjimą</string>
@@ -536,6 +544,7 @@
     <string name="nc_upload_video_from_cam">Įrašyti vaizdo įrašą</string>
     <string name="nc_user">Naudotojas</string>
     <string name="nc_video_filename">Vaizdo įrašas iš %1$s</string>
+    <string name="nc_voice_message">Balso žinutė</string>
     <string name="nc_voice_message_filename">„Talk“ įrašas iš %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Laikykite, kad įrašinėtumėte, atleiskite, kad išsiųstumėte.</string>
     <string name="nc_voice_message_missing_audio_permission">Reikalingas leidimas garso įrašymui</string>

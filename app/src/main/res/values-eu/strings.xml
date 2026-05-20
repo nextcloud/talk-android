@@ -7,6 +7,8 @@
     <string name="appear_offline">Lineaz kanpo agertzen da</string>
     <string name="archive_conversation">Artxibatu elkarrizketa</string>
     <string name="archived">Artxibatuta</string>
+    <string name="archived_conversation">%1$s artxibatuta</string>
+    <string name="audio_call">Audio deia</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Audio irteera</string>
     <string name="audio_output_phone">Telefonoa</string>
@@ -15,6 +17,7 @@
     <string name="automatic_status_set">Zure egoera automatikoki ezarriko dira</string>
     <string name="avatar">Avatarra</string>
     <string name="away">Kanpoan</string>
+    <string name="back_button">Itzuli botoia</string>
     <string name="ban">Debekatu</string>
     <string name="ban_participant">Debekatu parte-hartzailea</string>
     <string name="battery_optimization_title">Bateria ezarpenak</string>
