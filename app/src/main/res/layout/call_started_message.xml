@@ -31,7 +31,8 @@
             app:chipCornerRadius="@dimen/dialogBorderRadius"
             tools:text="Julius James Linus"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="visible"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/call_started_secondary_text"
@@ -40,7 +41,8 @@
             android:layout_marginHorizontal="@dimen/standard_quarter_margin"
             android:text="@string/started_a_call"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="visible"
+            android:layout_weight="1"/>
 
         <ImageView
             android:id="@+id/call_started_close_btn"
@@ -51,6 +53,7 @@
             android:src="@drawable/ic_keyboard_arrow_down"
             android:background="?attr/selectableItemBackground"
             android:layout_gravity="center"
+            android:layout_weight="1"
             />
 
     </LinearLayout>
