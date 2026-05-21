@@ -370,7 +370,7 @@
     <string name="nc_profile_personal_info_title">Asmeninė informacija</string>
     <string name="nc_promote">Paaukštinti į moderatorius</string>
     <string name="nc_public_call_status">Viešas pokalbis</string>
-    <string name="nc_push_disabled">\"Push\" pranešimai yra išjungti</string>
+    <string name="nc_push_disabled">Tiesioginiai pranešimai yra išjungti</string>
     <string name="nc_push_notification_error">Atsiprašome, įvyko klaida, klaida - %1$s </string>
     <string name="nc_push_notification_fetch_error">Atsiprašome, kažkas įvyko netinkamai, nepavyko gauti bandomojo „push“ pranešimo</string>
     <string name="nc_push_notification_message">Pranešimas išsiųstas sėkmingai. Dabar šiame įrenginyje turėtumėte gauti pranešimą su pavadinimu „Push pranešimų testavimas“</string>
