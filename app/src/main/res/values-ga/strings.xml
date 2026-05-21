@@ -63,6 +63,7 @@
     <string name="ecosystem_apps_notes">Nótaí</string>
     <string name="edit">Cuir in eagar</string>
     <string name="edit_error_24_hours_old_message">Ní féidir teachtaireachtaí atá níos sine ná 24 uair an chloig a chur in eagar</string>
+    <string name="emoji_more">Tuilleadh emoji</string>
     <string name="encrypted">Criptithe</string>
     <string name="end_call">Cuir deireadh leis an nglao</string>
     <string name="end_call_for_everyone">Cuir deireadh leis an nglao do chách</string>
@@ -74,6 +75,9 @@
     <string name="file_list_loading">Á lódáil…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 uair an chloig</string>
+    <string name="full_screen_intent_permission_granted">Ceadaítear scáileán glaonna isteach thar an scáileán glasála, tá gach rud ceart go leor</string>
+    <string name="full_screen_intent_permission_not_granted">Ní cheadaítear scáileán glaonna isteach thar an scáileán glasála. Ceadaigh é seo le do thoil ionas go mbeidh glaonna isteach le feiceáil ar an scáileán glasála!</string>
+    <string name="full_screen_intent_permission_title">Taispeáin glao isteach thar an scáileán glasála</string>
     <string name="get_invitations_error">Theip ar chuirí ar feitheamh a fháil</string>
     <string name="gplay_available_no">Níl seirbhísí Google Play ar fáil. Ní thacaítear le fógraí</string>
     <string name="hint_edited_message">(in eagar)</string>
@@ -126,6 +130,7 @@
     <string name="nc_add_file">Cuir leis an gcomhrá</string>
     <string name="nc_add_participants">Cuir rannpháirtithe leis</string>
     <string name="nc_add_to_favorites">Cuir le ceanáin</string>
+    <string name="nc_add_to_home_screen">Cuir leis an scáileán baile</string>
     <string name="nc_all_ok_operation">Ceart go leor, déanta go léir!</string>
     <string name="nc_attendee_pin">Bioráin: %1$s</string>
     <string name="nc_biometric_unlock">Díghlasáil %1$s</string>
@@ -320,6 +325,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">Níl %1$s ar fáil (gan suiteáil nó srianta ag an riarthóir)</string>
     <string name="nc_nick_guest">Aoi</string>
     <string name="nc_no">Níl</string>
+    <string name="nc_no_account_for_server">Níor aimsíodh aon chuntas don fhreastalaí seo</string>
     <string name="nc_no_open_conversations_headline">Níl aon chomhrá oscailte</string>
     <string name="nc_no_open_conversations_text">Níl aon chomhrá oscailte ar féidir leat páirt a ghlacadh ann.\nNíl aon chomhráite oscailte ann nó chuir tú isteach ar gach ceann acu cheana féin.</string>
     <string name="nc_no_proxy">Gan seachfhreastalaí</string>
@@ -508,6 +514,8 @@
     <string name="nc_shared_items_empty">Níl aon mhír roinnte</string>
     <string name="nc_shared_items_location">Suíomh</string>
     <string name="nc_shared_location">Suíomh roinnte</string>
+    <string name="nc_shortcut_conversation_deleted">Níl an comhrá seo ann a thuilleadh</string>
+    <string name="nc_shortcut_created">Aicearra cruthaithe</string>
     <string name="nc_show_ecosystem_description">Moltaí aip Nextcloud i ndialóg roghnóra cuntais</string>
     <string name="nc_show_ecosystem_title">Taispeáin athróir aip</string>
     <string name="nc_show_notification_warning_description">Nuair nach bhfuil fógraí socraithe i gceart, taispeáin rabhadh rialta</string>
@@ -536,6 +544,7 @@
     <string name="nc_upload_video_from_cam">Tóg físeán</string>
     <string name="nc_user">Úsáideoir</string>
     <string name="nc_video_filename">Taifeadadh físe ó %1$s</string>
+    <string name="nc_voice_message">Teachtaireacht gutha</string>
     <string name="nc_voice_message_filename">Taifeadadh cainte ó %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Coinnigh a thaifeadadh, scaoileadh a sheoladh.</string>
     <string name="nc_voice_message_missing_audio_permission">Tá cead taifeadta fuaime ag teastáil</string>
