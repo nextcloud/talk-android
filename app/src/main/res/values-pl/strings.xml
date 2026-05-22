@@ -32,6 +32,7 @@
     <string name="call_without_notification">Połącz bez powiadomienia</string>
     <string name="camera_permission_granted">Udzielono dostępu do kamery. Proszę ponownie wybrać kamerę.</string>
     <string name="cancel_login">Anuluj logowanie</string>
+    <string name="chat_messages_load_gap">Nie udało się wczytać niektórych wiadomości</string>
     <string name="choose_avatar_from_cloud">Wybierz awatar z chmury</string>
     <string name="clear_status_message">Wyczyść komunikat statusu</string>
     <string name="clear_status_message_after">Wyczyść komunikat statusu po</string>
@@ -51,6 +52,7 @@
     <string name="danger_zone">Strefa niebezpieczeństwa</string>
     <string name="deck_card_description">%1$s w %2$s</string>
     <string name="default_room">Domyślny</string>
+    <string name="default_room_preset">Wysyłaj wiadomości, twórz wątki oraz rozpoczynaj połączenia głosowe i wideo</string>
     <string name="delete_avatar">Usuń awatar</string>
     <string name="delete_voice_recording">Usuń nagranie głosowe</string>
     <string name="deleted_conversation">Usunięto rozmowę %1$s</string>
@@ -61,6 +63,7 @@
     <string name="ecosystem_apps_notes">Notatki</string>
     <string name="edit">Edytuj</string>
     <string name="edit_error_24_hours_old_message">Wiadomości starsze niż 24 godziny nie mogą być edytowane.</string>
+    <string name="emoji_more">Więcej emoji</string>
     <string name="encrypted">Zaszyfrowane</string>
     <string name="end_call">Zakończ połączenie</string>
     <string name="end_call_for_everyone">Zakończ połączenie dla wszystkich</string>
@@ -72,6 +75,9 @@
     <string name="file_list_loading">Wczytywanie…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 godziny</string>
+    <string name="full_screen_intent_permission_granted">Wyświetlanie ekranu połączenia przychodzącego ponad ekranem blokady jest przyznane, wszystko działa poprawnie</string>
+    <string name="full_screen_intent_permission_not_granted">Wyświetlanie ekranu połączenia przychodzącego ponad ekranem blokady nie jest przyznane. Przyznaj to uprawnienie, aby połączenia przychodzące pojawiały się ponad ekranem blokady!</string>
+    <string name="full_screen_intent_permission_title">Pokaż połączenie przychodzące ponad ekranem blokady</string>
     <string name="get_invitations_error">Nie udało się pobrać oczekujących zaproszeń</string>
     <string name="gplay_available_no">Usługi Google Play są niedostępne. Powiadomienia nie są obsługiwane</string>
     <string name="hint_edited_message">(edytowane)</string>
@@ -93,6 +99,7 @@
     <string name="lower_hand">Opuścić rękę</string>
     <string name="media_message_content_description">Podgląd pliku</string>
     <string name="media_message_content_play">Odtwórz plik multimedialny</string>
+    <string name="mention_open_chat_with">Otwórz czat z %1$s</string>
     <string name="mentioned">Wspomniany</string>
     <string name="menu_item_sort_by_date_newest_first">Od najnowszych</string>
     <string name="menu_item_sort_by_date_oldest_first">Od najstarszych</string>
@@ -108,6 +115,9 @@
     <string name="message_search_begin_empty">Brak wyników wyszukiwania</string>
     <string name="message_search_begin_typing">Zacznij pisać, aby wyszukać…</string>
     <string name="message_search_hint">Szukaj…</string>
+    <string name="message_search_next_result">Następny wynik wyszukiwania</string>
+    <string name="message_search_no_more_results">Nie znaleziono więcej wiadomości</string>
+    <string name="message_search_previous_result">Poprzedni wynik wyszukiwania</string>
     <string name="messages">Wiadomości</string>
     <string name="mute_all_notifications">Wycisz wszystkie powiadomienia</string>
     <string name="nc_Server_account_imported">Wybrane konto jest teraz zaimportowane i dostępne</string>
@@ -120,6 +130,7 @@
     <string name="nc_add_file">Dodaj do rozmowy</string>
     <string name="nc_add_participants">Dodaj uczestników</string>
     <string name="nc_add_to_favorites">Dodaj do ulubionych</string>
+    <string name="nc_add_to_home_screen">Dodaj do ekranu głównego</string>
     <string name="nc_all_ok_operation">OK, wszystko gotowe!</string>
     <string name="nc_attendee_pin">Przypnij: %1$s</string>
     <string name="nc_biometric_unlock">Odblokuj %1$s</string>
@@ -204,6 +215,7 @@
     <string name="nc_diagnosis_dialog_open_checklist">Otwórz listę kontrolną rozwiązywania problemów</string>
     <string name="nc_diagnosis_dialog_open_diagnosis">Otwórz ekran diagnostyczny</string>
     <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Otwórz stronę dontkillmyapp.com</string>
+    <string name="nc_dialog_introduce_unifiedpush_selection">Za chwilę wybierzesz domyślną usługę push</string>
     <string name="nc_dialog_invalid_password">Nieprawidłowe hasło</string>
     <string name="nc_dialog_maintenance_mode_description">Serwer jest obecnie w trybie konserwacji.</string>
     <string name="nc_dialog_outdated_client">Aplikacja jest przestarzała</string>
@@ -294,6 +306,7 @@
     <string name="nc_mark_as_unread">Oznacz jako nieprzeczytane</string>
     <string name="nc_meeting_ended">Spotkanie zakończone</string>
     <string name="nc_message_added_to_notes">Wiadomość dodana do notatek</string>
+    <string name="nc_message_failed">Nie udało się wysłać wiadomości</string>
     <string name="nc_message_failed_to_send">Nie udało się wysłać wiadomości:</string>
     <string name="nc_message_quote_cancel_reply">Anuluj odpowiedź</string>
     <string name="nc_message_read">Wiadomość przeczytana</string>
@@ -312,6 +325,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s niedostępne (niezainstalowane lub ograniczone przez administratora)</string>
     <string name="nc_nick_guest">Gość</string>
     <string name="nc_no">Nie</string>
+    <string name="nc_no_account_for_server">Nie znaleziono konta dla tego serwera</string>
     <string name="nc_no_open_conversations_headline">Brak otwartych rozmów</string>
     <string name="nc_no_open_conversations_text">Brak otwartych rozmów, do których możesz dołączyć.\nAlbo nie ma otwartych rozmów lub już do nich dołączyłeś.</string>
     <string name="nc_no_proxy">Brak proxy</string>
@@ -370,6 +384,7 @@
     <string name="nc_rename_confirm">Zmień nazwę</string>
     <string name="nc_reply">Odpowiedz</string>
     <string name="nc_reply_privately">Odpowiedz prywatnie</string>
+    <string name="nc_reply_to_thread">Odpowiedz w wątku: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Zmień harmonogram z powiadomieniem</string>
     <string name="nc_reschedule_message_without_notification">Zmień harmonogram bez powiadomienia</string>
     <string name="nc_room_retention">Pokój został pomyślnie zachowany</string>
@@ -380,6 +395,7 @@
     <string name="nc_schedule_message_without_notification">Wyślij później bez powiadomienia</string>
     <string name="nc_scheduled_messages">Zaplanowane wiadomości</string>
     <string name="nc_scheduled_messages_empty">Brak zaplanowanych wiadomości</string>
+    <string name="nc_scheduled_thread">Zaplanowany wątek</string>
     <string name="nc_scheduled_time">Zaplanowany czas</string>
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
     <string name="nc_screen_lock_timeout_300">5 minut</string>
@@ -461,11 +477,14 @@
     <string name="nc_settings_remove">Usuń</string>
     <string name="nc_settings_remove_account">Usuń konto</string>
     <string name="nc_settings_remove_confirmation">Potwierdź zamiar usunięcia bieżącego konta.</string>
+    <string name="nc_settings_screen_enable_unifiedpush_desc">Otrzymuj powiadomienia push za pomocą zewnętrznej usługi UnifiedPush</string>
+    <string name="nc_settings_screen_enable_unifiedpush_title">Włącz UnifiedPush</string>
     <string name="nc_settings_screen_lock_desc">Blokuje %1$s za pomocą blokady ekranu Androida lub obsługiwanej metody biometrycznej</string>
     <string name="nc_settings_screen_lock_timeout_title">Czas bezczynności do blokady ekranu</string>
     <string name="nc_settings_screen_lock_title">Blokada ekranu</string>
     <string name="nc_settings_screen_security_desc">Zapobiega zrzutom ekranu ostatniej listy i wnętrza aplikacji</string>
     <string name="nc_settings_screen_security_title">Zabezpieczenie ekranu</string>
+    <string name="nc_settings_screen_unifiedpush_service_title">Usługa UnifiedPush</string>
     <string name="nc_settings_server_almost_eol">Wersja serwerowa jest bardzo stara i nie będzie obsługiwana w następnej wersji!</string>
     <string name="nc_settings_server_eol">Wersja serwera jest zbyt stara i nie jest obsługiwana przez tę wersję aplikacji na Androida</string>
     <string name="nc_settings_server_eol_title">Niewspierany serwer</string>
@@ -495,6 +514,8 @@
     <string name="nc_shared_items_empty">Brak udostępnionych elementów</string>
     <string name="nc_shared_items_location">Lokalizacja</string>
     <string name="nc_shared_location">Udostępniona lokalizacja</string>
+    <string name="nc_shortcut_conversation_deleted">Ta rozmowa już nie istnieje</string>
+    <string name="nc_shortcut_created">Utworzono skrót</string>
     <string name="nc_show_ecosystem_description">Sugestie aplikacji Nextcloud w oknie wyboru konta</string>
     <string name="nc_show_ecosystem_title">Pokaż przełącznik aplikacji</string>
     <string name="nc_show_notification_warning_description">Gdy powiadomienia nie są poprawnie skonfigurowane, wyświetlaj regularne ostrzeżenie</string>
@@ -523,6 +544,7 @@
     <string name="nc_upload_video_from_cam">Nagraj film wideo</string>
     <string name="nc_user">Użytkownik</string>
     <string name="nc_video_filename">Nagrywanie filmu wideo z %1$s</string>
+    <string name="nc_voice_message">Wiadomość głosowa</string>
     <string name="nc_voice_message_filename">Nagranie rozmowy z %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Przytrzymaj, aby nagrać, zwolnij, aby wysłać.</string>
     <string name="nc_voice_message_missing_audio_permission">Wymagane jest uprawnienie na nagrywanie dźwięku</string>
@@ -640,6 +662,7 @@
     <string name="shared_items_voice">Połączenie głosowe</string>
     <string name="show_ban_reason">Pokaż powód zablokowania</string>
     <string name="show_banned_participants">Pokaż zablokowanych uczestników</string>
+    <string name="silent_message_hint">Cicha wiadomość</string>
     <string name="starred">Ulubione</string>
     <string name="startCallForbidden">Nie możesz rozpocząć połączenia</string>
     <string name="start_thread">Utwórz wątek</string>
@@ -688,6 +711,7 @@
     <string name="unarchive_hint">Po przywróceniu archiwizacji rozmowa będzie ponownie wyświetlana domyślnie.</string>
     <string name="unarchived_conversation">Niezarchiwizowane %1$s</string>
     <string name="unban">Odblokuj</string>
+    <string name="unifiedpush">UnifiedPush</string>
     <string name="unpin_message">Odepnij wiadomość</string>
     <string name="unread">Nieprzeczytane</string>
     <string name="until_unpin">Do odpięcia</string>
@@ -716,7 +740,14 @@
     <string name="userinfo_no_info_text">Dodaj nazwę, zdjęcie profilowe i dane kontaktowe do swojego profilu.</string>
     <string name="video_call">Rozmowa wideo</string>
     <string name="voice_room">Pokój głosowy</string>
+    <string name="voice_room_preset">Dołącz bezpośrednio do połączenia — idealne do szybkich rozmów lub spontanicznych spotkań</string>
     <string name="whats_your_status">Jaki jest Twój status?</string>
+    <plurals name="nc_new_messages_count">
+        <item quantity="one">%d nowa wiadomość</item>
+        <item quantity="few">%d nowych wiadomości</item>
+        <item quantity="many">%d nowych wiadomości</item>
+        <item quantity="other">%d nowych wiadomości</item>
+    </plurals>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Zobacz %d podobną wiadomość</item>
         <item quantity="few">Zobacz %d podobne wiadomości</item>
