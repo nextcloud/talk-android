@@ -47,7 +47,7 @@
     <string name="conversation_read_only_failed">Görüşme salt okunur olarak ayarlanamadı</string>
     <string name="conversations">Görüşmeler</string>
     <string name="create_conversation">Görüşme oluştur</string>
-    <string name="create_issue">Sorun ekle</string>
+    <string name="create_issue">Sorun oluştur</string>
     <string name="custom">Özel</string>
     <string name="danger_zone">Tehlikeli bölge</string>
     <string name="deck_card_description">%1$s, %2$s içinde</string>
@@ -176,7 +176,7 @@
     <string name="nc_common_and">ve</string>
     <string name="nc_common_copy">Kopyala</string>
     <string name="nc_common_copy_success">Panoya kopyalandı</string>
-    <string name="nc_common_create">Ekle</string>
+    <string name="nc_common_create">Oluştur</string>
     <string name="nc_common_disabled">Kapalı</string>
     <string name="nc_common_dismiss">Yok say</string>
     <string name="nc_common_error_sorry">Ne yazık ki bir sorun çıktı!</string>
@@ -198,7 +198,7 @@
     <string name="nc_conversations_empty_details">Tanıdık ve çalışma arkadaşlarınıza selam verin!</string>
     <string name="nc_copy_message">Kopyala</string>
     <string name="nc_create_new_conversation">Yeni bir görüşme oluştur</string>
-    <string name="nc_create_poll">Anket ekle</string>
+    <string name="nc_create_poll">Anket oluştur</string>
     <string name="nc_date_header_today">Bugün</string>
     <string name="nc_date_header_yesterday">Dün</string>
     <string name="nc_delete">Sil</string>
