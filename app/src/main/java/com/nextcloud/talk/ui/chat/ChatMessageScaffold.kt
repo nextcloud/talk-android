@@ -741,6 +741,7 @@ private fun QuoteTextContent(message: ChatMessageUi, onClick: () -> Unit) {
             ),
             maxLines = 4,
             enableMentionClicks = false,
+            enableLinks = false,
             onDisabledMentionClick = onClick
         )
     }

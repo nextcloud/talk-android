@@ -41,6 +41,7 @@ fun MentionEnrichedText(
     maxLines: Int = Int.MAX_VALUE,
     highlightSearchTerm: String? = null,
     enableMentionClicks: Boolean = true,
+    enableLinks: Boolean = true,
     onDisabledMentionClick: (() -> Unit)? = null
 ) {
     var isMultilineLayout by remember(message.id, message.message) {
@@ -53,7 +54,8 @@ fun MentionEnrichedText(
         isMultilineLayout,
         linkColor,
         codeBackground,
-        textStyle
+        textStyle,
+        enableLinks
     ) {
         buildMentionRichText(
             message = message,
@@ -62,6 +64,7 @@ fun MentionEnrichedText(
             textStyle = textStyle,
             isMultilineLayout = isMultilineLayout,
             enableMentionClicks = enableMentionClicks,
+            enableLinks = enableLinks,
             onDisabledMentionClick = onDisabledMentionClick
         )
     }
@@ -97,6 +100,7 @@ private fun buildMentionRichText(
     textStyle: TextStyle,
     isMultilineLayout: Boolean,
     enableMentionClicks: Boolean,
+    enableLinks: Boolean,
     onDisabledMentionClick: (() -> Unit)?
 ): MentionRichText {
     val inlineContent = linkedMapOf<String, InlineTextContent>()
@@ -160,10 +164,12 @@ private fun buildMentionRichText(
                 token.startsWith("[") -> {
                     val textPart = token.substringAfter("[").substringBefore("]")
                     val url = token.substringAfter("(").substringBefore(")")
-                    appendLinkedToken(textPart, url, linkColor)
+                    if (enableLinks) appendLinkedToken(textPart, url, linkColor) else append(textPart)
                 }
 
-                token.startsWith("http") -> append(token)
+                token.startsWith("http") -> {
+                    if (enableLinks) appendLinkedToken(token, token, linkColor) else append(token)
+                }
             }
 
             lastIndex = range.last + 1
