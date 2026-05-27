@@ -225,20 +225,15 @@ private fun IdleSearchBarActions(
             onClick = actions.onFilterClick,
             modifier = Modifier.size(48.dp)
         ) {
-            Box(
-                Modifier.fillMaxSize(),
-                contentAlignment = if (state.showThreadsButton) Alignment.CenterEnd else Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_baseline_filter_list_24),
-                    contentDescription = stringResource(R.string.nc_filter),
-                    tint = if (state.showFilterActive) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    }
-                )
-            }
+            Icon(
+                painter = painterResource(R.drawable.ic_baseline_filter_list_24),
+                contentDescription = stringResource(R.string.nc_filter),
+                tint = if (state.showFilterActive) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                }
+            )
         }
         if (state.showThreadsButton) {
             IconButton(
