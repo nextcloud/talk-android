@@ -244,6 +244,7 @@ fun resolveStatusIcon(
     }
 
 fun getMessageTypeContent(user: User, message: ChatMessage): MessageTypeContent? =
+
     if (message.isSystemMessage) {
         MessageTypeContent.SystemMessage
     } else if (message.isVoiceMessage) {
