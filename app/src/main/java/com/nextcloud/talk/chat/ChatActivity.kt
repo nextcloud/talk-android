@@ -973,7 +973,10 @@ class ChatActivity :
                 return@launch
             }
 
-            val file = File(context.cacheDir, filename)
+            val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, filename)
+            if (file == null) {
+                return@launch
+            }
             if (file.exists()) {
                 if (isCurrentlyPlaying) {
                     chatViewModel.pauseMediaPlayer(true)
@@ -1929,7 +1932,10 @@ class ChatActivity :
 
     private fun setUpWaveform(message: ChatMessage, thenPlay: Boolean = true, backgroundPlayAllowed: Boolean = false) {
         val filename = message.fileParameters.name
-        val file = File(context.cacheDir, filename!!)
+        val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, filename)
+        if (file == null) {
+            return
+        }
         if (file.exists() && message.voiceMessageFloatArray == null) {
             message.isDownloadingVoiceMessage = true
             chatViewModel.syncVoiceMessageUiState(message)
@@ -2537,7 +2543,12 @@ class ChatActivity :
         if (cursor != null && cursor.moveToFirst()) {
             val id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
             val fileName = ContactUtils.getDisplayNameFromDeviceContact(context, id) + ".vcf"
-            val file = File(context.cacheDir, fileName)
+            val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileName)
+            if (file == null) {
+                Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                cursor.close()
+                return
+            }
             writeContactToVcfFile(cursor, file)
 
             val shareUri = FileProvider.getUriForFile(
@@ -4039,12 +4050,16 @@ class ChatActivity :
     }
 
     fun share(message: ChatMessage) {
-        val filename = message.fileParameters.name
-        path = applicationContext.cacheDir.absolutePath + "/" + filename
+        val sharedFile = FileUtils.resolveSharedAttachmentFile(applicationContext.cacheDir, message.fileParameters.name)
+        if (sharedFile == null) {
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            return
+        }
+        path = sharedFile.absolutePath
         val shareUri = FileProvider.getUriForFile(
             this,
             BuildConfig.APPLICATION_ID,
-            File(path)
+            sharedFile
         )
 
         val shareIntent: Intent = Intent().apply {
@@ -4057,9 +4072,12 @@ class ChatActivity :
     }
 
     fun checkIfSharable(message: ChatMessage) {
-        val filename = message.fileParameters.name
-        path = applicationContext.cacheDir.absolutePath + "/" + filename
-        val file = File(context.cacheDir, filename!!)
+        val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, message.fileParameters.name)
+        if (file == null) {
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            return
+        }
+        path = file.absolutePath
         if (file.exists()) {
             share(message)
         } else {
@@ -4080,9 +4098,12 @@ class ChatActivity :
     }
 
     fun checkIfSaveable(message: ChatMessage) {
-        val filename = message.fileParameters.name
-        path = applicationContext.cacheDir.absolutePath + "/" + filename
-        val file = File(context.cacheDir, filename!!)
+        val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, message.fileParameters.name)
+        if (file == null) {
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            return
+        }
+        path = file.absolutePath
         if (file.exists()) {
             showSaveToStorageWarning(message)
         } else {
@@ -4112,12 +4133,16 @@ class ChatActivity :
                 var metaData = ""
                 var objectId = ""
                 if (message.hasFileAttachment) {
-                    val filename = message.fileParameters.name
-                    path = applicationContext.cacheDir.absolutePath + "/" + filename
+                    val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, message.fileParameters.name)
+                    if (file == null) {
+                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                        return@launch
+                    }
+                    path = file.absolutePath
                     shareUri = FileProvider.getUriForFile(
                         context,
                         BuildConfig.APPLICATION_ID,
-                        File(path)
+                        file
                     )
 
                     grantUriPermission(
@@ -4342,14 +4367,15 @@ class ChatActivity :
             Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takeVideoIntent ->
                 takeVideoIntent.resolveActivity(packageManager)?.also {
                     val videoFile: File? = try {
-                        val outputDir = context.cacheDir
+                        val outputDir = FileUtils.getSharedAttachmentsDirectory(context.cacheDir)
+                            ?: throw IOException("Could not create shared attachments directory")
                         val dateFormat = SimpleDateFormat(FILE_DATE_PATTERN, Locale.ROOT)
                         val date = dateFormat.format(Date())
                         val videoName = String.format(
                             context.resources.getString(R.string.nc_video_filename),
                             date
                         )
-                        File("$outputDir/$videoName$VIDEO_SUFFIX")
+                        File(outputDir, "$videoName$VIDEO_SUFFIX")
                     } catch (e: IOException) {
                         Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                         Log.e(TAG, "error while creating video file", e)

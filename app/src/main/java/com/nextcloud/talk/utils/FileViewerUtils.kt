@@ -51,7 +51,6 @@ import com.nextcloud.talk.utils.MimetypeUtils.isGif
 import com.nextcloud.talk.utils.MimetypeUtils.isMarkdown
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
-import java.io.File
 import java.util.concurrent.ExecutionException
 
 /*
@@ -88,20 +87,28 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         openWhenDownloadState: MutableState<Boolean>,
         downloadState: MutableState<List<String>>? = null
     ) {
-        if (isSupportedForInternalViewer(fileInfo.mimetype) ||
-            canBeHandledByExternalApp(fileInfo.mimetype, fileInfo.fileName)
+        val safeFile = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileInfo.fileName)
+        if (safeFile == null) {
+            Log.e(TAG, "Refused to open file with unsafe name: ${fileInfo.fileName}")
+            Snackbar.make(View(context), R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            return
+        }
+        val safeFileInfo = fileInfo.copy(fileName = safeFile.name)
+
+        if (isSupportedForInternalViewer(safeFileInfo.mimetype) ||
+            canBeHandledByExternalApp(safeFileInfo.mimetype, safeFileInfo.fileName)
         ) {
             openOrDownloadFile(
-                fileInfo,
+                safeFileInfo,
                 openWhenDownloadState,
                 downloadState
             )
-        } else if (!fileInfo.link.isNullOrEmpty()) {
-            openFileInFilesApp(fileInfo.link, fileInfo.fileId)
+        } else if (!safeFileInfo.link.isNullOrEmpty()) {
+            openFileInFilesApp(safeFileInfo.link, safeFileInfo.fileId)
         } else {
             Log.e(
                 TAG,
-                "File with id " + fileInfo.fileId + " can't be opened because internal viewer doesn't " +
+                "File with id " + safeFileInfo.fileId + " can't be opened because internal viewer doesn't " +
                     "support it, it can't be handled by an external app and there is no link " +
                     "to open it in the nextcloud files app"
             )
@@ -110,8 +117,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
     }
 
     private fun canBeHandledByExternalApp(mimetype: String?, fileName: String): Boolean {
-        val path: String = context.cacheDir.absolutePath + "/" + fileName
-        val file = File(path)
+        val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileName) ?: return false
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setDataAndType(Uri.fromFile(file), mimetype)
         return intent.resolveActivity(context.packageManager) != null
@@ -122,7 +128,12 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         openWhenDownloadState: MutableState<Boolean>,
         downloadState: MutableState<List<String>>?
     ) {
-        val file = File(context.cacheDir, fileInfo.fileName)
+        val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileInfo.fileName)
+        if (file == null) {
+            Log.e(TAG, "Refused to open file with unsafe name: ${fileInfo.fileName}")
+            Snackbar.make(View(context), R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            return
+        }
         if (file.exists()) {
             openFileByMimetype(fileInfo.fileName, fileInfo.mimetype, fileInfo.link, fileInfo.fileId)
         } else {
@@ -163,8 +174,12 @@ class FileViewerUtils(private val context: Context, private val user: User) {
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun openFileByExternalApp(fileName: String, mimetype: String) {
-        val path = context.cacheDir.absolutePath + "/" + fileName
-        val file = File(path)
+        val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileName)
+        if (file == null) {
+            Log.e(TAG, "Refused to share file with unsafe name: $fileName")
+            Snackbar.make(View(context), R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            return
+        }
         val intent = Intent()
         intent.action = Intent.ACTION_VIEW
         val pdfURI = FileProvider.getUriForFile(context, context.packageName, file)
