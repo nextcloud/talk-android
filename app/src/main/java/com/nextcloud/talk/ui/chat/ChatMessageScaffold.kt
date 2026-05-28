@@ -127,13 +127,14 @@ private fun shouldShowTimeNextToContent(
     showQuote: Boolean
 ): Boolean {
     val containsLinebreak = message.message.contains("\n") || message.message.contains("\r")
-    val shouldHideTime = forceTimeBelow ||
+    val shouldShowTimeBelowContent = forceTimeBelow ||
         forceTimeOverlay ||
         message.hasMentionChips() ||
         showQuote ||
-        containsLinebreak
+        containsLinebreak ||
+        message.isEdited
 
-    return !shouldHideTime && (message.message.length < MESSAGE_LENGTH_THRESHOLD)
+    return !shouldShowTimeBelowContent && (message.message.length < MESSAGE_LENGTH_THRESHOLD)
 }
 
 private val mentionChipTypes = setOf("user", "guest", "call", "user-group", "email", "circle")
