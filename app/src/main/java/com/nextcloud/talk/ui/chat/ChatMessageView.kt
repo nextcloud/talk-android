@@ -176,18 +176,18 @@ fun ChatMessageView(
                             )
                         }
 
-                    is MessageTypeContent.Voice -> {
-                        VoiceMessage(
-                            typeContent = content,
-                            message = message,
-                            isOneToOneConversation = context.isOneToOneConversation,
-                            conversationThreadId = context.conversationThreadId,
-                            currentlyPlayingVoiceMessageId = context.currentlyPlayingVoiceMessageId,
-                            onPlayPauseClick = callbacks.onVoicePlayPauseClick,
-                            onSeek = callbacks.onVoiceSeek,
-                            onSpeedClick = callbacks.onVoiceSpeedClick
-                        )
-                    }
+                        is MessageTypeContent.Voice -> {
+                            VoiceMessage(
+                                typeContent = content,
+                                message = message,
+                                isOneToOneConversation = context.isOneToOneConversation,
+                                conversationThreadId = context.conversationThreadId,
+                                currentlyPlayingVoiceMessageId = context.currentlyPlayingVoiceMessageId,
+                                onPlayPauseClick = callbacks.onVoicePlayPauseClick,
+                                onSeek = callbacks.onVoiceSeek,
+                                onSpeedClick = callbacks.onVoiceSpeedClick
+                            )
+                        }
 
                         is MessageTypeContent.Poll -> {
                             PollMessage(
