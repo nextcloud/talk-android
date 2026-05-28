@@ -711,23 +711,38 @@ fun CommonMessageQuote(message: ChatMessageUi) {
                 iconRes = R.drawable.baseline_location_pin_24,
                 label = c.name
             )
-            else -> QuoteTextContent(message)
+            else -> QuoteTextContent(message, onClick = { onQuotedMessageClick(message.id) })
         }
     }
 }
 
 @Composable
-private fun QuoteTextContent(message: ChatMessageUi) {
-    Column {
+private fun QuoteTextContent(message: ChatMessageUi, onClick: () -> Unit) {
+    Column(modifier = Modifier.combinedClickable(onClick = onClick)) {
         Text(
             message.actorDisplayName,
             fontSize = authorTextSize,
             color = colorResource(R.color.no_emphasis_text)
         )
-        EnrichedText(
+
+        val isInspectionMode = LocalInspectionMode.current
+        val isSingleEmoji = !isInspectionMode &&
+            message.messageParameters.isEmpty() &&
+            TextMatchers.isMessageWithSingleEmoticonOnly(message.plainMessage)
+        val fontSize = if (isSingleEmoji) regularTextSize * SINGLE_EMOJI_SIZE_MULTIPLIER else regularTextSize
+
+        MentionEnrichedText(
             message = message,
             modifier = Modifier.padding(end = 4.dp),
-            maxLines = 4
+            textStyle = TextStyle(
+                fontSize = fontSize,
+                color = colorScheme.onSurface,
+                lineHeight = fontSize * LINE_SPACING
+            ),
+            maxLines = 4,
+            enableMentionClicks = false,
+            enableLinks = false,
+            onDisabledMentionClick = onClick
         )
     }
 }

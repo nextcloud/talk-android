@@ -39,7 +39,10 @@ fun MentionEnrichedText(
     modifier: Modifier = Modifier,
     textStyle: TextStyle,
     maxLines: Int = Int.MAX_VALUE,
-    highlightSearchTerm: String? = null
+    highlightSearchTerm: String? = null,
+    enableMentionClicks: Boolean = true,
+    enableLinks: Boolean = true,
+    onDisabledMentionClick: (() -> Unit)? = null
 ) {
     var isMultilineLayout by remember(message.id, message.message) {
         mutableStateOf(message.message.contains("\n") || message.message.contains("\r"))
@@ -51,14 +54,18 @@ fun MentionEnrichedText(
         isMultilineLayout,
         linkColor,
         codeBackground,
-        textStyle
+        textStyle,
+        enableLinks
     ) {
         buildMentionRichText(
             message = message,
             linkColor = linkColor,
             codeBackground = codeBackground,
             textStyle = textStyle,
-            isMultilineLayout = isMultilineLayout
+            isMultilineLayout = isMultilineLayout,
+            enableMentionClicks = enableMentionClicks,
+            enableLinks = enableLinks,
+            onDisabledMentionClick = onDisabledMentionClick
         )
     }
     val highlightedText = remember(richText.annotated, highlightSearchTerm) {
@@ -91,7 +98,10 @@ private fun buildMentionRichText(
     linkColor: Color,
     codeBackground: Color,
     textStyle: TextStyle,
-    isMultilineLayout: Boolean
+    isMultilineLayout: Boolean,
+    enableMentionClicks: Boolean,
+    enableLinks: Boolean,
+    onDisabledMentionClick: (() -> Unit)?
 ): MentionRichText {
     val inlineContent = linkedMapOf<String, InlineTextContent>()
     var mentionCounter = 0
@@ -113,14 +123,22 @@ private fun buildMentionRichText(
                         messageParameters = message.messageParameters,
                         activeUserId = message.activeUserId,
                         activeUserBaseUrl = message.activeUserBaseUrl,
-                        roomToken = message.roomToken
+                        roomToken = message.roomToken,
+                        enableMentionClicks = enableMentionClicks
                     )
                     if (mention == null) {
                         appendFallbackParameter(token, message.messageParameters)
                     } else {
                         val inlineId = "mention-${message.id}-$mentionCounter"
                         mentionCounter += 1
-                        appendMentionChip(inlineId, mention, inlineContent, textStyle, isMultilineLayout)
+                        appendMentionChip(
+                            inlineId,
+                            mention,
+                            inlineContent,
+                            textStyle,
+                            isMultilineLayout,
+                            onDisabledMentionClick
+                        )
                     }
                 }
 
@@ -146,10 +164,12 @@ private fun buildMentionRichText(
                 token.startsWith("[") -> {
                     val textPart = token.substringAfter("[").substringBefore("]")
                     val url = token.substringAfter("(").substringBefore(")")
-                    appendLinkedToken(textPart, url, linkColor)
+                    if (enableLinks) appendLinkedToken(textPart, url, linkColor) else append(textPart)
                 }
 
-                token.startsWith("http") -> appendLinkedToken(token, token, linkColor)
+                token.startsWith("http") -> {
+                    if (enableLinks) appendLinkedToken(token, token, linkColor) else append(token)
+                }
             }
 
             lastIndex = range.last + 1
