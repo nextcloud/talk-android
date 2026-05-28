@@ -25,6 +25,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.jobs.SaveFileToStorageWorker
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.FileUtils
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 
@@ -70,7 +71,10 @@ class SaveToStorageDialogFragment : DialogFragment() {
 
     @SuppressLint("LongLogTag")
     private fun saveImageToStorage(fileName: String) {
-        val sourceFilePath = requireContext().cacheDir.path
+        val sourceDirectory = FileUtils.getSharedAttachmentsDirectory(requireContext().cacheDir) ?: run {
+            Log.e(TAG, "Failed to resolve shared attachments directory")
+            return
+        }
         val workerTag = SAVE_TO_STORAGE_WORKER_PREFIX + fileName
 
         val workers = WorkManager.getInstance(requireContext()).getWorkInfosByTag(workerTag)
@@ -88,7 +92,7 @@ class SaveToStorageDialogFragment : DialogFragment() {
 
         val data: Data = Data.Builder()
             .putString(SaveFileToStorageWorker.KEY_FILE_NAME, fileName)
-            .putString(SaveFileToStorageWorker.KEY_SOURCE_FILE_PATH, "$sourceFilePath/$fileName")
+            .putString(SaveFileToStorageWorker.KEY_SOURCE_FILE_PATH, "$sourceDirectory/$fileName")
             .build()
 
         val saveWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(SaveFileToStorageWorker::class.java)

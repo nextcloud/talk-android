@@ -11,6 +11,7 @@ package com.nextcloud.talk.fullscreenfile
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
@@ -25,6 +26,7 @@ import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
+import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype.TEXT_PREFIX_GENERIC
 import com.nextcloud.talk.utils.adjustUIForAPILevel35
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
@@ -37,6 +39,7 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
+    private lateinit var textFile: File
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,8 +51,12 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
         val link = intent.getStringExtra("LINK")
         val username = intent.getStringExtra("USERNAME").orEmpty()
         val baseUrl = intent.getStringExtra("BASE_URL").orEmpty()
-        val path = applicationContext.cacheDir.absolutePath + "/" + fileName
-        val text = readFile(path)
+        textFile = FileUtils.resolveSharedAttachmentFile(applicationContext.cacheDir, fileName) ?: run {
+            Log.e(TAG, "Invalid text filename: $fileName")
+            finish()
+            return
+        }
+        val text = readFile(textFile)
 
         adjustUIForAPILevel35()
 
@@ -62,7 +69,7 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
                     text = text,
                     isMarkdown = isMarkdown,
                     actions = FullScreenTextActions(
-                        onShare = { shareFile(path) },
+                        onShare = { shareFile() },
                         onSave = { showSaveDialog(fileName) },
                         onOpenInFilesApp = if (fileId.isNotEmpty()) {
                             { openInFilesApp(link, fileId, username, baseUrl) }
@@ -94,8 +101,8 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
         }
     }
 
-    private fun shareFile(path: String) {
-        val shareUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, File(path))
+    private fun shareFile() {
+        val shareUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, textFile)
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_STREAM, shareUri)
@@ -110,5 +117,9 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
         saveFragment.show(supportFragmentManager, SaveToStorageDialogFragment.TAG)
     }
 
-    private fun readFile(fileName: String) = File(fileName).inputStream().readBytes().toString(Charsets.UTF_8)
+    private fun readFile(file: File) = file.inputStream().readBytes().toString(Charsets.UTF_8)
+
+    companion object {
+        private val TAG = FullScreenTextViewerActivity::class.java.simpleName
+    }
 }
