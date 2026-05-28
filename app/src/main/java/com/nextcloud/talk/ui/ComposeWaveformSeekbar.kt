@@ -54,7 +54,7 @@ fun ComposeWaveformSeekBar(value: Float, onValueChange: (Float) -> Unit, modifie
                             for (i in waveData.indices) {
                                 val x: Float = i * (barWidth + barGap)
                                 val y: Float = waveData[i] * height
-                                val isXBeforeThumb = (x / this.size.width) <= value + OVERLAP
+                                val isXBeforeThumb = (x / this.size.width) <= value
 
                                 drawLine(
                                     if (isXBeforeThumb) inversePrimary else onPrimaryContainer,
@@ -85,7 +85,7 @@ fun Preview() {
     val waveData = remember { FloatArray(WAVEFORM_SIZE) { (Math.random() % 1).toFloat() } }
 
     ComposeWaveformSeekBar(
-        0f,
+        0.0f,
         {},
         modifier = Modifier
             .height(MAX_HEIGHT.dp)
