@@ -74,8 +74,14 @@ class NetworkMonitorImpl @Inject constructor(private val context: Context) : Net
     }.stateIn(
         CoroutineScope(Dispatchers.IO),
         SharingStarted.WhileSubscribed(COROUTINE_TIMEOUT),
-        false
+        isCurrentlyConnected()
     )
+
+    private fun isCurrentlyConnected(): Boolean {
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+    }
 
     companion object {
         private val TAG = NetworkMonitorImpl::class.java.simpleName
