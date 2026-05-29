@@ -73,7 +73,6 @@
     <string name="fifteenMinutes">15 minut</string>
     <string name="file_list_folder">katalog</string>
     <string name="file_list_loading">Wczytywanie…</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 godziny</string>
     <string name="full_screen_intent_permission_granted">Wyświetlanie ekranu połączenia przychodzącego ponad ekranem blokady jest przyznane, wszystko działa poprawnie</string>
     <string name="full_screen_intent_permission_not_granted">Wyświetlanie ekranu połączenia przychodzącego ponad ekranem blokady nie jest przyznane. Przyznaj to uprawnienie, aby połączenia przychodzące pojawiały się ponad ekranem blokady!</string>
@@ -543,9 +542,7 @@
     <string name="nc_upload_picture_from_cam">Zrób zdjęcie</string>
     <string name="nc_upload_video_from_cam">Nagraj film wideo</string>
     <string name="nc_user">Użytkownik</string>
-    <string name="nc_video_filename">Nagrywanie filmu wideo z %1$s</string>
     <string name="nc_voice_message">Wiadomość głosowa</string>
-    <string name="nc_voice_message_filename">Nagranie rozmowy z %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Przytrzymaj, aby nagrać, zwolnij, aby wysłać.</string>
     <string name="nc_voice_message_missing_audio_permission">Wymagane jest uprawnienie na nagrywanie dźwięku</string>
     <string name="nc_voice_message_slide_to_cancel">« Przesuń, aby anulować</string>

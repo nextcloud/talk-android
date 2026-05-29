@@ -70,7 +70,6 @@
     <string name="fifteenMinutes">15 minutes</string>
     <string name="file_list_folder">folder</string>
     <string name="file_list_loading">Loading …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hours</string>
     <string name="get_invitations_error">Failed to fetch pending invitations</string>
     <string name="gplay_available_no">Google Play services are not available.Notifications are not supported</string>
@@ -523,8 +522,6 @@
     <string name="nc_upload_picture_from_cam">Take photo</string>
     <string name="nc_upload_video_from_cam">Take video</string>
     <string name="nc_user">User</string>
-    <string name="nc_video_filename">Video recording from %1$s</string>
-    <string name="nc_voice_message_filename">Talk recording from %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Hold to record, release to send.</string>
     <string name="nc_voice_message_missing_audio_permission">Permission for audio recording is required</string>
     <string name="nc_voice_message_slide_to_cancel">« Slide to cancel</string>

@@ -65,7 +65,6 @@
     <string name="fifteenMinutes">15 دقيقة</string>
     <string name="file_list_folder">مُجلّد</string>
     <string name="file_list_loading">التحميل جارٍ …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 ساعات</string>
     <string name="get_invitations_error">تعذّر جلب الدعوات المعلقة</string>
     <string name="hint_edited_message">(معدّلة)</string>
@@ -466,8 +465,6 @@
     <string name="nc_upload_picture_from_cam">خُذ صورة</string>
     <string name="nc_upload_video_from_cam">خُذ فيديو</string>
     <string name="nc_user">مستخدم</string>
-    <string name="nc_video_filename">تسجيل فيديو من %1$s</string>
-    <string name="nc_voice_message_filename">تسجيل محادثة Talk من %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">أُنقُر مُطوّلاً للتسجيل، ثم أفلِت للإرسال.</string>
     <string name="nc_voice_message_missing_audio_permission">الإذن لتسجيل الصوت مطلوب</string>
     <string name="nc_voice_message_slide_to_cancel">« إسحب للإلغاء</string>

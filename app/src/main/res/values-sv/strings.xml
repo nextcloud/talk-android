@@ -72,7 +72,6 @@
     <string name="fifteenMinutes">15 minuter</string>
     <string name="file_list_folder">mapp</string>
     <string name="file_list_loading">Läser in …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 timmar</string>
     <string name="full_screen_intent_permission_granted">Behörighet att visa inkommande samtalsskärm över låsskärmen är beviljad, allt är bra</string>
     <string name="full_screen_intent_permission_not_granted">Behörighet att visa inkommande samtalsskärm över låsskärmen är inte beviljad. Bevilja detta så att inkommande samtal visas på låsskärmen!</string>
@@ -542,9 +541,7 @@
     <string name="nc_upload_picture_from_cam">Ta en bild</string>
     <string name="nc_upload_video_from_cam">Spela in video</string>
     <string name="nc_user">Användare</string>
-    <string name="nc_video_filename">Videoinspelning från %1$s</string>
     <string name="nc_voice_message">Röstmeddelande</string>
-    <string name="nc_voice_message_filename">Talk-inspelning från %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Håll ned för att spela in, släpp för att skicka.</string>
     <string name="nc_voice_message_missing_audio_permission">Tillstånd för ljudinspelning krävs</string>
     <string name="nc_voice_message_slide_to_cancel">« Dra för att avbryta</string>

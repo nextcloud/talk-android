@@ -73,7 +73,6 @@
     <string name="fifteenMinutes">15 minutit</string>
     <string name="file_list_folder">kaust</string>
     <string name="file_list_loading">Laadimisel...</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 tundi</string>
     <string name="full_screen_intent_permission_granted">Näed helisevat kõnet lukustusvaates, kõik on korras</string>
     <string name="full_screen_intent_permission_not_granted">Sa ei näe helisevat kõnet lukustusvaates. Palun anna rakendusele vastavad õigused!</string>
@@ -543,9 +542,7 @@
     <string name="nc_upload_picture_from_cam">Pildista</string>
     <string name="nc_upload_video_from_cam">Filmi</string>
     <string name="nc_user">Kasutaja</string>
-    <string name="nc_video_filename">Videosalvestus kasutajalt %1$s</string>
     <string name="nc_voice_message">Häälsõnum</string>
-    <string name="nc_voice_message_filename">Salvestus: %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Salvestamiseks hoia nupp all ja saatmiseks vabasta nupp</string>
     <string name="nc_voice_message_missing_audio_permission">Vajalikud on õigused heli salvestamiseks</string>
     <string name="nc_voice_message_slide_to_cancel">« Katkestamiseks viipa</string>

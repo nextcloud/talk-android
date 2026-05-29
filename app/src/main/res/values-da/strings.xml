@@ -70,7 +70,6 @@
     <string name="fifteenMinutes">15 minutter</string>
     <string name="file_list_folder">mappe</string>
     <string name="file_list_loading">Loading …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 timer</string>
     <string name="get_invitations_error">Kunne ikke hente afventende invitationer</string>
     <string name="hint_edited_message">(redigeret)</string>
@@ -498,8 +497,6 @@
     <string name="nc_upload_picture_from_cam">Tag et billede</string>
     <string name="nc_upload_video_from_cam">Optag video</string>
     <string name="nc_user">ruger</string>
-    <string name="nc_video_filename">Videooptagelse fra %1$s</string>
-    <string name="nc_voice_message_filename">Snak optagelse fra %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Hold for at optage, slip for at sende.</string>
     <string name="nc_voice_message_missing_audio_permission">Rettighede til audiooptagelse er krævet</string>
     <string name="nc_voice_message_slide_to_cancel">« Rul for at annullere</string>

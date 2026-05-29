@@ -52,6 +52,7 @@
     <string name="danger_zone">Опасная зона</string>
     <string name="deck_card_description">%1$s в %2$s</string>
     <string name="default_room">По умолчанию</string>
+    <string name="default_room_preset">Отправляйте сообщения, создавайте обсуждения и начинайте голосовые и видеозвонки</string>
     <string name="delete_avatar">Удалить аватар</string>
     <string name="delete_voice_recording">Удалить голосовую запись</string>
     <string name="deleted_conversation">Удалённое обсуждение %1$s</string>
@@ -62,6 +63,7 @@
     <string name="ecosystem_apps_notes">Заметки</string>
     <string name="edit">Редактировать</string>
     <string name="edit_error_24_hours_old_message">Сообщения старше 24 часов нельзя редактировать</string>
+    <string name="emoji_more">Больше эмодзи</string>
     <string name="encrypted">Зашифровано</string>
     <string name="end_call">Завершить вызов</string>
     <string name="end_call_for_everyone">Завершить звонок для всех</string>
@@ -71,8 +73,10 @@
     <string name="fifteenMinutes">15 минут</string>
     <string name="file_list_folder">каталог</string>
     <string name="file_list_loading">Загрузка …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 часа</string>
+    <string name="full_screen_intent_permission_granted">Экран входящего вызова поверх экрана блокировки разрешён, всё в порядке</string>
+    <string name="full_screen_intent_permission_not_granted">Экран входящего вызова поверх экрана блокировки не предоставляется. Пожалуйста, разрешите это, чтобы входящие вызовы отображались на экране блокировки!</string>
+    <string name="full_screen_intent_permission_title">Показывать входящий вызов на экране блокировки</string>
     <string name="get_invitations_error">Не удалось получить ожидающие приглашения</string>
     <string name="gplay_available_no">Сервисы Google Play недоступны. Уведомления не поддерживаются</string>
     <string name="hint_edited_message">(изменено)</string>
@@ -125,6 +129,7 @@
     <string name="nc_add_file">Добавить к обсуждению</string>
     <string name="nc_add_participants">Добавить участников</string>
     <string name="nc_add_to_favorites">Добавить в избранное</string>
+    <string name="nc_add_to_home_screen">Добавить на главный экран</string>
     <string name="nc_all_ok_operation">Всё готово!</string>
     <string name="nc_attendee_pin">Пин: %1$s</string>
     <string name="nc_biometric_unlock">Разблокировать %1$s</string>
@@ -319,6 +324,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">Приложение %1$s недоступно (не установлено, либо использование приложения ограничено администратором)</string>
     <string name="nc_nick_guest">Гость</string>
     <string name="nc_no">Нет</string>
+    <string name="nc_no_account_for_server">Для этого сервера не найдена учётная запись</string>
     <string name="nc_no_open_conversations_headline">Нет открытых обсуждений</string>
     <string name="nc_no_open_conversations_text">Нет открытых обсуждений, к которым можно присоединиться. Либо открытых обсуждений не существует, либо вы уже присоединились ко всем.</string>
     <string name="nc_no_proxy">Без прокси-сервера</string>
@@ -507,6 +513,8 @@
     <string name="nc_shared_items_empty">Нет общих элементов</string>
     <string name="nc_shared_items_location">Местоположение</string>
     <string name="nc_shared_location">Опубликованы сведения о местоположении</string>
+    <string name="nc_shortcut_conversation_deleted">Этот разговор больше не существует</string>
+    <string name="nc_shortcut_created">Ярлык создан</string>
     <string name="nc_show_ecosystem_description">Предложения приложений Nextcloud в диалоговом окне выбора учётной записи</string>
     <string name="nc_show_ecosystem_title">Показать переключатель приложений</string>
     <string name="nc_show_notification_warning_description">Периодически предупреждать о некорректной настройке уведомлений</string>
@@ -534,8 +542,7 @@
     <string name="nc_upload_picture_from_cam">Сфотографировать</string>
     <string name="nc_upload_video_from_cam">Снять видео</string>
     <string name="nc_user">Пользователь</string>
-    <string name="nc_video_filename">Запись видео с %1$s</string>
-    <string name="nc_voice_message_filename">Запись разговора с %1$s (%2$s)</string>
+    <string name="nc_voice_message">Голосовое сообщение</string>
     <string name="nc_voice_message_hold_to_record_info">Удерживайте для записи, отпустите для отправки.</string>
     <string name="nc_voice_message_missing_audio_permission">Требуется разрешение на аудиозапись</string>
     <string name="nc_voice_message_slide_to_cancel">« Сдвинуть для отмены</string>
@@ -730,6 +737,7 @@
     <string name="userinfo_no_info_text">На странице профиля укажите своё имя, добавьте изображение и подробные сведения</string>
     <string name="video_call">Видеозвонок</string>
     <string name="voice_room">Голосовой чат</string>
+    <string name="voice_room_preset">Присоединяйтесь к звонку напрямую, идеально подходит для встреч или спонтанных встреч</string>
     <string name="whats_your_status">Какой у вас статус?</string>
     <plurals name="nc_new_messages_count">
         <item quantity="one">%d новое сообщение</item>

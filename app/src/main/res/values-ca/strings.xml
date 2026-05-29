@@ -68,7 +68,6 @@
     <string name="fifteenMinutes">15 minuts</string>
     <string name="file_list_folder">carpeta</string>
     <string name="file_list_loading">Carregant …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hores</string>
     <string name="get_invitations_error">No s\'han pogut recuperar les invitacions pendents</string>
     <string name="hint_edited_message">(editat)</string>
@@ -464,8 +463,6 @@
     <string name="nc_upload_picture_from_cam">Fes una foto</string>
     <string name="nc_upload_video_from_cam">Fes un vídeo</string>
     <string name="nc_user">Usuari</string>
-    <string name="nc_video_filename">S\'està enregistrant un vídeo des de %1$s</string>
-    <string name="nc_voice_message_filename">Trucada enregistrada des de %1$s(%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Manteniu premut per gravar, deixeu anar per enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">Es necessita permís per gravar àudio</string>
     <string name="nc_voice_message_slide_to_cancel">« Llisqueu per cancel·lar</string>

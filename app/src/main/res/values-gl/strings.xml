@@ -70,7 +70,6 @@
     <string name="fifteenMinutes">15 minutos</string>
     <string name="file_list_folder">cartafol</string>
     <string name="file_list_loading">Cargando…</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 horas</string>
     <string name="get_invitations_error">Produciuse un fallo ao recuperar os convites pendentes</string>
     <string name="gplay_available_no">Non están dispoñíbeis os servizos de Google Play. Non se admiten notificacións</string>
@@ -519,8 +518,6 @@
     <string name="nc_upload_picture_from_cam">Tirar unha foto</string>
     <string name="nc_upload_video_from_cam">Gravar un vídeo</string>
     <string name="nc_user">Usuario</string>
-    <string name="nc_video_filename">Gravación de vídeo de %1$s</string>
-    <string name="nc_voice_message_filename">Gravación da conversa de %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Manteña premido para gravar, solte para enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">Precísase de permiso para gravar son</string>
     <string name="nc_voice_message_slide_to_cancel">« Esvare para cancelar</string>

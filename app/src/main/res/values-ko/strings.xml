@@ -43,7 +43,6 @@
     <string name="fifteenMinutes">15분</string>
     <string name="file_list_folder">폴더</string>
     <string name="file_list_loading">불러오는 중 …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 시간</string>
     <string name="hint_edited_message">(수정됨)</string>
     <string name="invisible">숨겨짐</string>
@@ -377,8 +376,6 @@
     <string name="nc_upload_picture_from_cam">사진 찍기</string>
     <string name="nc_upload_video_from_cam">영상 촬영</string>
     <string name="nc_user">사용자</string>
-    <string name="nc_video_filename">%1$s(으)로 부터의 영상 녹화</string>
-    <string name="nc_voice_message_filename">%1$s(%2$s) 부터의 음성녹음</string>
     <string name="nc_voice_message_missing_audio_permission">오디오 녹음을 위하여 권한이 필요합니다.</string>
     <string name="nc_voice_message_slide_to_cancel">« 취소하려면 슬라이드하세요.</string>
     <string name="nc_webinar">Webinar</string>

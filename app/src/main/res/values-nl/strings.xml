@@ -70,7 +70,6 @@
     <string name="fifteenMinutes">15 minuten</string>
     <string name="file_list_folder">map</string>
     <string name="file_list_loading">Laden …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 uur</string>
     <string name="get_invitations_error">Kon wachtende uitnodigingen niet ophalen</string>
     <string name="hint_edited_message">(bewerkt)</string>
@@ -507,8 +506,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_upload_picture_from_cam">Neem foto</string>
     <string name="nc_upload_video_from_cam">Maak video</string>
     <string name="nc_user">Gebruiker</string>
-    <string name="nc_video_filename">Video-opname van %1$s</string>
-    <string name="nc_voice_message_filename">Talk neemt op vanaf%1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Ingedrukt houden om op te nemen, loslaten om te versturen.</string>
     <string name="nc_voice_message_missing_audio_permission">Toestemming voor audio-opname is vereist</string>
     <string name="nc_voice_message_slide_to_cancel">« Schuiven om te annuleren</string>

@@ -53,7 +53,6 @@
     <string name="fifteenMinutes">15分</string>
     <string name="file_list_folder">フォルダー</string>
     <string name="file_list_loading">読み込み中…</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4時間</string>
     <string name="get_invitations_error">保留中の招待を取得することができませんでした</string>
     <string name="hint_edited_message">(編集済み)</string>
@@ -444,8 +443,6 @@
     <string name="nc_upload_picture_from_cam">写真を撮る</string>
     <string name="nc_upload_video_from_cam">ビデオを撮る</string>
     <string name="nc_user">ユーザー</string>
-    <string name="nc_video_filename">%1$sからビデオレコーディング</string>
-    <string name="nc_voice_message_filename">%1$s(%2$s)からの会話録音</string>
     <string name="nc_voice_message_hold_to_record_info">長押しして録音、離して送信</string>
     <string name="nc_voice_message_missing_audio_permission">音声の録音を許可する権限が必要です</string>
     <string name="nc_voice_message_slide_to_cancel">« スライドしてキャンセル</string>

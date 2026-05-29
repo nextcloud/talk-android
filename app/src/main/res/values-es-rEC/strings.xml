@@ -41,7 +41,6 @@
     <string name="fifteenMinutes">15 minutos</string>
     <string name="file_list_folder">carpeta</string>
     <string name="file_list_loading">Loading …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 horas</string>
     <string name="invisible">Invisible</string>
     <string name="leave_call">Dejar la llamada</string>
@@ -381,8 +380,6 @@
     <string name="nc_upload_picture_from_cam">Tomar foto</string>
     <string name="nc_upload_video_from_cam">Tomar video</string>
     <string name="nc_user">Usuario</string>
-    <string name="nc_video_filename">Grabación de video desde %1$s</string>
-    <string name="nc_voice_message_filename">Grabación de Talk desde %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Mantén presionado para grabar, suelta para enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">Se requiere permiso para grabar audio</string>
     <string name="nc_voice_message_slide_to_cancel">« Deslizar para cancelar</string>

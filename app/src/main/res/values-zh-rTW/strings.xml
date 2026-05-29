@@ -73,7 +73,6 @@
     <string name="fifteenMinutes">15分鐘</string>
     <string name="file_list_folder">資料夾</string>
     <string name="file_list_loading">正在載入……</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4小時</string>
     <string name="full_screen_intent_permission_granted">已允許來電通知顯示於鎖定畫面上，一切正常</string>
     <string name="full_screen_intent_permission_not_granted">未授予「來電顯示於鎖定畫面」的權限。請授予此權限，以便來電資訊能顯示在鎖定畫面上！</string>
@@ -83,6 +82,7 @@
     <string name="hint_edited_message">（已編輯）</string>
     <string name="internal_note">內部筆記</string>
     <string name="invisible">隱藏</string>
+    <string name="join_call">加入通話</string>
     <string name="languages_error_message">無法擷取語言</string>
     <string name="languages_error_title">擷取失敗</string>
     <string name="later_today">今天稍後</string>
@@ -326,6 +326,7 @@
     <string name="nc_nick_guest">訪客</string>
     <string name="nc_no">否</string>
     <string name="nc_no_account_for_server">未找到此伺服器的帳號</string>
+    <string name="nc_no_account_found">找不到帳號</string>
     <string name="nc_no_open_conversations_headline">沒有開放的對話</string>
     <string name="nc_no_open_conversations_text">沒有您可以加入的開放對話。\n可能是沒有開放的對話，或是您已經加入全部的開放對話。</string>
     <string name="nc_no_proxy">無proxy代理</string>
@@ -543,9 +544,7 @@
     <string name="nc_upload_picture_from_cam">拍照</string>
     <string name="nc_upload_video_from_cam">錄影</string>
     <string name="nc_user">使用者</string>
-    <string name="nc_video_filename">錄影來自 %1$s</string>
     <string name="nc_voice_message">音訊訊息</string>
-    <string name="nc_voice_message_filename">Talk 錄音來自 %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">按住以錄音，放開以傳送</string>
     <string name="nc_voice_message_missing_audio_permission">需要錄音權限</string>
     <string name="nc_voice_message_slide_to_cancel">« 滑動取消</string>

@@ -70,12 +70,12 @@
     <string name="fifteenMinutes">15 хвилин</string>
     <string name="file_list_folder">каталог</string>
     <string name="file_list_loading">Завантаження …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 години</string>
     <string name="get_invitations_error">Не вдалося отримати очікувані запрошення</string>
     <string name="hint_edited_message">(відредаговано)</string>
     <string name="internal_note">Внутрішня примітка</string>
     <string name="invisible">Невидимка</string>
+    <string name="join_call">Приєднатися</string>
     <string name="languages_error_message">Мови не вдалося отримати</string>
     <string name="languages_error_title">Не вдалося виконати пошук</string>
     <string name="later_today">Пізніше сьогодні</string>
@@ -304,6 +304,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">Застосунок %1$s недоступний (не встановлений, або використання додатка обмежене адміністратором)</string>
     <string name="nc_nick_guest">Гість</string>
     <string name="nc_no">Ні</string>
+    <string name="nc_no_account_found">Акаунт не знайдено</string>
     <string name="nc_no_open_conversations_headline">Ніяких відкритих розмов</string>
     <string name="nc_no_open_conversations_text">Немає відкритих розмов, до яких ви можете приєднатися.\nАбо немає відкритих розмов, або ви вже приєдналися до всіх них.</string>
     <string name="nc_no_proxy">Без проксі</string>
@@ -501,8 +502,6 @@
     <string name="nc_upload_picture_from_cam">Сфотографувати</string>
     <string name="nc_upload_video_from_cam">Зняти відео</string>
     <string name="nc_user">Користувач</string>
-    <string name="nc_video_filename">Запис відео з %1$s</string>
-    <string name="nc_voice_message_filename">Запис розмови з %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Утримуйте для запису, відпустіть для надсилання.</string>
     <string name="nc_voice_message_missing_audio_permission">Потрібен дозвіл на аудіозапис</string>
     <string name="nc_voice_message_slide_to_cancel">« Зсунути для скасування</string>

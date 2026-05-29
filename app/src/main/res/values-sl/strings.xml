@@ -47,7 +47,6 @@
     <string name="fifteenMinutes">15 minut</string>
     <string name="file_list_folder">mapa</string>
     <string name="file_list_loading">Poteka nalaganje …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 urah</string>
     <string name="hint_edited_message">(spremenjeno)</string>
     <string name="invisible">Drugim nevidno</string>
@@ -398,7 +397,6 @@
     <string name="nc_upload_picture_from_cam">Zajemi sliko</string>
     <string name="nc_upload_video_from_cam">Zajemi video</string>
     <string name="nc_user">Uporabnik</string>
-    <string name="nc_voice_message_filename">Posnetek %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Zadržite za snemanje in sprostite za pošiljanje.</string>
     <string name="nc_voice_message_missing_audio_permission">Zahtevano je dovoljenje za zvočno snemanje.</string>
     <string name="nc_voice_message_slide_to_cancel">« Potegnite za preklic</string>
