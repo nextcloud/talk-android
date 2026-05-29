@@ -12,6 +12,7 @@ package com.nextcloud.talk.fullscreenfile
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.activity.SystemBarStyle
@@ -41,6 +42,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.ui.SwipeToCloseLayout
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX_GENERIC
 import java.io.File
 import javax.inject.Inject
@@ -53,6 +55,7 @@ class FullScreenMediaActivity : AppCompatActivity() {
 
     private lateinit var path: String
     private lateinit var fileName: String
+    private lateinit var mediaFile: File
     private var player: ExoPlayer? by mutableStateOf(null)
     private var playWhenReadyState: Boolean = true
     private var playBackPosition: Long = 0L
@@ -64,7 +67,12 @@ class FullScreenMediaActivity : AppCompatActivity() {
 
         fileName = intent.getStringExtra("FILE_NAME").orEmpty()
         val isAudioOnly = intent.getBooleanExtra("AUDIO_ONLY", false)
-        path = applicationContext.cacheDir.absolutePath + "/" + fileName
+        mediaFile = FileUtils.resolveSharedAttachmentFile(applicationContext.cacheDir, fileName) ?: run {
+            Log.e(TAG, "Invalid media filename: $fileName")
+            finish()
+            return
+        }
+        path = mediaFile.absolutePath
 
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
@@ -128,7 +136,7 @@ class FullScreenMediaActivity : AppCompatActivity() {
     }
 
     private fun preparePlayer() {
-        val mediaItem: MediaItem = MediaItem.fromUri(File(path).toUri())
+        val mediaItem: MediaItem = MediaItem.fromUri(mediaFile.toUri())
         player?.let { exoPlayer ->
             exoPlayer.setMediaItem(mediaItem)
             exoPlayer.playWhenReady = playWhenReadyState
@@ -160,7 +168,7 @@ class FullScreenMediaActivity : AppCompatActivity() {
     }
 
     private fun shareFile() {
-        val shareUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, File(path))
+        val shareUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, mediaFile)
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_STREAM, shareUri)
@@ -173,5 +181,9 @@ class FullScreenMediaActivity : AppCompatActivity() {
     private fun showSaveDialog() {
         val saveFragment: DialogFragment = SaveToStorageDialogFragment.newInstance(fileName)
         saveFragment.show(supportFragmentManager, SaveToStorageDialogFragment.TAG)
+    }
+
+    companion object {
+        private val TAG = FullScreenMediaActivity::class.java.simpleName
     }
 }

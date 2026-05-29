@@ -12,6 +12,7 @@ package com.nextcloud.talk.fullscreenfile
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +36,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.ui.SwipeToCloseLayout
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX_GENERIC
 import java.io.File
 import javax.inject.Inject
@@ -48,6 +50,7 @@ class FullScreenImageActivity : AppCompatActivity() {
     private lateinit var windowInsetsController: WindowInsetsControllerCompat
     private lateinit var path: String
     private lateinit var fileName: String
+    private lateinit var imageFile: File
     private lateinit var swipeToCloseLayout: SwipeToCloseLayout
     private var showFullscreen by mutableStateOf(false)
 
@@ -57,7 +60,12 @@ class FullScreenImageActivity : AppCompatActivity() {
 
         fileName = intent.getStringExtra("FILE_NAME").orEmpty()
         val isGif = intent.getBooleanExtra("IS_GIF", false)
-        path = applicationContext.cacheDir.absolutePath + "/" + fileName
+        imageFile = FileUtils.resolveSharedAttachmentFile(applicationContext.cacheDir, fileName) ?: run {
+            Log.e(TAG, "Invalid image filename: $fileName")
+            finish()
+            return
+        }
+        path = imageFile.absolutePath
 
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
@@ -123,7 +131,7 @@ class FullScreenImageActivity : AppCompatActivity() {
     }
 
     private fun shareFile() {
-        val shareUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, File(path))
+        val shareUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, imageFile)
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_STREAM, shareUri)
@@ -140,5 +148,9 @@ class FullScreenImageActivity : AppCompatActivity() {
 
     private fun showBitmapError() {
         Snackbar.make(swipeToCloseLayout, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+    }
+
+    companion object {
+        private val TAG = FullScreenImageActivity::class.java.simpleName
     }
 }

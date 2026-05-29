@@ -18,6 +18,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import okhttp3.ResponseBody
@@ -88,15 +89,21 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
     }
 
     private fun executeDownload(body: ResponseBody?, fileName: String): Result {
-        if (body == null) {
-            Log.e(TAG, "Response body when downloading $fileName is null!")
+        val targetFile = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileName)
+        if (body == null || targetFile == null) {
+            if (body == null) {
+                Log.e(TAG, "Response body when downloading $fileName is null!")
+            }
+            if (targetFile == null) {
+                Log.e(TAG, "Refused to download file with unsafe name: $fileName")
+            }
             return Result.failure()
         }
 
         var count: Int
         val data = ByteArray(BYTE_UNIT_DIVIDER * DATA_BYTES)
         val bis: InputStream = BufferedInputStream(body.byteStream(), BYTE_UNIT_DIVIDER * DOWNLOAD_STREAM_SIZE)
-        val outputFile = File(context.cacheDir, fileName + "_")
+        val outputFile = File(targetFile.parentFile, targetFile.name + "_")
         val output: OutputStream = FileOutputStream(outputFile)
         var total: Long = 0
         val startTime = System.currentTimeMillis()
@@ -122,20 +129,16 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
         output.close()
         bis.close()
 
-        return onDownloadComplete(fileName)
+        return onDownloadComplete(outputFile, targetFile)
     }
 
-    private fun onDownloadComplete(fileName: String): Result {
-        val tempFile = File(context.cacheDir, fileName + "_")
-        val targetFile = File(context.cacheDir, fileName)
-
-        return if (tempFile.renameTo(targetFile)) {
+    private fun onDownloadComplete(tempFile: File, targetFile: File): Result =
+        if (tempFile.renameTo(targetFile)) {
             setProgressAsync(Data.Builder().putBoolean(SUCCESS, true).build())
             Result.success()
         } else {
             Result.failure()
         }
-    }
 
     companion object {
         const val TAG = "DownloadFileToCache"

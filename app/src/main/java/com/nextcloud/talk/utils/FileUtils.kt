@@ -26,6 +26,52 @@ object FileUtils {
     private val TAG = FileUtils::class.java.simpleName
     private const val RADIX: Int = 16
     private const val MD5_LENGTH: Int = 32
+    private const val SHARED_ATTACHMENTS_DIRECTORY = "shared_attachments"
+
+    /**
+     * Returns the dedicated cache directory used for externally shared attachments.
+     */
+    fun getSharedAttachmentsDirectory(cacheDir: File): File? {
+        val directory = File(cacheDir, SHARED_ATTACHMENTS_DIRECTORY)
+        if (directory.exists()) {
+            return if (directory.isDirectory) directory else null
+        }
+        return if (directory.mkdirs()) directory else null
+    }
+
+    /**
+     * Resolves a shared attachment file inside the dedicated cache directory.
+     */
+    fun resolveSharedAttachmentFile(cacheDir: File, untrustedFileName: String?): File? {
+        val sharedDirectory = getSharedAttachmentsDirectory(cacheDir) ?: return null
+        return resolveFileInDirectory(sharedDirectory, untrustedFileName)
+    }
+
+    /**
+     * Resolves an untrusted file name inside [baseDirectory] and rejects traversal attempts.
+     */
+    fun resolveFileInDirectory(baseDirectory: File, untrustedFileName: String?): File? {
+        val fileName = untrustedFileName?.trim().orEmpty()
+        val isSimpleFileName = fileName.isNotEmpty() &&
+            fileName != "." &&
+            fileName != ".." &&
+            !fileName.contains('/') &&
+            !fileName.contains('\\') &&
+            File(fileName).name == fileName
+
+        val resolvedFile = if (isSimpleFileName) {
+            val canonicalBase = baseDirectory.canonicalFile
+            val candidate = File(canonicalBase, fileName).canonicalFile
+            if (candidate.path.startsWith(canonicalBase.path + File.separator)) {
+                candidate
+            } else {
+                null
+            }
+        } else {
+            null
+        }
+        return resolvedFile
+    }
 
     /**
      * Creates a new [File]
@@ -33,7 +79,11 @@ object FileUtils {
     @Suppress("ThrowsCount")
     @JvmStatic
     fun getTempCacheFile(context: Context, fileName: String): File {
-        val cacheFile = File(context.applicationContext.filesDir.absolutePath + "/" + fileName)
+        val cacheRoot = context.applicationContext.cacheDir.canonicalFile
+        val cacheFile = File(cacheRoot, fileName).canonicalFile
+        if (!cacheFile.path.startsWith(cacheRoot.path + File.separator)) {
+            throw IOException("Temporary file must stay inside cache directory.")
+        }
         Log.v(TAG, "Full path for new cache file:" + cacheFile.absolutePath)
         val tempDir = cacheFile.parentFile ?: throw FileNotFoundException("could not cacheFile.getParentFile()")
         if (!tempDir.exists()) {
@@ -60,7 +110,11 @@ object FileUtils {
      * Creates a new [File]
      */
     fun removeTempCacheFile(context: Context, fileName: String) {
-        val cacheFile = File(context.applicationContext.filesDir.absolutePath + "/" + fileName)
+        val cacheRoot = context.applicationContext.cacheDir.canonicalFile
+        val cacheFile = File(cacheRoot, fileName).canonicalFile
+        if (!cacheFile.path.startsWith(cacheRoot.path + File.separator)) {
+            throw IOException("Temporary file must stay inside cache directory.")
+        }
         Log.v(TAG, "Full path for new cache file:" + cacheFile.absolutePath)
         if (cacheFile.exists()) {
             if (cacheFile.delete()) {
