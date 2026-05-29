@@ -70,13 +70,13 @@
     <string name="fifteenMinutes">15 minuti</string>
     <string name="file_list_folder">cartella</string>
     <string name="file_list_loading">Caricamento …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 ore</string>
     <string name="get_invitations_error">Impossibile recuperare gli inviti in sospeso</string>
     <string name="gplay_available_no">I servizi di Google Play non sono disponibili. Le notifiche non sono supportate</string>
     <string name="hint_edited_message">(modificato)</string>
     <string name="internal_note">Note interne</string>
     <string name="invisible">Invisibile</string>
+    <string name="join_call">Unisciti alla chiamata</string>
     <string name="languages_error_message">Impossibile recuperare le lingue</string>
     <string name="languages_error_title">Recupero non riuscito</string>
     <string name="later_today">Più tardi oggi</string>
@@ -307,6 +307,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s non disponibile (non installato o limitato dall\'amministratore)</string>
     <string name="nc_nick_guest">Ospite</string>
     <string name="nc_no">No</string>
+    <string name="nc_no_account_found">Account non trovato</string>
     <string name="nc_no_open_conversations_headline">Nessuna conversazione aperta</string>
     <string name="nc_no_open_conversations_text">Non ci sono conversazioni aperte a cui puoi partecipare.\nO non ci sono conversazioni aperte o hai già partecipato a tutte.</string>
     <string name="nc_no_proxy">Nessun proxy</string>
@@ -513,8 +514,6 @@
     <string name="nc_upload_picture_from_cam">Scatta foto</string>
     <string name="nc_upload_video_from_cam">Cattura video</string>
     <string name="nc_user">Utente</string>
-    <string name="nc_video_filename">Registrazione video da %1$s</string>
-    <string name="nc_voice_message_filename">Registrazione Talk da %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Tieni premuto per registrare, rilascia per inviare.</string>
     <string name="nc_voice_message_missing_audio_permission">Autorizzazione di registrazione audio richiesta</string>
     <string name="nc_voice_message_slide_to_cancel">« Scorri per annullare</string>

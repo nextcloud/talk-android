@@ -42,9 +42,9 @@
     <string name="fifteenMinutes">15 минути</string>
     <string name="file_list_folder">папка</string>
     <string name="file_list_loading">Зареждане …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 чàса</string>
     <string name="invisible">Невидим</string>
+    <string name="join_call">Присъединяване към обаждането</string>
     <string name="leave_call">Напускане на обаждането</string>
     <string name="load_more_results">Зареждане на още резултати</string>
     <string name="lock_conversation">Заключване на разговор</string>
@@ -226,6 +226,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s не е наличен (не е инсталиран или е ограничен от администратора)</string>
     <string name="nc_nick_guest">Гост</string>
     <string name="nc_no">Не</string>
+    <string name="nc_no_account_found">Няма намерен профил</string>
     <string name="nc_no_proxy">Без прокси</string>
     <string name="nc_not_allowed_to_activate_audio">Не ви е позволено да активирате аудио!</string>
     <string name="nc_not_allowed_to_activate_video">Не ви е позволено да активирате видео!</string>
@@ -380,8 +381,6 @@
     <string name="nc_upload_picture_from_cam">Снимане</string>
     <string name="nc_upload_video_from_cam">Заснемане на видео</string>
     <string name="nc_user">Потребител</string>
-    <string name="nc_video_filename">Видеозапис от %1$s</string>
-    <string name="nc_voice_message_filename">Запис на разговор от %1$s(%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Задържане за запис, отпускане за изпращане.</string>
     <string name="nc_voice_message_missing_audio_permission">Нужно е право за аудио запис </string>
     <string name="nc_voice_message_slide_to_cancel">«Плъзнете, за да отмените</string>

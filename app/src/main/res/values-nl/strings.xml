@@ -70,12 +70,12 @@
     <string name="fifteenMinutes">15 minuten</string>
     <string name="file_list_folder">map</string>
     <string name="file_list_loading">Laden …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 uur</string>
     <string name="get_invitations_error">Kon wachtende uitnodigingen niet ophalen</string>
     <string name="hint_edited_message">(bewerkt)</string>
     <string name="internal_note">Interne notitie</string>
     <string name="invisible">Onzichtbaar</string>
+    <string name="join_call">Deelnemen aan gesprek</string>
     <string name="languages_error_message">Talen konden niet opgehaald worden</string>
     <string name="languages_error_title">Ophalen mislukt</string>
     <string name="later_today">Later vandaag</string>
@@ -306,6 +306,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s niet beschikbaar (niet geïnstalleerd of beperkt door beheerder)</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_no">Nee</string>
+    <string name="nc_no_account_found">Account niet gevonden</string>
     <string name="nc_no_open_conversations_headline">Geen open gesprekken</string>
     <string name="nc_no_open_conversations_text">Geen open gesprekken waaraan je kan deelnemen.\nEr zijn geen open gesprekken of je bent al lid van alle gesprekken.</string>
     <string name="nc_no_proxy">geen proxy</string>
@@ -507,8 +508,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_upload_picture_from_cam">Neem foto</string>
     <string name="nc_upload_video_from_cam">Maak video</string>
     <string name="nc_user">Gebruiker</string>
-    <string name="nc_video_filename">Video-opname van %1$s</string>
-    <string name="nc_voice_message_filename">Talk neemt op vanaf%1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Ingedrukt houden om op te nemen, loslaten om te versturen.</string>
     <string name="nc_voice_message_missing_audio_permission">Toestemming voor audio-opname is vereist</string>
     <string name="nc_voice_message_slide_to_cancel">« Schuiven om te annuleren</string>

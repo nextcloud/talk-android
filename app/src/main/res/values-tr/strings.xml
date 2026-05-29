@@ -73,7 +73,6 @@
     <string name="fifteenMinutes">15 dakika</string>
     <string name="file_list_folder">klasör</string>
     <string name="file_list_loading">Yükleniyor…</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 saat</string>
     <string name="full_screen_intent_permission_granted">Kilit ekranında gelen aramaların görüntülenmesine izin veriliyor, her şey yolunda</string>
     <string name="full_screen_intent_permission_not_granted">Kilit ekranında gelen aramaların görüntülenmesine izin verilmiyor. Gelen aramaların görüntülenmesi için lütfen izin verin!</string>
@@ -543,9 +542,7 @@
     <string name="nc_upload_picture_from_cam">Fotoğraf çek</string>
     <string name="nc_upload_video_from_cam">Görüntü al</string>
     <string name="nc_user">Kullanıcı</string>
-    <string name="nc_video_filename">%1$s üzerinden görüntü kaydı</string>
     <string name="nc_voice_message">Sesli ileti</string>
-    <string name="nc_voice_message_filename">%1$s Konuş kaydı (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Kaydetmek için basılı tutun, bırakarak gönderin.</string>
     <string name="nc_voice_message_missing_audio_permission">Ses kaydetme izninin verilmesi gereklidir</string>
     <string name="nc_voice_message_slide_to_cancel">« İptal etmek için kaydırın</string>

@@ -50,10 +50,10 @@
     <string name="fifteenMinutes">15 分钟 </string>
     <string name="file_list_folder">文件夹</string>
     <string name="file_list_loading">正在加载 …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4小时</string>
     <string name="hint_edited_message">（已编辑）</string>
     <string name="invisible">隐身</string>
+    <string name="join_call">加入通话</string>
     <string name="later_today">今日稍晚</string>
     <string name="leave_call">离开通话</string>
     <string name="left_conversation">你已离开对话%1$s</string>
@@ -256,6 +256,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s不可用（尚未安装或被管理员限制使用）</string>
     <string name="nc_nick_guest">来宾</string>
     <string name="nc_no">不</string>
+    <string name="nc_no_account_found">未找到账号</string>
     <string name="nc_no_open_conversations_headline">没有公开的对话</string>
     <string name="nc_no_open_conversations_text">没有可以加入的公开对话 \n可能是没有公开对话，或是您已经加入全部的公开对话</string>
     <string name="nc_no_proxy">无代理</string>
@@ -430,8 +431,6 @@
     <string name="nc_upload_picture_from_cam">拍照</string>
     <string name="nc_upload_video_from_cam">拍摄视频</string>
     <string name="nc_user">用户</string>
-    <string name="nc_video_filename">来自 %1$s的视频录制</string>
-    <string name="nc_voice_message_filename">来自%1$s的通话录制（%2$s）</string>
     <string name="nc_voice_message_hold_to_record_info">按住录音，松开发送</string>
     <string name="nc_voice_message_missing_audio_permission">需要音频录制权限</string>
     <string name="nc_voice_message_slide_to_cancel">«滑动取消</string>

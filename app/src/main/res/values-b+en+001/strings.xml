@@ -70,13 +70,13 @@
     <string name="fifteenMinutes">15 minutes</string>
     <string name="file_list_folder">folder</string>
     <string name="file_list_loading">Loading …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hours</string>
     <string name="get_invitations_error">Failed to fetch pending invitations</string>
     <string name="gplay_available_no">Google Play services are not available.Notifications are not supported</string>
     <string name="hint_edited_message">(edited)</string>
     <string name="internal_note">Internal note</string>
     <string name="invisible">Invisible</string>
+    <string name="join_call">Join call</string>
     <string name="languages_error_message">Languages could not be retrieved</string>
     <string name="languages_error_title">Retrieval failed</string>
     <string name="later_today">Later today</string>
@@ -313,6 +313,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s not available (not installed or restricted by admin)</string>
     <string name="nc_nick_guest">Guest</string>
     <string name="nc_no">No</string>
+    <string name="nc_no_account_found">Account not found</string>
     <string name="nc_no_open_conversations_headline">No open conversations</string>
     <string name="nc_no_open_conversations_text">No open conversations that you can join.\nEither there are no open conversations or you already joined all of them.</string>
     <string name="nc_no_proxy">No proxy</string>
@@ -523,8 +524,6 @@
     <string name="nc_upload_picture_from_cam">Take photo</string>
     <string name="nc_upload_video_from_cam">Take video</string>
     <string name="nc_user">User</string>
-    <string name="nc_video_filename">Video recording from %1$s</string>
-    <string name="nc_voice_message_filename">Talk recording from %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Hold to record, release to send.</string>
     <string name="nc_voice_message_missing_audio_permission">Permission for audio recording is required</string>
     <string name="nc_voice_message_slide_to_cancel">« Slide to cancel</string>

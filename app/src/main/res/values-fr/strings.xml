@@ -70,13 +70,13 @@
     <string name="fifteenMinutes">15 minutes</string>
     <string name="file_list_folder">Dossier</string>
     <string name="file_list_loading">Chargement…</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 heures</string>
     <string name="get_invitations_error">Échec de la récupération des invitations en attente</string>
     <string name="gplay_available_no">Les services Google Play ne sont pas disponibles. Les notifications ne sont pas prises en charge</string>
     <string name="hint_edited_message">(modifié)</string>
     <string name="internal_note">Note interne</string>
     <string name="invisible">Invisible</string>
+    <string name="join_call">Rejoindre l\'appel</string>
     <string name="languages_error_message">Les langues n\'ont pas pu être récupérées</string>
     <string name="languages_error_title">Récupération échouée</string>
     <string name="later_today">Plus tard aujourd\'hui</string>
@@ -312,6 +312,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s non disponible (non installé ou restreint par l\'administrateur) </string>
     <string name="nc_nick_guest">Invité</string>
     <string name="nc_no">Non</string>
+    <string name="nc_no_account_found">Compte introuvable</string>
     <string name="nc_no_open_conversations_headline">Pas de conversations ouvertes</string>
     <string name="nc_no_open_conversations_text">Aucune conversation ouverte.\nSoit il n\'y aucune conversation ouverte, soit vous les avez déjà toutes rejointes.</string>
     <string name="nc_no_proxy">Aucun proxy</string>
@@ -521,8 +522,6 @@
     <string name="nc_upload_picture_from_cam">Prendre une photo</string>
     <string name="nc_upload_video_from_cam">Enregistrer une vidéo</string>
     <string name="nc_user">Utilisateur</string>
-    <string name="nc_video_filename">Enregistrement vidéo de %1$s</string>
-    <string name="nc_voice_message_filename">Enregistrement de conversation de %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Maintenir pour enregistrer, relâcher pour envoyer.</string>
     <string name="nc_voice_message_missing_audio_permission">La permission d\'enregistrer l\'audio est requise</string>
     <string name="nc_voice_message_slide_to_cancel">« Balayer pour annuler</string>

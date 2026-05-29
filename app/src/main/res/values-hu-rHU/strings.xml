@@ -70,13 +70,13 @@
     <string name="fifteenMinutes">15 perc</string>
     <string name="file_list_folder">mappa</string>
     <string name="file_list_loading">Betöltés…</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 óra</string>
     <string name="get_invitations_error">A függőben lévő meghívások lekérése sikertelen</string>
     <string name="gplay_available_no">A Google Play szolgáltatások nem érhetőek el. Az értesítések nem támogatottak.</string>
     <string name="hint_edited_message">(szerkesztve)</string>
     <string name="internal_note">Belső jegyzet</string>
     <string name="invisible">Láthatatlan</string>
+    <string name="join_call">Csatlakozás a híváshoz</string>
     <string name="languages_error_message">A nyelveket nem lehet lekérni</string>
     <string name="languages_error_title">Lekérés sikertelen</string>
     <string name="later_today">Mai nap később</string>
@@ -315,6 +315,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">A(z) %1$s nem érhető el (nincs telepítve vagy egy rendszergazda korlátozta)</string>
     <string name="nc_nick_guest">Vendég</string>
     <string name="nc_no">Nem</string>
+    <string name="nc_no_account_found">A fiók nem található</string>
     <string name="nc_no_open_conversations_headline">Nincs nyitott beszélgetés</string>
     <string name="nc_no_open_conversations_text">Nincs nyitott beszélgetés, melyhez csatlakozhatna.\nVagy nincsenek nyitott beszélgetések, vagy már mindhez csatlakozott.</string>
     <string name="nc_no_proxy">Nincs proxy</string>
@@ -530,8 +531,6 @@
     <string name="nc_upload_picture_from_cam">Fénykép készítése</string>
     <string name="nc_upload_video_from_cam">Videó készítése</string>
     <string name="nc_user">Felhasználó</string>
-    <string name="nc_video_filename">Videófelvétel innen: %1$s</string>
-    <string name="nc_voice_message_filename">Beszédfelvétel innen: %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Tartsa a felvételhez, engedje el a küldéshez.</string>
     <string name="nc_voice_message_missing_audio_permission">Hangfelvételi engedély szükséges</string>
     <string name="nc_voice_message_slide_to_cancel">« Csúsztassa a megszakításhoz</string>

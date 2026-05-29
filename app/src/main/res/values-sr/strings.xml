@@ -70,7 +70,6 @@
     <string name="fifteenMinutes">15 минута</string>
     <string name="file_list_folder">фасцикли</string>
     <string name="file_list_loading">Учитавање…</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 сата</string>
     <string name="get_invitations_error">Није успело добављање позивница на чекању</string>
     <string name="hint_edited_message">(уређено)</string>
@@ -502,8 +501,6 @@
     <string name="nc_upload_picture_from_cam">Сликај</string>
     <string name="nc_upload_video_from_cam">Направи видео снимак</string>
     <string name="nc_user">Корисник</string>
-    <string name="nc_video_filename">Видео снимак од %1$s</string>
-    <string name="nc_voice_message_filename">Говорни снимак од %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Задржите за снимање, отпустите да пошаљете.</string>
     <string name="nc_voice_message_missing_audio_permission">Потребна је дозвола за аудио снимање</string>
     <string name="nc_voice_message_slide_to_cancel">« Превуците да откажете</string>

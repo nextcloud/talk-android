@@ -65,12 +65,12 @@
     <string name="fifteenMinutes">15 دقيقة</string>
     <string name="file_list_folder">مُجلّد</string>
     <string name="file_list_loading">التحميل جارٍ …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 ساعات</string>
     <string name="get_invitations_error">تعذّر جلب الدعوات المعلقة</string>
     <string name="hint_edited_message">(معدّلة)</string>
     <string name="internal_note">ملاحظة داخلية</string>
     <string name="invisible">غير مرئي</string>
+    <string name="join_call">انضمام لمكالمة</string>
     <string name="languages_error_message">تعذّرت استعادة اللغات</string>
     <string name="languages_error_title">فشلت الاستعادة</string>
     <string name="later_today">في وقت لاحقٍ اليوم</string>
@@ -283,6 +283,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$sغير متاحٍ (غير مثبت أو مقيد من قبل المدير)</string>
     <string name="nc_nick_guest">ضيف</string>
     <string name="nc_no">لا</string>
+    <string name="nc_no_account_found">الحساب غير موجود </string>
     <string name="nc_no_open_conversations_headline">لا توجد محادثات مفتوحة</string>
     <string name="nc_no_open_conversations_text">لا توجد محادثات مفتوحة يمكنك الانضمام إليها. إمّا أنه لا توجد محادثات مفتوحة أو أنك مُنضّمٌ إليها جميعًا بالفعل.</string>
     <string name="nc_no_proxy">بدون بروكسي</string>
@@ -466,8 +467,6 @@
     <string name="nc_upload_picture_from_cam">خُذ صورة</string>
     <string name="nc_upload_video_from_cam">خُذ فيديو</string>
     <string name="nc_user">مستخدم</string>
-    <string name="nc_video_filename">تسجيل فيديو من %1$s</string>
-    <string name="nc_voice_message_filename">تسجيل محادثة Talk من %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">أُنقُر مُطوّلاً للتسجيل، ثم أفلِت للإرسال.</string>
     <string name="nc_voice_message_missing_audio_permission">الإذن لتسجيل الصوت مطلوب</string>
     <string name="nc_voice_message_slide_to_cancel">« إسحب للإلغاء</string>

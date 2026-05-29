@@ -73,7 +73,6 @@
     <string name="fifteenMinutes">15 minutit</string>
     <string name="file_list_folder">kaust</string>
     <string name="file_list_loading">Laadimisel...</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 tundi</string>
     <string name="full_screen_intent_permission_granted">Näed helisevat kõnet lukustusvaates, kõik on korras</string>
     <string name="full_screen_intent_permission_not_granted">Sa ei näe helisevat kõnet lukustusvaates. Palun anna rakendusele vastavad õigused!</string>
@@ -83,6 +82,7 @@
     <string name="hint_edited_message">(muudetud)</string>
     <string name="internal_note">Sisemine märge</string>
     <string name="invisible">Nähtamatu</string>
+    <string name="join_call">Liitu kõnega</string>
     <string name="languages_error_message">Keeli ei õnnestu laadida</string>
     <string name="languages_error_title">Laadimine ei õnnestunud</string>
     <string name="later_today">Täna hiljem</string>
@@ -326,6 +326,7 @@
     <string name="nc_nick_guest">Külaline</string>
     <string name="nc_no">Ei</string>
     <string name="nc_no_account_for_server">Selle serveri kohta ei leidu kasutajakontot</string>
+    <string name="nc_no_account_found">Kasutajakontot ei leidu</string>
     <string name="nc_no_open_conversations_headline">Pole avalikke vestlusi</string>
     <string name="nc_no_open_conversations_text">Pole avalikke vestlusi, millega saaksid liituda.\nSee siis tähendab, et kas neid pole üldse või oled kõikide olemasolevatega juba liitunud.</string>
     <string name="nc_no_proxy">Proksiserver pole vajalik</string>
@@ -543,9 +544,7 @@
     <string name="nc_upload_picture_from_cam">Pildista</string>
     <string name="nc_upload_video_from_cam">Filmi</string>
     <string name="nc_user">Kasutaja</string>
-    <string name="nc_video_filename">Videosalvestus kasutajalt %1$s</string>
     <string name="nc_voice_message">Häälsõnum</string>
-    <string name="nc_voice_message_filename">Salvestus: %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Salvestamiseks hoia nupp all ja saatmiseks vabasta nupp</string>
     <string name="nc_voice_message_missing_audio_permission">Vajalikud on õigused heli salvestamiseks</string>
     <string name="nc_voice_message_slide_to_cancel">« Katkestamiseks viipa</string>

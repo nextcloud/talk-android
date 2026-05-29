@@ -73,7 +73,6 @@
     <string name="fifteenMinutes">15 Minuten</string>
     <string name="file_list_folder">Ordner</string>
     <string name="file_list_loading">Lade …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 Stunden</string>
     <string name="full_screen_intent_permission_granted">Eingehender Anrufbildschirm über Sperrbildschirm zugelassen, alles in Ordnung</string>
     <string name="full_screen_intent_permission_not_granted">Eingehender Anrufbildschirm über dem Sperrbildschirm ist nicht zugelassen. Bitte zulassen, damit eingehende Anrufe auf dem Sperrbildschirm angezeigt werden!</string>
@@ -83,6 +82,7 @@
     <string name="hint_edited_message">(Bearbeitet)</string>
     <string name="internal_note">Interne Notiz</string>
     <string name="invisible">Unsichtbar</string>
+    <string name="join_call">Anruf beitreten</string>
     <string name="languages_error_message">Sprachen konnten nicht abgerufen werden</string>
     <string name="languages_error_title">Abrufen fehlgeschlagen</string>
     <string name="later_today">Später heute</string>
@@ -326,6 +326,7 @@
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_no">Nein</string>
     <string name="nc_no_account_for_server">Für diesen Server wurde kein Konto gefunden</string>
+    <string name="nc_no_account_found">Konto nicht gefunden</string>
     <string name="nc_no_open_conversations_headline">Keine offenen Unterhaltungen</string>
     <string name="nc_no_open_conversations_text">Keine offenen Unterhaltungen, denen Sie beitreten können.\nEntweder existieren keine offenen Unterhaltungen oder Sie sind bereits allen offenen Unterhaltungen beigetreten.</string>
     <string name="nc_no_proxy">Kein Proxy</string>
@@ -543,9 +544,7 @@
     <string name="nc_upload_picture_from_cam">Foto aufnehmen</string>
     <string name="nc_upload_video_from_cam">Video aufnehmen</string>
     <string name="nc_user">Benutzer</string>
-    <string name="nc_video_filename">Videoaufnahme von %1$s</string>
     <string name="nc_voice_message">Sprachnachricht</string>
-    <string name="nc_voice_message_filename">Talk-Aufnahme von %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Halten zum Aufnehmen, zum Versenden loslassen.</string>
     <string name="nc_voice_message_missing_audio_permission">Erlaubnis für Audioaufnahmen ist erforderlich</string>
     <string name="nc_voice_message_slide_to_cancel">« Schieben zum Abbrechen</string>

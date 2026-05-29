@@ -70,12 +70,12 @@
     <string name="fifteenMinutes">15 minút</string>
     <string name="file_list_folder">priečinok</string>
     <string name="file_list_loading">Načítavam …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hodiny</string>
     <string name="get_invitations_error">Nepodarilo sa načítať čakajúce pozvánky</string>
     <string name="hint_edited_message">(editované)</string>
     <string name="internal_note">Interná poznámka</string>
     <string name="invisible">Neviditeľný</string>
+    <string name="join_call">Pripojiť sa k hovoru</string>
     <string name="languages_error_message">Jazyky sa nedali získať</string>
     <string name="languages_error_title">Získanie zlyhalo</string>
     <string name="later_today">Neskôr dnes</string>
@@ -307,6 +307,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s nie je dostupné (nie je nainštalované alebo je obmedzené administrátorom)</string>
     <string name="nc_nick_guest">Hosť</string>
     <string name="nc_no">Nie</string>
+    <string name="nc_no_account_found">Účet sa nenašiel</string>
     <string name="nc_no_open_conversations_headline">Žiadne prebiehajúce konverzácie</string>
     <string name="nc_no_open_conversations_text">Momentálne neexistuje žiadna prebiehajúca konverzácia, ku ktorej by ste sa mohli pripojiť\nBuď žiadne neprebiehajú alebo sa už všetkých zúčastňujete.</string>
     <string name="nc_no_proxy">Bez proxy</string>
@@ -507,8 +508,6 @@
     <string name="nc_upload_picture_from_cam">Urobiť fotografiu</string>
     <string name="nc_upload_video_from_cam">Natočiť video</string>
     <string name="nc_user">Používateľ</string>
-    <string name="nc_video_filename">Nahrávanie vidia od %1$s</string>
-    <string name="nc_voice_message_filename">Nahrávanie hovoru od %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Podržte pre nahrávanie, uvoľnite pre poslanie.</string>
     <string name="nc_voice_message_missing_audio_permission">Je potrebné oprávnenie pre nahrávanie zvuku.</string>
     <string name="nc_voice_message_slide_to_cancel">« Potiahnite pre zrušenie</string>

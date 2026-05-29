@@ -42,10 +42,10 @@
     <string name="fifteenMinutes">15 λεπτά</string>
     <string name="file_list_folder">φάκελος</string>
     <string name="file_list_loading">Φόρτωση …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 ώρες</string>
     <string name="hint_edited_message">(επεξεργασμένο)</string>
     <string name="invisible">Αόρατο</string>
+    <string name="join_call">Συμμετοχή σε κλήση</string>
     <string name="later_today">Αργότερα σήμερα</string>
     <string name="leave_call">Αποχώρηση από την κλήση</string>
     <string name="load_more_results">Φόρτωση περισσοτέρων αποτελεσμάτων</string>
@@ -214,6 +214,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">Το %1$s δεν είναι διαθέσιμο (δεν έχει εγκατασταθεί ή έχει απαγορευθεί από τον διαχειριστή)</string>
     <string name="nc_nick_guest">Επισκέπτης</string>
     <string name="nc_no">Όχι</string>
+    <string name="nc_no_account_found">Δεν βρέθηκε λογαριασμός</string>
     <string name="nc_no_proxy">Κανένας διαμεσολαβητής</string>
     <string name="nc_not_now">Όχι τώρα</string>
     <string name="nc_notification_channel">%1$s από %2$s κανάλι ειδοποίησης</string>
@@ -362,7 +363,6 @@
     <string name="nc_upload_in_progess">Γίνεται μεταφόρτωση</string>
     <string name="nc_upload_picture_from_cam">Βγάλε φωτογραφία</string>
     <string name="nc_user">Χρήστης</string>
-    <string name="nc_voice_message_filename">Εγγραφή ομιλίας από %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Κρατήστε για εγγραφή, αφήστε για αποστολή.</string>
     <string name="nc_voice_message_missing_audio_permission">Απαιτούνται δικαιώματα για ηχογράφηση</string>
     <string name="nc_voice_message_slide_to_cancel">« Σύρετε για ακύρωση</string>

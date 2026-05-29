@@ -59,12 +59,12 @@
     <string name="fifteenMinutes">15 minutter</string>
     <string name="file_list_folder">mappe</string>
     <string name="file_list_loading">Laster ...</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 timer</string>
     <string name="get_invitations_error">Henting av ventende invitasjoner feilet</string>
     <string name="hint_edited_message">(redigert)</string>
     <string name="internal_note">Intern merknad</string>
     <string name="invisible">Usynlig</string>
+    <string name="join_call">Ta del i samtale</string>
     <string name="languages_error_message">Språk kunne ikke hentes</string>
     <string name="languages_error_title">Henting feilet</string>
     <string name="later_today">Senere i dag</string>
@@ -277,6 +277,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ikke tilgjengelig (ikke installert eller begrenset av admin)</string>
     <string name="nc_nick_guest">Gjest</string>
     <string name="nc_no">Nei</string>
+    <string name="nc_no_account_found">Konto ble ikke funnet</string>
     <string name="nc_no_open_conversations_headline">Ingen åpne samtaler</string>
     <string name="nc_no_open_conversations_text">Ingen åpne samtaler du kan bli med i.\nEnten er det ingen åpne samtaler, eller så har du allerede blitt med i dem alle.</string>
     <string name="nc_no_proxy">Ingen mellomserver</string>
@@ -449,8 +450,6 @@
     <string name="nc_upload_picture_from_cam">Ta et bilde</string>
     <string name="nc_upload_video_from_cam">Ta opp video</string>
     <string name="nc_user">Bruker</string>
-    <string name="nc_video_filename">Videoopptak fra %1$s</string>
-    <string name="nc_voice_message_filename">Taleopptak fra %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Hold for å spille inn, slipp for å sende.</string>
     <string name="nc_voice_message_missing_audio_permission">Tillatelse til lydopptak kreves</string>
     <string name="nc_voice_message_slide_to_cancel">« Skyv for å avbryte</string>

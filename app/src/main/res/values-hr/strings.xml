@@ -41,10 +41,10 @@
     <string name="fifteenMinutes">15 minuta</string>
     <string name="file_list_folder">mapa</string>
     <string name="file_list_loading">Učitavanje…</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 sata</string>
     <string name="hint_edited_message">(uređeno)</string>
     <string name="invisible">Nevidljiva</string>
+    <string name="join_call">Pridruži se pozivu</string>
     <string name="later_today">Kanije danas</string>
     <string name="leave_call">Napusti poziv</string>
     <string name="load_more_results">Učitaj više rezultata</string>
@@ -213,6 +213,7 @@
     <string name="nc_new_messages">Nove poruke</string>
     <string name="nc_nick_guest">Gost</string>
     <string name="nc_no">Ne</string>
+    <string name="nc_no_account_found">Račun nije pronađen</string>
     <string name="nc_no_proxy">Nema proxyja</string>
     <string name="nc_not_now">Ne sada</string>
     <string name="nc_notification_channel">%1$s na kanalu za obavijesti %2$s</string>
@@ -365,7 +366,6 @@
     <string name="nc_upload_in_progess">Otpremanje</string>
     <string name="nc_upload_picture_from_cam">Snimi fotografiju</string>
     <string name="nc_user">Korisnik</string>
-    <string name="nc_voice_message_filename">Snimka iz aplikacije Talk od %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Držite za snimanje, pustite za slanje.</string>
     <string name="nc_voice_message_missing_audio_permission">Potrebno je dopuštenje za snimanje zvuka</string>
     <string name="nc_voice_message_slide_to_cancel">« Pomakni za otkazivanje</string>

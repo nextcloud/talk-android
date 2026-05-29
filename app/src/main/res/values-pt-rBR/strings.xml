@@ -73,7 +73,6 @@
     <string name="fifteenMinutes">15 minutos</string>
     <string name="file_list_folder">pasta</string>
     <string name="file_list_loading">Carregando …</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 horas</string>
     <string name="full_screen_intent_permission_granted">A exibição da tela de chamadas recebidas na tela de bloqueio está habilitada, tudo certo</string>
     <string name="full_screen_intent_permission_not_granted">A exibição de chamadas recebidas na tela de bloqueio não está habilitada. Por favor, habilite essa função para que as chamadas recebidas apareçam na tela de bloqueio!</string>
@@ -83,6 +82,7 @@
     <string name="hint_edited_message">(editado)</string>
     <string name="internal_note">Nota interna</string>
     <string name="invisible">Invisível</string>
+    <string name="join_call">Entrar na chamada</string>
     <string name="languages_error_message">Não foi possível recuperar os idiomas</string>
     <string name="languages_error_title">Falha na recuperação</string>
     <string name="later_today">Hoje mais tarde</string>
@@ -326,6 +326,7 @@
     <string name="nc_nick_guest">Convidado</string>
     <string name="nc_no">Não</string>
     <string name="nc_no_account_for_server">Nenhuma conta encontrada neste servidor</string>
+    <string name="nc_no_account_found">Conta não encontrada</string>
     <string name="nc_no_open_conversations_headline">Nenhuma conversa aberta</string>
     <string name="nc_no_open_conversations_text">Não há conversas abertas nas quais você possa entrar.\nOu não há conversas abertas ou você já entrou em todas elas.</string>
     <string name="nc_no_proxy">Sem proxy</string>
@@ -543,9 +544,7 @@
     <string name="nc_upload_picture_from_cam">Tirar foto</string>
     <string name="nc_upload_video_from_cam">Gravar vídeo</string>
     <string name="nc_user">Usuário</string>
-    <string name="nc_video_filename">Gravação de vídeo de %1$s</string>
     <string name="nc_voice_message">Mensagem de voz</string>
-    <string name="nc_voice_message_filename">Gravação de conversa de %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Segure para gravar, solte para enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">A permissão para gravação de áudio é necessária</string>
     <string name="nc_voice_message_slide_to_cancel">« Deslize para cancelar</string>

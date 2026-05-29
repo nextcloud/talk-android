@@ -70,12 +70,12 @@
     <string name="fifteenMinutes">15 مىنۇت</string>
     <string name="file_list_folder">ھۆججەت قىسقۇچ</string>
     <string name="file_list_loading">يۈكلەۋاتىدۇ…</string>
-    <string name="filename_progress"> %1$s (%2$d)</string>
     <string name="fourHours">4 سائەت</string>
     <string name="get_invitations_error">ساقلىنىۋاتقان تەكلىپلەرنى ئالالمىدى</string>
     <string name="hint_edited_message">(تەھرىرلەندى)</string>
     <string name="internal_note">ئىچكى خاتىرە</string>
     <string name="invisible">كۆرۈنمەيدۇ</string>
+    <string name="join_call">چاقىرىشقا قوشۇلۇڭ</string>
     <string name="languages_error_message">تىللارنى ئەسلىگە كەلتۈرگىلى بولمىدى</string>
     <string name="languages_error_title">ئەسلىگە كەلتۈرۈش مەغلۇب بولدى</string>
     <string name="later_today">بۈگۈن بۈگۈن</string>
@@ -502,8 +502,6 @@
     <string name="nc_upload_picture_from_cam">رەسىمگە تارتىڭ</string>
     <string name="nc_upload_video_from_cam">سىن ئېلىڭ</string>
     <string name="nc_user">ئىشلەتكۈچى</string>
-    <string name="nc_video_filename">سىن خاتىرىلەش نىسبىتى%1$s</string>
-    <string name="nc_voice_message_filename">سۆزلىشىش خاتىرىسى(%2$s)%1$s</string>
     <string name="nc_voice_message_hold_to_record_info">خاتىرىلەش ، ئەۋەتىش ئۈچۈن قويۇپ بېرىش.</string>
     <string name="nc_voice_message_missing_audio_permission">ئاۋاز خاتىرىلەش ئىجازىتى تەلەپ قىلىنىدۇ</string>
     <string name="nc_voice_message_slide_to_cancel">«ئەمەلدىن قالدۇرۇش</string>

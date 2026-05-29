@@ -73,7 +73,6 @@
     <string name="fifteenMinutes">15 minučių</string>
     <string name="file_list_folder">aplankas</string>
     <string name="file_list_loading">Įkeliama…</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 valandos</string>
     <string name="full_screen_intent_permission_granted">Leidžiama rodyti gaunamo skambučio langą užrakintame ekrane, viskas gerai</string>
     <string name="full_screen_intent_permission_not_granted">Neleidžiama rodyti skambučių ekrano užrakintame ekrane. Prašome suteikti šią teisę, kad skambučiai būtų rodomi užrakintame ekrane!</string>
@@ -83,6 +82,7 @@
     <string name="hint_edited_message">(redaguota)</string>
     <string name="internal_note">Vidaus užrašas</string>
     <string name="invisible">Nematomas</string>
+    <string name="join_call">Prisijungti prie skambučio</string>
     <string name="languages_error_message">Nepavyko rasti kalbų</string>
     <string name="languages_error_title">Nepavyko gauti</string>
     <string name="later_today">Šiandien vėliau</string>
@@ -326,6 +326,7 @@
     <string name="nc_nick_guest">Svečias</string>
     <string name="nc_no">Ne</string>
     <string name="nc_no_account_for_server">Šio serverio paskyros nerasta</string>
+    <string name="nc_no_account_found">Paskyra nerasta</string>
     <string name="nc_no_open_conversations_headline">Jokių atvirų pokalbių</string>
     <string name="nc_no_open_conversations_text">Nėra atvirų pokalbių, prie kurių galėtumėte prisijungti.\nArba nėra atvirų pokalbių, arba jau prisijungėte prie visų.</string>
     <string name="nc_no_proxy">Be įgaliotojo serverio</string>
@@ -543,9 +544,7 @@
     <string name="nc_upload_picture_from_cam">Fotografuoti</string>
     <string name="nc_upload_video_from_cam">Įrašyti vaizdo įrašą</string>
     <string name="nc_user">Naudotojas</string>
-    <string name="nc_video_filename">Vaizdo įrašas iš %1$s</string>
     <string name="nc_voice_message">Balso žinutė</string>
-    <string name="nc_voice_message_filename">„Talk“ įrašas iš %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Laikykite, kad įrašinėtumėte, atleiskite, kad išsiųstumėte.</string>
     <string name="nc_voice_message_missing_audio_permission">Reikalingas leidimas garso įrašymui</string>
     <string name="nc_voice_message_slide_to_cancel">« Perbraukite norėdami atsisakyti</string>
