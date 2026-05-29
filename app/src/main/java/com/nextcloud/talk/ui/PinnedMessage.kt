@@ -29,6 +29,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,11 +47,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.ui.model.toIncompleteMessageUiModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.ui.chat.EnrichedText
+import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.preview.ComposePreviewUtils
@@ -119,121 +123,128 @@ fun PinnedMessageView(
 
     val interactionSource = remember { MutableInteractionSource() }
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp)
-            .shadow(
-                elevation = ELEVATION,
-                shape = RoundedCornerShape(CORNER_RADIUS.dp),
-                clip = false
-            )
-            .background(
-                incomingBubbleColor,
-                RoundedCornerShape(CORNER_RADIUS.dp)
-            )
-            .padding(SPACE_16.dp, SPACE_0.dp, SPACE_0.dp, SPACE_16.dp)
-            .heightIn(max = MAX_HEIGHT.dp)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null
-            ) {
-                scrollToMessageWithIdWithOffset(message.jsonMessageId.toString())
-            }
+    CompositionLocalProvider(
+        LocalViewThemeUtils provides viewThemeUtils
     ) {
-        var expanded by remember { mutableStateOf(false) }
-        val pinnedUntilStr = stringResource(R.string.pinned_until)
-        val untilUnpin = stringResource(R.string.until_unpin)
-        val pinnedText = remember(message.pinnedUntil) {
-            message.pinnedUntil?.let {
-                val format = if (DateFormat.is24HourFormat(context)) {
-                    "MMM dd yyyy, HH:mm"
-                } else {
-                    "MMM dd yyyy, hh:mm a"
-                }
-
-                val localDateTime = Instant.ofEpochSecond(it)
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDateTime()
-
-                val timeString = localDateTime.format(DateTimeFormatter.ofPattern(format))
-
-                "$pinnedUntilStr $timeString"
-            } ?: untilUnpin
-        }
-
-        Column(
-            modifier = Modifier
-                .verticalScroll(scrollState)
-                .padding(top = SPACE_16.dp, end = 40.dp)
-        ) {
-            Text(
-                text = pinnedHeadline,
-                color = colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.labelMedium
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = message.getRichText(),
-                color = colorScheme.onSurface
-            )
-        }
-
         Box(
             modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(top = 2.dp)
+                .fillMaxWidth()
+                .padding(4.dp)
+                .shadow(
+                    elevation = ELEVATION,
+                    shape = RoundedCornerShape(CORNER_RADIUS.dp),
+                    clip = false
+                )
+                .background(
+                    incomingBubbleColor,
+                    RoundedCornerShape(CORNER_RADIUS.dp)
+                )
+                .padding(SPACE_16.dp, SPACE_0.dp, SPACE_0.dp, SPACE_16.dp)
+                .heightIn(max = MAX_HEIGHT.dp)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null
+                ) {
+                    scrollToMessageWithIdWithOffset(message.jsonMessageId.toString())
+                }
         ) {
-            IconButton(onClick = { expanded = true }) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_more_vert_24px),
-                    contentDescription = stringResource(R.string.pinned_message_options),
-                    tint = highEmphasisColor
+            var expanded by remember { mutableStateOf(false) }
+            val pinnedUntilStr = stringResource(R.string.pinned_until)
+            val untilUnpin = stringResource(R.string.until_unpin)
+            val pinnedText = remember(message.pinnedUntil) {
+                message.pinnedUntil?.let {
+                    val format = if (DateFormat.is24HourFormat(context)) {
+                        "MMM dd yyyy, HH:mm"
+                    } else {
+                        "MMM dd yyyy, hh:mm a"
+                    }
+
+                    val localDateTime = Instant.ofEpochSecond(it)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDateTime()
+
+                    val timeString = localDateTime.format(DateTimeFormatter.ofPattern(format))
+
+                    "$pinnedUntilStr $timeString"
+                } ?: untilUnpin
+            }
+
+            Column(
+                modifier = Modifier
+                    .verticalScroll(scrollState)
+                    .padding(top = SPACE_16.dp, end = 40.dp)
+            ) {
+                Text(
+                    text = pinnedHeadline,
+                    color = colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.labelMedium
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                EnrichedText(
+                    message = message.toIncompleteMessageUiModel(
+                        currentConversation!!.token,
+                        currentConversation.remoteServer!!
+                    ),
+                    Modifier
                 )
             }
 
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier.background(outgoingBubbleColor)
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 2.dp)
             ) {
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = pinnedText,
-                            color = highEmphasisColor
-                        )
-                    },
-                    onClick = {},
-                    enabled = false
-                )
+                IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_more_vert_24px),
+                        contentDescription = stringResource(R.string.pinned_message_options),
+                        tint = highEmphasisColor
+                    )
+                }
 
-                HorizontalDivider()
-
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.pinned_go_to_message), color = highEmphasisColor) },
-                    onClick = {
-                        expanded = false
-                        scrollToMessageWithIdWithOffset(message.jsonMessageId.toString())
-                    }
-                )
-
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.pinned_dismiss), color = highEmphasisColor) },
-                    onClick = {
-                        expanded = false
-                        hidePinnedMessage(message)
-                    }
-                )
-
-                if (canPin) {
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.background(outgoingBubbleColor)
+                ) {
                     DropdownMenuItem(
-                        text = { Text(stringResource(R.string.unpin_message), color = highEmphasisColor) },
+                        text = {
+                            Text(
+                                text = pinnedText,
+                                color = highEmphasisColor
+                            )
+                        },
+                        onClick = {},
+                        enabled = false
+                    )
+
+                    HorizontalDivider()
+
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.pinned_go_to_message), color = highEmphasisColor) },
                         onClick = {
                             expanded = false
-                            unPinMessage(message)
+                            scrollToMessageWithIdWithOffset(message.jsonMessageId.toString())
                         }
                     )
+
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.pinned_dismiss), color = highEmphasisColor) },
+                        onClick = {
+                            expanded = false
+                            hidePinnedMessage(message)
+                        }
+                    )
+
+                    if (canPin) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.unpin_message), color = highEmphasisColor) },
+                            onClick = {
+                                expanded = false
+                                unPinMessage(message)
+                            }
+                        )
+                    }
                 }
             }
         }

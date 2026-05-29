@@ -192,6 +192,38 @@ fun ChatMessage.toScheduledMessageUiModel(
     )
 }
 
+fun ChatMessage.toIncompleteMessageUiModel(roomToken: String, baseUrl: String): ChatMessageUi {
+    val sendAtTimestamp = sendAt?.toLong() ?: timestamp
+    return ChatMessageUi(
+        id = token?.toIntOrNull() ?: token.hashCode(),
+        message = getRichText(),
+        plainMessage = message.orEmpty(),
+        renderMarkdown = renderMarkdown != false,
+        actorDisplayName = actorDisplayName.orEmpty(),
+        isThread = isThread,
+        threadTitle = threadTitle.orEmpty(),
+        threadReplies = threadReplies ?: 0,
+        incoming = false,
+        isDeleted = isDeleted,
+        avatarUrl = avatarUrl,
+        statusIcon = MessageStatusIcon.SCHEDULED,
+        timestamp = sendAtTimestamp,
+        date = Instant.ofEpochSecond(sendAtTimestamp).atZone(ZoneId.systemDefault()).toLocalDate(),
+        content = null,
+        roomToken = roomToken,
+        activeUserId = null,
+        activeUserBaseUrl = baseUrl,
+        messageParameters = normalizeMessageParameters(),
+        reactions = emptyList(),
+        isEdited = lastEditTimestamp != 0L,
+        parentMessage = null,
+        replyable = false,
+        isGrouped = false,
+        isGroupedWithNext = false,
+        isSilent = silent
+    )
+}
+
 private fun ChatMessage.normalizeMessageParameters(): Map<String, Map<String, String>> =
     messageParameters
         .orEmpty()
