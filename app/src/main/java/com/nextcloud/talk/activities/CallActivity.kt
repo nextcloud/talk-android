@@ -237,6 +237,7 @@ class CallActivity : CallBaseActivity() {
     private var videoCapturer: VideoCapturer? = null
     private var rootEglBase: EglBase? = null
     private var signalingDisposable: Disposable? = null
+    private var nickSendingDisposable: Disposable? = null
     private var iceServers: MutableList<PeerConnection.IceServer>? = null
     private var cameraEnumerator: CameraEnumerator? = null
     private var roomToken: String? = null
@@ -1962,6 +1963,8 @@ class CallActivity : CallBaseActivity() {
         stopCallingSound()
         callTimeHandler.removeCallbacksAndMessages(null)
         dispose(null)
+        dispose(nickSendingDisposable)
+        nickSendingDisposable = null
 
         if (shutDownView) {
             terminateAudioVideo()
@@ -2560,6 +2563,8 @@ class CallActivity : CallBaseActivity() {
         currentCallStatus === CallStatus.CONNECTING || isConnectionEstablished
 
     private fun startSendingNick() {
+        dispose(nickSendingDisposable)
+        nickSendingDisposable = null
         val dataChannelMessage = DataChannelMessage()
         dataChannelMessage.type = "nickChanged"
         val nickChangedPayload: MutableMap<String, String> = HashMap()
@@ -2570,11 +2575,11 @@ class CallActivity : CallBaseActivity() {
             if (peerConnectionWrapper.isMCUPublisher) {
                 Observable
                     .interval(1, TimeUnit.SECONDS)
-                    .repeatUntil { !isConnectionEstablished || isDestroyed }
+                    .takeWhile { isConnectionEstablished && !isDestroyed }
                     .observeOn(Schedulers.io())
                     .subscribe(object : Observer<Long> {
                         override fun onSubscribe(d: Disposable) {
-                            // unused atm
+                            nickSendingDisposable = d
                         }
 
                         override fun onNext(aLong: Long) {
