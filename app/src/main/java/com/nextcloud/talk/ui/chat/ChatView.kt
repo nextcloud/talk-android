@@ -303,15 +303,13 @@ fun ChatView(
         }
     }
 
-    LaunchedEffect(isAtNewest) {
+    LaunchedEffect(isAtNewest, state.chatItems) {
         if (!isAtNewest) return@LaunchedEffect
 
-        latestChatItems
-            .getOrNull(listState.firstVisibleItemIndex)
-            ?.let { item ->
-                if (item is ChatViewModel.ChatItem.MessageItem) {
-                    callbacks.advanceLocalLastReadMessageIfNeeded?.invoke(item.uiMessage.id)
-                }
+        state.chatItems
+            .firstNotNullOfOrNull { (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id }
+            ?.let { newestId ->
+                callbacks.advanceLocalLastReadMessageIfNeeded?.invoke(newestId)
             }
     }
 
