@@ -54,6 +54,7 @@ fun VoiceMessage(
     message: ChatMessageUi,
     isOneToOneConversation: Boolean = false,
     conversationThreadId: Long? = null,
+    currentlyPlayingVoiceMessageId: Int? = null,
     onPlayPauseClick: (Int) -> Unit = {},
     onSeek: (messageId: Int, progress: Int) -> Unit = { _, _ -> },
     onSpeedClick: (messageId: Int) -> Unit = {}
@@ -83,6 +84,12 @@ fun VoiceMessage(
                 label = "size"
             )
 
+            val icon = if (message.id != currentlyPlayingVoiceMessageId) {
+                Icons.Filled.PlayArrow
+            } else {
+                if (typeContent.isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow
+            }
+
             Column {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -96,7 +103,7 @@ fun VoiceMessage(
                             modifier = Modifier.size(48.dp)
                         ) {
                             Icon(
-                                imageVector = if (typeContent.isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                                imageVector = icon,
                                 contentDescription = stringResource(R.string.play_pause_voice_message),
                                 modifier = Modifier.size(40.dp)
                             )
