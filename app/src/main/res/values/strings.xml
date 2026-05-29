@@ -631,7 +631,7 @@ How to translate with transifex:
     <string name="nc_file_storage_permission">Permission for file access is required</string>
 
     <!-- Video -->
-    <string name="nc_video_filename">Video recording from %1$s</string>
+    <string name="nc_video_filename" translatable="false">Video recording from %1$s</string>
 
     <!-- location sharing -->
     <string name="nc_share_location">Share location</string>
@@ -654,7 +654,7 @@ How to translate with transifex:
 
     <!-- voice messages -->
     <string name="nc_voice_message">Voice message</string>
-    <string name="nc_voice_message_filename">Talk recording from %1$s (%2$s)</string>
+    <string name="nc_voice_message_filename" translatable="false">Talk recording from %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Hold to record, release to send.</string>
     <string name="nc_description_record_voice">Record voice message</string>
     <string name="nc_voice_message_slide_to_cancel">« Slide to cancel</string>
@@ -733,7 +733,7 @@ How to translate with transifex:
 
     <string name="failed_to_save">Failed to save %1$s</string>
     <string name="selected_list_item">Selected</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="filename_progress" translatable="false">%1$s (%2$d)</string>
     <string name="nc_dialog_invalid_password">Invalid password</string>
     <string name="nc_dialog_reauth_or_delete">Do you want to reauthorize or delete this account?</string>
     <string name="nc_deleted_user">User %1$s was removed</string>
