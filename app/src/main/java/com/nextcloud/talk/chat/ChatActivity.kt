@@ -48,7 +48,6 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.PopupWindow
 import android.widget.TextView
@@ -63,7 +62,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.SearchView
-import androidx.cardview.widget.CardView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Box
@@ -95,7 +93,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
-import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
@@ -116,12 +113,10 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import coil.imageLoader
-import coil.load
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.target.Target
 import coil.transform.CircleCropTransformation
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.color.ColorUtil
@@ -177,9 +172,14 @@ import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.translate.ui.TranslateActivity
+import com.nextcloud.talk.ui.ConversationDeleteNoticeView
+import com.nextcloud.talk.ui.ConversationDeleteNoticeViewData
+import com.nextcloud.talk.ui.OutOfOfficeView
+import com.nextcloud.talk.ui.OutOfOfficeViewData
 import com.nextcloud.talk.ui.PinnedMessageView
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.ui.StatusDrawable
+import com.nextcloud.talk.ui.UpcomingEventView
 import com.nextcloud.talk.ui.chat.ChatMessageCallbacks
 import com.nextcloud.talk.ui.chat.ChatView
 import com.nextcloud.talk.ui.chat.ChatViewCallbacks
@@ -316,6 +316,8 @@ class ChatActivity :
     private var overflowMenuHostView: ComposeView? = null
     private var isThreadMenuExpanded by mutableStateOf(false)
     private val searchLoadingState = mutableStateOf(false)
+    private val upcomingEventUiState =
+        mutableStateOf<ChatViewModel.UpcomingEventUIState>(ChatViewModel.UpcomingEventUIState.None)
 
     private val startSelectContactForResult = registerForActivityResult(
         ActivityResultContracts
@@ -539,6 +541,8 @@ class ChatActivity :
 
         setPinnedMessageContent()
 
+        setUpcomingEventContent()
+
         lifecycleScope.launch {
             currentUserProvider.getCurrentUser()
                 .onSuccess { user ->
@@ -598,23 +602,55 @@ class ChatActivity :
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
+    private fun setUpcomingEventContent() {
+        chatViewModel.upcomingEventViewState.observe(this) { state ->
+            if (state is ChatViewModel.UpcomingEventUIState.Error) {
+                Log.e(TAG, "Error fetching upcoming events", state.exception)
+            }
+            upcomingEventUiState.value = state
+        }
+        binding.upcomingEventComposeView.setContent {
+            MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
+                val uiState = upcomingEventUiState.value
+                val successState = uiState as? ChatViewModel.UpcomingEventUIState.Success
+                val event = successState?.event
+                val hiddenEventKey = event?.let { "${it.uri}${it.start}${it.summary}" }
+                if (event != null && hiddenEventKey != chatViewModel.hiddenUpcomingEvent) {
+                    UpcomingEventView(
+                        event = event,
+                        viewThemeUtils = viewThemeUtils,
+                        onDismiss = {
+                            upcomingEventUiState.value = ChatViewModel.UpcomingEventUIState.None
+                            chatViewModel.saveHiddenUpcomingEvent(hiddenEventKey!!)
+                            Snackbar.make(binding.root, R.string.nc_upcoming_event_dismissed, Snackbar.LENGTH_LONG)
+                                .show()
+                        }
+                    )
+                }
+            }
+        }
+    }
+
     private fun setPinnedMessageContent() {
         binding.pinnedMessageComposeView.setContent {
             MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
-                val uiState by chatViewModel.uiState.collectAsStateWithLifecycle()
-                val pinnedMessage = uiState.pinnedMessage
-                binding.pinnedMessageContainer.visibility = if (pinnedMessage != null) View.VISIBLE else View.GONE
-                if (pinnedMessage != null) {
-                    PinnedMessageView(
-                        message = pinnedMessage,
-                        viewThemeUtils = viewThemeUtils,
-                        currentConversation = uiState.conversation,
-                        scrollToMessageWithIdWithOffset = { messageId ->
-                            scrollToMessageById(messageId.toLong())
-                        },
-                        hidePinnedMessage = ::hidePinnedMessage,
-                        unPinMessage = ::unPinMessage
-                    )
+                CompositionLocalProvider(LocalViewThemeUtils provides viewThemeUtils) {
+                    val uiState by chatViewModel.uiState.collectAsStateWithLifecycle()
+                    val pinnedMessage = uiState.pinnedMessage
+                    binding.pinnedMessageContainer.visibility = if (pinnedMessage != null) View.VISIBLE else View.GONE
+                    if (pinnedMessage != null) {
+                        PinnedMessageView(
+                            message = pinnedMessage,
+                            user = conversationUser,
+                            viewThemeUtils = viewThemeUtils,
+                            currentConversation = uiState.conversation,
+                            scrollToMessageWithIdWithOffset = { messageId ->
+                                chatViewModel.jumpToQuotedMessage(messageId.toLong())
+                            },
+                            hidePinnedMessage = ::hidePinnedMessage,
+                            unPinMessage = ::unPinMessage
+                        )
+                    }
                 }
             }
         }
@@ -1646,7 +1682,7 @@ class ChatActivity :
         chatViewModel.unbindRoomResult.observe(this) { uiState ->
             when (uiState) {
                 is ChatViewModel.UnbindRoomUiState.Success -> {
-                    binding.conversationDeleteNotice.visibility = View.GONE
+                    binding.conversationDeleteNoticeComposeView.visibility = View.GONE
                     Snackbar.make(
                         binding.root,
                         context.getString(R.string.nc_room_retention),
@@ -1678,113 +1714,24 @@ class ChatActivity :
                 }
 
                 is ChatViewModel.OutOfOfficeUIState.Success -> {
-                    binding.outOfOfficeContainer.visibility = View.VISIBLE
-
-                    val backgroundColor = colorUtil.getNullSafeColorWithFallbackRes(
-                        conversationUser!!.capabilities!!.themingCapability!!.color,
-                        R.color.colorPrimary
-                    )
-
-                    binding.outOfOfficeContainer.findViewById<View>(
-                        R.id.verticalLine
-                    ).setBackgroundColor(backgroundColor)
-                    val setAlpha = ColorUtils.setAlphaComponent(backgroundColor, OUT_OF_OFFICE_ALPHA)
-                    binding.outOfOfficeContainer.setCardBackgroundColor(setAlpha)
-
-                    val startDateTimestamp: Long = uiState.userAbsence.startDate.toLong()
-                    val endDateTimestamp: Long = uiState.userAbsence.endDate.toLong()
-
-                    val startDate = Date(startDateTimestamp * ONE_SECOND_IN_MILLIS)
-                    val endDate = Date(endDateTimestamp * ONE_SECOND_IN_MILLIS)
-
-                    if (dateUtils.isSameDate(startDate, endDate)) {
-                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text =
-                            String.format(
-                                context.resources.getString(R.string.user_absence_for_one_day),
-                                currentConversation?.displayName
-                            )
-                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).visibility =
-                            View.GONE
-                    } else {
-                        val dateFormatter = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
-                        val startDateString = dateFormatter.format(startDate)
-                        val endDateString = dateFormatter.format(endDate)
-                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text =
-                            String.format(
-                                context.resources.getString(R.string.user_absence),
-                                currentConversation?.displayName
-                            )
-
-                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).text =
-                            "$startDateString - $endDateString"
-                    }
-
-                    if (uiState.userAbsence.replacementUserDisplayName != null) {
-                        val imageUri = ApiUtils.getUrlForAvatar(
-                            conversationUser?.baseUrl,
-                            uiState.userAbsence.replacementUserId,
-                            false,
-                            darkMode = DisplayUtils.isDarkModeOn(context)
-                        ).toUri()
-                        binding.outOfOfficeContainer.findViewById<ImageView>(R.id.replacement_user_avatar)
-                            .load(imageUri) {
-                                transformations(CircleCropTransformation())
-                                placeholder(R.drawable.account_circle_96dp)
-                                error(R.drawable.account_circle_96dp)
-                                crossfade(true)
+                    binding.outOfOfficeComposeView.apply {
+                        visibility = View.VISIBLE
+                        setContent {
+                            MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
+                                OutOfOfficeView(
+                                    data = OutOfOfficeViewData(
+                                        userAbsence = uiState.userAbsence,
+                                        displayName = currentConversation?.displayName.orEmpty(),
+                                        baseUrl = conversationUser?.baseUrl
+                                    ),
+                                    viewThemeUtils = viewThemeUtils,
+                                    onReplacementClick = {
+                                        joinOneToOneConversation(uiState.userAbsence.replacementUserId!!)
+                                    }
+                                )
                             }
-                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.replacement_user_name).text =
-                            uiState.userAbsence.replacementUserDisplayName
-                    } else {
-                        binding.outOfOfficeContainer.findViewById<LinearLayout>(R.id.userAbsenceReplacement)
-                            .visibility = View.GONE
-                    }
-                    binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceLongMessage).text =
-                        uiState.userAbsence.message
-                    binding.outOfOfficeContainer.findViewById<CardView>(R.id.avatar_chip).setOnClickListener {
-                        joinOneToOneConversation(uiState.userAbsence.replacementUserId!!)
-                    }
-                }
-            }
-        }
-
-        chatViewModel.upcomingEventViewState.observe(this) { uiState ->
-            when (uiState) {
-                is ChatViewModel.UpcomingEventUIState.Success -> {
-                    val hiddenEventKey = "${uiState.event.uri}${uiState.event.start}${uiState.event.summary}"
-                    if (hiddenEventKey == chatViewModel.hiddenUpcomingEvent) {
-                        binding.upcomingEventCard.visibility = View.GONE
-                    } else {
-                        binding.upcomingEventCard.visibility = View.VISIBLE
-                        viewThemeUtils.material.themeCardView(binding.upcomingEventCard)
-
-                        binding.upcomingEventContainer.upcomingEventSummary.text = uiState.event.summary
-
-                        uiState.event.start?.let { start ->
-                            val startDateTime = Instant.ofEpochSecond(start).atZone(ZoneId.systemDefault())
-                            val currentTime = ZonedDateTime.now(ZoneId.systemDefault())
-                            binding.upcomingEventContainer.upcomingEventTime.text =
-                                DateUtils(context).getStringForMeetingStartDateTime(startDateTime, currentTime)
-                        }
-
-                        binding.upcomingEventContainer.upcomingEventDismiss.setOnClickListener {
-                            binding.upcomingEventCard.visibility = View.GONE
-                            chatViewModel.saveHiddenUpcomingEvent(hiddenEventKey)
-                            Snackbar.make(
-                                binding.root,
-                                R.string.nc_upcoming_event_dismissed,
-                                Snackbar.LENGTH_LONG
-                            ).show()
                         }
                     }
-                }
-
-                is ChatViewModel.UpcomingEventUIState.Error -> {
-                    Log.e(TAG, "Error fetching upcoming events", uiState.exception)
-                }
-
-                ChatViewModel.UpcomingEventUIState.None -> {
-                    binding.upcomingEventCard.visibility = View.GONE
                 }
             }
         }
@@ -1814,40 +1761,31 @@ class ChatActivity :
     }
 
     fun showConversationDeletionWarning(retentionPeriod: Int) {
-        binding.conversationDeleteNotice.visibility = View.VISIBLE
-        binding.conversationDeleteNotice.apply {
-            isClickable = false
-            isFocusable = false
+        binding.conversationDeleteNoticeComposeView.apply {
+            visibility = View.VISIBLE
             bringToFront()
-        }
-        val deleteNoticeText = binding.conversationDeleteNotice.findViewById<TextView>(R.id.deletion_message)
-        viewThemeUtils.material.themeCardView(binding.conversationDeleteNotice)
-
-        deleteNoticeText.text = resources.getQuantityString(
-            R.plurals.nc_conversation_auto_delete_info,
-            retentionPeriod,
-            retentionPeriod
-        )
-        viewThemeUtils.material.colorMaterialButtonPrimaryTonal(
-            binding.conversationDeleteNotice
-                .findViewById<MaterialButton>(R.id.keep_button)
-        )
-
-        if (ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)) {
-            binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.delete_now_button).visibility =
-                View.VISIBLE
-            binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.keep_button).visibility = View.VISIBLE
-        } else {
-            binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.delete_now_button).visibility =
-                View.GONE
-            binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.keep_button).visibility = View.GONE
-        }
-        binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.delete_now_button).setOnClickListener {
-            deleteConversationDialog(it.context)
-        }
-
-        binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.keep_button).setOnClickListener {
-            chatViewModel.unbindRoom(credentials!!, conversationUser?.baseUrl!!, currentConversation?.token!!)
+            setContent {
+                MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
+                    ConversationDeleteNoticeView(
+                        data = ConversationDeleteNoticeViewData(
+                            retentionDays = retentionPeriod,
+                            isModeratorOrOwner = ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
+                        ),
+                        viewThemeUtils = viewThemeUtils,
+                        onDeleteNow = { deleteConversationDialog(context) },
+                        onKeep = {
+                            chatViewModel.unbindRoom(
+                                credentials!!,
+                                conversationUser?.baseUrl!!,
+                                currentConversation?.token!!
+                            )
+                        },
+                        onDismiss = {
+                            binding.conversationDeleteNoticeComposeView.visibility = View.GONE
+                        }
+                    )
+                }
+            }
         }
     }
 

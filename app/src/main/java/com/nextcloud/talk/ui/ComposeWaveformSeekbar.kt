@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 
 const val WAVEFORM_THUMB_SIZE = 20
 const val WAVEFORM_SIZE = 30
+const val MAX_HEIGHT = 100
 const val OVERLAP = 0.025
 
 @OptIn(ExperimentalMaterial3Api::class)
