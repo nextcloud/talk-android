@@ -231,22 +231,34 @@ public class PeerConnectionWrapper {
         return stream;
     }
 
-    public synchronized void removePeerConnection() {
+    public void removePeerConnection() {
         signalingMessageReceiver.removeListener(webRtcMessageListener);
 
-        for (DataChannel dataChannel: dataChannels.values()) {
-            Log.d(TAG, "Disposed DataChannel " + dataChannel.label());
-
-            dataChannel.dispose();
-        }
-        dataChannels.clear();
-
-        if (peerConnection != null) {
-            peerConnection.close();
+        final PeerConnection connectionToClose;
+        synchronized (this) {
+            connectionToClose = peerConnection;
             peerConnection = null;
+        }
+
+        if (connectionToClose != null) {
+            // close() blocks until the signaling thread finishes, and signaling thread callbacks
+            // (onStateChange, onDataChannel) acquire this object's lock — so close() must be
+            // called outside the lock. Nulling peerConnection above causes those callbacks to
+            // return early once they acquire the lock.
+            connectionToClose.close();
             Log.d(TAG, "Disposed PeerConnection");
         } else {
             Log.d(TAG, "PeerConnection is null.");
+        }
+
+        synchronized (this) {
+            for (DataChannel dataChannel : dataChannels.values()) {
+                Log.d(TAG, "Disposed DataChannel " + dataChannel.label());
+
+                dataChannel.unregisterObserver();
+                dataChannel.dispose();
+            }
+            dataChannels.clear();
         }
     }
 
@@ -497,6 +509,9 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
+            if (peerConnection == null) {
+                return;
+            }
 
             Log.d("iceConnectionChangeTo: ", iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
 
@@ -577,6 +592,7 @@ public class PeerConnectionWrapper {
                 if (oldDataChannel != null) {
                     Log.w(TAG, "Data channel with label " + dataChannel.label() + " exists");
 
+                    oldDataChannel.unregisterObserver();
                     oldDataChannel.dispose();
                 }
 
@@ -607,13 +623,13 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onCreateFailure(String s) {
-            Log.d(TAG, "SDPObserver createFailure: " + s + " over " + peerConnection.hashCode() + " " + sessionId);
+            Log.d(TAG, "SDPObserver createFailure: " + s + " over " + sessionId);
 
         }
 
         @Override
         public void onSetFailure(String s) {
-            Log.d(TAG,"SDPObserver setFailure: " + s + " over " + peerConnection.hashCode() + " " + sessionId);
+            Log.d(TAG,"SDPObserver setFailure: " + s + " over " + sessionId);
         }
 
         @Override
