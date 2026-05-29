@@ -345,14 +345,27 @@ class ConversationsListViewModel @Inject constructor(
                 getMessagesFlow(filter)
             ) { localConvs, openConvs, contacts, (messages, hasMore) ->
                 val entries = mutableListOf<ConversationListEntry>()
+                val wordPattern = """\b${Regex.escape(filter)}\b""".toRegex(RegexOption.IGNORE_CASE)
 
                 if (localConvs.isNotEmpty()) {
                     entries.add(ConversationListEntry.Header(conversationsTitle))
-                    localConvs.forEach { entries.add(ConversationListEntry.ConversationEntry(it)) }
+                    sortedByMatchQuality(
+                        localConvs,
+                        { it.name },
+                        filter,
+                        wordPattern,
+                        isSingleUser = { it.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL }
+                    ).forEach { entries.add(ConversationListEntry.ConversationEntry(it)) }
                 }
                 if (openConvs.isNotEmpty()) {
                     entries.add(ConversationListEntry.Header(openConversationsTitle))
-                    openConvs.forEach { conv ->
+                    sortedByMatchQuality(
+                        openConvs,
+                        { it.name },
+                        filter,
+                        wordPattern,
+                        isSingleUser = { it.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL }
+                    ).forEach { conv ->
                         entries.add(
                             ConversationListEntry.ConversationEntry(
                                 ConversationModel.mapToConversationModel(conv, currentUser)
@@ -362,17 +375,21 @@ class ConversationsListViewModel @Inject constructor(
                 }
                 if (contacts.isNotEmpty()) {
                     entries.add(ConversationListEntry.Header(usersTitle))
-                    contacts.forEach { autocompleteUser ->
-                        val participant = Participant()
-                        participant.actorId = autocompleteUser.id
-                        participant.actorType = actorTypeConverter.getFromString(autocompleteUser.source)
-                        participant.displayName = autocompleteUser.label
-                        entries.add(ConversationListEntry.ContactEntry(participant))
-                    }
+                    sortedByMatchQuality(contacts, { it.label }, filter, wordPattern)
+                        .forEach { autocompleteUser ->
+                            val participant = Participant()
+                            participant.actorId = autocompleteUser.id
+                            participant.actorType = actorTypeConverter.getFromString(autocompleteUser.source)
+                            participant.displayName = autocompleteUser.label
+                            entries.add(ConversationListEntry.ContactEntry(participant))
+                        }
                 }
                 if (messages.isNotEmpty()) {
                     entries.add(ConversationListEntry.Header(messagesTitle))
-                    messages.forEach { msg -> entries.add(ConversationListEntry.MessageResultEntry(msg)) }
+                    sortedByMatchQuality(messages, {
+                        it.messageExcerpt
+                    }, filter, wordPattern, exactMatchEnabled = false)
+                        .forEach { msg -> entries.add(ConversationListEntry.MessageResultEntry(msg)) }
                 }
                 if (hasMore) entries.add(ConversationListEntry.LoadMore)
 
@@ -383,6 +400,39 @@ class ConversationsListViewModel @Inject constructor(
             }
         }
     }
+
+    // Sort keys in order:
+    //   1. tier: 0 = exact title, 1 = starts with filter, 2 = whole-word match, 3 = substring
+    //   2. isSingleUser: 0 = 1-on-1 conversation, 1 = group/other (optional)
+    //   3. position of the match in the text (earlier = better, tiebreaker within tier)
+    // exactMatchEnabled = false for messages, where an exact excerpt match is not a meaningful tier.
+    private fun <T> sortedByMatchQuality(
+        list: List<T>,
+        getText: (T) -> String?,
+        filter: String,
+        wordPattern: Regex,
+        exactMatchEnabled: Boolean = true,
+        isSingleUser: ((T) -> Boolean)? = null
+    ): List<T> =
+        list.sortedWith(
+            compareBy(
+                { item ->
+                    val text = getText(item)
+                    when {
+                        text == null -> 3
+                        exactMatchEnabled && text.trim().equals(filter, ignoreCase = true) -> 0
+                        text.startsWith(filter, ignoreCase = true) -> 1
+                        text.contains(wordPattern) -> 2
+                        else -> 3
+                    }
+                },
+                { item -> if (isSingleUser?.invoke(item) == true) 0 else 1 },
+                { item ->
+                    val pos = getText(item)?.indexOf(filter, ignoreCase = true) ?: -1
+                    if (pos >= 0) pos else Int.MAX_VALUE
+                }
+            )
+        )
 
     private fun getMessagesFlow(search: String): Flow<MessageSearchResults> =
         flow {
