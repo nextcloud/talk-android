@@ -92,7 +92,9 @@ public abstract class LocalStateBroadcaster {
      * this method instead.
      */
     public void handleCallParticipantAdded(StateFlow<ParticipantUiState> uiStateFlow) {
-        handleCallParticipantAdded(uiStateFlow.getValue());
+        if (uiStateFlow != null) {
+            handleCallParticipantAdded(uiStateFlow.getValue());
+        }
     }
 
     public abstract void handleCallParticipantAdded(ParticipantUiState uiState);
