@@ -11,6 +11,7 @@ package com.nextcloud.talk.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.app.PendingIntent
 import android.app.RemoteAction
 import android.content.BroadcastReceiver
@@ -78,6 +79,7 @@ import com.nextcloud.talk.camera.BackgroundBlurFrameProcessor
 import com.nextcloud.talk.camera.BlurBackgroundViewModel
 import com.nextcloud.talk.camera.BlurBackgroundViewModel.BackgroundBlurOn
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.callnotification.CallNotificationActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallActivityBinding
@@ -2049,9 +2051,8 @@ class CallActivity : CallBaseActivity() {
                     }
 
                     if (conversationModel?.checkIfVoiceRoom() == true) {
-                        val intent = Intent(context, ConversationsListActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                        openConversationListInPrimaryTask()
+                        finishAndRemoveTask()
                     } else if (switchToRoomToken.isNotEmpty()) {
                         val intent = Intent(context, ChatActivity::class.java)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -2081,6 +2082,54 @@ class CallActivity : CallBaseActivity() {
                     // unused atm
                 }
             })
+    }
+
+    private fun openConversationListInPrimaryTask() {
+        val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+        val appTasks = activityManager
+            ?.appTasks
+            ?.filter { appTask -> appTask.taskInfo?.baseActivity?.packageName == packageName }
+            .orEmpty()
+
+        val primaryTask = appTasks.firstOrNull { appTask ->
+            val taskInfo = appTask.taskInfo
+            val baseActivityName = taskInfo?.baseActivity?.className
+            taskInfo != null &&
+                taskInfo.taskId != taskId &&
+                baseActivityName == MainActivity::class.java.name
+        } ?: appTasks.firstOrNull { appTask ->
+            val taskInfo = appTask.taskInfo
+            val baseActivityName = taskInfo?.baseActivity?.className
+            taskInfo != null &&
+                taskInfo.taskId != taskId &&
+                baseActivityName != CallActivity::class.java.name &&
+                baseActivityName != CallNotificationActivity::class.java.name
+        }
+
+        if (primaryTask != null) {
+            val intent = Intent(context, ConversationsListActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            }
+            primaryTask.startActivity(context, intent, null)
+            primaryTask.moveToFront()
+            val primaryTaskId = primaryTask.taskInfo?.taskId
+            appTasks
+                .filter { appTask ->
+                    val taskInfo = appTask.taskInfo
+                    val baseActivityName = taskInfo?.baseActivity?.className
+                    val isCallTask = baseActivityName == CallActivity::class.java.name ||
+                        baseActivityName == CallNotificationActivity::class.java.name
+                    taskInfo != null && !isCallTask && taskInfo.taskId != primaryTaskId && taskInfo.taskId != taskId
+                }
+                .forEach { it.finishAndRemoveTask() }
+        } else {
+            val mainIntent = Intent(context, MainActivity::class.java).apply {
+                action = Intent.ACTION_MAIN
+                addCategory(Intent.CATEGORY_LAUNCHER)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
+            startActivity(mainIntent)
+        }
     }
 
     private fun startVideoCapture(isPortrait: Boolean) {
