@@ -53,13 +53,18 @@ public class CallParticipantListExternalSignalingTest {
     private Collection<Participant> expectedLeft;
     private Collection<Participant> expectedUnchanged;
 
-    // The order of the left participants in some tests depends on how they are internally sorted by the map, so the
-    // list of left participants needs to be checked ignoring the sorting (or, rather, sorting by session ID as in
-    // expectedLeft).
+    // The order of the left/unchanged participants in some tests depends on how they are internally sorted by the map,
+    // so the lists need to be checked ignoring the sorting (or, rather, sorting by session ID as in expectedLeft/
+    // expectedUnchanged).
     // Other tests can just relay on the not guaranteed, but known internal sorting of the elements.
     private final ArgumentMatcher<List<Participant>> matchesExpectedLeftIgnoringOrder = left -> {
         Collections.sort(left, Comparator.comparing(Participant::getSessionId));
         return expectedLeft.equals(left);
+    };
+
+    private final ArgumentMatcher<List<Participant>> matchesExpectedUnchangedIgnoringOrder = unchanged -> {
+        Collections.sort(unchanged, Comparator.comparing(Participant::getSessionId));
+        return expectedUnchanged.equals(unchanged);
     };
 
     private static class ParticipantsUpdateParticipantBuilder {
@@ -485,7 +490,9 @@ public class CallParticipantListExternalSignalingTest {
     }
 
     @Test
-    public void testParticipantsUpdateLeaveCallAndRoom() {
+    public void testParticipantsUpdateEmptyListDoesNotEvictExistingParticipants() {
+        // With HPB, onParticipantsUpdate is a partial update. An empty list means "nothing changed", not
+        // "everyone left". Absent participants must remain in the call.
         List<Participant> participants = new ArrayList<>();
         participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", MODERATOR, "theUserId1"));
 
@@ -493,18 +500,15 @@ public class CallParticipantListExternalSignalingTest {
 
         callParticipantList.addObserver(mockedCallParticipantListObserver);
 
-        participants = new ArrayList<>();
+        participantListMessageListener.onParticipantsUpdate(new ArrayList<>());
 
-        participantListMessageListener.onParticipantsUpdate(participants);
-
-        expectedLeft.add(builder.newUser(DISCONNECTED, 1, "theSessionId1", MODERATOR, "theUserId1"));
-
-        verify(mockedCallParticipantListObserver, only()).onCallParticipantsChanged(expectedJoined, expectedUpdated,
-                                                                                    expectedLeft, expectedUnchanged);
+        verifyNoInteractions(mockedCallParticipantListObserver);
     }
 
     @Test
-    public void testParticipantsUpdateLeaveCallAndRoomSeveralParticipants() {
+    public void testParticipantsUpdatePartialListDoesNotEvictAbsentParticipants() {
+        // With HPB, onParticipantsUpdate is a partial update. Participants absent from the list are still
+        // in the call — they just have no state change to report in this update.
         List<Participant> participants = new ArrayList<>();
         participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", MODERATOR, "theUserId1"));
         participants.add(builder.newGuest(IN_CALL, 2, "theSessionId2", GUEST));
@@ -515,18 +519,16 @@ public class CallParticipantListExternalSignalingTest {
 
         callParticipantList.addObserver(mockedCallParticipantListObserver);
 
+        // Partial update: only sessions 3 and 4 are included; sessions 1 and 2 are absent but still in call.
         participants = new ArrayList<>();
         participants.add(builder.newUser(DISCONNECTED, 3, "theSessionId3", USER, "theUserId3"));
         participants.add(builder.newUser(IN_CALL, 4, "theSessionId4", USER, "theUserId4"));
 
         participantListMessageListener.onParticipantsUpdate(participants);
 
-        expectedLeft.add(builder.newUser(DISCONNECTED, 1, "theSessionId1", MODERATOR, "theUserId1"));
-        expectedLeft.add(builder.newGuest(DISCONNECTED, 2, "theSessionId2", GUEST));
-        expectedUnchanged.add(builder.newUser(IN_CALL, 4, "theSessionId4", USER, "theUserId4"));
-
-        verify(mockedCallParticipantListObserver).onCallParticipantsChanged(eq(expectedJoined), eq(expectedUpdated),
-                                                                            argThat(matchesExpectedLeftIgnoringOrder), eq(expectedUnchanged));
+        // Sessions 1 and 2 must NOT appear in left. Session 4 is unchanged.
+        // No joined/updated/left → no notification.
+        verifyNoInteractions(mockedCallParticipantListObserver);
     }
 
     @Test
@@ -547,7 +549,7 @@ public class CallParticipantListExternalSignalingTest {
         callParticipantList.addObserver(mockedCallParticipantListObserver);
 
         participants = new ArrayList<>();
-        // theSessionId1 is gone.
+        // theSessionId1 is absent from this partial update but is still in the call (not explicitly disconnected).
         participants.add(builder.newGuest(DISCONNECTED, 2, "theSessionId2", GUEST));
         participants.add(builder.newUser(DISCONNECTED, 3, "theSessionId3", USER, "theUserId3"));
         participants.add(builder.newUser(IN_CALL, 4, "theSessionId4", USER, "theUserId4"));
@@ -563,14 +565,51 @@ public class CallParticipantListExternalSignalingTest {
         expectedJoined.add(builder.newUser(IN_CALL, 8, "theSessionId8", USER, "theUserId8"));
         expectedUpdated.add(builder.newUser(IN_CALL | WITH_AUDIO | WITH_VIDEO, 5, "theSessionId5", OWNER, "theUserId5"));
         expectedUpdated.add(builder.newGuest(IN_CALL, 7, "theSessionId7", GUEST));
-        expectedLeft.add(builder.newUser(DISCONNECTED, 1, "theSessionId1", MODERATOR, "theUserId1"));
+        // theSessionId1 absent from partial update → NOT in left, but in unchanged.
+        // theSessionId2 explicitly DISCONNECTED → left.
         expectedLeft.add(builder.newGuest(DISCONNECTED, 2, "theSessionId2", GUEST));
+        // Sorted by sessionId for matchesExpectedUnchangedIgnoringOrder.
+        expectedUnchanged.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", MODERATOR, "theUserId1"));
         expectedUnchanged.add(builder.newUser(IN_CALL, 4, "theSessionId4", USER, "theUserId4"));
         // Last ping and participant type are not seen as changed, even if they did.
         expectedUnchanged.add(builder.newUser(IN_CALL | WITH_AUDIO, 42, "theSessionId9", USER, "theUserId9"));
 
         verify(mockedCallParticipantListObserver).onCallParticipantsChanged(eq(expectedJoined), eq(expectedUpdated),
-                                                                            argThat(matchesExpectedLeftIgnoringOrder), eq(expectedUnchanged));
+                                                                            argThat(matchesExpectedLeftIgnoringOrder),
+                                                                            argThat(matchesExpectedUnchangedIgnoringOrder));
+    }
+
+    /**
+     * Regression test for HPB partial update bug: when a new participant joins (partial update containing only that
+     * participant), existing participants absent from the update must NOT be moved to "left".
+     *
+     * With internal signaling (usersInRoom), an absent participant means they left. With HPB external signaling
+     * (participantsUpdate), the update is partial — only changed participants are included; absent ones are still
+     * in the call.
+     */
+    @Test
+    public void testParticipantsUpdateNewParticipantJoinsDoesNotEvictExisting() {
+        // Participant 1 (self / Android) joins the call first.
+        List<Participant> participants = new ArrayList<>();
+        participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", MODERATOR, "theUserId1"));
+
+        participantListMessageListener.onParticipantsUpdate(participants);
+
+        callParticipantList.addObserver(mockedCallParticipantListObserver);
+
+        // Participant 2 (browser) joins: HPB sends a partial update containing ONLY participant 2.
+        // Participant 1 is absent from this update but is still in the call.
+        participants = new ArrayList<>();
+        participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 2, "theSessionId2", USER, "theUserId2"));
+
+        participantListMessageListener.onParticipantsUpdate(participants);
+
+        // Participant 2 should be in "joined"; participant 1 must NOT appear in "left" but in "unchanged".
+        expectedJoined.add(builder.newUser(IN_CALL | WITH_AUDIO, 2, "theSessionId2", USER, "theUserId2"));
+        expectedUnchanged.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", MODERATOR, "theUserId1"));
+
+        verify(mockedCallParticipantListObserver, only()).onCallParticipantsChanged(expectedJoined, expectedUpdated,
+                                                                                    expectedLeft, expectedUnchanged);
     }
 
     @Test
