@@ -82,6 +82,7 @@
     <string name="hint_edited_message">(edytowane)</string>
     <string name="internal_note">Notatka wewnętrzna</string>
     <string name="invisible">Niewidoczny</string>
+    <string name="join_call">Dołącz do połączenia</string>
     <string name="languages_error_message">Nie udało się pobrać języków</string>
     <string name="languages_error_title">Pobieranie nie powiodło się</string>
     <string name="later_today">Później dzisiaj</string>
@@ -325,6 +326,7 @@
     <string name="nc_nick_guest">Gość</string>
     <string name="nc_no">Nie</string>
     <string name="nc_no_account_for_server">Nie znaleziono konta dla tego serwera</string>
+    <string name="nc_no_account_found">Nie znaleziono konta</string>
     <string name="nc_no_open_conversations_headline">Brak otwartych rozmów</string>
     <string name="nc_no_open_conversations_text">Brak otwartych rozmów, do których możesz dołączyć.\nAlbo nie ma otwartych rozmów lub już do nich dołączyłeś.</string>
     <string name="nc_no_proxy">Brak proxy</string>

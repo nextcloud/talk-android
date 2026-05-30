@@ -43,6 +43,7 @@
     <string name="file_list_loading">Loading …</string>
     <string name="fourHours">4 horas</string>
     <string name="invisible">Invisible</string>
+    <string name="join_call">Unirse a la llamada</string>
     <string name="leave_call">Dejar la llamada</string>
     <string name="load_more_results">Cargar más resultados</string>
     <string name="lock_conversation">Bloquear conversación</string>
@@ -227,6 +228,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s no disponible (no instalado o restringido por el administrador)</string>
     <string name="nc_nick_guest">Invitado</string>
     <string name="nc_no">No</string>
+    <string name="nc_no_account_found">Cuenta no encontrada</string>
     <string name="nc_no_open_conversations_headline">No hay conversaciones abiertas</string>
     <string name="nc_no_open_conversations_text">No hay conversaciones abiertas a las que puedas unirte.\nO no hay conversaciones abiertas o ya te has unido a todas.</string>
     <string name="nc_no_proxy">Sin proxy</string>

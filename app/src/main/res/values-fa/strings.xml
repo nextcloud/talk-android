@@ -45,6 +45,7 @@
     <string name="file_list_loading">بارگذاری …</string>
     <string name="fourHours">۴ ساعت</string>
     <string name="invisible">نامرئی</string>
+    <string name="join_call">پیوستن به تماس</string>
     <string name="later_today">تا آخر وقت همین امروز</string>
     <string name="leave_call">Leave call</string>
     <string name="load_more_results">بار کردن نتیحه‌های بیش‌تر</string>
@@ -202,6 +203,7 @@
     <string name="nc_new_messages">پیام‌های خوانده نشده</string>
     <string name="nc_nick_guest">مهمان</string>
     <string name="nc_no">نه</string>
+    <string name="nc_no_account_found">حساب یافت نشد</string>
     <string name="nc_no_open_conversations_headline">گفتگوی بازی وجود ندارد</string>
     <string name="nc_no_proxy">پروکسی نیست</string>
     <string name="nc_not_allowed_to_activate_video">مجاز به فعال کردن ویدئو نیستید!</string>

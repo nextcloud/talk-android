@@ -75,6 +75,7 @@
     <string name="hint_edited_message">(bewerkt)</string>
     <string name="internal_note">Interne notitie</string>
     <string name="invisible">Onzichtbaar</string>
+    <string name="join_call">Deelnemen aan gesprek</string>
     <string name="languages_error_message">Talen konden niet opgehaald worden</string>
     <string name="languages_error_title">Ophalen mislukt</string>
     <string name="later_today">Later vandaag</string>
@@ -305,6 +306,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s niet beschikbaar (niet geïnstalleerd of beperkt door beheerder)</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_no">Nee</string>
+    <string name="nc_no_account_found">Account niet gevonden</string>
     <string name="nc_no_open_conversations_headline">Geen open gesprekken</string>
     <string name="nc_no_open_conversations_text">Geen open gesprekken waaraan je kan deelnemen.\nEr zijn geen open gesprekken of je bent al lid van alle gesprekken.</string>
     <string name="nc_no_proxy">geen proxy</string>

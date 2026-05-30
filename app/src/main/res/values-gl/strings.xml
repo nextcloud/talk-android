@@ -76,6 +76,7 @@
     <string name="hint_edited_message">(editado)</string>
     <string name="internal_note">Nota interna</string>
     <string name="invisible">Invisíbel</string>
+    <string name="join_call">Unirse á chamada</string>
     <string name="languages_error_message">Non foi posíbel recuperar os idiomas</string>
     <string name="languages_error_title">Produciuse un fallo na recuperación</string>
     <string name="later_today">Hoxe máis tarde</string>
@@ -309,6 +310,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s non está dispoñíbel (nin instalado nin restrinxido pola administración da instancia.)</string>
     <string name="nc_nick_guest">Convidado</string>
     <string name="nc_no">Non</string>
+    <string name="nc_no_account_found">Non se atopou a conta</string>
     <string name="nc_no_open_conversations_headline">Non hai conversas abertas</string>
     <string name="nc_no_open_conversations_text">Non hai conversas abertas ás que poida unirse.\nNon hai conversas abertas ou xa se uníu a todas.</string>
     <string name="nc_no_proxy">Sen proxy</string>
@@ -708,6 +710,7 @@
     <string name="userinfo_no_info_headline">Non foi estabelecida a información persoal</string>
     <string name="userinfo_no_info_text">Engada o seu nome, imaxe e detalles de contacto na súa páxina de perfil.</string>
     <string name="video_call">Vídeo chamada</string>
+    <string name="voice_room">Sala de voz</string>
     <string name="whats_your_status">Cal é o seu estado?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Ver %d mensaxe semellante</item>

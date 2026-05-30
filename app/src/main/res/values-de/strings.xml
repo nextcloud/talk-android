@@ -82,6 +82,7 @@
     <string name="hint_edited_message">(Bearbeitet)</string>
     <string name="internal_note">Interne Notiz</string>
     <string name="invisible">Unsichtbar</string>
+    <string name="join_call">Anruf beitreten</string>
     <string name="languages_error_message">Sprachen konnten nicht abgerufen werden</string>
     <string name="languages_error_title">Abrufen fehlgeschlagen</string>
     <string name="later_today">Später heute</string>
@@ -325,6 +326,7 @@
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_no">Nein</string>
     <string name="nc_no_account_for_server">Für diesen Server wurde kein Konto gefunden</string>
+    <string name="nc_no_account_found">Konto nicht gefunden</string>
     <string name="nc_no_open_conversations_headline">Keine offenen Unterhaltungen</string>
     <string name="nc_no_open_conversations_text">Keine offenen Unterhaltungen, denen Sie beitreten können.\nEntweder existieren keine offenen Unterhaltungen oder Sie sind bereits allen offenen Unterhaltungen beigetreten.</string>
     <string name="nc_no_proxy">Kein Proxy</string>

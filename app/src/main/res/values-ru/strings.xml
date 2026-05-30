@@ -82,6 +82,7 @@
     <string name="hint_edited_message">(изменено)</string>
     <string name="internal_note">Внутреннее примечание</string>
     <string name="invisible">Невидимый</string>
+    <string name="join_call">Присоединиться к вызову</string>
     <string name="languages_error_message">Языки не могут быть извлечены</string>
     <string name="languages_error_title">Не удалось получить</string>
     <string name="later_today">Позже сегодня</string>
@@ -325,6 +326,7 @@
     <string name="nc_nick_guest">Гость</string>
     <string name="nc_no">Нет</string>
     <string name="nc_no_account_for_server">Для этого сервера не найдена учётная запись</string>
+    <string name="nc_no_account_found">Учётная запись не найдена</string>
     <string name="nc_no_open_conversations_headline">Нет открытых обсуждений</string>
     <string name="nc_no_open_conversations_text">Нет открытых обсуждений, к которым можно присоединиться. Либо открытых обсуждений не существует, либо вы уже присоединились ко всем.</string>
     <string name="nc_no_proxy">Без прокси-сервера</string>

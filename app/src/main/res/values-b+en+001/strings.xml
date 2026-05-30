@@ -76,6 +76,7 @@
     <string name="hint_edited_message">(edited)</string>
     <string name="internal_note">Internal note</string>
     <string name="invisible">Invisible</string>
+    <string name="join_call">Join call</string>
     <string name="languages_error_message">Languages could not be retrieved</string>
     <string name="languages_error_title">Retrieval failed</string>
     <string name="later_today">Later today</string>
@@ -312,6 +313,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s not available (not installed or restricted by admin)</string>
     <string name="nc_nick_guest">Guest</string>
     <string name="nc_no">No</string>
+    <string name="nc_no_account_found">Account not found</string>
     <string name="nc_no_open_conversations_headline">No open conversations</string>
     <string name="nc_no_open_conversations_text">No open conversations that you can join.\nEither there are no open conversations or you already joined all of them.</string>
     <string name="nc_no_proxy">No proxy</string>

@@ -76,6 +76,7 @@
     <string name="hint_edited_message">(upraveno)</string>
     <string name="internal_note">Interní poznámka</string>
     <string name="invisible">Není vidět</string>
+    <string name="join_call">Připojit se k hovoru</string>
     <string name="languages_error_message">Jazyky se nepodařilo získat</string>
     <string name="languages_error_title">Získání se nezdařil</string>
     <string name="later_today">Později dnes</string>
@@ -311,6 +312,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s není k dispozici (nenainstalováno nebo administrativně omezen přístup k)</string>
     <string name="nc_nick_guest">Host</string>
     <string name="nc_no">Ne</string>
+    <string name="nc_no_account_found">Účet nenalezen</string>
     <string name="nc_no_open_conversations_headline">Žádné otevřené konverzace</string>
     <string name="nc_no_open_conversations_text">Žádné otevřené konverzace, ke kterým byste se mohli přidat.\nBuď zde žádné takové nejsou nebo už jste se přidali do všech.</string>
     <string name="nc_no_proxy">Bez proxy</string>

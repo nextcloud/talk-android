@@ -57,6 +57,7 @@
     <string name="get_invitations_error">保留中の招待を取得することができませんでした</string>
     <string name="hint_edited_message">(編集済み)</string>
     <string name="invisible">オフライン</string>
+    <string name="join_call">通話開始</string>
     <string name="languages_error_message">言語を取得できませんでした</string>
     <string name="languages_error_title">取得に失敗しました</string>
     <string name="later_today">今日この後</string>
@@ -270,6 +271,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s利用できません（インストールされていないか、管理者によって制限されています）</string>
     <string name="nc_nick_guest">ゲスト</string>
     <string name="nc_no">いいえ</string>
+    <string name="nc_no_account_found">アカウントが見つかりません</string>
     <string name="nc_no_open_conversations_headline">オープンな会話はありません</string>
     <string name="nc_no_proxy">プロキシを利用しない</string>
     <string name="nc_not_allowed_to_activate_audio">オーディオを有効にすることはできません。</string>

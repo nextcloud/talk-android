@@ -46,6 +46,7 @@
     <string name="fourHours">4 시간</string>
     <string name="hint_edited_message">(수정됨)</string>
     <string name="invisible">숨겨짐</string>
+    <string name="join_call">통화 참가하기</string>
     <string name="later_today">오늘 중</string>
     <string name="leave_call">통화 떠나기</string>
     <string name="load_more_results">더 많은 결과 불러오기</string>
@@ -223,6 +224,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s을(를) 사용할 수 없음 (설치되지 않았거나 관리자에 의해 제한됨)</string>
     <string name="nc_nick_guest">손님</string>
     <string name="nc_no">아니요</string>
+    <string name="nc_no_account_found">계정을 찾을 수 없습니다.</string>
     <string name="nc_no_proxy">프록시 없음</string>
     <string name="nc_not_allowed_to_activate_audio">오디오를 활성화 할 수 없습니다!</string>
     <string name="nc_not_allowed_to_activate_video">영상을 활성화할 수 없습니다!</string>

@@ -73,6 +73,7 @@
     <string name="hint_edited_message">(editat)</string>
     <string name="internal_note">Nota interna</string>
     <string name="invisible">Invisible</string>
+    <string name="join_call">Uneix-te a la trucada</string>
     <string name="languages_error_message">No s\'han pogut recuperar els idiomes</string>
     <string name="languages_error_title">Ha fallat la recuperació</string>
     <string name="later_today">Avui més tard</string>
@@ -283,6 +284,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s no està disponible (no instal·lat o restringit per l\'administrador)</string>
     <string name="nc_nick_guest">Convidat</string>
     <string name="nc_no">No</string>
+    <string name="nc_no_account_found">No s\'ha trobat el compte</string>
     <string name="nc_no_open_conversations_headline">No hi ha converses obertes</string>
     <string name="nc_no_open_conversations_text">No hi ha converses obertes a què us pugueu unir.\nO bé no hi ha converses obertes o ja us heu unit a totes.</string>
     <string name="nc_no_proxy">Sense proxy</string>

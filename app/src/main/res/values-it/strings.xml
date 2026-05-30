@@ -76,6 +76,7 @@
     <string name="hint_edited_message">(modificato)</string>
     <string name="internal_note">Note interne</string>
     <string name="invisible">Invisibile</string>
+    <string name="join_call">Unisciti alla chiamata</string>
     <string name="languages_error_message">Impossibile recuperare le lingue</string>
     <string name="languages_error_title">Recupero non riuscito</string>
     <string name="later_today">Più tardi oggi</string>
@@ -306,6 +307,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s non disponibile (non installato o limitato dall\'amministratore)</string>
     <string name="nc_nick_guest">Ospite</string>
     <string name="nc_no">No</string>
+    <string name="nc_no_account_found">Account non trovato</string>
     <string name="nc_no_open_conversations_headline">Nessuna conversazione aperta</string>
     <string name="nc_no_open_conversations_text">Non ci sono conversazioni aperte a cui puoi partecipare.\nO non ci sono conversazioni aperte o hai già partecipato a tutte.</string>
     <string name="nc_no_proxy">Nessun proxy</string>

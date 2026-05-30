@@ -44,6 +44,7 @@
     <string name="file_list_loading">Зареждане …</string>
     <string name="fourHours">4 чàса</string>
     <string name="invisible">Невидим</string>
+    <string name="join_call">Присъединяване към обаждането</string>
     <string name="leave_call">Напускане на обаждането</string>
     <string name="load_more_results">Зареждане на още резултати</string>
     <string name="lock_conversation">Заключване на разговор</string>
@@ -225,6 +226,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s не е наличен (не е инсталиран или е ограничен от администратора)</string>
     <string name="nc_nick_guest">Гост</string>
     <string name="nc_no">Не</string>
+    <string name="nc_no_account_found">Няма намерен профил</string>
     <string name="nc_no_proxy">Без прокси</string>
     <string name="nc_not_allowed_to_activate_audio">Не ви е позволено да активирате аудио!</string>
     <string name="nc_not_allowed_to_activate_video">Не ви е позволено да активирате видео!</string>

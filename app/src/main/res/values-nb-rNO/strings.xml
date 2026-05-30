@@ -64,6 +64,7 @@
     <string name="hint_edited_message">(redigert)</string>
     <string name="internal_note">Intern merknad</string>
     <string name="invisible">Usynlig</string>
+    <string name="join_call">Ta del i samtale</string>
     <string name="languages_error_message">Språk kunne ikke hentes</string>
     <string name="languages_error_title">Henting feilet</string>
     <string name="later_today">Senere i dag</string>
@@ -276,6 +277,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ikke tilgjengelig (ikke installert eller begrenset av admin)</string>
     <string name="nc_nick_guest">Gjest</string>
     <string name="nc_no">Nei</string>
+    <string name="nc_no_account_found">Konto ble ikke funnet</string>
     <string name="nc_no_open_conversations_headline">Ingen åpne samtaler</string>
     <string name="nc_no_open_conversations_text">Ingen åpne samtaler du kan bli med i.\nEnten er det ingen åpne samtaler, eller så har du allerede blitt med i dem alle.</string>
     <string name="nc_no_proxy">Ingen mellomserver</string>

@@ -82,6 +82,7 @@
     <string name="hint_edited_message">(in eagar)</string>
     <string name="internal_note">Nóta inmheánach</string>
     <string name="invisible">Dofheicthe</string>
+    <string name="join_call">Glac páirt sa ghlao</string>
     <string name="languages_error_message">Níorbh fhéidir teangacha a aisghabháil</string>
     <string name="languages_error_title">Theip ar an aisghabháil</string>
     <string name="later_today">Níos déanaí inniu</string>
@@ -325,6 +326,7 @@
     <string name="nc_nick_guest">Aoi</string>
     <string name="nc_no">Níl</string>
     <string name="nc_no_account_for_server">Níor aimsíodh aon chuntas don fhreastalaí seo</string>
+    <string name="nc_no_account_found">Cuntas gan aimsiú</string>
     <string name="nc_no_open_conversations_headline">Níl aon chomhrá oscailte</string>
     <string name="nc_no_open_conversations_text">Níl aon chomhrá oscailte ar féidir leat páirt a ghlacadh ann.\nNíl aon chomhráite oscailte ann nó chuir tú isteach ar gach ceann acu cheana féin.</string>
     <string name="nc_no_proxy">Gan seachfhreastalaí</string>

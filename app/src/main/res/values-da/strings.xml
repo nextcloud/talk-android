@@ -75,6 +75,7 @@
     <string name="hint_edited_message">(redigeret)</string>
     <string name="internal_note">Intern bemærkning</string>
     <string name="invisible">Usynlig</string>
+    <string name="join_call">Deltag i opkaldet</string>
     <string name="languages_error_message">Sprog kunne ikke hentes</string>
     <string name="languages_error_title">Hentning fejlede</string>
     <string name="later_today">Senere i dag</string>
@@ -301,6 +302,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ikke tilgængelig (Ikke installeret eller begrænset af admin)</string>
     <string name="nc_nick_guest">Gæst</string>
     <string name="nc_no">Nej</string>
+    <string name="nc_no_account_found">Konto blev ikke fundet</string>
     <string name="nc_no_open_conversations_headline">Ingen åbne samtaler</string>
     <string name="nc_no_open_conversations_text">Ingen åbne samtaler som du kan deltage i.\nEnten er der ingen åbne samtaler eller du deltager allerede i alle.</string>
     <string name="nc_no_proxy">Ikke proxy</string>

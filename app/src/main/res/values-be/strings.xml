@@ -76,6 +76,7 @@
     <string name="hint_edited_message">(адрэдагавана)</string>
     <string name="internal_note">Унутраная заўвага</string>
     <string name="invisible">Нябачны</string>
+    <string name="join_call">Далучыцца да выкліку</string>
     <string name="languages_error_message">Не ўдалося атрымаць мовы</string>
     <string name="languages_error_title">Памылка атрымання</string>
     <string name="later_today">Пазней сёння</string>
@@ -309,6 +310,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s недаступна (не ўсталявана або абмежавана адміністратарам)</string>
     <string name="nc_nick_guest">Госць</string>
     <string name="nc_no">Не</string>
+    <string name="nc_no_account_found">Уліковы запіс не знойдзены</string>
     <string name="nc_no_open_conversations_headline">Няма адкрытых размоў</string>
     <string name="nc_no_open_conversations_text">Няма адкрытых размоў, да якіх вы можаце далучыцца.\nАбо адкрытых размоў няма, або вы ўжо далучыліся да ўсіх з іх.</string>
     <string name="nc_no_proxy">Няма проксі</string>

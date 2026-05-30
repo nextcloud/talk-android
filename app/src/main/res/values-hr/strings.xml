@@ -44,6 +44,7 @@
     <string name="fourHours">4 sata</string>
     <string name="hint_edited_message">(uređeno)</string>
     <string name="invisible">Nevidljiva</string>
+    <string name="join_call">Pridruži se pozivu</string>
     <string name="later_today">Kanije danas</string>
     <string name="leave_call">Napusti poziv</string>
     <string name="load_more_results">Učitaj više rezultata</string>
@@ -212,6 +213,7 @@
     <string name="nc_new_messages">Nove poruke</string>
     <string name="nc_nick_guest">Gost</string>
     <string name="nc_no">Ne</string>
+    <string name="nc_no_account_found">Račun nije pronađen</string>
     <string name="nc_no_proxy">Nema proxyja</string>
     <string name="nc_not_now">Ne sada</string>
     <string name="nc_notification_channel">%1$s na kanalu za obavijesti %2$s</string>

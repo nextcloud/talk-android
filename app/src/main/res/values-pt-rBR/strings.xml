@@ -82,6 +82,7 @@
     <string name="hint_edited_message">(editado)</string>
     <string name="internal_note">Nota interna</string>
     <string name="invisible">Invisível</string>
+    <string name="join_call">Entrar na chamada</string>
     <string name="languages_error_message">Não foi possível recuperar os idiomas</string>
     <string name="languages_error_title">Falha na recuperação</string>
     <string name="later_today">Hoje mais tarde</string>
@@ -325,6 +326,7 @@
     <string name="nc_nick_guest">Convidado</string>
     <string name="nc_no">Não</string>
     <string name="nc_no_account_for_server">Nenhuma conta encontrada neste servidor</string>
+    <string name="nc_no_account_found">Conta não encontrada</string>
     <string name="nc_no_open_conversations_headline">Nenhuma conversa aberta</string>
     <string name="nc_no_open_conversations_text">Não há conversas abertas nas quais você possa entrar.\nOu não há conversas abertas ou você já entrou em todas elas.</string>
     <string name="nc_no_proxy">Sem proxy</string>

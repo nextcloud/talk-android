@@ -60,6 +60,7 @@
     <string name="hint_edited_message">(editatuta)</string>
     <string name="internal_note">Barneko oharra</string>
     <string name="invisible">Ikusezina</string>
+    <string name="join_call">Batu deira</string>
     <string name="languages_error_message">Ezin izan dira hizkuntzak berreskuratu</string>
     <string name="languages_error_title">Ezin izan da berreskuratu</string>
     <string name="later_today">Beranduago gaur</string>
@@ -263,6 +264,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ez dago erabilgarri (administratzaileak instalatu edo mugatu gabe)</string>
     <string name="nc_nick_guest">Gonbidatua</string>
     <string name="nc_no">Ez</string>
+    <string name="nc_no_account_found">Ez da kontua aurkitu</string>
     <string name="nc_no_open_conversations_headline">Ez ireki elkarrizketak</string>
     <string name="nc_no_open_conversations_text">Ez dago sartu ahal zaren elkarrizketa irekirik.\nEz dago elkarrizketa irekirik edo dagoeneko denetara sartu zara.</string>
     <string name="nc_no_proxy">Proxyrik ez</string>

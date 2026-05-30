@@ -82,6 +82,7 @@
     <string name="hint_edited_message">(redaguota)</string>
     <string name="internal_note">Vidaus užrašas</string>
     <string name="invisible">Nematomas</string>
+    <string name="join_call">Prisijungti prie skambučio</string>
     <string name="languages_error_message">Nepavyko rasti kalbų</string>
     <string name="languages_error_title">Nepavyko gauti</string>
     <string name="later_today">Šiandien vėliau</string>
@@ -325,6 +326,7 @@
     <string name="nc_nick_guest">Svečias</string>
     <string name="nc_no">Ne</string>
     <string name="nc_no_account_for_server">Šio serverio paskyros nerasta</string>
+    <string name="nc_no_account_found">Paskyra nerasta</string>
     <string name="nc_no_open_conversations_headline">Jokių atvirų pokalbių</string>
     <string name="nc_no_open_conversations_text">Nėra atvirų pokalbių, prie kurių galėtumėte prisijungti.\nArba nėra atvirų pokalbių, arba jau prisijungėte prie visų.</string>
     <string name="nc_no_proxy">Be įgaliotojo serverio</string>

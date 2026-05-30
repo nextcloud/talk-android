@@ -45,6 +45,7 @@
     <string name="fourHours">4 tuntia</string>
     <string name="hint_edited_message">(muokattu)</string>
     <string name="invisible">Näkymätön</string>
+    <string name="join_call">Liity puheluun</string>
     <string name="later_today">Myöhemmin tänään</string>
     <string name="leave_call">Poistu puhelusta</string>
     <string name="load_more_results">Lataa lisää tuloksia</string>
@@ -196,6 +197,7 @@
     <string name="nc_new_messages">Lukemattomat viestit</string>
     <string name="nc_nick_guest">Vieras</string>
     <string name="nc_no">Ei</string>
+    <string name="nc_no_account_found">Tiliä ei löydy</string>
     <string name="nc_no_proxy">Ei välityspalvelinta</string>
     <string name="nc_not_now">Ei nyt</string>
     <string name="nc_notification_channel_calls">Puhelut</string>

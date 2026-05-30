@@ -35,6 +35,7 @@
     <string name="file_list_loading">Carrigamentu …</string>
     <string name="fourHours">4 oras</string>
     <string name="invisible">Invisìbile</string>
+    <string name="join_call">Intra in sa mutida</string>
     <string name="leave_call">Lassa sa mutida</string>
     <string name="load_more_results">Càrriga àteros resurtados</string>
     <string name="lock_conversation">Bloca resonada</string>
@@ -178,6 +179,7 @@
     <string name="nc_new_messages">Messàgios non lèghidos</string>
     <string name="nc_nick_guest">Persone invitada</string>
     <string name="nc_no">No</string>
+    <string name="nc_no_account_found">Contu no agatadu</string>
     <string name="nc_no_proxy">Perunu proxy</string>
     <string name="nc_not_now">No immoe</string>
     <string name="nc_notification_channel">%1$s in %2$s canale de notìfica</string>
