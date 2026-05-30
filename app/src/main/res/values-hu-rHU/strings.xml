@@ -32,6 +32,7 @@
     <string name="call_without_notification">Hívás értesítés nélkül</string>
     <string name="camera_permission_granted">Kamera engedély megadva. Válassza újra a kamerát.</string>
     <string name="cancel_login">Bejelentkezés megszakítása</string>
+    <string name="chat_messages_load_gap">Néhány üzenet betöltése nem sikerült</string>
     <string name="choose_avatar_from_cloud">Profilkép választása a felhőből</string>
     <string name="clear_status_message">Állapotüzenet törlése</string>
     <string name="clear_status_message_after">Állapotüzenet törlése ennyi idő után:</string>
@@ -61,6 +62,7 @@
     <string name="ecosystem_apps_notes">Jegyzetek</string>
     <string name="edit">Szerkesztés</string>
     <string name="edit_error_24_hours_old_message">A 24 óránál régebbi beszélgetések nem szerkeszthetőek</string>
+    <string name="emoji_more">További emodzsik</string>
     <string name="encrypted">Titkosított</string>
     <string name="end_call">Hívás befejezése</string>
     <string name="end_call_for_everyone">Hívás befejezése mindenki számára</string>
@@ -71,6 +73,8 @@
     <string name="file_list_folder">mappa</string>
     <string name="file_list_loading">Betöltés…</string>
     <string name="fourHours">4 óra</string>
+    <string name="full_screen_intent_permission_granted">A képernyőzáron megjelenő bejövő hívás-értesítés engedélyezve van, minden rendben</string>
+    <string name="full_screen_intent_permission_title">Bejövő hívások megjelenítése a képernyőzáron</string>
     <string name="get_invitations_error">A függőben lévő meghívások lekérése sikertelen</string>
     <string name="gplay_available_no">A Google Play szolgáltatások nem érhetőek el. Az értesítések nem támogatottak.</string>
     <string name="hint_edited_message">(szerkesztve)</string>
@@ -109,6 +113,9 @@
     <string name="message_search_begin_empty">Nincs találat</string>
     <string name="message_search_begin_typing">Kezdjen el gépelni a kereséshez…</string>
     <string name="message_search_hint">Keresés…</string>
+    <string name="message_search_next_result">Következő találat</string>
+    <string name="message_search_no_more_results">Nincs több üzenet</string>
+    <string name="message_search_previous_result">Előző keresési eredmény</string>
     <string name="messages">Üzenetek</string>
     <string name="mute_all_notifications">Összes értesítés némítása</string>
     <string name="nc_Server_account_imported">A kiválasztott fiók importálva lett és elérhető</string>
@@ -121,6 +128,7 @@
     <string name="nc_add_file">Hozzáadás a beszélgetéshez</string>
     <string name="nc_add_participants">Résztvevők hozzáadása</string>
     <string name="nc_add_to_favorites">Hozzáadás a kedvencekhez</string>
+    <string name="nc_add_to_home_screen">Hozzáadás a kezdőképernyőhöz</string>
     <string name="nc_all_ok_operation">Rendben, minden kész!</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">%1$s feloldása</string>
@@ -504,6 +512,8 @@
     <string name="nc_shared_items_empty">Nincsenek megosztott elemek</string>
     <string name="nc_shared_items_location">Hely</string>
     <string name="nc_shared_location">Hely megosztva</string>
+    <string name="nc_shortcut_conversation_deleted">A beszélgetés már nem létezik</string>
+    <string name="nc_shortcut_created">Gyorsbillentyű létrehozva</string>
     <string name="nc_show_ecosystem_description">Nextcloud alkalmazásjavaslatok a fiókválasztó párbeszédablakban</string>
     <string name="nc_show_ecosystem_title">Alkalmazásváltó megjelenítése</string>
     <string name="nc_show_notification_warning_description">Szokásos figyelmeztetés megjelenítése, ha az értesítések nincsenek helyesen beállítva</string>
@@ -531,6 +541,7 @@
     <string name="nc_upload_picture_from_cam">Fénykép készítése</string>
     <string name="nc_upload_video_from_cam">Videó készítése</string>
     <string name="nc_user">Felhasználó</string>
+    <string name="nc_voice_message">Hangüzenet</string>
     <string name="nc_voice_message_hold_to_record_info">Tartsa a felvételhez, engedje el a küldéshez.</string>
     <string name="nc_voice_message_missing_audio_permission">Hangfelvételi engedély szükséges</string>
     <string name="nc_voice_message_slide_to_cancel">« Csúsztassa a megszakításhoz</string>
