@@ -38,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -98,7 +99,7 @@ fun OutOfOfficeView(data: OutOfOfficeViewData, viewThemeUtils: ViewThemeUtils, o
     val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
     val scrollState = rememberScrollState()
     var isExpanded by remember { mutableStateOf(data.initialExpanded) }
-    val locale = context.resources.configuration.locales[0]
+    val locale = LocalConfiguration.current.locales[0]
     val dateState = rememberOutOfOfficeDateState(data.userAbsence, locale)
     val shortMessage = if (dateState.isSameDay) {
         stringResource(R.string.user_absence_for_one_day, data.displayName)
