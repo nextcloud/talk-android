@@ -132,6 +132,8 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.model.FileParameters
+import com.nextcloud.talk.chat.ui.ChatEmptyState
+import com.nextcloud.talk.chat.ui.ChatEmptyStateType
 import com.nextcloud.talk.chat.ui.MessageActionsBottomSheet
 import com.nextcloud.talk.chat.ui.ProfileModalBottomSheet
 import com.nextcloud.talk.chat.ui.ShowReactionsModalBottomSheet
@@ -316,6 +318,7 @@ class ChatActivity :
     private var overflowMenuHostView: ComposeView? = null
     private var isThreadMenuExpanded by mutableStateOf(false)
     private val searchLoadingState = mutableStateOf(false)
+    private val chatEmptyStateType = mutableStateOf<ChatEmptyStateType?>(null)
     private val upcomingEventUiState =
         mutableStateOf<ChatViewModel.UpcomingEventUIState>(ChatViewModel.UpcomingEventUIState.None)
 
@@ -510,7 +513,7 @@ class ChatActivity :
         setupActionBar()
         setContentView(binding.root)
 
-        binding.offline.root.visibility = View.GONE
+        setupChatEmptyStateView()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             ViewCompat.setOnApplyWindowInsetsListener(binding.chatContainer) { view, insets ->
@@ -2369,6 +2372,13 @@ class ChatActivity :
             currentConversation?.conversationReadOnlyState ==
             ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY
 
+    private fun setupChatEmptyStateView() {
+        binding.chatEmptyStateComposeView.setContent {
+            val type by chatEmptyStateType
+            type?.let { ChatEmptyState(it) }
+        }
+    }
+
     private fun checkLobbyState() {
         if (currentConversation != null &&
             ConversationUtils.isLobbyViewApplicable(currentConversation!!, spreedCapabilities) &&
@@ -2376,15 +2386,14 @@ class ChatActivity :
         ) {
             showLobbyView()
         } else {
-            binding.lobby.lobbyView.visibility = View.GONE
-            // binding.messagesListView.visibility = View.VISIBLE
+            binding.chatEmptyStateComposeView.visibility = View.GONE
+            chatEmptyStateType.value = null
             checkShowMessageInputView()
         }
     }
 
     private fun showLobbyView() {
-        binding.lobby.lobbyView.visibility = View.VISIBLE
-        // binding.messagesListView.visibility = View.GONE
+        binding.chatEmptyStateComposeView.visibility = View.VISIBLE
         binding.fragmentContainerActivityChat.visibility = View.GONE
 
         val sb = StringBuilder()
@@ -2407,7 +2416,7 @@ class ChatActivity :
         }
 
         sb.append(currentConversation!!.description)
-        binding.lobby.lobbyTextView.text = sb.toString()
+        chatEmptyStateType.value = ChatEmptyStateType.Lobby(sb.toString())
     }
 
     private fun onRemoteFileBrowsingResult(intent: Intent?) {
