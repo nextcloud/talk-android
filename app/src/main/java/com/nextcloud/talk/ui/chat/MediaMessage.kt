@@ -44,6 +44,7 @@ import com.nextcloud.talk.chat.data.model.decodeBlurhashPlaceholder
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.contacts.load
+import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.MimetypeUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -107,12 +108,11 @@ fun MediaMessage(
             Column {
                 val context = LocalContext.current
                 val scope = rememberCoroutineScope()
-                val resourceName = context.resources.getResourceEntryName(typeContent.drawableResourceId)
                 val isGif = MimetypeUtils.isGif(typeContent.mimeType)
                 val showPlayButton = !typeContent.previewUrl.isNullOrEmpty() &&
                     (
-                        resourceName.contains("video") ||
-                            resourceName.contains("audio") ||
+                        typeContent.mimeType.startsWith(Mimetype.VIDEO_PREFIX) ||
+                            typeContent.mimeType.startsWith(Mimetype.AUDIO_PREFIX) ||
                             (isGif && !typeContent.animateGif)
                         )
 
