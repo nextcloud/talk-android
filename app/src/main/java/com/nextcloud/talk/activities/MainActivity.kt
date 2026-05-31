@@ -11,13 +11,13 @@ package com.nextcloud.talk.activities
 
 import android.app.KeyguardManager
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.net.toUri
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -39,8 +39,8 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DeepLinkHandler
 import com.nextcloud.talk.utils.SecurityUtils
-import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.ShortcutManagerHelper
+import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import io.reactivex.SingleObserver
@@ -49,7 +49,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
-import androidx.core.net.toUri
 
 @AutoInjector(NextcloudTalkApplication::class)
 class MainActivity :
