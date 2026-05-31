@@ -325,7 +325,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">„%1$s“ pole saadaval (kas pole paigaldatud või on peakasutaja piiranud nähtavust)</string>
     <string name="nc_nick_guest">Külaline</string>
     <string name="nc_no">Ei</string>
-    <string name="nc_no_account_for_server">Selles serveris ei leidu kasutajakontot</string>
+    <string name="nc_no_account_for_server">Selle serveri jaoks ei leidu kasutajakontot</string>
     <string name="nc_no_account_found">Kasutajakontot ei leidu</string>
     <string name="nc_no_open_conversations_headline">Pole avalikke vestlusi</string>
     <string name="nc_no_open_conversations_text">Pole avalikke vestlusi, millega saaksid liituda.\nSee siis tähendab, et kas neid pole üldse või oled kõikide olemasolevatega juba liitunud.</string>
