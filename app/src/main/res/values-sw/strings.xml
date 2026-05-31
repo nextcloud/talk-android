@@ -75,6 +75,7 @@
     <string name="hint_edited_message">(imehaririwa)</string>
     <string name="internal_note">Nukuu ya ndani</string>
     <string name="invisible">Haionekani</string>
+    <string name="join_call">Jiunge katika muito</string>
     <string name="languages_error_message">Lugha hazikuweza kurejeshwa</string>
     <string name="languages_error_title">Urejeshaji umeshindikana</string>
     <string name="later_today">Baadaye leo</string>
@@ -308,6 +309,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s haipatikani (haijasakinishwa au kuzuiwa na msimamizi)</string>
     <string name="nc_nick_guest">Mgeni</string>
     <string name="nc_no">Hapana</string>
+    <string name="nc_no_account_found">Akaunti haipatikani</string>
     <string name="nc_no_open_conversations_headline">Hakuna mazungumzo ya wazi</string>
     <string name="nc_no_open_conversations_text">Hakuna mazungumzo ya wazi ambayo unaweza kujiunga.\nAidha hakuna mazungumzo ya wazi au tayari umejiunga nayo yote.</string>
     <string name="nc_no_proxy">Hakuna proksi</string>
@@ -506,7 +508,7 @@
     <string name="nc_upload_from_cloud">Shirikisha kutoka %1$s</string>
     <string name="nc_upload_from_device">Pakia kutoka katika kifaa</string>
     <string name="nc_upload_in_progess">Inapakia</string>
-    <string name="nc_upload_notification_text">%1$skwenda %2$s-%3$s/%%</string>
+    <string name="nc_upload_notification_text">%1$s kwenda %2$s-%3$s/%%</string>
     <string name="nc_upload_picture_from_cam">Chukua picha</string>
     <string name="nc_upload_video_from_cam">Chukua video</string>
     <string name="nc_user">Mtumiaji</string>

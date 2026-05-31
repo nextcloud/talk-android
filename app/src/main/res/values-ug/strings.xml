@@ -305,6 +305,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ئىشلەتكىلى بولمايدۇ (باشقۇرغۇچى تەرىپىدىن ئورنىتىلمىغان ياكى چەكلەنمىگەن)</string>
     <string name="nc_nick_guest">مېھمان</string>
     <string name="nc_no">ياق</string>
+    <string name="nc_no_account_found">ھېسابات تېپىلمىدى</string>
     <string name="nc_no_open_conversations_headline">ئوچۇق سۆھبەت يوق</string>
     <string name="nc_no_open_conversations_text">سىز قاتنىشالايدىغان ئوچۇق سۆھبەت يوق. \ N يا ئوچۇق سۆھبەت يوق ، ياكى ئاللىبۇرۇن ئۇلارنىڭ ھەممىسىگە قوشۇلدىڭىز.</string>
     <string name="nc_no_proxy">ۋاكالەتچى يوق</string>
@@ -498,7 +499,7 @@
     <string name="nc_upload_from_cloud">%1$s دىن ئورتاقلىشىش</string>
     <string name="nc_upload_from_device">ئۈسكۈنىدىن يۈكلەش</string>
     <string name="nc_upload_in_progess">يۈكلەش</string>
-    <string name="nc_upload_notification_text">%1$s دىن%2$s  - %3$s  \ %%</string>
+    <string name="nc_upload_notification_text">%1$s دىن %2$s - %3$s \ %%</string>
     <string name="nc_upload_picture_from_cam">رەسىمگە تارتىڭ</string>
     <string name="nc_upload_video_from_cam">سىن ئېلىڭ</string>
     <string name="nc_user">ئىشلەتكۈچى</string>
