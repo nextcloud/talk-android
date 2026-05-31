@@ -508,7 +508,7 @@
     <string name="nc_upload_from_cloud">Shirikisha kutoka %1$s</string>
     <string name="nc_upload_from_device">Pakia kutoka katika kifaa</string>
     <string name="nc_upload_in_progess">Inapakia</string>
-    <string name="nc_upload_notification_text">%1$s kwenda %2$s-%3$s/%%</string>
+    <string name="nc_upload_notification_text">%1$s kwenda %2$s-%3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Chukua picha</string>
     <string name="nc_upload_video_from_cam">Chukua video</string>
     <string name="nc_user">Mtumiaji</string>
