@@ -102,15 +102,10 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <include
-            android:id="@+id/offline"
-            layout="@layout/no_saved_messages_view"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <include
-            android:id="@+id/lobby"
-            layout="@layout/lobby_view"
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/chatEmptyStateComposeView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:visibility="gone"
             tools:visibility="visible" />
 
