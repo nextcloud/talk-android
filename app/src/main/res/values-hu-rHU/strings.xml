@@ -52,6 +52,7 @@
     <string name="danger_zone">Veszélyes területet</string>
     <string name="deck_card_description">%1$s itt: %2$s</string>
     <string name="default_room">Alapértelmezett</string>
+    <string name="default_room_preset">Üzenetek küldése, beszélgetések létrehozása, valamint hang- és videóhívások indítása</string>
     <string name="delete_avatar">Profilkép törlése</string>
     <string name="delete_voice_recording">Hangfelvétel törlése</string>
     <string name="deleted_conversation">%1$s beszélgetés törlése</string>
@@ -74,6 +75,7 @@
     <string name="file_list_loading">Betöltés…</string>
     <string name="fourHours">4 óra</string>
     <string name="full_screen_intent_permission_granted">A képernyőzáron megjelenő bejövő hívás-értesítés engedélyezve van, minden rendben</string>
+    <string name="full_screen_intent_permission_not_granted">A bejövő hívások képernyőjének megjelenítése a lezárási képernyőn nincs engedélyezve. Kérjük, engedélyezze ezt, hogy a bejövő hívások megjelenjenek a lezárási képernyőn!</string>
     <string name="full_screen_intent_permission_title">Bejövő hívások megjelenítése a képernyőzáron</string>
     <string name="get_invitations_error">A függőben lévő meghívások lekérése sikertelen</string>
     <string name="gplay_available_no">A Google Play szolgáltatások nem érhetőek el. Az értesítések nem támogatottak.</string>
@@ -323,6 +325,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">A(z) %1$s nem érhető el (nincs telepítve vagy egy rendszergazda korlátozta)</string>
     <string name="nc_nick_guest">Vendég</string>
     <string name="nc_no">Nem</string>
+    <string name="nc_no_account_for_server">Nem található fiók ehhez a szerverhez</string>
     <string name="nc_no_account_found">A fiók nem található</string>
     <string name="nc_no_open_conversations_headline">Nincs nyitott beszélgetés</string>
     <string name="nc_no_open_conversations_text">Nincs nyitott beszélgetés, melyhez csatlakozhatna.\nVagy nincsenek nyitott beszélgetések, vagy már mindhez csatlakozott.</string>
@@ -736,6 +739,7 @@
     <string name="userinfo_no_info_text">Adja meg a nevét, profilképét és kapcsolati adatait a profil oldalán.</string>
     <string name="video_call">Videóhívás</string>
     <string name="voice_room">Hangos szoba</string>
+    <string name="voice_room_preset">Közvetlenül csatlakozhat a híváshoz, ami ideális beszélgetésekhez vagy spontán megbeszélésekhez</string>
     <string name="whats_your_status">Mi az állapota?</string>
     <plurals name="nc_new_messages_count">
         <item quantity="one">%dúj üzenet</item>
