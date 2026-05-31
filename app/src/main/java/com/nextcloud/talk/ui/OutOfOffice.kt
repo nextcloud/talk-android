@@ -113,19 +113,19 @@ fun OutOfOfficeView(data: OutOfOfficeViewData, viewThemeUtils: ViewThemeUtils, o
         colors = CardDefaults.cardColors(containerColor = colorScheme.surface),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
-        Row(modifier = Modifier.padding(start = 8.dp, end = 0.dp)) {
+        Row(modifier = Modifier.padding(start = 8.dp, end = 0.dp, bottom = 4.dp)) {
             Icon(
                 imageVector = Icons.Outlined.Bedtime,
                 contentDescription = null,
                 modifier = Modifier
-                    .padding(top = 8.dp)
+                    .padding(top = 10.dp)
                     .size(24.dp)
             )
             Spacer(modifier = Modifier.size(8.dp))
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(top = 8.dp, bottom = 8.dp),
+                    .padding(top = 10.dp, bottom = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
@@ -177,8 +177,7 @@ private fun OutOfOfficeExpandedContent(
     Column(
         modifier = Modifier
             .heightIn(max = MAX_CONTENT_HEIGHT.dp)
-            .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .verticalScroll(scrollState)
     ) {
         if (period != null) {
             Text(
@@ -194,6 +193,8 @@ private fun OutOfOfficeExpandedContent(
                 baseUrl = baseUrl,
                 onReplacementClick = onReplacementClick
             )
+        } else {
+            Spacer(modifier = Modifier.size(8.dp))
         }
         Text(
             text = userAbsence.message,
@@ -289,13 +290,38 @@ fun OutOfOfficePreviewRtlCollapsed() {
     OutOfOfficePreview(displayName = "جين", initialExpanded = false)
 }
 
+@Preview(name = "Light Mode / No Replacement")
+@Composable
+fun OutOfOfficePreviewNoReplacement() {
+    OutOfOfficePreview(replacementUserId = null, replacementUserDisplayName = null)
+}
+
+@Preview(name = "Dark Mode / No Replacement", uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun OutOfOfficePreviewDarkNoReplacement() {
+    OutOfOfficePreview(replacementUserId = null, replacementUserDisplayName = null)
+}
+
+@Preview(name = "R-t-L / No Replacement", locale = "ar")
+@Composable
+fun OutOfOfficePreviewRtlNoReplacement() {
+    OutOfOfficePreview(
+        displayName = "جين",
+        message = "مرحباً، أنا خارج المكتب هذا الأسبوع.",
+        replacementUserId = null,
+        replacementUserDisplayName = null
+    )
+}
+
 @Suppress("MagicNumber")
 @Preview(name = "Light Mode")
 @Composable
 fun OutOfOfficePreview(
     displayName: String = "Jane",
     initialExpanded: Boolean = true,
-    message: String = "Hi, I am out of office this week. Please contact Bob for urgent matters."
+    message: String = "Hi, I am out of office this week. Please contact Bob for urgent matters.",
+    replacementUserId: String? = "bob",
+    replacementUserDisplayName: String? = "Bob"
 ) {
     val context = LocalContext.current
     val previewUtils = ComposePreviewUtils.getInstance(context)
@@ -309,8 +335,8 @@ fun OutOfOfficePreview(
         endDate = 1749340800,
         shortMessage = "Out of office",
         message = message,
-        replacementUserId = "bob",
-        replacementUserDisplayName = "Bob"
+        replacementUserId = replacementUserId,
+        replacementUserDisplayName = replacementUserDisplayName
     )
 
     MaterialTheme(colorScheme = colorScheme) {
