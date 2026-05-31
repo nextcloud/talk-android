@@ -49,6 +49,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 @AutoInjector(NextcloudTalkApplication::class)
 class MainActivity :
@@ -386,7 +387,7 @@ class MainActivity :
      * 3. Current active user as fallback (if server matches)
      */
     private fun resolveTargetUser(users: List<User>, deepLinkResult: DeepLinkHandler.DeepLinkResult): User? {
-        val deepLinkHost = Uri.parse(deepLinkResult.serverUrl).host?.lowercase()
+        val deepLinkHost = deepLinkResult.serverUrl.toUri().host?.lowercase()
         if (deepLinkHost.isNullOrBlank()) {
             return currentUserProviderOld.currentUser.blockingGet()
         }
@@ -395,7 +396,7 @@ class MainActivity :
         val username = deepLinkResult.username
         val exactMatch = if (username != null) {
             users.find { user ->
-                val userHost = user.baseUrl?.let { Uri.parse(it).host?.lowercase() }
+                val userHost = user.baseUrl?.let { it.toUri().host?.lowercase() }
                 userHost == deepLinkHost && user.username?.lowercase() == username.lowercase()
             }
         } else {
@@ -403,13 +404,13 @@ class MainActivity :
         }
 
         val serverMatch = users.find { user ->
-            val userHost = user.baseUrl?.let { Uri.parse(it).host?.lowercase() }
+            val userHost = user.baseUrl?.let { it.toUri().host?.lowercase() }
             userHost == deepLinkHost
         }
 
         val currentUser = currentUserProviderOld.currentUser.blockingGet()
         val currentUserMatch = currentUser?.takeIf {
-            it.baseUrl?.let { url -> Uri.parse(url).host?.lowercase() } == deepLinkHost
+            it.baseUrl?.let { url -> url.toUri().host?.lowercase() } == deepLinkHost
         }
 
         return exactMatch ?: serverMatch ?: currentUserMatch

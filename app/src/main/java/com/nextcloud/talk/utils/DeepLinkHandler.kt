@@ -7,6 +7,7 @@
 package com.nextcloud.talk.utils
 
 import android.net.Uri
+import androidx.core.net.toUri
 
 /**
  * Handles parsing of deep links for opening conversations.
@@ -110,7 +111,7 @@ object DeepLinkHandler {
      */
     fun createConversationUri(roomToken: String, serverUrl: String, username: String? = null): Uri {
         // Extract host from server URL
-        val serverUri = Uri.parse(serverUrl)
+        val serverUri = serverUrl.toUri()
         val host = serverUri.host ?: return Uri.EMPTY
 
         // Build authority with optional username
