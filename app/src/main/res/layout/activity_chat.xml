@@ -114,19 +114,14 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/conversation_delete_notice"
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/conversationDeleteNoticeComposeView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            tools:visibility="visible"
             android:layout_marginStart="@dimen/standard_quarter_margin"
             android:layout_marginEnd="@dimen/standard_quarter_margin"
-            android:layout_marginTop="@dimen/standard_quarter_margin"
-            app:cardCornerRadius="@dimen/meta_info_corner_radius">
-
-            <include layout="@layout/remainder_to_delete_conversation" />
-        </com.google.android.material.card.MaterialCardView>
+            android:layout_marginTop="@dimen/standard_quarter_margin" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -146,21 +141,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/upcoming_event_card"
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/upcomingEventComposeView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/standard_quarter_margin"
                 android:layout_marginEnd="@dimen/standard_quarter_margin"
-                android:layout_marginTop="@dimen/standard_quarter_margin"
-                android:visibility="gone"
-                app:cardCornerRadius="@dimen/meta_info_corner_radius"
-                tools:visibility="visible">
-
-                <include
-                    android:id="@+id/upcoming_event_container"
-                    layout="@layout/upcoming_event_view" />
-            </com.google.android.material.card.MaterialCardView>
+                android:layout_marginTop="@dimen/standard_quarter_margin" />
 
             <LinearLayout
                 android:id="@+id/pinnedMessageContainer"
@@ -185,19 +172,14 @@
                 android:orientation="vertical"
                 android:background="@color/bg_default">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/out_of_office_container"
+                <androidx.compose.ui.platform.ComposeView
+                    android:id="@+id/outOfOfficeComposeView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:visibility="visible"
+                    android:visibility="gone"
                     android:layout_marginStart="@dimen/standard_quarter_margin"
                     android:layout_marginEnd="@dimen/standard_quarter_margin"
-                    android:layout_marginTop="@dimen/standard_quarter_margin"
-                    android:visibility="gone"
-                    app:cardCornerRadius="@dimen/meta_info_corner_radius">
-
-                    <include layout="@layout/out_of_office_view" />
-                </com.google.android.material.card.MaterialCardView>
+                    android:layout_marginTop="@dimen/standard_quarter_margin" />
 
             </LinearLayout>
         </LinearLayout>

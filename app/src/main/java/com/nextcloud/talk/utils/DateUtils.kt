@@ -68,14 +68,17 @@ class DateUtils(val context: Context) {
     fun getStringForMeetingStartDateTime(startDateTime: ZonedDateTime, currentTime: ZonedDateTime): String {
         val isToday = startDateTime.toLocalDate().isEqual(currentTime.toLocalDate())
         val isTomorrow = startDateTime.toLocalDate().isEqual(currentTime.toLocalDate().plusDays(1))
-        val timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+        val locale = context.resources.configuration.locales[0]
+        val timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(locale)
         return when {
             isToday -> String.format(
+                locale,
                 context.resources.getString(R.string.nc_today_meeting),
                 startDateTime.format(timeFormatter)
             )
 
             isTomorrow -> String.format(
+                locale,
                 context.resources.getString(R.string.nc_tomorrow_meeting),
                 startDateTime.format(timeFormatter)
             )
@@ -84,7 +87,7 @@ class DateUtils(val context: Context) {
                 DateTimeFormatter.ofLocalizedDateTime(
                     FormatStyle.MEDIUM,
                     FormatStyle.SHORT
-                )
+                ).withLocale(locale)
             )
         }
     }
