@@ -75,6 +75,7 @@
     <string name="hint_edited_message">(уређено)</string>
     <string name="internal_note">Интерна белешка</string>
     <string name="invisible">Невидљива</string>
+    <string name="join_call">Придружи се разговору</string>
     <string name="languages_error_message">Није успело преузимање језика</string>
     <string name="languages_error_title">Није успело преузимање</string>
     <string name="later_today">Касније данас</string>
@@ -304,6 +305,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s није доступно (није инсталирано или је ограничио админ)</string>
     <string name="nc_nick_guest">Гост</string>
     <string name="nc_no">Не</string>
+    <string name="nc_no_account_found">Налог није нађен</string>
     <string name="nc_no_open_conversations_headline">Нема отворених разговора</string>
     <string name="nc_no_open_conversations_text">Нема ниједног отвореног разговора којем можете да се прикључите.\nИли нема отворених разговора, или сте се већ прикључили у све.</string>
     <string name="nc_no_proxy">Без посредника</string>

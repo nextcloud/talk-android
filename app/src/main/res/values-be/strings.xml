@@ -61,6 +61,7 @@
     <string name="ecosystem_apps_notes">Нататкі</string>
     <string name="edit">Рэдагаваць</string>
     <string name="edit_error_24_hours_old_message">Паведамленні, старэйшыя за 24 гадзіны, немагчыма рэдагаваць</string>
+    <string name="emoji_more">Яшчэ эмодзі</string>
     <string name="encrypted">Зашыфравана</string>
     <string name="end_call">Завяршыць выклік</string>
     <string name="end_call_for_everyone">Завяршыць выклік для ўсіх</string>
@@ -91,6 +92,8 @@
     <string name="lock_conversation">Заблакіраваць размову</string>
     <string name="lock_symbol">Сімвал блакіроўкі</string>
     <string name="lower_hand">Апусціць руку</string>
+    <string name="media_message_content_description">Перадпрагляд файла</string>
+    <string name="media_message_content_play">Прайграць медыяфайл</string>
     <string name="mentioned">Згаданы</string>
     <string name="menu_item_sort_by_date_newest_first">Спачатку новыя</string>
     <string name="menu_item_sort_by_date_oldest_first">Спачатку старыя</string>
@@ -106,6 +109,9 @@
     <string name="message_search_begin_empty">Няма вынікаў пошуку</string>
     <string name="message_search_begin_typing">Пачніце ўводзіць тэкст для пошуку …</string>
     <string name="message_search_hint">Пошук ...</string>
+    <string name="message_search_next_result">Наступны вынік пошуку</string>
+    <string name="message_search_no_more_results">Больш паведамленняў не знойдзена</string>
+    <string name="message_search_previous_result">Папярэдні вынік пошуку</string>
     <string name="messages">Паведамленні</string>
     <string name="mute_all_notifications">Адключыць усе апавяшчэнні</string>
     <string name="nc_Server_account_imported">Выбраны ўліковы запіс імпартаваны і даступны</string>
@@ -292,6 +298,7 @@
     <string name="nc_mark_as_unread">Пазначыць як непрачытанае</string>
     <string name="nc_meeting_ended">Сустрэча завершана</string>
     <string name="nc_message_added_to_notes">Паведамленне дададзена ў нататкі</string>
+    <string name="nc_message_failed">Не ўдалося адправіць паведамленне</string>
     <string name="nc_message_failed_to_send">Не атрымалася адправіць паведамленне:</string>
     <string name="nc_message_quote_cancel_reply">Скасаваць адказ</string>
     <string name="nc_message_read">Паведамленне прачытана</string>
@@ -310,6 +317,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s недаступна (не ўсталявана або абмежавана адміністратарам)</string>
     <string name="nc_nick_guest">Госць</string>
     <string name="nc_no">Не</string>
+    <string name="nc_no_account_for_server">Не знойдзены ўліковы запіс для гэтага сервера</string>
     <string name="nc_no_account_found">Уліковы запіс не знойдзены</string>
     <string name="nc_no_open_conversations_headline">Няма адкрытых размоў</string>
     <string name="nc_no_open_conversations_text">Няма адкрытых размоў, да якіх вы можаце далучыцца.\nАбо адкрытых размоў няма, або вы ўжо далучыліся да ўсіх з іх.</string>
@@ -489,6 +497,7 @@
     <string name="nc_shared_items_empty">Няма абагуленых элементаў</string>
     <string name="nc_shared_items_location">Месцазнаходжанне</string>
     <string name="nc_shared_location">Абагуленае месцазнаходжанне</string>
+    <string name="nc_shortcut_conversation_deleted">Размова больш не існуе</string>
     <string name="nc_show_notification_warning_description">Калі апавяшчэнні наладжаны няправільна, паказваць звычайнае папярэджанне</string>
     <string name="nc_show_notification_warning_title">Паказваць звычайнае папярэджанне аб апавяшчэннях</string>
     <string name="nc_sort_by">Сартаваць па</string>
@@ -513,6 +522,7 @@
     <string name="nc_upload_picture_from_cam">Зрабіць фота</string>
     <string name="nc_upload_video_from_cam">Зняць відэа</string>
     <string name="nc_user">Карыстальнік</string>
+    <string name="nc_voice_message">Галасавое паведамленне</string>
     <string name="nc_voice_message_hold_to_record_info">Утрымлівайце для запісу, адпусціце для адпраўкі.</string>
     <string name="nc_voice_message_missing_audio_permission">Патрабуецца дазвол на аўдыязапіс</string>
     <string name="nc_voice_message_slide_to_cancel">« Правядзіце пальцам, каб скасаваць</string>
@@ -704,6 +714,12 @@
     <string name="userinfo_no_info_text">Дадайце імя, аватар і кантактную інфармацыю на старонку вашага профілю.</string>
     <string name="video_call">Відэавыклік</string>
     <string name="whats_your_status">Які ў вас статус?</string>
+    <plurals name="nc_new_messages_count">
+        <item quantity="one">%d новае паведамленне</item>
+        <item quantity="few">%d новыя паведамленні</item>
+        <item quantity="many">%d новых паведамленняў</item>
+        <item quantity="other">%d новых паведамленняў</item>
+    </plurals>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Паглядзець %d падобнае паведамленне</item>
         <item quantity="few">Паглядзець %d падобныя паведамленні</item>

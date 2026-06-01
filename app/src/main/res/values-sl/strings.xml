@@ -50,6 +50,7 @@
     <string name="fourHours">4 urah</string>
     <string name="hint_edited_message">(spremenjeno)</string>
     <string name="invisible">Drugim nevidno</string>
+    <string name="join_call">Pridruži se klicu</string>
     <string name="leave_call">Zapusti klic</string>
     <string name="load_more_results">Naloži več zadetkov</string>
     <string name="local_time">Krajevni čas: %1$s</string>
@@ -238,6 +239,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ni na voljo (ni nameščen ali pa je dostop skrbniško omejen)</string>
     <string name="nc_nick_guest">Gost</string>
     <string name="nc_no">Ne</string>
+    <string name="nc_no_account_found">Računa ni mogoče najti</string>
     <string name="nc_no_proxy">Brez posredniškega strežnika</string>
     <string name="nc_not_allowed_to_activate_audio">Ni ustreznih dovoljenj za omogočanje zvoka</string>
     <string name="nc_not_allowed_to_activate_video">Ni ustreznih dovoljenj za omogočanje slike</string>
