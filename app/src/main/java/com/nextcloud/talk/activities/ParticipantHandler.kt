@@ -230,10 +230,7 @@ class ParticipantHandler(
 
     fun isConnected(iceConnectionState: IceConnectionState?): Boolean =
         iceConnectionState == IceConnectionState.CONNECTED ||
-            iceConnectionState == IceConnectionState.COMPLETED ||
-            // If there is no connection state that means that no connection is needed,
-            // so it is a special case that is also seen as "connected".
-            iceConnectionState == null
+            iceConnectionState == IceConnectionState.COMPLETED
 
     fun updateNick(nick: String?) = _uiState.update { it.copy(nick = nick ?: "Guest") }
 
