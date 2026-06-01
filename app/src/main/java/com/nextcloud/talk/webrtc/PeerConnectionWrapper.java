@@ -253,7 +253,13 @@ public class PeerConnectionWrapper {
 
         synchronized (this) {
             for (DataChannel dataChannel : dataChannels.values()) {
-                Log.d(TAG, "Disposed DataChannel " + dataChannel.label());
+                String label;
+                try {
+                    label = dataChannel.label();
+                } catch (IllegalStateException e) {
+                    label = "<disposed>";
+                }
+                Log.d(TAG, "Disposed DataChannel " + label);
 
                 dataChannel.unregisterObserver();
                 dataChannel.dispose();
@@ -584,14 +590,17 @@ public class PeerConnectionWrapper {
 
                 DataChannel oldDataChannel = dataChannels.get(dataChannelLabel);
                 if (oldDataChannel == dataChannel) {
-                    Log.w(TAG, "Data channel with label " + dataChannel.label() + " added again");
+                    Log.w(TAG, "Data channel with label " + dataChannelLabel + " added again");
 
                     return;
                 }
 
                 if (oldDataChannel != null) {
-                    Log.w(TAG, "Data channel with label " + dataChannel.label() + " exists");
+                    Log.w(TAG, "Data channel with label " + dataChannelLabel + " exists");
 
+                    // Remove the old entry first so that removePeerConnection() cannot iterate over
+                    // a channel that we are about to dispose (it would throw when calling label() on it).
+                    dataChannels.remove(dataChannelLabel);
                     oldDataChannel.unregisterObserver();
                     oldDataChannel.dispose();
                 }
@@ -604,7 +613,7 @@ public class PeerConnectionWrapper {
                 }
 
                 dataChannel.registerObserver(new DataChannelObserver(dataChannel));
-                dataChannels.put(dataChannel.label(), dataChannel);
+                dataChannels.put(dataChannelLabel, dataChannel);
             }
         }
 

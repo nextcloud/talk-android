@@ -660,6 +660,7 @@ class PeerConnectionWrapperTest {
             }
 
             Mockito.verify(mockedStatusDataChannel).registerObserver(any())
+            Mockito.verify(mockedStatusDataChannel).unregisterObserver()
             Mockito.verify(mockedStatusDataChannel).dispose()
             Mockito.verify(mockedStatusDataChannel, atLeast(0)).label()
             Mockito.verify(mockedStatusDataChannel, atLeast(0)).state()
@@ -748,6 +749,7 @@ class PeerConnectionWrapperTest {
             }
 
             Mockito.verify(mockedStatusDataChannel).registerObserver(any())
+            Mockito.verify(mockedStatusDataChannel).unregisterObserver()
             Mockito.verify(mockedStatusDataChannel).dispose()
             Mockito.verify(mockedStatusDataChannel, atLeast(0)).label()
             Mockito.verify(mockedStatusDataChannel, atLeast(0)).state()
