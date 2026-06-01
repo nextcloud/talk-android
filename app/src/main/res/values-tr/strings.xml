@@ -82,6 +82,7 @@
     <string name="hint_edited_message">(düzenlendi)</string>
     <string name="internal_note">İç not</string>
     <string name="invisible">Görünmez</string>
+    <string name="join_call">Çağrıya katıl</string>
     <string name="languages_error_message">Diller alınamadı</string>
     <string name="languages_error_title">Alınamadı</string>
     <string name="later_today">Bugün daha sonra</string>
@@ -325,6 +326,7 @@
     <string name="nc_nick_guest">Konuk</string>
     <string name="nc_no">Hayır</string>
     <string name="nc_no_account_for_server">Bu sunucu için bir hesap bulunamadı</string>
+    <string name="nc_no_account_found">Hesap bulunamadı</string>
     <string name="nc_no_open_conversations_headline">Herhangi bir açık görüşme yok</string>
     <string name="nc_no_open_conversations_text">Katılabileceğiniz açık bir görüşme yok.\nHerhangi bir açık görüşme olmayabilir ya da zaten tüm görüşmelere katılmış olabilirsiniz.</string>
     <string name="nc_no_proxy">Vekil sunucu yok</string>

@@ -81,6 +81,7 @@
     <string name="hint_edited_message">(redigerad)</string>
     <string name="internal_note">Intern anteckning</string>
     <string name="invisible">Osynlig</string>
+    <string name="join_call">Gå med i samtal</string>
     <string name="languages_error_message">Kunde inte hämta språk</string>
     <string name="languages_error_title">Hämtning misslyckades</string>
     <string name="later_today">Senare idag</string>
@@ -324,6 +325,7 @@
     <string name="nc_nick_guest">Gäst</string>
     <string name="nc_no">Nej</string>
     <string name="nc_no_account_for_server">Inget konto hittades för den här servern</string>
+    <string name="nc_no_account_found">Kontot hittades inte</string>
     <string name="nc_no_open_conversations_headline">Inga öppna konversationer</string>
     <string name="nc_no_open_conversations_text">Inga öppna konversationer som du kan gå med i.\nAntingen finns det inga öppna konversationer eller så har du redan gått med i alla.</string>
     <string name="nc_no_proxy">Ingen proxy</string>
