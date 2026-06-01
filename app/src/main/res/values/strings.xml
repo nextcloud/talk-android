@@ -38,6 +38,7 @@ How to translate with transifex:
     <string name="nc_common_copy">Copy</string>
     <string name="nc_common_copy_success">Copied to clipboard</string>
     <string name="nc_common_more_options">More options</string>
+    <string name="nc_common_more">More</string>
 
     <!-- Shortcuts and Deep Links -->
     <string name="nc_add_to_home_screen">Add to home screen</string>
