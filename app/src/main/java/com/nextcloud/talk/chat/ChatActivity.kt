@@ -67,8 +67,6 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.ComposeView
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
@@ -284,8 +282,6 @@ class ChatActivity :
 
     private var hasScheduledMessages: Boolean = false
 
-    private var overflowMenuHostView: ComposeView? = null
-    private var isThreadMenuExpanded by mutableStateOf(false)
     private var chatToolbarState by mutableStateOf(ChatToolbarState())
     private var typingParticipantNames by mutableStateOf<List<String>>(emptyList())
     private val chatEmptyStateType = mutableStateOf<ChatEmptyStateType?>(null)
@@ -1843,7 +1839,7 @@ class ChatActivity :
                             },
                             onSearchPrevious = { chatViewModel.selectNextSearchResult() },
                             onSearchNext = { chatViewModel.selectPreviousSearchResult() },
-                            onThreadNotification = { showThreadNotificationMenu() },
+                            onThreadNotificationLevelChange = { level -> setThreadNotificationLevel(level) },
                             onEventMenu = { showConversationEventMenu(binding.chatToolbarComposeView) }
                         )
                     )
@@ -3031,84 +3027,14 @@ class ChatActivity :
         )
     }
 
-    @Suppress("Detekt.LongMethod")
-    private fun showThreadNotificationMenu() {
-        fun setThreadNotificationLevel(level: Int) {
-            val threadNotificationUrl = ApiUtils.getUrlForThreadNotificationLevel(
-                version = 1,
-                baseUrl = conversationUser!!.baseUrl,
-                token = roomToken,
-                threadId = conversationThreadId!!.toInt()
-            )
-            chatViewModel.setThreadNotificationLevel(credentials!!, threadNotificationUrl, level)
-        }
-
-        if (overflowMenuHostView == null) {
-            val threadNotificationsAnchor: View? = findViewById(R.id.thread_notifications)
-
-            val colorScheme = viewThemeUtils.getColorScheme(this)
-
-            overflowMenuHostView = ComposeView(this).apply {
-                setContent {
-                    MaterialTheme(
-                        colorScheme = colorScheme
-                    ) {
-                        val items = listOf(
-                            MenuItemData(
-                                title = context.resources.getString(R.string.notifications_default),
-                                subtitle = context.resources.getString(
-                                    R.string.notifications_default_description
-                                ),
-                                icon = R.drawable.baseline_notifications_24,
-                                onClick = {
-                                    setThreadNotificationLevel(0)
-                                }
-                            ),
-                            MenuItemData(
-                                title = context.resources.getString(R.string.notification_all_messages),
-                                subtitle = null,
-                                icon = R.drawable.outline_notifications_active_24,
-                                onClick = {
-                                    setThreadNotificationLevel(NOTIFICATION_LEVEL_ALWAYS)
-                                }
-                            ),
-                            MenuItemData(
-                                title = context.resources.getString(R.string.notification_mention_only),
-                                subtitle = null,
-                                icon = R.drawable.baseline_notifications_24,
-                                onClick = {
-                                    setThreadNotificationLevel(NOTIFICATION_LEVEL_MENTION_AND_CALLS)
-                                }
-                            ),
-                            MenuItemData(
-                                title = context.resources.getString(R.string.notification_off),
-                                subtitle = null,
-                                icon = R.drawable.ic_baseline_notifications_off_24,
-                                onClick = {
-                                    setThreadNotificationLevel(NOTIFICATION_LEVEL_NEVER)
-                                }
-                            )
-                        )
-
-                        OverflowMenu(
-                            anchor = threadNotificationsAnchor,
-                            expanded = isThreadMenuExpanded,
-                            items = items,
-                            onDismiss = { isThreadMenuExpanded = false }
-                        )
-                    }
-                }
-            }
-
-            addContentView(
-                overflowMenuHostView,
-                CoordinatorLayout.LayoutParams(
-                    CoordinatorLayout.LayoutParams.MATCH_PARENT,
-                    CoordinatorLayout.LayoutParams.MATCH_PARENT
-                )
-            )
-        }
-        isThreadMenuExpanded = true
+    private fun setThreadNotificationLevel(level: Int) {
+        val threadNotificationUrl = ApiUtils.getUrlForThreadNotificationLevel(
+            version = 1,
+            baseUrl = conversationUser!!.baseUrl,
+            token = roomToken,
+            threadId = conversationThreadId!!.toInt()
+        )
+        chatViewModel.setThreadNotificationLevel(credentials!!, threadNotificationUrl, level)
     }
 
     @SuppressLint("InflateParams")

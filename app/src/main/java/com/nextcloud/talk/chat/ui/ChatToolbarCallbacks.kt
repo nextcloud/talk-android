@@ -20,6 +20,6 @@ data class ChatToolbarCallbacks(
     val onSearchSubmit: () -> Unit = {},
     val onSearchPrevious: () -> Unit = {},
     val onSearchNext: () -> Unit = {},
-    val onThreadNotification: () -> Unit = {},
+    val onThreadNotificationLevelChange: (Int) -> Unit = {},
     val onEventMenu: () -> Unit = {}
 )
