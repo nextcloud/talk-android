@@ -174,13 +174,14 @@ private fun ToolbarActions(state: ChatToolbarState, callbacks: ChatToolbarCallba
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CallButton(iconRes: Int, contentDescription: String, onClick: () -> Unit, onLongClick: (() -> Unit)?) {
+    var showMenu by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .size(48.dp)
             .semantics { role = Role.Button }
             .combinedClickable(
                 onClick = onClick,
-                onLongClick = onLongClick
+                onLongClick = if (onLongClick != null) ({ showMenu = true }) else null
             ),
         contentAlignment = Alignment.Center
     ) {
@@ -189,6 +190,20 @@ private fun CallButton(iconRes: Int, contentDescription: String, onClick: () -> 
             contentDescription = contentDescription,
             tint = MaterialTheme.colorScheme.onSurface
         )
+        if (onLongClick != null) {
+            DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.call_without_notification)) },
+                    onClick = {
+                        onLongClick()
+                        showMenu = false
+                    },
+                    leadingIcon = {
+                        Icon(painterResource(R.drawable.ic_baseline_notifications_off_24), contentDescription = null)
+                    }
+                )
+            }
+        }
     }
 }
 
