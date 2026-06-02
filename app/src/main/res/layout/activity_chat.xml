@@ -17,100 +17,20 @@
     android:orientation="vertical"
     tools:ignore="Overdraw">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/chat_appbar"
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/chatToolbarComposeView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/chat_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/appbar"
-            android:theme="?attr/actionBarPopupTheme"
-            app:navigationIconTint="@color/fontAppbar"
-            app:popupTheme="@style/appActionBarPopupMenu">
-
-            <FrameLayout
-                android:id="@+id/chat_toolbar_avatar_container"
-                android:layout_width="46dp"
-                android:layout_height="46dp"
-                android:layout_marginEnd="@dimen/standard_half_margin"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <ImageView
-                    android:id="@+id/chat_toolbar_avatar"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:layout_gravity="start|center_vertical"
-                    android:contentDescription="@null"
-                    tools:src="@drawable/ic_avatar_group" />
-
-                <ImageView
-                    android:id="@+id/chat_toolbar_status"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_gravity="end|bottom"
-                    android:contentDescription="@null"
-                    tools:src="@drawable/online_status" />
-
-            </FrameLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/chat_toolbar_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:lines="1"
-                    android:text="@string/nc_app_product_name"
-                    android:textColor="@color/fontAppbar"
-                    android:textSize="18sp" />
-
-                <androidx.emoji2.widget.EmojiTextView
-                    android:id="@+id/chat_toolbar_status_message"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:lines="1"
-                    android:text="@string/nc_app_product_name"
-                    android:textColor="@color/fontAppbar"
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    tools:text="Offline"
-                    tools:visibility="visible" />
-
-            </LinearLayout>
-
-        </com.google.android.material.appbar.MaterialToolbar>
-
-        <androidx.compose.ui.platform.ComposeView
-            android:id="@+id/search_loading_indicator_compose_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+        android:layout_height="wrap_content" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <include
-            android:id="@+id/offline"
-            layout="@layout/no_saved_messages_view"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <include
-            android:id="@+id/lobby"
-            layout="@layout/lobby_view"
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/chatEmptyStateComposeView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -197,28 +117,11 @@
             app:fabCustomSize="@dimen/min_size_clickable_area"
             app:srcCompat="@drawable/ic_lock_open_grey600_24dp" />
 
-        <LinearLayout
-            android:id="@+id/typing_indicator_wrapper"
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/typingIndicatorComposeView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="-19dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/typing_indicator"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/side_margin"
-                android:paddingEnd="@dimen/side_margin"
-                android:background="@color/bg_default"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:textColor="@color/low_emphasis_text"
-                tools:ignore="Overdraw"
-                tools:text="Marcel is typing"/>
-
-        </LinearLayout>
+            android:layout_alignParentBottom="true" />
 
     </RelativeLayout>
 

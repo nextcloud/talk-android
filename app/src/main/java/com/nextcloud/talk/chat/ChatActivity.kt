@@ -23,8 +23,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.database.Cursor
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
@@ -34,21 +32,12 @@ import android.os.SystemClock
 import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.provider.Settings
-import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.util.Log
-import android.view.Gravity
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.PopupMenu
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
@@ -60,16 +49,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.view.ContextThemeWrapper
-import androidx.appcompat.widget.SearchView
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.scrollBy
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -84,20 +67,11 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.unit.dp
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
-import androidx.core.graphics.drawable.toBitmap
-import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
-import androidx.core.text.bold
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.emoji2.text.EmojiCompat
@@ -112,15 +86,9 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
-import coil.imageLoader
-import coil.request.CachePolicy
-import coil.request.ImageRequest
-import coil.target.Target
-import coil.transform.CircleCropTransformation
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.color.ColorUtil
-import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -132,6 +100,12 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.model.FileParameters
+import com.nextcloud.talk.chat.ui.ChatEmptyState
+import com.nextcloud.talk.chat.ui.ChatEmptyStateType
+import com.nextcloud.talk.chat.ui.ChatToolbar
+import com.nextcloud.talk.chat.ui.ChatToolbarCallbacks
+import com.nextcloud.talk.chat.ui.ChatToolbarState
+import com.nextcloud.talk.chat.ui.TypingIndicatorBanner
 import com.nextcloud.talk.chat.ui.MessageActionsBottomSheet
 import com.nextcloud.talk.chat.ui.ProfileModalBottomSheet
 import com.nextcloud.talk.chat.ui.ShowReactionsModalBottomSheet
@@ -178,7 +152,6 @@ import com.nextcloud.talk.ui.OutOfOfficeView
 import com.nextcloud.talk.ui.OutOfOfficeViewData
 import com.nextcloud.talk.ui.PinnedMessageView
 import com.nextcloud.talk.ui.PlaybackSpeed
-import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.UpcomingEventView
 import com.nextcloud.talk.ui.chat.ChatMessageCallbacks
 import com.nextcloud.talk.ui.chat.ChatView
@@ -260,7 +233,6 @@ import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.abs
-import kotlin.math.roundToInt
 
 @Suppress("TooManyFunctions", "LargeClass", "LongMethod")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -308,14 +280,11 @@ class ChatActivity :
     lateinit var conversationInfoViewModel: ConversationInfoViewModel
     val messageInputViewModel: MessageInputViewModel by viewModels()
 
-    private var chatMenu: Menu? = null
-
-    private var scheduledMessagesMenuItem: MenuItem? = null
     private var hasScheduledMessages: Boolean = false
 
-    private var overflowMenuHostView: ComposeView? = null
-    private var isThreadMenuExpanded by mutableStateOf(false)
-    private val searchLoadingState = mutableStateOf(false)
+    private var chatToolbarState by mutableStateOf(ChatToolbarState())
+    private var typingParticipantNames by mutableStateOf<List<String>>(emptyList())
+    private val chatEmptyStateType = mutableStateOf<ChatEmptyStateType?>(null)
     private val upcomingEventUiState =
         mutableStateOf<ChatViewModel.UpcomingEventUIState>(ChatViewModel.UpcomingEventUIState.None)
 
@@ -395,10 +364,6 @@ class ChatActivity :
     var myFirstMessage: CharSequence? = null
     var checkingLobbyStatus: Boolean = false
 
-    private var conversationVoiceCallMenuItem: MenuItem? = null
-    private var conversationVideoMenuItem: MenuItem? = null
-    private var eventConversationMenuItem: MenuItem? = null
-    private var searchView: SearchView? = null
     private var lastHandledHighlightNonce: Long? = null
     private var pendingHighlightedMessageId: Long? = null
     private var lastNoMoreResultsToastTime: Long = 0L
@@ -429,7 +394,7 @@ class ChatActivity :
         override fun handleOnBackPressed() {
             if (chatViewModel.chatMode.value == ChatViewModel.ChatMode.SEARCH_MODE) {
                 chatViewModel.exitSearchMode()
-                invalidateOptionsMenu()
+                chatToolbarState = chatToolbarState.copy(isSearchMode = false, searchQuery = "")
                 return
             }
 
@@ -507,10 +472,11 @@ class ChatActivity :
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         binding = ActivityChatBinding.inflate(layoutInflater)
-        setupActionBar()
         setContentView(binding.root)
 
-        binding.offline.root.visibility = View.GONE
+        setupChatToolbarView()
+        setupChatEmptyStateView()
+        setupTypingIndicatorView()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             ViewCompat.setOnApplyWindowInsetsListener(binding.chatContainer) { view, insets ->
@@ -782,7 +748,10 @@ class ChatActivity :
                 val chatMode by chatViewModel.chatMode.collectAsStateWithLifecycle()
                 currentConversation = uiState.conversation
 
-                binding.messagesListViewCompose.visibility = View.VISIBLE
+                val isLobbyViewActive = chatEmptyStateType.value is ChatEmptyStateType.Lobby
+                if (!isLobbyViewActive) {
+                    binding.messagesListViewCompose.visibility = View.VISIBLE
+                }
 
                 val listState = rememberLazyListState()
                 val composeScope = rememberCoroutineScope()
@@ -1239,10 +1208,11 @@ class ChatActivity :
         Log.d(TAG, "initObservers Called")
 
         lifecycleScope.launch {
-            chatViewModel.chatMode.collectLatest {
-                invalidateOptionsMenu()
+            chatViewModel.chatMode.collectLatest { mode ->
+                val inSearchMode = mode == ChatViewModel.ChatMode.SEARCH_MODE
+                updateToolbarForSearchMode(inSearchMode)
                 updateSearchLoadingIndicator(
-                    isLoading = it == ChatViewModel.ChatMode.SEARCH_MODE && chatViewModel.searchUiState.value.isLoading
+                    isLoading = inSearchMode && chatViewModel.searchUiState.value.isLoading
                 )
             }
         }
@@ -1325,9 +1295,7 @@ class ChatActivity :
                         chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
                         participantPermissions = ParticipantPermissions(spreedCapabilities, currentConversation!!)
 
-                        invalidateOptionsMenu()
-                        isEventConversation()
-                        checkShowCallButtons()
+                        updateToolbarState()
                         checkLobbyState()
                         updateRoomTimerHandler()
                     } else {
@@ -1356,18 +1324,9 @@ class ChatActivity :
 
                     joinRoomWithPassword()
 
-                    if (conversationUser?.userId != "?" &&
-                        hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG) &&
-                        !isChatThread()
-                    ) {
-                        binding.chatToolbar.setOnClickListener { _ -> showConversationInfoScreen() }
-                    }
                     refreshScheduledMessages()
 
-                    loadAvatarForStatusBar()
-                    setActionBarTitle()
-                    isEventConversation()
-                    checkShowCallButtons()
+                    updateToolbarState()
                     checkLobbyState()
                     if (state.conversationModel.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
                         state.conversationModel.status == "dnd"
@@ -1564,13 +1523,13 @@ class ChatActivity :
                 is ChatViewModel.ScheduledMessagesSuccessState -> {
                     hasScheduledMessages = state.messages.isNotEmpty()
                     messageInputFragment.updateScheduledMessagesAvailability(hasScheduledMessages)
-                    invalidateOptionsMenu()
+                    updateToolbarState()
                 }
 
                 is ChatViewModel.ScheduledMessagesErrorState -> {
                     hasScheduledMessages = false
                     messageInputFragment.updateScheduledMessagesAvailability(false)
-                    invalidateOptionsMenu()
+                    updateToolbarState()
                 }
 
                 else -> {}
@@ -1708,7 +1667,7 @@ class ChatActivity :
                         Snackbar.LENGTH_LONG
                     ).show()
 
-                    chatMenu?.removeItem(R.id.conversation_event)
+                    chatToolbarState = chatToolbarState.copy(showEventMenu = false)
                 }
 
                 is ChatViewModel.UnbindRoomUiState.Error -> {
@@ -1768,7 +1727,7 @@ class ChatActivity :
 
                     is ChatViewModel.ThreadRetrieveUiState.Success -> {
                         conversationThreadInfo = uiState.thread
-                        invalidateOptionsMenu()
+                        updateToolbarState()
                     }
                 }
             }
@@ -1848,43 +1807,42 @@ class ChatActivity :
 
         chatViewModel.getRoom(roomToken)
 
-        actionBar?.show()
-
         binding.let { viewThemeUtils.material.themeFAB(it.voiceRecordingLock) }
 
-        loadAvatarForStatusBar()
-        setActionBarTitle()
-        viewThemeUtils.material.colorToolbarOverflowIcon(binding.chatToolbar)
+        updateToolbarState()
     }
 
-    private fun setupActionBar() {
-        setSupportActionBar(binding.chatToolbar)
-        binding.chatToolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(resources!!.getColor(R.color.transparent, null).toDrawable())
-        setActionBarTitle()
-        viewThemeUtils.material.themeToolbar(binding.chatToolbar)
-        val toolbarBackgroundColorInt = (binding.chatToolbar.background as? ColorDrawable)?.color
-        binding.searchLoadingIndicatorComposeView.setContent {
+    private fun setupChatToolbarView() {
+        binding.chatToolbarComposeView.setContent {
             MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
-                val isLoading by searchLoadingState
-                val appBarBackgroundColor = toolbarBackgroundColorInt?.let(::Color) ?: MaterialTheme.colorScheme.surface
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(4.dp)
-                        .background(appBarBackgroundColor)
-                ) {
-                    if (isLoading) {
-                        LinearProgressIndicator(
-                            modifier = Modifier.fillMaxWidth(),
-                            color = MaterialTheme.colorScheme.primary,
-                            trackColor = appBarBackgroundColor
+                CompositionLocalProvider(LocalViewThemeUtils provides viewThemeUtils) {
+                    ChatToolbar(
+                        state = chatToolbarState,
+                        callbacks = ChatToolbarCallbacks(
+                            onNavigateUp = { onBackPressedDispatcher.onBackPressed() },
+                            onTitleClick = { showConversationInfoScreen() },
+                            onVoiceCall = { startACall(true, false) },
+                            onSilentVoiceCall = { startACall(true, true) },
+                            onVideoCall = { startACall(false, false) },
+                            onSilentVideoCall = { startACall(false, true) },
+                            onSearchOpen = { startMessageSearch() },
+                            onSearchClose = {
+                                chatViewModel.exitSearchMode()
+                                chatToolbarState = chatToolbarState.copy(isSearchMode = false, searchQuery = "")
+                            },
+                            onSearchQueryChange = { query ->
+                                chatToolbarState = chatToolbarState.copy(searchQuery = query)
+                                chatViewModel.onSearchQueryChanged(query)
+                            },
+                            onSearchSubmit = {
+                                chatViewModel.jumpToSearchSelection()
+                            },
+                            onSearchPrevious = { chatViewModel.selectNextSearchResult() },
+                            onSearchNext = { chatViewModel.selectPreviousSearchResult() },
+                            onThreadNotificationLevelChange = { level -> setThreadNotificationLevel(level) },
+                            onEventMenu = { showConversationEventMenu(binding.chatToolbarComposeView) }
                         )
-                    }
+                    )
                 }
             }
         }
@@ -1922,159 +1880,143 @@ class ChatActivity :
         chatViewModel.syncVoiceMessageUiState(message)
     }
 
-    @Suppress("MagicNumber", "LongMethod")
     private fun updateTypingIndicator() {
-        fun ellipsize(text: String): String = DisplayUtils.ellipsize(text, TYPING_INDICATOR_MAX_NAME_LENGTH)
-
-        val participantNames = ArrayList<String>()
-
-        for (typingParticipant in typingParticipants.values) {
-            participantNames.add(typingParticipant.name)
-        }
-
-        val typingString: SpannableStringBuilder
-        when (typingParticipants.size) {
-            0 -> typingString = SpannableStringBuilder().append(binding.typingIndicator.text)
-
-            // person1 is typing
-            1 -> typingString = SpannableStringBuilder()
-                .bold { append(ellipsize(participantNames[0])) }
-                .append(WHITESPACE + context.resources?.getString(R.string.typing_is_typing))
-
-            // person1 and person2 are typing
-            2 -> typingString = SpannableStringBuilder()
-                .bold { append(ellipsize(participantNames[0])) }
-                .append(WHITESPACE + context.resources?.getString(R.string.nc_common_and) + WHITESPACE)
-                .bold { append(ellipsize(participantNames[1])) }
-                .append(WHITESPACE + context.resources?.getString(R.string.typing_are_typing))
-
-            // person1, person2 and person3 are typing
-            3 -> typingString = SpannableStringBuilder()
-                .bold { append(ellipsize(participantNames[0])) }
-                .append(COMMA)
-                .bold { append(ellipsize(participantNames[1])) }
-                .append(WHITESPACE + context.resources?.getString(R.string.nc_common_and) + WHITESPACE)
-                .bold { append(ellipsize(participantNames[2])) }
-                .append(WHITESPACE + context.resources?.getString(R.string.typing_are_typing))
-
-            // person1, person2, person3 and 1 other is typing
-            4 -> typingString = SpannableStringBuilder()
-                .bold { append(participantNames[0]) }
-                .append(COMMA)
-                .bold { append(participantNames[1]) }
-                .append(COMMA)
-                .bold { append(participantNames[2]) }
-                .append(WHITESPACE + context.resources?.getString(R.string.typing_1_other))
-
-            // person1, person2, person3 and x others are typing
-            else -> {
-                val moreTypersAmount = typingParticipants.size - 3
-                val othersTyping = context.resources?.getString(R.string.typing_x_others)?.let {
-                    String.format(it, moreTypersAmount)
-                }
-                typingString = SpannableStringBuilder()
-                    .bold { append(participantNames[0]) }
-                    .append(COMMA)
-                    .bold { append(participantNames[1]) }
-                    .append(COMMA)
-                    .bold { append(participantNames[2]) }
-                    .append(othersTyping)
-            }
-        }
-
-        runOnUiThread {
-            binding.typingIndicator.text = typingString
-
-            val typingIndicatorPositionY = if (participantNames.size > 0) {
-                TYPING_INDICATOR_POSITION_VISIBLE
-            } else {
-                TYPING_INDICATOR_POSITION_HIDDEN
-            }
-
-            binding.typingIndicatorWrapper.animate()
-                .translationY(DisplayUtils.convertDpToPixel(typingIndicatorPositionY, context))
-                .setInterpolator(AccelerateDecelerateInterpolator())
-                .duration = TYPING_INDICATOR_ANIMATION_DURATION
-        }
+        val names = typingParticipants.values.map { it.name }
+        runOnUiThread { typingParticipantNames = names }
     }
 
     private fun isTypingStatusEnabled(): Boolean =
         webSocketInstance != null &&
             !CapabilitiesUtil.isTypingStatusPrivate(conversationUser!!)
 
-    private fun loadAvatarForStatusBar() {
-        if (currentConversation == null) {
-            return
-        }
+    fun updateToolbarState() {
+        val conversation = currentConversation
+        val user = conversationUser
+        val isOneToOne = isOneToOneConversation()
+        val capabilitiesReady = ::spreedCapabilities.isInitialized
 
-        if (isOneToOneConversation()) {
-            val url = ApiUtils.getUrlForAvatar(
-                conversationUser!!.baseUrl!!,
-                currentConversation!!.name,
-                true,
-                darkMode = DisplayUtils.isDarkModeOn(supportActionBar?.themedContext!!)
-            )
+        chatToolbarState = chatToolbarState.copy(
+            title = buildToolbarTitle(conversation),
+            subtitle = buildToolbarSubtitle(conversation),
+            avatarUrl = buildAvatarUrl(user, conversation, isOneToOne),
+            credentials = user?.let { ApiUtils.getCredentials(it.username, it.token) },
+            userStatus = if (isOneToOne) conversation?.status else null,
+            showVoiceCall = isCallsEnabled(capabilitiesReady, conversation),
+            showVideoCall = isCallsEnabled(capabilitiesReady, conversation),
+            showSearch = isSearchAvailable(capabilitiesReady, conversation),
+            titleClickable = user?.userId != "?" && !chatToolbarState.isSearchMode,
+            overflowItems = buildOverflowItems(),
+            threadNotificationIcon = buildThreadNotificationIcon(capabilitiesReady),
+            showEventMenu = conversation?.objectType == ConversationEnums.ObjectType.EVENT,
+            supportsSilentCall = capabilitiesReady &&
+                hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_CALL) &&
+                !isChatThread()
+        )
+    }
 
-            val target = object : Target {
-
-                private fun setIcon(drawable: Drawable?) {
-                    supportActionBar?.let {
-                        val toolbarAvatar = binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_avatar)
-                        val toolbarStatus = binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_status)
-                        val avatarContainer =
-                            binding.chatToolbar.findViewById<FrameLayout>(R.id.chat_toolbar_avatar_container)
-                        if (toolbarAvatar == null || toolbarStatus == null || avatarContainer == null) {
-                            return
-                        }
-
-                        val avatarSize = (it.height / TOOLBAR_AVATAR_RATIO).roundToInt()
-                        val size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, context)
-                        if (drawable != null && avatarSize > 0) {
-                            val bitmap = drawable.toBitmap(avatarSize, avatarSize)
-                            val status = StatusDrawable(
-                                currentConversation!!.status,
-                                null,
-                                size,
-                                0,
-                                binding.chatToolbar.context
-                            )
-                            viewThemeUtils.talk.themeStatusDrawable(context, status)
-                            toolbarAvatar.setImageDrawable(bitmap.toDrawable(resources))
-                            toolbarStatus.setImageDrawable(status)
-                            toolbarStatus.contentDescription = currentConversation?.status
-                            avatarContainer.visibility = View.VISIBLE
-                        } else {
-                            Log.d(TAG, "loadAvatarForStatusBar avatarSize <= 0")
-                        }
-                    }
-                }
-
-                override fun onStart(placeholder: Drawable?) {
-                    this.setIcon(placeholder)
-                }
-
-                override fun onSuccess(result: Drawable) {
-                    this.setIcon(result)
+    private fun buildToolbarTitle(conversation: ConversationModel?): String =
+        when {
+            isChatThread() -> conversationThreadInfo?.thread?.title.orEmpty()
+            conversation?.displayName != null -> {
+                try {
+                    EmojiCompat.get().process(conversation.displayName!! as CharSequence).toString()
+                } catch (e: IllegalStateException) {
+                    Log.e(TAG, "buildToolbarTitle EmojiCompat processing failed", e)
+                    conversation.displayName!!
                 }
             }
+            else -> ""
+        }
 
-            val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
-            if (credentials != null) {
-                context.imageLoader.enqueue(
-                    ImageRequest.Builder(context)
-                        .data(url)
-                        .addHeader("Authorization", credentials)
-                        .transformations(CircleCropTransformation())
-                        .crossfade(true)
-                        .target(target)
-                        .memoryCachePolicy(CachePolicy.DISABLED)
-                        .diskCachePolicy(CachePolicy.DISABLED)
-                        .build()
+    private fun buildAvatarUrl(user: User?, conversation: ConversationModel?, isOneToOne: Boolean): String? =
+        if (user != null && conversation != null && isOneToOne) {
+            ApiUtils.getUrlForAvatar(user.baseUrl!!, conversation.name, true, DisplayUtils.isDarkModeOn(this))
+        } else {
+            null
+        }
+
+    private fun isCallsEnabled(capabilitiesReady: Boolean, conversation: ConversationModel?): Boolean =
+        capabilitiesReady &&
+            CapabilitiesUtil.isAbleToCall(spreedCapabilities) &&
+            !isChatThread() &&
+            !ConversationUtils.isNoteToSelfConversation(conversation) &&
+            !isReadOnlyConversation() &&
+            !shouldShowLobby()
+
+    private fun isSearchAvailable(capabilitiesReady: Boolean, conversation: ConversationModel?): Boolean =
+        capabilitiesReady &&
+            networkMonitor.isOnline.value &&
+            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.UNIFIED_SEARCH) &&
+            conversation?.remoteServer.isNullOrEmpty() == true &&
+            !isChatThread()
+
+    private fun buildThreadNotificationIcon(capabilitiesReady: Boolean): Int? {
+        if (!isChatThread() ||
+            !capabilitiesReady ||
+            !hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.THREADS)
+        ) {
+            return null
+        }
+        return when (conversationThreadInfo?.attendee?.notificationLevel) {
+            NOTIFICATION_LEVEL_ALWAYS -> R.drawable.outline_notifications_active_24
+            NOTIFICATION_LEVEL_NEVER -> R.drawable.ic_baseline_notifications_off_24
+            else -> R.drawable.baseline_notifications_24
+        }
+    }
+
+    private fun buildToolbarSubtitle(conversation: ConversationModel?): String =
+        when {
+            isChatThread() -> {
+                val count = conversationThreadInfo?.thread?.numReplies ?: 0
+                resources.getQuantityString(R.plurals.thread_replies, count, count)
+            }
+            conversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> {
+                val icon = conversation.statusIcon.orEmpty()
+                val msg = conversation.statusMessage.orEmpty()
+                "$icon$msg"
+            }
+            conversation?.type == ConversationEnums.ConversationType.ROOM_GROUP_CALL ||
+                conversation?.type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL ->
+                conversation.description.orEmpty()
+            else -> ""
+        }
+
+    private fun buildOverflowItems(): List<MenuItemData> {
+        val items = mutableListOf<MenuItemData>()
+        val isThread = isChatThread()
+        val capabilitiesReady = ::spreedCapabilities.isInitialized
+
+        if (conversationUser?.userId != "?" && !isThread) {
+            items += MenuItemData(
+                title = getString(R.string.nc_conversation_menu_conversation_info),
+                onClick = { showConversationInfoScreen() }
+            )
+        }
+        if (!isThread) {
+            items += MenuItemData(
+                title = getString(R.string.nc_shared_items),
+                onClick = { showSharedItems() }
+            )
+            if (capabilitiesReady && hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.THREADS)) {
+                items += MenuItemData(
+                    title = getString(R.string.recent_threads),
+                    onClick = { openThreadsOverview() }
                 )
             }
-        } else {
-            binding.chatToolbar.findViewById<FrameLayout>(R.id.chat_toolbar_avatar_container).visibility = View.GONE
+            if (networkMonitor.isOnline.value && hasScheduledMessages) {
+                items += MenuItemData(
+                    title = getString(R.string.nc_scheduled_messages),
+                    onClick = { openScheduledMessages() }
+                )
+            }
         }
+        if (currentConversation?.objectType == ConversationEnums.ObjectType.FILE) {
+            items += MenuItemData(
+                title = getString(R.string.nc_conversation_menu_conversation_go_to_file),
+                onClick = { launchFileShareLink() }
+            )
+        }
+        return items
     }
 
     fun isOneToOneConversation() =
@@ -2130,35 +2072,6 @@ class ChatActivity :
                 chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(chatIntent)
             }
-        }
-    }
-
-    private fun showCallButtonMenu(isVoiceOnlyCall: Boolean) {
-        val anchor: View? = if (isVoiceOnlyCall) {
-            findViewById(R.id.conversation_voice_call)
-        } else {
-            findViewById(R.id.conversation_video_call)
-        }
-
-        if (anchor != null) {
-            val popupMenu = PopupMenu(
-                ContextThemeWrapper(this, R.style.CallButtonMenu),
-                anchor,
-                Gravity.END
-            )
-            popupMenu.inflate(R.menu.chat_call_menu)
-
-            popupMenu.setOnMenuItemClickListener { item: MenuItem ->
-                when (item.itemId) {
-                    R.id.call_without_notification -> startACall(isVoiceOnlyCall, true)
-                }
-                true
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                popupMenu.setForceShowIcon(true)
-            }
-            popupMenu.show()
         }
     }
 
@@ -2296,14 +2209,7 @@ class ChatActivity :
     }
 
     private fun checkShowCallButtons() {
-        if (isReadOnlyConversation() ||
-            shouldShowLobby() ||
-            ConversationUtils.isNoteToSelfConversation(currentConversation)
-        ) {
-            disableCallButtons()
-        } else {
-            enableCallButtons()
-        }
+        updateToolbarState()
     }
 
     private fun checkShowMessageInputView() {
@@ -2327,47 +2233,29 @@ class ChatActivity :
         return false
     }
 
-    private fun disableCallButtons() {
-        if (CapabilitiesUtil.isAbleToCall(spreedCapabilities)) {
-            if (conversationVoiceCallMenuItem != null && conversationVideoMenuItem != null) {
-                conversationVoiceCallMenuItem?.icon?.alpha = SEMI_TRANSPARENT_INT
-                conversationVideoMenuItem?.icon?.alpha = SEMI_TRANSPARENT_INT
-                conversationVoiceCallMenuItem?.isEnabled = false
-                conversationVideoMenuItem?.isEnabled = false
-            } else {
-                Log.e(TAG, "call buttons were null when trying to disable them")
-            }
-        }
-    }
-
-    private fun enableCallButtons() {
-        if (CapabilitiesUtil.isAbleToCall(spreedCapabilities)) {
-            if (conversationVoiceCallMenuItem != null && conversationVideoMenuItem != null) {
-                conversationVoiceCallMenuItem?.icon?.alpha = FULLY_OPAQUE_INT
-                conversationVideoMenuItem?.icon?.alpha = FULLY_OPAQUE_INT
-                conversationVoiceCallMenuItem?.isEnabled = true
-                conversationVideoMenuItem?.isEnabled = true
-            } else {
-                Log.e(TAG, "call buttons were null when trying to enable them")
-            }
-        }
-    }
-
     private fun isEventConversation() {
-        if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT) {
-            if (eventConversationMenuItem != null) {
-                eventConversationMenuItem?.icon?.alpha = FULLY_OPAQUE_INT
-                eventConversationMenuItem?.isEnabled = true
-            }
-        } else {
-            eventConversationMenuItem?.isEnabled = false
-        }
+        updateToolbarState()
     }
 
     private fun isReadOnlyConversation(): Boolean =
         currentConversation?.conversationReadOnlyState != null &&
             currentConversation?.conversationReadOnlyState ==
             ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY
+
+    private fun setupTypingIndicatorView() {
+        binding.typingIndicatorComposeView.setContent {
+            MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
+                TypingIndicatorBanner(names = typingParticipantNames)
+            }
+        }
+    }
+
+    private fun setupChatEmptyStateView() {
+        binding.chatEmptyStateComposeView.setContent {
+            val type by chatEmptyStateType
+            type?.let { ChatEmptyState(it) }
+        }
+    }
 
     private fun checkLobbyState() {
         if (currentConversation != null &&
@@ -2376,15 +2264,16 @@ class ChatActivity :
         ) {
             showLobbyView()
         } else {
-            binding.lobby.lobbyView.visibility = View.GONE
-            // binding.messagesListView.visibility = View.VISIBLE
+            binding.chatEmptyStateComposeView.visibility = View.GONE
+            binding.messagesListViewCompose.visibility = View.VISIBLE
+            chatEmptyStateType.value = null
             checkShowMessageInputView()
         }
     }
 
     private fun showLobbyView() {
-        binding.lobby.lobbyView.visibility = View.VISIBLE
-        // binding.messagesListView.visibility = View.GONE
+        binding.chatEmptyStateComposeView.visibility = View.VISIBLE
+        binding.messagesListViewCompose.visibility = View.GONE
         binding.fragmentContainerActivityChat.visibility = View.GONE
 
         val sb = StringBuilder()
@@ -2407,7 +2296,7 @@ class ChatActivity :
         }
 
         sb.append(currentConversation!!.description)
-        binding.lobby.lobbyTextView.text = sb.toString()
+        chatEmptyStateType.value = ChatEmptyStateType.Lobby(sb.toString())
     }
 
     private fun onRemoteFileBrowsingResult(intent: Intent?) {
@@ -2908,74 +2797,11 @@ class ChatActivity :
         !ApplicationWideCurrentRoomHolder.getInstance().isInCall &&
             !ApplicationWideCurrentRoomHolder.getInstance().isDialing
 
-    private fun setActionBarTitle() {
-        val title = binding.chatToolbar.findViewById<TextView>(R.id.chat_toolbar_title)
-        if (title == null) {
-            Log.w(TAG, "setActionBarTitle: title view not found, skipping")
-            return
-        }
-        viewThemeUtils.platform.colorTextView(title, ColorRole.ON_SURFACE)
-
-        title.text =
-            if (isChatThread()) {
-                conversationThreadInfo?.thread?.title
-            } else if (currentConversation?.displayName != null) {
-                try {
-                    EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
-                } catch (e: java.lang.IllegalStateException) {
-                    Log.e(TAG, "setActionBarTitle failed $e")
-                    currentConversation?.displayName
-                }
-            } else {
-                ""
-            }
-
-        if (isChatThread()) {
-            val replyAmount = conversationThreadInfo?.thread?.numReplies ?: 0
-            val repliesAmountTitle = resources.getQuantityString(
-                R.plurals.thread_replies,
-                replyAmount,
-                replyAmount
-            )
-
-            statusMessageViewContents(repliesAmountTitle)
-        } else if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-            var statusMessage = ""
-            if (currentConversation?.statusIcon != null) {
-                statusMessage += currentConversation?.statusIcon
-            }
-            if (currentConversation?.statusMessage != null) {
-                statusMessage += currentConversation?.statusMessage
-            }
-            statusMessageViewContents(statusMessage)
-        } else {
-            if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_GROUP_CALL ||
-                currentConversation?.type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
-            ) {
-                var descriptionMessage = ""
-                descriptionMessage += currentConversation?.description
-                statusMessageViewContents(descriptionMessage)
-            }
-        }
-    }
-
-    private fun statusMessageViewContents(statusMessageContent: String) {
-        val statusMessageView = binding.chatToolbar.findViewById<TextView>(R.id.chat_toolbar_status_message)
-        if (statusMessageContent.isNotEmpty()) {
-            viewThemeUtils.platform.colorTextView(statusMessageView, ColorRole.ON_SURFACE)
-            statusMessageView.text = statusMessageContent
-            statusMessageView.visibility = View.VISIBLE
-        } else {
-            statusMessageView.visibility = View.GONE
-        }
-    }
-
     private fun updateToolbarForSearchMode(isSearchMode: Boolean) {
-        if (isSearchMode) {
-            binding.chatToolbar.setOnClickListener(null)
-        } else {
-            binding.chatToolbar.setOnClickListener { _ -> showConversationInfoScreen() }
-        }
+        chatToolbarState = chatToolbarState.copy(
+            isSearchMode = isSearchMode,
+            titleClickable = !isSearchMode && conversationUser?.userId != "?"
+        )
     }
 
     public override fun onDestroy() {
@@ -3122,206 +2948,6 @@ class ChatActivity :
         chatViewModel.loadMoreMessages(messageId, direction)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        super.onCreateOptionsMenu(menu)
-        menuInflater.inflate(R.menu.menu_conversation, menu)
-        chatMenu = menu
-
-        scheduledMessagesMenuItem = menu.findItem(R.id.conversation_scheduled_messages)
-
-        if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT) {
-            eventConversationMenuItem = menu.findItem(R.id.conversation_event)
-        } else {
-            menu.removeItem(R.id.conversation_event)
-        }
-
-        if (conversationUser?.userId == "?") {
-            menu.removeItem(R.id.conversation_info)
-        } else {
-            loadAvatarForStatusBar()
-            setActionBarTitle()
-        }
-
-        return true
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        super.onPrepareOptionsMenu(menu)
-
-        val inSearchMode = chatViewModel.chatMode.value == ChatViewModel.ChatMode.SEARCH_MODE
-        updateToolbarForSearchMode(inSearchMode)
-
-        val searchItem = menu.findItem(R.id.conversation_search)
-        val previousSearchItem = menu.findItem(R.id.conversation_search_previous)
-        val nextSearchItem = menu.findItem(R.id.conversation_search_next)
-
-        if (inSearchMode) {
-            val searchState = chatViewModel.searchUiState.value
-            conversationVoiceCallMenuItem?.isVisible = false
-            conversationVideoMenuItem?.isVisible = false
-            menu.findItem(R.id.shared_items)?.isVisible = false
-            menu.findItem(R.id.conversation_go_to_file)?.isVisible = false
-            menu.findItem(R.id.conversation_info)?.isVisible = false
-            menu.findItem(R.id.show_threads)?.isVisible = false
-            menu.findItem(R.id.thread_notifications)?.isVisible = false
-            menu.findItem(R.id.conversation_scheduled_messages)?.isVisible = false
-            menu.findItem(R.id.conversation_event)?.isVisible = false
-
-            searchItem?.isVisible = true
-            previousSearchItem?.isVisible = true
-            nextSearchItem?.isVisible = true
-            configureSearchActionView(searchItem)
-            return true
-        }
-
-        previousSearchItem?.isVisible = false
-        nextSearchItem?.isVisible = false
-        searchItem?.collapseActionView()
-
-        if (this::spreedCapabilities.isInitialized) {
-            if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.READ_ONLY_ROOMS)) {
-                checkShowCallButtons()
-            }
-
-            scheduledMessagesMenuItem?.isVisible = networkMonitor.isOnline.value &&
-                hasScheduledMessages
-
-            searchItem.isVisible =
-                hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.UNIFIED_SEARCH) &&
-                currentConversation!!.remoteServer.isNullOrEmpty() &&
-                !isChatThread()
-
-            val sharedItemsItem = menu.findItem(R.id.shared_items)
-            sharedItemsItem.isVisible = !isChatThread()
-
-            val conversationFileItem = menu.findItem(R.id.conversation_go_to_file)
-            conversationFileItem.isVisible = currentConversation?.objectType == ConversationEnums.ObjectType.FILE
-
-            val conversationInfoItem = menu.findItem(R.id.conversation_info)
-            conversationInfoItem.isVisible = !isChatThread()
-
-            val showThreadsItem = menu.findItem(R.id.show_threads)
-            showThreadsItem.isVisible = !isChatThread() &&
-                hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.THREADS)
-
-            if (CapabilitiesUtil.isAbleToCall(spreedCapabilities) &&
-                !isChatThread() &&
-                !ConversationUtils.isNoteToSelfConversation(currentConversation)
-            ) {
-                conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
-                conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
-
-                this.lifecycleScope.launch {
-                    networkMonitor.isOnline.onEach { isOnline ->
-                        conversationVoiceCallMenuItem?.isVisible = isOnline
-                        searchItem?.isVisible = isOnline
-                        conversationVideoMenuItem?.isVisible = isOnline
-                    }.collect()
-                }
-
-                if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_CALL)) {
-                    Handler().post {
-                        findViewById<View?>(R.id.conversation_voice_call)?.setOnLongClickListener {
-                            showCallButtonMenu(true)
-                            true
-                        }
-                    }
-
-                    Handler().post {
-                        findViewById<View?>(R.id.conversation_video_call)?.setOnLongClickListener {
-                            showCallButtonMenu(false)
-                            true
-                        }
-                    }
-                }
-            } else {
-                menu.removeItem(R.id.conversation_video_call)
-                menu.removeItem(R.id.conversation_voice_call)
-            }
-
-            handleThreadNotificationIcon(menu.findItem(R.id.thread_notifications))
-        }
-        return true
-    }
-
-    private fun handleThreadNotificationIcon(threadNotificationItem: MenuItem) {
-        threadNotificationItem.isVisible = isChatThread() &&
-            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.THREADS)
-
-        val threadNotificationIcon = when (conversationThreadInfo?.attendee?.notificationLevel) {
-            NOTIFICATION_LEVEL_ALWAYS -> R.drawable.outline_notifications_active_24
-            NOTIFICATION_LEVEL_NEVER -> R.drawable.ic_baseline_notifications_off_24
-            else -> R.drawable.baseline_notifications_24
-        }
-        threadNotificationItem.icon = ContextCompat.getDrawable(context, threadNotificationIcon)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean =
-        when (item.itemId) {
-            R.id.conversation_video_call -> {
-                startACall(false, false)
-                true
-            }
-
-            R.id.conversation_voice_call -> {
-                startACall(true, false)
-                true
-            }
-
-            R.id.conversation_go_to_file -> {
-                launchFileShareLink()
-                true
-            }
-
-            R.id.conversation_info -> {
-                showConversationInfoScreen()
-                true
-            }
-
-            R.id.shared_items -> {
-                showSharedItems()
-                true
-            }
-
-            R.id.conversation_search -> {
-                startMessageSearch()
-                true
-            }
-
-            R.id.conversation_search_previous -> {
-                chatViewModel.selectNextSearchResult()
-                true
-            }
-
-            R.id.conversation_search_next -> {
-                chatViewModel.selectPreviousSearchResult()
-                true
-            }
-
-            R.id.conversation_scheduled_messages -> {
-                openScheduledMessages()
-                true
-            }
-
-            R.id.conversation_event -> {
-                val anchorView = findViewById<View>(R.id.conversation_event)
-                showConversationEventMenu(anchorView)
-                true
-            }
-
-            R.id.show_threads -> {
-                openThreadsOverview()
-                true
-            }
-
-            R.id.thread_notifications -> {
-                showThreadNotificationMenu()
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
-
     private fun launchFileShareLink() {
         val intent = Intent(Intent.ACTION_VIEW).apply {
             data = (conversationUser.baseUrl + "/f/" + currentConversation?.objectId).toUri()
@@ -3399,84 +3025,14 @@ class ChatActivity :
         )
     }
 
-    @Suppress("Detekt.LongMethod")
-    private fun showThreadNotificationMenu() {
-        fun setThreadNotificationLevel(level: Int) {
-            val threadNotificationUrl = ApiUtils.getUrlForThreadNotificationLevel(
-                version = 1,
-                baseUrl = conversationUser!!.baseUrl,
-                token = roomToken,
-                threadId = conversationThreadId!!.toInt()
-            )
-            chatViewModel.setThreadNotificationLevel(credentials!!, threadNotificationUrl, level)
-        }
-
-        if (overflowMenuHostView == null) {
-            val threadNotificationsAnchor: View? = findViewById(R.id.thread_notifications)
-
-            val colorScheme = viewThemeUtils.getColorScheme(this)
-
-            overflowMenuHostView = ComposeView(this).apply {
-                setContent {
-                    MaterialTheme(
-                        colorScheme = colorScheme
-                    ) {
-                        val items = listOf(
-                            MenuItemData(
-                                title = context.resources.getString(R.string.notifications_default),
-                                subtitle = context.resources.getString(
-                                    R.string.notifications_default_description
-                                ),
-                                icon = R.drawable.baseline_notifications_24,
-                                onClick = {
-                                    setThreadNotificationLevel(0)
-                                }
-                            ),
-                            MenuItemData(
-                                title = context.resources.getString(R.string.notification_all_messages),
-                                subtitle = null,
-                                icon = R.drawable.outline_notifications_active_24,
-                                onClick = {
-                                    setThreadNotificationLevel(NOTIFICATION_LEVEL_ALWAYS)
-                                }
-                            ),
-                            MenuItemData(
-                                title = context.resources.getString(R.string.notification_mention_only),
-                                subtitle = null,
-                                icon = R.drawable.baseline_notifications_24,
-                                onClick = {
-                                    setThreadNotificationLevel(NOTIFICATION_LEVEL_MENTION_AND_CALLS)
-                                }
-                            ),
-                            MenuItemData(
-                                title = context.resources.getString(R.string.notification_off),
-                                subtitle = null,
-                                icon = R.drawable.ic_baseline_notifications_off_24,
-                                onClick = {
-                                    setThreadNotificationLevel(NOTIFICATION_LEVEL_NEVER)
-                                }
-                            )
-                        )
-
-                        OverflowMenu(
-                            anchor = threadNotificationsAnchor,
-                            expanded = isThreadMenuExpanded,
-                            items = items,
-                            onDismiss = { isThreadMenuExpanded = false }
-                        )
-                    }
-                }
-            }
-
-            addContentView(
-                overflowMenuHostView,
-                CoordinatorLayout.LayoutParams(
-                    CoordinatorLayout.LayoutParams.MATCH_PARENT,
-                    CoordinatorLayout.LayoutParams.MATCH_PARENT
-                )
-            )
-        }
-        isThreadMenuExpanded = true
+    private fun setThreadNotificationLevel(level: Int) {
+        val threadNotificationUrl = ApiUtils.getUrlForThreadNotificationLevel(
+            version = 1,
+            baseUrl = conversationUser!!.baseUrl,
+            token = roomToken,
+            threadId = conversationThreadId!!.toInt()
+        )
+        chatViewModel.setThreadNotificationLevel(credentials!!, threadNotificationUrl, level)
     }
 
     @SuppressLint("InflateParams")
@@ -3653,64 +3209,14 @@ class ChatActivity :
 
     private fun startMessageSearch() {
         chatViewModel.enterSearchMode()
-        invalidateOptionsMenu()
+        chatToolbarState = chatToolbarState.copy(
+            isSearchMode = true,
+            searchQuery = chatViewModel.searchUiState.value.query
+        )
     }
 
     private fun updateSearchLoadingIndicator(isLoading: Boolean) {
-        searchLoadingState.value = isLoading
-    }
-
-    private fun configureSearchActionView(searchItem: MenuItem?) {
-        val actionView = searchItem?.actionView as? SearchView ?: return
-        searchView = actionView
-        searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-            override fun onMenuItemActionExpand(item: MenuItem): Boolean = true
-
-            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                if (chatViewModel.chatMode.value == ChatViewModel.ChatMode.SEARCH_MODE) {
-                    chatViewModel.exitSearchMode()
-                    invalidateOptionsMenu()
-                }
-                return true
-            }
-        })
-        searchItem.expandActionView()
-        actionView.queryHint = getString(R.string.message_search_hint)
-        actionView.isIconified = false
-        actionView.maxWidth = Int.MAX_VALUE
-        viewThemeUtils.talk.themeSearchView(actionView)
-        actionView.requestFocus()
-        window.decorView.post {
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.showSoftInput(actionView.findFocus(), InputMethodManager.SHOW_IMPLICIT)
-        }
-
-        val currentQuery = chatViewModel.searchUiState.value.query
-        if (actionView.query.toString() != currentQuery) {
-            actionView.setQuery(currentQuery, false)
-        }
-
-        actionView.setOnCloseListener {
-            chatViewModel.exitSearchMode()
-            invalidateOptionsMenu()
-            true
-        }
-
-        actionView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                chatViewModel.onSearchQueryChanged(query.orEmpty())
-                chatViewModel.jumpToSearchSelection()
-                actionView.clearFocus()
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                imm?.hideSoftInputFromWindow(actionView.windowToken, 0)
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                chatViewModel.onSearchQueryChanged(newText.orEmpty())
-                return true
-            }
-        })
+        chatToolbarState = chatToolbarState.copy(isLoading = isLoading)
     }
 
     private fun logSearchNavigation(message: String) {
@@ -4488,11 +3994,7 @@ class ChatActivity :
         private const val REQUEST_CAMERA_PERMISSION = 223
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
         private const val VIDEO_SUFFIX = ".mp4"
-        private const val FULLY_OPAQUE_INT: Int = 255
-        private const val SEMI_TRANSPARENT_INT: Int = 99
         private const val VOICE_MESSAGE_SEEKBAR_BASE = 1000
-        private const val TOOLBAR_AVATAR_RATIO = 1.5
-        private const val STATUS_SIZE_IN_DP = 9f
         private const val HTTP_BAD_REQUEST = 400
         private const val HTTP_FORBIDDEN = 403
         private const val HTTP_NOT_FOUND = 404
@@ -4504,12 +4006,6 @@ class ChatActivity :
         private const val NOTIFICATION_LEVEL_MENTION_AND_CALLS = 2
         private const val NOTIFICATION_LEVEL_NEVER = 3
         private const val ONE_SECOND_IN_MILLIS = 1000
-        private const val WHITESPACE = " "
-        private const val COMMA = ", "
-        private const val TYPING_INDICATOR_ANIMATION_DURATION = 200L
-        private const val TYPING_INDICATOR_MAX_NAME_LENGTH = 14
-        private const val TYPING_INDICATOR_POSITION_VISIBLE = -18f
-        private const val TYPING_INDICATOR_POSITION_HIDDEN = -1f
         private const val MILLISEC_15: Long = 15
         private const val CURRENT_AUDIO_MESSAGE_KEY = "CURRENT_AUDIO_MESSAGE"
         private const val CURRENT_AUDIO_POSITION_KEY = "CURRENT_AUDIO_POSITION"
