@@ -2006,7 +2006,6 @@ class ChatActivity :
             if (networkMonitor.isOnline.value && hasScheduledMessages) {
                 items += MenuItemData(
                     title = getString(R.string.nc_scheduled_messages),
-                    icon = R.drawable.baseline_schedule_24,
                     onClick = { openScheduledMessages() }
                 )
             }
@@ -2014,7 +2013,6 @@ class ChatActivity :
         if (currentConversation?.objectType == ConversationEnums.ObjectType.FILE) {
             items += MenuItemData(
                 title = getString(R.string.nc_conversation_menu_conversation_go_to_file),
-                icon = R.drawable.ic_file_24px,
                 onClick = { launchFileShareLink() }
             )
         }
