@@ -132,8 +132,56 @@ private fun ToolbarActions(state: ChatToolbarState, callbacks: ChatToolbarCallba
         }
     } else {
         if (state.threadNotificationIcon != null) {
-            IconButton(onClick = callbacks.onThreadNotification) {
-                Icon(painterResource(state.threadNotificationIcon), stringResource(R.string.thread_notifications))
+            var expanded by remember { mutableStateOf(false) }
+            Box {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(painterResource(state.threadNotificationIcon), stringResource(R.string.thread_notifications))
+                }
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.notifications_default)) },
+                        onClick = {
+                            callbacks.onThreadNotificationLevelChange(0)
+                            expanded = false
+                        },
+                        leadingIcon = {
+                            Icon(painterResource(R.drawable.baseline_notifications_24), contentDescription = null)
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.notification_all_messages)) },
+                        onClick = {
+                            callbacks.onThreadNotificationLevelChange(1)
+                            expanded = false
+                        },
+                        leadingIcon = {
+                            Icon(painterResource(R.drawable.outline_notifications_active_24), contentDescription = null)
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.notification_mention_only)) },
+                        onClick = {
+                            callbacks.onThreadNotificationLevelChange(2)
+                            expanded = false
+                        },
+                        leadingIcon = {
+                            Icon(painterResource(R.drawable.baseline_notifications_24), contentDescription = null)
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.notification_off)) },
+                        onClick = {
+                            callbacks.onThreadNotificationLevelChange(3)
+                            expanded = false
+                        },
+                        leadingIcon = {
+                            Icon(
+                                painterResource(R.drawable.ic_baseline_notifications_off_24),
+                                contentDescription = null
+                            )
+                        }
+                    )
+                }
             }
         }
         if (state.showEventMenu) {
