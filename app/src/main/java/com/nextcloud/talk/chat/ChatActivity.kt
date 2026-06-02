@@ -405,6 +405,7 @@ class ChatActivity :
     private var pendingHighlightRetryJob: Job? = null
     private var centerSelectedMessageJob: Job? = null
     private var chatListComposeScope: CoroutineScope? = null
+    private var pendingScrollToNewestMessage: Boolean = false
 
     var webSocketInstance: WebSocketInstance? = null
     var signalingMessageSender: SignalingMessageSender? = null
@@ -658,6 +659,21 @@ class ChatActivity :
 
     private var chatListState: LazyListState? = null
 
+    fun requestScrollToNewestMessage() {
+        val listState = chatListState
+        val composeScope = chatListComposeScope
+
+        if (listState != null && composeScope != null) {
+            pendingScrollToNewestMessage = false
+            chatViewModel.switchToDefaultMode()
+            composeScope.launch {
+                listState.scrollToItem(0)
+            }
+        } else {
+            pendingScrollToNewestMessage = true
+        }
+    }
+
     private fun scrollToMessageById(messageId: Long, logMiss: Boolean = true): Boolean {
         val items = chatViewModel.uiState.value.items
         val targetIndex = items.indexOfFirst { item ->
@@ -773,6 +789,9 @@ class ChatActivity :
                 SideEffect {
                     chatListState = listState
                     chatListComposeScope = composeScope
+                    if (pendingScrollToNewestMessage) {
+                        requestScrollToNewestMessage()
+                    }
                 }
 
                 SideEffect { chatListState = listState }
