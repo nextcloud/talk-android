@@ -1043,6 +1043,7 @@ class MessageInputFragment : Fragment() {
             )
             cancelReply()
             cancelCreateThread()
+            chatActivity.requestScrollToNewestMessage()
         }
     }
 
