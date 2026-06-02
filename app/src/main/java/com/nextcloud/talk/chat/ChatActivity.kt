@@ -32,14 +32,12 @@ import android.os.SystemClock
 import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.provider.Settings
-import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
@@ -76,7 +74,6 @@ import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
-import androidx.core.text.bold
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.emoji2.text.EmojiCompat
@@ -110,6 +107,7 @@ import com.nextcloud.talk.chat.ui.ChatEmptyStateType
 import com.nextcloud.talk.chat.ui.ChatToolbar
 import com.nextcloud.talk.chat.ui.ChatToolbarCallbacks
 import com.nextcloud.talk.chat.ui.ChatToolbarState
+import com.nextcloud.talk.chat.ui.TypingIndicatorBanner
 import com.nextcloud.talk.chat.ui.MessageActionsBottomSheet
 import com.nextcloud.talk.chat.ui.ProfileModalBottomSheet
 import com.nextcloud.talk.chat.ui.ShowReactionsModalBottomSheet
@@ -289,6 +287,7 @@ class ChatActivity :
     private var overflowMenuHostView: ComposeView? = null
     private var isThreadMenuExpanded by mutableStateOf(false)
     private var chatToolbarState by mutableStateOf(ChatToolbarState())
+    private var typingParticipantNames by mutableStateOf<List<String>>(emptyList())
     private val chatEmptyStateType = mutableStateOf<ChatEmptyStateType?>(null)
     private val upcomingEventUiState =
         mutableStateOf<ChatViewModel.UpcomingEventUIState>(ChatViewModel.UpcomingEventUIState.None)
@@ -481,6 +480,7 @@ class ChatActivity :
 
         setupChatToolbarView()
         setupChatEmptyStateView()
+        setupTypingIndicatorView()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             ViewCompat.setOnApplyWindowInsetsListener(binding.chatContainer) { view, insets ->
@@ -1881,80 +1881,9 @@ class ChatActivity :
         chatViewModel.syncVoiceMessageUiState(message)
     }
 
-    @Suppress("MagicNumber", "LongMethod")
     private fun updateTypingIndicator() {
-        fun ellipsize(text: String): String = DisplayUtils.ellipsize(text, TYPING_INDICATOR_MAX_NAME_LENGTH)
-
-        val participantNames = ArrayList<String>()
-
-        for (typingParticipant in typingParticipants.values) {
-            participantNames.add(typingParticipant.name)
-        }
-
-        val typingString: SpannableStringBuilder
-        when (typingParticipants.size) {
-            0 -> typingString = SpannableStringBuilder().append(binding.typingIndicator.text)
-
-            // person1 is typing
-            1 -> typingString = SpannableStringBuilder()
-                .bold { append(ellipsize(participantNames[0])) }
-                .append(WHITESPACE + context.resources?.getString(R.string.typing_is_typing))
-
-            // person1 and person2 are typing
-            2 -> typingString = SpannableStringBuilder()
-                .bold { append(ellipsize(participantNames[0])) }
-                .append(WHITESPACE + context.resources?.getString(R.string.nc_common_and) + WHITESPACE)
-                .bold { append(ellipsize(participantNames[1])) }
-                .append(WHITESPACE + context.resources?.getString(R.string.typing_are_typing))
-
-            // person1, person2 and person3 are typing
-            3 -> typingString = SpannableStringBuilder()
-                .bold { append(ellipsize(participantNames[0])) }
-                .append(COMMA)
-                .bold { append(ellipsize(participantNames[1])) }
-                .append(WHITESPACE + context.resources?.getString(R.string.nc_common_and) + WHITESPACE)
-                .bold { append(ellipsize(participantNames[2])) }
-                .append(WHITESPACE + context.resources?.getString(R.string.typing_are_typing))
-
-            // person1, person2, person3 and 1 other is typing
-            4 -> typingString = SpannableStringBuilder()
-                .bold { append(participantNames[0]) }
-                .append(COMMA)
-                .bold { append(participantNames[1]) }
-                .append(COMMA)
-                .bold { append(participantNames[2]) }
-                .append(WHITESPACE + context.resources?.getString(R.string.typing_1_other))
-
-            // person1, person2, person3 and x others are typing
-            else -> {
-                val moreTypersAmount = typingParticipants.size - 3
-                val othersTyping = context.resources?.getString(R.string.typing_x_others)?.let {
-                    String.format(it, moreTypersAmount)
-                }
-                typingString = SpannableStringBuilder()
-                    .bold { append(participantNames[0]) }
-                    .append(COMMA)
-                    .bold { append(participantNames[1]) }
-                    .append(COMMA)
-                    .bold { append(participantNames[2]) }
-                    .append(othersTyping)
-            }
-        }
-
-        runOnUiThread {
-            binding.typingIndicator.text = typingString
-
-            val typingIndicatorPositionY = if (participantNames.size > 0) {
-                TYPING_INDICATOR_POSITION_VISIBLE
-            } else {
-                TYPING_INDICATOR_POSITION_HIDDEN
-            }
-
-            binding.typingIndicatorWrapper.animate()
-                .translationY(DisplayUtils.convertDpToPixel(typingIndicatorPositionY, context))
-                .setInterpolator(AccelerateDecelerateInterpolator())
-                .duration = TYPING_INDICATOR_ANIMATION_DURATION
-        }
+        val names = typingParticipants.values.map { it.name }
+        runOnUiThread { typingParticipantNames = names }
     }
 
     private fun isTypingStatusEnabled(): Boolean =
@@ -2315,6 +2244,14 @@ class ChatActivity :
         currentConversation?.conversationReadOnlyState != null &&
             currentConversation?.conversationReadOnlyState ==
             ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY
+
+    private fun setupTypingIndicatorView() {
+        binding.typingIndicatorComposeView.setContent {
+            MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
+                TypingIndicatorBanner(names = typingParticipantNames)
+            }
+        }
+    }
 
     private fun setupChatEmptyStateView() {
         binding.chatEmptyStateComposeView.setContent {
@@ -4140,12 +4077,6 @@ class ChatActivity :
         private const val NOTIFICATION_LEVEL_MENTION_AND_CALLS = 2
         private const val NOTIFICATION_LEVEL_NEVER = 3
         private const val ONE_SECOND_IN_MILLIS = 1000
-        private const val WHITESPACE = " "
-        private const val COMMA = ", "
-        private const val TYPING_INDICATOR_ANIMATION_DURATION = 200L
-        private const val TYPING_INDICATOR_MAX_NAME_LENGTH = 14
-        private const val TYPING_INDICATOR_POSITION_VISIBLE = -18f
-        private const val TYPING_INDICATOR_POSITION_HIDDEN = -1f
         private const val MILLISEC_15: Long = 15
         private const val CURRENT_AUDIO_MESSAGE_KEY = "CURRENT_AUDIO_MESSAGE"
         private const val CURRENT_AUDIO_POSITION_KEY = "CURRENT_AUDIO_POSITION"
