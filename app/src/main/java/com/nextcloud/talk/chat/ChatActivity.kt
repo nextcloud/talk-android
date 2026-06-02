@@ -62,11 +62,19 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
@@ -287,6 +295,7 @@ class ChatActivity :
     private val chatEmptyStateType = mutableStateOf<ChatEmptyStateType?>(null)
     private val upcomingEventUiState =
         mutableStateOf<ChatViewModel.UpcomingEventUIState>(ChatViewModel.UpcomingEventUIState.None)
+    private val overflowContainerHeightPx = mutableIntStateOf(0)
 
     private val startSelectContactForResult = registerForActivityResult(
         ActivityResultContracts
@@ -509,6 +518,10 @@ class ChatActivity :
         setPinnedMessageContent()
 
         setUpcomingEventContent()
+
+        binding.chatOverflowContainer.viewTreeObserver.addOnGlobalLayoutListener {
+            overflowContainerHeightPx.intValue = binding.chatOverflowContainer.height
+        }
 
         lifecycleScope.launch {
             currentUserProvider.getCurrentUser()
@@ -787,6 +800,9 @@ class ChatActivity :
                         openWhenDownloadState.value = (downloadingFileState.value.intersect(visibleIds).isNotEmpty())
                     }
 
+                    val overflowHeightDp = with(LocalDensity.current) {
+                        overflowContainerHeightPx.intValue.toDp()
+                    }
                     ChatView(
                         state = ChatViewState(
                             chatItems = uiState.items,
@@ -798,7 +814,8 @@ class ChatActivity :
                             highlightedSearchTerm = uiState.highlightedSearchTerm,
                             hasChatPermission = this::participantPermissions.isInitialized &&
                                 participantPermissions.hasChatPermission(),
-                            downloadingFileState = downloadingFileState.value
+                            downloadingFileState = downloadingFileState.value,
+                            stickyHeaderTopOffset = overflowHeightDp
                         ),
                         callbacks = ChatViewCallbacks(
                             onLoadMore = { messageId, direction -> loadMoreMessages(messageId, direction) },
