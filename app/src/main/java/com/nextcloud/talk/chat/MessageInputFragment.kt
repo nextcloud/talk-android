@@ -31,6 +31,7 @@ import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.view.animation.LinearInterpolator
 import android.view.inputmethod.InputMethodManager
+import android.widget.Chronometer
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -616,6 +617,7 @@ class MessageInputFragment : Fragment() {
                     binding.fragmentMessageInputView.audioRecordDuration.start()
                     chatActivity.chatViewModel.startAudioRecording(requireContext(), chatActivity.currentConversation!!)
                     showRecordAudioUi(true)
+                    prevDx = event.x
                 }
 
                 MotionEvent.ACTION_CANCEL -> {
@@ -675,18 +677,10 @@ class MessageInputFragment : Fragment() {
                         resetSlider()
                         return@setOnTouchListener true
                     }
-                    if (event.x < 0f) {
-                        val dX = event.x
-                        if (dX < prevDx) { // left
-                            binding.fragmentMessageInputView.slideToCancelDescription.x -= INCREMENT
-                            xcounter += INCREMENT
-                        } else { // right
-                            binding.fragmentMessageInputView.slideToCancelDescription.x += INCREMENT
-                            xcounter -= INCREMENT
-                        }
-
-                        prevDx = dX
-                    }
+                    val dX = event.x - prevDx
+                    prevDx = event.x
+                    binding.fragmentMessageInputView.slideToCancelDescription.x += dX
+                    xcounter -= dX
 
                     if (event.y < 0f) {
                         chatActivity.chatViewModel.postToRecordTouchObserver(INCREMENT)
@@ -1205,6 +1199,10 @@ class MessageInputFragment : Fragment() {
             viewThemeUtils.platform.themeViewBackground(it, ColorRole.SURFACE_VARIANT)
         }
 
+        binding.fragmentMessageInputView.findViewById<Chronometer>(R.id.audioRecordDuration)?.let {
+            viewThemeUtils.platform.themeViewBackground(it, ColorRole.SURFACE_VARIANT)
+        }
+
         binding.fragmentMessageInputView.button?.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }
 
         binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.let {
@@ -1306,7 +1304,7 @@ class MessageInputFragment : Fragment() {
         private const val MENTION_AUTO_COMPLETE_ELEVATION = 6f
         private const val MINIMUM_VOICE_RECORD_DURATION: Int = 1000
         private const val ANIMATION_DURATION: Long = 750
-        private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -150
+        private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -300
         private const val VOICE_RECORD_LOCK_THRESHOLD: Float = 100f
         private const val INCREMENT = 8f
         private const val CURSOR_KEY = "_cursor"
