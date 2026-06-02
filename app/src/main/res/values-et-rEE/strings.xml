@@ -362,7 +362,7 @@
     <string name="nc_permissions_denied">Mõned õigused puuduvad.</string>
     <string name="nc_permissions_rationale_dialog_title">Palun anna vajalikud õigused</string>
     <string name="nc_permissions_settings">Ava seadistused</string>
-    <string name="nc_permissions_settings_hint">Palun luba vaajalikud õigused menüüst „Seadistused“ → „Õigused“</string>
+    <string name="nc_permissions_settings_hint">Palun luba vajalikud õigused menüüst „Seadistused“ → „Õigused“</string>
     <string name="nc_phone_book_integration_account_not_found">Kasutajakontot ei leidu</string>
     <string name="nc_phone_book_integration_chat_via">Vestle %s vahendusel</string>
     <string name="nc_pip_microphone_mute">Summuta mikrofon</string>
@@ -716,6 +716,7 @@
     <string name="until_unpin">Kuni esiletõstmise lõpetamiseni</string>
     <string name="upload_new_avatar_from_device">Lisa uus tunnuspilt arvutist või nutiseadmest</string>
     <string name="user_absence">%1$s pole kohal ja ei pruugi vastata</string>
+    <string name="user_absence_collapsed">%1$s pole kohal</string>
     <string name="user_absence_for_one_day">%1$s pole täna kohal</string>
     <string name="user_absence_replacement">Asendus:</string>
     <string name="user_avatar">Kasutaja tunnuspilt</string>

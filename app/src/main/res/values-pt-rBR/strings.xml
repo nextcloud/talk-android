@@ -716,6 +716,7 @@
     <string name="until_unpin">Até desfixar</string>
     <string name="upload_new_avatar_from_device">Carregar novo avatar do dispositivo</string>
     <string name="user_absence">%1$s está fora do escritório e pode não responder</string>
+    <string name="user_absence_collapsed">%1$s está fora do escritório</string>
     <string name="user_absence_for_one_day">%1$s está fora do escritório hoje</string>
     <string name="user_absence_replacement">Substituto:</string>
     <string name="user_avatar">Avatar do usuário</string>
