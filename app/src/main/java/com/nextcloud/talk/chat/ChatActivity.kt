@@ -752,7 +752,10 @@ class ChatActivity :
                 val chatMode by chatViewModel.chatMode.collectAsStateWithLifecycle()
                 currentConversation = uiState.conversation
 
-                binding.messagesListViewCompose.visibility = View.VISIBLE
+                val isLobbyViewActive = chatEmptyStateType.value is ChatEmptyStateType.Lobby
+                if (!isLobbyViewActive) {
+                    binding.messagesListViewCompose.visibility = View.VISIBLE
+                }
 
                 val listState = rememberLazyListState()
                 val composeScope = rememberCoroutineScope()
@@ -2268,6 +2271,7 @@ class ChatActivity :
             showLobbyView()
         } else {
             binding.chatEmptyStateComposeView.visibility = View.GONE
+            binding.messagesListViewCompose.visibility = View.VISIBLE
             chatEmptyStateType.value = null
             checkShowMessageInputView()
         }
@@ -2275,6 +2279,7 @@ class ChatActivity :
 
     private fun showLobbyView() {
         binding.chatEmptyStateComposeView.visibility = View.VISIBLE
+        binding.messagesListViewCompose.visibility = View.GONE
         binding.fragmentContainerActivityChat.visibility = View.GONE
 
         val sb = StringBuilder()
