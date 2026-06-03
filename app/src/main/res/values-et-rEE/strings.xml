@@ -180,6 +180,7 @@
     <string name="nc_common_disabled">Keelatud</string>
     <string name="nc_common_dismiss">Jäta vahele</string>
     <string name="nc_common_error_sorry">Vabandust, midagi läks valesti!</string>
+    <string name="nc_common_more">Veel</string>
     <string name="nc_common_more_options">Täiendavad valikud</string>
     <string name="nc_common_set">Lisa</string>
     <string name="nc_common_skip">Jäta vahele</string>

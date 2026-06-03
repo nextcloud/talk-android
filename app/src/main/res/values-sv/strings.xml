@@ -179,6 +179,7 @@
     <string name="nc_common_disabled">Inaktiverad</string>
     <string name="nc_common_dismiss">Avfärda</string>
     <string name="nc_common_error_sorry">Ledsen, någonting gick fel!</string>
+    <string name="nc_common_more">Mer</string>
     <string name="nc_common_more_options">Fler alternativ</string>
     <string name="nc_common_set">Sätt</string>
     <string name="nc_common_skip">Hoppa över</string>
@@ -714,6 +715,7 @@
     <string name="until_unpin">Tills fästet tas bort</string>
     <string name="upload_new_avatar_from_device">Ladda upp ny avatar från enheten</string>
     <string name="user_absence">%1$s är frånvarande och kanske inte svarar</string>
+    <string name="user_absence_collapsed">%1$s är frånvarande</string>
     <string name="user_absence_for_one_day">%1$s är frånvarande idag</string>
     <string name="user_absence_replacement">Ersättning:</string>
     <string name="user_avatar">Användar-avatar</string>
