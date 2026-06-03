@@ -199,6 +199,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
+import com.nextcloud.talk.webrtc.Globals
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
 import com.nextcloud.talk.webrtc.WebSocketInstance
 import com.otaliastudios.autocomplete.Autocomplete
@@ -362,7 +363,6 @@ class ChatActivity :
     private lateinit var path: String
 
     var myFirstMessage: CharSequence? = null
-    var checkingLobbyStatus: Boolean = false
 
     private var lastHandledHighlightNonce: Long? = null
     private var pendingHighlightedMessageId: Long? = null
@@ -748,9 +748,19 @@ class ChatActivity :
                 val chatMode by chatViewModel.chatMode.collectAsStateWithLifecycle()
                 currentConversation = uiState.conversation
 
-                val isLobbyViewActive = chatEmptyStateType.value is ChatEmptyStateType.Lobby
-                if (!isLobbyViewActive) {
-                    binding.messagesListViewCompose.visibility = View.VISIBLE
+                LaunchedEffect(uiState.isInLobby, uiState.conversation?.lobbyTimer, uiState.conversation?.description) {
+                    if (uiState.isInLobby) {
+                        binding.messagesListViewCompose.visibility = View.GONE
+                        showLobbyView()
+                    } else {
+                        binding.messagesListViewCompose.visibility = View.VISIBLE
+                        binding.chatEmptyStateComposeView.visibility = View.GONE
+                        binding.typingIndicatorComposeView.visibility = View.VISIBLE
+                        chatEmptyStateType.value = null
+                        if (::participantPermissions.isInitialized) {
+                            checkShowMessageInputView()
+                        }
+                    }
                 }
 
                 val listState = rememberLazyListState()
@@ -1296,7 +1306,6 @@ class ChatActivity :
                         participantPermissions = ParticipantPermissions(spreedCapabilities, currentConversation!!)
 
                         updateToolbarState()
-                        checkLobbyState()
                         updateRoomTimerHandler()
                     } else {
                         Log.w(
@@ -1327,7 +1336,6 @@ class ChatActivity :
                     refreshScheduledMessages()
 
                     updateToolbarState()
-                    checkLobbyState()
                     if (state.conversationModel.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
                         state.conversationModel.status == "dnd"
                     ) {
@@ -1455,8 +1463,6 @@ class ChatActivity :
             when (state) {
                 is ChatViewModel.LeaveRoomSuccessState -> {
                     logConversationInfos("leaveRoom#onNext")
-
-                    checkingLobbyStatus = false
 
                     if (getRoomInfoTimerHandler != null) {
                         getRoomInfoTimerHandler?.removeCallbacksAndMessages(null)
@@ -2214,7 +2220,6 @@ class ChatActivity :
 
     private fun checkShowMessageInputView() {
         if (isReadOnlyConversation() ||
-            shouldShowLobby() ||
             !participantPermissions.hasChatPermission()
         ) {
             binding.fragmentContainerActivityChat.visibility = View.GONE
@@ -2257,24 +2262,10 @@ class ChatActivity :
         }
     }
 
-    private fun checkLobbyState() {
-        if (currentConversation != null &&
-            ConversationUtils.isLobbyViewApplicable(currentConversation!!, spreedCapabilities) &&
-            shouldShowLobby()
-        ) {
-            showLobbyView()
-        } else {
-            binding.chatEmptyStateComposeView.visibility = View.GONE
-            binding.messagesListViewCompose.visibility = View.VISIBLE
-            chatEmptyStateType.value = null
-            checkShowMessageInputView()
-        }
-    }
-
     private fun showLobbyView() {
         binding.chatEmptyStateComposeView.visibility = View.VISIBLE
-        binding.messagesListViewCompose.visibility = View.GONE
         binding.fragmentContainerActivityChat.visibility = View.GONE
+        binding.typingIndicatorComposeView.visibility = View.GONE
 
         val sb = StringBuilder()
         sb.append(resources!!.getText(R.string.nc_lobby_waiting))
@@ -2741,8 +2732,6 @@ class ChatActivity :
         webSocketInstance?.getSignalingMessageReceiver()?.removeListener(conversationMessageListener)
 
         findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
-
-        checkingLobbyStatus = false
 
         if (getRoomInfoTimerHandler != null) {
             getRoomInfoTimerHandler?.removeCallbacksAndMessages(null)
@@ -3791,22 +3780,16 @@ class ChatActivity :
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onMessageEvent(webSocketCommunicationEvent: WebSocketCommunicationEvent) {
-        /*
-        switch (webSocketCommunicationEvent.getType()) {
-            case "refreshChat":
-
-                if (
-                webSocketCommunicationEvent
-                .getHashMap().get(BundleKeys.KEY_INTERNAL_USER_ID)
-                .equals(Long.toString(conversationUser.getId()))
-                ) {
-                    if (roomToken.equals(webSocketCommunicationEvent.getHashMap().get(BundleKeys.KEY_ROOM_TOKEN))) {
-                        pullChatMessages(2);
-                    }
+        when (webSocketCommunicationEvent.type) {
+            "roomUpdated" -> {
+                // With HPB, the signaling server sends a "room" message when room properties change
+                // (e.g. lobby state) while already in the room. Refresh room details so the DB is
+                // updated and observeLobbyState() can react to the new lobby state.
+                if (webSocketCommunicationEvent.hashMap?.get(Globals.ROOM_TOKEN) == roomToken) {
+                    chatViewModel.getRoom(roomToken)
                 }
-                break;
-            default:
-        }*/
+            }
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

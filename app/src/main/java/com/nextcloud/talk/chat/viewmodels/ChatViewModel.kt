@@ -63,7 +63,10 @@ import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
@@ -203,6 +206,10 @@ class ChatViewModel @AssistedInject constructor(
     var messageDraft: MessageDraft = MessageDraft()
     var hiddenUpcomingEvent: String? = null
     lateinit var participantPermissions: ParticipantPermissions
+    private val _spreedCapabilities = MutableStateFlow<SpreedCapability?>(null)
+    val spreedCapabilities: StateFlow<SpreedCapability?> = _spreedCapabilities
+
+    private var lobbyPollingJob: Job? = null
 
     fun getChatRepository(): ChatMessageRepository = chatRepository
 
@@ -438,7 +445,8 @@ class ChatViewModel @AssistedInject constructor(
         val pinnedMessage: ChatMessage? = null,
         val highlightedMessageId: Int? = null,
         val highlightedSearchTerm: String? = null,
-        val highlightTriggerNonce: Long? = null
+        val highlightTriggerNonce: Long? = null,
+        val isInLobby: Boolean = false
     )
 
     private val _uiState = MutableStateFlow(ChatUiState())
@@ -546,6 +554,8 @@ class ChatViewModel @AssistedInject constructor(
     // ------------------------------
     init {
         observeConversation()
+        observeLobbyState()
+        observeLobbyPolling()
         observeMessages()
         observeMediaPlayerProgressForCompose()
         observePinnedMessage()
@@ -886,6 +896,46 @@ class ChatViewModel @AssistedInject constructor(
                         conversation = conversation,
                         isOneToOneConversation = !conversation.isOneToOneConversation()
                     )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun observeLobbyState() {
+        val conversationFromDb = nonNullUserFlow
+            .flatMapLatest { user ->
+                conversationRepository.observeConversation(requireNotNull(user.id), chatRoomToken)
+            }
+            .mapNotNull { result ->
+                (result as? OfflineFirstConversationsRepository.ConversationResult.Found)?.conversation
+            }
+
+        combine(conversationFromDb, _spreedCapabilities.filterNotNull()) { conversation, capabilities ->
+            val permissions = ParticipantPermissions(capabilities, conversation)
+            ConversationUtils.isLobbyViewApplicable(conversation, capabilities) &&
+                hasSpreedFeatureCapability(capabilities, SpreedFeatures.WEBINARY_LOBBY) &&
+                conversation.lobbyState == ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
+                !permissions.canIgnoreLobby()
+        }
+            .onEach { isInLobby ->
+                _uiState.update { it.copy(isInLobby = isInLobby) }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun observeLobbyPolling() {
+        uiState
+            .map { it.isInLobby }
+            .distinctUntilChanged()
+            .onEach { isInLobby ->
+                lobbyPollingJob?.cancel()
+                if (isInLobby) {
+                    lobbyPollingJob = viewModelScope.launch {
+                        while (true) {
+                            delay(LOBBY_POLLING_INTERVAL_MS)
+                            getRoom(chatRoomToken)
+                        }
+                    }
                 }
             }
             .launchIn(viewModelScope)
@@ -1397,6 +1447,7 @@ class ChatViewModel @AssistedInject constructor(
                 user.capabilities!!.spreedCapability!!,
                 conversationModel
             )
+            _spreedCapabilities.value = user.capabilities!!.spreedCapability!!
         } else {
             chatNetworkDataSource.getCapabilities(user, token)
                 .subscribeOn(Schedulers.io())
@@ -1419,6 +1470,7 @@ class ChatViewModel @AssistedInject constructor(
                             spreedCapabilities,
                             conversationModel
                         )
+                        _spreedCapabilities.value = spreedCapabilities
                     }
 
                     override fun onError(e: Throwable) {
@@ -2242,6 +2294,7 @@ class ChatViewModel @AssistedInject constructor(
         private const val WEBSOCKET_CONNECT_TIMEOUT_MS = 3000L
         private const val WEBSOCKET_POLL_INTERVAL_MS = 50L
         private const val ROOM_REFRESH_DEBOUNCE_MS = 500L
+        private const val LOBBY_POLLING_INTERVAL_MS = 5_000L
         private const val GROUPING_TIME_WINDOW_SECONDS = 300L
         private const val TIMESTAMP_TO_MILLIS = 1000L
         private const val MIN_CHARS_FOR_SEARCH = 2
