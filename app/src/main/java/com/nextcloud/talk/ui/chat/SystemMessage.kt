@@ -68,10 +68,16 @@ fun SystemMessage(message: ChatMessageUi) {
         val highlightedAnnotated = remember(annotated, highlightSearchTerm) {
             annotated.withSearchHighlight(highlightSearchTerm)
         }
+        val resolvedTextStyle =
+            if (inlineContent.isEmpty()) {
+                textStyle
+            } else {
+                textStyle.copy(lineHeight = androidx.compose.ui.unit.TextUnit.Unspecified)
+            }
         Box(modifier = Modifier.fillMaxWidth()) {
             Text(
                 highlightedAnnotated,
-                style = systemMessageTextStyle,
+                style = resolvedTextStyle,
                 color = colorScheme.onSurface,
                 inlineContent = inlineContent,
                 textAlign = TextAlign.Center,
@@ -168,8 +174,7 @@ private fun buildSystemMessageContent(
             if (mention != null) {
                 val inlineId = "sysmsg-${message.id}-$mentionCounter"
                 mentionCounter++
-                appendMentionChip(inlineId, mention, inlineContent, textStyle, isMultilineLayout = false)
-                if (addLineBreaks) append("\n")
+                appendMentionChip(inlineId, mention, inlineContent, textStyle, isMultilineLayout = addLineBreaks)
             } else {
                 val name = message.messageParameters[key]?.get("name") ?: match.value
                 val start = length
