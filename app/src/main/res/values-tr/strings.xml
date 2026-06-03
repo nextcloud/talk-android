@@ -180,6 +180,7 @@
     <string name="nc_common_disabled">Kapalı</string>
     <string name="nc_common_dismiss">Yok say</string>
     <string name="nc_common_error_sorry">Ne yazık ki bir sorun çıktı!</string>
+    <string name="nc_common_more">Diğer</string>
     <string name="nc_common_more_options">Diğer seçenekler</string>
     <string name="nc_common_set">Ayarla</string>
     <string name="nc_common_skip">Atla</string>
@@ -716,6 +717,7 @@
     <string name="until_unpin">Sabitleme kaldırılana kadar</string>
     <string name="upload_new_avatar_from_device">Aygıttan yeni avatar yükle</string>
     <string name="user_absence">%1$s iş yeri dışında ve yanıt veremeyebilir.</string>
+    <string name="user_absence_collapsed">%1$s iş yeri dışında</string>
     <string name="user_absence_for_one_day">%1$s bugün iş yeri dışında</string>
     <string name="user_absence_replacement">Yedek:</string>
     <string name="user_avatar">Kullanıcı avatarı</string>

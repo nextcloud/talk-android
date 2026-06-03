@@ -51,6 +51,7 @@
     <string name="danger_zone">Zone de danger</string>
     <string name="deck_card_description">%1$s dans %2$s</string>
     <string name="default_room">Défaut</string>
+    <string name="default_room_preset">Envoyer des messages, créer des sujets et démarrer des appels audio et vidéo.</string>
     <string name="delete_avatar">Supprimer l\'avatar</string>
     <string name="delete_voice_recording">Supprimer l\'enregistrement vocal</string>
     <string name="deleted_conversation">La conversation %1$s a été supprimée</string>
@@ -169,6 +170,7 @@
     <string name="nc_common_disabled">Désactivé</string>
     <string name="nc_common_dismiss">Ignorer</string>
     <string name="nc_common_error_sorry">Désolé, quelque chose s’est mal passé !</string>
+    <string name="nc_common_more">Plus</string>
     <string name="nc_common_more_options">Plus d\'options</string>
     <string name="nc_common_set">Sauver</string>
     <string name="nc_common_skip">Ignorer</string>
@@ -691,6 +693,7 @@
     <string name="until_unpin">Jusqu\'au désépinglage</string>
     <string name="upload_new_avatar_from_device">Téléverser un nouvel avatar depuis l\'appareil</string>
     <string name="user_absence">%1$s est absent et pourrait ne pas répondre.</string>
+    <string name="user_absence_collapsed">%1$s est absent</string>
     <string name="user_absence_for_one_day">%1$s est absent aujourd\'hui</string>
     <string name="user_absence_replacement">Remplacement :</string>
     <string name="user_avatar">Avatar utilisateur</string>
@@ -714,7 +717,13 @@
     <string name="userinfo_no_info_text">Ajoutez vos nom, photo et coordonnées sur votre page de profil.</string>
     <string name="video_call">Appel vidéo</string>
     <string name="voice_room">Salon vocal</string>
+    <string name="voice_room_preset">Rejoindre l\'appel directement, idéal pour rattraper une conversation ou pour les réunions spontanées.</string>
     <string name="whats_your_status">Quel est votre statut ?</string>
+    <plurals name="nc_new_messages_count">
+        <item quantity="one">%d Nouveau message</item>
+        <item quantity="many">%d Nouveaux messages</item>
+        <item quantity="other">%d Nouveaux messages</item>
+    </plurals>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Voir %d message similaire</item>
         <item quantity="many">Voir %d messages similaires</item>

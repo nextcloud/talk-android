@@ -114,6 +114,7 @@
     <string name="nc_common_disabled">비활성화됨</string>
     <string name="nc_common_dismiss">무시</string>
     <string name="nc_common_error_sorry">죄송합니다, 무언가 잘못되었습니다!</string>
+    <string name="nc_common_more">더 보기</string>
     <string name="nc_common_set">설정</string>
     <string name="nc_common_skip">건너뛰기</string>
     <string name="nc_common_unknown">알 수 없음</string>
