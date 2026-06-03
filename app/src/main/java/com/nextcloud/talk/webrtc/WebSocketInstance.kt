@@ -286,9 +286,14 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     private fun processJoinedRoomMessage(text: String) {
         val (_, roomWebSocketMessage) = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage::class.java)
         if (roomWebSocketMessage != null) {
+            val alreadyInRoom = roomWebSocketMessage.roomId == currentRoomToken
             currentRoomToken = roomWebSocketMessage.roomId
             if (roomWebSocketMessage.roomPropertiesWebSocketMessage != null && !TextUtils.isEmpty(currentRoomToken)) {
-                sendRoomJoinedEvent()
+                if (alreadyInRoom) {
+                    sendRoomUpdatedEvent()
+                } else {
+                    sendRoomJoinedEvent()
+                }
             }
         }
     }
@@ -354,6 +359,12 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         val joinRoomHashMap = HashMap<String, String?>()
         joinRoomHashMap[Globals.ROOM_TOKEN] = currentRoomToken
         eventBus!!.post(WebSocketCommunicationEvent("roomJoined", joinRoomHashMap))
+    }
+
+    private fun sendRoomUpdatedEvent() {
+        val hashMap = HashMap<String, String?>()
+        hashMap[Globals.ROOM_TOKEN] = currentRoomToken
+        eventBus!!.post(WebSocketCommunicationEvent("roomUpdated", hashMap))
     }
 
     override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
