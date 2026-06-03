@@ -283,8 +283,9 @@ class ConversationsListActivity : BaseActivity() {
                         ?.toInt() ?: 0
                     val scrollOffset = -(viewportHeight / 2) + (avgItemHeight / 2)
                     listState.scrollToItem(nextUnreadConversationScrollPosition, scrollOffset)
+                    val lastVisible = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                    checkToShowUnreadBubble(lastVisible)
                 }
-                showUnreadBubbleState.value = false
             },
             onNotificationWarningNotNow = {
                 appPreferences.setNotificationWarningLastPostponedDate(System.currentTimeMillis())
