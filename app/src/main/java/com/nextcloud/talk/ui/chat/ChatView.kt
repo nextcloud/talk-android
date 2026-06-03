@@ -55,9 +55,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nextcloud.talk.R
@@ -96,7 +98,8 @@ data class ChatViewState(
     val chatMode: ChatViewModel.ChatMode = ChatViewModel.ChatMode.DEFAULT_MODE,
     val highlightedMessageId: Int? = null,
     val highlightedSearchTerm: String? = null,
-    val downloadingFileState: List<String> = listOf()
+    val downloadingFileState: List<String> = listOf(),
+    val stickyHeaderTopOffset: Dp = 0.dp
 )
 
 data class ChatViewCallbacks(
@@ -301,23 +304,36 @@ fun ChatView(
     }
 
     // Sticky date header
-    val stickyDateHeaderText by remember(listState, state.chatItems) {
+    val density = LocalDensity.current
+    val overflowPx = with(density) { state.stickyHeaderTopOffset.roundToPx() }
+
+    val stickyDateHeaderText by remember(listState, state.chatItems, overflowPx) {
         derivedStateOf {
-            state.chatItems.getOrNull(
-                listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            )?.let { item ->
-                when (item) {
-                    is ChatViewModel.ChatItem.MessageItem ->
-                        formatTime(item.uiMessage.timestamp * LONG_1000)
+            val visibleItems = listState.layoutInfo.visibleItemsInfo
+            val viewportEnd = listState.layoutInfo.viewportEndOffset
+            // In reverseLayout=true, offsets increase from bottom (newest) to top (oldest).
+            // An item's bottom edge is at screen Y = viewportEnd - offset; it is visible when that
+            // is >= overflowPx, i.e. offset <= viewportEnd - overflowPx.
+            val targetItem = if (overflowPx > 0) {
+                visibleItems.filter { it.offset <= viewportEnd - overflowPx }.lastOrNull()
+            } else {
+                visibleItems.lastOrNull()
+            }
+            targetItem?.let { itemInfo ->
+                state.chatItems.getOrNull(itemInfo.index)?.let { item ->
+                    when (item) {
+                        is ChatViewModel.ChatItem.MessageItem ->
+                            formatTime(item.uiMessage.timestamp * LONG_1000)
 
-                    is ChatViewModel.ChatItem.DateHeaderItem ->
-                        formatTime(item.date)
+                        is ChatViewModel.ChatItem.DateHeaderItem ->
+                            formatTime(item.date)
 
-                    is ChatViewModel.ChatItem.UnreadMessagesMarkerItem ->
-                        formatTime(item.date)
+                        is ChatViewModel.ChatItem.UnreadMessagesMarkerItem ->
+                            formatTime(item.date)
 
-                    else -> ""
-                }
+                        else -> ""
+                    }
+                } ?: ""
             } ?: ""
         }
     }
@@ -435,7 +451,7 @@ fun ChatView(
             text = stickyDateHeaderText,
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .padding(top = 2.dp)
+                .padding(top = state.stickyHeaderTopOffset + 2.dp)
                 .alpha(stickyDateHeaderAlpha)
         )
 
