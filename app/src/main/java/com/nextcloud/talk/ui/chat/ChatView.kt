@@ -50,6 +50,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -155,6 +156,8 @@ fun ChatView(
     var isNewerBoundaryLoadArmed by remember(state.chatMode, state.highlightedMessageId) {
         mutableStateOf(state.chatMode == ChatViewModel.ChatMode.DEFAULT_MODE)
     }
+    var didScrollToUnreadMarker by remember { mutableStateOf(false) }
+    var hadUnreadMarker by remember { mutableStateOf(false) }
 
     val handleQuotedMessageClick: (Int) -> Unit = remember(coroutineScope, listState) {
         { messageId ->
@@ -180,17 +183,52 @@ fun ChatView(
         }
     }
 
-    // Track newest message and show unread popup
+    // Scroll once to unread marker when it becomes available (it can appear after initial load).
+    LaunchedEffect(state.chatItems, isDefaultMode) {
+        if (!isDefaultMode) return@LaunchedEffect
+
+        val markerIndex = state.chatItems.indexOfFirst {
+            it is ChatViewModel.ChatItem.UnreadMessagesMarkerItem
+        }
+
+        if (markerIndex < 0) {
+            didScrollToUnreadMarker = false
+            return@LaunchedEffect
+        }
+
+        if (didScrollToUnreadMarker) return@LaunchedEffect
+
+        // While marker exists, keep popup hidden and reset unread popup count once.
+        showUnreadPopup.value = false
+        unreadCount = 0
+        listState.scrollToItem(markerIndex)
+        withFrameNanos { }
+        listState.centerItemInViewportIfVisible(markerIndex)
+        didScrollToUnreadMarker = true
+    }
+
+    // Track newest message and show unread popup.
     LaunchedEffect(state.chatItems) {
         if (state.chatItems.isEmpty()) return@LaunchedEffect
         if (!isDefaultMode) return@LaunchedEffect
 
+        val hasUnreadMarker = state.chatItems.any { it is ChatViewModel.ChatItem.UnreadMessagesMarkerItem }
+        if (hasUnreadMarker && !hadUnreadMarker) {
+            showUnreadPopup.value = false
+            unreadCount = 0
+        }
+        hadUnreadMarker = hasUnreadMarker
+
         val newestId = state.chatItems.firstNotNullOfOrNull { it.messageOrNull()?.id }
         val previousNewestId = lastNewestIdRef.value
 
+        if (previousNewestId == null) {
+            lastNewestIdRef.value = newestId
+            return@LaunchedEffect
+        }
+
         val isNearBottom = listState.firstVisibleItemIndex <= 2
-        val hasNewMessage = previousNewestId != null &&
-            newestId != previousNewestId &&
+        val hasNewMessage = newestId != previousNewestId &&
             state.chatMode == ChatViewModel.ChatMode.DEFAULT_MODE
 
         if (hasNewMessage) {
