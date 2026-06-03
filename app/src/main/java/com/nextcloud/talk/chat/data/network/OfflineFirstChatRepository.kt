@@ -632,7 +632,7 @@ class OfflineFirstChatRepository @Inject constructor(
         }
 
     private suspend fun handleSystemMessagesThatAffectDatabase(messagesJson: List<ChatMessageJson>) {
-        var hasPinnedMessageChange = false
+        var needsRoomRefresh = false
         messagesJson.forEach { messageJson ->
             when (messageJson.systemMessageType) {
                 ChatMessage.SystemMessageType.REACTION,
@@ -647,6 +647,10 @@ class OfflineFirstChatRepository @Inject constructor(
                 ChatMessage.SystemMessageType.MESSAGE_EDITED ->
                     upsertParentMessage(messageJson)
 
+                ChatMessage.SystemMessageType.LOBBY_NONE,
+                ChatMessage.SystemMessageType.LOBBY_NON_MODERATORS,
+                ChatMessage.SystemMessageType.LOBBY_OPEN_TO_EVERYONE -> needsRoomRefresh = true
+
                 ChatMessage.SystemMessageType.CLEARED_CHAT -> {
                     // for lookIntoFuture just deleting everything would be fine.
                     // But lets say we did not open the chat for a while and in between it was cleared.
@@ -659,12 +663,12 @@ class OfflineFirstChatRepository @Inject constructor(
                 }
 
                 ChatMessage.SystemMessageType.MESSAGE_PINNED,
-                ChatMessage.SystemMessageType.MESSAGE_UNPINNED -> hasPinnedMessageChange = true
+                ChatMessage.SystemMessageType.MESSAGE_UNPINNED -> needsRoomRefresh = true
 
                 else -> {}
             }
         }
-        if (hasPinnedMessageChange) _roomRefreshFlow.emit(Unit)
+        if (needsRoomRefresh) _roomRefreshFlow.emit(Unit)
     }
 
     // the parent message is always the newest state, no matter how old the system message is.
