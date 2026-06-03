@@ -41,6 +41,13 @@ class UriUtils {
             return url.toUri().lastPathSegment ?: ""
         }
 
+        /**
+         * Builds a shareable web link to a specific chat message, matching the web client format:
+         * {baseUrl}/call/{token}#message_{messageId}
+         */
+        fun getMessageLink(baseUrl: String, roomToken: String, messageId: Long): String =
+            "${baseUrl.trimEnd('/')}/call/$roomToken#message_$messageId"
+
         fun isInstanceInternalFileUrl(baseUrl: String, url: String): Boolean {
             // https://cloud.nextcloud.com/apps/files/?dir=/Engineering&fileid=41
             return (
