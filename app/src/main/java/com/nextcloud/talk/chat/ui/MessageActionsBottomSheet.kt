@@ -129,6 +129,7 @@ data class MessageActionsState(
     val showForward: Boolean,
     val showEdit: Boolean,
     val showCopy: Boolean,
+    val showCopyMessageLink: Boolean,
     val showMarkAsUnread: Boolean,
     val showRemind: Boolean,
     val showPin: Boolean,
@@ -242,6 +243,8 @@ internal fun buildMessageActionsState(
             isOnline,
         showEdit = isMessageEditable,
         showCopy = !message.isDeleted,
+        showCopyMessageLink = !message.isDeleted &&
+            ChatMessage.MessageType.SYSTEM_MESSAGE != messageType,
         showMarkAsUnread = hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CHAT_READ_MARKER) &&
             ChatMessage.MessageType.SYSTEM_MESSAGE != messageType &&
             isOnline,
@@ -279,6 +282,7 @@ fun MessageActionsBottomSheet(
     onForward: () -> Unit,
     onEdit: () -> Unit,
     onCopy: () -> Unit,
+    onCopyMessageLink: () -> Unit,
     onMarkAsUnread: () -> Unit,
     onRemind: () -> Unit,
     onPin: () -> Unit,
@@ -306,6 +310,7 @@ fun MessageActionsBottomSheet(
             onForward = onForward,
             onEdit = onEdit,
             onCopy = onCopy,
+            onCopyMessageLink = onCopyMessageLink,
             onMarkAsUnread = onMarkAsUnread,
             onRemind = onRemind,
             onPin = onPin,
@@ -332,6 +337,7 @@ internal fun MessageActionsSheetContent(
     onForward: () -> Unit,
     onEdit: () -> Unit,
     onCopy: () -> Unit,
+    onCopyMessageLink: () -> Unit,
     onMarkAsUnread: () -> Unit,
     onRemind: () -> Unit,
     onPin: () -> Unit,
@@ -432,6 +438,16 @@ internal fun MessageActionsSheetContent(
                         text = stringResource(R.string.nc_copy_message),
                         onClick = {
                             onCopy()
+                            onDismiss()
+                        }
+                    )
+                }
+                if (actionsState.showCopyMessageLink) {
+                    MessageActionItem(
+                        iconRes = R.drawable.ic_open_in_new,
+                        text = stringResource(R.string.nc_copy_message_link),
+                        onClick = {
+                            onCopyMessageLink()
                             onDismiss()
                         }
                     )
@@ -808,6 +824,7 @@ private fun PreviewMessageActionsSheetContent() {
         showForward = true,
         showEdit = true,
         showCopy = true,
+        showCopyMessageLink = true,
         showMarkAsUnread = true,
         showRemind = true,
         showPin = true,
@@ -830,6 +847,7 @@ private fun PreviewMessageActionsSheetContent() {
                 onForward = {},
                 onEdit = {},
                 onCopy = {},
+                onCopyMessageLink = {},
                 onMarkAsUnread = {},
                 onRemind = {},
                 onPin = {},
@@ -864,6 +882,7 @@ private fun PreviewMessageActionsSheetPinned() {
                     showForward = false,
                     showEdit = false,
                     showCopy = true,
+                    showCopyMessageLink = true,
                     showMarkAsUnread = false,
                     showRemind = false,
                     showPin = true,
@@ -882,6 +901,7 @@ private fun PreviewMessageActionsSheetPinned() {
                 onForward = {},
                 onEdit = {},
                 onCopy = {},
+                onCopyMessageLink = {},
                 onMarkAsUnread = {},
                 onRemind = {},
                 onPin = {},
