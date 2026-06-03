@@ -48,6 +48,7 @@ import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
 import com.nextcloud.talk.utils.message.MessageUtils
+import io.noties.markwon.core.spans.LinkSpan
 import org.greenrobot.eventbus.EventBus
 import java.lang.ref.WeakReference
 import kotlin.math.roundToInt
@@ -158,8 +159,27 @@ fun MarkdownText(
                     avatarGapPx = avatarGapPx
                 )
 
+                // Linkify.addLinks(mask) removes ALL existing URLSpan objects (including Markwon's
+                // LinkSpan which extends URLSpan) before adding its own. Save them first so we can
+                // restore them afterwards — otherwise markdown links like [text](url) become dead.
+                data class SavedLinkSpan(val span: LinkSpan, val start: Int, val end: Int, val flags: Int)
+                val savedMarkdownLinks = ssb.getSpans(0, ssb.length, LinkSpan::class.java)
+                    .map { span ->
+                        SavedLinkSpan(
+                            span,
+                            ssb.getSpanStart(span),
+                            ssb.getSpanEnd(span),
+                            ssb.getSpanFlags(span)
+                        )
+                    }
+
                 val hasOtherLinks = Linkify.addLinks(ssb, MESSAGE_LINKIFY_MASK)
-                val hasLinks = Linkify.addLinks(ssb, validLinkRegex.toPattern(), null) || hasOtherLinks
+                val hasAutoDetectedLinks = Linkify.addLinks(ssb, validLinkRegex.toPattern(), null) || hasOtherLinks
+
+                // Restore Markwon link spans that Linkify removed.
+                savedMarkdownLinks.forEach { ssb.setSpan(it.span, it.start, it.end, it.flags) }
+                val hasMarkdownLinks = savedMarkdownLinks.isNotEmpty()
+                val hasLinks = hasAutoDetectedLinks || hasMarkdownLinks
 
                 resolveFileParams(ssb, message)
                 applySearchHighlight(ssb, highlightSearchTerm, searchHighlightColorArgb)
