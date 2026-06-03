@@ -562,6 +562,7 @@ How to translate with transifex:
 
     <!-- Chat -->
     <string name="nc_copy_message">Copy</string>
+    <string name="nc_copy_message_link">Copy message link</string>
     <string name="nc_forward_message">Forward</string>
     <string name="nc_reply">Reply</string>
     <string name="nc_reply_privately">Reply privately</string>
