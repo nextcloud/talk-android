@@ -170,19 +170,28 @@ data class ChatMessage(
             else -> MessageType.REGULAR_TEXT_MESSAGE
         }
 
-    var extractedUrlToPreview: String? = null
-
     fun extractLinkPreviewUrl(user: User): String? {
         val messageText = message
         if (!CapabilitiesUtil.isLinkPreviewAvailable(user) || messageText == null) {
             return null
         }
 
-        val text: CharSequence = StringBuffer(messageText)
-        val regexOptions = setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE)
-
         val regexStringFromServer = user.capabilities?.coreCapability?.referenceRegex
-        val regexFromServer = regexStringFromServer?.toRegex(regexOptions)
+        return extractUrlCandidateForLinkPreview(messageText, regexStringFromServer)
+    }
+
+    internal fun extractUrlCandidateForLinkPreview(messageText: String, serverReferenceRegex: String?): String? {
+        val markdownUrl = MARKDOWN_LINK_REGEX.find(messageText)
+            ?.groups
+            ?.get(1)
+            ?.value
+            ?.trim()
+        if (!markdownUrl.isNullOrBlank()) {
+            return markdownUrl
+        }
+
+        val text: CharSequence = StringBuffer(messageText)
+        val regexFromServer = serverReferenceRegex?.toRegex(regexOptions)
         val serverMatch = regexFromServer?.find(text)?.groups?.get(0)?.value?.trim()
 
         return serverMatch ?: REGEX_STRING_DEFAULT.toRegex(regexOptions)
@@ -323,6 +332,8 @@ data class ChatMessage(
     companion object {
         private const val TAG = "ChatMessage"
         private const val MILLIES: Long = 1000L
+        private val regexOptions = setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE)
+        private val MARKDOWN_LINK_REGEX = """\[[^\]]+\]\((https?://[^\s)]+)\)""".toRegex(regexOptions)
 
         val SYSTEM_MESSAGE_TYPE_UNTRANSLATED: Set<SystemMessageType> = setOf(
             SystemMessageType.REACTION,
