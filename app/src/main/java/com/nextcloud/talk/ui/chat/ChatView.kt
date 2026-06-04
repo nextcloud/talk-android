@@ -412,7 +412,8 @@ fun ChatView(
                                     currentlyPlayingVoiceMessageId = state.currentlyPlayingVoiceMessageId,
                                     isOneToOneConversation = state.isOneToOneConversation,
                                     conversationThreadId = state.conversationThreadId,
-                                    hasChatPermission = state.hasChatPermission
+                                    hasChatPermission = state.hasChatPermission,
+                                    downloadingFileState = state.downloadingFileState
                                 ),
                                 callbacks = ChatMessageCallbacks(
                                     onLongClick = callbacks.messageCallbacks.onLongClick,
