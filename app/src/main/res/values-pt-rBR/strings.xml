@@ -167,6 +167,7 @@
     <string name="nc_certificate_error">Sua configuração SSL impediu a conexão</string>
     <string name="nc_change_cert_auth">Alterar certificado de autenticação</string>
     <string name="nc_change_password">Alterar senha</string>
+    <string name="nc_chat_no_messages">Ainda não há mensagens. Seja o primeiro a dizer olá!</string>
     <string name="nc_clear_edit_button">Cancelar edição</string>
     <string name="nc_clear_history">Excluir todas as mensagens </string>
     <string name="nc_clear_history_success">Todas as mensagens foram excluídas </string>

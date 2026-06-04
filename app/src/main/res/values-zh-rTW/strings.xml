@@ -167,6 +167,7 @@
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
     <string name="nc_change_cert_auth">變更驗證憑證</string>
     <string name="nc_change_password">變更密碼</string>
+    <string name="nc_chat_no_messages">目前尚無訊息。快來當第一個打招呼的人吧！</string>
     <string name="nc_clear_edit_button">取消編輯</string>
     <string name="nc_clear_history">刪除所有訊息</string>
     <string name="nc_clear_history_success">已刪除所有訊息</string>

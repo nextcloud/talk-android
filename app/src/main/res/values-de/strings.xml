@@ -167,6 +167,7 @@
     <string name="nc_certificate_error">Ihre SSL-Konfiguration hat die Verbindung verhindert</string>
     <string name="nc_change_cert_auth">Authentifizierungs-Zertifikat ändern</string>
     <string name="nc_change_password">Passwort ändern</string>
+    <string name="nc_chat_no_messages">Noch keine Nachrichten. Seien Sie der Erste, der Hallo sagt!</string>
     <string name="nc_clear_edit_button">Bearbeitung abbrechen</string>
     <string name="nc_clear_history">Alle Nachrichten löschen</string>
     <string name="nc_clear_history_success">Alle Nachrichten wurden gelöscht</string>
@@ -180,6 +181,7 @@
     <string name="nc_common_disabled">Deaktiviert</string>
     <string name="nc_common_dismiss">Ablehnen</string>
     <string name="nc_common_error_sorry">Leider ist etwas schiefgelaufen!</string>
+    <string name="nc_common_more">Mehr</string>
     <string name="nc_common_more_options">Weitere Optionen</string>
     <string name="nc_common_set">Setzen</string>
     <string name="nc_common_skip">Überspringen</string>
