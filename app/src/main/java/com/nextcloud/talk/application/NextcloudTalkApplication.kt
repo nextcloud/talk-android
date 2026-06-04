@@ -60,9 +60,13 @@ import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.google.GoogleEmojiProvider
 import de.cotech.hw.SecurityKeyManager
 import de.cotech.hw.SecurityKeyManagerConfig
+import io.reactivex.exceptions.UndeliverableException
+import io.reactivex.plugins.RxJavaPlugins
 import okhttp3.OkHttpClient
 import org.conscrypt.Conscrypt
 import org.webrtc.PeerConnectionFactory
+import java.io.IOException
+import java.net.SocketException
 import java.security.Security
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -121,6 +125,16 @@ class NextcloudTalkApplication :
     override fun onCreate() {
         Log.d(TAG, "onCreate")
         sharedApplication = this
+
+        RxJavaPlugins.setErrorHandler { e ->
+            var throwable: Throwable = if (e is UndeliverableException) e.cause ?: e else e
+            if (throwable is IOException || throwable is SocketException) {
+                Log.w(TAG, "Undeliverable network exception ignored", throwable)
+                return@setErrorHandler
+            }
+            Thread.currentThread().uncaughtExceptionHandler
+                ?.uncaughtException(Thread.currentThread(), throwable)
+        }
 
         val securityKeyManager = SecurityKeyManager.getInstance()
         val securityKeyConfigBuilder = SecurityKeyManagerConfig.Builder()
