@@ -50,7 +50,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -72,8 +71,11 @@ import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -82,6 +84,7 @@ import java.time.format.DateTimeFormatter
 private const val LONG_1000 = 1000L
 private const val LOAD_MORE_BUFFER_ITEMS = 5
 private const val STICKY_HEADER_HIDE_DELAY_MILLIS = 1200L
+private const val UNREAD_MARKER_LAYOUT_TIMEOUT_MS = 500L
 private const val PREVIEW_SAMPLE_CHAT_COUNT = 50
 private const val PREVIEW_UNREAD_MARKER_OFFSET = 15
 
@@ -205,7 +208,12 @@ fun ChatView(
         showUnreadPopup.value = false
         unreadCount = 0
         listState.scrollToItem(markerIndex)
-        withFrameNanos { }
+        // Wait for the layout pass to complete so visibleItemsInfo reflects the new scroll position.
+        withTimeoutOrNull(UNREAD_MARKER_LAYOUT_TIMEOUT_MS) {
+            snapshotFlow {
+                listState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == markerIndex }
+            }.filterNotNull().first()
+        }
         listState.centerItemInViewportIfVisible(markerIndex)
         didScrollToUnreadMarker = true
     }
