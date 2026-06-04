@@ -529,7 +529,7 @@ class ChatViewModel @AssistedInject constructor(
                 messages.let(::handleSystemMessages)
                     .let(::handleThreadMessages)
             }
-    // .distinctUntilChangedBy { it.map { msg -> msg.jsonMessageId } }
+            .distinctUntilChanged()
 
     private val trackedParentIds = MutableStateFlow<Set<Long>>(emptySet())
 
@@ -1025,6 +1025,7 @@ class ChatViewModel @AssistedInject constructor(
         ) { messages, lastCommonRead, parentMap, conversationLastRead, expandedParents ->
             CombinedInput(messages, lastCommonRead, parentMap, conversationLastRead, expandedParents)
         }
+            .debounce(MESSAGES_REBUILD_DEBOUNCE_MS)
             .map { (messages, lastCommonRead, parentMap, conversationLastRead, expandedParents) ->
                 val messageMap: Map<Long, ChatMessage> = messages.associateBy { it.jsonMessageId.toLong() }
                 val combinedMap: Map<Long, ChatMessage> = messageMap + parentMap
@@ -2294,6 +2295,7 @@ class ChatViewModel @AssistedInject constructor(
         private const val WEBSOCKET_CONNECT_TIMEOUT_MS = 3000L
         private const val WEBSOCKET_POLL_INTERVAL_MS = 50L
         private const val ROOM_REFRESH_DEBOUNCE_MS = 500L
+        private const val MESSAGES_REBUILD_DEBOUNCE_MS = 200L
         private const val LOBBY_POLLING_INTERVAL_MS = 5_000L
         private const val GROUPING_TIME_WINDOW_SECONDS = 300L
         private const val TIMESTAMP_TO_MILLIS = 1000L
