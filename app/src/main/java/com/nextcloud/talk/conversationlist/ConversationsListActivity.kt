@@ -226,6 +226,9 @@ class ConversationsListActivity : BaseActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        setIntent(intent)
+        forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
+        conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
         handleEcoSystemIntent(intent)
     }
 
