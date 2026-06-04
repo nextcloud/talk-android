@@ -219,6 +219,7 @@ class ChatViewModel @AssistedInject constructor(
         mediaRecorderManager.handleOnResume()
         chatRepository.handleOnResume()
         mediaPlayerManager.handleOnResume()
+        viewModelScope.launch { fetchNewMessagesWithRetry() }
     }
 
     override fun onPause(owner: LifecycleOwner) {
