@@ -406,6 +406,7 @@ class ChatActivity :
             } else {
                 val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
                 startActivity(intent)
+                finish()
             }
         }
     }
