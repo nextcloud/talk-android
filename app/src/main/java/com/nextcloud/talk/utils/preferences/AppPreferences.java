@@ -143,6 +143,10 @@ public interface AppPreferences {
 
     void removeScreenLockTimeout();
 
+    long getLockTimestamp();
+
+    void setLockTimestamp(long timestamp);
+
     String getTheme();
 
     void setTheme(String newValue);

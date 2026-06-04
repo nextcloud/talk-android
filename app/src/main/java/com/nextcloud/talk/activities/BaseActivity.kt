@@ -9,6 +9,7 @@
 package com.nextcloud.talk.activities
 
 import android.annotation.SuppressLint
+import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -36,6 +37,8 @@ import com.nextcloud.talk.account.SwitchAccountActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.events.CertificateEvent
+import com.nextcloud.talk.lock.LockedActivity
+import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileViewerUtils
@@ -91,6 +94,20 @@ open class BaseActivity : AppCompatActivity() {
 
     open val view: View?
         get() = null
+
+    fun lockScreenIfConditionsApply() {
+        val keyguardManager = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
+        if (!keyguardManager.isKeyguardSecure || !appPreferences.isScreenLocked) return
+        try {
+            val timeoutSeconds = SecurityUtils.getIntegerFromStringTimeout(appPreferences.screenLockTimeout)
+            val elapsedSeconds = (System.currentTimeMillis() - appPreferences.lockTimestamp) / 1000
+            if (elapsedSeconds >= timeoutSeconds) {
+                startActivity(Intent(this, LockedActivity::class.java))
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error checking screen lock conditions", e)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
