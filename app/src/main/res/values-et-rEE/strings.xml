@@ -167,6 +167,7 @@
     <string name="nc_certificate_error">Sinu SSL-i seadistused ei võimaldanud ühendust luua</string>
     <string name="nc_change_cert_auth">Muuda autentimise sertifikaati</string>
     <string name="nc_change_password">Muuda salasõna</string>
+    <string name="nc_chat_no_messages">Sõnumeid veel pole. Ole esimene, kes ütleb tere!</string>
     <string name="nc_clear_edit_button">Katkesta muutmine</string>
     <string name="nc_clear_history">Kustuta kõik sõnumid</string>
     <string name="nc_clear_history_success">Kõik sõnumid on kustutatud</string>
@@ -533,8 +534,8 @@
     <string name="nc_tomorrow_meeting">Homme kell %1$s</string>
     <string name="nc_upcoming_event_dismissed">Hetkel helisev kõne on nähtav vestluse teabes</string>
     <string name="nc_upload_choose_local_files">Vali failid</string>
-    <string name="nc_upload_confirm_send_multiple">Kas saadame need failid kasutajale „%1$s“?</string>
-    <string name="nc_upload_confirm_send_single">Kas saadame selle faili kasutajale „%1$s“?</string>
+    <string name="nc_upload_confirm_send_multiple">Kas saadad need failid kasutajale „%1$s“?</string>
+    <string name="nc_upload_confirm_send_single">Kas saadad selle faili kasutajale „%1$s“?</string>
     <string name="nc_upload_failed">Vabandust, üleslaadimine ei õnnestunud</string>
     <string name="nc_upload_failed_notification_text">„%1$s“ üleslaadimine ei õnnestunud</string>
     <string name="nc_upload_failed_notification_title">Ebaõnnestumine</string>
@@ -653,9 +654,9 @@
     <string name="set_status_message">Sisesta olekuteade</string>
     <string name="share">Jaga</string>
     <string name="share_link_to_conversation">Liitu „%1$s“ vestlusega: %2$s</string>
-    <string name="shared_items_audio">Helid</string>
+    <string name="shared_items_audio">Helifailid</string>
     <string name="shared_items_file">Fail</string>
-    <string name="shared_items_media">Meedia</string>
+    <string name="shared_items_media">Meedium</string>
     <string name="shared_items_other">Muu</string>
     <string name="shared_items_poll">Küsitlus</string>
     <string name="shared_items_recording">Kõnesalvestus</string>
