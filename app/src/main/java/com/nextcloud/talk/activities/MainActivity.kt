@@ -9,7 +9,6 @@
  */
 package com.nextcloud.talk.activities
 
-import android.app.KeyguardManager
 import android.content.Intent
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -18,9 +17,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.net.toUri
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ProcessLifecycleOwner
 import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
@@ -33,7 +29,6 @@ import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMainBinding
 import com.nextcloud.talk.invitation.InvitationsActivity
-import com.nextcloud.talk.lock.LockedActivity
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -76,12 +71,6 @@ class MainActivity :
 
         super.onCreate(savedInstanceState)
 
-        ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onStart(owner: LifecycleOwner) {
-                lockScreenIfConditionsApply()
-            }
-        })
-
         // Set the default theme to replace the launch screen theme.
         setTheme(R.style.AppTheme)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -99,16 +88,6 @@ class MainActivity :
     override fun onDestroy() {
         super.onDestroy()
         disposables.dispose()
-    }
-
-    fun lockScreenIfConditionsApply() {
-        val keyguardManager = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
-        if (keyguardManager.isKeyguardSecure && appPreferences.isScreenLocked) {
-            if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)) {
-                val lockIntent = Intent(context, LockedActivity::class.java)
-                startActivity(lockIntent)
-            }
-        }
     }
 
     private fun launchServerSelection() {
@@ -129,12 +108,12 @@ class MainActivity :
     override fun onStart() {
         Log.d(TAG, "onStart: Activity: " + System.identityHashCode(this).toString())
         super.onStart()
+        lockScreenIfConditionsApply()
     }
 
     override fun onResume() {
         Log.d(TAG, "onResume: Activity: " + System.identityHashCode(this).toString())
         super.onResume()
-
         if (appPreferences.isScreenLocked) {
             SecurityUtils.createKey(appPreferences.screenLockTimeout)
         }

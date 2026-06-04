@@ -373,6 +373,11 @@ class ConversationsListActivity : BaseActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        lockScreenIfConditionsApply()
+    }
+
     override fun onResume() {
         super.onResume()
         scrollPositionRestored = false

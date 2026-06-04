@@ -1118,6 +1118,10 @@ class SettingsActivity :
             val isChecked = binding.settingsScreenLockSwitch.isChecked
             binding.settingsScreenLockSwitch.isChecked = !isChecked
             appPreferences.setScreenLock(!isChecked)
+            if (!isChecked) {
+                SecurityUtils.createKey(appPreferences.screenLockTimeout)
+                appPreferences.setLockTimestamp(System.currentTimeMillis())
+            }
         }
 
         binding.settingsReadPrivacy.setOnClickListener {

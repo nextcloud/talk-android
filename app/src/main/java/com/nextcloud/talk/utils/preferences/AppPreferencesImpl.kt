@@ -360,6 +360,18 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
             }
         }
 
+    override fun getLockTimestamp(): Long =
+        runBlocking {
+            async { readLong(LOCK_TIMESTAMP).first() }
+        }.getCompleted()
+
+    override fun setLockTimestamp(timestamp: Long) =
+        runBlocking<Unit> {
+            async {
+                writeLong(LOCK_TIMESTAMP, timestamp)
+            }
+        }
+
     override fun getScreenLockTimeout(): String {
         val default = context.resources.getString(R.string.nc_screen_lock_timeout_sixty)
         val read = runBlocking { async { readString(SCREEN_LOCK_TIMEOUT).first() } }.getCompleted()
@@ -665,6 +677,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val PHONE_BOOK_INTEGRATION = "phone_book_integration"
         const val LINK_PREVIEWS = "link_previews"
         const val SCREEN_LOCK_TIMEOUT = "screen_lock_timeout"
+        const val LOCK_TIMESTAMP = "lock_timestamp"
         const val DB_CYPHER_V4_UPGRADE = "db_cypher_v4_upgrade"
         const val DB_ROOM_MIGRATED = "db_room_migrated"
         const val PHONE_BOOK_INTEGRATION_LAST_RUN = "phone_book_integration_last_run"

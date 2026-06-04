@@ -74,12 +74,10 @@ class LockedActivity : AppCompatActivity() {
     private fun checkIfWeAreSecure() {
         val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager?
         if (keyguardManager?.isKeyguardSecure == true && appPreferences.isScreenLocked) {
-            if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)) {
-                Log.d(TAG, "showBiometricDialog because 'we are NOT authenticated'...")
-                showBiometricDialog()
-            } else {
-                finish()
-            }
+            // Prepare crypto object for biometric, then always require authentication since
+            // this activity is only shown when the inactivity timeout has already elapsed.
+            SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)
+            showBiometricDialog()
         }
     }
 
@@ -101,6 +99,7 @@ class LockedActivity : AppCompatActivity() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
                     Log.d(TAG, "Fingerprint recognised successfully")
+                    appPreferences.setLockTimestamp(System.currentTimeMillis())
                     finish()
                 }
 
@@ -134,11 +133,8 @@ class LockedActivity : AppCompatActivity() {
 
     private fun onConfirmDeviceCredentials(result: ActivityResult) {
         if (result.resultCode == Activity.RESULT_OK) {
-            if (
-                SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)
-            ) {
-                finish()
-            }
+            appPreferences.setLockTimestamp(System.currentTimeMillis())
+            finish()
         } else {
             Log.d(TAG, "Authorization failed")
         }
