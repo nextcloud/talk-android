@@ -2037,6 +2037,13 @@ class CallActivity : CallBaseActivity() {
 
     private fun hangupNetworkCalls(shutDownView: Boolean, endCallForAll: Boolean) {
         Log.d(TAG, "hangupNetworkCalls. shutDownView=$shutDownView")
+        if (!::conversationUser.isInitialized) {
+            Log.w(TAG, "hangupNetworkCalls: conversationUser not initialized, skipping network calls")
+            if (shutDownView) {
+                finish()
+            }
+            return
+        }
         val apiVersion = ApiUtils.getCallApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
         if (localStateBroadcaster != null) {
             localStateBroadcaster!!.destroy()
