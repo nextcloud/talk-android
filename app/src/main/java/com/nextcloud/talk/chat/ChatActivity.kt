@@ -405,6 +405,7 @@ class ChatActivity :
                 onBackPressedDispatcher.onBackPressed()
             } else {
                 val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 startActivity(intent)
                 finish()
             }
@@ -3396,7 +3397,9 @@ class ChatActivity :
 
         val intent = Intent(this, ConversationsListActivity::class.java)
         intent.putExtras(bundle)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         startActivity(intent)
+        finish()
     }
 
     fun remindMeLater(message: ChatMessage?) {
