@@ -106,7 +106,7 @@ public class SecurityUtils {
         }
     }
 
-    private static int getIntegerFromStringTimeout(String validity) {
+    public static int getIntegerFromStringTimeout(String validity) {
         Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
         List<String> entryValues = Arrays.asList(resources.getStringArray(R.array.screen_lock_timeout_entry_values));
         int[] entryIntValues = resources.getIntArray(R.array.screen_lock_timeout_entry_int_values);
