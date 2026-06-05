@@ -15,6 +15,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -97,11 +98,22 @@ open class BaseActivity : AppCompatActivity() {
 
     fun lockScreenIfConditionsApply() {
         val keyguardManager = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
-        if (!keyguardManager.isKeyguardSecure || !appPreferences.isScreenLocked) return
+        val isKeyguardSecure = keyguardManager.isKeyguardSecure
+        val isScreenLocked = appPreferences.isScreenLocked
+        Log.d(TAG, "lockScreenIfConditionsApply: isKeyguardSecure=$isKeyguardSecure isScreenLocked=$isScreenLocked")
+        if (!isKeyguardSecure || !isScreenLocked) return
         try {
             val timeoutSeconds = SecurityUtils.getIntegerFromStringTimeout(appPreferences.screenLockTimeout)
-            val elapsedSeconds = (System.currentTimeMillis() - appPreferences.lockTimestamp) / 1000
-            if (elapsedSeconds >= timeoutSeconds) {
+            val lockTimestamp = appPreferences.lockTimestamp
+            val elapsedSeconds = (System.currentTimeMillis() - lockTimestamp) / DateUtils.SECOND_IN_MILLIS
+            Log.d(
+                TAG,
+                "lockScreenIfConditionsApply: " +
+                    "timeoutSeconds=$timeoutSeconds " +
+                    "lockTimestamp=$lockTimestamp " +
+                    "elapsedSeconds=$elapsedSeconds"
+            )
+            if (timeoutSeconds == 0 || elapsedSeconds >= timeoutSeconds) {
                 startActivity(Intent(this, LockedActivity::class.java))
             }
         } catch (e: Exception) {
@@ -122,8 +134,20 @@ open class BaseActivity : AppCompatActivity() {
         eventBus.register(this)
     }
 
+    protected open val skipLockCheckOnResume: Boolean = false
+
     public override fun onResume() {
         super.onResume()
+        Log.d(
+            TAG,
+            "onResume: " +
+                "pendingLockCheck=${NextcloudTalkApplication.pendingLockCheck} " +
+                "activity=${this.javaClass.simpleName}"
+        )
+        if (!skipLockCheckOnResume && NextcloudTalkApplication.pendingLockCheck) {
+            NextcloudTalkApplication.pendingLockCheck = false
+            lockScreenIfConditionsApply()
+        }
 
         if (appPreferences.isKeyboardIncognito) {
             val viewGroup = (findViewById<View>(android.R.id.content) as ViewGroup).getChildAt(0) as ViewGroup
