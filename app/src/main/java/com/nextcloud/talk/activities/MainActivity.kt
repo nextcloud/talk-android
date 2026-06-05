@@ -58,6 +58,10 @@ class MainActivity :
     @Inject
     lateinit var userManager: UserManager
 
+    // MainActivity only routes to ConversationsListActivity or ChatActivity and is never
+    // visible to the user. The lock check must run in the actual destination activity.
+    override val skipLockCheckOnResume: Boolean = true
+
     private val disposables = CompositeDisposable()
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -108,7 +112,6 @@ class MainActivity :
     override fun onStart() {
         Log.d(TAG, "onStart: Activity: " + System.identityHashCode(this).toString())
         super.onStart()
-        lockScreenIfConditionsApply()
     }
 
     override fun onResume() {
