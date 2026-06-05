@@ -468,7 +468,6 @@ class ChatActivity :
                 isVoiceOnlyCall = false
             )
         }
-        }
     }
 
     private val conversationMessageListener = object : SignalingMessageReceiver.ConversationMessageListener {
