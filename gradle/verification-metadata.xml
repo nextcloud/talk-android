@@ -62,6 +62,7 @@
             <trusting group="androidx.camera.featurecombinationquery" name="featurecombinationquery" version="1.5.1"/>
             <trusting group="androidx.camera.featurecombinationquery" name="featurecombinationquery" version="1.5.2"/>
             <trusting group="androidx.camera.featurecombinationquery" name="featurecombinationquery" version="1.5.3"/>
+            <trusting group="androidx.camera.featurecombinationquery" name="featurecombinationquery" version="1.6.1"/>
             <trusting group="androidx.camera.viewfinder"/>
             <trusting group="androidx.collection"/>
             <trusting group="androidx.compose.runtime"/>
@@ -101,6 +102,7 @@
             <trusting group="org.snakeyaml" name="snakeyaml-engine" version="2.7"/>
          </trusted-key>
          <trusted-key id="12AD14C3B9F0A4A3781DB7F387A6E2E8D3CF7F26" group="^org[.]maplibre($|([.].*))" regex="true"/>
+         <trusted-key id="1390EC1374BA3F4EE6DC74A9A020597F309CEB64" group="io.github.crow-misia.libyuv" name="libyuv-android" version="0.43.2"/>
          <trusted-key id="147B691A19097624902F4EA9689CBE64F4BC997F">
             <trusting group="org.mockito"/>
             <trusting group="org.mockito.kotlin" name="mockito-kotlin" version="4.1.0"/>
@@ -121,8 +123,9 @@
          <trusted-key id="162D99106A441E7F4EC718AA709FFA533688A5C7" group="me.saket.bytesize"/>
          <trusted-key id="190D5A957FF22273E601F7A7C92C5FEC70161C62" group="org.apache" name="apache" version="18"/>
          <trusted-key id="19BEAB2D799C020F17C69126B16698A4ADF4D638" group="org.checkerframework"/>
-         <trusted-key id="1A55F091AD28C07F831FA44D7905DE25C78AD456" group="com.google.protobuf"/>
-         <trusted-key id="1D0A8B5E77C678A7C724445ABF984B4145EA13F7" group="com.squareup" name="javapoet" version="1.13.0"/>
+          <trusted-key id="1A55F091AD28C07F831FA44D7905DE25C78AD456" group="com.google.protobuf"/>
+          <trusted-key id="1BD97A6A154E7810EE0BC832E2F38302C8075E3D" group="gradle"/>
+          <trusted-key id="1D0A8B5E77C678A7C724445ABF984B4145EA13F7" group="com.squareup" name="javapoet" version="1.13.0"/>
          <trusted-key id="1D217F8475EEE9F19AB8DD6B793FD5751A0F0780">
             <trusting group="app.cash.turbine"/>
             <trusting group="com.squareup.retrofit2"/>
@@ -242,6 +245,7 @@
             <trusting group="net.zetetic" name="sqlcipher-android" version="4.12.0"/>
             <trusting group="net.zetetic" name="sqlcipher-android" version="4.13.0"/>
             <trusting group="net.zetetic" name="sqlcipher-android" version="4.14.0"/>
+            <trusting group="net.zetetic" name="sqlcipher-android" version="4.16.0"/>
             <trusting group="net.zetetic" name="sqlcipher-android" version="4.9.0"/>
          </trusted-key>
          <trusted-key id="635EE627345F3C1DD422B2E207D3516820BCF6B1" group="com.github.ben-manes.caffeine" name="caffeine" version="2.9.3"/>
@@ -259,7 +263,10 @@
          <trusted-key id="6F656B7F6BFB238D38ACF81F3C27D97B0C83A85C" group="com.google.errorprone"/>
          <trusted-key id="6F7E5ACBCD02DB60DFD232E45E1F79A7C298661E" group="com.google.auto" name="auto-parent" version="6"/>
          <trusted-key id="720746177725A89207A7075BFD5DEA07FCB690A8" group="org.codehaus.mojo" name="mojo-parent" version="50"/>
-         <trusted-key id="73976C9C39C1479B84E2641A5A68A2249128E2C6" group="com.google.crypto.tink" name="tink" version="1.18.0"/>
+         <trusted-key id="73976C9C39C1479B84E2641A5A68A2249128E2C6">
+            <trusting group="com.google.crypto.tink" name="tink" version="1.18.0"/>
+            <trusting group="com.google.crypto.tink" name="tink" version="1.21.0"/>
+         </trusted-key>
          <trusted-key id="7440F1F7D27BAC115F953D55EB095DA7D2F6AC0E" group="org.tensorflow" name="tensorflow-lite-metadata" version="0.2.0"/>
          <trusted-key id="7616EB882DAF57A11477AAF559A252FB1199D873" group="com.google.code.findbugs" name="jsr305" version="3.0.2"/>
          <trusted-key id="77A45740C23880C7F81B9D4D5C504E1210E49773">
@@ -271,6 +278,7 @@
          <trusted-key id="7B79ADD11F8A779FE90FD3D0893A028475557671" group="com.gradle" name="develocity-gradle-plugin" version="3.19.2"/>
          <trusted-key id="7CEA1BE22FB2423EAC1A4CBC90F76D4A6BCC07D1" group="org.maplibre.gl"/>
          <trusted-key id="7E22D50A7EBD9D2CD269B2D4056ACA74D46000BF" group="io.netty"/>
+         <trusted-key id="7F0C6700F82B97092092AFF84DA93C0B57A98B11" group="org.unifiedpush.android" name="connector" version="3.3.3"/>
          <trusted-key id="7F36E793AE3252E5D9E9B98FEE9E7DC9D92FC896" group="com.google.errorprone"/>
          <trusted-key id="8461EFA0E74ABAE010DE66994EB27DB2A3B88B8B">
             <trusting group="androidx.activity"/>
@@ -378,6 +386,7 @@
             <trusting group="joda-time" name="joda-time" version="2.13.1"/>
             <trusting group="joda-time" name="joda-time" version="2.14.0"/>
             <trusting group="joda-time" name="joda-time" version="2.14.1"/>
+            <trusting group="joda-time" name="joda-time" version="2.14.2"/>
          </trusted-key>
          <trusted-key id="B6E73D84EA4FCC47166087253FAAD2CD5ECBB314">
             <trusting group="org.apache.commons"/>
@@ -8958,6 +8967,14 @@
          </artifact>
          <artifact name="savedstate-ktx-1.4.0.module">
             <sha256 value="7cf86881220aa594c4ad1685ebd0f295e3d97b9c0fdc31b28300f4318a5045a8" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
+      <component group="androidx.sharetarget" name="sharetarget" version="1.2.0">
+         <artifact name="sharetarget-1.2.0.aar">
+            <sha256 value="1d4e46d2c99b3ddf92163673cac212a4f0342ccf6827ff47606048b348ea78e3" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+         <artifact name="sharetarget-1.2.0.module">
+            <sha256 value="5a35f1e23888d0eee77bfe481b000710aaac14edf123a8485edbd8fbcd18e059" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
       </component>
       <component group="androidx.slidingpanelayout" name="slidingpanelayout" version="1.0.0">
@@ -27552,6 +27569,11 @@
             <sha256 value="8afdbb07964f0c3668a146ee4d8c90dab9d56737fa7627348ce757b686aedc13" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
       </component>
+      <component group="org.jetbrains.kotlin.plugin.compose" name="org.jetbrains.kotlin.plugin.compose.gradle.plugin" version="2.3.21">
+         <artifact name="org.jetbrains.kotlin.plugin.compose.gradle.plugin-2.3.21.pom">
+            <sha256 value="35bbd365a61afa59ad8c116528bced5bd628d3351704173abfc8b75fec04ffad" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+      </component>
       <component group="org.jetbrains.kotlinx" name="atomicfu" version="0.17.0">
          <artifact name="atomicfu-0.17.0.module">
             <sha256 value="12e828b1269614b2e50adfaf0d834c98ba5bba782b93fd157ce1e0a35e60cc0b" origin="Generated by Gradle"/>
@@ -27663,6 +27685,11 @@
       <component group="org.jetbrains.kotlinx" name="kotlinx-coroutines-bom" version="1.10.2">
          <artifact name="kotlinx-coroutines-bom-1.10.2.pom">
             <sha256 value="faf0c6538e53ddc0499a63664d8e763c216580b2e18e722ccbdf1b431a6afe26" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
+      <component group="org.jetbrains.kotlinx" name="kotlinx-coroutines-bom" version="1.11.0">
+         <artifact name="kotlinx-coroutines-bom-1.11.0.pom">
+            <sha256 value="f65860bce58a2bfadf05fdc516d38333421f0e387fef87e24449c0394c80d254" origin="Generated by Gradle"/>
          </artifact>
       </component>
       <component group="org.jetbrains.kotlinx" name="kotlinx-coroutines-bom" version="1.6.1">
