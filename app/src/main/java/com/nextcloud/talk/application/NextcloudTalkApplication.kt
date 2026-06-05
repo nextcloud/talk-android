@@ -171,7 +171,10 @@ class NextcloudTalkApplication :
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onStop(owner: LifecycleOwner) {
-                appPreferences.setLockTimestamp(System.currentTimeMillis())
+                val ts = System.currentTimeMillis()
+                Log.d(TAG, "ProcessLifecycle onStop: saving lockTimestamp=$ts")
+                appPreferences.setLockTimestamp(ts)
+                pendingLockCheck = true
             }
         })
 
@@ -270,6 +273,9 @@ class NextcloudTalkApplication :
 
         var sharedApplication: NextcloudTalkApplication? = null
             protected set
+
+        @Volatile
+        var pendingLockCheck = true
         //endregion
 
         //region Setters
