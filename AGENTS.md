@@ -214,10 +214,3 @@ After finishing code changes, run `./gradlew detekt ktlintCheck` and fix any new
   ```
 
   General pattern: `Assisted-by: <coding-agent>:<model-version>`
-
-  If multiple models are used for different roles, add one trailer per role:
-
-  ```
-  Assisted-by: OpenCode:claude-opus-4-5 (plan)
-  Assisted-by: OpenCode:claude-sonnet-4-5 (edit)
-  ```
