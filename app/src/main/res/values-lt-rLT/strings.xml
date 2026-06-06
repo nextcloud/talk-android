@@ -162,10 +162,10 @@
     <string name="nc_cancel">Atsisakyti</string>
     <string name="nc_capabilities_failed">Klaida nustatant funkcijas, veiksmas atšauktas</string>
     <string name="nc_caption">Antraštė</string>
-    <string name="nc_certificate_dialog_text">Ar pasitikite iki šiol nežinomu SSL liudijimu, kurį išdavė %1$s, kuris skirtas %2$s ir galioja nuo %3$s iki %4$s?</string>
+    <string name="nc_certificate_dialog_text">Ar pasitikite iki šiol nežinomu SSL sertifikatu, kurį išdavė %1$s, kuris skirtas %2$s ir galioja nuo %3$s iki %4$s?</string>
     <string name="nc_certificate_dialog_title">Peržiūrėkite sertifikatą</string>
     <string name="nc_certificate_error">Jūsų SSL sąranka neleido ryšio</string>
-    <string name="nc_change_cert_auth">Keisti tapatybės nustatymo liudijimą</string>
+    <string name="nc_change_cert_auth">Keisti tapatybės nustatymo sertifikatą</string>
     <string name="nc_change_password">Pakeisti slaptažodį</string>
     <string name="nc_chat_no_messages">Kol kas nėra žinučių. Būkite pirmas, kuris pasisveikina!</string>
     <string name="nc_clear_edit_button">Atšaukti redagavimą</string>
@@ -331,7 +331,7 @@
     <string name="nc_no_account_found">Paskyra nerasta</string>
     <string name="nc_no_open_conversations_headline">Jokių atvirų pokalbių</string>
     <string name="nc_no_open_conversations_text">Nėra atvirų pokalbių, prie kurių galėtumėte prisijungti.\nArba nėra atvirų pokalbių, arba jau prisijungėte prie visų.</string>
-    <string name="nc_no_proxy">Be įgaliotojo serverio</string>
+    <string name="nc_no_proxy">Nėra tarpinio serverio</string>
     <string name="nc_no_search_results_headline">Nėra rezultatų pagal jūsų paiešką</string>
     <string name="nc_no_search_results_text">Patikrinkite paieškos terminą arba pabandykite naudoti kitą.</string>
     <string name="nc_not_allowed_to_activate_audio">Jums neleidžiama įjungti garso!</string>
@@ -471,8 +471,8 @@
     <string name="nc_settings_privacy">Privatumas</string>
     <string name="nc_settings_proxy_host_title">Tarpinio serverio mazgas</string>
     <string name="nc_settings_proxy_password_title">Tarpinio serverio slaptažodis</string>
-    <string name="nc_settings_proxy_port_title">Įgaliotojo serverio prievadas</string>
-    <string name="nc_settings_proxy_type_title">Įgaliotojo serverio tipas</string>
+    <string name="nc_settings_proxy_port_title">Tarpinio serverio prievadas</string>
+    <string name="nc_settings_proxy_type_title">Tarpinio serverio tipas</string>
     <string name="nc_settings_proxy_username_title">Tarpinio serverio vartotojo vardas</string>
     <string name="nc_settings_read_privacy_desc">Rodyti mano perskaitymo būseną ir kitų perskaitymo būseną</string>
     <string name="nc_settings_read_privacy_title">Skaitymo būsena</string>
