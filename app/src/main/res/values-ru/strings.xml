@@ -167,6 +167,7 @@
     <string name="nc_certificate_error">Заданные параметры SSL не позволяют подключиться</string>
     <string name="nc_change_cert_auth">Изменить сертификат для аутентификации</string>
     <string name="nc_change_password">Изменить пароль</string>
+    <string name="nc_chat_no_messages">Сообщений пока нет. Будьте первым, кто поздоровается!</string>
     <string name="nc_clear_edit_button">Отменить редактирование</string>
     <string name="nc_clear_history">Удалить все сообщения</string>
     <string name="nc_clear_history_success">Все сообщения были удалены</string>
@@ -717,6 +718,7 @@
     <string name="until_unpin">До открепления</string>
     <string name="upload_new_avatar_from_device">Загрузить новый аватар с устройства</string>
     <string name="user_absence">%1$s находится вне офиса и может не ответить</string>
+    <string name="user_absence_collapsed">%1$s находится вне офиса</string>
     <string name="user_absence_for_one_day">%1$s вне офиса сегодня</string>
     <string name="user_absence_replacement">Замена:</string>
     <string name="user_avatar">Изображение профиля</string>

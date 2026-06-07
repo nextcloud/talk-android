@@ -718,7 +718,7 @@
     <string name="until_unpin">Kol nebus atsegta</string>
     <string name="upload_new_avatar_from_device">Įkelti naują avatarą iš įrenginio</string>
     <string name="user_absence">%1$s yra išvykęs(-usi) ir gali neatsakyti</string>
-    <string name="user_absence_collapsed">%1$s nėra ofise</string>
+    <string name="user_absence_collapsed">%1$s nėra biure</string>
     <string name="user_absence_for_one_day">%1$s yra išvykęs(-usi) šiandien</string>
     <string name="user_absence_replacement">Pakeitimas:</string>
     <string name="user_avatar">Vartotojo avataras</string>
