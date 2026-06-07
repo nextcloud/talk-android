@@ -408,6 +408,7 @@
     <string name="translation_detect_language">تشخیص زبان</string>
     <string name="translation_device_settings">تنظیمات افزاره</string>
     <string name="translation_error_message">امکان تشخیص زبان وجود ندارد.</string>
+    <string name="translation_error_title">ترجمه ناموفق بود</string>
     <string name="translation_from">از</string>
     <string name="translation_to">به</string>
     <string name="unread">خوانده‌نشده</string>
