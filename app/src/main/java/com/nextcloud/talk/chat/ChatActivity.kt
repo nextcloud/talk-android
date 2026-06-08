@@ -943,6 +943,7 @@ class ChatActivity :
                                 onForward = { forwardMessage(msg) },
                                 onEdit = { messageInputViewModel.edit(msg) },
                                 onCopy = { copyMessage(msg) },
+                                onCopyMessageLink = { copyMessageLink(msg) },
                                 onMarkAsUnread = { markAsUnread(msg) },
                                 onRemind = { remindMeLater(msg) },
                                 onPin = { pinMessage(msg) },
@@ -3507,6 +3508,27 @@ class ChatActivity :
             message?.getRichText()
         )
         clipboardManager.setPrimaryClip(clipData)
+    }
+
+    fun copyMessageLink(message: ChatMessage) {
+        val baseUrl = conversationUser?.baseUrl
+        if (baseUrl.isNullOrEmpty()) {
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            return
+        }
+
+        // Matches the web client link format: {baseUrl}/call/{token}#message_{messageId}
+        val messageLink = "$baseUrl/call/$roomToken#message_${message.jsonMessageId}"
+
+        val clipboardManager =
+            getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val clipData = ClipData.newPlainText(
+            resources?.getString(R.string.nc_app_product_name),
+            messageLink
+        )
+        clipboardManager.setPrimaryClip(clipData)
+
+        Snackbar.make(binding.root, R.string.nc_common_copy_success, Snackbar.LENGTH_SHORT).show()
     }
 
     fun translateMessage(message: ChatMessage?) {
