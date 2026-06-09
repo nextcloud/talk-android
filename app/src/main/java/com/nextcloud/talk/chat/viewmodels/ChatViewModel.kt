@@ -1011,6 +1011,24 @@ class ChatViewModel @AssistedInject constructor(
         val expandedParents: Set<Int> = emptySet()
     )
 
+    data class CallStartedIndicatorData(
+        val actorDisplayName: String,
+        val actorType: String,
+        val actorId: String,
+        val shouldShow: Boolean
+    )
+
+    private val _lastCallSystemMessage = MutableStateFlow<ChatMessage?>(null)
+
+    val lastCallSystemMessage = _lastCallSystemMessage.map { msg ->
+        CallStartedIndicatorData(
+            msg?.actorDisplayName ?: "",
+            msg?.actorType ?: "",
+            msg?.actorId ?: "",
+            msg != null
+        )
+    }
+
     private data class ProcessedMessages(val items: List<ChatItem>, val missingParentIds: List<Long>)
 
     private fun observeMessages() {
@@ -1328,6 +1346,21 @@ class ChatViewModel @AssistedInject constructor(
         val chatMessageMap = chatMessageList.associateBy { it.jsonMessageId }.toMutableMap()
         val chatMessageIterator = chatMessageMap.iterator()
 
+        chatMessageList.lastOrNull {
+            it.systemMessageType in
+                listOf(
+                    ChatMessage.SystemMessageType.CALL_STARTED,
+                    ChatMessage.SystemMessageType.CALL_JOINED,
+                    ChatMessage.SystemMessageType.CALL_LEFT,
+                    ChatMessage.SystemMessageType.CALL_ENDED,
+                    ChatMessage.SystemMessageType.CALL_TRIED,
+                    ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE,
+                    ChatMessage.SystemMessageType.CALL_MISSED
+                )
+        }?.let { callMessage ->
+            processCallSystemMessage(callMessage)
+        }
+
         while (chatMessageIterator.hasNext()) {
             val currentMessage = chatMessageIterator.next()
 
@@ -1336,6 +1369,21 @@ class ChatViewModel @AssistedInject constructor(
             }
         }
         return chatMessageMap.values.toList()
+    }
+
+    private fun processCallSystemMessage(recent: ChatMessage) {
+        when (recent.systemMessageType) {
+            ChatMessage.SystemMessageType.CALL_STARTED -> {
+                _lastCallSystemMessage.tryEmit(recent)
+            }
+            ChatMessage.SystemMessageType.CALL_ENDED,
+            ChatMessage.SystemMessageType.CALL_MISSED,
+            ChatMessage.SystemMessageType.CALL_TRIED,
+            ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE -> {
+                _lastCallSystemMessage.tryEmit(null)
+            }
+            else -> {}
+        }
     }
 
     private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<Int, ChatMessage>): Boolean =

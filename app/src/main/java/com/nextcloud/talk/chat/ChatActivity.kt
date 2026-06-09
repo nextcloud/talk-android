@@ -1192,8 +1192,8 @@ class ChatActivity :
 
         pendingTargetMessageId = extras?.getString(BundleKeys.KEY_MESSAGE_ID)?.toLongOrNull()?.takeIf { it > 0L }
             ?: extras?.getLong(BundleKeys.KEY_MESSAGE_ID)?.takeIf { it > 0L }
-        pendingTargetThreadId = extras?.getString(BundleKeys.KEY_THREAD_ID)?.toLongOrNull()?.takeIf { it > 0L }
-            ?: extras?.getLong(BundleKeys.KEY_THREAD_ID)?.takeIf { it > 0L }
+        pendingTargetThreadId = extras?.getString(KEY_THREAD_ID)?.toLongOrNull()?.takeIf { it > 0L }
+            ?: extras?.getLong(KEY_THREAD_ID)?.takeIf { it > 0L }
         pendingTargetSearchQuery = extras?.getString(BundleKeys.KEY_SEARCH_QUERY)
     }
 
@@ -1332,7 +1332,6 @@ class ChatActivity :
                     currentConversation = state.conversationModel
                     chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
                     participantPermissions = ParticipantPermissions(spreedCapabilities, state.conversationModel!!)
-
                     supportFragmentManager.commit {
                         setReorderingAllowed(true) // optimizes out redundant replace operations
                         replace(R.id.fragment_container_activity_chat, messageInputFragment)
@@ -1440,7 +1439,6 @@ class ChatActivity :
             when (state) {
                 is ChatViewModel.JoinRoomSuccessState -> {
                     currentConversation = state.conversationModel
-
                     sessionIdAfterRoomJoined = currentConversation!!.sessionId
                     ApplicationWideCurrentRoomHolder.getInstance().session = currentConversation!!.sessionId
                     ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = currentConversation!!.token
