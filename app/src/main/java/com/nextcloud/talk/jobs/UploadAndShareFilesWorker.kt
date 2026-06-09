@@ -137,7 +137,12 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             )
             initNotificationSetup()
             file?.let { isChunkedUploading = it.length() > CHUNK_UPLOAD_THRESHOLD_SIZE }
-            val uploadSuccess: Boolean = uploadFile(sourceFileUri, remotePath, useConversationSubfolders)
+            val uploadSuccess: Boolean = uploadFile(
+                sourceFileUri = sourceFileUri,
+                metaData = metaData,
+                remotePath = remotePath,
+                useConversationSubfolders = useConversationSubfolders
+            )
 
             if (uploadSuccess) {
                 val shareSuccess = shareFile(remotePath, metaData)
@@ -168,7 +173,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         }
     }
 
-    private fun uploadFile(sourceFileUri: Uri,
+    private fun uploadFile(
+        sourceFileUri: Uri,
+        metaData: String?,
         remotePath: String,
         useConversationSubfolders: Boolean
     ): Boolean =
