@@ -429,7 +429,7 @@ fun ChatView(
                                     onQuotedMessageClick = handleQuotedMessageClick,
                                     onSystemMessageExpandClick = callbacks.messageCallbacks.onSystemMessageExpandClick,
                                     onAvatarClick = callbacks.messageCallbacks.onAvatarClick,
-                                    onCancelUpload = callbacks.onCancelUpload
+                                    onCancelUpload = callbacks.messageCallbacks.onCancelUpload
                                 )
                             )
                         }
