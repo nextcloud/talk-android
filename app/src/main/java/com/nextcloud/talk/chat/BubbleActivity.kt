@@ -22,7 +22,8 @@ class BubbleActivity : ChatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_talk)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        findViewById<androidx.appcompat.widget.Toolbar>(R.id.chat_toolbar)?.setNavigationOnClickListener {
+
+        findViewById<androidx.appcompat.widget.Toolbar>(R.id.chatToolbarComposeView)?.setNavigationOnClickListener {
             openConversationList()
         }
 
