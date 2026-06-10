@@ -1228,9 +1228,13 @@ class OfflineFirstChatRepository @Inject constructor(
         sendWithoutNotification: Boolean,
         referenceId: String
     ): ChatMessageEntity {
-        val currentTimeMillies = System.currentTimeMillis()
+        val currentTimeMillis = System.currentTimeMillis()
 
-        val currentTimeWithoutYear = SendMessageUtils().removeYearFromTimestamp(currentTimeMillies)
+        // only use the time of a day so it can fit into an integer
+        val timeOfDayMillis = SendMessageUtils().timeOfDayMillis(currentTimeMillis)
+
+        // make it negative -> sending the lastReadMessage to server checks "-1 < messageId" to avoid temporary messages
+        val negativeTimeOfDayMillis = timeOfDayMillis * MINUS_ONE
 
         val parentMessageId = if (replyTo != 0) {
             replyTo.toLong()
@@ -1239,9 +1243,9 @@ class OfflineFirstChatRepository @Inject constructor(
         }
 
         val entity = ChatMessageEntity(
-            internalId = "$internalConversationId@_temp_$currentTimeMillies",
+            internalId = "$internalConversationId@_temp_$currentTimeMillis",
             internalConversationId = internalConversationId,
-            id = currentTimeWithoutYear.toLong(),
+            id = negativeTimeOfDayMillis,
             threadId = threadId,
             message = message,
             deleted = false,
@@ -1254,7 +1258,7 @@ class OfflineFirstChatRepository @Inject constructor(
             parentMessageId = parentMessageId,
             systemMessageType = ChatMessage.SystemMessageType.DUMMY,
             replyable = false,
-            timestamp = currentTimeMillies / MILLIES,
+            timestamp = currentTimeMillis / MILLIES,
             expirationTimestamp = 0,
             actorDisplayName = currentUser.displayName!!,
             referenceId = referenceId,
@@ -1278,5 +1282,7 @@ class OfflineFirstChatRepository @Inject constructor(
         private const val RETRY_LIMIT_FALLBACK_ATTEMPT = 5
         private const val MILLIES = 1000L
         private const val INSURANCE_REQUEST_DELAY = 2 * 60 * MILLIES
+
+        private const val MINUS_ONE = -1L
     }
 }

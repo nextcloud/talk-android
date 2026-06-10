@@ -1707,7 +1707,10 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun advanceLocalLastReadMessageIfNeeded(messageId: Int) {
-        if (localLastReadMessage < messageId) {
+        Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, messageId: $messageId")
+        Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, localLastReadMessage: $localLastReadMessage")
+        if (localLastReadMessage < messageId && -1 < messageId) {
+            Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, setting localLastReadMessage to $messageId")
             localLastReadMessage = messageId
         }
     }
@@ -1716,7 +1719,16 @@ class ChatViewModel @AssistedInject constructor(
      * Please use with caution to not spam the server
      */
     fun updateRemoteLastReadMessageIfNeeded(credentials: String, url: String) {
+        Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, localLastReadMessage: $localLastReadMessage")
+        Log.d(
+            TAG,
+            "updateRemoteLastReadMessageIfNeeded, _uiState.value.conversation!!.lastReadMessage: " +
+                _uiState.value.conversation!!.lastReadMessage
+        )
+
         if (localLastReadMessage > _uiState.value.conversation!!.lastReadMessage) {
+            Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, setChatReadMessage...")
+
             setChatReadMessage(credentials, url, localLastReadMessage)
         }
     }
