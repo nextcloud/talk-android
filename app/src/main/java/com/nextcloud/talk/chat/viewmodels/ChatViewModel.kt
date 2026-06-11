@@ -378,7 +378,7 @@ class ChatViewModel @AssistedInject constructor(
         get() = _joinRoomViewState
 
     object LeaveRoomStartState : ViewState
-    class LeaveRoomSuccessState(val funToCallWhenLeaveSuccessful: (() -> Unit)?) : ViewState
+    object LeaveRoomSuccessState : ViewState
 
     private val _leaveRoomViewState: MutableLiveData<ViewState> = MutableLiveData(LeaveRoomStartState)
     val leaveRoomViewState: LiveData<ViewState>
@@ -1542,15 +1542,19 @@ class ChatViewModel @AssistedInject constructor(
             })
     }
 
-    fun leaveRoom(credentials: String, url: String, funToCallWhenLeaveSuccessful: (() -> Unit)?) {
-        val startNanoTime = System.nanoTime()
+    fun leaveRoom(credentials: String, url: String, functionToCallAfterLeave: (() -> Unit)?) {
         appScope.launch {
             try {
-                chatNetworkDataSource.leaveRoom(credentials, url)
-                Log.d(TAG, "leaveRoom - completed: $startNanoTime")
+                val result = chatNetworkDataSource.leaveRoom(credentials, url)
+                if (result.ocs?.meta?.statusCode == HTTP_CODE_OK) {
+                    Log.d(TAG, "leaveRoom completed")
+                } else {
+                    Log.e(TAG, "leaveRoom failed with OCS status: ${result.ocs?.meta?.statusCode}")
+                }
                 withContext(Dispatchers.Main) {
-                    _leaveRoomViewState.value = LeaveRoomSuccessState(funToCallWhenLeaveSuccessful)
+                    _leaveRoomViewState.value = LeaveRoomSuccessState
                     _getCapabilitiesViewState.value = GetCapabilitiesStartState
+                    functionToCallAfterLeave?.invoke()
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "leaveRoom - ERROR", e)
