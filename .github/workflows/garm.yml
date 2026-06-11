@@ -81,7 +81,7 @@ jobs:
             -   name: Build gplay
                 run: |
                     sdkmanager "cmake;4.1.2"
-                    sed -i s#https://server#http://10.0.2.2# gradle.properties
+                    sed -i s#http://server#http://10.0.2.2# gradle.properties
                     sed -i s'#<bool name="is_beta">false</bool>#<bool name="is_beta">true</bool>#'g app/src/main/res/values/setup.xml
                     ./gradlew assembleGplayDebug
 
