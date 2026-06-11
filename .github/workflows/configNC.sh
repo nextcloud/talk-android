@@ -6,13 +6,7 @@
 # SPDX-License-Identifier: MIT
 #
 
-if [ $1 = "master" ]; then
-    SERVER_VERSION_MAIN="main"
-    SERVER_VERSION_MASTER="master"
-else
-    SERVER_VERSION_MAIN=$1
-    SERVER_VERSION_MASTER=$1
-fi
+SERVER_VERSION_MASTER=$1
 
 php /var/www/html/occ log:manage --level warning
 
