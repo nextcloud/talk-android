@@ -53,7 +53,7 @@ interface ChatNetworkDataSource {
         metadata: String
     ): Observable<GenericOverall>
 
-    fun leaveRoom(credentials: String, url: String): Observable<GenericOverall>
+    suspend fun leaveRoom(credentials: String, url: String): GenericOverall
     suspend fun sendChatMessage(
         credentials: String,
         url: String,

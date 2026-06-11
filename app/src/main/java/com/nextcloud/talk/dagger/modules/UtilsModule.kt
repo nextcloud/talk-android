@@ -15,6 +15,10 @@ import com.nextcloud.talk.utils.permissions.PlatformPermissionUtilImpl
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import javax.inject.Singleton
 
 @Module(includes = [ContextModule::class])
 class UtilsModule {
@@ -29,4 +33,9 @@ class UtilsModule {
     @Provides
     @Reusable
     fun provideMessageUtils(context: Context): MessageUtils = MessageUtils(context)
+
+    @Provides
+    @Singleton
+    @ApplicationScope
+    fun provideApplicationScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 }

@@ -58,7 +58,10 @@ import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.preferences.AppPreferencesImpl
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -194,6 +197,7 @@ class ComposePreviewUtils private constructor(context: Context) {
             mediaRecorderManager = mediaRecorderManager,
             audioFocusRequestManager = audioFocusRequestManager,
             currentUserProvider = currentUserProvider,
+            appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
             chatRoomToken = "",
             conversationThreadId = null
         )
