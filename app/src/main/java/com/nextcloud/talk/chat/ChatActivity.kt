@@ -1471,27 +1471,6 @@ class ChatActivity :
             }
         }
 
-        chatViewModel.leaveRoomViewState.observe(this) { state ->
-            when (state) {
-                is ChatViewModel.LeaveRoomSuccessState -> {
-                    logConversationInfos("leaveRoom#onNext")
-
-                    if (getRoomInfoTimerHandler != null) {
-                        getRoomInfoTimerHandler?.removeCallbacksAndMessages(null)
-                    }
-
-                    sessionIdAfterRoomJoined = "0"
-
-                    if (state.funToCallWhenLeaveSuccessful != null) {
-                        Log.d(TAG, "a callback action was set and is now executed because room was left successfully")
-                        state.funToCallWhenLeaveSuccessful.invoke()
-                    }
-                }
-
-                else -> {}
-            }
-        }
-
         messageInputViewModel.sendChatMessageViewState.observe(this) { state ->
             when (state) {
                 is MessageInputViewModel.SendChatMessageSuccessState -> {
@@ -2835,7 +2814,7 @@ class ChatActivity :
         }
     }
 
-    fun leaveRoom(funToCallWhenLeaveSuccessful: (() -> Unit)?) {
+    fun leaveRoom(functionToCallAfterLeave: (() -> Unit)?) {
         logConversationInfos("leaveRoom")
 
         // Send the HPB "leave room" immediately, before waiting for the backend DELETE to
@@ -2844,6 +2823,7 @@ class ChatActivity :
         if (webSocketInstance != null && currentConversation != null) {
             webSocketInstance?.joinRoomWithRoomTokenAndSession("", sessionIdAfterRoomJoined)
         }
+        sessionIdAfterRoomJoined = "0"
 
         var apiVersion = 1
         // FIXME Fix API checking with guests?
@@ -2860,7 +2840,7 @@ class ChatActivity :
                 conversationUser?.baseUrl!!,
                 roomToken
             ),
-            funToCallWhenLeaveSuccessful
+            functionToCallAfterLeave
         )
     }
 
