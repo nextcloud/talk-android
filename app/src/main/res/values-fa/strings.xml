@@ -93,6 +93,7 @@
     <string name="nc_call_timeout">در  ۴۵ ثانیه پاسخی وجود نداشت ، برای آزمایش دوباره ضربه بزنید</string>
     <string name="nc_cancel">لغو</string>
     <string name="nc_capabilities_failed">دریافت قابلیت‌ها موفقیت‌آمیز نبود، درحال لغو</string>
+    <string name="nc_caption">زیرنویس</string>
     <string name="nc_certificate_dialog_text">آیا به گواهی SSL ناشناخته ، صادر شده توسط ، اعتماد دارید %1$s برای %2$s, معتبر از %3$s به %4$s؟</string>
     <string name="nc_certificate_dialog_title">گواهی را بررسی کنید</string>
     <string name="nc_certificate_error">راه اندازی SSL شما مانع از اتصال شد</string>
@@ -148,6 +149,7 @@
     <string name="nc_edit_icon">ویرایش</string>
     <string name="nc_edit_message">ویرایش</string>
     <string name="nc_edit_message_text">Edit message</string>
+    <string name="nc_event_schedule">زمان‌بندی</string>
     <string name="nc_expire_message_eight_hours">8 ساعت</string>
     <string name="nc_expire_message_four_weeks">4 weeks</string>
     <string name="nc_expire_message_off">خاموش</string>
@@ -191,6 +193,7 @@
     <string name="nc_manual">تنظیم نشده</string>
     <string name="nc_mark_as_read">علامت به عنوان خوانده‌شده</string>
     <string name="nc_mark_as_unread">علامت به عنوان خوانده‌نشده</string>
+    <string name="nc_message_failed">ارسال پیام ناموفق بود</string>
     <string name="nc_message_failed_to_send">ناتوانی در فرستادن پیام:</string>
     <string name="nc_message_quote_cancel_reply">لغو پاسخ</string>
     <string name="nc_message_read">پیام، خوانده شد</string>
@@ -349,6 +352,7 @@
     <string name="next_week">هفتهٔ بعد</string>
     <string name="notification_all_messages">All messages</string>
     <string name="notification_mention_only">\@-mentions only</string>
+    <string name="notification_off">خاموش</string>
     <string name="notifications_default">پیش‌فرض</string>
     <string name="oneHour">۱ ساعت</string>
     <string name="online">برخط</string>
@@ -357,6 +361,7 @@
     <string name="pinned_dismiss">رد کردن</string>
     <string name="play_pause_voice_message">پخش/مکث پیام شنیداری</string>
     <string name="polls_add_option">افزودن گزینه</string>
+    <string name="polls_option_hint">گزینهٔ %1$d</string>
     <string name="polls_options">گزینه‌ها</string>
     <string name="polls_results_subtitle">نتایج</string>
     <string name="polls_settings">تنظیمات</string>
@@ -365,6 +370,8 @@
     <string name="previously_set">Previously set</string>
     <string name="raise_hand">بالا بردن دست</string>
     <string name="reactions_tab_all">همه</string>
+    <string name="record_start_description">شروع ضبط</string>
+    <string name="record_stop_description">توقف ضبط</string>
     <string name="recording_settings_title">ضبط جلسه</string>
     <string name="reset_status">Reset status</string>
     <string name="save">ذخیره</string>
@@ -400,6 +407,7 @@
     <string name="thirtyMinutes">۳۰ دقیقه</string>
     <string name="thisWeek">این هفته</string>
     <string name="this_weekend">این آخر هفته</string>
+    <string name="thread_reply">پاسخ</string>
     <string name="today">امروز</string>
     <string name="tomorrow">فردا</string>
     <string name="translate">ترجمه</string>
@@ -414,6 +422,7 @@
     <string name="unread">خوانده‌نشده</string>
     <string name="user_avatar">آواتار کاربر</string>
     <string name="user_info_address">نشانی</string>
+    <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">نام کامل</string>
     <string name="user_info_email">رایانامه</string>
     <string name="user_info_fediverse">فدیورس</string>
@@ -421,6 +430,7 @@
     <string name="user_info_organisation">سازمانی</string>
     <string name="user_info_phone">شماره تلفن</string>
     <string name="user_info_pronouns">ضمایر</string>
+    <string name="user_info_role">نقش</string>
     <string name="user_info_twitter">توییتر</string>
     <string name="user_info_website">وب‌ سایت</string>
     <string name="user_status">وضعیت</string>
