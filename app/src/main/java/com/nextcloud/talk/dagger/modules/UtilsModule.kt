@@ -22,6 +22,10 @@ import dagger.Provides
 import dagger.Reusable
 import java.io.File
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import javax.inject.Singleton
 
 @Module(includes = [ContextModule::class])
 class UtilsModule {
@@ -65,4 +69,9 @@ class UtilsModule {
         const val LOG_FILE_NAME = "nc_talk_log.txt"
         private const val LOG_FILE_MAX_SIZE = 1_000_000L // 1 MB per file, 4 files max = 4 MB
     }
+
+    @Provides
+    @Singleton
+    @ApplicationScope
+    fun provideApplicationScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 }

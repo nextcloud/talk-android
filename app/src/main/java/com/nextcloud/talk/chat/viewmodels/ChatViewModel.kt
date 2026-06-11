@@ -80,7 +80,9 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import com.nextcloud.talk.dagger.modules.ApplicationScope
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -135,6 +137,7 @@ class ChatViewModel @AssistedInject constructor(
     private val mediaRecorderManager: MediaRecorderManager,
     private val audioFocusRequestManager: AudioFocusRequestManager,
     private val currentUserProvider: CurrentUserProvider,
+    @ApplicationScope private val appScope: CoroutineScope,
     @Assisted private val chatRoomToken: String,
     @Assisted private val conversationThreadId: Long?
 ) : ViewModel(),
@@ -1541,27 +1544,18 @@ class ChatViewModel @AssistedInject constructor(
 
     fun leaveRoom(credentials: String, url: String, funToCallWhenLeaveSuccessful: (() -> Unit)?) {
         val startNanoTime = System.nanoTime()
-        chatNetworkDataSource.leaveRoom(credentials, url)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposableSet.add(d)
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "leaveRoom - leaveRoom - ERROR", e)
-                }
-
-                override fun onComplete() {
-                    Log.d(TAG, "leaveRoom - leaveRoom - completed: $startNanoTime")
-                }
-
-                override fun onNext(t: GenericOverall) {
+        appScope.launch {
+            try {
+                chatNetworkDataSource.leaveRoom(credentials, url)
+                Log.d(TAG, "leaveRoom - completed: $startNanoTime")
+                withContext(Dispatchers.Main) {
                     _leaveRoomViewState.value = LeaveRoomSuccessState(funToCallWhenLeaveSuccessful)
                     _getCapabilitiesViewState.value = GetCapabilitiesStartState
                 }
-            })
+            } catch (e: Exception) {
+                Log.e(TAG, "leaveRoom - ERROR", e)
+            }
+        }
     }
 
     fun createRoom(credentials: String, url: String, queryMap: Map<String, String>) {
