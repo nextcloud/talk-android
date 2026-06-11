@@ -1480,13 +1480,6 @@ class ChatActivity :
                         getRoomInfoTimerHandler?.removeCallbacksAndMessages(null)
                     }
 
-                    if (webSocketInstance != null && currentConversation != null) {
-                        webSocketInstance?.joinRoomWithRoomTokenAndSession(
-                            "",
-                            sessionIdAfterRoomJoined
-                        )
-                    }
-
                     sessionIdAfterRoomJoined = "0"
 
                     if (state.funToCallWhenLeaveSuccessful != null) {
@@ -2844,6 +2837,13 @@ class ChatActivity :
 
     fun leaveRoom(funToCallWhenLeaveSuccessful: (() -> Unit)?) {
         logConversationInfos("leaveRoom")
+
+        // Send the HPB "leave room" immediately, before waiting for the backend DELETE to
+        // confirm. This minimises the window in which the HPB could still consider the user
+        // "in" the room and cause the server to delete a freshly-created notification.
+        if (webSocketInstance != null && currentConversation != null) {
+            webSocketInstance?.joinRoomWithRoomTokenAndSession("", sessionIdAfterRoomJoined)
+        }
 
         var apiVersion = 1
         // FIXME Fix API checking with guests?
