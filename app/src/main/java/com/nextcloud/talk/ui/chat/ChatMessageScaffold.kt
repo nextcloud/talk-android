@@ -203,21 +203,21 @@ fun MessageScaffold(
     )
 
     val shape = remember(incoming, uiMessage.isGrouped, uiMessage.isGroupedWithNext) {
-        val outerTop = if (uiMessage.isGrouped) bubbleRadiusSmall else bubbleRadiusBig
-        val outerBottom = if (uiMessage.isGroupedWithNext) bubbleRadiusSmall else bubbleRadiusBig
+        val groupedSideTop = if (uiMessage.isGrouped) bubbleRadiusSmall else bubbleRadiusBig
+        val groupedSideBottom = if (uiMessage.isGroupedWithNext) bubbleRadiusSmall else bubbleRadiusBig
         if (incoming) {
             RoundedCornerShape(
-                topStart = bubbleRadiusSmall,
-                topEnd = outerTop,
-                bottomEnd = outerBottom,
-                bottomStart = outerBottom
+                topStart = groupedSideTop,
+                topEnd = bubbleRadiusBig,
+                bottomEnd = bubbleRadiusBig,
+                bottomStart = groupedSideBottom
             )
         } else {
             RoundedCornerShape(
-                topStart = outerTop,
-                topEnd = bubbleRadiusSmall,
-                bottomEnd = outerBottom,
-                bottomStart = outerBottom
+                topStart = bubbleRadiusBig,
+                topEnd = groupedSideTop,
+                bottomEnd = groupedSideBottom,
+                bottomStart = bubbleRadiusBig
             )
         }
     }
