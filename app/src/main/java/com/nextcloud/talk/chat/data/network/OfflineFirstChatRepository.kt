@@ -150,10 +150,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override suspend fun loadInitialMessages(withNetworkParams: Bundle, isChatRelaySupported: Boolean) {
         Log.d(TAG, "---- loadInitialMessages ------------")
-        val expiredDeleted = chatDao.deleteExpiredMessages(internalConversationId, System.currentTimeMillis() / MILLIES)
-        if (expiredDeleted > 0) {
-            chatBlocksDao.deleteAllChatBlocksForConversation(internalConversationId)
-        }
+        cleanupExpiredMessages()
         newXChatLastCommonRead = conversationModel.lastCommonReadMessage
 
         Log.d(TAG, "conversationModel.internalId: " + conversationModel.internalId)
@@ -284,12 +281,20 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
+    private suspend fun cleanupExpiredMessages() {
+        val expiredDeleted = chatDao.deleteExpiredMessages(internalConversationId, System.currentTimeMillis() / MILLIES)
+        if (expiredDeleted > 0) {
+            chatBlocksDao.deleteAllChatBlocksForConversation(internalConversationId)
+        }
+    }
+
     /**
      * Fetches messages newer than latest known message.
      *
      * @return `true` if at least one new message was received and persisted.
      */
     override suspend fun fetchNewMessages(): Boolean {
+        cleanupExpiredMessages()
         val fieldMap = getFieldMap(
             lookIntoFuture = true,
             timeout = 0,
