@@ -19,14 +19,13 @@ class SendMessageUtils {
     }
 
     @Suppress("MagicNumber")
-    fun removeYearFromTimestamp(timestampMillis: Long): Int {
+    fun timeOfDayMillis(timestampMillis: Long): Int {
         val calendar = Calendar.getInstance().apply { timeInMillis = timestampMillis }
 
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
         val second = calendar.get(Calendar.SECOND)
-        return (month * 1000000) + (day * 10000) + (hour * 100) + (minute * 10) + second
+        val millis = calendar.get(Calendar.MILLISECOND)
+        return (hour * 3_600_000) + (minute * 60_000) + (second * 1_000) + millis
     }
 }
