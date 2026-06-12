@@ -120,6 +120,50 @@ interface ChatBlocksDao {
 
     @Query(
         """
+        DELETE FROM ChatBlocks
+        WHERE internalConversationId = :internalConversationId
+        AND NOT EXISTS (
+            SELECT 1 FROM ChatMessages
+            WHERE ChatMessages.internalConversationId = :internalConversationId
+            AND ChatMessages.id BETWEEN ChatBlocks.oldestMessageId AND ChatBlocks.newestMessageId
+            AND ChatMessages.isTemporary = 0
+            AND (ChatBlocks.threadId IS NULL OR ChatMessages.threadId = ChatBlocks.threadId)
+        )
+        """
+    )
+    suspend fun deleteEmptyChatBlocks(internalConversationId: String)
+
+    @Query(
+        """
+        UPDATE ChatBlocks
+        SET
+            oldestMessageId = COALESCE((
+                SELECT MIN(m.id) FROM ChatMessages m
+                WHERE m.internalConversationId = ChatBlocks.internalConversationId
+                AND m.id BETWEEN ChatBlocks.oldestMessageId AND ChatBlocks.newestMessageId
+                AND m.isTemporary = 0
+                AND (ChatBlocks.threadId IS NULL OR m.threadId = ChatBlocks.threadId)
+            ), ChatBlocks.oldestMessageId),
+            newestMessageId = COALESCE((
+                SELECT MAX(m.id) FROM ChatMessages m
+                WHERE m.internalConversationId = ChatBlocks.internalConversationId
+                AND m.id BETWEEN ChatBlocks.oldestMessageId AND ChatBlocks.newestMessageId
+                AND m.isTemporary = 0
+                AND (ChatBlocks.threadId IS NULL OR m.threadId = ChatBlocks.threadId)
+            ), ChatBlocks.newestMessageId)
+        WHERE internalConversationId = :internalConversationId
+        """
+    )
+    suspend fun trimChatBlockBoundaries(internalConversationId: String)
+
+    @Transaction
+    suspend fun trimAndCleanBlocks(internalConversationId: String) {
+        deleteEmptyChatBlocks(internalConversationId)
+        trimChatBlockBoundaries(internalConversationId)
+    }
+
+    @Query(
+        """
     SELECT *
     FROM ChatBlocks
     WHERE internalConversationId = :internalConversationId
