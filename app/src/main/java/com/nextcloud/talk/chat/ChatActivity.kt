@@ -213,6 +213,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -383,7 +386,8 @@ class ChatActivity :
     private val filesToUpload: MutableList<String> = ArrayList()
     lateinit var sharedText: String
 
-    lateinit var participantPermissions: ParticipantPermissions
+    private val _participantPermissionsFlow = MutableStateFlow<ParticipantPermissions?>(null)
+    val participantPermissionsFlow: StateFlow<ParticipantPermissions?> = _participantPermissionsFlow.asStateFlow()
 
     private var videoURI: Uri? = null
     private var pendingTargetMessageId: Long? = null
@@ -754,6 +758,7 @@ class ChatActivity :
             MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
                 val uiState by chatViewModel.uiState.collectAsStateWithLifecycle()
                 val chatMode by chatViewModel.chatMode.collectAsStateWithLifecycle()
+                val participantPermissions by participantPermissionsFlow.collectAsStateWithLifecycle()
                 currentConversation = uiState.conversation
 
                 LaunchedEffect(uiState.isInLobby, uiState.conversation?.lobbyTimer, uiState.conversation?.description) {
@@ -765,7 +770,7 @@ class ChatActivity :
                         binding.chatEmptyStateComposeView.visibility = View.GONE
                         binding.typingIndicatorComposeView.visibility = View.VISIBLE
                         chatEmptyStateType.value = null
-                        if (::participantPermissions.isInitialized) {
+                        if (participantPermissions != null) {
                             checkShowMessageInputView()
                         }
                     }
@@ -817,8 +822,7 @@ class ChatActivity :
                             chatMode = chatMode,
                             highlightedMessageId = uiState.highlightedMessageId,
                             highlightedSearchTerm = uiState.highlightedSearchTerm,
-                            hasChatPermission = this::participantPermissions.isInitialized &&
-                                participantPermissions.hasChatPermission(),
+                            hasChatPermission = participantPermissions?.hasChatPermission() == true,
                             downloadingFileState = downloadingFileState.value,
                             stickyHeaderTopOffset = overflowHeightDp
                         ),
@@ -859,7 +863,7 @@ class ChatActivity :
                             chatMessage = msg,
                             user = user,
                             roomToken = roomToken,
-                            hasReactPermission = participantPermissions.hasReactPermission(),
+                            hasReactPermission = participantPermissions?.hasReactPermission() == true,
                             ncApiCoroutines = ncApiCoroutines,
                             onDeleteReaction = { emoji -> chatViewModel.deleteReaction(roomToken, msg, emoji) },
                             onDismiss = { chatViewModel.dismissReactionsSheet() }
@@ -917,8 +921,8 @@ class ChatActivity :
                                     message = msg,
                                     user = user,
                                     conversation = currentConversation,
-                                    hasChatPermission = participantPermissions.hasChatPermission(),
-                                    hasReactPermission = participantPermissions.hasReactPermission(),
+                                    hasChatPermission = participantPermissions?.hasChatPermission() == true,
+                                    hasReactPermission = participantPermissions?.hasReactPermission() == true,
                                     spreedCapabilities = spreedCapabilities,
                                     isOnline = isOnline,
                                     dateUtils = dateUtils,
@@ -1315,7 +1319,7 @@ class ChatActivity :
                     if (currentConversation != null) {
                         spreedCapabilities = state.spreedCapabilities
                         chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
-                        participantPermissions = ParticipantPermissions(spreedCapabilities, currentConversation!!)
+                        _participantPermissionsFlow.value = ParticipantPermissions(spreedCapabilities, currentConversation!!)
 
                         updateToolbarState()
                         updateRoomTimerHandler()
@@ -1331,7 +1335,7 @@ class ChatActivity :
                     spreedCapabilities = state.spreedCapabilities
                     currentConversation = state.conversationModel
                     chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
-                    participantPermissions = ParticipantPermissions(spreedCapabilities, state.conversationModel!!)
+                    _participantPermissionsFlow.value = ParticipantPermissions(spreedCapabilities, state.conversationModel!!)
 
                     supportFragmentManager.commit {
                         setReorderingAllowed(true) // optimizes out redundant replace operations
@@ -2232,7 +2236,7 @@ class ChatActivity :
 
     private fun checkShowMessageInputView() {
         if (isReadOnlyConversation() ||
-            !participantPermissions.hasChatPermission()
+            participantPermissionsFlow.value?.hasChatPermission() == false
         ) {
             binding.fragmentContainerActivityChat.visibility = View.GONE
         } else {
@@ -2245,7 +2249,7 @@ class ChatActivity :
             return hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.WEBINARY_LOBBY) &&
                 currentConversation?.lobbyState == ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
                 !ConversationUtils.canModerate(currentConversation!!, spreedCapabilities) &&
-                !participantPermissions.canIgnoreLobby()
+                participantPermissionsFlow.value?.canIgnoreLobby() != true
         }
         return false
     }
@@ -3255,12 +3259,12 @@ class ChatActivity :
             bundle.putBoolean(KEY_IS_MODERATOR, ConversationUtils.isParticipantOwnerOrModerator(it))
             bundle.putBoolean(
                 BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO,
-                participantPermissions.canPublishAudio()
+                participantPermissionsFlow.value?.canPublishAudio() == true
             )
             bundle.putBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE, isOneToOneConversation())
             bundle.putBoolean(
                 BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO,
-                participantPermissions.canPublishVideo()
+                participantPermissionsFlow.value?.canPublishVideo() == true
             )
 
             if (isVoiceOnlyCall) {
@@ -3283,7 +3287,7 @@ class ChatActivity :
     }
 
     fun onClickReaction(chatMessage: ChatMessage, emoji: String) {
-        if (!participantPermissions.hasReactPermission()) {
+        if (participantPermissionsFlow.value?.hasReactPermission() != true) {
             Snackbar.make(binding.root, R.string.reaction_forbidden, Snackbar.LENGTH_LONG).show()
             return
         }
@@ -3346,7 +3350,7 @@ class ChatActivity :
         ChatMessage.MessageType.SYSTEM_MESSAGE == message.getCalculateMessageType()
 
     fun deleteMessage(message: ChatMessage) {
-        if (!participantPermissions.hasChatPermission()) {
+        if (participantPermissionsFlow.value?.hasChatPermission() != true) {
             Log.w(
                 TAG,
                 "Deletion of message is skipped because of restrictions by permissions. " +
@@ -3775,7 +3779,7 @@ class ChatActivity :
             message.systemMessageType != ChatMessage.SystemMessageType.DUMMY -> false
             message.isDeleted -> false
             !hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.DELETE_MESSAGES) -> false
-            !participantPermissions.hasChatPermission() -> false
+            participantPermissionsFlow.value?.hasChatPermission() != true -> false
             hasDeleteMessagesUnlimitedCapability -> true
             else -> true
         }
