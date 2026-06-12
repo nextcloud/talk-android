@@ -60,7 +60,7 @@ jobs:
 
 
             -   name: create AVD and generate snapshot for caching
-                uses: reactivecircus/android-emulator-runner@b530d96654c385303d652368551fb075bc2f0b6b # v2.35.0
+                uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2.37.0
                 with:
                     api-level: ${{ matrix.api-level }}
                     force-avd-creation: false
@@ -95,7 +95,7 @@ jobs:
             -   name: gplay
                 env:
                     GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
-                uses: reactivecircus/android-emulator-runner@b530d96654c385303d652368551fb075bc2f0b6b # v2.35.0
+                uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2.37.0
                 with:
                     api-level: ${{ matrix.api-level }}
                     force-avd-creation: false
@@ -106,7 +106,7 @@ jobs:
                     script: ./gradlew --no-daemon --stacktrace connectedGplayDebugAndroidTest
 
             -   name: Archive Espresso results
-                uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
+                uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
                 if: ${{ always() }}
                 with:
                     name: Report-${{ matrix.server }}-${{ matrix.api-level }}
