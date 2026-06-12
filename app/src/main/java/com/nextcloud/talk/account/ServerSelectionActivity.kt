@@ -34,6 +34,7 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.ActivityServerSelectionBinding
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.generic.Status
@@ -65,6 +66,9 @@ class ServerSelectionActivity : BaseActivity() {
     @Inject
     lateinit var userManager: UserManager
 
+    @Inject
+    lateinit var networkMonitor: NetworkMonitor
+
     private var statusQueryDisposable: Disposable? = null
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -92,6 +96,14 @@ class ServerSelectionActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+
+        networkMonitor.isOnlineLiveData.observe(this) { connected ->
+            binding.networkErrorWrapper.visibility = if (connected) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
+        }
 
         binding.hostUrlInputHelperText.text = String.format(
             resources!!.getString(R.string.nc_server_helper_text),
@@ -379,12 +391,12 @@ class ServerSelectionActivity : BaseActivity() {
     }
 
     private fun showserverEntryProgressBar() {
-        binding.errorWrapper.visibility = View.INVISIBLE
+        binding.errorWrapper.visibility = View.GONE
         binding.serverEntryProgressBar.visibility = View.VISIBLE
     }
 
     private fun hideserverEntryProgressBar() {
-        binding.serverEntryProgressBar.visibility = View.INVISIBLE
+        binding.serverEntryProgressBar.visibility = View.GONE
     }
 
     @SuppressLint("LongLogTag")
