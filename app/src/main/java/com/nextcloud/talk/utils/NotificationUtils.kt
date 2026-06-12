@@ -11,6 +11,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.media.AudioAttributes
 import android.net.Uri
@@ -316,7 +317,12 @@ object NotificationUtils {
         )
 
     fun loadAvatarSync(avatarUrl: String, context: Context): IconCompat? {
-        var avatarIcon: IconCompat? = null
+        val bitmap = loadAvatarBitmapSync(avatarUrl, context)
+        return bitmap?.let { IconCompat.createWithBitmap(it) }
+    }
+
+    fun loadAvatarBitmapSync(avatarUrl: String, context: Context): Bitmap? {
+        var avatarBitmap: Bitmap? = null
 
         val request = ImageRequest.Builder(context)
             .data(avatarUrl)
@@ -324,13 +330,11 @@ object NotificationUtils {
             .placeholder(R.drawable.account_circle_96dp)
             .target(
                 onSuccess = { result ->
-                    val bitmap = (result as BitmapDrawable).bitmap
-                    avatarIcon = IconCompat.createWithBitmap(bitmap)
+                    avatarBitmap = (result as BitmapDrawable).bitmap
                 },
                 onError = { error ->
                     error?.let {
-                        val bitmap = (error as BitmapDrawable).bitmap
-                        avatarIcon = IconCompat.createWithBitmap(bitmap)
+                        avatarBitmap = (error as BitmapDrawable).bitmap
                     }
                     Log.w(TAG, "Can't load avatar for URL: $avatarUrl")
                 }
@@ -339,7 +343,7 @@ object NotificationUtils {
 
         context.imageLoader.executeBlocking(request)
 
-        return avatarIcon
+        return avatarBitmap
     }
 
     private data class Channel(val id: String, val name: String, val description: String, val isImportant: Boolean)
