@@ -1082,7 +1082,17 @@ class OfflineFirstChatRepository @Inject constructor(
             it.asEntity(currentUser.id!!)
         }
 
-        chatDao.upsertChatMessagesAndDeleteTemp(internalConversationId, chatMessageEntities)
+        try {
+            chatDao.upsertChatMessagesAndDeleteTemp(internalConversationId, chatMessageEntities)
+        } catch (e: android.database.sqlite.SQLiteConstraintException) {
+            // Skipped persisting messages: conversation $internalConversationId not in DB yet.
+            // This avoids "SQLiteConstraintException: FOREIGN KEY constraint failed".
+            // It may happen when a notification for a newly created conversation is opened. The websocket was just
+            // faster than the API request so no conversation for the message exists yet. Just swallow the exception
+            // and let the insurance request handle it.
+            Log.w(TAG, "Skip persisting messages from signaling: conversation not in DB yet. Swallowed exception: $e")
+            return emptyList()
+        }
 
         if (emitOnIncoming) {
             val hasIncomingFromOther = chatMessages.any { msg ->
