@@ -38,9 +38,6 @@ end_of_line=crlf
 [*.md]
 trim_trailing_whitespace=false
 
-[.drone.yml]
-indent_size=2
-
 [*.{kt,kts}]
 # IDE does not follow this Ktlint rule strictly, but the default ordering is pretty good anyway, so let's ditch it
 ktlint_code_style = android_studio

@@ -6,6 +6,8 @@ name: "Assemble"
 on:
   pull_request:
     branches: [ master, stable-* ]
+  push:
+      branches: [ master, stable-* ]
 
 # Declare default permissions as read only.
 permissions: read-all
