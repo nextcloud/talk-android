@@ -27,9 +27,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -65,6 +67,9 @@ private const val CHIP_CORNER_RADIUS_DP = 16f
 private const val MESSAGE_LINKIFY_MASK = Linkify.PHONE_NUMBERS or
     Linkify.EMAIL_ADDRESSES
 
+// GFM table separator row: starts with | followed by optional spaces/colons and at least 3 dashes
+private val TABLE_SEPARATOR_REGEX = Regex("""^\|[ :]*-{3,}""", RegexOption.MULTILINE)
+
 val validLinkRegex = Regex(
     """(?<!\w)https?://(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+(?:/[^\s)]*)?""",
     RegexOption.IGNORE_CASE
@@ -98,6 +103,9 @@ fun MarkdownText(
     val messageId = message.id
     val onMessageLongClick = LocalMessageLongClickHandler.current
     val onLongClickState = rememberUpdatedState(onMessageLongClick)
+    val hasTable = remember(message.plainMessage) {
+        message.plainMessage.contains(TABLE_SEPARATOR_REGEX)
+    }
 
     if (LocalInspectionMode.current) {
         Text(
@@ -109,7 +117,7 @@ fun MarkdownText(
         )
     } else {
         AndroidView(
-            modifier = modifier,
+            modifier = if (hasTable) modifier.fillMaxWidth() else modifier,
             factory = { ctx ->
                 val gestureDetector = GestureDetector(
                     ctx,
@@ -183,7 +191,7 @@ fun MarkdownText(
 
                 resolveFileParams(ssb, message)
                 applySearchHighlight(ssb, highlightSearchTerm, searchHighlightColorArgb)
-                textView.text = ssb
+                markwon.setParsedMarkdown(textView, ssb)
                 textView.setLinkTextColor(linkColorArgb)
                 val needsMovementMethod = (hasClickableChips || hasLinks) && maxLines == Int.MAX_VALUE
                 if (needsMovementMethod) {
