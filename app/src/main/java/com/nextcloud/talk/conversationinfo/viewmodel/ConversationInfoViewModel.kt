@@ -5,6 +5,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.conversationinfo.viewmodel
+import android.content.Context
+import android.os.Build
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -22,6 +24,7 @@ import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.conversationinfo.Participants
 import com.nextcloud.talk.conversationinfo.model.ParticipantModel
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.jobs.NotificationWorker.Companion.BUBBLE_SWITCH_KEY
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.converters.DomainEnumNotificationLevelConverter
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
@@ -46,12 +49,15 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -73,7 +79,8 @@ import javax.inject.Inject
 class ConversationInfoViewModel @Inject constructor(
     private val chatNetworkDataSource: ChatNetworkDataSource,
     private val conversationsRepository: ConversationsRepository,
-    private val ncApi: NcApi
+    private val ncApi: NcApi,
+    private val appPreferences: AppPreferences
 ) : ViewModel() {
     object LifeCycleObserver : DefaultLifecycleObserver {
         enum class LifeCycleFlag {
@@ -417,6 +424,12 @@ class ConversationInfoViewModel @Inject constructor(
         val showMessageExpiration = isModerator &&
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)
 
+        val globalBubblesEnabled = appPreferences.areBubblesEnabled()
+        val forceAllBubbles = appPreferences.areBubblesForced()
+        val showBubblesSetting = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+
+        val shouldBubble = globalBubblesEnabled && (forceAllBubbles || dbModule.getBoolean(BUBBLE_SWITCH_KEY, false))
+
         val credentials = ApiUtils.getCredentials(user.username, user.token) ?: ""
 
         _uiState.update { state ->
@@ -467,6 +480,10 @@ class ConversationInfoViewModel @Inject constructor(
                 canLeave = canLeave,
                 canDelete = canDelete,
                 showClearHistory = showClearHistory,
+                showBubblesSetting = showBubblesSetting,
+                forceAllBubbles = forceAllBubbles,
+                shouldBubble = shouldBubble,
+                globalBubblesEnabled = globalBubblesEnabled,
                 showEditButton = showEditButton
             )
         }
@@ -811,6 +828,33 @@ class ConversationInfoViewModel @Inject constructor(
 
     fun setUpcomingEvent(summary: String?, time: String?) {
         _uiState.update { it.copy(upcomingEventSummary = summary, upcomingEventTime = time) }
+    }
+
+    fun setFocusBubble(focus: Boolean) {
+        _uiState.update { it.copy(focusBubbleSetting = focus) }
+    }
+
+    fun toggleBubble(context: Context, scope: CoroutineScope) {
+        val rowIsInteractive = uiState.value.globalBubblesEnabled && !uiState.value.forceAllBubbles
+
+        if (!rowIsInteractive) {
+            return
+        }
+
+        val newValue = !uiState.value.shouldBubble
+        _uiState.update { it.copy(shouldBubble = newValue) }
+
+        scope.launch {
+            databaseStorageModule?.saveBoolean(BUBBLE_SWITCH_KEY, newValue)
+        }
+
+        if (!newValue) {
+            NotificationUtils.dismissBubbleForRoom(
+                context,
+                currentUser ?: return,
+                currentToken
+            )
+        }
     }
 
     suspend fun emitSnackbar(@androidx.annotation.StringRes resId: Int) {

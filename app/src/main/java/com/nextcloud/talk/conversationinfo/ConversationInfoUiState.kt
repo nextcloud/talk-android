@@ -81,5 +81,11 @@ data class ConversationInfoUiState(
     val canDelete: Boolean = false,
     val showClearHistory: Boolean = false,
 
+    val showBubblesSetting: Boolean = false,
+    val focusBubbleSetting: Boolean = false,
+    val shouldBubble: Boolean = false,
+    val forceAllBubbles: Boolean = false,
+    val globalBubblesEnabled: Boolean = false,
+
     val showEditButton: Boolean = false
 )
