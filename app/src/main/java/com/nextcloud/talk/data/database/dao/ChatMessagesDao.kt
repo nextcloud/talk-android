@@ -289,6 +289,16 @@ interface ChatMessagesDao {
 
     @Query(
         """
+        DELETE FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND expirationTimestamp > 0
+        AND expirationTimestamp <= :currentTimeSecs
+        """
+    )
+    suspend fun deleteExpiredMessages(internalConversationId: String, currentTimeSecs: Long): Int
+
+    @Query(
+        """
         DELETE FROM chatmessages
         WHERE internalConversationId = :internalConversationId 
         AND id < :messageId
