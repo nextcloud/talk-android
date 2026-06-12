@@ -58,6 +58,13 @@ class MessageUtils(val context: Context) {
     companion object {
         private const val TAG = "MessageUtils"
 
+        private const val TABLE_CELL_PADDING_DP = 8f
+        private const val TABLE_BORDER_WIDTH_DP = 1f
+        private const val TABLE_BORDER_ALPHA = 0x4D // ~30 %
+        private const val TABLE_HEADER_BG_ALPHA = 0x1A // ~10 %
+        private const val COLOR_ALPHA_SHIFT = 24
+        private const val COLOR_RGB_MASK = 0x00FFFFFF
+
         private var cachedMarkwon: Markwon? = null
         private var cachedContextRef: WeakReference<Context>? = null
         private var cachedTextColor: Int = 0
@@ -86,7 +93,21 @@ class MessageUtils(val context: Context) {
                     }
                 })
                 .usePlugin(TaskListPlugin.create(drawable))
-                .usePlugin(TablePlugin.create { _ -> })
+                .usePlugin(
+                    TablePlugin.create { tableTheme ->
+                        val density = context.resources.displayMetrics.density
+                        val cellPaddingPx = (TABLE_CELL_PADDING_DP * density).toInt()
+                        val borderWidthPx = maxOf(1, (TABLE_BORDER_WIDTH_DP * density).toInt())
+                        // Derive border/header colors from textColor so they adapt to
+                        // both light (dark text) and dark (light text) message bubbles.
+                        val rgb = textColor and COLOR_RGB_MASK
+                        tableTheme
+                            .tableCellPadding(cellPaddingPx)
+                            .tableBorderWidth(borderWidthPx)
+                            .tableBorderColor((TABLE_BORDER_ALPHA shl COLOR_ALPHA_SHIFT) or rgb)
+                            .tableHeaderRowBackgroundColor((TABLE_HEADER_BG_ALPHA shl COLOR_ALPHA_SHIFT) or rgb)
+                    }
+                )
                 .usePlugin(StrikethroughPlugin.create())
                 .build()
             cachedMarkwon = markwon
