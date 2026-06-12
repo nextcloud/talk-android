@@ -150,6 +150,10 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override suspend fun loadInitialMessages(withNetworkParams: Bundle, isChatRelaySupported: Boolean) {
         Log.d(TAG, "---- loadInitialMessages ------------")
+        val expiredDeleted = chatDao.deleteExpiredMessages(internalConversationId, System.currentTimeMillis() / MILLIES)
+        if (expiredDeleted > 0) {
+            chatBlocksDao.deleteAllChatBlocksForConversation(internalConversationId)
+        }
         newXChatLastCommonRead = conversationModel.lastCommonReadMessage
 
         Log.d(TAG, "conversationModel.internalId: " + conversationModel.internalId)
