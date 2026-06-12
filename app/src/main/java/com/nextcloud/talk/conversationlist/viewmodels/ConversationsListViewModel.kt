@@ -220,6 +220,12 @@ class ConversationsListViewModel @Inject constructor(
 
     private val hideRoomToken = MutableStateFlow<String?>(null)
 
+    private enum class SearchDisplayMode {
+        OFF,
+        ALL_CONVERSATIONS,
+        RESULTS
+    }
+
     /**
      * Single source of truth for the [ConversationList] LazyColumn.
      * Auto-reacts to rooms, filter, search-active and search-result changes.
@@ -227,11 +233,17 @@ class ConversationsListViewModel @Inject constructor(
     val conversationListEntriesFlow: StateFlow<List<ConversationListEntry>> = combine(
         getRoomsStateFlow,
         _filterStateFlow,
-        _isSearchActiveFlow,
+        combine(_isSearchActiveFlow, _currentSearchQueryFlow) { active, query ->
+            when {
+                !active -> SearchDisplayMode.OFF
+                query.isEmpty() -> SearchDisplayMode.ALL_CONVERSATIONS
+                else -> SearchDisplayMode.RESULTS
+            }
+        },
         searchResultEntries,
         hideRoomToken
-    ) { rooms, filterState, isSearchActive, searchResults, hideToken ->
-        buildConversationListEntries(rooms, filterState, isSearchActive, searchResults, hideToken)
+    ) { rooms, filterState, searchMode, searchResults, hideToken ->
+        buildConversationListEntries(rooms, filterState, searchMode, searchResults, hideToken)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     /** Update filter state; triggers [conversationListEntriesFlow] re-emit. */
@@ -583,11 +595,11 @@ class ConversationsListViewModel @Inject constructor(
     private fun buildConversationListEntries(
         rooms: List<ConversationModel>,
         filterState: Map<String, Boolean>,
-        isSearchActive: Boolean,
+        searchMode: SearchDisplayMode,
         searchResults: List<ConversationListEntry>,
         hideToken: String?
     ): List<ConversationListEntry> {
-        if (isSearchActive) return searchResults
+        if (searchMode == SearchDisplayMode.RESULTS) return searchResults
 
         val hasFilterEnabled = filterState[MENTION] == true ||
             filterState[UNREAD] == true ||
@@ -602,10 +614,12 @@ class ConversationsListViewModel @Inject constructor(
                     )
             }
 
-        filtered = if (hasFilterEnabled) {
-            filtered.filter { filterConversationModel(it, filterState) }
-        } else {
-            filtered.filter { !isFutureEvent(it) && !it.hasArchived }
+        filtered = when {
+            // While search is open with an empty query, all conversations are listed,
+            // ignoring active filters and the default hiding of archived/future-event rooms
+            searchMode == SearchDisplayMode.ALL_CONVERSATIONS -> filtered
+            hasFilterEnabled -> filtered.filter { filterConversationModel(it, filterState) }
+            else -> filtered.filter { !isFutureEvent(it) && !it.hasArchived }
         }
 
         val sorted = filtered.sortedWith(
