@@ -132,6 +132,8 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
         /* */
     }
 
+    override suspend fun deleteExpiredMessages(internalConversationId: String, currentTimeSecs: Long): Int = 0
+
     override fun getNumberOfThreadReplies(internalConversationId: String, threadId: Long): Int = 0
 }
 
@@ -284,5 +286,6 @@ class DummyChatBlocksDaoImpl : ChatBlocksDao {
     override fun deleteChatBlocksOlderThan(internalConversationId: String, messageId: Long) {
         /* */
     }
+
     override fun getLatestChatBlock(internalConversationId: String, threadId: Long?): Flow<ChatBlockEntity?> = flowOf()
 }

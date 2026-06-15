@@ -1319,7 +1319,8 @@ class ChatActivity :
                     if (currentConversation != null) {
                         spreedCapabilities = state.spreedCapabilities
                         chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
-                        _participantPermissionsFlow.value = ParticipantPermissions(spreedCapabilities, currentConversation!!)
+                        _participantPermissionsFlow.value =
+                            ParticipantPermissions(spreedCapabilities, currentConversation!!)
 
                         updateToolbarState()
                         updateRoomTimerHandler()
@@ -1335,7 +1336,8 @@ class ChatActivity :
                     spreedCapabilities = state.spreedCapabilities
                     currentConversation = state.conversationModel
                     chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
-                    _participantPermissionsFlow.value = ParticipantPermissions(spreedCapabilities, state.conversationModel!!)
+                    _participantPermissionsFlow.value =
+                        ParticipantPermissions(spreedCapabilities, state.conversationModel!!)
 
                     supportFragmentManager.commit {
                         setReorderingAllowed(true) // optimizes out redundant replace operations
