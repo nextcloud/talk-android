@@ -150,12 +150,13 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override suspend fun loadInitialMessages(withNetworkParams: Bundle, isChatRelaySupported: Boolean) {
         Log.d(TAG, "---- loadInitialMessages ------------")
+        cleanupExpiredMessages()
         newXChatLastCommonRead = conversationModel.lastCommonReadMessage
 
         Log.d(TAG, "conversationModel.internalId: " + conversationModel.internalId)
         Log.d(TAG, "conversationModel.lastReadMessage:" + conversationModel.lastReadMessage)
 
-        var newestMessageIdFromDb = chatBlocksDao.getNewestMessageIdFromChatBlocks(internalConversationId, threadId)
+        val newestMessageIdFromDb = chatBlocksDao.getNewestMessageIdFromChatBlocks(internalConversationId, threadId)
         Log.d(TAG, "newestMessageIdFromDb: $newestMessageIdFromDb")
 
         val weAlreadyHaveSomeOfflineMessages = newestMessageIdFromDb > 0
@@ -280,12 +281,20 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
+    private suspend fun cleanupExpiredMessages() {
+        // For now, only the messages are deleted without adapting the chatBlocks. It may turn out that there must be
+        // solutions to delete empty chatBlocks and trim chatBlocks if a first or last messages of it does not exist
+        // anymore
+        chatDao.deleteExpiredMessages(internalConversationId, System.currentTimeMillis() / MILLIES)
+    }
+
     /**
      * Fetches messages newer than latest known message.
      *
      * @return `true` if at least one new message was received and persisted.
      */
     override suspend fun fetchNewMessages(): Boolean {
+        cleanupExpiredMessages()
         val fieldMap = getFieldMap(
             lookIntoFuture = true,
             timeout = 0,
