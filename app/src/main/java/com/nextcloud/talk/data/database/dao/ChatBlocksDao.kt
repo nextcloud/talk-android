@@ -112,14 +112,6 @@ interface ChatBlocksDao {
 
     @Query(
         """
-        DELETE FROM ChatBlocks
-        WHERE internalConversationId = :internalConversationId
-        """
-    )
-    suspend fun deleteAllChatBlocksForConversation(internalConversationId: String)
-
-    @Query(
-        """
     SELECT *
     FROM ChatBlocks
     WHERE internalConversationId = :internalConversationId

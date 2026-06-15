@@ -287,9 +287,5 @@ class DummyChatBlocksDaoImpl : ChatBlocksDao {
         /* */
     }
 
-    override suspend fun deleteAllChatBlocksForConversation(internalConversationId: String) {
-        /* */
-    }
-
     override fun getLatestChatBlock(internalConversationId: String, threadId: Long?): Flow<ChatBlockEntity?> = flowOf()
 }
