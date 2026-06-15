@@ -32,6 +32,7 @@
     <string name="call_without_notification">Appeler sans notification</string>
     <string name="camera_permission_granted">Caméra autorisée. Merci de choisir à nouveau la caméra.</string>
     <string name="cancel_login">Annuler la connexion</string>
+    <string name="chat_messages_load_gap">Certains messages n\'ont pas pu être chargés</string>
     <string name="choose_avatar_from_cloud">Sélectionner l\'avatar depuis le cloud</string>
     <string name="clear_status_message">Effacer le message d\'état</string>
     <string name="clear_status_message_after">Effacer le message d\'état après</string>
@@ -62,6 +63,7 @@
     <string name="ecosystem_apps_notes">Notes</string>
     <string name="edit">Modifier</string>
     <string name="edit_error_24_hours_old_message">Les messages datant de plus de 24 heures ne peuvent pas être modifiés</string>
+    <string name="emoji_more">Plus d\'emojis</string>
     <string name="encrypted">Chiffré</string>
     <string name="end_call">Terminer l\'appel</string>
     <string name="end_call_for_everyone">Mettre fin à l\'appel pour tout le monde</string>
@@ -72,6 +74,9 @@
     <string name="file_list_folder">Dossier</string>
     <string name="file_list_loading">Chargement…</string>
     <string name="fourHours">4 heures</string>
+    <string name="full_screen_intent_permission_granted">L\'écran d\'appel entrant sur écran de verrouillage est autorisé, tout est ok</string>
+    <string name="full_screen_intent_permission_not_granted">L\'écran d\'appel entrant sur écran de verrouillage n\'est pas autorisé. Merci d\'autoriser cela pour que les appels entrants apparaissent sur l\'écran de verrouillage.</string>
+    <string name="full_screen_intent_permission_title">Montrer les appels entrants sur l\'écran de verrouillage</string>
     <string name="get_invitations_error">Échec de la récupération des invitations en attente</string>
     <string name="gplay_available_no">Les services Google Play ne sont pas disponibles. Les notifications ne sont pas prises en charge</string>
     <string name="hint_edited_message">(modifié)</string>
@@ -94,6 +99,7 @@
     <string name="lower_hand">Baisser la main</string>
     <string name="media_message_content_description">Prévisualisation du fichier</string>
     <string name="media_message_content_play">Lire le fichier multimédia</string>
+    <string name="mention_open_chat_with">Ouvrir la conversation avec %1$s</string>
     <string name="mentioned">Mentionné</string>
     <string name="menu_item_sort_by_date_newest_first">Les plus récents d\'abord</string>
     <string name="menu_item_sort_by_date_oldest_first">Les plus anciens d\'abord</string>
@@ -109,6 +115,9 @@
     <string name="message_search_begin_empty">Aucun résultat de recherche</string>
     <string name="message_search_begin_typing">Commencer à taper pour lancer la recherche…</string>
     <string name="message_search_hint">Recherche…</string>
+    <string name="message_search_next_result">Résultat de recherche suivant</string>
+    <string name="message_search_no_more_results">Aucun autre message trouvé</string>
+    <string name="message_search_previous_result">Résultat de recherche précédent</string>
     <string name="messages">Messages</string>
     <string name="mute_all_notifications">Désactiver les notifications</string>
     <string name="nc_Server_account_imported">Le compte sélectionné est maintenant importé et disponible</string>
@@ -121,6 +130,7 @@
     <string name="nc_add_file">Ajouter à la conversation</string>
     <string name="nc_add_participants">Ajouter des participants</string>
     <string name="nc_add_to_favorites">Ajouter aux favoris</string>
+    <string name="nc_add_to_home_screen">Ajouter à l\'écran d\'accueil</string>
     <string name="nc_all_ok_operation">OK, tout est fini !</string>
     <string name="nc_attendee_pin">Épingler : %1$s</string>
     <string name="nc_biometric_unlock">Déverrouiller %1$s</string>
@@ -157,6 +167,7 @@
     <string name="nc_certificate_error">Votre configuration SSL a empêché la connexion</string>
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
     <string name="nc_change_password">Changer son mot de passe</string>
+    <string name="nc_chat_no_messages">Pas encore de message. Soyez le premier à dire salut !</string>
     <string name="nc_clear_edit_button">Annuler la modification</string>
     <string name="nc_clear_history">Supprimer tous les messages</string>
     <string name="nc_clear_history_success">Tous les messages ont été supprimés</string>
@@ -206,6 +217,7 @@
     <string name="nc_diagnosis_dialog_open_checklist">Ouvrir la liste de vérifications des erreurs communes</string>
     <string name="nc_diagnosis_dialog_open_diagnosis">Ouvrir l\'écran de diagnostic</string>
     <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Ouvrir dontkillmyapp.com</string>
+    <string name="nc_dialog_introduce_unifiedpush_selection">Vous êtes en train de choisir votre service de notification par défaut</string>
     <string name="nc_dialog_invalid_password">Mot de passe incorrect</string>
     <string name="nc_dialog_maintenance_mode_description">Le serveur est actuellement en mode maintenance.</string>
     <string name="nc_dialog_outdated_client">L\'application est obsolète</string>
@@ -296,6 +308,7 @@
     <string name="nc_mark_as_unread">Marquer comme non lu</string>
     <string name="nc_meeting_ended">Réunion terminée</string>
     <string name="nc_message_added_to_notes">Message ajouté aux notes</string>
+    <string name="nc_message_failed">Impossible d\'envoyer le message</string>
     <string name="nc_message_failed_to_send">Échec d\'envoi du message :</string>
     <string name="nc_message_quote_cancel_reply">Annuler la réponse</string>
     <string name="nc_message_read">Message lu</string>
@@ -314,6 +327,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s non disponible (non installé ou restreint par l\'administrateur) </string>
     <string name="nc_nick_guest">Invité</string>
     <string name="nc_no">Non</string>
+    <string name="nc_no_account_for_server">Aucun compte trouvé pour ce serveur</string>
     <string name="nc_no_account_found">Compte introuvable</string>
     <string name="nc_no_open_conversations_headline">Pas de conversations ouvertes</string>
     <string name="nc_no_open_conversations_text">Aucune conversation ouverte.\nSoit il n\'y aucune conversation ouverte, soit vous les avez déjà toutes rejointes.</string>
@@ -360,6 +374,7 @@
     <string name="nc_promote">Promouvoir comme modérateur</string>
     <string name="nc_public_call_status">Conversation publique</string>
     <string name="nc_push_disabled">Notifications push désactivées</string>
+    <string name="nc_push_notification_error">Désolé, quelque chose s\'est mal passé, l\'erreur est %1$s</string>
     <string name="nc_push_notification_fetch_error">Désolé, quelque chose s\'est mal passé, impossible de récupérer le message de test push</string>
     <string name="nc_push_notification_message">La notification push a été envoyée avec succès. Vous devriez maintenant recevoir une notification sur cet appareil intitulée « Test des notifications push ».</string>
     <string name="nc_remind">Rappelez-moi plus tard</string>
@@ -372,6 +387,7 @@
     <string name="nc_rename_confirm">Renommer</string>
     <string name="nc_reply">Répondre</string>
     <string name="nc_reply_privately">Répondre en privé</string>
+    <string name="nc_reply_to_thread">Répondre au fil : %1$s</string>
     <string name="nc_reschedule_message_with_notification">Reprogrammer avec notification</string>
     <string name="nc_reschedule_message_without_notification">Reprogrammer sans notification</string>
     <string name="nc_room_retention">Salle réservée avec succès</string>
@@ -382,6 +398,7 @@
     <string name="nc_schedule_message_without_notification">Envoyer plus tard sans notificatio</string>
     <string name="nc_scheduled_messages">Messages programmés</string>
     <string name="nc_scheduled_messages_empty">Aucun message programmé</string>
+    <string name="nc_scheduled_thread">Fil planifié</string>
     <string name="nc_scheduled_time">Horaire programmé</string>
     <string name="nc_screen_lock_timeout_30">30 secondes</string>
     <string name="nc_screen_lock_timeout_300">5 minutes</string>
@@ -463,11 +480,14 @@
     <string name="nc_settings_remove">Effacer</string>
     <string name="nc_settings_remove_account">Retirer le compte</string>
     <string name="nc_settings_remove_confirmation">Veuillez confirmer votre intention de retirer le compte en cours.</string>
+    <string name="nc_settings_screen_enable_unifiedpush_desc">Recevoir des notifications avec un service UnifiedPush externe</string>
+    <string name="nc_settings_screen_enable_unifiedpush_title">Activer UnifiedPush</string>
     <string name="nc_settings_screen_lock_desc">Verrouiller %1$s avec le verrouillage d’écran Android ou une méthode biométrique supportée</string>
     <string name="nc_settings_screen_lock_timeout_title">Délai d\'inactivité avant verrouillage de l\'écran</string>
     <string name="nc_settings_screen_lock_title">Écran de verrouillage</string>
     <string name="nc_settings_screen_security_desc">Empêche les captures d\'écran dans la liste récente et dans l\'application</string>
     <string name="nc_settings_screen_security_title">Sécurité de l\'écran</string>
+    <string name="nc_settings_screen_unifiedpush_service_title">Service UnifiedPush</string>
     <string name="nc_settings_server_almost_eol">La version du serveur est très ancienne et ne sera plus prise en charge dans la prochaine version  !</string>
     <string name="nc_settings_server_eol">La version du serveur est trop ancienne et n\'est pas supporté par cette version de l\'application android</string>
     <string name="nc_settings_server_eol_title">Serveur non pris en charge</string>
@@ -497,6 +517,8 @@
     <string name="nc_shared_items_empty">Pas d\'éléments partagés</string>
     <string name="nc_shared_items_location">Position</string>
     <string name="nc_shared_location">Position partagée</string>
+    <string name="nc_shortcut_conversation_deleted">Cette conversation n\'existe plus</string>
+    <string name="nc_shortcut_created">Raccourci créé</string>
     <string name="nc_show_ecosystem_description">Suggestions d\'applications Nextcloud dans la boîte de dialogue de sélection de compte</string>
     <string name="nc_show_ecosystem_title">Afficher le sélecteur d\'applications</string>
     <string name="nc_show_notification_warning_description">Quand les notifications ne sont pas correctement configurées, afficher un avertissement régulier</string>
@@ -524,6 +546,7 @@
     <string name="nc_upload_picture_from_cam">Prendre une photo</string>
     <string name="nc_upload_video_from_cam">Enregistrer une vidéo</string>
     <string name="nc_user">Utilisateur</string>
+    <string name="nc_voice_message">Message vocal</string>
     <string name="nc_voice_message_hold_to_record_info">Maintenir pour enregistrer, relâcher pour envoyer.</string>
     <string name="nc_voice_message_missing_audio_permission">La permission d\'enregistrer l\'audio est requise</string>
     <string name="nc_voice_message_slide_to_cancel">« Balayer pour annuler</string>
@@ -640,6 +663,7 @@
     <string name="shared_items_voice">Voix</string>
     <string name="show_ban_reason">Montrer la raison du bannissement</string>
     <string name="show_banned_participants">Afficher les participants bannis</string>
+    <string name="silent_message_hint">Message muet</string>
     <string name="starred">Favori</string>
     <string name="startCallForbidden">Vous n\'êtes pas autorisé à lancer un appel</string>
     <string name="start_thread">Créer une conversation</string>
@@ -688,6 +712,7 @@
     <string name="unarchive_hint">Une fois qu\'une conversation est désarchivée, elle sera à nouveau affichée par défaut.</string>
     <string name="unarchived_conversation">%1$s non archivée</string>
     <string name="unban">Retirer le ban</string>
+    <string name="unifiedpush">UnifiedPush</string>
     <string name="unpin_message">Désépingler le message</string>
     <string name="unread">Non lu</string>
     <string name="until_unpin">Jusqu\'au désépinglage</string>
