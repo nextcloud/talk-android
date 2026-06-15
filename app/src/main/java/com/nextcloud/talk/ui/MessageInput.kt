@@ -61,7 +61,7 @@ class MessageInput : FrameLayout {
         inputEditText = findViewById(R.id.messageInput)
         val displayMetrics = resources.displayMetrics
         val screenHeight = displayMetrics.heightPixels
-        inputEditText.maxHeight = screenHeight / 2
+        inputEditText.maxHeight = screenHeight / 3
 
         attachmentButton = findViewById(R.id.attachmentButton)
         messageSendButton = findViewById(R.id.messageSendButton)
