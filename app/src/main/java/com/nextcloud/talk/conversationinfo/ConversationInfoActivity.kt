@@ -331,7 +331,8 @@ class ConversationInfoActivity : BaseActivity() {
             onDeleteConversationClick = { showDeleteConversationDialog() },
             onBubbleClick = {
                 viewModel.toggleBubble(this, this.lifecycleScope)
-            }
+            },
+            onFocusBubbleReset = { viewModel.setFocusBubble(false) }
         )
 
     private fun showSharedItems() {

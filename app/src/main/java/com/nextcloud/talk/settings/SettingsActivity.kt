@@ -15,8 +15,8 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.KeyguardManager
-import android.content.ActivityNotFoundException
 import android.app.NotificationManager
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -85,8 +85,8 @@ import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.NotificationUtils.getMessageRingtoneUri
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.SpreedFeatures
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FOCUS_BUBBLE_SETTINGS
 import com.nextcloud.talk.utils.UnifiedPushUtils
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FOCUS_BUBBLE_SETTINGS
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_TO_NOTIFICATION_CATEGORY
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
@@ -720,16 +720,17 @@ class SettingsActivity :
     private fun launchIntentSafely(intent: Intent): Boolean =
         runCatching {
             if (intent.resolveActivity(packageManager) == null) {
-                throw NullPointerException("Intent to resolveActivity was Null!!!") // should not happen
+                return@runCatching false
             }
 
             startActivity(intent)
+            true
         }.onFailure { error ->
             when (error) {
                 is ActivityNotFoundException -> Log.e(TAG, "LaunchIntentSafely failed, is this activity real?: $error")
                 else -> Log.e(TAG, "LaunchIntentSafely failed: $error")
             }
-        }.isSuccess
+        }.getOrDefault(false)
 
     private fun setupNotificationSoundsSettings() {
         if (NotificationUtils.isCallsNotificationChannelEnabled(this)) {

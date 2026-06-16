@@ -645,9 +645,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
 
         // Bubbles need the notification to stay alive
-        val autoCancelOnClick = TYPE_RECORDING != pushMessage.type &&
-            TYPE_CHAT != pushMessage.type &&
-            TYPE_REMINDER != pushMessage.type
+        val autoCancelOnClick = TYPE_CHAT != pushMessage.type
 
         val notificationBuilder =
             createNotificationBuilder(
@@ -694,7 +692,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
             // Only add bubble metadata if there's no existing notification
             // If one exists, the bubble metadata will be preserved
-            handleBubble(activeStatusBarNotification, bubbleAllowed, notificationBuilder, effectiveShortcutId)
+            handleBubble(activeStatusBarNotification, notificationBuilder, effectiveShortcutId)
             notificationBuilder.addReplyAction(systemNotificationId)
             notificationBuilder.addMarkAsReadAction(systemNotificationId)
         }
@@ -759,7 +757,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun handleBubble(
         activeStatusBarNotification: StatusBarNotification?,
-        bubbleAllowed: Boolean,
         notificationBuilder: NotificationCompat.Builder,
         effectiveShortcutId: String?
     ) {
@@ -767,15 +764,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             return // bubbling not available
         }
 
-        if (bubbleAllowed && activeStatusBarNotification != null) {
+        if (activeStatusBarNotification != null) {
             notificationBuilder.handleExistingBubble(activeStatusBarNotification, effectiveShortcutId)
         } else {
-            if (bubbleAllowed) {
-                notificationBuilder.addBubbleMetadata(false)
-            } else {
-                notificationBuilder.setBubbleMetadata(null)
-            }
-
+            notificationBuilder.addBubbleMetadata(false)
             notificationBuilder.applyShortcutAndLocus(effectiveShortcutId)
         }
     }
@@ -960,14 +952,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     /**
      * This only adds bubble metadata, locus id, and a shortcut if allowed and valid
      */
+    @RequiresApi(Build.VERSION_CODES.R)
     private fun NotificationCompat.Builder.addBubbleMetadata(suppress: Boolean): NotificationCompat.Builder =
         runCatching {
             val roomToken = pushMessage.id
-            val shouldAbort = Build.VERSION.SDK_INT < Build.VERSION_CODES.R ||
-                roomToken.isNullOrEmpty() ||
-                roomToken.let { !shouldBubble(it) }
-
-            if (shouldAbort) {
+            if (roomToken.isNullOrEmpty()) {
                 return@runCatching this
             }
 

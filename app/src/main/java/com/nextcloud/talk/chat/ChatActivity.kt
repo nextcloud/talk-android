@@ -3721,7 +3721,7 @@ open class ChatActivity :
                     val lon = message.geoLocationParameters.longitude
                     metaData =
                         "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
-                            "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+                        "\"longitude\":\"$lon\",\"name\":\"$name\"}"
                 }
 
                 shareToNotes(shareUri, noteToSelfConversation.token, message, objectId, metaData)

@@ -58,6 +58,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -92,6 +93,7 @@ import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import kotlinx.coroutines.delay
 import com.nextcloud.talk.utils.withLinks
 
 data class ConversationInfoScreenCallbacks(
@@ -120,7 +122,8 @@ data class ConversationInfoScreenCallbacks(
     val onLeaveConversationClick: () -> Unit = {},
     val onClearHistoryClick: () -> Unit = {},
     val onDeleteConversationClick: () -> Unit = {},
-    val onBubbleClick: () -> Unit = {}
+    val onBubbleClick: () -> Unit = {},
+    val onFocusBubbleReset: () -> Unit = {}
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -492,6 +495,13 @@ private fun NotificationSettingsSection(state: ConversationInfoUiState, callback
             else -> R.string.nc_conversation_notification_bubble_desc
         }
 
+        LaunchedEffect(state.focusBubbleSetting) {
+            if (state.focusBubbleSetting) {
+                delay(FOCUS_HIGHLIGHT_DURATION_MS)
+                callbacks.onFocusBubbleReset()
+            }
+        }
+
         val highlightColor by animateColorAsState(
             targetValue = if (state.focusBubbleSetting) {
                 MaterialTheme.colorScheme.primary
@@ -807,6 +817,7 @@ private fun ParticipantAvatarImage(
 private const val PARTICIPANT_STATUS_SIZE_DP = 18f
 private const val PARTICIPANT_OFFLINE_ALPHA = 0.38f
 private const val PARTICIPANT_STATUS_EMOJI_SCALE = 0.8f
+private const val FOCUS_HIGHLIGHT_DURATION_MS = 3000L
 
 @Composable
 private fun ParticipantStatusOverlay(status: String?, modifier: Modifier = Modifier) {

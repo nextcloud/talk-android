@@ -81,7 +81,7 @@ class BubbleActivity : ChatActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onSupportNavigateUp(): Boolean {
-        openInMainApp()
+        openConversationList()
         return true
     }
 
