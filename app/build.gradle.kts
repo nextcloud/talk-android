@@ -184,7 +184,7 @@ configurations.configureEach {
     //
     // To analyse the dependencies:
     // `./gradlew :app:dependencyInsight --configuration genericDebugRuntimeClasspath --dependency com.google.protobuf:protobuf-java`
-    val protobufJava = "com.google.protobuf:protobuf-java:4.35.0"
+    val protobufJava = "com.google.protobuf:protobuf-java:4.35.1"
     resolutionStrategy {
         force(protobufJava)
         dependencySubstitution {
