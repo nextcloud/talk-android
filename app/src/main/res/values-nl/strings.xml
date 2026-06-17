@@ -176,6 +176,7 @@
     <string name="nc_connecting_call">Verbinden …</string>
     <string name="nc_contacts_done">Gereed</string>
     <string name="nc_conversation_description">Gespreksbeschrijving</string>
+    <string name="nc_conversation_menu_conversation_go_to_file">Naar bestand gaan</string>
     <string name="nc_conversation_menu_conversation_info">Gespreksinformatie</string>
     <string name="nc_conversation_menu_video_call">Videogesprek</string>
     <string name="nc_conversation_menu_voice_call">Gesprek</string>
