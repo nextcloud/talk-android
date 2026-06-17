@@ -95,7 +95,7 @@
                 android:orientation="horizontal"
                 android:paddingStart="16dp"
                 android:paddingEnd="2dp"
-                android:visibility="invisible"
+                android:visibility="gone"
                 tools:visibility="visible">
 
                 <ProgressBar
@@ -126,7 +126,7 @@
                 android:orientation="horizontal"
                 android:paddingStart="16dp"
                 android:paddingEnd="2dp"
-                android:visibility="invisible"
+                android:visibility="gone"
                 tools:ignore="UseCompoundDrawables"
                 tools:visibility="visible">
 
@@ -150,6 +150,39 @@
                     android:textAlignment="viewStart"
                     android:textColor="@color/white"
                     tools:text="@string/nc_server_unsupported" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/network_error_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="2dp"
+                android:visibility="invisible"
+                tools:ignore="UseCompoundDrawables"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@null"
+                    android:src="@android:drawable/stat_sys_warning" />
+
+                <TextView
+                    android:id="@+id/network_error_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="5dp"
+                    android:ellipsize="end"
+                    android:gravity="start|center_vertical"
+                    android:lineSpacingMultiplier="1.2"
+                    android:lines="2"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="8dp"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/white"
+                    android:text="@string/connection_lost" />
             </LinearLayout>
 
             <ImageButton
