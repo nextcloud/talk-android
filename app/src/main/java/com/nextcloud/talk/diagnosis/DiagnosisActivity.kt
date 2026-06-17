@@ -6,15 +6,9 @@
  */
 package com.nextcloud.talk.diagnosis
 
-import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Intent
-import android.os.Build
-import android.os.Build.MANUFACTURER
-import android.os.Build.MODEL
 import android.os.Bundle
-import android.text.SpannableStringBuilder
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -31,10 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
-import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
@@ -44,21 +36,12 @@ import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
-import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.NotificationUtils
-import com.nextcloud.talk.utils.PushUtils.Companion.LATEST_PUSH_REGISTRATION_AT_PUSH_PROXY
-import com.nextcloud.talk.utils.PushUtils.Companion.LATEST_PUSH_REGISTRATION_AT_SERVER
 import com.nextcloud.talk.utils.UnifiedPushUtils
-import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
-import com.nextcloud.talk.utils.power.PowerManagerUtils
-import org.unifiedpush.android.connector.UnifiedPush
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-@Suppress("TooManyFunctions")
 class DiagnosisActivity : BaseActivity() {
 
     @Inject
@@ -79,19 +62,6 @@ class DiagnosisActivity : BaseActivity() {
     @Inject
     lateinit var platformPermissionUtil: PlatformPermissionUtil
 
-    private var isGooglePlayServicesAvailable: Boolean = false
-    private var useEmbeddedDistrib: Boolean = false
-
-    private var nUnifiedPushServices = 0
-    private var offerUnifiedPush: Boolean = false
-    private var useUnifiedPush: Boolean = false
-    private var unifiedPushService: String = ""
-
-    sealed class DiagnosisElement {
-        data class DiagnosisHeadline(val headline: String) : DiagnosisElement()
-        data class DiagnosisEntry(val key: String, val value: String) : DiagnosisElement()
-    }
-
     private val diagnosisData = mutableListOf<DiagnosisElement>()
     private val diagnosisDataState = mutableStateOf(emptyList<DiagnosisElement>())
 
@@ -104,28 +74,16 @@ class DiagnosisActivity : BaseActivity() {
         )[DiagnosisViewModel::class.java]
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
-        isGooglePlayServicesAvailable = ClosedInterfaceImpl().isGooglePlayServicesAvailable
-        nUnifiedPushServices = UnifiedPushUtils.getExternalDistributors(this).size
-        offerUnifiedPush = nUnifiedPushServices > 0 &&
-            userManager.users.blockingGet().all { it.hasWebPushCapability }
-        useUnifiedPush = appPreferences.useUnifiedPush
-        useEmbeddedDistrib = UnifiedPushUtils.hasEmbeddedDistributor(context) && !useUnifiedPush
-        unifiedPushService = UnifiedPush.getAckDistributor(this) ?: "N/A"
+        val isGooglePlayServicesAvailable = ClosedInterfaceImpl().isGooglePlayServicesAvailable
+        val useUnifiedPush = appPreferences.useUnifiedPush
+        val useEmbeddedDistrib = UnifiedPushUtils.hasEmbeddedDistributor(context) && !useUnifiedPush
 
         setContent {
             val backgroundColor = colorResource(id = R.color.bg_default)
 
-            val menuItems = mutableListOf(
-                stringResource(R.string.nc_common_copy) to { copyToClipboard(diagnosisData.toMarkdownString()) },
-                stringResource(R.string.share) to { shareToOtherApps(diagnosisData.toMarkdownString()) },
-                stringResource(R.string.send_email) to { composeEmail(diagnosisData.toMarkdownString()) }
+            val menuItems = listOf(
+                stringResource(R.string.nc_common_copy) to { copyToClipboard(diagnosisData.toMarkdown()) }
             )
-
-            if (BrandingUtils.isOriginalNextcloudClient(applicationContext)) {
-                menuItems.add(
-                    stringResource(R.string.create_issue) to { createGithubIssue(diagnosisData.toMarkdownString()) }
-                )
-            }
 
             MaterialTheme(
                 colorScheme = colorScheme
@@ -180,46 +138,8 @@ class DiagnosisActivity : BaseActivity() {
         supportActionBar?.show()
 
         diagnosisData.clear()
-        setupMetaValues()
-        setupPhoneValues()
-        setupAppValues()
-        setupAccountValues()
-
+        diagnosisData.addAll(buildDiagnosisElements(this, userManager, appPreferences, arbitraryStorageManager))
         diagnosisDataState.value = diagnosisData.toList()
-    }
-
-    private fun shareToOtherApps(message: String) {
-        val sendIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, message)
-            type = "text/plain"
-        }
-        val shareIntent = Intent.createChooser(sendIntent, getString(R.string.share))
-        startActivity(shareIntent)
-    }
-
-    private fun composeEmail(text: String) {
-        val intent = Intent(Intent.ACTION_SENDTO).apply {
-            val appName = context.resources.getString(R.string.nc_app_product_name)
-
-            data = "mailto:".toUri()
-            putExtra(Intent.EXTRA_SUBJECT, appName)
-            putExtra(Intent.EXTRA_TEXT, text)
-        }
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(intent)
-        }
-    }
-
-    private fun createGithubIssue(text: String) {
-        copyToClipboard(text)
-
-        startActivity(
-            Intent(
-                Intent.ACTION_VIEW,
-                resources!!.getString(R.string.nc_talk_android_issues_url).toUri()
-            )
-        )
     }
 
     private fun copyToClipboard(text: String) {
@@ -238,341 +158,7 @@ class DiagnosisActivity : BaseActivity() {
         ).show()
     }
 
-    private fun setupMetaValues() {
-        addHeadline(context.resources.getString(R.string.nc_diagnosis_meta_category_title))
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_meta_system_report_date),
-            value = DisplayUtils.unixTimeToHumanReadable(System.currentTimeMillis())
-        )
-    }
-
-    private fun setupPhoneValues() {
-        addHeadline(context.resources.getString(R.string.nc_diagnosis_phone_category_title))
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_device_name_title),
-            value = getDeviceName()
-        )
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_android_version_title),
-            value = Build.VERSION.SDK_INT.toString()
-        )
-
-        when (true) {
-            isGooglePlayServicesAvailable -> {
-                addDiagnosisEntry(
-                    key = context.resources.getString(R.string.nc_diagnosis_gplay_available_title),
-                    value = context.resources.getString(R.string.nc_diagnosis_gplay_available_yes)
-                )
-            }
-            useEmbeddedDistrib -> {
-                addDiagnosisEntry(
-                    key = context.resources.getString(R.string.nc_diagnosis_gplay_available_title),
-                    value = context.resources.getString(R.string.nc_diagnosis_gplay_available_yes_up)
-                )
-            }
-            else -> {
-                addDiagnosisEntry(
-                    key = context.resources.getString(R.string.nc_diagnosis_gplay_available_title),
-                    value = context.resources.getString(R.string.nc_diagnosis_gplay_available_no_short)
-                )
-            }
-        }
-
-        addDiagnosisEntry(
-            key = getString(R.string.nc_diagnosis_unifiedpush_available_title),
-            value = context.resources.getQuantityString(
-                R.plurals.nc_diagnosis_unifiedpush_available_n,
-                nUnifiedPushServices,
-                nUnifiedPushServices
-            )
-        )
-    }
-
-    @SuppressLint("SetTextI18n")
-    @Suppress("MagicNumber")
-    private fun setupAppValues() {
-        addHeadline(context.resources.getString(R.string.nc_diagnosis_app_category_title))
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_app_name_title),
-            value = context.resources.getString(R.string.nc_app_product_name)
-        )
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_app_version_title),
-            value = String.format("v" + BuildConfig.VERSION_NAME)
-        )
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_flavor),
-            value = BuildConfig.FLAVOR
-        )
-
-        addDiagnosisEntry(
-            key = getString(R.string.nc_diagnosis_offer_unifiedpush),
-            value = getStringForBoolean(offerUnifiedPush)
-        )
-
-        addDiagnosisEntry(
-            key = getString(R.string.nc_diagnosis_use_unifiedpush),
-            value = getStringForBoolean(useUnifiedPush)
-        )
-
-        if (useUnifiedPush || useEmbeddedDistrib) {
-            setupAppValuesForPush()
-            setupAppValuesForUnifiedPush()
-        } else if (isGooglePlayServicesAvailable) {
-            setupAppValuesForPush()
-            setupAppValuesForGooglePlayServices()
-        }
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_app_users_amount),
-            value = userManager.users.blockingGet().size.toString()
-        )
-    }
-
-    private fun setupAppValuesForPush() {
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_battery_optimization_title),
-            value = if (PowerManagerUtils().isIgnoringBatteryOptimizations()) {
-                context.resources.getString(R.string.nc_diagnosis_battery_optimization_ignored)
-            } else {
-                context.resources.getString(R.string.nc_diagnosis_battery_optimization_not_ignored)
-            }
-        )
-
-        // handle notification permission on API level >= 33
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            addDiagnosisEntry(
-                key = context.resources.getString(R.string.nc_diagnosis_notification_permission),
-                value = if (platformPermissionUtil.isPostNotificationsPermissionGranted()) {
-                    context.resources.getString(R.string.nc_diagnosis_notifications_granted)
-                } else {
-                    context.resources.getString(R.string.nc_diagnosis_notifications_declined)
-                }
-            )
-        }
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_notification_calls_channel_permission),
-            value =
-            getStringForBoolean(
-                NotificationUtils.isCallsNotificationChannelEnabled(this)
-            )
-        )
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_notification_messages_channel_permission),
-            value =
-            getStringForBoolean(
-                NotificationUtils.isMessagesNotificationChannelEnabled(this)
-            )
-        )
-    }
-
-    private fun setupAppValuesForUnifiedPush() {
-        addDiagnosisEntry(
-            key = getString(R.string.nc_diagnosis_unifiedpush_service),
-            value = unifiedPushService
-        )
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_unifiedpush_latest_endpoint),
-            value = if (appPreferences.unifiedPushLatestEndpoint != null &&
-                appPreferences.unifiedPushLatestEndpoint != 0L
-            ) {
-                DisplayUtils.unixTimeToHumanReadable(
-                    appPreferences
-                        .unifiedPushLatestEndpoint
-                )
-            } else {
-                context.resources.getString(R.string.nc_common_unknown)
-            }
-        )
-    }
-
-    @Suppress("Detekt.LongMethod")
-    private fun setupAppValuesForGooglePlayServices() {
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_firebase_push_token_title),
-            value = if (appPreferences.pushToken.isNullOrEmpty()) {
-                context.resources.getString(R.string.nc_diagnosis_firebase_push_token_missing)
-            } else {
-                "${appPreferences.pushToken.substring(0, PUSH_TOKEN_PREFIX_END)}..."
-            }
-        )
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_firebase_push_token_latest_generated),
-            value = if (appPreferences.pushTokenLatestGeneration != null &&
-                appPreferences.pushTokenLatestGeneration != 0L
-            ) {
-                DisplayUtils.unixTimeToHumanReadable(
-                    appPreferences
-                        .pushTokenLatestGeneration
-                )
-            } else {
-                "Unknown"
-            }
-        )
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_firebase_push_token_latest_fetch),
-            value = if (appPreferences.pushTokenLatestFetch != null && appPreferences.pushTokenLatestFetch != 0L) {
-                DisplayUtils.unixTimeToHumanReadable(appPreferences.pushTokenLatestFetch)
-            } else {
-                context.resources.getString(R.string.nc_common_unknown)
-            }
-        )
-    }
-
-    private fun setupAccountValues() {
-        val currentUser = currentUserProviderOld.currentUser.blockingGet()
-
-        addHeadline(context.resources.getString(R.string.nc_diagnosis_account_category_title))
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_account_server),
-            value =
-            currentUser.baseUrl!!
-        )
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_account_user_name),
-            value =
-            currentUser.displayName!!
-        )
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_account_user_status_enabled),
-            value =
-            getStringForBoolean(
-                (currentUser.capabilities?.userStatusCapability?.enabled)
-            )
-        )
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_account_server_notification_app),
-            value =
-            getStringForBoolean(currentUser.capabilities?.notificationsCapability?.features?.isNotEmpty())
-        )
-
-        addDiagnosisEntry(
-            key = getString(R.string.nc_diagnosis_server_supports_webpush),
-            value = getStringForBoolean(currentUser.hasWebPushCapability)
-        )
-
-        if (isGooglePlayServicesAvailable) {
-            setupPushRegistrationDiagnosis()
-        }
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_server_version),
-            value =
-            currentUser.serverVersion?.versionString!!
-        )
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_server_talk_version),
-            value =
-            currentUser.capabilities?.spreedCapability?.version!!
-        )
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_signaling_mode_title),
-            value =
-            if (currentUser.externalSignalingServer?.externalSignalingServer?.isNotEmpty() == true) {
-                context.resources.getString(R.string.nc_diagnosis_signaling_mode_extern)
-            } else {
-                context.resources.getString(R.string.nc_diagnosis_signaling_mode_intern)
-            }
-        )
-    }
-
-    private fun setupPushRegistrationDiagnosis() {
-        val accountId = UserIdUtils.getIdForUser(currentUserProviderOld.currentUser.blockingGet())
-
-        val latestPushRegistrationAtServer = arbitraryStorageManager.getStorageSetting(
-            accountId,
-            LATEST_PUSH_REGISTRATION_AT_SERVER,
-            ""
-        ).blockingGet()?.value
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_latest_push_registration_at_server),
-            if (latestPushRegistrationAtServer.isNullOrEmpty()) {
-                context.resources.getString(R.string.nc_diagnosis_latest_push_registration_at_server_fail)
-            } else {
-                DisplayUtils.unixTimeToHumanReadable(latestPushRegistrationAtServer.toLong())
-            }
-        )
-
-        val latestPushRegistrationAtPushProxy = arbitraryStorageManager.getStorageSetting(
-            accountId,
-            LATEST_PUSH_REGISTRATION_AT_PUSH_PROXY,
-            ""
-        ).blockingGet()?.value
-
-        addDiagnosisEntry(
-            key = context.resources.getString(R.string.nc_diagnosis_latest_push_registration_at_push_proxy),
-            value = if (latestPushRegistrationAtPushProxy.isNullOrEmpty()) {
-                context.resources.getString(R.string.nc_diagnosis_latest_push_registration_at_push_proxy_fail)
-            } else {
-                DisplayUtils.unixTimeToHumanReadable(latestPushRegistrationAtPushProxy.toLong())
-            }
-        )
-    }
-
-    private fun getDeviceName(): String =
-        if (MODEL.startsWith(MANUFACTURER, ignoreCase = true)) {
-            MODEL
-        } else {
-            "$MANUFACTURER $MODEL"
-        }
-
-    private fun getStringForBoolean(answer: Boolean?): String =
-        when (answer) {
-            null -> context.getString(R.string.nc_diagnosis_unknown)
-            true -> context.getString(R.string.nc_diagnosis_yes)
-            else -> context.getString(R.string.nc_diagnosis_no)
-        }
-
-    private fun List<DiagnosisElement>.toMarkdownString(): String {
-        val markdownText = SpannableStringBuilder()
-
-        this.forEach {
-            when (it) {
-                is DiagnosisElement.DiagnosisHeadline -> {
-                    markdownText.append("$MARKDOWN_HEADLINE ${it.headline}")
-                    markdownText.append("\n\n")
-                }
-
-                is DiagnosisElement.DiagnosisEntry -> {
-                    markdownText.append("$MARKDOWN_BOLD${it.key}$MARKDOWN_BOLD")
-                    markdownText.append("\n\n")
-                    markdownText.append(it.value)
-                    markdownText.append("\n\n")
-                }
-            }
-        }
-        return markdownText.toString()
-    }
-
-    private fun addHeadline(text: String) {
-        diagnosisData.add(DiagnosisElement.DiagnosisHeadline(text))
-    }
-
-    private fun addDiagnosisEntry(key: String, value: String) {
-        diagnosisData.add(DiagnosisElement.DiagnosisEntry(key, value))
-    }
-
     companion object {
         val TAG = DiagnosisActivity::class.java.simpleName
-        private const val MARKDOWN_HEADLINE = "###"
-        private const val MARKDOWN_BOLD = "**"
-        private const val PUSH_TOKEN_PREFIX_END: Int = 5
     }
 }

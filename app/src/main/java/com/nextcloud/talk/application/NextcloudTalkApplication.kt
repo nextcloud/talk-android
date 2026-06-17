@@ -34,6 +34,10 @@ import coil.memory.MemoryCache
 import coil.util.DebugLogger
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.account.AccountVerificationActivity
+import com.nextcloud.talk.diagnosis.buildDiagnosisElements
+import com.nextcloud.talk.diagnosis.toMarkdown
+import com.nextcloud.talk.errorhandling.ExceptionHandler
+import com.nextcloud.talk.logger.LoggerImpl
 import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.dagger.modules.BusModule
 import com.nextcloud.talk.dagger.modules.ContextModule
@@ -50,6 +54,7 @@ import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
 import com.nextcloud.talk.jobs.WebsocketConnectionsWorker
 import com.nextcloud.talk.ui.theme.ThemeModule
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DeviceUtils
 import com.nextcloud.talk.utils.NotificationUtils
@@ -105,9 +110,34 @@ class NextcloudTalkApplication :
 
     @Inject
     lateinit var okHttpClient: OkHttpClient
+
+    @Inject
+    lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var logger: LoggerImpl
     //endregion
 
     //region private methods
+    private fun installExceptionHandler() {
+        val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
+        Log.d(TAG, "installExceptionHandler: defaultHandler=$defaultHandler")
+        if (defaultHandler != null) {
+            Thread.setDefaultUncaughtExceptionHandler(
+                ExceptionHandler(
+                    context = this,
+                    defaultExceptionHandler = defaultHandler,
+                    diagnosisSupplier = { buildDiagnosisElements(this, userManager, appPreferences).toMarkdown() },
+                    logCrash = { msg, t -> logger.e(TAG, msg, t) },
+                    logFlusher = logger::flush
+                )
+            )
+            Log.d(TAG, "ExceptionHandler installed successfully")
+        } else {
+            Log.w(TAG, "No default UncaughtExceptionHandler found — ExceptionHandler NOT installed")
+        }
+    }
+
     private fun initializeWebRtc() {
         try {
             PeerConnectionFactory.initialize(
@@ -125,6 +155,15 @@ class NextcloudTalkApplication :
     override fun onCreate() {
         Log.d(TAG, "onCreate")
         sharedApplication = this
+
+        // The crash-reporter process only needs to show ShowErrorActivity — skip all heavy
+        // initialization (WebRTC, Room, Dagger) so the error screen can actually render.
+        val currentProcessName = if (SDK_INT >= P) getProcessName() else null
+        Log.d(TAG, "onCreate: processName=$currentProcessName")
+        if (SDK_INT >= P && currentProcessName?.endsWith(":crash") == true) {
+            Log.d(TAG, "Crash process detected — skipping full Application init")
+            return
+        }
 
         RxJavaPlugins.setErrorHandler { e ->
             var throwable: Throwable = if (e is UndeliverableException) e.cause ?: e else e
@@ -168,6 +207,7 @@ class NextcloudTalkApplication :
         Security.insertProviderAt(Conscrypt.newProvider(), 1)
 
         componentApplication.inject(this)
+        installExceptionHandler()
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onStop(owner: LifecycleOwner) {

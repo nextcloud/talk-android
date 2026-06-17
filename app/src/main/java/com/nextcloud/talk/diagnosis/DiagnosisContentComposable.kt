@@ -53,7 +53,7 @@ import com.nextcloud.talk.R
 @Suppress("LongParameterList")
 @Composable
 fun DiagnosisContentComposable(
-    data: State<List<DiagnosisActivity.DiagnosisElement>>,
+    data: State<List<DiagnosisElement>>,
     isLoading: Boolean,
     showDialog: Boolean,
     viewState: NotificationUiState,
@@ -76,7 +76,7 @@ fun DiagnosisContentComposable(
     ) {
         data.value.forEach { element ->
             when (element) {
-                is DiagnosisActivity.DiagnosisElement.DiagnosisHeadline -> {
+                is DiagnosisElement.DiagnosisHeadline -> {
                     Text(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
                         text = element.headline,
@@ -88,7 +88,7 @@ fun DiagnosisContentComposable(
                     )
                 }
 
-                is DiagnosisActivity.DiagnosisElement.DiagnosisEntry -> {
+                is DiagnosisElement.DiagnosisEntry -> {
                     Text(
                         text = element.key,
                         color = colorResource(R.color.high_emphasis_text),
@@ -248,8 +248,8 @@ fun DiagnosisContentPreview() {
     val state = remember {
         mutableStateOf(
             listOf(
-                DiagnosisActivity.DiagnosisElement.DiagnosisHeadline("Headline"),
-                DiagnosisActivity.DiagnosisElement.DiagnosisEntry("Key", "Value")
+                DiagnosisElement.DiagnosisHeadline("Headline"),
+                DiagnosisElement.DiagnosisEntry("Key", "Value")
             )
         )
     }

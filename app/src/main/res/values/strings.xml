@@ -202,7 +202,34 @@ How to translate with transifex:
     <string name="gplay_available_no">Google Play services are not available.Notifications are not supported</string>
 
     <string name="nc_settings_diagnosis_title">Diagnosis</string>
-    <string name="nc_settings_diagnosis_subtitle">Open diagnosis screen to check settings or create bug report</string>
+    <string name="nc_settings_diagnosis_logs_section_title">Diagnosis &amp; Logs</string>
+    <string name="nc_settings_diagnosis_subtitle">Open diagnosis screen to check settings</string>
+    <string name="nc_settings_logs_title">Logs</string>
+    <string name="nc_settings_logs_subtitle">View local log files</string>
+    <string name="nc_settings_share_report_title">Share diagnosis report</string>
+    <string name="nc_settings_share_report_subtitle">Share the logs and diagnosis info</string>
+
+    <!-- Error / crash screen -->
+    <string name="error_crash_title">%1$s crashed</string>
+    <string name="error_crash_description">The app crashed unexpectedly. Please help us fix it by sending the crash report via the menu.</string>
+    <string name="nc_logs_advanced_logging_privacy_warning">If you had advanced logging activated, please do not share the report in public.</string>
+    <string name="nc_logs_advanced_logging_enabled_warning">Advanced logging is enabled. This may slow down performance.</string>
+    <string name="error_crash_please_describe">Please describe the problem (How to reproduce the bug or crash?)</string>
+
+    <!-- Logs screen -->
+    <string name="nc_logs_title">Logs</string>
+    <string name="nc_logs_share">Send as mail</string>
+    <string name="nc_logs_share_subject">%1$s logs</string>
+    <string name="nc_logs_delete_all">Delete all logs</string>
+    <string name="nc_logs_empty">No log entries found.</string>
+    <string name="nc_logs_total_size">Total log size: %d KB</string>
+    <string name="nc_logs_overflow_warning">Warning: some log entries were lost due to queue overflow.</string>
+    <string name="nc_logs_share_latest_crash">Latest crash</string>
+    <string name="nc_logs_share_diagnosis">Diagnosis report</string>
+    <string name="nc_logs_download_zip">Download as ZIP</string>
+    <string name="nc_logs_advanced_logging">Advanced logging</string>
+    <string name="nc_logs_advanced_logging_enable">Enable advanced logging</string>
+    <string name="nc_logs_advanced_logging_disable">Disable advanced logging</string>
 
     <!-- Diagnosis -->
     <string name="nc_diagnosis_dialog_open_checklist">Open troubleshooting checklist</string>
@@ -228,8 +255,10 @@ How to translate with transifex:
     <string name="nc_diagnosis_meta_category_title" translatable="false" >Meta information</string>
     <string name="nc_diagnosis_meta_system_report_date" translatable="false">Generation of system report</string>
     <string name="nc_diagnosis_phone_category_title" translatable="false">Phone</string>
+    <string name="nc_diagnosis_device_brand" translatable="false">Brand</string>
     <string name="nc_diagnosis_device_name_title" translatable="false">Device</string>
     <string name="nc_diagnosis_android_version_title" translatable="false">Android version</string>
+    <string name="nc_diagnosis_android_api_version_title" translatable="false">Android API version</string>
     <string name="nc_diagnosis_app_category_title" translatable="false">App</string>
     <string name="nc_diagnosis_app_name_title" translatable="false">App name</string>
     <string name="nc_diagnosis_app_version_title" translatable="false">App version</string>
