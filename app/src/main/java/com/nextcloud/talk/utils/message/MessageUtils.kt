@@ -19,6 +19,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonConfiguration
+import io.noties.markwon.SoftBreakAddsNewLinePlugin
 import io.noties.markwon.core.MarkwonTheme
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tables.TablePlugin
@@ -109,6 +110,7 @@ class MessageUtils(val context: Context) {
                     }
                 )
                 .usePlugin(StrikethroughPlugin.create())
+                .usePlugin(SoftBreakAddsNewLinePlugin.create())
                 .build()
             cachedMarkwon = markwon
             cachedContextRef = WeakReference(context)
