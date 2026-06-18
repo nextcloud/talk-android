@@ -376,7 +376,7 @@
     <string name="nc_push_disabled">دریافت اعلانات غیرفعال است</string>
     <string name="nc_push_notification_error">متأسفانه مشکلی پیش آمد، خطا %1$s است</string>
     <string name="nc_push_notification_fetch_error">متأسفانه مشکلی پیش آمد، نمی‌توان پیام تست پوش را دریافت کرد</string>
-    <string name="nc_push_notification_message">اعلان پوش با موفقیت ارسال شد. اکنون باید یک اعلان روی این دستگاه با عنوان 'Testing push notifications' دریافت کنید</string>
+    <string name="nc_push_notification_message">اعلان پوش با موفقیت ارسال شد. اکنون باید یک اعلان روی این دستگاه با عنوان \'\Testing push notifications\'\ دریافت کنید</string>
     <string name="nc_remind">بعدا به من یادآوری کن</string>
     <string name="nc_remove_from_favorites">حذف کردن از مورد علاقه‌ها</string>
     <string name="nc_remove_group_and_members">حذف گروه و اعضا</string>
@@ -427,7 +427,7 @@
     <string name="nc_sent_an_audio_you">شما صوتی ارسال کردید.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s تصویری فرستاد.</string>
     <string name="nc_sent_an_image_you">شما یک تصویر ارسال کردید</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s یک کارت دک فرستاد</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s یک کارت کارتابل فرستاد</string>
     <string name="nc_server_connect">آزمایش اتصال به سرور</string>
     <string name="nc_server_db_upgrade_needed">لطفا پایگاه داده %1$s خود را ارتقا دهید</string>
     <string name="nc_server_failed_to_import_account">وارد کردن حساب انتخاب‌شده موفقیت آمیز نبود</string>
@@ -512,7 +512,7 @@
     <string name="nc_share_this_location">هم‌رسانی این مکان</string>
     <string name="nc_share_to_choose_account">حساب کاربری را انتخاب کنید</string>
     <string name="nc_shared_items">موارد هم‌رسانی‌شده</string>
-    <string name="nc_shared_items_deck_card">کارت deck</string>
+    <string name="nc_shared_items_deck_card">کارت کارتابل</string>
     <string name="nc_shared_items_description">تصاویر، فایل‌ها، پیام‌های صوتی …</string>
     <string name="nc_shared_items_empty">مورد هم‌رسانی‌شده‌ای وجود ندارد</string>
     <string name="nc_shared_items_location">مکان</string>
@@ -743,7 +743,7 @@
     <string name="video_call">تماس تصویری</string>
     <string name="voice_room">اتاق صوتی</string>
     <string name="voice_room_preset">مستقیماً به تماس بپیوندید، ایده‌آل برای گفتگوهای خودمانی یا جلسات ناگهانی</string>
-    <string name="whats_your_status">What's your status?</string>
+    <string name="whats_your_status">وضعیت شما چیست؟</string>
     <plurals name="nc_new_messages_count">
         <item quantity="one">%d new message</item>
         <item quantity="other">%d new messages</item>
