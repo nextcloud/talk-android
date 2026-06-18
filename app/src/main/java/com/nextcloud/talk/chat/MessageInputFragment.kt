@@ -303,7 +303,6 @@ class MessageInputFragment : Fragment() {
             chatActivity.chatViewModel.lastCallSystemMessage.collect {
                 if (it.shouldShow) {
                     binding.fragmentCallStarted.callAuthorChip.text = it.actorDisplayName
-                    binding.fragmentCallStarted.callAuthorChipSecondary.text = it.actorDisplayName
                     val user = currentUserProvider.currentUser.blockingGet()
                     val url: String = if (it.actorType == "guests" || it.actorType == "guest") {
                         ApiUtils.getUrlForGuestAvatar(user!!.baseUrl!!, it.actorDisplayName, true)
@@ -331,7 +330,6 @@ class MessageInputFragment : Fragment() {
 
                             override fun onSuccess(result: Drawable) {
                                 binding.fragmentCallStarted.callAuthorChip.chipIcon = result
-                                binding.fragmentCallStarted.callAuthorChipSecondary.chipIcon = result
                             }
                         })
                         .build()
@@ -569,10 +567,7 @@ class MessageInputFragment : Fragment() {
 
         binding.fragmentCallStarted.callStartedCloseBtn.setOnClickListener {
             collapsed = !collapsed
-            binding.fragmentCallStarted.callAuthorLayout.visibility = if (collapsed) View.GONE else View.VISIBLE
             binding.fragmentCallStarted.callBtnLayout.visibility = if (collapsed) View.GONE else View.VISIBLE
-            binding.fragmentCallStarted.callAuthorChipSecondary.visibility = if (collapsed) View.VISIBLE else View.GONE
-            binding.fragmentCallStarted.callStartedSecondaryText.visibility = if (collapsed) View.VISIBLE else View.GONE
             setDropDown(collapsed)
         }
 
@@ -1252,10 +1247,6 @@ class MessageInputFragment : Fragment() {
         }
 
         binding.fragmentCallStarted.callAuthorChip.apply {
-            viewThemeUtils.material.colorChipBackground(this)
-        }
-
-        binding.fragmentCallStarted.callAuthorChipSecondary.apply {
             viewThemeUtils.material.colorChipBackground(this)
         }
 

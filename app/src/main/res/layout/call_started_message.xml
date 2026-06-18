@@ -18,47 +18,6 @@
     tools:backgroundTint="@color/colorPrimaryDark">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end">
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/call_author_chip_secondary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:chipIcon="@drawable/account_circle_48dp"
-            app:chipCornerRadius="@dimen/dialogBorderRadius"
-            tools:text="Julius James Linus"
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:id="@+id/call_started_secondary_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/standard_quarter_margin"
-            android:text="@string/started_a_call"
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:layout_weight="1"/>
-
-        <ImageView
-            android:id="@+id/call_started_close_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/standard_margin"
-            android:contentDescription="@string/close_icon"
-            android:src="@drawable/ic_keyboard_arrow_down"
-            android:background="?attr/selectableItemBackground"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            />
-
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/call_author_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -73,12 +32,27 @@
             android:layout_marginHorizontal="@dimen/standard_quarter_margin"
             app:chipIcon="@drawable/account_circle_48dp"
             app:chipCornerRadius="@dimen/dialogBorderRadius"
-            tools:text="Julius James Linus" />
+            tools:text="Julius James Linus"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:maxWidth="180dp"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/started_a_call" />
+
+        <ImageView
+            android:id="@+id/call_started_close_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:contentDescription="@string/close_icon"
+            android:src="@drawable/ic_keyboard_arrow_down"
+            android:background="?attr/selectableItemBackground"
+            android:layout_gravity="center"
+            />
 
     </LinearLayout>
 
