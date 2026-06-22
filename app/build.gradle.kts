@@ -176,6 +176,7 @@ configurations.configureEach {
     exclude(group = "com.google.firebase", module = "firebase-core")
     exclude(group = "com.google.firebase", module = "firebase-analytics")
     exclude(group = "com.google.firebase", module = "firebase-measurement-connector")
+    exclude(group = "com.google.android.datatransport")
     exclude(group = "org.jetbrains", module = "annotations-java5") // via prism4j, already using annotations explicitly
 
     // com.google.crypto.tink (pulled in by org.unifiedpush.android:connector) transitively depends on
