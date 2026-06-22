@@ -18,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.camera.BlurBackgroundViewModel
 import com.nextcloud.talk.databinding.DialogMoreCallActionsBinding
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
@@ -76,6 +77,10 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
             binding.raiseHand.visibility = View.VISIBLE
         } else {
             binding.raiseHand.visibility = View.GONE
+        }
+
+        if (!BuildConfig.BACKGROUND_BLUR_ENABLED) {
+            binding.backgroundBlur.visibility = View.GONE
         }
     }
 

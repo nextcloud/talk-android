@@ -75,6 +75,7 @@ import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.call.components.ParticipantGrid
 import com.nextcloud.talk.call.components.SelfVideoView
 import com.nextcloud.talk.call.components.screenshare.ScreenShareComponent
+import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.camera.BackgroundBlurFrameProcessor
 import com.nextcloud.talk.camera.BlurBackgroundViewModel
 import com.nextcloud.talk.camera.BlurBackgroundViewModel.BackgroundBlurOn
@@ -555,6 +556,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun initBackgroundBlurViewModel(surfaceTextureHelper: SurfaceTextureHelper) {
+        if (!BuildConfig.BACKGROUND_BLUR_ENABLED) return
         blurBackgroundViewModel.viewState.observe(this) { state ->
             val isOn = state == BackgroundBlurOn
 
