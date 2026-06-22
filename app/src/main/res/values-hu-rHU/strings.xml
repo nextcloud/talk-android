@@ -74,8 +74,8 @@
     <string name="file_list_folder">mappa</string>
     <string name="file_list_loading">Betöltés…</string>
     <string name="fourHours">4 óra</string>
-    <string name="full_screen_intent_permission_granted">A képernyőzáron megjelenő bejövő hívás-értesítés engedélyezve van, minden rendben</string>
-    <string name="full_screen_intent_permission_not_granted">A bejövő hívások képernyőjének megjelenítése a lezárási képernyőn nincs engedélyezve. Kérjük, engedélyezze ezt, hogy a bejövő hívások megjelenjenek a lezárási képernyőn!</string>
+    <string name="full_screen_intent_permission_granted">A képernyőzáron megjelenő bejövő hívást jelző értesítés engedélyezve van, minden rendben</string>
+    <string name="full_screen_intent_permission_not_granted">A bejövő hívások képernyőjének megjelenítése a lezárási képernyőn nincs engedélyezve. Engedélyezze ezt, hogy a bejövő hívások megjelenjenek a képernyőzáron!</string>
     <string name="full_screen_intent_permission_title">Bejövő hívások megjelenítése a képernyőzáron</string>
     <string name="get_invitations_error">A függőben lévő meghívások lekérése sikertelen</string>
     <string name="gplay_available_no">A Google Play szolgáltatások nem érhetőek el. Az értesítések nem támogatottak.</string>
@@ -117,7 +117,7 @@
     <string name="message_search_hint">Keresés…</string>
     <string name="message_search_next_result">Következő találat</string>
     <string name="message_search_no_more_results">Nincs több üzenet</string>
-    <string name="message_search_previous_result">Előző keresési eredmény</string>
+    <string name="message_search_previous_result">Előző találat</string>
     <string name="messages">Üzenetek</string>
     <string name="mute_all_notifications">Összes értesítés némítása</string>
     <string name="nc_Server_account_imported">A kiválasztott fiók importálva lett és elérhető</string>
@@ -167,6 +167,7 @@
     <string name="nc_certificate_error">Az SSL beállítás megakadályozta a kapcsolódást</string>
     <string name="nc_change_cert_auth">Hitelesítési tanúsítvány módosítása</string>
     <string name="nc_change_password">Jelszó módosítása</string>
+    <string name="nc_chat_no_messages">Még nincsenek üzenetek. Legyen Ön az első, aki köszön!</string>
     <string name="nc_clear_edit_button">Szerkesztés megszakítása</string>
     <string name="nc_clear_history">Összes üzenet törlése</string>
     <string name="nc_clear_history_success">Az összes üzenet törölve lett</string>
@@ -216,7 +217,7 @@
     <string name="nc_diagnosis_dialog_open_checklist">Hibaelhárítási ellenőrzőlista megnyitása</string>
     <string name="nc_diagnosis_dialog_open_diagnosis">Diagnosztikai képernyő megnyitása</string>
     <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">A dontkillmyapp.com megnyitása</string>
-    <string name="nc_dialog_introduce_unifiedpush_selection">Az alapértelmezett push-szolgáltatást készül kiválasztani</string>
+    <string name="nc_dialog_introduce_unifiedpush_selection">Az alapértelmezett leküldési szolgáltatás kiválasztására készül</string>
     <string name="nc_dialog_invalid_password">Érvénytelen jelszó</string>
     <string name="nc_dialog_maintenance_mode_description">A kiszolgáló jelenleg karbantartási módban van.</string>
     <string name="nc_dialog_outdated_client">Az alkalmazás elavult</string>
@@ -326,7 +327,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">A(z) %1$s nem érhető el (nincs telepítve vagy egy rendszergazda korlátozta)</string>
     <string name="nc_nick_guest">Vendég</string>
     <string name="nc_no">Nem</string>
-    <string name="nc_no_account_for_server">Nem található fiók ehhez a szerverhez</string>
+    <string name="nc_no_account_for_server">Nem található fiók ehhez a kiszolgálóhoz</string>
     <string name="nc_no_account_found">A fiók nem található</string>
     <string name="nc_no_open_conversations_headline">Nincs nyitott beszélgetés</string>
     <string name="nc_no_open_conversations_text">Nincs nyitott beszélgetés, melyhez csatlakozhatna.\nVagy nincsenek nyitott beszélgetések, vagy már mindhez csatlakozott.</string>
@@ -479,7 +480,7 @@
     <string name="nc_settings_remove">Eltávolítás</string>
     <string name="nc_settings_remove_account">Fiók eltávolítása</string>
     <string name="nc_settings_remove_confirmation">Erősítse meg szándékát, hogy eltávolítja a jelenlegi fiókot.</string>
-    <string name="nc_settings_screen_enable_unifiedpush_desc">Push-értesítések fogadása külső UnifiedPush szolgáltatással</string>
+    <string name="nc_settings_screen_enable_unifiedpush_desc">Leküldéses értesítések fogadása külső UnifiedPush szolgáltatással</string>
     <string name="nc_settings_screen_enable_unifiedpush_title">UnifiedPush engedélyezése</string>
     <string name="nc_settings_screen_lock_desc">A(z) %1$s zárolása az androidos képernyőzárral, vagy támogatott biometrikus eljárással</string>
     <string name="nc_settings_screen_lock_timeout_title">Képernyő zárolása ennyi tétlenség után</string>
@@ -517,7 +518,7 @@
     <string name="nc_shared_items_location">Hely</string>
     <string name="nc_shared_location">Hely megosztva</string>
     <string name="nc_shortcut_conversation_deleted">A beszélgetés már nem létezik</string>
-    <string name="nc_shortcut_created">Gyorsbillentyű létrehozva</string>
+    <string name="nc_shortcut_created">Indítóikon létrehozva</string>
     <string name="nc_show_ecosystem_description">Nextcloud alkalmazásjavaslatok a fiókválasztó párbeszédablakban</string>
     <string name="nc_show_ecosystem_title">Alkalmazásváltó megjelenítése</string>
     <string name="nc_show_notification_warning_description">Szokásos figyelmeztetés megjelenítése, ha az értesítések nincsenek helyesen beállítva</string>
@@ -717,6 +718,7 @@
     <string name="until_unpin">Kitűzés megszüntetéséig</string>
     <string name="upload_new_avatar_from_device">Új profilkép feltöltése az eszközről</string>
     <string name="user_absence">%1$s házon kívül van, és lehet, hogy nem válaszol</string>
+    <string name="user_absence_collapsed">%1$s házon kívül van</string>
     <string name="user_absence_for_one_day">%1$s ma házon kívül van</string>
     <string name="user_absence_replacement">Helyettes: </string>
     <string name="user_avatar">Felhasználói profilkép</string>
@@ -743,8 +745,8 @@
     <string name="voice_room_preset">Közvetlenül csatlakozhat a híváshoz, ami ideális beszélgetésekhez vagy spontán megbeszélésekhez</string>
     <string name="whats_your_status">Mi az állapota?</string>
     <plurals name="nc_new_messages_count">
-        <item quantity="one">%dúj üzenet</item>
-        <item quantity="other">%dúj üzenet </item>
+        <item quantity="one">%d új üzenet</item>
+        <item quantity="other">%d új üzenet </item>
     </plurals>
     <plurals name="see_similar_system_messages">
         <item quantity="one">%d hasonló üzenet megtekintése</item>
