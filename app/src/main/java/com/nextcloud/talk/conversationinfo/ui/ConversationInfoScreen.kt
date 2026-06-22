@@ -86,6 +86,7 @@ import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.withLinks
 
 data class ConversationInfoScreenCallbacks(
     val onNavigateBack: () -> Unit = {},
@@ -328,7 +329,7 @@ private fun HeaderUserInfo(state: ConversationInfoUiState) {
 @Composable
 private fun ConversationDescriptionSection(description: String) {
     Text(
-        text = description,
+        text = description.withLinks(),
         style = MaterialTheme.typography.bodyMedium,
         modifier = Modifier
             .fillMaxWidth()
