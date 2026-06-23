@@ -263,6 +263,7 @@
             <trusting group="com.google.crypto.tink" name="tink" version="1.18.0"/>
             <trusting group="com.google.crypto.tink" name="tink" version="1.20.0"/>
             <trusting group="com.google.crypto.tink" name="tink" version="1.21.0"/>
+            <trusting group="com.google.crypto.tink" name="tink" version="1.22.0"/>
          </trusted-key>
          <trusted-key id="7440F1F7D27BAC115F953D55EB095DA7D2F6AC0E" group="org.tensorflow" name="tensorflow-lite-metadata" version="0.2.0"/>
          <trusted-key id="7616EB882DAF57A11477AAF559A252FB1199D873" group="com.google.code.findbugs" name="jsr305" version="3.0.2"/>
