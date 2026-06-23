@@ -31,6 +31,7 @@ import com.github.dhaval2404.imagepicker.util.PermissionUtil
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
+import com.nextcloud.talk.appconfig.AppConfigManager
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -68,6 +69,9 @@ class ServerSelectionActivity : BaseActivity() {
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
+
+    @Inject
+    lateinit var appConfigManager: AppConfigManager
 
     private var statusQueryDisposable: Disposable? = null
 
@@ -127,9 +131,17 @@ class ServerSelectionActivity : BaseActivity() {
         }
 
         binding.serverEntryTextInputEditText.requestFocus()
-        if (!TextUtils.isEmpty(resources!!.getString(R.string.weblogin_url))) {
-            binding.serverEntryTextInputEditText.setText(resources!!.getString(R.string.weblogin_url))
-            checkServerAndProceed()
+
+        val managedBaseUrl = appConfigManager.getServerBaseUrl()
+        when {
+            !managedBaseUrl.isNullOrBlank() -> {
+                binding.serverEntryTextInputEditText.setText(managedBaseUrl)
+                checkServerAndProceed()
+            }
+            !TextUtils.isEmpty(resources!!.getString(R.string.weblogin_url)) -> {
+                binding.serverEntryTextInputEditText.setText(resources!!.getString(R.string.weblogin_url))
+                checkServerAndProceed()
+            }
         }
         binding.serverEntryTextInputEditText.setOnEditorActionListener { _: TextView?, i: Int, _: KeyEvent? ->
             if (i == EditorInfo.IME_ACTION_DONE) {
