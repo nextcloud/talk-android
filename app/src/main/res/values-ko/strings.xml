@@ -10,6 +10,7 @@
     <string name="audio_output_phone">전화 번호</string>
     <string name="audio_output_speaker">스피커</string>
     <string name="audio_output_wired_headset">유선 헤드셋</string>
+    <string name="automatic_status_set">상태가 자동 설정되었습니다.</string>
     <string name="avatar">아바타</string>
     <string name="away">자리비움</string>
     <string name="battery_optimization_title">배터리 설정</string>
@@ -410,6 +411,7 @@
     <string name="polls_settings">설정</string>
     <string name="polls_submit_vote">투표</string>
     <string name="polls_voted_hidden_success">투표가 제출되었습니다.</string>
+    <string name="previously_set">이전 설정</string>
     <string name="raise_hand">손들기</string>
     <string name="reactions_tab_all">모두</string>
     <string name="read_storage_no_permission">허가 없이 저장소에서 파일을 공유할 수 없습니다.</string>
@@ -422,6 +424,7 @@
     <string name="recording_consent_for_conversation_title">녹음/녹화 동의</string>
     <string name="recording_consent_title">통화가 녹음/녹화됩니다.</string>
     <string name="recording_settings_title">녹음/녹화 중</string>
+    <string name="reset_status">상태 초기화</string>
     <string name="restrict_join_other_room_while_call">통화 중 다른 대화방에 접속할 수 없습니다</string>
     <string name="save">저장</string>
     <string name="scan_qr_code">Scan QR Code</string>
