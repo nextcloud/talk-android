@@ -96,6 +96,21 @@ class ServerSelectionActivity : BaseActivity() {
         initSystemBars()
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
+        if (savedInstanceState == null) {
+            val managedBaseUrl = appConfigManager.getServerBaseUrl()
+            when {
+                !managedBaseUrl.isNullOrBlank() -> {
+                    binding.serverEntryTextInputEditText.setText(managedBaseUrl)
+                    checkServerAndProceed()
+                }
+
+                !TextUtils.isEmpty(resources!!.getString(R.string.weblogin_url)) -> {
+                    binding.serverEntryTextInputEditText.setText(resources!!.getString(R.string.weblogin_url))
+                    checkServerAndProceed()
+                }
+            }
+        }
     }
 
     override fun onResume() {
@@ -132,17 +147,6 @@ class ServerSelectionActivity : BaseActivity() {
 
         binding.serverEntryTextInputEditText.requestFocus()
 
-        val managedBaseUrl = appConfigManager.getServerBaseUrl()
-        when {
-            !managedBaseUrl.isNullOrBlank() -> {
-                binding.serverEntryTextInputEditText.setText(managedBaseUrl)
-                checkServerAndProceed()
-            }
-            !TextUtils.isEmpty(resources!!.getString(R.string.weblogin_url)) -> {
-                binding.serverEntryTextInputEditText.setText(resources!!.getString(R.string.weblogin_url))
-                checkServerAndProceed()
-            }
-        }
         binding.serverEntryTextInputEditText.setOnEditorActionListener { _: TextView?, i: Int, _: KeyEvent? ->
             if (i == EditorInfo.IME_ACTION_DONE) {
                 checkServerAndProceed()
