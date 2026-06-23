@@ -194,6 +194,7 @@ configurations.configureEach {
 }
 
 dependencies {
+    implementation("androidx.media3:media3-session:1.10.1")
     kapt("org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlinVersion")
     implementation("androidx.room:room-testing-android:$roomVersion")
     implementation("androidx.compose.foundation:foundation-layout:1.12.0")
