@@ -259,17 +259,27 @@ class DiagnosisActivity : BaseActivity() {
             value = Build.VERSION.SDK_INT.toString()
         )
 
-        if (isGooglePlayServicesAvailable || useEmbeddedDistrib) {
-            addDiagnosisEntry(
-                key = context.resources.getString(R.string.nc_diagnosis_gplay_available_title),
-                value = context.resources.getString(R.string.nc_diagnosis_gplay_available_yes)
-            )
-        } else {
-            addDiagnosisEntry(
-                key = context.resources.getString(R.string.nc_diagnosis_gplay_available_title),
-                value = context.resources.getString(R.string.nc_diagnosis_gplay_available_no_short)
-            )
+        when (true) {
+            isGooglePlayServicesAvailable -> {
+                addDiagnosisEntry(
+                    key = context.resources.getString(R.string.nc_diagnosis_gplay_available_title),
+                    value = context.resources.getString(R.string.nc_diagnosis_gplay_available_yes)
+                )
+            }
+            useEmbeddedDistrib -> {
+                addDiagnosisEntry(
+                    key = context.resources.getString(R.string.nc_diagnosis_gplay_available_title),
+                    value = context.resources.getString(R.string.nc_diagnosis_gplay_available_yes_up)
+                )
+            }
+            else -> {
+                addDiagnosisEntry(
+                    key = context.resources.getString(R.string.nc_diagnosis_gplay_available_title),
+                    value = context.resources.getString(R.string.nc_diagnosis_gplay_available_no_short)
+                )
+            }
         }
+
         addDiagnosisEntry(
             key = getString(R.string.nc_diagnosis_unifiedpush_available_title),
             value = context.resources.getQuantityString(
