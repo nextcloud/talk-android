@@ -854,7 +854,10 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
+    var currentVoiceMessage: ChatMessage? = null
+
     fun syncVoiceMessageUiState(message: ChatMessage) {
+        currentVoiceMessage = message
         _uiState.update { current ->
             val updatedItems = current.items.map { item ->
                 if (item is ChatItem.MessageItem && item.uiMessage.id == message.jsonMessageId) {
