@@ -236,6 +236,7 @@ How to translate with transifex:
     <string name="nc_diagnosis_app_users_amount" translatable="false">Registered users</string>
     <string name="nc_diagnosis_gplay_available_title" translatable="false">Google Play services</string>
     <string name="nc_diagnosis_gplay_available_yes" translatable="false">Google Play services are available</string>
+    <string name="nc_diagnosis_gplay_available_yes_up" translatable="false">Google Play services are available, with the embedded distributor</string>
     <string name="nc_diagnosis_gplay_available_no" translatable="false">Google Play services are not available. Notifications are not supported</string>
     <string name="nc_diagnosis_gplay_available_no_short" translatable="false">Google Play services are not available.</string>
     <string name="nc_diagnosis_unifiedpush_available_title" translatable="false">UnifiedPush services</string>

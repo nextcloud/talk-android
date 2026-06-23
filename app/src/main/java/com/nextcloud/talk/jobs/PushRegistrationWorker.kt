@@ -102,6 +102,10 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
         } else if (useUnifiedPush) {
             Log.d(TAG, "PushRegistrationWorker called via $origin (unifiedPushWork)")
             unifiedPushWork()
+        } else if (UnifiedPushUtils.hasEmbeddedDistributor(applicationContext)) {
+            Log.d(TAG, "PushRegistrationWorker called via $origin (unifiedPushWork#embeddedDistrib)")
+            UnifiedPushUtils.useEmbeddedDistributor(applicationContext)
+            unifiedPushWork()
         } else {
             Log.d(TAG, "PushRegistrationWorker called via $origin (proxyPushWork)")
             proxyPushWork()
