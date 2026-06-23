@@ -98,6 +98,10 @@
         tools:replace="label, icon, theme, name, allowBackup">
 
         <meta-data
+            android:name="android.content.APP_RESTRICTIONS"
+            android:resource="@xml/app_restrictions" />
+
+        <meta-data
             android:name="android.max_aspect"
             android:value="10" />
 
