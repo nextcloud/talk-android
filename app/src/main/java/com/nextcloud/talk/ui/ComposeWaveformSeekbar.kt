@@ -11,6 +11,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,7 +34,13 @@ const val OVERLAP = 0.025
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ComposeWaveformSeekBar(value: Float, onValueChange: (Float) -> Unit, modifier: Modifier, waveData: FloatArray) {
+fun ComposeWaveformSeekBar(
+    value: Float,
+    onValueChange: (Float) -> Unit,
+    modifier: Modifier,
+    waveData: FloatArray,
+    enabled: Boolean
+) {
     val barWidth = Stroke.DefaultMiter
     val thumbSize = WAVEFORM_THUMB_SIZE.dp
     val inversePrimary = MaterialTheme.colorScheme.inversePrimary
@@ -41,6 +48,7 @@ fun ComposeWaveformSeekBar(value: Float, onValueChange: (Float) -> Unit, modifie
 
     Slider(
         value = value,
+        enabled = enabled,
         onValueChange = onValueChange,
         track = {
             Box(
@@ -48,14 +56,18 @@ fun ComposeWaveformSeekBar(value: Float, onValueChange: (Float) -> Unit, modifie
                     .drawWithCache {
                         onDrawBehind {
                             val height = this.size.height
-                            val width = this.size.width
+                            val width = this.size.width + 8.dp.value
                             val midpoint = (this.size.height / 2f)
 
                             val barGap = (width - waveData.size * barWidth) / (waveData.size - 1).toFloat() + 1
                             for (i in waveData.indices) {
                                 val x: Float = i * (barWidth + barGap)
-                                val y: Float = waveData[i] * height
-                                val isXBeforeThumb = (x / this.size.width) <= value
+
+                                if (x < 0f || x > size.width) continue
+
+                                val y: Float = (waveData[i] * height).coerceIn(0f, midpoint)
+
+                                val isXBeforeThumb = x <= value * width
 
                                 drawLine(
                                     if (isXBeforeThumb) inversePrimary else onPrimaryContainer,
@@ -86,11 +98,13 @@ fun Preview() {
     val waveData = remember { FloatArray(WAVEFORM_SIZE) { (Math.random() % 1).toFloat() } }
 
     ComposeWaveformSeekBar(
-        0.0f,
+        0.97f,
         {},
         modifier = Modifier
             .height(MAX_HEIGHT.dp)
-            .fillMaxWidth(),
-        waveData
+            .fillMaxWidth()
+            .padding(8.dp),
+        waveData,
+        true
     )
 }
