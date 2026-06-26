@@ -10,21 +10,22 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.dagger.modules.UtilsModule
 import com.nextcloud.talk.logger.LogEntry
 import java.io.File
 import java.io.OutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
-import androidx.core.net.toUri
 
 private const val MILLIS_PER_SECOND = 1000L
 private const val NANOS_PER_MILLI = 1_000_000L
 private const val LOG_SORT_BASE_FILE = 3
 
 fun shareLogsAndDiagnosis(context: Context, subject: String, diagnosisText: String, crashInfo: String? = null) {
-    val logDir = File(context.filesDir, "logs")
+    val logDir = File(context.filesDir, UtilsModule.LOG_DIR_NAME)
     val jsonFile = buildLogcatJsonFile(context, logDir)
 
     val uris = ArrayList<Uri>()
@@ -66,7 +67,7 @@ fun shareLogsAndDiagnosis(context: Context, subject: String, diagnosisText: Stri
 }
 
 fun saveLogsAsZip(context: Context, outputStream: OutputStream, diagnosisText: String) {
-    val logDir = File(context.filesDir, "logs")
+    val logDir = File(context.filesDir, UtilsModule.LOG_DIR_NAME)
     val entries = LogEntry.parseLines(loadAllLogLines(logDir))
     ZipOutputStream(outputStream).use { zip ->
         if (entries.isNotEmpty()) {

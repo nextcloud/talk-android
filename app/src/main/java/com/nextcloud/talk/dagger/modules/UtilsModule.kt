@@ -40,8 +40,8 @@ class UtilsModule {
     @Provides
     @Singleton
     fun provideLoggerImpl(context: Context): LoggerImpl {
-        val logDir = File(context.filesDir, "logs")
-        val handler = FileLogHandler(logDir, "nc_talk_log.txt", maxSize = LOG_FILE_MAX_SIZE)
+        val logDir = File(context.filesDir, LOG_DIR_NAME)
+        val handler = FileLogHandler(logDir, LOG_FILE_NAME, maxSize = LOG_FILE_MAX_SIZE)
         val impl = LoggerImpl(handler = handler)
         val savedLevelName = context
             .getSharedPreferences(LoggerImpl.PREFS_NAME, Context.MODE_PRIVATE)
@@ -61,6 +61,8 @@ class UtilsModule {
     fun provideLogsRepository(impl: LoggerImpl): LogsRepository = impl
 
     companion object {
+        const val LOG_DIR_NAME = "logs"
+        const val LOG_FILE_NAME = "nc_talk_log.txt"
         private const val LOG_FILE_MAX_SIZE = 1_000_000L // 1 MB per file, 4 files max = 4 MB
     }
 }

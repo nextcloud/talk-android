@@ -10,6 +10,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.nextcloud.talk.dagger.modules.UtilsModule
 import java.io.File
 
 class ExceptionHandler(
@@ -103,7 +104,7 @@ class ExceptionHandler(
         }
 
     private fun readRecentLogs(maxLines: Int = 200): String {
-        val logFile = File(context.filesDir, "logs/nc_talk_log.txt")
+        val logFile = File(context.filesDir, "${UtilsModule.LOG_DIR_NAME}/${UtilsModule.LOG_FILE_NAME}")
         return try {
             val lines = logFile.readLines(Charsets.UTF_8)
             val recent = if (lines.size > maxLines) lines.takeLast(maxLines) else lines
