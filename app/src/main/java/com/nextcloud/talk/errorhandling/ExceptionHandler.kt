@@ -38,11 +38,11 @@ class ExceptionHandler(
             ) {
                 null
             }
-            val report = buildReport(diagnosis)
             val summary = exception.javaClass.simpleName +
                 (exception.message?.let { ": $it" } ?: "")
             val stackTrace = "Exception in thread \"${thread.name}\"\n" +
                 Log.getStackTraceString(exception)
+            val report = buildReport(stackTrace, diagnosis)
             // FLAG_ACTIVITY_CLEAR_TASK is intentionally omitted: the app uses
             // android:taskAffinity="" globally, so CLEAR_TASK never finds a task to
             // clear and ShowErrorActivity always lands in a new task regardless.
@@ -86,9 +86,14 @@ class ExceptionHandler(
         defaultExceptionHandler.uncaughtException(thread, exception)
     }
 
-    private fun buildReport(diagnosis: String?): String =
+    private fun buildReport(stackTrace: String, diagnosis: String?): String =
         buildString {
             logFlusher?.invoke()
+            appendLine("# Stack trace")
+            appendLine("```")
+            appendLine(stackTrace)
+            appendLine("```")
+            appendLine()
             val logs = readRecentLogs()
             if (logs.isNotEmpty()) {
                 appendLine("# Recent logs")
