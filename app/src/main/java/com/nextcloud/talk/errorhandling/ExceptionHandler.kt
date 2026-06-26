@@ -49,8 +49,6 @@ class ExceptionHandler(
             val intent = Intent(context, ShowErrorActivity::class.java).apply {
                 putExtra(ShowErrorActivity.EXTRA_CRASH_REPORT, report)
                 putExtra(ShowErrorActivity.EXTRA_CRASH_TITLE, summary)
-                putExtra(ShowErrorActivity.EXTRA_CRASH_STACKTRACE, stackTrace)
-                if (diagnosis != null) putExtra(ShowErrorActivity.EXTRA_CRASH_DIAGNOSIS, diagnosis)
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
             Log.e(TAG, "Starting ShowErrorActivity")

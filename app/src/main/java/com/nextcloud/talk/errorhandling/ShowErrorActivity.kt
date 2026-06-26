@@ -39,13 +39,10 @@ class ShowErrorActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_CRASH_REPORT = "crash_report"
         const val EXTRA_CRASH_TITLE = "crash_title"
-        const val EXTRA_CRASH_DIAGNOSIS = "crash_diagnosis"
-        const val EXTRA_CRASH_STACKTRACE = "crash_stacktrace"
     }
 
-    private lateinit var crashDiagnosis: String
+    private lateinit var crashReport: String
     private lateinit var mailSubject: String
-    private var crashStacktrace: String? = null
 
     private val saveZipLauncher =
         registerForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uri ->
@@ -56,10 +53,8 @@ class ShowErrorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
-        val crashReport = intent.getStringExtra(EXTRA_CRASH_REPORT) ?: ""
+        crashReport = intent.getStringExtra(EXTRA_CRASH_REPORT) ?: ""
         val crashTitle = intent.getStringExtra(EXTRA_CRASH_TITLE)
-        crashDiagnosis = intent.getStringExtra(EXTRA_CRASH_DIAGNOSIS) ?: ""
-        crashStacktrace = intent.getStringExtra(EXTRA_CRASH_STACKTRACE)
         val appName = getString(R.string.nc_app_product_name)
         mailSubject = getString(R.string.error_crash_title, appName) + " - " + crashTitle
 
@@ -69,7 +64,7 @@ class ShowErrorActivity : AppCompatActivity() {
                     stringResource(R.string.nc_logs_share) to { sendMail() },
                     stringResource(R.string.nc_logs_download_zip) to { saveZipLauncher.launch("nc_talk_logs.zip") }
                 )
-                CrashScreen(errorText = crashReport, menuItems = menuItems)
+                CrashScreen(errorText = this@ShowErrorActivity.crashReport, menuItems = menuItems)
             }
         }
     }
@@ -78,15 +73,14 @@ class ShowErrorActivity : AppCompatActivity() {
         shareLogsAndDiagnosis(
             context = this,
             subject = mailSubject,
-            diagnosisText = crashDiagnosis,
-            crashInfo = crashStacktrace
+            diagnosisText = crashReport
         )
     }
 
     private fun writeZipToUri(uri: Uri) {
         lifecycleScope.launch(Dispatchers.IO) {
             contentResolver.openOutputStream(uri)?.use { os ->
-                saveLogsAsZip(this@ShowErrorActivity, os, crashDiagnosis)
+                saveLogsAsZip(this@ShowErrorActivity, os, crashReport)
             }
         }
     }

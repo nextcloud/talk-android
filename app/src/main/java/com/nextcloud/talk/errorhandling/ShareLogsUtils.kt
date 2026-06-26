@@ -24,7 +24,7 @@ private const val MILLIS_PER_SECOND = 1000L
 private const val NANOS_PER_MILLI = 1_000_000L
 private const val LOG_SORT_BASE_FILE = 3
 
-fun shareLogsAndDiagnosis(context: Context, subject: String, diagnosisText: String, crashInfo: String? = null) {
+fun shareLogsAndDiagnosis(context: Context, subject: String, diagnosisText: String) {
     val logDir = File(context.filesDir, UtilsModule.LOG_DIR_NAME)
     val jsonFile = buildLogcatJsonFile(context, logDir)
 
@@ -40,15 +40,6 @@ fun shareLogsAndDiagnosis(context: Context, subject: String, diagnosisText: Stri
         appendLine()
         appendLine()
         appendLine()
-        appendLine()
-        if (crashInfo != null) {
-            appendLine("# ${context.getString(R.string.nc_logs_share_latest_crash)}:")
-            appendLine("```")
-            appendLine(crashInfo)
-            appendLine("```")
-            appendLine()
-        }
-        append("# ${context.getString(R.string.nc_logs_share_diagnosis)}:")
         appendLine()
         append(diagnosisText)
     }
