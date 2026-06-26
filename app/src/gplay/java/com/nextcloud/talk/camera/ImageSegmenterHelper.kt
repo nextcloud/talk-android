@@ -147,6 +147,7 @@ class ImageSegmenterHelper(val context: Context, var imageSegmenterListener: Seg
     }
 
     companion object {
+        fun isAvailable() = true
         const val OTHER_ERROR = 0
         const val GPU_ERROR = 1
         const val MODEL_SELFIE_SEGMENTER_PATH = "selfie_segmenter.tflite"

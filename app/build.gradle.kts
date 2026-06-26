@@ -76,7 +76,6 @@ android {
         val localBroadcastPermission = "PRIVATE_BROADCAST"
         manifestPlaceholders["broadcastPermission"] = localBroadcastPermission
         buildConfigField("String", "PERMISSION_LOCAL_BROADCAST", "\"$localBroadcastPermission\"")
-        buildConfigField("Boolean", "BACKGROUND_BLUR_ENABLED", "true")
     }
 
     flavorDimensions += "default"
@@ -86,7 +85,6 @@ android {
         create("generic") {
             applicationId = "com.nextcloud.talk2"
             dimension = "default"
-            buildConfigField("Boolean", "BACKGROUND_BLUR_ENABLED", "false")
         }
         create("gplay") {
             applicationId = "com.nextcloud.talk2"
@@ -97,7 +95,6 @@ android {
             dimension = "default"
             versionCode = 1
             versionName = "1"
-            buildConfigField("Boolean", "BACKGROUND_BLUR_ENABLED", "false")
         }
     }
 
