@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
+import com.nextcloud.talk.logger.LogsRepository
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DisplayUtils
@@ -55,7 +56,8 @@ fun buildDiagnosisElements(
     context: Context,
     userManager: UserManager,
     appPreferences: AppPreferences,
-    arbitraryStorageManager: ArbitraryStorageManager? = null
+    arbitraryStorageManager: ArbitraryStorageManager? = null,
+    logsRepository: LogsRepository
 ): List<DiagnosisElement> {
     val data = mutableListOf<DiagnosisElement>()
 
@@ -138,6 +140,7 @@ fun buildDiagnosisElements(
     addEntry(context.getString(R.string.nc_diagnosis_app_name_title), context.getString(R.string.nc_app_product_name))
     addEntry(context.getString(R.string.nc_diagnosis_app_version_title), "v${BuildConfig.VERSION_NAME}")
     addEntry(context.getString(R.string.nc_diagnosis_flavor), BuildConfig.FLAVOR)
+    addEntry(context.getString(R.string.nc_diagnosis_log_level), logsRepository.minimumLevel.toString())
     addEntry(context.getString(R.string.nc_diagnosis_offer_unifiedpush), boolStr(offerUnifiedPush))
     addEntry(context.getString(R.string.nc_diagnosis_use_unifiedpush), boolStr(useUnifiedPush))
 

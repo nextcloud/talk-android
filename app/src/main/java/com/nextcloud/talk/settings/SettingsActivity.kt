@@ -146,7 +146,7 @@ class SettingsActivity :
     private val saveZipLauncher =
         registerForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uri ->
             if (uri != null) {
-                val diagnosisText = buildDiagnosisElements(this, userManager, appPreferences).toMarkdown()
+                val diagnosisText = buildDiagnosisReport()
                 lifecycleScope.launch(Dispatchers.IO) {
                     contentResolver.openOutputStream(uri)?.use { os ->
                         saveLogsAsZip(this@SettingsActivity, os, diagnosisText)
@@ -713,7 +713,7 @@ class SettingsActivity :
     private fun buildShareReportOptions(): List<Pair<String, () -> Unit>> {
         val options = mutableListOf(
             getString(R.string.nc_logs_share) to {
-                val diagnosisText = buildDiagnosisElements(this, userManager, appPreferences).toMarkdown()
+                val diagnosisText = buildDiagnosisReport()
                 shareLogsAndDiagnosis(
                     context = this,
                     subject = getString(R.string.nc_logs_share_subject, getString(R.string.nc_app_product_name)),
@@ -727,7 +727,7 @@ class SettingsActivity :
         if (BrandingUtils.isOriginalNextcloudClient(applicationContext)) {
             options.add(
                 getString(R.string.create_issue) to {
-                    val diagnosisText = buildDiagnosisElements(this, userManager, appPreferences).toMarkdown()
+                    val diagnosisText = buildDiagnosisReport()
                     val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
                     clipboard.setPrimaryClip(
                         android.content.ClipData.newPlainText(getString(R.string.nc_app_product_name), diagnosisText)
@@ -739,6 +739,13 @@ class SettingsActivity :
         }
         return options
     }
+
+    private fun buildDiagnosisReport(): String = buildDiagnosisElements(
+        context = this,
+        userManager = userManager,
+        appPreferences = appPreferences,
+        logsRepository = logsRepository
+    ).toMarkdown()
 
     private fun buildShareDialogContentView(
         options: List<Pair<String, () -> Unit>>,

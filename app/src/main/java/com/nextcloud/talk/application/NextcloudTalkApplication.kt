@@ -127,7 +127,14 @@ class NextcloudTalkApplication :
                 ExceptionHandler(
                     context = this,
                     defaultExceptionHandler = defaultHandler,
-                    diagnosisSupplier = { buildDiagnosisElements(this, userManager, appPreferences).toMarkdown() },
+                    diagnosisSupplier = {
+                        buildDiagnosisElements(
+                            context = this,
+                            userManager = userManager,
+                            appPreferences = appPreferences,
+                            logsRepository = logger
+                        ).toMarkdown()
+                    },
                     logCrash = { msg, t -> logger.e(TAG, msg, t) },
                     logFlusher = logger::flush
                 )

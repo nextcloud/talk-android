@@ -35,6 +35,7 @@ import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.data.network.NetworkMonitor
+import com.nextcloud.talk.logger.LogsRepository
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.UnifiedPushUtils
@@ -61,6 +62,9 @@ class DiagnosisActivity : BaseActivity() {
 
     @Inject
     lateinit var platformPermissionUtil: PlatformPermissionUtil
+
+    @Inject
+    lateinit var logsRepository: LogsRepository
 
     private val diagnosisData = mutableListOf<DiagnosisElement>()
     private val diagnosisDataState = mutableStateOf(emptyList<DiagnosisElement>())
@@ -138,7 +142,7 @@ class DiagnosisActivity : BaseActivity() {
         supportActionBar?.show()
 
         diagnosisData.clear()
-        diagnosisData.addAll(buildDiagnosisElements(this, userManager, appPreferences, arbitraryStorageManager))
+        diagnosisData.addAll(buildDiagnosisElements(this, userManager, appPreferences, arbitraryStorageManager, logsRepository))
         diagnosisDataState.value = diagnosisData.toList()
     }
 
