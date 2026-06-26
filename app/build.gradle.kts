@@ -97,6 +97,7 @@ android {
             dimension = "default"
             versionCode = 1
             versionName = "1"
+            buildConfigField("Boolean", "BACKGROUND_BLUR_ENABLED", "false")
         }
     }
 
