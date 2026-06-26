@@ -16,11 +16,13 @@ import android.content.Context
  */
 class ImageSegmenterHelper(val context: Context, var imageSegmenterListener: SegmenterListener? = null) {
 
-    fun destroyImageSegmenter() {}
+    fun destroyImageSegmenter() {
+        // does nothing
+    }
 
-    fun setupImageSegmenter() {}
-
-    fun segmentFrame(byteBuffer: java.nio.ByteBuffer, width: Int, height: Int, videoFrameTimeStamp: Long) {}
+    fun segmentFrame(byteBuffer: java.nio.ByteBuffer, width: Int, height: Int, videoFrameTimeStamp: Long) {
+        // does nothing
+    }
 
     data class ResultBundle(val mask: ByteArray, val inferenceTime: Long, val width: Int, val height: Int) {
         override fun equals(other: Any?): Boolean {
@@ -40,10 +42,8 @@ class ImageSegmenterHelper(val context: Context, var imageSegmenterListener: Seg
     }
 
     companion object {
+        fun isAvailable() = false
         const val OTHER_ERROR = 0
-        const val GPU_ERROR = 1
-        const val MODEL_SELFIE_SEGMENTER_PATH = "selfie_segmenter.tflite"
-        const val RGB_MAX = 255.0
     }
 
     interface SegmenterListener {
