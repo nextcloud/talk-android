@@ -37,10 +37,28 @@ class LogsViewModel @Inject constructor(private val logsRepository: LogsReposito
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    private val _loggingEnabled = MutableStateFlow(logsRepository.minimumLevel != Level.NONE)
+    val loggingEnabled: StateFlow<Boolean> = _loggingEnabled
+
     private val _advancedLogging = MutableStateFlow(logsRepository.minimumLevel <= Level.DEBUG)
     val advancedLogging: StateFlow<Boolean> = _advancedLogging
 
     val lostEntries: Boolean get() = logsRepository.lostEntries
+
+    fun setLoggingEnabled(enabled: Boolean, deleteExisting: Boolean = false) {
+        val level = if (enabled) Level.INFO else Level.NONE
+        logsRepository.minimumLevel = level
+        _loggingEnabled.value = enabled
+        if (!enabled) _advancedLogging.value = false
+        prefs.edit { putString(LoggerImpl.PREF_LOG_LEVEL, level.name) }
+        if (!enabled && deleteExisting) {
+            logsRepository.deleteAll()
+            _entries.value = emptyList()
+            _totalSize.value = 0L
+        } else {
+            load()
+        }
+    }
 
     fun setAdvancedLogging(enabled: Boolean) {
         val level = if (enabled) Level.DEBUG else Level.INFO

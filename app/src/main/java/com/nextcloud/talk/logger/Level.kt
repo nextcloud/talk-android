@@ -10,7 +10,8 @@ enum class Level(val tag: String) {
     DEBUG("D"),
     INFO("I"),
     WARNING("W"),
-    ERROR("E");
+    ERROR("E"),
+    NONE("-");
 
     companion object {
         fun fromTag(tag: String): Level? = entries.find { it.tag == tag }

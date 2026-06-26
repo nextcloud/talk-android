@@ -230,9 +230,13 @@ class SettingsActivity :
         supportActionBar?.show()
         dispose(null)
 
-        val advancedLoggingEnabled = logsRepository.minimumLevel <= Level.DEBUG
-        binding.logsAdvancedLoggingWarning.visibility =
-            if (advancedLoggingEnabled) View.VISIBLE else View.GONE
+        binding.logsSubtitle.setText(
+            when {
+                logsRepository.minimumLevel == Level.NONE -> R.string.nc_logs_logging_disabled_note
+                logsRepository.minimumLevel <= Level.DEBUG -> R.string.nc_logs_advanced_logging_enabled_warning
+                else -> R.string.nc_logs_logging_enabled
+            }
+        )
 
         loadCapabilitiesAndUpdateSettings(isOnline.value)
 
@@ -751,7 +755,8 @@ class SettingsActivity :
             addView(
                 android.widget.TextView(context).apply {
                     text = getString(R.string.nc_logs_advanced_logging_privacy_warning)
-                    val h = dp(DIALOG_PADDING_H_DP); val v = dp(DIALOG_PADDING_V_DP)
+                    val h = dp(DIALOG_PADDING_H_DP)
+                    val v = dp(DIALOG_PADDING_V_DP)
                     setPadding(h, v, h, v)
                     setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium)
                 }
@@ -775,13 +780,17 @@ class SettingsActivity :
                 addView(
                     android.widget.TextView(context).apply {
                         text = label
-                        val h = dp(DIALOG_PADDING_H_DP); val v = dp(DIALOG_PADDING_V_DP)
+                        val h = dp(DIALOG_PADDING_H_DP)
+                        val v = dp(DIALOG_PADDING_V_DP)
                         setPadding(h, v, h, v)
                         setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge)
                         setBackgroundResource(selectableBackground)
                         isClickable = true
                         isFocusable = true
-                        setOnClickListener { onDismiss(); action() }
+                        setOnClickListener {
+                            onDismiss()
+                            action()
+                        }
                     }
                 )
             }

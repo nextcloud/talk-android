@@ -227,6 +227,12 @@ How to translate with transifex:
     <string name="nc_logs_share_latest_crash">Latest crash</string>
     <string name="nc_logs_share_diagnosis">Diagnosis report</string>
     <string name="nc_logs_download_zip">Download as ZIP</string>
+    <string name="nc_logs_logging_enabled">Logging enabled</string>
+    <string name="nc_logs_logging_disabled_note">Logging is disabled. No logs are written to disk.</string>
+    <string name="nc_logs_disable_dialog_title">Disable logging</string>
+    <string name="nc_logs_disable_dialog_message">Do you also want to delete the existing log files?</string>
+    <string name="nc_logs_disable_keep">Keep logs</string>
+    <string name="nc_logs_disable_delete">Delete logs</string>
     <string name="nc_logs_advanced_logging">Advanced logging</string>
     <string name="nc_logs_advanced_logging_enable">Enable advanced logging</string>
     <string name="nc_logs_advanced_logging_disable">Disable advanced logging</string>

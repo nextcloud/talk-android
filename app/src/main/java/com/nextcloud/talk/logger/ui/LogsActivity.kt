@@ -22,12 +22,14 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -80,6 +82,7 @@ class LogsActivity : BaseActivity() {
                 val entries = viewModel.entries.collectAsState().value
                 val isLoading = viewModel.isLoading.collectAsState().value
                 val totalSize = viewModel.totalSize.collectAsState().value
+                val loggingEnabled = viewModel.loggingEnabled.collectAsState().value
                 val advancedLogging = viewModel.advancedLogging.collectAsState().value
 
                 val menuItems = listOf(
@@ -104,9 +107,12 @@ class LogsActivity : BaseActivity() {
                             isLoading = isLoading,
                             totalSize = totalSize,
                             lostEntries = viewModel.lostEntries,
+                            loggingEnabled = loggingEnabled,
                             advancedLogging = advancedLogging
                         ),
+                        onLoggingEnabledChange = { viewModel.setLoggingEnabled(it) },
                         onAdvancedLoggingChange = { viewModel.setAdvancedLogging(it) },
+                        onDisable = { deleteExisting -> viewModel.setLoggingEnabled(false, deleteExisting) },
                         paddingValues = paddingValues
                     )
                 }
@@ -124,16 +130,45 @@ private data class LogsUiState(
     val isLoading: Boolean,
     val totalSize: Long,
     val lostEntries: Boolean,
+    val loggingEnabled: Boolean,
     val advancedLogging: Boolean
 )
 
 @Composable
 private fun LogsContent(
     state: LogsUiState,
+    onLoggingEnabledChange: (Boolean) -> Unit,
     onAdvancedLoggingChange: (Boolean) -> Unit,
+    onDisable: (deleteExisting: Boolean) -> Unit,
     paddingValues: PaddingValues
 ) {
     val listState = rememberLazyListState()
+    var showDisableDialog by remember { mutableStateOf(false) }
+
+    if (showDisableDialog) {
+        AlertDialog(
+            onDismissRequest = { showDisableDialog = false },
+            title = { Text(stringResource(R.string.nc_logs_disable_dialog_title)) },
+            text = { Text(stringResource(R.string.nc_logs_disable_dialog_message)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDisableDialog = false
+                    onDisable(true)
+                }) {
+                    Text(stringResource(R.string.nc_logs_disable_delete))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showDisableDialog = false
+                    onDisable(false)
+                }) {
+                    Text(stringResource(R.string.nc_logs_disable_keep))
+                }
+            }
+        )
+    }
+
     LaunchedEffect(state.entries.size) {
         if (state.entries.isNotEmpty()) listState.scrollToItem(state.entries.size - 1)
     }
@@ -143,7 +178,13 @@ private fun LogsContent(
             .padding(paddingValues)
             .fillMaxSize()
     ) {
-        LogsHeader(state = state, onAdvancedLoggingChange = onAdvancedLoggingChange)
+        LogsHeader(
+            state = state,
+            onLoggingEnabledChange = { enabled ->
+                if (!enabled) showDisableDialog = true else onLoggingEnabledChange(true)
+            },
+            onAdvancedLoggingChange = onAdvancedLoggingChange
+        )
         if (state.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
@@ -164,7 +205,33 @@ private fun LogsContent(
 }
 
 @Composable
-private fun LogsHeader(state: LogsUiState, onAdvancedLoggingChange: (Boolean) -> Unit) {
+private fun LogsHeader(
+    state: LogsUiState,
+    onLoggingEnabledChange: (Boolean) -> Unit,
+    onAdvancedLoggingChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stringResource(R.string.nc_logs_logging_enabled),
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Switch(checked = state.loggingEnabled, onCheckedChange = onLoggingEnabledChange)
+    }
+    if (!state.loggingEnabled) {
+        Text(
+            text = stringResource(R.string.nc_logs_logging_disabled_note),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        return
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -228,6 +295,7 @@ private fun LogEntryRow(entry: LogEntry) {
         Level.INFO -> colorInfo
         Level.WARNING -> colorWarning
         Level.ERROR -> colorError
+        Level.NONE -> colorMuted
     }
     val lines = entry.message.split('\n')
     val isMultiLine = lines.size > 1

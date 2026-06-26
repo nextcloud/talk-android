@@ -820,13 +820,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/nc_settings_logs_subtitle" />
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/logs_advanced_logging_warning"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/nc_logs_advanced_logging_enabled_warning"
-                        android:textColor="@color/nc_darkRed"
-                        android:visibility="gone" />
+
                 </LinearLayout>
 
                 <LinearLayout
