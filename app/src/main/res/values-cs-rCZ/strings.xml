@@ -91,6 +91,7 @@
     <string name="lock_conversation">Uzamknout konverzaci</string>
     <string name="lock_symbol">Symbol zámku</string>
     <string name="lower_hand">Přestat se hlásit</string>
+    <string name="media_message_content_description">Náhled souboru</string>
     <string name="media_message_content_play">Přehrát multimediální soubor</string>
     <string name="mentioned">Zmíněni</string>
     <string name="menu_item_sort_by_date_newest_first">Nejnovější jako první</string>
