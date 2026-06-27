@@ -380,7 +380,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
 
     testImplementation("org.junit.vintage:junit-vintage-engine:6.1.0") // DO NOT REMOVE
-    testImplementation("com.google.crypto.tink:tink:1.21.0")
+    testImplementation("com.google.crypto.tink:tink:1.22.0")
     testImplementation("androidx.room:room-testing:$roomVersion")
     testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
     testImplementation("com.google.dagger:hilt-android-testing:2.59.2")
