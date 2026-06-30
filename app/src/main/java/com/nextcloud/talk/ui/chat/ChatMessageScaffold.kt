@@ -100,6 +100,7 @@ internal val LocalMessageLongClickHandler = compositionLocalOf<(Int) -> Unit> { 
 internal val LocalHighlightSearchTerm = compositionLocalOf<String?> { null }
 internal val LocalShowThreadButton = compositionLocalOf { true }
 internal val LocalAvatarClickHandler = compositionLocalOf<(Int) -> Unit> { {} }
+internal val LocalMarkdownTaskToggleHandler = compositionLocalOf<(Int, String) -> Unit> { { _, _ -> } }
 
 private enum class MetadataLayoutMode {
     CAPTION,

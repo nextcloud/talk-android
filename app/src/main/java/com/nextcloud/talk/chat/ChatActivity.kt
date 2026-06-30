@@ -846,7 +846,10 @@ class ChatActivity :
                                 onSystemMessageExpandClick = { messageId ->
                                     chatViewModel.toggleSystemMessageCollapse(messageId)
                                 },
-                                onAvatarClick = { messageId -> chatViewModel.showProfileSheet(messageId.toLong()) }
+                                onAvatarClick = { messageId -> chatViewModel.showProfileSheet(messageId.toLong()) },
+                                onMarkdownTaskToggle = { messageId, updatedMessage ->
+                                    updateMarkdownTaskMessage(messageId, updatedMessage)
+                                }
                             )
                         ),
                         listState = listState
@@ -972,6 +975,51 @@ class ChatActivity :
                 }
             }
         }
+    }
+
+    private fun updateMarkdownTaskMessage(messageId: Int, updatedMessage: String) {
+        if (credentials.isNullOrBlank() || conversationUser?.baseUrl.isNullOrBlank()) {
+            return
+        }
+
+        lifecycleScope.launch {
+            val message = chatViewModel.getMessageById(messageId.toLong()).first()
+            if (message.isTemporary) {
+                messageInputViewModel.editTempChatMessage(message, updatedMessage)
+            } else {
+                val apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
+                messageInputViewModel.editChatMessage(
+                    credentials!!,
+                    ApiUtils.getUrlForChatMessage(
+                        version = apiVersion,
+                        baseUrl = conversationUser!!.baseUrl!!,
+                        token = roomToken,
+                        messageId = message.jsonMessageId.toString()
+                    ),
+                    getMarkdownTaskEditText(message, updatedMessage)
+                )
+            }
+        }
+    }
+
+    private fun getMarkdownTaskEditText(message: ChatMessage, updatedMessage: String): String {
+        val messageParameters = message.messageParameters ?: return updatedMessage
+        var result = updatedMessage
+        for ((key, params) in messageParameters) {
+            val token = "{$key}"
+            if (!result.contains(token)) {
+                continue
+            }
+
+            val replacement = when (params?.get("type")) {
+                "user", "guest", "email" -> "@${params["mention-id"]}"
+                "user-group", "circle" -> "@\"${params["mention-id"]}\""
+                "call" -> "@all"
+                else -> params?.get("name").orEmpty()
+            }
+            result = result.replace(token, replacement)
+        }
+        return result
     }
 
     @Composable
