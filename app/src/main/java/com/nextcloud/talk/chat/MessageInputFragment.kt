@@ -187,6 +187,7 @@ class MessageInputFragment : Fragment() {
         }
     }
 
+    @Suppress("LongMethod")
     private fun initObservers() {
         Log.d(TAG, "LifeCyclerOwner is: ${viewLifecycleOwner.lifecycle}")
         chatActivity.chatViewModel.getCapabilitiesViewState.observe(viewLifecycleOwner) { state ->
@@ -426,6 +427,7 @@ class MessageInputFragment : Fragment() {
         }
     }
 
+    @Suppress("LongMethod")
     private fun initMessageInputView(spreedCapabilities: SpreedCapability) {
         if (!chatActivity.active) return
         this.spreedCapabilities = spreedCapabilities

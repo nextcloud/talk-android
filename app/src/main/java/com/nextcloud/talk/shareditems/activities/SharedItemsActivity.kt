@@ -207,6 +207,7 @@ class SharedItemsActivity : BaseActivity() {
         binding.sharedItemsTabs.visibility = View.GONE
     }
 
+    @Suppress("LongMethod")
     private fun initTabs(sharedItemTypes: Set<SharedItemType>) {
         binding.sharedItemsTabs.removeAllTabs()
 

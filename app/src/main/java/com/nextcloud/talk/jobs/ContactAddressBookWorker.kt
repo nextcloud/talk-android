@@ -67,6 +67,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
     private lateinit var accountName: String
     private lateinit var accountType: String
 
+    @Suppress("LongMethod")
     override fun doWork(): Result {
         sharedApplication!!.componentApplication.inject(this)
 
@@ -255,6 +256,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
         }
     }
 
+    @Suppress("LongMethod")
     private fun createLinkedAccounts(contactsWithAssociatedPhoneNumbers: Map<String, String>?) {
         fun hasLinkedAccount(id: String): Boolean {
             var hasLinkedAccount = false

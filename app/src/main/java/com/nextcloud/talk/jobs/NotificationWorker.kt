@@ -223,6 +223,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         getNcDataAndShowNotification(mainActivityIntent)
     }
 
+    @Suppress("LongMethod")
     private fun handleCallPushMessage() {
         val userBeingCalled = userManager.getUserWithId(user.id!!).blockingGet()
 
@@ -259,6 +260,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             return bundle
         }
 
+        @Suppress("LongMethod")
         fun prepareCallNotificationScreen(conversation: ConversationModel) {
             val fullScreenIntent = Intent(context, CallNotificationActivity::class.java)
             val bundle = createBundle(conversation)
@@ -602,7 +604,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return false
     }
 
-    @Suppress("MagicNumber")
+    @Suppress("MagicNumber", "LongMethod")
     private fun showNotification(
         intent: Intent,
         ncNotification: com.nextcloud.talk.models.json.notifications.Notification?
