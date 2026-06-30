@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2025 Alexandre Wery <nextcloud-talk-android@alwy.be>
  * SPDX-FileCopyrightText: 2024 Christian Reiner <foss@christian-reiner.info>
  * SPDX-FileCopyrightText: 2024 Parneet Singh <gurayaparneet@gmail.com>
  * SPDX-FileCopyrightText: 2024 Giacomo Pacini <giacomo@paciosoft.com>
@@ -127,6 +128,7 @@ import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
+import com.nextcloud.talk.jobs.NotificationWorker.Companion.BUBBLE_SWITCH_KEY
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.location.LocationPickerActivity
@@ -142,6 +144,7 @@ import com.nextcloud.talk.models.json.threads.ThreadInfo
 import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.polls.ui.PollMainDialogFragment
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
+import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
@@ -198,6 +201,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWIT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
+import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import com.nextcloud.talk.webrtc.Globals
@@ -241,7 +245,7 @@ import kotlin.math.abs
 
 @Suppress("TooManyFunctions", "LargeClass", "LongMethod")
 @AutoInjector(NextcloudTalkApplication::class)
-class ChatActivity :
+open class ChatActivity :
     BaseActivity(),
     CallStartedMessageInterface {
 
@@ -1196,8 +1200,8 @@ class ChatActivity :
 
         pendingTargetMessageId = extras?.getString(BundleKeys.KEY_MESSAGE_ID)?.toLongOrNull()?.takeIf { it > 0L }
             ?: extras?.getLong(BundleKeys.KEY_MESSAGE_ID)?.takeIf { it > 0L }
-        pendingTargetThreadId = extras?.getString(BundleKeys.KEY_THREAD_ID)?.toLongOrNull()?.takeIf { it > 0L }
-            ?: extras?.getLong(BundleKeys.KEY_THREAD_ID)?.takeIf { it > 0L }
+        pendingTargetThreadId = extras?.getString(KEY_THREAD_ID)?.toLongOrNull()?.takeIf { it > 0L }
+            ?: extras?.getLong(KEY_THREAD_ID)?.takeIf { it > 0L }
         pendingTargetSearchQuery = extras?.getString(BundleKeys.KEY_SEARCH_QUERY)
     }
 
@@ -2033,6 +2037,12 @@ class ChatActivity :
                     onClick = { openScheduledMessages() }
                 )
             }
+            if (NotificationUtils.deviceSupportsBubbles) {
+                items += MenuItemData(
+                    title = getString(R.string.nc_create_bubble),
+                    onClick = { createConversationBubble() }
+                )
+            }
         }
         if (currentConversation?.objectType == ConversationEnums.ObjectType.FILE) {
             items += MenuItemData(
@@ -2275,8 +2285,10 @@ class ChatActivity :
 
     private fun setupChatEmptyStateView() {
         binding.chatEmptyStateComposeView.setContent {
-            val type by chatEmptyStateType
-            type?.let { ChatEmptyState(it) }
+            MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
+                val type by chatEmptyStateType
+                type?.let { ChatEmptyState(it) }
+            }
         }
     }
 
@@ -2307,6 +2319,79 @@ class ChatActivity :
         sb.append(currentConversation!!.description)
         chatEmptyStateType.value = ChatEmptyStateType.Lobby(sb.toString())
     }
+
+    private fun openBubbleSettings() {
+        val intent = Intent(this, SettingsActivity::class.java)
+        intent.putExtra(BundleKeys.KEY_FOCUS_BUBBLE_SETTINGS, true)
+        startActivity(intent)
+    }
+
+    @Suppress("ReturnCount")
+    private fun createConversationBubble() {
+        if (!NotificationUtils.deviceSupportsBubbles) {
+            Log.e(
+                TAG,
+                "createConversationBubble was called but device doesn't support it. It should not be possible " +
+                    "to get here via UI!"
+            )
+            return
+        }
+
+        if (!appPreferences.areBubblesEnabled() || !NotificationUtils.areSystemBubblesEnabled(context)) {
+            // Do not replace with snackbar as it needs to survive screen change
+            Toast.makeText(
+                context,
+                getString(R.string.nc_conversation_notification_bubble_disabled),
+                Toast.LENGTH_SHORT
+            ).show()
+            openBubbleSettings()
+            return
+        }
+
+        if (!appPreferences.areBubblesForced() && !isConversationBubbleEnabled()) {
+            // Do not replace with snackbar as it needs to survive screen change
+            Toast.makeText(
+                context,
+                getString(R.string.nc_conversation_notification_bubble_enable_conversation),
+                Toast.LENGTH_SHORT
+            ).show()
+            showConversationInfoScreen(focusBubbleSwitch = true)
+            return
+        }
+
+        val conversationName = currentConversation?.displayName ?: getString(R.string.nc_app_name)
+        currentConversation?.let {
+            val bubbleInfo = NotificationUtils.BubbleInfo(
+                roomToken = roomToken,
+                conversationRemoteId = it.name,
+                conversationName = conversationName,
+                conversationUser = conversationUser,
+                isOneToOneConversation = isOneToOneConversation(),
+                credentials = credentials
+            )
+
+            NotificationUtils.createConversationBubble(
+                context = context,
+                bubbleInfo = bubbleInfo,
+                appPreferences = appPreferences,
+                lifecycleScope
+            )
+        }
+    }
+
+    private fun isConversationBubbleEnabled(): Boolean =
+        runCatching {
+            DatabaseStorageModule(conversationUser, roomToken).getBoolean(BUBBLE_SWITCH_KEY, false)
+        }.onFailure { e ->
+            when (e) {
+                is IOException -> Log.e(TAG, "Failed to read conversation bubble preference: IO error", e)
+                is IllegalStateException -> Log.e(
+                    TAG,
+                    "Failed to read conversation bubble preference: Invalid state",
+                    e
+                )
+            }
+        }.getOrDefault(false)
 
     private fun onRemoteFileBrowsingResult(intent: Intent?) {
         val pathList = intent?.getStringArrayListExtra(RemoteFileBrowserActivity.EXTRA_SELECTED_PATHS)
@@ -2700,11 +2785,14 @@ class ChatActivity :
         )
     }
 
-    private fun showConversationInfoScreen() {
+    private fun showConversationInfoScreen(focusBubbleSwitch: Boolean = false) {
         val bundle = Bundle()
 
         bundle.putString(KEY_ROOM_TOKEN, roomToken)
         bundle.putBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE, isOneToOneConversation())
+        if (focusBubbleSwitch) {
+            bundle.putBoolean(BundleKeys.KEY_FOCUS_CONVERSATION_BUBBLE, true)
+        }
 
         val upcomingEvent =
             (chatViewModel.upcomingEventViewState.value as? ChatViewModel.UpcomingEventUIState.Success)?.event
@@ -2723,9 +2811,10 @@ class ChatActivity :
             sessionIdAfterRoomJoined != "0"
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    private fun cancelNotificationsForCurrentConversation() {
+    protected open fun cancelNotificationsForCurrentConversation() {
+        val isBubbleMode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isLaunchedFromBubble
         if (conversationUser != null) {
-            if (!TextUtils.isEmpty(roomToken)) {
+            if (!TextUtils.isEmpty(roomToken) && !isBubbleMode) {
                 try {
                     NotificationUtils.cancelExistingNotificationsForRoom(
                         applicationContext,
