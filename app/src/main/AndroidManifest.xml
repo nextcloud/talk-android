@@ -193,7 +193,6 @@
         <activity
             android:name=".activities.CallActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
-            android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:showOnLockScreen="true"
             android:supportsPictureInPicture="true"
@@ -313,6 +312,7 @@
         <receiver android:name=".receivers.DeclineCallReceiver" android:exported="false" />
         <receiver android:name=".receivers.DismissRecordingAvailableReceiver" />
         <receiver android:name=".receivers.ShareRecordingToChatReceiver" />
+        <receiver android:name=".receivers.EndCallReceiver" />
 
         <service
             android:name=".utils.SyncService"
