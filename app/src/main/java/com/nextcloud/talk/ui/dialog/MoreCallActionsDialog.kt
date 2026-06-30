@@ -19,6 +19,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.camera.BlurBackgroundViewModel
+import com.nextcloud.talk.camera.ImageSegmenterHelper
 import com.nextcloud.talk.databinding.DialogMoreCallActionsBinding
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -76,6 +77,10 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
             binding.raiseHand.visibility = View.VISIBLE
         } else {
             binding.raiseHand.visibility = View.GONE
+        }
+
+        if (!ImageSegmenterHelper.isAvailable()) {
+            binding.backgroundBlur.visibility = View.GONE
         }
     }
 
