@@ -195,9 +195,6 @@ public interface NcApi {
                                      @Url String url,
                                      @Nullable @Field("password") String password);
 
-    @DELETE
-    Observable<GenericOverall> leaveRoom(@Nullable @Header("Authorization") String authorization, @Url String url);
-
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
     */
