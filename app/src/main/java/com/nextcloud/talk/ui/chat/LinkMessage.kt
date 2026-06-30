@@ -88,7 +88,8 @@ private fun LinkPreviewCard(og: OpenGraphObject, url: String, highlightSearchTer
             .fillMaxWidth()
             .padding(start = 8.dp, end = 8.dp, bottom = 8.dp, top = 4.dp)
             .clickable(enabled = url.isNotBlank()) {
-                context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
+                val normalizedUri = url.toUri().normalizeScheme()
+                context.startActivity(Intent(Intent.ACTION_VIEW, normalizedUri))
             }
     ) {
         Column(modifier = Modifier.padding(8.dp)) {

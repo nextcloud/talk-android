@@ -20,7 +20,9 @@ import android.text.method.LinkMovementMethod
 import android.text.style.BackgroundColorSpan
 import android.text.style.ClickableSpan
 import android.text.style.ReplacementSpan
+import android.text.style.URLSpan
 import android.text.util.Linkify
+import android.util.Patterns
 import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -63,9 +65,6 @@ private const val CHIP_START_PADDING_DP = 2f
 private const val CHIP_END_PADDING_DP = 5f
 private const val CHIP_VERTICAL_PADDING_DP = 2f
 private const val CHIP_CORNER_RADIUS_DP = 16f
-
-private const val MESSAGE_LINKIFY_MASK = Linkify.PHONE_NUMBERS or
-    Linkify.EMAIL_ADDRESSES
 
 // GFM table separator row: starts with | followed by optional spaces/colons and at least 3 dashes
 private val TABLE_SEPARATOR_REGEX = Regex("""^\|[ :]*-{3,}""", RegexOption.MULTILINE)
@@ -167,27 +166,31 @@ fun MarkdownText(
                     avatarGapPx = avatarGapPx
                 )
 
-                // Linkify.addLinks(mask) removes ALL existing URLSpan objects (including Markwon's
-                // LinkSpan which extends URLSpan) before adding its own. Save them first so we can
-                // restore them afterwards — otherwise markdown links like [text](url) become dead.
-                data class SavedLinkSpan(val span: LinkSpan, val start: Int, val end: Int, val flags: Int)
-                val savedMarkdownLinks = ssb.getSpans(0, ssb.length, LinkSpan::class.java)
-                    .map { span ->
-                        SavedLinkSpan(
-                            span,
-                            ssb.getSpanStart(span),
-                            ssb.getSpanEnd(span),
-                            ssb.getSpanFlags(span)
-                        )
-                    }
-
-                val hasOtherLinks = Linkify.addLinks(ssb, MESSAGE_LINKIFY_MASK)
-                val hasAutoDetectedLinks = Linkify.addLinks(ssb, validLinkRegex.toPattern(), null) || hasOtherLinks
-
-                // Restore Markwon link spans that Linkify removed.
-                savedMarkdownLinks.forEach { ssb.setSpan(it.span, it.start, it.end, it.flags) }
-                val hasMarkdownLinks = savedMarkdownLinks.isNotEmpty()
-                val hasLinks = hasAutoDetectedLinks || hasMarkdownLinks
+                val skipExistingLinks = Linkify.MatchFilter { s, start, end ->
+                    s !is Spanned || s.getSpans(start, end, URLSpan::class.java).isEmpty()
+                }
+                val hasUrlLinks = Linkify.addLinks(ssb, validLinkRegex.toPattern(), null, null) { _, url ->
+                    val schemeEnd = url.indexOf("://")
+                    if (schemeEnd > 0) url.substring(0, schemeEnd).lowercase() + url.substring(schemeEnd) else url
+                }
+                val hasPhoneLinks = Linkify.addLinks(
+                    ssb,
+                    Patterns.PHONE,
+                    "tel:",
+                    null,
+                    skipExistingLinks,
+                    null
+                )
+                val hasEmailLinks = Linkify.addLinks(
+                    ssb,
+                    Patterns.EMAIL_ADDRESS,
+                    "mailto:",
+                    null,
+                    skipExistingLinks,
+                    null
+                )
+                val hasMarkdownLinks = ssb.getSpans(0, ssb.length, LinkSpan::class.java).isNotEmpty()
+                val hasLinks = hasUrlLinks || hasPhoneLinks || hasEmailLinks || hasMarkdownLinks
 
                 resolveFileParams(ssb, message)
                 applySearchHighlight(ssb, highlightSearchTerm, searchHighlightColorArgb)
