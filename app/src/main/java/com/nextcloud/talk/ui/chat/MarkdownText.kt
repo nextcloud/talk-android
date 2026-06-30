@@ -65,6 +65,7 @@ private const val CHIP_START_PADDING_DP = 2f
 private const val CHIP_END_PADDING_DP = 5f
 private const val CHIP_VERTICAL_PADDING_DP = 2f
 private const val CHIP_CORNER_RADIUS_DP = 16f
+private const val TASK_CHECKBOX_TOUCH_TARGET_DP = 48f
 
 // GFM table separator row: starts with | followed by optional spaces/colons and at least 3 dashes
 private val TABLE_SEPARATOR_REGEX = Regex("""^\|[ :]*-{3,}""", RegexOption.MULTILINE)
@@ -73,6 +74,8 @@ val validLinkRegex = Regex(
     """(?<!\w)https?://(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+(?:/[^\s)]*)?""",
     RegexOption.IGNORE_CASE
 )
+
+private val MARKDOWN_TASK_LINE_REGEX = Regex("""^(\s*(?:[-*+]\s+|\d+[.)]\s+)\[)([ xX])(]\s+.*)$""")
 
 @Suppress("LongMethod", "LongParameterList")
 @Composable
@@ -101,7 +104,11 @@ fun MarkdownText(
     val avatarGapPx = with(density) { AVATAR_GAP_DP.dp.toPx() }
     val messageId = message.id
     val onMessageLongClick = LocalMessageLongClickHandler.current
+    val onMarkdownTaskToggle = LocalMarkdownTaskToggleHandler.current
     val onLongClickState = rememberUpdatedState(onMessageLongClick)
+    val hasMarkdownTasks = remember(message.plainMessage) {
+        message.plainMessage.lineSequence().any { MARKDOWN_TASK_LINE_REGEX.matches(it) }
+    }
     val hasTable = remember(message.plainMessage) {
         message.plainMessage.contains(TABLE_SEPARATOR_REGEX)
     }
@@ -127,8 +134,37 @@ fun MarkdownText(
                     }
                 )
                 val longPressListener = View.OnTouchListener { view, event ->
-                    if (event.action == MotionEvent.ACTION_UP) {
-                        view.performClick()
+                    val textView = view as? LongPressTextView ?: return@OnTouchListener false
+                    val currentMessage = textView.currentMessage ?: return@OnTouchListener false
+                    when (event.actionMasked) {
+                        MotionEvent.ACTION_DOWN -> {
+                            val taskLine = findMarkdownTaskLineAtTouch(
+                                textView = textView,
+                                event = event,
+                                message = currentMessage,
+                                requireCheckboxHit = true
+                            )
+                            textView.pendingMarkdownTaskLine = taskLine
+                            if (taskLine != null) {
+                                return@OnTouchListener true
+                            }
+                        }
+
+                        MotionEvent.ACTION_UP -> {
+                            val pendingTaskLine = textView.pendingMarkdownTaskLine
+                            textView.pendingMarkdownTaskLine = null
+                            if (pendingTaskLine != null) {
+                                handleMarkdownTaskToggle(
+                                    message = currentMessage,
+                                    clickedSourceLine = pendingTaskLine,
+                                    onMarkdownTaskToggle = textView.onMarkdownTaskToggle
+                                )
+                                return@OnTouchListener true
+                            }
+                            view.performClick()
+                        }
+
+                        MotionEvent.ACTION_CANCEL -> textView.pendingMarkdownTaskLine = null
                     }
                     gestureDetector.onTouchEvent(event)
                     false
@@ -140,6 +176,8 @@ fun MarkdownText(
                 }
             },
             update = { textView ->
+                textView.currentMessage = message
+                textView.onMarkdownTaskToggle = onMarkdownTaskToggle
                 textView.setTextColor(textColorArgb)
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeSp)
                 textView.maxLines = maxLines
@@ -196,7 +234,8 @@ fun MarkdownText(
                 applySearchHighlight(ssb, highlightSearchTerm, searchHighlightColorArgb)
                 markwon.setParsedMarkdown(textView, ssb)
                 textView.setLinkTextColor(linkColorArgb)
-                val needsMovementMethod = (hasClickableChips || hasLinks) && maxLines == Int.MAX_VALUE
+                val needsMovementMethod = (hasClickableChips || hasLinks || hasMarkdownTasks) &&
+                    maxLines == Int.MAX_VALUE
                 if (needsMovementMethod) {
                     textView.movementMethod = LinkMovementMethod.getInstance()
                     textView.setOnTouchListener(textView.tag as? View.OnTouchListener)
@@ -233,6 +272,66 @@ private fun applySearchHighlight(spannable: SpannableStringBuilder, searchTerm: 
         startIndex = matchEnd
         matchIndex = lowerText.indexOf(term, startIndex)
     }
+}
+
+private fun findMarkdownTaskLineAtTouch(
+    textView: TextView,
+    event: MotionEvent,
+    message: ChatMessageUi,
+    requireCheckboxHit: Boolean
+): Int? {
+    if (!message.renderMarkdown || message.isDeleted || message.plainMessage.isBlank()) {
+        return null
+    }
+
+    val layout = textView.layout ?: return null
+    val verticalPosition = (event.y - textView.totalPaddingTop + textView.scrollY).roundToInt()
+    val clickedRenderedLine = layout.getLineForVertical(verticalPosition)
+    if (requireCheckboxHit && !isInsideTaskCheckboxTouchTarget(textView, event, layout, clickedRenderedLine)) {
+        return null
+    }
+
+    val renderedText = textView.text?.toString().orEmpty()
+    val clickedSourceLine = renderedText
+        .take(layout.getLineStart(clickedRenderedLine).coerceAtMost(renderedText.length))
+        .count { it == '\n' }
+
+    return clickedSourceLine.takeIf { sourceLineIndex ->
+        message.plainMessage
+            .lineSequence()
+            .elementAtOrNull(sourceLineIndex)
+            ?.let { MARKDOWN_TASK_LINE_REGEX.matchEntire(it) } != null
+    }
+}
+
+private fun isInsideTaskCheckboxTouchTarget(
+    textView: TextView,
+    event: MotionEvent,
+    layout: android.text.Layout,
+    clickedRenderedLine: Int
+): Boolean {
+    val density = textView.resources.displayMetrics.density
+    val horizontalPosition = event.x - textView.totalPaddingLeft + textView.scrollX
+    val lineStart = layout.getLineStart(clickedRenderedLine)
+    val textStart = layout.getPrimaryHorizontal(lineStart)
+    val touchTargetStart = (textStart - TASK_CHECKBOX_TOUCH_TARGET_DP * density).coerceAtLeast(0f)
+    val touchTargetEnd = textStart + TASK_CHECKBOX_TOUCH_TARGET_DP * density / 2
+    return horizontalPosition in touchTargetStart..touchTargetEnd
+}
+
+private fun handleMarkdownTaskToggle(
+    message: ChatMessageUi,
+    clickedSourceLine: Int,
+    onMarkdownTaskToggle: (Int, String) -> Unit
+) {
+    val sourceLines = message.plainMessage.split('\n')
+    val sourceLine = sourceLines.getOrNull(clickedSourceLine) ?: return
+    val match = MARKDOWN_TASK_LINE_REGEX.matchEntire(sourceLine) ?: return
+    val replacement = if (match.groupValues[2].equals("x", ignoreCase = true)) " " else "x"
+    val updatedLine = match.groupValues[1] + replacement + match.groupValues[3]
+    val updatedMessage = sourceLines.toMutableList().also { it[clickedSourceLine] = updatedLine }.joinToString("\n")
+
+    onMarkdownTaskToggle(message.id, updatedMessage)
 }
 
 private fun resolveNonMentionParams(message: ChatMessageUi): String {
@@ -464,6 +563,9 @@ private class MentionChipSpan(
 }
 
 private class LongPressTextView(context: Context) : AppCompatTextView(context) {
+    var currentMessage: ChatMessageUi? = null
+    var onMarkdownTaskToggle: (Int, String) -> Unit = { _, _ -> }
+    var pendingMarkdownTaskLine: Int? = null
     override fun performClick(): Boolean {
         super.performClick()
         return true
