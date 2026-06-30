@@ -168,7 +168,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         logger.d(TAG, pushMessage.toString())
         logger.d(TAG, "pushMessage.id (=KEY_ROOM_TOKEN): " + pushMessage.id)
         logger.d(TAG, "pushMessage.notificationId: " + pushMessage.notificationId)
-        logger.d(TAG, "pushMessage.notificationIds: " + pushMessage.notificationIds.contentToString())
+        logger.d(TAG, "pushMessage.notificationIds: " + pushMessage.notificationIds.toString())
         logger.d(TAG, "pushMessage.timestamp: " + pushMessage.timestamp)
 
         if (pushMessage.delete) {

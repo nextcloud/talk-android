@@ -740,12 +740,14 @@ class SettingsActivity :
         return options
     }
 
-    private fun buildDiagnosisReport(): String = buildDiagnosisElements(
-        context = this,
-        userManager = userManager,
-        appPreferences = appPreferences,
-        logsRepository = logsRepository
-    ).toMarkdown()
+    @Suppress("Detekt.LongMethod")
+    private fun buildDiagnosisReport(): String =
+        buildDiagnosisElements(
+            context = this,
+            userManager = userManager,
+            appPreferences = appPreferences,
+            logsRepository = logsRepository
+        ).toMarkdown()
 
     private fun buildShareDialogContentView(
         options: List<Pair<String, () -> Unit>>,

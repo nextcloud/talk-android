@@ -142,7 +142,15 @@ class DiagnosisActivity : BaseActivity() {
         supportActionBar?.show()
 
         diagnosisData.clear()
-        diagnosisData.addAll(buildDiagnosisElements(this, userManager, appPreferences, arbitraryStorageManager, logsRepository))
+        diagnosisData.addAll(
+            buildDiagnosisElements(
+                this,
+                userManager,
+                appPreferences,
+                arbitraryStorageManager,
+                logsRepository
+            )
+        )
         diagnosisDataState.value = diagnosisData.toList()
     }
 

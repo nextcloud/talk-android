@@ -134,6 +134,7 @@ private data class LogsUiState(
     val advancedLogging: Boolean
 )
 
+@Suppress("Detekt.LongMethod")
 @Composable
 private fun LogsContent(
     state: LogsUiState,
@@ -204,6 +205,7 @@ private fun LogsContent(
     }
 }
 
+@Suppress("Detekt.LongMethod")
 @Composable
 private fun LogsHeader(
     state: LogsUiState,
@@ -288,6 +290,7 @@ private val colorError = Color(0xFFEF5350)
 @Suppress("MagicNumber")
 private val colorMuted = Color(0xFF888888)
 
+@Suppress("Detekt.LongMethod")
 @Composable
 private fun LogEntryRow(entry: LogEntry) {
     val levelColor = when (entry.level) {
