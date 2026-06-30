@@ -41,6 +41,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -122,6 +123,7 @@ import javax.inject.Inject
 
 @Suppress("TooManyFunctions", "LongParameterList")
 class ChatViewModel @AssistedInject constructor(
+    private val logger: Logger,
     // should be removed here. Use it via RetrofitChatNetwork
     private val appPreferences: AppPreferences,
     private val chatNetworkDataSource: ChatNetworkDataSource,

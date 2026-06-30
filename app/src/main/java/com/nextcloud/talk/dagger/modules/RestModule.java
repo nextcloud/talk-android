@@ -11,14 +11,12 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.github.aurae.retrofit2.LoganSquareConverterFactory;
-import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.NcApiCoroutines;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.LoggingUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.ssl.KeyManager;
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat;
@@ -59,7 +57,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.Route;
 import okhttp3.internal.tls.OkHostnameVerifier;
-import okhttp3.logging.HttpLoggingInterceptor;
+import com.nextcloud.talk.api.LoggingHttpInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
@@ -185,7 +183,8 @@ public class RestModule {
     OkHttpClient provideHttpClient(Proxy proxy, AppPreferences appPreferences,
                                    TrustManager trustManager,
                                    SSLSocketFactoryCompat sslSocketFactoryCompat, Cache cache,
-                                   CookieManager cookieManager, Dispatcher dispatcher) {
+                                   CookieManager cookieManager, Dispatcher dispatcher,
+                                   LoggingHttpInterceptor loggingHttpInterceptor) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
         httpClient.retryOnConnectionFailure(true);
@@ -218,22 +217,7 @@ public class RestModule {
         }
 
         httpClient.addInterceptor(new HeadersInterceptor());
-
-        if (BuildConfig.DEBUG && !context.getResources().getBoolean(R.bool.nc_is_debug)) {
-            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            loggingInterceptor.redactHeader("Authorization");
-            loggingInterceptor.redactHeader("Proxy-Authorization");
-            httpClient.addInterceptor(loggingInterceptor);
-        } else if (context.getResources().getBoolean(R.bool.nc_is_debug)) {
-            HttpLoggingInterceptor.Logger fileLogger =
-                s -> LoggingUtils.INSTANCE.writeLogEntryToFile(context, s);
-            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(fileLogger);
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            loggingInterceptor.redactHeader("Authorization");
-            loggingInterceptor.redactHeader("Proxy-Authorization");
-            httpClient.addInterceptor(loggingInterceptor);
-        }
+        httpClient.addInterceptor(loggingHttpInterceptor);
 
         return httpClient.build();
     }

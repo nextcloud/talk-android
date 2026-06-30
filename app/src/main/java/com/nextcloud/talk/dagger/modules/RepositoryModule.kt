@@ -18,6 +18,7 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.chat.data.network.OfflineFirstChatRepository
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.chat.data.network.RetrofitChatNetwork
 import com.nextcloud.talk.chooseaccount.data.StatusRepository
 import com.nextcloud.talk.chooseaccount.data.StatusRepositoryImplementation
@@ -137,12 +138,14 @@ class RepositoryModule {
 
     @Provides
     fun provideOfflineFirstChatRepository(
+        logger: Logger,
         chatMessagesDao: ChatMessagesDao,
         chatBlocksDao: ChatBlocksDao,
         dataSource: ChatNetworkDataSource,
         networkMonitor: NetworkMonitor
     ): ChatMessageRepository =
         OfflineFirstChatRepository(
+            logger,
             chatMessagesDao,
             chatBlocksDao,
             dataSource,

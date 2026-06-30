@@ -111,6 +111,7 @@ fun ChatToolbar(state: ChatToolbarState, callbacks: ChatToolbarCallbacks, modifi
     }
 }
 
+@Suppress("LongMethod")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ToolbarActions(state: ChatToolbarState, callbacks: ChatToolbarCallbacks) {

@@ -356,23 +356,26 @@ class ConversationsListActivity : BaseActivity() {
         )
     }
 
+    @SuppressLint("InlinedApi")
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
 
         // handle notification permission on API level >= 33
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            !platformPermissionUtil.isPostNotificationsPermissionGranted() &&
-            (
-                ClosedInterfaceImpl().isGooglePlayServicesAvailable ||
-                    appPreferences.useUnifiedPush ||
-                    UnifiedPushUtils.hasEmbeddedDistributor(context)
-                )
-        ) {
+        if (needsPostNotificationsPermission()) {
             requestPermissions(
                 arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                 REQUEST_POST_NOTIFICATIONS_PERMISSION
             )
         }
+    }
+
+    private fun needsPostNotificationsPermission(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return false
+        if (platformPermissionUtil.isPostNotificationsPermissionGranted()) return false
+        val usesPush = ClosedInterfaceImpl().isGooglePlayServicesAvailable ||
+            appPreferences.useUnifiedPush ||
+            UnifiedPushUtils.hasEmbeddedDistributor(context)
+        return usesPush
     }
 
     override fun onResume() {

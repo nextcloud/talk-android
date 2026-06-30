@@ -419,14 +419,14 @@ class ConversationsListViewModel @Inject constructor(
                 { item ->
                     val text = getText(item)
                     when {
-                        text == null -> 3
-                        exactMatchEnabled && text.trim().equals(filter, ignoreCase = true) -> 0
-                        text.startsWith(filter, ignoreCase = true) -> 1
-                        text.contains(wordPattern) -> 2
-                        else -> 3
+                        text == null -> MATCH_RANK_NONE
+                        exactMatchEnabled && text.trim().equals(filter, ignoreCase = true) -> MATCH_RANK_EXACT
+                        text.startsWith(filter, ignoreCase = true) -> MATCH_RANK_PREFIX
+                        text.contains(wordPattern) -> MATCH_RANK_WORD
+                        else -> MATCH_RANK_NONE
                     }
                 },
-                { item -> if (isSingleUser?.invoke(item) == true) 0 else 1 },
+                { item -> if (isSingleUser?.invoke(item) == true) SINGLE_USER_RANK else MULTI_USER_RANK },
                 { item ->
                     val pos = getText(item)?.indexOf(filter, ignoreCase = true) ?: -1
                     if (pos >= 0) pos else Int.MAX_VALUE
@@ -794,5 +794,11 @@ class ConversationsListViewModel @Inject constructor(
         const val FOLLOWED_THREADS_EXIST = "FOLLOWED_THREADS_EXIST"
         private const val SIXTEEN_HOURS_IN_SECONDS: Long = 57600
         private const val LONG_1000: Long = 1000
+        private const val MATCH_RANK_EXACT = 0
+        private const val MATCH_RANK_PREFIX = 1
+        private const val MATCH_RANK_WORD = 2
+        private const val MATCH_RANK_NONE = 3
+        private const val SINGLE_USER_RANK = 0
+        private const val MULTI_USER_RANK = 1
     }
 }

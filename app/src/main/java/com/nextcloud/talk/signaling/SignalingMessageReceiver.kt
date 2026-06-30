@@ -591,7 +591,7 @@ abstract class SignalingMessageReceiver {
         }
     }
 
-    @Suppress("ReturnCount")
+    @Suppress("ReturnCount", "LongMethod")
     fun processSignalingMessage(signalingMessage: NCSignalingMessage?) {
         if (signalingMessage == null) {
             return
