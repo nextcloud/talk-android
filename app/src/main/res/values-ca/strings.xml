@@ -383,7 +383,6 @@
     <string name="nc_settings_appearance">Aparença</string>
     <string name="nc_settings_call_ringtone">Trucades</string>
     <string name="nc_settings_contact_admin_of">Contacteu amb l\'administrador de</string>
-    <string name="nc_settings_diagnosis_subtitle">Obre la pantalla de diagnòstic per a comprovar la configuració o crear un informe d\'error</string>
     <string name="nc_settings_diagnosis_title">Diagnòstic</string>
     <string name="nc_settings_incognito_keyboard_desc">Indica al teclat que desactivi l\'aprenentatge personalitzat (sense garanties)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclat d\'incògnit</string>

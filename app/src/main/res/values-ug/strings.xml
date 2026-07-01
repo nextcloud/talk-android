@@ -64,6 +64,7 @@
     <string name="encrypted">شىفىرلانغان</string>
     <string name="end_call">ئاخىرلىشىش تېلېفونى</string>
     <string name="end_call_for_everyone">ھەممەيلەنگە تېلېفون قىلىش</string>
+    <string name="error_crash_title">%1$s چۈشۈپ كەتتى</string>
     <string name="error_loading_chats">پاراڭلىرىڭىزنى يۈكلەشتە مەسىلە كۆرۈلدى</string>
     <string name="error_unbanning">قاتناشقۇچىنى چەكلىگەندە خاتالىق كۆرۈلدى</string>
     <string name="failed_to_save">%1$s نى تېجەلمىدى</string>
@@ -285,6 +286,8 @@
     <string name="nc_location_unknown">ئورنى نامەلۇم</string>
     <string name="nc_locked">قۇلۇپلاندى</string>
     <string name="nc_locked_tap_to_unlock">قۇلۇپنى چېكىڭ</string>
+    <string name="nc_logs_disable_delete">خاتىرىلەرنى ئۆچۈرۈڭ</string>
+    <string name="nc_logs_title">خاتىرە</string>
     <string name="nc_manual">تەڭشەلمىدى</string>
     <string name="nc_mark_as_read">ئوقۇغاندەك بەلگە قويۇڭ</string>
     <string name="nc_mark_as_unread">ئوقۇلمىغان دەپ بەلگە قويۇڭ</string>
@@ -415,10 +418,10 @@
     <string name="nc_settings_appearance">كۆرۈنۈش</string>
     <string name="nc_settings_call_ringtone">تېلېفون قىلىدۇ</string>
     <string name="nc_settings_contact_admin_of">باشقۇرغۇچى بىلەن ئالاقىلىشىڭ</string>
-    <string name="nc_settings_diagnosis_subtitle">تەڭشەكلەرنى تەكشۈرۈش ياكى خاتالىق دوكلاتىنى تەكشۈرۈش ئۈچۈن دىئاگنوز ئېكرانىنى ئېچىڭ</string>
     <string name="nc_settings_diagnosis_title">دىئاگنوز</string>
     <string name="nc_settings_incognito_keyboard_desc">خاسلاشتۇرۇلغان ئۆگىنىشنى چەكلەش ئۈچۈن كۇنۇپكا تاختىسىغا بۇيرۇق بېرىدۇ (كاپالەتسىز)</string>
     <string name="nc_settings_incognito_keyboard_title">Incognito كۇنۇپكا تاختىسى</string>
+    <string name="nc_settings_logs_title">خاتىرە</string>
     <string name="nc_settings_no_ringtone">ئاۋاز يوق</string>
     <string name="nc_settings_no_talk_installed">سىز دەلىللىمەكچى بولغان مۇلازىمېتىرغا پاراڭ دېتالى ئورنىتىلمىدى</string>
     <string name="nc_settings_notification_sounds_post_oreo">ئۇقتۇرۇش</string>

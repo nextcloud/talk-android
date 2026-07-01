@@ -450,7 +450,6 @@
     <string name="nc_settings_appearance">Aussehen</string>
     <string name="nc_settings_call_ringtone">Anrufe</string>
     <string name="nc_settings_contact_admin_of">Bitte kontaktieren Sie die Administration von</string>
-    <string name="nc_settings_diagnosis_subtitle">Die Diagnoseseite öffnen, um die Einstellungen zu überprüfen oder einen Fehlerbericht zu erstellen</string>
     <string name="nc_settings_diagnosis_title">Diagnose</string>
     <string name="nc_settings_incognito_keyboard_desc">Weist die Tastatur an, das personalisierte Lernen zu deaktivieren (ohne Garantien)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito-Tastatur</string>

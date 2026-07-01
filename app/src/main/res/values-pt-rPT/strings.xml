@@ -104,6 +104,7 @@
     <string name="nc_call_video">%s chamada de vídeo</string>
     <string name="nc_cancel">Cancelar</string>
     <string name="nc_capabilities_failed">Não foi possível obter as capacidades, a abortar</string>
+    <string name="nc_caption">Legenda</string>
     <string name="nc_certificate_dialog_text">Quer confiar em um certificado SSL desconhecido, emitido por %1$s para %2$s, válido de %3$s a %4$s?</string>
     <string name="nc_certificate_dialog_title">Confira o certificado</string>
     <string name="nc_certificate_error">A sua configuração de SSL impediu a ligação</string>
@@ -209,6 +210,9 @@
     <string name="nc_lobby_waiting">No momento, você está esperando na sala de espera.</string>
     <string name="nc_location_current_position_description">Sua localização atual</string>
     <string name="nc_location_unknown">Posição desconhecida</string>
+    <string name="nc_logs_disable_delete">Eliminar registos</string>
+    <string name="nc_logs_share_diagnosis">Relatório de diagnóstico</string>
+    <string name="nc_logs_title">Registos de Alterações</string>
     <string name="nc_manual">Não definido</string>
     <string name="nc_mark_as_read">Marcar como lido</string>
     <string name="nc_mark_as_unread">Marcar como não lido</string>
@@ -313,6 +317,7 @@
     <string name="nc_settings_diagnosis_title">Diagnóstico</string>
     <string name="nc_settings_incognito_keyboard_desc">Instrui o teclado para desativar o aprendizado personalizado (sem garantias)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado incógnito</string>
+    <string name="nc_settings_logs_title">Registos de Alterações</string>
     <string name="nc_settings_no_ringtone">Sem som</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notificações</string>
     <string name="nc_settings_other_notifications_ringtone">Mensagens</string>
@@ -488,6 +493,7 @@
     <string name="user_info_email">E-mail</string>
     <string name="user_info_fediverse">Fediverso</string>
     <string name="user_info_headline">Título </string>
+    <string name="user_info_organisation">Organização</string>
     <string name="user_info_phone">Número de telefone</string>
     <string name="user_info_profile_enable">Ativar perfil</string>
     <string name="user_info_pronouns">Pronomes</string>

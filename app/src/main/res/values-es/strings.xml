@@ -429,7 +429,6 @@
     <string name="nc_settings_appearance">Apariencia</string>
     <string name="nc_settings_call_ringtone">Llamadas</string>
     <string name="nc_settings_contact_admin_of">Por favor contacte al administrador de</string>
-    <string name="nc_settings_diagnosis_subtitle">Abrir la pantalla de diagnóstico para verificar los ajustes o para crear un informe de fallos</string>
     <string name="nc_settings_diagnosis_title">Diagnóstico</string>
     <string name="nc_settings_incognito_keyboard_desc">Indica que el teclado tendrá desactivado el aprendizaje personalizado (no hay garantías)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado de incógnito</string>

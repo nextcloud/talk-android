@@ -434,7 +434,6 @@
     <string name="nc_settings_appearance">Знешні выгляд</string>
     <string name="nc_settings_call_ringtone">Выклікі</string>
     <string name="nc_settings_contact_admin_of">Звярніцеся да адміністратара</string>
-    <string name="nc_settings_diagnosis_subtitle">Адкрыйце экран дыягностыкі, каб праверыць налады або стварыць справаздачу пра памылку</string>
     <string name="nc_settings_diagnosis_title">Дыягностыка</string>
     <string name="nc_settings_incognito_keyboard_desc">Дае каманду клавіятуры адключыць персаналізаванае навучанне (без гарантый)</string>
     <string name="nc_settings_incognito_keyboard_title">Клавіятура інкогніта</string>

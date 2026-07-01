@@ -450,7 +450,6 @@
     <string name="nc_settings_appearance">ظاهر</string>
     <string name="nc_settings_call_ringtone">تماس‌ها</string>
     <string name="nc_settings_contact_admin_of">لطفاً با مدیر</string>
-    <string name="nc_settings_diagnosis_subtitle">باز کردن صفحه تشخیص برای بررسی تنظیمات یا ایجاد گزارش اشکال</string>
     <string name="nc_settings_diagnosis_title">تشخیص</string>
     <string name="nc_settings_incognito_keyboard_desc">دستورالعمل صفحه کلید برای غیرفعال کردن یادگیری شخصی (بدون ضمانت)</string>
     <string name="nc_settings_incognito_keyboard_title">صفحه کلید ناشناس</string>

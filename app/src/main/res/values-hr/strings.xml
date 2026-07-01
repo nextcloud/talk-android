@@ -302,6 +302,7 @@
     <string name="nc_settings_call_ringtone">Pozivi</string>
     <string name="nc_settings_incognito_keyboard_desc">Naređuje tipkovnici da onemogući personalizirano učenje (nije zajamčeno)</string>
     <string name="nc_settings_incognito_keyboard_title">Anonimna tipkovnica</string>
+    <string name="nc_settings_logs_title">Zapisi</string>
     <string name="nc_settings_no_ringtone">Bez zvuka</string>
     <string name="nc_settings_no_talk_installed">Aplikacija Talk nije instalirana na poslužitelju s kojim ste se pokušali autentificirati</string>
     <string name="nc_settings_notification_sounds_post_oreo">Obavijesti</string>

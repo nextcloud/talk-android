@@ -303,6 +303,8 @@
     <string name="nc_location_unknown">Vieta nežinoma</string>
     <string name="nc_locked">Užrakinta</string>
     <string name="nc_locked_tap_to_unlock">Bakstelėkite, norėdami atrakinti</string>
+    <string name="nc_logs_share_diagnosis">Diagnozės ataskaita</string>
+    <string name="nc_logs_title">Žurnalai</string>
     <string name="nc_manual">Nenustatyta</string>
     <string name="nc_mark_as_read">Žymėti kaip skaitytą</string>
     <string name="nc_mark_as_unread">Žymėti kaip neskaitytą</string>
@@ -450,10 +452,10 @@
     <string name="nc_settings_appearance">Išvaizda</string>
     <string name="nc_settings_call_ringtone">Skambučiai</string>
     <string name="nc_settings_contact_admin_of">Prašome susisiekti su administratoriumi</string>
-    <string name="nc_settings_diagnosis_subtitle">Atidarykite diagnostikos langą, kad patikrintumėte nustatymus arba sukurtumėte pranešimą apie klaidą</string>
     <string name="nc_settings_diagnosis_title">Diagnozė</string>
     <string name="nc_settings_incognito_keyboard_desc">Nurodo klaviatūrai išjungti individualizuotą mokymąsi (be garantijų)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klaviatūra</string>
+    <string name="nc_settings_logs_title">Žurnalai</string>
     <string name="nc_settings_no_ringtone">Be garso</string>
     <string name="nc_settings_no_talk_installed">Pokalbių programėlė nėra įdiegta serveryje, kuriame bandėte nusistatyti tapatybę</string>
     <string name="nc_settings_notification_sounds_post_oreo">Pranešimai</string>

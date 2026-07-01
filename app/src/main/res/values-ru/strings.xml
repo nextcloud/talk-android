@@ -303,6 +303,9 @@
     <string name="nc_location_unknown">Положение неизвестно</string>
     <string name="nc_locked">Заблокировано</string>
     <string name="nc_locked_tap_to_unlock">Коснитесь для разблокирования</string>
+    <string name="nc_logs_disable_delete">Удалить журнал</string>
+    <string name="nc_logs_share_diagnosis">Отчёт о диагностике</string>
+    <string name="nc_logs_title">Журнал</string>
     <string name="nc_manual">Не задано</string>
     <string name="nc_mark_as_read">Отметить прочитанным</string>
     <string name="nc_mark_as_unread">Отметить непрочитанным</string>
@@ -450,10 +453,10 @@
     <string name="nc_settings_appearance">Внешний вид</string>
     <string name="nc_settings_call_ringtone">Вызовы</string>
     <string name="nc_settings_contact_admin_of">Свяжитесь с администратором </string>
-    <string name="nc_settings_diagnosis_subtitle">Откройте экран диагностики, чтобы проверить настройки или создать отчёт об ошибке.</string>
     <string name="nc_settings_diagnosis_title">Диагностика</string>
     <string name="nc_settings_incognito_keyboard_desc">Указывает клавиатуре отключить персонализированное обучение (без гарантий)</string>
     <string name="nc_settings_incognito_keyboard_title">Клавиатура инкогнито</string>
+    <string name="nc_settings_logs_title">Журнал</string>
     <string name="nc_settings_no_ringtone">Без звука</string>
     <string name="nc_settings_no_talk_installed">На сервере, к которому вы пытаетесь подключиться, приложение «Конференции» не установлено</string>
     <string name="nc_settings_notification_sounds_post_oreo">Уведомления</string>

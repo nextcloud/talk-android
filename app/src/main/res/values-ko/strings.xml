@@ -311,6 +311,7 @@
     <string name="nc_settings_call_ringtone">통화</string>
     <string name="nc_settings_incognito_keyboard_desc">키보드에 개인화된 학습을 비활성화하도록 지시(보증 없음)</string>
     <string name="nc_settings_incognito_keyboard_title">시크릿 키보드</string>
+    <string name="nc_settings_logs_title">로그</string>
     <string name="nc_settings_no_ringtone">무음</string>
     <string name="nc_settings_no_talk_installed">인증하려는 서버에 토크 앱이 설치되어 있지 않습니다.</string>
     <string name="nc_settings_notification_sounds_post_oreo">알림</string>

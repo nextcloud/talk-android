@@ -433,7 +433,6 @@
     <string name="nc_settings_appearance">Vzhled</string>
     <string name="nc_settings_call_ringtone">Volání</string>
     <string name="nc_settings_contact_admin_of">Obraťte se na správce</string>
-    <string name="nc_settings_diagnosis_subtitle">Otevřít diagnostickou obrazovku pro kontrolu nastavení nebo vytvoření hlášení chyby</string>
     <string name="nc_settings_diagnosis_title">Diagnostika</string>
     <string name="nc_settings_incognito_keyboard_desc">Dát klávesnici pokyn, že má vypnout přizpůsobené učení se (bez záruky)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klávesnice</string>

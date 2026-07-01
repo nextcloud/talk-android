@@ -411,7 +411,6 @@
     <string name="nc_settings_appearance">Udseende</string>
     <string name="nc_settings_call_ringtone">Opkald</string>
     <string name="nc_settings_contact_admin_of">Kontakt venligst administratoren for</string>
-    <string name="nc_settings_diagnosis_subtitle">Åbn diagnosticeringsskærmen for at kontrollere indstillinger eller oprette en fejlrapport</string>
     <string name="nc_settings_diagnosis_title">Diagnose</string>
     <string name="nc_settings_incognito_keyboard_desc">Indstiller tastatur til at deaktivere personaliseret indlæring (uden garanti)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito tastatur</string>

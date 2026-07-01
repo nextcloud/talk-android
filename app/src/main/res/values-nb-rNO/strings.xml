@@ -260,6 +260,7 @@
     <string name="nc_location_unknown">Posisjon ukjent</string>
     <string name="nc_locked">Låst</string>
     <string name="nc_locked_tap_to_unlock">Trykk for å låse opp</string>
+    <string name="nc_logs_title">Logger</string>
     <string name="nc_manual">Ikke satt</string>
     <string name="nc_mark_as_read">Merk som lest</string>
     <string name="nc_mark_as_unread">Merk som ulest</string>
@@ -371,10 +372,10 @@
     <string name="nc_settings_advanced_title">Avansert</string>
     <string name="nc_settings_appearance">Utseende</string>
     <string name="nc_settings_call_ringtone">Samtaler</string>
-    <string name="nc_settings_diagnosis_subtitle">Åpne diagnoseskjermen for å sjekke innstillinger eller opprette feilrapport</string>
     <string name="nc_settings_diagnosis_title">Diagnose</string>
     <string name="nc_settings_incognito_keyboard_desc">Instruerer tastaturet om å deaktivere personlig læring (uten garantier)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito-tastatur</string>
+    <string name="nc_settings_logs_title">Logger</string>
     <string name="nc_settings_no_ringtone">Ingen lyd</string>
     <string name="nc_settings_no_talk_installed">Samtale-appen er ikke installert på serveren du forsøkte å autentisere mot</string>
     <string name="nc_settings_notification_sounds_post_oreo">Varsler</string>

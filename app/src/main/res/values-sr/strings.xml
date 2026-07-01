@@ -285,6 +285,8 @@
     <string name="nc_location_unknown">Непозната позиција</string>
     <string name="nc_locked">Закључано</string>
     <string name="nc_locked_tap_to_unlock">Тапни за откључавање</string>
+    <string name="nc_logs_disable_delete">Обриши записнике</string>
+    <string name="nc_logs_title">Записници</string>
     <string name="nc_manual">Није постављено</string>
     <string name="nc_mark_as_read">Означи као прочитано</string>
     <string name="nc_mark_as_unread">Означи као непрочитано</string>
@@ -415,10 +417,10 @@
     <string name="nc_settings_appearance">Изглед</string>
     <string name="nc_settings_call_ringtone">Позиви</string>
     <string name="nc_settings_contact_admin_of">Молимо вас да контактирате администратора</string>
-    <string name="nc_settings_diagnosis_subtitle">Отвара дијагностички екран да проверите поставке или да креирате извештај о багу</string>
     <string name="nc_settings_diagnosis_title">Дијагностика</string>
     <string name="nc_settings_incognito_keyboard_desc">Наложи тастатури да искључи персонализовано учење (без гаранција)</string>
     <string name="nc_settings_incognito_keyboard_title">Инкогнито тастатура</string>
+    <string name="nc_settings_logs_title">Записници</string>
     <string name="nc_settings_no_ringtone">Нема звука</string>
     <string name="nc_settings_no_talk_installed">Апликација Ћаскања није инсталирана на серверу на који се пријављујете</string>
     <string name="nc_settings_notification_sounds_post_oreo">Обавештења</string>

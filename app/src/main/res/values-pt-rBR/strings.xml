@@ -303,6 +303,8 @@
     <string name="nc_location_unknown">Posição desconhecida</string>
     <string name="nc_locked">Trancado</string>
     <string name="nc_locked_tap_to_unlock">Toque para destrancar</string>
+    <string name="nc_logs_share_diagnosis">Relatório de diagnóstico</string>
+    <string name="nc_logs_title">Logs</string>
     <string name="nc_manual">Não definido</string>
     <string name="nc_mark_as_read">Marcar como lido</string>
     <string name="nc_mark_as_unread">Marcar como não lido</string>
@@ -450,10 +452,10 @@
     <string name="nc_settings_appearance">Aparência</string>
     <string name="nc_settings_call_ringtone">Chamadas</string>
     <string name="nc_settings_contact_admin_of">Por favor, entre em contato com o administrador de</string>
-    <string name="nc_settings_diagnosis_subtitle">Abra a tela de diagnóstico para verificar as configurações ou crie um relatório de bug</string>
     <string name="nc_settings_diagnosis_title">Diagnóstico</string>
     <string name="nc_settings_incognito_keyboard_desc">Instrui o teclado para desativar o aprendizado personalizado (sem garantias)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado incógnito</string>
+    <string name="nc_settings_logs_title">Logs</string>
     <string name="nc_settings_no_ringtone">Sem som</string>
     <string name="nc_settings_no_talk_installed">O aplicativo Talk não está instalado no servidor em que você tentou se autenticar</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notificações</string>

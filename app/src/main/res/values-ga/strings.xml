@@ -450,7 +450,6 @@
     <string name="nc_settings_appearance">Dealramh</string>
     <string name="nc_settings_call_ringtone">Glaonna</string>
     <string name="nc_settings_contact_admin_of">Déan teagmháil le riarthóir na</string>
-    <string name="nc_settings_diagnosis_subtitle">Oscail scáileán diagnóis chun socruithe a sheiceáil nó chun tuairisc fhabht a chruthú</string>
     <string name="nc_settings_diagnosis_title">Diagnóis</string>
     <string name="nc_settings_incognito_keyboard_desc">Tugann sé treoir don mhéarchlár foghlaim phearsantaithe a dhíchumasú (gan ráthaíochtaí)</string>
     <string name="nc_settings_incognito_keyboard_title">Méarchlár incognito</string>

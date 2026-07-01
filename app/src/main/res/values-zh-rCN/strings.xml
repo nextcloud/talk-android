@@ -45,6 +45,7 @@
     <string name="encrypted">已加密</string>
     <string name="end_call">结束通话</string>
     <string name="end_call_for_everyone">为所有人结束通话</string>
+    <string name="error_crash_title">%1$s 崩溃了</string>
     <string name="error_loading_chats">加载聊天记录时出错</string>
     <string name="failed_to_save">保存%1$s失败</string>
     <string name="fifteenMinutes">15 分钟 </string>
@@ -239,6 +240,8 @@
     <string name="nc_location_unknown">位置未知</string>
     <string name="nc_locked">已锁定</string>
     <string name="nc_locked_tap_to_unlock">轻按解锁</string>
+    <string name="nc_logs_disable_delete">删除日志</string>
+    <string name="nc_logs_title">日志</string>
     <string name="nc_manual">未设置</string>
     <string name="nc_mark_as_read">标为已读</string>
     <string name="nc_mark_as_unread">标为未读</string>
@@ -358,6 +361,7 @@
     <string name="nc_settings_diagnosis_title">诊断</string>
     <string name="nc_settings_incognito_keyboard_desc">要求输入法禁用个性化学习（不保证键盘会执行）</string>
     <string name="nc_settings_incognito_keyboard_title">无痕键盘</string>
+    <string name="nc_settings_logs_title">日志</string>
     <string name="nc_settings_no_ringtone">无声音</string>
     <string name="nc_settings_no_talk_installed">您进行身份验证的服务器上未安装通话应用</string>
     <string name="nc_settings_notification_sounds_post_oreo">通知</string>

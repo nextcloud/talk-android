@@ -384,7 +384,6 @@
     <string name="nc_settings_appearance">المظهر</string>
     <string name="nc_settings_call_ringtone">المكالمات</string>
     <string name="nc_settings_contact_admin_of">رجاءً، تواصل مع المشرف</string>
-    <string name="nc_settings_diagnosis_subtitle">فتح شاشة فحص الأعطال لاختبار الإعدادات أو تكوين تقرير بالعطل</string>
     <string name="nc_settings_diagnosis_title">فحوصات</string>
     <string name="nc_settings_incognito_keyboard_desc">توجيه لوحة المفاتيح لتعطيل التعلم المخصص (بدون ضمانات)</string>
     <string name="nc_settings_incognito_keyboard_title">لوحة المفاتيح في وضع المجهول</string>

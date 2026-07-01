@@ -450,7 +450,6 @@
     <string name="nc_settings_appearance">Apparence</string>
     <string name="nc_settings_call_ringtone">Appels</string>
     <string name="nc_settings_contact_admin_of">Merci de contacter l\'administrateur de</string>
-    <string name="nc_settings_diagnosis_subtitle">Ouvrir l\'écran de diagnostic pour vérifier les réglages ou créer un rapport de bug</string>
     <string name="nc_settings_diagnosis_title">Diagnostic</string>
     <string name="nc_settings_incognito_keyboard_desc">Indique au clavier de désactiver l\'apprentissage personnalisé (sans garantie)</string>
     <string name="nc_settings_incognito_keyboard_title">Clavier incognito</string>

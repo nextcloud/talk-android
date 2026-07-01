@@ -450,7 +450,6 @@
     <string name="nc_settings_appearance">Välimus</string>
     <string name="nc_settings_call_ringtone">Kõned</string>
     <string name="nc_settings_contact_admin_of">Palun võta ühendust serveri peakasutajaga - </string>
-    <string name="nc_settings_diagnosis_subtitle">Seadistuste kontrollimiseks või veateate koostamiseks ava veaotsingu vaade</string>
     <string name="nc_settings_diagnosis_title">Veaotsing</string>
     <string name="nc_settings_incognito_keyboard_desc">Sellega annad klahvistikul käsu mitte kasutada isikustatud sisestuste õpet (aga puudub garantii toimivuse osas)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klahvistik</string>
