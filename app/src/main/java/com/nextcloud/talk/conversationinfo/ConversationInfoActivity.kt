@@ -305,7 +305,6 @@ class ConversationInfoActivity : BaseActivity() {
                     this,
                     user.baseUrl,
                     state.conversationToken,
-                    state.conversation?.name,
                     CapabilitiesUtil.canGeneratePrettyURL(user)
                 )
             },
