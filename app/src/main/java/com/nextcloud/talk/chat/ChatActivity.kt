@@ -984,6 +984,9 @@ class ChatActivity :
 
         lifecycleScope.launch {
             val message = chatViewModel.getMessageById(messageId.toLong()).first()
+            if (!canEditMarkdownTaskMessage(message)) {
+                return@launch
+            }
             if (message.isTemporary) {
                 messageInputViewModel.editTempChatMessage(message, updatedMessage)
             } else {
@@ -1000,6 +1003,26 @@ class ChatActivity :
                 )
             }
         }
+    }
+
+    private fun canEditMarkdownTaskMessage(message: ChatMessage): Boolean {
+        if (message.isTemporary) {
+            return true
+        }
+        val isOlderThanTwentyFourHours = message.createdAt
+            .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_EDIT_MESSAGE))
+        if (isOlderThanTwentyFourHours || message.isDeleted) {
+            return false
+        }
+        if (!hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.EDIT_MESSAGES)) {
+            return false
+        }
+        if (message.getCalculateMessageType() != ChatMessage.MessageType.REGULAR_TEXT_MESSAGE) {
+            return false
+        }
+
+        return message.actorId == conversationUser?.userId ||
+            currentConversation?.let { ConversationUtils.canModerate(it, spreedCapabilities) } == true
     }
 
     private fun getMarkdownTaskEditText(message: ChatMessage, updatedMessage: String): String {
@@ -4061,5 +4084,6 @@ class ChatActivity :
         private const val SEARCH_CENTER_TOLERANCE_PX = 2f
         private const val SEARCH_CENTER_STABILIZE_ATTEMPTS = 8
         private const val SEARCH_CENTER_STABILIZE_DELAY_MS = 200L
+        private const val AGE_THRESHOLD_FOR_EDIT_MESSAGE: Long = 86400000
     }
 }
