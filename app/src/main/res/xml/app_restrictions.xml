@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<restrictions xmlns:android="http://schemas.android.com/apk/res/android">
+    <restriction
+        android:defaultValue=""
+        android:description="@string/nc_restriction_server_url_description"
+        android:key="nextcloud_url"
+        android:restrictionType="string"
+        android:title="@string/nc_restriction_server_url_title" />
+
+    <restriction
+        android:defaultValue=""
+        android:description="@string/nc_restriction_username_description"
+        android:key="nextcloud_username"
+        android:restrictionType="string"
+        android:title="@string/nc_restriction_username_title" />
+
+    <restriction
+        android:defaultValue=""
+        android:description="@string/nc_restriction_app_password_description"
+        android:key="nextcloud_password"
+        android:restrictionType="string"
+        android:title="@string/nc_restriction_app_password_title" />
+</restrictions>
