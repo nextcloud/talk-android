@@ -64,6 +64,7 @@
     <string name="encrypted">Зашифровано</string>
     <string name="end_call">Кінець зв\'язку.</string>
     <string name="end_call_for_everyone">Завершити дзвінок для всіх</string>
+    <string name="error_crash_title">Відмова в обслуговуванні %1$s</string>
     <string name="error_loading_chats">Виникла проблема під час завантаження ваших чатів</string>
     <string name="error_unbanning">Виникла помилка при знятті бану з учасника</string>
     <string name="failed_to_save">Не вдалося зберегти %1$s</string>
@@ -283,6 +284,8 @@
     <string name="nc_location_unknown">Місце розташування не визначено</string>
     <string name="nc_locked">Заблоковано</string>
     <string name="nc_locked_tap_to_unlock">Торкніться щоб розблокувати</string>
+    <string name="nc_logs_disable_delete">Вилучити журнал</string>
+    <string name="nc_logs_title">Журнал подій</string>
     <string name="nc_manual">Не встановлено</string>
     <string name="nc_mark_as_read">Позначити прочитаним</string>
     <string name="nc_mark_as_unread">Позначити не прочитаним</string>
@@ -414,10 +417,10 @@
     <string name="nc_settings_appearance">Вигляд</string>
     <string name="nc_settings_call_ringtone">Виклики</string>
     <string name="nc_settings_contact_admin_of">Будь ласка, зв\'яжіться з адміністратором</string>
-    <string name="nc_settings_diagnosis_subtitle">Відкрийте екран діагностики, щоб перевірити налаштування або створити звіт про помилку</string>
     <string name="nc_settings_diagnosis_title">Діагноз</string>
     <string name="nc_settings_incognito_keyboard_desc">Вказує клавіатурі відключити персоналізоване навчання (без гарантій)</string>
     <string name="nc_settings_incognito_keyboard_title">Клавіатура інкогніто</string>
+    <string name="nc_settings_logs_title">Журнал подій</string>
     <string name="nc_settings_no_ringtone">Відсутній звук</string>
     <string name="nc_settings_no_talk_installed">На сервері, до якого ви намагаєтеся підключитися, застосунок \"Talk\" не встановлено.</string>
     <string name="nc_settings_notification_sounds_post_oreo">Сповіщення</string>

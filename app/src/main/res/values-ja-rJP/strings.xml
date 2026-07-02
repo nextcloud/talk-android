@@ -48,6 +48,7 @@
     <string name="encrypted">暗号化済み</string>
     <string name="end_call">通話終了</string>
     <string name="end_call_for_everyone">全員の通話を終了する</string>
+    <string name="error_crash_title">%1$s はクラッシュしました</string>
     <string name="error_loading_chats">あなたのチャットの読み込み中に問題が発生しました</string>
     <string name="failed_to_save">%1$sの保存に失敗しました</string>
     <string name="fifteenMinutes">15分</string>
@@ -254,6 +255,8 @@
     <string name="nc_location_unknown">位置が不明</string>
     <string name="nc_locked">ロック</string>
     <string name="nc_locked_tap_to_unlock">タップしてロック解除</string>
+    <string name="nc_logs_disable_delete">ログを消去</string>
+    <string name="nc_logs_title">ログ</string>
     <string name="nc_manual">未設定</string>
     <string name="nc_mark_as_read">既読にする</string>
     <string name="nc_mark_as_unread">未読にする</string>
@@ -366,10 +369,10 @@
     <string name="nc_settings_advanced_title">高度な</string>
     <string name="nc_settings_appearance">表示</string>
     <string name="nc_settings_call_ringtone">呼び出し</string>
-    <string name="nc_settings_diagnosis_subtitle">診断画面を開く設定を確認したり、不具合の報告を作成したりします</string>
     <string name="nc_settings_diagnosis_title">診断</string>
     <string name="nc_settings_incognito_keyboard_desc">カスタマイズされた入力が認識されないようにする（保証なし）</string>
     <string name="nc_settings_incognito_keyboard_title">シークレットモードキーボード</string>
+    <string name="nc_settings_logs_title">ログ</string>
     <string name="nc_settings_no_ringtone">音無し</string>
     <string name="nc_settings_no_talk_installed">許可を得ようとしたサーバーにトークアプリがインストールされていません</string>
     <string name="nc_settings_notification_sounds_post_oreo">通知</string>

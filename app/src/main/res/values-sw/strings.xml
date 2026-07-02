@@ -287,6 +287,8 @@
     <string name="nc_location_unknown">Nafasi haijulikani</string>
     <string name="nc_locked">Imefungwa</string>
     <string name="nc_locked_tap_to_unlock">Bonyeza kufungua</string>
+    <string name="nc_logs_disable_delete">Futa kumbukumbu</string>
+    <string name="nc_logs_title">Kumbukumbu</string>
     <string name="nc_manual">Haijawekwa</string>
     <string name="nc_mark_as_read">Weka alama kama iliyosomwa</string>
     <string name="nc_mark_as_unread">Weka alama kama haijasomwa</string>
@@ -424,10 +426,10 @@
     <string name="nc_settings_appearance">Mwonekano</string>
     <string name="nc_settings_call_ringtone">Simu</string>
     <string name="nc_settings_contact_admin_of">Tafadhali wasiliana na msimamizi wa</string>
-    <string name="nc_settings_diagnosis_subtitle">Fungua skrini ya utambuzi ili kuangalia mipangilio au kuunda ripoti ya hitilafu</string>
     <string name="nc_settings_diagnosis_title">Uchunguzi</string>
     <string name="nc_settings_incognito_keyboard_desc">Huagiza kibodi kuzima ujifunzaji wa kibinafsi (bila dhamana)</string>
     <string name="nc_settings_incognito_keyboard_title">Kibodi fiche</string>
+    <string name="nc_settings_logs_title">Kumbukumbu</string>
     <string name="nc_settings_no_ringtone">Hakuna sauti</string>
     <string name="nc_settings_no_talk_installed">Programu ya Talk haijasakinishwa kwenye seva uliyojaribu kuthibitisha dhidi yake</string>
     <string name="nc_settings_notification_sounds_post_oreo">Arifa</string>

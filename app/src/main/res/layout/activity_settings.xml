@@ -763,17 +763,17 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/settings_advanced_category"
+                android:id="@+id/settings_diagnosis_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/settings_advanced_title"
+                    android:id="@+id/settings_diagnosis_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/standard_margin"
-                    android:text="@string/nc_settings_advanced_title"
+                    android:text="@string/nc_settings_diagnosis_logs_section_title"
                     android:textSize="@dimen/headline_text_size"
                     android:textStyle="bold" />
 
@@ -798,6 +798,69 @@
                         android:layout_height="wrap_content"
                         android:text="@string/nc_settings_diagnosis_subtitle" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/logs_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="vertical"
+                    android:padding="@dimen/standard_padding">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/logs_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nc_settings_logs_title"
+                        android:textSize="@dimen/headline_text_size" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/logs_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nc_settings_logs_subtitle" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/share_report_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="vertical"
+                    android:padding="@dimen/standard_padding">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/share_report_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nc_settings_share_report_title"
+                        android:textSize="@dimen/headline_text_size" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/share_report_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nc_settings_share_report_subtitle" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/settings_advanced_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/settings_advanced_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/standard_margin"
+                    android:text="@string/nc_settings_advanced_title"
+                    android:textSize="@dimen/headline_text_size"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:id="@+id/settings_client_cert"
@@ -936,6 +999,7 @@
                 android:id="@+id/settings_about_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_margin"
                 android:orientation="vertical">
 
                 <com.google.android.material.textview.MaterialTextView

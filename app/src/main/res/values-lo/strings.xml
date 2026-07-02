@@ -64,6 +64,7 @@
     <string name="encrypted">Encrypted</string>
     <string name="end_call">End call</string>
     <string name="end_call_for_everyone">End call for everyone</string>
+    <string name="error_crash_title">%1$sຢຸດ</string>
     <string name="error_loading_chats">There was a problem loading your chats</string>
     <string name="error_unbanning">Error occurred when unbanning participant</string>
     <string name="failed_to_save">Failed to save %1$s</string>
@@ -285,6 +286,8 @@
     <string name="nc_location_unknown">Position unknown</string>
     <string name="nc_locked">Locked</string>
     <string name="nc_locked_tap_to_unlock">Tap to unlock</string>
+    <string name="nc_logs_disable_delete">ລຶບ</string>
+    <string name="nc_logs_title">ບັນທຶກ</string>
     <string name="nc_manual">Not set</string>
     <string name="nc_mark_as_read">Mark as read</string>
     <string name="nc_mark_as_unread">Mark as unread</string>
@@ -415,10 +418,10 @@
     <string name="nc_settings_appearance">Appearance</string>
     <string name="nc_settings_call_ringtone">Calls</string>
     <string name="nc_settings_contact_admin_of">Please contact the administrator of</string>
-    <string name="nc_settings_diagnosis_subtitle">Open diagnosis screen to check settings or create bug report</string>
     <string name="nc_settings_diagnosis_title">Diagnosis</string>
     <string name="nc_settings_incognito_keyboard_desc">Instructs keyboard to disable personalized learning (without guarantees)</string>
     <string name="nc_settings_incognito_keyboard_title">Incognito keyboard</string>
+    <string name="nc_settings_logs_title">ບັນທຶກ</string>
     <string name="nc_settings_no_ringtone">No sound</string>
     <string name="nc_settings_no_talk_installed">Talk app is not installed on the server you tried to authenticate against</string>
     <string name="nc_settings_notification_sounds_post_oreo">ການເເຈ້ງເຕືອນ</string>

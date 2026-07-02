@@ -50,6 +50,7 @@ import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.utils.ssl.TrustManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -90,6 +91,9 @@ open class BaseActivity : AppCompatActivity() {
     @Inject
     lateinit var currentUserProvider: CurrentUserProvider
 
+    @Inject
+    lateinit var logger: Logger
+
     open val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.TOOLBAR
 
@@ -123,6 +127,7 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        logger.i(this::class.java.simpleName, "onCreate")
         adjustUIForAPILevel35()
         super.onCreate(savedInstanceState)
 
@@ -137,6 +142,7 @@ open class BaseActivity : AppCompatActivity() {
     protected open val skipLockCheckOnResume: Boolean = false
 
     public override fun onResume() {
+        logger.d(this::class.java.simpleName, "onResume")
         super.onResume()
         Log.d(
             TAG,
@@ -162,8 +168,14 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     public override fun onStop() {
+        logger.d(this::class.java.simpleName, "onStop")
         super.onStop()
         eventBus.unregister(this)
+    }
+
+    public override fun onDestroy() {
+        logger.d(this::class.java.simpleName, "onDestroy")
+        super.onDestroy()
     }
 
     /*

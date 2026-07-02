@@ -67,6 +67,7 @@
     <string name="encrypted">رمزگذاری شده</string>
     <string name="end_call">پایان تماس</string>
     <string name="end_call_for_everyone">پایان تماس برای همه</string>
+    <string name="error_crash_title">%1$s از کار افتاد</string>
     <string name="error_loading_chats">مشکلی در بارگذاری چت‌های شما وجود داشت</string>
     <string name="error_unbanning">خطا در رفع مسدودیت شرکت‌کننده</string>
     <string name="failed_to_save">ذخیره %1$s انجام نشد</string>
@@ -303,6 +304,9 @@
     <string name="nc_location_unknown">موقعیت ناشناخته</string>
     <string name="nc_locked">قفل‌شده</string>
     <string name="nc_locked_tap_to_unlock">برای باز کردن قفل ضربه بزنید</string>
+    <string name="nc_logs_disable_delete">حذف لاگ‌ها</string>
+    <string name="nc_logs_share_diagnosis">گزارش تشخیص</string>
+    <string name="nc_logs_title">لاگ‌ها</string>
     <string name="nc_manual">تنظیم نشده</string>
     <string name="nc_mark_as_read">علامت به عنوان خوانده‌شده</string>
     <string name="nc_mark_as_unread">علامت به عنوان خوانده‌نشده</string>
@@ -450,10 +454,10 @@
     <string name="nc_settings_appearance">ظاهر</string>
     <string name="nc_settings_call_ringtone">تماس‌ها</string>
     <string name="nc_settings_contact_admin_of">لطفاً با مدیر</string>
-    <string name="nc_settings_diagnosis_subtitle">باز کردن صفحه تشخیص برای بررسی تنظیمات یا ایجاد گزارش اشکال</string>
     <string name="nc_settings_diagnosis_title">تشخیص</string>
     <string name="nc_settings_incognito_keyboard_desc">دستورالعمل صفحه کلید برای غیرفعال کردن یادگیری شخصی (بدون ضمانت)</string>
     <string name="nc_settings_incognito_keyboard_title">صفحه کلید ناشناس</string>
+    <string name="nc_settings_logs_title">لاگ‌ها</string>
     <string name="nc_settings_no_ringtone">بدون صدا</string>
     <string name="nc_settings_no_talk_installed">برنامه Talk روی سروری که قصد اعتبار سنجی در آن را دارید، نصب نشده است</string>
     <string name="nc_settings_notification_sounds_post_oreo">آگاهی‌ها</string>

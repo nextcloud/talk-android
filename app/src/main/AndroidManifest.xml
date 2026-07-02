@@ -271,6 +271,16 @@
             android:theme="@style/AppTheme" />
 
         <activity
+            android:name=".errorhandling.ShowErrorActivity"
+            android:exported="false"
+            android:process=":crash"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".logger.ui.LogsActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
             android:name=".conversationinfo.ConversationInfoActivity"
             android:theme="@style/AppTheme" />
 

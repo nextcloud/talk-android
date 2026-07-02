@@ -62,8 +62,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode = 240010014
-        versionName = "24.1.0 Alpha 14"
+        versionCode = 240010015
+        versionName = "24.1.0 Alpha 15"
 
         vectorDrawables.useSupportLibrary = true
 
@@ -311,8 +311,10 @@ dependencies {
     implementation("io.noties.markwon:ext-tasklist:$markwonVersion")
     implementation("io.noties.markwon:ext-tables:$markwonVersion")
 
-    // Computer Vision - for background effects during video calls
-    implementation("com.google.mediapipe:tasks-vision:0.10.26")
+    // Computer Vision - for background effects during video calls (gplay only; generic/F-Droid
+    // build excludes this because it transitively pulls in com.google.firebase:firebase-encoders*
+    // via datatransport, which F-Droid's APK scanner rejects)
+    "gplayImplementation"("com.google.mediapipe:tasks-vision:0.10.26")
     implementation("io.github.crow-misia.libyuv:libyuv-android:0.43.2")
 
     // Avatar picker

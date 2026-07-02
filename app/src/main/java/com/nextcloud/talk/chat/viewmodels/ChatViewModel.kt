@@ -41,6 +41,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -79,7 +80,9 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import com.nextcloud.talk.dagger.modules.ApplicationScope
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -122,6 +125,7 @@ import javax.inject.Inject
 
 @Suppress("TooManyFunctions", "LongParameterList")
 class ChatViewModel @AssistedInject constructor(
+    private val logger: Logger,
     // should be removed here. Use it via RetrofitChatNetwork
     private val appPreferences: AppPreferences,
     private val chatNetworkDataSource: ChatNetworkDataSource,
@@ -133,6 +137,7 @@ class ChatViewModel @AssistedInject constructor(
     private val mediaRecorderManager: MediaRecorderManager,
     private val audioFocusRequestManager: AudioFocusRequestManager,
     private val currentUserProvider: CurrentUserProvider,
+    @ApplicationScope private val appScope: CoroutineScope,
     @Assisted private val chatRoomToken: String,
     @Assisted private val conversationThreadId: Long?
 ) : ViewModel(),
@@ -373,7 +378,7 @@ class ChatViewModel @AssistedInject constructor(
         get() = _joinRoomViewState
 
     object LeaveRoomStartState : ViewState
-    class LeaveRoomSuccessState(val funToCallWhenLeaveSuccessful: (() -> Unit)?) : ViewState
+    object LeaveRoomSuccessState : ViewState
 
     private val _leaveRoomViewState: MutableLiveData<ViewState> = MutableLiveData(LeaveRoomStartState)
     val leaveRoomViewState: LiveData<ViewState>
@@ -1537,29 +1542,24 @@ class ChatViewModel @AssistedInject constructor(
             })
     }
 
-    fun leaveRoom(credentials: String, url: String, funToCallWhenLeaveSuccessful: (() -> Unit)?) {
-        val startNanoTime = System.nanoTime()
-        chatNetworkDataSource.leaveRoom(credentials, url)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposableSet.add(d)
+    fun leaveRoom(credentials: String, url: String, functionToCallAfterLeave: (() -> Unit)?) {
+        appScope.launch {
+            try {
+                val result = chatNetworkDataSource.leaveRoom(credentials, url)
+                if (result.ocs?.meta?.statusCode == HTTP_CODE_OK) {
+                    Log.d(TAG, "leaveRoom completed")
+                } else {
+                    Log.e(TAG, "leaveRoom failed with OCS status: ${result.ocs?.meta?.statusCode}")
                 }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "leaveRoom - leaveRoom - ERROR", e)
-                }
-
-                override fun onComplete() {
-                    Log.d(TAG, "leaveRoom - leaveRoom - completed: $startNanoTime")
-                }
-
-                override fun onNext(t: GenericOverall) {
-                    _leaveRoomViewState.value = LeaveRoomSuccessState(funToCallWhenLeaveSuccessful)
+                withContext(Dispatchers.Main) {
+                    _leaveRoomViewState.value = LeaveRoomSuccessState
                     _getCapabilitiesViewState.value = GetCapabilitiesStartState
+                    functionToCallAfterLeave?.invoke()
                 }
-            })
+            } catch (e: Exception) {
+                Log.e(TAG, "leaveRoom - ERROR", e)
+            }
+        }
     }
 
     fun createRoom(credentials: String, url: String, queryMap: Map<String, String>) {

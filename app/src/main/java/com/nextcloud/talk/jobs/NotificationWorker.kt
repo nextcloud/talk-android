@@ -53,7 +53,9 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.callnotification.CallNotificationActivity
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.conversationlist.DirectShareHelper
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -99,6 +101,7 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.runBlocking
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -116,6 +119,8 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class NotificationWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
+
+    @Inject lateinit var logger: Logger
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -151,6 +156,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         sharedApplication!!.componentApplication.inject(this)
         context = applicationContext
 
+        logger.d(TAG, "NotificationWorker::doWork")
+
         initDecryptedData(inputData)
         initNcApiAndCredentials()
 
@@ -158,11 +165,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         pushMessage.timestamp = System.currentTimeMillis()
 
-        Log.d(TAG, pushMessage.toString())
-        Log.d(TAG, "pushMessage.id (=KEY_ROOM_TOKEN): " + pushMessage.id)
-        Log.d(TAG, "pushMessage.notificationId: " + pushMessage.notificationId)
-        Log.d(TAG, "pushMessage.notificationIds: " + pushMessage.notificationIds)
-        Log.d(TAG, "pushMessage.timestamp: " + pushMessage.timestamp)
+        logger.d(TAG, pushMessage.toString())
+        logger.d(TAG, "pushMessage.id (=KEY_ROOM_TOKEN): " + pushMessage.id)
+        logger.d(TAG, "pushMessage.notificationId: " + pushMessage.notificationId)
+        logger.d(TAG, "pushMessage.notificationIds: " + pushMessage.notificationIds.toString())
+        logger.d(TAG, "pushMessage.timestamp: " + pushMessage.timestamp)
 
         if (pushMessage.delete) {
             cancelNotification(context, user, pushMessage.notificationId)
@@ -173,7 +180,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 cancelNotification(context, user, notificationId)
             }
         } else if (isTalkNotification()) {
-            Log.d(TAG, "pushMessage.type: " + pushMessage.type)
+            logger.d(TAG, "pushMessage.type: " + pushMessage.type)
             when (pushMessage.type) {
                 TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER -> handleNonCallPushMessage()
                 TYPE_REMOTE_TALK_SHARE -> handleRemoteTalkSharePushMessage()
@@ -181,7 +188,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 else -> Log.e(TAG, pushMessage.type + " is not handled")
             }
         } else if (isAdminTalkNotification()) {
-            Log.d(TAG, "pushMessage.type: " + pushMessage.type)
+            logger.d(TAG, "pushMessage.type: " + pushMessage.type)
             when (pushMessage.type) {
                 TYPE_ADMIN_NOTIFICATIONS -> handleInternalPushMessage()
                 else -> Log.e(TAG, pushMessage.type + " is not handled")
@@ -189,7 +196,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         } else if (isInternal()) {
             handleInternalPushMessage()
         } else {
-            Log.d(TAG, "a pushMessage that is not for spreed was received.")
+            logger.d(TAG, "a pushMessage that is not for spreed was received.")
         }
 
         return Result.success()
@@ -216,6 +223,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         getNcDataAndShowNotification(mainActivityIntent)
     }
 
+    @Suppress("LongMethod")
     private fun handleCallPushMessage() {
         val userBeingCalled = userManager.getUserWithId(user.id!!).blockingGet()
 
@@ -252,6 +260,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             return bundle
         }
 
+        @Suppress("LongMethod")
         fun prepareCallNotificationScreen(conversation: ConversationModel) {
             val fullScreenIntent = Intent(context, CallNotificationActivity::class.java)
             val bundle = createBundle(conversation)
@@ -595,7 +604,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return false
     }
 
-    @Suppress("MagicNumber")
+    @Suppress("MagicNumber", "LongMethod")
     private fun showNotification(
         intent: Intent,
         ncNotification: com.nextcloud.talk.models.json.notifications.Notification?
@@ -615,8 +624,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             val token = pushMessage.id
             val displayName = pushMessage.subject
             if (token != null && displayName.isNotEmpty()) {
-                kotlinx.coroutines.runBlocking {
-                    com.nextcloud.talk.conversationlist.DirectShareHelper.reportIncomingMessage(
+                runBlocking {
+                    DirectShareHelper.reportIncomingMessage(
                         context!!,
                         user,
                         token,
@@ -1016,7 +1025,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private fun parseThreadId(objectId: String?): Long? = objectId?.split("/")?.getOrNull(2)?.toLongOrNull()
 
     private fun sendNotification(notificationId: Int, notification: Notification) {
-        Log.d(TAG, "show notification with id $notificationId")
+        logger.d(TAG, "show notification with id $notificationId")
         if (ActivityCompat.checkSelfPermission(
                 applicationContext,
                 Manifest.permission.POST_NOTIFICATIONS
@@ -1035,7 +1044,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     private fun removeNotification(notificationId: Int) {
-        Log.d(TAG, "removed notification with id $notificationId")
+        logger.d(TAG, "removed notification with id $notificationId")
         notificationManager.cancel(notificationId)
     }
 
@@ -1190,7 +1199,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private fun getIntentFlags(): Int = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
 
     companion object {
-        val TAG = NotificationWorker::class.simpleName
+        val TAG: String = NotificationWorker::class.java.simpleName
         private const val TYPE_CHAT = "chat"
         private const val TYPE_ROOM = "room"
         private const val TYPE_CALL = "call"

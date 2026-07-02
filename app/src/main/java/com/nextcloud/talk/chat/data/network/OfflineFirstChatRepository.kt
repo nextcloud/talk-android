@@ -8,6 +8,7 @@
 
 package com.nextcloud.talk.chat.data.network
 
+import android.database.sqlite.SQLiteConstraintException
 import android.os.Bundle
 import android.util.Log
 import com.nextcloud.talk.chat.data.ChatMessageRepository
@@ -23,6 +24,7 @@ import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
@@ -54,6 +56,7 @@ import javax.inject.Inject
 
 @Suppress("LargeClass", "TooManyFunctions")
 class OfflineFirstChatRepository @Inject constructor(
+    private val logger: Logger,
     private val chatDao: ChatMessagesDao,
     private val chatBlocksDao: ChatBlocksDao,
     private val network: ChatNetworkDataSource,
@@ -149,7 +152,7 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     override suspend fun loadInitialMessages(withNetworkParams: Bundle, isChatRelaySupported: Boolean) {
-        Log.d(TAG, "---- loadInitialMessages ------------")
+        logger.d(TAG, "---- loadInitialMessages ------------")
         cleanupExpiredMessages()
         newXChatLastCommonRead = conversationModel.lastCommonReadMessage
 
@@ -1093,7 +1096,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
         try {
             chatDao.upsertChatMessagesAndDeleteTemp(internalConversationId, chatMessageEntities)
-        } catch (e: android.database.sqlite.SQLiteConstraintException) {
+        } catch (e: SQLiteConstraintException) {
             // Skipped persisting messages: conversation $internalConversationId not in DB yet.
             // This avoids "SQLiteConstraintException: FOREIGN KEY constraint failed".
             // It may happen when a notification for a newly created conversation is opened. The websocket was just
@@ -1289,7 +1292,7 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     companion object {
-        val TAG = OfflineFirstChatRepository::class.simpleName
+        val TAG: String = OfflineFirstChatRepository::class.java.simpleName
         private const val HTTP_CODE_OK: Int = 200
         private const val HTTP_CODE_NOT_MODIFIED = 304
         private const val HTTP_CODE_PRECONDITION_FAILED = 412

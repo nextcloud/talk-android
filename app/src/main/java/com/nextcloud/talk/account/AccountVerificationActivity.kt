@@ -63,6 +63,7 @@ import org.greenrobot.eventbus.ThreadMode
 import java.net.CookieManager
 import javax.inject.Inject
 
+@Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
 class AccountVerificationActivity : BaseActivity() {
 

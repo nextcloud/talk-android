@@ -67,6 +67,7 @@
     <string name="encrypted">Zaszyfrowane</string>
     <string name="end_call">Zakończ połączenie</string>
     <string name="end_call_for_everyone">Zakończ połączenie dla wszystkich</string>
+    <string name="error_crash_title">%1$s zatrzymany</string>
     <string name="error_loading_chats">Wystąpił problem z wczytaniem Twoich czatów</string>
     <string name="error_unbanning">Wystąpił błąd podczas odblokowywania uczestnika</string>
     <string name="failed_to_save">Nie udało się zapisać %1$s</string>
@@ -302,6 +303,9 @@
     <string name="nc_location_unknown">Pozycja nieznana</string>
     <string name="nc_locked">Zablokowany</string>
     <string name="nc_locked_tap_to_unlock">Dotknij, aby odblokować</string>
+    <string name="nc_logs_disable_delete">Usuń dziennik</string>
+    <string name="nc_logs_share_diagnosis">Raport diagnostyczny</string>
+    <string name="nc_logs_title">Dziennik</string>
     <string name="nc_manual">Nie ustawiony</string>
     <string name="nc_mark_as_read">Oznacz jako przeczytane</string>
     <string name="nc_mark_as_unread">Oznacz jako nieprzeczytane</string>
@@ -449,10 +453,10 @@
     <string name="nc_settings_appearance">Wygląd</string>
     <string name="nc_settings_call_ringtone">Połączenia</string>
     <string name="nc_settings_contact_admin_of">Proszę o kontakt z administratorem</string>
-    <string name="nc_settings_diagnosis_subtitle">Otwórz ekran diagnostyczny, aby sprawdzić ustawienia lub utworzyć raport o błędzie</string>
     <string name="nc_settings_diagnosis_title">Diagnoza</string>
     <string name="nc_settings_incognito_keyboard_desc">Wskaż klawiaturze, aby wyłączyła spersonalizowane uczenie (bez gwarancji)</string>
     <string name="nc_settings_incognito_keyboard_title">Klawiatura incognito</string>
+    <string name="nc_settings_logs_title">Dziennik</string>
     <string name="nc_settings_no_ringtone">Bez dźwięku</string>
     <string name="nc_settings_no_talk_installed">Aplikacja Talk nie jest zainstalowana na serwerze, na którym próbowałeś się uwierzytelnić</string>
     <string name="nc_settings_notification_sounds_post_oreo">Powiadomienia</string>

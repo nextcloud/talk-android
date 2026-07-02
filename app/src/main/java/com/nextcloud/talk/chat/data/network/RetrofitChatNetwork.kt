@@ -134,10 +134,8 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         metadata: String
     ): Observable<GenericOverall> = ncApi.sendLocation(credentials, url, objectType, objectId, metadata).map { it }
 
-    override fun leaveRoom(credentials: String, url: String): Observable<GenericOverall> =
-        ncApi.leaveRoom(credentials, url).map {
-            it
-        }
+    override suspend fun leaveRoom(credentials: String, url: String): GenericOverall =
+        ncApiCoroutines.leaveRoom(credentials, url)
 
     override suspend fun sendChatMessage(
         credentials: String,

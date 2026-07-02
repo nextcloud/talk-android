@@ -36,6 +36,7 @@
     <string name="edit">Editar</string>
     <string name="encrypted">Cifrado</string>
     <string name="end_call_for_everyone">Finalizar llamada para todos</string>
+    <string name="error_crash_title">%1$s se ha bloqueado</string>
     <string name="error_loading_chats">Hubo un problema al cargar tus chats</string>
     <string name="failed_to_save">Error al guardar %1$s</string>
     <string name="fifteenMinutes">15 minutos</string>
@@ -211,6 +212,8 @@
     <string name="nc_location_unknown">Ubicación desconocida</string>
     <string name="nc_locked">Bloqueado</string>
     <string name="nc_locked_tap_to_unlock">Toca para desbloquear</string>
+    <string name="nc_logs_disable_delete">Eliminar registros</string>
+    <string name="nc_logs_title">Bitácoras</string>
     <string name="nc_manual">No establecido</string>
     <string name="nc_mark_as_read">Marcar como leído</string>
     <string name="nc_mark_as_unread">Marcar como no leído</string>
@@ -311,6 +314,7 @@
     <string name="nc_settings_call_ringtone">Llamadas</string>
     <string name="nc_settings_incognito_keyboard_desc">Instruye al teclado a desactivar el aprendizaje personalizado (sin garantías)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado en modo incógnito</string>
+    <string name="nc_settings_logs_title">Bitácoras</string>
     <string name="nc_settings_no_ringtone">Sin sonido</string>
     <string name="nc_settings_no_talk_installed">La aplicación Talk no está instalada en el servidor al que intentaste autenticarte</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notificaciones</string>

@@ -82,7 +82,7 @@ class ConversationCreationViewModel @Inject constructor(
         _conversationDescription.value = conversationDescription
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
+    @Suppress("Detekt.TooGenericExceptionCaught", "LongMethod")
     fun createRoomAndAddParticipants(
         roomType: String,
         conversationName: String,

@@ -54,11 +54,14 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderImpl
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOldImpl
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
-import com.nextcloud.talk.utils.message.MessageUtils
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.preferences.AppPreferencesImpl
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -107,9 +110,6 @@ class ComposePreviewUtils private constructor(context: Context) {
             return ViewThemeUtils(materialScheme, android, material, androidx, talk, dialog)
         }
 
-    val messageUtils: MessageUtils
-        get() = MessageUtils(mContext)
-
     val retrofit: Retrofit
         get() {
             val retrofitBuilder = Retrofit.Builder()
@@ -145,8 +145,12 @@ class ComposePreviewUtils private constructor(context: Context) {
     val networkMonitor: NetworkMonitor
         get() = NetworkMonitorImpl(mContext)
 
+    val logger: TestLogger
+        get() = TestLogger
+
     val chatRepository: ChatMessageRepository
         get() = OfflineFirstChatRepository(
+            logger,
             chatMessagesDao,
             chatBlocksDao,
             chatNetworkDataSource,
@@ -182,6 +186,15 @@ class ComposePreviewUtils private constructor(context: Context) {
     val currentUserProvider: CurrentUserProviderImpl
         get() = CurrentUserProviderImpl(userManager)
 
+    object TestLogger : Logger {
+        override fun d(tag: String, message: String) = Unit
+        override fun d(tag: String, message: String, t: Throwable) = Unit
+        override fun i(tag: String, message: String) = Unit
+        override fun w(tag: String, message: String) = Unit
+        override fun e(tag: String, message: String) = Unit
+        override fun e(tag: String, message: String, t: Throwable) = Unit
+    }
+
     val chatViewModel: ChatViewModel
         get() = ChatViewModel(
             appPreferences = appPreferences,
@@ -194,8 +207,10 @@ class ComposePreviewUtils private constructor(context: Context) {
             mediaRecorderManager = mediaRecorderManager,
             audioFocusRequestManager = audioFocusRequestManager,
             currentUserProvider = currentUserProvider,
+            appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
             chatRoomToken = "",
-            conversationThreadId = null
+            conversationThreadId = null,
+            logger = TestLogger
         )
 
     val contactsRepository: ContactsRepository
