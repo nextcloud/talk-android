@@ -80,10 +80,10 @@ import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CharPolicy
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.EmojiTextInputEditText
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.SpreedFeatures
@@ -300,47 +300,46 @@ class MessageInputFragment : Fragment() {
                 }.collect()
         }
 
-        messageInputViewModel.callStartedFlow.observe(viewLifecycleOwner) {
-            val (message, show) = it
-            if (show) {
-                binding.fragmentCallStarted.callAuthorChip.text = message.actorDisplayName
-                binding.fragmentCallStarted.callAuthorChipSecondary.text = message.actorDisplayName
-                val user = currentUserProvider.currentUser.blockingGet()
-                val url: String = if (message.actorType == "guests" || message.actorType == "guest") {
-                    ApiUtils.getUrlForGuestAvatar(user!!.baseUrl!!, message.actorDisplayName, true)
+        viewLifecycleOwner.lifecycleScope.launch {
+            chatActivity.chatViewModel.lastCallSystemMessage.collect {
+                if (it.shouldShow) {
+                    binding.fragmentCallStarted.callAuthorChip.text = it.actorDisplayName
+                    val user = currentUserProvider.currentUser.blockingGet()
+                    val url: String = if (it.actorType == "guests" || it.actorType == "guest") {
+                        ApiUtils.getUrlForGuestAvatar(user!!.baseUrl!!, it.actorDisplayName, true)
+                    } else {
+                        ApiUtils.getUrlForAvatar(
+                            user!!.baseUrl!!,
+                            it.actorId,
+                            false,
+                            darkMode = DisplayUtils.isDarkModeOn(requireContext())
+                        )
+                    }
+
+                    val imageRequest: ImageRequest = ImageRequest.Builder(requireContext())
+                        .data(url)
+                        .crossfade(true)
+                        .transformations(CircleCropTransformation())
+                        .target(object : Target {
+                            override fun onStart(placeholder: Drawable?) {
+                                // unused atm
+                            }
+
+                            override fun onError(error: Drawable?) {
+                                // unused atm
+                            }
+
+                            override fun onSuccess(result: Drawable) {
+                                binding.fragmentCallStarted.callAuthorChip.chipIcon = result
+                            }
+                        })
+                        .build()
+
+                    imageLoader(requireContext()).enqueue(imageRequest)
+                    binding.fragmentCallStarted.root.visibility = View.VISIBLE
                 } else {
-                    ApiUtils.getUrlForAvatar(
-                        user!!.baseUrl!!,
-                        message.actorId,
-                        false,
-                        darkMode = DisplayUtils.isDarkModeOn(requireContext())
-                    )
+                    binding.fragmentCallStarted.root.visibility = View.GONE
                 }
-
-                val imageRequest: ImageRequest = ImageRequest.Builder(requireContext())
-                    .data(url)
-                    .crossfade(true)
-                    .transformations(CircleCropTransformation())
-                    .target(object : Target {
-                        override fun onStart(placeholder: Drawable?) {
-                            // unused atm
-                        }
-
-                        override fun onError(error: Drawable?) {
-                            // unused atm
-                        }
-
-                        override fun onSuccess(result: Drawable) {
-                            binding.fragmentCallStarted.callAuthorChip.chipIcon = result
-                            binding.fragmentCallStarted.callAuthorChipSecondary.chipIcon = result
-                        }
-                    })
-                    .build()
-
-                imageLoader(requireContext()).enqueue(imageRequest)
-                binding.fragmentCallStarted.root.visibility = View.VISIBLE
-            } else {
-                binding.fragmentCallStarted.root.visibility = View.GONE
             }
         }
     }
@@ -570,10 +569,7 @@ class MessageInputFragment : Fragment() {
 
         binding.fragmentCallStarted.callStartedCloseBtn.setOnClickListener {
             collapsed = !collapsed
-            binding.fragmentCallStarted.callAuthorLayout.visibility = if (collapsed) View.GONE else View.VISIBLE
             binding.fragmentCallStarted.callBtnLayout.visibility = if (collapsed) View.GONE else View.VISIBLE
-            binding.fragmentCallStarted.callAuthorChipSecondary.visibility = if (collapsed) View.VISIBLE else View.GONE
-            binding.fragmentCallStarted.callStartedSecondaryText.visibility = if (collapsed) View.VISIBLE else View.GONE
             setDropDown(collapsed)
         }
 
@@ -1253,10 +1249,6 @@ class MessageInputFragment : Fragment() {
         }
 
         binding.fragmentCallStarted.callAuthorChip.apply {
-            viewThemeUtils.material.colorChipBackground(this)
-        }
-
-        binding.fragmentCallStarted.callAuthorChipSecondary.apply {
             viewThemeUtils.material.colorChipBackground(this)
         }
 
