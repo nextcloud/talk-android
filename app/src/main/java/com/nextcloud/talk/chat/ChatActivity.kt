@@ -18,6 +18,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -68,6 +69,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalDensity
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
@@ -81,6 +83,10 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -89,6 +95,7 @@ import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.common.util.concurrent.ListenableFuture
 import com.nextcloud.android.common.ui.color.ColorUtil
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
@@ -99,6 +106,7 @@ import com.nextcloud.talk.adapters.messages.CallStartedMessageInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.chat.data.io.VoiceMessageMediaService
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.model.FileParameters
 import com.nextcloud.talk.chat.ui.ChatEmptyState
@@ -222,6 +230,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
@@ -238,6 +247,7 @@ import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
 @Suppress("TooManyFunctions", "LargeClass", "LongMethod")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -293,6 +303,9 @@ class ChatActivity :
     private val upcomingEventUiState =
         mutableStateOf<ChatViewModel.UpcomingEventUIState>(ChatViewModel.UpcomingEventUIState.None)
     private val overflowContainerHeightPx = mutableIntStateOf(0)
+
+    private var mediaControllerFuture: ListenableFuture<MediaController>? = null
+    private var mediaController: MediaController? = null
 
     private val startSelectContactForResult = registerForActivityResult(
         ActivityResultContracts
@@ -1196,9 +1209,63 @@ class ChatActivity :
 
         pendingTargetMessageId = extras?.getString(BundleKeys.KEY_MESSAGE_ID)?.toLongOrNull()?.takeIf { it > 0L }
             ?: extras?.getLong(BundleKeys.KEY_MESSAGE_ID)?.takeIf { it > 0L }
-        pendingTargetThreadId = extras?.getString(BundleKeys.KEY_THREAD_ID)?.toLongOrNull()?.takeIf { it > 0L }
-            ?: extras?.getLong(BundleKeys.KEY_THREAD_ID)?.takeIf { it > 0L }
+        pendingTargetThreadId = extras?.getString(KEY_THREAD_ID)?.toLongOrNull()?.takeIf { it > 0L }
+            ?: extras?.getLong(KEY_THREAD_ID)?.takeIf { it > 0L }
         pendingTargetSearchQuery = extras?.getString(BundleKeys.KEY_SEARCH_QUERY)
+    }
+
+    private var progressJob: Job? = null
+
+    private fun startProgressPolling() {
+        progressJob?.cancel()
+        progressJob = lifecycleScope.launch {
+            while (isActive) {
+                mediaController?.let { controller ->
+                    // Guard against invalid states
+                    if (!controller.isPlaying) return@let
+
+                    val currentPosition = controller.currentPosition
+                    val duration = controller.duration.takeIf { it > 0 } ?: 1 // Prevent division by zero
+
+                    // Calculate progress
+                    val progress = (currentPosition.toFloat() / duration) * 100f
+                    val secondsPlayed = (currentPosition / 1000)
+
+                    val msg = chatViewModel.currentVoiceMessage?.apply {
+                        voiceMessageSeekbarProgress = progress.roundToInt()
+                        voiceMessagePlayedSeconds = secondsPlayed.toInt()
+                    }
+
+                    // Dispatch to your ViewModel to update the specific ChatMessage UI
+                    val currentMediaId = controller.currentMediaItem?.mediaId
+                    if (currentMediaId != null && msg != null) {
+                        chatViewModel.syncVoiceMessageUiState(msg)
+                    }
+                }
+                // Poll every 150ms for smooth seekbar updates
+                delay(150L)
+            }
+        }
+    }
+
+    private fun stopProgressPolling() {
+        progressJob?.cancel()
+        progressJob = null
+    }
+
+    private val playerListener = object : Player.Listener {
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            if (isPlaying) {
+                startProgressPolling()
+            } else {
+                stopProgressPolling()
+            }
+        }
+
+        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+            // Optional: Reset the UI state of the previously playing message here
+            // if you want to handle the transition logic completely reactively.
+        }
     }
 
     override fun onStart() {
@@ -1206,6 +1273,24 @@ class ChatActivity :
         active = true
         this.lifecycle.addObserver(AudioUtils)
         this.lifecycle.addObserver(chatViewModel)
+
+        val sessionToken = SessionToken(this, ComponentName(this, VoiceMessageMediaService::class.java))
+        mediaControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
+
+        mediaControllerFuture?.addListener({
+            mediaController = mediaControllerFuture?.get()
+
+            mediaController?.addListener(playerListener)
+
+            // If the controller connects and is already playing (e.g. background playback),
+            // start polling immediately
+            if (mediaController?.isPlaying == true) {
+                startProgressPolling()
+            }
+
+            // (Optional) Add a Player.Listener here if you want the Activity
+            // to reactively listen to playback state changes (e.g., when a track ends).
+        }, ContextCompat.getMainExecutor(this))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -1218,6 +1303,12 @@ class ChatActivity :
         active = false
         this.lifecycle.removeObserver(AudioUtils)
         this.lifecycle.removeObserver(chatViewModel)
+
+        mediaController?.removeListener(playerListener)
+        stopProgressPolling()
+
+        mediaControllerFuture?.let { MediaController.releaseFuture(it) }
+        mediaController = null
     }
 
     @OptIn(FlowPreview::class)
@@ -1869,9 +1960,19 @@ class ChatActivity :
     }
 
     private fun startPlayback(file: File, message: ChatMessage) {
-        chatViewModel.clearMediaPlayerQueue()
-        chatViewModel.queueInMediaPlayer(file.canonicalPath, message)
-        chatViewModel.startCyclingMediaPlayer()
+        val controller = mediaController ?: return
+
+        val mediaItem = MediaItem.Builder()
+            .setMediaId(message.jsonMessageId.toString())
+            .setUri(file.toURI().toString())
+            .build()
+
+        controller.setMediaItem(mediaItem)
+
+        controller.prepare()
+        controller.play()
+
+        // TODO: Ideally, the ViewModel should listen to the MediaController's state
         message.isPlayingVoiceMessage = true
         chatViewModel.syncVoiceMessageUiState(message)
     }
