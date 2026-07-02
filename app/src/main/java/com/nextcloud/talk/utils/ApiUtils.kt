@@ -39,6 +39,14 @@ object ApiUtils {
     val userAgent = "Mozilla/5.0 (Android) Nextcloud-Talk v"
         get() = field + BuildConfig.VERSION_NAME
 
+    // shown to the user in the browser during the login flow, so it uses the human-readable product name
+    @JvmStatic
+    val loginUserAgent: String
+        get() {
+            val productName = sharedApplication!!.resources.getString(R.string.nc_app_product_name)
+            return "Mozilla/5.0 (Android) $productName v${BuildConfig.VERSION_NAME}"
+        }
+
     @Deprecated(
         "This is only supported on API v1-3, in API v4+ please use " +
             "{@link ApiUtils#getUrlForAttendees(int, String, String)} instead."
