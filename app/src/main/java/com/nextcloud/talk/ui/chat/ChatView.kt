@@ -428,7 +428,8 @@ fun ChatView(
                                     onOpenThreadClick = callbacks.messageCallbacks.onOpenThreadClick,
                                     onQuotedMessageClick = handleQuotedMessageClick,
                                     onSystemMessageExpandClick = callbacks.messageCallbacks.onSystemMessageExpandClick,
-                                    onAvatarClick = callbacks.messageCallbacks.onAvatarClick
+                                    onAvatarClick = callbacks.messageCallbacks.onAvatarClick,
+                                    onMarkdownTaskToggle = callbacks.messageCallbacks.onMarkdownTaskToggle
                                 )
                             )
                         }

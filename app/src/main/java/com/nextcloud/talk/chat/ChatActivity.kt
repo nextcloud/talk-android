@@ -846,7 +846,10 @@ class ChatActivity :
                                 onSystemMessageExpandClick = { messageId ->
                                     chatViewModel.toggleSystemMessageCollapse(messageId)
                                 },
-                                onAvatarClick = { messageId -> chatViewModel.showProfileSheet(messageId.toLong()) }
+                                onAvatarClick = { messageId -> chatViewModel.showProfileSheet(messageId.toLong()) },
+                                onMarkdownTaskToggle = { messageId, updatedMessage ->
+                                    updateMarkdownTaskMessage(messageId, updatedMessage)
+                                }
                             )
                         ),
                         listState = listState
@@ -972,6 +975,74 @@ class ChatActivity :
                 }
             }
         }
+    }
+
+    private fun updateMarkdownTaskMessage(messageId: Int, updatedMessage: String) {
+        if (credentials.isNullOrBlank() || conversationUser?.baseUrl.isNullOrBlank()) {
+            return
+        }
+
+        lifecycleScope.launch {
+            val message = chatViewModel.getMessageById(messageId.toLong()).first()
+            if (!canEditMarkdownTaskMessage(message)) {
+                return@launch
+            }
+            if (message.isTemporary) {
+                messageInputViewModel.editTempChatMessage(message, updatedMessage)
+            } else {
+                val apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
+                messageInputViewModel.editChatMessage(
+                    credentials!!,
+                    ApiUtils.getUrlForChatMessage(
+                        version = apiVersion,
+                        baseUrl = conversationUser!!.baseUrl!!,
+                        token = roomToken,
+                        messageId = message.jsonMessageId.toString()
+                    ),
+                    getMarkdownTaskEditText(message, updatedMessage)
+                )
+            }
+        }
+    }
+
+    private fun canEditMarkdownTaskMessage(message: ChatMessage): Boolean {
+        if (message.isTemporary) {
+            return true
+        }
+        val isOlderThanTwentyFourHours = message.createdAt
+            .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_EDIT_MESSAGE))
+        if (isOlderThanTwentyFourHours || message.isDeleted) {
+            return false
+        }
+        if (!hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.EDIT_MESSAGES)) {
+            return false
+        }
+        if (message.getCalculateMessageType() != ChatMessage.MessageType.REGULAR_TEXT_MESSAGE) {
+            return false
+        }
+
+        return message.actorId == conversationUser?.userId ||
+            currentConversation?.let { ConversationUtils.canModerate(it, spreedCapabilities) } == true
+    }
+
+    private fun getMarkdownTaskEditText(message: ChatMessage, updatedMessage: String): String {
+        val messageParameters = message.messageParameters ?: return updatedMessage
+        var result = updatedMessage
+        for ((key, params) in messageParameters) {
+            val token = "{$key}"
+            if (!result.contains(token)) {
+                continue
+            }
+
+            val replacement = when (params?.get("type")) {
+                "user", "guest", "email" -> "@${params["mention-id"]}"
+                "user-group", "circle" -> "@\"${params["mention-id"]}\""
+                "call" -> "@all"
+                else -> params?.get("name").orEmpty()
+            }
+            result = result.replace(token, replacement)
+        }
+        return result
     }
 
     @Composable
@@ -4013,5 +4084,6 @@ class ChatActivity :
         private const val SEARCH_CENTER_TOLERANCE_PX = 2f
         private const val SEARCH_CENTER_STABILIZE_ATTEMPTS = 8
         private const val SEARCH_CENTER_STABILIZE_DELAY_MS = 200L
+        private const val AGE_THRESHOLD_FOR_EDIT_MESSAGE: Long = 86400000
     }
 }
