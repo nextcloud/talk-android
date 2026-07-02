@@ -64,6 +64,7 @@
     <string name="encrypted">Šifrované</string>
     <string name="end_call">Ukončit hovor</string>
     <string name="end_call_for_everyone">Ukončit hovor pro všechny</string>
+    <string name="error_crash_title">%1$s zhavarovalo</string>
     <string name="error_loading_chats">Došlo k problému při načítání vašich chatů</string>
     <string name="error_unbanning">Došlo k chybě při rušení vyloučení účastníka</string>
     <string name="failed_to_save">Nepodařilo se uložit %1$s</string>
@@ -290,6 +291,9 @@
     <string name="nc_location_unknown">Pozice neznámá</string>
     <string name="nc_locked">Uzamčeno</string>
     <string name="nc_locked_tap_to_unlock">Odemkněte klepnutím</string>
+    <string name="nc_logs_disable_delete">Smazat záznamy událostí</string>
+    <string name="nc_logs_share_diagnosis">Diagnostické hlášení</string>
+    <string name="nc_logs_title">Záznamy událostí</string>
     <string name="nc_manual">Nenastaveno</string>
     <string name="nc_mark_as_read">Označit jako přečtené</string>
     <string name="nc_mark_as_unread">Označit jako nepřečtené</string>
@@ -436,6 +440,7 @@
     <string name="nc_settings_diagnosis_title">Diagnostika</string>
     <string name="nc_settings_incognito_keyboard_desc">Dát klávesnici pokyn, že má vypnout přizpůsobené učení se (bez záruky)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klávesnice</string>
+    <string name="nc_settings_logs_title">Záznamy událostí</string>
     <string name="nc_settings_no_ringtone">Žádný zvuk</string>
     <string name="nc_settings_no_talk_installed">Aplikace Talk není na serveru, vůči kterému jste se pokusili ověřit, vůbec nainstalována</string>
     <string name="nc_settings_notification_sounds_post_oreo">Upozornění</string>

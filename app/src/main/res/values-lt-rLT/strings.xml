@@ -67,6 +67,7 @@
     <string name="encrypted">Užšifruota</string>
     <string name="end_call">Baigti pokalbį</string>
     <string name="end_call_for_everyone">Baigti pokalbį visiems</string>
+    <string name="error_crash_title">%1$s užstrigo</string>
     <string name="error_loading_chats">Kilo problemų įkeliant jūsų pokalbius</string>
     <string name="error_unbanning">Atšaukiant dalyvio blokavimą įvyko klaida</string>
     <string name="failed_to_save">Nepavyko įrašyti %1$s</string>
@@ -303,6 +304,7 @@
     <string name="nc_location_unknown">Vieta nežinoma</string>
     <string name="nc_locked">Užrakinta</string>
     <string name="nc_locked_tap_to_unlock">Bakstelėkite, norėdami atrakinti</string>
+    <string name="nc_logs_disable_delete">Ištrinti žurnalus</string>
     <string name="nc_logs_share_diagnosis">Diagnozės ataskaita</string>
     <string name="nc_logs_title">Žurnalai</string>
     <string name="nc_manual">Nenustatyta</string>

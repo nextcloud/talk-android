@@ -64,6 +64,7 @@
     <string name="encrypted">Šifrované</string>
     <string name="end_call">Ukončiť hovor</string>
     <string name="end_call_for_everyone">Ukončiť hovor pre všetkých</string>
+    <string name="error_crash_title">%1$s zhavarovalo</string>
     <string name="error_loading_chats">Nastal problém s načítaním vašich správ</string>
     <string name="error_unbanning">Pri rušení banu pre účastníka sa vyskytla chyba</string>
     <string name="failed_to_save">Nepodarilo sa uložiť %1$s</string>

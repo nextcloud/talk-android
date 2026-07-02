@@ -67,6 +67,7 @@
     <string name="encrypted">Titkosított</string>
     <string name="end_call">Hívás befejezése</string>
     <string name="end_call_for_everyone">Hívás befejezése mindenki számára</string>
+    <string name="error_crash_title">A(z) %1$s összeomlott</string>
     <string name="error_loading_chats">Hiba történt a csevegések betöltése során</string>
     <string name="error_unbanning">Hiba történt a résztvevő tiltásának visszavonása során</string>
     <string name="failed_to_save">Sikertelen mentés: %1$s</string>
@@ -303,6 +304,8 @@
     <string name="nc_location_unknown">Ismeretlen pozíci</string>
     <string name="nc_locked">Zárolt</string>
     <string name="nc_locked_tap_to_unlock">Koppintson a feloldáshoz</string>
+    <string name="nc_logs_disable_delete">Naplók törlése</string>
+    <string name="nc_logs_title">Naplók</string>
     <string name="nc_manual">Nincs megadva</string>
     <string name="nc_mark_as_read">Megjelölés olvasottként</string>
     <string name="nc_mark_as_unread">Megjelölés olvasatlanként</string>

@@ -67,6 +67,7 @@
     <string name="encrypted">Зашифровано</string>
     <string name="end_call">Завершить вызов</string>
     <string name="end_call_for_everyone">Завершить звонок для всех</string>
+    <string name="error_crash_title">сбой %1$s</string>
     <string name="error_loading_chats">Возникла проблема при загрузке ваших чатов</string>
     <string name="error_unbanning">Произошла ошибка при разблокировке участника</string>
     <string name="failed_to_save">Не удалось сохранить %1$s</string>

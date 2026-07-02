@@ -64,6 +64,7 @@
     <string name="encrypted">Versleuteld</string>
     <string name="end_call">Beëindig gesprek</string>
     <string name="end_call_for_everyone">Beëindig gesprek voor iedereen</string>
+    <string name="error_crash_title">%1$s gecrasht</string>
     <string name="error_loading_chats">Het laden van uw gesprekken was problematisch</string>
     <string name="error_unbanning">Fout opgetreden bij deblokkeren deelnemer</string>
     <string name="failed_to_save">Kon %1$s niet opslaan</string>
@@ -287,6 +288,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_location_unknown">Positie onbekend</string>
     <string name="nc_locked">Vergrendeld</string>
     <string name="nc_locked_tap_to_unlock">Tikken om te ontgrendelen</string>
+    <string name="nc_logs_disable_delete">Verwijderen logs</string>
     <string name="nc_logs_share_diagnosis">Diagnoserapport</string>
     <string name="nc_logs_title">Logs</string>
     <string name="nc_manual">Niet ingesteld</string>

@@ -64,6 +64,7 @@
     <string name="encrypted">Krypteret</string>
     <string name="end_call">Afslut opkald</string>
     <string name="end_call_for_everyone">Afslut opkald for alle</string>
+    <string name="error_crash_title">%1$s krakket</string>
     <string name="error_loading_chats">Der opstod et problem med at indlæse dine chats</string>
     <string name="error_unbanning">En fejl opstod under fjernelse af blokering af deltager</string>
     <string name="failed_to_save">Kunne ikke gemme %1$s</string>
@@ -283,6 +284,8 @@
     <string name="nc_location_unknown">Placering ukendt</string>
     <string name="nc_locked">Låst</string>
     <string name="nc_locked_tap_to_unlock">Tryk for at låse op</string>
+    <string name="nc_logs_disable_delete">Slet logs</string>
+    <string name="nc_logs_title">Logs</string>
     <string name="nc_manual">Ikke indstillet</string>
     <string name="nc_mark_as_read">Marker som læst</string>
     <string name="nc_mark_as_unread">Marker som ulæst</string>
@@ -414,6 +417,7 @@
     <string name="nc_settings_diagnosis_title">Diagnose</string>
     <string name="nc_settings_incognito_keyboard_desc">Indstiller tastatur til at deaktivere personaliseret indlæring (uden garanti)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito tastatur</string>
+    <string name="nc_settings_logs_title">Logs</string>
     <string name="nc_settings_no_ringtone">Ingen lyd</string>
     <string name="nc_settings_no_talk_installed">Snak appen er ikke installeret på serveren du prøver at blive godkendt på</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notifikationer</string>

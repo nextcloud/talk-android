@@ -38,6 +38,7 @@
     <string name="encrypted">Κρυπτογραφημένο</string>
     <string name="end_call">Τερματισμός κλήσης</string>
     <string name="end_call_for_everyone">Τερματισμός κλήσης για όλους</string>
+    <string name="error_crash_title">%1$sκαταστράφηκε</string>
     <string name="failed_to_save">Αποτυχία αποθήκευσης %1$s</string>
     <string name="fifteenMinutes">15 λεπτά</string>
     <string name="file_list_folder">φάκελος</string>
@@ -200,6 +201,8 @@
     <string name="nc_location_unknown">Άγνωστη θέση</string>
     <string name="nc_locked">Κλειδώθηκε</string>
     <string name="nc_locked_tap_to_unlock">Αγγίξτε για ξεκλείδωμα</string>
+    <string name="nc_logs_disable_delete">Διαγραφή καταγραφών</string>
+    <string name="nc_logs_title">Καταγραφές</string>
     <string name="nc_manual">Δεν ορίστηκε</string>
     <string name="nc_mark_as_read">Σήμανση ως αναγνωσμένο</string>
     <string name="nc_mark_as_unread">επισήμανση ως μή-αναγνωσμένο</string>
@@ -300,6 +303,7 @@
     <string name="nc_settings_call_ringtone">Κλήσεις</string>
     <string name="nc_settings_incognito_keyboard_desc">Ενημερώνει το πληκτρολόγιο για να απενεργοποιήσει την προσωπική μάθηση (χωρίς εγγυήσεις)</string>
     <string name="nc_settings_incognito_keyboard_title">Πληκτρολόγιο ανώνυμης περιήγησης</string>
+    <string name="nc_settings_logs_title">Καταγραφές</string>
     <string name="nc_settings_no_ringtone">Χωρίς ήχο</string>
     <string name="nc_settings_no_talk_installed">Προσπαθείτε να πιστοποιήσετε ξανά την εφάρμογή Talk που δεν είναι εγκατεστημένη στον διακομιστή</string>
     <string name="nc_settings_notification_sounds_post_oreo">Ειδοποιήσεις</string>

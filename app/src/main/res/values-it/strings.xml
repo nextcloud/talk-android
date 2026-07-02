@@ -64,6 +64,7 @@
     <string name="encrypted">Cifrato</string>
     <string name="end_call">Termina chiamata</string>
     <string name="end_call_for_everyone">Termina chiamata per tutti</string>
+    <string name="error_crash_title">%1$s si è chiuso inaspettatamente</string>
     <string name="error_loading_chats">Si è verificato un problema durante il caricamento delle tue chat</string>
     <string name="error_unbanning">Si è verificato un errore durante la rimozione del ban dal partecipante</string>
     <string name="failed_to_save">Salvataggio di %1$s fallito</string>
@@ -285,6 +286,9 @@
     <string name="nc_location_unknown">Posizione sconosciuta</string>
     <string name="nc_locked">Bloccato</string>
     <string name="nc_locked_tap_to_unlock">Tocca per sbloccare</string>
+    <string name="nc_logs_disable_delete">Elimina log</string>
+    <string name="nc_logs_share_diagnosis">Rapporto di diagnosi</string>
+    <string name="nc_logs_title">Log</string>
     <string name="nc_manual">Non impostato</string>
     <string name="nc_mark_as_read">Segna come letto</string>
     <string name="nc_mark_as_unread">Segna come non letto</string>

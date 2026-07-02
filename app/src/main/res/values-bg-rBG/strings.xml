@@ -37,6 +37,7 @@
     <string name="edit">Променяне</string>
     <string name="encrypted">Криптиран</string>
     <string name="end_call_for_everyone">Прекратяване на разговора за всички</string>
+    <string name="error_crash_title">%1$s крах</string>
     <string name="error_loading_chats">Имаше проблем със зареждането на вашите чатове</string>
     <string name="failed_to_save">Неуспешно записване %1$s</string>
     <string name="fifteenMinutes">15 минути</string>
@@ -210,6 +211,8 @@
     <string name="nc_location_unknown">Неизвестна позиция</string>
     <string name="nc_locked">Заключено</string>
     <string name="nc_locked_tap_to_unlock">Докоснете, за да отключите</string>
+    <string name="nc_logs_disable_delete">Изтрий журналите</string>
+    <string name="nc_logs_title">Журнали</string>
     <string name="nc_manual">Не е зададено</string>
     <string name="nc_mark_as_read">Маркирай като прочетено</string>
     <string name="nc_mark_as_unread">Маркирай като непрочетена</string>
@@ -313,6 +316,7 @@
     <string name="nc_settings_call_ringtone">Обаждания</string>
     <string name="nc_settings_incognito_keyboard_desc">Инструктира клавиатурата да деактивира персонализираното обучение (без гаранции)</string>
     <string name="nc_settings_incognito_keyboard_title">Инкогнито клавиатура</string>
+    <string name="nc_settings_logs_title">Журнали</string>
     <string name="nc_settings_no_ringtone">Без звук</string>
     <string name="nc_settings_no_talk_installed">Приложението Talk /разговор/ не е инсталирано на сървъра, в който сте се опитали да се удостоверите</string>
     <string name="nc_settings_notification_sounds_post_oreo">Известия</string>

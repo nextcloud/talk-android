@@ -37,6 +37,7 @@
     <string name="encrypted">Šifrirano</string>
     <string name="end_call">Završi poziv</string>
     <string name="end_call_for_everyone">Završi poziv za sve</string>
+    <string name="error_crash_title">Ispad %1$s</string>
     <string name="failed_to_save">Spremanje %1$s nije uspjelo</string>
     <string name="fifteenMinutes">15 minuta</string>
     <string name="file_list_folder">mapa</string>
@@ -199,6 +200,8 @@
     <string name="nc_location_unknown">Nepoznat položaj</string>
     <string name="nc_locked">Zaključano</string>
     <string name="nc_locked_tap_to_unlock">Dodirni za otključavanje</string>
+    <string name="nc_logs_disable_delete">Izbriši zapise</string>
+    <string name="nc_logs_title">Zapisi</string>
     <string name="nc_manual">Nije postavljeno</string>
     <string name="nc_mark_as_read">Označi kao pročitano</string>
     <string name="nc_mark_as_unread">Označi kao nepročitano</string>

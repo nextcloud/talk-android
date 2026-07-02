@@ -59,6 +59,7 @@
     <string name="encrypted">مُشفّر</string>
     <string name="end_call">إقطَع المكالمة</string>
     <string name="end_call_for_everyone">إنهاء المكالمة للجميع</string>
+    <string name="error_crash_title">%1$s فشل</string>
     <string name="error_loading_chats">حدثت مشكلة أثناء رفع دردشاتك</string>
     <string name="error_unbanning">حدث خطأ عند محاولة رفع الحظر عن مشارك</string>
     <string name="failed_to_save">تعذّر حفظ %1$s</string>
@@ -266,6 +267,8 @@
     <string name="nc_location_unknown">الموقع غير معلوم</string>
     <string name="nc_locked">مقفل</string>
     <string name="nc_locked_tap_to_unlock">أنقُر لفكّ القُفْل</string>
+    <string name="nc_logs_disable_delete">احذف السجلات</string>
+    <string name="nc_logs_title">السجلات</string>
     <string name="nc_manual">غير معيّن</string>
     <string name="nc_mark_as_read">تمييز كمقروء</string>
     <string name="nc_mark_as_unread">تمييز كغير مقروء</string>
@@ -387,6 +390,7 @@
     <string name="nc_settings_diagnosis_title">فحوصات</string>
     <string name="nc_settings_incognito_keyboard_desc">توجيه لوحة المفاتيح لتعطيل التعلم المخصص (بدون ضمانات)</string>
     <string name="nc_settings_incognito_keyboard_title">لوحة المفاتيح في وضع المجهول</string>
+    <string name="nc_settings_logs_title">السجلات</string>
     <string name="nc_settings_no_ringtone">بدون صوت</string>
     <string name="nc_settings_no_talk_installed">تطبيق التحدث غير مثبت على الخادم الذي تريد المصادقة إليه.</string>
     <string name="nc_settings_notification_sounds_post_oreo">التنبيهات</string>

@@ -39,6 +39,7 @@
     <string name="edit">편집</string>
     <string name="encrypted">암호화</string>
     <string name="end_call_for_everyone">모든 이들에 대해 통화 끝내기</string>
+    <string name="error_crash_title">%1$s충돌</string>
     <string name="error_loading_chats">당신의 채팅을 불러들이는데 문제가 생겼습니다.</string>
     <string name="failed_to_save">%1$s 저장 실패</string>
     <string name="fifteenMinutes">15분</string>
@@ -209,6 +210,9 @@
     <string name="nc_location_unknown">위치를 알 수 없음</string>
     <string name="nc_locked">잠긴</string>
     <string name="nc_locked_tap_to_unlock">탭하여 잠금해제</string>
+    <string name="nc_logs_disable_delete">로그 삭제</string>
+    <string name="nc_logs_share_diagnosis">진단 보고서</string>
+    <string name="nc_logs_title">로그</string>
     <string name="nc_manual">설정되지 않음</string>
     <string name="nc_mark_as_read">읽은 것으로 표시</string>
     <string name="nc_mark_as_unread">읽지 않은 것으로 표시</string>

@@ -29,6 +29,7 @@
     <string name="ecosystem_apps_notes">Notas</string>
     <string name="edit">Modìfica</string>
     <string name="encrypted">Tzifradu</string>
+    <string name="error_crash_title">%1$ss\'est blocadu</string>
     <string name="failed_to_save">No at fatu a sarvare %1$s</string>
     <string name="fifteenMinutes">15 minutos</string>
     <string name="file_list_folder">cartella</string>

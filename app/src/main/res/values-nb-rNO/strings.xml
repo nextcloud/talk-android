@@ -53,6 +53,7 @@
     <string name="encrypted">Kryptert</string>
     <string name="end_call">Avslutt samtale</string>
     <string name="end_call_for_everyone">Avslutt samtale for alle</string>
+    <string name="error_crash_title">%1$s kræsjet</string>
     <string name="error_loading_chats">Det oppstod et problem med å laste inn chattene dine</string>
     <string name="error_unbanning">Det oppstod feil ved oppheving av utestengelse av deltaker</string>
     <string name="failed_to_save">Kunne ikke lagre %1$s</string>
@@ -260,6 +261,7 @@
     <string name="nc_location_unknown">Posisjon ukjent</string>
     <string name="nc_locked">Låst</string>
     <string name="nc_locked_tap_to_unlock">Trykk for å låse opp</string>
+    <string name="nc_logs_disable_delete">Slett logg</string>
     <string name="nc_logs_title">Logger</string>
     <string name="nc_manual">Ikke satt</string>
     <string name="nc_mark_as_read">Merk som lest</string>
