@@ -15,6 +15,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -57,6 +58,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
@@ -81,6 +83,7 @@ private const val SINGLE_EMOJI_SIZE_MULTIPLIER = 2.5f
 private const val HALF_OPACITY = 127
 private const val MESSAGE_LENGTH_THRESHOLD = 25
 private const val ANIMATED_BLINK = 500
+private const val MESSAGE_BUBBLE_MAX_WIDTH_FRACTION = 0.9f
 
 private val bubbleRadiusBig = 10.dp
 private val bubbleRadiusSmall = 2.dp
@@ -222,28 +225,33 @@ fun MessageScaffold(
         }
     }
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = if (incoming) Arrangement.Start else Arrangement.End
-    ) {
-        MessageLeadingDecoration(
-            uiMessage = uiMessage,
-            isOneToOneConversation = isOneToOneConversation
-        )
-        MessageBubbleWithReactions(
-            uiMessage = uiMessage,
-            incoming = incoming,
-            includePadding = includePadding,
-            isOneToOneConversation = isOneToOneConversation,
-            conversationThreadId = conversationThreadId,
-            shape = shape,
-            resolvedBubbleColor = resolvedBubbleColor,
-            metadataLayoutMode = metadataLayoutMode,
-            captionText = captionText,
-            showInlineMetadata = showInlineMetadata,
-            showQuote = showQuote,
-            content = content
-        )
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        val messageBubbleMaxWidth = maxWidth * MESSAGE_BUBBLE_MAX_WIDTH_FRACTION
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = if (incoming) Arrangement.Start else Arrangement.End
+        ) {
+            MessageLeadingDecoration(
+                uiMessage = uiMessage,
+                isOneToOneConversation = isOneToOneConversation
+            )
+            MessageBubbleWithReactions(
+                uiMessage = uiMessage,
+                incoming = incoming,
+                includePadding = includePadding,
+                isOneToOneConversation = isOneToOneConversation,
+                conversationThreadId = conversationThreadId,
+                maxBubbleWidth = messageBubbleMaxWidth,
+                shape = shape,
+                resolvedBubbleColor = resolvedBubbleColor,
+                metadataLayoutMode = metadataLayoutMode,
+                captionText = captionText,
+                showInlineMetadata = showInlineMetadata,
+                showQuote = showQuote,
+                content = content
+            )
+        }
     }
 }
 
@@ -282,6 +290,7 @@ private fun MessageBubbleWithReactions(
     includePadding: Boolean,
     isOneToOneConversation: Boolean,
     conversationThreadId: Long?,
+    maxBubbleWidth: Dp,
     shape: RoundedCornerShape,
     resolvedBubbleColor: Color,
     metadataLayoutMode: MetadataLayoutMode,
@@ -292,7 +301,7 @@ private fun MessageBubbleWithReactions(
 ) {
     val bubbleModifier = Modifier
         .defaultMinSize(60.dp, 40.dp)
-        .widthIn(60.dp, 280.dp)
+        .widthIn(60.dp, maxBubbleWidth)
 
     val hasReactionsOrThread = uiMessage.reactions.isNotEmpty() ||
         isFirstMessageOfThreadInNormalChat(uiMessage, conversationThreadId)
