@@ -232,9 +232,12 @@ public class RestModule {
         public Response intercept(@NonNull Chain chain) throws IOException {
             Request original = chain.request();
             Request.Builder requestBuilder = original.newBuilder()
-                .header("User-Agent", ApiUtils.getUserAgent())
                 .header("ngrok-skip-browser-warning", "true")
                 .method(original.method(), original.body());
+
+            if (TextUtils.isEmpty(original.header("User-Agent"))) {
+                requestBuilder.header("User-Agent", ApiUtils.getUserAgent());
+            }
 
             if (isOcsEndpoint(original)) {
                 requestBuilder

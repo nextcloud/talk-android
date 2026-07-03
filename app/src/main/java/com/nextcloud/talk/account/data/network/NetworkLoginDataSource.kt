@@ -12,6 +12,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.nextcloud.talk.account.data.model.LoginCompletion
 import com.nextcloud.talk.account.data.model.LoginResponse
+import com.nextcloud.talk.utils.ApiUtils
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -101,6 +102,7 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
             .url(url)
             .post(FormBody.Builder().build())
             .addHeader("Clear-Site-Data", "cookies")
+            .header("User-Agent", ApiUtils.loginUserAgent)
             .build()
 
         okHttpClient.newCall(request).execute().use { response ->
