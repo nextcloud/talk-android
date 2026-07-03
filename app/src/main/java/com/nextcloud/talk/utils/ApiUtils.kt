@@ -39,11 +39,14 @@ object ApiUtils {
     val userAgent = "Mozilla/5.0 (Android) Nextcloud-Talk v"
         get() = field + BuildConfig.VERSION_NAME
 
+    private const val DEFAULT_LOGIN_PRODUCT_NAME = "Nextcloud Talk"
+
     // shown to the user in the browser during the login flow, so it uses the human-readable product name
     @JvmStatic
     val loginUserAgent: String
         get() {
-            val productName = sharedApplication!!.resources.getString(R.string.nc_app_product_name)
+            val productName = sharedApplication?.resources?.getString(R.string.nc_app_product_name)
+                ?: DEFAULT_LOGIN_PRODUCT_NAME
             return "Mozilla/5.0 (Android) $productName v${BuildConfig.VERSION_NAME}"
         }
 
