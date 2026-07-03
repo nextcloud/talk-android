@@ -889,6 +889,7 @@ class MessageInputFragment : Fragment() {
             emojiPopup = EmojiPopup(
                 rootView = binding.root,
                 editText = inputEditText,
+                theming = viewThemeUtils.talk.getEmojiTheming(requireContext()),
                 onEmojiPopupShownListener = {
                     isEmojiPopupOpen = true
                     updateSmileyButtonIcon()

@@ -107,6 +107,7 @@ import com.nextcloud.talk.ui.chat.LocalShowThreadButton
 import com.nextcloud.talk.ui.chat.formatTime
 import com.nextcloud.talk.ui.theme.LocalMessageUtils
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
+import com.nextcloud.talk.ui.theme.emojiTheming
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
@@ -809,6 +810,7 @@ class ScheduledMessagesActivity : BaseActivity() {
     ) {
         val rootView = LocalView.current
         val keyboardController = LocalSoftwareKeyboardController.current
+        val theming = emojiTheming()
 
         val emojiEditTextRef = remember { mutableStateOf<EmojiEditText?>(null) }
         var emojiPopup by remember { mutableStateOf<EmojiPopup?>(null) }
@@ -872,6 +874,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                             emojiPopup = EmojiPopup(
                                 rootView = rootView,
                                 editText = editText,
+                                theming = theming,
                                 onEmojiPopupShownListener = {
                                     isEmojiOpen = true
                                 },
