@@ -554,6 +554,7 @@
     <string name="pin_7_days">Fixar por 7 dias</string>
     <string name="pin_indefinitely">Fixar indefinidamente</string>
     <string name="pin_message">Fixar mensagem</string>
+    <string name="pinned">Fixada</string>
     <string name="pinned_by_author">%1$s (fixada por %2$s)</string>
     <string name="pinned_by_you">%1$s (fixada por você)</string>
     <string name="pinned_dismiss">Dispensar</string>
@@ -594,6 +595,7 @@
     <string name="record_stopping">Parando a gravação …</string>
     <string name="recording_consent_all">O consentimento de gravação é necessário para todas as chamadas</string>
     <string name="recording_consent_description">A gravação pode incluir sua voz, vídeo da câmera e compartilhamento de tela. Seu consentimento é obrigatório antes de entrar na chamada. Você consente?</string>
+    <string name="recording_consent_for_conversation_description">Exigir consentimento de gravação antes de entrar em uma chamada nesta conversa</string>
     <string name="recording_consent_for_conversation_title">Consentimento de gravação</string>
     <string name="recording_consent_title">A chamada pode ser gravada.</string>
     <string name="recording_settings_title">Gravação</string>
