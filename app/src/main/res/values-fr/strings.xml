@@ -67,6 +67,7 @@
     <string name="encrypted">Chiffré</string>
     <string name="end_call">Terminer l\'appel</string>
     <string name="end_call_for_everyone">Mettre fin à l\'appel pour tout le monde</string>
+    <string name="error_crash_title">%1$s a planté</string>
     <string name="error_loading_chats">Un problème est survenu lors du chargement de vos discussions</string>
     <string name="error_unbanning">Une erreur est survenue à la réintégration du participant</string>
     <string name="failed_to_save">Échec de la sauvegarde de %1$s</string>
@@ -303,6 +304,9 @@
     <string name="nc_location_unknown">Position inconnue</string>
     <string name="nc_locked">Verrouillé</string>
     <string name="nc_locked_tap_to_unlock">Appuyer pour déverrouiller</string>
+    <string name="nc_logs_disable_delete">Supprimer les logs</string>
+    <string name="nc_logs_share_diagnosis">Rapport de diagnostic</string>
+    <string name="nc_logs_title">Logs</string>
     <string name="nc_manual">Non défini</string>
     <string name="nc_mark_as_read">Marquer comme lu</string>
     <string name="nc_mark_as_unread">Marquer comme non lu</string>
@@ -450,10 +454,10 @@
     <string name="nc_settings_appearance">Apparence</string>
     <string name="nc_settings_call_ringtone">Appels</string>
     <string name="nc_settings_contact_admin_of">Merci de contacter l\'administrateur de</string>
-    <string name="nc_settings_diagnosis_subtitle">Ouvrir l\'écran de diagnostic pour vérifier les réglages ou créer un rapport de bug</string>
     <string name="nc_settings_diagnosis_title">Diagnostic</string>
     <string name="nc_settings_incognito_keyboard_desc">Indique au clavier de désactiver l\'apprentissage personnalisé (sans garantie)</string>
     <string name="nc_settings_incognito_keyboard_title">Clavier incognito</string>
+    <string name="nc_settings_logs_title">Logs</string>
     <string name="nc_settings_no_ringtone">Aucun son</string>
     <string name="nc_settings_no_talk_installed">L\'application Talk n\'est pas installée sur le serveur auquel vous essayez de vous connecter.</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notifications</string>

@@ -51,6 +51,7 @@
     <string name="encrypted">Zifratua</string>
     <string name="end_call">Amaitu deia</string>
     <string name="end_call_for_everyone">Amaitu deia denontzat</string>
+    <string name="error_crash_title">%1$s(e)k huts egin du</string>
     <string name="error_loading_chats">Arazo bat gertatu da zure txatak kargatzean</string>
     <string name="failed_to_save">%1$s gordetzeak huts egin du</string>
     <string name="fifteenMinutes">15 minutu</string>
@@ -247,6 +248,8 @@
     <string name="nc_location_unknown">Kokapen ezezaguna</string>
     <string name="nc_locked">Blokeatuta</string>
     <string name="nc_locked_tap_to_unlock">Sakatu desblokeatzeko</string>
+    <string name="nc_logs_disable_delete">Ezabatu egunkariak</string>
+    <string name="nc_logs_title">Egunkariak</string>
     <string name="nc_manual">Ezarri gabe</string>
     <string name="nc_mark_as_read">Markatu irakurritako gisa</string>
     <string name="nc_mark_as_unread">Markatu ez irakurritako gisa</string>
@@ -360,6 +363,7 @@
     <string name="nc_settings_diagnosis_title">Diagnostikoa</string>
     <string name="nc_settings_incognito_keyboard_desc">Teklatuaren ikasketa pertsonalizatua desgaitzen du (bermerik gabe)</string>
     <string name="nc_settings_incognito_keyboard_title">Teklatu ezkutua</string>
+    <string name="nc_settings_logs_title">Egunkariak</string>
     <string name="nc_settings_no_ringtone">Soinurik ez</string>
     <string name="nc_settings_no_talk_installed">Talk aplikazioa ez dago instalatuta baimendu nahi duzun zerbitzarian</string>
     <string name="nc_settings_notification_sounds_post_oreo">Jakinarazpenak</string>

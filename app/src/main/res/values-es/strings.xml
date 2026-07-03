@@ -64,6 +64,7 @@
     <string name="encrypted">Cifrado</string>
     <string name="end_call">Finalizar llamada</string>
     <string name="end_call_for_everyone">Finalizar llamada para todos</string>
+    <string name="error_crash_title">%1$s se bloqueó</string>
     <string name="error_loading_chats">Hubo un problema cargando sus chats</string>
     <string name="error_unbanning">Ocurrió un error al desbloquear al participante</string>
     <string name="failed_to_save">Fallo al guardar %1$s</string>
@@ -287,6 +288,8 @@
     <string name="nc_location_unknown">Posición desconocida</string>
     <string name="nc_locked">Bloqueado</string>
     <string name="nc_locked_tap_to_unlock">Toca para desbloquear</string>
+    <string name="nc_logs_disable_delete">Eliminar registros</string>
+    <string name="nc_logs_title">Registros</string>
     <string name="nc_manual">No configurado</string>
     <string name="nc_mark_as_read">Marcar como leído</string>
     <string name="nc_mark_as_unread">Marcar como no leído</string>
@@ -429,10 +432,10 @@
     <string name="nc_settings_appearance">Apariencia</string>
     <string name="nc_settings_call_ringtone">Llamadas</string>
     <string name="nc_settings_contact_admin_of">Por favor contacte al administrador de</string>
-    <string name="nc_settings_diagnosis_subtitle">Abrir la pantalla de diagnóstico para verificar los ajustes o para crear un informe de fallos</string>
     <string name="nc_settings_diagnosis_title">Diagnóstico</string>
     <string name="nc_settings_incognito_keyboard_desc">Indica que el teclado tendrá desactivado el aprendizaje personalizado (no hay garantías)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado de incógnito</string>
+    <string name="nc_settings_logs_title">Registros</string>
     <string name="nc_settings_no_ringtone">Sin sonido</string>
     <string name="nc_settings_no_talk_installed">La app Talk no está instalada en el servidor contra el que has intentado autorizarte</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notificaciones</string>

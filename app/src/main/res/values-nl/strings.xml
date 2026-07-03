@@ -64,6 +64,7 @@
     <string name="encrypted">Versleuteld</string>
     <string name="end_call">Beëindig gesprek</string>
     <string name="end_call_for_everyone">Beëindig gesprek voor iedereen</string>
+    <string name="error_crash_title">%1$s gecrasht</string>
     <string name="error_loading_chats">Het laden van uw gesprekken was problematisch</string>
     <string name="error_unbanning">Fout opgetreden bij deblokkeren deelnemer</string>
     <string name="failed_to_save">Kon %1$s niet opslaan</string>
@@ -287,6 +288,9 @@ Kies er eentje van een provider.</string>
     <string name="nc_location_unknown">Positie onbekend</string>
     <string name="nc_locked">Vergrendeld</string>
     <string name="nc_locked_tap_to_unlock">Tikken om te ontgrendelen</string>
+    <string name="nc_logs_disable_delete">Verwijderen logs</string>
+    <string name="nc_logs_share_diagnosis">Diagnoserapport</string>
+    <string name="nc_logs_title">Logs</string>
     <string name="nc_manual">Niet ingesteld</string>
     <string name="nc_mark_as_read">Markeren als gelezen</string>
     <string name="nc_mark_as_unread">Markeren als ongelezen</string>
@@ -421,10 +425,10 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_appearance">Uiterlijk</string>
     <string name="nc_settings_call_ringtone">Oproepen</string>
     <string name="nc_settings_contact_admin_of">Neem contact op met de beheerder van</string>
-    <string name="nc_settings_diagnosis_subtitle">Open het diagnosevenster om de instellingen te controleren of een bug report te maken</string>
     <string name="nc_settings_diagnosis_title">Diagnose</string>
     <string name="nc_settings_incognito_keyboard_desc">Instrueert het toetsenbord gepersonaliseerd leren uit te schakelen (geen garanties)</string>
     <string name="nc_settings_incognito_keyboard_title">Incognito keyboard</string>
+    <string name="nc_settings_logs_title">Logs</string>
     <string name="nc_settings_no_ringtone">Geen geluid</string>
     <string name="nc_settings_no_talk_installed">De Talk-app is niet geïnstalleerd op de server waartegen je probeert te authenticeren</string>
     <string name="nc_settings_notification_sounds_post_oreo">Meldingen</string>

@@ -67,6 +67,9 @@
     <string name="encrypted">Krüptitud</string>
     <string name="end_call">Lõpeta kõne</string>
     <string name="end_call_for_everyone">Lõpeta kõne kõigi jaoks</string>
+    <string name="error_crash_description">Rakendus jooksis ootamatult kokku.  Koostades veakorjelduse ja seda meile saates võid aidata seda meil parandada - õige valiku leiad menüüst.</string>
+    <string name="error_crash_please_describe">Palun kirjelda probleemi (kuidas saaks seda viga või kokkujooksmist korrata)</string>
+    <string name="error_crash_title">%1$s jooksis kokku</string>
     <string name="error_loading_chats">Sinu vestluste laadimisel tekkis viga</string>
     <string name="error_unbanning">Osaleja suhtluskeelu eemaldamisel tekkis viga</string>
     <string name="failed_to_save">„%1$s“ salvestamine ei õnnestunud</string>
@@ -303,6 +306,27 @@
     <string name="nc_location_unknown">Asukoht pole teada</string>
     <string name="nc_locked">Lukus</string>
     <string name="nc_locked_tap_to_unlock">Klõpsi lukustuse eemaldamiseks</string>
+    <string name="nc_logs_advanced_logging">Detailne logimine</string>
+    <string name="nc_logs_advanced_logging_disable">Lülita detailne logimine välja</string>
+    <string name="nc_logs_advanced_logging_enable">Lülita detailne logimine sisse</string>
+    <string name="nc_logs_advanced_logging_enabled_warning">Detailne logimine on kasutusel. See võib vähendada nutiseadme jõudust.</string>
+    <string name="nc_logs_advanced_logging_privacy_warning">Kui kasutad detailset logimist, siis palun ära jaga logiteavet avalikult.</string>
+    <string name="nc_logs_delete_all">Kustuta kõik logid</string>
+    <string name="nc_logs_disable_delete">Kustuta logid</string>
+    <string name="nc_logs_disable_dialog_message">Kas samuti sooviksid olemasolevad logifailid kustutada?</string>
+    <string name="nc_logs_disable_dialog_title">Lülita logimine välja</string>
+    <string name="nc_logs_disable_keep">Säilita logid</string>
+    <string name="nc_logs_download_zip">Laadi alla ZIP-failine</string>
+    <string name="nc_logs_empty">Ühtegi logikirjet ei leidu.</string>
+    <string name="nc_logs_logging_disabled_note">Logimine pole kasutusel. Mitte mingeid logikirjeid ei kirjutada andmekandjale.</string>
+    <string name="nc_logs_logging_enabled">Logimine on kasutusel</string>
+    <string name="nc_logs_overflow_warning">Hoiatus: kuna andmeid oli korraga liiga palju, siis mõned logikirjed jäid salvestamata.</string>
+    <string name="nc_logs_share">Saada e-kirjana</string>
+    <string name="nc_logs_share_diagnosis">Diagnostika aruanne</string>
+    <string name="nc_logs_share_latest_crash">Viimane kokkujooksmine</string>
+    <string name="nc_logs_share_subject">%1$s logi</string>
+    <string name="nc_logs_title">Logid</string>
+    <string name="nc_logs_total_size">Logimaht kokku: %d KB</string>
     <string name="nc_manual">Pole määratud</string>
     <string name="nc_mark_as_read">Märgi loetuks</string>
     <string name="nc_mark_as_unread">Märgi mitteloetuks</string>
@@ -346,13 +370,13 @@
     <string name="nc_notification_channel_uploads_description">Teavita üleslaadimise edenemisest</string>
     <string name="nc_notification_settings">Teavituse seadistused</string>
     <string name="nc_notification_warning">Teavitused pole korrektselt seadistatud</string>
-    <string name="nc_notifications_troubleshooting_dialog_text">Teavituste ja akukasutuse seadistused on teavituste toimimiseks korrektselt seadistatud. Kui ikkagi on nendega probleeme, siis vaata, kas kõnede ja sõnumite teavituskanalid on sisse lülitatud. Lisateavet leiad saidist DontKillMyApp.com või veaotsingu kontrollnimekirjast. Kui ka sellest pole ikkagi abi, siis ava veaotsingu vaade ja koosta veateade.</string>
+    <string name="nc_notifications_troubleshooting_dialog_text">Teavituste ja akukasutuse seadistused on teavituste toimimiseks korrektselt seadistatud. Kui ikkagi on nendega probleeme, siis vaata, kas kõnede ja sõnumite teavituskanalid on sisse lülitatud. Lisateavet leiad saidist DontKillMyApp.com või veaotsingu kontrollnimekirjast. Kui ka sellest pole ikkagi abi, siis ava veaotsingu ja diagnostikavaade ja koosta veateade.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Teavituste veaotsing</string>
     <string name="nc_notify_me_always">Teavita alati</string>
     <string name="nc_notify_me_mention">Teavita minu mainimisel</string>
     <string name="nc_notify_me_never">Ära iialgi teavita</string>
     <string name="nc_offline">Nutiseade pole võrgus, palun kontrolli internetiühendust</string>
-    <string name="nc_ok">OK</string>
+    <string name="nc_ok">Sobib</string>
     <string name="nc_ongoing_meeting">Pooleliolev kohtumine</string>
     <string name="nc_open_conversation_to_registered_users">Ava vestlus registreeritud kasutajatele</string>
     <string name="nc_open_to_guest_app_users">Lisaks ava ka rakenduse külaliskasutajatele</string>
@@ -419,8 +443,8 @@
     <string name="nc_send_voice_recording">Saada helisalvestis</string>
     <string name="nc_sensitive_conversation">Vestlus tundlikul teemal</string>
     <string name="nc_sensitive_conversation_hint">Sõnumite eelvaated saavad vestluste loendis ja teavitustes olema peidetud</string>
-    <string name="nc_sent_a_gif" formatted="true">%1$s saatis gif-faili.</string>
-    <string name="nc_sent_a_gif_you">Sina saatsid gif-faili.</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s saatis GIF-faili.</string>
+    <string name="nc_sent_a_gif_you">Sina saatsid GIF-faili.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s saatis video.</string>
     <string name="nc_sent_a_video_you">Sina saatsid video.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s saatis helifaili.</string>
@@ -450,12 +474,15 @@
     <string name="nc_settings_appearance">Välimus</string>
     <string name="nc_settings_call_ringtone">Kõned</string>
     <string name="nc_settings_contact_admin_of">Palun võta ühendust serveri peakasutajaga - </string>
-    <string name="nc_settings_diagnosis_subtitle">Seadistuste kontrollimiseks või veateate koostamiseks ava veaotsingu vaade</string>
-    <string name="nc_settings_diagnosis_title">Veaotsing</string>
-    <string name="nc_settings_incognito_keyboard_desc">Sellega annad klahvistikul käsu mitte kasutada isikustatud sisestuste õpet (aga puudub garantii toimivuse osas)</string>
+    <string name="nc_settings_diagnosis_logs_section_title">Diagnostika ja logid</string>
+    <string name="nc_settings_diagnosis_subtitle">Seadistuste kontrollimiseks ava rakenduse korrasoleku kontrolli ja diagnostikavaade</string>
+    <string name="nc_settings_diagnosis_title">Veaotsing ja diagnostika</string>
+    <string name="nc_settings_incognito_keyboard_desc">Sellega annad klahvistikule käsu mitte kasutada isikustatud sisestuste õpet (aga puudub garantii toimivuse osas)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klahvistik</string>
+    <string name="nc_settings_logs_subtitle">Vaata kohalikke logifaile</string>
+    <string name="nc_settings_logs_title">Logid</string>
     <string name="nc_settings_no_ringtone">Heli puudub</string>
-    <string name="nc_settings_no_talk_installed">Nextcloud Talk rakendus pole paigaldatud serverisse, mille autentimist kasutasid</string>
+    <string name="nc_settings_no_talk_installed">Nextcloudi kõnerakendus (Nextcloud Talk), mille autentimist kasutasid, pole serverisse paigaldatud</string>
     <string name="nc_settings_notification_sounds_post_oreo">Teavitused</string>
     <string name="nc_settings_notifications_declined">Teavitused pole lubatud</string>
     <string name="nc_settings_notifications_granted">Teavitused on lubatud</string>
@@ -478,8 +505,8 @@
     <string name="nc_settings_read_privacy_title">Lugemisejärje olek</string>
     <string name="nc_settings_reauthorize">Autoriseeri kasutajakonto uuesti</string>
     <string name="nc_settings_remove">Eemalda</string>
-    <string name="nc_settings_remove_account">Eemalda konto</string>
-    <string name="nc_settings_remove_confirmation">Palun kinnita oma praeguse kasutajakonto eemaldamise soovi</string>
+    <string name="nc_settings_remove_account">Eemalda kasutajakonto</string>
+    <string name="nc_settings_remove_confirmation">Palun kinnita oma praeguse kasutajakonto eemaldamise soov.</string>
     <string name="nc_settings_screen_enable_unifiedpush_desc">See rakendus saab tõuketeateid välise UnifiedPushi teenuse abil</string>
     <string name="nc_settings_screen_enable_unifiedpush_title">Võta UnifiedPush kasutusele</string>
     <string name="nc_settings_screen_lock_desc">Kasuta %1$s rakenduse lukustamiseks Androidi ekraanilukustust või biomeetrilise tuvastuse meetodeid</string>
@@ -492,6 +519,8 @@
     <string name="nc_settings_server_eol">Kasutatav serveri versioon on liiga vana ning selle rakenduse see versioon seda ei toeta!</string>
     <string name="nc_settings_server_eol_title">Mittetoetatud server</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Serveriteavituste rakendus pole paigaldatud</string>
+    <string name="nc_settings_share_report_subtitle">Jaga logisid ja diagnostilist teavet</string>
+    <string name="nc_settings_share_report_title">Jaga diagnostika aruannet</string>
     <string name="nc_settings_theme_battery_saver">Määratud akukasutuse piiraja poolt</string>
     <string name="nc_settings_theme_dark">Tume kujundus</string>
     <string name="nc_settings_theme_follow_system">Kasuta süsteemi kujundust</string>
