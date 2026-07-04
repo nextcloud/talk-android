@@ -20,6 +20,7 @@
     <string name="back_button">Botão voltar</string>
     <string name="ban">Banir</string>
     <string name="ban_participant">Banir participante</string>
+    <string name="bans_list">Lista de banimentos</string>
     <string name="battery_optimization_ignored">A otimização da bateria é ignorada, tudo bem</string>
     <string name="battery_optimization_not_ignored">A otimização da bateria está ativada, o que pode causar problemas. Você deve desativar a otimização da bateria!</string>
     <string name="battery_optimization_title">Configurações da bateria</string>
@@ -50,6 +51,7 @@
     <string name="default_room">Predefinido</string>
     <string name="default_room_preset">Envie mensagens, crie fios e incie chamadas por voz e vídeo</string>
     <string name="delete_avatar">Excluir avatar</string>
+    <string name="delete_voice_recording">Excluir gravação de voz</string>
     <string name="deleted_conversation">Conversa %1$s excluída</string>
     <string name="dnd">Não incomodar</string>
     <string name="dontClear">Não limpar</string>
@@ -79,6 +81,7 @@
     <string name="invisible">Invisível </string>
     <string name="join_call">Juntar-se à chamada</string>
     <string name="languages_error_message">Não foi possível recuperar os idiomas</string>
+    <string name="languages_error_title">Falha na recuperação</string>
     <string name="later_today">Hoje mais tarde</string>
     <string name="leave_call">Sair da chamada</string>
     <string name="left_conversation">Você saiu da conversa %1$s</string>
@@ -108,6 +111,7 @@
     <string name="message_search_begin_empty">Nenhum resultado de pesquisa</string>
     <string name="message_search_hint">Pesquisar …</string>
     <string name="message_search_next_result">Próximo resultado da pesquisa</string>
+    <string name="message_search_no_more_results">Não foram encontradas mais mensagens</string>
     <string name="message_search_previous_result">Resultado anterior da pesquisa</string>
     <string name="messages">Mensagens</string>
     <string name="mute_all_notifications">Desativar todas as notificações</string>
@@ -141,6 +145,7 @@
     <string name="nc_call_reconnecting">Reconectando …</string>
     <string name="nc_call_ringing">TOCANDO</string>
     <string name="nc_call_state_in_call">%1$s em chamada</string>
+    <string name="nc_call_state_with_phone">%1$s com telefone</string>
     <string name="nc_call_state_with_video">%1$s com vídeo</string>
     <string name="nc_call_timeout">45 segundos sem resposta, toque para retentar</string>
     <string name="nc_call_unknown">%s chamada</string>
@@ -202,6 +207,7 @@
     <string name="nc_description_send_message_button">Enviar mensagem</string>
     <string name="nc_diagnosis_dialog_open_checklist">Abrir lista de verificação de solução de problemas</string>
     <string name="nc_diagnosis_dialog_open_diagnosis">Abrir tela de diagnóstico</string>
+    <string name="nc_dialog_introduce_unifiedpush_selection">Você está prestes a selecionar seu serviço de notificações push padrão</string>
     <string name="nc_dialog_invalid_password">Palavra-passe inválida</string>
     <string name="nc_dialog_maintenance_mode_description">O servidor está atualmente em modo de manutenção.</string>
     <string name="nc_dialog_outdated_client">Aplicativo está desatualizado</string>
@@ -269,6 +275,7 @@
     <string name="nc_invitations">Convites</string>
     <string name="nc_join_open_conversations">Juntar-me a conversas abertas</string>
     <string name="nc_keep">Manter</string>
+    <string name="nc_last_moderator_leaving_room_warning">Você precisa promover um novo moderador antes de sair da conversa</string>
     <string name="nc_last_modified">%1$s | Última modificação: %2$s</string>
     <string name="nc_leave">Sair da conversação</string>
     <string name="nc_leaving_call">Saindo da chamada …</string>
@@ -284,6 +291,7 @@
     <string name="nc_locked">Trancado</string>
     <string name="nc_locked_tap_to_unlock">Toque para destrancar</string>
     <string name="nc_logs_advanced_logging">Registro avançado</string>
+    <string name="nc_logs_advanced_logging_enable">Ativar o registro avançado</string>
     <string name="nc_logs_advanced_logging_enabled_warning">O registro avançado está ativado. Isso pode reduzir o desempenho.</string>
     <string name="nc_logs_delete_all">Excluir todos os registros</string>
     <string name="nc_logs_disable_delete">Eliminar registos</string>
@@ -293,6 +301,7 @@
     <string name="nc_logs_logging_disabled_note">O registro está desativado. Nenhum registro é gravado no disco.</string>
     <string name="nc_logs_logging_enabled">Registro ativado</string>
     <string name="nc_logs_overflow_warning">Aviso: algumas entradas do registro foram perdidas devido ao estouro da fila.</string>
+    <string name="nc_logs_share">Enviar como e-mail</string>
     <string name="nc_logs_share_diagnosis">Relatório de diagnóstico</string>
     <string name="nc_logs_share_latest_crash">Última falha</string>
     <string name="nc_logs_share_subject">%1$s registros</string>
@@ -325,6 +334,7 @@
     <string name="nc_no_open_conversations_headline">Nenhuma conversa aberta</string>
     <string name="nc_no_open_conversations_text">Não há conversas abertas nas quais você possa entrar.\nOu não há conversas abertas ou você já entrou em todas elas.</string>
     <string name="nc_no_proxy">Sem proxy</string>
+    <string name="nc_no_search_results_headline">Nenhum resultado para sua pesquisa</string>
     <string name="nc_no_search_results_text">Verifique o termo de pesquisa ou tente usar outro.</string>
     <string name="nc_not_allowed_to_activate_audio">Você não tem permissão para ativar o áudio!</string>
     <string name="nc_not_allowed_to_activate_video">Você não tem permissão para ativar o vídeo!</string>
@@ -333,6 +343,7 @@
     <string name="nc_notification_channel_calls">Chamadas</string>
     <string name="nc_notification_channel_calls_description">Notificar sobre chamadas recebidas</string>
     <string name="nc_notification_channel_messages">Mensagens</string>
+    <string name="nc_notification_channel_messages_description">Notificar sobre mensagens recebidas</string>
     <string name="nc_notification_channel_uploads">Envios</string>
     <string name="nc_notification_channel_uploads_description">Notificar sobre o progresso do upload</string>
     <string name="nc_notification_settings">Definições de notificação</string>
@@ -378,11 +389,13 @@
     <string name="nc_reply_privately">Responder privadamente</string>
     <string name="nc_reply_to_thread">Responder ao fio: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Reagendar com notificação</string>
+    <string name="nc_reschedule_message_without_notification">Reagendar sem notificação</string>
     <string name="nc_room_retention">A sala é mantida com sucesso</string>
     <string name="nc_save_message">Guardar</string>
     <string name="nc_save_success">Salvo com sucesso</string>
     <string name="nc_schedule_message">Agendar mensagem</string>
     <string name="nc_schedule_message_title">Agendar mensagem</string>
+    <string name="nc_schedule_message_without_notification">Enviar mais tarde sem notificação</string>
     <string name="nc_scheduled_messages">Mensagens agendadas</string>
     <string name="nc_scheduled_messages_empty">Nenhuma mensagem agendada</string>
     <string name="nc_scheduled_thread">Fio agendado</string>
@@ -435,10 +448,12 @@
     <string name="nc_settings_appearance">Aspeto</string>
     <string name="nc_settings_call_ringtone">Chamadas</string>
     <string name="nc_settings_contact_admin_of">Por favor, entre em contato com o administrador de</string>
+    <string name="nc_settings_diagnosis_logs_section_title">Diagnóstico &amp; registros</string>
     <string name="nc_settings_diagnosis_subtitle">Abra a tela de diagnóstico para verificar as configurações</string>
     <string name="nc_settings_diagnosis_title">Diagnóstico</string>
     <string name="nc_settings_incognito_keyboard_desc">Instrui o teclado para desativar o aprendizado personalizado (sem garantias)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado incógnito</string>
+    <string name="nc_settings_logs_subtitle">Exibir arquivos de registro locais</string>
     <string name="nc_settings_logs_title">Registos de Alterações</string>
     <string name="nc_settings_no_ringtone">Sem som</string>
     <string name="nc_settings_no_talk_installed">O aplicativo Talk não está instalado no servidor em que você tentou se autenticar</string>
@@ -461,6 +476,7 @@
     <string name="nc_settings_proxy_username_title">Nome de usuário do proxy</string>
     <string name="nc_settings_read_privacy_desc">Compartilhar meu status de leitura e mostrá-los a outros</string>
     <string name="nc_settings_read_privacy_title">Status de leitura</string>
+    <string name="nc_settings_reauthorize">Reautorizar conta</string>
     <string name="nc_settings_remove">Remover</string>
     <string name="nc_settings_remove_account">Remover conta</string>
     <string name="nc_settings_remove_confirmation">Confirme se quer realmente excluir a conta atual.</string>
@@ -475,6 +491,7 @@
     <string name="nc_settings_server_eol">A versão do servidor é muito antiga e não suporta esta versão do aplicativo para Android</string>
     <string name="nc_settings_server_eol_title">Servidor não suportado</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Aplicativo de notificações do servidor não instalado</string>
+    <string name="nc_settings_share_report_subtitle">Compartilhe os registros e as informações de diagnóstico</string>
     <string name="nc_settings_theme_battery_saver">Definido pelo economizador de bateria</string>
     <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_theme_follow_system">Use o padrão do sistema</string>
@@ -501,6 +518,7 @@
     <string name="nc_shared_items_location">Localização</string>
     <string name="nc_shared_location">Localização compartilhada</string>
     <string name="nc_shortcut_conversation_deleted">Esta conversa não existe mais</string>
+    <string name="nc_shortcut_created">Atalho criado</string>
     <string name="nc_show_ecosystem_title">Mostrar alternador de aplicações</string>
     <string name="nc_show_notification_warning_description">Quando as notificações não estiverem configuradas corretamente, mostre um aviso regular</string>
     <string name="nc_show_notification_warning_title">Mostrar aviso de notificação regular</string>
@@ -523,6 +541,7 @@
     <string name="nc_upload_from_device">Carregar do dispositivo</string>
     <string name="nc_upload_in_progess">A carregar</string>
     <string name="nc_upload_notification_text">%1$s para %2$s - %3$s\%%</string>
+    <string name="nc_upload_picture_from_cam">Tirar foto</string>
     <string name="nc_upload_video_from_cam">Gravar vídeo</string>
     <string name="nc_user">Utilizador</string>
     <string name="nc_voice_message">Mensagem de voz</string>
@@ -534,6 +553,7 @@
     <string name="nc_zoom_in">Ampliar</string>
     <string name="nc_zoom_out">Reduzir</string>
     <string name="next_week">Próxima semana</string>
+    <string name="no_conversations_archived">Nenhuma conversa arquivada</string>
     <string name="no_offline_messages_saved">Nenhuma mensagem off-line foi salva</string>
     <string name="no_phone_book_integration_due_to_permissions">Sem integração de número de telefone devido à falta de permissões</string>
     <string name="no_scheduled_messages_offline">Sem conexão com o servidor - Não foi possível carregar as mensagens agendadas</string>
@@ -563,6 +583,7 @@
     <string name="pinned_message_options">Opções da mensagem</string>
     <string name="pinned_until">Fixada até</string>
     <string name="play_pause_voice_message">Reproduzir/pausar mensagem de voz</string>
+    <string name="playback_speed_control">Controle de velocidade de reprodução</string>
     <string name="please_continue_the_login_process_in_the_browser">Por favor, continue o login no navegador</string>
     <string name="polls_add_option">Adicionar opção</string>
     <string name="polls_edit_vote">Editar voto</string>
@@ -587,6 +608,7 @@
     <string name="read_storage_no_permission">O compartilhamento de arquivos do armazenamento não é possível sem permissões</string>
     <string name="recent_threads">Fios recentes</string>
     <string name="record_active_info">A chamada está sendo gravada</string>
+    <string name="record_cancel_start">Cancelar início da gravação</string>
     <string name="record_failed_info">A gravação falhou. Entre em contato com o administrador.</string>
     <string name="record_start_description">Iniciar gravação</string>
     <string name="record_stop_confirm_message">Você realmente deseja encerrar a gravação?</string>
@@ -634,6 +656,7 @@
     <string name="shared_items_poll">Enquete</string>
     <string name="shared_items_recording">Gravação de chamada</string>
     <string name="shared_items_voice">Voz</string>
+    <string name="show_ban_reason">Mostrar motivo do banimento</string>
     <string name="show_banned_participants">Mostrar participantes banidos</string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">Você não tem permissão para iniciar uma chamada</string>
@@ -650,6 +673,7 @@
     <string name="take_photo_send">Enviar</string>
     <string name="take_photo_switch_camera">Trocar câmera</string>
     <string name="take_photo_toggle_crop">Cortar foto</string>
+    <string name="take_photo_toggle_lowres">Reduzir tamanho da imagem</string>
     <string name="take_photo_toggle_torch">Alternar a lanterna</string>
     <string name="thirtyMinutes">30 minutos</string>
     <string name="thisWeek">Esta semana</string>
@@ -660,6 +684,7 @@
     <string name="thread_reply">Responder</string>
     <string name="thread_title">Título do fio</string>
     <string name="threads">Fios</string>
+    <string name="threads_list_empty">Nenhum fio encontrado</string>
     <string name="today">Hoje</string>
     <string name="tomorrow">Amanhã</string>
     <string name="translate">Traduzir</string>
