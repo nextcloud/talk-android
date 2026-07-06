@@ -118,6 +118,10 @@ public interface AppPreferences {
 
     void removeScreenLock();
 
+    boolean getCallMicrophoneMuted();
+
+    void setCallMicrophoneMuted(boolean value);
+
     boolean getIsKeyboardIncognito();
 
     void setIncognitoKeyboard(boolean value);

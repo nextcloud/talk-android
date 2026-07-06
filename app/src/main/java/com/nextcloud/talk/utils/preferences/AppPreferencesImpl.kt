@@ -309,6 +309,18 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         setScreenLock(false)
     }
 
+    override fun getCallMicrophoneMuted(): Boolean =
+        runBlocking {
+            async { readBoolean(CALL_MICROPHONE_MUTED).first() }
+        }.getCompleted()
+
+    override fun setCallMicrophoneMuted(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(CALL_MICROPHONE_MUTED, value)
+            }
+        }
+
     override fun getIsKeyboardIncognito(): Boolean {
         val read = runBlocking { async { readBoolean(INCOGNITO_KEYBOARD).first() } }.getCompleted()
         return read
@@ -672,6 +684,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val NOTIFY_UPGRADE_V3 = "notification_channels_upgrade_to_v3"
         const val SCREEN_SECURITY = "screen_security"
         const val SCREEN_LOCK = "screen_lock"
+        const val CALL_MICROPHONE_MUTED = "call_microphone_muted"
         const val INCOGNITO_KEYBOARD = "incognito_keyboard"
         const val SHOW_ECOSYSTEM = "SHOW_ECOSYSTEM"
         const val PHONE_BOOK_INTEGRATION = "phone_book_integration"
