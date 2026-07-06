@@ -291,7 +291,9 @@
     <string name="nc_location_unknown">Pozice neznámá</string>
     <string name="nc_locked">Uzamčeno</string>
     <string name="nc_locked_tap_to_unlock">Odemkněte klepnutím</string>
+    <string name="nc_logs_delete_all">Smazat všechny logy</string>
     <string name="nc_logs_disable_delete">Smazat záznamy událostí</string>
+    <string name="nc_logs_download_zip">Stáhnout jako ZIP</string>
     <string name="nc_logs_share_diagnosis">Diagnostické hlášení</string>
     <string name="nc_logs_title">Záznamy událostí</string>
     <string name="nc_manual">Nenastaveno</string>
@@ -528,6 +530,7 @@
     <string name="nc_upload_picture_from_cam">Vyfotit</string>
     <string name="nc_upload_video_from_cam">Natočit video</string>
     <string name="nc_user">Uživatel</string>
+    <string name="nc_voice_message">Hlasová zpráva</string>
     <string name="nc_voice_message_hold_to_record_info">Podržením nahrajte, uvolněním odešlete.</string>
     <string name="nc_voice_message_missing_audio_permission">Je zapotřebí oprávnění pro zaznamenávání zvuku</string>
     <string name="nc_voice_message_slide_to_cancel">« Zrušíte přejetím prstem</string>
