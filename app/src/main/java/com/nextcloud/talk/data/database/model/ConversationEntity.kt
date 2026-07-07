@@ -98,6 +98,7 @@ data class ConversationEntity(
     @ColumnInfo(name = "hasArchived") var hasArchived: Boolean = false,
     @ColumnInfo(name = "hasSensitive") var hasSensitive: Boolean = false,
     @ColumnInfo(name = "hasImportant") var hasImportant: Boolean = false,
+    @ColumnInfo(name = "tagIds") var tagIds: ArrayList<String>? = null,
     @ColumnInfo(name = "hiddenPinnedId") var hiddenPinnedId: Long? = null,
     @ColumnInfo(name = "lastPinnedId") var lastPinnedId: Long? = null,
     @ColumnInfo(name = "attributes") var attributes: Int? = null,

@@ -9,6 +9,7 @@ package com.nextcloud.talk.conversationlist.ui
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,10 +37,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -47,18 +51,25 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.AwaitPointerEventScope
 import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -71,8 +82,10 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -87,6 +100,150 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 private const val MSG_KEY_EXCERPT_LENGTH = 20
+
+/** Fraction of a raw drag delta that actually moves the tags row into view (the "resistance"). */
+private const val TAGS_REVEAL_PULL_RESISTANCE = 0.5f
+
+/** Fraction of the tags row that must be revealed when the gesture ends for it to snap fully open. */
+private const val TAGS_REVEAL_SNAP_THRESHOLD_FRACTION = 0.35f
+
+/**
+ * Lays out [content] at its own natural (unconstrained) height, but reports a layout height of
+ * only [revealPx] to its parent, bottom-clipping the rest. Reads [revealPx] during the layout
+ * phase (not composition), so animating it every frame during a drag never triggers recomposition
+ * of [content] itself — only a cheap remeasure/relayout, which is what keeps the gesture smooth.
+ */
+@Composable
+private fun PullRevealHeader(
+    revealPx: () -> Float,
+    onNaturalHeightPxChanged: (Float) -> Unit,
+    content: @Composable () -> Unit
+) {
+    Layout(content = content, modifier = Modifier.clipToBounds()) { measurables, constraints ->
+        val placeable = measurables.first().measure(constraints.copy(minHeight = 0, maxHeight = Constraints.Infinity))
+        onNaturalHeightPxChanged(placeable.height.toFloat())
+        val height = revealPx().roundToInt().coerceIn(0, placeable.height)
+        layout(placeable.width, height) {
+            placeable.placeRelative(0, height - placeable.height)
+        }
+    }
+}
+
+/**
+ * Rubber-band pull-to-reveal, Telegram/Signal style: normally [revealPx] is 0 (tags row fully
+ * hidden, zero layout height). Pulling down while the conversation list is scrolled to its own
+ * absolute top grows [revealPx] at [TAGS_REVEAL_PULL_RESISTANCE] of the raw drag distance; pulling
+ * up while any of it is showing collapses it 1:1 first, before the list itself scrolls. Releasing
+ * mid-gesture snaps to fully open or fully closed with a spring, depending on how far it was
+ * pulled.
+ *
+ * Deliberately wraps everything *outside* [PullToRefreshBox] (not attached to the LazyColumn
+ * inside it): nested-scroll pre-scroll dispatch runs outermost-connection-first, so this must be
+ * the outermost connection to get first claim on "pulling down while at the top" — once the
+ * tags row is fully revealed it stops consuming that gesture, letting the remainder flow through
+ * to [PullToRefreshBox]'s own overscroll detection underneath, unmodified.
+ *
+ * The interactive value itself ([revealPx]) is plain, synchronously-mutated state — not an
+ * [Animatable] driven via `snapTo` from a launched coroutine. Doing that instead (as an earlier
+ * version of this code did) queues a new coroutine on every single scroll callback during a fast
+ * drag, and each one competes for the Animatable's internal mutation mutex, which is what caused
+ * the stutter/dropped-input symptoms. A coroutine is only ever launched once per gesture, for the
+ * release-time settle animation.
+ */
+/** Bundles the reveal-height accessors so [rememberPullRevealNestedScrollConnection] stays under the param limit. */
+private class PullRevealController(
+    val revealPx: () -> Float,
+    val naturalHeightPx: () -> Float,
+    val onRevealPxChanged: (Float) -> Unit,
+    /** [PullToRefreshState.getDistanceFraction]: > 0 while the refresh indicator is showing/pulling. */
+    val refreshDistanceFraction: () -> Float
+)
+
+@Composable
+private fun rememberPullRevealNestedScrollConnection(
+    listState: LazyListState,
+    isEnabled: Boolean,
+    controller: PullRevealController,
+    coroutineScope: CoroutineScope
+): NestedScrollConnection =
+    remember(listState, isEnabled) {
+        object : NestedScrollConnection {
+            /** Tracks the in-flight settle animation so a fresh drag/fling can cancel a stale one. */
+            var settleJob: Job? = null
+
+            /**
+             * True once this same continuous gesture has already pulled the tags row to fully
+             * revealed. Kept true for the rest of the gesture so further pulling is absorbed
+             * instead of leaking into [PullToRefreshBox] — the refresh indicator may only be
+             * engaged by a separate, later pull, not by continuing the same one that revealed the
+             * tags row. Reset on every gesture end (see [onPreFling]).
+             */
+            var reachedMaxThisGesture = false
+            val revealPx = controller.revealPx
+            val naturalHeightPx = controller.naturalHeightPx
+            val onRevealPxChanged = controller.onRevealPxChanged
+            val refreshDistanceFraction = controller.refreshDistanceFraction
+
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                if (!isEnabled) return Offset.Zero
+                val atOwnTop = listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0
+                return when {
+                    // The refresh indicator engages only after the tags row is fully revealed, so it
+                    // must also retract first: while it still has any pull progress, let the drag
+                    // pass straight through to PullToRefreshBox's own retraction handling untouched,
+                    // instead of collapsing the tags row underneath it.
+                    available.y < 0f && revealPx() > 0f && refreshDistanceFraction() <= 0f -> {
+                        settleJob?.cancel()
+                        val newValue = (revealPx() + available.y).coerceAtLeast(0f)
+                        val consumedY = newValue - revealPx()
+                        onRevealPxChanged(newValue)
+                        Offset(0f, consumedY)
+                    }
+
+                    available.y > 0f && atOwnTop && revealPx() < naturalHeightPx() -> {
+                        settleJob?.cancel()
+                        val newValue = (revealPx() + available.y * TAGS_REVEAL_PULL_RESISTANCE)
+                            .coerceAtMost(naturalHeightPx())
+                        onRevealPxChanged(newValue)
+                        if (newValue >= naturalHeightPx()) {
+                            reachedMaxThisGesture = true
+                        }
+                        available
+                    }
+
+                    // Same gesture, already fully revealed: swallow further pulling so it can't
+                    // chain straight into triggering the refresh indicator.
+                    available.y > 0f && atOwnTop && reachedMaxThisGesture -> available
+
+                    else -> Offset.Zero
+                }
+            }
+
+            override suspend fun onPreFling(available: Velocity): Velocity {
+                reachedMaxThisGesture = false
+                // Fire-and-forget: must NOT suspend here. onPreFling is awaited by the nested-scroll
+                // dispatcher before the fling is handed to the LazyColumn below, so directly awaiting
+                // the settle animation on this coroutine would block (and visibly delay) the list's
+                // own fling until the spring finishes.
+                val max = naturalHeightPx()
+                if (isEnabled && revealPx() > 0f && revealPx() < max) {
+                    settleJob?.cancel()
+                    settleJob = coroutineScope.launch {
+                        val target = if (revealPx() >= max * TAGS_REVEAL_SNAP_THRESHOLD_FRACTION) max else 0f
+                        animate(
+                            initialValue = revealPx(),
+                            targetValue = target,
+                            animationSpec = spring(
+                                dampingRatio = Spring.DampingRatioMediumBouncy,
+                                stiffness = Spring.StiffnessLow
+                            )
+                        ) { value, _ -> onRevealPxChanged(value) }
+                    }
+                }
+                return Velocity.Zero
+            }
+        }
+    }
 
 /**
  * The full conversation list: pull-to-refresh + LazyColumn.
@@ -115,8 +272,29 @@ fun ConversationList(
     /** Extra bottom padding added as LazyColumn contentPadding so the last item is reachable above the nav bar. */
     contentBottomPadding: Dp = 0.dp,
     onSwipeConversation: (ConversationOpsAction, ConversationModel) -> Unit = { _, _ -> },
-    isOnline: Boolean = true
+    isOnline: Boolean = true,
+    /** Rubber-band pull-to-reveal content shown above the list; null hides the feature entirely. */
+    tagsRowContent: (@Composable () -> Unit)? = null
 ) {
+    var tagsRevealPx by remember { mutableFloatStateOf(0f) }
+    var tagsNaturalHeightPx by remember { mutableFloatStateOf(0f) }
+    val pullToRefreshState = rememberPullToRefreshState()
+    val tagsRevealController = remember {
+        PullRevealController(
+            revealPx = { tagsRevealPx },
+            naturalHeightPx = { tagsNaturalHeightPx },
+            onRevealPxChanged = { tagsRevealPx = it },
+            refreshDistanceFraction = { pullToRefreshState.distanceFraction }
+        )
+    }
+    val tagsRevealCoroutineScope = rememberCoroutineScope()
+    val tagsRevealConnection = rememberPullRevealNestedScrollConnection(
+        listState = listState,
+        isEnabled = tagsRowContent != null,
+        controller = tagsRevealController,
+        coroutineScope = tagsRevealCoroutineScope
+    )
+
     var prevIndex by remember { mutableIntStateOf(listState.firstVisibleItemIndex) }
     var prevOffset by remember { mutableIntStateOf(listState.firstVisibleItemScrollOffset) }
     LaunchedEffect(listState) {
@@ -155,78 +333,109 @@ fun ConversationList(
         onScrollStopped(lastVisible)
     }
 
-    PullToRefreshBox(
-        isRefreshing = isRefreshing,
-        onRefresh = onRefresh,
-        modifier = Modifier.fillMaxSize()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(tagsRevealConnection)
     ) {
-        LazyColumn(
-            state = listState,
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = contentBottomPadding)
+        if (tagsRowContent != null) {
+            PullRevealHeader(
+                revealPx = { tagsRevealPx },
+                onNaturalHeightPxChanged = { tagsNaturalHeightPx = it },
+                content = tagsRowContent
+            )
+        }
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
+            state = pullToRefreshState,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            indicator = {
+                // Pinned to a fixed position near the search bar (offsetting by however much the
+                // tags row currently pushes this Box down), instead of sliding down together with
+                // it and appearing to emerge from underneath the tags row.
+                PullToRefreshDefaults.Indicator(
+                    state = pullToRefreshState,
+                    isRefreshing = isRefreshing,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .offset { IntOffset(0, -tagsRevealPx.roundToInt()) }
+                )
+            }
         ) {
-            itemsIndexed(
-                items = entries,
-                key = { index, entry ->
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(bottom = contentBottomPadding)
+            ) {
+                itemsIndexed(
+                    items = entries,
+                    key = { index, entry ->
+                        when (entry) {
+                            is ConversationListEntry.Header ->
+                                "header_${entry.title}"
+
+                            is ConversationListEntry.ConversationEntry ->
+                                "conv_${entry.model.token}"
+
+                            is ConversationListEntry.MessageResultEntry ->
+                                "msg_${entry.result.conversationToken}_" +
+                                    "${
+                                        entry.result.messageId
+                                            ?: entry.result.messageExcerpt.take(MSG_KEY_EXCERPT_LENGTH)
+                                    }"
+
+                            is ConversationListEntry.ContactEntry ->
+                                // Contacts can legitimately appear multiple times in search results.
+                                "contact_${entry.participant.actorId}_${entry.participant.actorType}_$index"
+
+                            ConversationListEntry.LoadMore ->
+                                "load_more"
+                        }
+                    }
+                ) { _, entry ->
                     when (entry) {
                         is ConversationListEntry.Header ->
-                            "header_${entry.title}"
+                            ConversationSectionHeader(title = entry.title)
 
                         is ConversationListEntry.ConversationEntry ->
-                            "conv_${entry.model.token}"
+                            SwipeableConversationItem(
+                                model = entry.model,
+                                onSwipe = { action -> onSwipeConversation(action, entry.model) },
+                                enabled = isOnline
+                            ) {
+                                ConversationListItem(
+                                    model = entry.model,
+                                    currentUser = currentUser,
+                                    callbacks = ConversationListItemCallbacks(
+                                        onClick = { onConversationClick(entry.model) },
+                                        onLongClick = { onConversationLongClick(entry.model) }
+                                    ),
+                                    searchQuery = searchQuery
+                                )
+                            }
 
                         is ConversationListEntry.MessageResultEntry ->
-                            "msg_${entry.result.conversationToken}_" +
-                                "${entry.result.messageId ?: entry.result.messageExcerpt.take(MSG_KEY_EXCERPT_LENGTH)}"
+                            MessageResultListItem(
+                                result = entry.result,
+                                credentials = credentials,
+                                onClick = { onMessageResultClick(entry.result) }
+                            )
 
                         is ConversationListEntry.ContactEntry ->
-                            // Contacts can legitimately appear multiple times in search results.
-                            "contact_${entry.participant.actorId}_${entry.participant.actorType}_$index"
+                            ContactResultListItem(
+                                participant = entry.participant,
+                                currentUser = currentUser,
+                                credentials = credentials,
+                                searchQuery = searchQuery,
+                                onClick = { onContactClick(entry.participant) }
+                            )
 
                         ConversationListEntry.LoadMore ->
-                            "load_more"
+                            LoadMoreListItem(onClick = onLoadMoreClick)
                     }
-                }
-            ) { _, entry ->
-                when (entry) {
-                    is ConversationListEntry.Header ->
-                        ConversationSectionHeader(title = entry.title)
-
-                    is ConversationListEntry.ConversationEntry ->
-                        SwipeableConversationItem(
-                            model = entry.model,
-                            onSwipe = { action -> onSwipeConversation(action, entry.model) },
-                            enabled = isOnline
-                        ) {
-                            ConversationListItem(
-                                model = entry.model,
-                                currentUser = currentUser,
-                                callbacks = ConversationListItemCallbacks(
-                                    onClick = { onConversationClick(entry.model) },
-                                    onLongClick = { onConversationLongClick(entry.model) }
-                                ),
-                                searchQuery = searchQuery
-                            )
-                        }
-
-                    is ConversationListEntry.MessageResultEntry ->
-                        MessageResultListItem(
-                            result = entry.result,
-                            credentials = credentials,
-                            onClick = { onMessageResultClick(entry.result) }
-                        )
-
-                    is ConversationListEntry.ContactEntry ->
-                        ContactResultListItem(
-                            participant = entry.participant,
-                            currentUser = currentUser,
-                            credentials = credentials,
-                            searchQuery = searchQuery,
-                            onClick = { onContactClick(entry.participant) }
-                        )
-
-                    ConversationListEntry.LoadMore ->
-                        LoadMoreListItem(onClick = onLoadMoreClick)
                 }
             }
         }

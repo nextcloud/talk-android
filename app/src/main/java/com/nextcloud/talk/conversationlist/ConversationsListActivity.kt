@@ -53,6 +53,7 @@ import com.nextcloud.talk.conversationlist.ui.ConversationsListScreen
 import com.nextcloud.talk.conversationlist.ui.ConversationsListScreenCallbacks
 import com.nextcloud.talk.conversationlist.ui.ConversationsListScreenState
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
+import com.nextcloud.talk.conversationtags.viewmodels.ConversationTagsViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
@@ -145,6 +146,8 @@ class ConversationsListActivity : BaseActivity() {
 
     lateinit var conversationsListViewModel: ConversationsListViewModel
 
+    lateinit var conversationTagsViewModel: ConversationTagsViewModel
+
     private var currentUser: User? = null
     private val snackbarHostState = SnackbarHostState()
     private val isMaintenanceModeState = MutableStateFlow(false)
@@ -198,6 +201,7 @@ class ConversationsListActivity : BaseActivity() {
         }
 
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
+        conversationTagsViewModel = ViewModelProvider(this, viewModelFactory)[ConversationTagsViewModel::class.java]
 
         setSupportActionBar(null)
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
@@ -209,6 +213,7 @@ class ConversationsListActivity : BaseActivity() {
         setContent {
             ConversationsListScreen(
                 viewModel = conversationsListViewModel,
+                tagsViewModel = conversationTagsViewModel,
                 state = buildScreenState(),
                 callbacks = buildScreenCallbacks()
             )
@@ -426,6 +431,7 @@ class ConversationsListActivity : BaseActivity() {
 
         conversationsListViewModel.checkIfThreadsExist()
         conversationsListViewModel.reloadFilterFromStorage(UserIdUtils.getIdForUser(currentUser))
+        conversationTagsViewModel.loadConversationTags()
     }
 
     override fun onPause() {
@@ -1140,6 +1146,9 @@ class ConversationsListActivity : BaseActivity() {
             is ConversationOpsAction.AddToHomeScreen -> addConversationToHomeScreen(conversation)
             is ConversationOpsAction.Leave -> leaveConversation(conversation)
             is ConversationOpsAction.Delete -> showDeleteConversationDialog(conversation)
+            is ConversationOpsAction.ManageTags -> conversationTagsViewModel.setConversationForTagAssignment(
+                conversation
+            )
         }
     }
 

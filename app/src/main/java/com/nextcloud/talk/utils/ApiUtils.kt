@@ -205,6 +205,16 @@ object ApiUtils {
     fun getUrlForImportantConversation(baseUrl: String, roomToken: String): String =
         "$baseUrl$OCS_API_VERSION/apps/spreed/api/v4/room/$roomToken/important"
 
+    fun getUrlForConversationTags(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/apps/spreed/api/v4/tags"
+
+    fun getUrlForConversationTag(baseUrl: String, tagId: String): String =
+        "${getUrlForConversationTags(baseUrl)}/$tagId"
+
+    fun getUrlForConversationTagsReorder(baseUrl: String): String = "${getUrlForConversationTags(baseUrl)}/reorder"
+
+    fun getUrlForRoomTags(baseUrl: String, roomToken: String): String =
+        "$baseUrl$OCS_API_VERSION/apps/spreed/api/v4/room/$roomToken/tags"
+
     @JvmStatic
     fun getUrlForParticipantsSelf(version: Int, baseUrl: String?, token: String?): String =
         getUrlForParticipants(version, baseUrl, token) + "/self"
