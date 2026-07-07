@@ -10,6 +10,8 @@ package com.nextcloud.talk.conversationlist.ui
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Label
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +33,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,7 +58,8 @@ private data class ConversationOpsVisibility(
     val isArchived: Boolean,
     val showAddToHomeScreen: Boolean,
     val showLeave: Boolean,
-    val showDelete: Boolean
+    val showDelete: Boolean,
+    val showManageTags: Boolean
 )
 
 private fun computeVisibility(conversation: ConversationModel, user: User): ConversationOpsVisibility {
@@ -63,6 +67,7 @@ private fun computeVisibility(conversation: ConversationModel, user: User): Conv
     val hasFavorites = CapabilitiesUtil.hasSpreedFeatureCapability(spreedCap, SpreedFeatures.FAVORITES)
     val hasReadMarker = CapabilitiesUtil.hasSpreedFeatureCapability(spreedCap, SpreedFeatures.CHAT_READ_MARKER)
     val hasUnread = CapabilitiesUtil.hasSpreedFeatureCapability(spreedCap, SpreedFeatures.CHAT_UNREAD)
+    val hasConversationTags = CapabilitiesUtil.hasSpreedFeatureCapability(spreedCap, SpreedFeatures.CONVERSATION_TAGS)
     return ConversationOpsVisibility(
         showRemoveFromFavorites = hasFavorites && conversation.favorite,
         showAddToFavorites = hasFavorites && !conversation.favorite,
@@ -73,7 +78,8 @@ private fun computeVisibility(conversation: ConversationModel, user: User): Conv
         isArchived = conversation.hasArchived,
         showAddToHomeScreen = true,
         showLeave = conversation.canLeaveConversation,
-        showDelete = conversation.canDeleteConversation
+        showDelete = conversation.canDeleteConversation,
+        showManageTags = hasConversationTags
     )
 }
 
@@ -160,6 +166,12 @@ private fun ConversationOpsManageGroup(
             stringResource(R.string.nc_rename)
         ) { onAction(ConversationOpsAction.Rename) }
     }
+    if (visibility.showManageTags) {
+        ConversationOpsMenuItem(
+            Icons.AutoMirrored.Outlined.Label,
+            stringResource(R.string.nc_conversation_tags)
+        ) { onAction(ConversationOpsAction.ManageTags) }
+    }
     val archiveIcon = if (visibility.isArchived) R.drawable.ic_unarchive_24px else R.drawable.outline_archive_24
     val archiveLabel = if (visibility.isArchived) {
         stringResource(R.string.unarchive_conversation)
@@ -189,6 +201,28 @@ private fun ConversationOpsManageGroup(
 
 @Composable
 private fun ConversationOpsMenuItem(@DrawableRes iconRes: Int, label: String, onClick: () -> Unit) {
+    ConversationOpsMenuItem(onClick = onClick, label = label) {
+        Icon(
+            painter = painterResource(iconRes),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+private fun ConversationOpsMenuItem(icon: ImageVector, label: String, onClick: () -> Unit) {
+    ConversationOpsMenuItem(onClick = onClick, label = label) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+private fun ConversationOpsMenuItem(label: String, onClick: () -> Unit, icon: @Composable () -> Unit) {
     TextButton(
         onClick = onClick,
         modifier = Modifier
@@ -198,11 +232,7 @@ private fun ConversationOpsMenuItem(@DrawableRes iconRes: Int, label: String, on
         contentPadding = PaddingValues(horizontal = dimensionResource(R.dimen.standard_dialog_padding)),
         colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface)
     ) {
-        Icon(
-            painter = painterResource(iconRes),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        icon()
         Spacer(modifier = Modifier.width(dimensionResource(R.dimen.standard_dialog_padding)))
         Text(
             text = label,

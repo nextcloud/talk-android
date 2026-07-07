@@ -32,6 +32,8 @@ import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.ConversationsNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.RetrofitConversationsNetwork
+import com.nextcloud.talk.conversationtags.data.ConversationTagsRepository
+import com.nextcloud.talk.conversationtags.data.ConversationTagsRepositoryImpl
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
@@ -71,6 +73,7 @@ import com.nextcloud.talk.utils.preferences.AppPreferences
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
+import javax.inject.Singleton
 
 @Suppress("TooManyFunctions")
 @Module
@@ -153,6 +156,7 @@ class RepositoryModule {
         )
 
     @Provides
+    @Singleton
     fun provideOfflineFirstConversationsRepository(
         dao: ConversationsDao,
         dataSource: ConversationsNetworkDataSource,
@@ -177,6 +181,10 @@ class RepositoryModule {
     @Provides
     fun provideThreadsRepository(ncApiCoroutines: NcApiCoroutines): ThreadsRepository =
         ThreadsRepositoryImpl(ncApiCoroutines)
+
+    @Provides
+    fun provideConversationTagsRepository(ncApiCoroutines: NcApiCoroutines): ConversationTagsRepository =
+        ConversationTagsRepositoryImpl(ncApiCoroutines)
 
     @Provides
     fun provideNetworkDataSource(okHttpClient: OkHttpClient): NetworkLoginDataSource =

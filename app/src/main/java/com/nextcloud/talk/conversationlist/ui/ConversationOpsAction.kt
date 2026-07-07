@@ -18,4 +18,5 @@ sealed class ConversationOpsAction {
     object AddToHomeScreen : ConversationOpsAction()
     object Leave : ConversationOpsAction()
     object Delete : ConversationOpsAction()
+    object ManageTags : ConversationOpsAction()
 }
