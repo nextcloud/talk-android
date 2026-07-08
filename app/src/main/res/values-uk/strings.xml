@@ -204,8 +204,8 @@
     <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Відкрийте dontkillmyapp.com</string>
     <string name="nc_dialog_invalid_password">Invalid Password</string>
     <string name="nc_dialog_maintenance_mode_description">Наразі сервер знаходиться в режимі технічного обслуговування.</string>
-    <string name="nc_dialog_outdated_client">Додаток застарілий</string>
-    <string name="nc_dialog_outdated_client_description">Додаток занадто старий і більше не підтримується цим сервером. Будь ласка, оновіть його.</string>
+    <string name="nc_dialog_outdated_client">Це застарілий застосунок</string>
+    <string name="nc_dialog_outdated_client_description">Цей застосунок застарілий і більше не підтримується цим сервером. Будь ласка, оновіть його.</string>
     <string name="nc_dialog_outdated_client_option_update">Оновлення</string>
     <string name="nc_dialog_reauth_or_delete">Чи хочете ви повторно авторизувати чи вилучити цей акаунт?</string>
     <string name="nc_dialog_save_to_storage_content">Збереження цього медіафайлу в пам\'яті дозволить будь-яким іншим програмам на вашому пристрої отримати до нього доступ.</string>
@@ -228,7 +228,7 @@
     <string name="nc_expire_message_one_hour">1 година</string>
     <string name="nc_expire_message_one_week">1 тиждень</string>
     <string name="nc_expire_messages">Термін дії повідомлень чату закінчився</string>
-    <string name="nc_expire_messages_explanation">Повідомлення чату можуть бути видалені після закінчення певного часу. Примітка: Файли, передані в чаті, не будуть видалені для власника, але більше не будуть доступні в обговоренні.</string>
+    <string name="nc_expire_messages_explanation">Повідомлення чату може бути вилучено через певний часу. Примітка: Файли, які було передано у чаті, не буде вилучено для власника, проте вони більше не будуть доступні в обговоренні.</string>
     <string name="nc_external_server_failed">Помилка отримання налаштувань сповіщення</string>
     <string name="nc_federation_invitation_accept">Прийняти</string>
     <string name="nc_federation_invitation_reject">Відхилити</string>
