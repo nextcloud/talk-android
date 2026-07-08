@@ -695,6 +695,7 @@
     <string name="user_absence_replacement">Reemplazo:</string>
     <string name="user_avatar">Avatar del usuario</string>
     <string name="user_info_address">Dirección</string>
+    <string name="user_info_biography">Biografía</string>
     <string name="user_info_bluesky">Bluesky</string>
     <string name="user_info_displayname">Nombre completo</string>
     <string name="user_info_email">Email</string>
