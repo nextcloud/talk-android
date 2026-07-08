@@ -60,6 +60,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -107,19 +109,50 @@ private const val TAGS_REVEAL_PULL_RESISTANCE = 0.5f
 /** Fraction of the tags row that must be revealed when the gesture ends for it to snap fully open. */
 private const val TAGS_REVEAL_SNAP_THRESHOLD_FRACTION = 0.35f
 
+/** The tags row starts at this scale and eases up to 1f as it's revealed — a subtle "pop", not a stretch. */
+private const val TAGS_REVEAL_MIN_SCALE = 0.85f
+
+/** Fraction of the reveal distance over which the tags row fades in; it's fully opaque well before fully open. */
+private const val TAGS_REVEAL_FADE_IN_FRACTION = 0.7f
+
+/** Anchors the fade/scale pop to the bottom-center edge the tags row visually emerges from. */
+@Suppress("MagicNumber")
+private val tagsRevealPopOrigin = TransformOrigin(pivotFractionX = 0.5f, pivotFractionY = 1f)
+
 /**
  * Lays out [content] at its own natural (unconstrained) height, but reports a layout height of
- * only [revealPx] to its parent, bottom-clipping the rest. Reads [revealPx] during the layout
- * phase (not composition), so animating it every frame during a drag never triggers recomposition
- * of [content] itself — only a cheap remeasure/relayout, which is what keeps the gesture smooth.
+ * only [revealPx] to its parent, bottom-clipping the rest. Also fades and gently scales [content]
+ * in as it's revealed, anchored to the bottom edge it's emerging from, so the gesture feels like a
+ * deliberate reveal rather than a mechanical crop. Reads [revealPx]/[naturalHeightPx] during the
+ * layout/draw phase (not composition), so animating them every frame during a drag never triggers
+ * recomposition of [content] itself — only a cheap remeasure/redraw, which is what keeps the
+ * gesture smooth.
  */
 @Composable
 private fun PullRevealHeader(
     revealPx: () -> Float,
+    naturalHeightPx: () -> Float,
     onNaturalHeightPxChanged: (Float) -> Unit,
     content: @Composable () -> Unit
 ) {
-    Layout(content = content, modifier = Modifier.clipToBounds()) { measurables, constraints ->
+    Layout(
+        content = {
+            Box(
+                modifier = Modifier.graphicsLayer {
+                    val natural = naturalHeightPx()
+                    val fraction = if (natural > 0f) (revealPx() / natural).coerceIn(0f, 1f) else 0f
+                    alpha = (fraction / TAGS_REVEAL_FADE_IN_FRACTION).coerceIn(0f, 1f)
+                    val scale = TAGS_REVEAL_MIN_SCALE + (1f - TAGS_REVEAL_MIN_SCALE) * fraction
+                    scaleX = scale
+                    scaleY = scale
+                    transformOrigin = tagsRevealPopOrigin
+                }
+            ) {
+                content()
+            }
+        },
+        modifier = Modifier.clipToBounds()
+    ) { measurables, constraints ->
         val placeable = measurables.first().measure(constraints.copy(minHeight = 0, maxHeight = Constraints.Infinity))
         onNaturalHeightPxChanged(placeable.height.toFloat())
         val height = revealPx().roundToInt().coerceIn(0, placeable.height)
@@ -341,6 +374,7 @@ fun ConversationList(
         if (tagsRowContent != null) {
             PullRevealHeader(
                 revealPx = { tagsRevealPx },
+                naturalHeightPx = { tagsNaturalHeightPx },
                 onNaturalHeightPxChanged = { tagsNaturalHeightPx = it },
                 content = tagsRowContent
             )
