@@ -81,9 +81,7 @@ class ConversationTagsViewModel @Inject constructor(
                 val response = withContext(Dispatchers.IO) {
                     conversationTagsRepository.getTags(credentials, currentUser.baseUrl!!)
                 }
-                _conversationTagsFlow.value = response.ocs?.data
-                    ?.filter { it.type == ConversationTag.TYPE_CUSTOM }
-                    ?: emptyList()
+                _conversationTagsFlow.value = response.ocs?.data.toDisplayTags()
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to load conversation tags", e)
             }
@@ -98,7 +96,7 @@ class ConversationTagsViewModel @Inject constructor(
                     conversationTagsRepository.createTag(credentials, currentUser.baseUrl!!, name)
                 }
                 response.ocs?.data?.let { tag ->
-                    _conversationTagsFlow.value = (_conversationTagsFlow.value + tag).sortedBy { it.sortOrder }
+                    _conversationTagsFlow.value = (_conversationTagsFlow.value + tag).toDisplayTags()
                 }
                 _tagActionState.value = TagActionUiState.Success
             } catch (e: Exception) {
@@ -109,6 +107,7 @@ class ConversationTagsViewModel @Inject constructor(
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun renameConversationTag(tagId: String, name: String) {
+        if (!isCustomTag(tagId)) return
         viewModelScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
@@ -127,6 +126,7 @@ class ConversationTagsViewModel @Inject constructor(
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun deleteConversationTag(tagId: String) {
+        if (!isCustomTag(tagId)) return
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
@@ -140,6 +140,12 @@ class ConversationTagsViewModel @Inject constructor(
         }
     }
 
+    /**
+     * [orderedIds] is the full desired order shown in the UI, including the built-in Favorites
+     * tag's real id — the server tracks a real `sortOrder` for Favorites/Other just like custom
+     * tags (see `ConversationTagService::reorderTags` server-side), so nothing needs to be
+     * stripped before sending; the request's order becomes the new `sortOrder` for every id in it.
+     */
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun reorderConversationTags(orderedIds: List<String>) {
         viewModelScope.launch {
@@ -147,8 +153,8 @@ class ConversationTagsViewModel @Inject constructor(
                 val response = withContext(Dispatchers.IO) {
                     conversationTagsRepository.reorderTags(credentials, currentUser.baseUrl!!, orderedIds)
                 }
-                response.ocs?.data?.filter { it.type == ConversationTag.TYPE_CUSTOM }?.let {
-                    _conversationTagsFlow.value = it
+                response.ocs?.data?.let { tags ->
+                    _conversationTagsFlow.value = tags.toDisplayTags()
                 }
                 _tagActionState.value = TagActionUiState.Success
             } catch (e: Exception) {
@@ -203,6 +209,18 @@ class ConversationTagsViewModel @Inject constructor(
             errorBody?.let { LoganSquare.parse(it, ConversationTagErrorOverall::class.java).ocs?.data?.error }
         }.getOrNull()
     }
+
+    private fun isCustomTag(tagId: String): Boolean =
+        _conversationTagsFlow.value.firstOrNull { it.id == tagId }?.type == ConversationTag.TYPE_CUSTOM
+
+    /**
+     * The server always includes the built-in Favorites/Other tags in its response and
+     * auto-creates them on first access (see `ConversationTagService::fetchAndEnsureBuiltInTags`).
+     * Other isn't surfaced in this UI, so it's dropped here; everything else is shown sorted by
+     * its real `sortOrder`.
+     */
+    private fun List<ConversationTag>?.toDisplayTags(): List<ConversationTag> =
+        this?.filter { it.type != ConversationTag.TYPE_OTHER }?.sortedBy { it.sortOrder } ?: emptyList()
 
     companion object {
         private val TAG = ConversationTagsViewModel::class.simpleName

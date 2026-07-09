@@ -49,10 +49,13 @@ fun ConversationTagsRow(
         }
         items(tags, key = { it.id }) { tag ->
             val isSelected = tag.id == selectedTagId
+            val isFavorites = tag.type == ConversationTag.TYPE_FAVORITES
             FilterChip(
                 selected = isSelected,
                 onClick = { onTagSelected(if (isSelected) null else tag.id) },
-                label = { Text(tag.name) }
+                label = {
+                    Text(if (isFavorites) stringResource(R.string.nc_conversation_tags_favorites) else tag.name)
+                }
             )
         }
     }
@@ -60,6 +63,7 @@ fun ConversationTagsRow(
 
 private fun previewTags() =
     listOf(
+        ConversationTag(id = "favorites", name = "", type = ConversationTag.TYPE_FAVORITES),
         ConversationTag(id = "1", name = "Work", sortOrder = 0),
         ConversationTag(id = "2", name = "Family", sortOrder = 1),
         ConversationTag(id = "3", name = "Projects", sortOrder = 2)

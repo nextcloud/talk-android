@@ -91,7 +91,9 @@ fun ManageConversationTagsSheetContent(
             )
         }
 
-        if (tags.isEmpty()) {
+        val customTags = tags.filter { it.type == ConversationTag.TYPE_CUSTOM }
+
+        if (customTags.isEmpty()) {
             Text(
                 text = stringResource(R.string.nc_conversation_tags_empty),
                 modifier = Modifier
@@ -103,6 +105,7 @@ fun ManageConversationTagsSheetContent(
         }
 
         tags.forEachIndexed { index, tag ->
+            val isFavorites = tag.type == ConversationTag.TYPE_FAVORITES
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -124,7 +127,7 @@ fun ManageConversationTagsSheetContent(
                     }
                 } else {
                     Text(
-                        text = tag.name,
+                        text = if (isFavorites) stringResource(R.string.nc_conversation_tags_favorites) else tag.name,
                         modifier = Modifier.weight(1f),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface
@@ -135,23 +138,30 @@ fun ManageConversationTagsSheetContent(
                     IconButton(onClick = { onMoveTag(tag.id, 1) }, enabled = index < tags.lastIndex) {
                         Icon(Icons.Outlined.KeyboardArrowDown, contentDescription = null)
                     }
-                    IconButton(
-                        onClick = {
-                            editingTagId = tag.id
-                            editingName = tag.name
-                            onResetActionState()
+                    if (isFavorites) {
+                        // Empty, disabled placeholders reserve the same width as the edit/delete
+                        // buttons on the other rows, so the up/down arrows line up across all rows.
+                        IconButton(onClick = {}, enabled = false) {}
+                        IconButton(onClick = {}, enabled = false) {}
+                    } else {
+                        IconButton(
+                            onClick = {
+                                editingTagId = tag.id
+                                editingName = tag.name
+                                onResetActionState()
+                            }
+                        ) {
+                            Icon(
+                                Icons.Outlined.Edit,
+                                contentDescription = stringResource(R.string.nc_conversation_tags_rename)
+                            )
                         }
-                    ) {
-                        Icon(
-                            Icons.Outlined.Edit,
-                            contentDescription = stringResource(R.string.nc_conversation_tags_rename)
-                        )
-                    }
-                    IconButton(onClick = { tagPendingDelete = tag }) {
-                        Icon(
-                            Icons.Outlined.Delete,
-                            contentDescription = stringResource(R.string.nc_conversation_tags_delete)
-                        )
+                        IconButton(onClick = { tagPendingDelete = tag }) {
+                            Icon(
+                                Icons.Outlined.Delete,
+                                contentDescription = stringResource(R.string.nc_conversation_tags_delete)
+                            )
+                        }
                     }
                 }
             }
@@ -221,6 +231,7 @@ private fun tagErrorMessage(errorType: String?): String =
 
 private fun previewTags() =
     listOf(
+        ConversationTag(id = "favorites", name = "", type = ConversationTag.TYPE_FAVORITES),
         ConversationTag(id = "1", name = "Work", sortOrder = 0),
         ConversationTag(id = "2", name = "Family", sortOrder = 1),
         ConversationTag(id = "3", name = "Projects", sortOrder = 2)
