@@ -138,10 +138,6 @@ class MessageInputViewModel :
     val isVoicePreviewPlaying: LiveData<Boolean>
         get() = _isVoicePreviewPlaying
 
-    private val _callStartedFlow: MutableLiveData<Pair<ChatMessage, Boolean>> = MutableLiveData()
-    val callStartedFlow: LiveData<Pair<ChatMessage, Boolean>>
-        get() = _callStartedFlow
-
     object ScheduleChatMessageStartState : ViewState
     class ScheduleChatMessageSuccessState(val scheduledAt: Long) : ViewState
     object ScheduleChatMessageErrorState : ViewState
@@ -285,10 +281,6 @@ class MessageInputViewModel :
 
     fun setRecordingTime(time: Long) {
         _getRecordingTime.postValue(time)
-    }
-
-    fun showCallStartedIndicator(recent: ChatMessage, show: Boolean) {
-        _callStartedFlow.postValue(Pair(recent, show))
     }
 
     fun startThreadCreation() {
