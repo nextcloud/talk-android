@@ -214,8 +214,7 @@ fun ConversationsListScreen(
         )
     }
 
-    // Keyed on the tag filter so switching tags (or clearing the filter) starts the list at a
-    // fresh, already-at-top scroll state instead of visibly jumping there from the old position.
+    // Keyed on the tag filter so switching tags starts the list at the top without a visible jump.
     val lazyListState = remember(selectedTagFilter) { LazyListState() }
     DisposableEffect(lazyListState) {
         callbacks.onLazyListStateAvailable(lazyListState)
@@ -417,7 +416,6 @@ fun ConversationsListScreen(
                 }
             }
 
-            // Assign-tags-to-conversation bottom sheet
             val conversationForTags = conversationForTagAssignment
             if (conversationForTags != null) {
                 ModalBottomSheet(
@@ -444,7 +442,6 @@ fun ConversationsListScreen(
                 }
             }
 
-            // Manage-tags bottom sheet
             if (showManageTagsSheet) {
                 ModalBottomSheet(
                     onDismissRequest = { tagsViewModel.setShowManageTagsSheet(false) },

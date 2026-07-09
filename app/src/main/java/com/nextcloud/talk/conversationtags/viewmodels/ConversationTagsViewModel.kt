@@ -140,12 +140,7 @@ class ConversationTagsViewModel @Inject constructor(
         }
     }
 
-    /**
-     * [orderedIds] is the full desired order shown in the UI, including the built-in Favorites
-     * tag's real id — the server tracks a real `sortOrder` for Favorites/Other just like custom
-     * tags (see `ConversationTagService::reorderTags` server-side), so nothing needs to be
-     * stripped before sending; the request's order becomes the new `sortOrder` for every id in it.
-     */
+    /** [orderedIds] includes the built-in Favorites tag's real id — the server tracks its sortOrder too. */
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun reorderConversationTags(orderedIds: List<String>) {
         viewModelScope.launch {
@@ -191,11 +186,7 @@ class ConversationTagsViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Keeps the conversation shown in the assign-tags sheet in sync with an optimistic update
-     * or rollback, since [conversationForTagAssignment] is a snapshot and not fed from the live
-     * room list.
-     */
+    /** [conversationForTagAssignment] is a snapshot, not fed from the live room list — keep it in sync. */
     private fun replaceConversationForTagAssignment(token: String, replacement: ConversationModel) {
         if (_conversationForTagAssignment.value?.token == token) {
             _conversationForTagAssignment.value = replacement
@@ -213,12 +204,7 @@ class ConversationTagsViewModel @Inject constructor(
     private fun isCustomTag(tagId: String): Boolean =
         _conversationTagsFlow.value.firstOrNull { it.id == tagId }?.type == ConversationTag.TYPE_CUSTOM
 
-    /**
-     * The server always includes the built-in Favorites/Other tags in its response and
-     * auto-creates them on first access (see `ConversationTagService::fetchAndEnsureBuiltInTags`).
-     * Other isn't surfaced in this UI, so it's dropped here; everything else is shown sorted by
-     * its real `sortOrder`.
-     */
+    /** Drops the built-in "Other" tag (not surfaced in this UI) and sorts the rest by sortOrder. */
     private fun List<ConversationTag>?.toDisplayTags(): List<ConversationTag> =
         this?.filter { it.type != ConversationTag.TYPE_OTHER }?.sortedBy { it.sortOrder } ?: emptyList()
 

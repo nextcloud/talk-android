@@ -139,8 +139,7 @@ fun ManageConversationTagsSheetContent(
                         Icon(Icons.Outlined.KeyboardArrowDown, contentDescription = null)
                     }
                     if (isFavorites) {
-                        // Empty, disabled placeholders reserve the same width as the edit/delete
-                        // buttons on the other rows, so the up/down arrows line up across all rows.
+                        // Reserve the edit/delete buttons' width so arrows still line up.
                         IconButton(onClick = {}, enabled = false) {}
                         IconButton(onClick = {}, enabled = false) {}
                     } else {

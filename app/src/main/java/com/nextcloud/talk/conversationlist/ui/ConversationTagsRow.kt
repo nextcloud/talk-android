@@ -74,14 +74,7 @@ fun ConversationTagsRow(
     }
 }
 
-/**
- * [FilterChip] only exposes a plain click. Rather than layering a second clickable region on top
- * (whose ripple would need to exactly replicate the chip's own shape/bounds to stay visually
- * contained), long-press is detected by watching the chip's own [MutableInteractionSource] for a
- * [PressInteraction.Press] that outlasts the long-press timeout — the chip's native ripple and
- * click handling are left completely untouched, so the ripple is always exactly as clipped as the
- * chip itself.
- */
+/** Detects long-press via the chip's own interactionSource so its native ripple stays untouched. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TagFilterChip(selected: Boolean, label: String, onClick: () -> Unit, onLongClick: () -> Unit) {
