@@ -8,6 +8,8 @@
 package com.nextcloud.talk.conversationlist.ui
 
 import android.content.res.Configuration
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,12 +22,22 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.tags.ConversationTag
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,6 +45,7 @@ fun ConversationTagsRow(
     tags: List<ConversationTag>,
     selectedTagId: String?,
     onTagSelected: (String?) -> Unit,
+    onManageTagsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyRow(
@@ -41,24 +54,63 @@ fun ConversationTagsRow(
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.standard_half_padding))
     ) {
         item {
-            FilterChip(
+            TagFilterChip(
                 selected = selectedTagId == null,
+                label = stringResource(R.string.nc_conversation_tags_filter_all),
                 onClick = { onTagSelected(null) },
-                label = { Text(stringResource(R.string.nc_conversation_tags_filter_all)) }
+                onLongClick = onManageTagsClick
             )
         }
         items(tags, key = { it.id }) { tag ->
             val isSelected = tag.id == selectedTagId
             val isFavorites = tag.type == ConversationTag.TYPE_FAVORITES
-            FilterChip(
+            TagFilterChip(
                 selected = isSelected,
+                label = if (isFavorites) stringResource(R.string.nc_conversation_tags_favorites) else tag.name,
                 onClick = { onTagSelected(if (isSelected) null else tag.id) },
-                label = {
-                    Text(if (isFavorites) stringResource(R.string.nc_conversation_tags_favorites) else tag.name)
-                }
+                onLongClick = onManageTagsClick
             )
         }
     }
+}
+
+/**
+ * [FilterChip] only exposes a plain click. Rather than layering a second clickable region on top
+ * (whose ripple would need to exactly replicate the chip's own shape/bounds to stay visually
+ * contained), long-press is detected by watching the chip's own [MutableInteractionSource] for a
+ * [PressInteraction.Press] that outlasts the long-press timeout — the chip's native ripple and
+ * click handling are left completely untouched, so the ripple is always exactly as clipped as the
+ * chip itself.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TagFilterChip(selected: Boolean, label: String, onClick: () -> Unit, onLongClick: () -> Unit) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val hapticFeedback = LocalHapticFeedback.current
+    val longPressTimeoutMillis = LocalViewConfiguration.current.longPressTimeoutMillis
+    var suppressClick by remember { mutableStateOf(false) }
+
+    LaunchedEffect(interactionSource) {
+        interactionSource.interactions.collectLatest { interaction ->
+            if (interaction is PressInteraction.Press) {
+                suppressClick = false
+                delay(longPressTimeoutMillis)
+                suppressClick = true
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                onLongClick()
+            }
+        }
+    }
+
+    FilterChip(
+        selected = selected,
+        onClick = {
+            if (!suppressClick) onClick()
+            suppressClick = false
+        },
+        label = { Text(label) },
+        interactionSource = interactionSource
+    )
 }
 
 private fun previewTags() =
@@ -77,7 +129,8 @@ private fun ConversationTagsRowPreview() {
         ConversationTagsRow(
             tags = previewTags(),
             selectedTagId = "2",
-            onTagSelected = {}
+            onTagSelected = {},
+            onManageTagsClick = {}
         )
     }
 }
