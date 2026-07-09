@@ -83,7 +83,7 @@ private const val SINGLE_EMOJI_SIZE_MULTIPLIER = 2.5f
 private const val HALF_OPACITY = 127
 private const val MESSAGE_LENGTH_THRESHOLD = 25
 private const val ANIMATED_BLINK = 500
-private const val MESSAGE_BUBBLE_MAX_WIDTH_FRACTION = 0.9f
+private const val MESSAGE_BUBBLE_MAX_WIDTH_FRACTION = 0.8f
 
 private val bubbleRadiusBig = 10.dp
 private val bubbleRadiusSmall = 2.dp
