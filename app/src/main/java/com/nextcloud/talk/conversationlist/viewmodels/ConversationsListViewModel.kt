@@ -226,6 +226,8 @@ class ConversationsListViewModel @Inject constructor(
         RESULTS
     }
 
+    private data class TagFilterSelection(val tagId: String? = null, val isFavorites: Boolean = false)
+
     private val _selectedTagFilterFlow = MutableStateFlow<String?>(null)
     val selectedTagFilterFlow: StateFlow<String?> = _selectedTagFilterFlow.asStateFlow()
 
@@ -238,25 +240,12 @@ class ConversationsListViewModel @Inject constructor(
         selectedTagIsFavoritesFlow.value = tagId != null && isFavorites
     }
 
-    private val tagFilteredRoomsFlow: StateFlow<List<ConversationModel>> = combine(
-        getRoomsStateFlow,
-        _selectedTagFilterFlow,
-        selectedTagIsFavoritesFlow
-    ) { rooms, tagId, isFavorites ->
-        when {
-            tagId == null -> rooms
-            // Favorites has no relation to tagIds; it mirrors the pre-existing favorite flag.
-            isFavorites -> rooms.filter { it.favorite }
-            else -> rooms.filter { it.tagIds.contains(tagId) }
-        }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
-
     /**
      * Single source of truth for the [ConversationList] LazyColumn.
-     * Auto-reacts to rooms, filter, search-active and search-result changes.
+     * Auto-reacts to rooms, filter, tag filter, search-active and search-result changes.
      */
     val conversationListEntriesFlow: StateFlow<List<ConversationListEntry>> = combine(
-        tagFilteredRoomsFlow,
+        getRoomsStateFlow,
         _filterStateFlow,
         combine(_isSearchActiveFlow, _currentSearchQueryFlow) { active, query ->
             when {
@@ -265,10 +254,10 @@ class ConversationsListViewModel @Inject constructor(
                 else -> SearchDisplayMode.RESULTS
             }
         },
-        searchResultEntries,
-        hideRoomToken
-    ) { rooms, filterState, searchMode, searchResults, hideToken ->
-        buildConversationListEntries(rooms, filterState, searchMode, searchResults, hideToken)
+        combine(_selectedTagFilterFlow, selectedTagIsFavoritesFlow, ::TagFilterSelection),
+        combine(searchResultEntries, hideRoomToken, ::Pair)
+    ) { rooms, filterState, searchMode, tagFilter, (searchResults, hideToken) ->
+        buildConversationListEntries(rooms, filterState, searchMode, tagFilter, searchResults, hideToken)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     /** Clears the tag filter when the filtered-by tag no longer exists (e.g. it was deleted). */
@@ -625,10 +614,12 @@ class ConversationsListViewModel @Inject constructor(
                 }
         }
 
+    @Suppress("LongParameterList")
     private fun buildConversationListEntries(
         rooms: List<ConversationModel>,
         filterState: Map<String, Boolean>,
         searchMode: SearchDisplayMode,
+        tagFilter: TagFilterSelection,
         searchResults: List<ConversationListEntry>,
         hideToken: String?
     ): List<ConversationListEntry> {
@@ -649,10 +640,18 @@ class ConversationsListViewModel @Inject constructor(
 
         filtered = when {
             // While search is open with an empty query, all conversations are listed,
-            // ignoring active filters and the default hiding of archived/future-event rooms
+            // ignoring active filters, the tag filter and the default hiding of archived/future-event rooms
             searchMode == SearchDisplayMode.ALL_CONVERSATIONS -> filtered
             hasFilterEnabled -> filtered.filter { filterConversationModel(it, filterState) }
             else -> filtered.filter { !isFutureEvent(it) && !it.hasArchived }
+        }
+
+        if (searchMode != SearchDisplayMode.ALL_CONVERSATIONS) {
+            filtered = when {
+                tagFilter.isFavorites -> filtered.filter { it.favorite }
+                tagFilter.tagId != null -> filtered.filter { it.tagIds.contains(tagFilter.tagId) }
+                else -> filtered
+            }
         }
 
         val sorted = filtered.sortedWith(
