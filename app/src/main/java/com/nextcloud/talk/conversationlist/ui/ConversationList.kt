@@ -103,31 +103,15 @@ import kotlin.math.roundToInt
 
 private const val MSG_KEY_EXCERPT_LENGTH = 20
 
-/** Fraction of a raw drag delta that actually moves the tags row into view (the "resistance"). */
 private const val TAGS_REVEAL_PULL_RESISTANCE = 0.5f
-
-/** Fraction of the tags row that must be revealed when the gesture ends for it to snap fully open. */
 private const val TAGS_REVEAL_SNAP_THRESHOLD_FRACTION = 0.35f
-
-/** The tags row starts at this scale and eases up to 1f as it's revealed — a subtle "pop", not a stretch. */
 private const val TAGS_REVEAL_MIN_SCALE = 0.85f
-
-/** Fraction of the reveal distance over which the tags row fades in; it's fully opaque well before fully open. */
 private const val TAGS_REVEAL_FADE_IN_FRACTION = 0.7f
 
-/** Anchors the fade/scale pop to the bottom-center edge the tags row visually emerges from. */
 @Suppress("MagicNumber")
 private val tagsRevealPopOrigin = TransformOrigin(pivotFractionX = 0.5f, pivotFractionY = 1f)
 
-/**
- * Lays out [content] at its own natural (unconstrained) height, but reports a layout height of
- * only [revealPx] to its parent, bottom-clipping the rest. Also fades and gently scales [content]
- * in as it's revealed, anchored to the bottom edge it's emerging from, so the gesture feels like a
- * deliberate reveal rather than a mechanical crop. Reads [revealPx]/[naturalHeightPx] during the
- * layout/draw phase (not composition), so animating them every frame during a drag never triggers
- * recomposition of [content] itself — only a cheap remeasure/redraw, which is what keeps the
- * gesture smooth.
- */
+/** Reports a layout height of only [revealPx] instead of [content]'s natural height, bottom-clipping the rest. */
 @Composable
 private fun PullRevealHeader(
     revealPx: () -> Float,
@@ -162,35 +146,21 @@ private fun PullRevealHeader(
     }
 }
 
-/**
- * Rubber-band pull-to-reveal, Telegram/Signal style: normally [revealPx] is 0 (tags row fully
- * hidden, zero layout height). Pulling down while the conversation list is scrolled to its own
- * absolute top grows [revealPx] at [TAGS_REVEAL_PULL_RESISTANCE] of the raw drag distance; pulling
- * up while any of it is showing collapses it 1:1 first, before the list itself scrolls. Releasing
- * mid-gesture snaps to fully open or fully closed with a spring, depending on how far it was
- * pulled.
- *
- * Deliberately wraps everything *outside* [PullToRefreshBox] (not attached to the LazyColumn
- * inside it): nested-scroll pre-scroll dispatch runs outermost-connection-first, so this must be
- * the outermost connection to get first claim on "pulling down while at the top" — once the
- * tags row is fully revealed it stops consuming that gesture, letting the remainder flow through
- * to [PullToRefreshBox]'s own overscroll detection underneath, unmodified.
- *
- * The interactive value itself ([revealPx]) is plain, synchronously-mutated state — not an
- * [Animatable] driven via `snapTo` from a launched coroutine. Doing that instead (as an earlier
- * version of this code did) queues a new coroutine on every single scroll callback during a fast
- * drag, and each one competes for the Animatable's internal mutation mutex, which is what caused
- * the stutter/dropped-input symptoms. A coroutine is only ever launched once per gesture, for the
- * release-time settle animation.
- */
 /** Bundles the reveal-height accessors so [rememberPullRevealNestedScrollConnection] stays under the param limit. */
 private class PullRevealController(
     val revealPx: () -> Float,
     val naturalHeightPx: () -> Float,
     val onRevealPxChanged: (Float) -> Unit,
-    /** [PullToRefreshState.getDistanceFraction]: > 0 while the refresh indicator is showing/pulling. */
     val refreshDistanceFraction: () -> Float
 )
+
+// This must be the outermost nested-scroll connection (wrapping PullToRefreshBox, not attached
+// to the LazyColumn inside it): pre-scroll dispatch runs outermost-first, so it needs first claim
+// on "pulling down while at the top" before PullToRefreshBox's own overscroll detection sees it.
+// revealPx is plain, synchronously-mutated state rather than an Animatable driven via snapTo from
+// a launched coroutine — that queues a new coroutine per scroll callback during a drag, and they
+// compete for the Animatable's mutation mutex, causing stutter. A coroutine only runs once per
+// gesture, for the release-time settle animation.
 
 @Composable
 private fun rememberPullRevealNestedScrollConnection(
@@ -204,13 +174,9 @@ private fun rememberPullRevealNestedScrollConnection(
             /** Tracks the in-flight settle animation so a fresh drag/fling can cancel a stale one. */
             var settleJob: Job? = null
 
-            /**
-             * True once this same continuous gesture has already pulled the tags row to fully
-             * revealed. Kept true for the rest of the gesture so further pulling is absorbed
-             * instead of leaking into [PullToRefreshBox] — the refresh indicator may only be
-             * engaged by a separate, later pull, not by continuing the same one that revealed the
-             * tags row. Reset on every gesture end (see [onPreFling]).
-             */
+            // True once this gesture has already pulled the tags row fully open; further pulling
+            // is then absorbed here instead of leaking into the refresh indicator below, which may
+            // only be engaged by a separate, later pull. Reset on gesture end in onPreFling.
             var reachedMaxThisGesture = false
             val revealPx = controller.revealPx
             val naturalHeightPx = controller.naturalHeightPx
@@ -221,10 +187,8 @@ private fun rememberPullRevealNestedScrollConnection(
                 if (!isEnabled) return Offset.Zero
                 val atOwnTop = listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0
                 return when {
-                    // The refresh indicator engages only after the tags row is fully revealed, so it
-                    // must also retract first: while it still has any pull progress, let the drag
-                    // pass straight through to PullToRefreshBox's own retraction handling untouched,
-                    // instead of collapsing the tags row underneath it.
+                    // Refresh indicator has no pull progress of its own yet, so retract the tags
+                    // row first instead of letting it collapse underneath the indicator.
                     available.y < 0f && revealPx() > 0f && refreshDistanceFraction() <= 0f -> {
                         settleJob?.cancel()
                         val newValue = (revealPx() + available.y).coerceAtLeast(0f)
@@ -244,8 +208,6 @@ private fun rememberPullRevealNestedScrollConnection(
                         available
                     }
 
-                    // Same gesture, already fully revealed: swallow further pulling so it can't
-                    // chain straight into triggering the refresh indicator.
                     available.y > 0f && atOwnTop && reachedMaxThisGesture -> available
 
                     else -> Offset.Zero
@@ -254,10 +216,8 @@ private fun rememberPullRevealNestedScrollConnection(
 
             override suspend fun onPreFling(available: Velocity): Velocity {
                 reachedMaxThisGesture = false
-                // Fire-and-forget: must NOT suspend here. onPreFling is awaited by the nested-scroll
-                // dispatcher before the fling is handed to the LazyColumn below, so directly awaiting
-                // the settle animation on this coroutine would block (and visibly delay) the list's
-                // own fling until the spring finishes.
+                // Fire-and-forget: awaiting the settle animation here would block the fling this
+                // suspend function is expected to hand off to the LazyColumn below.
                 val max = naturalHeightPx()
                 if (isEnabled && revealPx() > 0f && revealPx() < max) {
                     settleJob?.cancel()
@@ -278,10 +238,6 @@ private fun rememberPullRevealNestedScrollConnection(
         }
     }
 
-/**
- * The full conversation list: pull-to-refresh + LazyColumn.
- * Replaces RecyclerView + FlexibleAdapter + SwipeRefreshLayout.
- */
 @Suppress("LongParameterList", "LongMethod", "CyclomaticComplexMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -342,7 +298,6 @@ fun ConversationList(
             }
     }
 
-    // Unread-bubble: notify Activity when scrolling stops
     LaunchedEffect(listState) {
         snapshotFlow { listState.isScrollInProgress }
             .collect { isScrolling ->
@@ -353,13 +308,11 @@ fun ConversationList(
             }
     }
 
-    // Unread-bubble: also trigger the check after entries are first loaded (or updated)
     LaunchedEffect(entries) {
         if (entries.isEmpty()) {
             onScrollStopped(0)
             return@LaunchedEffect
         }
-        // Wait until the LazyColumn has measured visible items so the last-visible index is accurate.
         snapshotFlow { listState.layoutInfo.visibleItemsInfo }
             .first { it.isNotEmpty() }
         val lastVisible = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
@@ -387,9 +340,7 @@ fun ConversationList(
                 .weight(1f)
                 .fillMaxWidth(),
             indicator = {
-                // Pinned to a fixed position near the search bar (offsetting by however much the
-                // tags row currently pushes this Box down), instead of sliding down together with
-                // it and appearing to emerge from underneath the tags row.
+                // Offset cancels the tags row's push-down, keeping this pinned near the search bar.
                 PullToRefreshDefaults.Indicator(
                     state = pullToRefreshState,
                     isRefreshing = isRefreshing,
@@ -476,7 +427,6 @@ fun ConversationList(
     }
 }
 
-/** Possible swipe states for conversation row actions. */
 private enum class SwipeValue { Settled, StartToEnd, EndToStart }
 
 private const val POP_SCALE_PEAK = 1.35f

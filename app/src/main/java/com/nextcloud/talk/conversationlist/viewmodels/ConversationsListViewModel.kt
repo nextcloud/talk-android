@@ -229,8 +229,7 @@ class ConversationsListViewModel @Inject constructor(
     private val _selectedTagFilterFlow = MutableStateFlow<String?>(null)
     val selectedTagFilterFlow: StateFlow<String?> = _selectedTagFilterFlow.asStateFlow()
 
-    // The built-in Favorites tag has a real, server-assigned id (see ConversationTagsViewModel),
-    // so it can't be recognized by a fixed sentinel id — the caller tells us at selection time.
+    // Favorites has a real, server-assigned id, so the caller tells us if it's the one selected.
     private val selectedTagIsFavoritesFlow = MutableStateFlow(false)
 
     /** Select a tag to filter the conversation list, or null to clear the filter. */
@@ -272,10 +271,7 @@ class ConversationsListViewModel @Inject constructor(
         buildConversationListEntries(rooms, filterState, searchMode, searchResults, hideToken)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    /**
-     * Clears the tag filter when the filtered-by tag no longer exists (e.g. it was deleted).
-     * Called by [com.nextcloud.talk.conversationtags.viewmodels.ConversationTagsViewModel].
-     */
+    /** Clears the tag filter when the filtered-by tag no longer exists (e.g. it was deleted). */
     fun clearTagFilterIfMatches(tagId: String) {
         if (_selectedTagFilterFlow.value == tagId) {
             _selectedTagFilterFlow.value = null
