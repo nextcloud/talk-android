@@ -1149,7 +1149,6 @@ class ConversationsListActivity : BaseActivity() {
             this,
             currentUser?.baseUrl,
             conversation.token,
-            conversation.name,
             canGeneratePrettyURL
         )
     }
