@@ -345,6 +345,7 @@ fun ConversationsListScreen(
                                                     }
                                                     viewModel.selectTagFilter(tagId, isFavorites)
                                                 },
+                                                onManageTagsClick = { tagsViewModel.setShowManageTagsSheet(true) },
                                                 modifier = Modifier
                                                     .fillMaxWidth()
                                                     .padding(
