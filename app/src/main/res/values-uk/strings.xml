@@ -305,7 +305,7 @@
     <string name="nc_new_conversation_visibility">Видимість</string>
     <string name="nc_new_mention">Непрочитані згадки</string>
     <string name="nc_new_messages">Непрочитані повідомлення</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Застосунок %1$s недоступний (не встановлений, або використання додатка обмежене адміністратором)</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Застосунок %1$s недоступний (не встановлений, або використання застосунку обмежене адміністратором)</string>
     <string name="nc_nick_guest">Гість</string>
     <string name="nc_no">Ні</string>
     <string name="nc_no_account_found">Акаунт не знайдено</string>
@@ -450,7 +450,7 @@
     <string name="nc_settings_screen_lock_desc">Захищати %1$s за допомогою системи блокування Android або підтримуваного біометричного методу</string>
     <string name="nc_settings_screen_lock_timeout_title">Затримка блокування екрана під час бездіяльності</string>
     <string name="nc_settings_screen_lock_title">Блокування екрана</string>
-    <string name="nc_settings_screen_security_desc">Запобігає збереженню скріншотів усередині додатка і в списку недавніх додатків</string>
+    <string name="nc_settings_screen_security_desc">Запобігає збереженню скріншотів у списку нещодавніх файлів та всередині застосунку</string>
     <string name="nc_settings_screen_security_title">Безпека екрану</string>
     <string name="nc_settings_server_almost_eol">Ця версія сервера дуже застаріла і не буде підтримуватися в наступному випуску!</string>
     <string name="nc_settings_server_eol">Версія сервера застаріла і не підтримується цією версією застосунку для Android</string>
@@ -638,7 +638,7 @@
     <string name="tomorrow">Завтра</string>
     <string name="translate">Перекласти</string>
     <string name="translation">Переклад</string>
-    <string name="translation_copy_translated_text">Скопіювати перекладений текст</string>
+    <string name="translation_copy_translated_text">Копіювати перекладений текст</string>
     <string name="translation_detect_language">Визначити мову</string>
     <string name="translation_device_settings">Налаштування пристрою</string>
     <string name="translation_error_message">Не вдалося визначити мову</string>
