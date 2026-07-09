@@ -229,16 +229,27 @@ class ConversationsListViewModel @Inject constructor(
     private val _selectedTagFilterFlow = MutableStateFlow<String?>(null)
     val selectedTagFilterFlow: StateFlow<String?> = _selectedTagFilterFlow.asStateFlow()
 
+    // The built-in Favorites tag has a real, server-assigned id (see ConversationTagsViewModel),
+    // so it can't be recognized by a fixed sentinel id — the caller tells us at selection time.
+    private val selectedTagIsFavoritesFlow = MutableStateFlow(false)
+
     /** Select a tag to filter the conversation list, or null to clear the filter. */
-    fun selectTagFilter(tagId: String?) {
+    fun selectTagFilter(tagId: String?, isFavorites: Boolean = false) {
         _selectedTagFilterFlow.value = tagId
+        selectedTagIsFavoritesFlow.value = tagId != null && isFavorites
     }
 
     private val tagFilteredRoomsFlow: StateFlow<List<ConversationModel>> = combine(
         getRoomsStateFlow,
-        _selectedTagFilterFlow
-    ) { rooms, tagId ->
-        if (tagId == null) rooms else rooms.filter { it.tagIds.contains(tagId) }
+        _selectedTagFilterFlow,
+        selectedTagIsFavoritesFlow
+    ) { rooms, tagId, isFavorites ->
+        when {
+            tagId == null -> rooms
+            // Favorites has no relation to tagIds; it mirrors the pre-existing favorite flag.
+            isFavorites -> rooms.filter { it.favorite }
+            else -> rooms.filter { it.tagIds.contains(tagId) }
+        }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
 
     /**
@@ -268,6 +279,7 @@ class ConversationsListViewModel @Inject constructor(
     fun clearTagFilterIfMatches(tagId: String) {
         if (_selectedTagFilterFlow.value == tagId) {
             _selectedTagFilterFlow.value = null
+            selectedTagIsFavoritesFlow.value = false
         }
     }
 

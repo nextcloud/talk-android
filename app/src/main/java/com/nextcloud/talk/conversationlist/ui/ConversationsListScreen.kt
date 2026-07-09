@@ -59,6 +59,7 @@ import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.tags.ConversationTag
 import com.nextcloud.talk.chooseaccount.ChooseAccountDialogCompose
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.DEFAULT
@@ -338,7 +339,12 @@ fun ConversationsListScreen(
                                             ConversationTagsRow(
                                                 tags = conversationTags,
                                                 selectedTagId = selectedTagFilter,
-                                                onTagSelected = { viewModel.selectTagFilter(it) },
+                                                onTagSelected = { tagId ->
+                                                    val isFavorites = conversationTags.any {
+                                                        it.id == tagId && it.type == ConversationTag.TYPE_FAVORITES
+                                                    }
+                                                    viewModel.selectTagFilter(tagId, isFavorites)
+                                                },
                                                 modifier = Modifier
                                                     .fillMaxWidth()
                                                     .padding(
@@ -420,7 +426,7 @@ fun ConversationsListScreen(
                 ) {
                     AssignConversationTagsSheetContent(
                         conversation = conversationForTags,
-                        tags = conversationTags,
+                        tags = conversationTags.filter { it.type == ConversationTag.TYPE_CUSTOM },
                         onToggleTag = { tagId ->
                             val newTagIds = if (conversationForTags.tagIds.contains(tagId)) {
                                 conversationForTags.tagIds - tagId
