@@ -31,6 +31,7 @@ const val WAVEFORM_THUMB_SIZE = 20
 const val WAVEFORM_SIZE = 30
 const val MAX_HEIGHT = 100
 const val OVERLAP = 0.025
+const val PROGRESS = 0.97f
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -98,7 +99,7 @@ fun Preview() {
     val waveData = remember { FloatArray(WAVEFORM_SIZE) { (Math.random() % 1).toFloat() } }
 
     ComposeWaveformSeekBar(
-        0.97f,
+        PROGRESS,
         {},
         modifier = Modifier
             .height(MAX_HEIGHT.dp)

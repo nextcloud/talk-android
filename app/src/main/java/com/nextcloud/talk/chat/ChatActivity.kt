@@ -417,8 +417,8 @@ class ChatActivity :
             val currentPosition = controller.currentPosition
             val duration = controller.duration.takeIf { it > 0 } ?: 1
 
-            val progress = (currentPosition.toFloat() / duration) * 100f
-            val secondsPlayed = (currentPosition / 1000)
+            val progress = (currentPosition.toFloat() / duration) * FLOAT_100
+            val secondsPlayed = (currentPosition / MILLIS_1000)
 
             val msg = chatViewModel.currentVoiceMessage?.apply {
                 voiceMessageSeekbarProgress = kotlin.math.ceil(progress).toInt()
@@ -438,7 +438,7 @@ class ChatActivity :
             while (isActive) {
                 updateSeekbarUi()
                 // Poll every 150ms for smooth seekbar updates
-                delay(150L)
+                delay(MILLIS_150)
             }
         }
     }
@@ -1061,6 +1061,7 @@ class ChatActivity :
         }
     }
 
+    @Suppress("ReturnCount", "CyclomaticComplexMethod")
     private fun onVoiceClick(messageId: Int) {
         fun getAudioDuration(audioFilePath: String): Long {
             val retriever = MediaMetadataRetriever()
@@ -1070,8 +1071,8 @@ class ChatActivity :
                 val durationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
                 val durationLong = durationString?.toLong() ?: 0L
 
-                durationLong / 1000
-            } catch (e: Exception) {
+                durationLong / ONE_SECOND_IN_MILLIS
+            } catch (e: IllegalArgumentException) {
                 e.printStackTrace()
                 0L
             } finally {
@@ -1366,14 +1367,9 @@ class ChatActivity :
 
             mediaController?.addListener(playerListener)
 
-            // If the controller connects and is already playing (e.g. background playback),
-            // start polling immediately
             if (mediaController?.isPlaying == true) {
                 startProgressPolling()
             }
-
-            // (Optional) Add a Player.Listener here if you want the Activity
-            // to reactively listen to playback state changes (e.g., when a track ends).
         }, ContextCompat.getMainExecutor(this))
     }
 
@@ -2926,7 +2922,7 @@ class ChatActivity :
         )
     }
 
-    public override fun onDestroy() {
+    override fun onDestroy() {
         super.onDestroy()
         logConversationInfos("onDestroy")
 
@@ -4113,6 +4109,9 @@ class ChatActivity :
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
         private const val MILLIS_250 = 250L
+        private const val MILLIS_150 = 150L
+        private const val MILLIS_1000 = 1000L
+        private const val FLOAT_100 = 100f
         private const val AGE_THRESHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_SHARE_FILE_PERMISSION: Int = 221
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
