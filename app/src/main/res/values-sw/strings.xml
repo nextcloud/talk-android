@@ -64,6 +64,7 @@
     <string name="encrypted">Imesimbwa kwa njia fiche</string>
     <string name="end_call">Kata simu</string>
     <string name="end_call_for_everyone">Maliza simu kwa kila mtu</string>
+    <string name="error_crash_title">%1$s ilianguka</string>
     <string name="error_loading_chats">Kulikuwa na tatizo kupakia chati zako</string>
     <string name="error_unbanning">Hitilafu ilitokea wakati wa kubatilisha mshiriki</string>
     <string name="failed_to_save">Imeshindwa kuhifadhi %1$s</string>
@@ -184,6 +185,7 @@
     <string name="nc_conversations_empty">Jiunge na mazungumzo au anzisha mapya</string>
     <string name="nc_conversations_empty_details">Sema hi kwa marafiki zako na wenzako!</string>
     <string name="nc_copy_message">Nakili</string>
+    <string name="nc_copy_message_link">Nakili kiungo cha ujumbe</string>
     <string name="nc_create_new_conversation">Tengeneza mazungumzo mapya</string>
     <string name="nc_create_poll">Tengeneza poll</string>
     <string name="nc_date_header_today">Leo</string>

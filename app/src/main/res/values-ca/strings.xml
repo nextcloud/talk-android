@@ -175,6 +175,7 @@
     <string name="nc_conversations_empty">Uniu-vos a una conversa o inicieu-ne una de nova</string>
     <string name="nc_conversations_empty_details">Saludeu els vostres amics i col·legues!</string>
     <string name="nc_copy_message">Copia</string>
+    <string name="nc_copy_message_link">Copia l\'enllaç del missatge</string>
     <string name="nc_create_new_conversation">Crea una conversa nova</string>
     <string name="nc_create_poll">Crea enquesta</string>
     <string name="nc_date_header_today">Avui</string>

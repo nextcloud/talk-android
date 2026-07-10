@@ -172,6 +172,7 @@
     <string name="nc_conversations_empty">إنضم لمحادثةٍ او ابدأ محادثةً جديدةً</string>
     <string name="nc_conversations_empty_details">رحّب بالأصدقاء و الزملاء!</string>
     <string name="nc_copy_message">أنسخ</string>
+    <string name="nc_copy_message_link">نسخ رابط الرسالة </string>
     <string name="nc_create_new_conversation">إنشاء محادثة جديدة</string>
     <string name="nc_create_poll">صَوّت، رجاءً</string>
     <string name="nc_date_header_today">اليوم</string>

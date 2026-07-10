@@ -200,6 +200,7 @@
     <string name="nc_conversations_empty">Csatlakozzon egy beszélgetéshez, vagy indítson egy újat</string>
     <string name="nc_conversations_empty_details">Üdvözölje a barátait és munkatársait!</string>
     <string name="nc_copy_message">Másolás</string>
+    <string name="nc_copy_message_link">Üzenethivatkozás másolása</string>
     <string name="nc_create_new_conversation">Új beszélgetés létrehozása</string>
     <string name="nc_create_poll">Szavazás létrehozása</string>
     <string name="nc_date_header_today">Ma</string>

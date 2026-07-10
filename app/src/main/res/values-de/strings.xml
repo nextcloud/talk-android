@@ -202,6 +202,7 @@
     <string name="nc_conversations_empty">Treten Sie einer Unterhaltung bei oder starten Sie eine neue</string>
     <string name="nc_conversations_empty_details">Begrüßen Sie Ihre Freunde und Kollegen!</string>
     <string name="nc_copy_message">Kopieren</string>
+    <string name="nc_copy_message_link">Nachrichtenlink kopieren</string>
     <string name="nc_create_new_conversation">Neue Unterhaltung erstellen</string>
     <string name="nc_create_poll">Umfrage erstellen</string>
     <string name="nc_date_header_today">Heute</string>

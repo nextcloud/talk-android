@@ -188,6 +188,7 @@
     <string name="nc_conversations_empty">Připojte se ke konverzaci, nebo začněte novou</string>
     <string name="nc_conversations_empty_details">Pozdravte své přátele a kolegy!</string>
     <string name="nc_copy_message">Zkopírovat</string>
+    <string name="nc_copy_message_link">Zkopírovat odkaz zprávy</string>
     <string name="nc_create_new_conversation">Vytvořit novou konverzaci</string>
     <string name="nc_create_poll">Vytvořit anketu</string>
     <string name="nc_date_header_today">Dnes</string>

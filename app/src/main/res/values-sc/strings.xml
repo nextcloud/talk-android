@@ -112,6 +112,7 @@
     <string name="nc_conversations_empty">Intra in una resonada o cumintza•nde una noa</string>
     <string name="nc_conversations_empty_details">Saluda a sa gente!</string>
     <string name="nc_copy_message">Còpia</string>
+    <string name="nc_copy_message_link">Còpia su ligòngiu de su messàgiu</string>
     <string name="nc_create_new_conversation">Crea una resonada noa</string>
     <string name="nc_date_header_today">Oe</string>
     <string name="nc_date_header_yesterday">Eris</string>
