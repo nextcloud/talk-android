@@ -14,6 +14,7 @@ import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
+import android.webkit.MimeTypeMap
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -200,6 +201,17 @@ object FileUtils {
 
         return filename
     }
+
+    /**
+     * Resolves the MIME type of [uri]. [ContentResolver.getType] only resolves `content://` URIs, so for
+     * `file://` URIs (e.g. the in-app camera writes plain files) this falls back to guessing from the
+     * file extension.
+     */
+    fun resolveMimeType(context: Context, uri: Uri): String? =
+        context.contentResolver.getType(uri)
+            ?: MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                MimeTypeMap.getFileExtensionFromUrl(uri.toString()).lowercase()
+            )
 
     @JvmStatic
     fun md5Sum(file: File): String {

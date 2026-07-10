@@ -302,6 +302,8 @@ dependencies {
 
     implementation("androidx.media3:media3-exoplayer:$media3Version")
     implementation("androidx.media3:media3-ui:$media3Version")
+    implementation("androidx.media3:media3-transformer:$media3Version")
+    implementation("androidx.media3:media3-effect:$media3Version")
 
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.32")

@@ -1046,6 +1046,7 @@ class SettingsActivity :
                 settingsScreenLockSwitch,
                 settingsScreenSecuritySwitch,
                 settingsIncognitoKeyboardSwitch,
+                settingsCompressUploadImagesSwitch,
                 settingsPhoneBookIntegrationSwitch,
                 settingsReadPrivacySwitch,
                 settingsTypingStatusSwitch,
@@ -1293,6 +1294,7 @@ class SettingsActivity :
             appPreferences.setIncognitoKeyboard(!isChecked)
         }
 
+        setupCompressUploadImagesSetting()
         setupPhoneBookIntegrationSetting()
 
         binding.settingsScreenSecuritySwitch.isChecked = appPreferences.isScreenSecured
@@ -1315,6 +1317,15 @@ class SettingsActivity :
             val isChecked = binding.settingsShowEcosystemSwitch.isChecked
             binding.settingsShowEcosystemSwitch.isChecked = !isChecked
             appPreferences.setShowEcosystem(!isChecked)
+        }
+    }
+
+    private fun setupCompressUploadImagesSetting() {
+        binding.settingsCompressUploadImagesSwitch.isChecked = appPreferences.compressUploadImages
+        binding.settingsCompressUploadImages.setOnClickListener {
+            val isChecked = binding.settingsCompressUploadImagesSwitch.isChecked
+            binding.settingsCompressUploadImagesSwitch.isChecked = !isChecked
+            appPreferences.setCompressUploadImages(!isChecked)
         }
     }
 

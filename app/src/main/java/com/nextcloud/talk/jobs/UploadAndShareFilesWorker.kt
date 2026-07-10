@@ -43,8 +43,10 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.FileUtils
+import com.nextcloud.talk.utils.ImageCompressor
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.RemoteFileUtils
+import com.nextcloud.talk.utils.VideoCompressor
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
@@ -115,15 +117,21 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             require(sourceFile.isNotEmpty())
             checkNotNull(roomToken)
 
-            val sourceFileUri = sourceFile.toUri()
+            var sourceFileUri = sourceFile.toUri()
             fileName = FileUtils.getFileName(sourceFileUri, context)
             file = FileUtils.getFileFromUri(context, sourceFileUri)
+
+            initNotificationSetup()
+
+            if (inputData.getBoolean(COMPRESS_IMAGES, false)) {
+                sourceFileUri = compressMediaIfPossible(sourceFileUri)
+            }
+
             val remotePath = getRemotePath(currentUser)
 
             val useConversationSubfolders = CapabilitiesUtil.hasConversationSubfoldersForAttachments(
                 currentUser.capabilities!!.spreedCapability!!
             )
-            initNotificationSetup()
             file?.let { isChunkedUploading = it.length() > CHUNK_UPLOAD_THRESHOLD_SIZE }
             val uploadSuccess: Boolean = uploadFile(sourceFileUri, metaData, remotePath, useConversationSubfolders)
 
@@ -144,6 +152,35 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             showFailedToUploadNotification()
             return Result.failure()
         }
+    }
+
+    /**
+     * Replaces [file] and [fileName] with a compressed copy if [sourceFileUri] points to a
+     * compressible image or video, returning the [Uri] that should be uploaded.
+     */
+    @Suppress("ReturnCount")
+    private fun compressMediaIfPossible(sourceFileUri: Uri): Uri {
+        val originalFile = file ?: return sourceFileUri
+        val mimeType = FileUtils.resolveMimeType(context, sourceFileUri)
+
+        val compressedFile = when {
+            ImageCompressor.isCompressible(mimeType) -> ImageCompressor.compress(context, originalFile)
+            VideoCompressor.isCompressible(mimeType) -> compressVideoWithProgress(originalFile)
+            else -> null
+        } ?: return sourceFileUri
+
+        file = compressedFile
+        fileName = compressedFile.name
+        return Uri.fromFile(compressedFile)
+    }
+
+    /**
+     * Video compression can take a while, so the upload notification is repurposed to show its
+     * progress before it transitions into the actual upload progress.
+     */
+    private fun compressVideoWithProgress(originalFile: File): File? {
+        showCompressionStartedNotification()
+        return VideoCompressor.compress(context, originalFile, onProgress = ::onCompressionProgress)
     }
 
     private fun uploadFile(
@@ -285,6 +322,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             NotificationUtils.NotificationChannels
                 .NOTIFICATION_CHANNEL_UPLOADS.name
         )
+        notificationId = SystemClock.uptimeMillis().toInt()
     }
 
     private fun initNotificationWithPercentage() {
@@ -304,12 +342,53 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             )
             .build()
 
-        notificationId = SystemClock.uptimeMillis().toInt()
         mNotifyManager!!.notify(notificationId, initNotification)
         // only need one summary notification but multiple upload worker can call it more than once but it is safe
         // because of the same notification object config and id.
         makeSummaryNotification()
     }
+
+    /**
+     * Shows the same upload notification, but reflecting the compression phase that precedes the
+     * actual upload. Reuses [notificationId] so it later morphs into the upload progress notification
+     * instead of appearing as a separate entry.
+     */
+    private fun showCompressionStartedNotification() {
+        val compressionNotification = mBuilder!!
+            .setContentTitle(context.resources.getString(R.string.nc_compress_in_progress))
+            .setContentText(getCompressionNotificationContentText(ZERO_PERCENT))
+            .setSmallIcon(R.drawable.upload_white)
+            .setOngoing(true)
+            .setProgress(HUNDRED_PERCENT, ZERO_PERCENT, false)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setGroup(NotificationUtils.KEY_UPLOAD_GROUP)
+            .setContentIntent(getIntentToOpenConversation())
+            .addAction(
+                R.drawable.ic_cancel_white_24dp,
+                getResourceString(context, R.string.nc_cancel),
+                getCancelUploadIntent()
+            )
+            .build()
+
+        mNotifyManager!!.notify(notificationId, compressionNotification)
+        makeSummaryNotification()
+    }
+
+    private fun onCompressionProgress(percentage: Int) {
+        val progressUpdateNotification = mBuilder!!
+            .setProgress(HUNDRED_PERCENT, percentage, false)
+            .setContentText(getCompressionNotificationContentText(percentage))
+            .build()
+
+        mNotifyManager!!.notify(notificationId, progressUpdateNotification)
+    }
+
+    private fun getCompressionNotificationContentText(percentage: Int): String =
+        String.format(
+            getResourceString(context, R.string.nc_compress_notification_text),
+            getShortenedFileName(),
+            percentage
+        )
 
     private fun makeSummaryNotification() {
         // summary notification encapsulating the group of notifications
@@ -374,11 +453,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         intent.putExtras(bundle)
 
         val requestCode = System.currentTimeMillis().toInt()
-        val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_MUTABLE
-        } else {
-            0
-        }
+        val intentFlag = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         return PendingIntent.getActivity(context, requestCode, intent, intentFlag)
     }
 
@@ -413,6 +488,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         private const val ROOM_TOKEN = "ROOM_TOKEN"
         private const val CONVERSATION_NAME = "CONVERSATION_NAME"
         private const val META_DATA = "META_DATA"
+        private const val COMPRESS_IMAGES = "COMPRESS_IMAGES"
         private const val CHUNK_UPLOAD_THRESHOLD_SIZE: Long = 1024 * 1024
         private const val NOTIFICATION_FILE_NAME_MAX_LENGTH = 20
         private const val THREE_DOTS = "…"
@@ -465,12 +541,19 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             }
         }
 
-        fun upload(fileUri: String, roomToken: String, conversationName: String, metaData: String?) {
+        fun upload(
+            fileUri: String,
+            roomToken: String,
+            conversationName: String,
+            metaData: String?,
+            compressImages: Boolean = false
+        ) {
             val data: Data = Data.Builder()
                 .putString(DEVICE_SOURCE_FILE, fileUri)
                 .putString(ROOM_TOKEN, roomToken)
                 .putString(CONVERSATION_NAME, conversationName)
                 .putString(META_DATA, metaData)
+                .putBoolean(COMPRESS_IMAGES, compressImages)
                 .build()
             val uploadWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(UploadAndShareFilesWorker::class.java)
                 .setInputData(data)

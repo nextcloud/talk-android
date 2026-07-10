@@ -2011,7 +2011,8 @@ class ChatViewModel @AssistedInject constructor(
         caption: String = "",
         roomToken: String = "",
         replyToMessageId: Int? = null,
-        displayName: String
+        displayName: String,
+        compressImages: Boolean = false
     ) {
         val metaDataMap = mutableMapOf<String, Any>()
         var room = ""
@@ -2043,7 +2044,8 @@ class ChatViewModel @AssistedInject constructor(
                 fileUri,
                 room,
                 displayName,
-                metaData
+                metaData,
+                compressImages
             )
         } catch (e: IllegalArgumentException) {
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)

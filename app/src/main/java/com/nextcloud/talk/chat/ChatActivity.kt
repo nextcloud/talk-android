@@ -2394,19 +2394,11 @@ class ChatActivity :
         try {
             require(filesToUpload.isNotEmpty())
 
-            val filenamesWithLineBreaks = StringBuilder("\n")
-
-            for (file in filesToUpload) {
-                val filename = FileUtils.getFileName(file, context)
-                filenamesWithLineBreaks.append(filename).append("\n")
-            }
-
             val newFragment = FileAttachmentPreviewFragment.newInstance(
-                filenamesWithLineBreaks.toString(),
                 filesToUpload.map { it.toString() }.toMutableList()
             )
-            newFragment.setListener { files, caption ->
-                uploadFiles(files, caption)
+            newFragment.setListener { files, caption, compressImages ->
+                uploadFiles(files, caption, compressImages)
             }
             newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
         } catch (e: IllegalStateException) {
@@ -2489,18 +2481,10 @@ class ChatActivity :
             }
 
             if (permissionUtil.isFilesPermissionGranted()) {
-                val filenamesWithLineBreaks = StringBuilder("\n")
-
-                for (file in filesToUpload) {
-                    val filename = FileUtils.getFileName(file.toUri(), context)
-                    filenamesWithLineBreaks.append(filename).append("\n")
+                val newFragment = FileAttachmentPreviewFragment.newInstance(filesToUpload)
+                newFragment.setListener { files, caption, compressImages ->
+                    uploadFiles(files, caption, compressImages)
                 }
-
-                val newFragment = FileAttachmentPreviewFragment.newInstance(
-                    filenamesWithLineBreaks.toString(),
-                    filesToUpload
-                )
-                newFragment.setListener { files, caption -> uploadFiles(files, caption) }
                 newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
             } else {
                 UploadAndShareFilesWorker.requestStoragePermission(this)
@@ -2608,27 +2592,17 @@ class ChatActivity :
         }
     }
 
-    private fun uploadFiles(files: MutableList<String>, caption: String = "") {
+    private fun uploadFiles(files: MutableList<String>, caption: String = "", compressImages: Boolean = false) {
         for (i in 0 until files.size) {
-            if (i == files.size - 1) {
-                uploadFile(
-                    fileUri = files[i],
-                    isVoiceMessage = false,
-                    caption = caption,
-                    roomToken = roomToken,
-                    replyToMessageId = getReplyToMessageId(),
-                    displayName = currentConversation?.displayName!!
-                )
-            } else {
-                uploadFile(
-                    fileUri = files[i],
-                    isVoiceMessage = false,
-                    caption = "",
-                    roomToken = roomToken,
-                    replyToMessageId = getReplyToMessageId(),
-                    displayName = currentConversation?.displayName!!
-                )
-            }
+            uploadFile(
+                fileUri = files[i],
+                isVoiceMessage = false,
+                caption = if (i == files.size - 1) caption else "",
+                roomToken = roomToken,
+                replyToMessageId = getReplyToMessageId(),
+                displayName = currentConversation?.displayName!!,
+                compressImages = compressImages
+            )
         }
     }
 
@@ -4008,13 +3982,15 @@ class ChatActivity :
         )
     }
 
+    @Suppress("LongParameterList")
     fun uploadFile(
         fileUri: String,
         isVoiceMessage: Boolean,
         caption: String = "",
         roomToken: String = "",
         replyToMessageId: Int? = null,
-        displayName: String
+        displayName: String,
+        compressImages: Boolean = false
     ) {
         chatViewModel.uploadFile(
             fileUri,
@@ -4022,7 +3998,8 @@ class ChatActivity :
             caption,
             roomToken,
             replyToMessageId,
-            displayName
+            displayName,
+            compressImages
         )
         cancelReply()
     }
