@@ -67,6 +67,7 @@
     <string name="encrypted">Şifrelenmiş</string>
     <string name="end_call">Çağrıyı sonlandır</string>
     <string name="end_call_for_everyone">Çağrıyı herkes için sonlandır</string>
+    <string name="error_crash_title">%1$s çöktü</string>
     <string name="error_loading_chats">Çizelgeleriniz yüklenirken bir sorun çıktı</string>
     <string name="error_unbanning">Katılımcının yasaklaması kaldırılırken sorun çıktı</string>
     <string name="failed_to_save">%1$s kaydedilemedi</string>
@@ -199,6 +200,7 @@
     <string name="nc_conversations_empty">Bir görüşmeye katılın ya da yeni bir görüşme başlatın</string>
     <string name="nc_conversations_empty_details">Tanıdık ve çalışma arkadaşlarınıza selam verin!</string>
     <string name="nc_copy_message">Kopyala</string>
+    <string name="nc_copy_message_link">İleti bağlantısını kopyala</string>
     <string name="nc_create_new_conversation">Yeni bir görüşme oluştur</string>
     <string name="nc_create_poll">Anket oluştur</string>
     <string name="nc_date_header_today">Bugün</string>

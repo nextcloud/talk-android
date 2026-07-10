@@ -161,6 +161,7 @@
     <string name="nc_conversations_empty">Batu elkarrizketa batera edo hasi berri bat</string>
     <string name="nc_conversations_empty_details">Esan kaixo zure lagun eta lankideei!</string>
     <string name="nc_copy_message">Kopiatu</string>
+    <string name="nc_copy_message_link">Kopiatu mezuaren esteka</string>
     <string name="nc_create_new_conversation">Sortu elkarrizketa berri bat</string>
     <string name="nc_create_poll">Sortu galdeketa</string>
     <string name="nc_date_header_today">Gaur</string>

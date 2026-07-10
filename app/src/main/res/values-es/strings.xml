@@ -186,6 +186,7 @@
     <string name="nc_conversations_empty">Únete a una conversación o empieza una nueva</string>
     <string name="nc_conversations_empty_details">¡Saluda a tus amigos y colegas!</string>
     <string name="nc_copy_message">Copiar</string>
+    <string name="nc_copy_message_link">Copiar link del mensaje</string>
     <string name="nc_create_new_conversation">Crear una conversación nueva</string>
     <string name="nc_create_poll">Crear votación</string>
     <string name="nc_date_header_today">Hoy</string>

@@ -202,6 +202,7 @@
     <string name="nc_conversations_empty">加入一個對話或者開一個新的</string>
     <string name="nc_conversations_empty_details">跟大家打個招呼！</string>
     <string name="nc_copy_message">複製</string>
+    <string name="nc_copy_message_link">複製訊息連結</string>
     <string name="nc_create_new_conversation">建立新對話</string>
     <string name="nc_create_poll">建立調查活動</string>
     <string name="nc_date_header_today">今天</string>

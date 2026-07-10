@@ -185,6 +185,7 @@
     <string name="nc_conversations_empty">Doe mee met een gesprek, of start een nieuw</string>
     <string name="nc_conversations_empty_details">Zeg hallo tegen je vrienden en collega\'s!</string>
     <string name="nc_copy_message">Kopie</string>
+    <string name="nc_copy_message_link">Kopiëren berichtlink</string>
     <string name="nc_create_new_conversation">Maak een nieuw gesprek</string>
     <string name="nc_create_poll">Peiling aanmaken</string>
     <string name="nc_date_header_today">Vandaag</string>

@@ -128,6 +128,7 @@
     <string name="nc_conversations_empty">Pridružite se razgovoru ili započnite novi</string>
     <string name="nc_conversations_empty_details">Pozdravi svoje prijatelje i kolege!</string>
     <string name="nc_copy_message">Kopiraj</string>
+    <string name="nc_copy_message_link">Kopiraj poveznicu poruke</string>
     <string name="nc_create_new_conversation">Stvori novi razgovor</string>
     <string name="nc_create_poll">Stvori anketu</string>
     <string name="nc_date_header_today">Danas</string>

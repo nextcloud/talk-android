@@ -159,6 +159,7 @@
     <string name="nc_conversations_empty">会話に参加するか、新しいのを開始</string>
     <string name="nc_conversations_empty_details">友達や同僚に挨拶しましょう！</string>
     <string name="nc_copy_message">コピー</string>
+    <string name="nc_copy_message_link">メッセージリンクのコピー</string>
     <string name="nc_create_new_conversation">新しい会話を作成する</string>
     <string name="nc_create_poll">投票を作成</string>
     <string name="nc_date_header_today">今日</string>

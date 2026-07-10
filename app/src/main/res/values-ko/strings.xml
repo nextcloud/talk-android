@@ -132,6 +132,7 @@
     <string name="nc_conversations_empty">대화에 참가하거나 새 대화 시작</string>
     <string name="nc_conversations_empty_details">여러분의 친구들과 동료들에게 인사하세요!</string>
     <string name="nc_copy_message">복사</string>
+    <string name="nc_copy_message_link">메시지 링크 복사</string>
     <string name="nc_create_new_conversation">새 대화 만들기</string>
     <string name="nc_create_poll">투표 만들기</string>
     <string name="nc_date_header_today">오늘</string>

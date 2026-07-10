@@ -64,6 +64,7 @@
     <string name="encrypted">Шифровано</string>
     <string name="end_call">Заврши позив</string>
     <string name="end_call_for_everyone">Заврши позив за све</string>
+    <string name="error_crash_title">%1$s се срушио</string>
     <string name="error_loading_chats">Дошло је до проблема приликом учитавања ваших четова</string>
     <string name="error_unbanning">Дошло је до грешке приликом укидања забране за учесника</string>
     <string name="failed_to_save">Није успело чување %1$s</string>
@@ -184,6 +185,7 @@
     <string name="nc_conversations_empty">Придружи се разговору или започни нови</string>
     <string name="nc_conversations_empty_details">Поздравите Ваше пријатеље и колеге!</string>
     <string name="nc_copy_message">Копија</string>
+    <string name="nc_copy_message_link">Копирај линк поруке</string>
     <string name="nc_create_new_conversation">Креирај нови разговор</string>
     <string name="nc_create_poll">Направи гласање</string>
     <string name="nc_date_header_today">Данас</string>
