@@ -67,7 +67,7 @@
     <string name="encrypted">Krüptitud</string>
     <string name="end_call">Lõpeta kõne</string>
     <string name="end_call_for_everyone">Lõpeta kõne kõigi jaoks</string>
-    <string name="error_crash_description">Rakendus jooksis ootamatult kokku.  Koostades veakorjelduse ja seda meile saates võid aidata seda meil parandada - õige valiku leiad menüüst.</string>
+    <string name="error_crash_description">Rakendus jooksis ootamatult kokku. Koostades veakirjelduse ja seda meile saates võid aidata meil seda viga parandada - õige valiku leiad menüüst.</string>
     <string name="error_crash_please_describe">Palun kirjelda probleemi (kuidas saaks seda viga või kokkujooksmist korrata)</string>
     <string name="error_crash_title">%1$s jooksis kokku</string>
     <string name="error_loading_chats">Sinu vestluste laadimisel tekkis viga</string>
@@ -319,7 +319,7 @@
     <string name="nc_logs_disable_keep">Säilita logid</string>
     <string name="nc_logs_download_zip">Laadi alla ZIP-failine</string>
     <string name="nc_logs_empty">Ühtegi logikirjet ei leidu.</string>
-    <string name="nc_logs_logging_disabled_note">Logimine pole kasutusel. Mitte mingeid logikirjeid ei kirjutada andmekandjale.</string>
+    <string name="nc_logs_logging_disabled_note">Logimine pole kasutusel. Mitte mingeid logikirjeid ei kirjutata andmekandjale.</string>
     <string name="nc_logs_logging_enabled">Logimine on kasutusel</string>
     <string name="nc_logs_overflow_warning">Hoiatus: kuna andmeid oli korraga liiga palju, siis mõned logikirjed jäid salvestamata.</string>
     <string name="nc_logs_share">Saada e-kirjana</string>

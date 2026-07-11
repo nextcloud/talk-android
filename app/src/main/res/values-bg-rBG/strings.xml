@@ -135,6 +135,7 @@
     <string name="nc_conversations_empty">Присъединяване към разговор или започване на нов</string>
     <string name="nc_conversations_empty_details">Поздравете приятелите и колегите си!</string>
     <string name="nc_copy_message">Копиране</string>
+    <string name="nc_copy_message_link">Копиране на връзката към съобщението</string>
     <string name="nc_create_poll">Създаване на анкета</string>
     <string name="nc_date_header_today">Днес</string>
     <string name="nc_date_header_yesterday">Вчера</string>

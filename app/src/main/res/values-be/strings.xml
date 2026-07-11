@@ -191,6 +191,7 @@
     <string name="nc_conversations_empty">Далучайцеся да размовы або пачніце новую</string>
     <string name="nc_conversations_empty_details">Павітайцеся з сябрамі і калегамі!</string>
     <string name="nc_copy_message">Капіяваць</string>
+    <string name="nc_copy_message_link">Скапіяваць спасылку на паведамленне</string>
     <string name="nc_create_new_conversation">Стварыць новую размову</string>
     <string name="nc_create_poll">Стварыць апытанне</string>
     <string name="nc_date_header_today">Сёння</string>
