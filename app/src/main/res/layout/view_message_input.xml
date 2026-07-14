@@ -249,7 +249,8 @@
                 android:background="@color/transparent"
                 android:contentDescription="@string/start_thread"
                 android:src="@drawable/outline_forum_24"
-                app:tint="?attr/colorControlNormal" />
+                app:tint="?attr/colorControlNormal"
+                android:visibility="gone" />
 
             <ImageButton
                 android:id="@+id/editMessageButton"
