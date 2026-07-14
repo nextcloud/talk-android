@@ -82,6 +82,7 @@ freeline_project_description.json
 **/fastlane/test_output
 /fastlane/vendor/
 /.bundle/
+/.artifacts/
 /fastlane/.bundle
 
 # python

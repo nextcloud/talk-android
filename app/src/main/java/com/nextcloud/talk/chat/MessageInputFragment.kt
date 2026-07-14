@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.chat
 
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -29,6 +30,7 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.view.animation.LinearInterpolator
+import android.view.inputmethod.InputMethodManager
 import android.widget.Chronometer
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -38,6 +40,7 @@ import android.widget.RelativeLayout
 import android.widget.SeekBar
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -89,11 +92,10 @@ import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
-import kotlinx.coroutines.Dispatchers
+import com.vanniktech.emoji.EmojiPopup
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.Objects
 import javax.inject.Inject
 
@@ -125,6 +127,9 @@ class MessageInputFragment : Fragment() {
     private var typedWhileTypingTimerIsRunning: Boolean = false
     private var typingTimer: CountDownTimer? = null
     private lateinit var chatActivity: ChatActivity
+    private var emojiPopup: EmojiPopup? = null
+    private var isEmojiPopupOpen = false
+    private var restoreKeyboardOnEmojiDismiss = false
     private var mentionAutocomplete: Autocomplete<*>? = null
     private var xcounter = 0f
     private var ycounter = 0f
@@ -132,6 +137,10 @@ class MessageInputFragment : Fragment() {
     private var hasScheduledMessages = false
     private lateinit var spreedCapabilities: SpreedCapability
     private var hasSharedText = false
+
+    private var lastQuotedJsonId: Int? = null
+    private var lastEditMessageId: Int? = null
+    private var lastIsThreadCreationInProgress: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -156,9 +165,19 @@ class MessageInputFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        restoreKeyboardOnEmojiDismiss = false
+        emojiPopup?.dismiss()
+        emojiPopup = null
+        isEmojiPopupOpen = false
         super.onDestroyView()
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
+        }
+
+        val messageText = binding.fragmentMessageInputView.messageInput.text
+        if (messageText.isNotEmpty()) {
+            chatActivity.chatViewModel.messageDraft.messageText = messageText.toString()
+            chatActivity.chatViewModel.saveMessageDraft()
         }
     }
 
@@ -167,11 +186,68 @@ class MessageInputFragment : Fragment() {
         initObservers()
 
         binding.fragmentCreateThreadView.createThreadView.findViewById<EmojiTextInputEditText>(
-            R.id
-                .createThreadInput
+            R.id.createThreadInput
         ).doAfterTextChanged { text ->
             val threadTitle = text.toString()
+            messageInputViewModel.updateThreadTitle(threadTitle)
             chatActivity.chatViewModel.messageDraft.threadTitle = threadTitle
+        }
+
+        observeInputState()
+    }
+
+    private fun observeInputState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                messageInputViewModel.inputState.collect { state ->
+                    updateUiFromState(state)
+                    chatActivity.chatViewModel.messageDraft = messageInputViewModel.toDraft()
+                }
+            }
+        }
+    }
+
+    private fun updateUiFromState(state: MessageInputViewModel.MessageInputState) {
+        val input = binding.fragmentMessageInputView.messageInput
+        val currentText = input.text.toString()
+        if (currentText != state.messageText) {
+            input.setText(state.messageText)
+            input.setSelection(state.messageCursor.coerceAtMost(state.messageText.length))
+        }
+
+        if (state.quotedJsonId != lastQuotedJsonId) {
+            lastQuotedJsonId = state.quotedJsonId
+            if (state.quotedJsonId != null) {
+                replyToMessage(
+                    state.quotedMessageText,
+                    state.quotedDisplayName,
+                    state.quotedImageUrl
+                )
+            } else {
+                clearReplyUi()
+            }
+        }
+
+        val editMessageId = state.editMessage?.jsonMessageId
+        if (editMessageId != lastEditMessageId) {
+            lastEditMessageId = editMessageId
+            if (state.editMessage != null) {
+                setEditUI(state.editMessage)
+            } else {
+                clearEditUI()
+            }
+        }
+
+        if (state.isThreadCreationInProgress != lastIsThreadCreationInProgress) {
+            lastIsThreadCreationInProgress = state.isThreadCreationInProgress
+            binding.fragmentCreateThreadView.createThreadView.isVisible = state.isThreadCreationInProgress
+        }
+
+        val threadInput = binding.fragmentCreateThreadView.createThreadView.findViewById<EmojiTextInputEditText>(
+            R.id.createThreadInput
+        )
+        if (threadInput.text.toString() != state.threadTitle) {
+            threadInput.setText(state.threadTitle)
         }
     }
 
@@ -182,6 +258,7 @@ class MessageInputFragment : Fragment() {
             when (state) {
                 is ChatViewModel.GetCapabilitiesUpdateState -> {
                     initMessageInputView(state.spreedCapabilities)
+                    initSmileyKeyboardToggler()
                     setupMentionAutocomplete()
                     initVoiceRecordButton()
                     initThreadHandling()
@@ -190,31 +267,16 @@ class MessageInputFragment : Fragment() {
 
                 is ChatViewModel.GetCapabilitiesInitialLoadState -> {
                     initMessageInputView(state.spreedCapabilities)
+                    initSmileyKeyboardToggler()
                     setupMentionAutocomplete()
                     initVoiceRecordButton()
                     initThreadHandling()
                     updateScheduledMessagesAvailability(hasScheduledMessages)
-                    restoreState()
+                    initInputState()
                 }
 
                 else -> {}
             }
-        }
-
-        messageInputViewModel.getReplyChatMessage.observe(viewLifecycleOwner) { message ->
-            message?.let {
-                chatActivity.chatViewModel.messageDraft.quotedMessageText = message.getRichText()
-                chatActivity.chatViewModel.messageDraft.quotedDisplayName = message.actorDisplayName
-                // chatActivity.chatViewModel.messageDraft.quotedImageUrl = message.imageUrl
-                chatActivity.chatViewModel.messageDraft.quotedImageUrl = "" // TODO
-                chatActivity.chatViewModel.messageDraft.quotedJsonId = message.jsonMessageId
-                replyToMessage(
-                    quotedMessageText = message.getRichText(),
-                    quotedActorDisplayName = message.actorDisplayName,
-                    // quotedImageUrl = message.imageUrl
-                    quotedImageUrl = "" // TODO
-                )
-            } ?: clearReplyUi()
         }
 
         chatActivity.chatViewModel.scheduledMessagesCount.observe(viewLifecycleOwner) { count ->
@@ -230,32 +292,6 @@ class MessageInputFragment : Fragment() {
             } else {
                 updateScheduledMessagesAvailability(count > 0)
             }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                messageInputViewModel.getEditChatMessage.collect { message ->
-                    message?.let { setEditUI(it) } ?: clearEditUI()
-                }
-            }
-        }
-
-        messageInputViewModel.createThreadViewState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is MessageInputViewModel.CreateThreadStartState ->
-                    binding.fragmentCreateThreadView.createThreadView.visibility = View.GONE
-
-                is MessageInputViewModel.CreateThreadEditState -> {
-                    binding.fragmentCreateThreadView.createThreadView.visibility = View.VISIBLE
-                    binding.fragmentCreateThreadView.createThreadView
-                        .findViewById<EmojiTextInputEditText>(R.id.createThreadInput)?.setText(
-                            chatActivity.chatViewModel.messageDraft.threadTitle
-                        )
-                }
-
-                else -> {}
-            }
-            initVoiceRecordButton()
         }
 
         chatActivity.chatViewModel.leaveRoomViewState.observe(viewLifecycleOwner) { state ->
@@ -382,32 +418,16 @@ class MessageInputFragment : Fragment() {
         cancelCreateThread()
     }
 
-    private fun restoreState() {
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+    private fun initInputState() {
+        viewLifecycleOwner.lifecycleScope.launch {
             if (!hasSharedText) {
                 chatActivity.chatViewModel.updateMessageDraft()
             }
-
-            withContext(Dispatchers.Main) {
-                val draft = chatActivity.chatViewModel.messageDraft
-                binding.fragmentMessageInputView.messageInput.setText(draft.messageText)
-                binding.fragmentMessageInputView.messageInput.setSelection(draft.messageCursor)
-
-                if (draft.threadTitle?.isNotEmpty() == true) {
-                    messageInputViewModel.startThreadCreation()
-                }
-
-                if (draft.messageText != "") {
-                    binding.fragmentMessageInputView.messageInput.requestFocus()
-                }
-
-                if (isInReplyState()) {
-                    replyToMessage(
-                        chatActivity.chatViewModel.messageDraft.quotedMessageText,
-                        chatActivity.chatViewModel.messageDraft.quotedDisplayName,
-                        chatActivity.chatViewModel.messageDraft.quotedImageUrl
-                    )
-                }
+            if (messageInputViewModel.inputState.value.messageText.isEmpty() &&
+                messageInputViewModel.inputState.value.quotedJsonId == null &&
+                messageInputViewModel.inputState.value.editMessage == null
+            ) {
+                messageInputViewModel.initFromDraft(chatActivity.chatViewModel.messageDraft)
             }
         }
     }
@@ -473,6 +493,9 @@ class MessageInputFragment : Fragment() {
             override fun afterTextChanged(s: Editable) {
                 val cursor = binding.fragmentMessageInputView.messageInput.selectionStart
                 val text = binding.fragmentMessageInputView.messageInput.text.toString()
+                messageInputViewModel.updateMessageText(text)
+                messageInputViewModel.updateMessageCursor(cursor)
+
                 chatActivity.chatViewModel.messageDraft.messageCursor = cursor
                 chatActivity.chatViewModel.messageDraft.messageText = text
                 handleButtonsVisibility()
@@ -814,6 +837,8 @@ class MessageInputFragment : Fragment() {
 
     private fun showRecordAudioUi(show: Boolean) {
         if (show) {
+            restoreKeyboardOnEmojiDismiss = false
+            emojiPopup?.dismiss()
             val animation: Animation = AlphaAnimation(FULLY_OPAQUE, FULLY_TRANSPARENT)
             animation.duration = ANIMATION_DURATION
             animation.interpolator = LinearInterpolator()
@@ -826,6 +851,7 @@ class MessageInputFragment : Fragment() {
             binding.fragmentMessageInputView.audioRecordDuration.visibility = View.VISIBLE
             binding.fragmentMessageInputView.slideToCancelDescription.visibility = View.VISIBLE
             binding.fragmentMessageInputView.attachmentButton.visibility = View.GONE
+            binding.fragmentMessageInputView.smileyButton.visibility = View.GONE
             binding.fragmentMessageInputView.messageInput.visibility = View.GONE
             binding.fragmentMessageInputView.messageInput.hint = ""
             binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.GONE
@@ -837,9 +863,66 @@ class MessageInputFragment : Fragment() {
             binding.fragmentMessageInputView.audioRecordDuration.visibility = View.GONE
             binding.fragmentMessageInputView.slideToCancelDescription.visibility = View.GONE
             binding.fragmentMessageInputView.attachmentButton.visibility = View.VISIBLE
+            binding.fragmentMessageInputView.smileyButton.visibility = View.VISIBLE
             binding.fragmentMessageInputView.messageInput.visibility = View.VISIBLE
             binding.fragmentMessageInputView.messageInput.hint =
                 requireContext().resources?.getString(R.string.nc_hint_enter_a_message)
+        }
+    }
+
+    private fun updateSmileyButtonIcon() {
+        val icon = if (isEmojiPopupOpen) {
+            R.drawable.ic_baseline_keyboard_24
+        } else {
+            R.drawable.ic_insert_emoticon_black_24dp
+        }
+        val drawable = ContextCompat.getDrawable(requireContext(), icon)
+        binding.fragmentMessageInputView.smileyButton.setImageDrawable(drawable)
+    }
+
+    private fun showKeyboard() {
+        val editText = binding.fragmentMessageInputView.inputEditText
+        editText.requestFocus()
+        val inputMethodManager =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        inputMethodManager?.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    private fun initSmileyKeyboardToggler() {
+        val inputEditText = binding.fragmentMessageInputView.inputEditText
+        if (emojiPopup == null) {
+            emojiPopup = EmojiPopup(
+                rootView = binding.root,
+                editText = inputEditText,
+                onEmojiPopupShownListener = {
+                    isEmojiPopupOpen = true
+                    updateSmileyButtonIcon()
+                },
+                onEmojiPopupDismissListener = {
+                    isEmojiPopupOpen = false
+                    updateSmileyButtonIcon()
+                    if (restoreKeyboardOnEmojiDismiss) {
+                        restoreKeyboardOnEmojiDismiss = false
+                        showKeyboard()
+                    }
+                },
+                onEmojiClickListener = {
+                    inputEditText.editableText?.append(" ")
+                }
+            )
+        }
+
+        updateSmileyButtonIcon()
+
+        binding.fragmentMessageInputView.smileyButton.setOnClickListener {
+            if (isEmojiPopupOpen) {
+                restoreKeyboardOnEmojiDismiss = true
+                emojiPopup?.dismiss()
+            } else {
+                restoreKeyboardOnEmojiDismiss = false
+                inputEditText.requestFocus()
+                emojiPopup?.toggle()
+            }
         }
     }
 
@@ -1106,12 +1189,15 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun clearEditUI() {
-        binding.fragmentMessageInputView.editMessageButton.visibility = View.GONE
-        binding.fragmentMessageInputView.inputEditText.setText("")
         binding.fragmentEditView.editMessageView.visibility = View.GONE
+        binding.fragmentMessageInputView.messageSendButton.visibility = View.VISIBLE
+        binding.fragmentMessageInputView.recordAudioButton.visibility = View.VISIBLE
+        binding.fragmentMessageInputView.submitThreadButton.visibility = View.VISIBLE
+        binding.fragmentMessageInputView.editMessageButton.visibility = View.GONE
         binding.fragmentMessageInputView.attachmentButton.visibility = View.VISIBLE
-        messageInputViewModel.edit(null)
-        handleButtonsVisibility()
+        binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.VISIBLE
+        messageInputViewModel.cancelEdit()
+        lastEditMessageId = null
     }
 
     private fun themeMessageInputView() {
@@ -1192,25 +1278,18 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun cancelCreateThread() {
-        chatActivity.cancelCreateThread()
-        messageInputViewModel.stopThreadCreation()
-        binding.fragmentCreateThreadView.createThreadView.visibility = View.GONE
+        messageInputViewModel.cancelCreateThread()
     }
 
     private fun cancelReply() {
-        chatActivity.cancelReply()
-        clearReplyUi()
+        messageInputViewModel.cancelReply()
     }
 
     private fun clearReplyUi() {
         val quote = binding.fragmentMessageInputView.findViewById<RelativeLayout>(R.id.quotedChatMessageView)
         quote.visibility = View.GONE
         binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.VISIBLE
-    }
-
-    private fun isInReplyState(): Boolean {
-        val jsonId = chatActivity.chatViewModel.messageDraft.quotedJsonId
-        return jsonId != null
+        lastQuotedJsonId = null
     }
 
     companion object {
