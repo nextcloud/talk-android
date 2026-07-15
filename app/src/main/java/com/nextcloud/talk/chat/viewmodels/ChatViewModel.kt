@@ -35,6 +35,7 @@ import com.nextcloud.talk.conversationlist.DirectShareHelper
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel.Companion.FOLLOWED_THREADS_EXIST
+import com.nextcloud.talk.dagger.modules.ApplicationScope
 import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.user.model.User
@@ -80,7 +81,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import com.nextcloud.talk.dagger.modules.ApplicationScope
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -205,8 +205,6 @@ class ChatViewModel @AssistedInject constructor(
     private val mediaPlayerManager: MediaPlayerManager = MediaPlayerManager.sharedInstance(appPreferences)
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
-    var mediaPlayerDuration = mediaPlayerManager.mediaPlayerDuration
-    val mediaPlayerPosition = mediaPlayerManager.mediaPlayerPosition
 
     var messageDraft: MessageDraft = MessageDraft()
     var hiddenUpcomingEvent: String? = null
@@ -259,24 +257,8 @@ class ChatViewModel @AssistedInject constructor(
         showUnreadMessagesMarker = shouldShow
     }
 
-    val backgroundPlayUIFlow = mediaPlayerManager.backgroundPlayUIFlow
-
     val mediaPlayerSeekbarObserver: Flow<ChatMessage>
         get() = mediaPlayerManager.mediaPlayerSeekBarPositionMsg
-
-    // FIXME - map this to string id or some other kinda of id idk
-    val currentlyPlayedMessageId: Flow<Int?>
-        get() = mediaPlayerManager.currentCycledMessage.map { msg -> msg?.jsonMessageId }
-
-    val managerStateFlow: Flow<MediaPlayerManager.MediaPlayerManagerState>
-        get() = mediaPlayerManager.managerState
-
-    val voiceMessagePlayBackUIFlow: Flow<PlaybackSpeed>
-        get() = _voiceMessagePlayBackUIFlow
-    private val _voiceMessagePlayBackUIFlow: MutableSharedFlow<PlaybackSpeed> = MutableSharedFlow()
-
-    val getAudioFocusChange: LiveData<AudioFocusRequestManager.ManagerState>
-        get() = audioFocusRequestManager.getManagerState
 
     private val _recordTouchObserver: MutableLiveData<Float> = MutableLiveData()
     val recordTouchObserver: LiveData<Float>
@@ -1974,30 +1956,9 @@ class ChatViewModel @AssistedInject constructor(
         _getVoiceRecordingLocked.postValue(boolean)
     }
 
-    // Made this so that the MediaPlayer in ChatActivity can be focused. Eventually the player logic should be moved
-    // to the MediaPlayerManager class, so the audio focus logic can be handled in ChatViewModel, as it's done in
-    // the MessageInputViewModel
-    fun audioRequest(request: Boolean, callback: () -> Unit) {
-        audioFocusRequestManager.audioFocusRequest(request, callback)
-    }
-
     fun handleOrientationChange() {
         _getCapabilitiesViewState.value = GetCapabilitiesStartState
     }
-
-    // fun getMessageById(url: String, conversationModel: ConversationModel, messageId: Long): Flow<ChatMessage> =
-    //     flow {
-    //         val bundle = Bundle()
-    //         bundle.putString(BundleKeys.KEY_CHAT_URL, url)
-    //         bundle.putString(
-    //             BundleKeys.KEY_CREDENTIALS,
-    //             currentUser.getCredentials()
-    //         )
-    //         bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
-    //
-    //         val message = chatRepository.getMessage(messageId, bundle)
-    //         emit(message.first())
-    //     }
 
     @Deprecated("use getMessageById(messageId: Long)")
     fun getMessageById(url: String, conversationModel: ConversationModel, messageId: Long): Flow<ChatMessage> {
@@ -2025,61 +1986,6 @@ class ChatViewModel @AssistedInject constructor(
 
         return chatRepository.getMessage(messageId, bundle)
     }
-
-    // fun getIndividualMessageFromServer(
-    //     credentials: String,
-    //     baseUrl: String,
-    //     token: String,
-    //     messageId: String
-    // ): Flow<ChatMessage?> =
-    //     flow {
-    //         val messages = chatNetworkDataSource.getContextForChatMessage(
-    //             credentials = credentials,
-    //             baseUrl = baseUrl,
-    //             token = token,
-    //             messageId = messageId,
-    //             limit = 1,
-    //             threadId = null
-    //         )
-    //
-    //         if (messages.isNotEmpty()) {
-    //             val message = messages[0]
-    //             emit(message.toDomainModel())
-    //         } else {
-    //             emit(null)
-    //         }
-    //     }.flowOn(Dispatchers.IO)
-
-    suspend fun getNumberOfThreadReplies(threadId: Long): Int = chatRepository.getNumberOfThreadReplies(threadId)
-
-    fun setPlayBack(speed: PlaybackSpeed) {
-        mediaPlayerManager.setPlayBackSpeed(speed)
-        viewModelScope.launch {
-            _voiceMessagePlayBackUIFlow.emit(speed)
-        }
-    }
-
-    fun startMediaPlayer(path: String) {
-        audioRequest(true) {
-            mediaPlayerManager.start(path)
-        }
-    }
-
-    fun startCyclingMediaPlayer() = audioRequest(true, mediaPlayerManager::startCycling)
-
-    fun pauseMediaPlayer(notifyUI: Boolean) {
-        audioRequest(false) {
-            mediaPlayerManager.pause(notifyUI)
-        }
-    }
-
-    fun seekToMediaPlayer(progress: Int) = mediaPlayerManager.seekTo(progress)
-
-    fun stopMediaPlayer() = audioRequest(false, mediaPlayerManager::stop)
-
-    fun queueInMediaPlayer(path: String, msg: ChatMessage) = mediaPlayerManager.addToPlayList(path, msg)
-
-    fun clearMediaPlayerQueue() = mediaPlayerManager.clearPlayList()
 
     inner class JoinRoomObserver : Observer<ConversationModel> {
         override fun onSubscribe(d: Disposable) {
