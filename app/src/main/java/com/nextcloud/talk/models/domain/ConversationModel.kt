@@ -80,6 +80,16 @@ data class ConversationModel(
                 it and ConversationEnums.Preset.VOICE_ROOM.ordinal != 0
             } ?: false
 
+        fun ConversationModel?.isChannel(): Boolean =
+            this?.attributes?.let {
+                it and ConversationEnums.ATTRIBUTE_IS_CHANNEL != 0
+            } ?: false
+
+        fun ConversationModel?.isAnnouncement(): Boolean =
+            this?.attributes?.let {
+                it and ConversationEnums.ATTRIBUTE_IS_ANNOUNCEMENT != 0
+            } ?: false
+
         @Suppress("LongMethod")
         fun mapToConversationModel(conversation: Conversation, user: User): ConversationModel =
             ConversationModel(

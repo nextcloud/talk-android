@@ -71,6 +71,17 @@
                 android:animateLayoutChanges="true"
                 android:inputType="textLongMessage|textAutoComplete"
                 android:maxLength="1000" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/reactionOnlyAffordance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/standard_margin"
+                android:gravity="center"
+                android:text="@string/nc_channel_only_moderators_can_post"
+                android:textColor="@color/medium_emphasis_text"
+                android:visibility="gone"
+                tools:visibility="visible" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

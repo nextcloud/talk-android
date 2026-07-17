@@ -43,7 +43,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Campaign
 import androidx.compose.material.icons.outlined.Chat
+import androidx.compose.material.icons.outlined.Podcasts
 import androidx.compose.material.icons.outlined.VolumeUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -381,30 +383,62 @@ fun ConversationNameAndDescription(conversationCreationViewModel: ConversationCr
 @Composable
 fun ConversationPresets(conversationCreationViewModel: ConversationCreationViewModel) {
     val preset by conversationCreationViewModel.conversationPreset
+    val hasAnnouncementPreset = CapabilitiesUtil.hasSpreedFeatureCapability(
+        conversationCreationViewModel.currentUser.capabilities?.spreedCapability,
+        SpreedFeatures.ANNOUNCEMENT_PRESET
+    )
 
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        SelectableCard(
-            modifier = Modifier.weight(1f),
-            title = stringResource(R.string.default_room),
-            subtitle = stringResource(R.string.default_room_preset),
-            icon = Icons.Outlined.Chat,
-            isSelected = preset == "default",
-            onClick = { conversationCreationViewModel.conversationPreset.value = "default" }
-        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            SelectableCard(
+                modifier = Modifier.weight(1f),
+                title = stringResource(R.string.default_room),
+                subtitle = stringResource(R.string.default_room_preset),
+                icon = Icons.Outlined.Chat,
+                isSelected = preset == "default",
+                onClick = { conversationCreationViewModel.conversationPreset.value = "default" }
+            )
 
-        SelectableCard(
-            modifier = Modifier.weight(1f),
-            title = stringResource(R.string.voice_room),
-            subtitle = stringResource(R.string.voice_room_preset),
-            icon = Icons.Outlined.VolumeUp,
-            isSelected = preset == "voiceroom",
-            onClick = { conversationCreationViewModel.conversationPreset.value = "voiceroom" }
-        )
+            SelectableCard(
+                modifier = Modifier.weight(1f),
+                title = stringResource(R.string.voice_room),
+                subtitle = stringResource(R.string.voice_room_preset),
+                icon = Icons.Outlined.VolumeUp,
+                isSelected = preset == "voiceroom",
+                onClick = { conversationCreationViewModel.conversationPreset.value = "voiceroom" }
+            )
+        }
+
+        if (hasAnnouncementPreset) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                SelectableCard(
+                    modifier = Modifier.weight(1f),
+                    title = stringResource(R.string.nc_channel),
+                    subtitle = stringResource(R.string.nc_channel_description),
+                    icon = Icons.Outlined.Podcasts,
+                    isSelected = preset == "channel",
+                    onClick = { conversationCreationViewModel.conversationPreset.value = "channel" }
+                )
+
+                SelectableCard(
+                    modifier = Modifier.weight(1f),
+                    title = stringResource(R.string.nc_announcement),
+                    subtitle = stringResource(R.string.nc_announcement_description),
+                    icon = Icons.Outlined.Campaign,
+                    isSelected = preset == "announcement",
+                    onClick = { conversationCreationViewModel.conversationPreset.value = "announcement" }
+                )
+            }
+        }
     }
 }
 

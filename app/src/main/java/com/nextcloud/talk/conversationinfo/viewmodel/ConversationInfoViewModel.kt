@@ -23,6 +23,7 @@ import com.nextcloud.talk.conversationinfo.Participants
 import com.nextcloud.talk.conversationinfo.model.ParticipantModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.domain.ConversationModel.Companion.isChannel
 import com.nextcloud.talk.models.domain.converters.DomainEnumNotificationLevelConverter
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
@@ -417,6 +418,10 @@ class ConversationInfoViewModel @Inject constructor(
         val showMessageExpiration = isModerator &&
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)
 
+        val isChannel = conversationModel.isChannel() &&
+            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ANNOUNCEMENT_PRESET)
+        val showParticipants = if (isChannel) isModerator else true
+
         val credentials = ApiUtils.getCredentials(user.username, user.token) ?: ""
 
         _uiState.update { state ->
@@ -466,12 +471,15 @@ class ConversationInfoViewModel @Inject constructor(
                 isArchived = isArchived,
                 canLeave = canLeave,
                 canDelete = canDelete,
+                showParticipants = showParticipants,
                 showClearHistory = showClearHistory,
                 showEditButton = showEditButton
             )
         }
 
-        loadParticipants(user, token)
+        if (showParticipants) {
+            loadParticipants(user, token)
+        }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")

@@ -35,6 +35,7 @@ import com.nextcloud.talk.conversationlist.DirectShareHelper
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel.Companion.FOLLOWED_THREADS_EXIST
+import com.nextcloud.talk.dagger.modules.ApplicationScope
 import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.user.model.User
@@ -45,6 +46,7 @@ import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.domain.ConversationModel.Companion.isChannel
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
@@ -80,7 +82,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import com.nextcloud.talk.dagger.modules.ApplicationScope
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -510,8 +511,10 @@ class ChatViewModel @AssistedInject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val messagesFlow: Flow<List<ChatMessage>> =
-        conversationAndUserFlow
-            .flatMapLatest { (conversation, user) ->
+        combine(conversationAndUserFlow, spreedCapabilities) { (conversation, user), capabilities ->
+            Triple(conversation, user, capabilities)
+        }
+            .flatMapLatest { (conversation, user, capabilities) ->
                 combine(chatMode, contextAnchorMessageId) { mode, anchorMessageId ->
                     mode to anchorMessageId
                 }
@@ -530,10 +533,10 @@ class ChatViewModel @AssistedInject constructor(
                             .distinctUntilChanged()
                             .mapToChatMessages(user.userId!!)
                     }
-            }
-            .map { messages ->
-                messages.let(::handleSystemMessages)
-                    .let(::handleThreadMessages)
+                    .map { messages ->
+                        handleSystemMessages(messages, conversation, capabilities)
+                            .let(::handleThreadMessages)
+                    }
             }
             .distinctUntilChanged()
 
@@ -1340,7 +1343,15 @@ class ChatViewModel @AssistedInject constructor(
         }
         Log.d(TAG, "fetchNewMessagesWithRetry: no new messages after $POST_UPLOAD_FETCH_MAX_ATTEMPTS attempts")
     }
-    private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
+    private fun handleSystemMessages(
+        chatMessageList: List<ChatMessage>,
+        conversation: ConversationModel?,
+        capabilities: SpreedCapability?
+    ): List<ChatMessage> {
+        if (conversation.isChannel() && hasSpreedFeatureCapability(capabilities, SpreedFeatures.ANNOUNCEMENT_PRESET)) {
+            return chatMessageList.filter { !it.isSystemMessage }
+        }
+
         fun shouldRemoveMessage(currentMessage: MutableMap.MutableEntry<Int, ChatMessage>): Boolean =
             isInfoMessageAboutDeletion(currentMessage) ||
                 isReactionsMessage(currentMessage) ||
