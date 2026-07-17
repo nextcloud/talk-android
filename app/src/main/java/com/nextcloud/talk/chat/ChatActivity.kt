@@ -133,6 +133,7 @@ import com.nextcloud.talk.location.LocationPickerActivity
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ConversationModel.Companion.checkIfVoiceRoom
+import com.nextcloud.talk.models.domain.ConversationModel.Companion.isChannel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -1971,7 +1972,11 @@ class ChatActivity :
             !isChatThread() &&
             !ConversationUtils.isNoteToSelfConversation(conversation) &&
             !isReadOnlyConversation() &&
-            !shouldShowLobby()
+            !shouldShowLobby() &&
+            !(
+                conversation.isChannel() &&
+                    hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ANNOUNCEMENT_PRESET)
+                )
 
     private fun isSearchAvailable(capabilitiesReady: Boolean, conversation: ConversationModel?): Boolean =
         capabilitiesReady &&
@@ -2243,8 +2248,12 @@ class ChatActivity :
     }
 
     private fun checkShowMessageInputView() {
+        val permissions = participantPermissionsFlow.value
+        val isChannel = currentConversation.isChannel() &&
+            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ANNOUNCEMENT_PRESET)
+
         if (isReadOnlyConversation() ||
-            participantPermissionsFlow.value?.hasChatPermission() == false
+            (permissions?.hasChatPermission() == false && (!isChannel || permissions.hasReactPermission() == false))
         ) {
             binding.fragmentContainerActivityChat.visibility = View.GONE
         } else {
@@ -2816,7 +2825,7 @@ class ChatActivity :
         )
     }
 
-    public override fun onDestroy() {
+    override fun onDestroy() {
         super.onDestroy()
         logConversationInfos("onDestroy")
 

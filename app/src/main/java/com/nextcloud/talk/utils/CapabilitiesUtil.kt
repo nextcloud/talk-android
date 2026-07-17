@@ -67,6 +67,7 @@ enum class SpreedFeatures(val value: String) {
     REACT_PERMISSION("react-permission"),
     CONVERSATION_PRESETS("conversation-presets"),
     CLASSIFIED_CONVERSATIONS("classified-conversations"),
+    ANNOUNCEMENT_PRESET("announcement-preset"),
     CONVERSATION_TAGS("conversation-tags")
 }
 

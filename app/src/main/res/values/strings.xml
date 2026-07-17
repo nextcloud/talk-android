@@ -83,6 +83,11 @@ How to translate with transifex:
 
     <string name="nc_search">Search</string>
     <string name="nc_search_clear">Clear search</string>
+    <string name="nc_channel_only_moderators_can_post">Only moderators can post in this channel</string>
+    <string name="nc_channel">Channel</string>
+    <string name="nc_channel_description">Only moderators can post, everybody else can only react</string>
+    <string name="nc_announcement">Announcement</string>
+    <string name="nc_announcement_description">A channel where non-moderators can not leave</string>
 
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
     <string name="nc_certificate_dialog_text">Do you trust the until now unknown SSL certificate, issued by %1$s for %2$s, valid from %3$s to %4$s?</string>
