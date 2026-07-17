@@ -65,7 +65,6 @@ import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ConversationModel.Companion.checkIfVoiceRoom
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.settings.SettingsActivity
@@ -83,6 +82,7 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.ConversationUtils.checkIfVoiceRoom
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils

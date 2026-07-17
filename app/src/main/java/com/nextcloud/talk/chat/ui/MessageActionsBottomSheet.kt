@@ -181,7 +181,8 @@ internal fun buildMessageActionsState(
     val messageIsEditable = hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.EDIT_MESSAGES) &&
         (messageHasRegularText || messageHasCaptions) &&
         !isOlderThanTwentyFourHours &&
-        isUserAllowedByPrivileges
+        isUserAllowedByPrivileges &&
+        hasChatPermission
     val isMessageEditable = isNoTimeLimitOnNoteToSelf || messageIsEditable || isMessageBotOneToOne
 
     val hasDeleteMessagesUnlimitedCapability =

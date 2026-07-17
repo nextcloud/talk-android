@@ -133,7 +133,6 @@ import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.location.LocationPickerActivity
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ConversationModel.Companion.checkIfVoiceRoom
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -175,6 +174,7 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfClassifiedRoom
 import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfSIPRoom
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.ConversationUtils.checkIfVoiceRoom
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -1989,7 +1989,8 @@ class ChatActivity :
             !isChatThread() &&
             !ConversationUtils.isNoteToSelfConversation(conversation) &&
             !isReadOnlyConversation() &&
-            !shouldShowLobby()
+            !shouldShowLobby() &&
+            !ConversationUtils.isChannel(conversation, spreedCapabilities)
 
     private fun isSearchAvailable(capabilitiesReady: Boolean, conversation: ConversationModel?): Boolean =
         capabilitiesReady &&
@@ -2267,8 +2268,11 @@ class ChatActivity :
     }
 
     private fun checkShowMessageInputView() {
+        val permissions = participantPermissionsFlow.value
+        val isChannel = ConversationUtils.isChannel(currentConversation, spreedCapabilities)
+
         if (isReadOnlyConversation() ||
-            participantPermissionsFlow.value?.hasChatPermission() == false
+            (permissions?.hasChatPermission() == false && (!isChannel || permissions.hasReactPermission() == false))
         ) {
             binding.fragmentContainerActivityChat.visibility = View.GONE
         } else {
@@ -2815,7 +2819,7 @@ class ChatActivity :
         )
     }
 
-    public override fun onDestroy() {
+    override fun onDestroy() {
         super.onDestroy()
         logConversationInfos("onDestroy")
 

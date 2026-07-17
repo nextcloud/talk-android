@@ -16,6 +16,12 @@ data class CreateRoomRequest(
     var roomType: String,
     @JsonField(name = ["roomName"])
     var roomName: String? = null,
+    @JsonField(name = ["invite"])
+    var invite: String? = null,
+    @JsonField(name = ["source"])
+    var source: String? = null,
+    @JsonField(name = ["preset"])
+    var preset: String? = null,
     @JsonField(name = ["objectType"])
     var objectType: String? = null,
     @JsonField(name = ["objectId"])
@@ -23,23 +29,23 @@ data class CreateRoomRequest(
     @JsonField(name = ["password"])
     var password: String? = null,
     @JsonField(name = ["readOnly"])
-    var readOnly: Int,
+    var readOnly: Int? = null,
     @JsonField(name = ["listable"])
-    var listable: Int,
+    var listable: Int? = null,
     @JsonField(name = ["messageExpiration"])
     var messageExpiration: Int? = null,
     @JsonField(name = ["lobbyState"])
     var lobbyState: Int? = null,
     @JsonField(name = ["lobbyTimer"])
-    var lobbyTimer: Int,
+    var lobbyTimer: Int? = null,
     @JsonField(name = ["sipEnabled"])
-    var sipEnabled: Int,
+    var sipEnabled: Int? = null,
     @JsonField(name = ["permissions"])
-    var permissions: Int,
+    var permissions: Int? = null,
     @JsonField(name = ["recordingConsent"])
-    var recordingConsent: Int,
+    var recordingConsent: Int? = null,
     @JsonField(name = ["mentionPermissions"])
-    var mentionPermissions: Int,
+    var mentionPermissions: Int? = null,
     @JsonField(name = ["description"])
     var description: String? = null,
     @JsonField(name = ["emoji"])
@@ -49,24 +55,5 @@ data class CreateRoomRequest(
     @JsonField(name = ["participants"])
     var participants: Participants? = null
 ) {
-    constructor() : this(
-        0.toString(),
-        "",
-        "",
-        "",
-        "",
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        "",
-        "",
-        "",
-        Participants()
-    )
+    constructor() : this(roomType = "2")
 }

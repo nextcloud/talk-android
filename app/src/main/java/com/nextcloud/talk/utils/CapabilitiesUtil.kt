@@ -68,6 +68,7 @@ enum class SpreedFeatures(val value: String) {
     REACT_PERMISSION("react-permission"),
     CONVERSATION_PRESETS("conversation-presets"),
     CLASSIFIED_CONVERSATIONS("classified-conversations"),
+    ANNOUNCEMENT_PRESET("announcement-preset"),
     CONVERSATION_TAGS("conversation-tags")
 }
 
@@ -297,6 +298,16 @@ object CapabilitiesUtil {
 
     fun isBanningAvailable(spreedCapabilities: SpreedCapability): Boolean =
         hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.BAN_V1)
+
+    fun isAdmin(spreedCapabilities: SpreedCapability?): Boolean {
+        if (spreedCapabilities?.config?.containsKey("conversations") == true) {
+            val map = spreedCapabilities.config!!["conversations"]
+            if (map?.containsKey("is-admin") == true) {
+                return map["is-admin"].toString().toBoolean()
+            }
+        }
+        return false
+    }
 
     // endregion
 

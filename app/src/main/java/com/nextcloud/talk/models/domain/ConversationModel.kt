@@ -76,11 +76,6 @@ data class ConversationModel(
 ) {
 
     companion object {
-        fun ConversationModel?.checkIfVoiceRoom(): Boolean =
-            this?.attributes?.let {
-                it and ConversationEnums.Preset.VOICE_ROOM.ordinal != 0
-            } ?: false
-
         @Suppress("LongMethod")
         fun mapToConversationModel(conversation: Conversation, user: User): ConversationModel =
             ConversationModel(
