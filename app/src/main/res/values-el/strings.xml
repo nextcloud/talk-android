@@ -92,6 +92,7 @@
     <string name="nc_call_voice">%s κλήση με ήχο</string>
     <string name="nc_cancel">Ακύρωση</string>
     <string name="nc_capabilities_failed">Η εμφάνιση δυνατοτήτων απέτυχε, ματαιωση</string>
+    <string name="nc_caption">Λεζάντα</string>
     <string name="nc_certificate_dialog_text">Eμπιστεύεσαι το άγνωστο έως τώρα πιστοποιητικό SSL που εκδόθηκε %1$s για %2$s, έγκυρο από %3$s σε%4$s;</string>
     <string name="nc_certificate_dialog_title">Ελέγξτε το πιστοποιητικό</string>
     <string name="nc_certificate_error">Η ρύθμιση SSL απέτρεψε την σύνδεση</string>
@@ -152,6 +153,7 @@
     <string name="nc_edit_icon">Επεξεργασία</string>
     <string name="nc_edit_message">Επεξεργασία</string>
     <string name="nc_edit_message_text">Επεξεργασία μηνύματος</string>
+    <string name="nc_event_schedule">Προγραμματισμός</string>
     <string name="nc_expire_message_eight_hours">8 ώρες</string>
     <string name="nc_expire_message_four_weeks">4 εβδομάδες</string>
     <string name="nc_expire_message_off">Απενεργοποίηση </string>
@@ -207,6 +209,7 @@
     <string name="nc_manual">Δεν ορίστηκε</string>
     <string name="nc_mark_as_read">Σήμανση ως αναγνωσμένο</string>
     <string name="nc_mark_as_unread">επισήμανση ως μή-αναγνωσμένο</string>
+    <string name="nc_message_failed">Αποτυχία αποστολής μηνύματος</string>
     <string name="nc_message_quote_cancel_reply">Ακύρωση απάντησης</string>
     <string name="nc_message_read">Το μήνυμα διαβάστηκε</string>
     <string name="nc_message_sending">Αποστολή μηνύματος</string>
@@ -392,6 +395,7 @@
     <string name="polls_add_option">Προσθήκη επιλογής</string>
     <string name="polls_end_poll">Τερματισμός δημοσκόπησης</string>
     <string name="polls_multiple_answers">Πολλαπλές απαντήσεις</string>
+    <string name="polls_option_hint">Επιλογή %1$d</string>
     <string name="polls_options">Επιλογές</string>
     <string name="polls_private_poll">Ιδιωτική δημοσκόπηση</string>
     <string name="polls_question">Ερώτηση</string>
@@ -491,4 +495,8 @@
         <item quantity="one">%d απάντηση</item>
         <item quantity="other">%d απαντήσεις</item>
     </plurals>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">%d ψήφος</item>
+        <item quantity="other">%d ψήφοι</item>
+    </plurals>
+</resources>
