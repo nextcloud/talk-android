@@ -173,6 +173,9 @@ data class Conversation(
     @JsonField(name = ["isImportant"])
     var hasImportant: Boolean = false,
 
+    @JsonField(name = ["tagIds"])
+    var tagIds: ArrayList<String>? = null,
+
     @JsonField(name = ["lastPinnedId"])
     var lastPinnedId: Long? = null,
 

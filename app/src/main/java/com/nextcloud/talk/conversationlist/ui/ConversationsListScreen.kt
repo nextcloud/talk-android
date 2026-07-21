@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -45,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,18 +52,22 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nextcloud.talk.R
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
+import com.nextcloud.talk.conversationtags.viewmodels.ConversationTagsViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.tags.ConversationTag
 import com.nextcloud.talk.chooseaccount.ChooseAccountDialogCompose
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.DEFAULT
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -124,6 +128,7 @@ data class ConversationsListScreenCallbacks(
 @Composable
 fun ConversationsListScreen(
     viewModel: ConversationsListViewModel,
+    tagsViewModel: ConversationTagsViewModel,
     state: ConversationsListScreenState,
     callbacks: ConversationsListScreenCallbacks
 ) {
@@ -143,6 +148,13 @@ fun ConversationsListScreen(
     val showAvatarBadge by viewModel.showAvatarBadge.collectAsStateWithLifecycle()
     val threadsState by viewModel.threadsExistState.collectAsStateWithLifecycle()
     val federationHintVisible by viewModel.federationInvitationHintVisible.collectAsStateWithLifecycle()
+    val conversationTags by tagsViewModel.conversationTagsFlow.collectAsStateWithLifecycle()
+    val selectedTagFilter by viewModel.selectedTagFilterFlow.collectAsStateWithLifecycle()
+    val conversationForTagAssignment by tagsViewModel.conversationForTagAssignment.collectAsStateWithLifecycle()
+    val showManageTagsSheet by tagsViewModel.showManageTagsSheet.collectAsStateWithLifecycle()
+    val tagActionState by tagsViewModel.tagActionState.collectAsStateWithLifecycle()
+    val tagAssignmentSheetState = rememberModalBottomSheetState()
+    val manageTagsSheetState = rememberModalBottomSheetState()
 
     // Activity-level state
     val isMaintenanceMode by state.isMaintenanceModeFlow.collectAsStateWithLifecycle()
@@ -169,6 +181,14 @@ fun ConversationsListScreen(
     val showThreadsButton =
         threadsState is ConversationsListViewModel.ThreadsExistUiState.Success &&
             (threadsState as ConversationsListViewModel.ThreadsExistUiState.Success).threadsExistence == true
+    val hasConversationTagsCapability = state.currentUser?.capabilities?.spreedCapability?.let {
+        CapabilitiesUtil.hasSpreedFeatureCapability(it, SpreedFeatures.CONVERSATION_TAGS)
+    } == true
+    val showConversationTagsRow = hasConversationTagsCapability &&
+        conversationTags.isNotEmpty() &&
+        !isSearchActive &&
+        !showShareTo &&
+        !isForward
 
     val mode: TopBarMode = when {
         showShareTo -> TopBarMode.TitleBar(
@@ -194,7 +214,8 @@ fun ConversationsListScreen(
         )
     }
 
-    val lazyListState = rememberLazyListState()
+    // Keyed on the tag filter so switching tags starts the list at the top without a visible jump.
+    val lazyListState = remember(selectedTagFilter) { LazyListState() }
     DisposableEffect(lazyListState) {
         callbacks.onLazyListStateAvailable(lazyListState)
         onDispose { callbacks.onLazyListStateAvailable(null) }
@@ -311,7 +332,29 @@ fun ConversationsListScreen(
                                     listState = lazyListState,
                                     contentBottomPadding = paddingValues.calculateBottomPadding(),
                                     onSwipeConversation = callbacks.onConversationOpsAction,
-                                    isOnline = isOnline
+                                    isOnline = isOnline,
+                                    tagsRowContent = if (showConversationTagsRow) {
+                                        {
+                                            ConversationTagsRow(
+                                                tags = conversationTags,
+                                                selectedTagId = selectedTagFilter,
+                                                onTagSelected = { tagId ->
+                                                    val isFavorites = conversationTags.any {
+                                                        it.id == tagId && it.type == ConversationTag.TYPE_FAVORITES
+                                                    }
+                                                    viewModel.selectTagFilter(tagId, isFavorites)
+                                                },
+                                                onManageTagsClick = { tagsViewModel.setShowManageTagsSheet(true) },
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(
+                                                        vertical = dimensionResource(R.dimen.standard_half_padding)
+                                                    )
+                                            )
+                                        }
+                                    } else {
+                                        null
+                                    }
                                 )
                         }
                         // Empty-state overlay (centered; handles its own visibility)
@@ -369,6 +412,64 @@ fun ConversationsListScreen(
                             callbacks.onConversationOpsDismiss()
                             callbacks.onConversationOpsAction(action, conv)
                         }
+                    )
+                }
+            }
+
+            val conversationForTags = conversationForTagAssignment
+            if (conversationForTags != null) {
+                ModalBottomSheet(
+                    onDismissRequest = { tagsViewModel.setConversationForTagAssignment(null) },
+                    sheetState = tagAssignmentSheetState,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                ) {
+                    AssignConversationTagsSheetContent(
+                        conversation = conversationForTags,
+                        tags = conversationTags.filter { it.type == ConversationTag.TYPE_CUSTOM },
+                        onToggleTag = { tagId ->
+                            val newTagIds = if (conversationForTags.tagIds.contains(tagId)) {
+                                conversationForTags.tagIds - tagId
+                            } else {
+                                conversationForTags.tagIds + tagId
+                            }
+                            tagsViewModel.assignConversationTags(conversationForTags, newTagIds)
+                        },
+                        onManageTagsClick = {
+                            tagsViewModel.setConversationForTagAssignment(null)
+                            tagsViewModel.setShowManageTagsSheet(true)
+                        }
+                    )
+                }
+            }
+
+            if (showManageTagsSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = { tagsViewModel.setShowManageTagsSheet(false) },
+                    sheetState = manageTagsSheetState,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                ) {
+                    ManageConversationTagsSheetContent(
+                        tags = conversationTags,
+                        tagActionState = tagActionState,
+                        callbacks = ManageConversationTagsCallbacks(
+                            onCreateTag = { tagsViewModel.createConversationTag(it) },
+                            onRenameTag = { tagId, name -> tagsViewModel.renameConversationTag(tagId, name) },
+                            onDeleteTag = { tagId ->
+                                tagsViewModel.deleteConversationTag(tagId)
+                                viewModel.clearTagFilterIfMatches(tagId)
+                            },
+                            onMoveTag = { tagId, delta ->
+                                val currentOrder = conversationTags.map { it.id }
+                                val fromIndex = currentOrder.indexOf(tagId)
+                                val toIndex = (fromIndex + delta).coerceIn(0, currentOrder.lastIndex)
+                                if (fromIndex != -1 && fromIndex != toIndex) {
+                                    val reordered = currentOrder.toMutableList()
+                                    reordered.add(toIndex, reordered.removeAt(fromIndex))
+                                    tagsViewModel.reorderConversationTags(reordered)
+                                }
+                            },
+                            onResetActionState = { tagsViewModel.resetTagActionState() }
+                        )
                     )
                 }
             }

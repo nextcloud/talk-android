@@ -28,6 +28,12 @@ import com.nextcloud.talk.models.json.hovercard.HoverCardOverall
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.models.json.status.StatusOverall
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
+import com.nextcloud.talk.models.json.tags.AssignConversationTagsRequest
+import com.nextcloud.talk.models.json.tags.ConversationTagOverall
+import com.nextcloud.talk.models.json.tags.ConversationTagsOverall
+import com.nextcloud.talk.models.json.tags.CreateConversationTagRequest
+import com.nextcloud.talk.models.json.tags.ReorderConversationTagsRequest
+import com.nextcloud.talk.models.json.tags.UpdateConversationTagRequest
 import com.nextcloud.talk.models.json.testNotification.TestNotificationOverall
 import com.nextcloud.talk.models.json.threads.ThreadOverall
 import com.nextcloud.talk.models.json.threads.ThreadsOverall
@@ -224,6 +230,43 @@ interface NcApiCoroutines {
         @Header("Authorization") authorization: String,
         @Url url: String
     ): GenericOverall
+
+    @GET
+    suspend fun getConversationTags(
+        @Header("Authorization") authorization: String,
+        @Url url: String
+    ): ConversationTagsOverall
+
+    @POST
+    suspend fun createConversationTag(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Body body: CreateConversationTagRequest
+    ): ConversationTagOverall
+
+    @PUT
+    suspend fun updateConversationTag(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Body body: UpdateConversationTagRequest
+    ): ConversationTagOverall
+
+    @DELETE
+    suspend fun deleteConversationTag(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
+
+    @PUT
+    suspend fun reorderConversationTags(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Body body: ReorderConversationTagsRequest
+    ): ConversationTagsOverall
+
+    @POST
+    suspend fun assignConversationTags(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Body body: AssignConversationTagsRequest
+    ): RoomOverall
 
     @FormUrlEncoded
     @POST
