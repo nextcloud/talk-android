@@ -1060,7 +1060,7 @@ class CallActivity : CallBaseActivity() {
 
         if (permissionUtil!!.isMicrophonePermissionGranted()) {
             CallForegroundService.start(applicationContext, conversationName, intent.extras)
-            if (!microphoneOn) {
+            if (!microphoneOn && !appPreferences.callMicrophoneMuted) {
                 onMicrophoneClick()
             }
         }
@@ -1265,6 +1265,7 @@ class CallActivity : CallBaseActivity() {
                     )
                 }
                 toggleMedia(microphoneOn, false)
+                appPreferences.callMicrophoneMuted = !microphoneOn
             } else {
                 binding!!.microphoneButton.setImageResource(R.drawable.ic_mic_white_24px)
                 pulseAnimation!!.start()
