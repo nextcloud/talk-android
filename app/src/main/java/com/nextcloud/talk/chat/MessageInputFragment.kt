@@ -172,6 +172,12 @@ class MessageInputFragment : Fragment() {
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
+
+        val messageText = binding.fragmentMessageInputView.messageInput.text
+        if (messageText.isNotEmpty()) {
+            chatActivity.chatViewModel.messageDraft.messageText = messageText.toString()
+            chatActivity.chatViewModel.saveMessageDraft()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -331,7 +337,6 @@ class MessageInputFragment : Fragment() {
 
                             override fun onSuccess(result: Drawable) {
                                 binding.fragmentCallStarted.callAuthorChip.chipIcon = result
-
                             }
                         })
                         .build()
