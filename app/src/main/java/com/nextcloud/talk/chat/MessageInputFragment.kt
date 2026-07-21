@@ -70,6 +70,7 @@ import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.FragmentMessageInputBinding
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.models.domain.ConversationModel.Companion.isChannel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.models.json.mention.Mention
@@ -184,6 +185,12 @@ class MessageInputFragment : Fragment() {
         ).doAfterTextChanged { text ->
             val threadTitle = text.toString()
             chatActivity.chatViewModel.messageDraft.threadTitle = threadTitle
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            chatActivity.participantPermissionsFlow.collect {
+                handleButtonsVisibility()
+            }
         }
     }
 
@@ -331,7 +338,6 @@ class MessageInputFragment : Fragment() {
 
                             override fun onSuccess(result: Drawable) {
                                 binding.fragmentCallStarted.callAuthorChip.chipIcon = result
-
                             }
                         })
                         .build()
@@ -716,6 +722,16 @@ class MessageInputFragment : Fragment() {
 
         fun View.setVisible(isVisible: Boolean) {
             visibility = if (isVisible) View.VISIBLE else View.GONE
+        }
+
+        val isReactionOnly = isReactionOnlyMode()
+        if (isReactionOnly) {
+            binding.fragmentMessageInputView.setVisible(false)
+            binding.reactionOnlyAffordance.setVisible(true)
+            return
+        } else {
+            binding.fragmentMessageInputView.setVisible(true)
+            binding.reactionOnlyAffordance.setVisible(false)
         }
 
         val isEditModeActive = binding.fragmentEditView.editMessageView.isVisible
@@ -1286,6 +1302,14 @@ class MessageInputFragment : Fragment() {
     private fun isInReplyState(): Boolean {
         val jsonId = chatActivity.chatViewModel.messageDraft.quotedJsonId
         return jsonId != null
+    }
+
+    private fun isReactionOnlyMode(): Boolean {
+        val conversation = chatActivity.currentConversation
+        val permissions = chatActivity.participantPermissionsFlow.value
+        val isChannel = conversation.isChannel() &&
+            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ANNOUNCEMENT_PRESET)
+        return isChannel && permissions?.hasChatPermission() == false && permissions.hasReactPermission() == true
     }
 
     companion object {

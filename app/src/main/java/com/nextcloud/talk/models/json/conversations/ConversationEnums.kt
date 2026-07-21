@@ -54,4 +54,9 @@ class ConversationEnums {
         DEFAULT,
         VOICE_ROOM
     }
+
+    companion object {
+        const val ATTRIBUTE_IS_CHANNEL = 8
+        const val ATTRIBUTE_IS_ANNOUNCEMENT = 16
+    }
 }
