@@ -354,7 +354,7 @@ dependencies {
 
     // tests
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.1.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.11.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.11.4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     testImplementation("junit:junit:4.13.2")
