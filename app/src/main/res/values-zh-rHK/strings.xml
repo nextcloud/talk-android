@@ -662,7 +662,7 @@
     <string name="save">保存</string>
     <string name="scan_qr_code">掃描 QR 碼</string>
     <string name="scope_federated_description">僅同步至受信任的伺服器</string>
-    <string name="scope_federated_title">已聯盟</string>
+    <string name="scope_federated_title">已聯邦</string>
     <string name="scope_local_description">僅對此安裝的人和來賓可見</string>
     <string name="scope_local_title">近端</string>
     <string name="scope_private_description">僅對透過 Talk 在手提電話上通過電話號碼整合進行匹配的人可見</string>
