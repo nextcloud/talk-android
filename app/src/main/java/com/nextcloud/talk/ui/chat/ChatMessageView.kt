@@ -73,7 +73,8 @@ data class ChatMessageCallbacks(
     val onOpenThreadClick: (Int) -> Unit = {},
     val onQuotedMessageClick: (Int) -> Unit = {},
     val onSystemMessageExpandClick: (Int) -> Unit = {},
-    val onAvatarClick: (Int) -> Unit = {}
+    val onAvatarClick: (Int) -> Unit = {},
+    val onCancelUpload: (String) -> Unit = {}
 )
 
 @Suppress("Detekt.LongParameterList", "Detekt.LongMethod", "Detekt.CyclomaticComplexMethod")
@@ -208,9 +209,18 @@ fun ChatMessageView(
                             )
                         }
 
-                        else -> {
-                            Log.d("ChatView", "Unknown message type: ${'$'}content")
-                        }
+                        is MessageTypeContent.UploadingMedia -> {
+                        UploadingMediaMessage(
+                            typeContent = content,
+                            message = message,
+                            isOneToOneConversation = context.isOneToOneConversation,
+                            conversationThreadId = context.conversationThreadId,
+                            onCancelUpload = callbacks.onCancelUpload
+                        )
+                    }
+
+                    else -> {
+                        Log.d("ChatView", "Unknown message type: ${'$'}content")}
                     }
                 }
                 val useContainerHighlight = highlightSearchTerm.isNullOrBlank() || isSelected
