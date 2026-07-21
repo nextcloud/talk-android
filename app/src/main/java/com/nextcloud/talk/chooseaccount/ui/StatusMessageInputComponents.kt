@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.getSystemService
 import com.nextcloud.talk.R
+import com.nextcloud.talk.ui.theme.emojiTheming
 import com.vanniktech.emoji.EmojiEditText
 import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.installDisableKeyboardInput
@@ -83,6 +84,7 @@ internal fun EmojiAndMessageRow(
 private fun EmojiButton(emoji: String, onEmojiSelected: (String) -> Unit) {
     val isPreview = LocalInspectionMode.current
     val rootView = LocalView.current
+    val theming = emojiTheming()
     var emojiPopup by remember { mutableStateOf<EmojiPopup?>(null) }
     val displayEmoji = emoji.ifEmpty { stringResource(R.string.default_emoji) }
 
@@ -115,6 +117,7 @@ private fun EmojiButton(emoji: String, onEmojiSelected: (String) -> Unit) {
                         val popup = EmojiPopup(
                             rootView = rootView,
                             editText = this,
+                            theming = theming,
                             onEmojiClickListener = {
                                 onEmojiSelected(text.toString())
                                 emojiPopup?.dismiss()

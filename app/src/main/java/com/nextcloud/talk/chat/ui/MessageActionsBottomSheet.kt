@@ -68,6 +68,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.ui.theme.emojiTheming
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
@@ -648,6 +649,7 @@ private fun MoreEmojiButton(
 ) {
     val context = LocalContext.current
     val rootView = LocalView.current
+    val theming = emojiTheming()
     val popupRef = remember { mutableStateOf<EmojiPopup?>(null) }
 
     DisposableEffect(Unit) {
@@ -665,6 +667,7 @@ private fun MoreEmojiButton(
                 val emojiPopup = EmojiPopup(
                     rootView = rootView,
                     editText = this,
+                    theming = theming,
                     onEmojiPopupShownListener = {
                         clearFocus()
                         onPickerShown()
