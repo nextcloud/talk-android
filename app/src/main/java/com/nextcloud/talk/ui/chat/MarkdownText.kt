@@ -66,16 +66,17 @@ private const val CHIP_END_PADDING_DP = 5f
 private const val CHIP_VERTICAL_PADDING_DP = 2f
 private const val CHIP_CORNER_RADIUS_DP = 16f
 private const val TASK_CHECKBOX_TOUCH_TARGET_DP = 48f
+private const val INT_3 = 3
 
 // GFM table separator row: starts with | followed by optional spaces/colons and at least 3 dashes
-private val TABLE_SEPARATOR_REGEX = Regex("""^\|[ :]*-{3,}""", RegexOption.MULTILINE)
+private val tableSeparatorRegex = Regex("""^\|[ :]*-{3,}""", RegexOption.MULTILINE)
 
 val validLinkRegex = Regex(
     """(?<!\w)https?://(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+(?:/[^\s)]*)?""",
     RegexOption.IGNORE_CASE
 )
 
-private val MARKDOWN_TASK_LINE_REGEX = Regex("""^(\s*(?:[-*+]\s+|\d+[.)]\s+)\[)([ xX])(]\s+.*)$""")
+private val markdownTaskLineRegex = Regex("""^(\s*(?:[-*+]\s+|\d+[.)]\s+)\[)([ xX])(]\s+.*)$""")
 
 @Suppress("LongMethod", "LongParameterList")
 @Composable
@@ -107,10 +108,10 @@ fun MarkdownText(
     val onMarkdownTaskToggle = LocalMarkdownTaskToggleHandler.current
     val onLongClickState = rememberUpdatedState(onMessageLongClick)
     val hasMarkdownTasks = remember(message.plainMessage) {
-        message.plainMessage.lineSequence().any { MARKDOWN_TASK_LINE_REGEX.matches(it) }
+        message.plainMessage.lineSequence().any { markdownTaskLineRegex.matches(it) }
     }
     val hasTable = remember(message.plainMessage) {
-        message.plainMessage.contains(TABLE_SEPARATOR_REGEX)
+        message.plainMessage.contains(tableSeparatorRegex)
     }
 
     if (LocalInspectionMode.current) {
@@ -274,6 +275,7 @@ private fun applySearchHighlight(spannable: SpannableStringBuilder, searchTerm: 
     }
 }
 
+@Suppress("ReturnCount")
 private fun findMarkdownTaskLineAtTouch(
     textView: TextView,
     event: MotionEvent,
@@ -300,7 +302,7 @@ private fun findMarkdownTaskLineAtTouch(
         message.plainMessage
             .lineSequence()
             .elementAtOrNull(sourceLineIndex)
-            ?.let { MARKDOWN_TASK_LINE_REGEX.matchEntire(it) } != null
+            ?.let { markdownTaskLineRegex.matchEntire(it) } != null
     }
 }
 
@@ -326,9 +328,9 @@ private fun handleMarkdownTaskToggle(
 ) {
     val sourceLines = message.plainMessage.split('\n')
     val sourceLine = sourceLines.getOrNull(clickedSourceLine) ?: return
-    val match = MARKDOWN_TASK_LINE_REGEX.matchEntire(sourceLine) ?: return
+    val match = markdownTaskLineRegex.matchEntire(sourceLine) ?: return
     val replacement = if (match.groupValues[2].equals("x", ignoreCase = true)) " " else "x"
-    val updatedLine = match.groupValues[1] + replacement + match.groupValues[3]
+    val updatedLine = match.groupValues[1] + replacement + match.groupValues[INT_3]
     val updatedMessage = sourceLines.toMutableList().also { it[clickedSourceLine] = updatedLine }.joinToString("\n")
 
     onMarkdownTaskToggle(message.id, updatedMessage)

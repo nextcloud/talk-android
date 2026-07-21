@@ -331,7 +331,6 @@ class MessageInputFragment : Fragment() {
 
                             override fun onSuccess(result: Drawable) {
                                 binding.fragmentCallStarted.callAuthorChip.chipIcon = result
-
                             }
                         })
                         .build()
