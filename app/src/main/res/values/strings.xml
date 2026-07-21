@@ -1032,4 +1032,12 @@ How to translate with transifex:
     <string name="turn_on_background_blur">Turn on background blur</string>
     <string name="turn_off_background_blur">Turn off background blur</string>
     <string name="nc_no_account_found">Account not found</string>
+
+    <!-- Managed configurations -->
+    <string name="nc_restriction_server_url_title">Server URL</string>
+    <string name="nc_restriction_server_url_description">Nextcloud server address that should be used by default.</string>
+    <string name="nc_restriction_username_title">Username</string>
+    <string name="nc_restriction_username_description">Username that should be used by default.</string>
+    <string name="nc_restriction_app_password_title">App password</string>
+    <string name="nc_restriction_app_password_description">App-specific password or token for the user.</string>
 </resources>

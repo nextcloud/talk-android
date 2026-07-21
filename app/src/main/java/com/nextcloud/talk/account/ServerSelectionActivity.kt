@@ -30,7 +30,11 @@ import com.blikoon.qrcodescanner.QrCodeActivity
 import com.github.dhaval2404.imagepicker.util.PermissionUtil
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
+import com.nextcloud.talk.account.data.LoginRepository
+import com.nextcloud.talk.account.data.model.LoginCompletion
 import com.nextcloud.talk.activities.BaseActivity
+import com.nextcloud.talk.account.AccountVerificationActivity
+import com.nextcloud.talk.appconfig.AppConfigManager
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -44,6 +48,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import java.net.HttpURLConnection
 import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ACCOUNT_IMPORT
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
@@ -69,6 +74,12 @@ class ServerSelectionActivity : BaseActivity() {
     @Inject
     lateinit var networkMonitor: NetworkMonitor
 
+    @Inject
+    lateinit var appConfigManager: AppConfigManager
+
+    @Inject
+    lateinit var loginRepository: LoginRepository
+
     private var statusQueryDisposable: Disposable? = null
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -92,6 +103,21 @@ class ServerSelectionActivity : BaseActivity() {
         initSystemBars()
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
+        if (savedInstanceState == null) {
+            val managedBaseUrl = appConfigManager.getServerBaseUrl()
+            when {
+                !managedBaseUrl.isNullOrBlank() -> {
+                    binding.serverEntryTextInputEditText.setText(managedBaseUrl)
+                    checkServerAndProceed()
+                }
+
+                !TextUtils.isEmpty(resources!!.getString(R.string.weblogin_url)) -> {
+                    binding.serverEntryTextInputEditText.setText(resources!!.getString(R.string.weblogin_url))
+                    checkServerAndProceed()
+                }
+            }
+        }
     }
 
     override fun onResume() {
@@ -127,10 +153,7 @@ class ServerSelectionActivity : BaseActivity() {
         }
 
         binding.serverEntryTextInputEditText.requestFocus()
-        if (!TextUtils.isEmpty(resources!!.getString(R.string.weblogin_url))) {
-            binding.serverEntryTextInputEditText.setText(resources!!.getString(R.string.weblogin_url))
-            checkServerAndProceed()
-        }
+
         binding.serverEntryTextInputEditText.setOnEditorActionListener { _: TextView?, i: Int, _: KeyEvent? ->
             if (i == EditorInfo.IME_ACTION_DONE) {
                 checkServerAndProceed()
@@ -349,8 +372,27 @@ class ServerSelectionActivity : BaseActivity() {
                                     }
                                 }
                             } else {
+                                val baseUrl = queryUrl.replace("/status.php", "")
+                                val managedUsername = appConfigManager.getUsername()
+                                val managedPassword = appConfigManager.getAppPassword()
+                                if (!managedUsername.isNullOrBlank() && !managedPassword.isNullOrBlank()) {
+                                    val loginCompletion = LoginCompletion(
+                                        HttpURLConnection.HTTP_OK,
+                                        baseUrl,
+                                        managedUsername,
+                                        managedPassword
+                                    )
+                                    val managedBundle = loginRepository.parseAndLogin(loginCompletion)
+                                    if (managedBundle != null) {
+                                        val intent = Intent(context, AccountVerificationActivity::class.java)
+                                        intent.putExtras(managedBundle)
+                                        startActivity(intent)
+                                        return@runOnUiThread
+                                    }
+                                }
+
                                 val bundle = Bundle()
-                                bundle.putString(BundleKeys.KEY_BASE_URL, queryUrl.replace("/status.php", ""))
+                                bundle.putString(BundleKeys.KEY_BASE_URL, baseUrl)
 
                                 val intent = Intent(context, BrowserLoginActivity::class.java)
                                 intent.putExtras(bundle)
