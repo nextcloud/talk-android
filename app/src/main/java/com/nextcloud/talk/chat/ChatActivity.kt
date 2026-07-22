@@ -18,12 +18,14 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.database.Cursor
 import android.location.LocationManager
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -68,6 +70,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalDensity
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
@@ -81,6 +84,11 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.Player
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -89,6 +97,7 @@ import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.common.util.concurrent.ListenableFuture
 import com.nextcloud.android.common.ui.color.ColorUtil
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
@@ -99,6 +108,7 @@ import com.nextcloud.talk.adapters.messages.CallStartedMessageInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.chat.data.io.VoiceMessageMediaService
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.model.FileParameters
 import com.nextcloud.talk.chat.ui.ChatEmptyState
@@ -223,6 +233,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
@@ -294,6 +305,9 @@ class ChatActivity :
     private val upcomingEventUiState =
         mutableStateOf<ChatViewModel.UpcomingEventUIState>(ChatViewModel.UpcomingEventUIState.None)
     private val overflowContainerHeightPx = mutableIntStateOf(0)
+
+    private var mediaControllerFuture: ListenableFuture<MediaController>? = null
+    private var mediaController: MediaController? = null
 
     private val startSelectContactForResult = registerForActivityResult(
         ActivityResultContracts
@@ -396,6 +410,73 @@ class ChatActivity :
     private var pendingTargetSearchQuery: String? = null
 
     private lateinit var pickMultipleMedia: ActivityResultLauncher<PickVisualMediaRequest>
+
+    private var progressJob: Job? = null
+
+    private fun updateSeekbarUi() {
+        mediaController?.let { controller ->
+            val currentPosition = controller.currentPosition
+            val duration = controller.duration.takeIf { it > 0 } ?: 1
+
+            val progress = (currentPosition.toFloat() / duration) * FLOAT_100
+            val secondsPlayed = (currentPosition / MILLIS_1000)
+
+            val msg = chatViewModel.currentVoiceMessage?.apply {
+                voiceMessageSeekbarProgress = kotlin.math.ceil(progress).toInt()
+                voiceMessagePlayedSeconds = secondsPlayed.toInt()
+            }
+
+            val currentMediaId = controller.currentMediaItem?.mediaId
+            if (currentMediaId != null && msg != null) {
+                chatViewModel.syncVoiceMessageUiState(msg)
+            }
+        }
+    }
+
+    private fun startProgressPolling() {
+        progressJob?.cancel()
+        progressJob = lifecycleScope.launch {
+            while (isActive) {
+                updateSeekbarUi()
+                // Poll every 150ms for smooth seekbar updates
+                delay(MILLIS_150)
+            }
+        }
+    }
+
+    private fun stopProgressPolling() {
+        progressJob?.cancel()
+        progressJob = null
+    }
+
+    private val playerListener = object : Player.Listener {
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            if (isPlaying) {
+                startProgressPolling()
+            } else {
+                stopProgressPolling()
+                updateSeekbarUi()
+            }
+
+            chatViewModel.currentVoiceMessage?.apply {
+                isPlayingVoiceMessage = isPlaying
+            }?.let { chatViewModel.syncVoiceMessageUiState(it) }
+        }
+
+        // Catches instant changes (e.g., manual seeks, skipping to the next track)
+        override fun onPositionDiscontinuity(
+            oldPosition: Player.PositionInfo,
+            newPosition: Player.PositionInfo,
+            reason: Int
+        ) {
+            updateSeekbarUi()
+        }
+
+        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+            // Ensures the UI resets immediately when transitioning to the next voice message
+            updateSeekbarUi()
+        }
+    }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -796,7 +877,7 @@ class ChatActivity :
                 ) {
                     val currentlyPlayingId by chatViewModel.currentlyPlayedMessageId.collectAsState(null)
 
-                    val isOneToOneConversation = uiState.isOneToOneConversation
+                    val isOneToOneConversation by remember { mutableStateOf(uiState.isOneToOneConversation) }
                     Log.d(TAG, "isOneToOneConversation=" + isOneToOneConversation)
 
                     // list of the file ids of messages being downloaded
@@ -818,7 +899,6 @@ class ChatActivity :
                         state = ChatViewState(
                             chatItems = uiState.items,
                             isOneToOneConversation = isOneToOneConversation,
-                            currentlyPlayingVoiceMessageId = currentlyPlayingId,
                             conversationThreadId = conversationThreadId,
                             chatMode = chatMode,
                             highlightedMessageId = uiState.highlightedMessageId,
@@ -838,8 +918,15 @@ class ChatActivity :
                                 onSwipeReply = { handleSwipeToReply(it) },
                                 onFileClick = { downloadAndOpenFile(it, openWhenDownloadState, downloadingFileState) },
                                 onPollClick = { pollId, pollName -> openPollDialog(pollId, pollName) },
-                                onVoicePlayPauseClick = { onVoicePlayPauseClickCompose(it) },
-                                onVoiceSeek = { _, progress -> chatViewModel.seekToMediaPlayer(progress) },
+                                onVoicePlayPauseClick = { onVoiceClick(it) },
+                                onVoiceSeek = { id, progress ->
+                                    mediaController?.let { controller ->
+                                        if (id.toString() == controller.currentMediaItem?.mediaId) {
+                                            val pos = controller.duration * progress / 100f
+                                            controller.seekTo(pos.toLong())
+                                        }
+                                    }
+                                },
                                 onVoiceSpeedClick = { onVoiceSpeedClickCompose(it) },
                                 onReactionClick = { messageId, emoji -> handleReactionClick(messageId, emoji) },
                                 onReactionLongClick = { messageId -> openReactionsDialog(messageId) },
@@ -976,6 +1063,122 @@ class ChatActivity :
         }
     }
 
+    @Suppress("ReturnCount", "CyclomaticComplexMethod")
+    private fun onVoiceClick(messageId: Int) {
+        fun getAudioDuration(audioFilePath: String): Long {
+            val retriever = MediaMetadataRetriever()
+
+            return try {
+                retriever.setDataSource(audioFilePath)
+                val durationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                val durationLong = durationString?.toLong() ?: 0L
+
+                durationLong / ONE_SECOND_IN_MILLIS
+            } catch (e: IllegalArgumentException) {
+                e.printStackTrace()
+                0L
+            } finally {
+                retriever.release()
+            }
+        }
+
+        fun setupAndPlay(controller: MediaController, message: ChatMessage, file: String) {
+            val avatarUrl = chatViewModel.getAvatarUrl(message)
+
+            val metadata = MediaMetadata.Builder()
+                .setTitle(message.actorDisplayName)
+                .setArtist("Voice Message")
+                .setArtworkUri(avatarUrl.toUri())
+                .build()
+
+            val mediaItem = MediaItem.Builder()
+                .setMediaId(message.jsonMessageId.toString())
+                .setMediaMetadata(metadata)
+                .setUri(file)
+                .build()
+
+            controller.setMediaItem(mediaItem)
+
+            controller.prepare()
+            controller.play()
+        }
+
+        fun setUpWaveform(message: ChatMessage, file: File) {
+            if (message.voiceMessageFloatArray != null) return
+
+            val filename = message.fileParameters.name
+            message.isDownloadingVoiceMessage = true
+
+            chatViewModel.syncVoiceMessageUiState(message)
+
+            CoroutineScope(Dispatchers.Default).launch {
+                val waveform = AudioUtils.audioFileToFloatArray(file)
+                appPreferences.saveWaveFormForFile(filename, waveform.toTypedArray())
+                message.voiceMessageFloatArray = waveform
+
+                withContext(Dispatchers.Main) {
+                    message.isDownloadingVoiceMessage = false
+                    chatViewModel.syncVoiceMessageUiState(message)
+                }
+            }
+        }
+
+        fun prepareVoiceMessage(controller: MediaController, message: ChatMessage): Boolean {
+            val currentMessageId = message.jsonMessageId.toString()
+            val filename = message.fileParameters.name
+            if (filename.isEmpty()) {
+                return true
+            }
+
+            val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, filename) ?: return true
+            val fileURI = file.toUri()
+            val filePath = fileURI.toString()
+
+            chatViewModel.syncVoiceMessageUiState(
+                message.apply {
+                    voiceMessageDuration = getAudioDuration(filePath).toInt()
+                }
+            )
+
+            if (controller.currentMediaItem?.mediaId != currentMessageId) {
+                if (!file.exists()) {
+                    downloadFileToCache(message, true) {
+                        setupAndPlay(controller, message, filePath)
+                        setUpWaveform(message, file)
+                    }
+                } else {
+                    setupAndPlay(controller, message, filePath)
+                    setUpWaveform(message, file)
+                }
+
+                return true
+            }
+            return false
+        }
+
+        lifecycleScope.launch {
+            val message = chatViewModel.getMessageById(messageId.toLong()).first()
+
+            mediaController?.let { controller ->
+                // If a message is still playing, it must be paused first before another can be loaded
+                val currentMessageId = message.jsonMessageId.toString()
+                if (controller.isPlaying && controller.currentMediaItem?.mediaId != currentMessageId) return@launch
+
+                chatViewModel.currentVoiceMessage = message
+
+                // If the controller is playing a new voice message, initialize
+                if (prepareVoiceMessage(controller, message)) return@launch
+
+                // If the controller is playing the same voice message, pause/resume
+                if (controller.isPlaying) {
+                    controller.pause()
+                } else {
+                    controller.play()
+                }
+            }
+        }
+    }
+
     @Composable
     private fun LazyListState.visibleItemsWithThreshold(): List<String> =
         remember(this) {
@@ -1011,57 +1214,6 @@ class ChatActivity :
 
     private fun onLoadQuotedMessage(messageId: Int) {
         chatViewModel.jumpToQuotedMessage(messageId.toLong())
-    }
-
-    private fun onVoicePlayPauseClickCompose(messageId: Int) {
-        lifecycleScope.launch {
-            val isCurrentlyPlaying = chatViewModel.uiState.value.items
-                .mapNotNull { (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage }
-                .firstOrNull { it.id == messageId }
-                ?.content
-                ?.let { it as? MessageTypeContent.Voice }
-                ?.isPlaying ?: false
-
-            val message = chatViewModel.getMessageById(messageId.toLong()).first()
-            val filename = message.fileParameters.name
-            if (filename.isEmpty()) {
-                return@launch
-            }
-
-            val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, filename)
-            if (file == null) {
-                return@launch
-            }
-            if (file.exists()) {
-                if (isCurrentlyPlaying) {
-                    chatViewModel.pauseMediaPlayer(true)
-                    chatViewModel.pauseVoiceMessageUiState(messageId)
-                } else {
-                    val uiSpeed = chatViewModel.uiState.value.items
-                        .mapNotNull { (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage }
-                        .firstOrNull { it.id == messageId }
-                        ?.content
-                        ?.let { it as? MessageTypeContent.Voice }
-                        ?.playbackSpeed ?: PlaybackSpeed.NORMAL
-                    chatViewModel.setPlayBack(uiSpeed)
-
-                    val retrieved = appPreferences.getWaveFormFromFile(filename)
-                    if (retrieved.isEmpty()) {
-                        setUpWaveform(message)
-                    } else {
-                        if (message.voiceMessageFloatArray == null || message.voiceMessageFloatArray!!.isEmpty()) {
-                            message.voiceMessageFloatArray = retrieved.toFloatArray()
-                            chatViewModel.syncVoiceMessageUiState(message)
-                        }
-                        startPlayback(file, message)
-                    }
-                }
-            } else {
-                downloadFileToCache(message, true) {
-                    setUpWaveform(message)
-                }
-            }
-        }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -1208,6 +1360,19 @@ class ChatActivity :
         active = true
         this.lifecycle.addObserver(AudioUtils)
         this.lifecycle.addObserver(chatViewModel)
+
+        val sessionToken = SessionToken(this, ComponentName(this, VoiceMessageMediaService::class.java))
+        mediaControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
+
+        mediaControllerFuture?.addListener({
+            mediaController = mediaControllerFuture?.get()
+
+            mediaController?.addListener(playerListener)
+
+            if (mediaController?.isPlaying == true) {
+                startProgressPolling()
+            }
+        }, ContextCompat.getMainExecutor(this))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -1220,6 +1385,12 @@ class ChatActivity :
         active = false
         this.lifecycle.removeObserver(AudioUtils)
         this.lifecycle.removeObserver(chatViewModel)
+
+        mediaController?.removeListener(playerListener)
+        stopProgressPolling()
+
+        mediaControllerFuture?.let { MediaController.releaseFuture(it) }
+        mediaController = null
     }
 
     @OptIn(FlowPreview::class)
@@ -1842,38 +2013,6 @@ class ChatActivity :
                 }
             }
         }
-    }
-
-    private fun setUpWaveform(message: ChatMessage, thenPlay: Boolean = true, backgroundPlayAllowed: Boolean = false) {
-        val filename = message.fileParameters.name
-        val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, filename)
-        if (file == null) {
-            return
-        }
-        if (file.exists() && message.voiceMessageFloatArray == null) {
-            message.isDownloadingVoiceMessage = true
-            chatViewModel.syncVoiceMessageUiState(message)
-            CoroutineScope(Dispatchers.Default).launch {
-                val r = AudioUtils.audioFileToFloatArray(file)
-                appPreferences.saveWaveFormForFile(filename, r.toTypedArray())
-                message.voiceMessageFloatArray = r
-                withContext(Dispatchers.Main) {
-                    message.isDownloadingVoiceMessage = false
-                    chatViewModel.syncVoiceMessageUiState(message)
-                    startPlayback(file, message)
-                }
-            }
-        } else {
-            startPlayback(file, message)
-        }
-    }
-
-    private fun startPlayback(file: File, message: ChatMessage) {
-        chatViewModel.clearMediaPlayerQueue()
-        chatViewModel.queueInMediaPlayer(file.canonicalPath, message)
-        chatViewModel.startCyclingMediaPlayer()
-        message.isPlayingVoiceMessage = true
-        chatViewModel.syncVoiceMessageUiState(message)
     }
 
     private fun updateTypingIndicator() {
@@ -2783,7 +2922,7 @@ class ChatActivity :
         )
     }
 
-    public override fun onDestroy() {
+    override fun onDestroy() {
         super.onDestroy()
         logConversationInfos("onDestroy")
 
@@ -3990,6 +4129,9 @@ class ChatActivity :
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
         private const val MILLIS_250 = 250L
+        private const val MILLIS_150 = 150L
+        private const val MILLIS_1000 = 1000L
+        private const val FLOAT_100 = 100f
         private const val AGE_THRESHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_SHARE_FILE_PERMISSION: Int = 221
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222

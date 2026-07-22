@@ -54,7 +54,6 @@ fun VoiceMessage(
     message: ChatMessageUi,
     isOneToOneConversation: Boolean = false,
     conversationThreadId: Long? = null,
-    currentlyPlayingVoiceMessageId: Int? = null,
     onPlayPauseClick: (Int) -> Unit = {},
     onSeek: (messageId: Int, progress: Int) -> Unit = { _, _ -> },
     onSpeedClick: (messageId: Int) -> Unit = {}
@@ -69,7 +68,7 @@ fun VoiceMessage(
             remember(inversePrimaryColor) { inversePrimaryColor.toArgb() }
             val onPrimaryContainerColor = colorScheme.onPrimaryContainer
             remember(onPrimaryContainerColor) { onPrimaryContainerColor.toArgb() }
-            val remainingSeconds = (typeContent.durationSeconds - typeContent.playedSeconds).coerceAtLeast(0)
+            val remainingSeconds = (typeContent.durationSeconds - typeContent.playedSeconds)
             val waveformData = remember(typeContent.waveform) {
                 val floatArr = typeContent.waveform.toFloatArray()
                 if (floatArr.size < WAVEFORM_SIZE) {
@@ -84,11 +83,7 @@ fun VoiceMessage(
                 label = "size"
             )
 
-            val icon = if (message.id != currentlyPlayingVoiceMessageId) {
-                Icons.Filled.PlayArrow
-            } else {
-                if (typeContent.isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow
-            }
+            val icon = if (typeContent.isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow
 
             Column {
                 Row(
@@ -123,7 +118,8 @@ fun VoiceMessage(
                             .height(animValue.dp)
                             .fillMaxWidth()
                             .padding(8.dp), // or weight(1f),
-                        waveformData
+                        waveformData,
+                        enabled = true
                     )
 
                     TextButton(
