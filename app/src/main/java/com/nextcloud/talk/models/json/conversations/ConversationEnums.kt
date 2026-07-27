@@ -47,7 +47,8 @@ class ConversationEnums {
         EVENT,
         PHONE_TEMPORARY,
         PHONE_PERSIST,
-        INSTANT_MEETING
+        INSTANT_MEETING,
+        CLASSIFIED
     }
 
     enum class Preset {

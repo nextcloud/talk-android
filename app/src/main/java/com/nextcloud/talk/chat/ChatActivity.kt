@@ -171,6 +171,7 @@ import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfEventRooms
 import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfInstantMeetingRoom
+import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfClassifiedRoom
 import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfSIPRoom
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
@@ -1432,6 +1433,24 @@ class ChatActivity :
                         }
                     }
 
+                    if (state.conversationModel.objectType == ConversationEnums.ObjectType.CLASSIFIED &&
+                        hasSpreedFeatureCapability(
+                            conversationUser?.capabilities!!.spreedCapability!!,
+                            SpreedFeatures.UNBIND_CONVERSATION
+                        )
+                    ) {
+                        val retentionPeriod = retentionOfClassifiedRoom(spreedCapabilities)
+                        val systemMessage = state.conversationModel.lastMessage?.systemMessageType
+                        if (retentionPeriod != 0 &&
+                            (
+                                systemMessage == ChatMessage.SystemMessageType.CALL_ENDED ||
+                                    systemMessage == ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
+                                )
+                        ) {
+                            showConversationDeletionWarning(retentionPeriod)
+                        }
+                    }
+
                     updateRoomTimerHandler(MILLIS_250)
                 }
 
@@ -1891,6 +1910,7 @@ class ChatActivity :
         val isOneToOne = isOneToOneConversation()
         val capabilitiesReady = ::spreedCapabilities.isInitialized
 
+        val isClassified = conversation != null && capabilitiesReady && ConversationUtils.isClassified(conversation, spreedCapabilities)
         chatToolbarState = chatToolbarState.copy(
             title = buildToolbarTitle(conversation),
             subtitle = buildToolbarSubtitle(conversation),
@@ -1906,7 +1926,8 @@ class ChatActivity :
             showEventMenu = conversation?.objectType == ConversationEnums.ObjectType.EVENT,
             supportsSilentCall = capabilitiesReady &&
                 hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_CALL) &&
-                !isChatThread()
+                !isChatThread(),
+            isClassified = isClassified
         )
     }
 

@@ -237,11 +237,13 @@ internal fun buildMessageActionsState(
             hasUserId &&
             hasUserActorId &&
             conversation?.type != ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
-            isOnline,
+            isOnline &&
+            !(conversation != null && ConversationUtils.isClassified(conversation, spreedCapabilities)),
         showOpenThread = message.isThread && conversationThreadId == null,
         showForward = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == messageType &&
             !(message.isDeletedCommentMessage || message.isDeleted) &&
-            isOnline,
+            isOnline &&
+            !(conversation != null && ConversationUtils.isClassified(conversation, spreedCapabilities)),
         showEdit = isMessageEditable,
         showCopy = !message.isDeleted,
         showCopyMessageLink = !message.isDeleted &&

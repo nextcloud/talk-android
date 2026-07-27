@@ -58,4 +58,11 @@ object ConversationUtils {
     fun isNoteToSelfConversation(currentConversation: ConversationModel?): Boolean =
         currentConversation != null &&
             currentConversation.type == ConversationEnums.ConversationType.NOTE_TO_SELF
+
+    fun isClassified(
+        conversation: ConversationModel,
+        spreedCapabilities: SpreedCapability?
+    ): Boolean =
+        CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CLASSIFIED_CONVERSATIONS) &&
+            ((conversation.attributes ?: 0) and 4) != 0
 }

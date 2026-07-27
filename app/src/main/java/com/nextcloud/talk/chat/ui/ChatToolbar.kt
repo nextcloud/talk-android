@@ -21,7 +21,16 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -311,7 +320,30 @@ private fun ConversationHeader(state: ChatToolbarState, onClick: (() -> Unit)?) 
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            if (state.subtitle.isNotEmpty()) {
+            if (state.isClassified) {
+                val infiniteTransition = rememberInfiniteTransition()
+                val alpha by infiniteTransition.animateFloat(
+                    initialValue = 1f,
+                    targetValue = 0.3f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(1000, easing = LinearEasing),
+                        repeatMode = RepeatMode.Reverse
+                    ),
+                    label = "alpha"
+                )
+                Surface(
+                    modifier = Modifier.padding(top = 2.dp),
+                    color = Color.Red.copy(alpha = alpha),
+                    shape = RoundedCornerShape(4.dp)
+                ) {
+                    Text(
+                        text = "🛡️ Classified conversation",
+                        color = Color.White,
+                        fontSize = 10.sp,
+                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                    )
+                }
+            } else if (state.subtitle.isNotEmpty()) {
                 Text(
                     text = state.subtitle,
                     fontSize = 12.sp,
