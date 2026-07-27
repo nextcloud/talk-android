@@ -292,7 +292,7 @@
     <string name="nc_location_unknown">Pozice neznámá</string>
     <string name="nc_locked">Uzamčeno</string>
     <string name="nc_locked_tap_to_unlock">Odemkněte klepnutím</string>
-    <string name="nc_logs_delete_all">Smazat všechny logy</string>
+    <string name="nc_logs_delete_all">Smazat všechny záznamy událostí</string>
     <string name="nc_logs_disable_delete">Smazat záznamy událostí</string>
     <string name="nc_logs_download_zip">Stáhnout jako ZIP</string>
     <string name="nc_logs_share_diagnosis">Diagnostické hlášení</string>
@@ -696,6 +696,7 @@
     <string name="unarchive_hint">Jakmile je zrušeno archivování konverzace, znovu bude zobrazováná už ve výchozí stavu.</string>
     <string name="unarchived_conversation">Zrušena archivace %1$s</string>
     <string name="unban">Zrušit vyloučení</string>
+    <string name="unifiedpush">UnifiedPush</string>
     <string name="unpin_message">Zrušit připnutí zprávy</string>
     <string name="unread">Nastavit jako nepřečtené</string>
     <string name="until_unpin">Dokud není připnutí zrušeno</string>
