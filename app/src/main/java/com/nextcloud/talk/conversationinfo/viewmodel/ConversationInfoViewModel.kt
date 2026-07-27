@@ -345,7 +345,8 @@ class ConversationInfoViewModel @Inject constructor(
         val recordingConsentType = CapabilitiesUtil.getRecordingConsentType(spreedCapabilities)
         val showRecordingConsent = isModerator &&
             !isNoteToSelf &&
-            recordingConsentType != CapabilitiesUtil.RECORDING_CONSENT_NOT_REQUIRED && !isClassified
+            recordingConsentType != CapabilitiesUtil.RECORDING_CONSENT_NOT_REQUIRED &&
+            !isClassified
         val showRecordingConsentSwitch =
             showRecordingConsent && recordingConsentType == CapabilitiesUtil.RECORDING_CONSENT_DEPEND_ON_CONVERSATION
         val showRecordingConsentAll =
@@ -373,7 +374,8 @@ class ConversationInfoViewModel @Inject constructor(
         val hasPassword = guestsAllowed && conversationModel.hasPassword
         val showPasswordProtection = guestsAllowed
         val showResendInvitations = guestsAllowed &&
-            user.capabilities?.spreedCapability?.features?.contains("sip-support") == true && !isClassified
+            user.capabilities?.spreedCapability?.features?.contains("sip-support") == true &&
+            !isClassified
 
         val showSharedItems = hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA) &&
             conversationModel.remoteServer.isNullOrEmpty()
@@ -382,7 +384,8 @@ class ConversationInfoViewModel @Inject constructor(
         val isWebinarRoom = isGroup || isPublic
         val showWebinarSettings = hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.WEBINARY_LOBBY) &&
             isWebinarRoom &&
-            canModerate && !isClassified
+            canModerate &&
+            !isClassified
 
         val showImportantConversation =
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.IMPORTANT_CONVERSATIONS)
@@ -413,7 +416,7 @@ class ConversationInfoViewModel @Inject constructor(
         }
 
         val showEditButton = canModerate && hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.AVATAR)
-        val showShareConversationButton = !isNoteToSelf
+        val showShareConversationButton = !isNoteToSelf && !isClassified
         val showListBans = canModerate && !isOne2One
         val showMessageExpiration = isModerator &&
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)

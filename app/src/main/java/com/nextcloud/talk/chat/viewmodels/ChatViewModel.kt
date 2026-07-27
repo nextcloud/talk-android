@@ -1050,10 +1050,27 @@ class ChatViewModel @AssistedInject constructor(
             expandedSystemMessageParents
         ) { messages, lastCommonRead, parentMap, convAndCaps, expandedParents ->
             val (conversation, capabilities) = convAndCaps
-            CombinedInput(messages, lastCommonRead, parentMap, conversation.lastReadMessage, expandedParents, conversation, capabilities)
+            CombinedInput(
+                messages,
+                lastCommonRead,
+                parentMap,
+                conversation.lastReadMessage,
+                expandedParents,
+                conversation,
+                capabilities
+            )
         }
             .debounce(MESSAGES_REBUILD_DEBOUNCE_MS)
-            .map { (messages, lastCommonRead, parentMap, conversationLastRead, expandedParents, conversation, capabilities) ->
+            .map { input ->
+                val (
+                    messages,
+                    lastCommonRead,
+                    parentMap,
+                    conversationLastRead,
+                    expandedParents,
+                    conversation,
+                    capabilities
+                ) = input
                 val messageMap: Map<Long, ChatMessage> = messages.associateBy { it.jsonMessageId.toLong() }
                 val combinedMap: Map<Long, ChatMessage> = messageMap + parentMap
 

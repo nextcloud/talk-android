@@ -52,6 +52,7 @@
 * Stefan Niedermann <info@niedermann.it>
 * Stephan Ritscher <no3pam@gmail.com>
 * Tarek Loubani <tarek@tarek.org>
+* thirumani-vihaan <arjunthirumani02@gmail.com>
 * Tilo Spannagel <development@tilosp.de>
 * Tim Krüger <t@timkrueger.me>
 * Tobias Kaminsky <tobias@kaminsky.me>

@@ -1910,7 +1910,9 @@ class ChatActivity :
         val isOneToOne = isOneToOneConversation()
         val capabilitiesReady = ::spreedCapabilities.isInitialized
 
-        val isClassified = conversation != null && capabilitiesReady && ConversationUtils.isClassified(conversation, spreedCapabilities)
+        val isClassified = conversation != null &&
+            capabilitiesReady &&
+            ConversationUtils.isClassified(conversation, spreedCapabilities)
         chatToolbarState = chatToolbarState.copy(
             title = buildToolbarTitle(conversation),
             subtitle = buildToolbarSubtitle(conversation),

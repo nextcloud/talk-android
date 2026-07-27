@@ -226,6 +226,8 @@ internal fun buildMessageActionsState(
     val hasUserId = user?.userId?.isNotEmpty() == true && user.userId != "?"
     val hasUserActorId = message.actorType == "users" && message.actorId != conversation?.actorId
 
+    val isClassifiedRoom = conversation != null && ConversationUtils.isClassified(conversation, spreedCapabilities)
+
     return MessageActionsState(
         showEmojiBar = showEmojiBar,
         selfReactions = message.reactionsSelf?.toSet() ?: emptySet(),
@@ -238,12 +240,12 @@ internal fun buildMessageActionsState(
             hasUserActorId &&
             conversation?.type != ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
             isOnline &&
-            !(conversation != null && ConversationUtils.isClassified(conversation, spreedCapabilities)),
+            !isClassifiedRoom,
         showOpenThread = message.isThread && conversationThreadId == null,
         showForward = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == messageType &&
             !(message.isDeletedCommentMessage || message.isDeleted) &&
             isOnline &&
-            !(conversation != null && ConversationUtils.isClassified(conversation, spreedCapabilities)),
+            !isClassifiedRoom,
         showEdit = isMessageEditable,
         showCopy = !message.isDeleted,
         showCopyMessageLink = !message.isDeleted &&
@@ -262,10 +264,12 @@ internal fun buildMessageActionsState(
         showTranslate = !message.isDeleted &&
             ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == messageType &&
             CapabilitiesUtil.isTranslationsSupported(spreedCapabilities) &&
-            isOnline,
+            isOnline &&
+            !isClassifiedRoom,
         showShareToNote = !message.isDeleted &&
             !ConversationUtils.isNoteToSelfConversation(conversation) &&
-            isOnline,
+            isOnline &&
+            !isClassifiedRoom,
         showShare = messageHasFileAttachment || (messageHasRegularText && isOnline),
         showSave = messageHasFileAttachment,
         showOpenInFiles = messageHasFileAttachment && isOnline,

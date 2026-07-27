@@ -30,7 +30,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -82,6 +81,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.MenuItemData
+
+private const val BANNER_ANIMATION_DURATION_MS = 1000
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -326,19 +327,19 @@ private fun ConversationHeader(state: ChatToolbarState, onClick: (() -> Unit)?) 
                     initialValue = 1f,
                     targetValue = 0.3f,
                     animationSpec = infiniteRepeatable(
-                        animation = tween(1000, easing = LinearEasing),
+                        animation = tween(BANNER_ANIMATION_DURATION_MS, easing = LinearEasing),
                         repeatMode = RepeatMode.Reverse
                     ),
                     label = "alpha"
                 )
                 Surface(
                     modifier = Modifier.padding(top = 2.dp),
-                    color = Color.Red.copy(alpha = alpha),
+                    color = MaterialTheme.colorScheme.error.copy(alpha = alpha),
                     shape = RoundedCornerShape(4.dp)
                 ) {
                     Text(
                         text = "🛡️ Classified conversation",
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onError,
                         fontSize = 10.sp,
                         modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
                     )
