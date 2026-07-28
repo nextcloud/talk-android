@@ -93,7 +93,7 @@ class MentionAutocompleteAdapter(
             )
             viewThemeUtils.talk.themeAndHighlightText(
                 holder.binding.secondaryText,
-                "@${item.objectId}",
+                secondaryText(item),
                 filterQuery
             )
         } else {
@@ -103,6 +103,9 @@ class MentionAutocompleteAdapter(
         setAvatar(holder, item)
         drawStatus(holder, item)
     }
+
+    private fun secondaryText(item: MentionAutocompleteItem): String =
+        secondaryText(item.source, item.objectId, context.resources.getString(R.string.nc_team))
 
     private fun setAvatar(holder: ViewHolder, item: MentionAutocompleteItem) {
         val avatarView = holder.binding.avatarView
@@ -188,5 +191,13 @@ class MentionAutocompleteAdapter(
         private const val STATUS_SIZE_IN_DP = 9f
         private const val NO_ICON = ""
         private const val NO_USER_STATUS_DP_FROM_TOP: Float = 10f
+
+        // Teams use a "team/<id>" objectId that should not be exposed; show "Team" like the web client does.
+        fun secondaryText(source: String?, objectId: String?, teamLabel: String): String =
+            if (source == SOURCE_TEAMS) {
+                teamLabel
+            } else {
+                "@$objectId"
+            }
     }
 }
