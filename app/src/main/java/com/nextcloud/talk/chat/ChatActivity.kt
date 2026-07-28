@@ -2398,13 +2398,12 @@ class ChatActivity :
         cursor?.close()
     }
 
-    fun getReplyToMessageId(): Int {
-        var replyMessageId = messageInputViewModel.getReplyChatMessage.value?.jsonMessageId
-        if (replyMessageId == null || replyMessageId == 0) {
-            replyMessageId = conversationThreadInfo?.thread?.id ?: 0
-        }
-        return replyMessageId
-    }
+    fun getReplyToMessageId(): Int =
+        resolveReplyToMessageId(
+            messageInputViewModel.getReplyChatMessage.value?.jsonMessageId,
+            chatViewModel.messageDraft.quotedJsonId,
+            conversationThreadInfo?.thread?.id
+        )
 
     @Throws(IllegalStateException::class)
     private fun onPickCameraResult(intent: Intent?) {
@@ -4034,4 +4033,13 @@ class ChatActivity :
         private const val SEARCH_CENTER_STABILIZE_ATTEMPTS = 8
         private const val SEARCH_CENTER_STABILIZE_DELAY_MS = 200L
     }
+}
+
+/**
+ * The reply is only kept in the view model, so it is gone when the activity was recreated.
+ * The saved draft still holds it, so use it as fallback before falling back to the thread.
+ */
+internal fun resolveReplyToMessageId(replyMessageId: Int?, draftQuotedJsonId: Int?, threadId: Int?): Int {
+    val replyId = replyMessageId?.takeIf { it != 0 } ?: draftQuotedJsonId?.takeIf { it != 0 }
+    return replyId ?: threadId ?: 0
 }
