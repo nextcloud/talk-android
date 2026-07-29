@@ -582,6 +582,7 @@
     <string name="this_is_a_test_message">Això és un missatge de prova</string>
     <string name="this_weekend">Aquest cap de setmana</string>
     <string name="thread_reply">Resposta</string>
+    <string name="threads">Fils</string>
     <string name="today">Avui</string>
     <string name="tomorrow">Demà</string>
     <string name="translate">Traducció</string>
@@ -614,6 +615,7 @@
     <string name="user_info_phone">Número de telèfon</string>
     <string name="user_info_profile_enable">Habilita el perfil</string>
     <string name="user_info_pronouns">Pronoms</string>
+    <string name="user_info_role">Rol</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Lloc web</string>
     <string name="user_status">Estat</string>
@@ -622,6 +624,10 @@
     <string name="userinfo_no_info_text">Afegiu el nom, foto i detalls de contacte a la vostra pàgina de perfil.</string>
     <string name="video_call">Videotrucada</string>
     <string name="whats_your_status">Quin és el vostre estat?</string>
+    <plurals name="thread_replies">
+        <item quantity="one">%d resposta</item>
+        <item quantity="other">%d respostes</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d vot</item>
         <item quantity="other">%d vots</item>

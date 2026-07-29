@@ -67,6 +67,7 @@
     <string name="encrypted">رمزگذاری شده</string>
     <string name="end_call">پایان تماس</string>
     <string name="end_call_for_everyone">پایان تماس برای همه</string>
+    <string name="error_crash_please_describe">لطفاً مشکل را شرح دهید (چگونه میتوان این خطا یا باگ را بازتولید کرد؟)</string>
     <string name="error_crash_title">%1$s از کار افتاد</string>
     <string name="error_loading_chats">مشکلی در بارگذاری چت‌های شما وجود داشت</string>
     <string name="error_unbanning">خطا در رفع مسدودیت شرکت‌کننده</string>
@@ -305,7 +306,21 @@
     <string name="nc_location_unknown">موقعیت ناشناخته</string>
     <string name="nc_locked">قفل‌شده</string>
     <string name="nc_locked_tap_to_unlock">برای باز کردن قفل ضربه بزنید</string>
+    <string name="nc_logs_advanced_logging">ثبت وقایع پیشرفته</string>
+    <string name="nc_logs_advanced_logging_disable">غیرفعال کردن ثبت وقایع پیشرفته</string>
+    <string name="nc_logs_advanced_logging_enable">فعال سازی ثبت وقایع پیشرفته</string>
+    <string name="nc_logs_advanced_logging_enabled_warning">ثبت وقایع پیشرفته فعال شد. این ممکن است سرعت عملکرد را کاهش دهد.</string>
+    <string name="nc_logs_advanced_logging_privacy_warning">اگر ثبت وقایع پیشرفته را فعال کرده بودید، لطفاً گزارش را به صورت عمومی به اشتراک نگذارید.</string>
+    <string name="nc_logs_delete_all">تمامی گزارشهای ثبت وقایع را حذف کن</string>
     <string name="nc_logs_disable_delete">حذف لاگ‌ها</string>
+    <string name="nc_logs_disable_dialog_message">آیا میخواهید گزارشهای ثبت وقایع موجود را هم حذف کنید؟</string>
+    <string name="nc_logs_disable_dialog_title"> گزارش ثبت وقایع را غیرفعال کن</string>
+    <string name="nc_logs_disable_keep">گزارش های ثبت وقایع را نگه دار</string>
+    <string name="nc_logs_download_zip">به صورت فایل زیپ دانلود کن</string>
+    <string name="nc_logs_empty">هیچ گزارش ثبت وقایعی پیدا نشد.</string>
+    <string name="nc_logs_logging_disabled_note">ثبت گزارش وقایع غیرفعال شد. هیچ گزارشی بر بروی دیسک نوشته نمیشود.</string>
+    <string name="nc_logs_logging_enabled">ثبت گزارش وقایع فعال شد</string>
+    <string name="nc_logs_share">به صورت ایمیل ارسال کن</string>
     <string name="nc_logs_share_diagnosis">گزارش تشخیص</string>
     <string name="nc_logs_title">لاگ‌ها</string>
     <string name="nc_manual">تنظیم نشده</string>
@@ -497,6 +512,7 @@
     <string name="nc_settings_server_eol">نسخه سرور بسیار قدیمی است و توسط این نسخه از برنامه Android پشتیبانی نمی‌شود</string>
     <string name="nc_settings_server_eol_title">سرور پشتیبانی نشده</string>
     <string name="nc_settings_server_notification_app_not_installed_title">برنامه اعلان‌های سرور نصب نشده است</string>
+    <string name="nc_settings_share_report_title">گزارش تشخیص را همرسانی کن</string>
     <string name="nc_settings_theme_battery_saver">تنظیم شده توسط ذخیره‌کننده باتری</string>
     <string name="nc_settings_theme_dark">تیره</string>
     <string name="nc_settings_theme_follow_system">از پیش‌فرض سیستم استفاده کنید</string>

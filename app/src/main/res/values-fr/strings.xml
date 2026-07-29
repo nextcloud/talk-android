@@ -51,7 +51,7 @@
     <string name="custom">Personnalisé</string>
     <string name="danger_zone">Zone de danger</string>
     <string name="deck_card_description">%1$s dans %2$s</string>
-    <string name="default_room">Défaut</string>
+    <string name="default_room">Par défaut</string>
     <string name="default_room_preset">Envoyer des messages, créer des sujets et démarrer des appels audio et vidéo.</string>
     <string name="delete_avatar">Supprimer l\'avatar</string>
     <string name="delete_voice_recording">Supprimer l\'enregistrement vocal</string>
