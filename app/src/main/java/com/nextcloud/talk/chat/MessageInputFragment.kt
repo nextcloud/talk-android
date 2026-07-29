@@ -93,7 +93,6 @@ import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
 import com.vanniktech.emoji.EmojiPopup
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -398,7 +397,7 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun restoreState() {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             if (!hasSharedText) {
                 chatActivity.chatViewModel.updateMessageDraft()
             }
