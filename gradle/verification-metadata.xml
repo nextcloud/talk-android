@@ -378,6 +378,7 @@
             <trusting group="pl.droidsonroids.gif" name="android-gif-drawable" version="1.2.29"/>
             <trusting group="pl.droidsonroids.gif" name="android-gif-drawable" version="1.2.30"/>
             <trusting group="pl.droidsonroids.gif" name="android-gif-drawable" version="1.2.31"/>
+            <trusting group="pl.droidsonroids.gif" name="android-gif-drawable" version="1.2.32"/>
          </trusted-key>
          <trusted-key id="B2F967B67DADC1F07172DBDADE453E55DC86FC9B" group="co.touchlab"/>
          <trusted-key id="B41089A2DA79B0FA5810252872385FF0AF338D52">
