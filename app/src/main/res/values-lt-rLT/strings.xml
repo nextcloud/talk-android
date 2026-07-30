@@ -2,7 +2,7 @@
   <resources>
     <string name= "nc_edit">Redaguoti</string>
     <string name="add_participants">Pridėti</string>
-    <string name="add_to_notes">Pridėti į Užrašus</string>
+    <string name="add_to_notes">Pridėti į programėlę „Užrašai“</string>
     <string name="appbar_search_in">Ieškoti %s</string>
     <string name="appear_offline">Atrodyti atsijungusiu</string>
     <string name="archive_conversation">Archyvuoti pokalbį</string>
@@ -464,7 +464,7 @@
     <string name="nc_server_maintenance">Išjunkite savo %1$s techninės priežiūros veikseną</string>
     <string name="nc_server_not_installed">Užbaikite savo %1$s diegimą</string>
     <string name="nc_server_testing_connection">Ryšio tikrinimas</string>
-    <string name="nc_server_unsupported">Serveryje nėra įdiegta palaikoma Pokalbių programėlė</string>
+    <string name="nc_server_unsupported">Serveryje nėra įdiegta palaikoma „Pokalbiai“ programėlė</string>
     <string name="nc_server_url">Serverio adresas https://…</string>
     <string name="nc_server_version">%1$s veikia tik naudojant %2$s 13 ar naujesnę versiją</string>
     <string name="nc_set_new_password">Nustatyti naują slaptažodį</string>
@@ -483,12 +483,12 @@
     <string name="nc_settings_logs_subtitle">Peržiūrėti vietinius žurnalo failus</string>
     <string name="nc_settings_logs_title">Žurnalai</string>
     <string name="nc_settings_no_ringtone">Be garso</string>
-    <string name="nc_settings_no_talk_installed">Pokalbių programėlė nėra įdiegta serveryje, kuriame bandėte nusistatyti tapatybę</string>
+    <string name="nc_settings_no_talk_installed">Programėlė „Pokalbiai“ nėra įdiegta serveryje, kuriame bandėte nusistatyti tapatybę</string>
     <string name="nc_settings_notification_sounds_post_oreo">Pranešimai</string>
     <string name="nc_settings_notifications_declined">Pranešimai atmesti</string>
     <string name="nc_settings_notifications_granted">Pranešimai patvirtinti</string>
     <string name="nc_settings_other_notifications_ringtone">Žinutės</string>
-    <string name="nc_settings_phone_book_integration_desc">Suderinkite kontaktus pagal telefono numerį, kad „Talk“ nuoroda būtų integruota į sistemos kontaktų programėlę</string>
+    <string name="nc_settings_phone_book_integration_desc">Suderinkite kontaktus pagal telefono numerį, kad „Pokalbiai“ nuoroda būtų integruota į sistemos kontaktų programėlę</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Klaida 429: per daug užklausų</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Galite nurodyti savo telefono numerį, kad kiti vartotojai galėtų jus rasti</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Įveskite telefono numerį</string>
@@ -600,7 +600,7 @@
     <string name="online_status">Prisijungimo būsena</string>
     <string name="openConversations">Atverti pokalbius</string>
     <string name="open_in_files_app">Atidaryti programėlėje Failai</string>
-    <string name="open_notes">Atidaryti „Užrašai“</string>
+    <string name="open_notes">Atidaryti programėlę „Užrašai“</string>
     <string name="open_thread">Eiti į temą</string>
     <string name="pin_24hr">Prisegti 24 valandoms</string>
     <string name="pin_30_days">Prisegti 30 dienų</string>
@@ -665,7 +665,7 @@
     <string name="scope_federated_title">Federacinis</string>
     <string name="scope_local_description">Matoma tik žmonėms šiame egzemplioriuje ir svečiams</string>
     <string name="scope_local_title">Vietinis</string>
-    <string name="scope_private_description">Matoma tik žmonėms, su kuriais pokalbių programėlėje mobiliajame įrenginyje buvo rasta atitiktis per telefono numerio integraciją</string>
+    <string name="scope_private_description">Matoma tik žmonėms, su kuriais „Pokalbiai“ programėlėje mobiliajame įrenginyje buvo rasta atitiktis per telefono numerio integraciją</string>
     <string name="scope_private_title">Privatus</string>
     <string name="scope_published_description">Sinchronizuoti į patikimus serverius ir į visuotinę bei viešą adresų knygą</string>
     <string name="scope_published_title">Paskelbtas</string>
