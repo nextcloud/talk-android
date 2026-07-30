@@ -33,7 +33,6 @@ class NetworkLoginDataSourceTest {
     @Test
     fun `testing anonymouslyPostLoginRequest correct path`() {
         val server = MockWebServer()
-        server.start(0)
         val httpUrl = server.url("index.php/login/v2")
         val validResponse = """
         {
@@ -60,7 +59,6 @@ class NetworkLoginDataSourceTest {
             .setResponseCode(404)
             .setBody("{}")
 
-        server.start()
         server.enqueue(invalidResponse)
         val httpUrl = server.url("index.php/login/v2")
 
@@ -82,7 +80,6 @@ class NetworkLoginDataSourceTest {
 
         val mockResponse = MockResponse().setBody(validResponse)
         server.enqueue(mockResponse)
-        server.start()
         val httpUrl = server.url("index.php/login/v2")
 
         val loginResponse = network.anonymouslyPostLoginRequest(httpUrl.toString())
@@ -104,7 +101,6 @@ class NetworkLoginDataSourceTest {
             .setBody(validBody)
 
         server.enqueue(validResponse)
-        server.start()
         val httpUrl = server.url("login/v2/poll")
         val loginResponse = LoginResponse(
             token = "mQUYQdffOSAMJYtm8pVpkOsVqXt5hglnuSpO5EMbgJMNEPFGaiDe8OUjvrJ2WcYcBSLgqynu9jaPFvZHMl83ybMvp6aDIDARjTFIBpRWod6p32fL9LIpIStvc6k8Wrs1",
@@ -127,7 +123,6 @@ class NetworkLoginDataSourceTest {
             .setBody("{}")
 
         server.enqueue(invalidResponse)
-        server.start()
         val httpUrl = server.url("login/v2/poll")
         val loginResponse = LoginResponse(
             token = "mQUYQdffOSAMJYtm8pVpkOsVqXt5hglnuSpO5EMbgJMNEPFGaiDe8OUjvrJ2WcYcBSLgqynu9jaPFvZHMl83ybMvp6aDIDARjTFIBpRWod6p32fL9LIpIStvc6k8Wrs1",
@@ -153,7 +148,6 @@ class NetworkLoginDataSourceTest {
             .setBody(validBody)
 
         server.enqueue(validResponse)
-        server.start()
         val httpUrl = server.url("login/v2/poll")
         val loginResponse = LoginResponse(
             token = "mQUYQdffOSAMJYtm8pVpkOsVqXt5hglnuSpO5EMbgJMNEPFGaiDe8OUjvrJ2WcYcBSLgqynu9jaPFvZHMl83ybMvp6aDIDARjTFIBpRWod6p32fL9LIpIStvc6k8Wrs1",
