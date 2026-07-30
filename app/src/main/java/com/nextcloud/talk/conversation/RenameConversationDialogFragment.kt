@@ -123,6 +123,7 @@ class RenameConversationDialogFragment : DialogFragment() {
             EmojiPopup(
                 rootView = requireView(),
                 editText = it.textEdit,
+                theming = viewThemeUtils.talk.getEmojiTheming(requireContext()),
                 onEmojiPopupShownListener = {
                     viewThemeUtils.platform.colorImageView(it.smileyButton, ColorRole.PRIMARY)
                 },
