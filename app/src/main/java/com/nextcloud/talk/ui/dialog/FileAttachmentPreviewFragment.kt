@@ -7,14 +7,18 @@
 package com.nextcloud.talk.ui.dialog
 
 import android.app.Dialog
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -26,6 +30,7 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class FileAttachmentPreviewFragment : DialogFragment() {
     private lateinit var filesList: ArrayList<String>
+    private var conversationName: String = ""
     private var uploadFiles: (files: MutableList<String>, caption: String, compressImages: Boolean) -> Unit =
         { _, _, _ -> }
     private var composeView: ComposeView? = null
@@ -43,6 +48,7 @@ class FileAttachmentPreviewFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         arguments?.let {
             filesList = it.getStringArrayList(FILES_TO_UPLOAD_ARG)!!
+            conversationName = it.getString(CONVERSATION_NAME_ARG, "")
         }
 
         composeView = ComposeView(requireContext())
@@ -59,8 +65,27 @@ class FileAttachmentPreviewFragment : DialogFragment() {
         // runs, so clearing it must happen once the dialog window is actually up. Without this,
         // the system never routes the keyboard to this window, even while it holds input focus.
         dialog?.window?.apply {
+            setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
+            setBackgroundDrawableResource(android.R.color.transparent)
             setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
             clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
+            // Dialog windows dim whatever is behind them by default; at fullscreen size that
+            // scrim covers the whole window, including the status bar area, making it look dark
+            // regardless of the Compose content's own color.
+            clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            // targetSdk 36 enforces edge-to-edge; Window.setStatusBarColor() is a no-op there.
+            // Instead, let the dialog draw behind the status bar so the Compose Surface's own
+            // background shows through it, and inset the content with statusBarsPadding().
+            WindowCompat.setDecorFitsSystemWindows(this, false)
+            statusBarColor = Color.TRANSPARENT
+            navigationBarColor = Color.TRANSPARENT
+
+            val surfaceColor = viewThemeUtils.getColorScheme(requireActivity()).surface
+            val isLightSurface = surfaceColor.luminance() > LIGHT_LUMINANCE_THRESHOLD
+            WindowInsetsControllerCompat(this, decorView).apply {
+                isAppearanceLightStatusBars = isLightSurface
+                isAppearanceLightNavigationBars = isLightSurface
+            }
         }
     }
 
@@ -74,10 +99,11 @@ class FileAttachmentPreviewFragment : DialogFragment() {
                 MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(requireActivity())) {
                     FileAttachmentPreviewContent(
                         files = filesList,
+                        conversationName = conversationName,
                         initialCompressImages = appPreferences.compressUploadImages,
                         onDismiss = { dismiss() },
-                        onSend = { caption, compressImages ->
-                            uploadFiles(filesList, caption, compressImages)
+                        onSend = { files, caption, compressImages ->
+                            uploadFiles(files.toMutableList(), caption, compressImages)
                             dismiss()
                         }
                     )
@@ -93,13 +119,16 @@ class FileAttachmentPreviewFragment : DialogFragment() {
 
     companion object {
 
+        private const val LIGHT_LUMINANCE_THRESHOLD = 0.5f
         private const val FILES_TO_UPLOAD_ARG = "FILES_TO_UPLOAD_ARG"
+        private const val CONVERSATION_NAME_ARG = "CONVERSATION_NAME_ARG"
 
         @JvmStatic
-        fun newInstance(filesToUpload: MutableList<String>): FileAttachmentPreviewFragment {
+        fun newInstance(filesToUpload: MutableList<String>, conversationName: String): FileAttachmentPreviewFragment {
             val fileAttachmentFragment = FileAttachmentPreviewFragment()
             val args = Bundle()
             args.putStringArrayList(FILES_TO_UPLOAD_ARG, ArrayList(filesToUpload))
+            args.putString(CONVERSATION_NAME_ARG, conversationName)
             fileAttachmentFragment.arguments = args
             return fileAttachmentFragment
         }

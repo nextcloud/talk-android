@@ -2395,7 +2395,8 @@ class ChatActivity :
             require(filesToUpload.isNotEmpty())
 
             val newFragment = FileAttachmentPreviewFragment.newInstance(
-                filesToUpload.map { it.toString() }.toMutableList()
+                filesToUpload.map { it.toString() }.toMutableList(),
+                currentConversation?.displayName ?: ""
             )
             newFragment.setListener { files, caption, compressImages ->
                 uploadFiles(files, caption, compressImages)
@@ -2481,7 +2482,10 @@ class ChatActivity :
             }
 
             if (permissionUtil.isFilesPermissionGranted()) {
-                val newFragment = FileAttachmentPreviewFragment.newInstance(filesToUpload)
+                val newFragment = FileAttachmentPreviewFragment.newInstance(
+                    filesToUpload,
+                    currentConversation?.displayName ?: ""
+                )
                 newFragment.setListener { files, caption, compressImages ->
                     uploadFiles(files, caption, compressImages)
                 }
