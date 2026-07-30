@@ -44,7 +44,7 @@ val coroutinesVersion = "1.11.0"
 val mockitoKotlinVersion = "6.3.0"
 
 android {
-    compileSdk = 36
+    compileSdk = 37
 
     namespace = "com.nextcloud.talk"
 
