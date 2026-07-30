@@ -1,5 +1,5 @@
 <!--
- ~ SPDX-FileCopyrightText: 2021-2024 Nextcloud GmbH and Nextcloud contributors
+ ~ SPDX-FileCopyrightText: 2021-2026 Nextcloud GmbH and Nextcloud contributors
  ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
 # Debugging push notifications
@@ -9,19 +9,14 @@ not be complete. Please contribute to this list as you gain new knowledge. Just 
 "notification" label or create a pull request for this document. 
 
 ## 📱 Users
-- Please make sure to install the app from the Google PlayStore. **The f-droid version doesn't support push 
-  notifications.**
+- If you install the app from Google PlayStore, notifications will work out of the box if you respect the settings 
+  in this document. 
   
   [<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
   alt="Download from Google Play"
   height="80">](https://play.google.com/store/apps/details?id=com.nextcloud.talk2)
 
-- Only talk notifications will be delivered by the Talk app, for all other notifications install the Nextcloud Files 
-  app from Google PlayStore.
-  
-  [<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
-  alt="Download from Google Play"
-  height="80">](https://play.google.com/store/apps/details?id=com.nextcloud.client)
+- If you install the app from F-droid or install the generic apk, you have to set up [UnifiedPush](https://github.com/nextcloud/talk-android/blob/master/docs/unifiedPush.md) in order to receive notifications.
 
 If your problem still occurs after checking all these hints, create an issue at https://github.com/nextcloud/talk-android/issues
 
@@ -57,15 +52,21 @@ The android settings may look different depending on manufacturer and android ve
 
 Example 1:
 - Search app in list. 
+
   ![Ignore battery optimization - select all apps](/docs/ignoreBatteryOptimizationSelectAllApps.png "Ignore battery optimization - select all apps")
+
 - Please note that the switch has to be turned off.
+
   ![Ignore battery optimization - turn off switch](/docs/ignoreBatteryOptimizationTurnOffSwitch.png "Ignore battery optimization - turn off switch")
 
 Example 2:
 - Select app from list.
 - Please allow background usage. The switch has to be *turned on*. Also, please click on the text to reach the next menu.
+
   ![Allow background usage. Turn on switch and click on text](/docs/ignoreBatteryOptimization_newerAndroid_allowBackgroundUsage.png "Allow background usage. Turn on switch and click on text")
+
 - Set the background usage to "unrestricted".
+
   ![Set unrestricted background usage](/docs/ignoreBatteryOptimization_newerAndroid_unrestricted.png "Set unrestricted background usage")
 
 #### Grant permissions in settings
