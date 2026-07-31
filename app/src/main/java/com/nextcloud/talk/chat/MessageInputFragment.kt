@@ -205,6 +205,7 @@ class MessageInputFragment : Fragment() {
                     initVoiceRecordButton()
                     initThreadHandling()
                     updateScheduledMessagesAvailability(hasScheduledMessages)
+                    setReactionsOnly(state.spreedCapabilities)
                 }
 
                 is ChatViewModel.GetCapabilitiesInitialLoadState -> {
@@ -215,6 +216,7 @@ class MessageInputFragment : Fragment() {
                     initThreadHandling()
                     updateScheduledMessagesAvailability(hasScheduledMessages)
                     restoreState()
+                    setReactionsOnly(state.spreedCapabilities)
                 }
 
                 else -> {}
@@ -347,6 +349,17 @@ class MessageInputFragment : Fragment() {
                     binding.fragmentCallStarted.root.visibility = View.GONE
                 }
             }
+        }
+    }
+
+    private fun setReactionsOnly(spreedCapabilities: SpreedCapability) {
+        val isReactionOnly = isReactionOnlyMode(spreedCapabilities)
+        if (isReactionOnly) {
+            binding.fragmentMessageInputView.setVisible(false)
+            binding.reactionOnlyAffordance.setVisible(true)
+        } else {
+            binding.fragmentMessageInputView.setVisible(true)
+            binding.reactionOnlyAffordance.setVisible(false)
         }
     }
 
@@ -713,24 +726,14 @@ class MessageInputFragment : Fragment() {
         }
     }
 
+    fun View.setVisible(isVisible: Boolean) {
+        visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
     private fun handleButtonsVisibility() {
         if (!this::binding.isInitialized) {
             Log.w(TAG, "binding not initialized in handleButtonsVisibility")
             return
-        }
-
-        fun View.setVisible(isVisible: Boolean) {
-            visibility = if (isVisible) View.VISIBLE else View.GONE
-        }
-
-        val isReactionOnly = isReactionOnlyMode()
-        if (isReactionOnly) {
-            binding.fragmentMessageInputView.setVisible(false)
-            binding.reactionOnlyAffordance.setVisible(true)
-            return
-        } else {
-            binding.fragmentMessageInputView.setVisible(true)
-            binding.reactionOnlyAffordance.setVisible(false)
         }
 
         val isEditModeActive = binding.fragmentEditView.editMessageView.isVisible
@@ -1304,7 +1307,7 @@ class MessageInputFragment : Fragment() {
         return jsonId != null
     }
 
-    private fun isReactionOnlyMode(): Boolean {
+    private fun isReactionOnlyMode(spreedCapabilities: SpreedCapability): Boolean {
         val conversation = chatActivity.currentConversation
         val permissions = chatActivity.participantPermissionsFlow.value
         val isChannel = conversation.isChannel() &&
