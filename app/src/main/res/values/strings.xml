@@ -677,6 +677,9 @@ How to translate with transifex:
     <!-- Video -->
     <string name="nc_video_filename" translatable="false">Video recording from %1$s</string>
 
+    <!-- Picture -->
+    <string name="nc_picture_filename" translatable="false">Picture from %1$s</string>
+
     <!-- location sharing -->
     <string name="nc_share_location">Share location</string>
     <string name="nc_search_location">Search location</string>
@@ -793,13 +796,6 @@ How to translate with transifex:
 
     <!-- Take photo -->
     <string name="take_photo">Take a photo</string>
-    <string name="take_photo_switch_camera">Switch camera</string>
-    <string name="take_photo_retake_photo">Re-take photo</string>
-    <string name="take_photo_toggle_torch">Toggle torch</string>
-    <string name="take_photo_toggle_crop">Crop photo</string>
-    <string name="take_photo_toggle_lowres">Reduce image size</string>
-    <string name="take_photo_send">Send</string>
-    <string name="take_photo_error_deleting_picture">Error taking picture</string>
     <string name="take_photo_permission">Taking a photo is not possible without permissions</string>
     <string name="camera_permission_granted">Camera permission granted. Please choose camera again.</string>
     <string name="nc_take_video">Take a video</string>

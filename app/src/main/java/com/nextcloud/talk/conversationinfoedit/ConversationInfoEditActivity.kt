@@ -67,8 +67,8 @@ class ConversationInfoEditActivity : BaseActivity() {
     private val startTakePictureIntentForResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        handleResult(it) { result ->
-            pickImage?.onTakePictureResult(startImagePickerForResult, result.data)
+        handleResult(it) {
+            pickImage?.onTakePictureResult(startImagePickerForResult)
         }
     }
 
