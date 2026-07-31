@@ -8,14 +8,21 @@
 package com.nextcloud.talk.chooseaccount.ui
 
 import android.content.res.Configuration
+import android.view.ContextThemeWrapper
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -24,21 +31,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.util.Consumer
+import androidx.emoji2.emojipicker.EmojiPickerView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chooseaccount.viewmodel.StatusMessageViewModel
 import com.nextcloud.talk.models.json.status.Status
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
+import com.nextcloud.talk.ui.theme.themeEmojiPickerCategoryTabs
+
+private val emojiPickerHeight = 360.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatusMessageModalBottomSheet(currentStatus: Status, viewModel: StatusMessageViewModel, onDismiss: () -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isDismissed by viewModel.isDismissed.collectAsState()
+    var showEmojiPicker by remember { mutableStateOf(false) }
+    val backToStatus: () -> Unit = { showEmojiPicker = false }
 
     LaunchedEffect(currentStatus) {
         viewModel.init(currentStatus)
@@ -54,12 +73,59 @@ fun StatusMessageModalBottomSheet(currentStatus: Status, viewModel: StatusMessag
         onDismissRequest = onDismiss,
         sheetState = sheetState
     ) {
-        StatusMessageSheetContent(viewModel = viewModel)
+        if (showEmojiPicker) {
+            // The sheet's own Dialog window has its own back dispatcher, separate from the
+            // host Activity's - this BackHandler must be composed inside the sheet's content
+            // to intercept back before the sheet's onDismissRequest closes the whole thing.
+            BackHandler(onBack = backToStatus)
+            EmojiPickerSheetContent(
+                onEmojiSelected = { emoji ->
+                    viewModel.updateEmoji(emoji)
+                    backToStatus()
+                },
+                onBack = backToStatus
+            )
+        } else {
+            StatusMessageSheetContent(viewModel = viewModel, onEmojiButtonClick = { showEmojiPicker = true })
+        }
     }
 }
 
 @Composable
-fun StatusMessageSheetContent(modifier: Modifier = Modifier, viewModel: StatusMessageViewModel) {
+private fun EmojiPickerSheetContent(onEmojiSelected: (String) -> Unit, onBack: () -> Unit) {
+    val backgroundColor = MaterialTheme.colorScheme.surfaceContainerLow
+    val selectedTabColor = MaterialTheme.colorScheme.primary.toArgb()
+    val unselectedTabColor = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding()
+    ) {
+        IconButton(onClick = onBack) {
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_button))
+        }
+        AndroidView(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(emojiPickerHeight),
+            factory = { ctx ->
+                EmojiPickerView(ContextThemeWrapper(ctx, R.style.ThemeOverlay_App_EmojiPicker)).apply {
+                    setBackgroundColor(backgroundColor.toArgb())
+                    setOnEmojiPickedListener(Consumer { item -> onEmojiSelected(item.emoji) })
+                    themeEmojiPickerCategoryTabs(this, selectedTabColor, unselectedTabColor)
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun StatusMessageSheetContent(
+    modifier: Modifier = Modifier,
+    viewModel: StatusMessageViewModel,
+    onEmojiButtonClick: () -> Unit
+) {
     val emoji by viewModel.emoji.collectAsState()
     val message by viewModel.message.collectAsState()
     val clearAtPosition by viewModel.clearAtPosition.collectAsState()
@@ -73,7 +139,7 @@ fun StatusMessageSheetContent(modifier: Modifier = Modifier, viewModel: StatusMe
         clearAtPosition = clearAtPosition,
         predefinedStatuses = predefinedStatuses,
         isBackupStatusAvailable = isBackupStatusAvailable,
-        onEmojiSelected = { viewModel.updateEmoji(it) },
+        onEmojiButtonClick = onEmojiButtonClick,
         onMessageChanged = { viewModel.updateMessage(it) },
         onClearAtPositionSelected = { viewModel.updateClearAtPosition(it) },
         onRevertStatus = { viewModel.revertStatus() },
@@ -92,7 +158,7 @@ internal fun StatusMessageSheetContentStateless(
     clearAtPosition: Int,
     predefinedStatuses: List<PredefinedStatus>,
     isBackupStatusAvailable: Boolean,
-    onEmojiSelected: (String) -> Unit,
+    onEmojiButtonClick: () -> Unit,
     onMessageChanged: (String) -> Unit,
     onClearAtPositionSelected: (Int) -> Unit,
     onRevertStatus: () -> Unit,
@@ -109,7 +175,7 @@ internal fun StatusMessageSheetContentStateless(
             clearAtPosition = clearAtPosition,
             predefinedStatuses = predefinedStatuses,
             isBackupStatusAvailable = isBackupStatusAvailable,
-            onEmojiSelected = onEmojiSelected,
+            onEmojiButtonClick = onEmojiButtonClick,
             onMessageChanged = onMessageChanged,
             onClearAtPositionSelected = onClearAtPositionSelected,
             onRevertStatus = onRevertStatus,
@@ -125,7 +191,7 @@ internal fun StatusMessageSheetContentStateless(
             clearAtPosition = clearAtPosition,
             predefinedStatuses = predefinedStatuses,
             isBackupStatusAvailable = isBackupStatusAvailable,
-            onEmojiSelected = onEmojiSelected,
+            onEmojiButtonClick = onEmojiButtonClick,
             onMessageChanged = onMessageChanged,
             onClearAtPositionSelected = onClearAtPositionSelected,
             onRevertStatus = onRevertStatus,
@@ -145,7 +211,7 @@ private fun LandscapeSheetContent(
     clearAtPosition: Int,
     predefinedStatuses: List<PredefinedStatus>,
     isBackupStatusAvailable: Boolean,
-    onEmojiSelected: (String) -> Unit,
+    onEmojiButtonClick: () -> Unit,
     onMessageChanged: (String) -> Unit,
     onClearAtPositionSelected: (Int) -> Unit,
     onRevertStatus: () -> Unit,
@@ -164,7 +230,7 @@ private fun LandscapeSheetContent(
             EmojiAndMessageRow(
                 emoji = emoji,
                 message = message,
-                onEmojiSelected = onEmojiSelected,
+                onEmojiButtonClick = onEmojiButtonClick,
                 onMessageChanged = onMessageChanged
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -191,7 +257,7 @@ private fun PortraitSheetContent(
     clearAtPosition: Int,
     predefinedStatuses: List<PredefinedStatus>,
     isBackupStatusAvailable: Boolean,
-    onEmojiSelected: (String) -> Unit,
+    onEmojiButtonClick: () -> Unit,
     onMessageChanged: (String) -> Unit,
     onClearAtPositionSelected: (Int) -> Unit,
     onRevertStatus: () -> Unit,
@@ -208,7 +274,7 @@ private fun PortraitSheetContent(
         EmojiAndMessageRow(
             emoji = emoji,
             message = message,
-            onEmojiSelected = onEmojiSelected,
+            onEmojiButtonClick = onEmojiButtonClick,
             onMessageChanged = onMessageChanged
         )
         PredefinedStatusList(

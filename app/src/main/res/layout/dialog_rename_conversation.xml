@@ -20,8 +20,6 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/standard_half_margin"
-        android:layout_toStartOf="@id/smileyButton"
         android:hint="@string/nc_call_name"
         app:errorTextAppearance="@style/ErrorAppearance"
         app:passwordToggleTint="@color/grey_600"
@@ -39,18 +37,5 @@
             android:textColor="@color/high_emphasis_text" />
 
     </com.google.android.material.textfield.TextInputLayout>
-
-    <ImageButton
-        android:id="@+id/smileyButton"
-        android:layout_width="48dp"
-        android:layout_height="match_parent"
-        android:layout_alignBottom="@id/text_input_layout"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="-4dp"
-        android:background="@color/transparent"
-        android:contentDescription="@string/nc_add_emojis"
-        android:src="@drawable/ic_insert_emoticon_black_24dp"
-        app:tint="@color/medium_emphasis_text"
-        tools:visibility="visible" />
 
 </RelativeLayout>

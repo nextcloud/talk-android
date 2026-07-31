@@ -52,7 +52,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -68,7 +67,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -83,6 +81,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.widget.addTextChangedListener
+import androidx.emoji2.widget.EmojiEditText
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
@@ -107,15 +106,12 @@ import com.nextcloud.talk.ui.chat.LocalShowThreadButton
 import com.nextcloud.talk.ui.chat.formatTime
 import com.nextcloud.talk.ui.theme.LocalMessageUtils
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
-import com.nextcloud.talk.ui.theme.emojiTheming
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
-import com.vanniktech.emoji.EmojiEditText
-import com.vanniktech.emoji.EmojiPopup
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import java.time.Instant
@@ -808,23 +804,13 @@ class ScheduledMessagesActivity : BaseActivity() {
         onCancel: () -> Unit,
         onSend: () -> Unit
     ) {
-        val rootView = LocalView.current
         val keyboardController = LocalSoftwareKeyboardController.current
-        val theming = emojiTheming()
 
         val emojiEditTextRef = remember { mutableStateOf<EmojiEditText?>(null) }
-        var emojiPopup by remember { mutableStateOf<EmojiPopup?>(null) }
-        var isEmojiOpen by remember { mutableStateOf(false) }
 
         val canSend =
             editValue.text.isNotBlank() &&
                 editValue.text.trim() != originalText.trim()
-
-        DisposableEffect(rootView) {
-            onDispose {
-                emojiPopup?.dismiss()
-            }
-        }
 
         Surface(tonalElevation = 2.dp, modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(12.dp)) {
@@ -844,7 +830,6 @@ class ScheduledMessagesActivity : BaseActivity() {
                         modifier = Modifier.weight(1f)
                     )
                     IconButton(onClick = {
-                        emojiPopup?.dismiss()
                         keyboardController?.hide()
                         onCancel()
                     }) {
@@ -867,37 +852,6 @@ class ScheduledMessagesActivity : BaseActivity() {
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = {
-                        val editText = emojiEditTextRef.value ?: return@IconButton
-
-                        if (emojiPopup == null) {
-                            emojiPopup = EmojiPopup(
-                                rootView = rootView,
-                                editText = editText,
-                                theming = theming,
-                                onEmojiPopupShownListener = {
-                                    isEmojiOpen = true
-                                },
-                                onEmojiPopupDismissListener = {
-                                    isEmojiOpen = false
-                                    keyboardController?.show()
-                                }
-                            )
-                        }
-
-                        emojiPopup?.toggle()
-                    }) {
-                        Icon(
-                            imageVector = if (isEmojiOpen) {
-                                ImageVector.vectorResource(R.drawable.ic_baseline_keyboard_24)
-                            } else {
-                                ImageVector.vectorResource(R.drawable.ic_insert_emoticon_black_24dp)
-                            },
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
                     AndroidView(
                         modifier = Modifier
                             .weight(1f)
@@ -930,7 +884,6 @@ class ScheduledMessagesActivity : BaseActivity() {
                         onClick = {
                             if (!canSend) return@IconButton
                             emojiEditTextRef.value?.clearFocus()
-                            emojiPopup?.dismiss()
                             keyboardController?.hide()
                             onSend()
                         },
