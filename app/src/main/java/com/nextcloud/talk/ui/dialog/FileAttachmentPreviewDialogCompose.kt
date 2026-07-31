@@ -19,15 +19,19 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.annotation.OptIn
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
-import androidx.compose.foundation.indication
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -54,7 +58,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
@@ -68,11 +71,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -88,8 +88,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -117,12 +117,12 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
+import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.ImageCompressor
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.VideoCompressor
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -146,6 +146,7 @@ fun FileAttachmentPreviewContent(
     val hasCompressibleMedia = currentFiles.any { isCompressible(FileUtils.resolveMimeType(context, it.toUri())) }
     var caption by rememberSaveable { mutableStateOf("") }
     var compressImages by rememberSaveable { mutableStateOf(hasCompressibleMedia && initialCompressImages) }
+    var hqToggleVersion by rememberSaveable { mutableStateOf(0) }
 
     // Keyed by the set of files (not their order), so dragging to reorder doesn't trigger a re-describe
     // round trip through Dispatchers.IO — that async gap was causing a brief mismatch between the
@@ -161,22 +162,9 @@ fun FileAttachmentPreviewContent(
         }
     }
     val fileDescriptions = currentFiles.mapNotNull { descriptionsByUri[it] }
-
+    
     val pagerState = rememberPagerState(pageCount = { fileDescriptions.size })
     val coroutineScope = rememberCoroutineScope()
-
-    var previousFileUris by remember { mutableStateOf(fileDescriptions.map { it.uri }) }
-    LaunchedEffect(fileDescriptions.map { it.uri }) {
-        val uris = fileDescriptions.map { it.uri }
-        if (uris != previousFileUris) {
-            val activeUri = previousFileUris.getOrNull(pagerState.currentPage)
-            val newIndex = uris.indexOf(activeUri)
-            if (newIndex >= 0 && newIndex != pagerState.currentPage) {
-                pagerState.scrollToPage(newIndex)
-            }
-            previousFileUris = uris
-        }
-    }
 
     val pickMoreMedia = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(MAX_ADD_MORE_FILES)
@@ -233,7 +221,10 @@ fun FileAttachmentPreviewContent(
                 if (hasCompressibleMedia) {
                     HighQualityToggle(
                         checked = !compressImages,
-                        onCheckedChange = { highQuality -> compressImages = !highQuality }
+                        onCheckedChange = { highQuality ->
+                            compressImages = !highQuality
+                            hqToggleVersion++
+                        }
                     )
                 }
             }
@@ -244,6 +235,7 @@ fun FileAttachmentPreviewContent(
                 HeroPreview(
                     descriptions = fileDescriptions,
                     pagerState = pagerState,
+                    hqToggleVersion = hqToggleVersion,
                     modifier = Modifier.weight(1f)
                 )
 
@@ -380,25 +372,33 @@ private fun CaptionInputBar(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
             .clip(shape)
             .background(MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        TextField(
-            value = caption,
-            onValueChange = onCaptionChange,
-            placeholder = { Text(stringResource(R.string.nc_caption)) },
-            maxLines = 3,
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent
-            ),
+        Box(
             modifier = Modifier
                 .weight(1f)
                 .heightIn(min = dimensionResource(R.dimen.min_size_clickable_area))
-        )
+                .padding(start = 16.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            if (caption.isEmpty()) {
+                Text(
+                    text = stringResource(R.string.nc_caption),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            BasicTextField(
+                value = caption,
+                onValueChange = onCaptionChange,
+                maxLines = 5,
+                textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
         val sendTint = if (sendEnabled) {
             MaterialTheme.colorScheme.primary
@@ -421,6 +421,7 @@ private data class FileDescription(
     val uri: String,
     val name: String,
     val kind: MediaKind,
+    val mimeType: String?,
     val detail: String?,
     val aspectRatio: Float? = null,
     val videoThumbnail: Bitmap? = null
@@ -431,7 +432,8 @@ private const val HERO_MAX_HEIGHT_DP = 480
 private const val HERO_VERTICAL_SPACING_DP = 12
 private const val HERO_ICON_SIZE_DP = 96
 private const val DETAIL_CHIP_CORNER_RADIUS_PERCENT = 50
-private const val DETAIL_CHIP_RIPPLE_DURATION_MS = 300L
+private const val DETAIL_CHIP_POP_DURATION_MS = 520
+private const val DETAIL_CHIP_POP_INITIAL_SCALE = 0.85f
 private const val PLAY_BUTTON_SIZE_DP = 56
 private const val PLAY_ICON_SIZE_DP = 32
 private const val STRIP_THUMBNAIL_SIZE_DP = 64
@@ -439,12 +441,19 @@ private const val STRIP_ICON_SIZE_DP = 28
 private const val STRIP_PLAY_ICON_SIZE_DP = 28
 private const val STRIP_ITEM_SPACING_DP = 8
 private const val SELECTED_BORDER_WIDTH_DP = 2
+private const val HERO_OTHER_BORDER_WIDTH_DP = 1
+private const val HERO_OTHER_BORDER_PADDING_DP = 24
 private const val THUMBNAIL_CORNER_RADIUS_DP = 16
 private const val THUMBNAIL_ICON_SIZE_DP = 48
 private const val VIDEO_FRAME_MAX_DIMENSION_PX = 720
 
 @Composable
-private fun HeroPreview(descriptions: List<FileDescription>, pagerState: PagerState, modifier: Modifier = Modifier) {
+private fun HeroPreview(
+    descriptions: List<FileDescription>,
+    pagerState: PagerState,
+    hqToggleVersion: Int,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -458,20 +467,33 @@ private fun HeroPreview(descriptions: List<FileDescription>, pagerState: PagerSt
                 .fillMaxSize()
                 .heightIn(max = HERO_MAX_HEIGHT_DP.dp)
         ) { page ->
-            descriptions.getOrNull(page)?.let { description -> HeroPage(description) }
+            descriptions.getOrNull(page)?.let { description -> HeroPage(description, hqToggleVersion) }
         }
     }
 }
 
 @Composable
-private fun HeroPage(description: FileDescription) {
+private fun HeroPage(description: FileDescription, hqToggleVersion: Int) {
     var isPlayingVideo by remember(description.uri) { mutableStateOf(false) }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        val cardModifier = description.aspectRatio?.let { ratio ->
+        var cardModifier = description.aspectRatio?.let { ratio ->
             val (cardWidth, cardHeight) = fitWithinBounds(maxWidth, maxHeight, ratio)
             Modifier.size(cardWidth, cardHeight)
         } ?: Modifier.fillMaxSize()
+
+        // Non-media files have no image content of their own to visually delimit the card, so
+        // without an explicit outline the icon would appear to float directly on the dialog's
+        // background instead of reading as a bounded preview, unlike images/videos.
+        if (description.kind == MediaKind.OTHER) {
+            cardModifier = cardModifier
+                .padding(HERO_OTHER_BORDER_PADDING_DP.dp)
+                .border(
+                    width = HERO_OTHER_BORDER_WIDTH_DP.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    shape = RoundedCornerShape(THUMBNAIL_CORNER_RADIUS_DP.dp)
+                )
+        }
 
         Box(modifier = cardModifier) {
             if (description.kind == MediaKind.VIDEO && isPlayingVideo) {
@@ -495,6 +517,7 @@ private fun HeroPage(description: FileDescription) {
                 description.detail?.let { detail ->
                     HeroDetailOverlay(
                         detail,
+                        hqToggleVersion,
                         modifier = Modifier
                             .align(Alignment.BottomStart)
                             .padding(12.dp)
@@ -565,30 +588,29 @@ private fun fitWithinBounds(maxWidth: Dp, maxHeight: Dp, ratio: Float): Pair<Dp,
 }
 
 @Composable
-private fun HeroDetailOverlay(detail: String, modifier: Modifier = Modifier) {
-    val interactionSource = remember { MutableInteractionSource() }
-
-    LaunchedEffect(detail) {
-        val press = PressInteraction.Press(Offset.Zero)
-        interactionSource.emit(press)
-        delay(DETAIL_CHIP_RIPPLE_DURATION_MS)
-        interactionSource.emit(PressInteraction.Release(press))
-    }
-
+private fun HeroDetailOverlay(detail: String, hqToggleVersion: Int, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(DETAIL_CHIP_CORNER_RADIUS_PERCENT))
             .background(Color.Black.copy(alpha = 0.6f))
-            .indication(interactionSource, ripple(color = MaterialTheme.colorScheme.primary))
             .padding(horizontal = 10.dp, vertical = 6.dp)
     ) {
-        Text(
-            text = detail,
-            style = MaterialTheme.typography.labelMedium,
-            color = Color.White,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+        AnimatedContent(
+            targetState = hqToggleVersion,
+            transitionSpec = {
+                (fadeIn(tween(DETAIL_CHIP_POP_DURATION_MS)) + scaleIn(initialScale = DETAIL_CHIP_POP_INITIAL_SCALE))
+                    .togetherWith(fadeOut(tween(DETAIL_CHIP_POP_DURATION_MS)))
+            },
+            label = "detailChipPop"
+        ) {
+            Text(
+                text = detail,
+                style = MaterialTheme.typography.labelMedium,
+                color = Color.White,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
 }
 
@@ -610,23 +632,31 @@ private fun ThumbnailStrip(
     }
     val dragState = remember { DragReorderState() }
 
+    val horizontalArrangement = if (descriptions.size > 1) {
+        Arrangement.spacedBy(STRIP_ITEM_SPACING_DP.dp)
+    } else {
+        Arrangement.spacedBy(STRIP_ITEM_SPACING_DP.dp, Alignment.CenterHorizontally)
+    }
+
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(STRIP_ITEM_SPACING_DP.dp),
+        horizontalArrangement = horizontalArrangement,
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        itemsIndexed(descriptions, key = { _, description -> description.uri }) { index, description ->
-            DraggableStripItem(
-                description = description,
-                index = index,
-                selected = index == selectedIndex,
-                itemExtentPx = itemExtentPx,
-                itemCount = descriptions.size,
-                dragState = dragState,
-                onSelect = onSelect,
-                onRemove = onRemove,
-                onReorder = onReorder
-            )
+        if (descriptions.size > 1) {
+            itemsIndexed(descriptions, key = { _, description -> description.uri }) { index, description ->
+                DraggableStripItem(
+                    description = description,
+                    index = index,
+                    selected = index == selectedIndex,
+                    itemExtentPx = itemExtentPx,
+                    itemCount = descriptions.size,
+                    dragState = dragState,
+                    onSelect = onSelect,
+                    onRemove = onRemove,
+                    onReorder = onReorder
+                )
+            }
         }
         item { AddMoreTile(onClick = onAddMore) }
         item { TakePhotoTile(onClick = onTakePhoto) }
@@ -815,7 +845,7 @@ private fun AddMoreTile(onClick: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            imageVector = Icons.Filled.Add,
+            painter = painterResource(R.drawable.baseline_photo_library_24),
             contentDescription = stringResource(R.string.nc_add_more_files),
             modifier = Modifier.size(STRIP_ICON_SIZE_DP.dp)
         )
@@ -904,8 +934,9 @@ private fun FileThumbnailImage(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.baseline_insert_drive_file_24),
+                    painter = painterResource(DrawableUtils.getDrawableResourceIdForMimeType(description.mimeType)),
                     contentDescription = description.name,
+                    tint = Color.Unspecified,
                     modifier = Modifier.size(iconSize)
                 )
             }
@@ -923,14 +954,16 @@ private fun mediaKind(mimeType: String?): MediaKind =
 private fun describeFile(context: Context, uriString: String, compress: Boolean): FileDescription {
     val uri = uriString.toUri()
     val name = FileUtils.getFileName(uri, context)
-    val kind = mediaKind(FileUtils.resolveMimeType(context, uri))
-    val file = FileUtils.getFileFromUri(context, uri) ?: return FileDescription(uriString, name, kind, null)
+    val mimeType = FileUtils.resolveMimeType(context, uri)
+    val kind = mediaKind(mimeType)
+    val file = FileUtils.getFileFromUri(context, uri)
+        ?: return FileDescription(uriString, name, kind, mimeType, null)
     val sizeOnly = formatSize(context, file.length())
 
     val detail = when (kind) {
         MediaKind.IMAGE -> describeImageDetail(context, file, compress, sizeOnly)
         MediaKind.VIDEO -> describeVideoDetail(context, file, compress, sizeOnly)
-        MediaKind.OTHER -> sizeOnly
+        MediaKind.OTHER -> "$name, $sizeOnly"
     }
     val aspectRatio = when (kind) {
         MediaKind.IMAGE -> imageAspectRatio(file)
@@ -938,7 +971,7 @@ private fun describeFile(context: Context, uriString: String, compress: Boolean)
         MediaKind.OTHER -> null
     }
     val videoThumbnail = if (kind == MediaKind.VIDEO) extractVideoFrame(file) else null
-    return FileDescription(uriString, name, kind, detail, aspectRatio, videoThumbnail)
+    return FileDescription(uriString, name, kind, mimeType, detail, aspectRatio, videoThumbnail)
 }
 
 @Suppress("ReturnCount")
@@ -969,11 +1002,39 @@ private fun isSidewaysExifOrientation(file: File): Boolean =
         false
     }
 
+private const val VIDEO_ROTATION_DEGREES_90 = 90
+private const val VIDEO_ROTATION_DEGREES_270 = 270
+
 @Suppress("ReturnCount")
 private fun videoAspectRatio(file: File): Float? {
     val info = VideoCompressor.readVideoInfo(file) ?: return null
     if (info.height <= 0) return null
-    return info.width.toFloat() / info.height.toFloat()
+    val (width, height) = if (isSidewaysVideoRotation(file)) {
+        info.height to info.width
+    } else {
+        info.width to info.height
+    }
+    if (height <= 0) return null
+    return width.toFloat() / height.toFloat()
+}
+
+// MediaMetadataRetriever's width/height metadata reflect the raw, un-rotated encoded frame, so a
+// video recorded in the sensor's landscape orientation (with a 90/270 rotation flag for portrait
+// playback) reports swapped dimensions here compared to how it actually renders. getFrameAtTime()
+// (used for the thumbnail in extractVideoFrame) already applies this rotation, so swap back here
+// too, matching what's actually drawn.
+@Suppress("TooGenericExceptionCaught")
+private fun isSidewaysVideoRotation(file: File): Boolean {
+    val retriever = MediaMetadataRetriever()
+    return try {
+        retriever.setDataSource(file.absolutePath)
+        val rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)?.toIntOrNull() ?: 0
+        rotation == VIDEO_ROTATION_DEGREES_90 || rotation == VIDEO_ROTATION_DEGREES_270
+    } catch (e: Exception) {
+        false
+    } finally {
+        retriever.release()
+    }
 }
 
 @Suppress("TooGenericExceptionCaught")

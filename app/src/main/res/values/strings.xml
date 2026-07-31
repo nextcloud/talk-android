@@ -159,8 +159,10 @@ How to translate with transifex:
     <string name="nc_settings_screen_security_key" translatable="false">screen_security</string>
     <string name="nc_settings_incognito_keyboard_title">Incognito keyboard</string>
     <string name="nc_settings_incognito_keyboard_desc">Instructs keyboard to disable personalized learning (without guarantees)</string>
-    <string name="nc_settings_compress_upload_images_title">Compress images and videos before upload</string>
-    <string name="nc_settings_compress_upload_images_desc">Reduce file size of shared images and videos by default</string>
+    <string name="nc_settings_media_quality_title">Sent media quality</string>
+    <string name="nc_media_quality_original">Original quality</string>
+    <string name="nc_media_quality_reduced">Reduced quality</string>
+    <string name="nc_media_quality_original_hint">Sending original quality uses more mobile data.</string>
     <string name="nc_settings_read_privacy_key" translatable="false">read_privacy</string>
     <string name="nc_locked_tap_to_unlock">Tap to unlock</string>
     <string name="nc_locked">Locked</string>

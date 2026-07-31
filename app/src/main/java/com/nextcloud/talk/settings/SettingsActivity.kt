@@ -1046,7 +1046,6 @@ class SettingsActivity :
                 settingsScreenLockSwitch,
                 settingsScreenSecuritySwitch,
                 settingsIncognitoKeyboardSwitch,
-                settingsCompressUploadImagesSwitch,
                 settingsPhoneBookIntegrationSwitch,
                 settingsReadPrivacySwitch,
                 settingsTypingStatusSwitch,
@@ -1294,7 +1293,7 @@ class SettingsActivity :
             appPreferences.setIncognitoKeyboard(!isChecked)
         }
 
-        setupCompressUploadImagesSetting()
+        setupMediaQualitySetting()
         setupPhoneBookIntegrationSetting()
 
         binding.settingsScreenSecuritySwitch.isChecked = appPreferences.isScreenSecured
@@ -1320,12 +1319,87 @@ class SettingsActivity :
         }
     }
 
-    private fun setupCompressUploadImagesSetting() {
-        binding.settingsCompressUploadImagesSwitch.isChecked = appPreferences.compressUploadImages
-        binding.settingsCompressUploadImages.setOnClickListener {
-            val isChecked = binding.settingsCompressUploadImagesSwitch.isChecked
-            binding.settingsCompressUploadImagesSwitch.isChecked = !isChecked
-            appPreferences.setCompressUploadImages(!isChecked)
+    private fun setupMediaQualitySetting() {
+        updateMediaQualitySummary()
+        binding.settingsMediaQuality.setOnClickListener {
+            showMediaQualityDialog()
+        }
+    }
+
+    private fun updateMediaQualitySummary() {
+        binding.settingsMediaQualityDesc.text = if (appPreferences.compressUploadImages) {
+            getString(R.string.nc_media_quality_reduced)
+        } else {
+            getString(R.string.nc_media_quality_original)
+        }
+    }
+
+    private fun showMediaQualityDialog() {
+        var dialog: AlertDialog? = null
+        val view = buildMediaQualityDialogContentView { reducedQuality ->
+            appPreferences.setCompressUploadImages(reducedQuality)
+            updateMediaQualitySummary()
+            dialog?.dismiss()
+        }
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.nc_settings_media_quality_title)
+            .setView(view)
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+        dialog = dialogBuilder.show()
+    }
+
+    // AlertDialog/MaterialAlertDialogBuilder doesn't reliably render both setMessage(...) and
+    // setSingleChoiceItems(...) together (the list ends up empty), so the hint and the two
+    // options are laid out manually here instead, mirroring buildShareDialogContentView's style.
+    private fun buildMediaQualityDialogContentView(
+        onSelect: (reducedQuality: Boolean) -> Unit
+    ): android.widget.LinearLayout {
+        val density = resources.displayMetrics.density
+        fun dp(value: Int) = (value * density).toInt()
+        val selectableBackground = with(android.util.TypedValue()) {
+            theme.resolveAttribute(android.R.attr.selectableItemBackground, this, true)
+            resourceId
+        }
+
+        fun optionRow(label: String, reducedQuality: Boolean) =
+            android.widget.LinearLayout(this).apply {
+                orientation = android.widget.LinearLayout.HORIZONTAL
+                gravity = android.view.Gravity.CENTER_VERTICAL
+                val h = dp(DIALOG_PADDING_H_DP)
+                val v = dp(DIALOG_PADDING_V_DP)
+                setPadding(h, v, h, v)
+                setBackgroundResource(selectableBackground)
+                isClickable = true
+                isFocusable = true
+                addView(
+                    android.widget.RadioButton(context).apply {
+                        isChecked = appPreferences.compressUploadImages == reducedQuality
+                        isClickable = false
+                    }
+                )
+                addView(
+                    android.widget.TextView(context).apply {
+                        text = label
+                        setPadding(dp(DIALOG_SPACING_DP), 0, 0, 0)
+                        setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge)
+                    }
+                )
+                setOnClickListener { onSelect(reducedQuality) }
+            }
+
+        return android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            addView(
+                android.widget.TextView(context).apply {
+                    text = getString(R.string.nc_media_quality_original_hint)
+                    val h = dp(DIALOG_PADDING_H_DP)
+                    val v = dp(DIALOG_PADDING_V_DP)
+                    setPadding(h, v, h, v)
+                    setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium)
+                }
+            )
+            addView(optionRow(getString(R.string.nc_media_quality_original), reducedQuality = false))
+            addView(optionRow(getString(R.string.nc_media_quality_reduced), reducedQuality = true))
         }
     }
 
