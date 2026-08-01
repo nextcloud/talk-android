@@ -4,7 +4,7 @@
  * SPDX-FileCopyrightText: 2023 Julius Linus <julius.linus@nextcloud.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.ui.dialog
+package com.nextcloud.talk.attachmentpreview
 
 import android.app.Dialog
 import android.graphics.Color
@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -40,6 +41,13 @@ class FileAttachmentPreviewFragment : DialogFragment() {
 
     @Inject
     lateinit var appPreferences: AppPreferences
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: FileAttachmentPreviewViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[FileAttachmentPreviewViewModel::class.java]
+    }
 
     fun setListener(uploadFiles: (files: MutableList<String>, caption: String, compressImages: Boolean) -> Unit) {
         this.uploadFiles = uploadFiles
@@ -93,12 +101,16 @@ class FileAttachmentPreviewFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
+        // No-ops if the dialog is being recreated (e.g. after rotation) and the ViewModel
+        // already holds an in-progress edit of the file list.
+        viewModel.setInitialFiles(filesList)
+
         composeView?.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(requireActivity())) {
                     FileAttachmentPreviewContent(
-                        files = filesList,
+                        viewModel = viewModel,
                         conversationName = conversationName,
                         initialCompressImages = appPreferences.compressUploadImages,
                         onDismiss = { dismiss() },

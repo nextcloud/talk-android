@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.account.viewmodels.BrowserLoginActivityViewModel
 import com.nextcloud.talk.activities.CallViewModel
+import com.nextcloud.talk.attachmentpreview.FileAttachmentPreviewViewModel
 import com.nextcloud.talk.chat.viewmodels.ScheduledMessagesViewModel
 import com.nextcloud.talk.chooseaccount.viewmodel.StatusMessageViewModel
 import com.nextcloud.talk.chooseaccount.viewmodel.StatusViewModel
@@ -221,6 +222,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ChooseAccountShareToViewModel::class)
     abstract fun chooseAccountShareToViewModel(viewModel: ChooseAccountShareToViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FileAttachmentPreviewViewModel::class)
+    internal abstract fun fileAttachmentPreviewViewModel(viewModel: FileAttachmentPreviewViewModel): ViewModel
 }
 
 // @Module
