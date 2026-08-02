@@ -275,8 +275,22 @@ class OfflineFirstConversationsRepository @Inject constructor(
     }
 
     private suspend fun deleteLeftConversations(user: User, conversationsFromSync: List<ConversationEntity>) {
-        val conversationsFromSyncIds = conversationsFromSync.map { it.internalId }.toSet()
         val oldConversationsFromDb = dao.getConversationsForUser(user.id!!).first()
+
+        if (conversationsFromSync.isEmpty() && oldConversationsFromDb.isNotEmpty()) {
+            // A sync that suddenly contains no conversations at all is most likely a broken or
+            // partial server response. Deleting the local conversations in that case would also
+            // wipe their cached chat messages and chat blocks via foreign key cascade, destroying
+            // the offline cache. Skip and let a later successful sync reconcile.
+            Log.w(
+                TAG,
+                "Sync returned no conversations while ${oldConversationsFromDb.size} exist locally, " +
+                    "skipping deletion of left conversations"
+            )
+            return
+        }
+
+        val conversationsFromSyncIds = conversationsFromSync.map { it.internalId }.toSet()
 
         val conversationIdsToDelete = oldConversationsFromDb
             .map { it.internalId }
