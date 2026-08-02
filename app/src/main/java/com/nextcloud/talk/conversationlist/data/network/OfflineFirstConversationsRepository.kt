@@ -9,6 +9,7 @@
 package com.nextcloud.talk.conversationlist.data.network
 
 import android.util.Log
+import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.database.dao.ConversationsDao
@@ -18,7 +19,9 @@ import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
+import com.nextcloud.talk.utils.SpreedFeatures
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -39,7 +42,8 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val dao: ConversationsDao,
     private val network: ConversationsNetworkDataSource,
     private val chatNetworkDataSource: ChatNetworkDataSource,
-    private val networkMonitor: NetworkMonitor
+    private val networkMonitor: NetworkMonitor,
+    private val chatMessageSyncer: ChatMessageSyncer
 ) : OfflineConversationsRepository {
     override val roomListFlow: Flow<List<ConversationModel>>
         get() = _roomListFlow
@@ -159,15 +163,68 @@ class OfflineFirstConversationsRepository @Inject constructor(
                 it.asEntity(user.id!!)
             }
 
+            val previousConversations = dao.getConversationsForUser(user.id!!).first()
+                .associateBy { it.internalId }
+
             deleteLeftConversations(
                 user,
                 conversationsFromSync
             )
             dao.upsertConversations(user.id!!, conversationsFromSync)
+
+            val roomsWithNewMessages = getRoomsWithNewMessages(conversationsFromSync, previousConversations)
+            scope.launch { catchUpRoomsWithNewMessages(user, roomsWithNewMessages) }
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong when fetching conversations", e)
         }
         return conversationsFromSync
+    }
+
+    /**
+     * Determines the rooms whose messages should be caught up in the background: rooms with
+     * activity newer than the last synced state (matching the iOS behavior) plus unread rooms that
+     * have no cached messages yet (never-opened rooms).
+     */
+    private fun getRoomsWithNewMessages(
+        conversationsFromSync: List<ConversationEntity>,
+        previousConversations: Map<String, ConversationEntity>
+    ): List<ConversationEntity> =
+        conversationsFromSync.filter { room ->
+            val previous = previousConversations[room.internalId]
+            val activityAdvanced = previous == null || room.lastActivity > previous.lastActivity
+            activityAdvanced ||
+                (room.unreadMessages > 0 && !chatMessageSyncer.hasLocalChatBlock(room.internalId, null))
+        }
+
+    /**
+     * Prefetches the messages of [rooms] into the local database so they are instantly visible
+     * when a chat is opened. Runs after the room list sync; failures are logged and never affect
+     * the conversation list itself.
+     */
+    private suspend fun catchUpRoomsWithNewMessages(user: User, rooms: List<ConversationEntity>) {
+        if (rooms.isEmpty()) {
+            return
+        }
+
+        if (!user.hasSpreedFeatureCapability(SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value)) {
+            Log.d(TAG, "Server lacks ${SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value}, skipping message catch-up")
+            return
+        }
+
+        val credentials = ApiUtils.getCredentials(user.username, user.token) ?: return
+
+        Log.d(TAG, "Catching up messages for ${rooms.size} rooms")
+        for (room in rooms) {
+            val target = ChatMessageSyncer.SyncTarget(
+                user = user,
+                roomToken = room.token,
+                threadId = null,
+                credentials = credentials,
+                urlForChatting = ApiUtils.getUrlForChat(CHAT_API_VERSION, user.baseUrl!!, room.token)
+            )
+            runCatching { chatMessageSyncer.catchUpRoom(target) }
+                .onFailure { Log.e(TAG, "Message catch-up failed for room ${room.token}", it) }
+        }
     }
 
     private suspend fun deleteLeftConversations(user: User, conversationsFromSync: List<ConversationEntity>) {
@@ -193,5 +250,6 @@ class OfflineFirstConversationsRepository @Inject constructor(
 
     companion object {
         val TAG = OfflineFirstConversationsRepository::class.simpleName
+        private const val CHAT_API_VERSION = 1
     }
 }

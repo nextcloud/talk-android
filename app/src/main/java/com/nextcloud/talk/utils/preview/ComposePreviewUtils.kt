@@ -178,7 +178,8 @@ class ComposePreviewUtils private constructor(context: Context) {
             conversationsDao,
             conversationNetworkDataSource,
             chatNetworkDataSource,
-            networkMonitor
+            networkMonitor,
+            chatMessageSyncer
         )
 
     val reactionsRepository: ReactionsRepository
