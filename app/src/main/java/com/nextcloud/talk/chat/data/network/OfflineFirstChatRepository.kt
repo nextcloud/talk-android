@@ -175,7 +175,7 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
-    override suspend fun loadInitialMessages(withNetworkParams: Bundle, isChatRelaySupported: Boolean) {
+    override suspend fun loadInitialMessages(withNetworkParams: Bundle) {
         logger.d(TAG, "---- loadInitialMessages ------------")
         cleanupExpiredMessages()
         newXChatLastCommonRead = conversationModel.lastCommonReadMessage
@@ -194,14 +194,13 @@ class OfflineFirstChatRepository @Inject constructor(
         Log.d(TAG, "weAlreadyHaveSomeOfflineMessages:$weAlreadyHaveSomeOfflineMessages")
         Log.d(TAG, "weHaveAtLeastTheLastReadMessage:$weHaveAtLeastTheLastReadMessage")
         Log.d(TAG, "weHaveTheLastMessage:$weHaveTheLastMessage (lastMessageIdFromServer:$lastMessageIdFromServer)")
-        Log.d(TAG, "isChatRelaySupported:$isChatRelaySupported")
 
         when {
             weAlreadyHaveSomeOfflineMessages && weHaveTheLastMessage -> {
                 // The offline messages already reach the conversation's last message (e.g. because
                 // the room list sync prefetched them), so no initial request is needed at all —
-                // regardless of chat relay. Anything newer is handled by long polling, the chat
-                // relay or the insurance requests.
+                // regardless of the live-update mode. Anything newer is handled by long polling,
+                // the chat relay or the insurance requests.
                 Log.d(
                     TAG,
                     "Initial online request is skipped because offline messages are up to date" +
@@ -209,27 +208,14 @@ class OfflineFirstChatRepository @Inject constructor(
                 )
             }
 
-            weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage && !isChatRelaySupported -> {
-                Log.d(
-                    TAG,
-                    "Initial online request is skipped because offline messages are up to date" +
-                        " until lastReadMessage"
-                )
-
-                // For messages newer than lastRead, lookIntoFuture will load them.
-                // We must only end up here when NO HPB is used!
-                // If a HPB is used, longPolling is not available to handle loading of newer messages.
-            }
-
-            weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage && isChatRelaySupported -> {
-                // The chat relay only pushes messages that arrive while being connected, so the
-                // backlog since the newest offline message must be closed with an initial request.
-                // A delta fetch is enough — no need to re-download the newest 100 messages.
-                Log.d(
-                    TAG,
-                    "A delta request from the newest offline message is made because chatRelay is" +
-                        " supported (the relay cannot deliver messages that arrived while the app was closed)"
-                )
+            weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage -> {
+                // Close the backlog since the newest offline message with a delta fetch. This is
+                // required on chat-relay servers (the relay cannot deliver messages that arrived
+                // while the app was closed) and is equally cheap on long-polling servers, where it
+                // just front-loads what the first poll request would have fetched. This way the
+                // initial load never has to know the live-update mode, i.e. it must not wait for
+                // the websocket.
+                Log.d(TAG, "A delta request from the newest offline message is made to close the backlog")
 
                 val fieldMap = getFieldMap(
                     lookIntoFuture = true,
