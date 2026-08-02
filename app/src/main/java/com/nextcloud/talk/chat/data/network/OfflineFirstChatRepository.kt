@@ -189,53 +189,88 @@ class OfflineFirstChatRepository @Inject constructor(
         val weAlreadyHaveSomeOfflineMessages = newestMessageIdFromDb > 0
 
         val weHaveAtLeastTheLastReadMessage = newestMessageIdFromDb >= conversationModel.lastReadMessage.toLong()
+        val lastMessageIdFromServer = conversationModel.lastMessage?.id ?: 0
+        val weHaveTheLastMessage = newestMessageIdFromDb >= lastMessageIdFromServer
         Log.d(TAG, "weAlreadyHaveSomeOfflineMessages:$weAlreadyHaveSomeOfflineMessages")
         Log.d(TAG, "weHaveAtLeastTheLastReadMessage:$weHaveAtLeastTheLastReadMessage")
+        Log.d(TAG, "weHaveTheLastMessage:$weHaveTheLastMessage (lastMessageIdFromServer:$lastMessageIdFromServer)")
         Log.d(TAG, "isChatRelaySupported:$isChatRelaySupported")
 
-        if (weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage && !isChatRelaySupported) {
-            Log.d(
-                TAG,
-                "Initial online request is skipped because offline messages are up to date" +
-                    " until lastReadMessage"
-            )
-
-            // For messages newer than lastRead, lookIntoFuture will load them.
-            // We must only end up here when NO HPB is used!
-            // If a HPB is used, longPolling is not available to handle loading of newer messages.
-            // When a HPB is used the initial request must be made.
-        } else {
-            if (isChatRelaySupported) {
+        when {
+            weAlreadyHaveSomeOfflineMessages && weHaveTheLastMessage -> {
+                // The offline messages already reach the conversation's last message (e.g. because
+                // the room list sync prefetched them), so no initial request is needed at all —
+                // regardless of chat relay. Anything newer is handled by long polling, the chat
+                // relay or the insurance requests.
                 Log.d(
                     TAG,
-                    "An online request for newest 100 messages is made because chatRelay is supported (No long " +
-                        "polling available to catch up with messages newer than last read.)"
-                )
-            } else if (!weAlreadyHaveSomeOfflineMessages) {
-                Log.d(TAG, "An online request for newest 100 messages is made because offline chat is empty")
-                if (networkMonitor.isOnline.value.not()) {
-                    // _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
-                }
-            } else {
-                Log.d(
-                    TAG,
-                    "An online request for newest 100 messages is made because we don't have the lastReadMessage " +
-                        "(gaps could be closed by scrolling up to merge the chatblocks)"
+                    "Initial online request is skipped because offline messages are up to date" +
+                        " until the conversation's last message"
                 )
             }
 
-            // set up field map to load the newest messages
-            val fieldMap = getFieldMap(
-                lookIntoFuture = false,
-                timeout = 0,
-                includeLastKnown = true,
-                lastKnown = null
-            )
-            withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
-            withNetworkParams.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
+            weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage && !isChatRelaySupported -> {
+                Log.d(
+                    TAG,
+                    "Initial online request is skipped because offline messages are up to date" +
+                        " until lastReadMessage"
+                )
 
-            Log.d(TAG, "Starting online request for initial loading")
-            getAndPersistMessages(withNetworkParams)
+                // For messages newer than lastRead, lookIntoFuture will load them.
+                // We must only end up here when NO HPB is used!
+                // If a HPB is used, longPolling is not available to handle loading of newer messages.
+            }
+
+            weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage && isChatRelaySupported -> {
+                // The chat relay only pushes messages that arrive while being connected, so the
+                // backlog since the newest offline message must be closed with an initial request.
+                // A delta fetch is enough — no need to re-download the newest 100 messages.
+                Log.d(
+                    TAG,
+                    "A delta request from the newest offline message is made because chatRelay is" +
+                        " supported (the relay cannot deliver messages that arrived while the app was closed)"
+                )
+
+                val fieldMap = getFieldMap(
+                    lookIntoFuture = true,
+                    timeout = 0,
+                    includeLastKnown = false,
+                    lastKnown = newestMessageIdFromDb.toInt()
+                )
+                withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+                withNetworkParams.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
+
+                Log.d(TAG, "Starting delta request for initial loading")
+                getAndPersistMessages(withNetworkParams)
+            }
+
+            else -> {
+                if (!weAlreadyHaveSomeOfflineMessages) {
+                    Log.d(TAG, "An online request for newest 100 messages is made because offline chat is empty")
+                    if (networkMonitor.isOnline.value.not()) {
+                        // _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
+                    }
+                } else {
+                    Log.d(
+                        TAG,
+                        "An online request for newest 100 messages is made because we don't have the " +
+                            "lastReadMessage (gaps could be closed by scrolling up to merge the chatblocks)"
+                    )
+                }
+
+                // set up field map to load the newest messages
+                val fieldMap = getFieldMap(
+                    lookIntoFuture = false,
+                    timeout = 0,
+                    includeLastKnown = true,
+                    lastKnown = null
+                )
+                withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+                withNetworkParams.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
+
+                Log.d(TAG, "Starting online request for initial loading")
+                getAndPersistMessages(withNetworkParams)
+            }
         }
     }
 
