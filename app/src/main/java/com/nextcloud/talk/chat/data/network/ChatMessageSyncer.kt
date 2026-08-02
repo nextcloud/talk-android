@@ -80,6 +80,83 @@ class ChatMessageSyncer @Inject constructor(
 
     data class SyncOutcome(val persistedNewMessages: Boolean, val newestPersistedMessageId: Long?)
 
+    /**
+     * Builds the query parameters for a chat pull request. [setReadMarker] stays 0 so a sync never
+     * moves the user's read marker.
+     */
+    @Suppress("LongParameterList")
+    fun buildFieldMap(
+        lookIntoFuture: Boolean,
+        timeout: Int,
+        includeLastKnown: Boolean,
+        lastKnown: Int?,
+        limit: Int = DEFAULT_MESSAGES_LIMIT,
+        threadId: Long? = null,
+        lastCommonRead: Int? = null
+    ): HashMap<String, Int> {
+        val fieldMap = HashMap<String, Int>()
+
+        fieldMap["includeLastKnown"] = if (includeLastKnown) 1 else 0
+
+        if (lastKnown != null) {
+            fieldMap["lastKnownMessageId"] = lastKnown
+        }
+
+        lastCommonRead?.let {
+            fieldMap["lastCommonReadId"] = it
+        }
+
+        threadId?.let { fieldMap["threadId"] = it.toInt() }
+
+        fieldMap["timeout"] = timeout
+        fieldMap["limit"] = limit
+
+        fieldMap["lookIntoFuture"] = if (lookIntoFuture) 1 else 0
+        fieldMap["setReadMarker"] = 0
+
+        return fieldMap
+    }
+
+    /**
+     * Catches up a room with the server without requiring an open chat.
+     *
+     * If a chat block exists, only the delta since the newest locally known message is fetched and
+     * the block is extended. For rooms without any chat block (never-opened rooms) the newest
+     * messages are fetched and the initial chat block is created, so cached messages become
+     * visible to [ChatMessagesDao] block queries right away.
+     */
+    suspend fun catchUpRoom(target: SyncTarget, limit: Int = DEFAULT_MESSAGES_LIMIT): SyncOutcome {
+        if (!networkMonitor.isOnline.value) {
+            Log.d(TAG, "Device is offline, skipping catch-up for ${target.internalConversationId}")
+            return SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null)
+        }
+
+        val newestMessageIdFromDb =
+            chatBlocksDao.getNewestMessageIdFromChatBlocks(target.internalConversationId, target.threadId)
+
+        val fieldMap = if (newestMessageIdFromDb > 0) {
+            buildFieldMap(
+                lookIntoFuture = true,
+                timeout = 0,
+                includeLastKnown = false,
+                lastKnown = newestMessageIdFromDb.toInt(),
+                limit = limit,
+                threadId = target.threadId
+            )
+        } else {
+            buildFieldMap(
+                lookIntoFuture = false,
+                timeout = 0,
+                includeLastKnown = true,
+                lastKnown = null,
+                limit = limit,
+                threadId = target.threadId
+            )
+        }
+
+        return pullAndPersistMessages(target, fieldMap)
+    }
+
     fun pullMessagesFlow(target: SyncTarget, fieldMap: HashMap<String, Int>): Flow<ChatPullResult> =
         flow {
             var attempts = 1
@@ -168,7 +245,10 @@ class ChatMessageSyncer @Inject constructor(
                             hasHistory,
                             events
                         )
-                        return SyncOutcome(persistedNewMessages = true, newestPersistedMessageId = newestPersistedId)
+                        return SyncOutcome(
+                            persistedNewMessages = newestPersistedId != null,
+                            newestPersistedMessageId = newestPersistedId
+                        )
                     } else {
                         Log.d(TAG, "No new messages to update")
                         return SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null)
@@ -205,6 +285,14 @@ class ChatMessageSyncer @Inject constructor(
     ): Long? {
         val chatMessageEntities =
             persistChatMessagesAndHandleSystemMessages(target, chatMessagesJson, emitOnIncoming = lookIntoFuture, events)
+
+        if (chatMessageEntities.isEmpty()) {
+            // Persisting was skipped because the conversation is not in the DB yet (see
+            // persistChatMessagesAndHandleSystemMessages). Without persisted messages there must be
+            // no chat block update either, otherwise a block would reference missing messages.
+            Log.w(TAG, "No messages were persisted for ${target.internalConversationId}, skipping chat block update")
+            return null
+        }
 
         val oldestIdFromSync = chatMessageEntities.minByOrNull { it.id }!!.id
         val newestIdFromSync = chatMessageEntities.maxByOrNull { it.id }!!.id
@@ -481,6 +569,7 @@ class ChatMessageSyncer @Inject constructor(
 
         val NO_EVENTS: Events = object : Events {}
 
+        private const val DEFAULT_MESSAGES_LIMIT = 100
         private const val HTTP_CODE_OK: Int = 200
         private const val HTTP_CODE_NOT_MODIFIED = 304
         private const val HTTP_CODE_PRECONDITION_FAILED = 412

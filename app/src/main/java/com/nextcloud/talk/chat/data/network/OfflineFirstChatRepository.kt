@@ -366,36 +366,22 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
-    @Suppress("LongParameterList")
     private fun getFieldMap(
         lookIntoFuture: Boolean,
         timeout: Int,
         includeLastKnown: Boolean,
         lastKnown: Int?,
         limit: Int = DEFAULT_MESSAGES_LIMIT
-    ): HashMap<String, Int> {
-        val fieldMap = HashMap<String, Int>()
-
-        fieldMap["includeLastKnown"] = if (includeLastKnown) 1 else 0
-
-        if (lastKnown != null) {
-            fieldMap["lastKnownMessageId"] = lastKnown
-        }
-
-        newXChatLastCommonRead?.let {
-            fieldMap["lastCommonReadId"] = it
-        }
-
-        threadId?.let { fieldMap["threadId"] = it.toInt() }
-
-        fieldMap["timeout"] = timeout
-        fieldMap["limit"] = limit
-
-        fieldMap["lookIntoFuture"] = if (lookIntoFuture) 1 else 0
-        fieldMap["setReadMarker"] = 0
-
-        return fieldMap
-    }
+    ): HashMap<String, Int> =
+        syncer.buildFieldMap(
+            lookIntoFuture = lookIntoFuture,
+            timeout = timeout,
+            includeLastKnown = includeLastKnown,
+            lastKnown = lastKnown,
+            limit = limit,
+            threadId = threadId,
+            lastCommonRead = newXChatLastCommonRead
+        )
 
     override suspend fun getNumberOfThreadReplies(threadId: Long): Int =
         chatDao.getNumberOfThreadReplies(internalConversationId, threadId)
