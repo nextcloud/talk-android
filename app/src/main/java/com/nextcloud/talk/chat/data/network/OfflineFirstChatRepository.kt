@@ -8,12 +8,10 @@
 
 package com.nextcloud.talk.chat.data.network
 
-import android.database.sqlite.SQLiteConstraintException
 import android.os.Bundle
 import android.util.Log
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
-import com.nextcloud.talk.chat.domain.ChatPullResult
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.mappers.asEntity
@@ -33,7 +31,6 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.message.SendMessageUtils
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -47,10 +44,8 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
-import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
@@ -60,7 +55,8 @@ class OfflineFirstChatRepository @Inject constructor(
     private val chatDao: ChatMessagesDao,
     private val chatBlocksDao: ChatBlocksDao,
     private val network: ChatNetworkDataSource,
-    private val networkMonitor: NetworkMonitor
+    private val networkMonitor: NetworkMonitor,
+    private val syncer: ChatMessageSyncer
 ) : ChatMessageRepository {
 
     lateinit var currentUser: User
@@ -149,6 +145,34 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override fun updateConversation(conversationModel: ConversationModel) {
         this.conversationModel = conversationModel
+    }
+
+    private val syncTarget: ChatMessageSyncer.SyncTarget
+        get() = ChatMessageSyncer.SyncTarget(
+            user = currentUser,
+            roomToken = roomToken,
+            threadId = threadId,
+            credentials = credentials,
+            urlForChatting = urlForChatting
+        )
+
+    private val syncEvents = object : ChatMessageSyncer.Events {
+        override suspend fun onLastCommonReadChanged(lastCommonRead: Int?) {
+            newXChatLastCommonRead = lastCommonRead
+            updateUiForLastCommonRead()
+        }
+
+        override suspend fun onLoadingChanged(isLoading: Boolean) {
+            _isLoadingFlow.value = isLoading
+        }
+
+        override suspend fun onRoomRefreshNeeded() {
+            _roomRefreshFlow.emit(Unit)
+        }
+
+        override suspend fun onIncomingMessagesFromOthers() {
+            _incomingMessageFlow.emit(Unit)
+        }
     }
 
     override suspend fun loadInitialMessages(withNetworkParams: Bundle, isChatRelaySupported: Boolean) {
@@ -334,7 +358,7 @@ class OfflineFirstChatRepository @Inject constructor(
         Log.d(TAG, "Starting online request for loadMoreMessages")
         getAndPersistMessages(withNetworkParams)
 
-        return getBlockOfMessage(anchorMessageId.toInt())?.let {
+        return syncer.getBlockOfMessage(syncTarget, anchorMessageId.toInt())?.let {
             ChatMessageRepository.MessagesRange(
                 oldestMessageId = it.oldestMessageId,
                 newestMessageId = it.newestMessageId
@@ -431,7 +455,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 newestMessageId = newestId,
                 hasHistory = true
             )
-            updateBlocks(block)
+            syncer.updateBlocks(syncTarget, block)
 
             ChatMessageRepository.MessagesRange(
                 oldestMessageId = oldestId,
@@ -479,351 +503,17 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
-    fun pullMessagesFlow(bundle: Bundle): Flow<ChatPullResult> =
-        flow {
-            val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
-            var attempts = 1
-
-            while (attempts < MAX_PULL_ATTEMPTS) {
-                runCatching {
-                    network.pullChatMessages(credentials, urlForChatting, fieldMap)
-                }.fold(
-                    onSuccess = { response ->
-                        val result = when (response.code()) {
-                            HTTP_CODE_OK -> ChatPullResult.Success(
-                                messages = response.body()?.ocs?.data.orEmpty(),
-                                lastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.toInt()
-                            )
-                            HTTP_CODE_NOT_MODIFIED -> ChatPullResult.NotModified
-                            HTTP_CODE_PRECONDITION_FAILED -> ChatPullResult.PreconditionFailed
-                            else -> ChatPullResult.Error(HttpException(response))
-                        }
-
-                        emit(result)
-                        return@flow
-                    },
-                    onFailure = { e ->
-                        Log.e(TAG, "Attempt $attempts failed", e)
-                        attempts++
-                        fieldMap["limit"] = when (attempts) {
-                            2 -> RETRY_LIMIT_SECOND_ATTEMPT
-                            3 -> RETRY_LIMIT_THIRD_ATTEMPT
-                            else -> RETRY_LIMIT_FALLBACK_ATTEMPT
-                        }
-                    }
-                )
-            }
-
-            emit(ChatPullResult.Error(IllegalStateException("All attempts failed")))
-        }.flowOn(Dispatchers.IO)
-
     private suspend fun getAndPersistMessages(bundle: Bundle): Boolean {
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
-        val isLongPoll = (fieldMap["timeout"] ?: 0) > 0
-        if (!isLongPoll) _isLoadingFlow.value = true
-        try {
-            if (!networkMonitor.isOnline.value) {
-                Log.d(TAG, "Device is offline, can't load chat messages from server")
-            }
-
-            val queriedMessageId = fieldMap["lastKnownMessageId"]
-            val lookIntoFuture = fieldMap["lookIntoFuture"] == 1
-
-            val result = pullMessagesFlow(bundle).first()
-
-            when (result) {
-                is ChatPullResult.Success -> {
-                    newXChatLastCommonRead = result.lastCommonRead
-                    updateUiForLastCommonRead()
-
-                    val hasHistory = getHasHistory(HTTP_CODE_OK, lookIntoFuture)
-
-                    Log.d(
-                        TAG,
-                        "internalConv=$internalConversationId statusCode=${HTTP_CODE_OK} " +
-                            "lookIntoFuture=$lookIntoFuture hasHistory=$hasHistory " +
-                            "queriedMessageId=$queriedMessageId"
-                    )
-
-                    val blockContainingQueriedMessage: ChatBlockEntity? = getBlockOfMessage(queriedMessageId)
-
-                    blockContainingQueriedMessage?.takeIf { !hasHistory }?.apply {
-                        this.hasHistory = false
-                        chatBlocksDao.upsertChatBlock(this)
-                        Log.d(TAG, "End of chat reached, set hasHistory=false")
-                    }
-
-                    if (result.messages.isNotEmpty()) {
-                        updateMessagesData(
-                            result.messages,
-                            blockContainingQueriedMessage,
-                            lookIntoFuture,
-                            hasHistory
-                        )
-                        return true
-                    } else {
-                        Log.d(TAG, "No new messages to update")
-                        return false
-                    }
-                }
-
-                is ChatPullResult.NotModified -> {
-                    Log.d(TAG, "Server returned NOT_MODIFIED, nothing to update")
-                    return false
-                }
-
-                is ChatPullResult.PreconditionFailed -> {
-                    Log.d(TAG, "Server returned PRECONDITION_FAILED, nothing to update")
-                    return false
-                }
-
-                is ChatPullResult.Error -> {
-                    Log.e(TAG, "Error pulling messages from server", result.throwable)
-                    return false
-                }
-            }
-        } finally {
-            if (!isLongPoll) _isLoadingFlow.value = false
+        val outcome = syncer.pullAndPersistMessages(syncTarget, fieldMap, syncEvents)
+        outcome.newestPersistedMessageId?.let {
+            latestKnownMessageIdFromSync = maxOf(latestKnownMessageIdFromSync, it)
         }
+        return outcome.persistedNewMessages
     }
 
-    private suspend fun OfflineFirstChatRepository.updateMessagesData(
-        chatMessagesJson: List<ChatMessageJson>,
-        blockContainingQueriedMessage: ChatBlockEntity?,
-        lookIntoFuture: Boolean,
-        hasHistory: Boolean
-    ) {
-        val chatMessageEntities =
-            persistChatMessagesAndHandleSystemMessages(chatMessagesJson, emitOnIncoming = lookIntoFuture)
-
-        if (chatMessageEntities.isEmpty()) {
-            Log.w(TAG, "No messages were persisted, skipping chat block update")
-            return
-        }
-
-        val oldestIdFromSync = chatMessageEntities.minByOrNull { it.id }!!.id
-        val newestIdFromSync = chatMessageEntities.maxByOrNull { it.id }!!.id
-        Log.d(TAG, "oldestIdFromSync: $oldestIdFromSync")
-        Log.d(TAG, "newestIdFromSync: $newestIdFromSync")
-
-        latestKnownMessageIdFromSync = maxOf(latestKnownMessageIdFromSync, newestIdFromSync)
-
-        var oldestMessageIdForNewChatBlock = oldestIdFromSync
-        var newestMessageIdForNewChatBlock = newestIdFromSync
-
-        if (blockContainingQueriedMessage != null) {
-            if (lookIntoFuture) {
-                val oldestMessageIdFromBlockOfQueriedMessage = blockContainingQueriedMessage.oldestMessageId
-                Log.d(TAG, "oldestMessageIdFromBlockOfQueriedMessage: $oldestMessageIdFromBlockOfQueriedMessage")
-                oldestMessageIdForNewChatBlock = oldestMessageIdFromBlockOfQueriedMessage
-            } else {
-                val newestMessageIdFromBlockOfQueriedMessage = blockContainingQueriedMessage.newestMessageId
-                Log.d(TAG, "newestMessageIdFromBlockOfQueriedMessage: $newestMessageIdFromBlockOfQueriedMessage")
-                newestMessageIdForNewChatBlock = newestMessageIdFromBlockOfQueriedMessage
-            }
-        }
-
-        Log.d(TAG, "oldestMessageIdForNewChatBlock: $oldestMessageIdForNewChatBlock")
-        Log.d(TAG, "newestMessageIdForNewChatBlock: $newestMessageIdForNewChatBlock")
-
-        val newChatBlock = ChatBlockEntity(
-            internalConversationId = internalConversationId,
-            accountId = conversationModel.accountId,
-            token = conversationModel.token,
-            threadId = threadId,
-            oldestMessageId = oldestMessageIdForNewChatBlock,
-            newestMessageId = newestMessageIdForNewChatBlock,
-            hasHistory = hasHistory
-        )
-        updateBlocks(newChatBlock)
-    }
-
-    /**
-     * Returns true if all system messages do not require translation.
-     * Ignores other message types.
-     */
     private fun isUntranslatedSystemMessage(messagesJson: List<ChatMessageJson>): Boolean =
-        messagesJson.all {
-            it.systemMessageType == ChatMessage.SystemMessageType.DUMMY ||
-                it.systemMessageType in ChatMessage.SYSTEM_MESSAGE_TYPE_UNTRANSLATED
-        }
-
-    private suspend fun handleSystemMessagesThatAffectDatabase(messagesJson: List<ChatMessageJson>) {
-        var needsRoomRefresh = false
-        messagesJson.forEach { messageJson ->
-            when (messageJson.systemMessageType) {
-                ChatMessage.SystemMessageType.REACTION,
-                ChatMessage.SystemMessageType.REACTION_REVOKED,
-                ChatMessage.SystemMessageType.REACTION_DELETED ->
-                    // Signaling does not include reactionsSelf; derive it so the self-reaction
-                    // border stays correct regardless of whether signaling or the API response lands first.
-                    upsertParentMessage(messageJson, deriveReactions = true)
-
-                ChatMessage.SystemMessageType.MESSAGE_DELETED,
-                ChatMessage.SystemMessageType.POLL_VOTED,
-                ChatMessage.SystemMessageType.MESSAGE_EDITED ->
-                    upsertParentMessage(messageJson)
-
-                ChatMessage.SystemMessageType.LOBBY_NONE,
-                ChatMessage.SystemMessageType.LOBBY_NON_MODERATORS,
-                ChatMessage.SystemMessageType.LOBBY_OPEN_TO_EVERYONE -> needsRoomRefresh = true
-
-                ChatMessage.SystemMessageType.CLEARED_CHAT -> {
-                    // for lookIntoFuture just deleting everything would be fine.
-                    // But lets say we did not open the chat for a while and in between it was cleared.
-                    // We just load the last messages but this don't contain the system message.
-                    // We scroll up and load the system message. Deleting everything is not an option as we
-                    // would loose the messages that we want to keep. We only want to
-                    // delete the messages and chatBlocks older than the system message.
-                    chatDao.deleteMessagesOlderThan(internalConversationId, messageJson.id)
-                    chatBlocksDao.deleteChatBlocksOlderThan(internalConversationId, messageJson.id)
-                }
-
-                ChatMessage.SystemMessageType.MESSAGE_PINNED,
-                ChatMessage.SystemMessageType.MESSAGE_UNPINNED -> needsRoomRefresh = true
-
-                else -> {}
-            }
-        }
-        if (needsRoomRefresh) _roomRefreshFlow.emit(Unit)
-    }
-
-    // the parent message is always the newest state, no matter how old the system message is.
-    // that's why we can just take the parent, update it in DB and update the UI
-    private suspend fun upsertParentMessage(messageJson: ChatMessageJson, deriveReactions: Boolean = false) {
-        val parentMessageJson = messageJson.parentMessage ?: return
-        parentMessageJson.message ?: return
-        val parentMessageEntity = parentMessageJson.asEntity(currentUser.id!!)
-
-        // Preserve parentMessageId if missing in server response but present in local DB
-        val existingEntity = chatDao.getChatMessageEntity(internalConversationId, parentMessageJson.id)
-        if (existingEntity != null && parentMessageEntity.parentMessageId == null) {
-            parentMessageEntity.parentMessageId = existingEntity.parentMessageId
-        }
-
-        if (deriveReactions) {
-            parentMessageEntity.reactionsSelf =
-                deriveReactionsSelf(messageJson, existingEntity)
-        }
-
-        chatDao.upsertChatMessage(parentMessageEntity)
-    }
-
-    /**
-     * Derives the correct reactionsSelf list for a parent message when a reaction system message arrives via
-     * signaling. The signaling payload does not include reactionsSelf, so we preserve the existing DB state and
-     * apply a targeted update only if the actor of the system message is the current user.
-     *
-     * The emoji is always in the message field (messageParameters is empty for all reaction system messages).
-     *
-     * This handles the race condition where signaling may arrive before or after
-     * ReactionsRepositoryImpl has written the optimistic local update.
-     */
-    private fun deriveReactionsSelf(
-        systemMessageJson: ChatMessageJson,
-        existingEntity: ChatMessageEntity?
-    ): ArrayList<String> {
-        val reactionsSelf = ArrayList<String>(existingEntity?.reactionsSelf ?: emptyList())
-        val isCurrentUserActor = systemMessageJson.actorId == currentUser.userId &&
-            systemMessageJson.actorType == "users"
-
-        if (isCurrentUserActor) {
-            val emoji = systemMessageJson.message
-            if (emoji != null) {
-                when (systemMessageJson.systemMessageType) {
-                    ChatMessage.SystemMessageType.REACTION -> {
-                        if (!reactionsSelf.contains(emoji)) reactionsSelf.add(emoji)
-                    }
-
-                    ChatMessage.SystemMessageType.REACTION_REVOKED,
-                    ChatMessage.SystemMessageType.REACTION_DELETED -> reactionsSelf.remove(emoji)
-                    else -> {}
-                }
-            }
-        }
-
-        return reactionsSelf
-    }
-
-    /**
-     *  304 is returned when oldest message of chat was queried or when long polling request returned with no
-     *  modification. hasHistory is only set to false, when 304 was returned for the the oldest message
-     */
-    private fun getHasHistory(statusCode: Int, lookIntoFuture: Boolean): Boolean =
-        if (statusCode == HTTP_CODE_NOT_MODIFIED) {
-            lookIntoFuture
-        } else {
-            true
-        }
-
-    private suspend fun getBlockOfMessage(queriedMessageId: Int?): ChatBlockEntity? {
-        var blockContainingQueriedMessage: ChatBlockEntity? = null
-        if (queriedMessageId != null) {
-            val blocksContainingQueriedMessage =
-                chatBlocksDao.getChatBlocksContainingMessageId(
-                    internalConversationId = internalConversationId,
-                    threadId = threadId,
-                    messageId = queriedMessageId.toLong()
-                )
-
-            val chatBlocks = blocksContainingQueriedMessage.first()
-            if (chatBlocks.size > 1) {
-                Log.w(TAG, "multiple chat blocks with messageId $queriedMessageId were found")
-            }
-
-            blockContainingQueriedMessage = if (chatBlocks.isNotEmpty()) {
-                chatBlocks.first()
-            } else {
-                null
-            }
-        }
-        return blockContainingQueriedMessage
-    }
-
-    private suspend fun updateBlocks(chatBlock: ChatBlockEntity) {
-        chatBlocksDao.upsertChatBlock(chatBlock)
-
-        val connectedChatBlocks =
-            chatBlocksDao.getConnectedChatBlocks(
-                internalConversationId = internalConversationId,
-                threadId = threadId,
-                oldestMessageId = chatBlock.oldestMessageId,
-                newestMessageId = chatBlock.newestMessageId
-            ).first()
-
-        if (connectedChatBlocks.size == 1) {
-            Log.d(TAG, "This chatBlock is not connected to others")
-            val chatBlockFromDb = connectedChatBlocks[0]
-            Log.d(TAG, "chatBlockFromDb.oldestMessageId: " + chatBlockFromDb.oldestMessageId)
-            Log.d(TAG, "chatBlockFromDb.newestMessageId: " + chatBlockFromDb.newestMessageId)
-        } else if (connectedChatBlocks.size > 1) {
-            Log.d(TAG, "Found " + connectedChatBlocks.size + " chat blocks that are connected")
-            val oldestIdFromDbChatBlocks =
-                connectedChatBlocks.minByOrNull { it.oldestMessageId }!!.oldestMessageId
-            val newestIdFromDbChatBlocks =
-                connectedChatBlocks.maxByOrNull { it.newestMessageId }!!.newestMessageId
-
-            val hasNoHistory = connectedChatBlocks.any { !it.hasHistory }
-            val hasHistory = !hasNoHistory
-            Log.d(TAG, "hasHistory = $hasHistory")
-
-            val newChatBlock = ChatBlockEntity(
-                internalConversationId = internalConversationId,
-                accountId = conversationModel.accountId,
-                token = conversationModel.token,
-                threadId = threadId,
-                oldestMessageId = oldestIdFromDbChatBlocks,
-                newestMessageId = newestIdFromDbChatBlocks,
-                hasHistory = hasHistory
-            )
-            chatBlocksDao.replaceConnectedChatBlocks(connectedChatBlocks, newChatBlock)
-            Log.d(TAG, "A new chat block was created that covers all the range of the found chatblocks")
-            Log.d(TAG, "new chatBlock - oldest MessageId: $oldestIdFromDbChatBlocks")
-            Log.d(TAG, "new chatBlock - newest MessageId: $newestIdFromDbChatBlocks")
-        } else {
-            Log.d(TAG, "No chat block found ....")
-        }
-    }
+        syncer.isUntranslatedSystemMessage(messagesJson)
 
     override fun handleOnPause() {
         itIsPaused = true
@@ -1092,37 +782,8 @@ class OfflineFirstChatRepository @Inject constructor(
     suspend fun persistChatMessagesAndHandleSystemMessages(
         chatMessages: List<ChatMessageJson>,
         emitOnIncoming: Boolean = false
-    ): List<ChatMessageEntity> {
-        handleSystemMessagesThatAffectDatabase(chatMessages)
-
-        val chatMessageEntities = chatMessages.map {
-            it.asEntity(currentUser.id!!)
-        }
-
-        try {
-            chatDao.upsertChatMessagesAndDeleteTemp(internalConversationId, chatMessageEntities)
-        } catch (e: SQLiteConstraintException) {
-            // Skipped persisting messages: conversation $internalConversationId not in DB yet.
-            // This avoids "SQLiteConstraintException: FOREIGN KEY constraint failed".
-            // It may happen when a notification for a newly created conversation is opened. The websocket was just
-            // faster than the API request so no conversation for the message exists yet. Just swallow the exception
-            // and let the insurance request handle it.
-            Log.w(TAG, "Skip persisting messages from signaling: conversation not in DB yet. Swallowed exception: $e")
-            return emptyList()
-        }
-
-        if (emitOnIncoming) {
-            val hasIncomingFromOther = chatMessages.any { msg ->
-                msg.systemMessageType == ChatMessage.SystemMessageType.DUMMY &&
-                    msg.actorId != currentUser.userId
-            }
-            if (hasIncomingFromOther) {
-                _incomingMessageFlow.emit(Unit)
-            }
-        }
-
-        return chatMessageEntities
-    }
+    ): List<ChatMessageEntity> =
+        syncer.persistChatMessagesAndHandleSystemMessages(syncTarget, chatMessages, emitOnIncoming, syncEvents)
 
     override fun observeLatestMessages(internalConversationId: String): Flow<List<ChatMessageEntity>> =
         chatBlocksDao
@@ -1298,15 +959,8 @@ class OfflineFirstChatRepository @Inject constructor(
 
     companion object {
         val TAG: String = OfflineFirstChatRepository::class.java.simpleName
-        private const val HTTP_CODE_OK: Int = 200
-        private const val HTTP_CODE_NOT_MODIFIED = 304
-        private const val HTTP_CODE_PRECONDITION_FAILED = 412
         private const val HALF_SECOND = 500L
         private const val DEFAULT_MESSAGES_LIMIT = 100
-        private const val MAX_PULL_ATTEMPTS = 5
-        private const val RETRY_LIMIT_SECOND_ATTEMPT = 50
-        private const val RETRY_LIMIT_THIRD_ATTEMPT = 10
-        private const val RETRY_LIMIT_FALLBACK_ATTEMPT = 5
         private const val MILLIES = 1000L
         private const val INSURANCE_REQUEST_DELAY = 2 * 60 * MILLIES
 

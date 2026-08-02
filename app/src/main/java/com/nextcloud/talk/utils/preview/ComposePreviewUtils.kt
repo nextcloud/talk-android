@@ -20,6 +20,7 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
+import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.chat.data.network.OfflineFirstChatRepository
 import com.nextcloud.talk.chat.data.network.RetrofitChatNetwork
@@ -148,13 +149,22 @@ class ComposePreviewUtils private constructor(context: Context) {
     val logger: TestLogger
         get() = TestLogger
 
+    val chatMessageSyncer: ChatMessageSyncer
+        get() = ChatMessageSyncer(
+            chatMessagesDao,
+            chatBlocksDao,
+            chatNetworkDataSource,
+            networkMonitor
+        )
+
     val chatRepository: ChatMessageRepository
         get() = OfflineFirstChatRepository(
             logger,
             chatMessagesDao,
             chatBlocksDao,
             chatNetworkDataSource,
-            networkMonitor
+            networkMonitor,
+            chatMessageSyncer
         )
 
     val threadsRepository: ThreadsRepository

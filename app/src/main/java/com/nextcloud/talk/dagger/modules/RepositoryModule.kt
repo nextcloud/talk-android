@@ -16,6 +16,7 @@ import com.nextcloud.talk.account.data.network.NetworkLoginDataSource
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.chat.data.ChatMessageRepository
+import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.chat.data.network.OfflineFirstChatRepository
 import com.nextcloud.talk.logger.Logger
@@ -140,19 +141,36 @@ class RepositoryModule {
         InvitationsRepositoryImpl(ncApi, ncApiCoroutines)
 
     @Provides
+    @Singleton
+    fun provideChatMessageSyncer(
+        chatMessagesDao: ChatMessagesDao,
+        chatBlocksDao: ChatBlocksDao,
+        dataSource: ChatNetworkDataSource,
+        networkMonitor: NetworkMonitor
+    ): ChatMessageSyncer =
+        ChatMessageSyncer(
+            chatMessagesDao,
+            chatBlocksDao,
+            dataSource,
+            networkMonitor
+        )
+
+    @Provides
     fun provideOfflineFirstChatRepository(
         logger: Logger,
         chatMessagesDao: ChatMessagesDao,
         chatBlocksDao: ChatBlocksDao,
         dataSource: ChatNetworkDataSource,
-        networkMonitor: NetworkMonitor
+        networkMonitor: NetworkMonitor,
+        syncer: ChatMessageSyncer
     ): ChatMessageRepository =
         OfflineFirstChatRepository(
             logger,
             chatMessagesDao,
             chatBlocksDao,
             dataSource,
-            networkMonitor
+            networkMonitor,
+            syncer
         )
 
     @Provides
