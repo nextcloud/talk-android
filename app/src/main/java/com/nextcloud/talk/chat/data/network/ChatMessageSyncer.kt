@@ -126,6 +126,13 @@ class ChatMessageSyncer @Inject constructor(
     }
 
     /**
+     * Returns true when messages of the conversation (or thread) are cached locally and covered by
+     * a chat block, i.e. a catch-up only needs to fetch the delta.
+     */
+    fun hasLocalChatBlock(internalConversationId: String, threadId: Long?): Boolean =
+        chatBlocksDao.getNewestMessageIdFromChatBlocks(internalConversationId, threadId) > 0
+
+    /**
      * Catches up a room with the server without requiring an open chat.
      *
      * If a chat block exists, only the delta since the newest locally known message is fetched and
