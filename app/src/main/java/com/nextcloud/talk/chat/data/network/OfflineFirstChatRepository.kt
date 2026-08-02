@@ -330,10 +330,7 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     private suspend fun cleanupExpiredMessages() {
-        // For now, only the messages are deleted without adapting the chatBlocks. It may turn out that there must be
-        // solutions to delete empty chatBlocks and trim chatBlocks if a first or last messages of it does not exist
-        // anymore
-        chatDao.deleteExpiredMessages(internalConversationId, System.currentTimeMillis() / MILLIES)
+        syncer.cleanupExpiredMessages(internalConversationId)
     }
 
     /**

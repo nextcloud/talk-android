@@ -133,6 +133,52 @@ class ChatMessageSyncer @Inject constructor(
         chatBlocksDao.getNewestMessageIdFromChatBlocks(internalConversationId, threadId) > 0
 
     /**
+     * Deletes the expired messages of a conversation and reconciles its chat blocks afterwards:
+     * block boundaries are trimmed to the oldest/newest message that still exists and blocks whose
+     * messages are all gone are deleted. Without the reconciliation, block boundaries would point
+     * to deleted messages, e.g. faking coverage up to a message that is no longer cached.
+     */
+    suspend fun cleanupExpiredMessages(internalConversationId: String) {
+        val deletedMessages = chatDao.deleteExpiredMessages(
+            internalConversationId,
+            System.currentTimeMillis() / MILLIS_PER_SECOND
+        )
+        if (deletedMessages == 0) {
+            return
+        }
+        Log.d(TAG, "Deleted $deletedMessages expired messages for $internalConversationId, reconciling chat blocks")
+
+        val blocks = chatBlocksDao.getChatBlocksForConversation(internalConversationId)
+        for (block in blocks) {
+            val newestExistingId = chatDao.getNewestMessageIdInRange(
+                internalConversationId = internalConversationId,
+                threadId = block.threadId,
+                oldestMessageId = block.oldestMessageId,
+                newestMessageId = block.newestMessageId
+            )
+
+            if (newestExistingId == null) {
+                Log.d(TAG, "Deleting chat block without any remaining messages ($internalConversationId)")
+                chatBlocksDao.deleteChatBlocks(listOf(block))
+                continue
+            }
+
+            val oldestExistingId = chatDao.getOldestMessageIdInRange(
+                internalConversationId = internalConversationId,
+                threadId = block.threadId,
+                oldestMessageId = block.oldestMessageId,
+                newestMessageId = block.newestMessageId
+            ) ?: continue
+
+            if (block.oldestMessageId != oldestExistingId || block.newestMessageId != newestExistingId) {
+                block.oldestMessageId = oldestExistingId
+                block.newestMessageId = newestExistingId
+                chatBlocksDao.upsertChatBlock(block)
+            }
+        }
+    }
+
+    /**
      * Catches up a room with the server without requiring an open chat.
      *
      * If a chat block exists, only the delta since the newest locally known message is fetched and
@@ -600,6 +646,7 @@ class ChatMessageSyncer @Inject constructor(
         val NO_EVENTS: Events = object : Events {}
 
         private const val DEFAULT_MESSAGES_LIMIT = 100
+        private const val MILLIS_PER_SECOND = 1000L
         private const val HTTP_CODE_OK: Int = 200
         private const val HTTP_CODE_NOT_MODIFIED = 304
         private const val HTTP_CODE_PRECONDITION_FAILED = 412
