@@ -36,6 +36,7 @@ import javax.inject.Inject
  * account, room and thread to sync, so it can be used for any room at any time — no open chat
  * required. UI-bound side effects are reported through the optional [Events] listener.
  */
+@Suppress("TooManyFunctions")
 class ChatMessageSyncer @Inject constructor(
     private val chatDao: ChatMessagesDao,
     private val chatBlocksDao: ChatBlocksDao,
@@ -274,6 +275,7 @@ class ChatMessageSyncer @Inject constructor(
      * Pulls messages from the server as described by [fieldMap], persists them and updates the
      * chat blocks of [target].
      */
+    @Suppress("LongMethod")
     suspend fun pullAndPersistMessages(
         target: SyncTarget,
         fieldMap: HashMap<String, Int>,
@@ -351,6 +353,7 @@ class ChatMessageSyncer @Inject constructor(
         }
     }
 
+    @Suppress("LongParameterList")
     private suspend fun updateMessagesData(
         target: SyncTarget,
         chatMessagesJson: List<ChatMessageJson>,
@@ -359,8 +362,12 @@ class ChatMessageSyncer @Inject constructor(
         hasHistory: Boolean,
         events: Events
     ): Long? {
-        val chatMessageEntities =
-            persistChatMessagesAndHandleSystemMessages(target, chatMessagesJson, emitOnIncoming = lookIntoFuture, events)
+        val chatMessageEntities = persistChatMessagesAndHandleSystemMessages(
+            target,
+            chatMessagesJson,
+            emitOnIncoming = lookIntoFuture,
+            events = events
+        )
 
         if (chatMessageEntities.isEmpty()) {
             // Persisting was skipped because the conversation is not in the DB yet (see
@@ -533,6 +540,7 @@ class ChatMessageSyncer @Inject constructor(
      * This handles the race condition where signaling may arrive before or after
      * ReactionsRepositoryImpl has written the optimistic local update.
      */
+    @Suppress("NestedBlockDepth")
     private fun deriveReactionsSelf(
         target: SyncTarget,
         systemMessageJson: ChatMessageJson,

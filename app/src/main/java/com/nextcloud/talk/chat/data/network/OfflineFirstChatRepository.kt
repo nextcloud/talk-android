@@ -173,6 +173,7 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
+    @Suppress("LongMethod")
     override suspend fun loadInitialMessages(withNetworkParams: Bundle) {
         logger.d(TAG, "---- loadInitialMessages ------------")
         cleanupExpiredMessages()

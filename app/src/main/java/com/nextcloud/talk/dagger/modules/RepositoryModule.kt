@@ -156,6 +156,7 @@ class RepositoryModule {
         )
 
     @Provides
+    @Suppress("LongParameterList")
     fun provideOfflineFirstChatRepository(
         logger: Logger,
         chatMessagesDao: ChatMessagesDao,
@@ -175,6 +176,7 @@ class RepositoryModule {
 
     @Provides
     @Singleton
+    @Suppress("LongParameterList")
     fun provideOfflineFirstConversationsRepository(
         dao: ConversationsDao,
         dataSource: ConversationsNetworkDataSource,
