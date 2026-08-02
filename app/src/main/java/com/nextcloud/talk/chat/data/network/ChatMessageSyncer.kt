@@ -19,6 +19,7 @@ import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.utils.SpreedFeatures
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -81,8 +82,10 @@ class ChatMessageSyncer @Inject constructor(
     data class SyncOutcome(val persistedNewMessages: Boolean, val newestPersistedMessageId: Long?)
 
     /**
-     * Builds the query parameters for a chat pull request. [setReadMarker] stays 0 so a sync never
-     * moves the user's read marker.
+     * Builds the query parameters for a chat pull request. setReadMarker stays 0 so a sync never
+     * moves the user's read marker. Background fetches must additionally pass
+     * [markNotificationsAsRead] = false so the server keeps push notifications for the fetched
+     * messages — only supported when the server has the chat-keep-notifications capability.
      */
     @Suppress("LongParameterList")
     fun buildFieldMap(
@@ -92,7 +95,8 @@ class ChatMessageSyncer @Inject constructor(
         lastKnown: Int?,
         limit: Int = DEFAULT_MESSAGES_LIMIT,
         threadId: Long? = null,
-        lastCommonRead: Int? = null
+        lastCommonRead: Int? = null,
+        markNotificationsAsRead: Boolean = true
     ): HashMap<String, Int> {
         val fieldMap = HashMap<String, Int>()
 
@@ -114,6 +118,10 @@ class ChatMessageSyncer @Inject constructor(
         fieldMap["lookIntoFuture"] = if (lookIntoFuture) 1 else 0
         fieldMap["setReadMarker"] = 0
 
+        if (!markNotificationsAsRead) {
+            fieldMap["markNotificationsAsRead"] = 0
+        }
+
         return fieldMap
     }
 
@@ -124,10 +132,23 @@ class ChatMessageSyncer @Inject constructor(
      * the block is extended. For rooms without any chat block (never-opened rooms) the newest
      * messages are fetched and the initial chat block is created, so cached messages become
      * visible to [ChatMessagesDao] block queries right away.
+     *
+     * Requires the chat-keep-notifications capability: without it, a background fetch would
+     * dismiss the user's push notifications for the fetched messages, so the catch-up is skipped
+     * entirely (same guard as on iOS).
      */
     suspend fun catchUpRoom(target: SyncTarget, limit: Int = DEFAULT_MESSAGES_LIMIT): SyncOutcome {
         if (!networkMonitor.isOnline.value) {
             Log.d(TAG, "Device is offline, skipping catch-up for ${target.internalConversationId}")
+            return SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null)
+        }
+
+        if (!target.user.hasSpreedFeatureCapability(SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value)) {
+            Log.d(
+                TAG,
+                "Server lacks ${SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value}, " +
+                    "skipping catch-up for ${target.internalConversationId}"
+            )
             return SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null)
         }
 
@@ -141,7 +162,8 @@ class ChatMessageSyncer @Inject constructor(
                 includeLastKnown = false,
                 lastKnown = newestMessageIdFromDb.toInt(),
                 limit = limit,
-                threadId = target.threadId
+                threadId = target.threadId,
+                markNotificationsAsRead = false
             )
         } else {
             buildFieldMap(
@@ -150,7 +172,8 @@ class ChatMessageSyncer @Inject constructor(
                 includeLastKnown = true,
                 lastKnown = null,
                 limit = limit,
-                threadId = target.threadId
+                threadId = target.threadId,
+                markNotificationsAsRead = false
             )
         }
 
