@@ -8,6 +8,9 @@
 
 package com.nextcloud.talk.conversationlist.data.network
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.os.PowerManager
 import android.util.Log
 import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
@@ -33,8 +36,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import javax.inject.Inject
 import kotlin.collections.map
 
@@ -43,7 +49,8 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val network: ConversationsNetworkDataSource,
     private val chatNetworkDataSource: ChatNetworkDataSource,
     private val networkMonitor: NetworkMonitor,
-    private val chatMessageSyncer: ChatMessageSyncer
+    private val chatMessageSyncer: ChatMessageSyncer,
+    private val context: Context
 ) : OfflineConversationsRepository {
     override val roomListFlow: Flow<List<ConversationModel>>
         get() = _roomListFlow
@@ -200,6 +207,11 @@ class OfflineFirstConversationsRepository @Inject constructor(
      * Prefetches the messages of [rooms] into the local database so they are instantly visible
      * when a chat is opened. Runs after the room list sync; failures are logged and never affect
      * the conversation list itself.
+     *
+     * The catch-up is skipped in battery saver mode and when background data is restricted on a
+     * metered network (mirroring the Low Power Mode guard on iOS), and is bounded to the
+     * [MAX_ROOMS_TO_CATCH_UP] most recently active rooms with [MAX_CONCURRENT_CATCH_UPS] parallel
+     * requests, so a fresh install with many rooms cannot cause an unbounded request burst.
      */
     private suspend fun catchUpRoomsWithNewMessages(user: User, rooms: List<ConversationEntity>) {
         if (rooms.isEmpty()) {
@@ -211,20 +223,55 @@ class OfflineFirstConversationsRepository @Inject constructor(
             return
         }
 
+        if (isPowerSaveMode()) {
+            Log.d(TAG, "Battery saver is active, skipping message catch-up")
+            return
+        }
+
+        if (isBackgroundDataRestricted()) {
+            Log.d(TAG, "Background data is restricted on a metered network, skipping message catch-up")
+            return
+        }
+
         val credentials = ApiUtils.getCredentials(user.username, user.token) ?: return
 
-        Log.d(TAG, "Catching up messages for ${rooms.size} rooms")
-        for (room in rooms) {
-            val target = ChatMessageSyncer.SyncTarget(
-                user = user,
-                roomToken = room.token,
-                threadId = null,
-                credentials = credentials,
-                urlForChatting = ApiUtils.getUrlForChat(CHAT_API_VERSION, user.baseUrl!!, room.token)
-            )
-            runCatching { chatMessageSyncer.catchUpRoom(target) }
-                .onFailure { Log.e(TAG, "Message catch-up failed for room ${room.token}", it) }
+        val cappedRooms = rooms
+            .sortedByDescending { it.lastActivity }
+            .take(MAX_ROOMS_TO_CATCH_UP)
+        if (cappedRooms.size < rooms.size) {
+            Log.w(TAG, "Capping message catch-up to ${cappedRooms.size} of ${rooms.size} rooms")
         }
+
+        Log.d(TAG, "Catching up messages for ${cappedRooms.size} rooms")
+        coroutineScope {
+            val semaphore = Semaphore(MAX_CONCURRENT_CATCH_UPS)
+            cappedRooms.forEach { room ->
+                launch {
+                    semaphore.withPermit {
+                        val target = ChatMessageSyncer.SyncTarget(
+                            user = user,
+                            roomToken = room.token,
+                            threadId = null,
+                            credentials = credentials,
+                            urlForChatting = ApiUtils.getUrlForChat(CHAT_API_VERSION, user.baseUrl!!, room.token)
+                        )
+                        runCatching { chatMessageSyncer.catchUpRoom(target) }
+                            .onFailure { Log.e(TAG, "Message catch-up failed for room ${room.token}", it) }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun isPowerSaveMode(): Boolean {
+        val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        return powerManager.isPowerSaveMode
+    }
+
+    private fun isBackgroundDataRestricted(): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return connectivityManager.isActiveNetworkMetered &&
+            connectivityManager.restrictBackgroundStatus == ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED
     }
 
     private suspend fun deleteLeftConversations(user: User, conversationsFromSync: List<ConversationEntity>) {
@@ -251,5 +298,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
     companion object {
         val TAG = OfflineFirstConversationsRepository::class.simpleName
         private const val CHAT_API_VERSION = 1
+        private const val MAX_ROOMS_TO_CATCH_UP = 20
+        private const val MAX_CONCURRENT_CATCH_UPS = 3
     }
 }

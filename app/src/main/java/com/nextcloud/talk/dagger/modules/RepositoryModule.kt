@@ -180,14 +180,16 @@ class RepositoryModule {
         dataSource: ConversationsNetworkDataSource,
         chatNetworkDataSource: ChatNetworkDataSource,
         networkMonitor: NetworkMonitor,
-        chatMessageSyncer: ChatMessageSyncer
+        chatMessageSyncer: ChatMessageSyncer,
+        context: Context
     ): OfflineConversationsRepository =
         OfflineFirstConversationsRepository(
             dao,
             dataSource,
             chatNetworkDataSource,
             networkMonitor,
-            chatMessageSyncer
+            chatMessageSyncer,
+            context
         )
 
     @Provides
