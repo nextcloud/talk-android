@@ -123,8 +123,6 @@ class OfflineFirstChatRepository @Inject constructor(
     private lateinit var urlForChatting: String
     private var threadId: Long? = null
 
-    private var latestKnownMessageIdFromSync: Long = 0
-
     private val requestedParentIds = mutableSetOf<Long>()
 
     override fun initData(
@@ -323,7 +321,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
         while (true) {
             delay(INSURANCE_REQUEST_DELAY)
-            Log.d(TAG, "execute insurance request with latestKnownMessageIdFromSync: $latestKnownMessageIdFromSync")
+            Log.d(TAG, "execute insurance request")
 
             fetchNewMessages()
         }
@@ -334,17 +332,24 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     /**
-     * Fetches messages newer than latest known message.
+     * Fetches messages newer than the newest message covered by the chat blocks.
+     *
+     * The anchor is read from the database instead of in-memory state: messages and chat blocks
+     * are persisted together, so the blocks are always at least as fresh — and unlike a field in
+     * this (unscoped, per-chat-open) repository they survive reopening the chat.
      *
      * @return `true` if at least one new message was received and persisted.
      */
     override suspend fun fetchNewMessages(): Boolean {
         cleanupExpiredMessages()
+
+        val newestMessageIdFromDb = chatBlocksDao.getNewestMessageIdFromChatBlocks(internalConversationId, threadId)
+
         val fieldMap = getFieldMap(
             lookIntoFuture = true,
             timeout = 0,
             includeLastKnown = false,
-            lastKnown = latestKnownMessageIdFromSync.toInt(),
+            lastKnown = newestMessageIdFromDb.toInt(),
             limit = 200
         )
         val networkParams = Bundle()
@@ -510,9 +515,6 @@ class OfflineFirstChatRepository @Inject constructor(
     private suspend fun getAndPersistMessages(bundle: Bundle): Boolean {
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
         val outcome = syncer.pullAndPersistMessages(syncTarget, fieldMap, syncEvents)
-        outcome.newestPersistedMessageId?.let {
-            latestKnownMessageIdFromSync = maxOf(latestKnownMessageIdFromSync, it)
-        }
         return outcome.persistedNewMessages
     }
 
