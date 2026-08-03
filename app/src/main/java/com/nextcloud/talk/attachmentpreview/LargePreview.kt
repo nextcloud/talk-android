@@ -218,7 +218,7 @@ private fun VideoPlayerCard(uri: String, onStopped: () -> Unit, modifier: Modifi
         exoPlayer.prepare()
     }
 
-    Box(modifier = modifier) {
+    Box(modifier = modifier.clip(RoundedCornerShape(THUMBNAIL_CORNER_RADIUS_DP.dp))) {
         AndroidView(
             factory = { ctx ->
                 PlayerView(ctx).apply {
