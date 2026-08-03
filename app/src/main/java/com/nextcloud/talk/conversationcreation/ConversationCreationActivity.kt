@@ -57,6 +57,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -403,7 +404,7 @@ fun ConversationPresets(conversationCreationViewModel: ConversationCreationViewM
                 subtitle = stringResource(R.string.default_room_preset),
                 icon = Icons.Outlined.Chat,
                 isSelected = preset == "default",
-                onClick = { conversationCreationViewModel.conversationPreset.value = "default" }
+                onClick = { conversationCreationViewModel.updateConversationPreset("default") }
             )
 
             SelectableCard(
@@ -412,7 +413,7 @@ fun ConversationPresets(conversationCreationViewModel: ConversationCreationViewM
                 subtitle = stringResource(R.string.voice_room_preset),
                 icon = Icons.Outlined.VolumeUp,
                 isSelected = preset == "voiceroom",
-                onClick = { conversationCreationViewModel.conversationPreset.value = "voiceroom" }
+                onClick = { conversationCreationViewModel.updateConversationPreset("voiceroom") }
             )
         }
 
@@ -426,7 +427,7 @@ fun ConversationPresets(conversationCreationViewModel: ConversationCreationViewM
                     subtitle = stringResource(R.string.nc_channel_description),
                     icon = Icons.Outlined.Podcasts,
                     isSelected = preset == "channel",
-                    onClick = { conversationCreationViewModel.conversationPreset.value = "channel" }
+                    onClick = { conversationCreationViewModel.updateConversationPreset("channel") }
                 )
 
                 SelectableCard(
@@ -435,7 +436,8 @@ fun ConversationPresets(conversationCreationViewModel: ConversationCreationViewM
                     subtitle = stringResource(R.string.nc_announcement_description),
                     icon = Icons.Outlined.Campaign,
                     isSelected = preset == "announcement",
-                    onClick = { conversationCreationViewModel.conversationPreset.value = "announcement" }
+                    onClick = { conversationCreationViewModel.updateConversationPreset("announcement") },
+                    badgeText = stringResource(R.string.nc_admin_only)
                 )
             }
         }
@@ -450,7 +452,8 @@ fun SelectableCard(
     subtitle: String,
     icon: ImageVector,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    badgeText: String? = null
 ) {
     val borderColor = if (isSelected) Color.LightGray else Color.Transparent
     val borderWidth = 1.dp
@@ -478,8 +481,23 @@ fun SelectableCard(
             Text(
                 text = title,
                 fontWeight = FontWeight.Bold,
-                fontSize = 15.sp
+                fontSize = 15.sp,
+                modifier = Modifier.weight(1f, fill = false)
             )
+        }
+
+        if (badgeText != null) {
+            Surface(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = RoundedCornerShape(4.dp)
+            ) {
+                Text(
+                    text = badgeText,
+                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(12.dp))

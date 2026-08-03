@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.conversationcreation.data
 
+import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -26,6 +27,7 @@ interface ConversationCreationRepository {
     suspend fun openConversation(credentials: String?, url: String, roomToken: String, scope: Int): GenericOverall
     suspend fun addParticipants(credentials: String?, retrofitBucket: RetrofitBucket): AddParticipantOverall
     suspend fun createRoom(credentials: String?, retrofitBucket: RetrofitBucket): RoomOverall
+    suspend fun createRoomWithBody(credentials: String?, url: String, body: CreateRoomRequest): RoomOverall
     suspend fun setPassword(credentials: String?, url: String, roomToken: String, password: String): GenericOverall
     suspend fun uploadConversationAvatar(
         credentials: String?,

@@ -8,6 +8,7 @@
 package com.nextcloud.talk.conversationcreation.data
 
 import com.nextcloud.talk.api.NcApiCoroutines
+import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -58,11 +59,16 @@ class ConversationCreationRepositoryImpl @Inject constructor(private val ncApiCo
     }
 
     override suspend fun createRoom(credentials: String?, retrofitBucket: RetrofitBucket): RoomOverall {
-        val response = ncApiCoroutines.createRoom(
+        val response = ncApiCoroutines.createRoomForm(
             credentials,
             retrofitBucket.url,
             retrofitBucket.queryMap
         )
+        return response
+    }
+
+    override suspend fun createRoomWithBody(credentials: String?, url: String, body: CreateRoomRequest): RoomOverall {
+        val response = ncApiCoroutines.createRoomWithBody(credentials, url, body)
         return response
     }
 
