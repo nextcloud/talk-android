@@ -55,6 +55,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -119,7 +122,11 @@ private fun LargePage(description: FileDescription) {
 
         Box(modifier = cardModifier) {
             if (description.kind == MediaKind.VIDEO && isPlayingVideo) {
-                VideoPlayerCard(uri = description.uri, modifier = Modifier.fillMaxSize())
+                VideoPlayerCard(
+                    uri = description.uri,
+                    onStopped = { isPlayingVideo = false },
+                    modifier = Modifier.fillMaxSize()
+                )
             } else {
                 FileThumbnailImage(
                     description,
@@ -170,12 +177,29 @@ private fun PlayButtonOverlay(onClick: () -> Unit, modifier: Modifier = Modifier
 
 @OptIn(UnstableApi::class)
 @Composable
-private fun VideoPlayerCard(uri: String, modifier: Modifier = Modifier) {
+private fun VideoPlayerCard(uri: String, onStopped: () -> Unit, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val exoPlayer = remember(uri) { ExoPlayer.Builder(context).build() }
 
     DisposableEffect(exoPlayer) {
         onDispose { exoPlayer.release() }
+    }
+
+    // A still-active hardware video decoder competing with e.g. the system camera's own hardware
+    // encoder (launched on top of this dialog to take a photo/video, backgrounding it for as long
+    // as that takes) for the same limited codec resources can wedge the device's camera/GPU stack
+    // on some hardware. Stop decoding as soon as this screen isn't visible, not just on dispose —
+    // ON_STOP fires while backgrounded, well before the Composable would ever leave composition.
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner, exoPlayer) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) {
+                exoPlayer.stop()
+                onStopped()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
     // Preparing/starting playback here (instead of alongside player creation above) ensures the
