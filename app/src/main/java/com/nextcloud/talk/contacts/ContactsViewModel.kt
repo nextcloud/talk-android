@@ -12,19 +12,21 @@ import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ContactsViewModel @Inject constructor(
     private val repository: ContactsRepository,
-    private val currentUserProvider: CurrentUserProviderOld
+    private val currentUserProvider: CurrentUserProvider
 ) : ViewModel() {
 
     private val _contactsViewState = MutableStateFlow<ContactsUiState>(ContactsUiState.None)
@@ -53,7 +55,12 @@ class ContactsViewModel @Inject constructor(
 
     private var hideAlreadyAddedParticipants: Boolean = false
 
-    private var currentUser: User = currentUserProvider.currentUser.blockingGet()
+    private val currentUserFlow: StateFlow<User?> =
+        currentUserProvider.currentUserFlow
+            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private val currentUser: User?
+        get() = currentUserFlow.value
 
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
@@ -100,11 +107,16 @@ class ContactsViewModel @Inject constructor(
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun getContactsFromSearchParams(query: String = "") {
+        val user = currentUser
+        if (user == null) {
+            _contactsViewState.value = ContactsUiState.Error("No current user")
+            return
+        }
         _contactsViewState.value = ContactsUiState.Loading
         viewModelScope.launch {
             try {
                 val contacts = repository.getContacts(
-                    currentUser,
+                    user,
                     if (query != "") query else searchQuery.value,
                     shareTypeList
                 )
@@ -130,10 +142,15 @@ class ContactsViewModel @Inject constructor(
     @Suppress("Detekt.TooGenericExceptionCaught")
     suspend fun getBlockingContactsFromSearchParams(query: String = "") =
         withContext(Dispatchers.IO) {
+            val user = currentUser
+            if (user == null) {
+                _contactsViewState.value = ContactsUiState.Error("No current user")
+                return@withContext
+            }
             _contactsViewState.value = ContactsUiState.Loading
             try {
                 val contacts = repository.getContacts(
-                    currentUser,
+                    user,
                     if (query != "") query else searchQuery.value,
                     shareTypeList
                 )
@@ -157,10 +174,15 @@ class ContactsViewModel @Inject constructor(
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun createRoom(roomType: String, sourceType: String?, userId: String, conversationName: String?) {
+        val user = currentUser
+        if (user == null) {
+            _roomViewState.value = RoomUiState.Error("No current user")
+            return
+        }
         viewModelScope.launch {
             try {
                 val room = repository.createRoom(
-                    currentUser,
+                    user,
                     roomType,
                     sourceType,
                     userId,
@@ -176,12 +198,14 @@ class ContactsViewModel @Inject constructor(
     }
 
     fun getImageUri(avatarId: String, requestBigSize: Boolean, isDarkMode: Boolean): String =
-        repository.getImageUri(
-            currentUser,
-            avatarId,
-            requestBigSize,
-            isDarkMode
-        )
+        currentUser?.let {
+            repository.getImageUri(
+                it,
+                avatarId,
+                requestBigSize,
+                isDarkMode
+            )
+        } ?: ""
 
     sealed class ContactsUiState {
         data object None : ContactsUiState()
