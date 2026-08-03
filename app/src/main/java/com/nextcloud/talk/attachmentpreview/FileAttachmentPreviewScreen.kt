@@ -23,14 +23,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
@@ -47,8 +47,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -116,13 +114,7 @@ internal fun FileAttachmentPreviewContent(
                 .navigationBarsPadding()
                 .imePadding()
         ) {
-            PreviewTopBar(
-                conversationName = conversationName,
-                hasCompressibleMedia = hasCompressibleMedia,
-                highQuality = !compressImages,
-                onDismiss = onDismiss,
-                onHighQualityChange = { highQuality -> compressImages = !highQuality }
-            )
+            PreviewTopBar(conversationName = conversationName, onDismiss = onDismiss)
 
             HorizontalDivider()
 
@@ -147,6 +139,16 @@ internal fun FileAttachmentPreviewContent(
                 )
             }
 
+            if (hasCompressibleMedia) {
+                MediaQualitySegmentedButton(
+                    highQuality = !compressImages,
+                    onHighQualityChange = { highQuality -> compressImages = !highQuality },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+            }
+
             CaptionInputBar(
                 caption = caption,
                 onCaptionChange = { caption = it },
@@ -158,13 +160,7 @@ internal fun FileAttachmentPreviewContent(
 }
 
 @Composable
-private fun PreviewTopBar(
-    conversationName: String,
-    hasCompressibleMedia: Boolean,
-    highQuality: Boolean,
-    onDismiss: () -> Unit,
-    onHighQualityChange: (Boolean) -> Unit
-) {
+private fun PreviewTopBar(conversationName: String, onDismiss: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -193,33 +189,43 @@ private fun PreviewTopBar(
                 overflow = TextOverflow.Ellipsis
             )
         }
-
-        if (hasCompressibleMedia) {
-            HighQualityToggle(checked = highQuality, onCheckedChange = onHighQualityChange)
-        }
     }
 }
 
 @Composable
-private fun HighQualityToggle(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
-    val description = stringResource(R.string.nc_hq_toggle_description)
-    FilterChip(
-        selected = checked,
-        onClick = { onCheckedChange(!checked) },
-        label = { Text(stringResource(R.string.nc_hq_toggle)) },
-        leadingIcon = if (checked) {
-            {
+private fun MediaQualitySegmentedButton(
+    highQuality: Boolean,
+    onHighQualityChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    SingleChoiceSegmentedButtonRow(modifier = modifier) {
+        SegmentedButton(
+            selected = highQuality,
+            onClick = { onHighQualityChange(true) },
+            shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
+            icon = {
                 Icon(
-                    imageVector = Icons.Filled.Check,
+                    imageVector = HighQualityIcon,
                     contentDescription = null,
-                    modifier = Modifier.size(FilterChipDefaults.IconSize)
+                    modifier = Modifier.size(SegmentedButtonDefaults.IconSize)
                 )
-            }
-        } else {
-            null
-        },
-        modifier = Modifier.semantics { contentDescription = description }
-    )
+            },
+            label = { Text(stringResource(R.string.nc_media_quality_original)) }
+        )
+        SegmentedButton(
+            selected = !highQuality,
+            onClick = { onHighQualityChange(false) },
+            shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
+            icon = {
+                Icon(
+                    imageVector = HighQualityOffIcon,
+                    contentDescription = null,
+                    modifier = Modifier.size(SegmentedButtonDefaults.IconSize)
+                )
+            },
+            label = { Text(stringResource(R.string.nc_media_quality_reduced)) }
+        )
+    }
 }
 
 @Composable
