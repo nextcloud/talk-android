@@ -17,6 +17,9 @@ internal data class FileDescription(
     val kind: MediaKind,
     val mimeType: String?,
     val detail: String?,
+    // What `detail` would read as under the other compress setting — lets the hero preview's
+    // detail chip reserve width for whichever variant is wider, so it never resizes on HQ toggle.
+    val alternateDetail: String? = null,
     val aspectRatio: Float? = null,
     val videoThumbnail: Bitmap? = null
 )

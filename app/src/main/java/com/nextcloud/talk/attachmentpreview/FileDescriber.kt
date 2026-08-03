@@ -26,6 +26,14 @@ private const val VIDEO_FRAME_MAX_DIMENSION_PX = 720
 internal fun isCompressible(mimeType: String?): Boolean =
     ImageCompressor.isCompressible(mimeType) || VideoCompressor.isCompressible(mimeType)
 
+/**
+ * [current] is the detail text for the file's active compress setting, [alternate] is what it
+ * would read as under the other setting. Both are computed regardless of [FileDescription]'s own
+ * `compress` flag, so the hero preview's detail chip can reserve width for whichever is wider and
+ * never resize when the HQ toggle flips which one is actually shown.
+ */
+private data class DetailVariants(val current: String, val alternate: String)
+
 @Suppress("ReturnCount")
 internal fun describeFile(context: Context, uriString: String, compress: Boolean): FileDescription {
     val uri = uriString.toUri()
@@ -36,10 +44,10 @@ internal fun describeFile(context: Context, uriString: String, compress: Boolean
         ?: return FileDescription(uriString, name, kind, mimeType, null)
     val sizeOnly = formatSize(context, file.length())
 
-    val detail = when (kind) {
+    val variants = when (kind) {
         MediaKind.IMAGE -> describeImageDetail(context, file, compress, sizeOnly)
         MediaKind.VIDEO -> describeVideoDetail(context, file, compress, sizeOnly)
-        MediaKind.OTHER -> "$name, $sizeOnly"
+        MediaKind.OTHER -> "$name, $sizeOnly".let { DetailVariants(it, it) }
     }
     val aspectRatio = when (kind) {
         MediaKind.IMAGE -> imageAspectRatio(file)
@@ -47,7 +55,16 @@ internal fun describeFile(context: Context, uriString: String, compress: Boolean
         MediaKind.OTHER -> null
     }
     val videoThumbnail = if (kind == MediaKind.VIDEO) extractVideoFrame(file) else null
-    return FileDescription(uriString, name, kind, mimeType, detail, aspectRatio, videoThumbnail)
+    return FileDescription(
+        uriString,
+        name,
+        kind,
+        mimeType,
+        variants.current,
+        variants.alternate,
+        aspectRatio,
+        videoThumbnail
+    )
 }
 
 @Suppress("ReturnCount")
@@ -133,21 +150,21 @@ private fun downscaleIfNeeded(bitmap: Bitmap): Bitmap {
 }
 
 @Suppress("ReturnCount")
-private fun describeImageDetail(context: Context, file: File, compress: Boolean, fallback: String): String {
-    val original = ImageCompressor.readImageInfo(file) ?: return fallback
-    if (!compress) return describeMedia(context, original.width, original.height, original.sizeBytes)
+private fun describeImageDetail(context: Context, file: File, compress: Boolean, fallback: String): DetailVariants {
+    val original = ImageCompressor.readImageInfo(file) ?: return DetailVariants(fallback, fallback)
+    val originalText = describeMedia(context, original.width, original.height, original.sizeBytes)
     val compressed = ImageCompressor.estimateCompression(file)
-        ?: return describeMedia(context, original.width, original.height, original.sizeBytes)
-    return describeMedia(context, compressed.width, compressed.height, compressed.sizeBytes)
+    val compressedText = compressed?.let { describeMedia(context, it.width, it.height, it.sizeBytes) } ?: originalText
+    return if (compress) DetailVariants(compressedText, originalText) else DetailVariants(originalText, compressedText)
 }
 
 @Suppress("ReturnCount")
-private fun describeVideoDetail(context: Context, file: File, compress: Boolean, fallback: String): String {
-    val original = VideoCompressor.readVideoInfo(file) ?: return fallback
-    if (!compress) return describeMedia(context, original.width, original.height, original.sizeBytes)
+private fun describeVideoDetail(context: Context, file: File, compress: Boolean, fallback: String): DetailVariants {
+    val original = VideoCompressor.readVideoInfo(file) ?: return DetailVariants(fallback, fallback)
+    val originalText = describeMedia(context, original.width, original.height, original.sizeBytes)
     val compressed = VideoCompressor.estimateCompression(file)
-        ?: return describeMedia(context, original.width, original.height, original.sizeBytes)
-    return describeMedia(context, compressed.width, compressed.height, compressed.sizeBytes)
+    val compressedText = compressed?.let { describeMedia(context, it.width, it.height, it.sizeBytes) } ?: originalText
+    return if (compress) DetailVariants(compressedText, originalText) else DetailVariants(originalText, compressedText)
 }
 
 private fun describeMedia(context: Context, width: Int, height: Int, sizeBytes: Long): String =

@@ -8,10 +8,10 @@ package com.nextcloud.talk.attachmentpreview
 
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -39,8 +39,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -62,19 +64,15 @@ private const val HERO_ICON_SIZE_DP = 96
 private const val HERO_OTHER_BORDER_WIDTH_DP = 1
 private const val HERO_OTHER_BORDER_PADDING_DP = 24
 private const val DETAIL_CHIP_CORNER_RADIUS_PERCENT = 50
-private const val DETAIL_CHIP_POP_DURATION_MS = 520
-private const val DETAIL_CHIP_POP_INITIAL_SCALE = 0.85f
+private const val DETAIL_CHIP_TEXT_FADE_DURATION_MS = 200
+private const val DETAIL_CHIP_PULSE_SCALE = 1.04f
+private const val DETAIL_CHIP_PULSE_DURATION_MS = 150
 private const val PLAY_BUTTON_SIZE_DP = 56
 private const val PLAY_ICON_SIZE_DP = 32
 
 /** The large, swipeable preview shown above the thumbnail strip. */
 @Composable
-internal fun HeroPreview(
-    descriptions: List<FileDescription>,
-    pagerState: PagerState,
-    hqToggleVersion: Int,
-    modifier: Modifier = Modifier
-) {
+internal fun HeroPreview(descriptions: List<FileDescription>, pagerState: PagerState, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -88,13 +86,13 @@ internal fun HeroPreview(
                 .fillMaxSize()
                 .heightIn(max = HERO_MAX_HEIGHT_DP.dp)
         ) { page ->
-            descriptions.getOrNull(page)?.let { description -> HeroPage(description, hqToggleVersion) }
+            descriptions.getOrNull(page)?.let { description -> HeroPage(description) }
         }
     }
 }
 
 @Composable
-private fun HeroPage(description: FileDescription, hqToggleVersion: Int) {
+private fun HeroPage(description: FileDescription) {
     var isPlayingVideo by remember(description.uri) { mutableStateOf(false) }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -138,7 +136,7 @@ private fun HeroPage(description: FileDescription, hqToggleVersion: Int) {
                 description.detail?.let { detail ->
                     HeroDetailOverlay(
                         detail,
-                        hqToggleVersion,
+                        description.alternateDetail,
                         modifier = Modifier
                             .align(Alignment.BottomStart)
                             .padding(12.dp)
@@ -209,31 +207,66 @@ private fun fitWithinBounds(maxWidth: Dp, maxHeight: Dp, ratio: Float): Pair<Dp,
 }
 
 @Composable
-private fun HeroDetailOverlay(detail: String, hqToggleVersion: Int, modifier: Modifier = Modifier) {
+private fun HeroDetailOverlay(detail: String, alternateDetail: String?, modifier: Modifier = Modifier) {
+    val scale = remember { Animatable(1f) }
+    // The compressed-size estimate for `detail` is computed asynchronously (Dispatchers.IO), so it
+    // lands a moment after the HQ button is tapped — keying off `detail` itself (rather than e.g. a
+    // toggle counter bumped synchronously on tap) makes the pulse play exactly when the text is
+    // about to change, instead of firing early and having the text/size catch up unanimated later.
+    var hasComposedBefore by remember { mutableStateOf(false) }
+    LaunchedEffect(detail) {
+        if (hasComposedBefore) {
+            // A small, smooth up-and-back pulse (no spring/overshoot) — just enough to acknowledge
+            // the value changed without drawing much attention to itself.
+            scale.animateTo(DETAIL_CHIP_PULSE_SCALE, animationSpec = tween(DETAIL_CHIP_PULSE_DURATION_MS))
+            scale.animateTo(1f, animationSpec = tween(DETAIL_CHIP_PULSE_DURATION_MS))
+        }
+        hasComposedBefore = true
+    }
+
     Box(
         modifier = modifier
+            .graphicsLayer {
+                scaleX = scale.value
+                scaleY = scale.value
+            }
             .clip(RoundedCornerShape(DETAIL_CHIP_CORNER_RADIUS_PERCENT))
             .background(Color.Black.copy(alpha = 0.6f))
-            .padding(horizontal = 10.dp, vertical = 6.dp)
+            .padding(horizontal = 10.dp, vertical = 6.dp),
+        contentAlignment = Alignment.Center
     ) {
-        // Keyed by hqToggleVersion (not detail), which only advances from the HQ button's own click
-        // handler — so this only plays when that setting actually changes, not when swiping between
-        // pages. AnimatedContent doesn't animate its very first composition, so no extra guard needed.
+        // Invisible, always-laid-out copies of both possible detail texts. A Box without its own
+        // fixed size sizes itself to its widest child, so keeping both variants present here (just
+        // undrawn) permanently reserves width for whichever is wider — the chip then never resizes
+        // when toggling HQ swaps which variant the AnimatedContent below actually shows.
+        DetailText(detail, Modifier.alpha(0f))
+        if (alternateDetail != null && alternateDetail != detail) {
+            DetailText(alternateDetail, Modifier.alpha(0f))
+        }
+
+        // AnimatedContent doesn't animate its very first composition, so no extra guard is needed
+        // here the way the pulse above needs `hasComposedBefore`.
         AnimatedContent(
-            targetState = hqToggleVersion,
+            targetState = detail,
             transitionSpec = {
-                (fadeIn(tween(DETAIL_CHIP_POP_DURATION_MS)) + scaleIn(initialScale = DETAIL_CHIP_POP_INITIAL_SCALE))
-                    .togetherWith(fadeOut(tween(DETAIL_CHIP_POP_DURATION_MS)))
+                fadeIn(tween(DETAIL_CHIP_TEXT_FADE_DURATION_MS))
+                    .togetherWith(fadeOut(tween(DETAIL_CHIP_TEXT_FADE_DURATION_MS)))
             },
-            label = "detailChipPop"
-        ) {
-            Text(
-                text = detail,
-                style = MaterialTheme.typography.labelMedium,
-                color = Color.White,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            label = "detailChipFade"
+        ) { animatedDetail ->
+            DetailText(animatedDetail)
         }
     }
+}
+
+@Composable
+private fun DetailText(text: String, modifier: Modifier = Modifier) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelMedium,
+        color = Color.White,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        modifier = modifier
+    )
 }

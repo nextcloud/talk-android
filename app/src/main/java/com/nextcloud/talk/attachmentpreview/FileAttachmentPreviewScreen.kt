@@ -78,7 +78,6 @@ internal fun FileAttachmentPreviewContent(
     val hasCompressibleMedia = currentFiles.any { isCompressible(FileUtils.resolveMimeType(context, it.toUri())) }
     var caption by rememberSaveable { mutableStateOf("") }
     var compressImages by rememberSaveable { mutableStateOf(hasCompressibleMedia && initialCompressImages) }
-    var hqToggleVersion by rememberSaveable { mutableStateOf(0) }
 
     // Keyed by the set of files (not their order), so dragging to reorder doesn't trigger a
     // re-describe round trip through Dispatchers.IO — that async gap was causing a brief mismatch
@@ -122,10 +121,7 @@ internal fun FileAttachmentPreviewContent(
                 hasCompressibleMedia = hasCompressibleMedia,
                 highQuality = !compressImages,
                 onDismiss = onDismiss,
-                onHighQualityChange = { highQuality ->
-                    compressImages = !highQuality
-                    hqToggleVersion++
-                }
+                onHighQualityChange = { highQuality -> compressImages = !highQuality }
             )
 
             HorizontalDivider()
@@ -134,7 +130,6 @@ internal fun FileAttachmentPreviewContent(
                 HeroPreview(
                     descriptions = fileDescriptions,
                     pagerState = pagerState,
-                    hqToggleVersion = hqToggleVersion,
                     modifier = Modifier.weight(1f)
                 )
 
