@@ -40,6 +40,7 @@ object VideoCompressor {
 
     private val TAG = VideoCompressor::class.java.simpleName
     private const val TARGET_SHORT_SIDE = 540
+    private const val TARGET_FRAME_RATE_FPS = 24
     private const val TARGET_VIDEO_BITRATE_BPS = 600_000L
     private const val TARGET_AUDIO_BITRATE_BPS = 64_000L
     private const val BITS_PER_BYTE = 8L
@@ -58,6 +59,7 @@ object VideoCompressor {
      */
     @Suppress("TooGenericExceptionCaught")
     fun readVideoInfo(sourceFile: File): VideoInfo? {
+        Log.d(TAG, "reading video info for ${sourceFile.name}")
         val retriever = MediaMetadataRetriever()
         return try {
             retriever.setDataSource(sourceFile.absolutePath)
@@ -82,6 +84,7 @@ object VideoCompressor {
      * target bitrate rather than a real (expensive) transcode.
      */
     fun estimateCompression(sourceFile: File): VideoInfo? {
+        Log.d(TAG, "estimating compression for ${sourceFile.name}")
         val original = readVideoInfo(sourceFile) ?: return null
         val (targetWidth, targetHeight) = scaledDimensions(original.width, original.height)
         val estimatedBytes = (TARGET_VIDEO_BITRATE_BPS + TARGET_AUDIO_BITRATE_BPS) / BITS_PER_BYTE *
@@ -97,6 +100,7 @@ object VideoCompressor {
      */
     @Suppress("ReturnCount")
     fun compress(context: Context, sourceFile: File, onProgress: (Int) -> Unit = {}): File? {
+        Log.d(TAG, "compressing ${sourceFile.name}")
         val original = readVideoInfo(sourceFile) ?: return null
         if (minOf(original.width, original.height) <= TARGET_SHORT_SIDE) return null
 
@@ -108,6 +112,7 @@ object VideoCompressor {
     }
 
     private fun scaledDimensions(width: Int, height: Int): Pair<Int, Int> {
+        Log.d(TAG, "scaling dimensions for ${width}x${height}")
         val shortSide = minOf(width, height)
         if (shortSide <= TARGET_SHORT_SIDE) return width to height
         val scale = TARGET_SHORT_SIDE.toDouble() / shortSide
@@ -136,6 +141,7 @@ object VideoCompressor {
             val handler = Handler(handlerThread.looper)
 
             handler.post {
+                Log.d(TAG, "starting video compression for ${sourceFile.name}")
                 val encoderFactory = DefaultEncoderFactory.Builder(context)
                     .setRequestedVideoEncoderSettings(
                         VideoEncoderSettings.Builder().setBitrate(TARGET_VIDEO_BITRATE_BPS.toInt()).build()
@@ -151,6 +157,7 @@ object VideoCompressor {
                     .addListener(object : Transformer.Listener {
                         override fun onCompleted(composition: Composition, exportResult: ExportResult) {
                             success = true
+                            Log.d(TAG, "video compression completed for ${sourceFile.name}")
                             latch.countDown()
                         }
 
@@ -166,7 +173,13 @@ object VideoCompressor {
                     .build()
                 transformerRef.set(transformer)
 
+                // Capping the frame rate (frames are dropped, not sped up) noticeably cuts the total
+                // amount of GL/encoder work per second during transcoding. Uncapped, a 30/60fps source
+                // keeps its full rate through the whole effects pipeline, which on some devices pegs
+                // the GPU hard enough that the entire UI appears frozen for the transcode's duration
+                // even though it's all running on a background thread.
                 val editedMediaItem = EditedMediaItem.Builder(MediaItem.fromUri(Uri.fromFile(sourceFile)))
+                    .setFrameRate(TARGET_FRAME_RATE_FPS)
                     .setEffects(Effects(emptyList(), listOf(Presentation.createForShortSide(TARGET_SHORT_SIDE))))
                     .build()
 
