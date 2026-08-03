@@ -112,7 +112,7 @@ object VideoCompressor {
     }
 
     private fun scaledDimensions(width: Int, height: Int): Pair<Int, Int> {
-        Log.d(TAG, "scaling dimensions for ${width}x${height}")
+        Log.d(TAG, "scaling dimensions for ${width}x$height")
         val shortSide = minOf(width, height)
         if (shortSide <= TARGET_SHORT_SIDE) return width to height
         val scale = TARGET_SHORT_SIDE.toDouble() / shortSide

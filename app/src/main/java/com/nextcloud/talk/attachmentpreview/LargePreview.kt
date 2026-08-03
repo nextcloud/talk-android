@@ -104,7 +104,7 @@ internal fun LargePreview(descriptions: List<FileDescription>, pagerState: Pager
 
 @Composable
 private fun LargePage(description: FileDescription) {
-    var isPlayingVideo by remember(description.uri) { mutableStateOf(false) }
+    var isPlayingVideo by remember(description.uri, description.detail) { mutableStateOf(false) }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         var cardModifier = description.aspectRatio?.let { ratio ->
