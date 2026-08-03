@@ -27,6 +27,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -75,6 +77,9 @@ private const val DETAIL_CHIP_PULSE_SCALE = 1.04f
 private const val DETAIL_CHIP_PULSE_DURATION_MS = 150
 private const val PLAY_BUTTON_SIZE_DP = 56
 private const val PLAY_ICON_SIZE_DP = 32
+private const val CLOSE_BUTTON_SIZE_DP = 40
+private const val CLOSE_ICON_SIZE_DP = 20
+private const val CLOSE_BUTTON_PADDING_DP = 8
 
 /** The large, swipeable preview shown above the thumbnail strip. */
 @Composable
@@ -213,15 +218,44 @@ private fun VideoPlayerCard(uri: String, onStopped: () -> Unit, modifier: Modifi
         exoPlayer.prepare()
     }
 
-    AndroidView(
-        factory = { ctx ->
-            PlayerView(ctx).apply {
-                player = exoPlayer
-                useController = true
-            }
-        },
+    Box(modifier = modifier) {
+        AndroidView(
+            factory = { ctx ->
+                PlayerView(ctx).apply {
+                    player = exoPlayer
+                    useController = true
+                }
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+
+        CloseButtonOverlay(
+            onClick = {
+                exoPlayer.stop()
+                onStopped()
+            },
+            modifier = Modifier.align(Alignment.TopEnd)
+        )
+    }
+}
+
+@Composable
+private fun CloseButtonOverlay(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    IconButton(
+        onClick = onClick,
         modifier = modifier
-    )
+            .padding(CLOSE_BUTTON_PADDING_DP.dp)
+            .size(CLOSE_BUTTON_SIZE_DP.dp)
+            .clip(CircleShape)
+            .background(Color.Black.copy(alpha = 0.5f))
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Close,
+            contentDescription = stringResource(R.string.nc_close_video_playback),
+            tint = Color.White,
+            modifier = Modifier.size(CLOSE_ICON_SIZE_DP.dp)
+        )
+    }
 }
 
 private fun fitWithinBounds(maxWidth: Dp, maxHeight: Dp, ratio: Float): Pair<Dp, Dp> {

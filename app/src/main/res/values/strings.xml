@@ -163,6 +163,7 @@ How to translate with transifex:
     <string name="nc_media_quality_original">Original quality</string>
     <string name="nc_media_quality_reduced">Reduced quality</string>
     <string name="nc_media_quality_original_hint">Sending original quality uses more mobile data.</string>
+    <string name="nc_close_video_playback">Close video playback</string>
     <string name="nc_settings_read_privacy_key" translatable="false">read_privacy</string>
     <string name="nc_locked_tap_to_unlock">Tap to unlock</string>
     <string name="nc_locked">Locked</string>
