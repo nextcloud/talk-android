@@ -88,7 +88,7 @@ internal fun FileAttachmentPreviewContent(
     }
     val fileDescriptions = currentFiles.mapNotNull { viewModel.descriptionsByUri[it] }
 
-    // HeroPreview's HorizontalPager is keyed by file uri, so Pager itself already keeps
+    // LargePreview's HorizontalPager is keyed by file uri, so Pager itself already keeps
     // currentPage pointing at the same uri when the list is reordered (PagerState's built-in
     // matchScrollPositionWithKey) — no manual correction needed here.
     val pagerState = rememberPagerState(pageCount = { fileDescriptions.size })
@@ -127,7 +127,7 @@ internal fun FileAttachmentPreviewContent(
             HorizontalDivider()
 
             if (fileDescriptions.isNotEmpty()) {
-                HeroPreview(
+                LargePreview(
                     descriptions = fileDescriptions,
                     pagerState = pagerState,
                     modifier = Modifier.weight(1f)

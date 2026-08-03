@@ -58,11 +58,11 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.nextcloud.talk.R
 
-private const val HERO_MAX_HEIGHT_DP = 480
-private const val HERO_VERTICAL_SPACING_DP = 12
-private const val HERO_ICON_SIZE_DP = 96
-private const val HERO_OTHER_BORDER_WIDTH_DP = 1
-private const val HERO_OTHER_BORDER_PADDING_DP = 24
+private const val LARGE_MAX_HEIGHT_DP = 480
+private const val LARGE_VERTICAL_SPACING_DP = 12
+private const val LARGE_ICON_SIZE_DP = 96
+private const val LARGE_OTHER_BORDER_WIDTH_DP = 1
+private const val LARGE_OTHER_BORDER_PADDING_DP = 24
 private const val DETAIL_CHIP_CORNER_RADIUS_PERCENT = 50
 private const val DETAIL_CHIP_TEXT_FADE_DURATION_MS = 200
 private const val DETAIL_CHIP_PULSE_SCALE = 1.04f
@@ -72,11 +72,11 @@ private const val PLAY_ICON_SIZE_DP = 32
 
 /** The large, swipeable preview shown above the thumbnail strip. */
 @Composable
-internal fun HeroPreview(descriptions: List<FileDescription>, pagerState: PagerState, modifier: Modifier = Modifier) {
+internal fun LargePreview(descriptions: List<FileDescription>, pagerState: PagerState, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = HERO_VERTICAL_SPACING_DP.dp),
+            .padding(vertical = LARGE_VERTICAL_SPACING_DP.dp),
         contentAlignment = Alignment.Center
     ) {
         HorizontalPager(
@@ -84,15 +84,15 @@ internal fun HeroPreview(descriptions: List<FileDescription>, pagerState: PagerS
             key = { page -> descriptions.getOrNull(page)?.uri ?: page },
             modifier = Modifier
                 .fillMaxSize()
-                .heightIn(max = HERO_MAX_HEIGHT_DP.dp)
+                .heightIn(max = LARGE_MAX_HEIGHT_DP.dp)
         ) { page ->
-            descriptions.getOrNull(page)?.let { description -> HeroPage(description) }
+            descriptions.getOrNull(page)?.let { description -> LargePage(description) }
         }
     }
 }
 
 @Composable
-private fun HeroPage(description: FileDescription) {
+private fun LargePage(description: FileDescription) {
     var isPlayingVideo by remember(description.uri) { mutableStateOf(false) }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -106,9 +106,9 @@ private fun HeroPage(description: FileDescription) {
         // background instead of reading as a bounded preview, unlike images/videos.
         if (description.kind == MediaKind.OTHER) {
             cardModifier = cardModifier
-                .padding(HERO_OTHER_BORDER_PADDING_DP.dp)
+                .padding(LARGE_OTHER_BORDER_PADDING_DP.dp)
                 .border(
-                    width = HERO_OTHER_BORDER_WIDTH_DP.dp,
+                    width = LARGE_OTHER_BORDER_WIDTH_DP.dp,
                     color = MaterialTheme.colorScheme.outlineVariant,
                     shape = RoundedCornerShape(THUMBNAIL_CORNER_RADIUS_DP.dp)
                 )
@@ -120,7 +120,7 @@ private fun HeroPage(description: FileDescription) {
             } else {
                 FileThumbnailImage(
                     description,
-                    iconSize = HERO_ICON_SIZE_DP.dp,
+                    iconSize = LARGE_ICON_SIZE_DP.dp,
                     contentScale = ContentScale.Fit,
                     backgroundColor = MaterialTheme.colorScheme.surface,
                     modifier = Modifier.fillMaxSize()
@@ -134,7 +134,7 @@ private fun HeroPage(description: FileDescription) {
                 }
 
                 description.detail?.let { detail ->
-                    HeroDetailOverlay(
+                    LargeDetailOverlay(
                         detail,
                         description.alternateDetail,
                         modifier = Modifier
@@ -207,7 +207,7 @@ private fun fitWithinBounds(maxWidth: Dp, maxHeight: Dp, ratio: Float): Pair<Dp,
 }
 
 @Composable
-private fun HeroDetailOverlay(detail: String, alternateDetail: String?, modifier: Modifier = Modifier) {
+private fun LargeDetailOverlay(detail: String, alternateDetail: String?, modifier: Modifier = Modifier) {
     val scale = remember { Animatable(1f) }
     // The compressed-size estimate for `detail` is computed asynchronously (Dispatchers.IO), so it
     // lands a moment after the HQ button is tapped — keying off `detail` itself (rather than e.g. a

@@ -88,7 +88,7 @@ internal fun ThumbnailStrip(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        // With a single file it's already shown in full in the hero preview above, and the
+        // With a single file it's already shown in full in the large preview above, and the
         // "selected" thumbnail styling (dark overlay + trash icon) would otherwise cover the
         // only thumbnail permanently — looking like the file is already marked for deletion
         // rather than just being the one file that was picked.

@@ -32,7 +32,7 @@ private const val THUMBNAIL_ICON_SIZE_DP = 48
 
 /**
  * Renders [description] as an image, a video frame, or a mimetype icon, depending on [FileDescription.kind].
- * Shared by the hero pager and the thumbnail strip so both stay visually consistent.
+ * Shared by the large preview pager and the thumbnail strip so both stay visually consistent.
  */
 @Composable
 internal fun FileThumbnailImage(
