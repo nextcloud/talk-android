@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -39,14 +40,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -224,6 +227,18 @@ private fun LargeDetailOverlay(detail: String, alternateDetail: String?, modifie
         hasComposedBefore = true
     }
 
+    // Reserves width for whichever of the two variants is wider, measured directly rather than
+    // rendered as an extra invisible sibling — the chip then never resizes when toggling HQ swaps
+    // which variant is shown below.
+    val textMeasurer = rememberTextMeasurer()
+    val textStyle = MaterialTheme.typography.labelMedium
+    val density = LocalDensity.current
+    val contentWidth = remember(detail, alternateDetail, textStyle, density) {
+        val detailWidthPx = textMeasurer.measure(detail, textStyle).size.width
+        val alternateWidthPx = alternateDetail?.let { textMeasurer.measure(it, textStyle).size.width } ?: 0
+        with(density) { maxOf(detailWidthPx, alternateWidthPx).toDp() }
+    }
+
     Box(
         modifier = modifier
             .graphicsLayer {
@@ -232,18 +247,8 @@ private fun LargeDetailOverlay(detail: String, alternateDetail: String?, modifie
             }
             .clip(RoundedCornerShape(DETAIL_CHIP_CORNER_RADIUS_PERCENT))
             .background(Color.Black.copy(alpha = 0.6f))
-            .padding(horizontal = 10.dp, vertical = 6.dp),
-        contentAlignment = Alignment.Center
+            .padding(horizontal = 10.dp, vertical = 6.dp)
     ) {
-        // Invisible, always-laid-out copies of both possible detail texts. A Box without its own
-        // fixed size sizes itself to its widest child, so keeping both variants present here (just
-        // undrawn) permanently reserves width for whichever is wider — the chip then never resizes
-        // when toggling HQ swaps which variant the AnimatedContent below actually shows.
-        DetailText(detail, Modifier.alpha(0f))
-        if (alternateDetail != null && alternateDetail != detail) {
-            DetailText(alternateDetail, Modifier.alpha(0f))
-        }
-
         // AnimatedContent doesn't animate its very first composition, so no extra guard is needed
         // here the way the pulse above needs `hasComposedBefore`.
         AnimatedContent(
@@ -254,7 +259,7 @@ private fun LargeDetailOverlay(detail: String, alternateDetail: String?, modifie
             },
             label = "detailChipFade"
         ) { animatedDetail ->
-            DetailText(animatedDetail)
+            DetailText(animatedDetail, Modifier.width(contentWidth))
         }
     }
 }
@@ -267,6 +272,7 @@ private fun DetailText(text: String, modifier: Modifier = Modifier) {
         color = Color.White,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
+        textAlign = TextAlign.Center,
         modifier = modifier
     )
 }
