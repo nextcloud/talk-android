@@ -77,18 +77,11 @@ internal fun FileAttachmentPreviewContent(
     var caption by rememberSaveable { mutableStateOf("") }
     var compressImages by rememberSaveable { mutableStateOf(hasCompressibleMedia && initialCompressImages) }
 
-    // Keyed by the set of files (not their order), so dragging to reorder doesn't trigger a
-    // re-describe round trip through Dispatchers.IO — that async gap was causing a brief mismatch
-    // between the still-old-ordered list and the already-updated drag state. Reordering just
-    // re-maps against the existing descriptions synchronously below.
     LaunchedEffect(currentFiles.toSet(), compressImages) {
         viewModel.describeFiles(compressImages)
     }
     val fileDescriptions = currentFiles.mapNotNull { viewModel.descriptionsByUri[it] }
 
-    // LargePreview's HorizontalPager is keyed by file uri, so Pager itself already keeps
-    // currentPage pointing at the same uri when the list is reordered (PagerState's built-in
-    // matchScrollPositionWithKey) — no manual correction needed here.
     val pagerState = rememberPagerState(pageCount = { fileDescriptions.size })
     val coroutineScope = rememberCoroutineScope()
 

@@ -69,21 +69,12 @@ class FileAttachmentPreviewFragment : DialogFragment() {
     @Suppress("DEPRECATION")
     override fun onStart() {
         super.onStart()
-        // Dialog.show() re-applies FLAG_ALT_FOCUSABLE_IM from the theme after onCreateDialog()
-        // runs, so clearing it must happen once the dialog window is actually up. Without this,
-        // the system never routes the keyboard to this window, even while it holds input focus.
         dialog?.window?.apply {
             setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
             setBackgroundDrawableResource(android.R.color.transparent)
             setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
             clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
-            // Dialog windows dim whatever is behind them by default; at fullscreen size that
-            // scrim covers the whole window, including the status bar area, making it look dark
-            // regardless of the Compose content's own color.
             clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-            // targetSdk 36 enforces edge-to-edge; Window.setStatusBarColor() is a no-op there.
-            // Instead, let the dialog draw behind the status bar so the Compose Surface's own
-            // background shows through it, and inset the content with statusBarsPadding().
             WindowCompat.setDecorFitsSystemWindows(this, false)
             statusBarColor = Color.TRANSPARENT
             navigationBarColor = Color.TRANSPARENT
@@ -101,8 +92,6 @@ class FileAttachmentPreviewFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        // No-ops if the dialog is being recreated (e.g. after rotation) and the ViewModel
-        // already holds an in-progress edit of the file list.
         viewModel.setInitialFiles(filesList)
 
         composeView?.apply {
