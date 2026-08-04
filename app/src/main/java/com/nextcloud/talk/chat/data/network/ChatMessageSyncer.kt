@@ -80,7 +80,12 @@ class ChatMessageSyncer @Inject constructor(
         }
     }
 
-    data class SyncOutcome(val persistedNewMessages: Boolean, val newestPersistedMessageId: Long?)
+    data class SyncOutcome(
+        val persistedNewMessages: Boolean,
+        val newestPersistedMessageId: Long?,
+        val oldestPersistedMessageId: Long? = null,
+        val persistedMessageCount: Int = 0
+    )
 
     /**
      * Builds the query parameters for a chat pull request. setReadMarker stays 0 so a sync never
@@ -231,7 +236,20 @@ class ChatMessageSyncer @Inject constructor(
             )
         }
 
-        return pullAndPersistMessages(target, fieldMap)
+        val outcome = pullAndPersistMessages(target, fieldMap)
+
+        if (outcome.persistedNewMessages) {
+            Log.d(
+                TAG,
+                "Background catch-up for room ${target.roomToken}: fetched ${outcome.persistedMessageCount} " +
+                    "message(s), ids ${outcome.oldestPersistedMessageId}..${outcome.newestPersistedMessageId}" +
+                    if (newestMessageIdFromDb > 0) " (delta from $newestMessageIdFromDb)" else " (initial fetch)"
+            )
+        } else {
+            Log.d(TAG, "Background catch-up for room ${target.roomToken}: no new messages")
+        }
+
+        return outcome
     }
 
     fun pullMessagesFlow(target: SyncTarget, fieldMap: HashMap<String, Int>): Flow<ChatPullResult> =
@@ -315,7 +333,7 @@ class ChatMessageSyncer @Inject constructor(
                     }
 
                     if (result.messages.isNotEmpty()) {
-                        val newestPersistedId = updateMessagesData(
+                        val persistedMessages = updateMessagesData(
                             target,
                             result.messages,
                             blockContainingQueriedMessage,
@@ -324,8 +342,10 @@ class ChatMessageSyncer @Inject constructor(
                             events
                         )
                         return SyncOutcome(
-                            persistedNewMessages = newestPersistedId != null,
-                            newestPersistedMessageId = newestPersistedId
+                            persistedNewMessages = persistedMessages.isNotEmpty(),
+                            newestPersistedMessageId = persistedMessages.maxOfOrNull { it.id },
+                            oldestPersistedMessageId = persistedMessages.minOfOrNull { it.id },
+                            persistedMessageCount = persistedMessages.size
                         )
                     } else {
                         Log.d(TAG, "No new messages to update")
@@ -361,7 +381,7 @@ class ChatMessageSyncer @Inject constructor(
         lookIntoFuture: Boolean,
         hasHistory: Boolean,
         events: Events
-    ): Long? {
+    ): List<ChatMessageEntity> {
         val chatMessageEntities = persistChatMessagesAndHandleSystemMessages(
             target,
             chatMessagesJson,
@@ -374,7 +394,7 @@ class ChatMessageSyncer @Inject constructor(
             // persistChatMessagesAndHandleSystemMessages). Without persisted messages there must be
             // no chat block update either, otherwise a block would reference missing messages.
             Log.w(TAG, "No messages were persisted for ${target.internalConversationId}, skipping chat block update")
-            return null
+            return emptyList()
         }
 
         val oldestIdFromSync = chatMessageEntities.minByOrNull { it.id }!!.id
@@ -411,7 +431,7 @@ class ChatMessageSyncer @Inject constructor(
         )
         updateBlocks(target, newChatBlock)
 
-        return newestIdFromSync
+        return chatMessageEntities
     }
 
     suspend fun persistChatMessagesAndHandleSystemMessages(
