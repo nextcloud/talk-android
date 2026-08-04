@@ -1397,59 +1397,19 @@ class ChatActivity :
                         }
                     }
 
-                    if (state.conversationModel.objectType == ConversationEnums.ObjectType.PHONE_TEMPORARY &&
-                        hasSpreedFeatureCapability(
-                            conversationUser?.capabilities!!.spreedCapability!!,
-                            SpreedFeatures.UNBIND_CONVERSATION
-                        )
-                    ) {
-                        val retentionPeriod = retentionOfSIPRoom(spreedCapabilities)
-                        val systemMessage = currentConversation?.lastMessage?.systemMessageType
-                        if (retentionPeriod != 0 &&
-                            (
-                                systemMessage == ChatMessage.SystemMessageType.CALL_ENDED ||
-                                    systemMessage == ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
-                                )
-                        ) {
-                            showConversationDeletionWarning(retentionPeriod)
-                        }
-                    }
-
-                    if (state.conversationModel.objectType == ConversationEnums.ObjectType.INSTANT_MEETING &&
-                        hasSpreedFeatureCapability(
-                            conversationUser?.capabilities!!.spreedCapability!!,
-                            SpreedFeatures.UNBIND_CONVERSATION
-                        )
-                    ) {
-                        val retentionPeriod = retentionOfInstantMeetingRoom(spreedCapabilities)
-                        val systemMessage = state.conversationModel.lastMessage?.systemMessageType
-                        if (retentionPeriod != 0 &&
-                            (
-                                systemMessage == ChatMessage.SystemMessageType.CALL_ENDED ||
-                                    systemMessage == ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
-                                )
-                        ) {
-                            showConversationDeletionWarning(retentionPeriod)
-                        }
-                    }
-
-                    if (state.conversationModel.objectType == ConversationEnums.ObjectType.CLASSIFIED &&
-                        hasSpreedFeatureCapability(
-                            conversationUser?.capabilities!!.spreedCapability!!,
-                            SpreedFeatures.UNBIND_CONVERSATION
-                        )
-                    ) {
-                        val retentionPeriod = retentionOfClassifiedRoom(spreedCapabilities)
-                        val systemMessage = state.conversationModel.lastMessage?.systemMessageType
-                        if (retentionPeriod != 0 &&
-                            (
-                                systemMessage == ChatMessage.SystemMessageType.CALL_ENDED ||
-                                    systemMessage == ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
-                                )
-                        ) {
-                            showConversationDeletionWarning(retentionPeriod)
-                        }
-                    }
+                    val initialSystemMessage = state.conversationModel.lastMessage?.systemMessageType
+                    maybeShowCallEndedDeletionWarning(
+                        ConversationEnums.ObjectType.PHONE_TEMPORARY,
+                        initialSystemMessage
+                    )
+                    maybeShowCallEndedDeletionWarning(
+                        ConversationEnums.ObjectType.INSTANT_MEETING,
+                        initialSystemMessage
+                    )
+                    maybeShowCallEndedDeletionWarning(
+                        ConversationEnums.ObjectType.CLASSIFIED,
+                        initialSystemMessage
+                    )
 
                     updateRoomTimerHandler(MILLIS_250)
                 }
@@ -1459,6 +1419,14 @@ class ChatActivity :
                 }
 
                 else -> {}
+            }
+        }
+
+        lifecycleScope.launch {
+            chatViewModel.callEndedSystemMessage.collect { systemMessage ->
+                maybeShowCallEndedDeletionWarning(ConversationEnums.ObjectType.PHONE_TEMPORARY, systemMessage)
+                maybeShowCallEndedDeletionWarning(ConversationEnums.ObjectType.INSTANT_MEETING, systemMessage)
+                maybeShowCallEndedDeletionWarning(ConversationEnums.ObjectType.CLASSIFIED, systemMessage)
             }
         }
 
@@ -1751,6 +1719,40 @@ class ChatActivity :
 
     private fun removeUnreadMessagesMarker() {
         chatViewModel.setUnreadMessagesMarker(false)
+    }
+
+    private fun retentionPeriodFor(objectType: ConversationEnums.ObjectType): Int =
+        when (objectType) {
+            ConversationEnums.ObjectType.PHONE_TEMPORARY -> retentionOfSIPRoom(spreedCapabilities)
+            ConversationEnums.ObjectType.INSTANT_MEETING -> retentionOfInstantMeetingRoom(spreedCapabilities)
+            ConversationEnums.ObjectType.CLASSIFIED -> retentionOfClassifiedRoom(spreedCapabilities)
+            else -> 0
+        }
+
+    private fun maybeShowCallEndedDeletionWarning(
+        objectType: ConversationEnums.ObjectType,
+        systemMessage: ChatMessage.SystemMessageType?
+    ) {
+        val conversation = currentConversation ?: return
+        if (conversation.objectType != objectType) {
+            return
+        }
+        if (!hasSpreedFeatureCapability(
+                conversationUser?.capabilities!!.spreedCapability!!,
+                SpreedFeatures.UNBIND_CONVERSATION
+            )
+        ) {
+            return
+        }
+        if (systemMessage != ChatMessage.SystemMessageType.CALL_ENDED &&
+            systemMessage != ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
+        ) {
+            return
+        }
+        val retentionPeriod = retentionPeriodFor(objectType)
+        if (retentionPeriod != 0) {
+            showConversationDeletionWarning(retentionPeriod)
+        }
     }
 
     fun showConversationDeletionWarning(retentionPeriod: Int) {

@@ -90,6 +90,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -1036,6 +1037,10 @@ class ChatViewModel @AssistedInject constructor(
         )
     }
 
+    private val _callEndedSystemMessage = MutableSharedFlow<ChatMessage.SystemMessageType>(extraBufferCapacity = 1)
+    val callEndedSystemMessage: SharedFlow<ChatMessage.SystemMessageType>
+        get() = _callEndedSystemMessage
+
     private data class ProcessedMessages(val items: List<ChatItem>, val missingParentIds: List<Long>)
 
     private fun observeMessages() {
@@ -1398,15 +1403,27 @@ class ChatViewModel @AssistedInject constructor(
         return chatMessageMap.values.toList()
     }
 
+    private var hasSeenInitialCallSystemMessage = false
+    private var lastNotifiedCallEndedMessageId: Int? = null
+
     private fun processCallSystemMessage(recent: ChatMessage) {
+        val isInitialSnapshot = !hasSeenInitialCallSystemMessage
+        hasSeenInitialCallSystemMessage = true
+
         when (recent.systemMessageType) {
             ChatMessage.SystemMessageType.CALL_STARTED -> {
                 _lastCallSystemMessage.tryEmit(recent)
             }
             ChatMessage.SystemMessageType.CALL_ENDED,
-            ChatMessage.SystemMessageType.CALL_MISSED,
-            ChatMessage.SystemMessageType.CALL_TRIED,
             ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE -> {
+                _lastCallSystemMessage.tryEmit(null)
+                if (!isInitialSnapshot && lastNotifiedCallEndedMessageId != recent.jsonMessageId) {
+                    _callEndedSystemMessage.tryEmit(recent.systemMessageType!!)
+                }
+                lastNotifiedCallEndedMessageId = recent.jsonMessageId
+            }
+            ChatMessage.SystemMessageType.CALL_MISSED,
+            ChatMessage.SystemMessageType.CALL_TRIED -> {
                 _lastCallSystemMessage.tryEmit(null)
             }
             else -> {}
