@@ -391,12 +391,13 @@ private fun SettingsRow(
     subtitle: String? = null,
     @DrawableRes iconRes: Int? = null,
     checked: Boolean? = null,
+    enabled: Boolean = true,
     onClick: (() -> Unit)? = null
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+            .then(if (onClick != null && enabled) Modifier.clickable(onClick = onClick) else Modifier)
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -420,7 +421,7 @@ private fun SettingsRow(
             }
         }
         if (checked != null) {
-            Switch(checked = checked, onCheckedChange = null)
+            Switch(checked = checked, onCheckedChange = null, enabled = enabled)
         }
     }
 }
@@ -482,7 +483,8 @@ private fun NotificationSettingsSection(state: ConversationInfoUiState, callback
         SettingsRow(
             title = stringResource(R.string.nc_sensitive_conversation),
             subtitle = stringResource(R.string.nc_sensitive_conversation_hint),
-            checked = state.sensitiveConversation,
+            checked = state.isClassified || state.sensitiveConversation,
+            enabled = !state.isClassified,
             onClick = callbacks.onSensitiveConversationClick
         )
     }

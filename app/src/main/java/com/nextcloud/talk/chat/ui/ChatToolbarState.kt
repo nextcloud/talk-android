@@ -32,5 +32,6 @@ data class ChatToolbarState(
     /** Whether tapping the title area should open conversation info. */
     val titleClickable: Boolean = false,
     /** Whether the server capability SILENT_CALL is available (enables long-press on call buttons). */
-    val supportsSilentCall: Boolean = false
+    val supportsSilentCall: Boolean = false,
+    val isClassified: Boolean = false
 )

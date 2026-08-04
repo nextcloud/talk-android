@@ -226,6 +226,8 @@ internal fun buildMessageActionsState(
     val hasUserId = user?.userId?.isNotEmpty() == true && user.userId != "?"
     val hasUserActorId = message.actorType == "users" && message.actorId != conversation?.actorId
 
+    val isClassifiedRoom = conversation != null && ConversationUtils.isClassified(conversation, spreedCapabilities)
+
     return MessageActionsState(
         showEmojiBar = showEmojiBar,
         selfReactions = message.reactionsSelf?.toSet() ?: emptySet(),
@@ -237,11 +239,13 @@ internal fun buildMessageActionsState(
             hasUserId &&
             hasUserActorId &&
             conversation?.type != ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
-            isOnline,
+            isOnline &&
+            !isClassifiedRoom,
         showOpenThread = message.isThread && conversationThreadId == null,
         showForward = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == messageType &&
             !(message.isDeletedCommentMessage || message.isDeleted) &&
-            isOnline,
+            isOnline &&
+            !isClassifiedRoom,
         showEdit = isMessageEditable,
         showCopy = !message.isDeleted,
         showCopyMessageLink = !message.isDeleted &&
@@ -263,7 +267,8 @@ internal fun buildMessageActionsState(
             isOnline,
         showShareToNote = !message.isDeleted &&
             !ConversationUtils.isNoteToSelfConversation(conversation) &&
-            isOnline,
+            isOnline &&
+            !isClassifiedRoom,
         showShare = messageHasFileAttachment || (messageHasRegularText && isOnline),
         showSave = messageHasFileAttachment,
         showOpenInFiles = messageHasFileAttachment && isOnline,

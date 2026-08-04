@@ -65,7 +65,8 @@ enum class SpreedFeatures(val value: String) {
     PINNED_MESSAGES("pinned-messages"),
     SCHEDULED_MESSAGES("scheduled-messages"),
     REACT_PERMISSION("react-permission"),
-    CONVERSATION_PRESETS("conversation-presets")
+    CONVERSATION_PRESETS("conversation-presets"),
+    CLASSIFIED_CONVERSATIONS("classified-conversations")
 }
 
 @Suppress("TooManyFunctions")
@@ -204,6 +205,16 @@ object CapabilitiesUtil {
             val map = spreedCapabilities.config!!["conversations"]
             if (map?.containsKey("retention-instant-meetings") == true) {
                 return map["retention-instant-meetings"].toString().toInt()
+            }
+        }
+        return 0
+    }
+
+    fun retentionOfClassifiedRoom(spreedCapabilities: SpreedCapability): Int {
+        if (spreedCapabilities.config?.containsKey("conversations") == true) {
+            val map = spreedCapabilities.config!!["conversations"]
+            if (map?.containsKey("retention-classified") == true) {
+                return map["retention-classified"].toString().toInt()
             }
         }
         return 0

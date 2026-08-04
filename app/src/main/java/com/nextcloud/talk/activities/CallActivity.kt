@@ -3154,10 +3154,15 @@ class CallActivity : CallBaseActivity() {
     }
 
     val isAllowedToStartOrStopRecording: Boolean
-        get() = (
-            isCallRecordingAvailable(conversationUser!!.capabilities!!.spreedCapability!!) &&
-                isModerator
-            )
+        get() {
+            val spreedCap = conversationUser.capabilities?.spreedCapability
+            val isClassified = currentConversation?.let {
+                com.nextcloud.talk.utils.ConversationUtils.isClassified(it, spreedCap)
+            } ?: false
+            return isCallRecordingAvailable(conversationUser.capabilities!!.spreedCapability!!) &&
+                isModerator &&
+                !isClassified
+        }
     val isAllowedToRaiseHand: Boolean
         get() = hasSpreedFeatureCapability(
             conversationUser.capabilities!!.spreedCapability!!,

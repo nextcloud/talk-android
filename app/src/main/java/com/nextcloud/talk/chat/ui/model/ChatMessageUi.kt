@@ -74,7 +74,8 @@ sealed interface MessageTypeContent {
         val animateGif: Boolean = false,
         val blurhash: String? = null,
         val width: Int? = null,
-        val height: Int? = null
+        val height: Int? = null,
+        val isClassified: Boolean = false
     ) : MessageTypeContent
 
     data class Geolocation(val id: String, val name: String, val lat: Double, val lon: Double) : MessageTypeContent
@@ -110,7 +111,8 @@ fun ChatMessage.toUiModel(
     user: User,
     chatMessage: ChatMessage,
     lastCommonReadMessageId: Int,
-    parentMessage: ChatMessage?
+    parentMessage: ChatMessage?,
+    isClassified: Boolean = false
 ): ChatMessageUi =
     ChatMessageUi(
         id = jsonMessageId,
@@ -132,7 +134,7 @@ fun ChatMessage.toUiModel(
         ),
         timestamp = timestamp,
         date = dateKey(),
-        content = getMessageTypeContent(user, chatMessage),
+        content = getMessageTypeContent(user, chatMessage, isClassified),
         roomToken = token,
         activeUserId = user.userId,
         activeUserBaseUrl = user.baseUrl,
@@ -243,14 +245,14 @@ fun resolveStatusIcon(
         else -> MessageStatusIcon.SENT
     }
 
-fun getMessageTypeContent(user: User, message: ChatMessage): MessageTypeContent? =
+fun getMessageTypeContent(user: User, message: ChatMessage, isClassified: Boolean = false): MessageTypeContent? =
 
     if (message.isSystemMessage) {
         MessageTypeContent.SystemMessage
     } else if (message.isVoiceMessage) {
         getVoiceContent(message)
     } else if (message.hasFileAttachment) {
-        getMediaContent(user, message)
+        getMediaContent(user, message, isClassified)
     } else if (message.hasGeoLocation) {
         getGeolocationContent(message)
     } else if (message.hasPoll) {
@@ -263,7 +265,7 @@ fun getMessageTypeContent(user: User, message: ChatMessage): MessageTypeContent?
             ?: MessageTypeContent.RegularText
     }
 
-fun getMediaContent(user: User, message: ChatMessage): MessageTypeContent.Media {
+fun getMediaContent(user: User, message: ChatMessage, isClassified: Boolean = false): MessageTypeContent.Media {
     val mimetype = message.fileParameters.mimetype
     val drawableResourceId = DrawableUtils.getDrawableResourceIdForMimeType(mimetype)
 
@@ -285,7 +287,8 @@ fun getMediaContent(user: User, message: ChatMessage): MessageTypeContent.Media 
         animateGif = animateGif,
         blurhash = message.fileParameters.blurhash,
         width = message.fileParameters.width,
-        height = message.fileParameters.height
+        height = message.fileParameters.height,
+        isClassified = isClassified
     )
 }
 

@@ -19,6 +19,7 @@ class ConversationObjectTypeConverter : StringBasedTypeConverter<ConversationEnu
             "phone_persist" -> ConversationEnums.ObjectType.PHONE_PERSIST
             "phone_temporary" -> ConversationEnums.ObjectType.PHONE_TEMPORARY
             "instant_meeting" -> ConversationEnums.ObjectType.INSTANT_MEETING
+            "classified" -> ConversationEnums.ObjectType.CLASSIFIED
             else -> ConversationEnums.ObjectType.DEFAULT
         }
 
@@ -35,6 +36,7 @@ class ConversationObjectTypeConverter : StringBasedTypeConverter<ConversationEnu
             ConversationEnums.ObjectType.PHONE_PERSIST -> "phone_persist"
             ConversationEnums.ObjectType.PHONE_TEMPORARY -> "phone_temporary"
             ConversationEnums.ObjectType.INSTANT_MEETING -> "instant_meeting"
+            ConversationEnums.ObjectType.CLASSIFIED -> "classified"
             else -> ""
         }
     }

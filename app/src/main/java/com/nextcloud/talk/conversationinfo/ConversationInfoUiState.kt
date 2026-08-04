@@ -41,6 +41,7 @@ data class ConversationInfoUiState(
     val showImportantConversation: Boolean = false,
     val sensitiveConversation: Boolean = false,
     val showSensitiveConversation: Boolean = false,
+    val isClassified: Boolean = false,
 
     val lobbyEnabled: Boolean = false,
     val showWebinarSettings: Boolean = false,

@@ -139,13 +139,17 @@ fun MediaMessage(
                     val h = typeContent.height
                     if (w != null && h != null && w > 0 && h > 0) w.toFloat() / h else null
                 }
-                val loadedImage = remember(retryAwarePreviewUrl) {
-                    load(
-                        imageUri = retryAwarePreviewUrl,
-                        context = context,
-                        errorPlaceholderImage = typeContent.drawableResourceId,
-                        animated = typeContent.animateGif
-                    )
+                val loadedImage = remember(retryAwarePreviewUrl, typeContent.isClassified) {
+                    if (typeContent.isClassified) {
+                        null
+                    } else {
+                        load(
+                            imageUri = retryAwarePreviewUrl,
+                            context = context,
+                            errorPlaceholderImage = typeContent.drawableResourceId,
+                            animated = typeContent.animateGif
+                        )
+                    }
                 }
                 val fallbackPainter = painterResource(typeContent.drawableResourceId)
 

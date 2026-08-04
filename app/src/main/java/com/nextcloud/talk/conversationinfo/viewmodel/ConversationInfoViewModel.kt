@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Nextcloud Talk - Android Client
  *
  * SPDX-FileCopyrightText: 2023 Marcel Hibbe <dev@mhibbe.de>
@@ -341,17 +341,19 @@ class ConversationInfoViewModel @Inject constructor(
             ""
         }
 
+        val isClassified = ConversationUtils.isClassified(conversationModel, spreedCapabilities)
         val recordingConsentType = CapabilitiesUtil.getRecordingConsentType(spreedCapabilities)
         val showRecordingConsent = isModerator &&
             !isNoteToSelf &&
-            recordingConsentType != CapabilitiesUtil.RECORDING_CONSENT_NOT_REQUIRED
+            recordingConsentType != CapabilitiesUtil.RECORDING_CONSENT_NOT_REQUIRED &&
+            !isClassified
         val showRecordingConsentSwitch =
             showRecordingConsent && recordingConsentType == CapabilitiesUtil.RECORDING_CONSENT_DEPEND_ON_CONVERSATION
         val showRecordingConsentAll =
             showRecordingConsent && recordingConsentType == CapabilitiesUtil.RECORDING_CONSENT_REQUIRED
         val recordingConsentForConversation =
             conversationModel.recordingConsentRequired == RECORDING_CONSENT_REQUIRED_FOR_CONVERSATION
-        val recordingConsentEnabled = !conversationModel.hasCall
+        val recordingConsentEnabled = !conversationModel.hasCall && !isClassified
 
         val showCallNotifications = !isSystem &&
             conversationModel.notificationCalls != null &&
@@ -367,12 +369,13 @@ class ConversationInfoViewModel @Inject constructor(
         val canLeave = conversationModel.canLeaveConversation
         val canDelete = conversationModel.canDeleteConversation
 
-        val showGuestAccess = canModerate
-        val guestsAllowed = isPublic
+        val showGuestAccess = canModerate && !isClassified
+        val guestsAllowed = isPublic && !isClassified
         val hasPassword = guestsAllowed && conversationModel.hasPassword
         val showPasswordProtection = guestsAllowed
         val showResendInvitations = guestsAllowed &&
-            user.capabilities?.spreedCapability?.features?.contains("sip-support") == true
+            user.capabilities?.spreedCapability?.features?.contains("sip-support") == true &&
+            !isClassified
 
         val showSharedItems = hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA) &&
             conversationModel.remoteServer.isNullOrEmpty()
@@ -381,7 +384,8 @@ class ConversationInfoViewModel @Inject constructor(
         val isWebinarRoom = isGroup || isPublic
         val showWebinarSettings = hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.WEBINARY_LOBBY) &&
             isWebinarRoom &&
-            canModerate
+            canModerate &&
+            !isClassified
 
         val showImportantConversation =
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.IMPORTANT_CONVERSATIONS)
@@ -412,7 +416,7 @@ class ConversationInfoViewModel @Inject constructor(
         }
 
         val showEditButton = canModerate && hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.AVATAR)
-        val showShareConversationButton = !isNoteToSelf
+        val showShareConversationButton = !isNoteToSelf && !isClassified
         val showListBans = canModerate && !isOne2One
         val showMessageExpiration = isModerator &&
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)
@@ -438,6 +442,7 @@ class ConversationInfoViewModel @Inject constructor(
                 showImportantConversation = showImportantConversation,
                 sensitiveConversation = sensitiveConversation,
                 showSensitiveConversation = showSensitiveConversation,
+                isClassified = isClassified,
                 lobbyEnabled = isLobbyEnabled,
                 showWebinarSettings = showWebinarSettings,
                 lobbyTimerLabel = lobbyTimerLabel,

@@ -90,6 +90,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -1013,7 +1014,9 @@ class ChatViewModel @AssistedInject constructor(
         val lastCommonRead: Int,
         val parentMap: Map<Long, ChatMessage>,
         val conversationLastRead: Int,
-        val expandedParents: Set<Int> = emptySet()
+        val expandedParents: Set<Int> = emptySet(),
+        val conversation: ConversationModel? = null,
+        val capabilities: SpreedCapability? = null
     )
 
     data class CallStartedIndicatorData(
@@ -1034,6 +1037,10 @@ class ChatViewModel @AssistedInject constructor(
         )
     }
 
+    private val _callEndedSystemMessage = MutableSharedFlow<ChatMessage.SystemMessageType>(extraBufferCapacity = 1)
+    val callEndedSystemMessage: SharedFlow<ChatMessage.SystemMessageType>
+        get() = _callEndedSystemMessage
+
     private data class ProcessedMessages(val items: List<ChatItem>, val missingParentIds: List<Long>)
 
     private fun observeMessages() {
@@ -1044,13 +1051,31 @@ class ChatViewModel @AssistedInject constructor(
             messagesFlow,
             getLastCommonReadFlow.onStart { emit(0) },
             parentMessagesFlow,
-            conversationFlow.map { it.lastReadMessage },
+            combine(conversationFlow, _spreedCapabilities) { conv, caps -> conv to caps },
             expandedSystemMessageParents
-        ) { messages, lastCommonRead, parentMap, conversationLastRead, expandedParents ->
-            CombinedInput(messages, lastCommonRead, parentMap, conversationLastRead, expandedParents)
+        ) { messages, lastCommonRead, parentMap, convAndCaps, expandedParents ->
+            val (conversation, capabilities) = convAndCaps
+            CombinedInput(
+                messages,
+                lastCommonRead,
+                parentMap,
+                conversation.lastReadMessage,
+                expandedParents,
+                conversation,
+                capabilities
+            )
         }
             .debounce(MESSAGES_REBUILD_DEBOUNCE_MS)
-            .map { (messages, lastCommonRead, parentMap, conversationLastRead, expandedParents) ->
+            .map { input ->
+                val (
+                    messages,
+                    lastCommonRead,
+                    parentMap,
+                    conversationLastRead,
+                    expandedParents,
+                    conversation,
+                    capabilities
+                ) = input
                 val messageMap: Map<Long, ChatMessage> = messages.associateBy { it.jsonMessageId.toLong() }
                 val combinedMap: Map<Long, ChatMessage> = messageMap + parentMap
 
@@ -1059,6 +1084,7 @@ class ChatViewModel @AssistedInject constructor(
                     parentIds.filterNot { parentId -> combinedMap.containsKey(parentId) }
                         .distinct()
 
+                val isClassified = conversation != null && ConversationUtils.isClassified(conversation, capabilities)
                 val user = currentUserFlow.value
                 applyMessageGrouping(messages)
                 applySystemMessageGrouping(messages)
@@ -1068,7 +1094,8 @@ class ChatViewModel @AssistedInject constructor(
                         user = user ?: currentUser,
                         chatMessage = message,
                         lastCommonReadMessageId = lastCommonRead,
-                        parentMessage = parent
+                        parentMessage = parent,
+                        isClassified = isClassified
                     )
                 }
 
@@ -1376,15 +1403,27 @@ class ChatViewModel @AssistedInject constructor(
         return chatMessageMap.values.toList()
     }
 
+    private var hasSeenInitialCallSystemMessage = false
+    private var lastNotifiedCallEndedMessageId: Int? = null
+
     private fun processCallSystemMessage(recent: ChatMessage) {
+        val isInitialSnapshot = !hasSeenInitialCallSystemMessage
+        hasSeenInitialCallSystemMessage = true
+
         when (recent.systemMessageType) {
             ChatMessage.SystemMessageType.CALL_STARTED -> {
                 _lastCallSystemMessage.tryEmit(recent)
             }
             ChatMessage.SystemMessageType.CALL_ENDED,
-            ChatMessage.SystemMessageType.CALL_MISSED,
-            ChatMessage.SystemMessageType.CALL_TRIED,
             ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE -> {
+                _lastCallSystemMessage.tryEmit(null)
+                if (!isInitialSnapshot && lastNotifiedCallEndedMessageId != recent.jsonMessageId) {
+                    _callEndedSystemMessage.tryEmit(recent.systemMessageType!!)
+                }
+                lastNotifiedCallEndedMessageId = recent.jsonMessageId
+            }
+            ChatMessage.SystemMessageType.CALL_MISSED,
+            ChatMessage.SystemMessageType.CALL_TRIED -> {
                 _lastCallSystemMessage.tryEmit(null)
             }
             else -> {}
