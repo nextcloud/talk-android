@@ -127,6 +127,8 @@ class ChatMessageSyncerTest {
 
             assertTrue(outcome.persistedNewMessages)
             assertEquals(44L, outcome.newestPersistedMessageId)
+            assertEquals(43L, outcome.oldestPersistedMessageId)
+            assertEquals(2, outcome.persistedMessageCount)
 
             val fieldMapCaptor = argumentCaptor<HashMap<String, Int>>()
             verifyBlocking(network) { pullChatMessages(eq(CREDENTIALS), eq(CHAT_URL), fieldMapCaptor.capture()) }
@@ -154,6 +156,8 @@ class ChatMessageSyncerTest {
 
             assertTrue(outcome.persistedNewMessages)
             assertEquals(3L, outcome.newestPersistedMessageId)
+            assertEquals(1L, outcome.oldestPersistedMessageId)
+            assertEquals(3, outcome.persistedMessageCount)
 
             val fieldMapCaptor = argumentCaptor<HashMap<String, Int>>()
             verifyBlocking(network) { pullChatMessages(eq(CREDENTIALS), eq(CHAT_URL), fieldMapCaptor.capture()) }
