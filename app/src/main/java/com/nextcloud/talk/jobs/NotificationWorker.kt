@@ -229,11 +229,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
      * check are handled inside [ChatMessageSyncer.catchUpRoom].
      */
     private fun catchUpPushedRoom() {
-        val roomToken = pushMessage.id ?: return
-        val syncer = chatMessageSyncer ?: return
-
-        if (isPowerSaveMode()) {
-            logger.d(TAG, "Battery saver is active, skipping message catch-up for pushed room")
+        val roomToken = pushMessage.id
+        val syncer = chatMessageSyncer
+        if (roomToken == null || syncer == null || isPowerSaveMode()) {
+            logger.d(TAG, "Skipping message catch-up for pushed room (missing data or battery saver active)")
             return
         }
 
