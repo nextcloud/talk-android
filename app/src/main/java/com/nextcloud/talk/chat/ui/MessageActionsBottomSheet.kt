@@ -264,8 +264,7 @@ internal fun buildMessageActionsState(
         showTranslate = !message.isDeleted &&
             ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == messageType &&
             CapabilitiesUtil.isTranslationsSupported(spreedCapabilities) &&
-            isOnline &&
-            !isClassifiedRoom,
+            isOnline,
         showShareToNote = !message.isDeleted &&
             !ConversationUtils.isNoteToSelfConversation(conversation) &&
             isOnline &&
