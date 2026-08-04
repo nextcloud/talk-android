@@ -196,21 +196,26 @@ class ChatMessageSyncer @Inject constructor(
      * dismiss the user's push notifications for the fetched messages, so the catch-up is skipped
      * entirely (same guard as on iOS).
      */
-    suspend fun catchUpRoom(target: SyncTarget, limit: Int = DEFAULT_MESSAGES_LIMIT): SyncOutcome {
-        if (!networkMonitor.isOnline.value) {
-            Log.d(TAG, "Device is offline, skipping catch-up for ${target.internalConversationId}")
-            return SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null)
+    suspend fun catchUpRoom(target: SyncTarget, limit: Int = DEFAULT_MESSAGES_LIMIT): SyncOutcome =
+        when {
+            !networkMonitor.isOnline.value -> {
+                Log.d(TAG, "Device is offline, skipping catch-up for ${target.internalConversationId}")
+                NOTHING_SYNCED
+            }
+
+            !target.user.hasSpreedFeatureCapability(SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value) -> {
+                Log.d(
+                    TAG,
+                    "Server lacks ${SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value}, " +
+                        "skipping catch-up for ${target.internalConversationId}"
+                )
+                NOTHING_SYNCED
+            }
+
+            else -> fetchRoomCatchUp(target, limit)
         }
 
-        if (!target.user.hasSpreedFeatureCapability(SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value)) {
-            Log.d(
-                TAG,
-                "Server lacks ${SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value}, " +
-                    "skipping catch-up for ${target.internalConversationId}"
-            )
-            return SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null)
-        }
-
+    private suspend fun fetchRoomCatchUp(target: SyncTarget, limit: Int): SyncOutcome {
         val newestMessageIdFromDb =
             chatBlocksDao.getNewestMessageIdFromChatBlocks(target.internalConversationId, target.threadId)
 
@@ -293,7 +298,6 @@ class ChatMessageSyncer @Inject constructor(
      * Pulls messages from the server as described by [fieldMap], persists them and updates the
      * chat blocks of [target].
      */
-    @Suppress("LongMethod")
     suspend fun pullAndPersistMessages(
         target: SyncTarget,
         fieldMap: HashMap<String, Int>,
@@ -309,67 +313,74 @@ class ChatMessageSyncer @Inject constructor(
             val queriedMessageId = fieldMap["lastKnownMessageId"]
             val lookIntoFuture = fieldMap["lookIntoFuture"] == 1
 
-            val result = pullMessagesFlow(target, fieldMap).first()
-
-            when (result) {
-                is ChatPullResult.Success -> {
-                    events.onLastCommonReadChanged(result.lastCommonRead)
-
-                    val hasHistory = getHasHistory(HTTP_CODE_OK, lookIntoFuture)
-
-                    Log.d(
-                        TAG,
-                        "internalConv=${target.internalConversationId} statusCode=$HTTP_CODE_OK " +
-                            "lookIntoFuture=$lookIntoFuture hasHistory=$hasHistory " +
-                            "queriedMessageId=$queriedMessageId"
-                    )
-
-                    val blockContainingQueriedMessage: ChatBlockEntity? = getBlockOfMessage(target, queriedMessageId)
-
-                    blockContainingQueriedMessage?.takeIf { !hasHistory }?.apply {
-                        this.hasHistory = false
-                        chatBlocksDao.upsertChatBlock(this)
-                        Log.d(TAG, "End of chat reached, set hasHistory=false")
-                    }
-
-                    if (result.messages.isNotEmpty()) {
-                        val persistedMessages = updateMessagesData(
-                            target,
-                            result.messages,
-                            blockContainingQueriedMessage,
-                            lookIntoFuture,
-                            hasHistory,
-                            events
-                        )
-                        return SyncOutcome(
-                            persistedNewMessages = persistedMessages.isNotEmpty(),
-                            newestPersistedMessageId = persistedMessages.maxOfOrNull { it.id },
-                            oldestPersistedMessageId = persistedMessages.minOfOrNull { it.id },
-                            persistedMessageCount = persistedMessages.size
-                        )
-                    } else {
-                        Log.d(TAG, "No new messages to update")
-                        return SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null)
-                    }
-                }
+            return when (val result = pullMessagesFlow(target, fieldMap).first()) {
+                is ChatPullResult.Success ->
+                    handleSuccessfulPull(target, result, queriedMessageId, lookIntoFuture, events)
 
                 is ChatPullResult.NotModified -> {
                     Log.d(TAG, "Server returned NOT_MODIFIED, nothing to update")
-                    return SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null)
+                    NOTHING_SYNCED
                 }
 
                 is ChatPullResult.PreconditionFailed -> {
                     Log.d(TAG, "Server returned PRECONDITION_FAILED, nothing to update")
-                    return SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null)
+                    NOTHING_SYNCED
                 }
 
                 is ChatPullResult.Error -> {
                     Log.e(TAG, "Error pulling messages from server", result.throwable)
-                    return SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null)
+                    NOTHING_SYNCED
                 }
             }
         } finally {
             if (!isLongPoll) events.onLoadingChanged(false)
+        }
+    }
+
+    private suspend fun handleSuccessfulPull(
+        target: SyncTarget,
+        result: ChatPullResult.Success,
+        queriedMessageId: Int?,
+        lookIntoFuture: Boolean,
+        events: Events
+    ): SyncOutcome {
+        events.onLastCommonReadChanged(result.lastCommonRead)
+
+        val hasHistory = getHasHistory(HTTP_CODE_OK, lookIntoFuture)
+
+        Log.d(
+            TAG,
+            "internalConv=${target.internalConversationId} statusCode=$HTTP_CODE_OK " +
+                "lookIntoFuture=$lookIntoFuture hasHistory=$hasHistory " +
+                "queriedMessageId=$queriedMessageId"
+        )
+
+        val blockContainingQueriedMessage: ChatBlockEntity? = getBlockOfMessage(target, queriedMessageId)
+
+        blockContainingQueriedMessage?.takeIf { !hasHistory }?.apply {
+            this.hasHistory = false
+            chatBlocksDao.upsertChatBlock(this)
+            Log.d(TAG, "End of chat reached, set hasHistory=false")
+        }
+
+        return if (result.messages.isNotEmpty()) {
+            val persistedMessages = updateMessagesData(
+                target,
+                result.messages,
+                blockContainingQueriedMessage,
+                lookIntoFuture,
+                hasHistory,
+                events
+            )
+            SyncOutcome(
+                persistedNewMessages = persistedMessages.isNotEmpty(),
+                newestPersistedMessageId = persistedMessages.maxOfOrNull { it.id },
+                oldestPersistedMessageId = persistedMessages.minOfOrNull { it.id },
+                persistedMessageCount = persistedMessages.size
+            )
+        } else {
+            Log.d(TAG, "No new messages to update")
+            NOTHING_SYNCED
         }
     }
 
@@ -672,6 +683,8 @@ class ChatMessageSyncer @Inject constructor(
         val TAG: String = ChatMessageSyncer::class.java.simpleName
 
         val NO_EVENTS: Events = object : Events {}
+
+        private val NOTHING_SYNCED = SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null)
 
         private const val DEFAULT_MESSAGES_LIMIT = 100
         private const val MILLIS_PER_SECOND = 1000L

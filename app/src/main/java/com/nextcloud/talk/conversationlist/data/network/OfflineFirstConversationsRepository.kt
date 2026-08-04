@@ -214,22 +214,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
      * requests, so a fresh install with many rooms cannot cause an unbounded request burst.
      */
     private suspend fun catchUpRoomsWithNewMessages(user: User, rooms: List<ConversationEntity>) {
-        if (rooms.isEmpty()) {
-            return
-        }
-
-        if (!user.hasSpreedFeatureCapability(SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value)) {
-            Log.d(TAG, "Server lacks ${SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value}, skipping message catch-up")
-            return
-        }
-
-        if (isPowerSaveMode()) {
-            Log.d(TAG, "Battery saver is active, skipping message catch-up")
-            return
-        }
-
-        if (isBackgroundDataRestricted()) {
-            Log.d(TAG, "Background data is restricted on a metered network, skipping message catch-up")
+        if (rooms.isEmpty() || !isCatchUpAllowed(user)) {
             return
         }
 
@@ -262,6 +247,26 @@ class OfflineFirstConversationsRepository @Inject constructor(
             }
         }
     }
+
+    private fun isCatchUpAllowed(user: User): Boolean =
+        when {
+            !user.hasSpreedFeatureCapability(SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value) -> {
+                Log.d(TAG, "Server lacks ${SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value}, skipping message catch-up")
+                false
+            }
+
+            isPowerSaveMode() -> {
+                Log.d(TAG, "Battery saver is active, skipping message catch-up")
+                false
+            }
+
+            isBackgroundDataRestricted() -> {
+                Log.d(TAG, "Background data is restricted on a metered network, skipping message catch-up")
+                false
+            }
+
+            else -> true
+        }
 
     private fun isPowerSaveMode(): Boolean {
         val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
