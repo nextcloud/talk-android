@@ -596,6 +596,11 @@ class OfflineFirstChatRepository @Inject constructor(
         val chatMessageEntities =
             persistChatMessagesAndHandleSystemMessages(chatMessagesJson, emitOnIncoming = lookIntoFuture)
 
+        if (chatMessageEntities.isEmpty()) {
+            Log.w(TAG, "No messages were persisted, skipping chat block update")
+            return
+        }
+
         val oldestIdFromSync = chatMessageEntities.minByOrNull { it.id }!!.id
         val newestIdFromSync = chatMessageEntities.maxByOrNull { it.id }!!.id
         Log.d(TAG, "oldestIdFromSync: $oldestIdFromSync")
