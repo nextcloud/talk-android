@@ -171,6 +171,7 @@
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
     <string name="nc_change_password">Changer son mot de passe</string>
     <string name="nc_chat_no_messages">Pas encore de message. Soyez le premier à dire salut !</string>
+    <string name="nc_classified_conversation">Conversation classifiée</string>
     <string name="nc_clear_edit_button">Annuler la modification</string>
     <string name="nc_clear_history">Supprimer tous les messages</string>
     <string name="nc_clear_history_success">Tous les messages ont été supprimés</string>

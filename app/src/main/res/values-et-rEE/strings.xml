@@ -171,6 +171,7 @@
     <string name="nc_change_cert_auth">Muuda autentimise sertifikaati</string>
     <string name="nc_change_password">Muuda salasõna</string>
     <string name="nc_chat_no_messages">Sõnumeid veel pole. Ole esimene, kes ütleb tere!</string>
+    <string name="nc_classified_conversation">Salastatud vestlus</string>
     <string name="nc_clear_edit_button">Katkesta muutmine</string>
     <string name="nc_clear_history">Kustuta kõik sõnumid</string>
     <string name="nc_clear_history_success">Kõik sõnumid on kustutatud</string>
