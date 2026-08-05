@@ -7,7 +7,9 @@
 package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.domain.ConversationModel.Companion.isClassifiedAttribute
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
 
@@ -61,12 +63,10 @@ object ConversationUtils {
 
     fun isClassified(conversation: ConversationModel, spreedCapabilities: SpreedCapability?): Boolean =
         CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CLASSIFIED_CONVERSATIONS) &&
-            ((conversation.attributes ?: 0) and ConversationEnums.ATTRIBUTE_IS_CLASSIFIED) != 0
+            conversation.isClassifiedAttribute()
 
-    fun isClassified(
-        conversation: com.nextcloud.talk.models.json.conversations.Conversation,
-        spreedCapabilities: SpreedCapability?
-    ): Boolean =
+    @Deprecated("Use isClassified(conversation: ConversationModel, spreedCapabilities: SpreedCapability?)")
+    fun isClassified(conversation: Conversation, spreedCapabilities: SpreedCapability?): Boolean =
         CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CLASSIFIED_CONVERSATIONS) &&
             ((conversation.attributes ?: 0) and ConversationEnums.ATTRIBUTE_IS_CLASSIFIED) != 0
 }

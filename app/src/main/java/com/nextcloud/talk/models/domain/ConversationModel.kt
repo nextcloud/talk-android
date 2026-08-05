@@ -81,6 +81,11 @@ data class ConversationModel(
                 it and ConversationEnums.ATTRIBUTE_IS_VOICE_ROOM != 0
             } ?: false
 
+        fun ConversationModel?.isClassifiedAttribute(): Boolean =
+            this?.attributes?.let {
+                it and ConversationEnums.ATTRIBUTE_IS_CLASSIFIED != 0
+            } ?: false
+
         fun ConversationModel?.isChannel(): Boolean =
             this?.attributes?.let {
                 it and ConversationEnums.ATTRIBUTE_IS_CHANNEL != 0
