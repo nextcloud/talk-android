@@ -860,16 +860,18 @@ class ChatActivity :
                     value = reactionsSheetMessageId?.let { id -> chatViewModel.getMessageById(id).first() }
                 }
                 reactionsSheetMessage?.let { msg ->
-                    conversationUser?.let { user ->
-                        ShowReactionsModalBottomSheet(
-                            chatMessage = msg,
-                            user = user,
-                            roomToken = roomToken,
-                            hasReactPermission = participantPermissions?.hasReactPermission() == true,
-                            ncApiCoroutines = ncApiCoroutines,
-                            onDeleteReaction = { emoji -> chatViewModel.deleteReaction(roomToken, msg, emoji) },
-                            onDismiss = { chatViewModel.dismissReactionsSheet() }
-                        )
+                    if (::conversationUser.isInitialized) {
+                        conversationUser.let { user ->
+                            ShowReactionsModalBottomSheet(
+                                chatMessage = msg,
+                                user = user,
+                                roomToken = roomToken,
+                                hasReactPermission = participantPermissions?.hasReactPermission() == true,
+                                ncApiCoroutines = ncApiCoroutines,
+                                onDeleteReaction = { emoji -> chatViewModel.deleteReaction(roomToken, msg, emoji) },
+                                onDismiss = { chatViewModel.dismissReactionsSheet() }
+                            )
+                        }
                     }
                 }
 
@@ -881,14 +883,16 @@ class ChatActivity :
                     ?.takeIf { it.actorType.equals("users") }
                     ?.let { msg ->
                         val actorId = msg.actorId ?: return@let
-                        conversationUser?.let { user ->
-                            ProfileModalBottomSheet(
-                                actorId = actorId,
-                                user = user,
-                                ncApiCoroutines = ncApiCoroutines,
-                                onTalkTo = { actorId -> startDirectChat(actorId) },
-                                onDismiss = { chatViewModel.dismissProfileSheet() }
-                            )
+                        if (::conversationUser.isInitialized) {
+                            conversationUser.let { user ->
+                                ProfileModalBottomSheet(
+                                    actorId = actorId,
+                                    user = user,
+                                    ncApiCoroutines = ncApiCoroutines,
+                                    onTalkTo = { actorId -> startDirectChat(actorId) },
+                                    onDismiss = { chatViewModel.dismissProfileSheet() }
+                                )
+                            }
                         }
                     }
 
@@ -917,59 +921,61 @@ class ChatActivity :
                             onDismiss = { chatViewModel.dismissMessageActions() }
                         )
                     } else {
-                        conversationUser?.let { user ->
-                            MessageActionsBottomSheet(
-                                actionsState = buildMessageActionsState(
-                                    message = msg,
-                                    user = user,
-                                    conversation = currentConversation,
-                                    hasChatPermission = participantPermissions?.hasChatPermission() == true,
-                                    hasReactPermission = participantPermissions?.hasReactPermission() == true,
-                                    spreedCapabilities = spreedCapabilities,
-                                    isOnline = isOnline,
-                                    dateUtils = dateUtils,
-                                    conversationThreadId = conversationThreadId
-                                ),
-                                onEmojiClick = { emoji ->
-                                    if (msg.reactionsSelf?.contains(emoji) == true) {
-                                        chatViewModel.deleteReaction(roomToken, msg, emoji)
-                                    } else {
-                                        chatViewModel.addReaction(roomToken, msg, emoji)
-                                    }
-                                },
-                                onReply = {
-                                    if (msg.isThread && conversationThreadId == null) {
-                                        openThread(msg)
-                                    } else {
-                                        messageInputViewModel.reply(msg)
-                                    }
-                                },
-                                onReplyPrivately = { replyPrivately(msg) },
-                                onOpenThread = { msg.threadId?.let { openThread(it) } },
-                                onForward = { forwardMessage(msg) },
-                                onEdit = { messageInputViewModel.edit(msg) },
-                                onCopy = { copyMessage(msg) },
-                                onCopyMessageLink = { copyMessageLink(msg) },
-                                onMarkAsUnread = { markAsUnread(msg) },
-                                onRemind = { remindMeLater(msg) },
-                                onPin = { pinMessage(msg) },
-                                onUnpin = { unPinMessage(msg) },
-                                onTranslate = { translateMessage(msg) },
-                                onShareToNote = { shareToNotes(msg) },
-                                onShare = {
-                                    if (msg.getCalculateMessageType() ==
-                                        ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE
-                                    ) {
-                                        checkIfSharable(msg)
-                                    } else {
-                                        msg.message?.let { shareMessageText(it) }
-                                    }
-                                },
-                                onSave = { checkIfSaveable(msg) },
-                                onOpenInFiles = { openInFilesApp(msg) },
-                                onDelete = { deleteMessage(msg) },
-                                onDismiss = { chatViewModel.dismissMessageActions() }
-                            )
+                        if (::conversationUser.isInitialized) {
+                            conversationUser.let { user ->
+                                MessageActionsBottomSheet(
+                                    actionsState = buildMessageActionsState(
+                                        message = msg,
+                                        user = user,
+                                        conversation = currentConversation,
+                                        hasChatPermission = participantPermissions?.hasChatPermission() == true,
+                                        hasReactPermission = participantPermissions?.hasReactPermission() == true,
+                                        spreedCapabilities = spreedCapabilities,
+                                        isOnline = isOnline,
+                                        dateUtils = dateUtils,
+                                        conversationThreadId = conversationThreadId
+                                    ),
+                                    onEmojiClick = { emoji ->
+                                        if (msg.reactionsSelf?.contains(emoji) == true) {
+                                            chatViewModel.deleteReaction(roomToken, msg, emoji)
+                                        } else {
+                                            chatViewModel.addReaction(roomToken, msg, emoji)
+                                        }
+                                    },
+                                    onReply = {
+                                        if (msg.isThread && conversationThreadId == null) {
+                                            openThread(msg)
+                                        } else {
+                                            messageInputViewModel.reply(msg)
+                                        }
+                                    },
+                                    onReplyPrivately = { replyPrivately(msg) },
+                                    onOpenThread = { msg.threadId?.let { openThread(it) } },
+                                    onForward = { forwardMessage(msg) },
+                                    onEdit = { messageInputViewModel.edit(msg) },
+                                    onCopy = { copyMessage(msg) },
+                                    onCopyMessageLink = { copyMessageLink(msg) },
+                                    onMarkAsUnread = { markAsUnread(msg) },
+                                    onRemind = { remindMeLater(msg) },
+                                    onPin = { pinMessage(msg) },
+                                    onUnpin = { unPinMessage(msg) },
+                                    onTranslate = { translateMessage(msg) },
+                                    onShareToNote = { shareToNotes(msg) },
+                                    onShare = {
+                                        if (msg.getCalculateMessageType() ==
+                                            ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE
+                                        ) {
+                                            checkIfSharable(msg)
+                                        } else {
+                                            msg.message?.let { shareMessageText(it) }
+                                        }
+                                    },
+                                    onSave = { checkIfSaveable(msg) },
+                                    onOpenInFiles = { openInFilesApp(msg) },
+                                    onDelete = { deleteMessage(msg) },
+                                    onDismiss = { chatViewModel.dismissMessageActions() }
+                                )
+                            }
                         }
                     }
                 }
@@ -1069,7 +1075,8 @@ class ChatActivity :
     private fun startDirectChat(actorId: String) {
         lifecycleScope.launch {
             try {
-                val user = conversationUser ?: return@launch
+                if (!::conversationUser.isInitialized) return@launch
+                val user = conversationUser
                 val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, 1))
                 val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
                     version = apiVersion,
@@ -1369,13 +1376,15 @@ class ChatActivity :
                         }
                     }
 
-                    conversationUser?.let { user ->
-                        val credentials = ApiUtils.getCredentials(user.username, user.token)
-                        chatViewModel.fetchUpcomingEvent(
-                            credentials!!,
-                            user.baseUrl!!,
-                            roomToken
-                        )
+                    if (::conversationUser.isInitialized) {
+                        conversationUser.let { user ->
+                            val credentials = ApiUtils.getCredentials(user.username, user.token)
+                            chatViewModel.fetchUpcomingEvent(
+                                credentials!!,
+                                user.baseUrl!!,
+                                roomToken
+                            )
+                        }
                     }
 
                     if (state.conversationModel.objectType == ConversationEnums.ObjectType.EVENT &&
@@ -1908,7 +1917,7 @@ class ChatActivity :
 
     fun updateToolbarState() {
         val conversation = currentConversation
-        val user = conversationUser
+        val user = if (::conversationUser.isInitialized) conversationUser else null
         val isOneToOne = isOneToOneConversation()
         val capabilitiesReady = ::spreedCapabilities.isInitialized
 
@@ -2064,7 +2073,7 @@ class ChatActivity :
     }
 
     private fun switchToRoom(token: String, startCallAfterRoomSwitch: Boolean, isVoiceOnlyCall: Boolean) {
-        if (conversationUser != null) {
+        if (::conversationUser.isInitialized) {
             runOnUiThread {
                 val toastInfo = if (currentConversation?.objectType == ConversationEnums.ObjectType.ROOM) {
                     context.resources.getString(R.string.switch_to_main_room)
@@ -2720,7 +2729,7 @@ class ChatActivity :
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun cancelNotificationsForCurrentConversation() {
-        if (conversationUser != null) {
+        if (::conversationUser.isInitialized) {
             if (!TextUtils.isEmpty(roomToken)) {
                 try {
                     NotificationUtils.cancelExistingNotificationsForRoom(
@@ -2751,7 +2760,7 @@ class ChatActivity :
             getRoomInfoTimerHandler?.removeCallbacksAndMessages(null)
         }
 
-        if (conversationUser != null && isActivityNotChangingConfigurations() && isNotInCall()) {
+        if (::conversationUser.isInitialized && isActivityNotChangingConfigurations() && isNotInCall()) {
             ApplicationWideCurrentRoomHolder.getInstance().clear()
             if (validSessionId()) {
                 leaveRoom(null)
@@ -2857,8 +2866,8 @@ class ChatActivity :
 
         var apiVersion = 1
         // FIXME Fix API checking with guests?
-        if (conversationUser != null) {
-            apiVersion = ApiUtils.getConversationApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V4, 1))
+        if (::conversationUser.isInitialized) {
+            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
         }
 
         val startNanoTime = System.nanoTime()
@@ -2875,7 +2884,7 @@ class ChatActivity :
     }
 
     private fun setupWebsocket() {
-        if (currentConversation == null || conversationUser == null) {
+        if (currentConversation == null || !::conversationUser.isInitialized) {
             Log.e(TAG, "setupWebsocket: currentConversation or conversationUser is null")
             return
         }
@@ -3239,7 +3248,7 @@ class ChatActivity :
 
     private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
         currentConversation?.let {
-            if (conversationUser != null) {
+            if (::conversationUser.isInitialized) {
                 val pp = ParticipantPermissions(spreedCapabilities, it)
                 if (!pp.canStartCall() && currentConversation?.hasCall == false) {
                     Snackbar.make(binding.root, R.string.startCallForbidden, Snackbar.LENGTH_LONG).show()
@@ -3366,7 +3375,7 @@ class ChatActivity :
         } else {
             var apiVersion = 1
             // FIXME Fix API checking with guests?
-            if (conversationUser != null) {
+            if (::conversationUser.isInitialized) {
                 apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
             }
 
@@ -3812,7 +3821,7 @@ class ChatActivity :
     }
 
     fun userAllowedByPrivilages(message: ChatMessage): Boolean {
-        if (conversationUser == null) return false
+        if (!::conversationUser.isInitialized) return false
 
         val isUserAllowedByPrivileges = if (message.actorId == conversationUser!!.userId) {
             true
