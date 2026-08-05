@@ -76,25 +76,14 @@ data class ConversationModel(
 ) {
 
     companion object {
-        fun ConversationModel?.checkIfVoiceRoom(): Boolean =
-            this?.attributes?.let {
-                it and ConversationEnums.ATTRIBUTE_IS_VOICE_ROOM != 0
-            } ?: false
+        private fun ConversationModel?.hasAttribute(flag: Int): Boolean =
+            this?.attributes?.let { it and flag != 0 } ?: false
 
+        fun ConversationModel?.checkIfVoiceRoom(): Boolean = hasAttribute(ConversationEnums.ATTRIBUTE_IS_VOICE_ROOM)
         fun ConversationModel?.isClassifiedAttribute(): Boolean =
-            this?.attributes?.let {
-                it and ConversationEnums.ATTRIBUTE_IS_CLASSIFIED != 0
-            } ?: false
-
-        fun ConversationModel?.isChannel(): Boolean =
-            this?.attributes?.let {
-                it and ConversationEnums.ATTRIBUTE_IS_CHANNEL != 0
-            } ?: false
-
-        fun ConversationModel?.isAnnouncement(): Boolean =
-            this?.attributes?.let {
-                it and ConversationEnums.ATTRIBUTE_IS_ANNOUNCEMENT != 0
-            } ?: false
+            hasAttribute(ConversationEnums.ATTRIBUTE_IS_CLASSIFIED)
+        fun ConversationModel?.isChannel(): Boolean = hasAttribute(ConversationEnums.ATTRIBUTE_IS_CHANNEL)
+        fun ConversationModel?.isAnnouncement(): Boolean = hasAttribute(ConversationEnums.ATTRIBUTE_IS_ANNOUNCEMENT)
 
         @Suppress("LongMethod")
         fun mapToConversationModel(conversation: Conversation, user: User): ConversationModel =
