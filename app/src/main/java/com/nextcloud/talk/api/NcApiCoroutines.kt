@@ -151,6 +151,15 @@ interface NcApiCoroutines {
     @DELETE
     suspend fun deleteConversationAvatar(@Header("Authorization") authorization: String, @Url url: String): RoomOverall
 
+    @FormUrlEncoded
+    @POST
+    suspend fun setConversationEmojiAvatar(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("emoji") emoji: String,
+        @Field("color") color: String?
+    ): RoomOverall
+
     @POST
     suspend fun archiveConversation(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 

@@ -53,13 +53,17 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -274,15 +278,24 @@ private fun HeaderAvatar(avatarUrl: String?) {
             )
         }
     } else {
+        val context = LocalContext.current
+        val request = remember(avatarUrl) {
+            ImageRequest.Builder(context)
+                .data(avatarUrl)
+                .crossfade(true)
+                .build()
+        }
+        var lastPainter by remember { mutableStateOf<Painter?>(null) }
         AsyncImage(
-            model = avatarUrl,
+            model = request,
             contentDescription = stringResource(R.string.avatar),
             modifier = Modifier
                 .size(80.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop,
             error = painterResource(R.drawable.account_circle_48dp),
-            placeholder = painterResource(R.drawable.account_circle_48dp)
+            placeholder = lastPainter ?: painterResource(R.drawable.account_circle_48dp),
+            onSuccess = { lastPainter = it.painter }
         )
     }
 }

@@ -48,10 +48,12 @@ import androidx.compose.material.icons.outlined.VolumeUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -90,6 +92,9 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.components.AvatarEditPanel
+import com.nextcloud.talk.components.AvatarEditPanelCallbacks
+import com.nextcloud.talk.components.AvatarEditPanelState
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.loadImage
@@ -141,6 +146,8 @@ fun ConversationCreationScreen(
     pickImage: PickImage? = null
 ) {
     val selectedImageUri = conversationCreationViewModel.selectedImageUri.collectAsState().value
+    val selectedEmoji = conversationCreationViewModel.selectedEmoji.collectAsState().value
+    val selectedEmojiColor = conversationCreationViewModel.selectedEmojiColor.collectAsState().value
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -210,16 +217,23 @@ fun ConversationCreationScreen(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
-                DefaultUserAvatar(selectedImageUri)
+                DefaultUserAvatar(selectedImageUri, selectedEmoji, selectedEmojiColor)
                 if (pickImage != null) {
                     UploadAvatar(
                         pickImage = pickImage,
-                        onImageSelected = { uri -> conversationCreationViewModel.updateSelectedImageUri(uri) },
                         imagePickerLauncher = imagePickerLauncher,
                         remoteFilePickerLauncher = remoteFilePickerLauncher,
                         cameraLauncher = cameraLauncher,
-                        onDeleteImage = { conversationCreationViewModel.updateSelectedImageUri(null) },
-                        selectedImageUri = selectedImageUri
+                        selectedImageUri = selectedImageUri,
+                        selectedEmoji = selectedEmoji,
+                        selectedEmojiColor = selectedEmojiColor,
+                        onEmojiAvatarConfirmed = { emoji, color ->
+                            conversationCreationViewModel.updateSelectedEmojiAvatar(emoji, color)
+                        },
+                        onDeleteAvatar = {
+                            conversationCreationViewModel.updateSelectedImageUri(null)
+                            conversationCreationViewModel.updateSelectedEmoji(null)
+                        }
                     )
                 }
 
@@ -242,44 +256,65 @@ fun ConversationCreationScreen(
 }
 
 @Composable
-fun DefaultUserAvatar(selectedImageUri: Uri?) {
+fun DefaultUserAvatar(selectedImageUri: Uri?, selectedEmoji: String? = null, selectedEmojiColor: Int? = null) {
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
-        if (selectedImageUri != null) {
-            AsyncImage(
-                model = selectedImageUri,
-                contentDescription = stringResource(id = R.string.user_avatar),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(84.dp)
-                    .padding(top = 8.dp)
-                    .clip(CircleShape)
-            )
-        } else {
-            AsyncImage(
-                model = R.drawable.ic_circular_group,
-                contentDescription = stringResource(id = R.string.user_avatar),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(84.dp)
-                    .padding(top = 8.dp)
-                    .clip(CircleShape)
-            )
+        when {
+            selectedEmoji != null -> {
+                val backgroundColor = selectedEmojiColor?.let { Color(it) } ?: MaterialTheme.colorScheme.surfaceVariant
+                Box(
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .size(84.dp)
+                        .clip(CircleShape)
+                        .background(backgroundColor),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = selectedEmoji, fontSize = 36.sp)
+                }
+            }
+
+            selectedImageUri != null -> {
+                AsyncImage(
+                    model = selectedImageUri,
+                    contentDescription = stringResource(id = R.string.user_avatar),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .size(84.dp)
+                        .clip(CircleShape)
+                )
+            }
+
+            else -> {
+                AsyncImage(
+                    model = R.drawable.ic_circular_group,
+                    contentDescription = stringResource(id = R.string.user_avatar),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .size(84.dp)
+                        .clip(CircleShape)
+                )
+            }
         }
     }
 }
 
+@Suppress("LongParameterList")
 @Composable
 fun UploadAvatar(
     pickImage: PickImage,
-    onImageSelected: (Uri) -> Unit,
     imagePickerLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     remoteFilePickerLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     cameraLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
-    onDeleteImage: () -> Unit,
-    selectedImageUri: Uri?
+    selectedImageUri: Uri?,
+    selectedEmoji: String?,
+    selectedEmojiColor: Int?,
+    onEmojiAvatarConfirmed: (emoji: String, color: Int?) -> Unit,
+    onDeleteAvatar: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -287,50 +322,20 @@ fun UploadAvatar(
             .padding(16.dp),
         horizontalArrangement = Arrangement.Center
     ) {
-        IconButton(
-            onClick = {
-                pickImage.takePicture(cameraLauncher)
-            }
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_baseline_photo_camera_24),
-                contentDescription = null,
-                modifier = Modifier.size(24.dp)
+        AvatarEditPanel(
+            state = AvatarEditPanelState(
+                selectedEmoji = selectedEmoji,
+                selectedEmojiColor = selectedEmojiColor,
+                showDeleteButton = selectedImageUri != null || selectedEmoji != null
+            ),
+            callbacks = AvatarEditPanelCallbacks(
+                onCameraClick = { pickImage.takePicture(cameraLauncher) },
+                onUploadClick = { pickImage.selectLocal(imagePickerLauncher) },
+                onChooseClick = { pickImage.selectRemote(remoteFilePickerLauncher) },
+                onEmojiAvatarConfirmed = onEmojiAvatarConfirmed,
+                onDeleteClick = onDeleteAvatar
             )
-        }
-
-        IconButton(onClick = {
-            pickImage.selectLocal(imagePickerLauncher)
-        }) {
-            Icon(
-                painter = painterResource(id = R.drawable.upload),
-                contentDescription = null,
-                modifier = Modifier.size(24.dp)
-            )
-        }
-        IconButton(
-            onClick = {
-                pickImage.selectRemote(remoteFilePickerLauncher)
-            }
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_folder),
-                contentDescription = null,
-                modifier = Modifier.size(24.dp)
-            )
-        }
-
-        if (selectedImageUri != null) {
-            IconButton(onClick = {
-                onDeleteImage()
-            }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_delete_grey600_24dp),
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
+        )
     }
 }
 
@@ -806,6 +811,7 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
 @Composable
 fun CreateConversation(conversationCreationViewModel: ConversationCreationViewModel, context: Context) {
     val selectedParticipants by conversationCreationViewModel.selectedParticipants.collectAsState()
+    val isCreatingRoom by conversationCreationViewModel.isCreatingRoom.collectAsState()
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -813,6 +819,7 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
         contentAlignment = Alignment.Center
     ) {
         Button(
+            enabled = !isCreatingRoom,
             onClick = {
                 conversationCreationViewModel.createRoomAndAddParticipants(
                     roomType = CompanionClass.ROOM_TYPE_GROUP,
@@ -829,6 +836,14 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
                 }
             }
         ) {
+            if (isCreatingRoom) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(18.dp),
+                    strokeWidth = 2.dp,
+                    color = LocalContentColor.current
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+            }
             Text(text = stringResource(id = R.string.create_conversation))
         }
     }

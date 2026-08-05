@@ -19,6 +19,13 @@ interface ConversationInfoEditRepository {
 
     suspend fun deleteConversationAvatar(user: User, roomToken: String): ConversationModel
 
+    suspend fun setConversationEmojiAvatar(
+        user: User,
+        roomToken: String,
+        emoji: String,
+        color: String?
+    ): ConversationModel
+
     suspend fun renameConversation(user: User, roomToken: String, newRoomName: String): GenericOverall
 
     suspend fun setConversationDescription(

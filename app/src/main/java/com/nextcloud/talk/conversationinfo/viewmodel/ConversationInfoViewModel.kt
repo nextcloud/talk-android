@@ -297,7 +297,13 @@ class ConversationInfoViewModel @Inject constructor(
                 }
             ConversationEnums.ConversationType.ROOM_GROUP_CALL,
             ConversationEnums.ConversationType.ROOM_PUBLIC_CALL ->
-                ApiUtils.getUrlForConversationAvatar(1, user.baseUrl, token)
+                ApiUtils.getUrlForConversationAvatarWithVersion(
+                    version = 1,
+                    baseUrl = user.baseUrl,
+                    token = token,
+                    isDark = false,
+                    avatarVersion = conversationModel.avatarVersion.takeIf { it.isNotEmpty() }
+                )
             else -> null
         }
 

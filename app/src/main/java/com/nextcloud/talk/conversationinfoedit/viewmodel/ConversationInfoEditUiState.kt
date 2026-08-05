@@ -19,6 +19,8 @@ data class ConversationInfoEditUiState(
     val avatarUrl: String = "",
     val avatarUrlDark: String = "",
     val avatarRefreshKey: Int = 0,
+    val selectedEmoji: String? = null,
+    val selectedEmojiColor: Int? = null,
     val nameEnabled: Boolean = true,
     val descriptionEnabled: Boolean = true,
     val showSaveButton: Boolean = true,

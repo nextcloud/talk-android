@@ -107,6 +107,19 @@ class ConversationCreationRepositoryImpl @Inject constructor(private val ncApiCo
         return ConversationModel.mapToConversationModel(response.ocs?.data!!, user)
     }
 
+    override suspend fun setConversationEmojiAvatar(
+        credentials: String?,
+        url: String,
+        emoji: String,
+        color: String?
+    ): RoomOverall =
+        ncApiCoroutines.setConversationEmojiAvatar(
+            credentials!!,
+            url,
+            emoji,
+            color
+        )
+
     override suspend fun allowGuests(credentials: String?, url: String, token: String, allow: Boolean): GenericOverall {
         val result: GenericOverall = if (allow) {
             ncApiCoroutines.makeRoomPublic(

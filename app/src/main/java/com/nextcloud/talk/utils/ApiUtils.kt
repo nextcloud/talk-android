@@ -385,6 +385,9 @@ object ApiUtils {
     fun getUrlForConversationAvatar(version: Int, baseUrl: String?, token: String?): String =
         getUrlForRoom(version, baseUrl, token) + "/avatar"
 
+    fun getUrlForConversationEmojiAvatar(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRoom(version, baseUrl, token) + "/avatar/emoji"
+
     fun getUrlForConversationAvatarWithVersion(
         version: Int,
         baseUrl: String?,

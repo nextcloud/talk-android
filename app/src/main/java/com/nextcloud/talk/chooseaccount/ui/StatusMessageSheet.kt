@@ -47,6 +47,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.chooseaccount.viewmodel.StatusMessageViewModel
 import com.nextcloud.talk.models.json.status.Status
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
+import com.nextcloud.talk.ui.theme.protectEmojiPickerScrollGesture
 import com.nextcloud.talk.ui.theme.themeEmojiPickerCategoryTabs
 
 private val emojiPickerHeight = 360.dp
@@ -114,6 +115,7 @@ private fun EmojiPickerSheetContent(onEmojiSelected: (String) -> Unit, onBack: (
                     setBackgroundColor(backgroundColor.toArgb())
                     setOnEmojiPickedListener(Consumer { item -> onEmojiSelected(item.emoji) })
                     themeEmojiPickerCategoryTabs(this, selectedTabColor, unselectedTabColor)
+                    protectEmojiPickerScrollGesture(this)
                 }
             }
         )

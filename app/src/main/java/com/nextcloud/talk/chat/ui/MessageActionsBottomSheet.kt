@@ -72,6 +72,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.ui.theme.protectEmojiPickerScrollGesture
 import com.nextcloud.talk.ui.theme.themeEmojiPickerCategoryTabs
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
@@ -711,6 +712,7 @@ private fun EmojiPickerSheetContent(
                     setRecentEmojiProvider(recentEmojiProvider)
                     setOnEmojiPickedListener(Consumer { item -> onEmojiSelected(item.emoji) })
                     themeEmojiPickerCategoryTabs(this, selectedTabColor, unselectedTabColor)
+                    protectEmojiPickerScrollGesture(this)
                 }
             }
         )

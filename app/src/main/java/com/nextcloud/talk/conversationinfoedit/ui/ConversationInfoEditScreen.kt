@@ -13,7 +13,6 @@ import android.content.res.Configuration
 import android.widget.ImageView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,11 +27,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,10 +43,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -68,6 +69,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.nextcloud.talk.R
+import com.nextcloud.talk.components.AvatarEditPanel
+import com.nextcloud.talk.components.AvatarEditPanelCallbacks
+import com.nextcloud.talk.components.AvatarEditPanelState
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditUiState
 import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -75,9 +79,7 @@ import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
 
 private const val AVATAR_SIZE_DP = 96
-private const val AVATAR_BUTTON_SIZE_DP = 40
 private const val CONVERSATION_NAME_MAX_LENGTH = 255
-private val avatarButtonShape = RoundedCornerShape(12.dp)
 
 data class ConversationInfoEditCallbacks(
     val onNavigateBack: () -> Unit = {},
@@ -86,6 +88,7 @@ data class ConversationInfoEditCallbacks(
     val onAvatarChooseClick: () -> Unit = {},
     val onAvatarCameraClick: () -> Unit = {},
     val onAvatarDeleteClick: () -> Unit = {},
+    val onAvatarEmojiAvatarConfirmed: (emoji: String, color: Int?) -> Unit = { _, _ -> },
     val onNameChange: (String) -> Unit = {},
     val onDescriptionChange: (String) -> Unit = {}
 )
@@ -292,54 +295,21 @@ private fun AvatarButtonsRow(uiState: ConversationInfoEditUiState, callbacks: Co
 
     if (!showButtons) return
 
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        FilledTonalIconButton(
-            onClick = callbacks.onAvatarUploadClick,
-            enabled = uiState.avatarButtonsEnabled,
-            modifier = Modifier.size(AVATAR_BUTTON_SIZE_DP.dp),
-            shape = avatarButtonShape
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.upload),
-                contentDescription = stringResource(R.string.upload_new_avatar_from_device)
-            )
-        }
-        FilledTonalIconButton(
-            onClick = callbacks.onAvatarChooseClick,
-            enabled = uiState.avatarButtonsEnabled,
-            modifier = Modifier.size(AVATAR_BUTTON_SIZE_DP.dp),
-            shape = avatarButtonShape
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_folder),
-                contentDescription = stringResource(R.string.choose_avatar_from_cloud)
-            )
-        }
-        FilledTonalIconButton(
-            onClick = callbacks.onAvatarCameraClick,
-            enabled = uiState.avatarButtonsEnabled,
-            modifier = Modifier.size(AVATAR_BUTTON_SIZE_DP.dp),
-            shape = avatarButtonShape
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_baseline_photo_camera_24),
-                contentDescription = stringResource(R.string.set_avatar_from_camera)
-            )
-        }
-        if (uiState.conversation.hasCustomAvatar) {
-            FilledTonalIconButton(
-                onClick = callbacks.onAvatarDeleteClick,
-                enabled = uiState.avatarButtonsEnabled,
-                modifier = Modifier.size(AVATAR_BUTTON_SIZE_DP.dp),
-                shape = avatarButtonShape
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.trashbin),
-                    contentDescription = stringResource(R.string.delete_avatar)
-                )
-            }
-        }
-    }
+    AvatarEditPanel(
+        state = AvatarEditPanelState(
+            selectedEmoji = uiState.selectedEmoji,
+            selectedEmojiColor = uiState.selectedEmojiColor,
+            showDeleteButton = uiState.conversation.hasCustomAvatar,
+            enabled = uiState.avatarButtonsEnabled
+        ),
+        callbacks = AvatarEditPanelCallbacks(
+            onCameraClick = callbacks.onAvatarCameraClick,
+            onUploadClick = callbacks.onAvatarUploadClick,
+            onChooseClick = callbacks.onAvatarChooseClick,
+            onEmojiAvatarConfirmed = callbacks.onAvatarEmojiAvatarConfirmed,
+            onDeleteClick = callbacks.onAvatarDeleteClick
+        )
+    )
 }
 
 @Suppress("CyclomaticComplexMethod")
@@ -404,12 +374,14 @@ private fun OneToOneAvatarImage(params: AvatarImageParams, modifier: Modifier = 
             .crossfade(true)
             .build()
     }
+    var lastPainter by remember { mutableStateOf<Painter?>(null) }
     AsyncImage(
         model = request,
         contentDescription = stringResource(R.string.avatar),
         contentScale = ContentScale.Crop,
-        placeholder = painterResource(R.drawable.account_circle_96dp),
+        placeholder = lastPainter ?: painterResource(R.drawable.account_circle_96dp),
         error = painterResource(R.drawable.account_circle_96dp),
+        onSuccess = { lastPainter = it.painter },
         modifier = modifier
     )
 }
@@ -425,12 +397,14 @@ private fun GroupAvatarImage(params: AvatarImageParams, modifier: Modifier = Mod
             .crossfade(true)
             .build()
     }
+    var lastPainter by remember { mutableStateOf<Painter?>(null) }
     AsyncImage(
         model = request,
         contentDescription = stringResource(R.string.avatar),
         contentScale = ContentScale.Crop,
-        placeholder = painterResource(R.drawable.ic_circular_group),
+        placeholder = lastPainter ?: painterResource(R.drawable.ic_circular_group),
         error = painterResource(R.drawable.ic_circular_group),
+        onSuccess = { lastPainter = it.painter },
         modifier = modifier
     )
 }
