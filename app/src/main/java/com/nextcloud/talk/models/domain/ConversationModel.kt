@@ -78,7 +78,7 @@ data class ConversationModel(
     companion object {
         fun ConversationModel?.checkIfVoiceRoom(): Boolean =
             this?.attributes?.let {
-                it and ConversationEnums.Preset.VOICE_ROOM.ordinal != 0
+                it and ConversationEnums.ATTRIBUTE_IS_VOICE_ROOM != 0
             } ?: false
 
         fun ConversationModel?.isChannel(): Boolean =

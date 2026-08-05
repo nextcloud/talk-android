@@ -13,7 +13,6 @@ import com.nextcloud.talk.models.json.participants.Participant
 
 object ConversationUtils {
     private val TAG = ConversationUtils::class.java.simpleName
-    private const val CLASSIFIED_ATTRIBUTE_BIT = 4
 
     fun isPublic(conversation: ConversationModel): Boolean =
         ConversationEnums.ConversationType.ROOM_PUBLIC_CALL == conversation.type
@@ -62,12 +61,12 @@ object ConversationUtils {
 
     fun isClassified(conversation: ConversationModel, spreedCapabilities: SpreedCapability?): Boolean =
         CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CLASSIFIED_CONVERSATIONS) &&
-            ((conversation.attributes ?: 0) and CLASSIFIED_ATTRIBUTE_BIT) != 0
+            ((conversation.attributes ?: 0) and ConversationEnums.ATTRIBUTE_IS_CLASSIFIED) != 0
 
     fun isClassified(
         conversation: com.nextcloud.talk.models.json.conversations.Conversation,
         spreedCapabilities: SpreedCapability?
     ): Boolean =
         CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CLASSIFIED_CONVERSATIONS) &&
-            ((conversation.attributes ?: 0) and CLASSIFIED_ATTRIBUTE_BIT) != 0
+            ((conversation.attributes ?: 0) and ConversationEnums.ATTRIBUTE_IS_CLASSIFIED) != 0
 }
