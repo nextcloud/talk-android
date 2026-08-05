@@ -132,8 +132,6 @@ import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.location.LocationPickerActivity
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ConversationModel.Companion.checkIfVoiceRoom
-import com.nextcloud.talk.models.domain.ConversationModel.Companion.isChannel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -176,6 +174,8 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfClassifiedRoom
 import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfSIPRoom
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.ConversationUtils.checkIfVoiceRoom
+import com.nextcloud.talk.utils.ConversationUtils.isChannel
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils

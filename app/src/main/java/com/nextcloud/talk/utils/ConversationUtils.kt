@@ -7,7 +7,6 @@
 package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ConversationModel.Companion.isClassifiedAttribute
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -60,6 +59,14 @@ object ConversationUtils {
     fun isNoteToSelfConversation(currentConversation: ConversationModel?): Boolean =
         currentConversation != null &&
             currentConversation.type == ConversationEnums.ConversationType.NOTE_TO_SELF
+
+    private fun ConversationModel?.hasAttribute(flag: Int): Boolean =
+        this?.attributes?.let { it and flag != 0 } ?: false
+
+    fun ConversationModel?.checkIfVoiceRoom(): Boolean = hasAttribute(ConversationEnums.ATTRIBUTE_IS_VOICE_ROOM)
+    fun ConversationModel?.isClassifiedAttribute(): Boolean = hasAttribute(ConversationEnums.ATTRIBUTE_IS_CLASSIFIED)
+    fun ConversationModel?.isChannel(): Boolean = hasAttribute(ConversationEnums.ATTRIBUTE_IS_CHANNEL)
+    fun ConversationModel?.isAnnouncement(): Boolean = hasAttribute(ConversationEnums.ATTRIBUTE_IS_ANNOUNCEMENT)
 
     fun isClassified(conversation: ConversationModel, spreedCapabilities: SpreedCapability?): Boolean =
         CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CLASSIFIED_CONVERSATIONS) &&

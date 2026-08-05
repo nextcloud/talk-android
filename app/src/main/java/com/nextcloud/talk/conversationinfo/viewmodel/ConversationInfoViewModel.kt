@@ -23,7 +23,6 @@ import com.nextcloud.talk.conversationinfo.Participants
 import com.nextcloud.talk.conversationinfo.model.ParticipantModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ConversationModel.Companion.isChannel
 import com.nextcloud.talk.models.domain.converters.DomainEnumNotificationLevelConverter
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
@@ -45,6 +44,7 @@ import com.nextcloud.talk.utils.ApiUtils.getUrlForRooms
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.ConversationUtils.isChannel
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.SpreedFeatures

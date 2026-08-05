@@ -70,7 +70,6 @@ import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.FragmentMessageInputBinding
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
-import com.nextcloud.talk.models.domain.ConversationModel.Companion.isChannel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.models.json.mention.Mention
@@ -83,6 +82,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CharPolicy
+import com.nextcloud.talk.utils.ConversationUtils.isChannel
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.EmojiTextInputEditText

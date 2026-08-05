@@ -46,7 +46,6 @@ import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ConversationModel.Companion.isChannel
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
@@ -68,6 +67,7 @@ import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.ConversationUtils.isChannel
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
