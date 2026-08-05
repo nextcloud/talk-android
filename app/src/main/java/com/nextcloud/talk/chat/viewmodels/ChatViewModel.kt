@@ -67,7 +67,6 @@ import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
-import com.nextcloud.talk.utils.ConversationUtils.isChannel
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
@@ -1375,7 +1374,7 @@ class ChatViewModel @AssistedInject constructor(
         conversation: ConversationModel?,
         capabilities: SpreedCapability?
     ): List<ChatMessage> {
-        if (conversation.isChannel() && hasSpreedFeatureCapability(capabilities, SpreedFeatures.ANNOUNCEMENT_PRESET)) {
+        if (ConversationUtils.isChannel(conversation, capabilities)) {
             return chatMessageList.filter { !it.isSystemMessage }
         }
 

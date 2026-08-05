@@ -82,7 +82,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CharPolicy
-import com.nextcloud.talk.utils.ConversationUtils.isChannel
+import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.EmojiTextInputEditText
@@ -1310,8 +1310,7 @@ class MessageInputFragment : Fragment() {
     private fun isReactionOnlyMode(spreedCapabilities: SpreedCapability): Boolean {
         val conversation = chatActivity.currentConversation
         val permissions = chatActivity.participantPermissionsFlow.value
-        val isChannel = conversation.isChannel() &&
-            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ANNOUNCEMENT_PRESET)
+        val isChannel = ConversationUtils.isChannel(conversation, spreedCapabilities)
         return isChannel && permissions?.hasChatPermission() == false && permissions.hasReactPermission() == true
     }
 

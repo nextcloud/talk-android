@@ -44,7 +44,6 @@ import com.nextcloud.talk.utils.ApiUtils.getUrlForRooms
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
-import com.nextcloud.talk.utils.ConversationUtils.isChannel
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.SpreedFeatures
@@ -422,8 +421,7 @@ class ConversationInfoViewModel @Inject constructor(
         val showMessageExpiration = isModerator &&
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)
 
-        val isChannel = conversationModel.isChannel() &&
-            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ANNOUNCEMENT_PRESET)
+        val isChannel = ConversationUtils.isChannel(conversationModel, spreedCapabilities)
         val showParticipants = if (isChannel) isModerator else true
 
         val credentials = ApiUtils.getCredentials(user.username, user.token) ?: ""

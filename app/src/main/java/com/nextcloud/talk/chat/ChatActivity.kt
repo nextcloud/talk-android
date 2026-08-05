@@ -175,7 +175,6 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfSIPRoom
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.ConversationUtils.checkIfVoiceRoom
-import com.nextcloud.talk.utils.ConversationUtils.isChannel
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -1973,10 +1972,7 @@ class ChatActivity :
             !ConversationUtils.isNoteToSelfConversation(conversation) &&
             !isReadOnlyConversation() &&
             !shouldShowLobby() &&
-            !(
-                conversation.isChannel() &&
-                    hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ANNOUNCEMENT_PRESET)
-                )
+            !ConversationUtils.isChannel(conversation, spreedCapabilities)
 
     private fun isSearchAvailable(capabilitiesReady: Boolean, conversation: ConversationModel?): Boolean =
         capabilitiesReady &&
@@ -2249,8 +2245,7 @@ class ChatActivity :
 
     private fun checkShowMessageInputView() {
         val permissions = participantPermissionsFlow.value
-        val isChannel = currentConversation.isChannel() &&
-            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ANNOUNCEMENT_PRESET)
+        val isChannel = ConversationUtils.isChannel(currentConversation, spreedCapabilities)
 
         if (isReadOnlyConversation() ||
             (permissions?.hasChatPermission() == false && (!isChannel || permissions.hasReactPermission() == false))

@@ -65,8 +65,13 @@ object ConversationUtils {
 
     fun ConversationModel?.checkIfVoiceRoom(): Boolean = hasAttribute(ConversationEnums.ATTRIBUTE_IS_VOICE_ROOM)
     fun ConversationModel?.isClassifiedAttribute(): Boolean = hasAttribute(ConversationEnums.ATTRIBUTE_IS_CLASSIFIED)
-    fun ConversationModel?.isChannel(): Boolean = hasAttribute(ConversationEnums.ATTRIBUTE_IS_CHANNEL)
-    fun ConversationModel?.isAnnouncement(): Boolean = hasAttribute(ConversationEnums.ATTRIBUTE_IS_ANNOUNCEMENT)
+    fun ConversationModel?.isChannelAttribute(): Boolean = hasAttribute(ConversationEnums.ATTRIBUTE_IS_CHANNEL)
+    fun ConversationModel?.isAnnouncementAttribute(): Boolean =
+        hasAttribute(ConversationEnums.ATTRIBUTE_IS_ANNOUNCEMENT)
+
+    fun isChannel(conversation: ConversationModel?, spreedCapabilities: SpreedCapability?): Boolean =
+        conversation.isChannelAttribute() &&
+            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ANNOUNCEMENT_PRESET)
 
     fun isClassified(conversation: ConversationModel, spreedCapabilities: SpreedCapability?): Boolean =
         CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CLASSIFIED_CONVERSATIONS) &&
