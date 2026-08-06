@@ -8,6 +8,7 @@
 package com.nextcloud.talk.chat.ui
 
 import android.content.res.Configuration
+import android.widget.ImageView
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
@@ -57,6 +58,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -69,10 +71,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.MenuItemData
+import com.nextcloud.talk.extensions.loadNoteToSelfAvatar
+import com.nextcloud.talk.extensions.loadSystemAvatar
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -294,8 +299,9 @@ private fun ConversationHeader(state: ChatToolbarState, onClick: (() -> Unit)?) 
         modifier = rowModifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (state.avatarUrl != null) {
+        if (state.avatarType != ChatToolbarAvatarType.NONE) {
             ConversationAvatar(
+                avatarType = state.avatarType,
                 avatarUrl = state.avatarUrl,
                 credentials = state.credentials,
                 userStatus = state.userStatus,
@@ -326,29 +332,66 @@ private fun ConversationHeader(state: ChatToolbarState, onClick: (() -> Unit)?) 
 
 @Composable
 private fun ConversationAvatar(
-    avatarUrl: String,
+    avatarType: ChatToolbarAvatarType,
+    avatarUrl: String?,
     credentials: String?,
     userStatus: String?,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
-        val context = LocalContext.current
-        val request = ImageRequest.Builder(context)
-            .data(avatarUrl)
-            .apply { credentials?.let { addHeader("Authorization", it) } }
-            .crossfade(true)
-            .build()
+        when (avatarType) {
+            ChatToolbarAvatarType.URL -> {
+                val context = LocalContext.current
+                val request = ImageRequest.Builder(context)
+                    .data(avatarUrl)
+                    .apply { credentials?.let { addHeader("Authorization", it) } }
+                    .crossfade(true)
+                    .build()
 
-        AsyncImage(
-            model = request,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            placeholder = painterResource(R.drawable.account_circle_96dp),
-            error = painterResource(R.drawable.account_circle_96dp),
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(CircleShape)
-        )
+                AsyncImage(
+                    model = request,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(R.drawable.account_circle_96dp),
+                    error = painterResource(R.drawable.account_circle_96dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(CircleShape)
+                )
+            }
+
+            ChatToolbarAvatarType.SYSTEM -> {
+                if (LocalInspectionMode.current) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    AndroidView(
+                        factory = { ctx -> ImageView(ctx).apply { loadSystemAvatar() } },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
+
+            ChatToolbarAvatarType.NOTE_TO_SELF -> {
+                if (LocalInspectionMode.current) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_note_to_self),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    AndroidView(
+                        factory = { ctx -> ImageView(ctx).apply { loadNoteToSelfAvatar() } },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
+
+            ChatToolbarAvatarType.NONE -> Unit
+        }
 
         if (userStatus != null) {
             UserStatusBadge(

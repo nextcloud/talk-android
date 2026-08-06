@@ -9,10 +9,19 @@ package com.nextcloud.talk.chat.ui
 
 import com.nextcloud.talk.chat.MenuItemData
 
+enum class ChatToolbarAvatarType {
+    NONE,
+    URL,
+    SYSTEM,
+    NOTE_TO_SELF
+}
+
 data class ChatToolbarState(
     val title: String = "",
     val subtitle: String = "",
-    /** Non-null for 1-to-1 and group/public conversations; drives avatar display. */
+    /** Which kind of avatar (if any) to render in the toolbar. */
+    val avatarType: ChatToolbarAvatarType = ChatToolbarAvatarType.NONE,
+    /** Set only when [avatarType] is [ChatToolbarAvatarType.URL]. */
     val avatarUrl: String? = null,
     /** HTTP Basic / Bearer credential string for the avatar request. */
     val credentials: String? = null,

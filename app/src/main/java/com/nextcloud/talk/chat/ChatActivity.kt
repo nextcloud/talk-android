@@ -104,6 +104,7 @@ import com.nextcloud.talk.chat.data.model.FileParameters
 import com.nextcloud.talk.chat.ui.ChatEmptyState
 import com.nextcloud.talk.chat.ui.ChatEmptyStateType
 import com.nextcloud.talk.chat.ui.ChatToolbar
+import com.nextcloud.talk.chat.ui.ChatToolbarAvatarType
 import com.nextcloud.talk.chat.ui.ChatToolbarCallbacks
 import com.nextcloud.talk.chat.ui.ChatToolbarState
 import com.nextcloud.talk.chat.ui.MessageActionsBottomSheet
@@ -1894,6 +1895,7 @@ class ChatActivity :
         chatToolbarState = chatToolbarState.copy(
             title = buildToolbarTitle(conversation),
             subtitle = buildToolbarSubtitle(conversation),
+            avatarType = buildAvatarType(conversation),
             avatarUrl = buildAvatarUrl(user, conversation),
             credentials = user?.let { ApiUtils.getCredentials(it.username, it.token) },
             userStatus = if (isOneToOne) conversation?.status else null,
@@ -1922,6 +1924,16 @@ class ChatActivity :
                 }
             }
             else -> ""
+        }
+
+    private fun buildAvatarType(conversation: ConversationModel?): ChatToolbarAvatarType =
+        when (conversation?.type) {
+            ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL,
+            ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+            ConversationEnums.ConversationType.ROOM_PUBLIC_CALL -> ChatToolbarAvatarType.URL
+            ConversationEnums.ConversationType.ROOM_SYSTEM -> ChatToolbarAvatarType.SYSTEM
+            ConversationEnums.ConversationType.NOTE_TO_SELF -> ChatToolbarAvatarType.NOTE_TO_SELF
+            else -> ChatToolbarAvatarType.NONE
         }
 
     private fun buildAvatarUrl(user: User?, conversation: ConversationModel?): String? {
