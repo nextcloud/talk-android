@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.contacts
 
+import androidx.lifecycle.ViewModelStore
 import com.nextcloud.talk.contacts.apiService.FakeItem
 import com.nextcloud.talk.contacts.repository.FakeRepositoryError
 import com.nextcloud.talk.contacts.repository.FakeRepositorySuccess
@@ -14,11 +15,12 @@ import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.UsersRepositoryImpl
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOldImpl
+import com.nextcloud.talk.utils.database.user.CurrentUserProvider
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderImpl
 import com.nextcloud.talk.utils.preview.DummyUserDaoImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -32,6 +34,7 @@ import org.junit.Test
 class ContactsViewModelTest {
     private lateinit var viewModel: ContactsViewModel
     private val repository: ContactsRepository = FakeRepositorySuccess()
+    private val viewModelStore = ViewModelStore()
 
     val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
 
@@ -44,28 +47,39 @@ class ContactsViewModelTest {
     val userManager: UserManager
         get() = UserManager(userRepository)
 
-    val userProvider: CurrentUserProviderOld
-        get() = CurrentUserProviderOldImpl(userManager)
+    val userProvider: CurrentUserProvider
+        get() = CurrentUserProviderImpl(userManager)
 
-    @Before
-    fun setup() {
-        Dispatchers.setMain(dispatcher)
-    }
+    private var viewModelCount = 0
 
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
+    private fun createViewModel(repo: ContactsRepository): ContactsViewModel {
+        val provider = userProvider
+        // CurrentUserProviderImpl feeds its currentUserFlow from a real Dispatchers.IO
+        // scope, independent of the test dispatcher's virtual time. Waiting for it here
+        // (real blocking wait, since this isn't inside runTest) ensures the value is
+        // already cached by the time the ViewModel's viewModelScope collects it.
+        runBlocking { provider.getCurrentUser() }
+        return ContactsViewModel(repo, provider).also {
+            viewModelStore.put("contactsViewModel${viewModelCount++}", it)
+        }
     }
 
     @Before
     fun setUp() {
-        viewModel = ContactsViewModel(repository, userProvider)
+        Dispatchers.setMain(dispatcher)
+        viewModel = createViewModel(repository)
+    }
+
+    @After
+    fun tearDown() {
+        viewModelStore.clear()
+        Dispatchers.resetMain()
     }
 
     @Test
     fun `fetch contacts`() =
         runTest {
-            viewModel = ContactsViewModel(repository, userProvider)
+            viewModel = createViewModel(repository)
             viewModel.getContactsFromSearchParams()
             assert(viewModel.contactsViewState.value is ContactsViewModel.ContactsUiState.Success)
             val successState = viewModel.contactsViewState.value as ContactsViewModel.ContactsUiState.Success
@@ -75,7 +89,7 @@ class ContactsViewModelTest {
     @Test
     fun `test error contacts state`() =
         runTest {
-            viewModel = ContactsViewModel(FakeRepositoryError(), userProvider)
+            viewModel = createViewModel(FakeRepositoryError())
             viewModel.getContactsFromSearchParams()
             assert(viewModel.contactsViewState.value is ContactsViewModel.ContactsUiState.Error)
             val errorState = viewModel.contactsViewState.value as ContactsViewModel.ContactsUiState.Error
@@ -123,7 +137,7 @@ class ContactsViewModelTest {
     @Test
     fun `test failure room state`() =
         runTest {
-            viewModel = ContactsViewModel(FakeRepositoryError(), userProvider)
+            viewModel = createViewModel(FakeRepositoryError())
             viewModel.createRoom("1", "users", "s@gmail.com", null)
             assert(viewModel.roomViewState.value is ContactsViewModel.RoomUiState.Error)
             val errorState = viewModel.roomViewState.value as ContactsViewModel.RoomUiState.Error
