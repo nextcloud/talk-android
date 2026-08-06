@@ -2487,7 +2487,11 @@ class CallActivity : CallBaseActivity() {
             iceServers,
             tempSdpConstraints,
             sessionId,
-            callSession,
+            // #6169: the remote sessionId is a signaling-layer session ID when external signaling
+            // is used, so the offerer election must compare same-namespace IDs. Pass the local
+            // signaling session (matching the currentSessionId resolution used elsewhere); with
+            // internal signaling webSocketClient == null, so callSession is used as before.
+            if (webSocketClient != null) webSocketClient!!.sessionId else callSession,
             tempLocalStream,
             tempIsMCUPublisher,
             tempHasMCU,
