@@ -19,8 +19,10 @@ import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOCS
 import com.nextcloud.talk.models.json.chat.ChatOverall
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import okhttp3.Protocol
 import okhttp3.Request
@@ -33,9 +35,11 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.verifyNoInteractions
@@ -170,6 +174,48 @@ class ChatMessageSyncerTest {
             verifyBlocking(chatBlocksDao) { upsertChatBlock(blockCaptor.capture()) }
             assertEquals(1L, blockCaptor.firstValue.oldestMessageId)
             assertEquals(3L, blockCaptor.firstValue.newestMessageId)
+        }
+
+    @Test
+    fun `catchUpRoom coalesces a burst of calls for the same room into two fetches`() =
+        runTest {
+            val existingBlock = block(oldest = 10, newest = 42)
+            whenever(chatBlocksDao.getNewestMessageIdFromChatBlocks(INTERNAL_CONVERSATION_ID, null))
+                .thenReturn(42L)
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(INTERNAL_CONVERSATION_ID, null, 42L))
+                .thenReturn(flowOf(listOf(existingBlock)))
+            whenever(chatBlocksDao.getConnectedChatBlocks(eq(INTERNAL_CONVERSATION_ID), eq(null), any(), any()))
+                .thenReturn(flowOf(listOf(existingBlock)))
+
+            val firstFetchStarted = CompletableDeferred<Unit>()
+            val firstFetchReleased = CompletableDeferred<Unit>()
+            var pullCount = 0
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                pullCount++
+                if (pullCount == 1) {
+                    firstFetchStarted.complete(Unit)
+                    firstFetchReleased.await()
+                }
+                Response.success(overall(message(43), message(44)))
+            }
+
+            val firstCall = launch { syncer.catchUpRoom(target()) }
+            firstFetchStarted.await()
+            assertEquals("first fetch must be in flight", 1, pullCount)
+
+            // a second and third call while the first fetch is in flight must not fetch in
+            // parallel — they only mark a rerun for the running catch-up
+            val secondOutcome = syncer.catchUpRoom(target())
+            val thirdOutcome = syncer.catchUpRoom(target())
+            assertFalse(secondOutcome.persistedNewMessages)
+            assertFalse(thirdOutcome.persistedNewMessages)
+            assertEquals(1, pullCount)
+
+            firstFetchReleased.complete(Unit)
+            firstCall.join()
+
+            // the running catch-up re-fetched exactly once for the whole burst
+            verifyBlocking(network, times(2)) { pullChatMessages(any(), any(), any()) }
         }
 
     @Test

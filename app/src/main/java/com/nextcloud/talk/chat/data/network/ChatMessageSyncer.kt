@@ -8,6 +8,7 @@
 package com.nextcloud.talk.chat.data.network
 
 import android.database.sqlite.SQLiteConstraintException
+import android.os.SystemClock
 import android.util.Log
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.domain.ChatPullResult
@@ -21,20 +22,26 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.utils.SpreedFeatures
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.sync.Mutex
 import retrofit2.HttpException
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 /**
  * The chat message fetch-and-persist core, shared between the chat screen
  * ([OfflineFirstChatRepository]) and background sync callers.
  *
- * The syncer holds no per-conversation state: every operation takes a [SyncTarget] describing the
- * account, room and thread to sync, so it can be used for any room at any time — no open chat
- * required. UI-bound side effects are reported through the optional [Events] listener.
+ * Every operation takes a [SyncTarget] describing the account, room and thread to sync, so the
+ * syncer can be used for any room at any time — no open chat required. UI-bound side effects are
+ * reported through the optional [Events] listener. The only state kept between calls is the
+ * per-room coalescing bookkeeping of [catchUpRoom], which collapses bursts of catch-up requests
+ * (e.g. one push notification per incoming message) into few actual fetches.
  */
 @Suppress("TooManyFunctions")
 class ChatMessageSyncer @Inject constructor(
@@ -195,6 +202,10 @@ class ChatMessageSyncer @Inject constructor(
      * Requires the chat-keep-notifications capability: without it, a background fetch would
      * dismiss the user's push notifications for the fetched messages, so the catch-up is skipped
      * entirely (same guard as on iOS).
+     *
+     * Bursts of catch-up requests for the same room (e.g. one push notification per message of an
+     * active group chat) are coalesced: while a catch-up runs, further requests only mark a rerun
+     * and return, and consecutive fetches are paced by [CATCH_UP_COOLDOWN_MILLIS].
      */
     suspend fun catchUpRoom(target: SyncTarget, limit: Int = DEFAULT_MESSAGES_LIMIT): SyncOutcome =
         when {
@@ -212,8 +223,61 @@ class ChatMessageSyncer @Inject constructor(
                 NOTHING_SYNCED
             }
 
-            else -> fetchRoomCatchUp(target, limit)
+            else -> coalescedRoomCatchUp(target, limit)
         }
+
+    /**
+     * Runs at most one catch-up per room at a time. A request arriving while one is running only
+     * marks a rerun: the running catch-up re-fetches once more after finishing, so messages that
+     * arrived in between are still picked up without a parallel request. Consecutive fetches are
+     * paced by [CATCH_UP_COOLDOWN_MILLIS] and a single burst performs at most
+     * [MAX_CATCH_UP_RUNS_PER_BURST] fetches — later messages are covered by their own push or the
+     * next room list sync.
+     */
+    private suspend fun coalescedRoomCatchUp(target: SyncTarget, limit: Int): SyncOutcome {
+        val stateKey = "${target.internalConversationId}#${target.threadId}"
+        val state = catchUpStates.getOrPut(stateKey) { RoomCatchUpState() }
+
+        if (!state.mutex.tryLock()) {
+            state.rerunRequested.set(true)
+            Log.d(TAG, "Catch-up already running for $stateKey, coalescing into it")
+            return NOTHING_SYNCED
+        }
+
+        try {
+            var outcome: SyncOutcome
+            var runs = 0
+            do {
+                awaitCatchUpCooldown(state, stateKey)
+                state.rerunRequested.set(false)
+                outcome = fetchRoomCatchUp(target, limit)
+                state.lastCompletedAtMillis = SystemClock.elapsedRealtime()
+                runs++
+            } while (state.rerunRequested.get() && runs < MAX_CATCH_UP_RUNS_PER_BURST)
+            return outcome
+        } finally {
+            state.mutex.unlock()
+        }
+    }
+
+    private suspend fun awaitCatchUpCooldown(state: RoomCatchUpState, stateKey: String) {
+        val elapsedSinceLastCatchUp = SystemClock.elapsedRealtime() - state.lastCompletedAtMillis
+        val remainingCooldown = CATCH_UP_COOLDOWN_MILLIS - elapsedSinceLastCatchUp
+        if (state.lastCompletedAtMillis > 0 && remainingCooldown > 0) {
+            Log.d(TAG, "Catch-up cooldown for $stateKey, delaying fetch by $remainingCooldown ms")
+            delay(remainingCooldown)
+        }
+    }
+
+    private class RoomCatchUpState {
+        val mutex = Mutex()
+        val rerunRequested = AtomicBoolean(false)
+
+        @Volatile
+        var lastCompletedAtMillis = 0L
+    }
+
+    private val catchUpStates = ConcurrentHashMap<String, RoomCatchUpState>()
 
     private suspend fun fetchRoomCatchUp(target: SyncTarget, limit: Int): SyncOutcome {
         val newestMessageIdFromDb =
@@ -688,6 +752,8 @@ class ChatMessageSyncer @Inject constructor(
 
         private const val DEFAULT_MESSAGES_LIMIT = 100
         private const val MILLIS_PER_SECOND = 1000L
+        private const val CATCH_UP_COOLDOWN_MILLIS = 5_000L
+        private const val MAX_CATCH_UP_RUNS_PER_BURST = 3
         private const val HTTP_CODE_OK: Int = 200
         private const val HTTP_CODE_NOT_MODIFIED = 304
         private const val HTTP_CODE_PRECONDITION_FAILED = 412
