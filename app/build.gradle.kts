@@ -215,7 +215,7 @@ dependencies {
 
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("com.google.android.material:material:1.14.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.2")
     implementation("androidx.emoji2:emoji2:$emojiVersion")
     implementation("androidx.emoji2:emoji2-bundled:$emojiVersion")
     implementation("androidx.emoji2:emoji2-views:$emojiVersion")
