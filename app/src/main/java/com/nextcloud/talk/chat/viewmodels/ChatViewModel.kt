@@ -496,6 +496,11 @@ class ChatViewModel @AssistedInject constructor(
                 replay = 1
             )
 
+    private val isChannelFlow: Flow<Boolean> =
+        combine(conversationAndUserFlow, spreedCapabilities) { (conversation, _), capabilities ->
+            ConversationUtils.isChannel(conversation, capabilities)
+        }.distinctUntilChanged()
+
     // ------------------------------
     // Messages
     // ------------------------------
@@ -511,10 +516,8 @@ class ChatViewModel @AssistedInject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val messagesFlow: Flow<List<ChatMessage>> =
-        combine(conversationAndUserFlow, spreedCapabilities) { (conversation, user), capabilities ->
-            Triple(conversation, user, capabilities)
-        }
-            .flatMapLatest { (conversation, user, capabilities) ->
+        conversationAndUserFlow
+            .flatMapLatest { (conversation, user) ->
                 combine(chatMode, contextAnchorMessageId) { mode, anchorMessageId ->
                     mode to anchorMessageId
                 }
@@ -533,8 +536,8 @@ class ChatViewModel @AssistedInject constructor(
                             .distinctUntilChanged()
                             .mapToChatMessages(user.userId!!)
                     }
-                    .map { messages ->
-                        handleSystemMessages(messages, conversation, capabilities)
+                    .combine(isChannelFlow) { messages, isChannel ->
+                        handleSystemMessages(messages, isChannel)
                             .let(::handleThreadMessages)
                     }
             }
@@ -1369,12 +1372,8 @@ class ChatViewModel @AssistedInject constructor(
         }
         Log.d(TAG, "fetchNewMessagesWithRetry: no new messages after $POST_UPLOAD_FETCH_MAX_ATTEMPTS attempts")
     }
-    private fun handleSystemMessages(
-        chatMessageList: List<ChatMessage>,
-        conversation: ConversationModel?,
-        capabilities: SpreedCapability?
-    ): List<ChatMessage> {
-        if (ConversationUtils.isChannel(conversation, capabilities)) {
+    private fun handleSystemMessages(chatMessageList: List<ChatMessage>, isChannel: Boolean): List<ChatMessage> {
+        if (isChannel) {
             return chatMessageList.filter { !it.isSystemMessage }
         }
 
