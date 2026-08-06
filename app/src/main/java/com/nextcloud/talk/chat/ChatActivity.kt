@@ -1894,7 +1894,7 @@ class ChatActivity :
         chatToolbarState = chatToolbarState.copy(
             title = buildToolbarTitle(conversation),
             subtitle = buildToolbarSubtitle(conversation),
-            avatarUrl = buildAvatarUrl(user, conversation, isOneToOne),
+            avatarUrl = buildAvatarUrl(user, conversation),
             credentials = user?.let { ApiUtils.getCredentials(it.username, it.token) },
             userStatus = if (isOneToOne) conversation?.status else null,
             showVoiceCall = isCallsEnabled(capabilitiesReady, conversation),
@@ -1924,12 +1924,26 @@ class ChatActivity :
             else -> ""
         }
 
-    private fun buildAvatarUrl(user: User?, conversation: ConversationModel?, isOneToOne: Boolean): String? =
-        if (user != null && conversation != null && isOneToOne) {
-            ApiUtils.getUrlForAvatar(user.baseUrl!!, conversation.name, true, DisplayUtils.isDarkModeOn(this))
-        } else {
-            null
+    private fun buildAvatarUrl(user: User?, conversation: ConversationModel?): String? {
+        if (user == null || conversation == null) {
+            return null
         }
+        val isDark = DisplayUtils.isDarkModeOn(this)
+        return when (conversation.type) {
+            ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ->
+                ApiUtils.getUrlForAvatar(user.baseUrl!!, conversation.name, true, isDark)
+            ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+            ConversationEnums.ConversationType.ROOM_PUBLIC_CALL ->
+                ApiUtils.getUrlForConversationAvatarWithVersion(
+                    1,
+                    user.baseUrl,
+                    conversation.token,
+                    isDark,
+                    conversation.avatarVersion
+                )
+            else -> null
+        }
+    }
 
     private fun isCallsEnabled(capabilitiesReady: Boolean, conversation: ConversationModel?): Boolean =
         capabilitiesReady &&

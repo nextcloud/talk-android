@@ -343,6 +343,8 @@ private fun ConversationAvatar(
             model = request,
             contentDescription = null,
             contentScale = ContentScale.Crop,
+            placeholder = painterResource(R.drawable.account_circle_96dp),
+            error = painterResource(R.drawable.account_circle_96dp),
             modifier = Modifier
                 .fillMaxSize()
                 .clip(CircleShape)

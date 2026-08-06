@@ -12,7 +12,7 @@ import com.nextcloud.talk.chat.MenuItemData
 data class ChatToolbarState(
     val title: String = "",
     val subtitle: String = "",
-    /** Non-null only for 1-to-1 conversations; drives avatar display. */
+    /** Non-null for 1-to-1 and group/public conversations; drives avatar display. */
     val avatarUrl: String? = null,
     /** HTTP Basic / Bearer credential string for the avatar request. */
     val credentials: String? = null,
