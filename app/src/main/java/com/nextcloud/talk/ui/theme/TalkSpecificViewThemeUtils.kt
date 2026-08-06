@@ -52,8 +52,6 @@ import com.nextcloud.talk.ui.WaveformSeekBar
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.message.MessageUtils
-import com.vanniktech.emoji.EmojiTextView
-import com.vanniktech.emoji.EmojiTheming
 import dynamiccolor.DynamicScheme
 import dynamiccolor.MaterialDynamicColors
 import eu.davidea.flexibleadapter.utils.FlexibleUtils
@@ -169,35 +167,6 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         val switch = preference as SwitchCompat
         appcompat.colorSwitchCompat(switch)
     }
-
-    fun setCheckedBackground(emoji: EmojiTextView) {
-        withScheme(emoji) { scheme ->
-            val drawable = AppCompatResources
-                .getDrawable(emoji.context, R.drawable.reaction_self_bottom_sheet_background)!!
-                .mutate()
-            DrawableCompat.setTintList(
-                drawable,
-                ColorStateList.valueOf(dynamicColor.primary().getArgb(scheme))
-            )
-            emoji.background = drawable
-        }
-    }
-
-    /**
-     * Themes the vanniktech emoji popup so its category, search and backspace icons stay visible in dark mode.
-     * Keep in sync with the Compose variant [emojiTheming].
-     */
-    fun getEmojiTheming(context: Context): EmojiTheming =
-        withScheme(context) { scheme ->
-            EmojiTheming(
-                backgroundColor = dynamicColor.surface().getArgb(scheme),
-                primaryColor = dynamicColor.onSurfaceVariant().getArgb(scheme),
-                secondaryColor = dynamicColor.primary().getArgb(scheme),
-                dividerColor = dynamicColor.outlineVariant().getArgb(scheme),
-                textColor = dynamicColor.onSurface().getArgb(scheme),
-                textSecondaryColor = dynamicColor.onSurfaceVariant().getArgb(scheme)
-            )
-        }
 
     fun setReactionsBackground(linearLayout: LinearLayout, outgoing: Boolean, isBubbled: Boolean) {
         withScheme(linearLayout) { scheme ->

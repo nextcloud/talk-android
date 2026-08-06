@@ -7,10 +7,9 @@
 
 package com.nextcloud.talk.chooseaccount.ui
 
-import android.view.Gravity
-import android.view.inputmethod.InputMethodManager
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,32 +41,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.getSystemService
 import com.nextcloud.talk.R
-import com.nextcloud.talk.ui.theme.emojiTheming
-import com.vanniktech.emoji.EmojiEditText
-import com.vanniktech.emoji.EmojiPopup
-import com.vanniktech.emoji.installDisableKeyboardInput
-import com.vanniktech.emoji.installForceSingleEmoji
 
 @Composable
 internal fun EmojiAndMessageRow(
     emoji: String,
     message: String,
-    onEmojiSelected: (String) -> Unit,
+    onEmojiButtonClick: () -> Unit,
     onMessageChanged: (String) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ) {
-        EmojiButton(emoji = emoji, onEmojiSelected = onEmojiSelected)
+        EmojiButton(emoji = emoji, onClick = onEmojiButtonClick)
         Spacer(modifier = Modifier.width(8.dp))
         OutlinedTextField(
             value = message,
@@ -81,11 +71,7 @@ internal fun EmojiAndMessageRow(
 }
 
 @Composable
-private fun EmojiButton(emoji: String, onEmojiSelected: (String) -> Unit) {
-    val isPreview = LocalInspectionMode.current
-    val rootView = LocalView.current
-    val theming = emojiTheming()
-    var emojiPopup by remember { mutableStateOf<EmojiPopup?>(null) }
+private fun EmojiButton(emoji: String, onClick: () -> Unit) {
     val displayEmoji = emoji.ifEmpty { stringResource(R.string.default_emoji) }
 
     Card(
@@ -94,48 +80,12 @@ private fun EmojiButton(emoji: String, onEmojiSelected: (String) -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         modifier = Modifier
             .size(56.dp)
-            .clickable { emojiPopup?.show() }
+            .clickable(onClick = onClick)
     ) {
-        if (isPreview) {
+        Box(modifier = Modifier.size(56.dp), contentAlignment = Alignment.Center) {
             Text(
                 text = displayEmoji,
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier
-                    .size(56.dp)
-                    .padding(14.dp)
-            )
-        } else {
-            AndroidView(
-                modifier = Modifier.size(56.dp),
-                factory = { ctx ->
-                    EmojiEditText(ctx).apply {
-                        setText(displayEmoji)
-                        gravity = Gravity.CENTER
-                        textSize = EMOJI_TEXT_SIZE_SP
-                        background = null
-                        isCursorVisible = false
-                        val popup = EmojiPopup(
-                            rootView = rootView,
-                            editText = this,
-                            theming = theming,
-                            onEmojiClickListener = {
-                                onEmojiSelected(text.toString())
-                                emojiPopup?.dismiss()
-                                clearFocus()
-                                ctx.getSystemService<InputMethodManager>()
-                                    ?.hideSoftInputFromWindow(windowToken, 0)
-                            }
-                        )
-                        installDisableKeyboardInput(popup)
-                        installForceSingleEmoji()
-                        emojiPopup = popup
-                    }
-                },
-                update = { view ->
-                    if (view.text.toString() != displayEmoji) {
-                        view.setText(displayEmoji)
-                    }
-                }
+                style = MaterialTheme.typography.titleLarge
             )
         }
     }
@@ -223,5 +173,3 @@ internal fun ActionButtons(onClear: () -> Unit, onSet: () -> Unit) {
         }
     }
 }
-
-private const val EMOJI_TEXT_SIZE_SP = 24f

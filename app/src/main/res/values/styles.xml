@@ -48,6 +48,17 @@
         <item name="android:fitsSystemWindows">true</item>
     </style>
 
+    <!-- Fallback text color for androidx.emoji2.emojipicker.EmojiPickerView's category
+         headers, since the widget reads android:textColorPrimary/Secondary directly and
+         doesn't follow this app's dynamic per-server branding. Wherever EmojiPickerView
+         is used, its background and selected-category tab color are additionally set to
+         the live themed color at runtime (see themeEmojiPickerCategoryTabs). -->
+    <style name="ThemeOverlay.App.EmojiPicker" parent="">
+        <item name="android:textColorPrimary">@color/high_emphasis_text</item>
+        <item name="android:textColorSecondary">@color/medium_emphasis_text</item>
+        <item name="android:colorAccent">?attr/colorPrimary</item>
+    </style>
+
     <style name="Theme.UCrop" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Status bar: dark background, white (light) icons -->
         <item name="android:windowLightStatusBar">false</item>

@@ -7,13 +7,10 @@
 
 package com.nextcloud.talk.chat.ui
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
-import android.os.Handler
-import android.os.Looper
-import android.view.MotionEvent
-import android.view.inputmethod.InputMethodManager
+import android.view.ContextThemeWrapper
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -30,10 +27,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
@@ -43,79 +43,74 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
+import androidx.core.util.Consumer
+import androidx.emoji2.emojipicker.EmojiPickerView
+import androidx.emoji2.emojipicker.RecentEmojiProvider
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.ui.theme.emojiTheming
+import com.nextcloud.talk.ui.theme.themeEmojiPickerCategoryTabs
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.SpreedFeatures
-import com.vanniktech.emoji.Emoji
-import com.vanniktech.emoji.EmojiEditText
-import com.vanniktech.emoji.EmojiPopup
-import com.vanniktech.emoji.installDisableKeyboardInput
-import com.vanniktech.emoji.installForceSingleEmoji
-import com.vanniktech.emoji.recent.RecentEmojiManager
-import com.vanniktech.emoji.search.SearchEmojiManager
 import java.util.Date
+import kotlinx.coroutines.launch
 
 private const val TAG = "MessageActionsSheet"
 private const val AGE_THRESHOLD_FOR_EDIT_MESSAGE = 86400000L
 private const val AGE_THRESHOLD_FOR_DELETE_MESSAGE = 21600000L
-private const val EMOJI_POPUP_TOGGLE_DELAY = 200L
 private const val MAX_RECENTS = 8
 private const val ACTOR_BOTS = "bots"
+private const val RECENT_REACTIONS_PREFS = "recent_reaction_emojis"
+private const val RECENT_REACTIONS_KEY = "recent"
+private const val MAX_STORED_RECENT_REACTIONS = 20
 
-private val emojiSearchKeywords = mapOf(
-    "👍" to "thumbsup",
-    "👎" to "thumbsdown",
-    "❤️" to "heart",
-    "😂" to "joy",
-    "😕" to "confused",
-    "😢" to "cry",
-    "🙏" to "pray",
-    "🔥" to "fire"
-)
+private val defaultReactionEmojis = listOf("👍", "👎", "❤️", "😂", "😕", "😢", "🙏", "🔥")
+private val emojiPickerHeight = 360.dp
 
-private fun buildEmojiList(recentEmojiManager: RecentEmojiManager): List<String> {
-    val recentEmojis = recentEmojiManager.getRecentEmojis()
-    val searchEmojiManager = SearchEmojiManager()
-    val initialKeywords = listOf("thumbsup", "thumbsdown", "heart", "joy", "confused", "cry", "pray", "fire")
-    val initialEmojisFromSearch = mutableSetOf<Emoji>()
-    initialKeywords.forEach { keyword ->
-        val results = searchEmojiManager.search(keyword)
-        if (results.isNotEmpty()) {
-            initialEmojisFromSearch.add(results[0].component1())
-            recentEmojiManager.addEmoji(results[0].component1())
-        }
-        if (initialEmojisFromSearch.size >= MAX_RECENTS) return@forEach
+private class ReactionRecentEmojiProvider(context: Context) : RecentEmojiProvider {
+    private val prefs = context.getSharedPreferences(RECENT_REACTIONS_PREFS, Context.MODE_PRIVATE)
+
+    override fun recordSelection(emoji: String) {
+        val updated = listOf(emoji) + getStoredList().filterNot { it == emoji }
+        prefs.edit()
+            .putString(RECENT_REACTIONS_KEY, updated.take(MAX_STORED_RECENT_REACTIONS).joinToString(","))
+            .apply()
     }
-    return (recentEmojis + initialEmojisFromSearch).distinct().take(MAX_RECENTS).map { it.unicode }
+
+    override suspend fun getRecentEmojiList(): List<String> = getStoredList()
+
+    private fun getStoredList(): List<String> =
+        prefs.getString(RECENT_REACTIONS_KEY, null)
+            ?.split(",")
+            ?.filter { it.isNotBlank() }
+            ?: emptyList()
 }
 
 data class MessageActionsState(
@@ -301,34 +296,62 @@ fun MessageActionsBottomSheet(
     onDelete: () -> Unit,
     onDismiss: () -> Unit
 ) {
+    val context = LocalContext.current
+    val recentEmojiProvider = remember(context) { ReactionRecentEmojiProvider(context) }
+    var showEmojiPicker by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
     val sheetState = rememberModalBottomSheetState()
+    val backToActions: () -> Unit = {
+        showEmojiPicker = false
+        // Return to the actions list at its normal peek height, not fully expanded.
+        scope.launch { sheetState.partialExpand() }
+    }
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow
     ) {
-        MessageActionsSheetContent(
-            actionsState = actionsState,
-            onEmojiClick = onEmojiClick,
-            onReply = onReply,
-            onReplyPrivately = onReplyPrivately,
-            onOpenThread = onOpenThread,
-            onForward = onForward,
-            onEdit = onEdit,
-            onCopy = onCopy,
-            onCopyMessageLink = onCopyMessageLink,
-            onMarkAsUnread = onMarkAsUnread,
-            onRemind = onRemind,
-            onPin = onPin,
-            onUnpin = onUnpin,
-            onTranslate = onTranslate,
-            onShareToNote = onShareToNote,
-            onShare = onShare,
-            onSave = onSave,
-            onOpenInFiles = onOpenInFiles,
-            onDelete = onDelete,
-            onDismiss = onDismiss
-        )
+        if (showEmojiPicker) {
+            // The sheet's own Dialog window has its own back dispatcher, separate from the
+            // host Activity's - this BackHandler must be composed inside the sheet's content
+            // to intercept back before the sheet's onDismissRequest closes the whole thing.
+            BackHandler(onBack = backToActions)
+            EmojiPickerSheetContent(
+                recentEmojiProvider = recentEmojiProvider,
+                onEmojiSelected = { emoji ->
+                    onEmojiClick(emoji)
+                    onDismiss()
+                },
+                onBack = backToActions
+            )
+        } else {
+            MessageActionsSheetContent(
+                actionsState = actionsState,
+                recentEmojiProvider = recentEmojiProvider,
+                onEmojiClick = onEmojiClick,
+                onMoreEmojiClick = { showEmojiPicker = true },
+                onReply = onReply,
+                onReplyPrivately = onReplyPrivately,
+                onOpenThread = onOpenThread,
+                onForward = onForward,
+                onEdit = onEdit,
+                onCopy = onCopy,
+                onCopyMessageLink = onCopyMessageLink,
+                onMarkAsUnread = onMarkAsUnread,
+                onRemind = onRemind,
+                onPin = onPin,
+                onUnpin = onUnpin,
+                onTranslate = onTranslate,
+                onShareToNote = onShareToNote,
+                onShare = onShare,
+                onSave = onSave,
+                onOpenInFiles = onOpenInFiles,
+                onDelete = onDelete,
+                onDismiss = onDismiss
+            )
+        }
     }
 }
 
@@ -336,7 +359,9 @@ fun MessageActionsBottomSheet(
 @Composable
 internal fun MessageActionsSheetContent(
     actionsState: MessageActionsState,
+    recentEmojiProvider: RecentEmojiProvider,
     onEmojiClick: (String) -> Unit,
+    onMoreEmojiClick: () -> Unit,
     onReply: () -> Unit,
     onReplyPrivately: () -> Unit,
     onOpenThread: () -> Unit,
@@ -356,7 +381,6 @@ internal fun MessageActionsSheetContent(
     onDelete: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    var actionsVisible by remember { mutableStateOf(true) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
 
     Column(
@@ -367,195 +391,193 @@ internal fun MessageActionsSheetContent(
         if (actionsState.showEmojiBar) {
             EmojiBar(
                 selfReactions = actionsState.selfReactions,
+                recentEmojiProvider = recentEmojiProvider,
                 onEmojiClick = { emoji ->
                     onEmojiClick(emoji)
                     onDismiss()
                 },
-                onPickerShown = { actionsVisible = false },
-                onPickerDismissed = { actionsVisible = true }
+                onMoreEmojiClick = onMoreEmojiClick
             )
         }
 
-        if (actionsVisible) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-            ) {
-                if (actionsState.showEditInfo) {
-                    EditedInfo(
-                        editedBy = actionsState.lastEditedBy,
-                        editedAt = actionsState.lastEditedAt
-                    )
-                }
-                if (actionsState.showReply) {
-                    MessageActionItem(
-                        iconRes = R.drawable.ic_reply,
-                        text = stringResource(R.string.nc_reply),
-                        onClick = {
-                            onReply()
-                            onDismiss()
-                        }
-                    )
-                }
-                if (actionsState.showReplyPrivately) {
-                    MessageActionItem(
-                        iconRes = R.drawable.ic_reply,
-                        text = stringResource(R.string.nc_reply_privately),
-                        onClick = {
-                            onReplyPrivately()
-                            onDismiss()
-                        }
-                    )
-                }
-                if (actionsState.showOpenThread) {
-                    MessageActionItem(
-                        iconRes = R.drawable.outline_forum_24,
-                        text = stringResource(R.string.open_thread),
-                        onClick = {
-                            onOpenThread()
-                            onDismiss()
-                        }
-                    )
-                }
-                if (actionsState.showForward) {
-                    MessageActionItem(
-                        iconRes = R.drawable.forward_24,
-                        text = stringResource(R.string.nc_forward_message),
-                        onClick = {
-                            onForward()
-                            onDismiss()
-                        }
-                    )
-                }
-                if (actionsState.showEdit) {
-                    MessageActionItem(
-                        iconRes = R.drawable.ic_edit_24,
-                        text = stringResource(R.string.nc_edit_message),
-                        onClick = {
-                            onEdit()
-                            onDismiss()
-                        }
-                    )
-                }
-                if (actionsState.showCopy) {
-                    MessageActionItem(
-                        iconRes = R.drawable.ic_content_copy,
-                        text = stringResource(R.string.nc_copy_message),
-                        onClick = {
-                            onCopy()
-                            onDismiss()
-                        }
-                    )
-                }
-                if (actionsState.showCopyMessageLink) {
-                    MessageActionItem(
-                        iconRes = R.drawable.ic_open_in_new,
-                        text = stringResource(R.string.nc_copy_message_link),
-                        onClick = {
-                            onCopyMessageLink()
-                            onDismiss()
-                        }
-                    )
-                }
-                if (actionsState.showMarkAsUnread) {
-                    MessageActionItem(
-                        iconRes = R.drawable.ic_mark_chat_unread_24px,
-                        text = stringResource(R.string.nc_mark_as_unread),
-                        onClick = {
-                            onMarkAsUnread()
-                            onDismiss()
-                        }
-                    )
-                }
-                if (actionsState.showRemind) {
-                    MessageActionItem(
-                        iconRes = R.drawable.ic_timer_black_24dp,
-                        text = stringResource(R.string.nc_remind),
-                        onClick = {
-                            onRemind()
-                            onDismiss()
-                        }
-                    )
-                }
-                if (actionsState.showPin) {
-                    if (actionsState.isPinned) {
-                        MessageActionItem(
-                            iconRes = R.drawable.keep_off_24px,
-                            text = stringResource(R.string.unpin_message),
-                            onClick = {
-                                onUnpin()
-                                onDismiss()
-                            }
-                        )
-                    } else {
-                        MessageActionItem(
-                            iconRes = R.drawable.keep_24px,
-                            text = stringResource(R.string.pin_message),
-                            onClick = {
-                                onPin()
-                                onDismiss()
-                            }
-                        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+        ) {
+            if (actionsState.showEditInfo) {
+                EditedInfo(
+                    editedBy = actionsState.lastEditedBy,
+                    editedAt = actionsState.lastEditedAt
+                )
+            }
+            if (actionsState.showReply) {
+                MessageActionItem(
+                    iconRes = R.drawable.ic_reply,
+                    text = stringResource(R.string.nc_reply),
+                    onClick = {
+                        onReply()
+                        onDismiss()
                     }
-                }
-                if (actionsState.showTranslate) {
+                )
+            }
+            if (actionsState.showReplyPrivately) {
+                MessageActionItem(
+                    iconRes = R.drawable.ic_reply,
+                    text = stringResource(R.string.nc_reply_privately),
+                    onClick = {
+                        onReplyPrivately()
+                        onDismiss()
+                    }
+                )
+            }
+            if (actionsState.showOpenThread) {
+                MessageActionItem(
+                    iconRes = R.drawable.outline_forum_24,
+                    text = stringResource(R.string.open_thread),
+                    onClick = {
+                        onOpenThread()
+                        onDismiss()
+                    }
+                )
+            }
+            if (actionsState.showForward) {
+                MessageActionItem(
+                    iconRes = R.drawable.forward_24,
+                    text = stringResource(R.string.nc_forward_message),
+                    onClick = {
+                        onForward()
+                        onDismiss()
+                    }
+                )
+            }
+            if (actionsState.showEdit) {
+                MessageActionItem(
+                    iconRes = R.drawable.ic_edit_24,
+                    text = stringResource(R.string.nc_edit_message),
+                    onClick = {
+                        onEdit()
+                        onDismiss()
+                    }
+                )
+            }
+            if (actionsState.showCopy) {
+                MessageActionItem(
+                    iconRes = R.drawable.ic_content_copy,
+                    text = stringResource(R.string.nc_copy_message),
+                    onClick = {
+                        onCopy()
+                        onDismiss()
+                    }
+                )
+            }
+            if (actionsState.showCopyMessageLink) {
+                MessageActionItem(
+                    iconRes = R.drawable.ic_open_in_new,
+                    text = stringResource(R.string.nc_copy_message_link),
+                    onClick = {
+                        onCopyMessageLink()
+                        onDismiss()
+                    }
+                )
+            }
+            if (actionsState.showMarkAsUnread) {
+                MessageActionItem(
+                    iconRes = R.drawable.ic_mark_chat_unread_24px,
+                    text = stringResource(R.string.nc_mark_as_unread),
+                    onClick = {
+                        onMarkAsUnread()
+                        onDismiss()
+                    }
+                )
+            }
+            if (actionsState.showRemind) {
+                MessageActionItem(
+                    iconRes = R.drawable.ic_timer_black_24dp,
+                    text = stringResource(R.string.nc_remind),
+                    onClick = {
+                        onRemind()
+                        onDismiss()
+                    }
+                )
+            }
+            if (actionsState.showPin) {
+                if (actionsState.isPinned) {
                     MessageActionItem(
-                        iconRes = R.drawable.ic_baseline_translate_24,
-                        text = stringResource(R.string.translate),
+                        iconRes = R.drawable.keep_off_24px,
+                        text = stringResource(R.string.unpin_message),
                         onClick = {
-                            onTranslate()
+                            onUnpin()
+                            onDismiss()
+                        }
+                    )
+                } else {
+                    MessageActionItem(
+                        iconRes = R.drawable.keep_24px,
+                        text = stringResource(R.string.pin_message),
+                        onClick = {
+                            onPin()
                             onDismiss()
                         }
                     )
                 }
-                if (actionsState.showShareToNote) {
-                    MessageActionItem(
-                        iconRes = R.drawable.ic_edit_note_24,
-                        text = stringResource(R.string.add_to_notes),
-                        onClick = {
-                            onShareToNote()
-                            onDismiss()
-                        }
-                    )
-                }
-                if (actionsState.showShare) {
-                    MessageActionItem(
-                        iconRes = R.drawable.ic_share_action,
-                        text = stringResource(R.string.share),
-                        onClick = {
-                            onShare()
-                            onDismiss()
-                        }
-                    )
-                }
-                if (actionsState.showSave) {
-                    MessageActionItem(
-                        iconRes = R.drawable.baseline_download_24,
-                        text = stringResource(R.string.nc_save_message),
-                        onClick = {
-                            onSave()
-                            onDismiss()
-                        }
-                    )
-                }
-                if (actionsState.showOpenInFiles) {
-                    MessageActionItem(
-                        iconRes = R.drawable.ic_exit_to_app_black_24dp,
-                        text = stringResource(R.string.open_in_files_app),
-                        onClick = {
-                            onOpenInFiles()
-                            onDismiss()
-                        }
-                    )
-                }
-                if (actionsState.showDelete) {
-                    MessageActionItem(
-                        iconRes = R.drawable.ic_delete,
-                        text = stringResource(R.string.nc_delete),
-                        onClick = { showDeleteConfirmation = true }
-                    )
-                }
+            }
+            if (actionsState.showTranslate) {
+                MessageActionItem(
+                    iconRes = R.drawable.ic_baseline_translate_24,
+                    text = stringResource(R.string.translate),
+                    onClick = {
+                        onTranslate()
+                        onDismiss()
+                    }
+                )
+            }
+            if (actionsState.showShareToNote) {
+                MessageActionItem(
+                    iconRes = R.drawable.ic_edit_note_24,
+                    text = stringResource(R.string.add_to_notes),
+                    onClick = {
+                        onShareToNote()
+                        onDismiss()
+                    }
+                )
+            }
+            if (actionsState.showShare) {
+                MessageActionItem(
+                    iconRes = R.drawable.ic_share_action,
+                    text = stringResource(R.string.share),
+                    onClick = {
+                        onShare()
+                        onDismiss()
+                    }
+                )
+            }
+            if (actionsState.showSave) {
+                MessageActionItem(
+                    iconRes = R.drawable.baseline_download_24,
+                    text = stringResource(R.string.nc_save_message),
+                    onClick = {
+                        onSave()
+                        onDismiss()
+                    }
+                )
+            }
+            if (actionsState.showOpenInFiles) {
+                MessageActionItem(
+                    iconRes = R.drawable.ic_exit_to_app_black_24dp,
+                    text = stringResource(R.string.open_in_files_app),
+                    onClick = {
+                        onOpenInFiles()
+                        onDismiss()
+                    }
+                )
+            }
+            if (actionsState.showDelete) {
+                MessageActionItem(
+                    iconRes = R.drawable.ic_delete,
+                    text = stringResource(R.string.nc_delete),
+                    onClick = { showDeleteConfirmation = true }
+                )
             }
         }
     }
@@ -574,13 +596,16 @@ internal fun MessageActionsSheetContent(
 @Composable
 internal fun EmojiBar(
     selfReactions: Set<String>,
+    recentEmojiProvider: RecentEmojiProvider,
     onEmojiClick: (String) -> Unit,
-    onPickerShown: () -> Unit,
-    onPickerDismissed: () -> Unit
+    onMoreEmojiClick: () -> Unit
 ) {
-    val context = LocalContext.current
-    val recentEmojiManager = remember(context) { RecentEmojiManager(context, MAX_RECENTS) }
-    val emojis: List<String> = remember(context) { buildEmojiList(recentEmojiManager) }
+    var emojis by remember { mutableStateOf(defaultReactionEmojis) }
+
+    LaunchedEffect(recentEmojiProvider) {
+        val recents = recentEmojiProvider.getRecentEmojiList()
+        emojis = (recents + defaultReactionEmojis).distinct().take(MAX_RECENTS)
+    }
 
     val startPadding = dimensionResource(R.dimen.standard_padding)
     val emojiButtonSize = dimensionResource(R.dimen.reaction_bottom_sheet_layout_size)
@@ -607,20 +632,11 @@ internal fun EmojiBar(
                     isSelected = selfReactions.contains(unicodeEmoji),
                     onClick = {
                         onEmojiClick(unicodeEmoji)
-                        val keyword = emojiSearchKeywords[unicodeEmoji] ?: ""
-                        val results = SearchEmojiManager().search(keyword)
-                        if (results.isNotEmpty()) {
-                            recentEmojiManager.addEmoji(results[0].component1())
-                            recentEmojiManager.persist()
-                        }
+                        recentEmojiProvider.recordSelection(unicodeEmoji)
                     }
                 )
             }
-            MoreEmojiButton(
-                onEmojiSelected = onEmojiClick,
-                onPickerShown = onPickerShown,
-                onPickerDismissed = onPickerDismissed
-            )
+            MoreEmojiButton(onClick = onMoreEmojiClick)
         }
     }
 }
@@ -644,78 +660,61 @@ private fun EmojiButton(emoji: String, isSelected: Boolean, onClick: () -> Unit)
     }
 }
 
-@SuppressLint("ClickableViewAccessibility")
-@Suppress("LongMethod")
 @Composable
-private fun MoreEmojiButton(
-    onEmojiSelected: (String) -> Unit,
-    onPickerShown: () -> Unit,
-    onPickerDismissed: () -> Unit
-) {
-    val context = LocalContext.current
-    val rootView = LocalView.current
-    val theming = emojiTheming()
-    val popupRef = remember { mutableStateOf<EmojiPopup?>(null) }
-
-    DisposableEffect(Unit) {
-        onDispose { popupRef.value?.dismiss() }
-    }
-
-    AndroidView(
-        factory = { ctx ->
-            EmojiEditText(ctx).apply {
-                setBackgroundColor(android.graphics.Color.TRANSPARENT)
-                val drawable = ContextCompat.getDrawable(ctx, R.drawable.ic_dots_horizontal)
-                setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)
-                contentDescription = ctx.getString(R.string.emoji_more)
-
-                val emojiPopup = EmojiPopup(
-                    rootView = rootView,
-                    editText = this,
-                    theming = theming,
-                    onEmojiPopupShownListener = {
-                        clearFocus()
-                        onPickerShown()
-                    },
-                    onEmojiClickListener = { emoji ->
-                        popupRef.value?.dismiss()
-                        onEmojiSelected(emoji.unicode)
-                    },
-                    onEmojiPopupDismissListener = {
-                        clearFocus()
-                        val imm = ctx.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(windowToken, 0)
-                        onPickerDismissed()
-                    }
-                )
-                installDisableKeyboardInput(emojiPopup)
-                installForceSingleEmoji()
-                setOnTouchListener { _, event ->
-                    if (event.action == MotionEvent.ACTION_DOWN) {
-                        val popup = emojiPopup
-                        if (popup.isShowing) {
-                            popup.dismiss()
-                        } else {
-                            popup.show()
-                            // workaround for first-open bug (see issue #1914)
-                            Handler(Looper.getMainLooper()).postDelayed(
-                                {
-                                    popup.dismiss()
-                                    popup.show()
-                                },
-                                EMOJI_POPUP_TOGGLE_DELAY
-                            )
-                        }
-                    }
-                    true
-                }
-                popupRef.value = emojiPopup
-            }
-        },
+private fun MoreEmojiButton(onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        shape = CircleShape,
+        color = Color.Transparent,
         modifier = Modifier
             .width(dimensionResource(R.dimen.activity_row_layout_height))
             .height(dimensionResource(R.dimen.activity_row_layout_height))
-    )
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_dots_horizontal),
+                contentDescription = stringResource(R.string.emoji_more)
+            )
+        }
+    }
+}
+
+@Composable
+private fun EmojiPickerSheetContent(
+    recentEmojiProvider: RecentEmojiProvider,
+    onEmojiSelected: (String) -> Unit,
+    onBack: () -> Unit
+) {
+    val backgroundColor = MaterialTheme.colorScheme.surfaceContainerLow
+    val selectedTabColor = MaterialTheme.colorScheme.primary.toArgb()
+    val unselectedTabColor = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding()
+    ) {
+        IconButton(onClick = onBack) {
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_button))
+        }
+        AndroidView(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(emojiPickerHeight),
+            factory = { ctx ->
+                EmojiPickerView(ContextThemeWrapper(ctx, R.style.ThemeOverlay_App_EmojiPicker)).apply {
+                    setBackgroundColor(backgroundColor.toArgb())
+                    setRecentEmojiProvider(recentEmojiProvider)
+                    setOnEmojiPickedListener(Consumer { item -> onEmojiSelected(item.emoji) })
+                    themeEmojiPickerCategoryTabs(this, selectedTabColor, unselectedTabColor)
+                }
+            }
+        )
+    }
 }
 
 @Composable
@@ -806,9 +805,9 @@ private fun PreviewEmojiBar() {
         Surface(color = MaterialTheme.colorScheme.surfaceContainerLow) {
             EmojiBar(
                 selfReactions = setOf("👍", "❤️"),
+                recentEmojiProvider = ReactionRecentEmojiProvider(LocalContext.current),
                 onEmojiClick = {},
-                onPickerShown = {},
-                onPickerDismissed = {}
+                onMoreEmojiClick = {}
             )
         }
     }
@@ -848,7 +847,9 @@ private fun PreviewMessageActionsSheetContent() {
         Surface(color = MaterialTheme.colorScheme.surfaceContainerLow) {
             MessageActionsSheetContent(
                 actionsState = previewState,
+                recentEmojiProvider = ReactionRecentEmojiProvider(LocalContext.current),
                 onEmojiClick = {},
+                onMoreEmojiClick = {},
                 onReply = {},
                 onReplyPrivately = {},
                 onOpenThread = {},
@@ -902,7 +903,9 @@ private fun PreviewMessageActionsSheetPinned() {
                     showOpenInFiles = false,
                     showDelete = false
                 ),
+                recentEmojiProvider = ReactionRecentEmojiProvider(LocalContext.current),
                 onEmojiClick = {},
+                onMoreEmojiClick = {},
                 onReply = {},
                 onReplyPrivately = {},
                 onOpenThread = {},
