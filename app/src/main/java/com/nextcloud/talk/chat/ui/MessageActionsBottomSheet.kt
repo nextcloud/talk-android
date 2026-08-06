@@ -48,6 +48,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -299,7 +300,7 @@ fun MessageActionsBottomSheet(
 ) {
     val context = LocalContext.current
     val recentEmojiProvider = remember(context) { ReactionRecentEmojiProvider(context) }
-    var showEmojiPicker by remember { mutableStateOf(false) }
+    var showEmojiPicker by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     val sheetState = rememberModalBottomSheetState()

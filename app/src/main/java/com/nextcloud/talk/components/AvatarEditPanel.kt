@@ -18,7 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -43,7 +43,7 @@ data class AvatarEditPanelCallbacks(
 
 @Composable
 fun AvatarEditPanel(state: AvatarEditPanelState, callbacks: AvatarEditPanelCallbacks, modifier: Modifier = Modifier) {
-    var showEmojiAvatarPicker by remember { mutableStateOf(false) }
+    var showEmojiAvatarPicker by rememberSaveable { mutableStateOf(false) }
 
     AvatarActionButtonsRow(
         state = state,
