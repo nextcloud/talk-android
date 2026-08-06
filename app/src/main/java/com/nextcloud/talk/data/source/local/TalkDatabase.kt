@@ -48,7 +48,7 @@ import java.util.Locale
         ChatMessageEntity::class,
         ChatBlockEntity::class
     ],
-    version = 25,
+    version = 26,
     autoMigrations = [
         AutoMigration(from = 9, to = 10),
         AutoMigration(from = 16, to = 17, spec = AutoMigration16To17::class),
@@ -57,7 +57,8 @@ import java.util.Locale
         AutoMigration(from = 21, to = 22),
         AutoMigration(from = 22, to = 23),
         AutoMigration(from = 23, to = 24),
-        AutoMigration(from = 24, to = 25)
+        AutoMigration(from = 24, to = 25),
+        AutoMigration(from = 25, to = 26)
     ],
     exportSchema = true
 )

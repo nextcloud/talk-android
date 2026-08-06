@@ -64,6 +64,7 @@ data class ConversationModel(
     var hasArchived: Boolean = false,
     var hasSensitive: Boolean = false,
     var hasImportant: Boolean = false,
+    var tagIds: List<String> = emptyList(),
     var lastPinnedId: Long? = null,
     var hiddenPinnedId: Long? = null,
     var attributes: Int? = null,
@@ -141,6 +142,7 @@ data class ConversationModel(
                 hasArchived = conversation.hasArchived,
                 hasSensitive = conversation.hasSensitive,
                 hasImportant = conversation.hasImportant,
+                tagIds = conversation.tagIds ?: emptyList(),
                 lastPinnedId = conversation.lastPinnedId,
                 hiddenPinnedId = conversation.hiddenPinnedId,
                 attributes = conversation.attributes
