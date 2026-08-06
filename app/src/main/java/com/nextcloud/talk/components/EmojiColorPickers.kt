@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.components
 
+import android.content.res.Configuration
 import android.view.ContextThemeWrapper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,6 +19,8 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -58,6 +61,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
@@ -99,6 +103,7 @@ fun EmojiAvatarPickerBottomSheet(
     var saturation by rememberSaveable { mutableStateOf(initialHsv[1]) }
     var value by rememberSaveable { mutableStateOf(initialHsv[2].coerceAtLeast(MIN_VALUE)) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
         Column(
@@ -110,32 +115,91 @@ fun EmojiAvatarPickerBottomSheet(
         ) {
             EmojiAvatarPickerTopBar(onDiscard = onDismiss, onSave = { onConfirm(emoji, color) })
             Spacer(modifier = Modifier.height(8.dp))
-            EmojiAvatarPreview(emoji = emoji, color = color)
-            Spacer(modifier = Modifier.height(16.dp))
-            if (showCustomColorPicker) {
-                CustomColorSubScreen(
-                    hsv = HsvColor(hue, saturation, value),
-                    onHsvChange = { newHsv ->
-                        hue = newHsv.hue
-                        saturation = newHsv.saturation
-                        value = newHsv.value
-                        color = newHsv.toColorInt()
-                    },
-                    onBack = { showCustomColorPicker = false }
-                )
-            } else {
-                ColorSwatchRow(
+            EmojiAvatarPickerBody(
+                state = EmojiPickerBodyState(
+                    showCustomColorPicker = showCustomColorPicker,
+                    isLandscape = isLandscape,
+                    emoji = emoji,
+                    color = color,
                     paletteColors = paletteColors,
-                    selectedColor = color,
+                    hsv = HsvColor(hue, saturation, value)
+                ),
+                onHsvChange = { newHsv ->
+                    hue = newHsv.hue
+                    saturation = newHsv.saturation
+                    value = newHsv.value
+                    color = newHsv.toColorInt()
+                },
+                callbacks = EmojiPickerCallbacks(
                     onColorSelected = { color = it },
-                    onCustomColorClick = { showCustomColorPicker = true }
+                    onShowCustomColorPickerChange = { showCustomColorPicker = it },
+                    onEmojiSelected = { emoji = it }
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+            )
+        }
+    }
+}
+
+private data class EmojiPickerBodyState(
+    val showCustomColorPicker: Boolean,
+    val isLandscape: Boolean,
+    val emoji: String,
+    val color: Int?,
+    val paletteColors: List<Int>,
+    val hsv: HsvColor
+)
+
+private data class EmojiPickerCallbacks(
+    val onColorSelected: (Int?) -> Unit,
+    val onShowCustomColorPickerChange: (Boolean) -> Unit,
+    val onEmojiSelected: (String) -> Unit
+)
+
+@Composable
+private fun ColumnScope.EmojiAvatarPickerBody(
+    state: EmojiPickerBodyState,
+    onHsvChange: (HsvColor) -> Unit,
+    callbacks: EmojiPickerCallbacks
+) {
+    when {
+        state.showCustomColorPicker -> {
+            CustomColorSubScreen(
+                state = state,
+                onHsvChange = onHsvChange,
+                onBack = { callbacks.onShowCustomColorPickerChange(false) }
+            )
+        }
+        state.isLandscape -> {
+            Row(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                Column(modifier = Modifier.width(landscapeSidePanelWidth).fillMaxHeight()) {
+                    EmojiAvatarPreview(emoji = state.emoji, color = state.color)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ColorSwatchRow(
+                        paletteColors = state.paletteColors,
+                        selectedColor = state.color,
+                        onColorSelected = callbacks.onColorSelected,
+                        onCustomColorClick = { callbacks.onShowCustomColorPickerChange(true) },
+                        wrap = true
+                    )
+                }
+                Spacer(modifier = Modifier.width(16.dp))
                 EmojiGrid(
-                    onEmojiSelected = { emoji = it },
-                    modifier = Modifier.weight(1f)
+                    onEmojiSelected = callbacks.onEmojiSelected,
+                    modifier = Modifier.weight(1f).fillMaxHeight()
                 )
             }
+        }
+        else -> {
+            EmojiAvatarPreview(emoji = state.emoji, color = state.color)
+            Spacer(modifier = Modifier.height(16.dp))
+            ColorSwatchRow(
+                paletteColors = state.paletteColors,
+                selectedColor = state.color,
+                onColorSelected = callbacks.onColorSelected,
+                onCustomColorClick = { callbacks.onShowCustomColorPickerChange(true) }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            EmojiGrid(onEmojiSelected = callbacks.onEmojiSelected, modifier = Modifier.weight(1f))
         }
     }
 }
@@ -179,14 +243,10 @@ private fun ColorSwatchRow(
     paletteColors: List<Int>,
     selectedColor: Int?,
     onColorSelected: (Int?) -> Unit,
-    onCustomColorClick: () -> Unit
+    onCustomColorClick: () -> Unit,
+    wrap: Boolean = false
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(swatchSpacing)
-    ) {
+    val swatches: @Composable () -> Unit = {
         NoColorSwatch(isSelected = selectedColor == null, onClick = { onColorSelected(null) })
         CustomColorSwatch(onClick = onCustomColorClick)
         paletteColors.forEach { paletteColor ->
@@ -195,6 +255,25 @@ private fun ColorSwatchRow(
                 isSelected = selectedColor == paletteColor,
                 onClick = { onColorSelected(paletteColor) }
             )
+        }
+    }
+
+    if (wrap) {
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(swatchSpacing),
+            verticalArrangement = Arrangement.spacedBy(swatchSpacing)
+        ) {
+            swatches()
+        }
+    } else {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(swatchSpacing)
+        ) {
+            swatches()
         }
     }
 }
@@ -278,23 +357,50 @@ private fun EmojiGrid(onEmojiSelected: (String) -> Unit, modifier: Modifier = Mo
 }
 
 @Composable
-private fun CustomColorSubScreen(hsv: HsvColor, onHsvChange: (HsvColor) -> Unit, onBack: () -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+private fun CustomColorSubScreen(state: EmojiPickerBodyState, onHsvChange: (HsvColor) -> Unit, onBack: () -> Unit) {
+    val hsv = state.hsv
+    val saturationValuePicker: @Composable () -> Unit = {
+        SaturationValuePicker(
+            hue = hsv.hue,
+            saturation = hsv.saturation,
+            value = hsv.value,
+            onSaturationValueChange = { newSaturation, newValue ->
+                onHsvChange(hsv.copy(saturation = newSaturation, value = newValue))
+            }
+        )
+    }
+    val hueSlider: @Composable () -> Unit = {
+        HueSlider(hue = hsv.hue, onHueChange = { onHsvChange(hsv.copy(hue = it)) })
+    }
+    val backButton: @Composable () -> Unit = {
         IconButton(onClick = onBack, modifier = Modifier.size(32.dp)) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.back_button))
         }
     }
-    Spacer(modifier = Modifier.height(12.dp))
-    SaturationValuePicker(
-        hue = hsv.hue,
-        saturation = hsv.saturation,
-        value = hsv.value,
-        onSaturationValueChange = { newSaturation, newValue ->
-            onHsvChange(hsv.copy(saturation = newSaturation, value = newValue))
+
+    if (state.isLandscape) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.width(landscapeSidePanelWidth)) {
+                backButton()
+                Spacer(modifier = Modifier.height(12.dp))
+                EmojiAvatarPreview(emoji = state.emoji, color = state.color)
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                saturationValuePicker()
+                Spacer(modifier = Modifier.height(12.dp))
+                hueSlider()
+            }
         }
-    )
-    Spacer(modifier = Modifier.height(12.dp))
-    HueSlider(hue = hsv.hue, onHueChange = { onHsvChange(hsv.copy(hue = it)) })
+    } else {
+        backButton()
+        Spacer(modifier = Modifier.height(12.dp))
+        EmojiAvatarPreview(emoji = state.emoji, color = state.color)
+        Spacer(modifier = Modifier.height(16.dp))
+        saturationValuePicker()
+        Spacer(modifier = Modifier.height(12.dp))
+        hueSlider()
+    }
 }
 
 @Composable
@@ -417,3 +523,4 @@ private val swatchSize = 36.dp
 private val swatchSpacing = 8.dp
 private val previewSize = 88.dp
 private val previewEmojiFontSize = 40.sp
+private val landscapeSidePanelWidth = 160.dp
