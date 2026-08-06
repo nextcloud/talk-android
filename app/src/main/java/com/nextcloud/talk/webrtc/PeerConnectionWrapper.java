@@ -116,7 +116,7 @@ public class PeerConnectionWrapper {
         this.mediaConstraints = mediaConstraints;
 
         sdpObserver = new SdpObserver();
-        boolean hasInitiated = sessionId.compareTo(localSession) < 0;
+        boolean hasInitiated = isOfferer(localSession, sessionId);
         this.isMCUPublisher = isMCUPublisher;
 
         PeerConnection.RTCConfiguration configuration = new PeerConnection.RTCConfiguration(iceServerList);
@@ -163,6 +163,30 @@ public class PeerConnectionWrapper {
                 }
             }
         }
+    }
+
+    /**
+     * Decides whether this client takes the offerer role for a peer connection.
+     *
+     * <p>The role is resolved purely by lexicographic comparison of the two session IDs:
+     * the client whose remote session ID sorts before its own local session ID becomes the
+     * offerer. This yields exactly one offerer per pair <em>only if both peers compare the
+     * same ordered pair of strings</em>.
+     *
+     * <p>Bug #6169: with the High-Performance Backend the remote {@code sessionId} is a
+     * signaling-layer session ID. Callers must therefore pass a {@code localSession} from the
+     * <em>same</em> namespace (the local signaling session, not the Nextcloud session); otherwise
+     * the two peers compare unrelated strings and can both compute {@code false} (neither offers —
+     * deadlock) or both {@code true} (offer collision). The {@code requestoffer} fallback only
+     * applies in MCU mode, so a direct (no-MCU) 2-party call deadlocks outright. The deadlock is
+     * exercised by {@code PeerConnectionWrapperOffererRoleTest}.
+     *
+     * @param localSession  this client's own session ID (same namespace as {@code remoteSession})
+     * @param remoteSession the remote peer's session ID
+     * @return true if this client should create the initial offer
+     */
+    static boolean isOfferer(String localSession, String remoteSession) {
+        return remoteSession.compareTo(localSession) < 0;
     }
 
     public void raiseHand(Boolean raise) {
