@@ -214,11 +214,6 @@ private fun ToolbarActions(state: ChatToolbarState, callbacks: ChatToolbarCallba
                 onLongClick = callbacks.onSilentVideoCall.takeIf { state.supportsSilentCall }
             )
         }
-        if (state.showSearch) {
-            IconButton(onClick = callbacks.onSearchOpen) {
-                Icon(painterResource(R.drawable.ic_search_white_24dp), stringResource(R.string.nc_search))
-            }
-        }
         if (state.overflowItems.isNotEmpty()) {
             OverflowMenuButton(items = state.overflowItems)
         }
@@ -475,8 +470,8 @@ private fun NormalModePreview() {
                     userStatus = "online",
                     showVoiceCall = true,
                     showVideoCall = true,
-                    showSearch = true,
                     overflowItems = listOf(
+                        MenuItemData(title = "Search", onClick = {}),
                         MenuItemData(title = "Conversation info", onClick = {}),
                         MenuItemData(title = "Shared items", onClick = {})
                     ),

@@ -1822,7 +1822,6 @@ class ChatActivity :
                             onSilentVoiceCall = { startACall(true, true) },
                             onVideoCall = { startACall(false, false) },
                             onSilentVideoCall = { startACall(false, true) },
-                            onSearchOpen = { startMessageSearch() },
                             onSearchClose = {
                                 chatViewModel.exitSearchMode()
                                 chatToolbarState = chatToolbarState.copy(isSearchMode = false, searchQuery = "")
@@ -1901,7 +1900,6 @@ class ChatActivity :
             userStatus = if (isOneToOne) conversation?.status else null,
             showVoiceCall = isCallsEnabled(capabilitiesReady, conversation),
             showVideoCall = isCallsEnabled(capabilitiesReady, conversation),
-            showSearch = isSearchAvailable(capabilitiesReady, conversation),
             titleClickable = user?.userId != "?" && !chatToolbarState.isSearchMode,
             overflowItems = buildOverflowItems(),
             threadNotificationIcon = buildThreadNotificationIcon(capabilitiesReady),
@@ -2008,6 +2006,12 @@ class ChatActivity :
         val isThread = isChatThread()
         val capabilitiesReady = ::spreedCapabilities.isInitialized
 
+        if (isSearchAvailable(capabilitiesReady, currentConversation)) {
+            items += MenuItemData(
+                title = getString(R.string.nc_search),
+                onClick = { startMessageSearch() }
+            )
+        }
         if (conversationUser?.userId != "?" && !isThread) {
             items += MenuItemData(
                 title = getString(R.string.nc_conversation_menu_conversation_info),

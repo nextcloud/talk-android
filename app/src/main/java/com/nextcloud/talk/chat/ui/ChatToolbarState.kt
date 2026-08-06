@@ -31,8 +31,6 @@ data class ChatToolbarState(
     val isLoading: Boolean = false,
     val showVoiceCall: Boolean = false,
     val showVideoCall: Boolean = false,
-    /** Whether the server supports message search for this conversation. */
-    val showSearch: Boolean = false,
     val searchQuery: String = "",
     val overflowItems: List<MenuItemData> = emptyList(),
     /** Non-null in thread view; the drawable resource for the current notification level. */
