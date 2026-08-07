@@ -1001,16 +1001,11 @@ class ChatActivity :
             var result: String? = null
             message?.let {
                 if (message.messageParameters.isNotEmpty()) {
-                    runCatching {
-                        message.messageParameters as HashMap<String?, HashMap<String?, String?>>?
-                        val fileParameters = FileParameters(message.messageParameters)
-                        result = fileParameters.id
-                    }.onFailure { e ->
-                        when (e) {
-                            is ClassCastException -> {} // weird
-                            else -> Log.e(TAG, "Error in LazyListState.visibleItemsWithThreshold $e")
-                        }
-                    }
+                    val normalizedParameters = HashMap<String?, HashMap<String?, String?>>(
+                        message.messageParameters.mapValues { (_, params) -> HashMap(params) }
+                    )
+                    val fileParameters = FileParameters(normalizedParameters)
+                    result = fileParameters.id
                 }
             }
 
