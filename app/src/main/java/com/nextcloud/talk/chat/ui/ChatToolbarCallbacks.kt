@@ -14,7 +14,6 @@ data class ChatToolbarCallbacks(
     val onSilentVoiceCall: () -> Unit = {},
     val onVideoCall: () -> Unit = {},
     val onSilentVideoCall: () -> Unit = {},
-    val onSearchOpen: () -> Unit = {},
     val onSearchClose: () -> Unit = {},
     val onSearchQueryChange: (String) -> Unit = {},
     val onSearchSubmit: () -> Unit = {},
