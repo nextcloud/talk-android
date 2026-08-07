@@ -182,6 +182,15 @@
     <string name="nc_conversation_menu_video_call">Simu ya video</string>
     <string name="nc_conversation_menu_voice_call">Simu ya sauti</string>
     <string name="nc_conversation_settings">Mipangilio ya mazungumzo</string>
+    <string name="nc_conversation_tags">Maoni</string>
+    <string name="nc_conversation_tags_create">Tengeneza</string>
+    <string name="nc_conversation_tags_empty">Bado hakuna lebo</string>
+    <string name="nc_conversation_tags_favorites">Vinavyopendwa</string>
+    <string name="nc_conversation_tags_filter_all">Zote</string>
+    <string name="nc_conversation_tags_manage">Dhibiti lebo</string>
+    <string name="nc_conversation_tags_name_hint">Jina la lebo</string>
+    <string name="nc_conversation_tags_new">Lebo mpya</string>
+    <string name="nc_conversation_tags_save">Hifadhi</string>
     <string name="nc_conversations_empty">Jiunge na mazungumzo au anzisha mapya</string>
     <string name="nc_conversations_empty_details">Sema hi kwa marafiki zako na wenzako!</string>
     <string name="nc_copy_message">Nakili</string>

@@ -172,6 +172,17 @@
     <string name="nc_conversation_menu_video_call">Trucada de vídeo </string>
     <string name="nc_conversation_menu_voice_call">Trucada de veu</string>
     <string name="nc_conversation_settings">Paràmetres de la conversa</string>
+    <string name="nc_conversation_tags">Etiquetes</string>
+    <string name="nc_conversation_tags_create">Crea</string>
+    <string name="nc_conversation_tags_delete">Suprimir etiqueta</string>
+    <string name="nc_conversation_tags_empty">Encara no hi ha cap etiqueta</string>
+    <string name="nc_conversation_tags_favorites">Preferits</string>
+    <string name="nc_conversation_tags_filter_all">Totes</string>
+    <string name="nc_conversation_tags_manage">Administrar les etiquetes</string>
+    <string name="nc_conversation_tags_name_hint">Nom de l\'etiqueta</string>
+    <string name="nc_conversation_tags_new">Nova etiqueta</string>
+    <string name="nc_conversation_tags_rename">Canvia el nom de l\'etiqueta</string>
+    <string name="nc_conversation_tags_save">Desa</string>
     <string name="nc_conversations_empty">Uniu-vos a una conversa o inicieu-ne una de nova</string>
     <string name="nc_conversations_empty_details">Saludeu els vostres amics i col·legues!</string>
     <string name="nc_copy_message">Copia</string>

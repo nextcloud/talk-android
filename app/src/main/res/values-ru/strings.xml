@@ -197,6 +197,17 @@
     <string name="nc_conversation_menu_video_call">Видеовызов</string>
     <string name="nc_conversation_menu_voice_call">Голосовой вызов</string>
     <string name="nc_conversation_settings">Параметры обсуждения</string>
+    <string name="nc_conversation_tags">Метки</string>
+    <string name="nc_conversation_tags_create">Создать</string>
+    <string name="nc_conversation_tags_delete">Удалить метку</string>
+    <string name="nc_conversation_tags_empty">Нет ни одной метки</string>
+    <string name="nc_conversation_tags_favorites">Избранное</string>
+    <string name="nc_conversation_tags_filter_all">Все</string>
+    <string name="nc_conversation_tags_manage">Управление метками</string>
+    <string name="nc_conversation_tags_name_hint">Название метки</string>
+    <string name="nc_conversation_tags_new">Новый тег</string>
+    <string name="nc_conversation_tags_rename">Переименовать метку</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">Присоединитесь к обсуждению или начните новое</string>
     <string name="nc_conversations_empty_details">Поприветствуйте своих друзей и коллег.</string>
     <string name="nc_copy_message">Копировать</string>

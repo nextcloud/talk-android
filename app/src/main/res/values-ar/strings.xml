@@ -169,6 +169,17 @@
     <string name="nc_conversation_menu_video_call">اتصال فيديو</string>
     <string name="nc_conversation_menu_voice_call">اتصال فيديو</string>
     <string name="nc_conversation_settings">إعدادات المحادثة</string>
+    <string name="nc_conversation_tags">الوسوم</string>
+    <string name="nc_conversation_tags_create">إنشاء</string>
+    <string name="nc_conversation_tags_delete">حذف الوسم</string>
+    <string name="nc_conversation_tags_empty">لا توجد وسوم حتى الآن</string>
+    <string name="nc_conversation_tags_favorites">المُفضّلة</string>
+    <string name="nc_conversation_tags_filter_all">الكل</string>
+    <string name="nc_conversation_tags_manage">إدارة الوسوم</string>
+    <string name="nc_conversation_tags_name_hint">اسم الوسم</string>
+    <string name="nc_conversation_tags_new">وسم جديد</string>
+    <string name="nc_conversation_tags_rename">غَيِّر اسم الوَسْم</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">إنضم لمحادثةٍ او ابدأ محادثةً جديدةً</string>
     <string name="nc_conversations_empty_details">رحّب بالأصدقاء و الزملاء!</string>
     <string name="nc_copy_message">أنسخ</string>

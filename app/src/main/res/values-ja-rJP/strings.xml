@@ -156,6 +156,17 @@
     <string name="nc_conversation_menu_video_call">ビデオ通話</string>
     <string name="nc_conversation_menu_voice_call">音声通話</string>
     <string name="nc_conversation_settings">会話設定</string>
+    <string name="nc_conversation_tags">タグ</string>
+    <string name="nc_conversation_tags_create">作成</string>
+    <string name="nc_conversation_tags_delete">タグを削除</string>
+    <string name="nc_conversation_tags_empty">まだタグがありません</string>
+    <string name="nc_conversation_tags_favorites">お気に入り</string>
+    <string name="nc_conversation_tags_filter_all">すべて</string>
+    <string name="nc_conversation_tags_manage">タグを管理</string>
+    <string name="nc_conversation_tags_name_hint">タグの名前</string>
+    <string name="nc_conversation_tags_new">新しいタグ</string>
+    <string name="nc_conversation_tags_rename">タグ名を変更</string>
+    <string name="nc_conversation_tags_save">保存する</string>
     <string name="nc_conversations_empty">会話に参加するか、新しいのを開始</string>
     <string name="nc_conversations_empty_details">友達や同僚に挨拶しましょう！</string>
     <string name="nc_copy_message">コピー</string>

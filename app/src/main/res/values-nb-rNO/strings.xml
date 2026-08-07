@@ -163,6 +163,17 @@
     <string name="nc_conversation_menu_video_call">Videosamtale</string>
     <string name="nc_conversation_menu_voice_call">Samtale</string>
     <string name="nc_conversation_settings">Samtale innstillinger</string>
+    <string name="nc_conversation_tags">Merkelapper</string>
+    <string name="nc_conversation_tags_create">Opprett</string>
+    <string name="nc_conversation_tags_delete">Slett merke</string>
+    <string name="nc_conversation_tags_empty">Ingen etiketter enda</string>
+    <string name="nc_conversation_tags_favorites">Favoritter</string>
+    <string name="nc_conversation_tags_filter_all">Alle</string>
+    <string name="nc_conversation_tags_manage">Håndtere etiketter</string>
+    <string name="nc_conversation_tags_name_hint">Navn på merkelapp</string>
+    <string name="nc_conversation_tags_new">Ny merkelapp</string>
+    <string name="nc_conversation_tags_rename">Gi nytt navn til taggen</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">Ta del i en samtale eller start en ny</string>
     <string name="nc_conversations_empty_details">Si hei til venner og kolleger!</string>
     <string name="nc_copy_message">Kopier</string>

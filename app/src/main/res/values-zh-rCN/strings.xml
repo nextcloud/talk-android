@@ -149,6 +149,17 @@
     <string name="nc_conversation_menu_video_call">视频通话</string>
     <string name="nc_conversation_menu_voice_call">语音通话</string>
     <string name="nc_conversation_settings">对话设置</string>
+    <string name="nc_conversation_tags">标签</string>
+    <string name="nc_conversation_tags_create">创建</string>
+    <string name="nc_conversation_tags_delete">删除标签</string>
+    <string name="nc_conversation_tags_empty">尚无标签</string>
+    <string name="nc_conversation_tags_favorites">收藏</string>
+    <string name="nc_conversation_tags_filter_all">所有</string>
+    <string name="nc_conversation_tags_manage">管理标签</string>
+    <string name="nc_conversation_tags_name_hint">标签名称</string>
+    <string name="nc_conversation_tags_new">新标签</string>
+    <string name="nc_conversation_tags_rename">重命名标签</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">加入一个对话或开始一个新的对话</string>
     <string name="nc_conversations_empty_details">跟你的朋友和同事打个招呼！</string>
     <string name="nc_copy_message">复制</string>

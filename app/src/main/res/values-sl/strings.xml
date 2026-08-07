@@ -141,6 +141,17 @@
     <string name="nc_conversation_menu_video_call">Video klic</string>
     <string name="nc_conversation_menu_voice_call">Glasovni klic</string>
     <string name="nc_conversation_settings">Nastavitve pogovora</string>
+    <string name="nc_conversation_tags">Oznake</string>
+    <string name="nc_conversation_tags_create">Ustvari</string>
+    <string name="nc_conversation_tags_delete">Izbriši oznako</string>
+    <string name="nc_conversation_tags_empty">Ni še dodane nobene oznake</string>
+    <string name="nc_conversation_tags_favorites">Priljubljeno</string>
+    <string name="nc_conversation_tags_filter_all">Vse</string>
+    <string name="nc_conversation_tags_manage">Upravljanje oznak</string>
+    <string name="nc_conversation_tags_name_hint">Ime oznake</string>
+    <string name="nc_conversation_tags_new">Nova oznaka</string>
+    <string name="nc_conversation_tags_rename">Preimenuj oznako</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">Pridružite se pogovoru, ali pa začnite novega.</string>
     <string name="nc_conversations_empty_details">Pozdravite prijatelje in znance.</string>
     <string name="nc_copy_message">Kopiraj</string>

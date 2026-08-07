@@ -183,6 +183,17 @@
     <string name="nc_conversation_menu_video_call">Videohovor</string>
     <string name="nc_conversation_menu_voice_call">Hlasový hovor</string>
     <string name="nc_conversation_settings">Nastavenia konverzácie</string>
+    <string name="nc_conversation_tags">Štítky</string>
+    <string name="nc_conversation_tags_create">Vytvoriť</string>
+    <string name="nc_conversation_tags_delete">Zmazať štítok</string>
+    <string name="nc_conversation_tags_empty">Zatiaľ žiadne štítky</string>
+    <string name="nc_conversation_tags_favorites">Obľúbené</string>
+    <string name="nc_conversation_tags_filter_all">Všetko</string>
+    <string name="nc_conversation_tags_manage">Spravovať štítky</string>
+    <string name="nc_conversation_tags_name_hint">Názov štítku</string>
+    <string name="nc_conversation_tags_new">Nový štítok</string>
+    <string name="nc_conversation_tags_rename">Premenovať štítok</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">Pripojte sa ku konverzácii alebo začnite novú</string>
     <string name="nc_conversations_empty_details">Pozdravte svojich priateľov a kolegov!</string>
     <string name="nc_copy_message">Kopírovať</string>

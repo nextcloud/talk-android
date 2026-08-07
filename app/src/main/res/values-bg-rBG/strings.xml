@@ -132,6 +132,16 @@
     <string name="nc_conversation_menu_video_call">Видео разговор</string>
     <string name="nc_conversation_menu_voice_call">Гласово обаждане</string>
     <string name="nc_conversation_settings">Настройки за разговор</string>
+    <string name="nc_conversation_tags">Етикети</string>
+    <string name="nc_conversation_tags_create">Създаване</string>
+    <string name="nc_conversation_tags_delete">Изтрий таг</string>
+    <string name="nc_conversation_tags_empty">Все още няма етикети</string>
+    <string name="nc_conversation_tags_favorites">Любими</string>
+    <string name="nc_conversation_tags_filter_all">Всички</string>
+    <string name="nc_conversation_tags_manage">Управление на маркери</string>
+    <string name="nc_conversation_tags_new">Нов етикет</string>
+    <string name="nc_conversation_tags_rename">Преименуване на етикет</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">Присъединяване към разговор или започване на нов</string>
     <string name="nc_conversations_empty_details">Поздравете приятелите и колегите си!</string>
     <string name="nc_copy_message">Копиране</string>
