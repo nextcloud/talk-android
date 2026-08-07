@@ -47,6 +47,7 @@
             <trusting group="androidx.media3"/>
             <trusting group="androidx.work"/>
             <trusting group="com.google.firebase"/>
+            <trusting group="com.google.mediapipe"/>
             <trusting group="^androidx[.]camera($|([.].*))" regex="true"/>
             <trusting group="^androidx[.]compose($|([.].*))" regex="true"/>
             <trusting group="^com[.]android($|([.].*))" regex="true"/>
