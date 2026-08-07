@@ -449,11 +449,6 @@ class ChatActivity :
                 }
 
                 sessionIdAfterRoomJoined = "0"
-
-                if (state.funToCallWhenLeaveSuccessful != null) {
-                    Log.d(TAG, "a callback action was set and is now executed because room was left successfully")
-                    state.funToCallWhenLeaveSuccessful.invoke()
-                }
             }
 
             else -> {}
