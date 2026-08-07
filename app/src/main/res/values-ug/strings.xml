@@ -182,6 +182,16 @@
     <string name="nc_conversation_menu_video_call">سىنلىق تېلېفون</string>
     <string name="nc_conversation_menu_voice_call">ئاۋازلىق تېلېفون</string>
     <string name="nc_conversation_settings">سۆھبەت تەڭشەكلىرى</string>
+    <string name="nc_conversation_tags">خەتكۈچ</string>
+    <string name="nc_conversation_tags_create">قۇر</string>
+    <string name="nc_conversation_tags_delete">خەتكۈچنى ئۆچۈرۈڭ</string>
+    <string name="nc_conversation_tags_empty">خەتكۈچ يوق</string>
+    <string name="nc_conversation_tags_favorites">ياقتۇرىدىغانلار</string>
+    <string name="nc_conversation_tags_filter_all">ھەممىسى</string>
+    <string name="nc_conversation_tags_manage">خەتكۈچلەرنى باشقۇرۇش</string>
+    <string name="nc_conversation_tags_name_hint">خەتكۈچ ئىسمى</string>
+    <string name="nc_conversation_tags_new">يېڭى خەتكۈچ</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">سۆھبەتكە قاتنىشىڭ ياكى يېڭى باشلاڭ</string>
     <string name="nc_conversations_empty_details">دوستلىرىڭىز ۋە خىزمەتداشلىرىڭىزغا سالام!</string>
     <string name="nc_copy_message">كۆچۈرۈڭ</string>

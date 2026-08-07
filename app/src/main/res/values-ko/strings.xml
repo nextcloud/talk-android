@@ -129,6 +129,15 @@
     <string name="nc_conversation_menu_video_call">영상 통화</string>
     <string name="nc_conversation_menu_voice_call">음성 통화</string>
     <string name="nc_conversation_settings">대화 설정</string>
+    <string name="nc_conversation_tags">태그</string>
+    <string name="nc_conversation_tags_create">생성</string>
+    <string name="nc_conversation_tags_delete">태그 삭제</string>
+    <string name="nc_conversation_tags_favorites">즐겨찾기</string>
+    <string name="nc_conversation_tags_filter_all">모두</string>
+    <string name="nc_conversation_tags_manage">태그 관리하기</string>
+    <string name="nc_conversation_tags_name_hint">태그 이름</string>
+    <string name="nc_conversation_tags_new">새로운 태그</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">대화에 참가하거나 새 대화 시작</string>
     <string name="nc_conversations_empty_details">여러분의 친구들과 동료들에게 인사하세요!</string>
     <string name="nc_copy_message">복사</string>

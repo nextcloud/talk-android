@@ -200,6 +200,15 @@
     <string name="nc_conversation_menu_video_call">Glao físe</string>
     <string name="nc_conversation_menu_voice_call">Glao gutha</string>
     <string name="nc_conversation_settings">Socruithe comhrá</string>
+    <string name="nc_conversation_tags_create">Cruthaigh</string>
+    <string name="nc_conversation_tags_delete">Scrios clib</string>
+    <string name="nc_conversation_tags_empty">Gan clibeanna fós</string>
+    <string name="nc_conversation_tags_error_generic">Chuaigh rud éigin mícheart, déan iarracht arís</string>
+    <string name="nc_conversation_tags_favorites">Ceanáin</string>
+    <string name="nc_conversation_tags_filter_all">Gach</string>
+    <string name="nc_conversation_tags_manage">Bainistigh clibeanna</string>
+    <string name="nc_conversation_tags_new">Clib nua</string>
+    <string name="nc_conversation_tags_save">Sábháil</string>
     <string name="nc_conversations_empty">Glac páirt i gcomhrá nó cuir tús le ceann nua</string>
     <string name="nc_conversations_empty_details">Abair Dia duit a chairde agus a chomhghleacaithe!</string>
     <string name="nc_copy_message">Cóipeáil</string>

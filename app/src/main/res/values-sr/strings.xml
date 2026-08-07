@@ -182,6 +182,17 @@
     <string name="nc_conversation_menu_video_call">Видео позив</string>
     <string name="nc_conversation_menu_voice_call">Аудио позив</string>
     <string name="nc_conversation_settings">Подешавања разговора</string>
+    <string name="nc_conversation_tags">Ознаке</string>
+    <string name="nc_conversation_tags_create">Креирање</string>
+    <string name="nc_conversation_tags_delete">Обриши ознаку</string>
+    <string name="nc_conversation_tags_empty">Још нема ознака</string>
+    <string name="nc_conversation_tags_favorites">Омиљене</string>
+    <string name="nc_conversation_tags_filter_all">Све</string>
+    <string name="nc_conversation_tags_manage">Управљање ознакама</string>
+    <string name="nc_conversation_tags_name_hint">Назив ознаке</string>
+    <string name="nc_conversation_tags_new">Нова ознака</string>
+    <string name="nc_conversation_tags_rename">Промени назив ознаке</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">Придружи се разговору или започни нови</string>
     <string name="nc_conversations_empty_details">Поздравите Ваше пријатеље и колеге!</string>
     <string name="nc_copy_message">Копија</string>

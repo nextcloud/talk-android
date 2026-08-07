@@ -181,6 +181,16 @@
     <string name="nc_conversation_menu_video_call">Відеодзвінок</string>
     <string name="nc_conversation_menu_voice_call">Голосовий дзвінок</string>
     <string name="nc_conversation_settings">Налаштування розмови</string>
+    <string name="nc_conversation_tags">Мітки</string>
+    <string name="nc_conversation_tags_create">Створювати</string>
+    <string name="nc_conversation_tags_delete">Вилучити мітку</string>
+    <string name="nc_conversation_tags_empty">Ще немає міток</string>
+    <string name="nc_conversation_tags_favorites">Із зірочкою</string>
+    <string name="nc_conversation_tags_filter_all">Всі</string>
+    <string name="nc_conversation_tags_manage">Керування мітками</string>
+    <string name="nc_conversation_tags_name_hint">Назва мітки</string>
+    <string name="nc_conversation_tags_new">Нова мітка</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">Приєднайтеся до розмови або почніть нову</string>
     <string name="nc_conversations_empty_details">Привітайтеся з вашими друзями та колегами!</string>
     <string name="nc_copy_message">Копіювати</string>

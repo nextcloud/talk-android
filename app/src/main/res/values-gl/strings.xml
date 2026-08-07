@@ -183,6 +183,15 @@
     <string name="nc_conversation_menu_video_call">Chamada de vídeo</string>
     <string name="nc_conversation_menu_voice_call">Chamada de voz</string>
     <string name="nc_conversation_settings">Axustes da conversa</string>
+    <string name="nc_conversation_tags_create">Crear</string>
+    <string name="nc_conversation_tags_delete">Eliminar a etiqueta</string>
+    <string name="nc_conversation_tags_empty">Non hai ren etiquetado</string>
+    <string name="nc_conversation_tags_error_generic">Algo foi mal, ténteo de novo</string>
+    <string name="nc_conversation_tags_favorites">Favoritos</string>
+    <string name="nc_conversation_tags_filter_all">Todo</string>
+    <string name="nc_conversation_tags_manage">Xestionar as etiquetas</string>
+    <string name="nc_conversation_tags_new">Nova etiqueta</string>
+    <string name="nc_conversation_tags_save">Gardar</string>
     <string name="nc_conversations_empty">Únase a unha conversa ou inicie unha nova</string>
     <string name="nc_conversations_empty_details">Saúde aos seus amigos e compañeiros!</string>
     <string name="nc_copy_message">Copiar</string>

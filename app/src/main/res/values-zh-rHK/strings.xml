@@ -171,6 +171,7 @@
     <string name="nc_change_cert_auth">更改驗證證書</string>
     <string name="nc_change_password">變更密碼</string>
     <string name="nc_chat_no_messages">尚未有訊息。成為第一個打招呼的人吧！</string>
+    <string name="nc_classified_conversation">機密對話</string>
     <string name="nc_clear_edit_button">取消編輯</string>
     <string name="nc_clear_history">刪除所有訊息</string>
     <string name="nc_clear_history_success">已刪除所有訊息</string>
@@ -199,6 +200,18 @@
     <string name="nc_conversation_menu_video_call">視訊通話</string>
     <string name="nc_conversation_menu_voice_call">音頻通話</string>
     <string name="nc_conversation_settings">對話設定</string>
+    <string name="nc_conversation_tags">標籤</string>
+    <string name="nc_conversation_tags_create">創建</string>
+    <string name="nc_conversation_tags_delete">刪除標籤</string>
+    <string name="nc_conversation_tags_empty">尚未加入標籤</string>
+    <string name="nc_conversation_tags_error_generic">發生錯誤，請再試一次</string>
+    <string name="nc_conversation_tags_favorites">最愛</string>
+    <string name="nc_conversation_tags_filter_all">全部</string>
+    <string name="nc_conversation_tags_manage">管理標籤</string>
+    <string name="nc_conversation_tags_name_hint">標籤名稱</string>
+    <string name="nc_conversation_tags_new">新標籤</string>
+    <string name="nc_conversation_tags_rename">重新命名標籤</string>
+    <string name="nc_conversation_tags_save">儲存</string>
     <string name="nc_conversations_empty">加入或者開一個新的對話</string>
     <string name="nc_conversations_empty_details">跟大家打招呼</string>
     <string name="nc_copy_message">複製</string>

@@ -133,6 +133,11 @@
     <string name="nc_conversation_menu_video_call">Video llamada</string>
     <string name="nc_conversation_menu_voice_call">Llamada de voz</string>
     <string name="nc_conversation_settings">Configuración de la conversación</string>
+    <string name="nc_conversation_tags_create">Crear</string>
+    <string name="nc_conversation_tags_empty">Aún no hay etiquetas</string>
+    <string name="nc_conversation_tags_favorites">Favoritos</string>
+    <string name="nc_conversation_tags_manage">Gestionar etiquetas</string>
+    <string name="nc_conversation_tags_new">Nueva etiqueta</string>
     <string name="nc_conversations_empty">Únete a la conversación o incia una nueva</string>
     <string name="nc_conversations_empty_details">¡Saluda a tus amigos y colegas!</string>
     <string name="nc_copy_message">Copiar</string>

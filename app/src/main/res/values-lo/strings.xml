@@ -182,6 +182,16 @@
     <string name="nc_conversation_menu_video_call">Video call</string>
     <string name="nc_conversation_menu_voice_call">Voice call</string>
     <string name="nc_conversation_settings">Conversation settings</string>
+    <string name="nc_conversation_tags">ແທັກ</string>
+    <string name="nc_conversation_tags_create">ສ້າງ</string>
+    <string name="nc_conversation_tags_delete">Delete tag</string>
+    <string name="nc_conversation_tags_error_generic">ບາງຢ່າງຜິດພາດ, ກະລຸນາລອງໃໝ່</string>
+    <string name="nc_conversation_tags_favorites">ລາຍການທີ່ມັກ</string>
+    <string name="nc_conversation_tags_filter_all">ທັງໝົດ</string>
+    <string name="nc_conversation_tags_manage">ຈັດການປ້າຍກຳກັບ</string>
+    <string name="nc_conversation_tags_name_hint">Tag name</string>
+    <string name="nc_conversation_tags_new">ແທັກໃໝ່</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">Join a conversation or start a new one</string>
     <string name="nc_conversations_empty_details">Say hi to your friends and colleagues!</string>
     <string name="nc_copy_message">ສຳເນົາ</string>

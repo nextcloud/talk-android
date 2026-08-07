@@ -109,6 +109,14 @@
     <string name="nc_conversation_menu_video_call">Mutida de vìdeu</string>
     <string name="nc_conversation_menu_voice_call">Mutida de boghe</string>
     <string name="nc_conversation_settings">Cunfiguratzione de sa resonada</string>
+    <string name="nc_conversation_tags">Etichetas</string>
+    <string name="nc_conversation_tags_create">Crea</string>
+    <string name="nc_conversation_tags_empty">Ancora peruna eticheta</string>
+    <string name="nc_conversation_tags_favorites">Preferidos</string>
+    <string name="nc_conversation_tags_filter_all">Totu</string>
+    <string name="nc_conversation_tags_manage">Gesti etichetas</string>
+    <string name="nc_conversation_tags_new">Eticheta noa</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">Intra in una resonada o cumintza•nde una noa</string>
     <string name="nc_conversations_empty_details">Saluda a sa gente!</string>
     <string name="nc_copy_message">Còpia</string>

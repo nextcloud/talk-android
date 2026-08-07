@@ -200,6 +200,13 @@
     <string name="nc_conversation_menu_video_call">Videokõne</string>
     <string name="nc_conversation_menu_voice_call">Häälkõne</string>
     <string name="nc_conversation_settings">Vestluse seadistused</string>
+    <string name="nc_conversation_tags_create">Koostamine</string>
+    <string name="nc_conversation_tags_delete">Kustuta silt</string>
+    <string name="nc_conversation_tags_empty">Silte pole veel</string>
+    <string name="nc_conversation_tags_error_generic">Midagi läks viltu, palun proovi uuesti.</string>
+    <string name="nc_conversation_tags_favorites">Lemmikud</string>
+    <string name="nc_conversation_tags_manage">Halda silte</string>
+    <string name="nc_conversation_tags_new">Uus silt</string>
     <string name="nc_conversations_empty">Liitu vestlusega või alusta uut</string>
     <string name="nc_conversations_empty_details">Ütle tere oma sõpradele ja kolleegidele!</string>
     <string name="nc_copy_message">Kopeeri</string>

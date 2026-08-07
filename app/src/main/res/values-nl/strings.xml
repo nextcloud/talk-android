@@ -182,6 +182,17 @@
     <string name="nc_conversation_menu_video_call">Videogesprek</string>
     <string name="nc_conversation_menu_voice_call">Gesprek</string>
     <string name="nc_conversation_settings">Gespreksinstellingen</string>
+    <string name="nc_conversation_tags">Tags</string>
+    <string name="nc_conversation_tags_create">Creëer</string>
+    <string name="nc_conversation_tags_delete">Verwijderen tag</string>
+    <string name="nc_conversation_tags_empty">Nog geen labels</string>
+    <string name="nc_conversation_tags_favorites">Favorieten</string>
+    <string name="nc_conversation_tags_filter_all">Alle</string>
+    <string name="nc_conversation_tags_manage">Beheer labels</string>
+    <string name="nc_conversation_tags_name_hint">Tagnaam</string>
+    <string name="nc_conversation_tags_new">Nieuwe tag</string>
+    <string name="nc_conversation_tags_rename">Hernoem tag</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">Doe mee met een gesprek, of start een nieuw</string>
     <string name="nc_conversations_empty_details">Zeg hallo tegen je vrienden en collega\'s!</string>
     <string name="nc_copy_message">Kopie</string>

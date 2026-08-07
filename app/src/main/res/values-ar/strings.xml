@@ -169,6 +169,7 @@
     <string name="nc_conversation_menu_video_call">اتصال فيديو</string>
     <string name="nc_conversation_menu_voice_call">اتصال فيديو</string>
     <string name="nc_conversation_settings">إعدادات المحادثة</string>
+    <string name="nc_conversation_tags_delete">حذف الوسم</string>
     <string name="nc_conversations_empty">إنضم لمحادثةٍ او ابدأ محادثةً جديدةً</string>
     <string name="nc_conversations_empty_details">رحّب بالأصدقاء و الزملاء!</string>
     <string name="nc_copy_message">أنسخ</string>
