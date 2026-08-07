@@ -350,7 +350,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
 
     // tests
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.1.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.1.3")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.11.4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
@@ -376,7 +376,7 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
 
-    testImplementation("org.junit.vintage:junit-vintage-engine:6.1.0") // DO NOT REMOVE
+    testImplementation("org.junit.vintage:junit-vintage-engine:6.1.3") // DO NOT REMOVE
     testImplementation("com.google.crypto.tink:tink:1.23.0")
     testImplementation("androidx.room:room-testing:$roomVersion")
     testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
