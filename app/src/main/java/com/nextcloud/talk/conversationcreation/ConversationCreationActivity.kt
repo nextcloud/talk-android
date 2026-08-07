@@ -171,7 +171,7 @@ fun ConversationCreationScreen(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            pickImage?.onTakePictureResult(imagePickerLauncher, result.data)
+            pickImage?.onTakePictureResult(imagePickerLauncher)
         }
     }
 

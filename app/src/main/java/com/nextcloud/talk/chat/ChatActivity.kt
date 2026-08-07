@@ -94,11 +94,11 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
-import com.nextcloud.talk.activities.TakePhotoActivity
 import com.nextcloud.talk.adapters.messages.CallStartedMessageInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.attachmentpreview.FileAttachmentPreviewFragment
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.model.FileParameters
 import com.nextcloud.talk.chat.ui.ChatEmptyState
@@ -160,7 +160,6 @@ import com.nextcloud.talk.ui.chat.ChatView
 import com.nextcloud.talk.ui.chat.ChatViewCallbacks
 import com.nextcloud.talk.ui.chat.ChatViewState
 import com.nextcloud.talk.ui.dialog.DateTimeCompose
-import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.GetPinnedOptionsDialog
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.ui.theme.LocalMessageUtils
@@ -392,7 +391,7 @@ class ChatActivity :
     private val _participantPermissionsFlow = MutableStateFlow<ParticipantPermissions?>(null)
     val participantPermissionsFlow: StateFlow<ParticipantPermissions?> = _participantPermissionsFlow.asStateFlow()
 
-    private var videoURI: Uri? = null
+    private var pendingCameraUri: Uri? = null
     private var pendingTargetMessageId: Long? = null
     private var pendingTargetThreadId: Long? = null
     private var pendingTargetSearchQuery: String? = null
@@ -2394,19 +2393,12 @@ class ChatActivity :
         try {
             require(filesToUpload.isNotEmpty())
 
-            val filenamesWithLineBreaks = StringBuilder("\n")
-
-            for (file in filesToUpload) {
-                val filename = FileUtils.getFileName(file, context)
-                filenamesWithLineBreaks.append(filename).append("\n")
-            }
-
             val newFragment = FileAttachmentPreviewFragment.newInstance(
-                filenamesWithLineBreaks.toString(),
-                filesToUpload.map { it.toString() }.toMutableList()
+                filesToUpload.map { it.toString() }.toMutableList(),
+                currentConversation?.displayName ?: ""
             )
-            newFragment.setListener { files, caption ->
-                uploadFiles(files, caption)
+            newFragment.setListener { files, caption, compressImages ->
+                uploadFiles(files, caption, compressImages)
             }
             newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
         } catch (e: IllegalStateException) {
@@ -2474,33 +2466,25 @@ class ChatActivity :
         try {
             filesToUpload.clear()
 
-            if (intent != null && intent.data != null) {
-                run {
-                    intent.data.let {
-                        filesToUpload.add(intent.data.toString())
-                    }
-                }
-                require(filesToUpload.isNotEmpty())
-            } else if (videoURI != null) {
-                filesToUpload.add(videoURI.toString())
-                videoURI = null
+            // The system camera app is only guaranteed to write to the URI passed via EXTRA_OUTPUT;
+            // whether it also populates the result intent's data is device/vendor-dependent, so the
+            // URI we supplied up front is the one source of truth here.
+            val uri = pendingCameraUri ?: intent?.data
+            pendingCameraUri = null
+            if (uri != null) {
+                filesToUpload.add(uri.toString())
             } else {
                 error("Failed to get data from intent and uri")
             }
 
             if (permissionUtil.isFilesPermissionGranted()) {
-                val filenamesWithLineBreaks = StringBuilder("\n")
-
-                for (file in filesToUpload) {
-                    val filename = FileUtils.getFileName(file.toUri(), context)
-                    filenamesWithLineBreaks.append(filename).append("\n")
-                }
-
                 val newFragment = FileAttachmentPreviewFragment.newInstance(
-                    filenamesWithLineBreaks.toString(),
-                    filesToUpload
+                    filesToUpload,
+                    currentConversation?.displayName ?: ""
                 )
-                newFragment.setListener { files, caption -> uploadFiles(files, caption) }
+                newFragment.setListener { files, caption, compressImages ->
+                    uploadFiles(files, caption, compressImages)
+                }
                 newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
             } else {
                 UploadAndShareFilesWorker.requestStoragePermission(this)
@@ -2608,27 +2592,17 @@ class ChatActivity :
         }
     }
 
-    private fun uploadFiles(files: MutableList<String>, caption: String = "") {
+    private fun uploadFiles(files: MutableList<String>, caption: String = "", compressImages: Boolean = false) {
         for (i in 0 until files.size) {
-            if (i == files.size - 1) {
-                uploadFile(
-                    fileUri = files[i],
-                    isVoiceMessage = false,
-                    caption = caption,
-                    roomToken = roomToken,
-                    replyToMessageId = getReplyToMessageId(),
-                    displayName = currentConversation?.displayName!!
-                )
-            } else {
-                uploadFile(
-                    fileUri = files[i],
-                    isVoiceMessage = false,
-                    caption = "",
-                    roomToken = roomToken,
-                    replyToMessageId = getReplyToMessageId(),
-                    displayName = currentConversation?.displayName!!
-                )
-            }
+            uploadFile(
+                fileUri = files[i],
+                isVoiceMessage = false,
+                caption = if (i == files.size - 1) caption else "",
+                roomToken = roomToken,
+                replyToMessageId = getReplyToMessageId(),
+                displayName = currentConversation?.displayName!!,
+                compressImages = compressImages
+            )
         }
     }
 
@@ -3888,7 +3862,31 @@ class ChatActivity :
         if (!permissionUtil.isCameraPermissionGranted()) {
             requestCameraPermissions()
         } else {
-            startPickCameraIntentForResult.launch(TakePhotoActivity.createIntent(context))
+            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+                takePictureIntent.resolveActivity(packageManager)?.also {
+                    val photoFile: File? = try {
+                        val outputDir = FileUtils.getSharedAttachmentsDirectory(context.cacheDir)
+                            ?: throw IOException("Could not create shared attachments directory")
+                        val dateFormat = SimpleDateFormat(FILE_DATE_PATTERN, Locale.ROOT)
+                        val date = dateFormat.format(Date())
+                        val photoName = String.format(
+                            context.resources.getString(R.string.nc_picture_filename),
+                            date
+                        )
+                        File(outputDir, "$photoName$PICTURE_SUFFIX")
+                    } catch (e: IOException) {
+                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                        Log.e(TAG, "error while creating photo file", e)
+                        null
+                    }
+
+                    photoFile?.also {
+                        pendingCameraUri = FileProvider.getUriForFile(context, context.packageName, it)
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pendingCameraUri)
+                        startPickCameraIntentForResult.launch(takePictureIntent)
+                    }
+                }
+            }
         }
     }
 
@@ -3915,8 +3913,8 @@ class ChatActivity :
                     }
 
                     videoFile?.also {
-                        videoURI = FileProvider.getUriForFile(context, context.packageName, it)
-                        takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoURI)
+                        pendingCameraUri = FileProvider.getUriForFile(context, context.packageName, it)
+                        takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, pendingCameraUri)
                         startPickCameraIntentForResult.launch(takeVideoIntent)
                     }
                 }
@@ -4008,13 +4006,15 @@ class ChatActivity :
         )
     }
 
+    @Suppress("LongParameterList")
     fun uploadFile(
         fileUri: String,
         isVoiceMessage: Boolean,
         caption: String = "",
         roomToken: String = "",
         replyToMessageId: Int? = null,
-        displayName: String
+        displayName: String,
+        compressImages: Boolean = false
     ) {
         chatViewModel.uploadFile(
             fileUri,
@@ -4022,7 +4022,8 @@ class ChatActivity :
             caption,
             roomToken,
             replyToMessageId,
-            displayName
+            displayName,
+            compressImages
         )
         cancelReply()
     }
@@ -4060,6 +4061,7 @@ class ChatActivity :
         private const val REQUEST_CAMERA_PERMISSION = 223
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
         private const val VIDEO_SUFFIX = ".mp4"
+        private const val PICTURE_SUFFIX = ".jpg"
         private const val VOICE_MESSAGE_SEEKBAR_BASE = 1000
         private const val HTTP_BAD_REQUEST = 400
         private const val HTTP_FORBIDDEN = 403

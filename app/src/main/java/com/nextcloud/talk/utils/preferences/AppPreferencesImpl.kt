@@ -353,6 +353,18 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
             }
         }
 
+    override fun getCompressUploadImages(): Boolean =
+        runBlocking {
+            async { readBoolean(COMPRESS_UPLOAD_IMAGES, defaultValue = true).first() }
+        }.getCompleted()
+
+    override fun setCompressUploadImages(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(COMPRESS_UPLOAD_IMAGES, value)
+            }
+        }
+
     override fun removeLinkPreviews() =
         runBlocking<Unit> {
             async {
@@ -675,6 +687,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val INCOGNITO_KEYBOARD = "incognito_keyboard"
         const val SHOW_ECOSYSTEM = "SHOW_ECOSYSTEM"
         const val PHONE_BOOK_INTEGRATION = "phone_book_integration"
+        const val COMPRESS_UPLOAD_IMAGES = "compress_upload_images"
         const val LINK_PREVIEWS = "link_previews"
         const val SCREEN_LOCK_TIMEOUT = "screen_lock_timeout"
         const val LOCK_TIMESTAMP = "lock_timestamp"

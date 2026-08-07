@@ -14,12 +14,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
+import androidx.core.content.FileProvider
 import autodagger.AutoInjector
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.constant.ImageProvider
-import com.nextcloud.talk.activities.TakePhotoActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
@@ -43,6 +44,8 @@ class PickImage(private val activity: Activity, private var currentUser: User?) 
 
     @Inject
     lateinit var permissionUtil: PlatformPermissionUtil
+
+    private var pendingCameraFile: File? = null
 
     init {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -84,7 +87,13 @@ class PickImage(private val activity: Activity, private var currentUser: User?) 
 
     fun takePicture(startTakePictureIntentForResult: ActivityResultLauncher<Intent>) {
         if (permissionUtil.isCameraPermissionGranted()) {
-            startTakePictureIntentForResult.launch(TakePhotoActivity.createIntent(activity))
+            val photoFile = createTempFileForCameraCapture()
+            pendingCameraFile = photoFile
+            val uri = FileProvider.getUriForFile(activity, activity.packageName, photoFile)
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+                putExtra(MediaStore.EXTRA_OUTPUT, uri)
+            }
+            startTakePictureIntentForResult.launch(takePictureIntent)
         } else {
             activity.requestPermissions(
                 arrayOf(android.Manifest.permission.CAMERA),
@@ -151,6 +160,17 @@ class PickImage(private val activity: Activity, private var currentUser: User?) 
         )
     }
 
+    private fun createTempFileForCameraCapture(): File {
+        FileUtils.removeTempCacheFile(
+            activity,
+            CAMERA_CAPTURE_PATH
+        )
+        return FileUtils.getTempCacheFile(
+            activity,
+            CAMERA_CAPTURE_PATH
+        )
+    }
+
     fun onImagePickerResult(data: Intent?, handleImage: (uri: Uri) -> Unit) {
         val uri: Uri = data?.data!!
         handleImage(uri)
@@ -163,16 +183,17 @@ class PickImage(private val activity: Activity, private var currentUser: User?) 
         }
     }
 
-    fun onTakePictureResult(startImagePickerForResult: ActivityResultLauncher<Intent>, data: Intent?) {
-        data?.data?.path?.let {
-            selectLocal(startImagePickerForResult, File(it))
-        }
+    fun onTakePictureResult(startImagePickerForResult: ActivityResultLauncher<Intent>) {
+        val file = pendingCameraFile ?: return
+        pendingCameraFile = null
+        selectLocal(startImagePickerForResult, file)
     }
 
     companion object {
         private const val TAG: String = "PickImage"
         private const val MAX_SIZE: Int = 1024
         private const val AVATAR_PATH = "photos/avatar.png"
+        private const val CAMERA_CAPTURE_PATH = "photos/camera_capture.jpg"
         private const val FULL_QUALITY: Int = 100
         const val REQUEST_PERMISSION_CAMERA: Int = 1
     }

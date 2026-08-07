@@ -24,7 +24,6 @@ plugins {
 
 val kotlinVersion: String by rootProject.extra
 
-val androidxCameraVersion = "1.6.1"
 val coilKtVersion = "2.7.0"
 val daggerVersion = "2.59.2"
 val emojiVersion = "1.6.0"
@@ -232,10 +231,6 @@ dependencies {
     implementation("org.conscrypt:conscrypt-android:2.5.3")
     implementation("com.github.nextcloud-deps:qrcodescanner:0.1.2.4") // "com.github.blikoon:QRCodeScanner:0.1.2"
 
-    implementation("androidx.camera:camera-core:$androidxCameraVersion")
-    implementation("androidx.camera:camera-camera2:$androidxCameraVersion")
-    implementation("androidx.camera:camera-lifecycle:$androidxCameraVersion")
-    implementation("androidx.camera:camera-view:$androidxCameraVersion")
     implementation("androidx.exifinterface:exifinterface:1.4.2")
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
@@ -302,6 +297,8 @@ dependencies {
 
     implementation("androidx.media3:media3-exoplayer:$media3Version")
     implementation("androidx.media3:media3-ui:$media3Version")
+    implementation("androidx.media3:media3-transformer:$media3Version")
+    implementation("androidx.media3:media3-effect:$media3Version")
 
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.32")

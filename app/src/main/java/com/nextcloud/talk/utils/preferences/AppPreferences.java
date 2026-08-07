@@ -134,6 +134,10 @@ public interface AppPreferences {
 
     void setPhoneBookIntegration(boolean value);
 
+    boolean getCompressUploadImages();
+
+    void setCompressUploadImages(boolean value);
+
     // TODO Remove in 13.0.0
     void removeLinkPreviews();
 

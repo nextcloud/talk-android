@@ -159,6 +159,11 @@ How to translate with transifex:
     <string name="nc_settings_screen_security_key" translatable="false">screen_security</string>
     <string name="nc_settings_incognito_keyboard_title">Incognito keyboard</string>
     <string name="nc_settings_incognito_keyboard_desc">Instructs keyboard to disable personalized learning (without guarantees)</string>
+    <string name="nc_settings_media_quality_title">Sent media quality</string>
+    <string name="nc_media_quality_original">Original quality</string>
+    <string name="nc_media_quality_reduced">Reduced quality</string>
+    <string name="nc_media_quality_original_hint">Sending original quality uses more mobile data.</string>
+    <string name="nc_close_video_playback">Close video playback</string>
     <string name="nc_settings_read_privacy_key" translatable="false">read_privacy</string>
     <string name="nc_locked_tap_to_unlock">Tap to unlock</string>
     <string name="nc_locked">Locked</string>
@@ -666,12 +671,17 @@ How to translate with transifex:
     <string name="nc_gallery">Gallery</string>
 
     <string name="nc_upload_notification_text">%1$s to %2$s - %3$s\%%</string>
+    <string name="nc_compress_in_progress">Compressing</string>
+    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_upload_failed_notification_title">Failure</string>
     <string name="nc_upload_failed_notification_text">Failed to upload %1$s</string>
     <string name="nc_file_storage_permission">Permission for file access is required</string>
 
     <!-- Video -->
     <string name="nc_video_filename" translatable="false">Video recording from %1$s</string>
+
+    <!-- Picture -->
+    <string name="nc_picture_filename" translatable="false">Picture from %1$s</string>
 
     <!-- location sharing -->
     <string name="nc_share_location">Share location</string>
@@ -789,15 +799,9 @@ How to translate with transifex:
 
     <!-- Take photo -->
     <string name="take_photo">Take a photo</string>
-    <string name="take_photo_switch_camera">Switch camera</string>
-    <string name="take_photo_retake_photo">Re-take photo</string>
-    <string name="take_photo_toggle_torch">Toggle torch</string>
-    <string name="take_photo_toggle_crop">Crop photo</string>
-    <string name="take_photo_toggle_lowres">Reduce image size</string>
-    <string name="take_photo_send">Send</string>
-    <string name="take_photo_error_deleting_picture">Error taking picture</string>
     <string name="take_photo_permission">Taking a photo is not possible without permissions</string>
     <string name="camera_permission_granted">Camera permission granted. Please choose camera again.</string>
+    <string name="nc_take_video">Take a video</string>
 
     <!-- Audio selection -->
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -942,6 +946,11 @@ How to translate with transifex:
     <string name="started_a_call">started a call</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Error 429 Too Many Requests</string>
     <string name="nc_caption">Caption</string>
+    <string name="nc_compress_images">Compress images and videos</string>
+    <string name="nc_hq_toggle">HQ</string>
+    <string name="nc_hq_toggle_description">High quality, no compression</string>
+    <string name="nc_remove_file">Remove file</string>
+    <string name="nc_add_more_files">Add more files</string>
     <string name="languages_error_title">Retrieval failed</string>
     <string name="languages_error_message">Languages could not be retrieved</string>
     <string name="nc_edit_message">Edit</string>
