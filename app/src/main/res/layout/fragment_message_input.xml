@@ -71,6 +71,12 @@
                 android:animateLayoutChanges="true"
                 android:inputType="textLongMessage|textAutoComplete"
                 android:maxLength="1000" />
+
+            <androidx.emoji2.emojipicker.EmojiPickerView
+                android:id="@+id/emoji_picker"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:visibility="gone" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>
