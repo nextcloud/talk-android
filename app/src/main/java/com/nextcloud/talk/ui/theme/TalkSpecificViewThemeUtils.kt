@@ -35,6 +35,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
+import androidx.emoji2.emojipicker.EmojiPickerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
@@ -489,6 +490,18 @@ class TalkSpecificViewThemeUtils @Inject constructor(
             chip.chipStrokeColor = chipOutlineFilterColorList(scheme)
             chip.setTextColor(textColors)
             chip.checkedIconTint = iconColors
+        }
+    }
+
+    fun themeEmojiPicker(emojiPickerView: EmojiPickerView) {
+        withScheme(emojiPickerView.context) { scheme ->
+            emojiPickerView.setBackgroundColor(dynamicColor.surfaceContainerLow().getArgb(scheme))
+            themeEmojiPickerCategoryTabs(
+                emojiPickerView,
+                dynamicColor.primary().getArgb(scheme),
+                dynamicColor.onSurfaceVariant().getArgb(scheme)
+            )
+            protectEmojiPickerScrollGesture(emojiPickerView)
         }
     }
 
