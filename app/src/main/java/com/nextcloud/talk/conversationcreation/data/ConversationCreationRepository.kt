@@ -34,5 +34,11 @@ interface ConversationCreationRepository {
         file: File,
         roomToken: String
     ): ConversationModel
+    suspend fun setConversationEmojiAvatar(
+        credentials: String?,
+        url: String,
+        emoji: String,
+        color: String?
+    ): RoomOverall
     suspend fun allowGuests(credentials: String?, url: String, token: String, allow: Boolean): GenericOverall
 }

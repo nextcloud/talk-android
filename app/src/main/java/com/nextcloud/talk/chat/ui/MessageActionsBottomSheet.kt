@@ -48,6 +48,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,6 +73,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.ui.theme.protectEmojiPickerScrollGesture
 import com.nextcloud.talk.ui.theme.themeEmojiPickerCategoryTabs
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
@@ -298,7 +300,7 @@ fun MessageActionsBottomSheet(
 ) {
     val context = LocalContext.current
     val recentEmojiProvider = remember(context) { ReactionRecentEmojiProvider(context) }
-    var showEmojiPicker by remember { mutableStateOf(false) }
+    var showEmojiPicker by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     val sheetState = rememberModalBottomSheetState()
@@ -711,6 +713,7 @@ private fun EmojiPickerSheetContent(
                     setRecentEmojiProvider(recentEmojiProvider)
                     setOnEmojiPickedListener(Consumer { item -> onEmojiSelected(item.emoji) })
                     themeEmojiPickerCategoryTabs(this, selectedTabColor, unselectedTabColor)
+                    protectEmojiPickerScrollGesture(this)
                 }
             }
         )

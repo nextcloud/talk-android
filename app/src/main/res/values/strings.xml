@@ -754,6 +754,9 @@ How to translate with transifex:
     <string name="upload_new_avatar_from_device">Upload new avatar from device</string>
     <string name="choose_avatar_from_cloud">Choose avatar from cloud</string>
     <string name="delete_avatar">Delete avatar</string>
+    <string name="nc_set_emoji_as_conversation_picture">Set emoji as conversation picture</string>
+    <string name="nc_remove_color">Remove color</string>
+    <string name="nc_custom_color">Custom color</string>
     <string name="scope_private_title">Private</string>
     <string name="scope_private_description">Only visible to people matched via phone number integration through Talk on mobile</string>
     <string name="lock_symbol">Lock symbol</string>

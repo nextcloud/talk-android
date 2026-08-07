@@ -32,7 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
@@ -47,6 +47,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.chooseaccount.viewmodel.StatusMessageViewModel
 import com.nextcloud.talk.models.json.status.Status
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
+import com.nextcloud.talk.ui.theme.protectEmojiPickerScrollGesture
 import com.nextcloud.talk.ui.theme.themeEmojiPickerCategoryTabs
 
 private val emojiPickerHeight = 360.dp
@@ -56,7 +57,7 @@ private val emojiPickerHeight = 360.dp
 fun StatusMessageModalBottomSheet(currentStatus: Status, viewModel: StatusMessageViewModel, onDismiss: () -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isDismissed by viewModel.isDismissed.collectAsState()
-    var showEmojiPicker by remember { mutableStateOf(false) }
+    var showEmojiPicker by rememberSaveable { mutableStateOf(false) }
     val backToStatus: () -> Unit = { showEmojiPicker = false }
 
     LaunchedEffect(currentStatus) {
@@ -114,6 +115,7 @@ private fun EmojiPickerSheetContent(onEmojiSelected: (String) -> Unit, onBack: (
                     setBackgroundColor(backgroundColor.toArgb())
                     setOnEmojiPickedListener(Consumer { item -> onEmojiSelected(item.emoji) })
                     themeEmojiPickerCategoryTabs(this, selectedTabColor, unselectedTabColor)
+                    protectEmojiPickerScrollGesture(this)
                 }
             }
         )

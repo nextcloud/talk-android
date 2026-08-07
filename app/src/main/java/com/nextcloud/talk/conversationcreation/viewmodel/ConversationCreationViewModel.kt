@@ -40,6 +40,15 @@ class ConversationCreationViewModel @Inject constructor(
     private val _selectedImageUri = MutableStateFlow<Uri?>(null)
     val selectedImageUri: StateFlow<Uri?> = _selectedImageUri
 
+    private val _selectedEmoji = MutableStateFlow<String?>(null)
+    val selectedEmoji: StateFlow<String?> = _selectedEmoji
+
+    private val _selectedEmojiColor = MutableStateFlow<Int?>(null)
+    val selectedEmojiColor: StateFlow<Int?> = _selectedEmojiColor
+
+    private val _isCreatingRoom = MutableStateFlow(false)
+    val isCreatingRoom: StateFlow<Boolean> = _isCreatingRoom
+
     private val _currentUser = currentUserProvider.currentUser.blockingGet()
     val currentUser: User = _currentUser
 
@@ -56,6 +65,25 @@ class ConversationCreationViewModel @Inject constructor(
 
     fun updateSelectedImageUri(uri: Uri?) {
         _selectedImageUri.value = uri
+        if (uri != null) {
+            _selectedEmoji.value = null
+            _selectedEmojiColor.value = null
+        }
+    }
+
+    fun updateSelectedEmoji(emoji: String?) {
+        _selectedEmoji.value = emoji
+        if (emoji != null) {
+            _selectedImageUri.value = null
+        } else {
+            _selectedEmojiColor.value = null
+        }
+    }
+
+    fun updateSelectedEmojiAvatar(emoji: String, color: Int?) {
+        _selectedEmoji.value = emoji
+        _selectedEmojiColor.value = color
+        _selectedImageUri.value = null
     }
 
     private val _roomName = MutableStateFlow("")
@@ -90,6 +118,11 @@ class ConversationCreationViewModel @Inject constructor(
         participants: Set<AutocompleteUser>,
         onRoomCreated: (String) -> Unit
     ) {
+        if (_isCreatingRoom.value) {
+            return
+        }
+        _isCreatingRoom.value = true
+
         val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token)
         val scope = when {
             isConversationAvailableForRegisteredUsers.value && !openForGuestAppUsers.value -> 1
@@ -205,21 +238,7 @@ class ConversationCreationViewModel @Inject constructor(
                                 scope
                             )
 
-                            val urlForConversationAvatar = ApiUtils.getUrlForConversationAvatar(
-                                1,
-                                _currentUser.baseUrl!!,
-                                token
-                            )
-
-                            selectedImageUri.value?.let {
-                                repository.uploadConversationAvatar(
-                                    credentials,
-                                    _currentUser,
-                                    urlForConversationAvatar,
-                                    it.toFile(),
-                                    token
-                                )
-                            }
+                            saveAvatar(credentials, token)
                             onRoomCreated(token)
                         } catch (exception: Exception) {
                             allowGuestsResult.value = AllowGuestsUiState.Error(exception.message ?: "")
@@ -232,12 +251,42 @@ class ConversationCreationViewModel @Inject constructor(
             } catch (e: Exception) {
                 roomViewState.value = RoomUIState.Error(e.message ?: "Unknown error")
                 Log.e("ConversationCreationViewModel", "Error - ${e.message}")
+            } finally {
+                _isCreatingRoom.value = false
             }
         }
     }
 
     fun getImageUri(avatarId: String, requestBigSize: Boolean, isDarkMode: Boolean): String =
         ApiUtils.getUrlForAvatar(_currentUser.baseUrl, avatarId, requestBigSize, darkMode = isDarkMode)
+
+    private suspend fun saveAvatar(credentials: String?, token: String) {
+        val emoji = _selectedEmoji.value
+        if (emoji != null) {
+            val urlForConversationEmojiAvatar = ApiUtils.getUrlForConversationEmojiAvatar(
+                1,
+                _currentUser.baseUrl!!,
+                token
+            )
+            val color = _selectedEmojiColor.value?.let { "%06X".format(COLOR_HEX_MASK and it) }
+            repository.setConversationEmojiAvatar(credentials, urlForConversationEmojiAvatar, emoji, color)
+        } else {
+            selectedImageUri.value?.let {
+                val urlForConversationAvatar = ApiUtils.getUrlForConversationAvatar(1, _currentUser.baseUrl!!, token)
+                repository.uploadConversationAvatar(
+                    credentials,
+                    _currentUser,
+                    urlForConversationAvatar,
+                    it.toFile(),
+                    token
+                )
+            }
+        }
+    }
+
+    companion object {
+        private const val COLOR_HEX_MASK = 0xFFFFFF
+    }
 }
 
 sealed class AllowGuestsUiState {

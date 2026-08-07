@@ -141,6 +141,9 @@ class ConversationInfoEditActivity : BaseActivity() {
                             pickImage?.takePicture(startTakePictureIntentForResult = startTakePictureIntentForResult)
                         },
                         onAvatarDeleteClick = { conversationInfoEditViewModel.deleteAvatar() },
+                        onAvatarEmojiAvatarConfirmed = { emoji, color ->
+                            conversationInfoEditViewModel.onEmojiAvatarConfirmed(emoji, color)
+                        },
                         onNameChange = { conversationInfoEditViewModel.updateConversationName(it) },
                         onDescriptionChange = { conversationInfoEditViewModel.updateConversationDescription(it) }
                     ),

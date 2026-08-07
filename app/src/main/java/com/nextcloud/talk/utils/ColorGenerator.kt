@@ -39,6 +39,8 @@ object ColorGenerator {
         return Color.rgb(rgb.r, rgb.g, rgb.b)
     }
 
+    fun paletteColors(): List<Int> = finalPalette.map { Color.rgb(it.r, it.g, it.b) }
+
     private fun hashToInt(hash: String, maximum: Int): Int {
         val sum = hash.map { it.lowercaseChar().digitToInt(16) % 16 }.sum()
         return sum % maximum

@@ -60,6 +60,18 @@ class ConversationInfoEditRepositoryImpl(private val ncApiCoroutines: NcApiCorou
         return ConversationModel.mapToConversationModel(result.ocs?.data!!, user)
     }
 
+    override suspend fun setConversationEmojiAvatar(
+        user: User,
+        roomToken: String,
+        emoji: String,
+        color: String?
+    ): ConversationModel {
+        val credentials = ApiUtils.getCredentials(user.username, user.token) ?: ""
+        val url = ApiUtils.getUrlForConversationEmojiAvatar(1, user.baseUrl, roomToken)
+        val result = ncApiCoroutines.setConversationEmojiAvatar(credentials, url, emoji, color)
+        return ConversationModel.mapToConversationModel(result.ocs?.data!!, user)
+    }
+
     override suspend fun renameConversation(user: User, roomToken: String, newRoomName: String): GenericOverall {
         val credentials = ApiUtils.getCredentials(user.username, user.token)
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))

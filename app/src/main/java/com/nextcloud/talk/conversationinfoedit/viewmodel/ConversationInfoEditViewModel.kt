@@ -109,7 +109,9 @@ class ConversationInfoEditViewModel @Inject constructor(
                         conversation = conversationModel,
                         avatarUrl = avatarUrlLight,
                         avatarUrlDark = avatarUrlDark,
-                        avatarRefreshKey = it.avatarRefreshKey + 1
+                        avatarRefreshKey = it.avatarRefreshKey + 1,
+                        selectedEmoji = null,
+                        selectedEmojiColor = null
                     )
                 }
             } catch (e: Exception) {
@@ -131,11 +133,43 @@ class ConversationInfoEditViewModel @Inject constructor(
                         conversation = conversationModel,
                         avatarUrl = avatarUrlLight,
                         avatarUrlDark = avatarUrlDark,
-                        avatarRefreshKey = it.avatarRefreshKey + 1
+                        avatarRefreshKey = it.avatarRefreshKey + 1,
+                        selectedEmoji = null,
+                        selectedEmojiColor = null
                     )
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error when deleting avatar", e)
+                _uiState.update { it.copy(userMessage = R.string.nc_common_error_sorry) }
+            }
+        }
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun onEmojiAvatarConfirmed(emoji: String, color: Int?) {
+        viewModelScope.launch {
+            try {
+                val user = currentUser ?: return@launch
+                val colorHex = color?.let { "%06X".format(COLOR_HEX_MASK and it) }
+                val conversationModel = conversationInfoEditRepository.setConversationEmojiAvatar(
+                    user,
+                    roomToken,
+                    emoji,
+                    colorHex
+                )
+                val (avatarUrlLight, avatarUrlDark) = buildAvatarUrls(user, conversationModel)
+                _uiState.update {
+                    it.copy(
+                        conversation = conversationModel,
+                        avatarUrl = avatarUrlLight,
+                        avatarUrlDark = avatarUrlDark,
+                        avatarRefreshKey = it.avatarRefreshKey + 1,
+                        selectedEmoji = emoji,
+                        selectedEmojiColor = color
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error when setting emoji avatar", e)
                 _uiState.update { it.copy(userMessage = R.string.nc_common_error_sorry) }
             }
         }
@@ -180,6 +214,7 @@ class ConversationInfoEditViewModel @Inject constructor(
 
     companion object {
         private val TAG = ConversationInfoEditViewModel::class.simpleName
+        private const val COLOR_HEX_MASK = 0xFFFFFF
     }
 
     private fun buildAvatarUrls(user: User, conversationModel: ConversationModel): Pair<String, String> {

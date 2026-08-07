@@ -7,6 +7,7 @@
 package com.nextcloud.talk.ui.theme
 
 import android.content.res.ColorStateList
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ImageView
@@ -81,6 +82,65 @@ fun themeEmojiPickerCategoryTabs(emojiPickerView: EmojiPickerView, selectedColor
                     emojiPickerView.findViewById<RecyclerView>(EmojiPickerR.id.emoji_picker_header) ?: return
                 emojiPickerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 attachTo(lateHeader)
+            }
+        }
+    )
+}
+
+/**
+ * When the picker is embedded in a Compose `ModalBottomSheet` via `AndroidView`, a swipe that
+ * starts on a clickable/long-clickable emoji cell fails to scroll the grid, while a swipe over
+ * the recycler's own background (e.g. a section header) scrolls normally. Root cause: on such a
+ * touch, RecyclerView designates the clickable cell as the touch target and only later, from
+ * `onInterceptTouchEvent`, decides to intercept for scrolling - and in that path
+ * `RecyclerView.onTouchEvent()`, which is what calls `requestDisallowInterceptTouchEvent(true)` to
+ * protect the gesture from ancestors, never runs. Without that call, Compose's `AndroidView`
+ * interop (`PointerInteropFilter`) never marks the gesture as claimed by the embedded view, so the
+ * ModalBottomSheet's own drag-gesture detector is free to also claim it - which it does, sending
+ * ACTION_CANCEL down into the RecyclerView before it can visibly scroll. When the touch instead
+ * starts on a plain (non-interactive) child, no child claims the initial DOWN, so RecyclerView's
+ * own `onTouchEvent` runs from the very first event and calls `requestDisallowInterceptTouchEvent`
+ * promptly, which is why that case has always scrolled fine.
+ *
+ * Fix: claim `requestDisallowInterceptTouchEvent(true)` ourselves as soon as a gesture begins,
+ * exactly like a nested RecyclerView/ViewPager protecting its own scroll axis would - regardless
+ * of whether a clickable child ends up being the initial touch target.
+ */
+fun protectEmojiPickerScrollGesture(emojiPickerView: EmojiPickerView) {
+    fun protect(recyclerView: RecyclerView) {
+        recyclerView.addOnItemTouchListener(
+            object : RecyclerView.OnItemTouchListener {
+                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                    if (e.actionMasked == MotionEvent.ACTION_DOWN) {
+                        rv.parent?.requestDisallowInterceptTouchEvent(true)
+                    }
+                    return false
+                }
+
+                override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) = Unit
+
+                override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) = Unit
+            }
+        )
+    }
+
+    val header = emojiPickerView.findViewById<RecyclerView>(EmojiPickerR.id.emoji_picker_header)
+    val body = emojiPickerView.findViewById<RecyclerView>(EmojiPickerR.id.emoji_picker_body)
+    if (header != null && body != null) {
+        protect(header)
+        protect(body)
+        return
+    }
+
+    emojiPickerView.viewTreeObserver.addOnGlobalLayoutListener(
+        object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                val lateHeader = emojiPickerView.findViewById<RecyclerView>(EmojiPickerR.id.emoji_picker_header)
+                val lateBody = emojiPickerView.findViewById<RecyclerView>(EmojiPickerR.id.emoji_picker_body)
+                if (lateHeader == null || lateBody == null) return
+                emojiPickerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                protect(lateHeader)
+                protect(lateBody)
             }
         }
     )
