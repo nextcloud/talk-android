@@ -196,6 +196,7 @@
     <string name="nc_copy_message_link">Kopier besked link</string>
     <string name="nc_create_new_conversation">Opret ny samtale</string>
     <string name="nc_create_poll">Opret afstemning</string>
+    <string name="nc_custom_color">Brug brugerdefineret farve</string>
     <string name="nc_date_header_today">I dag</string>
     <string name="nc_date_header_yesterday">I går</string>
     <string name="nc_delete">Slet</string>
@@ -363,6 +364,8 @@
     <string name="nc_push_notification_fetch_error">Desværre, noget gik galt, kan ikke hente test push besked</string>
     <string name="nc_push_notification_message">Push notifikation afsendt. Du bør nu modtage en notifikation på apparatet med titlen \'Test push notifikationer\'</string>
     <string name="nc_remind">Påmind mig senere</string>
+    <string name="nc_remove_color">Fjern farve</string>
+    <string name="nc_remove_file">Fjern fil</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
     <string name="nc_remove_group_and_members">Fjern gruppe og medlemmer</string>
     <string name="nc_remove_participant">Fjern deltager</string>

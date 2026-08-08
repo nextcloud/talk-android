@@ -60,6 +60,7 @@
     <string name="nc_add_attachment">Agiunghe alligongiadu</string>
     <string name="nc_add_emojis">Agiunghe carigheddas</string>
     <string name="nc_add_file">Agiunghe a sa resonada</string>
+    <string name="nc_add_more_files">Agiunghe àteros archìvios</string>
     <string name="nc_add_participants">Aguinghe partetzipantes</string>
     <string name="nc_add_to_favorites">Agiunghe a preferidos</string>
     <string name="nc_all_ok_operation">AB, fatu!</string>
@@ -122,6 +123,7 @@
     <string name="nc_copy_message">Còpia</string>
     <string name="nc_copy_message_link">Còpia su ligòngiu de su messàgiu</string>
     <string name="nc_create_new_conversation">Crea una resonada noa</string>
+    <string name="nc_custom_color">Personaliza colore</string>
     <string name="nc_date_header_today">Oe</string>
     <string name="nc_date_header_yesterday">Eris</string>
     <string name="nc_delete">Cantzella</string>
@@ -219,6 +221,7 @@
     <string name="nc_promote">Approva a moderadore</string>
     <string name="nc_push_disabled">Notìficas push disativadas</string>
     <string name="nc_remind">Regorda•mi•ddu a coa</string>
+    <string name="nc_remove_color">Boga colore</string>
     <string name="nc_remove_from_favorites">Boga dae preferidos</string>
     <string name="nc_remove_group_and_members">Boga·nche grupu e partetzipantes</string>
     <string name="nc_remove_participant"> Boga·nche partetzipante</string>

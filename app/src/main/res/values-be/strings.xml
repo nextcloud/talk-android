@@ -122,6 +122,7 @@
     <string name="nc_add_attachment">Дадаць далучэнне</string>
     <string name="nc_add_emojis">Дадаць эмодзі</string>
     <string name="nc_add_file">Дадаць да размовы</string>
+    <string name="nc_add_more_files">Дадаць больш файлаў</string>
     <string name="nc_add_participants">Дадаць удзельнікаў</string>
     <string name="nc_add_to_favorites">У абранае</string>
     <string name="nc_all_ok_operation">ОК, усё гатова!</string>
@@ -379,6 +380,7 @@
     <string name="nc_push_notification_fetch_error">Нешта пайшло не так, не ўдалося атрымаць тэставае push-паведамленне</string>
     <string name="nc_push_notification_message">Push-апавяшчэнне паспяхова адпраўлена. Цяпер вы павінны атрымацьна гэтай прыладзе  апавяшчэнне з назвай \"Тэставае push-апавяшчэнне\".</string>
     <string name="nc_remind">Нагадаць пазней</string>
+    <string name="nc_remove_file">Выдаліць файл</string>
     <string name="nc_remove_from_favorites">Выдаліць з абранага</string>
     <string name="nc_remove_group_and_members">Выдаліць групу і ўдзельнікаў</string>
     <string name="nc_remove_participant">Выдаліць удзельніка</string>
@@ -438,6 +440,7 @@
     <string name="nc_server_unsupported">На серверы не ўсталявана праграма Talk, якая падтрымліваецца</string>
     <string name="nc_server_url">Адрас сервера https://…</string>
     <string name="nc_server_version">%1$s працуе толькі з %2$s версіі 13 і вышэй</string>
+    <string name="nc_set_emoji_as_conversation_picture">Задаць эмодзі ў якасці аватара размовы</string>
     <string name="nc_set_new_password">Задаць новы пароль</string>
     <string name="nc_set_password">Задаць пароль</string>
     <string name="nc_settings">Налады</string>

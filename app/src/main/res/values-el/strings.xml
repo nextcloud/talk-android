@@ -73,6 +73,7 @@
     <string name="nc_add_attachment">Προσθήκη συνημμένου</string>
     <string name="nc_add_emojis">Προσθήκη emojis</string>
     <string name="nc_add_file">Προσθήκη στη συζήτηση</string>
+    <string name="nc_add_more_files">Προσθήκη περισσότερων αρχείων</string>
     <string name="nc_add_participants">Προσθήκη συμμετεχόντων</string>
     <string name="nc_add_to_favorites">Προσθήκη στα αγαπημένα</string>
     <string name="nc_all_ok_operation">Εντάξει, ολοκληρώθηκαν όλα!</string>
@@ -143,6 +144,7 @@
     <string name="nc_copy_message_link">Αντιγραφή συνδέσμου μηνύματος</string>
     <string name="nc_create_new_conversation">Δημιουργία νέας συνομιλίας</string>
     <string name="nc_create_poll">Δημιουργία ψηφοφορίας</string>
+    <string name="nc_custom_color">Προσαρμοσμένο χρώμα</string>
     <string name="nc_date_header_today">Σήμερα</string>
     <string name="nc_date_header_yesterday">Χθές</string>
     <string name="nc_delete">Διαγραφή</string>
@@ -263,6 +265,8 @@
     <string name="nc_public_call_status">Δημόσια συνομιλία</string>
     <string name="nc_push_disabled">Οι ειδοποιήσεις push απενεργοποιήθηκαν</string>
     <string name="nc_remind">Θύμισέ μου αργότερα</string>
+    <string name="nc_remove_color">Αφαίρεση χρώματος</string>
+    <string name="nc_remove_file">Αφαίρεση αρχείου</string>
     <string name="nc_remove_from_favorites">Αφαίρεση από τα αγαπημένα</string>
     <string name="nc_remove_group_and_members">Αφαίρεση ομάδων και μελών</string>
     <string name="nc_remove_participant">Αφαίρεση συμμετέχοντα</string>
@@ -311,6 +315,7 @@
     <string name="nc_server_unsupported">Ο διακομιστής δεν έχει εγκατεστημένη την υποστήριξη εφαρμογής Talk</string>
     <string name="nc_server_url">Διεύθυνση διακομιστή https://…</string>
     <string name="nc_server_version">%1$s δουλεύει μόνο με %2$s 13 και πάνω</string>
+    <string name="nc_set_emoji_as_conversation_picture">Ορισμός emoji ως εικόνας συνομιλίας</string>
     <string name="nc_set_new_password">Ορισμός νέου συνθηματικού</string>
     <string name="nc_settings">Ρυθμίσεις</string>
     <string name="nc_settings_account_updated">Ο υπάρχων λογαριασμός ενημερώθηκε, χωρίς την εισαγωγή νέου</string>

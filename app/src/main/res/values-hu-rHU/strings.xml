@@ -129,6 +129,7 @@
     <string name="nc_add_attachment">Melléklet hozzáadása</string>
     <string name="nc_add_emojis">Emodzsi hozzáadása</string>
     <string name="nc_add_file">Hozzáadás a beszélgetéshez</string>
+    <string name="nc_add_more_files">Több fájl hozzáadása</string>
     <string name="nc_add_participants">Résztvevők hozzáadása</string>
     <string name="nc_add_to_favorites">Hozzáadás a kedvencekhez</string>
     <string name="nc_add_to_home_screen">Hozzáadás a kezdőképernyőhöz</string>
@@ -206,6 +207,7 @@
     <string name="nc_conversation_tags_manage">Címkék kezelése</string>
     <string name="nc_conversation_tags_name_hint">Címkenév</string>
     <string name="nc_conversation_tags_new">Új címke</string>
+    <string name="nc_conversation_tags_rename">Címke átnevezése</string>
     <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">Csatlakozzon egy beszélgetéshez, vagy indítson egy újat</string>
     <string name="nc_conversations_empty_details">Üdvözölje a barátait és munkatársait!</string>
@@ -213,6 +215,7 @@
     <string name="nc_copy_message_link">Üzenethivatkozás másolása</string>
     <string name="nc_create_new_conversation">Új beszélgetés létrehozása</string>
     <string name="nc_create_poll">Szavazás létrehozása</string>
+    <string name="nc_custom_color">Egyéni szín</string>
     <string name="nc_date_header_today">Ma</string>
     <string name="nc_date_header_yesterday">Tegnap</string>
     <string name="nc_delete">Törlés</string>
@@ -392,6 +395,8 @@
     <string name="nc_push_notification_fetch_error">Sajnos valamilyen hiba történt, a leküldéses tesztüzenet nem kérhető le</string>
     <string name="nc_push_notification_message">A leküldéses értesítés sikeresen elküldve. Kapnia kellene egy „Leküldéses értesítések tesztelése” című üzenetet ezen az eszközön.</string>
     <string name="nc_remind">Emlékeztessen később</string>
+    <string name="nc_remove_color">Szín eltávolítása</string>
+    <string name="nc_remove_file">Fájl eltávolítása</string>
     <string name="nc_remove_from_favorites">Eltávolítás a kedvencekből</string>
     <string name="nc_remove_group_and_members">Csoport és tagok eltávolítása</string>
     <string name="nc_remove_participant">Résztvevő eltávolítása</string>
@@ -456,6 +461,7 @@
     <string name="nc_server_unsupported">A kiszolgálón nincs támogatott Beszélgetés alkalmazás telepítve</string>
     <string name="nc_server_url">Kiszolgálócím https://…</string>
     <string name="nc_server_version">A(z) %1$s csak %2$s 13 vagy újabb verzióval működik</string>
+    <string name="nc_set_emoji_as_conversation_picture">Emodzsi beállítása a beszélgetés képének</string>
     <string name="nc_set_new_password">Jelszó beállítása</string>
     <string name="nc_set_password">Jelszó megadása</string>
     <string name="nc_settings">Beállítások</string>

@@ -74,6 +74,7 @@
     <string name="nc_add_attachment">Dodaj privitak</string>
     <string name="nc_add_emojis">Dodaj emojije</string>
     <string name="nc_add_file">Dodaj u razgovor</string>
+    <string name="nc_add_more_files">Dodaj više datoteka</string>
     <string name="nc_add_participants">Dodaj sudionike</string>
     <string name="nc_add_to_favorites">Dodaj u favorite</string>
     <string name="nc_all_ok_operation">U redu, završeno!</string>
@@ -143,6 +144,7 @@
     <string name="nc_copy_message_link">Kopiraj poveznicu poruke</string>
     <string name="nc_create_new_conversation">Stvori novi razgovor</string>
     <string name="nc_create_poll">Stvori anketu</string>
+    <string name="nc_custom_color">Prilagođena boja</string>
     <string name="nc_date_header_today">Danas</string>
     <string name="nc_date_header_yesterday">Jučer</string>
     <string name="nc_delete">Izbriši</string>
@@ -259,6 +261,7 @@
     <string name="nc_public_call_status">Javni razgovor</string>
     <string name="nc_push_disabled">Push obavijesti su onemogućene</string>
     <string name="nc_remind">Podsjeti me kasnije</string>
+    <string name="nc_remove_color">Ukloni boju</string>
     <string name="nc_remove_from_favorites">Ukloni iz favorita</string>
     <string name="nc_remove_group_and_members">Ukloni grupu i članove</string>
     <string name="nc_remove_participant">Ukloni sudionika</string>

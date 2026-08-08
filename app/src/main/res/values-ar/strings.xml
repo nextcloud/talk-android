@@ -104,6 +104,7 @@
     <string name="nc_add_attachment">إضافة مرفق</string>
     <string name="nc_add_emojis">إضِف إيموجي emoji</string>
     <string name="nc_add_file">إضافة إلى المحادثة</string>
+    <string name="nc_add_more_files">اضافة المزيد من الملفات</string>
     <string name="nc_add_participants">إضِف مُشاركين</string>
     <string name="nc_add_to_favorites">أضف إلى المفضلة</string>
     <string name="nc_all_ok_operation">تم!</string>
@@ -186,6 +187,7 @@
     <string name="nc_copy_message_link">نسخ رابط الرسالة </string>
     <string name="nc_create_new_conversation">إنشاء محادثة جديدة</string>
     <string name="nc_create_poll">صَوّت، رجاءً</string>
+    <string name="nc_custom_color">لون مخصص</string>
     <string name="nc_date_header_today">اليوم</string>
     <string name="nc_date_header_yesterday">أمس</string>
     <string name="nc_delete">حذف </string>
@@ -343,6 +345,8 @@
     <string name="nc_public_call_status">محادثة عمومية</string>
     <string name="nc_push_disabled">الإشعارات معطلة</string>
     <string name="nc_remind">ذكرني لاحقا</string>
+    <string name="nc_remove_color">حذف لون</string>
+    <string name="nc_remove_file">إزالة ملف</string>
     <string name="nc_remove_from_favorites">إزالتها مِن المفضلة</string>
     <string name="nc_remove_group_and_members">حذف المجموعة group و الأعضاء</string>
     <string name="nc_remove_participant">حذف مشارك</string>
@@ -391,6 +395,7 @@
     <string name="nc_server_unsupported">الخادم ليس فيه تطبيق Talk مدعوم </string>
     <string name="nc_server_url">عنوان الخادم https://…</string>
     <string name="nc_server_version">%1$s يعمل فقط مع %2$s 13 وأكثر</string>
+    <string name="nc_set_emoji_as_conversation_picture">تعيين إيموجي كصورة للمحادثة</string>
     <string name="nc_set_new_password">تعيين كلمة مرور جديدة</string>
     <string name="nc_set_password">تعيين كلمة المرور</string>
     <string name="nc_settings">الإعدادات</string>

@@ -130,6 +130,7 @@
     <string name="nc_add_attachment">افزودن پیوست</string>
     <string name="nc_add_emojis">افزودن صورتک</string>
     <string name="nc_add_file">افزودن به مکالمه</string>
+    <string name="nc_add_more_files">افزودن فایل‌های بیشتر</string>
     <string name="nc_add_participants">افزودن عضو</string>
     <string name="nc_add_to_favorites">افزودن به مورد علاقه‌ها</string>
     <string name="nc_add_to_home_screen">افزودن به صفحه اصلی</string>
@@ -216,6 +217,7 @@
     <string name="nc_copy_message_link">کپی لینک پیام</string>
     <string name="nc_create_new_conversation">ایجاد یک گفتگوی جدید</string>
     <string name="nc_create_poll">ایجاد نظرسنجی</string>
+    <string name="nc_custom_color">رنگ سفارشی</string>
     <string name="nc_date_header_today">امروز</string>
     <string name="nc_date_header_yesterday">دیروز</string>
     <string name="nc_delete">حذف</string>
@@ -410,6 +412,8 @@
     <string name="nc_push_notification_fetch_error">متأسفانه مشکلی پیش آمد، نمی‌توان پیام تست پوش را دریافت کرد</string>
     <string name="nc_push_notification_message">اعلان پوش با موفقیت ارسال شد. اکنون باید یک اعلان روی این دستگاه با عنوان \'\Testing push notifications\'\ دریافت کنید</string>
     <string name="nc_remind">بعدا به من یادآوری کن</string>
+    <string name="nc_remove_color">حذف رنگ</string>
+    <string name="nc_remove_file">حذف فایل</string>
     <string name="nc_remove_from_favorites">حذف کردن از مورد علاقه‌ها</string>
     <string name="nc_remove_group_and_members">حذف گروه و اعضا</string>
     <string name="nc_remove_participant">حذف شرکت‌کننده</string>
@@ -474,6 +478,7 @@
     <string name="nc_server_unsupported">کارگزار برنامه صحبت را پشتیبانی نمی‌کند</string>
     <string name="nc_server_url">نشانی سرور ‪https://…</string>
     <string name="nc_server_version">سرور %1$s فقط با %2$s و بالاتر کار می‌کند</string>
+    <string name="nc_set_emoji_as_conversation_picture">تنظیم ایموجی به عنوان تصویر گفتگو</string>
     <string name="nc_set_new_password">تنظیم گذرواژه جدید</string>
     <string name="nc_set_password">تنظیم گذرواژه</string>
     <string name="nc_settings">تنظیمات</string>

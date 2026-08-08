@@ -131,6 +131,7 @@
     <string name="nc_add_attachment">Lisa manus</string>
     <string name="nc_add_emojis">Lisa emojisid</string>
     <string name="nc_add_file">Lisa vestlusele</string>
+    <string name="nc_add_more_files">Lisa veel faile</string>
     <string name="nc_add_participants">Lisa osalejaid</string>
     <string name="nc_add_to_favorites">Lisa lemmikutesse</string>
     <string name="nc_add_to_home_screen">Lisa avalehel</string>
@@ -203,8 +204,12 @@
     <string name="nc_conversation_tags">Sildid</string>
     <string name="nc_conversation_tags_create">Koostamine</string>
     <string name="nc_conversation_tags_delete">Kustuta silt</string>
+    <string name="nc_conversation_tags_delete_confirm_message">See silt saab olema eemaldatud kõikide vestluste juurest, kuhu ta oli määratud.</string>
+    <string name="nc_conversation_tags_delete_confirm_title">Kas kustutad sildi?</string>
     <string name="nc_conversation_tags_empty">Silte pole veel</string>
     <string name="nc_conversation_tags_error_generic">Midagi läks viltu, palun proovi uuesti.</string>
+    <string name="nc_conversation_tags_error_limit">Sa oled jõudnud lubatud siltide arvuni</string>
+    <string name="nc_conversation_tags_error_name">Selle sildi nimi on vigane või juba kasutusel</string>
     <string name="nc_conversation_tags_favorites">Lemmikud</string>
     <string name="nc_conversation_tags_filter_all">Kõik</string>
     <string name="nc_conversation_tags_manage">Halda silte</string>
@@ -218,6 +223,7 @@
     <string name="nc_copy_message_link">Kopeeri sõnumi link</string>
     <string name="nc_create_new_conversation">Loo uus vestlus</string>
     <string name="nc_create_poll">Loo küsitlus</string>
+    <string name="nc_custom_color">Sinu valitud värv</string>
     <string name="nc_date_header_today">Täna</string>
     <string name="nc_date_header_yesterday">Eile</string>
     <string name="nc_delete">Kustuta</string>
@@ -416,6 +422,8 @@
     <string name="nc_push_notification_fetch_error">Vabandust, midagi läks valesti, tõuketeavituse testsõnumit ei õnnestu laadida</string>
     <string name="nc_push_notification_message">Tõuketeavituse saatmine õnnestus. Peaksid selles seadmes nüüd saama tõuketeavituse pealkirjaga „Tõuketeavituse test“</string>
     <string name="nc_remind">Tuleta mulle hiljem meelde</string>
+    <string name="nc_remove_color">Eemalda värv</string>
+    <string name="nc_remove_file">Eemalda fail</string>
     <string name="nc_remove_from_favorites">Eemalda lemmikutest</string>
     <string name="nc_remove_group_and_members">Eemalda gruppe ja liikmeid</string>
     <string name="nc_remove_participant">Eemalda osalejaid</string>
@@ -480,6 +488,7 @@
     <string name="nc_server_unsupported">Serverisse pole paigaldatud toetatud kõneteenuse rakendust</string>
     <string name="nc_server_url">Serveri aadress https://…</string>
     <string name="nc_server_version">%1$s toimib vaid siis, kui kasutusel on %2$s 13 ja uuem</string>
+    <string name="nc_set_emoji_as_conversation_picture">Lisa emoji vestluse pildiks</string>
     <string name="nc_set_new_password">Määra uus salasõna</string>
     <string name="nc_set_password">Määra salasõna</string>
     <string name="nc_settings">Seadistused</string>

@@ -72,6 +72,7 @@
     <string name="nc_add_attachment">Agregar adjunto</string>
     <string name="nc_add_emojis">Agregar emojis</string>
     <string name="nc_add_file">Agregar a la conversación</string>
+    <string name="nc_add_more_files">Agregar más archivos</string>
     <string name="nc_add_participants">Agregar participantes</string>
     <string name="nc_add_to_favorites">Agregar a tus favoritos</string>
     <string name="nc_all_ok_operation">¡OK, ya terminamos!</string>
@@ -147,6 +148,7 @@
     <string name="nc_copy_message">Copiar</string>
     <string name="nc_copy_message_link">Copiar enlace del mensaje</string>
     <string name="nc_create_poll">Crear encuesta</string>
+    <string name="nc_custom_color">Color personalizado</string>
     <string name="nc_date_header_today">Hoy</string>
     <string name="nc_date_header_yesterday">Ayer</string>
     <string name="nc_delete">Borrar</string>
@@ -275,6 +277,8 @@
     <string name="nc_promote">Promover a moderador</string>
     <string name="nc_push_disabled">Notificaciones push deshabilitadas</string>
     <string name="nc_remind">Recuérdame más tarde</string>
+    <string name="nc_remove_color">Eliminar color</string>
+    <string name="nc_remove_file">Eliminar archivo</string>
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>
     <string name="nc_remove_group_and_members">Eliminar grupo y miembros</string>
     <string name="nc_remove_participant">Eliminar participante</string>
@@ -317,6 +321,7 @@
     <string name="nc_server_unsupported">El servidor no tiene instalada la aplicación Talk compatible</string>
     <string name="nc_server_url">Dirección del servidor https://...</string>
     <string name="nc_server_version">%1$s solo funciona con %2$s 13 y posteriores</string>
+    <string name="nc_set_emoji_as_conversation_picture">Establecer un emoji como imagen de la conversación</string>
     <string name="nc_settings">Configuraciones </string>
     <string name="nc_settings_account_updated">Tu cuenta existente ha sido actualizada, en lugar de agregar una nueva</string>
     <string name="nc_settings_advanced_title">Avanzado</string>

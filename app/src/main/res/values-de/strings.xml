@@ -131,6 +131,7 @@
     <string name="nc_add_attachment">Anhang hinzufügen</string>
     <string name="nc_add_emojis">Emojis hinzufügen</string>
     <string name="nc_add_file">Zur Unterhaltung hinzufügen</string>
+    <string name="nc_add_more_files">Weitere Dateien hinzufügen</string>
     <string name="nc_add_participants">Teilnehmer hinzufügen</string>
     <string name="nc_add_to_favorites">Zu Favoriten hinzufügen</string>
     <string name="nc_add_to_home_screen">Zum Startbildschirm hinzufügen</string>
@@ -203,8 +204,12 @@
     <string name="nc_conversation_tags">Schlagworte</string>
     <string name="nc_conversation_tags_create">Erstellen</string>
     <string name="nc_conversation_tags_delete">Schlagwort löschen</string>
+    <string name="nc_conversation_tags_delete_confirm_message">Dieses Schlagwort wird aus allen Unterhaltungen entfernt, denen es zugewiesen ist.</string>
+    <string name="nc_conversation_tags_delete_confirm_title">Schlagwort löschen?</string>
     <string name="nc_conversation_tags_empty">Noch keine Schlagworte vorhanden</string>
     <string name="nc_conversation_tags_error_generic">Etwas ist schiefgelaufen. Bitte erneut versuchen.</string>
+    <string name="nc_conversation_tags_error_limit">Sie haben die maximale Anzahl von Schlagworten erreicht</string>
+    <string name="nc_conversation_tags_error_name">Dieser Schlagwortname ist ungültig oder wird bereits verwendet</string>
     <string name="nc_conversation_tags_favorites">Favoriten</string>
     <string name="nc_conversation_tags_filter_all">Alle</string>
     <string name="nc_conversation_tags_manage">Schlagworte verwalten</string>
@@ -218,6 +223,7 @@
     <string name="nc_copy_message_link">Nachrichtenlink kopieren</string>
     <string name="nc_create_new_conversation">Neue Unterhaltung erstellen</string>
     <string name="nc_create_poll">Umfrage erstellen</string>
+    <string name="nc_custom_color">Benutzerdefinierte Farbe</string>
     <string name="nc_date_header_today">Heute</string>
     <string name="nc_date_header_yesterday">Gestern</string>
     <string name="nc_delete">Löschen</string>
@@ -416,6 +422,8 @@
     <string name="nc_push_notification_fetch_error">Leider ist etwas schief gelaufen, die Test-Push-Nachricht kann nicht abgerufen werden</string>
     <string name="nc_push_notification_message">Die Push-Benachrichtigung wurde gesendet. Sie sollten nun auf diesem Gerät eine Benachrichtigung mit dem Titel \"Testen von Push-Benachrichtigungen\" erhalten.</string>
     <string name="nc_remind">Erinnere mich später</string>
+    <string name="nc_remove_color">Farbe entfernen</string>
+    <string name="nc_remove_file">Datei entfernen</string>
     <string name="nc_remove_from_favorites">Von Favoriten entfernen</string>
     <string name="nc_remove_group_and_members">Gruppe und Mitglieder entfernen</string>
     <string name="nc_remove_participant">Teilnehmer entfernen</string>
@@ -480,6 +488,7 @@
     <string name="nc_server_unsupported">Auf dem Server ist keine unterstützte Talk-App installiert</string>
     <string name="nc_server_url">Serveradresse https://…</string>
     <string name="nc_server_version">%1$s funktioniert nur mit %2$s 13 und höher</string>
+    <string name="nc_set_emoji_as_conversation_picture">Emoji als Unterhaltungsbild setzen</string>
     <string name="nc_set_new_password">Neues Passwort setzen</string>
     <string name="nc_set_password">Passwort festlegen</string>
     <string name="nc_settings">Einstellungen</string>

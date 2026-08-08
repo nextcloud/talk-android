@@ -71,6 +71,7 @@
     <string name="nc_add_attachment">Добавяне на прикачен файл</string>
     <string name="nc_add_emojis">Добавяне на емотикони</string>
     <string name="nc_add_file">Добави към разговор</string>
+    <string name="nc_add_more_files">Добавяне на още файлове </string>
     <string name="nc_add_participants">Добавяне на участници</string>
     <string name="nc_add_to_favorites">Добави към любимите</string>
     <string name="nc_all_ok_operation">Добре, всичко е готово!</string>
@@ -147,6 +148,7 @@
     <string name="nc_copy_message">Копиране</string>
     <string name="nc_copy_message_link">Копиране на връзката към съобщението</string>
     <string name="nc_create_poll">Създаване на анкета</string>
+    <string name="nc_custom_color">Персонализиране на цвят</string>
     <string name="nc_date_header_today">Днес</string>
     <string name="nc_date_header_yesterday">Вчера</string>
     <string name="nc_delete">Изтриване</string>
@@ -275,6 +277,8 @@
     <string name="nc_promote">Повишаване до модератор</string>
     <string name="nc_push_disabled">Push/насочените/ известия са деактивирани</string>
     <string name="nc_remind">Напомни ми по-късно</string>
+    <string name="nc_remove_color">Премахване на цвят</string>
+    <string name="nc_remove_file">Премахване на файлове</string>
     <string name="nc_remove_from_favorites">Премахни от любимите</string>
     <string name="nc_remove_group_and_members">Премахване на групата и на членовете</string>
     <string name="nc_remove_participant">Премахване на участник</string>

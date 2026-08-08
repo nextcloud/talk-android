@@ -71,6 +71,7 @@
     <string name="nc_add_attachment">Lisää liite</string>
     <string name="nc_add_emojis">Lisää emoji</string>
     <string name="nc_add_file">Lisää keskusteluun</string>
+    <string name="nc_add_more_files">Lisää enemmän tiedostoja</string>
     <string name="nc_add_participants">Lisää osallistujat</string>
     <string name="nc_add_to_favorites">Lisää suosikkeihin</string>
     <string name="nc_all_ok_operation">OK, kaikki valmista!</string>
@@ -133,6 +134,7 @@
     <string name="nc_copy_message_link">Kopioi viestin linkki</string>
     <string name="nc_create_new_conversation">Luo uusi keskustelu</string>
     <string name="nc_create_poll">Luo kysely</string>
+    <string name="nc_custom_color">Mukautettu väri</string>
     <string name="nc_date_header_today">Tänään</string>
     <string name="nc_date_header_yesterday">Eilen</string>
     <string name="nc_delete">Poista</string>
@@ -243,6 +245,8 @@
     <string name="nc_public_call_status">Julkinen keskustelu</string>
     <string name="nc_push_disabled">Push-ilmoitukset pois käytöstä</string>
     <string name="nc_remind">Muistuta myöhemmin</string>
+    <string name="nc_remove_color">Poista väri</string>
+    <string name="nc_remove_file">Poista tiedosto</string>
     <string name="nc_remove_from_favorites">Poista suosikeista</string>
     <string name="nc_remove_group_and_members">Poista ryhmä ja jäsenet</string>
     <string name="nc_remove_participant">Poista osallistuja</string>
@@ -285,6 +289,7 @@
     <string name="nc_server_testing_connection">Testataan yhteyttä</string>
     <string name="nc_server_unsupported">Tuettua Talk-sovellusta ei ole asennettu palvelimelle</string>
     <string name="nc_server_url">Palvelimen osoite https://…</string>
+    <string name="nc_set_emoji_as_conversation_picture">Aseta emoji keskustelukuvaksi</string>
     <string name="nc_set_new_password">Aseta uusi salasana:</string>
     <string name="nc_settings">Asetukset</string>
     <string name="nc_settings_account_updated">Olemassa oleva tilisi päivitettiin sen sijaan, että olisi lisätty tili</string>

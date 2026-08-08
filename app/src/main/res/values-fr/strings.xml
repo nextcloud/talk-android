@@ -131,6 +131,7 @@
     <string name="nc_add_attachment">Ajouter une pièce jointe</string>
     <string name="nc_add_emojis">Ajouter des emojis</string>
     <string name="nc_add_file">Ajouter à la conversation</string>
+    <string name="nc_add_more_files">Ajouter d\'autres fichiers</string>
     <string name="nc_add_participants">Ajouter des participants</string>
     <string name="nc_add_to_favorites">Ajouter aux favoris</string>
     <string name="nc_add_to_home_screen">Ajouter à l\'écran d\'accueil</string>
@@ -203,8 +204,12 @@
     <string name="nc_conversation_tags">Étiquettes</string>
     <string name="nc_conversation_tags_create">Créer</string>
     <string name="nc_conversation_tags_delete">Supprimer l\'étiquette</string>
+    <string name="nc_conversation_tags_delete_confirm_message">Cette étiquette sera supprimée de toutes les conversations auxquelles elle est attribuée.</string>
+    <string name="nc_conversation_tags_delete_confirm_title">Supprimer l\'étiquette ?</string>
     <string name="nc_conversation_tags_empty">Aucune étiquette pour le moment</string>
     <string name="nc_conversation_tags_error_generic">Une erreur est survenue. Veuillez réessayer.</string>
+    <string name="nc_conversation_tags_error_limit">Vous avez atteint le nombre maximum d’étiquettes</string>
+    <string name="nc_conversation_tags_error_name">Ce nom d’étiquette est invalide ou déjà utilisé</string>
     <string name="nc_conversation_tags_favorites">Favoris</string>
     <string name="nc_conversation_tags_filter_all">Tous</string>
     <string name="nc_conversation_tags_manage">Gérer les étiquettes</string>
@@ -218,6 +223,7 @@
     <string name="nc_copy_message_link">Copier le lien du message</string>
     <string name="nc_create_new_conversation">Créer une nouvelle conversation</string>
     <string name="nc_create_poll">Créer un sondage</string>
+    <string name="nc_custom_color">Couleur personnalisée</string>
     <string name="nc_date_header_today">Aujourd\'hui</string>
     <string name="nc_date_header_yesterday">Hier</string>
     <string name="nc_delete">Supprimer</string>
@@ -416,6 +422,8 @@
     <string name="nc_push_notification_fetch_error">Désolé, quelque chose s\'est mal passé, impossible de récupérer le message de test push</string>
     <string name="nc_push_notification_message">La notification push a été envoyée avec succès. Vous devriez maintenant recevoir une notification sur cet appareil intitulée « Test des notifications push ».</string>
     <string name="nc_remind">Rappelez-moi plus tard</string>
+    <string name="nc_remove_color">Retirer la couleur</string>
+    <string name="nc_remove_file">Retirer le fichier</string>
     <string name="nc_remove_from_favorites">Retirer des favoris</string>
     <string name="nc_remove_group_and_members">Supprimer un groupe et ses membres</string>
     <string name="nc_remove_participant">Retirer le participant</string>

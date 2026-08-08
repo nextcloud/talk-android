@@ -91,6 +91,7 @@
     <string name="nc_add_attachment">ファイルを添付</string>
     <string name="nc_add_emojis">絵文字追加</string>
     <string name="nc_add_file">会話に追加</string>
+    <string name="nc_add_more_files">さらにファイルを追加する</string>
     <string name="nc_add_participants">参加を追加</string>
     <string name="nc_add_to_favorites">お気に入りに追加</string>
     <string name="nc_all_ok_operation">OK、すべて完了！</string>
@@ -173,6 +174,7 @@
     <string name="nc_copy_message_link">メッセージリンクのコピー</string>
     <string name="nc_create_new_conversation">新しい会話を作成する</string>
     <string name="nc_create_poll">投票を作成</string>
+    <string name="nc_custom_color">カスタム色</string>
     <string name="nc_date_header_today">今日</string>
     <string name="nc_date_header_yesterday">昨日</string>
     <string name="nc_delete">削除</string>
@@ -328,6 +330,7 @@
     <string name="nc_public_call_status">公開会話</string>
     <string name="nc_push_disabled">プッシュ通知が無効になっています</string>
     <string name="nc_remind">後で通知する</string>
+    <string name="nc_remove_color">色を削除</string>
     <string name="nc_remove_from_favorites">お気に入りから削除</string>
     <string name="nc_remove_group_and_members">メンバーとグループを削除</string>
     <string name="nc_remove_participant">参加者を削除</string>
@@ -375,6 +378,7 @@
     <string name="nc_server_unsupported">サーバーにサポートされているトークアプリがインストールされていません</string>
     <string name="nc_server_url">サーバーのアドレス https://…</string>
     <string name="nc_server_version">%1$sは%2$s 13以降でのみ動作します</string>
+    <string name="nc_set_emoji_as_conversation_picture">絵文字を会話画像に設定する</string>
     <string name="nc_set_new_password">新しいパスワードの設定</string>
     <string name="nc_settings">設定</string>
     <string name="nc_settings_account_updated">新しいアカウントを追加する代わりに、既存のアカウントが更新されました</string>

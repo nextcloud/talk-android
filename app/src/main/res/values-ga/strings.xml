@@ -131,6 +131,7 @@
     <string name="nc_add_attachment">Cuir ceangaltán leis</string>
     <string name="nc_add_emojis">Cuir emojis leis</string>
     <string name="nc_add_file">Cuir leis an gcomhrá</string>
+    <string name="nc_add_more_files">Cuir tuilleadh comhad leis</string>
     <string name="nc_add_participants">Cuir rannpháirtithe leis</string>
     <string name="nc_add_to_favorites">Cuir le ceanáin</string>
     <string name="nc_add_to_home_screen">Cuir leis an scáileán baile</string>
@@ -218,6 +219,7 @@
     <string name="nc_copy_message_link">Cóipeáil nasc na teachtaireachta</string>
     <string name="nc_create_new_conversation">Cruthaigh comhrá nua</string>
     <string name="nc_create_poll">Cruthaigh vótaíocht</string>
+    <string name="nc_custom_color">Dath saincheaptha</string>
     <string name="nc_date_header_today">Inniu</string>
     <string name="nc_date_header_yesterday">Inné</string>
     <string name="nc_delete">Scrios</string>
@@ -416,6 +418,8 @@
     <string name="nc_push_notification_fetch_error">Tá brón orm gur tharla rud éigin mícheart, ní féidir teachtaireacht tástála a fháil</string>
     <string name="nc_push_notification_message">Tá fógra brú seolta go rathúil. Ba chóir duit fógra a fháil anois ar an ngléas seo leis an teideal \'Fógraí brú á dtástáil\'.</string>
     <string name="nc_remind">Agus an micreafón díchumasaithe, cliceáil agus coinneáil chun Brúigh chun Caint a úsáid</string>
+    <string name="nc_remove_color">Bain dath</string>
+    <string name="nc_remove_file">Bain an comhad</string>
     <string name="nc_remove_from_favorites">Bain ó cheanáin</string>
     <string name="nc_remove_group_and_members">Bain grúpa agus baill</string>
     <string name="nc_remove_participant">Bain rannpháirtí</string>

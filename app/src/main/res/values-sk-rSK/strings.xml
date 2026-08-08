@@ -117,6 +117,7 @@
     <string name="nc_add_attachment">Pridať prílohu</string>
     <string name="nc_add_emojis">Pridať emotikony</string>
     <string name="nc_add_file">Pridať do konverzácie</string>
+    <string name="nc_add_more_files">Pridať viac súborov</string>
     <string name="nc_add_participants">Pridať účastníkov</string>
     <string name="nc_add_to_favorites">Pridať do obľúbených</string>
     <string name="nc_all_ok_operation">OK, všetko hotovo!</string>
@@ -200,6 +201,7 @@
     <string name="nc_copy_message_link">Kopírovať odkaz správy</string>
     <string name="nc_create_new_conversation">Vytvoriť novú konverzáciu</string>
     <string name="nc_create_poll">Vytvoriť anketu</string>
+    <string name="nc_custom_color">Vlastná farba</string>
     <string name="nc_date_header_today">Dnes</string>
     <string name="nc_date_header_yesterday">Včera</string>
     <string name="nc_delete">Zmazať</string>
@@ -370,6 +372,8 @@
     <string name="nc_push_notification_fetch_error">Prepáčte, niečo sa pokazilo, nepodarilo sa načítať testovaciu push správu.</string>
     <string name="nc_push_notification_message">Push notifikácia bola úspešne odoslaná. Teraz by ste mali na tomto zariadení dostať notifikáciu s názvom „Testovanie push notifikácií“.</string>
     <string name="nc_remind">Pripomenúť neskôr</string>
+    <string name="nc_remove_color">Odobrať farbu</string>
+    <string name="nc_remove_file">Ostrániť súbor</string>
     <string name="nc_remove_from_favorites">Odstrániť z obľúbených</string>
     <string name="nc_remove_group_and_members">Odobrať skupinu a členov</string>
     <string name="nc_remove_participant">Odobrať účastníka</string>
@@ -427,6 +431,7 @@
     <string name="nc_server_unsupported">Na serveri nie je nainštalovaná podporovaná apka Talk</string>
     <string name="nc_server_url">Adresa servera https://…</string>
     <string name="nc_server_version">%1$spracuje iba s %2$s13 a vyššie</string>
+    <string name="nc_set_emoji_as_conversation_picture">Nastavte emotikon ako obrázok konverzácie</string>
     <string name="nc_set_new_password">Vytvoriť nové heslo</string>
     <string name="nc_set_password">Nastaviť Heslo</string>
     <string name="nc_settings">Nastavenia</string>

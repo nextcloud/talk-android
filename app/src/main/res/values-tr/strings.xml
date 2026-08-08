@@ -129,6 +129,7 @@
     <string name="nc_add_attachment">Dosya ekle</string>
     <string name="nc_add_emojis">Emoji ekle</string>
     <string name="nc_add_file">Görüşmeye ekle</string>
+    <string name="nc_add_more_files">Başka dosya ekle</string>
     <string name="nc_add_participants">Katılımcı ekle</string>
     <string name="nc_add_to_favorites">Sık kullanılanlara ekle</string>
     <string name="nc_add_to_home_screen">Ana sayfaya ekle</string>
@@ -216,6 +217,7 @@
     <string name="nc_copy_message_link">İleti bağlantısını kopyala</string>
     <string name="nc_create_new_conversation">Yeni bir görüşme oluştur</string>
     <string name="nc_create_poll">Anket oluştur</string>
+    <string name="nc_custom_color">Özel renk</string>
     <string name="nc_date_header_today">Bugün</string>
     <string name="nc_date_header_yesterday">Dün</string>
     <string name="nc_delete">Sil</string>
@@ -396,6 +398,8 @@
     <string name="nc_push_notification_fetch_error">Ne yazık ki bir sorun çıktı. Deneme anında bildirimi alınamadı</string>
     <string name="nc_push_notification_message">Anında bildirim gönderildi. Bu aygıtta \'Anlık bildirimler denemesi\' konulu bir bildirim almalısınız</string>
     <string name="nc_remind">Sonra hatırlat</string>
+    <string name="nc_remove_color">Rengi kaldır</string>
+    <string name="nc_remove_file">Dosyayı kaldır</string>
     <string name="nc_remove_from_favorites">Sık kullanılanlardan kaldır</string>
     <string name="nc_remove_group_and_members">Grup ve üyelerini sil</string>
     <string name="nc_remove_participant">Katılımcıyı çıkar</string>
@@ -460,6 +464,7 @@
     <string name="nc_server_unsupported">Sunucuda desteklenen bir Konuş uygulaması kurulu değil</string>
     <string name="nc_server_url">Sunucu adresi https://…</string>
     <string name="nc_server_version">%1$s yalnızca %2$s 13 ve üzerinde çalışır</string>
+    <string name="nc_set_emoji_as_conversation_picture">Emojiyi görüşme görseli olarak ayarla</string>
     <string name="nc_set_new_password">Yeni parola ayarla</string>
     <string name="nc_set_password">Parola ayarla</string>
     <string name="nc_settings">Ayarlar</string>

@@ -93,6 +93,7 @@
     <string name="nc_add_attachment">Gehitu eranskina</string>
     <string name="nc_add_emojis">Gehitu emojiak</string>
     <string name="nc_add_file">Gehitu elkarrizketara</string>
+    <string name="nc_add_more_files">Gehitu fitxategi gehiago</string>
     <string name="nc_add_participants">Gehitu parte-hartzaileak</string>
     <string name="nc_add_to_favorites">Gehitu gogokoetara</string>
     <string name="nc_all_ok_operation">Ados, dena eginda!</string>
@@ -175,6 +176,7 @@
     <string name="nc_copy_message_link">Kopiatu mezuaren esteka</string>
     <string name="nc_create_new_conversation">Sortu elkarrizketa berri bat</string>
     <string name="nc_create_poll">Sortu galdeketa</string>
+    <string name="nc_custom_color">Kolore pertsonalizatua</string>
     <string name="nc_date_header_today">Gaur</string>
     <string name="nc_date_header_yesterday">Atzo</string>
     <string name="nc_delete">Ezabatu</string>
@@ -321,6 +323,8 @@
     <string name="nc_public_call_status">Elkarrizketa publikoa</string>
     <string name="nc_push_disabled">Push jakinarazpenak desgaiturik</string>
     <string name="nc_remind">Gogoratu geroago</string>
+    <string name="nc_remove_color">Kendu kolorea</string>
+    <string name="nc_remove_file">Kendu fitxategiak</string>
     <string name="nc_remove_from_favorites">Kendu gogokoetatik</string>
     <string name="nc_remove_group_and_members">Kendu taldea eta kideak</string>
     <string name="nc_remove_participant">Kendu parte-hartzailea</string>
@@ -366,6 +370,7 @@
     <string name="nc_server_unsupported">Zerbitzariak ez du Talk aplikazio bateragarririk instalatuta</string>
     <string name="nc_server_url">Zerbitzariaren helbidea https://…</string>
     <string name="nc_server_version">%1$s (e)k %2$s 13rekin eta goragokoarekin bakarrik egiten du lan</string>
+    <string name="nc_set_emoji_as_conversation_picture">Ezarri emojia elkarrizketa-irudi gisa</string>
     <string name="nc_set_new_password">Ezarri pasahitz berria</string>
     <string name="nc_settings">Ezarpenak</string>
     <string name="nc_settings_account_updated">Zure kontua eguneratu egin da, beste kontu bat gehitu beharrean</string>

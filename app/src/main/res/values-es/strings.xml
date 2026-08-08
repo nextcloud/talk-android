@@ -117,6 +117,7 @@
     <string name="nc_add_attachment">Añadir adjunto</string>
     <string name="nc_add_emojis">Añadir emojis</string>
     <string name="nc_add_file">Añadir a la conversación</string>
+    <string name="nc_add_more_files">Añadir más archivos</string>
     <string name="nc_add_participants">Añadir participantes</string>
     <string name="nc_add_to_favorites">Añadir a favoritos</string>
     <string name="nc_all_ok_operation">OK. Todo hecho.</string>
@@ -201,6 +202,7 @@
     <string name="nc_copy_message_link">Copiar link del mensaje</string>
     <string name="nc_create_new_conversation">Crear una conversación nueva</string>
     <string name="nc_create_poll">Crear votación</string>
+    <string name="nc_custom_color">Colores personalizados</string>
     <string name="nc_date_header_today">Hoy</string>
     <string name="nc_date_header_yesterday">Ayer</string>
     <string name="nc_delete">Borrar</string>
@@ -375,6 +377,8 @@
     <string name="nc_push_notification_fetch_error">Lo sentimos, algo salió mal, no se pudo obtener el mensaje push de prueba</string>
     <string name="nc_push_notification_message">La notificación push se envió exitosamente, Debería recibir una notificación en este dispositivo con el título \"Probando notificaciones push\"</string>
     <string name="nc_remind">Recuérdamelo más tarde</string>
+    <string name="nc_remove_color">Quitar color</string>
+    <string name="nc_remove_file">Quitar archivo</string>
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>
     <string name="nc_remove_group_and_members">Eliminar grupo y miembros</string>
     <string name="nc_remove_participant">Eliminar participante</string>
@@ -437,6 +441,7 @@
     <string name="nc_server_unsupported">El servidor no tiene una app Talk soportada instalada</string>
     <string name="nc_server_url">Dirección del servidor https://…</string>
     <string name="nc_server_version">%1$s sólo trabaja con %2$s 13 y superior</string>
+    <string name="nc_set_emoji_as_conversation_picture">Establecer emoji como imagen de la conversación</string>
     <string name="nc_set_new_password">Establecer contraseña nueva</string>
     <string name="nc_set_password">Establecer Contraseña</string>
     <string name="nc_settings">Configuración</string>

@@ -131,6 +131,7 @@
     <string name="nc_add_attachment">Lägg till bilaga</string>
     <string name="nc_add_emojis">Lägg till emojier</string>
     <string name="nc_add_file">Lägg till i konversation</string>
+    <string name="nc_add_more_files">Lägg till fler filer</string>
     <string name="nc_add_participants">Lägg till deltagare</string>
     <string name="nc_add_to_favorites">Lägg till som favorit</string>
     <string name="nc_add_to_home_screen">Lägg till på hemskärmen</string>
@@ -217,6 +218,7 @@
     <string name="nc_copy_message_link">Kopiera meddelandelänk</string>
     <string name="nc_create_new_conversation">Skapa en ny konversation</string>
     <string name="nc_create_poll">Skapa omröstning</string>
+    <string name="nc_custom_color">Anpassad färg</string>
     <string name="nc_date_header_today">Idag</string>
     <string name="nc_date_header_yesterday">Igår</string>
     <string name="nc_delete">Ta bort</string>
@@ -415,6 +417,8 @@
     <string name="nc_push_notification_fetch_error">Tyvärr, något gick fel. Kunde inte hämta testmeddelande för push-notis</string>
     <string name="nc_push_notification_message">Push-notis skickades framgångsrikt. Du bör nu få en notis på den här enheten med titeln \'Testar push-notiser\'</string>
     <string name="nc_remind">Påminn mig senare</string>
+    <string name="nc_remove_color">Ta bort färg</string>
+    <string name="nc_remove_file">Ta bort fil</string>
     <string name="nc_remove_from_favorites">Ta bort från favoriter</string>
     <string name="nc_remove_group_and_members">Ta bort grupp och medlemmar</string>
     <string name="nc_remove_participant">Ta bort deltagare</string>
@@ -479,6 +483,7 @@
     <string name="nc_server_unsupported">Servern har inte korrekt Talk-app installerad</string>
     <string name="nc_server_url">Serveradress https://…</string>
     <string name="nc_server_version">%1$s fungerar bara med %2$s 13 och uppåt</string>
+    <string name="nc_set_emoji_as_conversation_picture">Ställ in emoji som konversationsbild</string>
     <string name="nc_set_new_password">Ange nytt lösenord</string>
     <string name="nc_set_password">Ange lösenord</string>
     <string name="nc_settings">Inställningar</string>
