@@ -19,12 +19,12 @@ import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ProbeConversatio
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.hovercard.HoverCardOverall
 import com.nextcloud.talk.models.json.invitation.InvitationOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.participants.TalkBanOverall
 import com.nextcloud.talk.models.json.profile.ProfileOverall
-import com.nextcloud.talk.models.json.hovercard.HoverCardOverall
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.models.json.status.StatusOverall
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
@@ -46,6 +46,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.Field
+import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -80,6 +81,14 @@ interface NcApiCoroutines {
         @Header("Authorization") authorization: String?,
         @Url url: String?,
         @QueryMap options: Map<String, String>?
+    ): RoomOverall
+
+    @FormUrlEncoded
+    @POST
+    suspend fun createRoomForm(
+        @Header("Authorization") authorization: String?,
+        @Url url: String?,
+        @FieldMap options: Map<String, String>?
     ): RoomOverall
 
     @POST

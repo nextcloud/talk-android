@@ -427,6 +427,9 @@ class ConversationInfoViewModel @Inject constructor(
         val showMessageExpiration = isModerator &&
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)
 
+        val isChannel = ConversationUtils.isChannel(conversationModel, spreedCapabilities)
+        val showParticipants = if (isChannel) isModerator else true
+
         val credentials = ApiUtils.getCredentials(user.username, user.token) ?: ""
 
         _uiState.update { state ->
@@ -477,12 +480,15 @@ class ConversationInfoViewModel @Inject constructor(
                 isArchived = isArchived,
                 canLeave = canLeave,
                 canDelete = canDelete,
+                showParticipants = showParticipants,
                 showClearHistory = showClearHistory,
                 showEditButton = showEditButton
             )
         }
 
-        loadParticipants(user, token)
+        if (showParticipants) {
+            loadParticipants(user, token)
+        }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")

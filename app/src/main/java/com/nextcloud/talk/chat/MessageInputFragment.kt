@@ -79,6 +79,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CharPolicy
+import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.EmojiTextInputEditText
@@ -173,6 +174,12 @@ class MessageInputFragment : Fragment() {
             val threadTitle = text.toString()
             chatActivity.chatViewModel.messageDraft.threadTitle = threadTitle
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            chatActivity.participantPermissionsFlow.collect {
+                handleButtonsVisibility()
+            }
+        }
     }
 
     @Suppress("LongMethod")
@@ -186,6 +193,7 @@ class MessageInputFragment : Fragment() {
                     initVoiceRecordButton()
                     initThreadHandling()
                     updateScheduledMessagesAvailability(hasScheduledMessages)
+                    setReactionsOnly(state.spreedCapabilities)
                 }
 
                 is ChatViewModel.GetCapabilitiesInitialLoadState -> {
@@ -195,6 +203,7 @@ class MessageInputFragment : Fragment() {
                     initThreadHandling()
                     updateScheduledMessagesAvailability(hasScheduledMessages)
                     restoreState()
+                    setReactionsOnly(state.spreedCapabilities)
                 }
 
                 else -> {}
@@ -327,6 +336,17 @@ class MessageInputFragment : Fragment() {
                     binding.fragmentCallStarted.root.visibility = View.GONE
                 }
             }
+        }
+    }
+
+    private fun setReactionsOnly(spreedCapabilities: SpreedCapability) {
+        val isReactionOnly = isReactionOnlyMode(spreedCapabilities)
+        if (isReactionOnly) {
+            binding.fragmentMessageInputView.setVisible(false)
+            binding.reactionOnlyAffordance.setVisible(true)
+        } else {
+            binding.fragmentMessageInputView.setVisible(true)
+            binding.reactionOnlyAffordance.setVisible(false)
         }
     }
 
@@ -693,14 +713,14 @@ class MessageInputFragment : Fragment() {
         }
     }
 
+    fun View.setVisible(isVisible: Boolean) {
+        visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
     private fun handleButtonsVisibility() {
         if (!this::binding.isInitialized) {
             Log.w(TAG, "binding not initialized in handleButtonsVisibility")
             return
-        }
-
-        fun View.setVisible(isVisible: Boolean) {
-            visibility = if (isVisible) View.VISIBLE else View.GONE
         }
 
         val isEditModeActive = binding.fragmentEditView.editMessageView.isVisible
@@ -1211,6 +1231,13 @@ class MessageInputFragment : Fragment() {
     private fun isInReplyState(): Boolean {
         val jsonId = chatActivity.chatViewModel.messageDraft.quotedJsonId
         return jsonId != null
+    }
+
+    private fun isReactionOnlyMode(spreedCapabilities: SpreedCapability): Boolean {
+        val conversation = chatActivity.currentConversation
+        val permissions = chatActivity.participantPermissionsFlow.value
+        val isChannel = ConversationUtils.isChannel(conversation, spreedCapabilities)
+        return isChannel && permissions?.hasChatPermission() == false && permissions.hasReactPermission() == true
     }
 
     companion object {

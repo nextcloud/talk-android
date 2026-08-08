@@ -529,9 +529,7 @@ class OfflineFirstChatRepository @Inject constructor(
             val queriedMessageId = fieldMap["lastKnownMessageId"]
             val lookIntoFuture = fieldMap["lookIntoFuture"] == 1
 
-            val result = pullMessagesFlow(bundle).first()
-
-            when (result) {
+            when (val result = pullMessagesFlow(bundle).first()) {
                 is ChatPullResult.Success -> {
                     newXChatLastCommonRead = result.lastCommonRead
                     updateUiForLastCommonRead()
