@@ -121,4 +121,14 @@ interface ChatBlocksDao {
     """
     )
     fun getLatestChatBlock(internalConversationId: String, threadId: Long?): Flow<ChatBlockEntity?>
+
+    @Query(
+        """
+        SELECT *
+        FROM ChatBlocks
+        WHERE internalConversationId = :internalConversationId
+        ORDER BY newestMessageId ASC
+        """
+    )
+    suspend fun getChatBlocksForConversation(internalConversationId: String): List<ChatBlockEntity>
 }
