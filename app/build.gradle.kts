@@ -25,7 +25,7 @@ plugins {
 val kotlinVersion: String by rootProject.extra
 
 val coilKtVersion = "2.7.0"
-val daggerVersion = "2.59.2"
+val daggerVersion = "2.60.1"
 val emojiVersion = "1.6.0"
 val fidoVersion = "4.1.0-patch2"
 val lifecycleVersion = "2.11.0"
