@@ -687,6 +687,7 @@ class OfflineFirstChatRepository @Inject constructor(
     @Suppress("Detekt.TooGenericExceptionCaught", "LongMethod")
     override suspend fun addUploadPlaceholderMessage(
         localFileUri: String,
+        fileName: String,
         caption: String,
         mimeType: String?,
         fileSize: Long,
@@ -714,7 +715,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
                 val fileParams = hashMapOf<String?, String?>(
                     "type" to "file",
-                    "name" to caption,
+                    "name" to fileName,
                     "mimetype" to (mimeType ?: ""),
                     "size" to fileSize.toString(),
                     "path" to localFileUri
@@ -728,7 +729,8 @@ class OfflineFirstChatRepository @Inject constructor(
                     internalConversationId = internalConversationId,
                     id = placeholderId,
                     threadId = threadId,
-                    message = "{file}",
+                    // "{file}" is the sentinel the server (and rest of this app) uses for "no caption"
+                    message = caption.ifEmpty { "{file}" },
                     deleted = false,
                     token = conversationModel.token,
                     actorId = currentUser.userId!!,
@@ -798,7 +800,11 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override suspend fun sendUnsentChatMessages(credentials: String, url: String) {
         val tempMessages = chatDao.getTempUnsentMessagesForConversation(internalConversationId, threadId).first()
-        tempMessages.sortedBy { it.internalId }.onEach {
+        // File-upload placeholders are also temporary messages, but they must never be resent as plain
+        // text here: their "message" field is just the "{file}" sentinel, and a failed/interrupted upload
+        // needs a real re-upload, not a bogus text message reusing its referenceId.
+        val unsentTextMessages = tempMessages.filterNot { it.messageParameters?.containsKey("file") == true }
+        unsentTextMessages.sortedBy { it.internalId }.onEach {
             sendChatMessage(
                 credentials,
                 url,

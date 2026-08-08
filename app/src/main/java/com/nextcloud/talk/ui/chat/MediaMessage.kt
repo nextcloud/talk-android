@@ -7,28 +7,32 @@
 
 package com.nextcloud.talk.ui.chat
 
+import android.graphics.Bitmap
 import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -44,10 +48,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import coil.network.HttpException
 import com.nextcloud.talk.R
+import com.nextcloud.talk.attachmentpreview.FileDescription
+import com.nextcloud.talk.attachmentpreview.describeFile
 import com.nextcloud.talk.chat.data.model.FileParameters
 import com.nextcloud.talk.chat.data.model.decodeBlurhashPlaceholder
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
@@ -56,11 +64,19 @@ import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.contacts.load
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.MimetypeUtils
+import com.nextcloud.talk.utils.VideoThumbnailCache
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import androidx.core.net.toUri
 
 val LocalUploadProgressProvider = compositionLocalOf<(referenceId: String) -> Int?> { { null } }
+
+// Local device URI of a just-finished-uploading message, keyed by referenceId. Used to bridge the gap
+// between the upload placeholder disappearing and the server-side preview finishing its first load, so
+// we show the image we already have on disk instead of a generic mimetype icon.
+val LocalUploadedLocalPreviewProvider = compositionLocalOf<(referenceId: String) -> String?> { { null } }
 
 private const val FILE_PLACEHOLDER_MESSAGE = "{file}"
 private const val PREVIEW_MAX_RETRIES = 3
@@ -69,6 +85,20 @@ private const val TAG = "MediaMessage"
 
 private val mediaRadiusBig = 8.dp
 private val mediaRadiusSmall = 2.dp
+
+private val uploadSpinnerSize = 56.dp
+private val uploadSpinnerStrokeWidth = 3.dp
+private const val UPLOAD_SCRIM_ALPHA = 0.25f
+private const val UPLOAD_SPINNER_TRACK_ALPHA = 0.3f
+
+// Used to size the uploading-video placeholder before its real aspect ratio is known (or if it can't
+// be read at all), so the bubble doesn't collapse to icon-size. 16:9 is the most common video shape.
+private const val DEFAULT_VIDEO_ASPECT_RATIO = 16f / 9f
+private const val VIDEO_PLACEHOLDER_BACKGROUND_ALPHA = 0.4f
+
+private val playButtonCircleSize = 56.dp
+private val playButtonIconSize = 32.dp
+private const val PLAY_BUTTON_CIRCLE_ALPHA = 0.45f
 
 @Suppress("Detekt.LongMethod", "LongParameterList", "CyclomaticComplexMethod")
 @Composable
@@ -89,8 +119,50 @@ fun MediaMessage(
             )
         }
 
+    val context = LocalContext.current
+    val isVideo = typeContent.mimeType.startsWith(Mimetype.VIDEO_PREFIX)
+    val hasServerPreview = !typeContent.previewUrl.isNullOrEmpty()
+
+    val getLocalPreviewUri = LocalUploadedLocalPreviewProvider.current
+    val localPreviewUri = if (typeContent.mimeType.startsWith(Mimetype.IMAGE_PREFIX) || isVideo) {
+        message.referenceId?.let(getLocalPreviewUri)
+    } else {
+        null
+    }
+    val localPreviewPainter = if (!isVideo && !localPreviewUri.isNullOrEmpty()) {
+        rememberAsyncImagePainter(model = localPreviewUri.toUri())
+    } else {
+        null
+    }
+
+    // The server didn't generate a preview for this video (unsupported codec, previews disabled, ...)
+    // - fall back to its first frame instead of a plain icon. Prefer the durable on-disk cache
+    // (survives leaving/reopening the chat or an app restart, unlike the in-memory localPreviewUri
+    // bridge, which only lives for the current upload); if it's not cached yet, re-extract from the
+    // local file while we still have it and cache it for next time. Coil has no built-in video frame
+    // decoding, so this reads the frame directly via MediaMetadataRetriever, same as the
+    // uploading-placeholder state.
+    val localVideoFramePainter = if (isVideo && !hasServerPreview) {
+        val refId = message.referenceId
+        val videoFrame by produceState<Bitmap?>(initialValue = null, key1 = refId, key2 = localPreviewUri) {
+            value = withContext(Dispatchers.IO) {
+                refId?.let { VideoThumbnailCache.get(context, it) }
+                    ?: localPreviewUri?.let { uri ->
+                        describeFile(context, uri, compress = false).videoThumbnail?.also { bitmap ->
+                            refId?.let { VideoThumbnailCache.put(context, it, bitmap) }
+                        }
+                    }
+            }
+        }
+        videoFrame?.let { BitmapPainter(it.asImageBitmap()) }
+    } else {
+        null
+    }
+
+    // A video shown via its local first frame counts as "has a preview" too, so the filename caption
+    // stays suppressed just like it would once the server's own preview becomes available.
+    val hasPreview = hasServerPreview || localVideoFramePainter != null
     val hasExplicitCaption = message.plainMessage != FILE_PLACEHOLDER_MESSAGE
-    val hasPreview = !typeContent.previewUrl.isNullOrEmpty()
     val captionText = when {
         hasExplicitCaption -> message.message
         !hasPreview -> message.message
@@ -111,14 +183,17 @@ fun MediaMessage(
         forceTimeOverlay = !hasCaption,
         content = {
             Column {
-                val context = LocalContext.current
                 val scope = rememberCoroutineScope()
                 val isGif = MimetypeUtils.isGif(typeContent.mimeType)
-                val showPlayButton = !typeContent.previewUrl.isNullOrEmpty() &&
+                // Every video gets a play button overlay, regardless of whether its preview came from
+                // the server or our own local-first-frame fallback (or neither, yet).
+                val showPlayButton = isVideo ||
                     (
-                        typeContent.mimeType.startsWith(Mimetype.VIDEO_PREFIX) ||
-                            typeContent.mimeType.startsWith(Mimetype.AUDIO_PREFIX) ||
-                            (isGif && !typeContent.animateGif)
+                        !typeContent.previewUrl.isNullOrEmpty() &&
+                            (
+                                typeContent.mimeType.startsWith(Mimetype.AUDIO_PREFIX) ||
+                                    (isGif && !typeContent.animateGif)
+                                )
                         )
 
                 var retryCount by remember(typeContent.previewUrl) { mutableIntStateOf(0) }
@@ -145,7 +220,10 @@ fun MediaMessage(
                     if (w != null && h != null && w > 0 && h > 0) w.toFloat() / h else null
                 }
                 val loadedImage = remember(retryAwarePreviewUrl, typeContent.isClassified) {
-                    if (typeContent.isClassified) {
+                    if (typeContent.isClassified || retryAwarePreviewUrl == null) {
+                        // Passing an ImageRequest built with null data (rather than a null model) here
+                        // would make Coil resolve its own null-data handling instead of ever showing the
+                        // fallback painter passed to AsyncImage below.
                         null
                     } else {
                         load(
@@ -158,58 +236,82 @@ fun MediaMessage(
                 }
                 val fallbackPainter = painterResource(typeContent.drawableResourceId)
 
+                val ownUploadPlaceholder = blurhashPainter ?: localPreviewPainter ?: fallbackPainter
+
+                val mediaModifier = Modifier
+                    .fillMaxWidth()
+                    .then(if (aspectRatio != null) Modifier.aspectRatio(aspectRatio) else Modifier)
+                    .padding(mediaInset)
+                    .clip(mediaShape)
+
                 Box(modifier = Modifier.fillMaxWidth()) {
                     val messageLongClickHandler = LocalMessageLongClickHandler.current
-                    AsyncImage(
-                        model = loadedImage,
-                        contentDescription = stringResource(R.string.media_message_content_description),
-                        placeholder = blurhashPainter ?: fallbackPainter,
-                        error = blurhashPainter ?: fallbackPainter,
-                        fallback = blurhashPainter ?: fallbackPainter,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .then(if (aspectRatio != null) Modifier.aspectRatio(aspectRatio) else Modifier)
-                            .padding(mediaInset)
-                            .clip(mediaShape)
-                            .combinedClickable(
-                                onClick = { onImageClick(message.id) },
-                                onLongClick = { messageLongClickHandler(message.id) }
-                            ),
-                        contentScale = ContentScale.FillWidth,
-                        onError = { state ->
-                            val cause = state.result.throwable
-                            val isServerError = cause is HttpException && cause.response.code in 500..599
-                            if (
-                                isServerError &&
-                                !typeContent.previewUrl.isNullOrEmpty() &&
-                                retryCount < PREVIEW_MAX_RETRIES &&
-                                !retryPending
-                            ) {
-                                retryPending = true
-                                scope.launch {
-                                    Log.d(
-                                        TAG,
-                                        "Preview returned HTTP ${(cause as HttpException).response.code}, " +
-                                            "scheduling retry ${retryCount + 1}/$PREVIEW_MAX_RETRIES " +
-                                            "for ${typeContent.previewUrl}"
-                                    )
-                                    delay(PREVIEW_RETRY_DELAY_MS)
-                                    retryCount++
-                                    retryPending = false
-                                }
-                            }
-                        }
+                    val clickableModifier = mediaModifier.combinedClickable(
+                        onClick = { onImageClick(message.id) },
+                        onLongClick = { messageLongClickHandler(message.id) }
                     )
 
+                    // Rendered directly instead of routed through Coil's placeholder/fallback painters,
+                    // since Coil's own null-data handling on a pre-built ImageRequest (see load() below)
+                    // takes priority and never shows a composable-supplied fallback painter here.
+                    if (localVideoFramePainter != null) {
+                        Image(
+                            painter = localVideoFramePainter,
+                            contentDescription = stringResource(R.string.media_message_content_description),
+                            modifier = clickableModifier,
+                            contentScale = ContentScale.FillWidth
+                        )
+                    } else {
+                        AsyncImage(
+                            model = loadedImage,
+                            contentDescription = stringResource(R.string.media_message_content_description),
+                            placeholder = ownUploadPlaceholder,
+                            error = ownUploadPlaceholder,
+                            fallback = ownUploadPlaceholder,
+                            modifier = clickableModifier,
+                            contentScale = ContentScale.FillWidth,
+                            onError = { state ->
+                                val cause = state.result.throwable
+                                val isServerError = cause is HttpException && cause.response.code in 500..599
+                                if (
+                                    isServerError &&
+                                    !typeContent.previewUrl.isNullOrEmpty() &&
+                                    retryCount < PREVIEW_MAX_RETRIES &&
+                                    !retryPending
+                                ) {
+                                    retryPending = true
+                                    scope.launch {
+                                        Log.d(
+                                            TAG,
+                                            "Preview returned HTTP ${(cause as HttpException).response.code}, " +
+                                                "scheduling retry ${retryCount + 1}/$PREVIEW_MAX_RETRIES " +
+                                                "for ${typeContent.previewUrl}"
+                                        )
+                                        delay(PREVIEW_RETRY_DELAY_MS)
+                                        retryCount++
+                                        retryPending = false
+                                    }
+                                }
+                            }
+                        )
+                    }
+
                     if (showPlayButton) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_baseline_play_arrow_voice_message_24),
-                            contentDescription = stringResource(R.string.media_message_content_play),
+                        Box(
                             modifier = Modifier
                                 .align(Alignment.Center)
-                                .size(48.dp),
-                            tint = Color.White
-                        )
+                                .size(playButtonCircleSize)
+                                .clip(CircleShape)
+                                .background(Color.Black.copy(alpha = PLAY_BUTTON_CIRCLE_ALPHA)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_baseline_play_arrow_voice_message_24),
+                                contentDescription = stringResource(R.string.media_message_content_play),
+                                modifier = Modifier.size(playButtonIconSize),
+                                tint = Color.White
+                            )
+                        }
                     }
 
                     if (chatViewDownloadingFileState.contains(fileParameters.id)) {
@@ -239,6 +341,7 @@ fun UploadingMediaMessage(
     val progress = getProgress(message.referenceId.orEmpty())
     val isFailed = message.statusIcon == MessageStatusIcon.FAILED
     val isSent = message.statusIcon == MessageStatusIcon.SENT
+    val hasCaption = typeContent.caption != null
 
     val mediaInset = 4.dp
     val mediaShape = remember(message.incoming) {
@@ -251,14 +354,16 @@ fun UploadingMediaMessage(
         conversationThreadId = conversationThreadId,
         includePadding = false,
         captionText = typeContent.caption,
+        forceTimeOverlay = !hasCaption,
         content = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Box(modifier = Modifier.fillMaxWidth()) {
-                    val isImage = typeContent.mimeType?.startsWith("image") == true
+                    val isImage = typeContent.mimeType?.startsWith(Mimetype.IMAGE_PREFIX) == true
+                    val isVideo = typeContent.mimeType?.startsWith(Mimetype.VIDEO_PREFIX) == true
                     if (isImage && typeContent.localFileUri.isNotEmpty()) {
                         AsyncImage(
                             model = typeContent.localFileUri.toUri(),
-                            contentDescription = typeContent.caption,
+                            contentDescription = typeContent.fileName,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .blur(4.dp)
@@ -266,10 +371,17 @@ fun UploadingMediaMessage(
                                 .clip(mediaShape),
                             contentScale = ContentScale.FillWidth
                         )
+                    } else if (isVideo && typeContent.localFileUri.isNotEmpty()) {
+                        UploadingVideoPreview(
+                            typeContent = typeContent,
+                            referenceId = message.referenceId,
+                            mediaInset = mediaInset,
+                            mediaShape = mediaShape
+                        )
                     } else {
                         Icon(
                             painter = painterResource(typeContent.drawableResourceId),
-                            contentDescription = typeContent.caption,
+                            contentDescription = typeContent.fileName,
                             modifier = Modifier
                                 .size(64.dp)
                                 .padding(mediaInset)
@@ -286,15 +398,42 @@ fun UploadingMediaMessage(
                                 .size(24.dp)
                         )
                     } else if (!isFailed) {
-                        IconButton(
-                            onClick = { onCancelUpload(message.referenceId.orEmpty()) },
-                            modifier = Modifier.align(Alignment.TopEnd)
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .background(Color.Black.copy(alpha = UPLOAD_SCRIM_ALPHA))
+                        )
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .size(uploadSpinnerSize)
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = stringResource(R.string.nc_cancel),
-                                tint = Color.White
-                            )
+                            if (progress != null) {
+                                CircularProgressIndicator(
+                                    progress = { progress / 100f },
+                                    modifier = Modifier.fillMaxSize(),
+                                    color = Color.White,
+                                    trackColor = Color.White.copy(alpha = UPLOAD_SPINNER_TRACK_ALPHA),
+                                    strokeWidth = uploadSpinnerStrokeWidth
+                                )
+                            } else {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.fillMaxSize(),
+                                    color = Color.White,
+                                    trackColor = Color.White.copy(alpha = UPLOAD_SPINNER_TRACK_ALPHA),
+                                    strokeWidth = uploadSpinnerStrokeWidth
+                                )
+                            }
+                            IconButton(
+                                onClick = { onCancelUpload(message.referenceId.orEmpty()) },
+                                modifier = Modifier.align(Alignment.Center)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = stringResource(R.string.nc_cancel),
+                                    tint = Color.White
+                                )
+                            }
                         }
                     }
                 }
@@ -305,25 +444,72 @@ fun UploadingMediaMessage(
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                         color = androidx.compose.ui.graphics.Color.Red
                     )
-                } else if (!isSent) {
-                    if (progress != null) {
-                        LinearProgressIndicator(
-                            progress = { progress / 100f },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 8.dp, vertical = 4.dp)
-                        )
-                    } else {
-                        LinearProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 8.dp, vertical = 4.dp)
-                        )
-                    }
                 }
             }
         }
     )
+}
+
+/**
+ * Sized to the video's real aspect ratio (read locally from the file being uploaded, so it matches
+ * what the final sent message will look like) with its first frame as a blurred thumbnail. Falls
+ * back to a fixed 16:9 box with the generic file icon while that's being read, or if it can't be
+ * read at all.
+ */
+@Composable
+private fun UploadingVideoPreview(
+    typeContent: MessageTypeContent.UploadingMedia,
+    referenceId: String?,
+    mediaInset: Dp,
+    mediaShape: RoundedCornerShape
+) {
+    val context = LocalContext.current
+    val videoDescription by produceState<FileDescription?>(
+        initialValue = null,
+        key1 = typeContent.localFileUri
+    ) {
+        value = withContext(Dispatchers.IO) {
+            describeFile(context, typeContent.localFileUri, compress = false).also { description ->
+                description.videoThumbnail?.let { bitmap ->
+                    referenceId?.let { VideoThumbnailCache.put(context, it, bitmap) }
+                }
+            }
+        }
+    }
+    val aspectRatio = videoDescription?.aspectRatio ?: DEFAULT_VIDEO_ASPECT_RATIO
+    val thumbnail = videoDescription?.videoThumbnail
+
+    if (thumbnail != null) {
+        Image(
+            bitmap = thumbnail.asImageBitmap(),
+            contentDescription = typeContent.fileName,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(aspectRatio)
+                .blur(4.dp)
+                .padding(mediaInset)
+                .clip(mediaShape),
+            contentScale = ContentScale.Crop
+        )
+    } else {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(aspectRatio)
+                .padding(mediaInset)
+                .clip(mediaShape)
+                .background(Color.Black.copy(alpha = VIDEO_PLACEHOLDER_BACKGROUND_ALPHA))
+        ) {
+            Icon(
+                painter = painterResource(typeContent.drawableResourceId),
+                contentDescription = typeContent.fileName,
+                modifier = Modifier
+                    .size(64.dp)
+                    .align(Alignment.Center),
+                tint = Color.Unspecified
+            )
+        }
+    }
 }
 
 fun shape(incoming: Boolean): RoundedCornerShape =
@@ -346,7 +532,8 @@ fun shape(incoming: Boolean): RoundedCornerShape =
 private fun previewUploadingContent(mimeType: String? = "image/jpeg") =
     MessageTypeContent.UploadingMedia(
         localFileUri = "",
-        caption = "photo.jpg",
+        fileName = "photo.jpg",
+        caption = null,
         mimeType = mimeType,
         drawableResourceId = R.drawable.ic_mimetype_image
     )
@@ -426,7 +613,8 @@ private fun UploadingMediaMessageNonImagePreview() {
         UploadingMediaMessage(
             typeContent = MessageTypeContent.UploadingMedia(
                 localFileUri = "",
-                caption = "document.pdf",
+                fileName = "document.pdf",
+                caption = null,
                 mimeType = "application/pdf",
                 drawableResourceId = R.drawable.ic_mimetype_application_pdf
             ),

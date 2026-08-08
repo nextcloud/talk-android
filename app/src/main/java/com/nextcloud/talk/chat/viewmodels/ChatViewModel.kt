@@ -224,6 +224,12 @@ class ChatViewModel @AssistedInject constructor(
     private val _uploadProgressMap = MutableStateFlow<Map<String, Int>>(emptyMap())
     val uploadProgressMap: StateFlow<Map<String, Int>> = _uploadProgressMap
 
+    // Maps referenceId -> local device fileUri, kept around for a while after the upload finishes so the
+    // final message can show the file we already have on disk instead of a generic mimetype icon while it
+    // waits for the server-side preview to load for the first time.
+    private val _uploadedLocalPreviewMap = MutableStateFlow<Map<String, String>>(emptyMap())
+    val uploadedLocalPreviewMap: StateFlow<Map<String, String>> = _uploadedLocalPreviewMap
+
     // Maps referenceId -> fileUri for cancellation support
     private val uploadReferenceToUri = mutableMapOf<String, String>()
 
@@ -234,6 +240,7 @@ class ChatViewModel @AssistedInject constructor(
             chatRepository.deleteTempMessageByReferenceId(referenceId)
         }
         _uploadProgressMap.update { it - referenceId }
+        _uploadedLocalPreviewMap.update { it - referenceId }
     }
 
     fun getChatRepository(): ChatMessageRepository = chatRepository
@@ -2058,7 +2065,8 @@ class ChatViewModel @AssistedInject constructor(
                 viewModelScope.launch {
                     chatRepository.addUploadPlaceholderMessage(
                         localFileUri = fileUri,
-                        caption = caption.ifEmpty { fileName },
+                        fileName = fileName,
+                        caption = caption,
                         mimeType = mimeType,
                         fileSize = fileSize,
                         referenceId = referenceId
@@ -2068,17 +2076,18 @@ class ChatViewModel @AssistedInject constructor(
 
             val internalConversationId = "${currentUser.id}@$chatRoomToken"
             val workerId = UploadAndShareFilesWorker.upload(
-                fileUri,
-                room,
-                displayName,
-                metaData,
-                compressImages,
-                referenceId,
-                internalConversationId
+                fileUri = fileUri,
+                roomToken = room,
+                conversationName = displayName,
+                metaData = metaData,
+                referenceId = referenceId,
+                internalConversationId = internalConversationId,
+                compressImages = compressImages
             )
 
             if (!isVoiceMessage) {
                 uploadReferenceToUri[referenceId] = fileUri
+                _uploadedLocalPreviewMap.update { it + (referenceId to fileUri) }
                 observeUploadProgress(workerId, referenceId)
             }
         } catch (e: IllegalArgumentException) {
@@ -2115,6 +2124,10 @@ class ChatViewModel @AssistedInject constructor(
                 if (workInfo.state.isFinished) {
                     _uploadProgressMap.update { it - referenceId }
                     uploadReferenceToUri.remove(referenceId)
+                    viewModelScope.launch {
+                        delay(LOCAL_PREVIEW_GRACE_PERIOD_MS)
+                        _uploadedLocalPreviewMap.update { it - referenceId }
+                    }
                 }
             }
             .launchIn(viewModelScope)
@@ -2417,7 +2430,7 @@ class ChatViewModel @AssistedInject constructor(
         private const val LOAD_MORE_MESSAGES_LIMIT = 100
         private const val POST_UPLOAD_FETCH_MAX_ATTEMPTS = 4
         private const val POST_UPLOAD_FETCH_RETRY_DELAY_MS = 1_500L
-
+        private const val LOCAL_PREVIEW_GRACE_PERIOD_MS = 15_000L
         private const val PLAUSIBLE_MESSAGE_ID_BUFFER = 10_000L
 
         /**

@@ -81,7 +81,8 @@ sealed interface MessageTypeContent {
 
     data class UploadingMedia(
         val localFileUri: String,
-        val caption: String,
+        val fileName: String,
+        val caption: String?,
         val mimeType: String?,
         val drawableResourceId: Int
     ) : MessageTypeContent
@@ -276,12 +277,15 @@ fun getMessageTypeContent(user: User, message: ChatMessage, isClassified: Boolea
             ?: MessageTypeContent.RegularText
     }
 
+private const val FILE_PLACEHOLDER_MESSAGE = "{file}"
+
 fun getUploadingMediaContent(message: ChatMessage): MessageTypeContent.UploadingMedia {
     val mimetype = message.fileParameters.mimetype
     val drawableResourceId = DrawableUtils.getDrawableResourceIdForMimeType(mimetype)
     return MessageTypeContent.UploadingMedia(
         localFileUri = message.fileParameters.path.orEmpty(),
-        caption = message.fileParameters.name.orEmpty(),
+        fileName = message.fileParameters.name.orEmpty(),
+        caption = message.message.takeIf { it != FILE_PLACEHOLDER_MESSAGE },
         mimeType = mimetype.takeIf { !it.isNullOrEmpty() },
         drawableResourceId = drawableResourceId
     )

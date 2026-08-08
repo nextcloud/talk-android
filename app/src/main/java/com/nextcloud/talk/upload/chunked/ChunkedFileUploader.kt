@@ -31,7 +31,6 @@ import com.nextcloud.talk.filebrowser.models.properties.NCPreview
 import com.nextcloud.talk.filebrowser.models.properties.OCFavorite
 import com.nextcloud.talk.filebrowser.models.properties.OCId
 import com.nextcloud.talk.filebrowser.models.properties.OCSize
-import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.FileUtils
@@ -51,11 +50,8 @@ import java.util.Locale
 class ChunkedFileUploader(
     okHttpClient: OkHttpClient,
     val currentUser: User,
-    val roomToken: String,
-    val metaData: String?,
     val listener: OnDataTransferProgressListener,
-    val ncApiCoroutines: NcApiCoroutines,
-    val supportsConversationFolders: Boolean
+    val ncApiCoroutines: NcApiCoroutines
 ) {
 
     private var okHttpClientNoRedirects: OkHttpClient? = null
@@ -95,7 +91,7 @@ class ChunkedFileUploader(
             }
 
             if (isUploadSuccessful) {
-                assembleChunks(uploadFolderUri, targetPath, supportsConversationFolders)
+                assembleChunks(uploadFolderUri, targetPath)
             }
             return isUploadSuccessful
         } catch (e: Exception) {
@@ -298,7 +294,7 @@ class ChunkedFileUploader(
         this.okHttpClientNoRedirects = builder.build()
     }
 
-    private fun assembleChunks(uploadFolderUri: String, targetPath: String, useConversationSubfolders: Boolean) {
+    private fun assembleChunks(uploadFolderUri: String, targetPath: String) {
         val destinationUri = ApiUtils.getUrlForFileUpload(
             currentUser.baseUrl!!,
             currentUser.userId!!,
@@ -315,16 +311,7 @@ class ChunkedFileUploader(
             destinationUri.toHttpUrlOrNull()!!,
             true
         ) { response: Response ->
-            if (response.isSuccessful) {
-                if (!useConversationSubfolders) {
-                    ShareOperationWorker.shareFile(
-                        roomToken,
-                        currentUser,
-                        targetPath,
-                        metaData
-                    )
-                }
-            } else {
+            if (!response.isSuccessful) {
                 throw IOException("Failed to assemble chunks. response code: " + response.code)
             }
         }

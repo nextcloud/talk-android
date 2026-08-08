@@ -153,6 +153,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
     @Suppress("LongParameterList")
     suspend fun addUploadPlaceholderMessage(
         localFileUri: String,
+        fileName: String,
         caption: String,
         mimeType: String?,
         fileSize: Long,

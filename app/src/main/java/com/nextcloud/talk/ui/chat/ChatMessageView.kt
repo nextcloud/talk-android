@@ -208,17 +208,18 @@ fun ChatMessageView(
                         }
 
                         is MessageTypeContent.UploadingMedia -> {
-                        UploadingMediaMessage(
-                            typeContent = content,
-                            message = message,
-                            isOneToOneConversation = context.isOneToOneConversation,
-                            conversationThreadId = context.conversationThreadId,
-                            onCancelUpload = callbacks.onCancelUpload
-                        )
-                    }
+                            UploadingMediaMessage(
+                                typeContent = content,
+                                message = message,
+                                isOneToOneConversation = context.isOneToOneConversation,
+                                conversationThreadId = context.conversationThreadId,
+                                onCancelUpload = callbacks.onCancelUpload
+                            )
+                        }
 
-                    else -> {
-                        Log.d("ChatView", "Unknown message type: ${'$'}content")}
+                        else -> {
+                            Log.d("ChatView", "Unknown message type: $content")
+                        }
                     }
                 }
                 val useContainerHighlight = highlightSearchTerm.isNullOrBlank() || isSelected
