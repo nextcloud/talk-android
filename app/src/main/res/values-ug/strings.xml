@@ -116,6 +116,7 @@
     <string name="nc_add_attachment">قوشۇمچە ھۆججەت قوشۇڭ</string>
     <string name="nc_add_emojis">Emojis نى قوشۇڭ</string>
     <string name="nc_add_file">سۆھبەتكە قوشۇڭ</string>
+    <string name="nc_add_more_files">تېخىمۇ كۆپ ھۆججەت قوشۇڭ</string>
     <string name="nc_add_participants">قاتناشقۇچىلارنى قوشۇڭ</string>
     <string name="nc_add_to_favorites">ياقتۇرىدىغانلارغا قوشۇڭ</string>
     <string name="nc_all_ok_operation">ماقۇل ، ھەممىسى تامام!</string>
@@ -198,6 +199,7 @@
     <string name="nc_copy_message_link">ئۇچۇر ئۇلانمىسىنى كۆچۈرۈڭ</string>
     <string name="nc_create_new_conversation">يېڭى سۆھبەت قۇر</string>
     <string name="nc_create_poll">راي سىناش</string>
+    <string name="nc_custom_color">ئىختىيارى رەڭ</string>
     <string name="nc_date_header_today">بۈگۈن</string>
     <string name="nc_date_header_yesterday">تۈنۈگۈن</string>
     <string name="nc_delete">ئۆچۈرۈش</string>
@@ -367,6 +369,8 @@
     <string name="nc_push_notification_fetch_error">كەچۈرۈڭ خاتالىق كۆرۈلدى، سىناق ئۇچۇرنى چۈشۈرەلمىدى</string>
     <string name="nc_push_notification_message">Push ئۇقتۇرۇش مۇۋەپپەقىيەتلىك ئەۋەتىلدى. سىز ھازىر بۇ ئۈسكۈنىدە «Push ئۇقتۇرۇشلىرىنى سىناق قىلىۋاتىدۇ» دېگەن ماۋزۇدىكى ئۇقتۇرۇشنى تاپشۇرۇۋېلىشىڭىز كېرەك.</string>
     <string name="nc_remind">كېيىن ماڭا ئەسكەرتىڭ</string>
+    <string name="nc_remove_color">رەڭنى ئۆچۈرۈڭ</string>
+    <string name="nc_remove_file">ھۆججەتنى چىقىرىۋېتىش</string>
     <string name="nc_remove_from_favorites">ياقتۇرىدىغانلاردىن ئۆچۈرۈڭ</string>
     <string name="nc_remove_group_and_members">گۇرۇپپا ۋە ئەزالارنى چىقىرىۋېتىڭ</string>
     <string name="nc_remove_participant">قاتناشقۇچىنى ئېلىۋېتىڭ</string>
@@ -421,6 +425,7 @@
     <string name="nc_server_unsupported">مۇلازىمېتىر قاچىلانغان Talk ئەپنى قوللىمايدۇ</string>
     <string name="nc_server_url">مۇلازىمېتىر ئادرېسى https: //…</string>
     <string name="nc_server_version">%1$s پەقەت%2$s s 13 ۋە ئۇنىڭدىن يۇقىرى ئىشلەيدۇ</string>
+    <string name="nc_set_emoji_as_conversation_picture">Emoji نى سۆھبەت رەسىمى قىلىپ تەڭشەڭ</string>
     <string name="nc_set_new_password">يېڭى پارول بەلگىلەڭ</string>
     <string name="nc_set_password">پارول بەلگىلەڭ</string>
     <string name="nc_settings">تەڭشەك</string>

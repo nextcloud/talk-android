@@ -200,10 +200,18 @@
     <string name="nc_conversation_menu_video_call">Video call</string>
     <string name="nc_conversation_menu_voice_call">Voice call</string>
     <string name="nc_conversation_settings">Conversation settings</string>
+    <string name="nc_conversation_tags">Tags</string>
     <string name="nc_conversation_tags_create">Create</string>
     <string name="nc_conversation_tags_delete">Delete tag</string>
+    <string name="nc_conversation_tags_empty">No tags yet</string>
     <string name="nc_conversation_tags_error_generic">Something went wrong, please try again</string>
     <string name="nc_conversation_tags_favorites">Favourites</string>
+    <string name="nc_conversation_tags_filter_all">All</string>
+    <string name="nc_conversation_tags_manage">Manage tags</string>
+    <string name="nc_conversation_tags_name_hint">Tag name</string>
+    <string name="nc_conversation_tags_new">New tag</string>
+    <string name="nc_conversation_tags_rename">Rename tag</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">Join a conversation or start a new one</string>
     <string name="nc_conversations_empty_details">Say hi to your friends and colleagues!</string>
     <string name="nc_copy_message">Copy</string>
@@ -408,6 +416,8 @@
     <string name="nc_push_notification_fetch_error">Sorry something went wrong, cannot fetch test push message</string>
     <string name="nc_push_notification_message">Push notification is sent successfully. You should now receive a notification on this device with the title \'Testing push notifications\'</string>
     <string name="nc_remind">Remind me later</string>
+    <string name="nc_remove_color">Remove colour</string>
+    <string name="nc_remove_file">Remove file</string>
     <string name="nc_remove_from_favorites">Remove from favourites</string>
     <string name="nc_remove_group_and_members">Remove group and members</string>
     <string name="nc_remove_participant">Remove participant</string>

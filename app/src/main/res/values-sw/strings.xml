@@ -116,6 +116,7 @@
     <string name="nc_add_attachment">Ongeza kiambatisho</string>
     <string name="nc_add_emojis">Ongeza emoji</string>
     <string name="nc_add_file">Ongeza kwenye mazungumzo</string>
+    <string name="nc_add_more_files">Oneza faili zaidi</string>
     <string name="nc_add_participants">Ongeza washiriki</string>
     <string name="nc_add_to_favorites">Ongeza kwenye pendwa</string>
     <string name="nc_all_ok_operation">Sawa, zote zimefanyika!</string>
@@ -197,6 +198,7 @@
     <string name="nc_copy_message_link">Nakili kiungo cha ujumbe</string>
     <string name="nc_create_new_conversation">Tengeneza mazungumzo mapya</string>
     <string name="nc_create_poll">Tengeneza poll</string>
+    <string name="nc_custom_color">Rangi maalum</string>
     <string name="nc_date_header_today">Leo</string>
     <string name="nc_date_header_yesterday">Jana</string>
     <string name="nc_delete">Futa</string>
@@ -370,6 +372,8 @@
     <string name="nc_push_notification_fetch_error">Samahani, hitilafu fulani imetokea, haiwezi kuleta ujumbe wa jaribio</string>
     <string name="nc_push_notification_message">Arifa kutoka kwa programu imetumwa kwa mafanikio. Sasa unapaswa kupokea arifa kwenye kifaa hiki yenye kichwa \'Kujaribu arifa zinazotumwa na programu hata wakati huitumii\'.</string>
     <string name="nc_remind">Nikumbushe baadaye</string>
+    <string name="nc_remove_color">Ondoa rangi</string>
+    <string name="nc_remove_file">Ondoa faili</string>
     <string name="nc_remove_from_favorites">Ondoa kutoka katika pendwa</string>
     <string name="nc_remove_group_and_members">Ndoa kundi na wanachama</string>
     <string name="nc_remove_participant">Ondoa washiriki</string>
@@ -429,6 +433,7 @@
     <string name="nc_server_unsupported">Seva haijasakinisha programu ya Talk inayotumika</string>
     <string name="nc_server_url">Anwani ya seva https://...</string>
     <string name="nc_server_version">%1$sanafanya kazi na %2$s13 na zaidi</string>
+    <string name="nc_set_emoji_as_conversation_picture">Weka emoji kama picha ya mazungumzo</string>
     <string name="nc_set_new_password">Pangilia nensiri jipya</string>
     <string name="nc_set_password">Pangilia nensiri</string>
     <string name="nc_settings">Mipangilio</string>

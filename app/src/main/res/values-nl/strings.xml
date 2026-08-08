@@ -116,6 +116,7 @@
     <string name="nc_add_attachment">Toevoegen bijlage</string>
     <string name="nc_add_emojis">Toevoegen emojis</string>
     <string name="nc_add_file">Toevoegen aan gespek</string>
+    <string name="nc_add_more_files">Voeg meer bestanden toe</string>
     <string name="nc_add_participants">Toevoegen deelnemers </string>
     <string name="nc_add_to_favorites">Toevoegen aan favorieten</string>
     <string name="nc_all_ok_operation">OK, alles in orde!</string>
@@ -199,6 +200,7 @@
     <string name="nc_copy_message_link">Kopiëren berichtlink</string>
     <string name="nc_create_new_conversation">Maak een nieuw gesprek</string>
     <string name="nc_create_poll">Peiling aanmaken</string>
+    <string name="nc_custom_color">Kleur op maat</string>
     <string name="nc_date_header_today">Vandaag</string>
     <string name="nc_date_header_yesterday">Gisteren</string>
     <string name="nc_delete">Verwijderen</string>
@@ -371,6 +373,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_push_notification_fetch_error">Sorry, er is iets misgegaan, het testbericht kan niet worden opgehaald.</string>
     <string name="nc_push_notification_message">De pushmelding is succesvol verzonden. Je zou nu een melding moeten ontvangen op dit apparaat met de titel ‘Pushmeldingen testen’.</string>
     <string name="nc_remind">Herinner me later</string>
+    <string name="nc_remove_color">Verwijderen kleur</string>
+    <string name="nc_remove_file">Bestand verwijderen</string>
     <string name="nc_remove_from_favorites">Verwijderen uit favorieten</string>
     <string name="nc_remove_group_and_members">Verwijderen groep en leden</string>
     <string name="nc_remove_participant">Verwijder deelnemer</string>
@@ -429,6 +433,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_server_unsupported">De server heeft geen ondersteunde Talk app geïnstalleerd</string>
     <string name="nc_server_url">Serveradres https://…</string>
     <string name="nc_server_version">%1$s werkt alleen met %2$s 13 en hoger</string>
+    <string name="nc_set_emoji_as_conversation_picture">Stel emoji in als gespreksafbeelding</string>
     <string name="nc_set_new_password">Instellen nieuw wachtwoord</string>
     <string name="nc_set_password">Instellen wachtwoord</string>
     <string name="nc_settings">Instellingen</string>

@@ -131,6 +131,7 @@
     <string name="nc_add_attachment">加入附件</string>
     <string name="nc_add_emojis">加入 emoji</string>
     <string name="nc_add_file">加入到對話</string>
+    <string name="nc_add_more_files">新增更多檔案</string>
     <string name="nc_add_participants">新增成員</string>
     <string name="nc_add_to_favorites">加到我的最愛</string>
     <string name="nc_add_to_home_screen">新增至主畫面</string>
@@ -218,6 +219,7 @@
     <string name="nc_copy_message_link">複製訊息連結</string>
     <string name="nc_create_new_conversation">建立新對話</string>
     <string name="nc_create_poll">建立調查活動</string>
+    <string name="nc_custom_color">自訂顏色</string>
     <string name="nc_date_header_today">今天</string>
     <string name="nc_date_header_yesterday">昨天</string>
     <string name="nc_delete">刪除</string>
@@ -416,6 +418,7 @@
     <string name="nc_push_notification_fetch_error">抱歉，發生了一點問題，無法擷取測試推播訊息</string>
     <string name="nc_push_notification_message">已成功傳送推播通知。現在您應該會在此裝置上收到標題為「測試推播通知」的通知。</string>
     <string name="nc_remind">稍後提醒我</string>
+    <string name="nc_remove_color">移除顏色</string>
     <string name="nc_remove_from_favorites">取消我的最愛</string>
     <string name="nc_remove_group_and_members">移除群組與成員</string>
     <string name="nc_remove_participant">移除參與者</string>
@@ -480,6 +483,7 @@
     <string name="nc_server_unsupported">伺服器未安裝受支援的 Talk 應用程式</string>
     <string name="nc_server_url">伺服器地址 https://…</string>
     <string name="nc_server_version">%1$s!只能在%2$s13版以上運作</string>
+    <string name="nc_set_emoji_as_conversation_picture">將表情符號設定對話圖片</string>
     <string name="nc_set_new_password">設定新密碼</string>
     <string name="nc_set_password">設定密碼</string>
     <string name="nc_settings">設定</string>

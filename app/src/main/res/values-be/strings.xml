@@ -188,7 +188,17 @@
     <string name="nc_conversation_menu_video_call">Відэавыклік</string>
     <string name="nc_conversation_menu_voice_call">Галасавы выклік</string>
     <string name="nc_conversation_settings">Налады размовы</string>
+    <string name="nc_conversation_tags">Тэгі</string>
+    <string name="nc_conversation_tags_create">Ствараць</string>
     <string name="nc_conversation_tags_delete">Выдаліць тэг</string>
+    <string name="nc_conversation_tags_empty">Пакуль няма тэгаў</string>
+    <string name="nc_conversation_tags_favorites">Абранае</string>
+    <string name="nc_conversation_tags_filter_all">Усе</string>
+    <string name="nc_conversation_tags_manage">Кіраванне тэгамі</string>
+    <string name="nc_conversation_tags_name_hint">Назва тэга</string>
+    <string name="nc_conversation_tags_new">Новы тэг</string>
+    <string name="nc_conversation_tags_rename">Перайменаваць тэг</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">Далучайцеся да размовы або пачніце новую</string>
     <string name="nc_conversations_empty_details">Павітайцеся з сябрамі і калегамі!</string>
     <string name="nc_copy_message">Капіяваць</string>

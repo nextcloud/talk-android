@@ -79,6 +79,7 @@
     <string name="nc_add_attachment">Dodaj prilogo</string>
     <string name="nc_add_emojis">Vstavi izrazno ikono</string>
     <string name="nc_add_file">Dodaj v pogovor</string>
+    <string name="nc_add_more_files">Dodaj več datotek</string>
     <string name="nc_add_participants">Dodaj udeležence</string>
     <string name="nc_add_to_favorites">Dodaj med priljubljene</string>
     <string name="nc_all_ok_operation">Opravilo je uspešno končano!</string>
@@ -158,6 +159,7 @@
     <string name="nc_copy_message_link">Kopiraj povezavo sporočila</string>
     <string name="nc_create_new_conversation">Ustvari nov pogovor</string>
     <string name="nc_create_poll">Ustvari vprašalnik</string>
+    <string name="nc_custom_color">Barva po meri</string>
     <string name="nc_date_header_today">Danes</string>
     <string name="nc_date_header_yesterday">Včeraj</string>
     <string name="nc_delete">Izbriši</string>
@@ -290,6 +292,8 @@
     <string name="nc_public_call_status">Javni pogovor</string>
     <string name="nc_push_disabled">Potisno obveščanje je onemogočeno</string>
     <string name="nc_remind">Opomni me kasneje</string>
+    <string name="nc_remove_color">Odstrani barvo</string>
+    <string name="nc_remove_file">Odstrani datoteko</string>
     <string name="nc_remove_from_favorites">Odstrani iz priljubljenih</string>
     <string name="nc_remove_group_and_members">Odstrani skupino in člane</string>
     <string name="nc_remove_participant">Odstrani udeležence</string>
@@ -336,6 +340,7 @@
     <string name="nc_server_unsupported">Na strežniku ni nameščenega ustreznega programa Talk</string>
     <string name="nc_server_url">Naslov strežnika: https://</string>
     <string name="nc_server_version">Program %1$s je podprt le na različicah %2$s 13 in novejših.</string>
+    <string name="nc_set_emoji_as_conversation_picture">Nastavi izrazno ikono kot sliko pogovora</string>
     <string name="nc_set_new_password">Nastavi novo geslo</string>
     <string name="nc_settings">Nastavitve</string>
     <string name="nc_settings_account_updated">Že obstoječ račun je posodobljen, zato nov račun ni bil dodan</string>

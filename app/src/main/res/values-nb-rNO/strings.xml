@@ -98,6 +98,7 @@
     <string name="nc_add_attachment">Legg til vedlegg</string>
     <string name="nc_add_emojis">Legg til emojier</string>
     <string name="nc_add_file">Legg til i samtale</string>
+    <string name="nc_add_more_files">Legg til flere filer</string>
     <string name="nc_add_participants">Legg til deltager</string>
     <string name="nc_add_to_favorites">Legg til favoritter</string>
     <string name="nc_all_ok_operation">OK, ferdig!</string>
@@ -180,6 +181,7 @@
     <string name="nc_copy_message_link">Kopier meldingskobling</string>
     <string name="nc_create_new_conversation">Opprett en ny samtale</string>
     <string name="nc_create_poll">Opprett avstemning</string>
+    <string name="nc_custom_color">Tilpasset farge</string>
     <string name="nc_date_header_today">I dag</string>
     <string name="nc_date_header_yesterday">I går</string>
     <string name="nc_delete">Slett</string>
@@ -335,6 +337,8 @@
     <string name="nc_public_call_status">Offentlig samtale</string>
     <string name="nc_push_disabled">Push notifisering deaktivert</string>
     <string name="nc_remind">Påminnn meg senere</string>
+    <string name="nc_remove_color">Fjern farge</string>
+    <string name="nc_remove_file">Fjern filen</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
     <string name="nc_remove_group_and_members">Fjern gruppe og medlemmer</string>
     <string name="nc_remove_participant">Fjern deltaker</string>
@@ -380,6 +384,7 @@
     <string name="nc_server_unsupported">Serveren har ikke en støttet Talk app installert</string>
     <string name="nc_server_url">Serveradresse https://…</string>
     <string name="nc_server_version">%1$s fungerer bare med %2$s 13 og høyere</string>
+    <string name="nc_set_emoji_as_conversation_picture">Angi emoji som samtalebilde</string>
     <string name="nc_set_new_password">Angi nytt passord</string>
     <string name="nc_settings">Instillinger</string>
     <string name="nc_settings_account_updated">Din allerede eksisterende konto ble oppdatert, istedenfor å legge til en ny</string>

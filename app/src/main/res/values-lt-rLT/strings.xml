@@ -131,6 +131,7 @@
     <string name="nc_add_attachment">Pridėti priedą</string>
     <string name="nc_add_emojis">Pridėti emociukų</string>
     <string name="nc_add_file">Pridėti į pokalbį</string>
+    <string name="nc_add_more_files">Pridėti daugiau failų</string>
     <string name="nc_add_participants">Pridėti dalyvių</string>
     <string name="nc_add_to_favorites">Pridėti į mėgstamus</string>
     <string name="nc_add_to_home_screen">Pridėti prie pradinio ekrano</string>
@@ -203,8 +204,12 @@
     <string name="nc_conversation_tags">Žymos</string>
     <string name="nc_conversation_tags_create">Sukurti</string>
     <string name="nc_conversation_tags_delete">Ištrinti žymą</string>
+    <string name="nc_conversation_tags_delete_confirm_message">Ši žyma bus pašalinta iš visų pokalbių, kuriems ji priskirta.</string>
+    <string name="nc_conversation_tags_delete_confirm_title">Ištrinti žymą?</string>
     <string name="nc_conversation_tags_empty">Kol kas žymų nėra</string>
     <string name="nc_conversation_tags_error_generic">Įvyko klaida, bandykite dar kartą</string>
+    <string name="nc_conversation_tags_error_limit">Pasiekėte maksimalų žymų skaičių.</string>
+    <string name="nc_conversation_tags_error_name">Šis žymos pavadinimas netinkamas arba jau naudojamas.</string>
     <string name="nc_conversation_tags_favorites">Mėgstami</string>
     <string name="nc_conversation_tags_filter_all">Visos</string>
     <string name="nc_conversation_tags_manage">Tvarkyti žymas</string>
@@ -218,6 +223,7 @@
     <string name="nc_copy_message_link">Kopijuoti žinutės nuorodą</string>
     <string name="nc_create_new_conversation">Sukurti naują pokalbį</string>
     <string name="nc_create_poll">Sukurti apklausą</string>
+    <string name="nc_custom_color">Tinkinta spalva</string>
     <string name="nc_date_header_today">Šiandien</string>
     <string name="nc_date_header_yesterday">Vakar</string>
     <string name="nc_delete">Ištrinti</string>
@@ -416,6 +422,8 @@
     <string name="nc_push_notification_fetch_error">Atsiprašome, kažkas įvyko netinkamai, nepavyko gauti bandomojo „push“ pranešimo</string>
     <string name="nc_push_notification_message">Pranešimas išsiųstas sėkmingai. Dabar šiame įrenginyje turėtumėte gauti pranešimą su pavadinimu „Push pranešimų testavimas“</string>
     <string name="nc_remind">Priminti vėliau</string>
+    <string name="nc_remove_color">Šalinti spalvą</string>
+    <string name="nc_remove_file">Šalinti failą</string>
     <string name="nc_remove_from_favorites">Šalinti iš mėgstamų</string>
     <string name="nc_remove_group_and_members">Šalinti grupę ir narius</string>
     <string name="nc_remove_participant">Šalinti dalyvį</string>
@@ -480,6 +488,7 @@
     <string name="nc_server_unsupported">Serveryje nėra įdiegta palaikoma „Pokalbiai“ programėlė</string>
     <string name="nc_server_url">Serverio adresas https://…</string>
     <string name="nc_server_version">%1$s veikia tik naudojant %2$s 13 ar naujesnę versiją</string>
+    <string name="nc_set_emoji_as_conversation_picture">Nustatyti emociuką kaip pokalbio paveikslėlį</string>
     <string name="nc_set_new_password">Nustatyti naują slaptažodį</string>
     <string name="nc_set_password">Nustatyti slaptažodį</string>
     <string name="nc_settings">Nustatymai</string>

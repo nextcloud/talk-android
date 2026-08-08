@@ -123,6 +123,7 @@
     <string name="nc_add_attachment">Adicionar anexo</string>
     <string name="nc_add_emojis">Adicionar emojis</string>
     <string name="nc_add_file">Adicionar à conversa </string>
+    <string name="nc_add_more_files">Adicionar mais arquivos</string>
     <string name="nc_add_participants">Adicionar participantes</string>
     <string name="nc_add_to_favorites">Adicionar aos favoritos</string>
     <string name="nc_add_to_home_screen">Adicionar para a tela inicial</string>
@@ -206,6 +207,7 @@
     <string name="nc_copy_message_link">Copiar link da mensagem</string>
     <string name="nc_create_new_conversation">Criar nova conversa</string>
     <string name="nc_create_poll">Criar enquete</string>
+    <string name="nc_custom_color">Cor personalizada</string>
     <string name="nc_date_header_today">Hoje</string>
     <string name="nc_date_header_yesterday">Ontem</string>
     <string name="nc_delete">Eliminar</string>
@@ -391,6 +393,7 @@
     <string name="nc_push_notification_fetch_error">Desculpe, algo deu errado, não foi possível obter a mensagem push de teste</string>
     <string name="nc_push_notification_message">A notificação push foi enviada com êxito. Agora você deve receber uma notificação neste dispositivo com o título \'Testando notificações push\'</string>
     <string name="nc_remind">Lembrar-me mais tarde</string>
+    <string name="nc_remove_file">Remover arquivo</string>
     <string name="nc_remove_from_favorites">Remover dos favoritos</string>
     <string name="nc_remove_group_and_members">Remover grupo e membros</string>
     <string name="nc_remove_participant">Remover participante</string>
@@ -453,6 +456,7 @@
     <string name="nc_server_unsupported">O servidor não tem um aplicativo Talk suportado instalado</string>
     <string name="nc_server_url">Endereço do servidor https://…</string>
     <string name="nc_server_version">%1$s somente funciona com%2$s 13 e posterior</string>
+    <string name="nc_set_emoji_as_conversation_picture">Configurar emoji como imagem da conversa</string>
     <string name="nc_set_new_password">Definir nova senha</string>
     <string name="nc_set_password">Definir Senha</string>
     <string name="nc_settings">Definições</string>

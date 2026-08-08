@@ -116,6 +116,7 @@
     <string name="nc_add_attachment">Додај прилог</string>
     <string name="nc_add_emojis">Додај емођије</string>
     <string name="nc_add_file">Додај у разговор</string>
+    <string name="nc_add_more_files">Додај још фајлова</string>
     <string name="nc_add_participants">Додај учеснике</string>
     <string name="nc_add_to_favorites">Додај у омиљене</string>
     <string name="nc_all_ok_operation">У реду, све готово!</string>
@@ -199,6 +200,7 @@
     <string name="nc_copy_message_link">Копирај линк поруке</string>
     <string name="nc_create_new_conversation">Креирај нови разговор</string>
     <string name="nc_create_poll">Направи гласање</string>
+    <string name="nc_custom_color">Прилагођена боја</string>
     <string name="nc_date_header_today">Данас</string>
     <string name="nc_date_header_yesterday">Јуче</string>
     <string name="nc_delete">Обриши</string>
@@ -368,6 +370,8 @@
     <string name="nc_push_notification_fetch_error">Жао нам је, нешто је пошло наопако, тест брзо обавештење не може да се преузме</string>
     <string name="nc_push_notification_message">Брзо обавештење је успешно послато. Сада би требало да примите обавештење на овај уређај под називом ’Тестирање брзих обавештења’</string>
     <string name="nc_remind">Подсети ме касније</string>
+    <string name="nc_remove_color">Уклони боју</string>
+    <string name="nc_remove_file">Уклони фајл</string>
     <string name="nc_remove_from_favorites">Уклони из омиљених</string>
     <string name="nc_remove_group_and_members">Уклони групу и чланове</string>
     <string name="nc_remove_participant">Уклони учесника</string>
@@ -422,6 +426,7 @@
     <string name="nc_server_unsupported">Сервер нема инсталирану подржану Talk апликацију</string>
     <string name="nc_server_url">Адреса сервера https://…</string>
     <string name="nc_server_version">%1$s ради само са%2$s верзије 13 и већом</string>
+    <string name="nc_set_emoji_as_conversation_picture">Постави емођи као слику разговора</string>
     <string name="nc_set_new_password">Постави нову лозинку</string>
     <string name="nc_set_password">Постави лозинку</string>
     <string name="nc_settings">Поставке</string>

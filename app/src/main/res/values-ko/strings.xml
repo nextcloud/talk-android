@@ -76,6 +76,7 @@
     <string name="nc_add_attachment">첨부파일 추가</string>
     <string name="nc_add_emojis">이모티콘 추가</string>
     <string name="nc_add_file">대화에 추가</string>
+    <string name="nc_add_more_files">파일 더 추가</string>
     <string name="nc_add_participants">참가자 추가</string>
     <string name="nc_add_to_favorites">즐겨찾기에 추가</string>
     <string name="nc_all_ok_operation">모두 완료되었습니다!</string>
@@ -144,6 +145,7 @@
     <string name="nc_copy_message_link">메시지 링크 복사</string>
     <string name="nc_create_new_conversation">새 대화 만들기</string>
     <string name="nc_create_poll">투표 만들기</string>
+    <string name="nc_custom_color">사용자 지정 색상</string>
     <string name="nc_date_header_today">오늘</string>
     <string name="nc_date_header_yesterday">어제</string>
     <string name="nc_delete">삭제</string>
@@ -274,6 +276,7 @@
     <string name="nc_promote">중재자 권한 부여</string>
     <string name="nc_push_disabled">푸시 알림이 비활성화됨</string>
     <string name="nc_remind">나중에 다시 알림</string>
+    <string name="nc_remove_color">색깔 삭제</string>
     <string name="nc_remove_from_favorites">즐겨찾기에서 제거</string>
     <string name="nc_remove_group_and_members">Remove group and members</string>
     <string name="nc_remove_participant">참가자 삭제</string>
@@ -317,6 +320,7 @@
     <string name="nc_server_unsupported">서버에 지원되는 토크 앱이 설치되어 있지 않습니다.</string>
     <string name="nc_server_url">서버 주소 https://…</string>
     <string name="nc_server_version">%1$s은(는) %2$s 13 이상에서만 작동합니다</string>
+    <string name="nc_set_emoji_as_conversation_picture">이모지를 대화의 사진으로 설정</string>
     <string name="nc_set_new_password">새 암호 설정</string>
     <string name="nc_settings">설정</string>
     <string name="nc_settings_account_updated">새 계정을 추가하는 대신 기존 계정이 업데이트됨</string>

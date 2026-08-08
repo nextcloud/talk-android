@@ -74,6 +74,7 @@
     <string name="nc_add_attachment">Dodaj privitak</string>
     <string name="nc_add_emojis">Dodaj emojije</string>
     <string name="nc_add_file">Dodaj u razgovor</string>
+    <string name="nc_add_more_files">Dodaj više datoteka</string>
     <string name="nc_add_participants">Dodaj sudionike</string>
     <string name="nc_add_to_favorites">Dodaj u favorite</string>
     <string name="nc_all_ok_operation">U redu, završeno!</string>
@@ -125,6 +126,7 @@
     <string name="nc_conversation_menu_video_call">Videopoziv</string>
     <string name="nc_conversation_menu_voice_call">Glasovni poziv</string>
     <string name="nc_conversation_settings">Postavke razgovora</string>
+    <string name="nc_conversation_tags">Oznake</string>
     <string name="nc_conversation_tags_create">Stvori</string>
     <string name="nc_conversation_tags_delete">Izbriši oznaku</string>
     <string name="nc_conversation_tags_empty">Još nema oznaka</string>
@@ -132,7 +134,9 @@
     <string name="nc_conversation_tags_favorites">Favoriti</string>
     <string name="nc_conversation_tags_filter_all">Sve</string>
     <string name="nc_conversation_tags_manage">Upravljaj oznakama</string>
+    <string name="nc_conversation_tags_name_hint">Naziv oznake</string>
     <string name="nc_conversation_tags_new">Nova oznaka</string>
+    <string name="nc_conversation_tags_rename">Preimenuj oznaku</string>
     <string name="nc_conversation_tags_save">Spremi</string>
     <string name="nc_conversations_empty">Pridružite se razgovoru ili započnite novi</string>
     <string name="nc_conversations_empty_details">Pozdravi svoje prijatelje i kolege!</string>
@@ -140,6 +144,7 @@
     <string name="nc_copy_message_link">Kopiraj poveznicu poruke</string>
     <string name="nc_create_new_conversation">Stvori novi razgovor</string>
     <string name="nc_create_poll">Stvori anketu</string>
+    <string name="nc_custom_color">Prilagođena boja</string>
     <string name="nc_date_header_today">Danas</string>
     <string name="nc_date_header_yesterday">Jučer</string>
     <string name="nc_delete">Izbriši</string>
@@ -256,6 +261,7 @@
     <string name="nc_public_call_status">Javni razgovor</string>
     <string name="nc_push_disabled">Push obavijesti su onemogućene</string>
     <string name="nc_remind">Podsjeti me kasnije</string>
+    <string name="nc_remove_color">Ukloni boju</string>
     <string name="nc_remove_from_favorites">Ukloni iz favorita</string>
     <string name="nc_remove_group_and_members">Ukloni grupu i članove</string>
     <string name="nc_remove_participant">Ukloni sudionika</string>

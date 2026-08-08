@@ -116,6 +116,7 @@
     <string name="nc_add_attachment">Додати вкладення</string>
     <string name="nc_add_emojis">Додати емоційки</string>
     <string name="nc_add_file">Додати до розмови</string>
+    <string name="nc_add_more_files">Додайте більше файлів</string>
     <string name="nc_add_participants">Додати учасників</string>
     <string name="nc_add_to_favorites">Додати зірочку</string>
     <string name="nc_all_ok_operation">ОК, все готово!</string>
@@ -197,6 +198,7 @@
     <string name="nc_copy_message_link">Копіювати посилання на повідомлення</string>
     <string name="nc_create_new_conversation">Створити нову розмову</string>
     <string name="nc_create_poll">Створити опитування</string>
+    <string name="nc_custom_color">Власний колір</string>
     <string name="nc_date_header_today">Сьогодні</string>
     <string name="nc_date_header_yesterday">Вчора</string>
     <string name="nc_delete">Вилучити</string>
@@ -366,6 +368,8 @@
     <string name="nc_push_notification_fetch_error">Вибачте, щось пішло не так, не вдається отримати тестове push-повідомлення</string>
     <string name="nc_push_notification_message">Push-повідомлення успішно надіслано. Ви повинні отримати на цьому пристрої повідомлення з назвою «Тестування push-повідомлень».</string>
     <string name="nc_remind">Нагадати пізніше</string>
+    <string name="nc_remove_color">Вилучити колір</string>
+    <string name="nc_remove_file">Видалити файл</string>
     <string name="nc_remove_from_favorites">Прибрати зірочку</string>
     <string name="nc_remove_group_and_members">Вилучити групи та учасників</string>
     <string name="nc_remove_participant">Вилучити учасника</string>
@@ -420,6 +424,7 @@
     <string name="nc_server_unsupported">На сервері не встановлено застосунок \"Talk\", який може підтримуватися</string>
     <string name="nc_server_url">Адреса сервера https://…</string>
     <string name="nc_server_version">Застосунок %1$s сумісний з %2$s версії 13 або вище</string>
+    <string name="nc_set_emoji_as_conversation_picture">Встановіть емодзі як картинку для розмови</string>
     <string name="nc_set_new_password">Встановіть новий пароль</string>
     <string name="nc_set_password">Встановити пароль</string>
     <string name="nc_settings">Налаштування</string>

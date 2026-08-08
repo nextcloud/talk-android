@@ -129,6 +129,7 @@
     <string name="nc_add_attachment">Добавить вложение</string>
     <string name="nc_add_emojis">Добавить эмодзи</string>
     <string name="nc_add_file">Добавить к обсуждению</string>
+    <string name="nc_add_more_files">Добавить файлы</string>
     <string name="nc_add_participants">Добавить участников</string>
     <string name="nc_add_to_favorites">Добавить в избранное</string>
     <string name="nc_add_to_home_screen">Добавить на главный экран</string>
@@ -214,6 +215,7 @@
     <string name="nc_copy_message_link">Скопировать ссылку на сообщение</string>
     <string name="nc_create_new_conversation">Создать новое обсуждение</string>
     <string name="nc_create_poll">Создать опрос</string>
+    <string name="nc_custom_color">Свой цвет</string>
     <string name="nc_date_header_today">Сегодня</string>
     <string name="nc_date_header_yesterday">Вчера</string>
     <string name="nc_delete">Удалить</string>
@@ -394,6 +396,8 @@
     <string name="nc_push_notification_fetch_error">Что-то пошло не так, не могу получить тестовое пуш-сообщение</string>
     <string name="nc_push_notification_message">Пуш-сообщение отправлено успешно. Вы теперь должны получить сообщение на этом устройстве с заголовком \"Тестирование пуш-сообщений\"</string>
     <string name="nc_remind">Напомнить позже</string>
+    <string name="nc_remove_color">Убрать отметку цветом</string>
+    <string name="nc_remove_file">Убрать файл</string>
     <string name="nc_remove_from_favorites">Удалить из избранного</string>
     <string name="nc_remove_group_and_members">Удалить группу и её участников</string>
     <string name="nc_remove_participant">Удалить участника</string>
@@ -458,6 +462,7 @@
     <string name="nc_server_unsupported">На сервере не установлено приложение «Конференции»</string>
     <string name="nc_server_url">Адрес сервера https://…</string>
     <string name="nc_server_version">Работа приложения %1$s возможна только с серверами %2$s версии 13 или старше</string>
+    <string name="nc_set_emoji_as_conversation_picture">Установить эмодзи в качестве изображения обсуждения</string>
     <string name="nc_set_new_password">Установить новый пароль</string>
     <string name="nc_set_password">Установить пароль</string>
     <string name="nc_settings">Параметры</string>

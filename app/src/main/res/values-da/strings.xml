@@ -181,8 +181,15 @@
     <string name="nc_conversation_menu_video_call">Videoopkald</string>
     <string name="nc_conversation_menu_voice_call">Stemmeopkald</string>
     <string name="nc_conversation_settings">Samtale indstillinger</string>
+    <string name="nc_conversation_tags">Tags</string>
     <string name="nc_conversation_tags_create">Opret</string>
+    <string name="nc_conversation_tags_empty">Ingen tags endnu</string>
     <string name="nc_conversation_tags_favorites">Favoritter</string>
+    <string name="nc_conversation_tags_filter_all">Alle</string>
+    <string name="nc_conversation_tags_manage">Administrér tags</string>
+    <string name="nc_conversation_tags_name_hint">Tag navn</string>
+    <string name="nc_conversation_tags_new">Nyt tag</string>
+    <string name="nc_conversation_tags_save">Save</string>
     <string name="nc_conversations_empty">Deltag i en samtale eller start en ny</string>
     <string name="nc_conversations_empty_details">Sig hej til dine venner og kollegaer.</string>
     <string name="nc_copy_message">Kopiér</string>
@@ -356,6 +363,8 @@
     <string name="nc_push_notification_fetch_error">Desværre, noget gik galt, kan ikke hente test push besked</string>
     <string name="nc_push_notification_message">Push notifikation afsendt. Du bør nu modtage en notifikation på apparatet med titlen \'Test push notifikationer\'</string>
     <string name="nc_remind">Påmind mig senere</string>
+    <string name="nc_remove_color">Fjern farve</string>
+    <string name="nc_remove_file">Fjern fil</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
     <string name="nc_remove_group_and_members">Fjern gruppe og medlemmer</string>
     <string name="nc_remove_participant">Fjern deltager</string>
