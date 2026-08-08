@@ -12,6 +12,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
@@ -73,7 +75,8 @@ data class ChatMessageCallbacks(
     val onOpenThreadClick: (Int) -> Unit = {},
     val onQuotedMessageClick: (Int) -> Unit = {},
     val onSystemMessageExpandClick: (Int) -> Unit = {},
-    val onAvatarClick: (Int) -> Unit = {}
+    val onAvatarClick: (Int) -> Unit = {},
+    val onMarkdownTaskToggle: (Int, String) -> Unit = { _, _ -> }
 )
 
 @Suppress("Detekt.LongParameterList", "Detekt.LongMethod", "Detekt.CyclomaticComplexMethod")
@@ -109,28 +112,30 @@ fun ChatMessageView(
         LocalOpenThreadHandler provides callbacks.onOpenThreadClick,
         LocalQuotedMessageClickHandler provides callbacks.onQuotedMessageClick,
         LocalHighlightSearchTerm provides highlightSearchTerm,
-        LocalAvatarClickHandler provides callbacks.onAvatarClick
+        LocalAvatarClickHandler provides callbacks.onAvatarClick,
+        LocalMarkdownTaskToggleHandler provides callbacks.onMarkdownTaskToggle
     ) {
         SwipeToReplyContainer(
             replyable = message.replyable && context.hasChatPermission,
             onSwipeReply = { callbacks.onSwipeReply?.invoke(message.id) }
         ) {
+            val messageGestureModifier = if (message.isExpandableParent) {
+                Modifier.combinedClickable(
+                    interactionSource = interactionSource,
+                    indication = ripple(),
+                    onClick = { callbacks.onSystemMessageExpandClick(message.id) },
+                    onLongClick = { callbacks.onLongClick?.invoke(message.id) }
+                )
+            } else {
+                Modifier.pointerInput(message.id) {
+                    detectTapGestures(onLongPress = { callbacks.onLongClick?.invoke(message.id) })
+                }
+            }
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .combinedClickable(
-                        interactionSource = interactionSource,
-                        indication = ripple(),
-                        onClick = {
-                            if (message.isExpandableParent) {
-                                callbacks.onSystemMessageExpandClick(message.id)
-                            } else {
-                                callbacks.onLongClick?.invoke(message.id)
-                            }
-                        },
-                        onDoubleClick = { callbacks.onLongClick?.invoke(message.id) },
-                        onLongClick = { callbacks.onLongClick?.invoke(message.id) }
-                    )
+                    .then(messageGestureModifier)
             ) {
                 Box(modifier = Modifier.padding(horizontal = 12.dp)) {
                     when (val content = message.content) {
