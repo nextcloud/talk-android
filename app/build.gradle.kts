@@ -320,8 +320,8 @@ dependencies {
     implementation("com.github.yalantis:ucrop:2.2.11")
 
     implementation("io.github.elye:loaderviewlibrary:3.0.0")
-    implementation("org.maplibre.compose:maplibre-compose:0.13.1")
-    implementation("org.maplibre.compose:maplibre-compose-material3:0.13.1")
+    implementation("org.maplibre.compose:maplibre-compose:0.14.0")
+    implementation("org.maplibre.compose:maplibre-compose-material3:0.14.0")
     implementation("fr.dudie:nominatim-api:3.4") {
         //noinspection DuplicatePlatformClasses
         exclude(group = "org.apache.httpcomponents", module = "httpclient")
