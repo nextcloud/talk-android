@@ -205,6 +205,14 @@ class OfflineFirstChatRepository @Inject constructor(
                     "Initial online request is skipped because offline messages are up to date" +
                         " until the conversation's last message"
                 )
+
+                // No HTTP fetch happens in this branch, so seed the insurance anchor explicitly:
+                // lastMessage came from the room list sync (HTTP) and the local chat block reaches
+                // it, so it is a valid HTTP-synced anchor. Without the seed, the first insurance
+                // request of this session would query with lastKnownMessageId=0.
+                conversationModel.lastMessage?.id?.let {
+                    syncer.seedHttpSyncedMessageId(internalConversationId, threadId, it)
+                }
             }
 
             weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage -> {
@@ -333,24 +341,26 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     /**
-     * Fetches messages newer than the newest message covered by the chat blocks.
+     * Fetches messages newer than the newest message known from HTTP syncs.
      *
-     * The anchor is read from the database instead of in-memory state: messages and chat blocks
-     * are persisted together, so the blocks are always at least as fresh — and unlike a field in
-     * this (unscoped, per-chat-open) repository they survive reopening the chat.
+     * The anchor deliberately EXCLUDES messages that were delivered via signaling: those extend
+     * the latest chat block optimistically (assuming they are contiguous on top of it), and this
+     * request is the insurance that verifies the assumption — anchoring on the chat block's
+     * newest message would skip exactly the range it has to check. The anchor lives in the
+     * singleton [ChatMessageSyncer], so it survives reopening the chat.
      *
      * @return `true` if at least one new message was received and persisted.
      */
     override suspend fun fetchNewMessages(): Boolean {
         cleanupExpiredMessages()
 
-        val newestMessageIdFromDb = chatBlocksDao.getNewestMessageIdFromChatBlocks(internalConversationId, threadId)
+        val lastHttpSyncedMessageId = syncer.lastHttpSyncedMessageId(internalConversationId, threadId) ?: 0L
 
         val fieldMap = getFieldMap(
             lookIntoFuture = true,
             timeout = 0,
             includeLastKnown = false,
-            lastKnown = newestMessageIdFromDb.toInt(),
+            lastKnown = lastHttpSyncedMessageId.toInt(),
             limit = 200
         )
         val networkParams = Bundle()

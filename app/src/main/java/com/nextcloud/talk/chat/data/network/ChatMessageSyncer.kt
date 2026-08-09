@@ -235,7 +235,7 @@ class ChatMessageSyncer @Inject constructor(
      * next room list sync.
      */
     private suspend fun coalescedRoomCatchUp(target: SyncTarget, limit: Int): SyncOutcome {
-        val stateKey = "${target.internalConversationId}#${target.threadId}"
+        val stateKey = syncStateKey(target.internalConversationId, target.threadId)
         val state = catchUpStates.getOrPut(stateKey) { RoomCatchUpState() }
 
         if (!state.mutex.tryLock()) {
@@ -278,6 +278,39 @@ class ChatMessageSyncer @Inject constructor(
     }
 
     private val catchUpStates = ConcurrentHashMap<String, RoomCatchUpState>()
+
+    /**
+     * Newest message id per conversation/thread that is known from HTTP syncs — deliberately
+     * EXCLUDING messages delivered via signaling. Signaling messages extend the latest chat block
+     * optimistically (assuming they are contiguous on top of it); the insurance request exists to
+     * verify that assumption and must therefore anchor on the last HTTP-synced message, otherwise
+     * messages that arrived between the last sync and the signaling delivery would never be
+     * fetched. Living in this singleton, the anchor survives reopening a chat.
+     */
+    private val lastHttpSyncedMessageIds = ConcurrentHashMap<String, Long>()
+
+    /**
+     * The newest message id of the conversation/thread confirmed via HTTP sync, or null when no
+     * sync happened yet (and [seedHttpSyncedMessageId] was never called) since app start.
+     */
+    fun lastHttpSyncedMessageId(internalConversationId: String, threadId: Long?): Long? =
+        lastHttpSyncedMessageIds[syncStateKey(internalConversationId, threadId)]
+
+    /**
+     * Seeds the HTTP-synced anchor without a fetch. Only call with ids whose coverage is proven by
+     * HTTP-derived data — e.g. the conversation's lastMessage from the room list sync when the
+     * local chat block already reaches it. The anchor only ever moves forward.
+     */
+    fun seedHttpSyncedMessageId(internalConversationId: String, threadId: Long?, messageId: Long) {
+        lastHttpSyncedMessageIds.merge(syncStateKey(internalConversationId, threadId), messageId, ::maxOf)
+    }
+
+    private fun recordHttpSyncedMessageId(target: SyncTarget, messageId: Long) {
+        lastHttpSyncedMessageIds.merge(syncStateKey(target.internalConversationId, target.threadId), messageId, ::maxOf)
+    }
+
+    private fun syncStateKey(internalConversationId: String, threadId: Long?): String =
+        "$internalConversationId#$threadId"
 
     private suspend fun fetchRoomCatchUp(target: SyncTarget, limit: Int): SyncOutcome {
         val newestMessageIdFromDb =
@@ -383,6 +416,11 @@ class ChatMessageSyncer @Inject constructor(
 
                 is ChatPullResult.NotModified -> {
                     Log.d(TAG, "Server returned NOT_MODIFIED, nothing to update")
+                    if (lookIntoFuture && queriedMessageId != null) {
+                        // the server confirmed there is nothing newer than the queried message, so
+                        // the queried message is a valid HTTP-synced anchor
+                        recordHttpSyncedMessageId(target, queriedMessageId.toLong())
+                    }
                     NOTHING_SYNCED
                 }
 
@@ -436,6 +474,7 @@ class ChatMessageSyncer @Inject constructor(
                 hasHistory,
                 events
             )
+            persistedMessages.maxOfOrNull { it.id }?.let { recordHttpSyncedMessageId(target, it) }
             SyncOutcome(
                 persistedNewMessages = persistedMessages.isNotEmpty(),
                 newestPersistedMessageId = persistedMessages.maxOfOrNull { it.id },
@@ -444,6 +483,11 @@ class ChatMessageSyncer @Inject constructor(
             )
         } else {
             Log.d(TAG, "No new messages to update")
+            if (lookIntoFuture && queriedMessageId != null) {
+                // an empty response to a lookIntoFuture request confirms the queried message as
+                // the newest one, so it is a valid HTTP-synced anchor
+                recordHttpSyncedMessageId(target, queriedMessageId.toLong())
+            }
             NOTHING_SYNCED
         }
     }

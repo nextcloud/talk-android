@@ -293,6 +293,63 @@ class ChatMessageSyncerTest {
         }
 
     @Test
+    fun `http pulls record the insurance anchor but signaling persists do not`() =
+        runTest {
+            val existingBlock = block(oldest = 10, newest = 42)
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(INTERNAL_CONVERSATION_ID, null, 42L))
+                .thenReturn(flowOf(listOf(existingBlock)))
+            whenever(chatBlocksDao.getConnectedChatBlocks(eq(INTERNAL_CONVERSATION_ID), eq(null), any(), any()))
+                .thenReturn(flowOf(listOf(existingBlock)))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(message(43), message(44))))
+
+            val fieldMap = syncer.buildFieldMap(
+                lookIntoFuture = true,
+                timeout = 0,
+                includeLastKnown = false,
+                lastKnown = 42
+            )
+            syncer.pullAndPersistMessages(target(), fieldMap)
+
+            assertEquals(44L, syncer.lastHttpSyncedMessageId(INTERNAL_CONVERSATION_ID, null))
+
+            // a message delivered via signaling must NOT move the anchor: the insurance request
+            // has to verify the signaling assumption and needs the last HTTP-synced id for that
+            syncer.persistChatMessagesAndHandleSystemMessages(target(), listOf(message(50)))
+
+            assertEquals(44L, syncer.lastHttpSyncedMessageId(INTERNAL_CONVERSATION_ID, null))
+        }
+
+    @Test
+    fun `an empty lookIntoFuture response confirms the queried anchor`() =
+        runTest {
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(INTERNAL_CONVERSATION_ID, null, 42L))
+                .thenReturn(flowOf(emptyList()))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall()))
+
+            val fieldMap = syncer.buildFieldMap(
+                lookIntoFuture = true,
+                timeout = 0,
+                includeLastKnown = false,
+                lastKnown = 42
+            )
+            syncer.pullAndPersistMessages(target(), fieldMap)
+
+            assertEquals(42L, syncer.lastHttpSyncedMessageId(INTERNAL_CONVERSATION_ID, null))
+        }
+
+    @Test
+    fun `seeded insurance anchor only moves forward`() {
+        assertNull(syncer.lastHttpSyncedMessageId(INTERNAL_CONVERSATION_ID, null))
+
+        syncer.seedHttpSyncedMessageId(INTERNAL_CONVERSATION_ID, null, 44L)
+        syncer.seedHttpSyncedMessageId(INTERNAL_CONVERSATION_ID, null, 10L)
+
+        assertEquals(44L, syncer.lastHttpSyncedMessageId(INTERNAL_CONVERSATION_ID, null))
+    }
+
+    @Test
     fun `cleanupExpiredMessages trims block boundaries and deletes empty blocks`() =
         runTest {
             val partiallyExpiredBlock = block(oldest = 1, newest = 10)
