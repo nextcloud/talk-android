@@ -216,23 +216,21 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private fun handleNonCallPushMessage() {
         val mainActivityIntent = createMainActivityIntent()
         getNcDataAndShowNotification(mainActivityIntent)
-        if (pushMessage.type == TYPE_CHAT) {
-            catchUpPushedRoom()
-        }
     }
 
     /**
      * Prefetches the pushed room's messages into the local database so they are instantly visible
-     * when the chat is opened from the notification (or later). Best effort only: failures are
-     * logged and never delay or suppress the notification, which is displayed independently.
+     * when the chat is opened from the notification (or later). For messages in a thread,
+     * [threadId] targets the thread so its chat block is extended. Best effort only: failures are
+     * logged and never delay or suppress the notification, which is displayed beforehand.
      * Skipped in battery saver mode; the chat-keep-notifications capability gate and the offline
      * check are handled inside [ChatMessageSyncer.catchUpRoom].
      */
-    private fun catchUpPushedRoom() {
+    private fun catchUpPushedRoom(threadId: Long?) {
         val roomToken = pushMessage.id
         val syncer = chatMessageSyncer
-        if (roomToken == null || syncer == null || isPowerSaveMode()) {
-            logger.d(TAG, "Skipping message catch-up for pushed room (missing data or battery saver active)")
+        if (pushMessage.type != TYPE_CHAT || roomToken == null || syncer == null || isPowerSaveMode()) {
+            logger.d(TAG, "Skipping message catch-up for pushed room (not a chat push or battery saver active)")
             return
         }
 
@@ -243,7 +241,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val target = ChatMessageSyncer.SyncTarget(
             user = currentUser,
             roomToken = roomToken,
-            threadId = null,
+            threadId = threadId,
             credentials = credentials,
             urlForChatting = ApiUtils.getUrlForChat(CHAT_API_VERSION, currentUser.baseUrl!!, roomToken)
         )
@@ -536,6 +534,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                         threadId?.let { intent.putExtra(KEY_THREAD_ID, it) }
 
                         showNotification(intent, ncNotification)
+                        catchUpPushedRoom(threadId)
                     }
                 }
 
@@ -549,6 +548,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
                     setContentsFromPushNotificationSubject()
                     showNotification(intent, null)
+
+                    // without the server notification the thread id is unknown — still catch up
+                    // the room itself so the pushed message is cached for the main chat
+                    catchUpPushedRoom(threadId = null)
 
                     Log.e(TAG, "Failed to get NC notification. Using decrypted data from push notification itself", e)
                     if (BuildConfig.DEBUG) {
