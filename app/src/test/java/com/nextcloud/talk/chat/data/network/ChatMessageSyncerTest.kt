@@ -293,6 +293,67 @@ class ChatMessageSyncerTest {
         }
 
     @Test
+    fun `closeBacklog loops until the server returns fewer messages than the limit`() =
+        runTest {
+            val existingBlock = block(oldest = 10, newest = 42)
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
+                .thenReturn(flowOf(listOf(existingBlock)))
+            whenever(chatBlocksDao.getConnectedChatBlocks(eq(INTERNAL_CONVERSATION_ID), eq(null), any(), any()))
+                .thenReturn(flowOf(listOf(existingBlock)))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(
+                    Response.success(overall(message(43), message(44))),
+                    Response.success(overall(message(45)))
+                )
+
+            val outcome = syncer.closeBacklog(target(), fromMessageId = 42, limit = 2)
+
+            assertTrue(outcome.persistedNewMessages)
+            assertEquals(3, outcome.persistedMessageCount)
+            assertEquals(43L, outcome.oldestPersistedMessageId)
+            assertEquals(45L, outcome.newestPersistedMessageId)
+
+            val fieldMapCaptor = argumentCaptor<HashMap<String, Int>>()
+            verifyBlocking(network, times(2)) { pullChatMessages(any(), any(), fieldMapCaptor.capture()) }
+            assertEquals(42, fieldMapCaptor.firstValue["lastKnownMessageId"])
+            assertEquals(44, fieldMapCaptor.secondValue["lastKnownMessageId"])
+        }
+
+    @Test
+    fun `closeBacklog falls back to the newest messages when the backlog persists`() =
+        runTest {
+            val existingBlock = block(oldest = 10, newest = 42)
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
+                .thenReturn(flowOf(listOf(existingBlock)))
+            whenever(chatBlocksDao.getConnectedChatBlocks(eq(INTERNAL_CONVERSATION_ID), eq(null), any(), any()))
+                .thenReturn(flowOf(listOf(existingBlock)))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(
+                    Response.success(overall(message(43))),
+                    Response.success(overall(message(44))),
+                    Response.success(overall(message(45))),
+                    Response.success(overall(message(46))),
+                    Response.success(overall(message(47))),
+                    Response.success(overall(message(100)))
+                )
+
+            val outcome = syncer.closeBacklog(target(), fromMessageId = 42, limit = 1)
+
+            assertTrue(outcome.persistedNewMessages)
+            assertEquals(6, outcome.persistedMessageCount)
+            assertEquals(43L, outcome.oldestPersistedMessageId)
+            assertEquals(100L, outcome.newestPersistedMessageId)
+
+            val fieldMapCaptor = argumentCaptor<HashMap<String, Int>>()
+            verifyBlocking(network, times(6)) { pullChatMessages(any(), any(), fieldMapCaptor.capture()) }
+            // the last request is the fallback: newest messages with includeLastKnown, no anchor
+            val fallbackFieldMap = fieldMapCaptor.allValues.last()
+            assertEquals(0, fallbackFieldMap["lookIntoFuture"])
+            assertEquals(1, fallbackFieldMap["includeLastKnown"])
+            assertFalse(fallbackFieldMap.containsKey("lastKnownMessageId"))
+        }
+
+    @Test
     fun `http pulls record the insurance anchor but signaling persists do not`() =
         runTest {
             val existingBlock = block(oldest = 10, newest = 42)

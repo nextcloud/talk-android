@@ -216,25 +216,21 @@ class OfflineFirstChatRepository @Inject constructor(
             }
 
             weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage -> {
-                // Close the backlog since the newest offline message with a delta fetch. This is
-                // required on chat-relay servers (the relay cannot deliver messages that arrived
-                // while the app was closed) and is equally cheap on long-polling servers, where it
-                // just front-loads what the first poll request would have fetched. This way the
+                // Close the backlog since the newest offline message. This is required on
+                // chat-relay servers (the relay cannot deliver messages that arrived while the
+                // app was closed) and is equally cheap on long-polling servers, where it just
+                // front-loads what the first poll request would have fetched. This way the
                 // initial load never has to know the live-update mode, i.e. it must not wait for
-                // the websocket.
-                Log.d(TAG, "A delta request from the newest offline message is made to close the backlog")
+                // the websocket. closeBacklog loops until the backlog is fully closed — a single
+                // capped fetch could leave a permanent gap on chat-relay servers.
+                Log.d(TAG, "Closing the backlog from the newest offline message for initial loading")
 
-                val fieldMap = getFieldMap(
-                    lookIntoFuture = true,
-                    timeout = 0,
-                    includeLastKnown = false,
-                    lastKnown = newestMessageIdFromDb.toInt()
+                syncer.closeBacklog(
+                    target = syncTarget,
+                    fromMessageId = newestMessageIdFromDb,
+                    lastCommonRead = newXChatLastCommonRead,
+                    events = syncEvents
                 )
-                withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
-                withNetworkParams.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
-
-                Log.d(TAG, "Starting delta request for initial loading")
-                getAndPersistMessages(withNetworkParams)
             }
 
             else -> {
@@ -356,17 +352,17 @@ class OfflineFirstChatRepository @Inject constructor(
 
         val lastHttpSyncedMessageId = syncer.lastHttpSyncedMessageId(internalConversationId, threadId) ?: 0L
 
-        val fieldMap = getFieldMap(
-            lookIntoFuture = true,
-            timeout = 0,
-            includeLastKnown = false,
-            lastKnown = lastHttpSyncedMessageId.toInt(),
-            limit = 200
+        // closeBacklog loops until the backlog is fully closed, so a backlog larger than the
+        // request limit is caught up within one insurance cycle instead of narrowing it by one
+        // page every cycle.
+        val outcome = syncer.closeBacklog(
+            target = syncTarget,
+            fromMessageId = lastHttpSyncedMessageId,
+            limit = 200,
+            lastCommonRead = newXChatLastCommonRead,
+            events = syncEvents
         )
-        val networkParams = Bundle()
-        networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
-
-        return getAndPersistMessages(networkParams)
+        return outcome.persistedNewMessages
     }
 
     override suspend fun loadMoreMessages(

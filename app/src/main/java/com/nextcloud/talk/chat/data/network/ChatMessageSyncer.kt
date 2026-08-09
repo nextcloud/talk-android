@@ -316,29 +316,27 @@ class ChatMessageSyncer @Inject constructor(
         val newestMessageIdFromDb =
             chatBlocksDao.getNewestMessageIdFromChatBlocks(target.internalConversationId, target.threadId)
 
-        val fieldMap = if (newestMessageIdFromDb > 0) {
-            buildFieldMap(
-                lookIntoFuture = true,
-                timeout = 0,
-                includeLastKnown = false,
-                lastKnown = newestMessageIdFromDb.toInt(),
+        val outcome = if (newestMessageIdFromDb > 0) {
+            closeBacklog(
+                target = target,
+                fromMessageId = newestMessageIdFromDb,
                 limit = limit,
-                threadId = target.threadId,
                 markNotificationsAsRead = false
             )
         } else {
-            buildFieldMap(
-                lookIntoFuture = false,
-                timeout = 0,
-                includeLastKnown = true,
-                lastKnown = null,
-                limit = limit,
-                threadId = target.threadId,
-                markNotificationsAsRead = false
+            pullAndPersistMessages(
+                target,
+                buildFieldMap(
+                    lookIntoFuture = false,
+                    timeout = 0,
+                    includeLastKnown = true,
+                    lastKnown = null,
+                    limit = limit,
+                    threadId = target.threadId,
+                    markNotificationsAsRead = false
+                )
             )
         }
-
-        val outcome = pullAndPersistMessages(target, fieldMap)
 
         if (outcome.persistedNewMessages) {
             Log.d(
@@ -352,6 +350,91 @@ class ChatMessageSyncer @Inject constructor(
         }
 
         return outcome
+    }
+
+    /**
+     * Fetches the messages newer than [fromMessageId] until the backlog is fully closed.
+     *
+     * A single fetch is capped by [limit], so one request only narrows a backlog larger than
+     * that — and on chat-relay servers the remaining gap would become permanent as soon as a
+     * signaling message extends the latest chat block over it. Fetches are therefore repeated
+     * until the server returns fewer messages than the limit. If [MAX_BACKLOG_ROUNDS] full pages
+     * were fetched and the backlog is still not closed, the newest messages are fetched with
+     * includeLastKnown instead: that creates a separate top chat block, so the remaining gap
+     * stays visible in the block structure (closable by scrolling up) rather than a block
+     * claiming ranges that were never fetched.
+     */
+    @Suppress("LongParameterList")
+    suspend fun closeBacklog(
+        target: SyncTarget,
+        fromMessageId: Long,
+        limit: Int = DEFAULT_MESSAGES_LIMIT,
+        lastCommonRead: Int? = null,
+        markNotificationsAsRead: Boolean = true,
+        events: Events = NO_EVENTS
+    ): SyncOutcome {
+        var anchor = fromMessageId
+        var totalCount = 0
+        var oldestPersisted: Long? = null
+        var newestPersisted: Long? = null
+
+        repeat(MAX_BACKLOG_ROUNDS) {
+            val fieldMap = buildFieldMap(
+                lookIntoFuture = true,
+                timeout = 0,
+                includeLastKnown = false,
+                lastKnown = anchor.toInt(),
+                limit = limit,
+                threadId = target.threadId,
+                lastCommonRead = lastCommonRead,
+                markNotificationsAsRead = markNotificationsAsRead
+            )
+            val roundOutcome = pullAndPersistMessages(target, fieldMap, events)
+
+            if (roundOutcome.persistedNewMessages) {
+                totalCount += roundOutcome.persistedMessageCount
+                oldestPersisted = oldestPersisted ?: roundOutcome.oldestPersistedMessageId
+                newestPersisted = roundOutcome.newestPersistedMessageId ?: newestPersisted
+            }
+
+            val caughtUp = !roundOutcome.persistedNewMessages || roundOutcome.persistedMessageCount < limit
+            val nextAnchor = roundOutcome.newestPersistedMessageId
+            if (caughtUp || nextAnchor == null) {
+                return SyncOutcome(
+                    persistedNewMessages = totalCount > 0,
+                    newestPersistedMessageId = newestPersisted,
+                    oldestPersistedMessageId = oldestPersisted,
+                    persistedMessageCount = totalCount
+                )
+            }
+            anchor = nextAnchor
+        }
+
+        Log.w(
+            TAG,
+            "Backlog above $fromMessageId in ${target.internalConversationId} still not closed after " +
+                "$MAX_BACKLOG_ROUNDS rounds, fetching the newest messages instead"
+        )
+        val fallbackOutcome = pullAndPersistMessages(
+            target,
+            buildFieldMap(
+                lookIntoFuture = false,
+                timeout = 0,
+                includeLastKnown = true,
+                lastKnown = null,
+                limit = limit,
+                threadId = target.threadId,
+                lastCommonRead = lastCommonRead,
+                markNotificationsAsRead = markNotificationsAsRead
+            ),
+            events
+        )
+        return SyncOutcome(
+            persistedNewMessages = totalCount > 0 || fallbackOutcome.persistedNewMessages,
+            newestPersistedMessageId = fallbackOutcome.newestPersistedMessageId ?: newestPersisted,
+            oldestPersistedMessageId = oldestPersisted ?: fallbackOutcome.oldestPersistedMessageId,
+            persistedMessageCount = totalCount + fallbackOutcome.persistedMessageCount
+        )
     }
 
     fun pullMessagesFlow(target: SyncTarget, fieldMap: HashMap<String, Int>): Flow<ChatPullResult> =
@@ -798,6 +881,7 @@ class ChatMessageSyncer @Inject constructor(
         private const val MILLIS_PER_SECOND = 1000L
         private const val CATCH_UP_COOLDOWN_MILLIS = 5_000L
         private const val MAX_CATCH_UP_RUNS_PER_BURST = 3
+        private const val MAX_BACKLOG_ROUNDS = 5
         private const val HTTP_CODE_OK: Int = 200
         private const val HTTP_CODE_NOT_MODIFIED = 304
         private const val HTTP_CODE_PRECONDITION_FAILED = 412
