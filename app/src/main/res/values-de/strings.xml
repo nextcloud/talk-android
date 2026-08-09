@@ -131,6 +131,7 @@
     <string name="nc_add_attachment">Anhang hinzufügen</string>
     <string name="nc_add_emojis">Emojis hinzufügen</string>
     <string name="nc_add_file">Zur Unterhaltung hinzufügen</string>
+    <string name="nc_add_more_files">Weitere Dateien hinzufügen</string>
     <string name="nc_add_participants">Teilnehmer hinzufügen</string>
     <string name="nc_add_to_favorites">Zu Favoriten hinzufügen</string>
     <string name="nc_add_to_home_screen">Zum Startbildschirm hinzufügen</string>
@@ -178,6 +179,7 @@
     <string name="nc_clear_history_warning">Sollen alle Nachrichten dieser Unterhaltung gelöscht werden?</string>
     <string name="nc_client_cert_change">Client-Zertifikat ändern</string>
     <string name="nc_client_cert_setup">Client-Zertifikat einrichten</string>
+    <string name="nc_close_video_playback">Videowiedergabe schließen</string>
     <string name="nc_common_and">und</string>
     <string name="nc_common_copy">Kopieren</string>
     <string name="nc_common_copy_success">In die Zwischenablage kopiert</string>
@@ -190,6 +192,9 @@
     <string name="nc_common_set">Setzen</string>
     <string name="nc_common_skip">Überspringen</string>
     <string name="nc_common_unknown">Unbekannt</string>
+    <string name="nc_compress_images">Bilder und Videos komprimieren</string>
+    <string name="nc_compress_in_progress">Komprimiere</string>
+    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_configure_cert_auth">Authentifizierungs-Zertifikat auswählen</string>
     <string name="nc_confirm">Bestätigen</string>
     <string name="nc_connecting_call">Verbinde …</string>
@@ -222,6 +227,7 @@
     <string name="nc_copy_message_link">Nachrichtenlink kopieren</string>
     <string name="nc_create_new_conversation">Neue Unterhaltung erstellen</string>
     <string name="nc_create_poll">Umfrage erstellen</string>
+    <string name="nc_custom_color">Benutzerdefinierte Farbe</string>
     <string name="nc_date_header_today">Heute</string>
     <string name="nc_date_header_yesterday">Gestern</string>
     <string name="nc_delete">Löschen</string>
@@ -299,6 +305,8 @@
     <string name="nc_guest_access_resend_invitations_successful">Es wurden erneut Einladungen verschickt.</string>
     <string name="nc_guest_access_share_link">Unterhaltungs-Link teilen</string>
     <string name="nc_hint_enter_a_message">Eine Nachricht eingeben …</string>
+    <string name="nc_hq_toggle">HQ</string>
+    <string name="nc_hq_toggle_description">Hohe Qualität, keine Kompression</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Die Akkuoptimierung wird nicht ignoriert. Dies sollte geändert werden, um sicherzustellen, dass Benachrichtigungen im Hintergrund funktionieren! Bitte dazu  auf OK klicken und \"Alle Apps\" wählen -> %1$s und anschließend \"Nicht optimieren\" bzw. \"Hintergrundnutzung zulassen -> Uneingeschränkt\" auswählen.</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Batterieoptimierung ignorieren</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
@@ -348,6 +356,9 @@
     <string name="nc_manual">Nicht eingestellt</string>
     <string name="nc_mark_as_read">Als gelesen markieren</string>
     <string name="nc_mark_as_unread">Als ungelesen markieren</string>
+    <string name="nc_media_quality_original">Originalqualität</string>
+    <string name="nc_media_quality_original_hint">Das Senden der Originalqualität verbraucht mehr mobile Daten.</string>
+    <string name="nc_media_quality_reduced">Verminderte Qualität</string>
     <string name="nc_meeting_ended">Meeting beendet</string>
     <string name="nc_message_added_to_notes">Nachricht zu den Notizen hinzugefügt</string>
     <string name="nc_message_failed">Nachricht konnte nicht gesendet werden</string>
@@ -486,6 +497,7 @@
     <string name="nc_server_unsupported">Auf dem Server ist keine unterstützte Talk-App installiert</string>
     <string name="nc_server_url">Serveradresse https://…</string>
     <string name="nc_server_version">%1$s funktioniert nur mit %2$s 13 und höher</string>
+    <string name="nc_set_emoji_as_conversation_picture">Emoji als Unterhaltungsbild setzen</string>
     <string name="nc_set_new_password">Neues Passwort setzen</string>
     <string name="nc_set_password">Passwort festlegen</string>
     <string name="nc_settings">Einstellungen</string>
@@ -501,6 +513,7 @@
     <string name="nc_settings_incognito_keyboard_title">Inkognito-Tastatur</string>
     <string name="nc_settings_logs_subtitle">Lokale Protokolldateien anzeigen</string>
     <string name="nc_settings_logs_title">Protokolle</string>
+    <string name="nc_settings_media_quality_title">Qualität der gesendeten Medien</string>
     <string name="nc_settings_no_ringtone">Kein Ton</string>
     <string name="nc_settings_no_talk_installed">Die Talk-App ist nicht auf dem Server installiert, auf dem Sie versucht haben sich zu authentisieren</string>
     <string name="nc_settings_notification_sounds_post_oreo">Benachrichtigungen</string>
@@ -576,6 +589,7 @@
     <string name="nc_start_group_chat">Gruppenchat starten</string>
     <string name="nc_start_time">Startzeit</string>
     <string name="nc_switch_account">Konto wechseln</string>
+    <string name="nc_take_video">Ein Video aufnehmen</string>
     <string name="nc_team">Team</string>
     <string name="nc_test_push_button">Push-Benachrichtigungen testen</string>
     <string name="nc_test_results">Testergebnisse</string>

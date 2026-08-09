@@ -179,6 +179,7 @@
     <string name="nc_clear_history_warning">Kas sa kindlasti soovid sellest vestlusest kõik sõnumid kustutada?</string>
     <string name="nc_client_cert_change">Muuda kliendisertifikaati</string>
     <string name="nc_client_cert_setup">Seadista kliendisertifikaat</string>
+    <string name="nc_close_video_playback">Sulge video taasesitus</string>
     <string name="nc_common_and">ja</string>
     <string name="nc_common_copy">Kopeeri</string>
     <string name="nc_common_copy_success">Kopeeritud lõikelauale</string>
@@ -191,6 +192,9 @@
     <string name="nc_common_set">Lisa</string>
     <string name="nc_common_skip">Jäta vahele</string>
     <string name="nc_common_unknown">Teadmata</string>
+    <string name="nc_compress_images">Paki pildid ja videod väiksemaks</string>
+    <string name="nc_compress_in_progress">Pakin kokku</string>
+    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_configure_cert_auth">Vali autentimise sertifikaat</string>
     <string name="nc_confirm">Kinnita</string>
     <string name="nc_connecting_call">Ühendan…</string>
@@ -301,6 +305,8 @@
     <string name="nc_guest_access_resend_invitations_successful">Kutsed on saadetud uuesti</string>
     <string name="nc_guest_access_share_link">Jaga vestluse linki</string>
     <string name="nc_hint_enter_a_message">Koosta sõnum…</string>
+    <string name="nc_hq_toggle">HQ</string>
+    <string name="nc_hq_toggle_description">Kvaliteetne ja pakkimata</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Akukasutuse optimeerimine pole eiratud. Et teavituste saatmine toimiks taustal, siis peaksid seda muutma. Palun klõpsi „Sobib“ ja vali „Kõik rakendused“ → „%1$s“ → „Ära optimeeri“ või „Luba kasutus taustal“ → „Piiramatu“.</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Eira akukasutuse optimeerimist</string>
     <string name="nc_important_conversation">Oluline vestlus</string>
@@ -350,6 +356,9 @@
     <string name="nc_manual">Pole määratud</string>
     <string name="nc_mark_as_read">Märgi loetuks</string>
     <string name="nc_mark_as_unread">Märgi mitteloetuks</string>
+    <string name="nc_media_quality_original">Algne kvaliteet</string>
+    <string name="nc_media_quality_original_hint">Algse kvaliteediga saatmisel kulub rohkem ribalaiust.</string>
+    <string name="nc_media_quality_reduced">Vähendatud kvaliteet</string>
     <string name="nc_meeting_ended">Kohtumine on lõppenud</string>
     <string name="nc_message_added_to_notes">Teade on lisatud märkmetesse</string>
     <string name="nc_message_failed">Sõnumi saatmine ei õnnestu</string>
@@ -488,6 +497,7 @@
     <string name="nc_server_unsupported">Serverisse pole paigaldatud toetatud kõneteenuse rakendust</string>
     <string name="nc_server_url">Serveri aadress https://…</string>
     <string name="nc_server_version">%1$s toimib vaid siis, kui kasutusel on %2$s 13 ja uuem</string>
+    <string name="nc_set_emoji_as_conversation_picture">Lisa emoji vestluse pildiks</string>
     <string name="nc_set_new_password">Määra uus salasõna</string>
     <string name="nc_set_password">Määra salasõna</string>
     <string name="nc_settings">Seadistused</string>
@@ -503,6 +513,7 @@
     <string name="nc_settings_incognito_keyboard_title">Inkognito klahvistik</string>
     <string name="nc_settings_logs_subtitle">Vaata kohalikke logifaile</string>
     <string name="nc_settings_logs_title">Logid</string>
+    <string name="nc_settings_media_quality_title">Saadetud meediumi kvaliteet</string>
     <string name="nc_settings_no_ringtone">Heli puudub</string>
     <string name="nc_settings_no_talk_installed">Nextcloudi kõnerakendus (Nextcloud Talk), mille autentimist kasutasid, pole serverisse paigaldatud</string>
     <string name="nc_settings_notification_sounds_post_oreo">Teavitused</string>
@@ -554,7 +565,7 @@
     <string name="nc_settings_typing_status_title">Kirjutamisteatised</string>
     <string name="nc_settings_use_credentials_title">Proksiserveri kasutamine eeldab tuvastamist</string>
     <string name="nc_settings_warning">Hoiatus</string>
-    <string name="nc_settings_wrong_account">Uuesti autoriseerida saad hetkel kasutatavat kontot</string>
+    <string name="nc_settings_wrong_account">Uuesti saad autoriseerida vaid hetkel kasutatavat kontot</string>
     <string name="nc_share_contact">Jaga kontakti</string>
     <string name="nc_share_contact_permission">Vajalikud on õigused kontaktide lugemiseks</string>
     <string name="nc_share_current_location">Jaga praegust asukohta</string>
@@ -578,6 +589,7 @@
     <string name="nc_start_group_chat">Alusta rühmavestlust</string>
     <string name="nc_start_time">Algusaeg</string>
     <string name="nc_switch_account">Vaheta kasutajakontot</string>
+    <string name="nc_take_video">Filmi</string>
     <string name="nc_team">Tiim</string>
     <string name="nc_test_push_button">Tõuketeavituse test</string>
     <string name="nc_test_results">Testi tulemused</string>

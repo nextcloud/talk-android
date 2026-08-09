@@ -119,6 +119,7 @@
     <string name="nc_add_attachment">Přidat přílohu</string>
     <string name="nc_add_emojis">Přidat emotikony</string>
     <string name="nc_add_file">Přidat do konverzace</string>
+    <string name="nc_add_more_files">Přidat další soubory</string>
     <string name="nc_add_participants">Přidat účastníky</string>
     <string name="nc_add_to_favorites">Přidat do oblíbených</string>
     <string name="nc_all_ok_operation">OK, vše hotovo!</string>
@@ -203,6 +204,7 @@
     <string name="nc_copy_message_link">Zkopírovat odkaz zprávy</string>
     <string name="nc_create_new_conversation">Vytvořit novou konverzaci</string>
     <string name="nc_create_poll">Vytvořit anketu</string>
+    <string name="nc_custom_color">Uživatelsky určená barva</string>
     <string name="nc_date_header_today">Dnes</string>
     <string name="nc_date_header_yesterday">Včera</string>
     <string name="nc_delete">Smazat</string>
@@ -382,6 +384,8 @@
     <string name="nc_push_notification_fetch_error">Omlouváme se, něco se pokazilo – nebylo možné stáhnout si testovací push zprávu</string>
     <string name="nc_push_notification_message">Push upozornění úspěšně odesláno. Nyní byste měli obdržet upozornění na tomto zařízení s nadpisem „Testování push upozorňování“</string>
     <string name="nc_remind">Připomenout později</string>
+    <string name="nc_remove_color">Odebrat barvu</string>
+    <string name="nc_remove_file">Odebrat soubor</string>
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>
     <string name="nc_remove_group_and_members">Odebrat skupinu a její členy</string>
     <string name="nc_remove_participant">Odebrat účastníka</string>
@@ -444,6 +448,7 @@
     <string name="nc_server_unsupported">Na serveru není nainstalovaná podporovaná verze aplikace Talk</string>
     <string name="nc_server_url">Adresa serveru https://…</string>
     <string name="nc_server_version">%1$s funguje pouze s %2$s 13 a novějším</string>
+    <string name="nc_set_emoji_as_conversation_picture">Nastavit emotikonu jako obrázek konverzace</string>
     <string name="nc_set_new_password">Nastavit nové heslo</string>
     <string name="nc_set_password">Nastavit heslo</string>
     <string name="nc_settings">Nastavení</string>

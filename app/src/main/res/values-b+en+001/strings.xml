@@ -131,6 +131,7 @@
     <string name="nc_add_attachment">Add attachment</string>
     <string name="nc_add_emojis">Add emojis</string>
     <string name="nc_add_file">Add to conversation</string>
+    <string name="nc_add_more_files">Add more files</string>
     <string name="nc_add_participants">Add participants</string>
     <string name="nc_add_to_favorites">Add to favourites</string>
     <string name="nc_add_to_home_screen">Add to home screen</string>
@@ -218,6 +219,7 @@
     <string name="nc_copy_message_link">Copy message link</string>
     <string name="nc_create_new_conversation">Create a new conversation</string>
     <string name="nc_create_poll">Create poll</string>
+    <string name="nc_custom_color">Custom colour</string>
     <string name="nc_date_header_today">Today</string>
     <string name="nc_date_header_yesterday">Yesterday</string>
     <string name="nc_delete">Delete</string>
@@ -482,6 +484,7 @@
     <string name="nc_server_unsupported">Server does not have supported Talk app installed</string>
     <string name="nc_server_url">Server address https://…</string>
     <string name="nc_server_version">%1$s only works with %2$s 13 and up</string>
+    <string name="nc_set_emoji_as_conversation_picture">Set emoji as conversation picture</string>
     <string name="nc_set_new_password">Set new password</string>
     <string name="nc_set_password">Set Password</string>
     <string name="nc_settings">Settings</string>

@@ -107,6 +107,7 @@
     <string name="nc_add_attachment">Afegeix un adjunt</string>
     <string name="nc_add_emojis">Afegeix emoji</string>
     <string name="nc_add_file">Afegeix a la conversa</string>
+    <string name="nc_add_more_files">Afegeix més fitxers</string>
     <string name="nc_add_participants">Afegeix participants</string>
     <string name="nc_add_to_favorites">Afegeix a preferits</string>
     <string name="nc_all_ok_operation">D\'acord, tot fet!</string>
@@ -189,6 +190,7 @@
     <string name="nc_copy_message_link">Copia l\'enllaç del missatge</string>
     <string name="nc_create_new_conversation">Crea una conversa nova</string>
     <string name="nc_create_poll">Crea enquesta</string>
+    <string name="nc_custom_color">Color personalitzat</string>
     <string name="nc_date_header_today">Avui</string>
     <string name="nc_date_header_yesterday">Ahir</string>
     <string name="nc_delete">Suprimir</string>
@@ -344,6 +346,7 @@
     <string name="nc_public_call_status">Conversa pública</string>
     <string name="nc_push_disabled">Servei de notificacions desactivat</string>
     <string name="nc_remind">Recorda-m\'ho més tard</string>
+    <string name="nc_remove_color">Suprimeix el color</string>
     <string name="nc_remove_from_favorites">Suprimeix de favorits</string>
     <string name="nc_remove_group_and_members">Suprimeix el grup i els membres</string>
     <string name="nc_remove_participant">Suprimeix el participant</string>
@@ -390,6 +393,7 @@
     <string name="nc_server_unsupported">El servidor no té instal·lada l\'aplicació Talk</string>
     <string name="nc_server_url">Adreça del servidor https://…</string>
     <string name="nc_server_version">%1$s només funciona amb %2$s 13 i endavant</string>
+    <string name="nc_set_emoji_as_conversation_picture">Estableix l\'emoticona com a imatge de conversa</string>
     <string name="nc_set_new_password">Estableix una contrasenya nova</string>
     <string name="nc_set_password">Defineix la contrasenya</string>
     <string name="nc_settings">Paràmetres</string>

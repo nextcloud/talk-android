@@ -478,6 +478,7 @@
     <string name="nc_server_unsupported">کارگزار برنامه صحبت را پشتیبانی نمی‌کند</string>
     <string name="nc_server_url">نشانی سرور ‪https://…</string>
     <string name="nc_server_version">سرور %1$s فقط با %2$s و بالاتر کار می‌کند</string>
+    <string name="nc_set_emoji_as_conversation_picture">تنظیم ایموجی به عنوان تصویر گفتگو</string>
     <string name="nc_set_new_password">تنظیم گذرواژه جدید</string>
     <string name="nc_set_password">تنظیم گذرواژه</string>
     <string name="nc_settings">تنظیمات</string>

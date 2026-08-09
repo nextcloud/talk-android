@@ -179,6 +179,7 @@
     <string name="nc_clear_history_warning">An bhfuil tú cinnte gur mhaith leat gach teachtaireacht sa chomhrá seo a scriosadh?</string>
     <string name="nc_client_cert_change">Athraigh teastas an chliaint</string>
     <string name="nc_client_cert_setup">Socraigh teastas cliant</string>
+    <string name="nc_close_video_playback">Dún athsheinm físe</string>
     <string name="nc_common_and">agus</string>
     <string name="nc_common_copy">Cóipeáil</string>
     <string name="nc_common_copy_success">Cóipeáladh chuig an ngearrthaisce</string>
@@ -191,6 +192,9 @@
     <string name="nc_common_set">Socraigh</string>
     <string name="nc_common_skip">Scipeáil</string>
     <string name="nc_common_unknown">Anaithnid</string>
+    <string name="nc_compress_images">Comhbhrúigh íomhánna agus físeáin</string>
+    <string name="nc_compress_in_progress">Ag comhbhrú</string>
+    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_configure_cert_auth">Roghnaigh teastas fíordheimhnithe</string>
     <string name="nc_confirm">Deimhnigh</string>
     <string name="nc_connecting_call">Ag nascadh…</string>
@@ -204,8 +208,12 @@
     <string name="nc_conversation_tags">Clibeanna</string>
     <string name="nc_conversation_tags_create">Cruthaigh</string>
     <string name="nc_conversation_tags_delete">Scrios clib</string>
+    <string name="nc_conversation_tags_delete_confirm_message">Bainfear an clib seo as na comhráite uile a sanntar dó.</string>
+    <string name="nc_conversation_tags_delete_confirm_title">Scrios an clib?</string>
     <string name="nc_conversation_tags_empty">Gan clibeanna fós</string>
     <string name="nc_conversation_tags_error_generic">Chuaigh rud éigin mícheart, déan iarracht arís</string>
+    <string name="nc_conversation_tags_error_limit">Tá an líon uasta clibeanna sroichte agat</string>
+    <string name="nc_conversation_tags_error_name">Tá ainm an chlib seo neamhbhailí nó in úsáid cheana féin</string>
     <string name="nc_conversation_tags_favorites">Ceanáin</string>
     <string name="nc_conversation_tags_filter_all">Gach</string>
     <string name="nc_conversation_tags_manage">Bainistigh clibeanna</string>
@@ -297,6 +305,8 @@
     <string name="nc_guest_access_resend_invitations_successful">Cuireadh cuirí amach arís.</string>
     <string name="nc_guest_access_share_link">Roinn nasc an chomhrá</string>
     <string name="nc_hint_enter_a_message">Cuir isteach teachtaireacht…</string>
+    <string name="nc_hq_toggle">Ardchaighdeáin</string>
+    <string name="nc_hq_toggle_description">Ardchaighdeán, gan aon chomhbhrú</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Ní dhéantar neamhaird ar uasmhéadú ceallraí. Ba chóir é seo a athrú lena chinntiú go n-oibríonn fógraí sa chúlra! Cliceáil OK agus roghnaigh \"Gach aip\" -> %1$s agus ansin \"Ná huasmhéadaigh\" nó \"Ceadaigh úsáid chúlra -> Gan srian\".</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Déan neamhaird de bharrfheabhsú ceallraí</string>
     <string name="nc_important_conversation">Comhrá tábhachtach</string>
@@ -346,6 +356,9 @@
     <string name="nc_manual">Gan socraithe</string>
     <string name="nc_mark_as_read">Marcáil mar léite</string>
     <string name="nc_mark_as_unread">Marcáil mar neamhléite</string>
+    <string name="nc_media_quality_original">Cáilíocht bhunaidh</string>
+    <string name="nc_media_quality_original_hint">Úsáideann seoltaí de cháilíocht bhunaidh níos mó sonraí soghluaiste.</string>
+    <string name="nc_media_quality_reduced">Cáilíocht laghdaithe</string>
     <string name="nc_meeting_ended">Deireadh leis an gcruinniú</string>
     <string name="nc_message_added_to_notes">Teachtaireacht curtha leis na nótaí</string>
     <string name="nc_message_failed">Theip ar an teachtaireacht a sheoladh</string>
@@ -484,6 +497,7 @@
     <string name="nc_server_unsupported">Níl an aip Talk tacaithe ag an bhfreastalaí suiteáilte</string>
     <string name="nc_server_url">Seoladh an fhreastalaí https://…</string>
     <string name="nc_server_version">Ní oibríonn %1$s ach le %2$s 13 agus níos sine</string>
+    <string name="nc_set_emoji_as_conversation_picture">Socraigh emoji mar phictiúr comhrá</string>
     <string name="nc_set_new_password">Socraigh pasfhocal nua</string>
     <string name="nc_set_password">Socraigh Pasfhocal</string>
     <string name="nc_settings">Socruithe</string>
@@ -499,6 +513,7 @@
     <string name="nc_settings_incognito_keyboard_title">Méarchlár incognito</string>
     <string name="nc_settings_logs_subtitle">Féach ar chomhaid loga áitiúla</string>
     <string name="nc_settings_logs_title">Logaí</string>
+    <string name="nc_settings_media_quality_title">Cáilíocht na meán seolta</string>
     <string name="nc_settings_no_ringtone">Gan fuaim</string>
     <string name="nc_settings_no_talk_installed">Níl aip Talk suiteáilte ar an bhfreastalaí a ndearna tú iarracht fíordheimhniú ina aghaidh</string>
     <string name="nc_settings_notification_sounds_post_oreo">Fógraí</string>
@@ -574,6 +589,7 @@
     <string name="nc_start_group_chat">Tosaigh comhrá grúpa</string>
     <string name="nc_start_time">Am tosaithe</string>
     <string name="nc_switch_account">Athraigh cuntas</string>
+    <string name="nc_take_video">Glac físeán</string>
     <string name="nc_team">Foireann</string>
     <string name="nc_test_push_button">Tástáil fógraí brú</string>
     <string name="nc_test_results">Torthaí tástála</string>

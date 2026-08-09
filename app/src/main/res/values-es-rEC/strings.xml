@@ -321,6 +321,7 @@
     <string name="nc_server_unsupported">El servidor no tiene instalada la aplicación Talk compatible</string>
     <string name="nc_server_url">Dirección del servidor https://...</string>
     <string name="nc_server_version">%1$s solo funciona con %2$s 13 y posteriores</string>
+    <string name="nc_set_emoji_as_conversation_picture">Establecer un emoji como imagen de la conversación</string>
     <string name="nc_settings">Configuraciones </string>
     <string name="nc_settings_account_updated">Tu cuenta existente ha sido actualizada, en lugar de agregar una nueva</string>
     <string name="nc_settings_advanced_title">Avanzado</string>
