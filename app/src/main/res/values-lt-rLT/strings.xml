@@ -179,6 +179,7 @@
     <string name="nc_clear_history_warning">Ar tikrai norite ištrinti visas šiame pokalbyje esančias žinutes?</string>
     <string name="nc_client_cert_change">Keisti kliento programėlės sertifikatą</string>
     <string name="nc_client_cert_setup">Nustatyti kliento programėlės sertifikatą</string>
+    <string name="nc_close_video_playback">Uždaryti vaizdo įrašo atkūrimą</string>
     <string name="nc_common_and">ir</string>
     <string name="nc_common_copy">Kopijuoti</string>
     <string name="nc_common_copy_success">Nukopijuota į iškarpinę</string>
@@ -191,6 +192,9 @@
     <string name="nc_common_set">Nustatyti</string>
     <string name="nc_common_skip">Praleisti</string>
     <string name="nc_common_unknown">Nežinoma</string>
+    <string name="nc_compress_images">Suspauskite nuotraukas ir vaizdo įrašus</string>
+    <string name="nc_compress_in_progress">Suspaudimas</string>
+    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_configure_cert_auth">Pasirinkti tapatybės nustatymo sertifikatą</string>
     <string name="nc_confirm">Patvirtinti</string>
     <string name="nc_connecting_call">Jungiamasi…</string>
@@ -301,6 +305,8 @@
     <string name="nc_guest_access_resend_invitations_successful">Kvietimai buvo išsiųsti dar kartą.</string>
     <string name="nc_guest_access_share_link">Bendrinkite pokalbio nuorodą</string>
     <string name="nc_hint_enter_a_message">Įrašykite žinutę …</string>
+    <string name="nc_hq_toggle">„HQ“</string>
+    <string name="nc_hq_toggle_description">Aukšta kokybė, be suspaudimo</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Baterijos optimizavimas nėra ignoruojamas. Tai reikėtų pakeisti, kad pranešimai veiktų fone! Spustelėkite Gerai ir pasirinkite „Visos programėlės“ -> %1$s, tada „Neoptimizuoti“ arba „Leisti naudoti foną -> Neribotai“.</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignoruoti akumuliatoriaus optimizavimą</string>
     <string name="nc_important_conversation">Svarbus pokalbis</string>
@@ -350,6 +356,9 @@
     <string name="nc_manual">Nenustatyta</string>
     <string name="nc_mark_as_read">Žymėti kaip skaitytą</string>
     <string name="nc_mark_as_unread">Žymėti kaip neskaitytą</string>
+    <string name="nc_media_quality_original">Originali kokybė</string>
+    <string name="nc_media_quality_original_hint">Siunčiant originalios kokybės failus sunaudojama daugiau mobiliųjų duomenų.</string>
+    <string name="nc_media_quality_reduced">Sumažinta kokybė</string>
     <string name="nc_meeting_ended">Susitikimas baigėsi</string>
     <string name="nc_message_added_to_notes">Pranešimas pridėtas prie užrašų</string>
     <string name="nc_message_failed">Nepavyko išsiųsti pranešimo</string>
@@ -504,6 +513,7 @@
     <string name="nc_settings_incognito_keyboard_title">Inkognito klaviatūra</string>
     <string name="nc_settings_logs_subtitle">Peržiūrėti vietinius žurnalo failus</string>
     <string name="nc_settings_logs_title">Žurnalai</string>
+    <string name="nc_settings_media_quality_title">Siunčiamos medijos kokybė</string>
     <string name="nc_settings_no_ringtone">Be garso</string>
     <string name="nc_settings_no_talk_installed">Programėlė „Pokalbiai“ nėra įdiegta serveryje, kuriame bandėte nusistatyti tapatybę</string>
     <string name="nc_settings_notification_sounds_post_oreo">Pranešimai</string>
@@ -579,6 +589,7 @@
     <string name="nc_start_group_chat">Pradėti grupinį pokalbį</string>
     <string name="nc_start_time">Pradžios laikas</string>
     <string name="nc_switch_account">Perjungti paskyrą</string>
+    <string name="nc_take_video">Nufilmuoti</string>
     <string name="nc_team">Komanda</string>
     <string name="nc_test_push_button">Išbandykite „push“ pranešimus</string>
     <string name="nc_test_results">Testų rezultatai</string>
