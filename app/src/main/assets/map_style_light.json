@@ -13,14 +13,14 @@
     {
       "id": "background",
       "type": "background",
-      "paint": { "background-color": "#f5f0e6" }
+      "paint": { "background-color": "#f8f4f0" }
     },
     {
       "id": "water",
       "type": "fill",
       "source": "openmaptiles",
       "source-layer": "water",
-      "paint": { "fill-color": "#6cbad0" }
+      "paint": { "fill-color": "rgb(158,189,255)" }
     },
     {
       "id": "waterway",
@@ -29,7 +29,7 @@
       "source-layer": "waterway",
       "minzoom": 8,
       "paint": {
-        "line-color": "#6cbad0",
+        "line-color": "#a0c8f0",
         "line-width": ["interpolate", ["linear"], ["zoom"], 8, 0.5, 12, 1.5, 16, 3]
       }
     },
@@ -39,7 +39,7 @@
       "source": "openmaptiles",
       "source-layer": "landcover",
       "filter": ["==", "class", "wood"],
-      "paint": { "fill-color": "#9ecc82" }
+      "paint": { "fill-color": "hsla(98,61%,72%,0.7)" }
     },
     {
       "id": "landcover-grass",
@@ -47,7 +47,7 @@
       "source": "openmaptiles",
       "source-layer": "landcover",
       "filter": ["in", "class", "grass", "scrub", "crop"],
-      "paint": { "fill-color": "#b2e08a" }
+      "paint": { "fill-color": "rgba(176, 213, 154, 1)" }
     },
     {
       "id": "landuse-residential",
@@ -55,7 +55,7 @@
       "source": "openmaptiles",
       "source-layer": "landuse",
       "filter": ["in", "class", "residential", "suburb", "neighbourhood"],
-      "paint": { "fill-color": "#f2e8dc" }
+      "paint": { "fill-color": "hsla(0,3%,85%,0.84)" }
     },
     {
       "id": "landuse-commercial",
@@ -63,7 +63,7 @@
       "source": "openmaptiles",
       "source-layer": "landuse",
       "filter": ["in", "class", "commercial", "retail", "industrial"],
-      "paint": { "fill-color": "#ede8d8" }
+      "paint": { "fill-color": "hsla(35,57%,88%,0.49)" }
     },
     {
       "id": "landuse-park",
@@ -71,24 +71,24 @@
       "source": "openmaptiles",
       "source-layer": "landuse",
       "filter": ["in", "class", "park", "pitch", "playground", "golf", "cemetery"],
-      "paint": { "fill-color": "#b2e08a" }
+      "paint": { "fill-color": "rgba(176, 213, 154, 1)" }
     },
     {
       "id": "park",
       "type": "fill",
       "source": "openmaptiles",
       "source-layer": "park",
-      "paint": { "fill-color": "#acd87e", "fill-opacity": 0.8 }
+      "paint": { "fill-color": "#d8e8c8", "fill-opacity": 0.7, "fill-outline-color": "rgba(95, 208, 100, 1)" }
     },
     {
       "id": "building",
       "type": "fill",
       "source": "openmaptiles",
       "source-layer": "building",
-      "minzoom": 13,
+      "minzoom": 15,
       "paint": {
-        "fill-color": "#e4d0bc",
-        "fill-outline-color": "#c8b8a2"
+        "fill-color": "hsl(35,9%,81%)",
+        "fill-outline-color": "hsl(35,9%,68%)"
       }
     },
     {
@@ -100,7 +100,7 @@
       "minzoom": 14,
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#b2b0a8",
+        "line-color": "hsl(36,6%,74%)",
         "line-width": 1,
         "line-dasharray": [2, 2]
       }
@@ -113,7 +113,7 @@
       "filter": ["==", "class", "service"],
       "minzoom": 14,
       "layout": { "line-cap": "round", "line-join": "round" },
-      "paint": { "line-color": "#ccc4b8", "line-width": 3 }
+      "paint": { "line-color": "#cfcdca", "line-width": 3 }
     },
     {
       "id": "road-service",
@@ -123,7 +123,7 @@
       "filter": ["==", "class", "service"],
       "minzoom": 13,
       "layout": { "line-cap": "round", "line-join": "round" },
-      "paint": { "line-color": "#ffffff", "line-width": 1.5 }
+      "paint": { "line-color": "#fff", "line-width": 1.5 }
     },
     {
       "id": "road-minor-casing",
@@ -134,7 +134,7 @@
       "minzoom": 12,
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#c8bea8",
+        "line-color": "#cfcdca",
         "line-width": ["interpolate", ["linear"], ["zoom"], 12, 2, 16, 5]
       }
     },
@@ -147,7 +147,7 @@
       "minzoom": 11,
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#ffffff",
+        "line-color": "#fff",
         "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.5, 14, 2, 16, 4]
       }
     },
@@ -159,7 +159,7 @@
       "filter": ["==", "class", "secondary"],
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#d0b030",
+        "line-color": "#e9ac77",
         "line-width": ["interpolate", ["linear"], ["zoom"], 8, 2, 14, 7]
       }
     },
@@ -171,7 +171,7 @@
       "filter": ["==", "class", "secondary"],
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#f8d870",
+        "line-color": "#fea",
         "line-width": ["interpolate", ["linear"], ["zoom"], 8, 1, 14, 5]
       }
     },
@@ -183,7 +183,7 @@
       "filter": ["in", "class", "primary", "trunk"],
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#cc9020",
+        "line-color": "#e9ac77",
         "line-width": ["interpolate", ["linear"], ["zoom"], 6, 2, 14, 9]
       }
     },
@@ -195,7 +195,7 @@
       "filter": ["in", "class", "primary", "trunk"],
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#f8c858",
+        "line-color": "#fea",
         "line-width": ["interpolate", ["linear"], ["zoom"], 6, 1, 14, 7]
       }
     },
@@ -207,7 +207,7 @@
       "filter": ["==", "class", "motorway"],
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#b46000",
+        "line-color": "#e9ac77",
         "line-width": ["interpolate", ["linear"], ["zoom"], 4, 2, 14, 12]
       }
     },
@@ -219,7 +219,7 @@
       "filter": ["==", "class", "motorway"],
       "layout": { "line-cap": "round", "line-join": "round" },
       "paint": {
-        "line-color": "#f48810",
+        "line-color": "#fc8",
         "line-width": ["interpolate", ["linear"], ["zoom"], 4, 1, 14, 10]
       }
     },
@@ -231,7 +231,7 @@
       "filter": ["in", "class", "rail", "transit"],
       "minzoom": 10,
       "paint": {
-        "line-color": "#908e86",
+        "line-color": "#bbb",
         "line-width": 1.5,
         "line-dasharray": [4, 3]
       }
@@ -243,7 +243,7 @@
       "source-layer": "boundary",
       "filter": ["==", "admin_level", 2],
       "paint": {
-        "line-color": "#9e887a",
+        "line-color": "hsl(248,1%,41%)",
         "line-width": 1.5,
         "line-dasharray": [4, 3]
       }
@@ -256,7 +256,7 @@
       "filter": ["==", "admin_level", 4],
       "minzoom": 4,
       "paint": {
-        "line-color": "#b09e8e",
+        "line-color": "hsl(0,0%,70%)",
         "line-width": 1,
         "line-dasharray": [3, 4]
       }
@@ -274,8 +274,8 @@
         "text-max-width": 8
       },
       "paint": {
-        "text-color": "#1e2428",
-        "text-halo-color": "#f5f0e6",
+        "text-color": "#000",
+        "text-halo-color": "#fff",
         "text-halo-width": 1.5
       }
     },
@@ -292,8 +292,8 @@
         "text-max-width": 10
       },
       "paint": {
-        "text-color": "#1e2428",
-        "text-halo-color": "#ffffff",
+        "text-color": "#000",
+        "text-halo-color": "#fff",
         "text-halo-width": 1.5
       }
     },
@@ -311,8 +311,8 @@
         "text-max-width": 8
       },
       "paint": {
-        "text-color": "#44484c",
-        "text-halo-color": "#ffffff",
+        "text-color": "#000",
+        "text-halo-color": "#fff",
         "text-halo-width": 1.5
       }
     },
@@ -330,8 +330,8 @@
         "text-max-width": 8
       },
       "paint": {
-        "text-color": "#555a60",
-        "text-halo-color": "#ffffff",
+        "text-color": "#000",
+        "text-halo-color": "#fff",
         "text-halo-width": 1
       }
     },
@@ -351,8 +351,8 @@
         "text-letter-spacing": 0.1
       },
       "paint": {
-        "text-color": "#64696e",
-        "text-halo-color": "#ffffff",
+        "text-color": "#333",
+        "text-halo-color": "#fff",
         "text-halo-width": 1
       }
     },
@@ -370,8 +370,8 @@
         "text-max-angle": 30
       },
       "paint": {
-        "text-color": "#44484c",
-        "text-halo-color": "#ffffff",
+        "text-color": "#666",
+        "text-halo-color": "#fff",
         "text-halo-width": 1
       }
     }

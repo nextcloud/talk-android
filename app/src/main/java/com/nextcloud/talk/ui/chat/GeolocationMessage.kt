@@ -83,6 +83,7 @@ fun GeolocationContent(
 ) {
     val context = LocalContext.current
     val highlightSearchTerm = LocalHighlightSearchTerm.current
+    val isDarkMode = isSystemInDarkTheme()
 
     Column {
         val latitude = typeContent.lat
@@ -107,7 +108,7 @@ fun GeolocationContent(
                     .align(Alignment.BottomEnd)
                     .padding(4.dp),
                 style = MaterialTheme.typography.labelSmall,
-                color = Color.Black.copy(alpha = 0.7f)
+                color = (if (isDarkMode) Color.White else Color.Black).copy(alpha = 0.7f)
             )
         }
         typeContent.name.let { name ->
@@ -126,6 +127,11 @@ fun GeolocationContent(
 
 @Composable
 fun OpenStreetMap(latitude: Double, longitude: Double) {
+    val styleUri = if (isSystemInDarkTheme()) {
+        "asset://map_style_dark.json"
+    } else {
+        "asset://map_style_light.json"
+    }
     val cameraState =
         rememberCameraState(CameraPosition(target = Position(longitude, latitude), zoom = 12.0))
 
@@ -147,8 +153,7 @@ fun OpenStreetMap(latitude: Double, longitude: Double) {
 
     MaplibreMap(
         modifier = Modifier.height(200.dp),
-        // Keep default style URL until file-based style configuration is introduced.
-        baseStyle = BaseStyle.Uri("https://tiles.openfreemap.org/styles/liberty"),
+        baseStyle = BaseStyle.Uri(styleUri),
         cameraState = cameraState,
         styleState = rememberStyleState(),
         onMapClick = { _, _ -> ClickResult.Pass },

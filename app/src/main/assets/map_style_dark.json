@@ -39,7 +39,7 @@
       "source": "openmaptiles",
       "source-layer": "landcover",
       "filter": ["==", "class", "wood"],
-      "paint": { "fill-color": "#0c2016" }
+      "paint": { "fill-color": "#122a1e" }
     },
     {
       "id": "landcover-grass",
@@ -47,7 +47,7 @@
       "source": "openmaptiles",
       "source-layer": "landcover",
       "filter": ["in", "class", "grass", "scrub", "crop"],
-      "paint": { "fill-color": "#102219" }
+      "paint": { "fill-color": "#162c21" }
     },
     {
       "id": "landuse-residential",
@@ -71,24 +71,24 @@
       "source": "openmaptiles",
       "source-layer": "landuse",
       "filter": ["in", "class", "park", "pitch", "playground", "golf", "cemetery"],
-      "paint": { "fill-color": "#102219" }
+      "paint": { "fill-color": "#162c21" }
     },
     {
       "id": "park",
       "type": "fill",
       "source": "openmaptiles",
       "source-layer": "park",
-      "paint": { "fill-color": "#102219", "fill-opacity": 0.8 }
+      "paint": { "fill-color": "#162c21", "fill-opacity": 0.8 }
     },
     {
       "id": "building",
       "type": "fill",
       "source": "openmaptiles",
       "source-layer": "building",
-      "minzoom": 13,
+      "minzoom": 15,
       "paint": {
-        "fill-color": "#14202e",
-        "fill-outline-color": "#1c2a3c"
+        "fill-color": "#1a2838",
+        "fill-outline-color": "#24344a"
       }
     },
     {
