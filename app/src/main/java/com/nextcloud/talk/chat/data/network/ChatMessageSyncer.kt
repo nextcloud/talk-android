@@ -413,7 +413,8 @@ class ChatMessageSyncer @Inject constructor(
         Log.w(
             TAG,
             "Backlog above $fromMessageId in ${target.internalConversationId} still not closed after " +
-                "$MAX_BACKLOG_ROUNDS rounds, fetching the newest messages instead"
+                "$MAX_BACKLOG_ROUNDS rounds (persisted $totalCount message(s), ids " +
+                "$oldestPersisted..$newestPersisted), fetching the newest messages instead"
         )
         val fallbackOutcome = pullAndPersistMessages(
             target,
@@ -431,9 +432,9 @@ class ChatMessageSyncer @Inject constructor(
         )
         return SyncOutcome(
             persistedNewMessages = totalCount > 0 || fallbackOutcome.persistedNewMessages,
-            newestPersistedMessageId = fallbackOutcome.newestPersistedMessageId ?: newestPersisted,
-            oldestPersistedMessageId = oldestPersisted ?: fallbackOutcome.oldestPersistedMessageId,
-            persistedMessageCount = totalCount + fallbackOutcome.persistedMessageCount
+            newestPersistedMessageId = fallbackOutcome.newestPersistedMessageId,
+            oldestPersistedMessageId = fallbackOutcome.oldestPersistedMessageId,
+            persistedMessageCount = fallbackOutcome.persistedMessageCount
         )
     }
 

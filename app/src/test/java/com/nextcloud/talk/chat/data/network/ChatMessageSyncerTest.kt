@@ -339,9 +339,11 @@ class ChatMessageSyncerTest {
 
             val outcome = syncer.closeBacklog(target(), fromMessageId = 42, limit = 1)
 
+            // the reported range is the fallback's own — it must not be merged with the backlog
+            // rounds' range, since the fallback lands in a separate, disconnected chat block
             assertTrue(outcome.persistedNewMessages)
-            assertEquals(6, outcome.persistedMessageCount)
-            assertEquals(43L, outcome.oldestPersistedMessageId)
+            assertEquals(1, outcome.persistedMessageCount)
+            assertEquals(100L, outcome.oldestPersistedMessageId)
             assertEquals(100L, outcome.newestPersistedMessageId)
 
             val fieldMapCaptor = argumentCaptor<HashMap<String, Int>>()
