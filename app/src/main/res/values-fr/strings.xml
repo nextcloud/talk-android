@@ -179,6 +179,7 @@
     <string name="nc_clear_history_warning">Voulez-vous vraiment supprimer tous les messages de cette conversation ?</string>
     <string name="nc_client_cert_change">Modifier le certificat du client</string>
     <string name="nc_client_cert_setup">Configurer le certificat du client</string>
+    <string name="nc_close_video_playback">Fermer la lecture vidéo</string>
     <string name="nc_common_and">et</string>
     <string name="nc_common_copy">Copier</string>
     <string name="nc_common_copy_success">Copié dans le presse-papier</string>
@@ -191,6 +192,8 @@
     <string name="nc_common_set">Sauver</string>
     <string name="nc_common_skip">Ignorer</string>
     <string name="nc_common_unknown">Inconnu</string>
+    <string name="nc_compress_images">Compresser les images et les vidéos</string>
+    <string name="nc_compress_in_progress">Compression</string>
     <string name="nc_configure_cert_auth">Sélectionner le certificat d\'authentification</string>
     <string name="nc_confirm">Confirmer</string>
     <string name="nc_connecting_call">Connexion…</string>
@@ -301,6 +304,8 @@
     <string name="nc_guest_access_resend_invitations_successful">Les invitations ont été envoyées à nouveau.</string>
     <string name="nc_guest_access_share_link">Partager le lien de conversation</string>
     <string name="nc_hint_enter_a_message">Saisir un message…</string>
+    <string name="nc_hq_toggle">HQ</string>
+    <string name="nc_hq_toggle_description">Haute qualité, pas de compression</string>
     <string name="nc_ignore_battery_optimization_dialog_text">L\'optimisation de la batterie n\'est pas ignorée. Cela doit être modifié pour garantir le bon fonctionnement des notifications en arrière-plan ! Veuillez cliquer sur OK et sélectionner « Toutes les applications » ->%1$s puis « Ne pas optimiser » ou « Autoriser l\'utilisation en arrière-plan -> Sans restriction ».</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorer l\'optimisation de batterie</string>
     <string name="nc_important_conversation">Conversation importante</string>
@@ -350,6 +355,9 @@
     <string name="nc_manual">Non défini</string>
     <string name="nc_mark_as_read">Marquer comme lu</string>
     <string name="nc_mark_as_unread">Marquer comme non lu</string>
+    <string name="nc_media_quality_original">Qualité originale</string>
+    <string name="nc_media_quality_original_hint">L\'envoi en qualité originale utilise davantage de données mobiles.</string>
+    <string name="nc_media_quality_reduced">Qualité réduite</string>
     <string name="nc_meeting_ended">Réunion terminée</string>
     <string name="nc_message_added_to_notes">Message ajouté aux notes</string>
     <string name="nc_message_failed">Impossible d\'envoyer le message</string>
@@ -488,6 +496,7 @@
     <string name="nc_server_unsupported">Le serveur n\'a pas d\'application Talk prise en charge installée.</string>
     <string name="nc_server_url">Adresse du serveur https://…</string>
     <string name="nc_server_version">%1$s ne fonctionne qu\'avec %2$s 13 et supérieur</string>
+    <string name="nc_set_emoji_as_conversation_picture">Définir l\'emoji comme icône de la conversation</string>
     <string name="nc_set_new_password">Définir un nouveau mot de passe</string>
     <string name="nc_set_password">Définir le Mot de passe</string>
     <string name="nc_settings">Paramètres</string>
@@ -503,6 +512,7 @@
     <string name="nc_settings_incognito_keyboard_title">Clavier incognito</string>
     <string name="nc_settings_logs_subtitle">Afficher les journaux locaux</string>
     <string name="nc_settings_logs_title">Logs</string>
+    <string name="nc_settings_media_quality_title">Qualité d\'envoi des médias</string>
     <string name="nc_settings_no_ringtone">Aucun son</string>
     <string name="nc_settings_no_talk_installed">L\'application Talk n\'est pas installée sur le serveur auquel vous essayez de vous connecter.</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notifications</string>
@@ -578,6 +588,7 @@
     <string name="nc_start_group_chat">Démarrer une discussion de groupe</string>
     <string name="nc_start_time">Heure de début</string>
     <string name="nc_switch_account">Changer de compte</string>
+    <string name="nc_take_video">Prendre une vidéo</string>
     <string name="nc_team">Équipe</string>
     <string name="nc_test_push_button">Tester les notifications push</string>
     <string name="nc_test_results">Résultats des tests</string>

@@ -179,6 +179,7 @@
     <string name="nc_clear_history_warning">您確定要刪除對話內所有的訊息嗎？</string>
     <string name="nc_client_cert_change">變更客戶端憑證</string>
     <string name="nc_client_cert_setup">設定客戶端憑證</string>
+    <string name="nc_close_video_playback">關閉影片播放</string>
     <string name="nc_common_and">與</string>
     <string name="nc_common_copy">複製</string>
     <string name="nc_common_copy_success">已複製至剪貼簿</string>
@@ -191,6 +192,9 @@
     <string name="nc_common_set">設定</string>
     <string name="nc_common_skip">跳過</string>
     <string name="nc_common_unknown">未知</string>
+    <string name="nc_compress_images">壓縮影像與影片</string>
+    <string name="nc_compress_in_progress">正在壓縮</string>
+    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_configure_cert_auth">選擇驗證憑證</string>
     <string name="nc_confirm">確認</string>
     <string name="nc_connecting_call">連線中 …</string>
@@ -204,8 +208,12 @@
     <string name="nc_conversation_tags">標籤</string>
     <string name="nc_conversation_tags_create">建立</string>
     <string name="nc_conversation_tags_delete">刪除標籤</string>
+    <string name="nc_conversation_tags_delete_confirm_message">此標籤將從所有已指派的對話中移除。</string>
+    <string name="nc_conversation_tags_delete_confirm_title">刪除標籤？</string>
     <string name="nc_conversation_tags_empty">尚未加入標籤</string>
     <string name="nc_conversation_tags_error_generic">出了點問題，請重試</string>
+    <string name="nc_conversation_tags_error_limit">您已達到標籤數量上限</string>
+    <string name="nc_conversation_tags_error_name">此標籤名稱無效或已被使用</string>
     <string name="nc_conversation_tags_favorites">喜愛</string>
     <string name="nc_conversation_tags_filter_all">全部</string>
     <string name="nc_conversation_tags_manage">管理標籤</string>
@@ -297,6 +305,8 @@
     <string name="nc_guest_access_resend_invitations_successful">邀請已再次傳送。</string>
     <string name="nc_guest_access_share_link">分享對話連結</string>
     <string name="nc_hint_enter_a_message">輸入訊息 …</string>
+    <string name="nc_hq_toggle">HQ</string>
+    <string name="nc_hq_toggle_description">高畫質，不壓縮</string>
     <string name="nc_ignore_battery_optimization_dialog_text">未忽略電池最佳化。為確保通知在背景中正在運作，請變更設定！請點擊「確定」並選取「所有應用程式」→ %1$s →「無限制」或「允許背景使用→不受限制」</string>
     <string name="nc_ignore_battery_optimization_dialog_title">忽略電池最佳化</string>
     <string name="nc_important_conversation">重要交談</string>
@@ -346,6 +356,9 @@
     <string name="nc_manual">未設定</string>
     <string name="nc_mark_as_read">標為已讀</string>
     <string name="nc_mark_as_unread">標為未讀</string>
+    <string name="nc_media_quality_original">原始畫質</string>
+    <string name="nc_media_quality_original_hint">使用較多行動數據傳送原始畫質。</string>
+    <string name="nc_media_quality_reduced">降低畫質</string>
     <string name="nc_meeting_ended">會議已結束</string>
     <string name="nc_message_added_to_notes">訊息已新增至筆記</string>
     <string name="nc_message_failed">傳送訊息失敗</string>
@@ -419,6 +432,7 @@
     <string name="nc_push_notification_message">已成功傳送推播通知。現在您應該會在此裝置上收到標題為「測試推播通知」的通知。</string>
     <string name="nc_remind">稍後提醒我</string>
     <string name="nc_remove_color">移除顏色</string>
+    <string name="nc_remove_file">移除檔案</string>
     <string name="nc_remove_from_favorites">取消我的最愛</string>
     <string name="nc_remove_group_and_members">移除群組與成員</string>
     <string name="nc_remove_participant">移除參與者</string>
@@ -499,6 +513,7 @@
     <string name="nc_settings_incognito_keyboard_title">無痕鍵盤</string>
     <string name="nc_settings_logs_subtitle">檢視本機紀錄檔</string>
     <string name="nc_settings_logs_title">紀錄檔</string>
+    <string name="nc_settings_media_quality_title">已傳送的媒體畫質</string>
     <string name="nc_settings_no_ringtone">無聲</string>
     <string name="nc_settings_no_talk_installed">您嘗試進行身份驗證的伺服器並未安裝 Talk 應用程式</string>
     <string name="nc_settings_notification_sounds_post_oreo">通知</string>
@@ -574,6 +589,7 @@
     <string name="nc_start_group_chat">開始群組聊天</string>
     <string name="nc_start_time">開始時間</string>
     <string name="nc_switch_account">切換帳號</string>
+    <string name="nc_take_video">錄影</string>
     <string name="nc_team">團隊</string>
     <string name="nc_test_push_button">測試推播通知</string>
     <string name="nc_test_results">測試結果</string>
