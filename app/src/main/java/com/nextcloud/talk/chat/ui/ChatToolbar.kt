@@ -86,7 +86,7 @@ import com.nextcloud.talk.extensions.loadSystemAvatar
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ChatToolbar(state: ChatToolbarState, callbacks: ChatToolbarCallbacks, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
+    Box(modifier = modifier) {
         TopAppBar(
             navigationIcon = {
                 IconButton(onClick = callbacks.onNavigateUp) {
@@ -112,7 +112,9 @@ fun ChatToolbar(state: ChatToolbarState, callbacks: ChatToolbarCallbacks, modifi
 
         if (state.isLoading) {
             LinearProgressIndicator(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomStart),
                 color = MaterialTheme.colorScheme.primary,
                 trackColor = MaterialTheme.colorScheme.surface
             )
