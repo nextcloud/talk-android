@@ -312,7 +312,7 @@ dependencies {
     // build excludes this because it transitively pulls in com.google.firebase:firebase-encoders*
     // via datatransport, which F-Droid's APK scanner rejects)
     "gplayImplementation"("com.google.mediapipe:tasks-vision:0.10.26")
-    implementation("io.github.crow-misia.libyuv:libyuv-android:0.43.2")
+    implementation("io.github.crow-misia.libyuv:libyuv-android:0.44.0")
 
     // Avatar picker
     implementation("com.github.nextcloud-deps:ImagePicker:2.1.0.2")
