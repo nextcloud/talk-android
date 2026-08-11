@@ -108,8 +108,8 @@ import com.nextcloud.talk.adapters.messages.CallStartedMessageInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.chat.data.io.VoiceMessageMediaService
 import com.nextcloud.talk.attachmentpreview.FileAttachmentPreviewFragment
+import com.nextcloud.talk.chat.data.io.VoiceMessageMediaService
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.model.FileParameters
 import com.nextcloud.talk.chat.ui.ChatEmptyState
@@ -179,9 +179,9 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AudioUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfClassifiedRoom
 import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfEventRooms
 import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfInstantMeetingRoom
-import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfClassifiedRoom
 import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfSIPRoom
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
@@ -877,8 +877,6 @@ class ChatActivity :
                     LocalMessageUtils provides messageUtils,
                     LocalOpenGraphFetcher provides { url -> chatViewModel.fetchOpenGraph(url) }
                 ) {
-                    val currentlyPlayingId by chatViewModel.currentlyPlayedMessageId.collectAsState(null)
-
                     val isOneToOneConversation by remember { mutableStateOf(uiState.isOneToOneConversation) }
                     Log.d(TAG, "isOneToOneConversation=" + isOneToOneConversation)
 

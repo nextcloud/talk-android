@@ -267,6 +267,12 @@ class ChatViewModel @AssistedInject constructor(
     val mediaPlayerSeekbarObserver: Flow<ChatMessage>
         get() = mediaPlayerManager.mediaPlayerSeekBarPositionMsg
 
+    val currentlyPlayedMessageId: Flow<Int?> = mediaPlayerManager.currentCycledMessage.map { it?.jsonMessageId }
+
+    fun setPlayBack(speed: PlaybackSpeed) {
+        mediaPlayerManager.setPlayBackSpeed(speed)
+    }
+
     private val _recordTouchObserver: MutableLiveData<Float> = MutableLiveData()
     val recordTouchObserver: LiveData<Float>
         get() = _recordTouchObserver
