@@ -173,7 +173,6 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
-    @Suppress("LongMethod")
     override suspend fun loadInitialMessages(withNetworkParams: Bundle) {
         logger.d(TAG, "---- loadInitialMessages ------------")
         cleanupExpiredMessages()
@@ -186,64 +185,68 @@ class OfflineFirstChatRepository @Inject constructor(
         Log.d(TAG, "newestMessageIdFromDb: $newestMessageIdFromDb")
 
         val weAlreadyHaveSomeOfflineMessages = newestMessageIdFromDb > 0
-
         val weHaveAtLeastTheLastReadMessage = newestMessageIdFromDb >= conversationModel.lastReadMessage.toLong()
+        val weLikelyOnlyHaveASmallBacklog = weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage
+
         Log.d(TAG, "weAlreadyHaveSomeOfflineMessages:$weAlreadyHaveSomeOfflineMessages")
         Log.d(TAG, "weHaveAtLeastTheLastReadMessage:$weHaveAtLeastTheLastReadMessage")
+        Log.d(TAG, "weLikelyOnlyHaveASmallBacklog:$weLikelyOnlyHaveASmallBacklog")
 
-        when {
-            weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage -> {
-                // Close the backlog since the newest offline message. This is required on
-                // chat-relay servers (the relay cannot deliver messages that arrived while the
-                // app was closed) and is equally cheap on long-polling servers, where it just
-                // front-loads what the first poll request would have fetched. This way the
-                // initial load never has to know the live-update mode, i.e. it must not wait for
-                // the websocket. closeBacklog loops until the backlog is fully closed — a single
-                // capped fetch could leave a permanent gap on chat-relay servers.
-                //
-                // This request is always made, even if the conversation's cached lastMessage
-                // suggests we are already caught up: that value is only as fresh as the last room
-                // list sync and can already be behind the server by the time the chat is opened.
-                // closeBacklog is cheap when there is truly nothing new (a single request coming
-                // back empty), so there is no good reason to trust the stale value instead.
-                Log.d(TAG, "Closing the backlog from the newest offline message for initial loading")
-
-                syncer.closeBacklog(
-                    target = syncTarget,
-                    fromMessageId = newestMessageIdFromDb,
-                    lastCommonRead = newXChatLastCommonRead,
-                    events = syncEvents
-                )
-            }
-
-            else -> {
-                if (!weAlreadyHaveSomeOfflineMessages) {
-                    Log.d(TAG, "An online request for newest 100 messages is made because offline chat is empty")
-                    if (networkMonitor.isOnline.value.not()) {
-                        // _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
-                    }
-                } else {
-                    Log.d(
-                        TAG,
-                        "An online request for newest 100 messages is made because we don't have the " +
-                            "lastReadMessage (gaps could be closed by scrolling up to merge the chatblocks)"
-                    )
-                }
-
-                // set up field map to load the newest messages
-                val fieldMap = getFieldMap(
-                    lookIntoFuture = false,
-                    timeout = 0,
-                    includeLastKnown = true,
-                    lastKnown = null
-                )
-                withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
-                withNetworkParams.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
-
-                Log.d(TAG, "Starting online request for initial loading")
-                getAndPersistMessages(withNetworkParams)
-            }
+        if (weLikelyOnlyHaveASmallBacklog) {
+            closeBacklogFromNewestOfflineMessage(newestMessageIdFromDb)
+        } else {
+            fetchNewestMessagesForInitialLoad(
+                withNetworkParams,
+                weAlreadyHaveSomeOfflineMessages,
+                weHaveAtLeastTheLastReadMessage
+            )
         }
+    }
+
+    /**
+     * Tries to close the backlog since the newest offline message.
+     */
+    private suspend fun closeBacklogFromNewestOfflineMessage(newestMessageIdFromDb: Long) {
+        Log.d(TAG, "Closing the backlog from the newest offline message for initial loading")
+
+        syncer.closeBacklog(
+            target = syncTarget,
+            fromMessageId = newestMessageIdFromDb,
+            lastCommonRead = newXChatLastCommonRead,
+            events = syncEvents
+        )
+    }
+
+    private suspend fun fetchNewestMessagesForInitialLoad(
+        withNetworkParams: Bundle,
+        weAlreadyHaveSomeOfflineMessages: Boolean,
+        weHaveAtLeastTheLastReadMessage: Boolean
+    ) {
+        if (!weAlreadyHaveSomeOfflineMessages) {
+            Log.d(TAG, "An online request for newest 100 messages is made because offline chat is empty")
+            if (networkMonitor.isOnline.value.not()) {
+                // _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
+            }
+        } else if (!weHaveAtLeastTheLastReadMessage) {
+            Log.d(
+                TAG,
+                "An online request for newest 100 messages is made because we don't have the " +
+                    "lastReadMessage (gaps could be closed by scrolling up to merge the chatblocks)"
+            )
+        }
+
+        // set up field map to load the newest messages
+        val fieldMap = getFieldMap(
+            lookIntoFuture = false,
+            timeout = 0,
+            includeLastKnown = true,
+            lastKnown = null
+        )
+        withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+        withNetworkParams.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
+
+        Log.d(TAG, "Starting online request for initial loading")
+        getAndPersistMessages(withNetworkParams)
     }
 
     override suspend fun startMessagePolling(hasHighPerformanceBackend: Boolean) {
