@@ -193,7 +193,7 @@ class OfflineFirstChatRepository @Inject constructor(
         Log.d(TAG, "weLikelyOnlyHaveASmallBacklog:$weLikelyOnlyHaveASmallBacklog")
 
         if (weLikelyOnlyHaveASmallBacklog) {
-            closeBacklogFromNewestOfflineMessage(newestMessageIdFromDb)
+            tryCloseBacklogFromNewestOfflineMessage(newestMessageIdFromDb)
         } else {
             fetchNewestMessagesForInitialLoad(
                 withNetworkParams,
@@ -206,10 +206,10 @@ class OfflineFirstChatRepository @Inject constructor(
     /**
      * Tries to close the backlog since the newest offline message.
      */
-    private suspend fun closeBacklogFromNewestOfflineMessage(newestMessageIdFromDb: Long) {
-        Log.d(TAG, "Closing the backlog from the newest offline message for initial loading")
+    private suspend fun tryCloseBacklogFromNewestOfflineMessage(newestMessageIdFromDb: Long) {
+        Log.d(TAG, "Try to close the backlog from the newest offline message for initial loading")
 
-        syncer.closeBacklog(
+        syncer.tryCloseBacklog(
             target = syncTarget,
             fromMessageId = newestMessageIdFromDb,
             lastCommonRead = newXChatLastCommonRead,
@@ -338,10 +338,10 @@ class OfflineFirstChatRepository @Inject constructor(
 
         val lastHttpSyncedMessageId = syncer.lastHttpSyncedMessageId(internalConversationId, threadId) ?: 0L
 
-        // closeBacklog loops until the backlog is fully closed, so a backlog larger than the
+        // tryCloseBacklog loops until the backlog is fully closed, so a backlog larger than the
         // request limit is caught up within one insurance cycle instead of narrowing it by one
         // page every cycle.
-        val outcome = syncer.closeBacklog(
+        val outcome = syncer.tryCloseBacklog(
             target = syncTarget,
             fromMessageId = lastHttpSyncedMessageId,
             limit = 200,

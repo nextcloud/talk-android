@@ -308,7 +308,7 @@ class ChatMessageSyncer @Inject constructor(
             chatBlocksDao.getNewestMessageIdFromChatBlocks(target.internalConversationId, target.threadId)
 
         val outcome = if (newestMessageIdFromDb > 0) {
-            closeBacklog(
+            tryCloseBacklog(
                 target = target,
                 fromMessageId = newestMessageIdFromDb,
                 limit = limit,
@@ -344,7 +344,8 @@ class ChatMessageSyncer @Inject constructor(
     }
 
     /**
-     * Fetches the messages newer than [fromMessageId] until the backlog is fully closed.
+     * Tries to fetch the messages newer than [fromMessageId] until the backlog is fully closed —
+     * there is no guarantee it will be: see the [MAX_BACKLOG_ROUNDS] fallback below.
      *
      * A single fetch is capped by [limit], so one request only narrows a backlog larger than
      * that — and on chat-relay servers the remaining gap would become permanent as soon as a
@@ -355,8 +356,8 @@ class ChatMessageSyncer @Inject constructor(
      * stays visible in the block structure (closable by scrolling up) rather than a block
      * claiming ranges that were never fetched.
      */
-    @Suppress("LongParameterList")
-    suspend fun closeBacklog(
+    @Suppress("LongParameterList", "LongMethod")
+    suspend fun tryCloseBacklog(
         target: SyncTarget,
         fromMessageId: Long,
         limit: Int = DEFAULT_MESSAGES_LIMIT,

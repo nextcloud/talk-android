@@ -293,7 +293,7 @@ class ChatMessageSyncerTest {
         }
 
     @Test
-    fun `closeBacklog loops until the server returns fewer messages than the limit`() =
+    fun `tryCloseBacklog loops until the server returns fewer messages than the limit`() =
         runTest {
             val existingBlock = block(oldest = 10, newest = 42)
             whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
@@ -306,7 +306,7 @@ class ChatMessageSyncerTest {
                     Response.success(overall(message(45)))
                 )
 
-            val outcome = syncer.closeBacklog(target(), fromMessageId = 42, limit = 2)
+            val outcome = syncer.tryCloseBacklog(target(), fromMessageId = 42, limit = 2)
 
             assertTrue(outcome.persistedNewMessages)
             assertEquals(3, outcome.persistedMessageCount)
@@ -320,7 +320,7 @@ class ChatMessageSyncerTest {
         }
 
     @Test
-    fun `closeBacklog falls back to the newest messages when the backlog persists`() =
+    fun `tryCloseBacklog falls back to the newest messages when the backlog persists`() =
         runTest {
             val existingBlock = block(oldest = 10, newest = 42)
             whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
@@ -337,7 +337,7 @@ class ChatMessageSyncerTest {
                     Response.success(overall(message(100)))
                 )
 
-            val outcome = syncer.closeBacklog(target(), fromMessageId = 42, limit = 1)
+            val outcome = syncer.tryCloseBacklog(target(), fromMessageId = 42, limit = 1)
 
             // the reported range is the fallback's own — it must not be merged with the backlog
             // rounds' range, since the fallback lands in a separate, disconnected chat block
