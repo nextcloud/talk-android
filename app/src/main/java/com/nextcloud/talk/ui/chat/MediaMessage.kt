@@ -68,7 +68,13 @@ fun MediaMessage(
     onImageClick: (Int) -> Unit
 ) {
     val fileParameters =
-        remember { FileParameters(message.messageParameters as HashMap<String?, HashMap<String?, String?>>?) }
+        remember {
+            FileParameters(
+                HashMap(
+                    message.messageParameters.mapValues { (_, params) -> HashMap(params) }
+                )
+            )
+        }
 
     val hasExplicitCaption = message.plainMessage != FILE_PLACEHOLDER_MESSAGE
     val hasPreview = !typeContent.previewUrl.isNullOrEmpty()
