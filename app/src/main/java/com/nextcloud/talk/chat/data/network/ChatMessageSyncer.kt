@@ -291,19 +291,10 @@ class ChatMessageSyncer @Inject constructor(
 
     /**
      * The newest message id of the conversation/thread confirmed via HTTP sync, or null when no
-     * sync happened yet (and [seedHttpSyncedMessageId] was never called) since app start.
+     * sync happened yet since app start.
      */
     fun lastHttpSyncedMessageId(internalConversationId: String, threadId: Long?): Long? =
         lastHttpSyncedMessageIds[syncStateKey(internalConversationId, threadId)]
-
-    /**
-     * Seeds the HTTP-synced anchor without a fetch. Only call with ids whose coverage is proven by
-     * HTTP-derived data — e.g. the conversation's lastMessage from the room list sync when the
-     * local chat block already reaches it. The anchor only ever moves forward.
-     */
-    fun seedHttpSyncedMessageId(internalConversationId: String, threadId: Long?, messageId: Long) {
-        lastHttpSyncedMessageIds.merge(syncStateKey(internalConversationId, threadId), messageId, ::maxOf)
-    }
 
     private fun recordHttpSyncedMessageId(target: SyncTarget, messageId: Long) {
         lastHttpSyncedMessageIds.merge(syncStateKey(target.internalConversationId, target.threadId), messageId, ::maxOf)

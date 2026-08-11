@@ -188,33 +188,10 @@ class OfflineFirstChatRepository @Inject constructor(
         val weAlreadyHaveSomeOfflineMessages = newestMessageIdFromDb > 0
 
         val weHaveAtLeastTheLastReadMessage = newestMessageIdFromDb >= conversationModel.lastReadMessage.toLong()
-        val lastMessageIdFromServer = conversationModel.lastMessage?.id ?: 0
-        val weHaveTheLastMessage = newestMessageIdFromDb >= lastMessageIdFromServer
         Log.d(TAG, "weAlreadyHaveSomeOfflineMessages:$weAlreadyHaveSomeOfflineMessages")
         Log.d(TAG, "weHaveAtLeastTheLastReadMessage:$weHaveAtLeastTheLastReadMessage")
-        Log.d(TAG, "weHaveTheLastMessage:$weHaveTheLastMessage (lastMessageIdFromServer:$lastMessageIdFromServer)")
 
         when {
-            weAlreadyHaveSomeOfflineMessages && weHaveTheLastMessage -> {
-                // The offline messages already reach the conversation's last message (e.g. because
-                // the room list sync prefetched them), so no initial request is needed at all —
-                // regardless of the live-update mode. Anything newer is handled by long polling,
-                // the chat relay or the insurance requests.
-                Log.d(
-                    TAG,
-                    "Initial online request is skipped because offline messages are up to date" +
-                        " until the conversation's last message"
-                )
-
-                // No HTTP fetch happens in this branch, so seed the insurance anchor explicitly:
-                // lastMessage came from the room list sync (HTTP) and the local chat block reaches
-                // it, so it is a valid HTTP-synced anchor. Without the seed, the first insurance
-                // request of this session would query with lastKnownMessageId=0.
-                conversationModel.lastMessage?.id?.let {
-                    syncer.seedHttpSyncedMessageId(internalConversationId, threadId, it)
-                }
-            }
-
             weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage -> {
                 // Close the backlog since the newest offline message. This is required on
                 // chat-relay servers (the relay cannot deliver messages that arrived while the
@@ -223,6 +200,12 @@ class OfflineFirstChatRepository @Inject constructor(
                 // initial load never has to know the live-update mode, i.e. it must not wait for
                 // the websocket. closeBacklog loops until the backlog is fully closed — a single
                 // capped fetch could leave a permanent gap on chat-relay servers.
+                //
+                // This request is always made, even if the conversation's cached lastMessage
+                // suggests we are already caught up: that value is only as fresh as the last room
+                // list sync and can already be behind the server by the time the chat is opened.
+                // closeBacklog is cheap when there is truly nothing new (a single request coming
+                // back empty), so there is no good reason to trust the stale value instead.
                 Log.d(TAG, "Closing the backlog from the newest offline message for initial loading")
 
                 syncer.closeBacklog(

@@ -403,16 +403,6 @@ class ChatMessageSyncerTest {
         }
 
     @Test
-    fun `seeded insurance anchor only moves forward`() {
-        assertNull(syncer.lastHttpSyncedMessageId(INTERNAL_CONVERSATION_ID, null))
-
-        syncer.seedHttpSyncedMessageId(INTERNAL_CONVERSATION_ID, null, 44L)
-        syncer.seedHttpSyncedMessageId(INTERNAL_CONVERSATION_ID, null, 10L)
-
-        assertEquals(44L, syncer.lastHttpSyncedMessageId(INTERNAL_CONVERSATION_ID, null))
-    }
-
-    @Test
     fun `cleanupExpiredMessages trims block boundaries and deletes empty blocks`() =
         runTest {
             val partiallyExpiredBlock = block(oldest = 1, newest = 10)
