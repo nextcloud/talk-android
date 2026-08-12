@@ -122,6 +122,7 @@
     <string name="nc_certificate_error">您的 SSL 设置阻止了连接</string>
     <string name="nc_change_cert_auth">更换验证证书</string>
     <string name="nc_change_password">更改密码</string>
+    <string name="nc_classified_conversation">机密对话</string>
     <string name="nc_clear_edit_button">取消编辑</string>
     <string name="nc_clear_history">删除所有消息</string>
     <string name="nc_clear_history_success">已删除所有消息</string>
