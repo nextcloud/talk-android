@@ -22,11 +22,13 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
+import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
+import kotlinx.coroutines.flow.first
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -50,6 +52,9 @@ class ChatMessageCatchUpWorker(context: Context, workerParams: WorkerParameters)
 
     @Inject
     lateinit var chatMessageSyncer: ChatMessageSyncer
+
+    @Inject
+    lateinit var conversationsDao: ConversationsDao
 
     override suspend fun doWork(): Result {
         sharedApplication!!.componentApplication.inject(this)
@@ -89,7 +94,23 @@ class ChatMessageCatchUpWorker(context: Context, workerParams: WorkerParameters)
             urlForChatting = ApiUtils.getUrlForChat(CHAT_API_VERSION, user.baseUrl!!, roomToken)
         )
 
-        val outcome = runCatching { chatMessageSyncer.catchUpRoom(target) }.getOrElse { throwable ->
+        // For a room without any cached chat block the unread boundary of the locally cached
+        // conversation is passed along, so a large backlog is fetched anchored at the last read
+        // message and the unread marker can be placed when the chat is opened. The boundary is
+        // room-level state and therefore not passed for thread catch-ups.
+        val conversation = if (threadId == null) {
+            conversationsDao.getConversationForUser(user.id!!, roomToken).first()
+        } else {
+            null
+        }
+
+        val outcome = runCatching {
+            chatMessageSyncer.catchUpRoom(
+                target = target,
+                lastReadMessage = conversation?.lastReadMessage,
+                unreadMessages = conversation?.unreadMessages ?: 0
+            )
+        }.getOrElse { throwable ->
             Log.e(TAG, "Message catch-up failed for room $roomToken", throwable)
             null
         }
