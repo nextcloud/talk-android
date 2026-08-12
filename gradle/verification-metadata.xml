@@ -212,6 +212,7 @@
          </trusted-key>
          <trusted-key id="49CF4E3B2996BE658A57DD39655CCC51B9BD2C38">
             <trusting group="org.conscrypt" name="conscrypt-android" version="2.6.1"/>
+            <trusting group="org.conscrypt" name="conscrypt-android" version="2.6.2"/>
             <trusting group="org.conscrypt" name="conscrypt-openjdk-uber" version="2.6.1"/>
          </trusted-key>
          <trusted-key id="4A2E4BE286EDAE3ADB3A3C26C21CE653B639E41A" group="com.bluelinelabs"/>
