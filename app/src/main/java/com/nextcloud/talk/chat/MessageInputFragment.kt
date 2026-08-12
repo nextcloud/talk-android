@@ -572,6 +572,7 @@ class MessageInputFragment : Fragment() {
         }
 
         binding.fragmentCallStarted.callStartedCloseBtn.setImageDrawable(drawable)
+        viewThemeUtils.platform.colorImageView(binding.fragmentCallStarted.callStartedCloseBtn, ColorRole.PRIMARY)
     }
 
     @Suppress("ClickableViewAccessibility", "CyclomaticComplexMethod", "LongMethod")
