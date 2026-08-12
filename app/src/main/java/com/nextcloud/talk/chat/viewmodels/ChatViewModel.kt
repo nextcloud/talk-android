@@ -1131,13 +1131,22 @@ class ChatViewModel @AssistedInject constructor(
 
         return buildList {
             if (firstUnreadMessageId == null && lastReadMessage > 0) {
-                firstUnreadMessageId =
-                    uiMessages.firstOrNull {
-                        it.id > lastReadMessage
-                    }?.id
-                Log.d(TAG, "reversedMessages.size = ${uiMessages.size}")
-                Log.d(TAG, "firstUnreadMessageId = $firstUnreadMessageId")
-                Log.d(TAG, "conversation.lastReadMessage = $lastReadMessage")
+                // Latch the marker position only when the visible window provably reaches back to
+                // the unread boundary, i.e. a message at or below lastReadMessage is visible.
+                // Without that proof the oldest visible message may still be far above the true
+                // first unread message (e.g. after a capped fetch of only the newest messages) and
+                // the marker would be latched in the middle of the unread messages. Temporary
+                // messages carry negative ids and don't count as proof.
+                val unreadBoundaryIsVisible = uiMessages.any { it.id in 1..lastReadMessage }
+                if (unreadBoundaryIsVisible) {
+                    firstUnreadMessageId =
+                        uiMessages.firstOrNull {
+                            it.id > lastReadMessage
+                        }?.id
+                    Log.d(TAG, "reversedMessages.size = ${uiMessages.size}")
+                    Log.d(TAG, "firstUnreadMessageId = $firstUnreadMessageId")
+                    Log.d(TAG, "conversation.lastReadMessage = $lastReadMessage")
+                }
             }
 
             for (uiMessage in uiMessages) {
