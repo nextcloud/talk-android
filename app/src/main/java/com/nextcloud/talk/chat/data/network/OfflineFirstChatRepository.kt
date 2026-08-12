@@ -182,25 +182,30 @@ class OfflineFirstChatRepository @Inject constructor(
         Log.d(TAG, "conversationModel.internalId: " + conversationModel.internalId)
         Log.d(TAG, "conversationModel.lastReadMessage:" + conversationModel.lastReadMessage)
 
-        val newestMessageIdFromDb = chatBlocksDao.getNewestMessageIdFromChatBlocks(internalConversationId, threadId)
-        Log.d(TAG, "newestMessageIdFromDb: $newestMessageIdFromDb")
+        val latestBlock = chatBlocksDao.getLatestChatBlock(internalConversationId, threadId).first()
+        Log.d(TAG, "latestBlock: ${latestBlock?.oldestMessageId}..${latestBlock?.newestMessageId}")
 
-        val weAlreadyHaveSomeOfflineMessages = newestMessageIdFromDb > 0
-        val weHaveAtLeastTheLastReadMessage = newestMessageIdFromDb >= conversationModel.lastReadMessage.toLong()
-        val weLikelyOnlyHaveASmallBacklog = weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage
+        if (latestBlock == null) {
+            fetchInitialMessages(weAlreadyHaveSomeOfflineMessages = false)
+            return
+        }
 
-        Log.d(TAG, "weAlreadyHaveSomeOfflineMessages:$weAlreadyHaveSomeOfflineMessages")
-        Log.d(TAG, "weHaveAtLeastTheLastReadMessage:$weHaveAtLeastTheLastReadMessage")
-        Log.d(TAG, "weLikelyOnlyHaveASmallBacklog:$weLikelyOnlyHaveASmallBacklog")
+        // The chat shows the messages of the latest chat block, and the unread marker can only be
+        // placed correctly when that block reaches back to the last read message. A block floating
+        // entirely above the boundary (e.g. created by a capped newest-messages fetch) must be
+        // repaired by an anchored fetch — only closing the backlog above it would keep the marker
+        // pinned to the block's oldest message, in the middle of the unread messages.
+        val lastReadMessage = conversationModel.lastReadMessage.toLong()
+        val blockReachesUnreadBoundary = lastReadMessage <= 0 ||
+            latestBlock.oldestMessageId <= lastReadMessage ||
+            !latestBlock.hasHistory
 
-        if (weLikelyOnlyHaveASmallBacklog) {
-            tryCloseBacklogFromNewestOfflineMessage(newestMessageIdFromDb)
+        Log.d(TAG, "blockReachesUnreadBoundary:$blockReachesUnreadBoundary")
+
+        if (blockReachesUnreadBoundary) {
+            tryCloseBacklogFromNewestOfflineMessage(latestBlock.newestMessageId)
         } else {
-            fetchNewestMessagesForInitialLoad(
-                withNetworkParams,
-                weAlreadyHaveSomeOfflineMessages,
-                weHaveAtLeastTheLastReadMessage
-            )
+            fetchInitialMessages(weAlreadyHaveSomeOfflineMessages = true)
         }
     }
 
@@ -218,36 +223,32 @@ class OfflineFirstChatRepository @Inject constructor(
         )
     }
 
-    private suspend fun fetchNewestMessagesForInitialLoad(
-        withNetworkParams: Bundle,
-        weAlreadyHaveSomeOfflineMessages: Boolean,
-        weHaveAtLeastTheLastReadMessage: Boolean
-    ) {
+    /**
+     * Fetches the initial message window via [ChatMessageSyncer.initialCatchUp]: anchored at the
+     * last read message when a large unread backlog exists, the newest messages otherwise.
+     */
+    private suspend fun fetchInitialMessages(weAlreadyHaveSomeOfflineMessages: Boolean) {
         if (!weAlreadyHaveSomeOfflineMessages) {
-            Log.d(TAG, "An online request for newest 100 messages is made because offline chat is empty")
+            Log.d(TAG, "An initial online request is made because offline chat is empty")
             if (networkMonitor.isOnline.value.not()) {
                 // _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
             }
-        } else if (!weHaveAtLeastTheLastReadMessage) {
+        } else {
             Log.d(
                 TAG,
-                "An online request for newest 100 messages is made because we don't have the " +
+                "An initial online request is made because the cached messages don't reach the " +
                     "lastReadMessage (gaps could be closed by scrolling up to merge the chatblocks)"
             )
         }
 
-        // set up field map to load the newest messages
-        val fieldMap = getFieldMap(
-            lookIntoFuture = false,
-            timeout = 0,
-            includeLastKnown = true,
-            lastKnown = null
-        )
-        withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
-        withNetworkParams.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
-
         Log.d(TAG, "Starting online request for initial loading")
-        getAndPersistMessages(withNetworkParams)
+        syncer.initialCatchUp(
+            target = syncTarget,
+            lastReadMessage = conversationModel.lastReadMessage,
+            unreadMessages = conversationModel.unreadMessages,
+            lastCommonRead = newXChatLastCommonRead,
+            events = syncEvents
+        )
     }
 
     override suspend fun startMessagePolling(hasHighPerformanceBackend: Boolean) {
