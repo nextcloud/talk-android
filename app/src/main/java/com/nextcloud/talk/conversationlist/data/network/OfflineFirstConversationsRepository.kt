@@ -240,7 +240,13 @@ class OfflineFirstConversationsRepository @Inject constructor(
                             credentials = credentials,
                             urlForChatting = ApiUtils.getUrlForChat(CHAT_API_VERSION, user.baseUrl!!, room.token)
                         )
-                        runCatching { chatMessageSyncer.catchUpRoom(target) }
+                        runCatching {
+                            chatMessageSyncer.catchUpRoom(
+                                target = target,
+                                lastReadMessage = room.lastReadMessage,
+                                unreadMessages = room.unreadMessages
+                            )
+                        }
                             .onFailure { Log.e(TAG, "Message catch-up failed for room ${room.token}", it) }
                     }
                 }

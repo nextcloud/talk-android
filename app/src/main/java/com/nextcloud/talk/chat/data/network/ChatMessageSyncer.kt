@@ -201,9 +201,10 @@ class ChatMessageSyncer @Inject constructor(
      * Catches up a room with the server without requiring an open chat.
      *
      * If a chat block exists, only the delta since the newest locally known message is fetched and
-     * the block is extended. For rooms without any chat block (never-opened rooms) the newest
-     * messages are fetched and the initial chat block is created, so cached messages become
-     * visible to [ChatMessagesDao] block queries right away.
+     * the block is extended. For rooms without any chat block (never-opened rooms) the initial
+     * chat block is created via [initialCatchUp] — anchored at [lastReadMessage] when the unread
+     * backlog calls for it — so cached messages become visible to [ChatMessagesDao] block queries
+     * right away.
      *
      * Requires the chat-keep-notifications capability: without it, a background fetch would
      * dismiss the user's push notifications for the fetched messages, so the catch-up is skipped
@@ -213,7 +214,12 @@ class ChatMessageSyncer @Inject constructor(
      * active group chat) are coalesced: while a catch-up runs, further requests only mark a rerun
      * and return, and consecutive fetches are paced by [CATCH_UP_COOLDOWN_MILLIS].
      */
-    suspend fun catchUpRoom(target: SyncTarget, limit: Int = DEFAULT_MESSAGES_LIMIT): SyncOutcome =
+    suspend fun catchUpRoom(
+        target: SyncTarget,
+        limit: Int = DEFAULT_MESSAGES_LIMIT,
+        lastReadMessage: Int? = null,
+        unreadMessages: Int = 0
+    ): SyncOutcome =
         when {
             !networkMonitor.isOnline.value -> {
                 Log.d(TAG, "Device is offline, skipping catch-up for ${target.internalConversationId}")
@@ -229,7 +235,7 @@ class ChatMessageSyncer @Inject constructor(
                 NOTHING_SYNCED
             }
 
-            else -> coalescedRoomCatchUp(target, limit)
+            else -> coalescedRoomCatchUp(target, limit, lastReadMessage, unreadMessages)
         }
 
     /**
@@ -240,7 +246,12 @@ class ChatMessageSyncer @Inject constructor(
      * [MAX_CATCH_UP_RUNS_PER_BURST] fetches — later messages are covered by their own push or the
      * next room list sync.
      */
-    private suspend fun coalescedRoomCatchUp(target: SyncTarget, limit: Int): SyncOutcome {
+    private suspend fun coalescedRoomCatchUp(
+        target: SyncTarget,
+        limit: Int,
+        lastReadMessage: Int?,
+        unreadMessages: Int
+    ): SyncOutcome {
         val stateKey = syncStateKey(target.internalConversationId, target.threadId)
         val state = catchUpStates.getOrPut(stateKey) { RoomCatchUpState() }
 
@@ -256,7 +267,7 @@ class ChatMessageSyncer @Inject constructor(
             do {
                 awaitCatchUpCooldown(state, stateKey)
                 state.rerunRequested.set(false)
-                outcome = fetchRoomCatchUp(target, limit)
+                outcome = fetchRoomCatchUp(target, limit, lastReadMessage, unreadMessages)
                 state.lastCompletedAtMillis = SystemClock.elapsedRealtime()
                 runs++
             } while (state.rerunRequested.get() && runs < MAX_CATCH_UP_RUNS_PER_BURST)
@@ -309,7 +320,12 @@ class ChatMessageSyncer @Inject constructor(
     private fun syncStateKey(internalConversationId: String, threadId: Long?): String =
         "$internalConversationId#$threadId"
 
-    private suspend fun fetchRoomCatchUp(target: SyncTarget, limit: Int): SyncOutcome {
+    private suspend fun fetchRoomCatchUp(
+        target: SyncTarget,
+        limit: Int,
+        lastReadMessage: Int?,
+        unreadMessages: Int
+    ): SyncOutcome {
         val newestMessageIdFromDb =
             chatBlocksDao.getNewestMessageIdFromChatBlocks(target.internalConversationId, target.threadId)
 
@@ -321,17 +337,12 @@ class ChatMessageSyncer @Inject constructor(
                 markNotificationsAsRead = false
             )
         } else {
-            pullAndPersistMessages(
-                target,
-                buildFieldMap(
-                    lookIntoFuture = false,
-                    timeout = 0,
-                    includeLastKnown = true,
-                    lastKnown = null,
-                    limit = limit,
-                    threadId = target.threadId,
-                    markNotificationsAsRead = false
-                )
+            initialCatchUp(
+                target = target,
+                limit = limit,
+                lastReadMessage = lastReadMessage,
+                unreadMessages = unreadMessages,
+                markNotificationsAsRead = false
             )
         }
 
@@ -347,6 +358,117 @@ class ChatMessageSyncer @Inject constructor(
         }
 
         return outcome
+    }
+
+    /**
+     * First fetch for a conversation whose cached messages do not reach the unread boundary yet
+     * (typically a conversation without any chat block).
+     *
+     * The unread marker can only be placed correctly when the chat's visible window — the latest
+     * chat block — contains the last read message. A plain newest-messages fetch creates a block
+     * floating entirely above the boundary as soon as the unread backlog is larger than one page,
+     * so for such backlogs the fetch is anchored at [lastReadMessage] instead (including the last
+     * read message itself) and the rest of the backlog is closed via [tryCloseBacklog]. Backlogs
+     * smaller than one page fit into a newest-messages fetch anyway, and backlogs too large to be
+     * closed within [MAX_BACKLOG_ROUNDS] would end up in a floating newest-messages block either
+     * way, so both keep the plain newest-messages fetch.
+     */
+    @Suppress("LongParameterList")
+    suspend fun initialCatchUp(
+        target: SyncTarget,
+        limit: Int = DEFAULT_MESSAGES_LIMIT,
+        lastReadMessage: Int? = null,
+        unreadMessages: Int = 0,
+        lastCommonRead: Int? = null,
+        markNotificationsAsRead: Boolean = true,
+        events: Events = NO_EVENTS
+    ): SyncOutcome {
+        val closableBacklogAnchor = lastReadMessage?.takeIf {
+            it > 0 && unreadMessages >= limit && unreadMessages <= MAX_BACKLOG_ROUNDS * limit
+        }
+
+        return if (closableBacklogAnchor != null) {
+            anchoredInitialCatchUp(
+                target = target,
+                limit = limit,
+                lastReadMessage = closableBacklogAnchor,
+                unreadMessages = unreadMessages,
+                lastCommonRead = lastCommonRead,
+                markNotificationsAsRead = markNotificationsAsRead,
+                events = events
+            )
+        } else {
+            pullAndPersistMessages(
+                target,
+                buildFieldMap(
+                    lookIntoFuture = false,
+                    timeout = 0,
+                    includeLastKnown = true,
+                    lastKnown = null,
+                    limit = limit,
+                    threadId = target.threadId,
+                    lastCommonRead = lastCommonRead,
+                    markNotificationsAsRead = markNotificationsAsRead
+                ),
+                events
+            )
+        }
+    }
+
+    /**
+     * The anchored branch of [initialCatchUp]: fetches one page starting at [lastReadMessage]
+     * (inclusive) and closes the remaining backlog from there via [tryCloseBacklog].
+     */
+    @Suppress("LongParameterList")
+    private suspend fun anchoredInitialCatchUp(
+        target: SyncTarget,
+        limit: Int,
+        lastReadMessage: Int,
+        unreadMessages: Int,
+        lastCommonRead: Int?,
+        markNotificationsAsRead: Boolean,
+        events: Events
+    ): SyncOutcome {
+        Log.d(
+            TAG,
+            "Anchoring the initial fetch for ${target.internalConversationId} at lastReadMessage " +
+                "$lastReadMessage ($unreadMessages unread)"
+        )
+        val anchorOutcome = pullAndPersistMessages(
+            target,
+            buildFieldMap(
+                lookIntoFuture = true,
+                timeout = 0,
+                includeLastKnown = true,
+                lastKnown = lastReadMessage,
+                limit = limit,
+                threadId = target.threadId,
+                lastCommonRead = lastCommonRead,
+                markNotificationsAsRead = markNotificationsAsRead
+            ),
+            events
+        )
+
+        val nextAnchor = anchorOutcome.newestPersistedMessageId
+        if (nextAnchor == null || anchorOutcome.persistedMessageCount < limit) {
+            return anchorOutcome
+        }
+
+        val backlogOutcome = tryCloseBacklog(
+            target = target,
+            fromMessageId = nextAnchor,
+            limit = limit,
+            lastCommonRead = lastCommonRead,
+            markNotificationsAsRead = markNotificationsAsRead,
+            events = events
+        )
+        return SyncOutcome(
+            persistedNewMessages = true,
+            newestPersistedMessageId = backlogOutcome.newestPersistedMessageId ?: nextAnchor,
+            oldestPersistedMessageId = anchorOutcome.oldestPersistedMessageId,
+            persistedMessageCount = anchorOutcome.persistedMessageCount + backlogOutcome.persistedMessageCount,
+            syncFailed = backlogOutcome.syncFailed
+        )
     }
 
     /**
