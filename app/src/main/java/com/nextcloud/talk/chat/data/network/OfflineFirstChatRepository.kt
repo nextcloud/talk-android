@@ -90,7 +90,7 @@ class OfflineFirstChatRepository @Inject constructor(
         get() = _lastCommonReadFlow
 
     private val _lastCommonReadFlow:
-        MutableSharedFlow<Int> = MutableSharedFlow()
+        MutableSharedFlow<Int> = MutableSharedFlow(replay = 1)
 
     override val lastReadMessageFlow: Flow<Int>
         get() = _lastReadMessageFlow
@@ -156,7 +156,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
     private val syncEvents = object : ChatMessageSyncer.Events {
         override suspend fun onLastCommonReadChanged(lastCommonRead: Int?) {
-            newXChatLastCommonRead = lastCommonRead
+            newXChatLastCommonRead = lastCommonRead ?: newXChatLastCommonRead
             updateUiForLastCommonRead()
         }
 
@@ -177,6 +177,7 @@ class OfflineFirstChatRepository @Inject constructor(
         logger.d(TAG, "---- loadInitialMessages ------------")
         cleanupExpiredMessages()
         newXChatLastCommonRead = conversationModel.lastCommonReadMessage
+        updateUiForLastCommonRead()
 
         Log.d(TAG, "conversationModel.internalId: " + conversationModel.internalId)
         Log.d(TAG, "conversationModel.lastReadMessage:" + conversationModel.lastReadMessage)
