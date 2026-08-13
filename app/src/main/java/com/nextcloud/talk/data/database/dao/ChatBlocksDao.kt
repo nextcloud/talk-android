@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.data.database.dao
 
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -19,7 +20,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ChatBlocksDao {
     @Delete
-    fun deleteChatBlocks(blocks: List<ChatBlockEntity>)
+    suspend fun deleteChatBlocks(blocks: List<ChatBlockEntity>)
 
     @Query(
         """
@@ -54,12 +55,12 @@ interface ChatBlocksDao {
         ORDER BY newestMessageId ASC
         """
     )
-    fun getConnectedChatBlocks(
+    suspend fun getConnectedChatBlocks(
         internalConversationId: String,
         threadId: Long?,
         oldestMessageId: Long,
         newestMessageId: Long
-    ): Flow<List<ChatBlockEntity>>
+    ): List<ChatBlockEntity>
 
     @Query(
         """
@@ -73,6 +74,41 @@ interface ChatBlocksDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatBlock(chatBlock: ChatBlockEntity)
+
+    /**
+     * Upserts [chatBlock] and merges all chat blocks it overlaps into one covering their combined
+     * range, as a single atomic operation.
+     *
+     * The open-path delta fetch, long polling, the insurance request, signaling and the background
+     * catch-up can all update the blocks of the same conversation concurrently. Without one
+     * transaction around upsert, connectivity query and merge, two callers could each upsert
+     * their block and query connectivity before seeing the other's write, leaving overlapping
+     * blocks behind.
+     */
+    @Transaction
+    suspend fun upsertAndMergeConnectedChatBlocks(chatBlock: ChatBlockEntity) {
+        upsertChatBlock(chatBlock)
+
+        val connectedChatBlocks = getConnectedChatBlocks(
+            internalConversationId = chatBlock.internalConversationId,
+            threadId = chatBlock.threadId,
+            oldestMessageId = chatBlock.oldestMessageId,
+            newestMessageId = chatBlock.newestMessageId
+        )
+        if (connectedChatBlocks.size > 1) {
+            val mergedBlock = chatBlock.copy(
+                oldestMessageId = connectedChatBlocks.minOf { it.oldestMessageId },
+                newestMessageId = connectedChatBlocks.maxOf { it.newestMessageId },
+                hasHistory = connectedChatBlocks.all { it.hasHistory }
+            )
+            replaceConnectedChatBlocks(connectedChatBlocks, mergedBlock)
+            Log.d(
+                TAG,
+                "Merged ${connectedChatBlocks.size} connected chat blocks into " +
+                    "${mergedBlock.oldestMessageId}..${mergedBlock.newestMessageId}"
+            )
+        }
+    }
 
     @Transaction
     suspend fun replaceConnectedChatBlocks(connectedBlocks: List<ChatBlockEntity>, mergedBlock: ChatBlockEntity) {
@@ -131,4 +167,8 @@ interface ChatBlocksDao {
         """
     )
     suspend fun getChatBlocksForConversation(internalConversationId: String): List<ChatBlockEntity>
+
+    companion object {
+        private const val TAG = "ChatBlocksDao"
+    }
 }

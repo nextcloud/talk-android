@@ -458,7 +458,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 newestMessageId = newestId,
                 hasHistory = true
             )
-            syncer.updateBlocks(syncTarget, block)
+            chatBlocksDao.upsertAndMergeConnectedChatBlocks(block)
 
             ChatMessageRepository.MessagesRange(
                 oldestMessageId = oldestId,

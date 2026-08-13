@@ -632,7 +632,7 @@ class ChatMessageSyncer @Inject constructor(
             newestMessageId = newestMessageIdForNewChatBlock,
             hasHistory = hasHistory
         )
-        updateBlocks(target, newChatBlock)
+        chatBlocksDao.upsertAndMergeConnectedChatBlocks(newChatBlock)
 
         return chatMessageEntities
     }
@@ -824,51 +824,6 @@ class ChatMessageSyncer @Inject constructor(
             }
         }
         return blockContainingQueriedMessage
-    }
-
-    suspend fun updateBlocks(target: SyncTarget, chatBlock: ChatBlockEntity) {
-        chatBlocksDao.upsertChatBlock(chatBlock)
-
-        val connectedChatBlocks =
-            chatBlocksDao.getConnectedChatBlocks(
-                internalConversationId = target.internalConversationId,
-                threadId = target.threadId,
-                oldestMessageId = chatBlock.oldestMessageId,
-                newestMessageId = chatBlock.newestMessageId
-            ).first()
-
-        if (connectedChatBlocks.size == 1) {
-            Log.d(TAG, "This chatBlock is not connected to others")
-            val chatBlockFromDb = connectedChatBlocks[0]
-            Log.d(TAG, "chatBlockFromDb.oldestMessageId: " + chatBlockFromDb.oldestMessageId)
-            Log.d(TAG, "chatBlockFromDb.newestMessageId: " + chatBlockFromDb.newestMessageId)
-        } else if (connectedChatBlocks.size > 1) {
-            Log.d(TAG, "Found " + connectedChatBlocks.size + " chat blocks that are connected")
-            val oldestIdFromDbChatBlocks =
-                connectedChatBlocks.minByOrNull { it.oldestMessageId }!!.oldestMessageId
-            val newestIdFromDbChatBlocks =
-                connectedChatBlocks.maxByOrNull { it.newestMessageId }!!.newestMessageId
-
-            val hasNoHistory = connectedChatBlocks.any { !it.hasHistory }
-            val hasHistory = !hasNoHistory
-            Log.d(TAG, "hasHistory = $hasHistory")
-
-            val newChatBlock = ChatBlockEntity(
-                internalConversationId = target.internalConversationId,
-                accountId = target.accountId,
-                token = target.roomToken,
-                threadId = target.threadId,
-                oldestMessageId = oldestIdFromDbChatBlocks,
-                newestMessageId = newestIdFromDbChatBlocks,
-                hasHistory = hasHistory
-            )
-            chatBlocksDao.replaceConnectedChatBlocks(connectedChatBlocks, newChatBlock)
-            Log.d(TAG, "A new chat block was created that covers all the range of the found chatblocks")
-            Log.d(TAG, "new chatBlock - oldest MessageId: $oldestIdFromDbChatBlocks")
-            Log.d(TAG, "new chatBlock - newest MessageId: $newestIdFromDbChatBlocks")
-        } else {
-            Log.d(TAG, "No chat block found ....")
-        }
     }
 
     companion object {

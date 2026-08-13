@@ -139,8 +139,6 @@ class ChatMessageSyncerTest {
                 .thenReturn(42L)
             whenever(chatBlocksDao.getChatBlocksContainingMessageId(INTERNAL_CONVERSATION_ID, null, 42L))
                 .thenReturn(flowOf(listOf(existingBlock)))
-            whenever(chatBlocksDao.getConnectedChatBlocks(eq(INTERNAL_CONVERSATION_ID), eq(null), any(), any()))
-                .thenReturn(flowOf(listOf(existingBlock)))
             wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
                 .thenReturn(Response.success(overall(message(43), message(44))))
 
@@ -158,7 +156,7 @@ class ChatMessageSyncerTest {
             assertEquals(0, fieldMapCaptor.firstValue["markNotificationsAsRead"])
 
             val blockCaptor = argumentCaptor<ChatBlockEntity>()
-            verifyBlocking(chatBlocksDao) { upsertChatBlock(blockCaptor.capture()) }
+            verifyBlocking(chatBlocksDao) { upsertAndMergeConnectedChatBlocks(blockCaptor.capture()) }
             assertEquals(10L, blockCaptor.firstValue.oldestMessageId)
             assertEquals(44L, blockCaptor.firstValue.newestMessageId)
         }
@@ -168,8 +166,6 @@ class ChatMessageSyncerTest {
         runTest {
             whenever(chatBlocksDao.getNewestMessageIdFromChatBlocks(INTERNAL_CONVERSATION_ID, null))
                 .thenReturn(0L)
-            whenever(chatBlocksDao.getConnectedChatBlocks(eq(INTERNAL_CONVERSATION_ID), eq(null), any(), any()))
-                .thenReturn(flowOf(emptyList()))
             wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
                 .thenReturn(Response.success(overall(message(1), message(2), message(3))))
 
@@ -188,7 +184,7 @@ class ChatMessageSyncerTest {
             assertEquals(0, fieldMapCaptor.firstValue["markNotificationsAsRead"])
 
             val blockCaptor = argumentCaptor<ChatBlockEntity>()
-            verifyBlocking(chatBlocksDao) { upsertChatBlock(blockCaptor.capture()) }
+            verifyBlocking(chatBlocksDao) { upsertAndMergeConnectedChatBlocks(blockCaptor.capture()) }
             assertEquals(1L, blockCaptor.firstValue.oldestMessageId)
             assertEquals(3L, blockCaptor.firstValue.newestMessageId)
         }
@@ -200,8 +196,6 @@ class ChatMessageSyncerTest {
             whenever(chatBlocksDao.getNewestMessageIdFromChatBlocks(INTERNAL_CONVERSATION_ID, null))
                 .thenReturn(42L)
             whenever(chatBlocksDao.getChatBlocksContainingMessageId(INTERNAL_CONVERSATION_ID, null, 42L))
-                .thenReturn(flowOf(listOf(existingBlock)))
-            whenever(chatBlocksDao.getConnectedChatBlocks(eq(INTERNAL_CONVERSATION_ID), eq(null), any(), any()))
                 .thenReturn(flowOf(listOf(existingBlock)))
 
             val firstFetchStarted = CompletableDeferred<Unit>()
@@ -236,13 +230,11 @@ class ChatMessageSyncerTest {
         }
 
     @Test
-    fun `pullAndPersistMessages merges connected chat blocks`() =
+    fun `pullAndPersistMessages extends the queried block and delegates the merge to the dao`() =
         runTest {
-            val connectedBlocks = listOf(block(oldest = 1, newest = 5), block(oldest = 3, newest = 44))
+            val blockOfQueriedMessage = block(oldest = 3, newest = 44)
             whenever(chatBlocksDao.getChatBlocksContainingMessageId(INTERNAL_CONVERSATION_ID, null, 42L))
-                .thenReturn(flowOf(listOf(connectedBlocks[1])))
-            whenever(chatBlocksDao.getConnectedChatBlocks(eq(INTERNAL_CONVERSATION_ID), eq(null), any(), any()))
-                .thenReturn(flowOf(connectedBlocks))
+                .thenReturn(flowOf(listOf(blockOfQueriedMessage)))
             wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
                 .thenReturn(Response.success(overall(message(43), message(44))))
 
@@ -254,10 +246,12 @@ class ChatMessageSyncerTest {
             )
             syncer.pullAndPersistMessages(target(), fieldMap)
 
-            val mergedCaptor = argumentCaptor<ChatBlockEntity>()
-            verifyBlocking(chatBlocksDao) { replaceConnectedChatBlocks(eq(connectedBlocks), mergedCaptor.capture()) }
-            assertEquals(1L, mergedCaptor.firstValue.oldestMessageId)
-            assertEquals(44L, mergedCaptor.firstValue.newestMessageId)
+            // merging with other overlapping blocks happens atomically inside the dao, the syncer
+            // only hands over the fetched range extended down to the queried block's oldest id
+            val blockCaptor = argumentCaptor<ChatBlockEntity>()
+            verifyBlocking(chatBlocksDao) { upsertAndMergeConnectedChatBlocks(blockCaptor.capture()) }
+            assertEquals(3L, blockCaptor.firstValue.oldestMessageId)
+            assertEquals(44L, blockCaptor.firstValue.newestMessageId)
         }
 
     @Test
@@ -280,7 +274,7 @@ class ChatMessageSyncerTest {
 
             assertFalse(outcome.persistedNewMessages)
             assertNull(outcome.newestPersistedMessageId)
-            verifyBlocking(chatBlocksDao, never()) { upsertChatBlock(any()) }
+            verifyBlocking(chatBlocksDao, never()) { upsertAndMergeConnectedChatBlocks(any()) }
         }
 
     @Test
@@ -315,8 +309,6 @@ class ChatMessageSyncerTest {
             val existingBlock = block(oldest = 10, newest = 42)
             whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
                 .thenReturn(flowOf(listOf(existingBlock)))
-            whenever(chatBlocksDao.getConnectedChatBlocks(eq(INTERNAL_CONVERSATION_ID), eq(null), any(), any()))
-                .thenReturn(flowOf(listOf(existingBlock)))
             wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
                 .thenReturn(
                     Response.success(overall(message(43), message(44))),
@@ -341,8 +333,6 @@ class ChatMessageSyncerTest {
         runTest {
             val existingBlock = block(oldest = 10, newest = 42)
             whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
-                .thenReturn(flowOf(listOf(existingBlock)))
-            whenever(chatBlocksDao.getConnectedChatBlocks(eq(INTERNAL_CONVERSATION_ID), eq(null), any(), any()))
                 .thenReturn(flowOf(listOf(existingBlock)))
             wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
                 .thenReturn(
@@ -377,8 +367,6 @@ class ChatMessageSyncerTest {
         runTest {
             val existingBlock = block(oldest = 10, newest = 42)
             whenever(chatBlocksDao.getChatBlocksContainingMessageId(INTERNAL_CONVERSATION_ID, null, 42L))
-                .thenReturn(flowOf(listOf(existingBlock)))
-            whenever(chatBlocksDao.getConnectedChatBlocks(eq(INTERNAL_CONVERSATION_ID), eq(null), any(), any()))
                 .thenReturn(flowOf(listOf(existingBlock)))
             wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
                 .thenReturn(Response.success(overall(message(43), message(44))))
