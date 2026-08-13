@@ -20,7 +20,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.PowerManager
 import android.os.SystemClock
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
@@ -53,7 +52,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.callnotification.CallNotificationActivity
-import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.DirectShareHelper
 import com.nextcloud.talk.data.user.model.User
@@ -138,9 +136,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     var chatNetworkDataSource: ChatNetworkDataSource? = null
         @Inject set
 
-    var chatMessageSyncer: ChatMessageSyncer? = null
-        @Inject set
-
     @Inject
     lateinit var userManager: UserManager
 
@@ -219,42 +214,19 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     /**
-     * Prefetches the pushed room's messages into the local database so they are instantly visible
-     * when the chat is opened from the notification (or later). For messages in a thread,
-     * [threadId] targets the thread so its chat block is extended. Best effort only: failures are
-     * logged and never delay or suppress the notification, which is displayed beforehand.
-     * Skipped in battery saver mode; the chat-keep-notifications capability gate and the offline
-     * check are handled inside [ChatMessageSyncer.catchUpRoom].
+     * Enqueues a [ChatMessageCatchUpWorker] that prefetches the pushed room's messages into the
+     * local database so they are instantly visible when the chat is opened from the notification
+     * (or later). For messages in a thread, [threadId] targets the thread so its chat block is
+     * extended. The worker runs independently of this one: the notification is displayed
+     * beforehand and a slow or failing fetch (retried there with backoff) can never delay it.
      */
     private fun catchUpPushedRoom(threadId: Long?) {
         val roomToken = pushMessage.id
-        val syncer = chatMessageSyncer
-        if (pushMessage.type != TYPE_CHAT || roomToken == null || syncer == null || isPowerSaveMode()) {
-            logger.d(TAG, "Skipping message catch-up for pushed room (not a chat push or battery saver active)")
+        if (pushMessage.type != TYPE_CHAT || roomToken == null) {
+            logger.d(TAG, "Skipping message catch-up for pushed room (not a chat push)")
             return
         }
-
-        // the user from the push signature verification may carry stale capabilities, so resolve
-        // the current state before the capability check in catchUpRoom
-        val currentUser = userManager.getUserWithId(user.id!!).blockingGet() ?: return
-
-        val target = ChatMessageSyncer.SyncTarget(
-            user = currentUser,
-            roomToken = roomToken,
-            threadId = threadId,
-            credentials = credentials,
-            urlForChatting = ApiUtils.getUrlForChat(CHAT_API_VERSION, currentUser.baseUrl!!, roomToken)
-        )
-        runCatching {
-            runBlocking { syncer.catchUpRoom(target) }
-        }.onFailure {
-            Log.e(TAG, "Message catch-up after push failed for room $roomToken", it)
-        }
-    }
-
-    private fun isPowerSaveMode(): Boolean {
-        val powerManager = applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
-        return powerManager.isPowerSaveMode
+        ChatMessageCatchUpWorker.enqueue(applicationContext, user.id!!, roomToken, threadId)
     }
 
     private fun handleRemoteTalkSharePushMessage() {
@@ -1250,7 +1222,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     companion object {
         val TAG: String = NotificationWorker::class.java.simpleName
         private const val TYPE_CHAT = "chat"
-        private const val CHAT_API_VERSION = 1
         private const val TYPE_ROOM = "room"
         private const val TYPE_CALL = "call"
         private const val TYPE_RECORDING = "recording"

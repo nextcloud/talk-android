@@ -87,11 +87,17 @@ class ChatMessageSyncer @Inject constructor(
         }
     }
 
+    /**
+     * [syncFailed] is true when the sync ended in a transient error (offline, failed request), so
+     * callers like a background worker can retry later. It stays false for skips that retrying
+     * would not change, e.g. a missing server capability.
+     */
     data class SyncOutcome(
         val persistedNewMessages: Boolean,
         val newestPersistedMessageId: Long?,
         val oldestPersistedMessageId: Long? = null,
-        val persistedMessageCount: Int = 0
+        val persistedMessageCount: Int = 0,
+        val syncFailed: Boolean = false
     )
 
     /**
@@ -211,7 +217,7 @@ class ChatMessageSyncer @Inject constructor(
         when {
             !networkMonitor.isOnline.value -> {
                 Log.d(TAG, "Device is offline, skipping catch-up for ${target.internalConversationId}")
-                NOTHING_SYNCED
+                SYNC_FAILED
             }
 
             !target.user.hasSpreedFeatureCapability(SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value) -> {
@@ -396,7 +402,8 @@ class ChatMessageSyncer @Inject constructor(
                     persistedNewMessages = totalCount > 0,
                     newestPersistedMessageId = newestPersisted,
                     oldestPersistedMessageId = oldestPersisted,
-                    persistedMessageCount = totalCount
+                    persistedMessageCount = totalCount,
+                    syncFailed = roundOutcome.syncFailed
                 )
             }
             anchor = nextAnchor
@@ -426,7 +433,8 @@ class ChatMessageSyncer @Inject constructor(
             persistedNewMessages = totalCount > 0 || fallbackOutcome.persistedNewMessages,
             newestPersistedMessageId = fallbackOutcome.newestPersistedMessageId,
             oldestPersistedMessageId = fallbackOutcome.oldestPersistedMessageId,
-            persistedMessageCount = fallbackOutcome.persistedMessageCount
+            persistedMessageCount = fallbackOutcome.persistedMessageCount,
+            syncFailed = fallbackOutcome.syncFailed
         )
     }
 
@@ -507,7 +515,7 @@ class ChatMessageSyncer @Inject constructor(
 
                 is ChatPullResult.Error -> {
                     Log.e(TAG, "Error pulling messages from server", result.throwable)
-                    NOTHING_SYNCED
+                    SYNC_FAILED
                 }
             }
         } finally {
@@ -869,6 +877,8 @@ class ChatMessageSyncer @Inject constructor(
         val NO_EVENTS: Events = object : Events {}
 
         private val NOTHING_SYNCED = SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null)
+        private val SYNC_FAILED =
+            SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null, syncFailed = true)
 
         private const val DEFAULT_MESSAGES_LIMIT = 100
         private const val MILLIS_PER_SECOND = 1000L

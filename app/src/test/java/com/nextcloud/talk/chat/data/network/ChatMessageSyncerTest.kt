@@ -95,13 +95,14 @@ class ChatMessageSyncerTest {
     }
 
     @Test
-    fun `catchUpRoom skips when offline`() =
+    fun `catchUpRoom skips when offline and marks the sync as failed`() =
         runTest {
             whenever(networkMonitor.isOnline).thenReturn(MutableStateFlow(false))
 
             val outcome = syncer.catchUpRoom(target())
 
             assertFalse(outcome.persistedNewMessages)
+            assertTrue(outcome.syncFailed)
             verifyNoInteractions(network)
         }
 
@@ -111,7 +112,23 @@ class ChatMessageSyncerTest {
             val outcome = syncer.catchUpRoom(target(user(withKeepNotificationsCapability = false)))
 
             assertFalse(outcome.persistedNewMessages)
+            // a missing capability is not retryable, so the skip must not count as failure
+            assertFalse(outcome.syncFailed)
             verifyNoInteractions(network)
+        }
+
+    @Test
+    fun `catchUpRoom marks the sync as failed when the server request errors`() =
+        runTest {
+            whenever(chatBlocksDao.getNewestMessageIdFromChatBlocks(INTERNAL_CONVERSATION_ID, null))
+                .thenReturn(42L)
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.error(HTTP_INTERNAL_SERVER_ERROR, "".toResponseBody()))
+
+            val outcome = syncer.catchUpRoom(target())
+
+            assertFalse(outcome.persistedNewMessages)
+            assertTrue(outcome.syncFailed)
         }
 
     @Test
@@ -499,5 +516,6 @@ class ChatMessageSyncerTest {
         private const val CREDENTIALS = "credentials"
         private const val CHAT_URL = "https://server.example.com/ocs/v2.php/apps/spreed/api/v1/chat/$ROOM_TOKEN"
         private const val HTTP_NOT_MODIFIED = 304
+        private const val HTTP_INTERNAL_SERVER_ERROR = 500
     }
 }
