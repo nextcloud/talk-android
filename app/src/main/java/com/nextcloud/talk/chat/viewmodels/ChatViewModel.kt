@@ -1796,6 +1796,18 @@ class ChatViewModel @AssistedInject constructor(
     fun advanceLocalLastReadMessageIfNeeded(messageId: Int) {
         Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, messageId: $messageId")
         Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, localLastReadMessage: $localLastReadMessage")
+
+        val newestKnownRealMessageId = _uiState.value.conversation?.lastMessage?.id
+
+        if (!isPlausibleLastReadMessageId(messageId, newestKnownRealMessageId)) {
+            logger.w(
+                TAG,
+                "advanceLocalLastReadMessageIfNeeded, messageId ($messageId) is implausibly higher than the " +
+                    "conversation's newest known message id ($newestKnownRealMessageId). We won't advance."
+            )
+            return
+        }
+
         if (localLastReadMessage < messageId && -1 < messageId) {
             Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, setting localLastReadMessage to $messageId")
             localLastReadMessage = messageId
@@ -2390,7 +2402,7 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     companion object {
-        private val TAG = ChatViewModel::class.simpleName
+        private val TAG = ChatViewModel::class.java.simpleName
         const val JOIN_ROOM_RETRY_COUNT: Long = 3
         const val HTTP_CODE_OK: Int = 200
         private const val CONVERSATION_AND_USER_FLOW_SHARING_TIMEOUT_MS = 5_000L
@@ -2406,6 +2418,11 @@ class ChatViewModel @AssistedInject constructor(
         private const val LOAD_MORE_MESSAGES_LIMIT = 100
         private const val POST_UPLOAD_FETCH_MAX_ATTEMPTS = 4
         private const val POST_UPLOAD_FETCH_RETRY_DELAY_MS = 1_500L
+
+        private const val PLAUSIBLE_MESSAGE_ID_BUFFER = 10_000L
+
+        fun isPlausibleLastReadMessageId(messageId: Int, newestKnownRealMessageId: Long?): Boolean =
+            newestKnownRealMessageId == null || messageId <= newestKnownRealMessageId + PLAUSIBLE_MESSAGE_ID_BUFFER
     }
 
     sealed class OutOfOfficeUIState {
