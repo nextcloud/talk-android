@@ -483,10 +483,7 @@ class ChatViewModel @AssistedInject constructor(
                         null
                 }
             }
-            .distinctUntilChangedBy { it.lastReadMessage }
-            .onEach {
-                println("Conversation changed: lastRead=${it.lastReadMessage}")
-            }
+            .distinctUntilChangedBy { it.lastReadMessage to it.lastCommonReadMessage }
 
     private val conversationAndUserFlow =
         combine(conversationFlow, nonNullUserFlow) { c, u -> c to u }
@@ -1057,7 +1054,7 @@ class ChatViewModel @AssistedInject constructor(
             val (conversation, capabilities) = convAndCaps
             CombinedInput(
                 messages,
-                lastCommonRead,
+                maxOf(lastCommonRead, conversation.lastCommonReadMessage),
                 parentMap,
                 conversation.lastReadMessage,
                 expandedParents,
