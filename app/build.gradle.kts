@@ -212,7 +212,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$coroutinesVersion")
 
-    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("androidx.appcompat:appcompat:1.8.0")
     implementation("com.google.android.material:material:1.14.0")
     implementation("androidx.constraintlayout:constraintlayout:2.2.2")
     implementation("androidx.emoji2:emoji2:$emojiVersion")
@@ -228,7 +228,7 @@ dependencies {
     implementation("com.github.bitfireAT:dav4jvm:2.1.3") {
         exclude(group = "org.ogce", module = "xpp3") // Android comes with its own XmlPullParser
     }
-    implementation("org.conscrypt:conscrypt-android:2.6.1")
+    implementation("org.conscrypt:conscrypt-android:2.6.2")
     implementation("com.github.nextcloud-deps:qrcodescanner:0.1.2.4") // "com.github.blikoon:QRCodeScanner:0.1.2"
 
     implementation("androidx.exifinterface:exifinterface:1.4.2")
@@ -384,7 +384,7 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.16.1")
     // conscrypt-android provides Android JNI libs only; the openjdk-uber variant bundles
     // JVM host natives so Robolectric can initialise the security provider without crashing.
-    testImplementation("org.conscrypt:conscrypt-openjdk-uber:2.6.1")
+    testImplementation("org.conscrypt:conscrypt-openjdk-uber:2.6.2")
 }
 
 tasks.register<Copy>("installGitHooks") {
