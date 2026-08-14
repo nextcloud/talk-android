@@ -25,6 +25,23 @@ interface ConversationsDao {
     @Query("SELECT * FROM Conversations where accountId = :accountId AND token = :token")
     fun getConversationForUser(accountId: Long, token: String): Flow<ConversationEntity?>
 
+    /**
+     * Applies a full room list sync atomically: left conversations are deleted and the server
+     * items are upserted in one transaction, so observers of the conversations table see a single
+     * consistent update per sync instead of intermediate states.
+     */
+    @Transaction
+    suspend fun syncConversationsForUser(
+        accountId: Long,
+        serverItems: List<ConversationEntity>,
+        conversationIdsToDelete: List<String>
+    ) {
+        if (conversationIdsToDelete.isNotEmpty()) {
+            deleteConversations(conversationIdsToDelete)
+        }
+        upsertConversations(accountId, serverItems)
+    }
+
     @Transaction
     suspend fun upsertConversations(accountId: Long, serverItems: List<ConversationEntity>) {
         serverItems.forEach { serverItem ->

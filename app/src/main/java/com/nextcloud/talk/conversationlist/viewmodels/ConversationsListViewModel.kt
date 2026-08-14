@@ -149,6 +149,10 @@ class ConversationsListViewModel @Inject constructor(
 
     val getRoomsStateFlow = repository
         .roomListFlow
+        .catch { throwable ->
+            Log.e(TAG, "Error observing the conversation list", throwable)
+            _getRoomsViewState.value = GetRoomsErrorState(throwable)
+        }
         .stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
 
     /**
@@ -711,7 +715,7 @@ class ConversationsListViewModel @Inject constructor(
         val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                repository.updateConversationLocallyAndEmit(currentUser, optimistic)
+                repository.updateConversation(optimistic)
             }
             try {
                 withContext(Dispatchers.IO) {
@@ -720,7 +724,7 @@ class ConversationsListViewModel @Inject constructor(
                 _readUnreadState.value = ConversationReadUnreadUiState.Success
             } catch (e: Exception) {
                 withContext(Dispatchers.IO) {
-                    repository.updateConversationLocallyAndEmit(currentUser, original)
+                    repository.updateConversation(original)
                 }
                 _readUnreadState.value = ConversationReadUnreadUiState.Error
             }
@@ -738,7 +742,7 @@ class ConversationsListViewModel @Inject constructor(
         val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                repository.updateConversationLocallyAndEmit(currentUser, optimistic)
+                repository.updateConversation(optimistic)
             }
             try {
                 withContext(Dispatchers.IO) {
@@ -747,7 +751,7 @@ class ConversationsListViewModel @Inject constructor(
                 _readUnreadState.value = ConversationReadUnreadUiState.Success
             } catch (e: Exception) {
                 withContext(Dispatchers.IO) {
-                    repository.updateConversationLocallyAndEmit(currentUser, original)
+                    repository.updateConversation(original)
                 }
                 _readUnreadState.value = ConversationReadUnreadUiState.Error
             }
@@ -766,7 +770,7 @@ class ConversationsListViewModel @Inject constructor(
         val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                repository.updateConversationLocallyAndEmit(currentUser, optimistic)
+                repository.updateConversation(optimistic)
             }
             try {
                 withContext(Dispatchers.IO) {
@@ -775,7 +779,7 @@ class ConversationsListViewModel @Inject constructor(
                 _favoriteState.value = FavoriteUiState.Success
             } catch (e: Exception) {
                 withContext(Dispatchers.IO) {
-                    repository.updateConversationLocallyAndEmit(currentUser, original)
+                    repository.updateConversation(original)
                 }
                 _favoriteState.value = FavoriteUiState.Error
             }
@@ -790,7 +794,7 @@ class ConversationsListViewModel @Inject constructor(
         val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                repository.updateConversationLocallyAndEmit(currentUser, optimistic)
+                repository.updateConversation(optimistic)
             }
             try {
                 withContext(Dispatchers.IO) {
@@ -799,7 +803,7 @@ class ConversationsListViewModel @Inject constructor(
                 _favoriteState.value = FavoriteUiState.Success
             } catch (e: Exception) {
                 withContext(Dispatchers.IO) {
-                    repository.updateConversationLocallyAndEmit(currentUser, original)
+                    repository.updateConversation(original)
                 }
                 _favoriteState.value = FavoriteUiState.Error
             }

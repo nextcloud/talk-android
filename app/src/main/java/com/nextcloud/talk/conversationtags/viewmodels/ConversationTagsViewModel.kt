@@ -165,7 +165,7 @@ class ConversationTagsViewModel @Inject constructor(
         replaceConversationForTagAssignment(conversation.token, optimistic)
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                repository.updateConversationLocallyAndEmit(currentUser, optimistic)
+                repository.updateConversation(optimistic)
             }
             try {
                 withContext(Dispatchers.IO) {
@@ -179,7 +179,7 @@ class ConversationTagsViewModel @Inject constructor(
             } catch (e: Exception) {
                 replaceConversationForTagAssignment(conversation.token, original)
                 withContext(Dispatchers.IO) {
-                    repository.updateConversationLocallyAndEmit(currentUser, original)
+                    repository.updateConversation(original)
                 }
                 Log.e(TAG, "Failed to assign conversation tags", e)
             }

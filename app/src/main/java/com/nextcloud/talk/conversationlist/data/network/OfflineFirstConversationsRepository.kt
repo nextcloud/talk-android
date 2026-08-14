@@ -31,10 +31,15 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -52,9 +57,25 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val chatMessageSyncer: ChatMessageSyncer,
     private val context: Context
 ) : OfflineConversationsRepository {
-    override val roomListFlow: Flow<List<ConversationModel>>
-        get() = _roomListFlow
-    private val _roomListFlow: MutableSharedFlow<List<ConversationModel>> = MutableSharedFlow()
+    private val observedAccountId = MutableStateFlow<Long?>(null)
+
+    /**
+     * The conversation list as a live view of the local database — the single source of truth.
+     * Every write to the conversations table (room list sync, background message catch-up,
+     * optimistic read state, drafts) reaches collectors reactively; [getRooms] only selects the
+     * account to observe and triggers the background sync, which stays in place as the authority
+     * and self-healing safeguard.
+     */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val roomListFlow: Flow<List<ConversationModel>> =
+        observedAccountId
+            .filterNotNull()
+            .distinctUntilChanged()
+            .flatMapLatest { accountId ->
+                dao.getConversationsForUser(accountId)
+                    .map { entities -> entities.map(ConversationEntity::toDomainModel) }
+            }
+            .distinctUntilChanged()
 
     override val conversationFlow: Flow<ConversationModel>
         get() = _conversationFlow
@@ -82,15 +103,10 @@ class OfflineFirstConversationsRepository @Inject constructor(
 
     override fun getRooms(user: User): Job =
         scope.launch {
-            val initialConversationModels = getListOfConversations(user.id!!)
-            _roomListFlow.emit(initialConversationModels)
+            observedAccountId.value = user.id!!
 
             if (networkMonitor.isOnline.value) {
-                val conversationEntitiesFromSync = getRoomsFromServer(user)
-                if (!conversationEntitiesFromSync.isNullOrEmpty()) {
-                    val conversationModelsFromSync = getListOfConversations(user.id!!)
-                    _roomListFlow.emit(conversationModelsFromSync)
-                }
+                getRoomsFromServer(user)
             }
         }
 
@@ -138,12 +154,6 @@ class OfflineFirstConversationsRepository @Inject constructor(
         dao.updateConversation(entity)
     }
 
-    override suspend fun updateConversationLocallyAndEmit(user: User, conversation: ConversationModel) {
-        dao.updateConversation(conversation.asEntity())
-        val updatedList = getListOfConversations(user.id!!)
-        _roomListFlow.emit(updatedList)
-    }
-
     override suspend fun getLocallyStoredConversation(user: User, roomToken: String): ConversationModel? {
         val id = user.id!!
         return getConversation(id, roomToken)
@@ -173,11 +183,11 @@ class OfflineFirstConversationsRepository @Inject constructor(
             val previousConversations = dao.getConversationsForUser(user.id!!).first()
                 .associateBy { it.internalId }
 
-            deleteLeftConversations(
-                user,
-                conversationsFromSync
+            dao.syncConversationsForUser(
+                accountId = user.id!!,
+                serverItems = conversationsFromSync,
+                conversationIdsToDelete = determineLeftConversationIds(previousConversations, conversationsFromSync)
             )
-            dao.upsertConversations(user.id!!, conversationsFromSync)
 
             val roomsWithNewMessages = getRoomsWithNewMessages(conversationsFromSync, previousConversations)
             scope.launch { catchUpRoomsWithNewMessages(user, roomsWithNewMessages) }
@@ -285,35 +295,27 @@ class OfflineFirstConversationsRepository @Inject constructor(
             connectivityManager.restrictBackgroundStatus == ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED
     }
 
-    private suspend fun deleteLeftConversations(user: User, conversationsFromSync: List<ConversationEntity>) {
-        val oldConversationsFromDb = dao.getConversationsForUser(user.id!!).first()
-
-        if (conversationsFromSync.isEmpty() && oldConversationsFromDb.isNotEmpty()) {
+    private fun determineLeftConversationIds(
+        previousConversations: Map<String, ConversationEntity>,
+        conversationsFromSync: List<ConversationEntity>
+    ): List<String> {
+        if (conversationsFromSync.isEmpty() && previousConversations.isNotEmpty()) {
             // A sync that suddenly contains no conversations at all is most likely a broken or
             // partial server response. Deleting the local conversations in that case would also
             // wipe their cached chat messages and chat blocks via foreign key cascade, destroying
             // the offline cache. Skip and let a later successful sync reconcile.
             Log.w(
                 TAG,
-                "Sync returned no conversations while ${oldConversationsFromDb.size} exist locally, " +
+                "Sync returned no conversations while ${previousConversations.size} exist locally, " +
                     "skipping deletion of left conversations"
             )
-            return
+            return emptyList()
         }
 
         val conversationsFromSyncIds = conversationsFromSync.map { it.internalId }.toSet()
 
-        val conversationIdsToDelete = oldConversationsFromDb
-            .map { it.internalId }
-            .filterNot { it in conversationsFromSyncIds }
-
-        dao.deleteConversations(conversationIdsToDelete)
+        return previousConversations.keys.filterNot { it in conversationsFromSyncIds }
     }
-
-    private suspend fun getListOfConversations(accountId: Long): List<ConversationModel> =
-        dao.getConversationsForUser(accountId).map {
-            it.map(ConversationEntity::toDomainModel)
-        }.first()
 
     private suspend fun getConversation(accountId: Long, token: String): ConversationModel? {
         val entity = dao.getConversationForUser(accountId, token).first()
