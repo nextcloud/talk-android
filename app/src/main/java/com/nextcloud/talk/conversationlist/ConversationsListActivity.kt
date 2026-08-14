@@ -160,7 +160,7 @@ class ConversationsListActivity : BaseActivity() {
     // Lazy list state – set from inside setContent, read from onPause
     private var conversationListLazyListState: androidx.compose.foundation.lazy.LazyListState? = null
 
-    // Ensures saved scroll position is restored only once per resume cycle, not on every room-list refresh.
+    // restored once per activity lifetime; a late scrollToItem on resume would jump the rendered list
     private var scrollPositionRestored = false
 
     private var nextUnreadConversationScrollPosition = 0
@@ -385,7 +385,6 @@ class ConversationsListActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        scrollPositionRestored = false
 
         showNotificationWarningState.value = shouldShowNotificationWarning()
         showShareToScreenState.value = hasActivityActionSendIntent()
