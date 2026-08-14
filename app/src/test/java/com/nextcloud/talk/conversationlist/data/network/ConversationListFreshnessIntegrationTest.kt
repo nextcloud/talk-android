@@ -290,6 +290,32 @@ class ConversationListFreshnessIntegrationTest {
     }
 
     @Test
+    fun `a sync cannot revert a pending archive until the server confirms it`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val repository = repository()
+        whenever(conversationsNetwork.getRooms(any(), any(), any())).thenReturn(
+            Observable.just(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0))),
+            Observable.just(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0, hasArchived = true))),
+            Observable.just(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0)))
+        )
+
+        runBlocking {
+            seedConversation(lastActivity = 12, lastReadMessage = 10, unreadMessages = 0)
+            conversationListUpdater.markPendingArchived(INTERNAL_CONVERSATION_ID, archived = true)
+            db.conversationsDao().updateConversation(conversationEntity().copy(hasArchived = true))
+
+            repository.getRooms(user).join()
+            assertTrue("stale sync must not revert the archive", conversationEntity().hasArchived)
+
+            repository.getRooms(user).join()
+            assertTrue("confirming sync must keep the archive", conversationEntity().hasArchived)
+
+            repository.getRooms(user).join()
+            assertFalse("server authority must be restored", conversationEntity().hasArchived)
+        }
+    }
+
+    @Test
     fun `room list flow reflects database writes reactively`() {
         val user = user(withKeepNotificationsCapability = false)
         val repository = OfflineFirstConversationsRepository(
@@ -332,13 +358,19 @@ class ConversationListFreshnessIntegrationTest {
             ApplicationProvider.getApplicationContext()
         )
 
-    private fun staleServerRoom(lastReadMessage: Int, unreadMessages: Int, favorite: Boolean = false): Conversation =
+    private fun staleServerRoom(
+        lastReadMessage: Int,
+        unreadMessages: Int,
+        favorite: Boolean = false,
+        hasArchived: Boolean = false
+    ): Conversation =
         Conversation(
             token = ROOM_TOKEN,
             lastActivity = 12,
             lastReadMessage = lastReadMessage,
             unreadMessages = unreadMessages,
-            favorite = favorite
+            favorite = favorite,
+            hasArchived = hasArchived
         )
 
     private suspend fun seedConversation(lastActivity: Long, lastReadMessage: Int, unreadMessages: Int) {

@@ -109,12 +109,10 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
@@ -556,6 +554,27 @@ class ConversationsListActivity : BaseActivity() {
                         conversationsListViewModel.resetFavoriteState()
                     }
                     ConversationsListViewModel.FavoriteUiState.None -> { /* no-op */ }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            conversationsListViewModel.archiveState.collect { state ->
+                when (state) {
+                    is ConversationsListViewModel.ArchiveUiState.Success -> {
+                        val messageRes = if (state.archived) {
+                            R.string.archived_conversation
+                        } else {
+                            R.string.unarchived_conversation
+                        }
+                        showSnackbar(String.format(resources.getString(messageRes), state.conversationDisplayName))
+                        conversationsListViewModel.resetArchiveState()
+                    }
+                    is ConversationsListViewModel.ArchiveUiState.Error -> {
+                        showSnackbar(resources.getString(R.string.nc_common_error_sorry))
+                        conversationsListViewModel.resetArchiveState()
+                    }
+                    ConversationsListViewModel.ArchiveUiState.None -> { /* no-op */ }
                 }
             }
         }
@@ -1173,29 +1192,8 @@ class ConversationsListActivity : BaseActivity() {
 
     @Suppress("Detekt.TooGenericExceptionCaught", "TooGenericExceptionCaught")
     private fun handleArchiving(conversation: ConversationModel) {
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser!!, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-        val url = ApiUtils.getUrlForArchive(apiVersion, currentUser?.baseUrl, conversation.token)
-        lifecycleScope.launch {
-            try {
-                if (conversation.hasArchived) {
-                    withContext(Dispatchers.IO) { ncApiCoroutines.unarchiveConversation(credentials!!, url) }
-                    fetchRooms()
-                    showSnackbar(
-                        String.format(resources.getString(R.string.unarchived_conversation), conversation.displayName)
-                    )
-                } else {
-                    withContext(Dispatchers.IO) { ncApiCoroutines.archiveConversation(credentials!!, url) }
-                    fetchRooms()
-                    showSnackbar(
-                        String.format(resources.getString(R.string.archived_conversation), conversation.displayName)
-                    )
-                }
-            } catch (e: Exception) {
-                showSnackbar(resources.getString(R.string.nc_common_error_sorry))
-            }
-        }
+        conversationsListViewModel.toggleConversationArchive(conversation)
     }
-
     private fun addConversationToFavorites(conversation: ConversationModel) {
         conversationsListViewModel.addConversationToFavorites(conversation)
     }

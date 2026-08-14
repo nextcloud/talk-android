@@ -126,6 +126,15 @@ class ConversationsListViewModel @Inject constructor(
     private val _favoriteState = MutableStateFlow<FavoriteUiState>(FavoriteUiState.None)
     val favoriteState: StateFlow<FavoriteUiState> = _favoriteState.asStateFlow()
 
+    sealed class ArchiveUiState {
+        data object None : ArchiveUiState()
+        data class Success(val archived: Boolean, val conversationDisplayName: String) : ArchiveUiState()
+        data object Error : ArchiveUiState()
+    }
+
+    private val _archiveState = MutableStateFlow<ArchiveUiState>(ArchiveUiState.None)
+    val archiveState: StateFlow<ArchiveUiState> = _archiveState.asStateFlow()
+
     object GetRoomsStartState : ViewState
     class GetRoomsErrorState(val throwable: Throwable) : ViewState
     open class GetRoomsSuccessState(val listIsNotEmpty: Boolean) : ViewState
@@ -766,6 +775,43 @@ class ConversationsListViewModel @Inject constructor(
 
     fun resetFavoriteState() {
         _favoriteState.value = FavoriteUiState.None
+    }
+
+    fun resetArchiveState() {
+        _archiveState.value = ArchiveUiState.None
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun toggleConversationArchive(conversation: ConversationModel) {
+        val original = conversation.copy()
+        val desiredArchived = !conversation.hasArchived
+        val optimistic = conversation.copy(hasArchived = desiredArchived)
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+        val url = ApiUtils.getUrlForArchive(apiVersion, currentUser.baseUrl, conversation.token)
+        viewModelScope.launch {
+            conversationListUpdater.markPendingArchived(conversation.internalId, desiredArchived)
+            withContext(Dispatchers.IO) {
+                repository.updateConversation(optimistic)
+            }
+            try {
+                withContext(Dispatchers.IO) {
+                    withRetry(1) {
+                        if (desiredArchived) {
+                            conversationsRepository.archiveConversation(credentials, url)
+                        } else {
+                            conversationsRepository.unarchiveConversation(credentials, url)
+                        }
+                    }
+                }
+                _archiveState.value = ArchiveUiState.Success(desiredArchived, conversation.displayName)
+            } catch (e: Exception) {
+                conversationListUpdater.clearPendingArchived(conversation.internalId, desiredArchived)
+                withContext(Dispatchers.IO) {
+                    repository.updateConversation(original)
+                }
+                _archiveState.value = ArchiveUiState.Error
+            }
+        }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")

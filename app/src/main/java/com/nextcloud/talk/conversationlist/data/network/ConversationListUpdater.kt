@@ -58,6 +58,11 @@ class ConversationListUpdater @Inject constructor(
     private val pendingUnreadFlags = ConcurrentHashMap<String, Boolean>()
 
     /**
+     * Archived flags applied locally but not yet confirmed by a server response.
+     */
+    private val pendingArchivedFlags = ConcurrentHashMap<String, Boolean>()
+
+    /**
      * Tag assignments applied locally but not yet confirmed by a server response.
      */
     private val pendingTagIds = ConcurrentHashMap<String, List<String>>()
@@ -89,6 +94,14 @@ class ConversationListUpdater @Inject constructor(
 
     fun clearPendingUnread(internalConversationId: String) {
         pendingUnreadFlags.remove(internalConversationId)
+    }
+
+    fun markPendingArchived(internalConversationId: String, archived: Boolean) {
+        pendingArchivedFlags[internalConversationId] = archived
+    }
+
+    fun clearPendingArchived(internalConversationId: String, archived: Boolean) {
+        pendingArchivedFlags.remove(internalConversationId, archived)
     }
 
     fun markPendingTags(internalConversationId: String, tagIds: List<String>) {
@@ -148,6 +161,7 @@ class ConversationListUpdater @Inject constructor(
             var guarded = guardPendingReadMarker(serverItem, previous)
             guarded = guardPendingUnread(guarded, previous)
             guarded = guardPendingFavorite(guarded, previous)
+            guarded = guardPendingArchived(guarded, previous)
             guarded = guardPendingTags(guarded, previous)
             guarded
         }
@@ -198,6 +212,17 @@ class ConversationListUpdater @Inject constructor(
             serverItem
         } else {
             serverItem.copy(favorite = previous.favorite)
+        }
+    }
+
+    private fun guardPendingArchived(serverItem: ConversationEntity, previous: ConversationEntity): ConversationEntity {
+        val desired = pendingArchivedFlags[serverItem.internalId] ?: return serverItem
+
+        return if (serverItem.hasArchived == desired) {
+            clearPendingArchived(serverItem.internalId, desired)
+            serverItem
+        } else {
+            serverItem.copy(hasArchived = previous.hasArchived)
         }
     }
 
