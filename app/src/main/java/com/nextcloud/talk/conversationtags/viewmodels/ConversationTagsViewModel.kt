@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
+import com.nextcloud.talk.conversationlist.data.network.ConversationListUpdater
 import com.nextcloud.talk.conversationtags.data.ConversationTagsRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -34,7 +35,8 @@ import javax.inject.Inject
 class ConversationTagsViewModel @Inject constructor(
     private val conversationTagsRepository: ConversationTagsRepository,
     private val repository: OfflineConversationsRepository,
-    private val currentUserProvider: CurrentUserProviderOld
+    private val currentUserProvider: CurrentUserProviderOld,
+    private val conversationListUpdater: ConversationListUpdater
 ) : ViewModel() {
 
     private val currentUser: User = currentUserProvider.currentUser.blockingGet()
@@ -164,6 +166,7 @@ class ConversationTagsViewModel @Inject constructor(
         val optimistic = conversation.copy(tagIds = tagIds)
         replaceConversationForTagAssignment(conversation.token, optimistic)
         viewModelScope.launch {
+            conversationListUpdater.markPendingTags(conversation.internalId, tagIds)
             withContext(Dispatchers.IO) {
                 repository.updateConversation(optimistic)
             }
@@ -177,6 +180,7 @@ class ConversationTagsViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
+                conversationListUpdater.clearPendingTags(conversation.internalId, tagIds)
                 replaceConversationForTagAssignment(conversation.token, original)
                 withContext(Dispatchers.IO) {
                     repository.updateConversation(original)

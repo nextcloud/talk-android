@@ -144,7 +144,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
                             model.hiddenUpcomingEvent = existingEntity?.hiddenUpcomingEvent
                             _conversationFlow.emit(model)
                             val previous = existingEntity?.let { mapOf(it.internalId to it) }.orEmpty()
-                            val entityList = conversationListUpdater.preserveReadStateOfPendingMarkers(
+                            val entityList = conversationListUpdater.preservePendingLocalState(
                                 previous,
                                 listOf(model.asEntity())
                             )
@@ -190,7 +190,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
 
             dao.syncConversationsForUser(
                 accountId = user.id!!,
-                serverItems = conversationListUpdater.preserveReadStateOfPendingMarkers(
+                serverItems = conversationListUpdater.preservePendingLocalState(
                     previousConversations,
                     conversationsFromSync
                 ),

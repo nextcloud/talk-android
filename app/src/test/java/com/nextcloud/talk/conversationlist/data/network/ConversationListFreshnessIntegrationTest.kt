@@ -40,6 +40,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -240,6 +242,54 @@ class ConversationListFreshnessIntegrationTest {
     }
 
     @Test
+    fun `a sync cannot revert a pending favorite until the server confirms it`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val repository = repository()
+        whenever(conversationsNetwork.getRooms(any(), any(), any())).thenReturn(
+            Observable.just(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0))),
+            Observable.just(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0, favorite = true))),
+            Observable.just(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0)))
+        )
+
+        runBlocking {
+            seedConversation(lastActivity = 12, lastReadMessage = 10, unreadMessages = 0)
+            conversationListUpdater.markPendingFavorite(INTERNAL_CONVERSATION_ID, favorite = true)
+            db.conversationsDao().updateConversation(conversationEntity().copy(favorite = true))
+
+            repository.getRooms(user).join()
+            assertTrue("stale sync must not revert the favorite", conversationEntity().favorite)
+
+            repository.getRooms(user).join()
+            assertTrue("confirming sync must keep the favorite", conversationEntity().favorite)
+
+            repository.getRooms(user).join()
+            assertFalse("server authority must be restored", conversationEntity().favorite)
+        }
+    }
+
+    @Test
+    fun `a sync cannot revert a pending mark as unread until the server confirms it`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val repository = repository()
+        whenever(conversationsNetwork.getRooms(any(), any(), any())).thenReturn(
+            Observable.just(listOf(staleServerRoom(lastReadMessage = 12, unreadMessages = 0))),
+            Observable.just(listOf(staleServerRoom(lastReadMessage = 9, unreadMessages = 3)))
+        )
+
+        runBlocking {
+            seedConversation(lastActivity = 12, lastReadMessage = 12, unreadMessages = 0)
+            conversationListUpdater.markPendingUnread(INTERNAL_CONVERSATION_ID)
+            db.conversationsDao().updateConversation(conversationEntity().copy(unreadMessages = 1))
+
+            repository.getRooms(user).join()
+            assertEquals("stale sync must not clear the unread state", 1, conversationEntity().unreadMessages)
+
+            repository.getRooms(user).join()
+            assertEquals("confirming sync must apply the server state", 3, conversationEntity().unreadMessages)
+        }
+    }
+
+    @Test
     fun `room list flow reflects database writes reactively`() {
         val user = user(withKeepNotificationsCapability = false)
         val repository = OfflineFirstConversationsRepository(
@@ -271,12 +321,24 @@ class ConversationListFreshnessIntegrationTest {
         }
     }
 
-    private fun staleServerRoom(lastReadMessage: Int, unreadMessages: Int): Conversation =
+    private fun repository(): OfflineFirstConversationsRepository =
+        OfflineFirstConversationsRepository(
+            db.conversationsDao(),
+            conversationsNetwork,
+            chatNetwork,
+            networkMonitor,
+            syncer,
+            conversationListUpdater,
+            ApplicationProvider.getApplicationContext()
+        )
+
+    private fun staleServerRoom(lastReadMessage: Int, unreadMessages: Int, favorite: Boolean = false): Conversation =
         Conversation(
             token = ROOM_TOKEN,
             lastActivity = 12,
             lastReadMessage = lastReadMessage,
-            unreadMessages = unreadMessages
+            unreadMessages = unreadMessages,
+            favorite = favorite
         )
 
     private suspend fun seedConversation(lastActivity: Long, lastReadMessage: Int, unreadMessages: Int) {

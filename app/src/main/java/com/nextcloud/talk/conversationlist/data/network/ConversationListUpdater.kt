@@ -27,6 +27,7 @@ import javax.inject.Inject
  * responses from reverting that read state. The room list sync remains the authority and
  * self-healing safeguard for everything else.
  */
+@Suppress("TooManyFunctions")
 class ConversationListUpdater @Inject constructor(
     private val chatDao: ChatMessagesDao,
     private val chatBlocksDao: ChatBlocksDao,
@@ -46,9 +47,57 @@ class ConversationListUpdater @Inject constructor(
     private val pendingReadMarkers = ConcurrentHashMap<String, Int>()
 
     /**
+     * Favorite flags applied locally but not yet confirmed by a server response; guarded in the
+     * merge like the pending read markers.
+     */
+    private val pendingFavorites = ConcurrentHashMap<String, Boolean>()
+
+    /**
+     * Rooms marked as unread from the conversation list whose server state doesn't reflect it yet.
+     */
+    private val pendingUnreadFlags = ConcurrentHashMap<String, Boolean>()
+
+    /**
+     * Tag assignments applied locally but not yet confirmed by a server response.
+     */
+    private val pendingTagIds = ConcurrentHashMap<String, List<String>>()
+
+    /**
      * The locally written but not yet server-confirmed read marker of the conversation, or null.
      */
     fun pendingReadMarker(internalConversationId: String): Int? = pendingReadMarkers[internalConversationId]
+
+    /**
+     * Registers a read marker sent from the conversation list (mark as read), so the merge guards
+     * it exactly like a marker sent from an open chat.
+     */
+    fun markPendingReadMarker(internalConversationId: String, lastReadMessage: Int) {
+        pendingReadMarkers[internalConversationId] = lastReadMessage
+    }
+
+    fun markPendingFavorite(internalConversationId: String, favorite: Boolean) {
+        pendingFavorites[internalConversationId] = favorite
+    }
+
+    fun clearPendingFavorite(internalConversationId: String, favorite: Boolean) {
+        pendingFavorites.remove(internalConversationId, favorite)
+    }
+
+    fun markPendingUnread(internalConversationId: String) {
+        pendingUnreadFlags[internalConversationId] = true
+    }
+
+    fun clearPendingUnread(internalConversationId: String) {
+        pendingUnreadFlags.remove(internalConversationId)
+    }
+
+    fun markPendingTags(internalConversationId: String, tagIds: List<String>) {
+        pendingTagIds[internalConversationId] = tagIds
+    }
+
+    fun clearPendingTags(internalConversationId: String, tagIds: List<String>) {
+        pendingTagIds.remove(internalConversationId, tagIds)
+    }
 
     /**
      * Releases a pending read marker: called when a room list sync confirmed it or when sending it
@@ -80,40 +129,88 @@ class ConversationListUpdater @Inject constructor(
     }
 
     /**
-     * Keeps provably stale read states out of the merge of server responses (the room list sync
-     * and the single-room refresh): a response computed before a concurrently sent read marker
-     * reached the server still reports the room as unread, and applying it would revert the
-     * conversation entry until the next sync. While a marker for the room is pending and the
-     * server's read state is still behind it, the local read state is kept; once the server has
-     * caught up (or moved past it, e.g. read further on another device) the marker is released
-     * and the server state applies unchanged — including a lower one, so marking as unread from
-     * another device keeps working.
+     * Keeps provably stale local-action state out of the merge of server responses (the room
+     * list sync and the single-room refresh): a response computed before a concurrently sent
+     * change — read marker, mark as unread, favorite flag, tag assignment — reached the server
+     * still reports the old state, and applying it would revert the conversation entry until the
+     * next sync. While a change for the room is pending and the server hasn't reflected it yet,
+     * the local state is kept; once the server confirms it (or moved past it, e.g. read further
+     * or unfavorited on another device after confirmation) the pending change is released and
+     * the server state applies unchanged, so the server stays the authority.
      */
-    fun preserveReadStateOfPendingMarkers(
+    fun preservePendingLocalState(
         previousConversations: Map<String, ConversationEntity>,
         conversationsFromServer: List<ConversationEntity>
     ): List<ConversationEntity> =
         conversationsFromServer.map { serverItem ->
-            val pendingMarker = pendingReadMarker(serverItem.internalId)
-                ?: return@map serverItem
             val previous = previousConversations[serverItem.internalId]
                 ?: return@map serverItem
-
-            if (serverItem.lastReadMessage < pendingMarker) {
-                Log.d(
-                    TAG,
-                    "Keeping local read state for room ${serverItem.token}: server lastRead=" +
-                        "${serverItem.lastReadMessage} is behind the pending read marker $pendingMarker"
-                )
-                serverItem.copy(
-                    lastReadMessage = previous.lastReadMessage,
-                    unreadMessages = previous.unreadMessages
-                )
-            } else {
-                clearPendingReadMarker(serverItem.internalId, pendingMarker)
-                serverItem
-            }
+            var guarded = guardPendingReadMarker(serverItem, previous)
+            guarded = guardPendingUnread(guarded, previous)
+            guarded = guardPendingFavorite(guarded, previous)
+            guarded = guardPendingTags(guarded, previous)
+            guarded
         }
+
+    private fun guardPendingReadMarker(
+        serverItem: ConversationEntity,
+        previous: ConversationEntity
+    ): ConversationEntity {
+        val pendingMarker = pendingReadMarker(serverItem.internalId) ?: return serverItem
+
+        return if (serverItem.lastReadMessage < pendingMarker) {
+            Log.d(
+                TAG,
+                "Keeping local read state for room ${serverItem.token}: server lastRead=" +
+                    "${serverItem.lastReadMessage} is behind the pending read marker $pendingMarker"
+            )
+            serverItem.copy(
+                lastReadMessage = previous.lastReadMessage,
+                unreadMessages = previous.unreadMessages
+            )
+        } else {
+            clearPendingReadMarker(serverItem.internalId, pendingMarker)
+            serverItem
+        }
+    }
+
+    private fun guardPendingUnread(serverItem: ConversationEntity, previous: ConversationEntity): ConversationEntity {
+        if (!pendingUnreadFlags.containsKey(serverItem.internalId)) {
+            return serverItem
+        }
+
+        return if (serverItem.unreadMessages > 0) {
+            clearPendingUnread(serverItem.internalId)
+            serverItem
+        } else {
+            serverItem.copy(
+                lastReadMessage = previous.lastReadMessage,
+                unreadMessages = previous.unreadMessages
+            )
+        }
+    }
+
+    private fun guardPendingFavorite(serverItem: ConversationEntity, previous: ConversationEntity): ConversationEntity {
+        val desired = pendingFavorites[serverItem.internalId] ?: return serverItem
+
+        return if (serverItem.favorite == desired) {
+            clearPendingFavorite(serverItem.internalId, desired)
+            serverItem
+        } else {
+            serverItem.copy(favorite = previous.favorite)
+        }
+    }
+
+    private fun guardPendingTags(serverItem: ConversationEntity, previous: ConversationEntity): ConversationEntity {
+        val desired = pendingTagIds[serverItem.internalId] ?: return serverItem
+
+        return if (serverItem.tagIds == desired) {
+            clearPendingTags(serverItem.internalId, desired)
+            serverItem
+        } else {
+            serverItem.copy(tagIds = previous.tagIds)
+        }
+    }
 
     /**
      * Reflects a background catch-up in the conversation list: the room's cached conversation

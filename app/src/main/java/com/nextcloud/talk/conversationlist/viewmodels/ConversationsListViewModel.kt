@@ -16,6 +16,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
+import com.nextcloud.talk.conversationlist.data.network.ConversationListUpdater
 import com.nextcloud.talk.conversationlist.ui.ConversationListEntry
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.data.InvitationsModel
@@ -77,7 +78,8 @@ class ConversationsListViewModel @Inject constructor(
     private val invitationsRepository: InvitationsRepository,
     private val arbitraryStorageManager: ArbitraryStorageManager,
     var userManager: UserManager,
-    private val conversationsRepository: ConversationsRepository
+    private val conversationsRepository: ConversationsRepository,
+    private val conversationListUpdater: ConversationListUpdater
 ) : ViewModel() {
 
     private val _currentUser = currentUserProvider.currentUser.blockingGet()
@@ -714,6 +716,7 @@ class ConversationsListViewModel @Inject constructor(
         )
         val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
+            messageId?.let { conversationListUpdater.markPendingReadMarker(conversation.internalId, it) }
             withContext(Dispatchers.IO) {
                 repository.updateConversation(optimistic)
             }
@@ -723,6 +726,7 @@ class ConversationsListViewModel @Inject constructor(
                 }
                 _readUnreadState.value = ConversationReadUnreadUiState.Success
             } catch (e: Exception) {
+                messageId?.let { conversationListUpdater.clearPendingReadMarker(conversation.internalId, it) }
                 withContext(Dispatchers.IO) {
                     repository.updateConversation(original)
                 }
@@ -741,6 +745,7 @@ class ConversationsListViewModel @Inject constructor(
         )
         val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
+            conversationListUpdater.markPendingUnread(conversation.internalId)
             withContext(Dispatchers.IO) {
                 repository.updateConversation(optimistic)
             }
@@ -750,6 +755,7 @@ class ConversationsListViewModel @Inject constructor(
                 }
                 _readUnreadState.value = ConversationReadUnreadUiState.Success
             } catch (e: Exception) {
+                conversationListUpdater.clearPendingUnread(conversation.internalId)
                 withContext(Dispatchers.IO) {
                     repository.updateConversation(original)
                 }
@@ -769,6 +775,7 @@ class ConversationsListViewModel @Inject constructor(
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
         val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
+            conversationListUpdater.markPendingFavorite(conversation.internalId, favorite = true)
             withContext(Dispatchers.IO) {
                 repository.updateConversation(optimistic)
             }
@@ -778,6 +785,7 @@ class ConversationsListViewModel @Inject constructor(
                 }
                 _favoriteState.value = FavoriteUiState.Success
             } catch (e: Exception) {
+                conversationListUpdater.clearPendingFavorite(conversation.internalId, favorite = true)
                 withContext(Dispatchers.IO) {
                     repository.updateConversation(original)
                 }
@@ -793,6 +801,7 @@ class ConversationsListViewModel @Inject constructor(
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
         val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
+            conversationListUpdater.markPendingFavorite(conversation.internalId, favorite = false)
             withContext(Dispatchers.IO) {
                 repository.updateConversation(optimistic)
             }
@@ -802,6 +811,7 @@ class ConversationsListViewModel @Inject constructor(
                 }
                 _favoriteState.value = FavoriteUiState.Success
             } catch (e: Exception) {
+                conversationListUpdater.clearPendingFavorite(conversation.internalId, favorite = false)
                 withContext(Dispatchers.IO) {
                     repository.updateConversation(original)
                 }
