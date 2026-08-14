@@ -426,6 +426,9 @@ class ChatActivity :
             val msg = chatViewModel.currentVoiceMessage?.apply {
                 voiceMessageSeekbarProgress = kotlin.math.ceil(progress).toInt()
                 voiceMessagePlayedSeconds = secondsPlayed.toInt()
+                if (controller.duration > 0) {
+                    voiceMessageDuration = (controller.duration / MILLIS_1000).toInt()
+                }
             }
 
             val currentMediaId = controller.currentMediaItem?.mediaId
@@ -1142,13 +1145,18 @@ class ChatActivity :
 
             chatViewModel.syncVoiceMessageUiState(
                 message.apply {
-                    voiceMessageDuration = getAudioDuration(filePath).toInt()
+                    voiceMessageDuration = getAudioDuration(file.absolutePath).toInt()
                 }
             )
 
             if (controller.currentMediaItem?.mediaId != currentMessageId) {
                 if (!file.exists()) {
                     downloadFileToCache(message, true) {
+                        chatViewModel.syncVoiceMessageUiState(
+                            message.apply {
+                                voiceMessageDuration = getAudioDuration(file.absolutePath).toInt()
+                            }
+                        )
                         setupAndPlay(controller, message, filePath)
                         setUpWaveform(message, file)
                     }
