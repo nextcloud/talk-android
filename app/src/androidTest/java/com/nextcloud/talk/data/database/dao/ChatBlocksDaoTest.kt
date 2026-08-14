@@ -244,7 +244,7 @@ class ChatBlocksDaoTest {
                 newestMessageId = searchedChatBlock.newestMessageId
             )
 
-            assertEquals(5, results.first().size)
+            assertEquals(5, results.size)
         }
 
     @Test
@@ -314,7 +314,7 @@ class ChatBlocksDaoTest {
                 newestMessageId = searchedChatBlock.newestMessageId
             )
 
-            assertEquals(1, resultsForThreadIdNull.first().size)
+            assertEquals(1, resultsForThreadIdNull.size)
 
             val resultsForThreadId123 = chatBlocksDao.getConnectedChatBlocks(
                 internalConversationId = conversation1.internalId,
@@ -323,7 +323,7 @@ class ChatBlocksDaoTest {
                 newestMessageId = searchedChatBlock.newestMessageId
             )
 
-            assertEquals(2, resultsForThreadId123.first().size)
+            assertEquals(2, resultsForThreadId123.size)
         }
 
     @Test
@@ -384,7 +384,7 @@ class ChatBlocksDaoTest {
                     threadId = null,
                     oldestMessageId = 10,
                     newestMessageId = 35
-                ).first()
+                )
             assertEquals(3, connectedBlocks.size)
 
             val mergedBlock = ChatBlockEntity(
@@ -412,8 +412,119 @@ class ChatBlocksDaoTest {
                     threadId = null,
                     oldestMessageId = 10,
                     newestMessageId = 40
-                ).first().size
+                ).size
             )
+        }
+
+    @Test
+    fun testUpsertAndMergeConnectedChatBlocksMergesOverlappingBlocks() =
+        runTest {
+            val user = createUserEntity("account1", "Account 1")
+            usersDao.saveUser(user)
+            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
+
+            conversationsDao.upsertConversations(
+                account1.id,
+                listOf(
+                    createConversationEntity(
+                        accountId = account1.id,
+                        token = "abc",
+                        roomName = "Conversation One"
+                    )
+                )
+            )
+
+            val conversation = conversationsDao.getConversationsForUser(account1.id).first()[0]
+
+            chatBlocksDao.upsertChatBlock(
+                ChatBlockEntity(
+                    internalConversationId = conversation.internalId,
+                    accountId = conversation.accountId,
+                    token = conversation.token,
+                    threadId = null,
+                    oldestMessageId = 10,
+                    newestMessageId = 20,
+                    hasHistory = false
+                )
+            )
+            chatBlocksDao.upsertChatBlock(
+                ChatBlockEntity(
+                    internalConversationId = conversation.internalId,
+                    accountId = conversation.accountId,
+                    token = conversation.token,
+                    threadId = null,
+                    oldestMessageId = 25,
+                    newestMessageId = 35,
+                    hasHistory = true
+                )
+            )
+
+            // the new block overlaps both existing blocks, so all three must merge into one
+            chatBlocksDao.upsertAndMergeConnectedChatBlocks(
+                ChatBlockEntity(
+                    internalConversationId = conversation.internalId,
+                    accountId = conversation.accountId,
+                    token = conversation.token,
+                    threadId = null,
+                    oldestMessageId = 18,
+                    newestMessageId = 27,
+                    hasHistory = true
+                )
+            )
+
+            val blocks = chatBlocksDao.getChatBlocksForConversation(conversation.internalId)
+            assertEquals(1, blocks.size)
+            assertEquals(10L, blocks[0].oldestMessageId)
+            assertEquals(35L, blocks[0].newestMessageId)
+            assertEquals(false, blocks[0].hasHistory)
+        }
+
+    @Test
+    fun testUpsertAndMergeConnectedChatBlocksKeepsDisjointBlocksSeparate() =
+        runTest {
+            val user = createUserEntity("account1", "Account 1")
+            usersDao.saveUser(user)
+            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
+
+            conversationsDao.upsertConversations(
+                account1.id,
+                listOf(
+                    createConversationEntity(
+                        accountId = account1.id,
+                        token = "abc",
+                        roomName = "Conversation One"
+                    )
+                )
+            )
+
+            val conversation = conversationsDao.getConversationsForUser(account1.id).first()[0]
+
+            chatBlocksDao.upsertChatBlock(
+                ChatBlockEntity(
+                    internalConversationId = conversation.internalId,
+                    accountId = conversation.accountId,
+                    token = conversation.token,
+                    threadId = null,
+                    oldestMessageId = 10,
+                    newestMessageId = 20,
+                    hasHistory = true
+                )
+            )
+
+            chatBlocksDao.upsertAndMergeConnectedChatBlocks(
+                ChatBlockEntity(
+                    internalConversationId = conversation.internalId,
+                    accountId = conversation.accountId,
+                    token = conversation.token,
+                    threadId = null,
+                    oldestMessageId = 30,
+                    newestMessageId = 40,
+                    hasHistory = true
+                )
+            )
+
+            val blocks = chatBlocksDao.getChatBlocksForConversation(conversation.internalId)
+            assertEquals(2, blocks.size)
         }
 
     private fun createUserEntity(userId: String, userName: String) =

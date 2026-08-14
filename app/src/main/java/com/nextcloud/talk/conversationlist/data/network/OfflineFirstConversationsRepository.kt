@@ -8,7 +8,11 @@
 
 package com.nextcloud.talk.conversationlist.data.network
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.os.PowerManager
 import android.util.Log
+import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.database.dao.ConversationsDao
@@ -18,7 +22,9 @@ import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
+import com.nextcloud.talk.utils.SpreedFeatures
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -30,8 +36,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import javax.inject.Inject
 import kotlin.collections.map
 
@@ -39,7 +48,9 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val dao: ConversationsDao,
     private val network: ConversationsNetworkDataSource,
     private val chatNetworkDataSource: ChatNetworkDataSource,
-    private val networkMonitor: NetworkMonitor
+    private val networkMonitor: NetworkMonitor,
+    private val chatMessageSyncer: ChatMessageSyncer,
+    private val context: Context
 ) : OfflineConversationsRepository {
     override val roomListFlow: Flow<List<ConversationModel>>
         get() = _roomListFlow
@@ -159,20 +170,132 @@ class OfflineFirstConversationsRepository @Inject constructor(
                 it.asEntity(user.id!!)
             }
 
+            val previousConversations = dao.getConversationsForUser(user.id!!).first()
+                .associateBy { it.internalId }
+
             deleteLeftConversations(
                 user,
                 conversationsFromSync
             )
             dao.upsertConversations(user.id!!, conversationsFromSync)
+
+            val roomsWithNewMessages = getRoomsWithNewMessages(conversationsFromSync, previousConversations)
+            scope.launch { catchUpRoomsWithNewMessages(user, roomsWithNewMessages) }
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong when fetching conversations", e)
         }
         return conversationsFromSync
     }
 
+    /**
+     * Determines the rooms whose messages should be caught up in the background: rooms with
+     * activity newer than the last synced state (matching the iOS behavior) plus unread rooms that
+     * have no cached messages yet (never-opened rooms).
+     */
+    private fun getRoomsWithNewMessages(
+        conversationsFromSync: List<ConversationEntity>,
+        previousConversations: Map<String, ConversationEntity>
+    ): List<ConversationEntity> =
+        conversationsFromSync.filter { room ->
+            val previous = previousConversations[room.internalId]
+            val activityAdvanced = previous == null || room.lastActivity > previous.lastActivity
+            activityAdvanced ||
+                (room.unreadMessages > 0 && !chatMessageSyncer.hasLocalChatBlock(room.internalId, null))
+        }
+
+    /**
+     * Prefetches the messages of [rooms] into the local database so they are instantly visible
+     * when a chat is opened. Runs after the room list sync; failures are logged and never affect
+     * the conversation list itself.
+     *
+     * The catch-up is skipped in battery saver mode and when background data is restricted on a
+     * metered network (mirroring the Low Power Mode guard on iOS), and is bounded to the
+     * [MAX_ROOMS_TO_CATCH_UP] most recently active rooms with [MAX_CONCURRENT_CATCH_UPS] parallel
+     * requests, so a fresh install with many rooms cannot cause an unbounded request burst.
+     */
+    private suspend fun catchUpRoomsWithNewMessages(user: User, rooms: List<ConversationEntity>) {
+        if (rooms.isEmpty() || !isCatchUpAllowed(user)) {
+            return
+        }
+
+        val credentials = ApiUtils.getCredentials(user.username, user.token) ?: return
+
+        val cappedRooms = rooms
+            .sortedByDescending { it.lastActivity }
+            .take(MAX_ROOMS_TO_CATCH_UP)
+        if (cappedRooms.size < rooms.size) {
+            Log.w(TAG, "Capping message catch-up to ${cappedRooms.size} of ${rooms.size} rooms")
+        }
+
+        Log.d(TAG, "Catching up messages for ${cappedRooms.size} rooms")
+        coroutineScope {
+            val semaphore = Semaphore(MAX_CONCURRENT_CATCH_UPS)
+            cappedRooms.forEach { room ->
+                launch {
+                    semaphore.withPermit {
+                        val target = ChatMessageSyncer.SyncTarget(
+                            user = user,
+                            roomToken = room.token,
+                            threadId = null,
+                            credentials = credentials,
+                            urlForChatting = ApiUtils.getUrlForChat(CHAT_API_VERSION, user.baseUrl!!, room.token)
+                        )
+                        runCatching { chatMessageSyncer.catchUpRoom(target) }
+                            .onFailure { Log.e(TAG, "Message catch-up failed for room ${room.token}", it) }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun isCatchUpAllowed(user: User): Boolean =
+        when {
+            !user.hasSpreedFeatureCapability(SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value) -> {
+                Log.d(TAG, "Server lacks ${SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value}, skipping message catch-up")
+                false
+            }
+
+            isPowerSaveMode() -> {
+                Log.d(TAG, "Battery saver is active, skipping message catch-up")
+                false
+            }
+
+            isBackgroundDataRestricted() -> {
+                Log.d(TAG, "Background data is restricted on a metered network, skipping message catch-up")
+                false
+            }
+
+            else -> true
+        }
+
+    private fun isPowerSaveMode(): Boolean {
+        val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        return powerManager.isPowerSaveMode
+    }
+
+    private fun isBackgroundDataRestricted(): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return connectivityManager.isActiveNetworkMetered &&
+            connectivityManager.restrictBackgroundStatus == ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED
+    }
+
     private suspend fun deleteLeftConversations(user: User, conversationsFromSync: List<ConversationEntity>) {
-        val conversationsFromSyncIds = conversationsFromSync.map { it.internalId }.toSet()
         val oldConversationsFromDb = dao.getConversationsForUser(user.id!!).first()
+
+        if (conversationsFromSync.isEmpty() && oldConversationsFromDb.isNotEmpty()) {
+            // A sync that suddenly contains no conversations at all is most likely a broken or
+            // partial server response. Deleting the local conversations in that case would also
+            // wipe their cached chat messages and chat blocks via foreign key cascade, destroying
+            // the offline cache. Skip and let a later successful sync reconcile.
+            Log.w(
+                TAG,
+                "Sync returned no conversations while ${oldConversationsFromDb.size} exist locally, " +
+                    "skipping deletion of left conversations"
+            )
+            return
+        }
+
+        val conversationsFromSyncIds = conversationsFromSync.map { it.internalId }.toSet()
 
         val conversationIdsToDelete = oldConversationsFromDb
             .map { it.internalId }
@@ -193,5 +316,8 @@ class OfflineFirstConversationsRepository @Inject constructor(
 
     companion object {
         val TAG = OfflineFirstConversationsRepository::class.simpleName
+        private const val CHAT_API_VERSION = 1
+        private const val MAX_ROOMS_TO_CATCH_UP = 20
+        private const val MAX_CONCURRENT_CATCH_UPS = 3
     }
 }

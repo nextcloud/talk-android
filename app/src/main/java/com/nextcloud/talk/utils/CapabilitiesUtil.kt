@@ -40,6 +40,7 @@ enum class SpreedFeatures(val value: String) {
     GEO_LOCATION_SHARING("geo-location-sharing"),
     TALK_POLLS("talk-polls"),
     FAVORITES("favorites"),
+    CHAT_KEEP_NOTIFICATIONS("chat-keep-notifications"),
     CHAT_READ_MARKER("chat-read-marker"),
     CHAT_UNREAD("chat-unread"),
     EDIT_MESSAGES("edit-messages"),

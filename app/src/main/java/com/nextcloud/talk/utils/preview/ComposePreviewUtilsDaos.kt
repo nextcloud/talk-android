@@ -134,6 +134,20 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
 
     override suspend fun deleteExpiredMessages(internalConversationId: String, currentTimeSecs: Long): Int = 0
 
+    override suspend fun getOldestMessageIdInRange(
+        internalConversationId: String,
+        threadId: Long?,
+        oldestMessageId: Long,
+        newestMessageId: Long
+    ): Long? = null
+
+    override suspend fun getNewestMessageIdInRange(
+        internalConversationId: String,
+        threadId: Long?,
+        oldestMessageId: Long,
+        newestMessageId: Long
+    ): Long? = null
+
     override fun getNumberOfThreadReplies(internalConversationId: String, threadId: Long): Int = 0
 }
 
@@ -260,7 +274,7 @@ class DummyConversationDaoImpl : ConversationsDao {
 }
 
 class DummyChatBlocksDaoImpl : ChatBlocksDao {
-    override fun deleteChatBlocks(blocks: List<ChatBlockEntity>) {
+    override suspend fun deleteChatBlocks(blocks: List<ChatBlockEntity>) {
         /* */
     }
 
@@ -270,12 +284,12 @@ class DummyChatBlocksDaoImpl : ChatBlocksDao {
         messageId: Long
     ): Flow<List<ChatBlockEntity>> = flowOf()
 
-    override fun getConnectedChatBlocks(
+    override suspend fun getConnectedChatBlocks(
         internalConversationId: String,
         threadId: Long?,
         oldestMessageId: Long,
         newestMessageId: Long
-    ): Flow<List<ChatBlockEntity>> = flowOf()
+    ): List<ChatBlockEntity> = emptyList()
 
     override fun getNewestMessageIdFromChatBlocks(internalConversationId: String, threadId: Long?): Long = 0L
 
@@ -288,4 +302,7 @@ class DummyChatBlocksDaoImpl : ChatBlocksDao {
     }
 
     override fun getLatestChatBlock(internalConversationId: String, threadId: Long?): Flow<ChatBlockEntity?> = flowOf()
+
+    override suspend fun getChatBlocksForConversation(internalConversationId: String): List<ChatBlockEntity> =
+        emptyList()
 }

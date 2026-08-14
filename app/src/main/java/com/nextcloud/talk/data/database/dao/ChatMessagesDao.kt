@@ -299,6 +299,40 @@ interface ChatMessagesDao {
 
     @Query(
         """
+        SELECT MIN(id)
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND isTemporary = 0
+        AND (:threadId IS NULL OR threadId = :threadId)
+        AND id BETWEEN :oldestMessageId AND :newestMessageId
+        """
+    )
+    suspend fun getOldestMessageIdInRange(
+        internalConversationId: String,
+        threadId: Long?,
+        oldestMessageId: Long,
+        newestMessageId: Long
+    ): Long?
+
+    @Query(
+        """
+        SELECT MAX(id)
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND isTemporary = 0
+        AND (:threadId IS NULL OR threadId = :threadId)
+        AND id BETWEEN :oldestMessageId AND :newestMessageId
+        """
+    )
+    suspend fun getNewestMessageIdInRange(
+        internalConversationId: String,
+        threadId: Long?,
+        oldestMessageId: Long,
+        newestMessageId: Long
+    ): Long?
+
+    @Query(
+        """
         DELETE FROM chatmessages
         WHERE internalConversationId = :internalConversationId 
         AND id < :messageId

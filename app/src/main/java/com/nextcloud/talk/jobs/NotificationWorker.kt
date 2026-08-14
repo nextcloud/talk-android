@@ -213,6 +213,22 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         getNcDataAndShowNotification(mainActivityIntent)
     }
 
+    /**
+     * Enqueues a [ChatMessageCatchUpWorker] that prefetches the pushed room's messages into the
+     * local database so they are instantly visible when the chat is opened from the notification
+     * (or later). For messages in a thread, [threadId] targets the thread so its chat block is
+     * extended. The worker runs independently of this one: the notification is displayed
+     * beforehand and a slow or failing fetch (retried there with backoff) can never delay it.
+     */
+    private fun catchUpPushedRoom(threadId: Long?) {
+        val roomToken = pushMessage.id
+        if (pushMessage.type != TYPE_CHAT || roomToken == null) {
+            logger.d(TAG, "Skipping message catch-up for pushed room (not a chat push)")
+            return
+        }
+        ChatMessageCatchUpWorker.enqueue(applicationContext, user.id!!, roomToken, threadId)
+    }
+
     private fun handleRemoteTalkSharePushMessage() {
         val mainActivityIntent = Intent(context, MainActivity::class.java)
         mainActivityIntent.flags = getIntentFlags()
@@ -490,6 +506,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                         threadId?.let { intent.putExtra(KEY_THREAD_ID, it) }
 
                         showNotification(intent, ncNotification)
+                        catchUpPushedRoom(threadId)
                     }
                 }
 
@@ -503,6 +520,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
                     setContentsFromPushNotificationSubject()
                     showNotification(intent, null)
+
+                    // without the server notification the thread id is unknown — still catch up
+                    // the room itself so the pushed message is cached for the main chat
+                    catchUpPushedRoom(threadId = null)
 
                     Log.e(TAG, "Failed to get NC notification. Using decrypted data from push notification itself", e)
                     if (BuildConfig.DEBUG) {

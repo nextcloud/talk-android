@@ -483,10 +483,7 @@ class ChatViewModel @AssistedInject constructor(
                         null
                 }
             }
-            .distinctUntilChangedBy { it.lastReadMessage }
-            .onEach {
-                println("Conversation changed: lastRead=${it.lastReadMessage}")
-            }
+            .distinctUntilChangedBy { it.lastReadMessage to it.lastCommonReadMessage }
 
     private val conversationAndUserFlow =
         combine(conversationFlow, nonNullUserFlow) { c, u -> c to u }
@@ -1057,7 +1054,7 @@ class ChatViewModel @AssistedInject constructor(
             val (conversation, capabilities) = convAndCaps
             CombinedInput(
                 messages,
-                lastCommonRead,
+                maxOf(lastCommonRead, conversation.lastCommonReadMessage),
                 parentMap,
                 conversation.lastReadMessage,
                 expandedParents,
@@ -1277,19 +1274,19 @@ class ChatViewModel @AssistedInject constructor(
 
                 chatRepository.updateConversation(conversation)
 
-                val isChatRelaySupported = withTimeoutOrNull(WEBSOCKET_CONNECT_TIMEOUT_MS) {
-                    awaitChatRelaySupport(user)
-                } ?: false
+                // The live-update mode (chat relay vs long polling) is decided in parallel: the
+                // initial load must never wait for the websocket to connect.
+                viewModelScope.launch {
+                    val isChatRelaySupported = withTimeoutOrNull(WEBSOCKET_CONNECT_TIMEOUT_MS) {
+                        awaitChatRelaySupport(user)
+                    } ?: false
+                    startMessagePolling(isChatRelaySupported)
+                }
 
                 loadInitialMessages(
                     withCredentials = credentials,
-                    withUrl = url,
-                    isChatRelaySupported = isChatRelaySupported
+                    withUrl = url
                 )
-
-                viewModelScope.launch {
-                    startMessagePolling(isChatRelaySupported)
-                }
 
                 getCapabilities(user, chatRoomToken, conversation)
             }
@@ -1712,13 +1709,12 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
-    suspend fun loadInitialMessages(withCredentials: String, withUrl: String, isChatRelaySupported: Boolean) {
+    suspend fun loadInitialMessages(withCredentials: String, withUrl: String) {
         val bundle = Bundle()
         bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
         bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
         chatRepository.loadInitialMessages(
-            withNetworkParams = bundle,
-            isChatRelaySupported = isChatRelaySupported
+            withNetworkParams = bundle
         )
     }
 

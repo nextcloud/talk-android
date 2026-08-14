@@ -31,6 +31,13 @@ object Log {
     }
 
     @JvmStatic
+    fun e(tag: String, msg: String, tr: Throwable): Int {
+        println("ERROR: $tag: $msg: $tr")
+
+        return 1
+    }
+
+    @JvmStatic
     fun i(tag: String, msg: String): Int {
         println("INFO: $tag: $msg")
 
