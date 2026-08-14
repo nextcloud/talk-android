@@ -55,6 +55,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val chatNetworkDataSource: ChatNetworkDataSource,
     private val networkMonitor: NetworkMonitor,
     private val chatMessageSyncer: ChatMessageSyncer,
+    private val conversationListUpdater: ConversationListUpdater,
     private val context: Context
 ) : OfflineConversationsRepository {
     private val observedAccountId = MutableStateFlow<Long?>(null)
@@ -143,8 +144,10 @@ class OfflineFirstConversationsRepository @Inject constructor(
                             model.hiddenUpcomingEvent = existingEntity?.hiddenUpcomingEvent
                             _conversationFlow.emit(model)
                             val previous = existingEntity?.let { mapOf(it.internalId to it) }.orEmpty()
-                            val entityList =
-                                preserveReadStateOfPendingMarkers(previous, listOf(model.asEntity()))
+                            val entityList = conversationListUpdater.preserveReadStateOfPendingMarkers(
+                                previous,
+                                listOf(model.asEntity())
+                            )
                             dao.upsertConversations(user.id!!, entityList)
                         }
                     }
@@ -187,7 +190,10 @@ class OfflineFirstConversationsRepository @Inject constructor(
 
             dao.syncConversationsForUser(
                 accountId = user.id!!,
-                serverItems = preserveReadStateOfPendingMarkers(previousConversations, conversationsFromSync),
+                serverItems = conversationListUpdater.preserveReadStateOfPendingMarkers(
+                    previousConversations,
+                    conversationsFromSync
+                ),
                 conversationIdsToDelete = determineLeftConversationIds(previousConversations, conversationsFromSync)
             )
 
@@ -296,42 +302,6 @@ class OfflineFirstConversationsRepository @Inject constructor(
         return connectivityManager.isActiveNetworkMetered &&
             connectivityManager.restrictBackgroundStatus == ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED
     }
-
-    /**
-     * Keeps provably stale read states out of the merge of server responses (the room list sync
-     * and the single-room refresh of [getRoom]): a response computed before a concurrently sent
-     * read marker reached the server still reports the room as unread, and applying it would
-     * revert the conversation entry until the next sync. While a marker for the room is pending
-     * and the server's read state is still behind it, the local read state is kept; once the
-     * server has caught up (or moved past it, e.g. read further on another device) the marker is
-     * released and the server state applies unchanged — including a lower one, so marking as
-     * unread from another device keeps working.
-     */
-    private fun preserveReadStateOfPendingMarkers(
-        previousConversations: Map<String, ConversationEntity>,
-        conversationsFromSync: List<ConversationEntity>
-    ): List<ConversationEntity> =
-        conversationsFromSync.map { serverItem ->
-            val pendingMarker = chatMessageSyncer.pendingReadMarker(serverItem.internalId)
-                ?: return@map serverItem
-            val previous = previousConversations[serverItem.internalId]
-                ?: return@map serverItem
-
-            if (serverItem.lastReadMessage < pendingMarker) {
-                Log.d(
-                    TAG,
-                    "Keeping local read state for room ${serverItem.token}: server lastRead=" +
-                        "${serverItem.lastReadMessage} is behind the pending read marker $pendingMarker"
-                )
-                serverItem.copy(
-                    lastReadMessage = previous.lastReadMessage,
-                    unreadMessages = previous.unreadMessages
-                )
-            } else {
-                chatMessageSyncer.clearPendingReadMarker(serverItem.internalId, pendingMarker)
-                serverItem
-            }
-        }
 
     private fun determineLeftConversationIds(
         previousConversations: Map<String, ConversationEntity>,

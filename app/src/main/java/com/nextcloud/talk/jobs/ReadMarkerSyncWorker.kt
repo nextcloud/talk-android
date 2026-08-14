@@ -21,8 +21,8 @@ import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.conversationlist.data.network.ConversationListUpdater
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
@@ -36,7 +36,7 @@ import javax.inject.Inject
  * The caller updates the local conversation entry optimistically before enqueuing this worker, so
  * the conversation list reflects the read state immediately. The server stays the authority:
  * every room list sync re-asserts the server's read state over the local entry — guarded by the
- * pending marker in [ChatMessageSyncer] only while the marker is provably not delivered yet.
+ * pending marker in [ConversationListUpdater] only while the marker is provably not delivered yet.
  * When all attempts fail, the pending marker is released so the client falls back to the server
  * state at the next sync instead of staying diverged. Work is unique per room with
  * [ExistingWorkPolicy.REPLACE], so the newest marker for a room always wins and retries can never
@@ -53,7 +53,7 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
     lateinit var chatNetworkDataSource: ChatNetworkDataSource
 
     @Inject
-    lateinit var chatMessageSyncer: ChatMessageSyncer
+    lateinit var conversationListUpdater: ConversationListUpdater
 
     override suspend fun doWork(): Result {
         sharedApplication!!.componentApplication.inject(this)
@@ -106,7 +106,7 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
         }
 
     private fun fail(userId: Long, roomToken: String, lastReadMessage: Int): Result {
-        chatMessageSyncer.clearPendingReadMarker("$userId@$roomToken", lastReadMessage)
+        conversationListUpdater.clearPendingReadMarker("$userId@$roomToken", lastReadMessage)
         return Result.failure()
     }
 

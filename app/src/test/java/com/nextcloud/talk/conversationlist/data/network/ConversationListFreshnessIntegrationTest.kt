@@ -64,6 +64,7 @@ class ConversationListFreshnessIntegrationTest {
 
     private lateinit var db: TalkDatabase
     private lateinit var syncer: ChatMessageSyncer
+    private lateinit var conversationListUpdater: ConversationListUpdater
 
     private val chatNetwork: ChatNetworkDataSource = mock()
     private val conversationsNetwork: ConversationsNetworkDataSource = mock()
@@ -82,12 +83,14 @@ class ConversationListFreshnessIntegrationTest {
 
         whenever(networkMonitor.isOnline).thenReturn(MutableStateFlow(true))
 
+        conversationListUpdater =
+            ConversationListUpdater(db.chatMessagesDao(), db.chatBlocksDao(), db.conversationsDao())
         syncer = ChatMessageSyncer(
             db.chatMessagesDao(),
             db.chatBlocksDao(),
-            db.conversationsDao(),
             chatNetwork,
-            networkMonitor
+            networkMonitor,
+            conversationListUpdater
         )
     }
 
@@ -137,6 +140,7 @@ class ConversationListFreshnessIntegrationTest {
             chatNetwork,
             networkMonitor,
             syncer,
+            conversationListUpdater,
             ApplicationProvider.getApplicationContext()
         )
         whenever(chatNetwork.getRoom(any(), any())).thenReturn(
@@ -150,7 +154,7 @@ class ConversationListFreshnessIntegrationTest {
 
         runBlocking {
             seedConversation(lastActivity = 12, lastReadMessage = 10, unreadMessages = 2)
-            syncer.updateLocalReadState(target(), lastReadMessage = 12)
+            conversationListUpdater.updateLocalReadState(target(), lastReadMessage = 12)
 
             repository.getRoom(user, ROOM_TOKEN).join()
             awaitUntil { conversationEntity().lastActivity == 12L }
@@ -187,11 +191,11 @@ class ConversationListFreshnessIntegrationTest {
                 )
             syncer.catchUpRoom(target(), lastReadMessage = 10, unreadMessages = 2)
 
-            syncer.updateLocalReadState(target(), lastReadMessage = 12)
+            conversationListUpdater.updateLocalReadState(target(), lastReadMessage = 12)
             assertEquals(12, conversationEntity().lastReadMessage)
             assertEquals("everything below the marker is read", 0, conversationEntity().unreadMessages)
 
-            syncer.updateLocalReadState(target(), lastReadMessage = 10)
+            conversationListUpdater.updateLocalReadState(target(), lastReadMessage = 10)
             assertEquals(10, conversationEntity().lastReadMessage)
             assertEquals("own messages must not count as unread", 1, conversationEntity().unreadMessages)
         }
@@ -206,6 +210,7 @@ class ConversationListFreshnessIntegrationTest {
             chatNetwork,
             networkMonitor,
             syncer,
+            conversationListUpdater,
             ApplicationProvider.getApplicationContext()
         )
         whenever(conversationsNetwork.getRooms(any(), any(), any())).thenReturn(
@@ -216,7 +221,7 @@ class ConversationListFreshnessIntegrationTest {
 
         runBlocking {
             seedConversation(lastActivity = 12, lastReadMessage = 10, unreadMessages = 2)
-            syncer.updateLocalReadState(target(), lastReadMessage = 12)
+            conversationListUpdater.updateLocalReadState(target(), lastReadMessage = 12)
             assertEquals(12, conversationEntity().lastReadMessage)
             assertEquals(0, conversationEntity().unreadMessages)
 
@@ -243,6 +248,7 @@ class ConversationListFreshnessIntegrationTest {
             chatNetwork,
             networkMonitor,
             syncer,
+            conversationListUpdater,
             ApplicationProvider.getApplicationContext()
         )
         whenever(conversationsNetwork.getRooms(any(), any(), any())).thenReturn(

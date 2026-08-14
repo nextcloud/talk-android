@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.util.Log
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.conversationlist.data.network.ConversationListUpdater
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.mappers.asEntity
@@ -56,7 +57,8 @@ class OfflineFirstChatRepository @Inject constructor(
     private val chatBlocksDao: ChatBlocksDao,
     private val network: ChatNetworkDataSource,
     private val networkMonitor: NetworkMonitor,
-    private val syncer: ChatMessageSyncer
+    private val syncer: ChatMessageSyncer,
+    private val conversationListUpdater: ConversationListUpdater
 ) : ChatMessageRepository {
 
     lateinit var currentUser: User
@@ -364,7 +366,7 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     override suspend fun updateLocalReadState(lastReadMessage: Int) {
-        syncer.updateLocalReadState(syncTarget, lastReadMessage)
+        conversationListUpdater.updateLocalReadState(syncTarget, lastReadMessage)
     }
 
     override suspend fun loadMoreMessages(

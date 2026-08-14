@@ -9,6 +9,7 @@ package com.nextcloud.talk.chat.data.network
 
 import android.os.Bundle
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.conversationlist.data.network.ConversationListUpdater
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
@@ -70,7 +71,14 @@ class OfflineFirstChatRepositoryTest {
             chatBlocksDao,
             network,
             networkMonitor,
-            ChatMessageSyncer(chatDao, chatBlocksDao, conversationsDao, network, networkMonitor)
+            ChatMessageSyncer(
+                chatDao,
+                chatBlocksDao,
+                network,
+                networkMonitor,
+                ConversationListUpdater(chatDao, chatBlocksDao, conversationsDao)
+            ),
+            ConversationListUpdater(chatDao, chatBlocksDao, conversationsDao)
         )
         repository.initData(user(), CREDENTIALS, CHAT_URL, ROOM_TOKEN, null)
     }
