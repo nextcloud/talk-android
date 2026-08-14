@@ -11,6 +11,7 @@ import android.os.Bundle
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
+import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
@@ -50,6 +51,7 @@ class OfflineFirstChatRepositoryTest {
     private val logger: Logger = mock()
     private val chatDao: ChatMessagesDao = mock()
     private val chatBlocksDao: ChatBlocksDao = mock()
+    private val conversationsDao: ConversationsDao = mock()
     private val network: ChatNetworkDataSource = mock()
     private val networkMonitor: NetworkMonitor = mock()
 
@@ -68,7 +70,7 @@ class OfflineFirstChatRepositoryTest {
             chatBlocksDao,
             network,
             networkMonitor,
-            ChatMessageSyncer(chatDao, chatBlocksDao, network, networkMonitor)
+            ChatMessageSyncer(chatDao, chatBlocksDao, conversationsDao, network, networkMonitor)
         )
         repository.initData(user(), CREDENTIALS, CHAT_URL, ROOM_TOKEN, null)
     }

@@ -58,6 +58,32 @@ interface ConversationsDao {
     }
 
     /**
+     * Reflects a background message catch-up in the conversation entry. A single guarded UPDATE:
+     * it only applies while the derived state is newer than the stored one ([lastActivity] guard),
+     * so a concurrently running room list sync — which stays authoritative — can never be
+     * overwritten with older data and no read-modify-write window exists. An [unreadMessages]
+     * value below zero keeps the stored count (used when the count cannot be derived locally).
+     *
+     * @return the number of updated rows: 1 when applied, 0 when the stored state was newer.
+     */
+    @Query(
+        """
+        UPDATE Conversations
+        SET lastMessage = :lastMessageJson,
+            lastActivity = :lastActivity,
+            unreadMessages = CASE WHEN :unreadMessages >= 0 THEN :unreadMessages ELSE unreadMessages END
+        WHERE internalId = :internalId
+        AND lastActivity < :lastActivity
+        """
+    )
+    suspend fun updateConversationFromCatchUp(
+        internalId: String,
+        lastMessageJson: String,
+        lastActivity: Long,
+        unreadMessages: Int
+    ): Int
+
+    /**
      * Deletes rows in the db matching the specified [conversationIds]
      */
     @Query(

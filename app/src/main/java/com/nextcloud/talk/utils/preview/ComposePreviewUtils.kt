@@ -153,6 +153,7 @@ class ComposePreviewUtils private constructor(context: Context) {
         get() = ChatMessageSyncer(
             chatMessagesDao,
             chatBlocksDao,
+            conversationsDao,
             chatNetworkDataSource,
             networkMonitor
         )

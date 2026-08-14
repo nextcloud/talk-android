@@ -145,12 +145,14 @@ class RepositoryModule {
     fun provideChatMessageSyncer(
         chatMessagesDao: ChatMessagesDao,
         chatBlocksDao: ChatBlocksDao,
+        conversationsDao: ConversationsDao,
         dataSource: ChatNetworkDataSource,
         networkMonitor: NetworkMonitor
     ): ChatMessageSyncer =
         ChatMessageSyncer(
             chatMessagesDao,
             chatBlocksDao,
+            conversationsDao,
             dataSource,
             networkMonitor
         )

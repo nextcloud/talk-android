@@ -262,11 +262,32 @@ interface ChatMessagesDao {
         threadId: Long?
     ): Flow<List<ChatMessageEntity>>
 
+    /**
+     * Counts the cached messages above [messageId] the way the server counts unread messages:
+     * spreed's ChatManager.getUnreadCount only counts the verbs 'comment' and 'object_shared',
+     * which the chat API surfaces as every messageType except 'system', 'comment_deleted',
+     * 'command' and 'reaction'. The user's own messages ([excludedActorId]) are additionally
+     * excluded: the server advances the author's read marker on every post, so own messages are
+     * never above the marker server-side — the exclusion compensates a lagging cached marker.
+     */
     @Query(
         """
-        SELECT COUNT(*) 
-        FROM ChatMessages 
-        WHERE internalConversationId = :internalConversationId 
+        SELECT COUNT(*)
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND isTemporary = 0
+        AND id > :messageId
+        AND messageType NOT IN ('system', 'comment_deleted', 'command', 'reaction')
+        AND NOT (actorType = 'users' AND actorId = :excludedActorId)
+        """
+    )
+    suspend fun countMessagesNewerThan(internalConversationId: String, messageId: Long, excludedActorId: String): Int
+
+    @Query(
+        """
+        SELECT COUNT(*)
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
         AND isTemporary = 0
         AND (:threadId IS NULL OR threadId = :threadId)
         AND id BETWEEN :newestMessageId AND :oldestMessageId
