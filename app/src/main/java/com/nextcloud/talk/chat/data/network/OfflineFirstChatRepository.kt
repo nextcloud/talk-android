@@ -363,6 +363,10 @@ class OfflineFirstChatRepository @Inject constructor(
         return outcome.persistedNewMessages
     }
 
+    override suspend fun updateLocalReadState(lastReadMessage: Int) {
+        syncer.updateLocalReadState(syncTarget, lastReadMessage)
+    }
+
     override suspend fun loadMoreMessages(
         anchorMessageId: Long,
         direction: ChatMessageRepository.LoadMoreDirection,

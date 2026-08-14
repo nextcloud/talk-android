@@ -2790,20 +2790,7 @@ class ChatActivity :
     }
 
     private fun updateRemoteLastReadMessageIfNeeded() {
-        if (this::spreedCapabilities.isInitialized) {
-            spreedCapabilities?.let {
-                val url = ApiUtils.getUrlForChatReadMarker(
-                    ApiUtils.getChatApiVersion(it, intArrayOf(ApiUtils.API_V1)),
-                    conversationUser.baseUrl!!,
-                    roomToken
-                )
-
-                chatViewModel.updateRemoteLastReadMessageIfNeeded(
-                    credentials = credentials!!,
-                    url = url
-                )
-            }
-        }
+        chatViewModel.updateRemoteLastReadMessageIfNeeded()
     }
 
     private fun isActivityNotChangingConfigurations(): Boolean = !isChangingConfigurations
@@ -3487,15 +3474,7 @@ class ChatActivity :
     }
 
     private fun markAsRead(messageId: Int) {
-        chatViewModel.setChatReadMessage(
-            credentials!!,
-            ApiUtils.getUrlForChatReadMarker(
-                ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1)),
-                conversationUser?.baseUrl!!,
-                roomToken
-            ),
-            messageId
-        )
+        chatViewModel.setChatReadMessage(messageId)
     }
 
     fun markAsUnread(chatMessage: ChatMessage) {
@@ -3510,15 +3489,7 @@ class ChatActivity :
         } else {
             0
         }
-        chatViewModel.setChatReadMessage(
-            credentials!!,
-            ApiUtils.getUrlForChatReadMarker(
-                ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1)),
-                conversationUser.baseUrl!!,
-                roomToken
-            ),
-            lastReadMessage
-        )
+        chatViewModel.setChatReadMessage(lastReadMessage)
     }
 
     fun copyMessage(message: ChatMessage?) {

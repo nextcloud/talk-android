@@ -405,6 +405,52 @@ class ChatMessageSyncer @Inject constructor(
     }
 
     /**
+     * Read markers that were written locally but whose delivery the server has not confirmed yet.
+     *
+     * A room list sync request can be answered before a marker sent at the same time reaches the
+     * server, so the sync response carries a provably stale read state — applying it would revert
+     * the conversation entry to unread until the next sync. While a marker is pending, such stale
+     * responses are kept out of the merge; the entry is only released once a sync confirms the
+     * marker (server read state caught up) or sending it ultimately failed, so the server's
+     * authority is restored either way and marking as unread from another device stays possible.
+     */
+    private val pendingReadMarkers = ConcurrentHashMap<String, Int>()
+
+    /**
+     * The locally written but not yet server-confirmed read marker of the conversation, or null.
+     */
+    fun pendingReadMarker(internalConversationId: String): Int? = pendingReadMarkers[internalConversationId]
+
+    /**
+     * Releases a pending read marker: called when a room list sync confirmed it or when sending it
+     * ultimately failed. Only removes [lastReadMessage] itself, so a newer marker written in the
+     * meantime stays pending.
+     */
+    fun clearPendingReadMarker(internalConversationId: String, lastReadMessage: Int) {
+        pendingReadMarkers.remove(internalConversationId, lastReadMessage)
+    }
+
+    /**
+     * Optimistically writes the user's read state into the conversation entry, so the
+     * conversation list reflects it immediately — before (and independent of) the read marker
+     * reaching the server. The unread count is recounted from the cached messages above the new
+     * marker. The server stays the authority: the next room list sync re-asserts its state, with
+     * [pendingReadMarkers] bridging the window until the marker's delivery is confirmed.
+     */
+    suspend fun updateLocalReadState(target: SyncTarget, lastReadMessage: Int) {
+        val conversation =
+            conversationsDao.getConversationForUser(target.accountId, target.roomToken).first() ?: return
+        val unreadMessages = chatDao.countMessagesNewerThan(
+            internalConversationId = target.internalConversationId,
+            messageId = lastReadMessage.toLong(),
+            excludedActorId = target.user.userId!!
+        )
+        pendingReadMarkers[target.internalConversationId] = lastReadMessage
+        conversationsDao.updateReadState(conversation.internalId, lastReadMessage, unreadMessages)
+        Log.d(TAG, "Local read state for room ${target.roomToken}: lastRead=$lastReadMessage, unread=$unreadMessages")
+    }
+
+    /**
      * Derives the room's unread count from the cached messages, or [UNREAD_COUNT_UNKNOWN] when it
      * cannot be derived — the count is only trustworthy when the latest chat block reaches back to
      * the last read message. Own messages don't count: sending from another device advances the

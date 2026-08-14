@@ -277,6 +277,10 @@ class DummyConversationDaoImpl : ConversationsDao {
         unreadMessages: Int
     ): Int = 0
 
+    override suspend fun updateReadState(internalId: String, lastReadMessage: Int, unreadMessages: Int) {
+        /* */
+    }
+
     override fun insertConversation(conversation: ConversationEntity) {
         /* */
     }

@@ -73,6 +73,13 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun fetchNewMessages(): Boolean
 
     /**
+     * Optimistically writes the user's read state into the local conversation entry, so the
+     * conversation list reflects it immediately. Sending the read marker to the server is the
+     * caller's concern; the next room list sync re-asserts the server state either way.
+     */
+    suspend fun updateLocalReadState(lastReadMessage: Int)
+
+    /**
      * Loads messages from local storage. If the messages are not found, then it
      * synchronizes the database with the server, before retrying exactly once. Only
      * emits to [messageFlow] if the message list is not empty.

@@ -84,6 +84,21 @@ interface ConversationsDao {
     ): Int
 
     /**
+     * Optimistically writes the user's read state for a conversation. Deliberately unguarded:
+     * marking as unread moves the read marker backwards, so a user action always wins locally —
+     * and the next room list sync re-asserts the server state either way.
+     */
+    @Query(
+        """
+        UPDATE Conversations
+        SET lastReadMessage = :lastReadMessage,
+            unreadMessages = :unreadMessages
+        WHERE internalId = :internalId
+        """
+    )
+    suspend fun updateReadState(internalId: String, lastReadMessage: Int, unreadMessages: Int)
+
+    /**
      * Deletes rows in the db matching the specified [conversationIds]
      */
     @Query(
