@@ -179,6 +179,7 @@
     <string name="nc_clear_history_warning">Do you really want to delete all messages in this conversation?</string>
     <string name="nc_client_cert_change">Change client certificate</string>
     <string name="nc_client_cert_setup">Set up client certificate</string>
+    <string name="nc_close_video_playback">Close video playback</string>
     <string name="nc_common_and">and</string>
     <string name="nc_common_copy">Copy</string>
     <string name="nc_common_copy_success">Copied to clipboard</string>
@@ -191,6 +192,9 @@
     <string name="nc_common_set">Set</string>
     <string name="nc_common_skip">Skip</string>
     <string name="nc_common_unknown">Unknown</string>
+    <string name="nc_compress_images">Compress images and videos</string>
+    <string name="nc_compress_in_progress">Compressing</string>
+    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_configure_cert_auth">Select authentication certificate</string>
     <string name="nc_confirm">Confirm</string>
     <string name="nc_connecting_call">Connecting …</string>
@@ -204,8 +208,12 @@
     <string name="nc_conversation_tags">Tags</string>
     <string name="nc_conversation_tags_create">Create</string>
     <string name="nc_conversation_tags_delete">Delete tag</string>
+    <string name="nc_conversation_tags_delete_confirm_message">This tag will be removed from all conversations it is assigned to.</string>
+    <string name="nc_conversation_tags_delete_confirm_title">Delete tag?</string>
     <string name="nc_conversation_tags_empty">No tags yet</string>
     <string name="nc_conversation_tags_error_generic">Something went wrong, please try again</string>
+    <string name="nc_conversation_tags_error_limit">You have reached the maximum number of tags</string>
+    <string name="nc_conversation_tags_error_name">This tag name is invalid or already in use</string>
     <string name="nc_conversation_tags_favorites">Favourites</string>
     <string name="nc_conversation_tags_filter_all">All</string>
     <string name="nc_conversation_tags_manage">Manage tags</string>
@@ -297,6 +305,8 @@
     <string name="nc_guest_access_resend_invitations_successful">Invitations were sent out again.</string>
     <string name="nc_guest_access_share_link">Share conversation link</string>
     <string name="nc_hint_enter_a_message">Enter a message …</string>
+    <string name="nc_hq_toggle">HQ</string>
+    <string name="nc_hq_toggle_description">High quality, no compression</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Battery optimisation is not ignored. This should be changed to make sure that notifications work in the background! Please click OK and select \"All apps\" -> %1$s and then \"Do not optimise\" or \"Allow background usage -> Unrestricted\".</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignore battery optimization</string>
     <string name="nc_important_conversation">Important conversation</string>
@@ -346,6 +356,9 @@
     <string name="nc_manual">Not set</string>
     <string name="nc_mark_as_read">Mark as read</string>
     <string name="nc_mark_as_unread">Mark as unread</string>
+    <string name="nc_media_quality_original">Original quality</string>
+    <string name="nc_media_quality_original_hint">Sending original quality uses more mobile data.</string>
+    <string name="nc_media_quality_reduced">Reduced quality</string>
     <string name="nc_meeting_ended">Meeting ended</string>
     <string name="nc_message_added_to_notes">Message added to notes</string>
     <string name="nc_message_failed">Failed to send message</string>
@@ -500,6 +513,7 @@
     <string name="nc_settings_incognito_keyboard_title">Incognito keyboard</string>
     <string name="nc_settings_logs_subtitle">View local log files</string>
     <string name="nc_settings_logs_title">Logs</string>
+    <string name="nc_settings_media_quality_title">Sent media quality</string>
     <string name="nc_settings_no_ringtone">No sound</string>
     <string name="nc_settings_no_talk_installed">Talk app is not installed on the server you tried to authenticate against</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notifications</string>
@@ -575,6 +589,7 @@
     <string name="nc_start_group_chat">Start group chat</string>
     <string name="nc_start_time">Start time</string>
     <string name="nc_switch_account">Switch account</string>
+    <string name="nc_take_video">Take a video</string>
     <string name="nc_team">Team</string>
     <string name="nc_test_push_button">Test push notifications</string>
     <string name="nc_test_results">Test results</string>
