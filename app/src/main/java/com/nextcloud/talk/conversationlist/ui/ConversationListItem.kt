@@ -43,6 +43,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -61,7 +63,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
+import coil.memory.MemoryCache
 import coil.imageLoader
+import android.graphics.drawable.BitmapDrawable
 import coil.request.ImageRequest
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
@@ -244,21 +248,35 @@ private fun ConversationAvatarImage(model: ConversationModel, currentUser: User,
                 val imageLoader = remember(avatarContent.versioned) {
                     if (avatarContent.versioned) AvatarImageLoader.get(context) else context.imageLoader
                 }
+                val aliasKey = remember(currentUser.id, model.token, isDark) {
+                    MemoryCache.Key("avatar-${currentUser.id}-${model.token}-" + if (isDark) "dark" else "light")
+                }
                 val request = remember(avatarContent.url, credentials) {
                     ImageRequest.Builder(context)
                         .data(avatarContent.url)
                         .diskCacheKey("${avatarContent.url}#v2")
                         .addHeader("Authorization", credentials)
                         .crossfade(true)
+                        .listener(
+                            onSuccess = { _, result ->
+                                (result.drawable as? BitmapDrawable)?.bitmap?.let { bitmap ->
+                                    imageLoader.memoryCache?.set(aliasKey, MemoryCache.Value(bitmap))
+                                }
+                            }
+                        )
                         .build()
                 }
+                val lastShownAvatar = remember(request) {
+                    imageLoader.memoryCache?.get(aliasKey)?.bitmap?.let { BitmapPainter(it.asImageBitmap()) }
+                }
+                val fallback = painterResource(R.drawable.account_circle_96dp)
                 AsyncImage(
                     model = request,
                     imageLoader = imageLoader,
                     contentDescription = stringResource(R.string.avatar),
                     contentScale = ContentScale.Crop,
-                    placeholder = painterResource(R.drawable.account_circle_96dp),
-                    error = painterResource(R.drawable.account_circle_96dp),
+                    placeholder = lastShownAvatar ?: fallback,
+                    error = lastShownAvatar ?: fallback,
                     modifier = modifier
                 )
             }
