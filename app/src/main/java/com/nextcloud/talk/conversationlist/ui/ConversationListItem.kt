@@ -61,6 +61,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
+import coil.imageLoader
 import coil.request.ImageRequest
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
@@ -76,6 +77,7 @@ import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.AvatarImageLoader
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.SpreedFeatures
@@ -91,44 +93,6 @@ private const val ICON_MSG_SPACING_DP = 2
 private const val UNREAD_THRESHOLD = 1000
 private const val UNREAD_BUBBLE_STROKE_DP = 1.5f
 private const val MILLIS_PER_SECOND = 1_000L
-
-private sealed class AvatarContent {
-    data class Url(val url: String) : AvatarContent()
-    data class Res(@param:DrawableRes val resId: Int) : AvatarContent()
-    object System : AvatarContent()
-    object NoteToSelf : AvatarContent()
-}
-
-private fun buildAvatarContent(model: ConversationModel, currentUser: User, isDark: Boolean): AvatarContent {
-    val avatarVersion = model.avatarVersion.takeIf { it.isNotEmpty() }
-    return when {
-        model.objectType == ConversationEnums.ObjectType.SHARE_PASSWORD ->
-            AvatarContent.Res(R.drawable.ic_circular_lock)
-
-        model.objectType == ConversationEnums.ObjectType.FILE ->
-            AvatarContent.Res(R.drawable.ic_avatar_document)
-
-        model.type == ConversationEnums.ConversationType.ROOM_SYSTEM ->
-            AvatarContent.System
-
-        model.type == ConversationEnums.ConversationType.NOTE_TO_SELF ->
-            AvatarContent.NoteToSelf
-
-        model.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ->
-            AvatarContent.Url(ApiUtils.getUrlForAvatar(currentUser.baseUrl, model.name, false, isDark))
-
-        else ->
-            AvatarContent.Url(
-                ApiUtils.getUrlForConversationAvatarWithVersion(
-                    1,
-                    currentUser.baseUrl,
-                    model.token,
-                    isDark,
-                    avatarVersion
-                )
-            )
-    }
-}
 
 /** Groups the tap callbacks for [ConversationListItem] to keep the parameter count low. */
 data class ConversationListItemCallbacks(val onClick: () -> Unit, val onLongClick: () -> Unit)
@@ -277,6 +241,9 @@ private fun ConversationAvatarImage(model: ConversationModel, currentUser: User,
             if (isInPreview) {
                 Box(modifier = modifier.background(Color.LightGray))
             } else {
+                val imageLoader = remember(avatarContent.versioned) {
+                    if (avatarContent.versioned) AvatarImageLoader.get(context) else context.imageLoader
+                }
                 val request = remember(avatarContent.url, credentials) {
                     ImageRequest.Builder(context)
                         .data(avatarContent.url)
@@ -287,6 +254,7 @@ private fun ConversationAvatarImage(model: ConversationModel, currentUser: User,
                 }
                 AsyncImage(
                     model = request,
+                    imageLoader = imageLoader,
                     contentDescription = stringResource(R.string.avatar),
                     contentScale = ContentScale.Crop,
                     placeholder = painterResource(R.drawable.account_circle_96dp),
