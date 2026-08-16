@@ -269,14 +269,13 @@ private fun ConversationAvatarImage(model: ConversationModel, currentUser: User,
                 val lastShownAvatar = remember(request) {
                     imageLoader.memoryCache?.get(aliasKey)?.bitmap?.let { BitmapPainter(it.asImageBitmap()) }
                 }
-                val fallback = painterResource(R.drawable.account_circle_96dp)
                 AsyncImage(
                     model = request,
                     imageLoader = imageLoader,
                     contentDescription = stringResource(R.string.avatar),
                     contentScale = ContentScale.Crop,
-                    placeholder = lastShownAvatar ?: fallback,
-                    error = lastShownAvatar ?: fallback,
+                    placeholder = lastShownAvatar,
+                    error = lastShownAvatar ?: painterResource(R.drawable.account_circle_96dp),
                     modifier = modifier
                 )
             }
