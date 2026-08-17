@@ -31,7 +31,10 @@ class ChatViewModelTest {
     @Test
     fun `isPlausibleLastReadMessageId returns true within the buffer above the newest known message id`() {
         assertTrue(
-            ChatViewModel.isPlausibleLastReadMessageId(messageId = 158761 + 2000, newestKnownRealMessageId = 158761L)
+            ChatViewModel.isPlausibleLastReadMessageId(
+                messageId = 158761 + 10_000,
+                newestKnownRealMessageId = 158761L
+            )
         )
     }
 
@@ -39,7 +42,7 @@ class ChatViewModelTest {
     fun `isPlausibleLastReadMessageId returns false just beyond the buffer above the newest known message id`() {
         assertFalse(
             ChatViewModel.isPlausibleLastReadMessageId(
-                messageId = 158761 + 2000 + 1,
+                messageId = 158761 + 10_000 + 1,
                 newestKnownRealMessageId = 158761L
             )
         )
