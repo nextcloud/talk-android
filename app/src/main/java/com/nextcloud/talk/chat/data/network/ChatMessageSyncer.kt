@@ -704,10 +704,6 @@ class ChatMessageSyncer @Inject constructor(
                 ChatMessage.SystemMessageType.MESSAGE_EDITED ->
                     upsertParentMessage(target, messageJson)
 
-                ChatMessage.SystemMessageType.LOBBY_NONE,
-                ChatMessage.SystemMessageType.LOBBY_NON_MODERATORS,
-                ChatMessage.SystemMessageType.LOBBY_OPEN_TO_EVERYONE -> needsRoomRefresh = true
-
                 ChatMessage.SystemMessageType.CLEARED_CHAT -> {
                     // for lookIntoFuture just deleting everything would be fine.
                     // But lets say we did not open the chat for a while and in between it was cleared.
@@ -719,16 +715,18 @@ class ChatMessageSyncer @Inject constructor(
                     chatBlocksDao.deleteChatBlocksOlderThan(target.internalConversationId, messageJson.id)
                 }
 
+                ChatMessage.SystemMessageType.LOBBY_NONE,
+                ChatMessage.SystemMessageType.LOBBY_NON_MODERATORS,
+                ChatMessage.SystemMessageType.LOBBY_OPEN_TO_EVERYONE,
                 ChatMessage.SystemMessageType.MESSAGE_PINNED,
-                ChatMessage.SystemMessageType.MESSAGE_UNPINNED -> needsRoomRefresh = true
-
+                ChatMessage.SystemMessageType.MESSAGE_UNPINNED,
                 ChatMessage.SystemMessageType.CALL_STARTED,
                 ChatMessage.SystemMessageType.CALL_ENDED,
                 ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE,
                 ChatMessage.SystemMessageType.CALL_MISSED,
                 ChatMessage.SystemMessageType.CALL_TRIED -> {
                     val messageAgeMillis = System.currentTimeMillis() - messageJson.timestamp * MILLIS_PER_SECOND
-                    if (messageAgeMillis <= CALL_REFRESH_MAX_AGE_MILLIS) {
+                    if (messageAgeMillis <= ROOM_REFRESH_MAX_AGE_MILLIS) {
                         needsRoomRefresh = true
                     }
                 }
@@ -848,7 +846,7 @@ class ChatMessageSyncer @Inject constructor(
 
         private const val DEFAULT_MESSAGES_LIMIT = 100
         private const val MILLIS_PER_SECOND = 1000L
-        private const val CALL_REFRESH_MAX_AGE_MILLIS = 3 * 60 * 60 * 1000L // 3 hours
+        private const val ROOM_REFRESH_MAX_AGE_MILLIS = 3 * 60 * 60 * 1000L // 3 hours
         private const val CATCH_UP_COOLDOWN_MILLIS = 5_000L
         private const val MAX_CATCH_UP_RUNS_PER_BURST = 3
         private const val MAX_BACKLOG_ROUNDS = 5
