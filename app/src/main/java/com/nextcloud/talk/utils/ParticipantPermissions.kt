@@ -93,5 +93,8 @@ class ParticipantPermissions(
         const val PUBLISH_SCREEN = 64
         const val CHAT = 128
         const val REACT = 256
+
+        const val DEFAULT_GROUP_PERMISSIONS =
+            JOIN_CALL or PUBLISH_AUDIO or PUBLISH_VIDEO or PUBLISH_SCREEN or CHAT or REACT
     }
 }

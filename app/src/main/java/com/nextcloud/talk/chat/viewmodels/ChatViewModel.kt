@@ -35,6 +35,7 @@ import com.nextcloud.talk.conversationlist.DirectShareHelper
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel.Companion.FOLLOWED_THREADS_EXIST
+import com.nextcloud.talk.dagger.modules.ApplicationScope
 import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.user.model.User
@@ -80,7 +81,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import com.nextcloud.talk.dagger.modules.ApplicationScope
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -493,6 +493,11 @@ class ChatViewModel @AssistedInject constructor(
                 replay = 1
             )
 
+    private val isChannelFlow: Flow<Boolean> =
+        combine(conversationAndUserFlow, spreedCapabilities) { (conversation, _), capabilities ->
+            ConversationUtils.isChannel(conversation, capabilities)
+        }.distinctUntilChanged()
+
     // ------------------------------
     // Messages
     // ------------------------------
@@ -528,10 +533,10 @@ class ChatViewModel @AssistedInject constructor(
                             .distinctUntilChanged()
                             .mapToChatMessages(user.userId!!)
                     }
-            }
-            .map { messages ->
-                messages.let(::handleSystemMessages)
-                    .let(::handleThreadMessages)
+                    .combine(isChannelFlow) { messages, isChannel ->
+                        handleSystemMessages(messages, isChannel)
+                            .let(::handleThreadMessages)
+                    }
             }
             .distinctUntilChanged()
 
@@ -1364,7 +1369,11 @@ class ChatViewModel @AssistedInject constructor(
         }
         Log.d(TAG, "fetchNewMessagesWithRetry: no new messages after $POST_UPLOAD_FETCH_MAX_ATTEMPTS attempts")
     }
-    private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
+    private fun handleSystemMessages(chatMessageList: List<ChatMessage>, isChannel: Boolean): List<ChatMessage> {
+        if (isChannel) {
+            return chatMessageList.filter { !it.isSystemMessage }
+        }
+
         fun shouldRemoveMessage(currentMessage: MutableMap.MutableEntry<Int, ChatMessage>): Boolean =
             isInfoMessageAboutDeletion(currentMessage) ||
                 isReactionsMessage(currentMessage) ||

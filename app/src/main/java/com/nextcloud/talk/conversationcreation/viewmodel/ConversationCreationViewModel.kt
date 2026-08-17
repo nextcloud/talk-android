@@ -14,15 +14,12 @@ import androidx.core.net.toFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.conversationcreation.data.ConversationCreationRepository
+import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.generic.GenericMeta
-import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl.Companion.STATUS_CODE_OK
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.ApiUtils.getRetrofitBucketForAddParticipant
-import com.nextcloud.talk.utils.ApiUtils.getRetrofitBucketForAddParticipantWithSource
+import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -96,7 +93,6 @@ class ConversationCreationViewModel @Inject constructor(
     var isConversationAvailableForRegisteredUsers = mutableStateOf(false)
     val conversationPreset = mutableStateOf("default")
     var openForGuestAppUsers = mutableStateOf(false)
-    private val addParticipantsViewState = MutableStateFlow<AddParticipantsUiState>(AddParticipantsUiState.None)
     private val allowGuestsResult = MutableStateFlow<AllowGuestsUiState>(AllowGuestsUiState.None)
     fun updateRoomName(roomName: String) {
         _roomName.value = roomName
@@ -108,6 +104,24 @@ class ConversationCreationViewModel @Inject constructor(
 
     fun updateConversationDescription(conversationDescription: String) {
         _conversationDescription.value = conversationDescription
+    }
+
+    fun updateConversationPreset(preset: String) {
+        conversationPreset.value = preset
+        when (preset) {
+            "default", "voiceroom" -> {
+                isConversationAvailableForRegisteredUsers.value = false
+                openForGuestAppUsers.value = false
+            }
+            "channel" -> {
+                isConversationAvailableForRegisteredUsers.value = true
+                openForGuestAppUsers.value = false
+            }
+            "announcement" -> {
+                isConversationAvailableForRegisteredUsers.value = false
+                openForGuestAppUsers.value = false
+            }
+        }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught", "LongMethod")
@@ -134,16 +148,24 @@ class ConversationCreationViewModel @Inject constructor(
             try {
                 val apiVersion =
                     ApiUtils.getConversationApiVersion(_currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-                val retrofitBucket: RetrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-                    version = apiVersion,
-                    baseUrl = _currentUser.baseUrl,
-                    roomType = roomType,
-                    preset = preset,
-                    conversationName = conversationName
-                )
-                val roomResult = repository.createRoom(
+                val url = ApiUtils.getUrlForRooms(apiVersion, _currentUser.baseUrl)
+                val body = CreateRoomRequest().apply {
+                    this.roomType = roomType
+                    this.roomName = conversationName
+                    this.preset = preset
+                    this.description = _conversationDescription.value
+                    this.listable = scope
+                    this.participants = convertAutocompleteUserToParticipants(participants)
+
+                    if (preset == "channel" || preset == "announcement") {
+                        this.permissions = ParticipantPermissions.DEFAULT_GROUP_PERMISSIONS and
+                            ParticipantPermissions.CHAT.inv()
+                    }
+                }
+                val roomResult = repository.createRoomWithBody(
                     credentials,
-                    retrofitBucket
+                    url,
+                    body
                 )
                 val conversation = roomResult.ocs?.data
 
@@ -151,66 +173,6 @@ class ConversationCreationViewModel @Inject constructor(
                     val token = conversation.token
                     if (token != null) {
                         try {
-                            val apiVersion = ApiUtils.getConversationApiVersion(
-                                _currentUser,
-                                intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
-                            )
-                            val url = ApiUtils.getUrlForConversationDescription(
-                                apiVersion,
-                                _currentUser.baseUrl,
-                                token
-                            )
-
-                            repository.setConversationDescription(
-                                credentials,
-                                url,
-                                token,
-                                _conversationDescription.value
-                            )
-
-                            val urlForRoomPublic = ApiUtils.getUrlForRoomPublic(
-                                apiVersion,
-                                _currentUser.baseUrl!!,
-                                token
-                            )
-                            val allowGuestResultOverall = repository.allowGuests(
-                                credentials,
-                                urlForRoomPublic,
-                                token,
-                                isGuestsAllowed.value
-                            )
-                            val statusCode: GenericMeta? = allowGuestResultOverall.ocs?.meta
-                            val result = (statusCode?.statusCode == STATUS_CODE_OK)
-                            if (result) {
-                                allowGuestsResult.value = AllowGuestsUiState.Success(result)
-                                for (participant in participants) {
-                                    if (participant.id != null) {
-                                        val retrofitBucket: RetrofitBucket = if (participant.source!! == "users") {
-                                            getRetrofitBucketForAddParticipant(
-                                                apiVersion,
-                                                _currentUser.baseUrl,
-                                                token,
-                                                participant.id!!
-                                            )
-                                        } else {
-                                            getRetrofitBucketForAddParticipantWithSource(
-                                                apiVersion,
-                                                _currentUser.baseUrl,
-                                                token,
-                                                participant.source!!,
-                                                participant.id!!
-                                            )
-                                        }
-
-                                        val participantOverall = repository.addParticipants(
-                                            credentials,
-                                            retrofitBucket
-                                        ).ocs?.data
-                                        addParticipantsViewState.value =
-                                            AddParticipantsUiState.Success(participantOverall)
-                                    }
-                                }
-                            }
                             if (_password.value.isNotEmpty()) {
                                 val url = ApiUtils.getUrlForRoomPassword(
                                     apiVersion,
@@ -255,6 +217,23 @@ class ConversationCreationViewModel @Inject constructor(
                 _isCreatingRoom.value = false
             }
         }
+    }
+
+    private fun convertAutocompleteUserToParticipants(
+        autocompleteUsers: Set<AutocompleteUser>
+    ): com.nextcloud.talk.conversationinfo.Participants {
+        val participants = com.nextcloud.talk.conversationinfo.Participants()
+        autocompleteUsers.forEach { autocompleteUser ->
+            when (autocompleteUser.source) {
+                "groups" -> participants.groups.add(autocompleteUser.id!!)
+                "emails" -> participants.emails.add(autocompleteUser.id!!)
+                "circles" -> participants.teams.add(autocompleteUser.id!!)
+                "federated" -> participants.federatedUsers.add(autocompleteUser.id!!)
+                "phones" -> participants.phones.add(autocompleteUser.id!!)
+                else -> participants.users.add(autocompleteUser.id!!)
+            }
+        }
+        return participants
     }
 
     fun getImageUri(avatarId: String, requestBigSize: Boolean, isDarkMode: Boolean): String =

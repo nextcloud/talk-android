@@ -51,8 +51,10 @@ class ConversationEnums {
         CLASSIFIED
     }
 
-    enum class Preset {
-        DEFAULT,
-        VOICE_ROOM
+    companion object {
+        const val ATTRIBUTE_IS_VOICE_ROOM = 1
+        const val ATTRIBUTE_IS_CLASSIFIED = 4
+        const val ATTRIBUTE_IS_CHANNEL = 8
+        const val ATTRIBUTE_IS_ANNOUNCEMENT = 16
     }
 }

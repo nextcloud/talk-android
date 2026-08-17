@@ -8,12 +8,12 @@ package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
 
 object ConversationUtils {
     private val TAG = ConversationUtils::class.java.simpleName
-    private const val CLASSIFIED_ATTRIBUTE_BIT = 4
 
     fun isPublic(conversation: ConversationModel): Boolean =
         ConversationEnums.ConversationType.ROOM_PUBLIC_CALL == conversation.type
@@ -60,14 +60,25 @@ object ConversationUtils {
         currentConversation != null &&
             currentConversation.type == ConversationEnums.ConversationType.NOTE_TO_SELF
 
+    private fun ConversationModel?.hasAttribute(flag: Int): Boolean =
+        this?.attributes?.let { it and flag != 0 } ?: false
+
+    fun ConversationModel?.checkIfVoiceRoom(): Boolean = hasAttribute(ConversationEnums.ATTRIBUTE_IS_VOICE_ROOM)
+    fun ConversationModel?.isClassifiedAttribute(): Boolean = hasAttribute(ConversationEnums.ATTRIBUTE_IS_CLASSIFIED)
+    fun ConversationModel?.isChannelAttribute(): Boolean = hasAttribute(ConversationEnums.ATTRIBUTE_IS_CHANNEL)
+    fun ConversationModel?.isAnnouncementAttribute(): Boolean =
+        hasAttribute(ConversationEnums.ATTRIBUTE_IS_ANNOUNCEMENT)
+
+    fun isChannel(conversation: ConversationModel?, spreedCapabilities: SpreedCapability?): Boolean =
+        conversation.isChannelAttribute() &&
+            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ANNOUNCEMENT_PRESET)
+
     fun isClassified(conversation: ConversationModel, spreedCapabilities: SpreedCapability?): Boolean =
         CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CLASSIFIED_CONVERSATIONS) &&
-            ((conversation.attributes ?: 0) and CLASSIFIED_ATTRIBUTE_BIT) != 0
+            conversation.isClassifiedAttribute()
 
-    fun isClassified(
-        conversation: com.nextcloud.talk.models.json.conversations.Conversation,
-        spreedCapabilities: SpreedCapability?
-    ): Boolean =
+    @Deprecated("Use isClassified(conversation: ConversationModel, spreedCapabilities: SpreedCapability?)")
+    fun isClassified(conversation: Conversation, spreedCapabilities: SpreedCapability?): Boolean =
         CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CLASSIFIED_CONVERSATIONS) &&
-            ((conversation.attributes ?: 0) and CLASSIFIED_ATTRIBUTE_BIT) != 0
+            ((conversation.attributes ?: 0) and ConversationEnums.ATTRIBUTE_IS_CLASSIFIED) != 0
 }
