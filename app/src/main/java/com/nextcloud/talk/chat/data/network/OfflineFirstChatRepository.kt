@@ -697,15 +697,14 @@ class OfflineFirstChatRepository @Inject constructor(
             try {
                 val currentTimeMillis = System.currentTimeMillis()
 
-                // Use the first 15 hex chars so the value always fits in a signed Long.
                 // Use referenceId.hashCode() as the placeholder id so that:
                 // 1. It is unique per file even when multiple files are selected simultaneously
                 // 2. It fits in an Int, so it survives the Long→Int cast in ChatMessageUi.id without
                 //    truncation, keeping DB lookups consistent when the message is tapped.
-                // 3. It is always positive, because getMessagesEqualOrNewerThan expects it to be larger
-                // than oldestMessageId
+                // 3. It is always negative -> sending the lastReadMessage to server checks "-1 < messageId"
+                //    to avoid temporary/placeholder messages (see createChatMessageEntity)
                 @Suppress("MagicNumber")
-                val placeholderId = (referenceId.hashCode().toLong() and 0x7FFF_FFFFL)
+                val placeholderId = -(referenceId.hashCode().toLong() and 0x7FFF_FFFFL)
 
                 Log.d(
                     TAG,
