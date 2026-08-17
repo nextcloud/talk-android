@@ -61,6 +61,7 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
             .header("Authorization", oneTimeCredentials)
             .header("OCS-APIRequest", "true")
             .header("Accept", "application/json")
+            .header("User-Agent", ApiUtils.loginUserAgent)
             .build()
 
         val newOkHttpClient = OkHttpClient()
