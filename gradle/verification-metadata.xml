@@ -37,6 +37,7 @@
          <trusted-key id="0D5D634755737A19ABBE2930D4DA5EAB3CD7E958" group="com.google.devtools.ksp" name="symbol-processing-api" version="1.7.0-1.0.6"/>
          <trusted-key id="0E225917414670F4442C250DFD533C07C264648F">
             <trusting group="androidx.activity"/>
+            <trusting group="androidx.appcompat"/>
             <trusting group="androidx.core"/>
             <trusting group="androidx.databinding"/>
             <trusting group="androidx.datastore"/>
@@ -202,6 +203,7 @@
             <trusting group="org.springframework" name="spring-framework-bom" version="5.3.32"/>
             <trusting group="org.springframework" name="spring-framework-bom" version="5.3.39"/>
          </trusted-key>
+         <trusted-key group="org.conscrypt" id="49CF4E3B2996BE658A57DD39655CCC51B9BD2C38"/>
          <trusted-key id="4A2E4BE286EDAE3ADB3A3C26C21CE653B639E41A" group="com.bluelinelabs"/>
          <trusted-key id="4BF79B8259007B566D2FCE82296CD27F60EED12C" group="com.google.crypto.tink" name="tink" version="1.7.0"/>
          <trusted-key id="4C5F68D09D42BA7FAC888DF9A929EA2321FDBF8F">
