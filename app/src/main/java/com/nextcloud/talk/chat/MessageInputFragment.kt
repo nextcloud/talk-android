@@ -8,7 +8,6 @@
 package com.nextcloud.talk.chat
 
 import android.content.res.Resources
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -48,11 +47,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
-import coil.Coil.imageLoader
 import coil.load
-import coil.request.ImageRequest
-import coil.target.Target
-import coil.transform.CircleCropTransformation
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
@@ -81,12 +76,10 @@ import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CharPolicy
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.EmojiTextInputEditText
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
@@ -107,9 +100,6 @@ class MessageInputFragment : Fragment() {
 
     @Inject
     lateinit var userManager: UserManager
-
-    @Inject
-    lateinit var currentUserProvider: CurrentUserProviderOld
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
@@ -296,45 +286,8 @@ class MessageInputFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            chatActivity.chatViewModel.lastCallSystemMessage.collect {
-                if (it.shouldShow) {
-                    binding.fragmentCallStarted.callAuthorChip.text = it.actorDisplayName
-                    val user = currentUserProvider.currentUser.blockingGet()
-                    val url: String = if (it.actorType == "guests" || it.actorType == "guest") {
-                        ApiUtils.getUrlForGuestAvatar(user!!.baseUrl!!, it.actorDisplayName, true)
-                    } else {
-                        ApiUtils.getUrlForAvatar(
-                            user!!.baseUrl!!,
-                            it.actorId,
-                            false,
-                            darkMode = DisplayUtils.isDarkModeOn(requireContext())
-                        )
-                    }
-
-                    val imageRequest: ImageRequest = ImageRequest.Builder(requireContext())
-                        .data(url)
-                        .crossfade(true)
-                        .transformations(CircleCropTransformation())
-                        .target(object : Target {
-                            override fun onStart(placeholder: Drawable?) {
-                                // unused atm
-                            }
-
-                            override fun onError(error: Drawable?) {
-                                // unused atm
-                            }
-
-                            override fun onSuccess(result: Drawable) {
-                                binding.fragmentCallStarted.callAuthorChip.chipIcon = result
-                            }
-                        })
-                        .build()
-
-                    imageLoader(requireContext()).enqueue(imageRequest)
-                    binding.fragmentCallStarted.root.visibility = View.VISIBLE
-                } else {
-                    binding.fragmentCallStarted.root.visibility = View.GONE
-                }
+            chatActivity.chatViewModel.lastCallSystemMessage.collect { hasCall ->
+                binding.fragmentCallStarted.root.visibility = if (hasCall) View.VISIBLE else View.GONE
             }
         }
     }
@@ -1193,10 +1146,6 @@ class MessageInputFragment : Fragment() {
 
         binding.fragmentCallStarted.callStartedBackground.apply {
             viewThemeUtils.talk.themeOutgoingMessageBubble(this, grouped = true, false)
-        }
-
-        binding.fragmentCallStarted.callAuthorChip.apply {
-            viewThemeUtils.material.colorChipBackground(this)
         }
 
         binding.fragmentCallStarted.callStartedCloseBtn.apply {

@@ -722,6 +722,15 @@ class ChatMessageSyncer @Inject constructor(
                 ChatMessage.SystemMessageType.MESSAGE_PINNED,
                 ChatMessage.SystemMessageType.MESSAGE_UNPINNED -> needsRoomRefresh = true
 
+                // The chat screen derives "is a call currently active" from the conversation's own
+                // hasCall flag (the server's authoritative answer) rather than from chat message
+                // history, so hasCall must be refreshed promptly whenever a call starts or ends.
+                ChatMessage.SystemMessageType.CALL_STARTED,
+                ChatMessage.SystemMessageType.CALL_ENDED,
+                ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE,
+                ChatMessage.SystemMessageType.CALL_MISSED,
+                ChatMessage.SystemMessageType.CALL_TRIED -> needsRoomRefresh = true
+
                 else -> {}
             }
         }
