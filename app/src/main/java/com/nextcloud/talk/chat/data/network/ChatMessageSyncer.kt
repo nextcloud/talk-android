@@ -67,6 +67,17 @@ class ChatMessageSyncer @Inject constructor(
     }
 
     /**
+     * A call-related system message that arrived as a genuinely new message (see [Events.onCallSystemMessage]),
+     * as opposed to one merely present in a re-loaded/paginated window of already-known history.
+     */
+    sealed interface CallSystemMessageEvent {
+        data class CallStarted(val actorDisplayName: String, val actorType: String, val actorId: String) :
+            CallSystemMessageEvent
+
+        data class CallEnded(val systemMessageType: ChatMessage.SystemMessageType) : CallSystemMessageEvent
+    }
+
+    /**
      * Side effects that only matter while a chat is on screen. Background callers can pass [NO_EVENTS].
      */
     interface Events {
@@ -83,6 +94,10 @@ class ChatMessageSyncer @Inject constructor(
         }
 
         suspend fun onIncomingMessagesFromOthers() {
+            // no-op by default
+        }
+
+        suspend fun onCallSystemMessage(event: CallSystemMessageEvent) {
             // no-op by default
         }
     }
@@ -493,10 +508,28 @@ class ChatMessageSyncer @Inject constructor(
 
             val queriedMessageId = fieldMap["lastKnownMessageId"]
             val lookIntoFuture = fieldMap["lookIntoFuture"] == 1
+            val includeLastKnown = fieldMap["includeLastKnown"] == 1
+            val requestedLimit = fieldMap["limit"] ?: DEFAULT_MESSAGES_LIMIT
+            // An unconditional "give me the newest messages" fetch (no anchor) always reaches the true
+            // current tail of the conversation, regardless of how many messages came back. Any other
+            // fetch — including a lookIntoFuture one — only reaches the tail if the server returned
+            // fewer than requested: a full page means more of a (potentially large, e.g. after the
+            // in-memory HTTP-sync anchor was lost on an app restart) backlog remains beyond this batch,
+            // so nothing in it may be trusted as reflecting live call state yet. Computed against the
+            // actual result below, in handleSuccessfulPull.
+            val unconditionalNewestFetch = includeLastKnown && queriedMessageId == null
 
             return when (val result = pullMessagesFlow(target, fieldMap).first()) {
                 is ChatPullResult.Success ->
-                    handleSuccessfulPull(target, result, queriedMessageId, lookIntoFuture, events)
+                    handleSuccessfulPull(
+                        target,
+                        result,
+                        queriedMessageId,
+                        lookIntoFuture,
+                        unconditionalNewestFetch,
+                        requestedLimit,
+                        events
+                    )
 
                 is ChatPullResult.NotModified -> {
                     Log.d(TAG, "Server returned NOT_MODIFIED, nothing to update")
@@ -523,22 +556,33 @@ class ChatMessageSyncer @Inject constructor(
         }
     }
 
+    @Suppress("LongParameterList")
     private suspend fun handleSuccessfulPull(
         target: SyncTarget,
         result: ChatPullResult.Success,
         queriedMessageId: Int?,
         lookIntoFuture: Boolean,
+        unconditionalNewestFetch: Boolean,
+        requestedLimit: Int,
         events: Events
     ): SyncOutcome {
         events.onLastCommonReadChanged(result.lastCommonRead)
 
         val hasHistory = getHasHistory(HTTP_CODE_OK, lookIntoFuture)
 
+        // A batch as large as requestedLimit means more of a (potentially large) backlog remains
+        // beyond it — e.g. the in-memory HTTP-sync anchor was lost on an app restart, so an insurance
+        // request restarts far behind and now has to crawl forward through everything in between.
+        // A call system message in such a batch is old backlog, not live state, and must not be
+        // trusted until a batch actually reaches the tail (fewer messages than requested).
+        val reflectsCurrentTail = unconditionalNewestFetch || result.messages.size < requestedLimit
+
         Log.d(
             TAG,
             "internalConv=${target.internalConversationId} statusCode=$HTTP_CODE_OK " +
                 "lookIntoFuture=$lookIntoFuture hasHistory=$hasHistory " +
-                "queriedMessageId=$queriedMessageId"
+                "queriedMessageId=$queriedMessageId reflectsCurrentTail=$reflectsCurrentTail " +
+                "batchSize=${result.messages.size} requestedLimit=$requestedLimit"
         )
 
         val blockContainingQueriedMessage: ChatBlockEntity? = getBlockOfMessage(target, queriedMessageId)
@@ -555,6 +599,7 @@ class ChatMessageSyncer @Inject constructor(
                 result.messages,
                 blockContainingQueriedMessage,
                 lookIntoFuture,
+                reflectsCurrentTail,
                 hasHistory,
                 events
             )
@@ -582,6 +627,7 @@ class ChatMessageSyncer @Inject constructor(
         chatMessagesJson: List<ChatMessageJson>,
         blockContainingQueriedMessage: ChatBlockEntity?,
         lookIntoFuture: Boolean,
+        reflectsCurrentTail: Boolean,
         hasHistory: Boolean,
         events: Events
     ): List<ChatMessageEntity> {
@@ -589,6 +635,7 @@ class ChatMessageSyncer @Inject constructor(
             target,
             chatMessagesJson,
             emitOnIncoming = lookIntoFuture,
+            reflectsCurrentTail = reflectsCurrentTail,
             events = events
         )
 
@@ -641,9 +688,10 @@ class ChatMessageSyncer @Inject constructor(
         target: SyncTarget,
         chatMessages: List<ChatMessageJson>,
         emitOnIncoming: Boolean = false,
+        reflectsCurrentTail: Boolean = emitOnIncoming,
         events: Events = NO_EVENTS
     ): List<ChatMessageEntity> {
-        handleSystemMessagesThatAffectDatabase(target, chatMessages, events)
+        handleSystemMessagesThatAffectDatabase(target, chatMessages, reflectsCurrentTail, events)
 
         val chatMessageEntities = chatMessages.map {
             it.asEntity(target.accountId)
@@ -687,6 +735,7 @@ class ChatMessageSyncer @Inject constructor(
     private suspend fun handleSystemMessagesThatAffectDatabase(
         target: SyncTarget,
         messagesJson: List<ChatMessageJson>,
+        reflectsCurrentTail: Boolean,
         events: Events
     ) {
         var needsRoomRefresh = false
@@ -726,6 +775,41 @@ class ChatMessageSyncer @Inject constructor(
             }
         }
         if (needsRoomRefresh) events.onRoomRefreshNeeded()
+
+        if (reflectsCurrentTail) {
+            reportLastDecisiveCallSystemMessage(messagesJson, events)
+        }
+    }
+
+    /**
+     * Reports only the chronologically last call-related message in [messagesJson] — never one per
+     * message in array order. The API does not guarantee ascending order across every fetch shape:
+     * an unconditional "give me the newest messages" fetch, in particular, returns newest-first, so
+     * iterating in array order and treating the last-processed message as authoritative would report
+     * the OLDEST message in the batch as the current call state. Only called when the batch is
+     * confirmed to reflect the current tail of the conversation — see [handleSuccessfulPull].
+     */
+    private suspend fun reportLastDecisiveCallSystemMessage(messagesJson: List<ChatMessageJson>, events: Events) {
+        val lastDecisiveCallMessage = messagesJson
+            .filter { it.systemMessageType in DECISIVE_CALL_SYSTEM_MESSAGE_TYPES }
+            .maxByOrNull { it.id }
+            ?: return
+
+        when (lastDecisiveCallMessage.systemMessageType) {
+            ChatMessage.SystemMessageType.CALL_STARTED ->
+                events.onCallSystemMessage(
+                    CallSystemMessageEvent.CallStarted(
+                        actorDisplayName = lastDecisiveCallMessage.actorDisplayName.orEmpty(),
+                        actorType = lastDecisiveCallMessage.actorType.orEmpty(),
+                        actorId = lastDecisiveCallMessage.actorId.orEmpty()
+                    )
+                )
+
+            else ->
+                events.onCallSystemMessage(
+                    CallSystemMessageEvent.CallEnded(lastDecisiveCallMessage.systemMessageType!!)
+                )
+        }
     }
 
     // the parent message is always the newest state, no matter how old the system message is.
@@ -830,6 +914,14 @@ class ChatMessageSyncer @Inject constructor(
         val TAG: String = ChatMessageSyncer::class.java.simpleName
 
         val NO_EVENTS: Events = object : Events {}
+
+        private val DECISIVE_CALL_SYSTEM_MESSAGE_TYPES = setOf(
+            ChatMessage.SystemMessageType.CALL_STARTED,
+            ChatMessage.SystemMessageType.CALL_ENDED,
+            ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE,
+            ChatMessage.SystemMessageType.CALL_MISSED,
+            ChatMessage.SystemMessageType.CALL_TRIED
+        )
 
         private val NOTHING_SYNCED = SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null)
         private val SYNC_FAILED =

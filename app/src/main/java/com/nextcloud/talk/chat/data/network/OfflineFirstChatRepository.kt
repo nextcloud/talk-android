@@ -108,6 +108,12 @@ class OfflineFirstChatRepository @Inject constructor(
 
     private val _incomingMessageFlow: MutableSharedFlow<Unit> = MutableSharedFlow()
 
+    override val callSystemMessageFlow: Flow<ChatMessageSyncer.CallSystemMessageEvent>
+        get() = _callSystemMessageFlow
+
+    private val _callSystemMessageFlow:
+        MutableSharedFlow<ChatMessageSyncer.CallSystemMessageEvent> = MutableSharedFlow(extraBufferCapacity = 4)
+
     override val isLoadingFlow: Flow<Boolean>
         get() = _isLoadingFlow
 
@@ -170,6 +176,10 @@ class OfflineFirstChatRepository @Inject constructor(
 
         override suspend fun onIncomingMessagesFromOthers() {
             _incomingMessageFlow.emit(Unit)
+        }
+
+        override suspend fun onCallSystemMessage(event: ChatMessageSyncer.CallSystemMessageEvent) {
+            _callSystemMessageFlow.emit(event)
         }
     }
 
@@ -783,7 +793,12 @@ class OfflineFirstChatRepository @Inject constructor(
         chatMessages: List<ChatMessageJson>,
         emitOnIncoming: Boolean = false
     ): List<ChatMessageEntity> =
-        syncer.persistChatMessagesAndHandleSystemMessages(syncTarget, chatMessages, emitOnIncoming, syncEvents)
+        syncer.persistChatMessagesAndHandleSystemMessages(
+            target = syncTarget,
+            chatMessages = chatMessages,
+            emitOnIncoming = emitOnIncoming,
+            events = syncEvents
+        )
 
     override fun observeLatestMessages(internalConversationId: String): Flow<List<ChatMessageEntity>> =
         chatBlocksDao

@@ -10,6 +10,7 @@ package com.nextcloud.talk.chat.data
 import android.os.Bundle
 import com.nextcloud.talk.chat.data.io.LifecycleAwareManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -43,6 +44,13 @@ interface ChatMessageRepository : LifecycleAwareManager {
     val roomRefreshFlow: Flow<Unit>
 
     val incomingMessageFlow: Flow<Unit>
+
+    /**
+     * Emits only for call-related system messages that just genuinely arrived (long poll, chat
+     * relay/signaling, insurance request) — never for one merely present in a re-loaded/paginated
+     * window of already-known history. See [ChatMessageSyncer.Events.onCallSystemMessage].
+     */
+    val callSystemMessageFlow: Flow<ChatMessageSyncer.CallSystemMessageEvent>
 
     val isLoadingFlow: Flow<Boolean>
 

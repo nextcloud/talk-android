@@ -25,6 +25,7 @@ import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
@@ -565,6 +566,7 @@ class ChatViewModel @AssistedInject constructor(
         observePinnedMessage()
         observeRoomRefresh()
         observeIncomingMessages()
+        observeCallSystemMessages()
     }
 
     fun enterSearchMode() {
@@ -1023,16 +1025,9 @@ class ChatViewModel @AssistedInject constructor(
         val shouldShow: Boolean
     )
 
-    private val _lastCallSystemMessage = MutableStateFlow<ChatMessage?>(null)
+    private val _lastCallSystemMessage = MutableStateFlow<CallStartedIndicatorData?>(null)
 
-    val lastCallSystemMessage = _lastCallSystemMessage.map { msg ->
-        CallStartedIndicatorData(
-            msg?.actorDisplayName ?: "",
-            msg?.actorType ?: "",
-            msg?.actorId ?: "",
-            msg != null
-        )
-    }
+    val lastCallSystemMessage = _lastCallSystemMessage.map { it ?: CallStartedIndicatorData("", "", "", false) }
 
     private val _callEndedSystemMessage = MutableSharedFlow<ChatMessage.SystemMessageType>(extraBufferCapacity = 1)
     val callEndedSystemMessage: SharedFlow<ChatMessage.SystemMessageType>
@@ -1375,20 +1370,7 @@ class ChatViewModel @AssistedInject constructor(
         val chatMessageMap = chatMessageList.associateBy { it.jsonMessageId }.toMutableMap()
         val chatMessageIterator = chatMessageMap.iterator()
 
-        chatMessageList.lastOrNull {
-            it.systemMessageType in
-                listOf(
-                    ChatMessage.SystemMessageType.CALL_STARTED,
-                    ChatMessage.SystemMessageType.CALL_JOINED,
-                    ChatMessage.SystemMessageType.CALL_LEFT,
-                    ChatMessage.SystemMessageType.CALL_ENDED,
-                    ChatMessage.SystemMessageType.CALL_TRIED,
-                    ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE,
-                    ChatMessage.SystemMessageType.CALL_MISSED
-                )
-        }?.let { callMessage ->
-            processCallSystemMessage(callMessage)
-        }
+        seedInitialCallStateIfNeeded(chatMessageList)
 
         while (chatMessageIterator.hasNext()) {
             val currentMessage = chatMessageIterator.next()
@@ -1401,30 +1383,78 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     private var hasSeenInitialCallSystemMessage = false
-    private var lastNotifiedCallEndedMessageId: Int? = null
 
-    private fun processCallSystemMessage(recent: ChatMessage) {
-        val isInitialSnapshot = !hasSeenInitialCallSystemMessage
+    /**
+     * Seeds the call-started banner exactly once per opened chat, from the tail window that
+     * [messagesFlow] always emits first (before any anchor/search navigation can switch it to a
+     * bounded history window) — so a call already running when the chat is opened still shows the
+     * banner immediately, without waiting for a live event. Every later update goes exclusively
+     * through [observeCallSystemMessages]; this seed never re-runs, so it can't misfire from a
+     * history window loaded afterwards.
+     */
+    private fun seedInitialCallStateIfNeeded(chatMessageList: List<ChatMessage>) {
+        if (hasSeenInitialCallSystemMessage) {
+            return
+        }
         hasSeenInitialCallSystemMessage = true
 
-        when (recent.systemMessageType) {
-            ChatMessage.SystemMessageType.CALL_STARTED -> {
-                _lastCallSystemMessage.tryEmit(recent)
-            }
-            ChatMessage.SystemMessageType.CALL_ENDED,
-            ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE -> {
-                _lastCallSystemMessage.tryEmit(null)
-                if (!isInitialSnapshot && lastNotifiedCallEndedMessageId != recent.jsonMessageId) {
-                    _callEndedSystemMessage.tryEmit(recent.systemMessageType!!)
-                }
-                lastNotifiedCallEndedMessageId = recent.jsonMessageId
-            }
-            ChatMessage.SystemMessageType.CALL_MISSED,
-            ChatMessage.SystemMessageType.CALL_TRIED -> {
-                _lastCallSystemMessage.tryEmit(null)
-            }
-            else -> {}
+        val callMessages = chatMessageList.filter {
+            it.systemMessageType in
+                listOf(
+                    ChatMessage.SystemMessageType.CALL_STARTED,
+                    ChatMessage.SystemMessageType.CALL_ENDED,
+                    ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE,
+                    ChatMessage.SystemMessageType.CALL_MISSED,
+                    ChatMessage.SystemMessageType.CALL_TRIED
+                )
         }
+        // maxByOrNull, not lastOrNull: chatMessageList isn't guaranteed ascending for every source
+        // (e.g. an unconditional "newest messages" fetch can return newest-first), so the last array
+        // element isn't reliably the most recent one.
+        val lastDecisiveCallMessage = callMessages.maxByOrNull { it.jsonMessageId } ?: return
+
+        if (lastDecisiveCallMessage.systemMessageType == ChatMessage.SystemMessageType.CALL_STARTED) {
+            _lastCallSystemMessage.value = CallStartedIndicatorData(
+                actorDisplayName = lastDecisiveCallMessage.actorDisplayName ?: "",
+                actorType = lastDecisiveCallMessage.actorType ?: "",
+                actorId = lastDecisiveCallMessage.actorId ?: "",
+                shouldShow = true
+            )
+        }
+    }
+
+    /**
+     * Drives the call-started banner and the call-ended notification from
+     * [ChatMessageRepository.callSystemMessageFlow], which only emits for call system messages that
+     * just genuinely arrived (see [ChatMessageSyncer.Events.onCallSystemMessage]) — never for one
+     * merely present in a re-loaded/paginated window of already-known history (e.g. jumping to an old
+     * message). Deriving call state from whatever history window happened to be loaded is what used
+     * to make the banner reappear for calls long since ended.
+     */
+    private fun observeCallSystemMessages() {
+        chatRepository.callSystemMessageFlow
+            .onEach { event ->
+                when (event) {
+                    is ChatMessageSyncer.CallSystemMessageEvent.CallStarted -> {
+                        _lastCallSystemMessage.value = CallStartedIndicatorData(
+                            actorDisplayName = event.actorDisplayName,
+                            actorType = event.actorType,
+                            actorId = event.actorId,
+                            shouldShow = true
+                        )
+                    }
+
+                    is ChatMessageSyncer.CallSystemMessageEvent.CallEnded -> {
+                        _lastCallSystemMessage.value = null
+                        if (event.systemMessageType == ChatMessage.SystemMessageType.CALL_ENDED ||
+                            event.systemMessageType == ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
+                        ) {
+                            _callEndedSystemMessage.tryEmit(event.systemMessageType)
+                        }
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<Int, ChatMessage>): Boolean =
