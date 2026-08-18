@@ -156,6 +156,7 @@
     <string name="nc_certificate_error">Vaša konfigurácia SSL zabránila pripojeniu</string>
     <string name="nc_change_cert_auth">Zmeniť autentifikačný certifikát</string>
     <string name="nc_change_password">Zmeniť heslo</string>
+    <string name="nc_channel">Kanál</string>
     <string name="nc_clear_edit_button">Zrušiť úpravy</string>
     <string name="nc_clear_history">Vymazať všetky správy</string>
     <string name="nc_clear_history_success">Všetky správy boli vymazané</string>

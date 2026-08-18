@@ -89,6 +89,7 @@
     <string name="nc_add_participants">添加参与者</string>
     <string name="nc_add_to_favorites">添加收藏</string>
     <string name="nc_all_ok_operation">OK，已完成！</string>
+    <string name="nc_announcement">公告</string>
     <string name="nc_attendee_pin">固定：%1$s</string>
     <string name="nc_biometric_unlock">解锁 %1$s</string>
     <string name="nc_bluetooth_permission_hint">使用蓝牙音箱需要“附近的设备”权限</string>
@@ -122,6 +123,7 @@
     <string name="nc_certificate_error">您的 SSL 设置阻止了连接</string>
     <string name="nc_change_cert_auth">更换验证证书</string>
     <string name="nc_change_password">更改密码</string>
+    <string name="nc_channel">频道</string>
     <string name="nc_classified_conversation">机密对话</string>
     <string name="nc_clear_edit_button">取消编辑</string>
     <string name="nc_clear_history">删除所有消息</string>

@@ -155,6 +155,7 @@
     <string name="nc_certificate_error">Ваша ССЛ постава је онемогућила повезивање</string>
     <string name="nc_change_cert_auth">Измени сертификат за пријаву</string>
     <string name="nc_change_password">Промени лозинку</string>
+    <string name="nc_channel">Канал</string>
     <string name="nc_clear_edit_button">Откажи уређивање</string>
     <string name="nc_clear_history">Обриши све поруке</string>
     <string name="nc_clear_history_success">Обрисане су све поруке</string>

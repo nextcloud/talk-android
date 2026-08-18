@@ -155,6 +155,7 @@
     <string name="nc_certificate_error">SSL تەڭشىكىڭىز ئۇلىنىشنىڭ ئالدىنى ئالدى</string>
     <string name="nc_change_cert_auth">دەلىللەش گۇۋاھنامىسىنى ئۆزگەرتىڭ</string>
     <string name="nc_change_password">پارولنى ئۆزگەرتىش</string>
+    <string name="nc_channel">قانال</string>
     <string name="nc_clear_edit_button">تەھرىرلەشنى ئەمەلدىن قالدۇرۇڭ</string>
     <string name="nc_clear_history">بارلىق ئۇچۇرلارنى ئۆچۈرۈڭ</string>
     <string name="nc_clear_history_success">بارلىق ئۇچۇرلار ئۆچۈرۈلدى</string>

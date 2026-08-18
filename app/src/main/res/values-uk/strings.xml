@@ -154,6 +154,7 @@
     <string name="nc_certificate_error">Ваші налаштування SSL завадили з’єднанню</string>
     <string name="nc_change_cert_auth">Змінити сертифікат автентифікації</string>
     <string name="nc_change_password">Змінити Пароль</string>
+    <string name="nc_channel">Канал</string>
     <string name="nc_clear_edit_button">Скасувати редагування</string>
     <string name="nc_clear_history">Вилучити усі повідомлення</string>
     <string name="nc_clear_history_success">Всі повідомлення видалено</string>

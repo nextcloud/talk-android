@@ -128,6 +128,7 @@
     <string name="nc_add_to_favorites">Adicionar aos favoritos</string>
     <string name="nc_add_to_home_screen">Adicionar para a tela inicial</string>
     <string name="nc_all_ok_operation">Ok, tudo concluído!</string>
+    <string name="nc_announcement">Anúncios</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">Desbloquear %1$s</string>
     <string name="nc_bluetooth_permission_hint">Para ativar os alto-falantes bluetooth, conceda a permissão \"Dispositivos próximos\".</string>
@@ -160,6 +161,7 @@
     <string name="nc_certificate_error">A sua configuração de SSL impediu a ligação</string>
     <string name="nc_change_cert_auth">Alterar certificado de autenticação</string>
     <string name="nc_change_password">Alterar palavra-passe</string>
+    <string name="nc_channel">Canal</string>
     <string name="nc_chat_no_messages">Ainda não há mensagens. Seja o primeiro a dizer olá!</string>
     <string name="nc_clear_edit_button">Cancelar edição</string>
     <string name="nc_clear_history">Excluir todas as mensagens </string>

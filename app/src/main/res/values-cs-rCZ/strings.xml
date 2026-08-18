@@ -123,6 +123,7 @@
     <string name="nc_add_participants">Přidat účastníky</string>
     <string name="nc_add_to_favorites">Přidat do oblíbených</string>
     <string name="nc_all_ok_operation">OK, vše hotovo!</string>
+    <string name="nc_announcement">Oznámení</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Odemknout %1$s</string>
     <string name="nc_bluetooth_permission_hint">Pro použití bluetooth reproduktorů je třeba udělit oprávnění „Zařízení poblíž“.</string>

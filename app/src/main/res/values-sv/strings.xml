@@ -136,6 +136,7 @@
     <string name="nc_add_to_favorites">Lägg till som favorit</string>
     <string name="nc_add_to_home_screen">Lägg till på hemskärmen</string>
     <string name="nc_all_ok_operation">Ok, allt klart!</string>
+    <string name="nc_announcement">Meddelande</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Lås upp %1$s</string>
     <string name="nc_bluetooth_permission_hint">För att aktivera bluetooth-högtalare måste du bevilja tillstånd för \"Enheter i närheten\".</string>
@@ -171,6 +172,7 @@
     <string name="nc_certificate_error">Dina SSL-inställningar förhindrade anslutning</string>
     <string name="nc_change_cert_auth">Ändra autentiseringscertifikat</string>
     <string name="nc_change_password">Ändra lösenord</string>
+    <string name="nc_channel">Kanal</string>
     <string name="nc_chat_no_messages">Inga meddelanden än</string>
     <string name="nc_clear_edit_button">Avbryt redigering</string>
     <string name="nc_clear_history">Radera alla meddelanden</string>

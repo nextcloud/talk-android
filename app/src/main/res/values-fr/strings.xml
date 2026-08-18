@@ -136,6 +136,7 @@
     <string name="nc_add_to_favorites">Ajouter aux favoris</string>
     <string name="nc_add_to_home_screen">Ajouter à l\'écran d\'accueil</string>
     <string name="nc_all_ok_operation">OK, tout est fini !</string>
+    <string name="nc_announcement">Annonce</string>
     <string name="nc_attendee_pin">Épingler : %1$s</string>
     <string name="nc_biometric_unlock">Déverrouiller %1$s</string>
     <string name="nc_bluetooth_permission_hint">Pour activer les écouteurs Bluetooth, merci de donner la permission « Appareils à proximité ».</string>
@@ -171,6 +172,7 @@
     <string name="nc_certificate_error">Votre configuration SSL a empêché la connexion</string>
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
     <string name="nc_change_password">Changer son mot de passe</string>
+    <string name="nc_channel">Canal</string>
     <string name="nc_chat_no_messages">Pas encore de message. Soyez le premier à dire salut !</string>
     <string name="nc_classified_conversation">Conversation classifiée</string>
     <string name="nc_clear_edit_button">Annuler la modification</string>

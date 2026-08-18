@@ -156,6 +156,7 @@
     <string name="nc_certificate_error">A súa configuración SSL impediu a conexión</string>
     <string name="nc_change_cert_auth">Cambiar o certificado de autenticación</string>
     <string name="nc_change_password">Cambiar o contrasinal</string>
+    <string name="nc_channel">Canle</string>
     <string name="nc_clear_edit_button">Cancelar a edición</string>
     <string name="nc_clear_history">Eliminar todas as mensaxes</string>
     <string name="nc_clear_history_success">Elimináronse todas as mensaxes</string>
@@ -443,6 +444,7 @@
     <string name="nc_server_unsupported">O servidor non ten instalada a aplicación Parladoiro</string>
     <string name="nc_server_url">Enderezo do servidor https://…</string>
     <string name="nc_server_version">%1$s só funciona con %2$s 13 ou superior</string>
+    <string name="nc_set_emoji_as_conversation_picture">Definir o «emoji» como imaxe da conversa</string>
     <string name="nc_set_new_password">Definir un novo contrasinal</string>
     <string name="nc_set_password">Definir o contrasinal</string>
     <string name="nc_settings">Axustes</string>

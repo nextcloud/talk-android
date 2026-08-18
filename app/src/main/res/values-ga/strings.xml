@@ -136,6 +136,7 @@
     <string name="nc_add_to_favorites">Cuir le ceanáin</string>
     <string name="nc_add_to_home_screen">Cuir leis an scáileán baile</string>
     <string name="nc_all_ok_operation">Ceart go leor, déanta go léir!</string>
+    <string name="nc_announcement">Fógra</string>
     <string name="nc_attendee_pin">Bioráin: %1$s</string>
     <string name="nc_biometric_unlock">Díghlasáil %1$s</string>
     <string name="nc_bluetooth_permission_hint">Chun cainteoirí Bluetooth a chumasú, deonaigh cead \"Gléasanna in aice láimhe\" le do thoil.</string>
@@ -171,6 +172,7 @@
     <string name="nc_certificate_error">Chuir do shocrú SSL cosc ​​ar cheangal</string>
     <string name="nc_change_cert_auth">Athraigh teastas fíordheimhnithe</string>
     <string name="nc_change_password">Athraigh do phasfhocal</string>
+    <string name="nc_channel">Cainéal</string>
     <string name="nc_chat_no_messages">Gan aon teachtaireachtaí fós. Bí ar an gcéad duine chun fáilte a chur romhat!</string>
     <string name="nc_classified_conversation">Comhrá rúnda</string>
     <string name="nc_clear_edit_button">Cealaigh eagarthóireacht</string>

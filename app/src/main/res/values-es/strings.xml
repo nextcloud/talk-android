@@ -121,6 +121,7 @@
     <string name="nc_add_participants">Añadir participantes</string>
     <string name="nc_add_to_favorites">Añadir a favoritos</string>
     <string name="nc_all_ok_operation">OK. Todo hecho.</string>
+    <string name="nc_announcement">Anuncio</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Desbloquear %1$s</string>
     <string name="nc_bluetooth_permission_hint">Para habilitar los parlantes bluetooth, por favor, otorgue el permiso \"Dispositivos cercanos\".</string>
@@ -156,6 +157,7 @@
     <string name="nc_certificate_error">Tu configuración SSL impidió la conexión</string>
     <string name="nc_change_cert_auth">Cambiar certificado de autenticación</string>
     <string name="nc_change_password">Cambiar contraseña</string>
+    <string name="nc_channel">Canal</string>
     <string name="nc_clear_edit_button">Cancelar edición</string>
     <string name="nc_clear_history">Borrar todos los mensajes</string>
     <string name="nc_clear_history_success">Se han eliminado todos los mensajes</string>

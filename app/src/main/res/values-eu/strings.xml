@@ -131,6 +131,7 @@
     <string name="nc_certificate_error">Zure SSL konfigurazioak konexioa eragotzi du</string>
     <string name="nc_change_cert_auth">Aldatu autentifikazio ziurtagiria</string>
     <string name="nc_change_password">Aldatu pasahitza</string>
+    <string name="nc_channel">Kanala</string>
     <string name="nc_clear_edit_button">Utzi editatzeari</string>
     <string name="nc_clear_history">Ezabatu mezu guztiak</string>
     <string name="nc_clear_history_success">Mezu guztiak ezabatu dira</string>
