@@ -44,6 +44,7 @@
             <trusting group="androidx.datastore"/>
             <trusting group="androidx.lifecycle"/>
             <trusting group="androidx.media3"/>
+            <trusting group="androidx.sqlite"/>
             <trusting group="androidx.work"/>
             <trusting group="com.google.firebase"/>
             <trusting group="^androidx[.]camera($|([.].*))" regex="true"/>
@@ -257,6 +258,7 @@
             <trusting group="net.zetetic" name="sqlcipher-android" version="4.15.0"/>
             <trusting group="net.zetetic" name="sqlcipher-android" version="4.16.0"/>
             <trusting group="net.zetetic" name="sqlcipher-android" version="4.17.0"/>
+            <trusting group="net.zetetic" name="sqlcipher-android" version="4.18.0"/>
             <trusting group="net.zetetic" name="sqlcipher-android" version="4.9.0"/>
          </trusted-key>
          <trusted-key id="635EE627345F3C1DD422B2E207D3516820BCF6B1" group="com.github.ben-manes.caffeine" name="caffeine" version="2.9.3"/>
