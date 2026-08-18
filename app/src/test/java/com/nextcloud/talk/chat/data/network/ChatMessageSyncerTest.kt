@@ -190,6 +190,76 @@ class ChatMessageSyncerTest {
         }
 
     @Test
+    fun `catchUpRoom anchors the initial fetch at the last read message for a large unread backlog`() =
+        runTest {
+            whenever(chatBlocksDao.getNewestMessageIdFromChatBlocks(INTERNAL_CONVERSATION_ID, null))
+                .thenReturn(0L)
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
+                .thenReturn(flowOf(emptyList()))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(
+                    // anchored page including the last read message 10 itself
+                    Response.success(overall(message(10), message(11))),
+                    // backlog rounds until the server returns fewer messages than the limit
+                    Response.success(overall(message(12), message(13))),
+                    Response.success(overall(message(14)))
+                )
+
+            val outcome = syncer.catchUpRoom(target(), limit = 2, lastReadMessage = 10, unreadMessages = 4)
+
+            assertTrue(outcome.persistedNewMessages)
+            assertEquals(5, outcome.persistedMessageCount)
+            assertEquals(10L, outcome.oldestPersistedMessageId)
+            assertEquals(14L, outcome.newestPersistedMessageId)
+
+            val fieldMapCaptor = argumentCaptor<HashMap<String, Int>>()
+            verifyBlocking(network, times(3)) { pullChatMessages(any(), any(), fieldMapCaptor.capture()) }
+            val anchoredFieldMap = fieldMapCaptor.firstValue
+            assertEquals(1, anchoredFieldMap["lookIntoFuture"])
+            assertEquals(1, anchoredFieldMap["includeLastKnown"])
+            assertEquals(10, anchoredFieldMap["lastKnownMessageId"])
+            assertEquals(0, anchoredFieldMap["markNotificationsAsRead"])
+        }
+
+    @Test
+    fun `catchUpRoom keeps the newest-messages fetch for a backlog smaller than one page`() =
+        runTest {
+            whenever(chatBlocksDao.getNewestMessageIdFromChatBlocks(INTERNAL_CONVERSATION_ID, null))
+                .thenReturn(0L)
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
+                .thenReturn(flowOf(emptyList()))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(message(9), message(10), message(11))))
+
+            syncer.catchUpRoom(target(), limit = 3, lastReadMessage = 10, unreadMessages = 1)
+
+            val fieldMapCaptor = argumentCaptor<HashMap<String, Int>>()
+            verifyBlocking(network) { pullChatMessages(any(), any(), fieldMapCaptor.capture()) }
+            assertEquals(0, fieldMapCaptor.firstValue["lookIntoFuture"])
+            assertEquals(1, fieldMapCaptor.firstValue["includeLastKnown"])
+            assertFalse(fieldMapCaptor.firstValue.containsKey("lastKnownMessageId"))
+        }
+
+    @Test
+    fun `catchUpRoom keeps the newest-messages fetch for a backlog too large to close`() =
+        runTest {
+            whenever(chatBlocksDao.getNewestMessageIdFromChatBlocks(INTERNAL_CONVERSATION_ID, null))
+                .thenReturn(0L)
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
+                .thenReturn(flowOf(emptyList()))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(message(999), message(1000))))
+
+            // MAX_BACKLOG_ROUNDS (5) * limit (2) = 10 closable messages, backlog is 11
+            syncer.catchUpRoom(target(), limit = 2, lastReadMessage = 10, unreadMessages = 11)
+
+            val fieldMapCaptor = argumentCaptor<HashMap<String, Int>>()
+            verifyBlocking(network) { pullChatMessages(any(), any(), fieldMapCaptor.capture()) }
+            assertEquals(0, fieldMapCaptor.firstValue["lookIntoFuture"])
+            assertFalse(fieldMapCaptor.firstValue.containsKey("lastKnownMessageId"))
+        }
+
+    @Test
     fun `catchUpRoom coalesces a burst of calls for the same room into two fetches`() =
         runTest {
             val existingBlock = block(oldest = 10, newest = 42)

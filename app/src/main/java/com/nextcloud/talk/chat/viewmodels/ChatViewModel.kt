@@ -221,11 +221,16 @@ class ChatViewModel @AssistedInject constructor(
 
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
+        val isReturningFromBackground = ::currentLifeCycleFlag.isInitialized
         currentLifeCycleFlag = LifeCycleFlag.RESUMED
         mediaRecorderManager.handleOnResume()
         chatRepository.handleOnResume()
         mediaPlayerManager.handleOnResume()
-        viewModelScope.launch { fetchNewMessagesWithRetry() }
+        if (isReturningFromBackground) {
+            viewModelScope.launch {
+                chatRepository.fetchNewMessages()
+            }
+        }
     }
 
     override fun onPause(owner: LifecycleOwner) {
@@ -1131,10 +1136,7 @@ class ChatViewModel @AssistedInject constructor(
 
         return buildList {
             if (firstUnreadMessageId == null && lastReadMessage > 0) {
-                firstUnreadMessageId =
-                    uiMessages.firstOrNull {
-                        it.id > lastReadMessage
-                    }?.id
+                firstUnreadMessageId = findFirstUnreadMessageId(uiMessages, lastReadMessage)
                 Log.d(TAG, "reversedMessages.size = ${uiMessages.size}")
                 Log.d(TAG, "firstUnreadMessageId = $firstUnreadMessageId")
                 Log.d(TAG, "conversation.lastReadMessage = $lastReadMessage")
@@ -2383,6 +2385,25 @@ class ChatViewModel @AssistedInject constructor(
 
     companion object {
         private val TAG = ChatViewModel::class.java.simpleName
+
+        /**
+         * Returns the id of the first unread message, or null when it cannot be determined (yet).
+         *
+         * The position is only trustworthy when the visible window provably reaches back to the
+         * unread boundary, i.e. a message at or below [lastReadMessage] is visible. Without that
+         * proof the oldest visible message may still be far above the true first unread message
+         * (e.g. after a capped fetch of only the newest messages) and a marker latched onto it
+         * would sit in the middle of the unread messages. Temporary messages carry negative ids
+         * and don't count as proof.
+         */
+        internal fun findFirstUnreadMessageId(uiMessages: List<ChatMessageUi>, lastReadMessage: Int): Int? {
+            val unreadBoundaryIsVisible = uiMessages.any { it.id in 1..lastReadMessage }
+            if (!unreadBoundaryIsVisible) {
+                return null
+            }
+            return uiMessages.firstOrNull { it.id > lastReadMessage }?.id
+        }
+
         const val JOIN_ROOM_RETRY_COUNT: Long = 3
         const val HTTP_CODE_OK: Int = 200
         private const val CONVERSATION_AND_USER_FLOW_SHARING_TIMEOUT_MS = 5_000L
