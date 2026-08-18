@@ -221,11 +221,16 @@ class ChatViewModel @AssistedInject constructor(
 
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
+        val isReturningFromBackground = ::currentLifeCycleFlag.isInitialized
         currentLifeCycleFlag = LifeCycleFlag.RESUMED
         mediaRecorderManager.handleOnResume()
         chatRepository.handleOnResume()
         mediaPlayerManager.handleOnResume()
-        viewModelScope.launch { fetchNewMessagesWithRetry() }
+        if (isReturningFromBackground) {
+            viewModelScope.launch {
+                chatRepository.fetchNewMessages()
+            }
+        }
     }
 
     override fun onPause(owner: LifecycleOwner) {
