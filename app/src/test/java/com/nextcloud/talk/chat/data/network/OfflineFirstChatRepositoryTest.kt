@@ -33,6 +33,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
@@ -151,6 +152,18 @@ class OfflineFirstChatRepositoryTest {
             assertEquals(0, fieldMap["lookIntoFuture"])
             assertEquals(1, fieldMap["includeLastKnown"])
             assertFalse(fieldMap.containsKey("lastKnownMessageId"))
+        }
+
+    @Test
+    fun `fetchNewMessages skips the request when no HTTP-synced anchor exists yet`() =
+        runTest {
+            // a fresh ChatMessageSyncer has recorded no HTTP sync for any conversation yet, so
+            // this is the state of a room whose initial load hasn't fetched anything so far —
+            // anchoring at 0 would try to close the backlog from the start of its history instead
+            val result = repository.fetchNewMessages()
+
+            assertFalse(result)
+            verifyBlocking(network, never()) { pullChatMessages(any(), any(), any()) }
         }
 
     private fun givenLatestBlock(block: ChatBlockEntity?) {

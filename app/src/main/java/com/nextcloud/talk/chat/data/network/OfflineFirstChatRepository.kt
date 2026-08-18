@@ -333,12 +333,22 @@ class OfflineFirstChatRepository @Inject constructor(
      * newest message would skip exactly the range it has to check. The anchor lives in the
      * singleton [ChatMessageSyncer], so it survives reopening the chat.
      *
+     * No-ops when no HTTP sync has happened yet for this conversation: that means the initial
+     * load hasn't completed (or hasn't even started), which is already fetching this room from
+     * scratch — anchoring at 0 instead would try to close the backlog from the very beginning of
+     * the conversation's history, which for a busy room can't close within
+     * [ChatMessageSyncer.tryCloseBacklog]'s round budget and just burns requests before falling
+     * back anyway.
+     *
      * @return `true` if at least one new message was received and persisted.
      */
     override suspend fun fetchNewMessages(): Boolean {
         cleanupExpiredMessages()
 
-        val lastHttpSyncedMessageId = syncer.lastHttpSyncedMessageId(internalConversationId, threadId) ?: 0L
+        val lastHttpSyncedMessageId = syncer.lastHttpSyncedMessageId(internalConversationId, threadId) ?: run {
+            Log.d(TAG, "No HTTP-synced anchor yet for $internalConversationId, skipping insurance fetch")
+            return false
+        }
 
         // tryCloseBacklog loops until the backlog is fully closed, so a backlog larger than the
         // request limit is caught up within one insurance cycle instead of narrowing it by one
