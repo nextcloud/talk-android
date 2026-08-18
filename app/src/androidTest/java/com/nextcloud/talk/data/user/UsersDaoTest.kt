@@ -173,6 +173,25 @@ class UsersDaoTest {
         assertEquals(newState, retrieved.pushConfigurationState)
     }
 
+    @Test
+    fun setActiveNonExistentUser() {
+        val count = usersDao.setUserAsActiveWithId(9999)
+        assertEquals(0, count)
+    }
+
+    @Test
+    fun deleteActiveUser() {
+        val user = createUserEntity("user1", "Account 1", "https://server1.com").apply { current = true }
+        val id = usersDao.saveUser(user)
+        val savedUser = usersDao.getUserWithId(id).blockingGet()
+
+        usersDao.deleteUser(savedUser)
+
+        val active = usersDao.getActiveUser().blockingGet()
+        assertNull(active)
+        assertNull(usersDao.getActiveUserSynchronously())
+    }
+
     private fun createUserEntity(userId: String, userName: String, server: String) =
         UserEntity(
             userId = userId,

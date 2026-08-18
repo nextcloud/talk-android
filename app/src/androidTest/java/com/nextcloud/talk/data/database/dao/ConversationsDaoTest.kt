@@ -10,6 +10,8 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.source.local.TalkDatabase
 import com.nextcloud.talk.data.user.UsersDao
@@ -123,6 +125,46 @@ class ConversationsDaoTest {
 
             val list = conversationsDao.getConversationsForUser(accountId).first()
             assertTrue(list.isEmpty())
+        }
+
+    @Test
+    fun upsertConversations_emptyList() =
+        runTest {
+            conversationsDao.upsertConversations(accountId, emptyList())
+            val list = conversationsDao.getConversationsForUser(accountId).first()
+            assertTrue(list.isEmpty())
+        }
+
+    @Test
+    fun cascadeDeletion_deletesMessages() =
+        runTest {
+            val chatMessagesDao = db.chatMessagesDao()
+            val conversation = createConversationEntity(accountId, "token1", "Conv 1")
+            conversationsDao.insertConversation(conversation)
+
+            val message =
+                ChatMessageEntity(
+                    internalId = "${conversation.internalId}@1",
+                    internalConversationId = conversation.internalId,
+                    id = 1,
+                    message = "test message",
+                    accountId = accountId,
+                    token = "token1",
+                    actorId = "user1",
+                    actorType = "users",
+                    actorDisplayName = "User 1",
+                    messageType = "comment",
+                    systemMessageType = ChatMessage.SystemMessageType.DUMMY,
+                    timestamp = 1000
+                )
+            chatMessagesDao.upsertChatMessage(message)
+
+            // Delete conversation
+            conversationsDao.deleteConversations(listOf(conversation.internalId))
+
+            // Verify message is also gone
+            val messages = chatMessagesDao.getMessagesForConversation(conversation.internalId, null).first()
+            assertTrue(messages.isEmpty())
         }
 
     private fun createConversationEntity(accountId: Long, token: String, roomName: String) =

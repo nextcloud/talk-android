@@ -527,6 +527,93 @@ class ChatBlocksDaoTest {
             assertEquals(2, blocks.size)
         }
 
+    @Test
+    fun testUpsertAndMergeConnectedChatBlocksAdjacentBlocks() =
+        runTest {
+            val user = createUserEntity("account1", "Account 1")
+            usersDao.saveUser(user)
+            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
+
+            conversationsDao.upsertConversations(
+                account1.id,
+                listOf(createConversationEntity(account1.id, "abc", "Conv"))
+            )
+            val conversation = conversationsDao.getConversationsForUser(account1.id).first()[0]
+
+            // Block 10-20
+            chatBlocksDao.upsertChatBlock(
+                ChatBlockEntity(
+                    internalConversationId = conversation.internalId,
+                    accountId = conversation.accountId,
+                    token = conversation.token,
+                    threadId = null,
+                    oldestMessageId = 10,
+                    newestMessageId = 20,
+                    hasHistory = true
+                )
+            )
+
+            // Block 21-30. No overlap, so they stay separate
+            chatBlocksDao.upsertAndMergeConnectedChatBlocks(
+                ChatBlockEntity(
+                    internalConversationId = conversation.internalId,
+                    accountId = conversation.accountId,
+                    token = conversation.token,
+                    threadId = null,
+                    oldestMessageId = 21,
+                    newestMessageId = 30,
+                    hasHistory = true
+                )
+            )
+
+            val blocks = chatBlocksDao.getChatBlocksForConversation(conversation.internalId)
+            assertEquals(2, blocks.size)
+        }
+
+    @Test
+    fun testUpsertAndMergeConnectedChatBlocksOverlapAtBoundary() =
+        runTest {
+            val user = createUserEntity("account1", "Account 1")
+            usersDao.saveUser(user)
+            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
+
+            conversationsDao.upsertConversations(
+                account1.id,
+                listOf(createConversationEntity(account1.id, "abc", "Conv"))
+            )
+            val conversation = conversationsDao.getConversationsForUser(account1.id).first()[0]
+
+            chatBlocksDao.upsertChatBlock(
+                ChatBlockEntity(
+                    internalConversationId = conversation.internalId,
+                    accountId = conversation.accountId,
+                    token = conversation.token,
+                    threadId = null,
+                    oldestMessageId = 10,
+                    newestMessageId = 20,
+                    hasHistory = true
+                )
+            )
+
+            // Inserting 20-30. Boundary 20 is shared.
+            chatBlocksDao.upsertAndMergeConnectedChatBlocks(
+                ChatBlockEntity(
+                    internalConversationId = conversation.internalId,
+                    accountId = conversation.accountId,
+                    token = conversation.token,
+                    threadId = null,
+                    oldestMessageId = 20,
+                    newestMessageId = 30,
+                    hasHistory = true
+                )
+            )
+
+            val blocks = chatBlocksDao.getChatBlocksForConversation(conversation.internalId)
+            assertEquals(1, blocks.size)
+            assertEquals(10L, blocks[0].oldestMessageId)
+            assertEquals(30L, blocks[0].newestMessageId)
+        }
+
     private fun createUserEntity(userId: String, userName: String) =
         UserEntity(
             userId = userId,
