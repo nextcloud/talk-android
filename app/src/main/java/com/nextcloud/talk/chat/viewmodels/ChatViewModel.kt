@@ -469,7 +469,7 @@ class ChatViewModel @AssistedInject constructor(
     private val nonNullUserFlow = currentUserFlow.filterNotNull()
 
     // Unlike conversationFlow below, this is not deduped by lastReadMessage/lastCommonReadMessage,
-    // so it also reacts to fields those two ignore, e.g. hasCall (see lastCallSystemMessage).
+    // so it also reacts to fields those two ignore, e.g. hasCall (see [hasCall]).
     private val rawConversationFlow: Flow<ConversationModel> =
         nonNullUserFlow
             .flatMapLatest { user ->
@@ -1029,7 +1029,7 @@ class ChatViewModel @AssistedInject constructor(
     // active" — unlike a scan over whatever chat message window happens to be loaded (which used to
     // make the call-started banner reappear for calls that had long since ended, since a loaded
     // window's contents don't necessarily reflect what's actually happening right now).
-    val lastCallSystemMessage: Flow<Boolean> = rawConversationFlow.map { it.hasCall }.distinctUntilChanged()
+    val hasCall: Flow<Boolean> = rawConversationFlow.map { it.hasCall }.distinctUntilChanged()
 
     private val _callEndedSystemMessage = MutableSharedFlow<ChatMessage.SystemMessageType>(extraBufferCapacity = 1)
     val callEndedSystemMessage: SharedFlow<ChatMessage.SystemMessageType>
@@ -1377,7 +1377,7 @@ class ChatViewModel @AssistedInject constructor(
         val chatMessageIterator = chatMessageMap.iterator()
 
         // Only drives the "conversation will be deleted after the call" warning (callEndedSystemMessage)
-        // — the call-started banner itself comes from lastCallSystemMessage / conversation.hasCall now.
+        // — the call-started banner itself comes from hasCall / conversation.hasCall now.
         chatMessageList.lastOrNull {
             it.systemMessageType in
                 listOf(

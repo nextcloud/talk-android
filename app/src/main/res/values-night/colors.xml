@@ -31,8 +31,6 @@
     <color name="fg_default">#FFFFFF</color>
     <color name="fg_inverse">#121212</color>
 
-    <color name="nc_darkGreen">#00AA00</color>
-
     <color name="conversation_unread_bubble">#373737</color>
     <color name="conversation_unread_bubble_text">#D8D8D8</color>
 
