@@ -468,7 +468,9 @@ class ChatViewModel @AssistedInject constructor(
 
     private val nonNullUserFlow = currentUserFlow.filterNotNull()
 
-    private val conversationFlow: Flow<ConversationModel> =
+    // Unlike conversationFlow below, this is not deduped by lastReadMessage/lastCommonReadMessage,
+    // so it also reacts to fields those two ignore, e.g. hasCall (see [hasCall]).
+    private val rawConversationFlow: Flow<ConversationModel> =
         nonNullUserFlow
             .flatMapLatest { user ->
                 val userId = requireNotNull(user.id)
@@ -483,7 +485,9 @@ class ChatViewModel @AssistedInject constructor(
                         null
                 }
             }
-            .distinctUntilChangedBy { it.lastReadMessage to it.lastCommonReadMessage }
+
+    private val conversationFlow: Flow<ConversationModel> =
+        rawConversationFlow.distinctUntilChangedBy { it.lastReadMessage to it.lastCommonReadMessage }
 
     private val conversationAndUserFlow =
         combine(conversationFlow, nonNullUserFlow) { c, u -> c to u }
@@ -1021,23 +1025,11 @@ class ChatViewModel @AssistedInject constructor(
         val capabilities: SpreedCapability? = null
     )
 
-    data class CallStartedIndicatorData(
-        val actorDisplayName: String,
-        val actorType: String,
-        val actorId: String,
-        val shouldShow: Boolean
-    )
-
-    private val _lastCallSystemMessage = MutableStateFlow<ChatMessage?>(null)
-
-    val lastCallSystemMessage = _lastCallSystemMessage.map { msg ->
-        CallStartedIndicatorData(
-            msg?.actorDisplayName ?: "",
-            msg?.actorType ?: "",
-            msg?.actorId ?: "",
-            msg != null
-        )
-    }
+    // The conversation's own hasCall is the server's authoritative answer to "is a call currently
+    // active" — unlike a scan over whatever chat message window happens to be loaded (which used to
+    // make the call-started banner reappear for calls that had long since ended, since a loaded
+    // window's contents don't necessarily reflect what's actually happening right now).
+    val hasCall: Flow<Boolean> = rawConversationFlow.map { it.hasCall }.distinctUntilChanged()
 
     private val _callEndedSystemMessage = MutableSharedFlow<ChatMessage.SystemMessageType>(extraBufferCapacity = 1)
     val callEndedSystemMessage: SharedFlow<ChatMessage.SystemMessageType>
@@ -1384,16 +1376,13 @@ class ChatViewModel @AssistedInject constructor(
         val chatMessageMap = chatMessageList.associateBy { it.jsonMessageId }.toMutableMap()
         val chatMessageIterator = chatMessageMap.iterator()
 
+        // Only drives the "conversation will be deleted after the call" warning (callEndedSystemMessage)
+        // — the call-started banner itself comes from hasCall / conversation.hasCall now.
         chatMessageList.lastOrNull {
             it.systemMessageType in
                 listOf(
-                    ChatMessage.SystemMessageType.CALL_STARTED,
-                    ChatMessage.SystemMessageType.CALL_JOINED,
-                    ChatMessage.SystemMessageType.CALL_LEFT,
                     ChatMessage.SystemMessageType.CALL_ENDED,
-                    ChatMessage.SystemMessageType.CALL_TRIED,
-                    ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE,
-                    ChatMessage.SystemMessageType.CALL_MISSED
+                    ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
                 )
         }?.let { callMessage ->
             processCallSystemMessage(callMessage)
@@ -1416,24 +1405,10 @@ class ChatViewModel @AssistedInject constructor(
         val isInitialSnapshot = !hasSeenInitialCallSystemMessage
         hasSeenInitialCallSystemMessage = true
 
-        when (recent.systemMessageType) {
-            ChatMessage.SystemMessageType.CALL_STARTED -> {
-                _lastCallSystemMessage.tryEmit(recent)
-            }
-            ChatMessage.SystemMessageType.CALL_ENDED,
-            ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE -> {
-                _lastCallSystemMessage.tryEmit(null)
-                if (!isInitialSnapshot && lastNotifiedCallEndedMessageId != recent.jsonMessageId) {
-                    _callEndedSystemMessage.tryEmit(recent.systemMessageType!!)
-                }
-                lastNotifiedCallEndedMessageId = recent.jsonMessageId
-            }
-            ChatMessage.SystemMessageType.CALL_MISSED,
-            ChatMessage.SystemMessageType.CALL_TRIED -> {
-                _lastCallSystemMessage.tryEmit(null)
-            }
-            else -> {}
+        if (!isInitialSnapshot && lastNotifiedCallEndedMessageId != recent.jsonMessageId) {
+            _callEndedSystemMessage.tryEmit(recent.systemMessageType!!)
         }
+        lastNotifiedCallEndedMessageId = recent.jsonMessageId
     }
 
     private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<Int, ChatMessage>): Boolean =

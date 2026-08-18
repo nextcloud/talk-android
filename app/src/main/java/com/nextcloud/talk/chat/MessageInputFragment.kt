@@ -8,7 +8,6 @@
 package com.nextcloud.talk.chat
 
 import android.content.res.Resources
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -36,8 +35,8 @@ import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.SeekBar
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.compose.material3.MaterialTheme
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -48,11 +47,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
-import coil.Coil.imageLoader
 import coil.load
-import coil.request.ImageRequest
-import coil.target.Target
-import coil.transform.CircleCropTransformation
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
@@ -72,6 +67,7 @@ import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
+import com.nextcloud.talk.ui.CallStartedBanner
 import com.nextcloud.talk.ui.MicInputCloud
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -81,12 +77,10 @@ import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CharPolicy
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.EmojiTextInputEditText
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
@@ -109,9 +103,6 @@ class MessageInputFragment : Fragment() {
     lateinit var userManager: UserManager
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderOld
-
-    @Inject
     lateinit var networkMonitor: NetworkMonitor
 
     @Inject
@@ -129,7 +120,6 @@ class MessageInputFragment : Fragment() {
     private var mentionAutocomplete: Autocomplete<*>? = null
     private var xcounter = 0f
     private var ycounter = 0f
-    private var collapsed = false
     private var hasScheduledMessages = false
     private lateinit var spreedCapabilities: SpreedCapability
     private var hasSharedText = false
@@ -295,46 +285,19 @@ class MessageInputFragment : Fragment() {
                 }.collect()
         }
 
+        binding.fragmentCallStarted.setContent {
+            MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(requireContext())) {
+                CallStartedBanner(
+                    viewThemeUtils = viewThemeUtils,
+                    onJoinVideoCall = { chatActivity.joinVideoCall() },
+                    onJoinAudioCall = { chatActivity.joinAudioCall() }
+                )
+            }
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
-            chatActivity.chatViewModel.lastCallSystemMessage.collect {
-                if (it.shouldShow) {
-                    binding.fragmentCallStarted.callAuthorChip.text = it.actorDisplayName
-                    val user = currentUserProvider.currentUser.blockingGet()
-                    val url: String = if (it.actorType == "guests" || it.actorType == "guest") {
-                        ApiUtils.getUrlForGuestAvatar(user!!.baseUrl!!, it.actorDisplayName, true)
-                    } else {
-                        ApiUtils.getUrlForAvatar(
-                            user!!.baseUrl!!,
-                            it.actorId,
-                            false,
-                            darkMode = DisplayUtils.isDarkModeOn(requireContext())
-                        )
-                    }
-
-                    val imageRequest: ImageRequest = ImageRequest.Builder(requireContext())
-                        .data(url)
-                        .crossfade(true)
-                        .transformations(CircleCropTransformation())
-                        .target(object : Target {
-                            override fun onStart(placeholder: Drawable?) {
-                                // unused atm
-                            }
-
-                            override fun onError(error: Drawable?) {
-                                // unused atm
-                            }
-
-                            override fun onSuccess(result: Drawable) {
-                                binding.fragmentCallStarted.callAuthorChip.chipIcon = result
-                            }
-                        })
-                        .build()
-
-                    imageLoader(requireContext()).enqueue(imageRequest)
-                    binding.fragmentCallStarted.root.visibility = View.VISIBLE
-                } else {
-                    binding.fragmentCallStarted.root.visibility = View.GONE
-                }
+            chatActivity.chatViewModel.hasCall.collect { hasCall ->
+                binding.fragmentCallStarted.visibility = if (hasCall) View.VISIBLE else View.GONE
             }
         }
     }
@@ -565,34 +528,9 @@ class MessageInputFragment : Fragment() {
         binding.fragmentMessageInputView.button?.contentDescription =
             resources.getString(R.string.nc_description_send_message_button)
 
-        binding.fragmentCallStarted.joinAudioCall.setOnClickListener {
-            chatActivity.joinAudioCall()
-        }
-
-        binding.fragmentCallStarted.joinVideoCall.setOnClickListener {
-            chatActivity.joinVideoCall()
-        }
-
-        binding.fragmentCallStarted.callStartedCloseBtn.setOnClickListener {
-            collapsed = !collapsed
-            binding.fragmentCallStarted.callBtnLayout.visibility = if (collapsed) View.GONE else View.VISIBLE
-            setDropDown(collapsed)
-        }
-
         binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.setOnClickListener {
             cancelReply()
         }
-    }
-
-    private fun setDropDown(collapsed: Boolean) {
-        val drawable = if (collapsed) {
-            AppCompatResources.getDrawable(requireContext(), R.drawable.ic_keyboard_arrow_up)
-        } else {
-            AppCompatResources.getDrawable(requireContext(), R.drawable.ic_keyboard_arrow_down)
-        }
-
-        binding.fragmentCallStarted.callStartedCloseBtn.setImageDrawable(drawable)
-        viewThemeUtils.platform.colorImageView(binding.fragmentCallStarted.callStartedCloseBtn, ColorRole.PRIMARY)
     }
 
     @Suppress("ClickableViewAccessibility", "CyclomaticComplexMethod", "LongMethod")
@@ -1189,18 +1127,6 @@ class MessageInputFragment : Fragment() {
         }
         binding.fragmentCreateThreadView.abortCreateThread.let {
             viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY)
-        }
-
-        binding.fragmentCallStarted.callStartedBackground.apply {
-            viewThemeUtils.talk.themeOutgoingMessageBubble(this, grouped = true, false)
-        }
-
-        binding.fragmentCallStarted.callAuthorChip.apply {
-            viewThemeUtils.material.colorChipBackground(this)
-        }
-
-        binding.fragmentCallStarted.callStartedCloseBtn.apply {
-            viewThemeUtils.platform.colorImageView(this, ColorRole.PRIMARY)
         }
 
         binding.fragmentMessageInputView.submitThreadButton.apply {
