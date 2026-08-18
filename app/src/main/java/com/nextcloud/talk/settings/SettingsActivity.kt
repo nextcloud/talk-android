@@ -43,6 +43,7 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -309,7 +310,9 @@ class SettingsActivity :
     }
 
     private fun loadCapabilitiesAndUpdateSettings(isOnline: Boolean) {
-        val capabilitiesWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java).build()
+        val capabilitiesWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .build()
         WorkManager.getInstance(context).enqueue(capabilitiesWork)
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(capabilitiesWork.id)
@@ -984,7 +987,9 @@ class SettingsActivity :
     @SuppressLint("CheckResult", "StringFormatInvalid")
     private fun removeCurrentAccount() {
         userManager.scheduleUserForDeletionWithId(currentUser!!.id!!).blockingGet()
-        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
+        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .build()
         WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)
