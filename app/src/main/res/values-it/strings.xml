@@ -156,6 +156,7 @@
     <string name="nc_certificate_error">La tua configurazione SSL ha impedito la connessione</string>
     <string name="nc_change_cert_auth">Cambia certificato di autenticazione</string>
     <string name="nc_change_password">Cambia password</string>
+    <string name="nc_channel">Canale</string>
     <string name="nc_clear_edit_button">Annulla modifica</string>
     <string name="nc_clear_history">Elimina tutti i messaggi</string>
     <string name="nc_clear_history_success">Tutti i messaggi sono stati eliminati</string>

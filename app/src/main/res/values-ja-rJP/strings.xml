@@ -129,6 +129,7 @@
     <string name="nc_certificate_error">SSL設定で接続が妨げられました</string>
     <string name="nc_change_cert_auth">認証証明書を変更する</string>
     <string name="nc_change_password">パスワードを変更</string>
+    <string name="nc_channel">チャンネル</string>
     <string name="nc_clear_edit_button">編集をキャンセル</string>
     <string name="nc_clear_history">すべてのメッセージを削除</string>
     <string name="nc_clear_history_success">すべてのメッセージが削除されたました。</string>

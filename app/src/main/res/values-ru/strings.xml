@@ -169,6 +169,7 @@
     <string name="nc_certificate_error">Заданные параметры SSL не позволяют подключиться</string>
     <string name="nc_change_cert_auth">Изменить сертификат для аутентификации</string>
     <string name="nc_change_password">Изменить пароль</string>
+    <string name="nc_channel">Канал</string>
     <string name="nc_chat_no_messages">Сообщений пока нет. Будьте первым, кто поздоровается!</string>
     <string name="nc_clear_edit_button">Отменить редактирование</string>
     <string name="nc_clear_history">Удалить все сообщения</string>

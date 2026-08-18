@@ -170,6 +170,7 @@
     <string name="nc_certificate_error">راه اندازی SSL شما مانع از اتصال شد</string>
     <string name="nc_change_cert_auth">گواهی تأیید اعتبار را تغییر دهید</string>
     <string name="nc_change_password">تغییر گذرواژه</string>
+    <string name="nc_channel">کانال</string>
     <string name="nc_chat_no_messages">هنوز پیامی نیست. اولین نفری باشید که سلام می‌کند!</string>
     <string name="nc_clear_edit_button">لغو ویرایش</string>
     <string name="nc_clear_history">حذف تمام پیام‌ها</string>

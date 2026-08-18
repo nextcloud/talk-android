@@ -142,6 +142,7 @@
     <string name="nc_certificate_error">إعدادات SSL الخاص بك تمنع الاتصال</string>
     <string name="nc_change_cert_auth">تغيير شهادة المصادقة</string>
     <string name="nc_change_password">تعديل الكلمة السرية</string>
+    <string name="nc_channel">قناة</string>
     <string name="nc_clear_edit_button">إلغاء التحرير</string>
     <string name="nc_clear_history">مسح جميع الرسائل</string>
     <string name="nc_clear_history_success">تمّ مسح جميع الرسائل</string>

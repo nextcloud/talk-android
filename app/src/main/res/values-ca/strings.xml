@@ -145,6 +145,7 @@
     <string name="nc_certificate_error">La vostra configuració SSL ha impedit la connexió</string>
     <string name="nc_change_cert_auth">Canvia el certificat d’autenticació</string>
     <string name="nc_change_password">Canvia la contrasenya</string>
+    <string name="nc_channel">Canal</string>
     <string name="nc_clear_edit_button">Cancel·la l\'edició</string>
     <string name="nc_clear_history">Suprimeix tots els missatges</string>
     <string name="nc_clear_history_success">S\'han suprimit tots els missatges</string>

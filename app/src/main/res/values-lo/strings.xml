@@ -155,6 +155,7 @@
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
     <string name="nc_change_cert_auth">Change authentication certificate</string>
     <string name="nc_change_password">Change Password</string>
+    <string name="nc_channel">ຊ່ອງ</string>
     <string name="nc_clear_edit_button">Cancel editing</string>
     <string name="nc_clear_history">Delete all messages</string>
     <string name="nc_clear_history_success">All messages were deleted</string>

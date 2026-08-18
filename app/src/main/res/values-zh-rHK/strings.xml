@@ -136,6 +136,7 @@
     <string name="nc_add_to_favorites">加到我的最愛</string>
     <string name="nc_add_to_home_screen">新增至主畫面</string>
     <string name="nc_all_ok_operation">完成</string>
+    <string name="nc_announcement">公告</string>
     <string name="nc_attendee_pin">密碼：%1$s</string>
     <string name="nc_biometric_unlock">解鎖 %1$s</string>
     <string name="nc_bluetooth_permission_hint">要啟用藍牙喇叭，請授予「鄰近裝置」權限。</string>
@@ -171,6 +172,7 @@
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
     <string name="nc_change_cert_auth">更改驗證證書</string>
     <string name="nc_change_password">變更密碼</string>
+    <string name="nc_channel">頻道</string>
     <string name="nc_chat_no_messages">尚未有訊息。成為第一個打招呼的人吧！</string>
     <string name="nc_classified_conversation">機密對話</string>
     <string name="nc_clear_edit_button">取消編輯</string>

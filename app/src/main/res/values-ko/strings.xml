@@ -104,6 +104,7 @@
     <string name="nc_certificate_error">SSL 설정에서 연결을 거부함</string>
     <string name="nc_change_cert_auth">인증서 변경</string>
     <string name="nc_change_password">암호 변경</string>
+    <string name="nc_channel">채널</string>
     <string name="nc_clear_edit_button">수정 취소</string>
     <string name="nc_clear_history">모든 메시지 삭제</string>
     <string name="nc_clear_history_success">모든 메시지가 삭제되었습니다.</string>

@@ -155,6 +155,7 @@
     <string name="nc_certificate_error">Usanidi wako wa SSL umezuia muunganisho</string>
     <string name="nc_change_cert_auth">Badilisha cheti cha uthibitishaji</string>
     <string name="nc_change_password">Badili nenosiri</string>
+    <string name="nc_channel">Kituo</string>
     <string name="nc_clear_edit_button">Ghairi uhariri</string>
     <string name="nc_clear_history">Futa jumbe zote </string>
     <string name="nc_clear_history_success">Jumbe zote zilifutwa</string>

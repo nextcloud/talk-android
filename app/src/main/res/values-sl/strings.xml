@@ -114,6 +114,7 @@
     <string name="nc_certificate_error">Nastavitve SSL onemogočajo vzpostavitev povezave</string>
     <string name="nc_change_cert_auth">Spremeni potrdilo za overitev</string>
     <string name="nc_change_password">Spremeni geslo</string>
+    <string name="nc_channel">Kanal</string>
     <string name="nc_clear_edit_button">Prekliči urejanje</string>
     <string name="nc_clear_history">Izbriši vsa sporočila</string>
     <string name="nc_clear_history_success">Vsa sporočilo so izbrisana</string>
