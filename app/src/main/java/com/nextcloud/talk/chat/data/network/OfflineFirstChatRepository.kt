@@ -196,13 +196,13 @@ class OfflineFirstChatRepository @Inject constructor(
         // repaired by an anchored fetch — only closing the backlog above it would keep the marker
         // pinned to the block's oldest message, in the middle of the unread messages.
         val lastReadMessage = conversationModel.lastReadMessage.toLong()
-        val blockReachesUnreadBoundary = lastReadMessage <= 0 ||
+        val blockNotFloatingAboveLastReadMessage = lastReadMessage <= 0 ||
             latestBlock.oldestMessageId <= lastReadMessage ||
             !latestBlock.hasHistory
 
-        Log.d(TAG, "blockReachesUnreadBoundary:$blockReachesUnreadBoundary")
+        Log.d(TAG, "blockNotFloatingAboveLastReadMessage:$blockNotFloatingAboveLastReadMessage")
 
-        if (blockReachesUnreadBoundary) {
+        if (blockNotFloatingAboveLastReadMessage) {
             tryCloseBacklogFromNewestOfflineMessage(latestBlock.newestMessageId)
         } else {
             fetchInitialMessages(weAlreadyHaveSomeOfflineMessages = true)
