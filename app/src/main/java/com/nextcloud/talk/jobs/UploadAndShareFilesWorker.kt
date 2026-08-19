@@ -53,6 +53,8 @@ import com.nextcloud.talk.utils.VideoCompressor
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -62,7 +64,10 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import java.io.File
 import java.io.IOException
+import java.util.Collections
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -107,11 +112,35 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     private var chunkedFileUploader: ChunkedFileUploader? = null
     private var referenceId: String? = null
     private var internalConversationId: String? = null
+    private var uploadDisposable: Disposable? = null
+    private var uploadLatch: CountDownLatch? = null
 
-    @Suppress("Detekt.TooGenericExceptionCaught", "Detekt.LongMethod")
+    /**
+     * WorkManager's own `isStopped`/`onStopped()` only becomes true/fires after
+     * cancelUniqueWork() round-trips through WorkManager's internal executor and Room DB - for a
+     * small/compressed image the whole upload+share can finish faster than that round-trip, so
+     * isStopped alone arrives too late. [cancelledReferenceIds] is set synchronously by the UI
+     * before cancelUniqueWork() is even called, so it's visible to doWork() immediately.
+     */
+    private fun isCancelled(): Boolean = referenceId?.let { cancelledReferenceIds.contains(it) } == true
+
     override fun doWork(): Result {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
+        try {
+            return doUpload()
+        } finally {
+            referenceId?.let { cancelledReferenceIds.remove(it) }
+        }
+    }
+
+    @Suppress(
+        "Detekt.TooGenericExceptionCaught",
+        "Detekt.LongMethod",
+        "Detekt.CyclomaticComplexMethod",
+        "Detekt.ReturnCount"
+    )
+    private fun doUpload(): Result {
         return try {
             currentUser = currentUserProvider.currentUser.blockingGet()
             val sourceFile = inputData.getString(DEVICE_SOURCE_FILE)
@@ -149,6 +178,11 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 useConversationSubfolders = useConversationSubfolders
             )
 
+            if (uploadSuccess && (isStopped || isCancelled())) {
+                // Cancelled right as the upload finished - don't share a cancelled upload.
+                return Result.failure()
+            }
+
             if (uploadSuccess) {
                 // useConversationSubfolders already shares as part of uploadFile() via
                 // postConversationAttachment, so only share explicitly for the plain upload path.
@@ -160,7 +194,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 }
                 Log.e(TAG, "Share operation failed after upload")
                 return failUpload()
-            } else if (isStopped) {
+            } else if (isStopped || isCancelled()) {
                 // since work is cancelled the result would be ignored anyways
                 return Result.failure()
             }
@@ -176,7 +210,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 "Network error while uploading file (attempt ${runAttemptCount + 1}/$MAX_UPLOAD_ATTEMPTS)",
                 e
             )
-            if (runAttemptCount < MAX_UPLOAD_ATTEMPTS - 1) {
+            if (isStopped || isCancelled()) {
+                Result.failure()
+            } else if (runAttemptCount < MAX_UPLOAD_ATTEMPTS - 1) {
                 Result.retry()
             } else {
                 failUpload()
@@ -235,7 +271,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             chunkedFileUploader!!.upload(file!!, mimeType, remotePath)
         } else {
             Log.d(TAG, "starting normal upload (not chunked) of $fileName")
-            FileUploader(
+            val observable = FileUploader(
                 okHttpClient,
                 context,
                 currentUser,
@@ -245,8 +281,36 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 ncApiCoroutines
             )
                 .upload(sourceFileUri, fileName, remotePath, null)
-                .blockingFirst()
+            blockingUpload(observable)
         }
+
+    // unlike .blockingFirst(), keeps a Disposable so onStopped() can cancel the underlying OkHttp call
+    private fun blockingUpload(observable: Observable<Boolean>): Boolean {
+        val latch = CountDownLatch(1)
+        uploadLatch = latch
+        var result = false
+        var error: Throwable? = null
+        uploadDisposable = observable.subscribe(
+            { success ->
+                result = success
+                latch.countDown()
+            },
+            { throwable ->
+                error = throwable
+                latch.countDown()
+            },
+            { latch.countDown() }
+        )
+        latch.await()
+        uploadDisposable = null
+        uploadLatch = null
+
+        if (isStopped || isCancelled()) {
+            return false
+        }
+        error?.let { throw it }
+        return result
+    }
 
     private fun uploadUsingConversationSubfolders(sourceFileUri: Uri, metaData: String?): Boolean =
         runBlocking {
@@ -287,7 +351,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                     .uploadToConversationSubfolder(sourceFileUri, tempRemotePath)
             }
 
-            if (!uploadSuccess) {
+            if (!uploadSuccess || isStopped || isCancelled()) {
                 return@runBlocking false
             }
 
@@ -352,6 +416,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         if (file != null && isChunkedUploading) {
             chunkedFileUploader?.abortUpload {}
         }
+        uploadDisposable?.dispose()
+        uploadLatch?.countDown()
         super.onStopped()
     }
 
@@ -398,6 +464,11 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         // transient network failure and marking the placeholder FAILED.
         private const val MAX_UPLOAD_ATTEMPTS = 4
         const val REQUEST_PERMISSION = 3123
+
+        // referenceIds the user cancelled - set synchronously here, before cancelUniqueWork() is
+        // even called, so doWork() can see it immediately instead of waiting for isStopped, which
+        // only becomes true once WorkManager's own async cancellation dispatch completes.
+        private val cancelledReferenceIds: MutableSet<String> = Collections.newSetFromMap(ConcurrentHashMap())
 
         private val _uploadCompletedFlow: MutableSharedFlow<String> = MutableSharedFlow(
             replay = 1,
@@ -478,6 +549,11 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 .build()
             WorkManager.getInstance().enqueueUniqueWork(fileUri, ExistingWorkPolicy.KEEP, uploadWorker)
             return uploadWorker.id
+        }
+
+        fun cancelUpload(referenceId: String, fileUri: String) {
+            cancelledReferenceIds.add(referenceId)
+            WorkManager.getInstance().cancelUniqueWork(fileUri)
         }
     }
 }

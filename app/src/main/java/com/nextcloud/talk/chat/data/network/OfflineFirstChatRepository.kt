@@ -755,9 +755,8 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
-    override suspend fun deleteTempMessageByReferenceId(referenceId: String) {
-        chatDao.deleteTempChatMessages(internalConversationId, listOf(referenceId))
-    }
+    override suspend fun deleteTempMessageByReferenceId(referenceId: String): Boolean =
+        chatDao.deleteTempChatMessageIfPending(internalConversationId, referenceId) > 0
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun editChatMessage(

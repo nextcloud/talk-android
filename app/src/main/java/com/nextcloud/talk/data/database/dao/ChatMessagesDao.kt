@@ -177,6 +177,23 @@ interface ChatMessagesDao {
     )
     fun deleteTempChatMessages(internalConversationId: String, referenceIds: List<String>)
 
+    /*
+     * Used when the user cancels an upload - unlike deleteTempChatMessages, this must NOT delete
+     * the placeholder once sendStatus has already moved past PENDING (i.e. the upload already
+     * finished and was shared), since by then the message has actually been sent and deleting the
+     * local placeholder would only hide it until the next sync brings it back.
+     */
+    @Query(
+        value = """
+            DELETE FROM ChatMessages
+            WHERE internalConversationId = :internalConversationId
+            AND referenceId = :referenceId
+            AND isTemporary = 1
+            AND sendStatus = 'PENDING'
+        """
+    )
+    fun deleteTempChatMessageIfPending(internalConversationId: String, referenceId: String): Int
+
     @Update
     fun updateChatMessage(message: ChatMessageEntity)
 

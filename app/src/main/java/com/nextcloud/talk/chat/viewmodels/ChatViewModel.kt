@@ -235,7 +235,7 @@ class ChatViewModel @AssistedInject constructor(
 
     fun cancelUpload(referenceId: String) {
         val fileUri = uploadReferenceToUri.remove(referenceId) ?: return
-        WorkManager.getInstance(NextcloudTalkApplication.sharedApplication!!).cancelUniqueWork(fileUri)
+        UploadAndShareFilesWorker.cancelUpload(referenceId, fileUri)
         viewModelScope.launch {
             chatRepository.deleteTempMessageByReferenceId(referenceId)
         }
