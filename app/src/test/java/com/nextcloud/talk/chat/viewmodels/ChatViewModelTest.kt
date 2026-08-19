@@ -61,6 +61,13 @@ class ChatViewModelTest {
         )
     }
 
+    @Test
+    fun `isPlausibleLastReadMessageId treats a newest known id of 0 as unknown`() {
+        // A federated conversation's cached lastMessage can carry an id of 0 - a real message id
+        // is never 0, so this must not be treated as a real ceiling near the start of the room.
+        assertTrue(ChatViewModel.isPlausibleLastReadMessageId(messageId = 136556, newestKnownRealMessageId = 0L))
+    }
+
     // The unread marker latch: the marker position must only be derived from the visible window
     // when the window provably reaches back to the unread boundary — otherwise a window of
     // only-unread messages (e.g. after a capped fetch of the newest messages) would place the

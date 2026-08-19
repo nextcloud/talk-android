@@ -2426,8 +2426,16 @@ class ChatViewModel @AssistedInject constructor(
 
         private const val PLAUSIBLE_MESSAGE_ID_BUFFER = 10_000L
 
-        fun isPlausibleLastReadMessageId(messageId: Int, newestKnownRealMessageId: Long?): Boolean =
-            newestKnownRealMessageId == null || messageId <= newestKnownRealMessageId + PLAUSIBLE_MESSAGE_ID_BUFFER
+        /**
+         * A real server-assigned message id is always positive, so a null, zero or negative
+         * [newestKnownRealMessageId] is never a trustworthy ceiling to judge [messageId] against -
+         * e.g. a federated conversation's cached lastMessage can carry an id of 0 when it was
+         * never populated. Without a trustworthy ceiling, [messageId] is accepted unchecked here.
+         */
+        fun isPlausibleLastReadMessageId(messageId: Int, newestKnownRealMessageId: Long?): Boolean {
+            val trustworthyCeiling = newestKnownRealMessageId?.takeIf { it > 0 } ?: return true
+            return messageId <= trustworthyCeiling + PLAUSIBLE_MESSAGE_ID_BUFFER
+        }
     }
 
     sealed class OutOfOfficeUIState {
