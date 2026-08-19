@@ -36,6 +36,7 @@ fun load(
         .size(Size.ORIGINAL)
         .error(errorPlaceholderImage)
         .placeholder(errorPlaceholderImage)
+        .crossfade(true)
     if (!animated) {
         builder.transformations(RoundedCornersTransformation())
     }

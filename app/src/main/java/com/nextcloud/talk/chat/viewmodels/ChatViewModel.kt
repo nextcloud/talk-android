@@ -2042,6 +2042,11 @@ class ChatViewModel @AssistedInject constructor(
             return
         }
 
+        // Same as a regular text send: once the user has sent something themselves, the unread
+        // marker must never latch onto it once it syncs back with its real (higher) message id -
+        // otherwise the marker can end up sitting right above the file the user just sent.
+        onMessageSent()
+
         if (replyToMessageId != 0) {
             metaDataMap["replyTo"] = replyToMessageId.toString()
         }
@@ -2490,7 +2495,12 @@ class ChatViewModel @AssistedInject constructor(
 
         fun stableKey(): Any =
             when (this) {
-                is MessageItem -> "msg_${uiMessage.id}"
+                // Prefer referenceId when present: it survives the swap from the local upload
+                // placeholder (negative placeholderId) to the real synced message (real server id),
+                // so Compose recomposes the existing list slot in place instead of removing and
+                // re-inserting a new one - which is what caused the visible flicker/pop.
+                is MessageItem -> uiMessage.referenceId?.takeIf { it.isNotBlank() }?.let { "msg_ref_$it" }
+                    ?: "msg_${uiMessage.id}"
                 is DateHeaderItem -> "header_$date"
                 is UnreadMessagesMarkerItem -> "last_read_$date"
                 is LoadGapItem -> "load_gap_$anchorMessageId"

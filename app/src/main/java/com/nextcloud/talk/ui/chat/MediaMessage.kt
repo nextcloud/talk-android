@@ -9,6 +9,8 @@ package com.nextcloud.talk.ui.chat
 
 import android.graphics.Bitmap
 import android.util.Log
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -47,10 +49,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.network.HttpException
 import com.nextcloud.talk.R
@@ -81,9 +85,16 @@ val LocalUploadedLocalPreviewProvider = compositionLocalOf<(referenceId: String)
 private const val FILE_PLACEHOLDER_MESSAGE = "{file}"
 private const val PREVIEW_MAX_RETRIES = 3
 private const val PREVIEW_RETRY_DELAY_MS = 2_000L
+private const val MEDIA_CROSSFADE_DURATION_MS = 300
 private const val TAG = "MediaMessage"
 
-private val mediaRadiusBig = 8.dp
+// bubbleRadiusBig (ChatMessageScaffold.kt) minus mediaInset below, so the media's own rounded
+// corner nests concentrically inside the bubble's corner instead of a visibly mismatched arc.
+private val mediaRadiusBig = 6.dp
+
+// bubbleRadiusSmall (2.dp) minus mediaInset would go negative, so this can't nest concentrically
+// like mediaRadiusBig does - a small fixed rounding instead of a hard 0 corner still looks better
+// than a perfectly sharp edge sitting inside the bubble's own (slightly rounded) grouped corner.
 private val mediaRadiusSmall = 2.dp
 
 private val uploadSpinnerSize = 56.dp
@@ -170,8 +181,8 @@ fun MediaMessage(
     }
     val hasCaption = captionText != null
     val mediaInset = 4.dp
-    val mediaShape = remember(message.incoming) {
-        shape(message.incoming)
+    val mediaShape = remember(message.incoming, message.isGrouped, message.isGroupedWithNext) {
+        shape(message.incoming, message.isGrouped, message.isGroupedWithNext)
     }
 
     MessageScaffold(
@@ -236,7 +247,11 @@ fun MediaMessage(
                 }
                 val fallbackPainter = painterResource(typeContent.drawableResourceId)
 
-                val ownUploadPlaceholder = blurhashPainter ?: localPreviewPainter ?: fallbackPainter
+                // Prefer the local file over blurhash when both are available: blurhash is a rough
+                // color-blob approximation meant for messages from other users where we don't have
+                // the actual bytes - for our own just-uploaded file we already have the real image on
+                // disk, so showing blurhash instead would be a needless downgrade.
+                val ownUploadPlaceholder = localPreviewPainter ?: blurhashPainter ?: fallbackPainter
 
                 val mediaModifier = Modifier
                     .fillMaxWidth()
@@ -259,17 +274,11 @@ fun MediaMessage(
                             painter = localVideoFramePainter,
                             contentDescription = stringResource(R.string.media_message_content_description),
                             modifier = clickableModifier,
-                            contentScale = ContentScale.FillWidth
+                            contentScale = ContentScale.Crop
                         )
                     } else {
-                        AsyncImage(
+                        val loadedPainter = rememberAsyncImagePainter(
                             model = loadedImage,
-                            contentDescription = stringResource(R.string.media_message_content_description),
-                            placeholder = ownUploadPlaceholder,
-                            error = ownUploadPlaceholder,
-                            fallback = ownUploadPlaceholder,
-                            modifier = clickableModifier,
-                            contentScale = ContentScale.FillWidth,
                             onError = { state ->
                                 val cause = state.result.throwable
                                 val isServerError = cause is HttpException && cause.response.code in 500..599
@@ -294,6 +303,35 @@ fun MediaMessage(
                                 }
                             }
                         )
+                        val isLoaded = loadedPainter.state is AsyncImagePainter.State.Success
+                        val loadedAlpha by animateFloatAsState(
+                            targetValue = if (isLoaded) 1f else 0f,
+                            animationSpec = tween(durationMillis = MEDIA_CROSSFADE_DURATION_MS),
+                            label = "mediaLoadedAlpha"
+                        )
+
+                        // Own explicit crossfade instead of relying on Coil's built-in one: the
+                        // placeholder is a Compose-supplied Painter (not a Coil-managed Drawable), so
+                        // Coil's crossfade transition doesn't reliably fade from what's actually on
+                        // screen - it can jump straight to the loaded image, reading as a flash rather
+                        // than a fade. Keeping the placeholder as a permanent base layer and fading the
+                        // loaded image in on top guarantees a smooth, controllable transition instead.
+                        Box(modifier = clickableModifier) {
+                            Image(
+                                painter = ownUploadPlaceholder,
+                                contentDescription = stringResource(R.string.media_message_content_description),
+                                modifier = Modifier.matchParentSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                            Image(
+                                painter = loadedPainter,
+                                contentDescription = stringResource(R.string.media_message_content_description),
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .alpha(loadedAlpha),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                     }
 
                     if (showPlayButton) {
@@ -344,8 +382,8 @@ fun UploadingMediaMessage(
     val hasCaption = typeContent.caption != null
 
     val mediaInset = 4.dp
-    val mediaShape = remember(message.incoming) {
-        shape(message.incoming)
+    val mediaShape = remember(message.incoming, message.isGrouped, message.isGroupedWithNext) {
+        shape(message.incoming, message.isGrouped, message.isGroupedWithNext)
     }
 
     MessageScaffold(
@@ -369,7 +407,7 @@ fun UploadingMediaMessage(
                                 .blur(4.dp)
                                 .padding(mediaInset)
                                 .clip(mediaShape),
-                            contentScale = ContentScale.FillWidth
+                            contentScale = ContentScale.Crop
                         )
                     } else if (isVideo && typeContent.localFileUri.isNotEmpty()) {
                         UploadingVideoPreview(
@@ -505,22 +543,29 @@ private fun UploadingVideoPreview(
     }
 }
 
-fun shape(incoming: Boolean): RoundedCornerShape =
-    if (incoming) {
+// Mirrors ChatMessageScaffold's own bubble-shape logic (groupedSideTop/groupedSideBottom) exactly,
+// so the media's clip always nests inside whichever corner radius the bubble actually rendered for
+// this specific message's grouping state - a fixed shape here would only ever match one of the two
+// possible bubble shapes and visibly mismatch on the other.
+fun shape(incoming: Boolean, isGrouped: Boolean, isGroupedWithNext: Boolean): RoundedCornerShape {
+    val groupedSideTop = if (isGrouped) mediaRadiusSmall else mediaRadiusBig
+    val groupedSideBottom = if (isGroupedWithNext) mediaRadiusSmall else mediaRadiusBig
+    return if (incoming) {
         RoundedCornerShape(
-            topStart = mediaRadiusSmall,
+            topStart = groupedSideTop,
             topEnd = mediaRadiusBig,
             bottomEnd = mediaRadiusBig,
-            bottomStart = mediaRadiusBig
+            bottomStart = groupedSideBottom
         )
     } else {
         RoundedCornerShape(
             topStart = mediaRadiusBig,
-            topEnd = mediaRadiusSmall,
-            bottomEnd = mediaRadiusBig,
+            topEnd = groupedSideTop,
+            bottomEnd = groupedSideBottom,
             bottomStart = mediaRadiusBig
         )
     }
+}
 
 private fun previewUploadingContent(mimeType: String? = "image/jpeg") =
     MessageTypeContent.UploadingMedia(
