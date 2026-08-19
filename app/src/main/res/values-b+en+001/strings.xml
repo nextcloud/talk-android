@@ -135,8 +135,10 @@
     <string name="nc_add_participants">Add participants</string>
     <string name="nc_add_to_favorites">Add to favourites</string>
     <string name="nc_add_to_home_screen">Add to home screen</string>
+    <string name="nc_admin_only">Admin only</string>
     <string name="nc_all_ok_operation">OK, all done!</string>
     <string name="nc_announcement">Announcement</string>
+    <string name="nc_announcement_description">Conversation for admins to inform a fixed audience, which cannot be left.</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Unlock %1$s</string>
     <string name="nc_bluetooth_permission_hint">To enable Bluetooth speakers please grant \"Nearby devices\" permission.</string>
@@ -173,6 +175,8 @@
     <string name="nc_change_cert_auth">Change authentication certificate</string>
     <string name="nc_change_password">Change Password</string>
     <string name="nc_channel">Channel</string>
+    <string name="nc_channel_description">Only moderators can post, everybody else can only react</string>
+    <string name="nc_channel_only_moderators_can_post">Only moderators can post in this channel</string>
     <string name="nc_chat_no_messages">No messages yet. Be the first to say hello!</string>
     <string name="nc_classified_conversation">Classified conversation</string>
     <string name="nc_clear_edit_button">Cancel editing</string>

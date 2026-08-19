@@ -196,6 +196,7 @@
     <string name="nc_common_unknown">Inconnu</string>
     <string name="nc_compress_images">Compresser les images et les vidéos</string>
     <string name="nc_compress_in_progress">Compression</string>
+    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_configure_cert_auth">Sélectionner le certificat d\'authentification</string>
     <string name="nc_confirm">Confirmer</string>
     <string name="nc_connecting_call">Connexion…</string>
