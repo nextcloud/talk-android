@@ -6,9 +6,12 @@
  */
 
 package com.nextcloud.talk.chat.data.io
-
-import android.media.MediaPlayer
 import android.util.Log
+import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackParameters
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.ui.PlaybackSpeed
@@ -28,6 +31,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileNotFoundException
 import kotlin.math.ceil
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Abstraction over the [MediaPlayer](https://developer.android.com/reference/android/media/MediaPlayer) class used
@@ -81,7 +85,7 @@ class MediaPlayerManager : LifecycleAwareManager {
         get() = _mediaPlayerSeekBarPosition
     private val _mediaPlayerSeekBarPosition: MutableSharedFlow<Int> = MutableSharedFlow()
 
-    private var mediaPlayer: MediaPlayer? = null
+    private var mediaPlayer: ExoPlayer? = null
     private var loop = false
     private var scope = MainScope()
 
@@ -106,7 +110,7 @@ class MediaPlayerManager : LifecycleAwareManager {
             init(path)
         } else {
             _managerState.value = MediaPlayerManagerState.RESUMED
-            mediaPlayer!!.start()
+            mediaPlayer!!.play()
             loop = true
             scope.launch { seekbarUpdateObserver() }
         }
@@ -121,13 +125,13 @@ class MediaPlayerManager : LifecycleAwareManager {
             stop()
         }
 
-        val shouldReset = playQueue.first().first != currentDataSource
+        val shouldReset = playQueue.isNotEmpty() && playQueue.first().first != currentDataSource
 
         if (mediaPlayer == null || !scope.isActive || shouldReset) {
             initCycling()
         } else {
             _managerState.value = MediaPlayerManagerState.RESUMED
-            mediaPlayer!!.start()
+            mediaPlayer!!.play()
             loop = true
             scope.launch { seekbarUpdateObserver() }
         }
@@ -171,46 +175,48 @@ class MediaPlayerManager : LifecycleAwareManager {
     fun seekTo(progress: Int) {
         if (mediaPlayer != null) {
             val pos = mediaPlayer!!.duration * (progress / DIVIDER)
-            mediaPlayer!!.seekTo(pos.toInt())
+            mediaPlayer!!.seekTo(pos.toLong())
             mediaPlayerPosition = pos.toInt()
         }
     }
 
     private suspend fun seekbarUpdateObserver() {
+        _currentCycledMessage.value?.voiceMessageDuration = mediaPlayerDuration / ONE_SEC
+        _currentCycledMessage.value?.resetVoiceMessage = false
         withContext(Dispatchers.IO) {
-            _currentCycledMessage.value?.voiceMessageDuration = mediaPlayerDuration / ONE_SEC
-            _currentCycledMessage.value?.resetVoiceMessage = false
             while (true) {
                 if (!loop) {
                     // NOTE: ok so this doesn't stop the loop, but rather stop the update. Wasteful, but minimal
-                    delay(SEEKBAR_UPDATE_DELAY)
+                    delay(SEEKBAR_UPDATE_DELAY.milliseconds)
                     continue
                 }
 
-                mediaPlayer?.let { player ->
-                    try {
-                        if (!player.isPlaying) return@let
-                    } catch (e: IllegalStateException) {
-                        Log.e(TAG, "Seekbar updated during an improper state: $e")
-                        return@let
-                    }
+                withContext(Dispatchers.Main) {
+                    mediaPlayer?.let { p ->
+                        try {
+                            if (!p.isPlaying) return@let
+                        } catch (e: IllegalStateException) {
+                            Log.e(TAG, "Seekbar updated during an improper state: $e")
+                            return@let
+                        }
 
-                    val pos = player.currentPosition
-                    mediaPlayerPosition = pos
-                    val progress = (pos.toFloat() / mediaPlayerDuration) * DIVIDER
-                    val progressI = ceil(progress).toInt()
-                    val seconds = (pos / ONE_SEC)
-                    _mediaPlayerSeekBarPosition.emit(progressI)
-                    _currentCycledMessage.value?.let { msg ->
-                        msg.isPlayingVoiceMessage = true
-                        msg.voiceMessageSeekbarProgress = progressI
-                        msg.voiceMessagePlayedSeconds = seconds
-                        if (progressI >= IS_PLAYED_CUTOFF) msg.wasPlayedVoiceMessage = true
-                        _mediaPlayerSeekBarPositionMsg.emit(msg)
+                        val pos = p.currentPosition
+                        mediaPlayerPosition = pos.toInt()
+                        val progress = (pos.toFloat() / mediaPlayerDuration) * DIVIDER
+                        val progressI = ceil(progress).toInt()
+                        val seconds = (pos / ONE_SEC).toInt()
+                        _mediaPlayerSeekBarPosition.emit(progressI)
+                        _currentCycledMessage.value?.let { msg ->
+                            msg.isPlayingVoiceMessage = true
+                            msg.voiceMessageSeekbarProgress = progressI
+                            msg.voiceMessagePlayedSeconds = seconds
+                            if (progressI >= IS_PLAYED_CUTOFF) msg.wasPlayedVoiceMessage = true
+                            _mediaPlayerSeekBarPositionMsg.emit(msg)
+                        }
                     }
                 }
 
-                delay(SEEKBAR_UPDATE_DELAY)
+                delay(SEEKBAR_UPDATE_DELAY.milliseconds)
             }
         }
     }
@@ -243,23 +249,27 @@ class MediaPlayerManager : LifecycleAwareManager {
     fun setPlayBackSpeed(speed: PlaybackSpeed) {
         requestedPlaybackSpeed = speed
         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-            mediaPlayer!!.playbackParams.let { params ->
-                params.speed = speed.value
-                mediaPlayer!!.playbackParams = params
-            }
+            mediaPlayer!!.playbackParameters = PlaybackParameters(speed.value)
         }
     }
 
     private fun init(path: String) {
         try {
-            mediaPlayer = MediaPlayer().apply {
+            val context = NextcloudTalkApplication.sharedApplication!!.applicationContext
+            mediaPlayer = ExoPlayer.Builder(context).build().apply {
                 _managerState.value = MediaPlayerManagerState.SETUP
-                setDataSource(path)
+                setMediaItem(MediaItem.fromUri(path))
                 currentDataSource = path
-                prepareAsync()
-                setOnPreparedListener {
-                    onPrepare()
-                }
+                prepare()
+                addListener(object : Player.Listener {
+                    override fun onPlaybackStateChanged(playbackState: Int) {
+                        if (playbackState == Player.STATE_READY &&
+                            _managerState.value == MediaPlayerManagerState.SETUP
+                        ) {
+                            onPrepare()
+                        }
+                    }
+                })
             }
         } catch (e: Exception) {
             Log.e(ChatActivity.TAG, "failed to initialize mediaPlayer", e)
@@ -269,48 +279,53 @@ class MediaPlayerManager : LifecycleAwareManager {
 
     private fun initCycling() {
         try {
-            mediaPlayer = MediaPlayer().apply {
+            val context = NextcloudTalkApplication.sharedApplication!!.applicationContext
+            mediaPlayer = ExoPlayer.Builder(context).build().apply {
                 _managerState.value = MediaPlayerManagerState.SETUP
                 val pair = playQueue.iterator().next()
-                setDataSource(pair.first)
+                setMediaItem(MediaItem.fromUri(pair.first))
                 currentDataSource = pair.first
                 _currentCycledMessage.value = pair.second
                 playQueue.removeAt(0)
-                prepareAsync()
-                setOnPreparedListener {
-                    onPrepare()
-                }
-
-                setOnCompletionListener {
-                    if (playQueue.iterator().hasNext() && playQueue.first().first != currentDataSource) {
-                        _managerState.value = MediaPlayerManagerState.SETUP
-                        val nextPair = playQueue.iterator().next()
-                        playQueue.removeAt(0)
-                        mediaPlayer?.reset()
-                        mediaPlayer?.setDataSource(nextPair.first)
-                        _currentCycledMessage.value = nextPair.second
-                        prepare()
-                    } else {
-                        mediaPlayer?.release()
-                        mediaPlayer = null
-                        _backgroundPlayUIFlow.tryEmit(null)
-                        _currentCycledMessage.value?.let {
-                            it.resetVoiceMessage = true
-                            it.isPlayingVoiceMessage = false
-                            it.voiceMessageSeekbarProgress = 0
-                            it.voiceMessagePlayedSeconds = 0
-                        }
-                        val completedMessage = _currentCycledMessage.value
-                        _currentCycledMessage.value = null
-                        if (completedMessage != null) {
-                            scope.launch {
-                                _mediaPlayerSeekBarPositionMsg.emit(completedMessage)
+                prepare()
+                addListener(object : Player.Listener {
+                    override fun onPlaybackStateChanged(playbackState: Int) {
+                        if (playbackState == Player.STATE_READY &&
+                            _managerState.value == MediaPlayerManagerState.SETUP
+                        ) {
+                            onPrepare()
+                        } else if (playbackState == Player.STATE_ENDED) {
+                            if (playQueue.iterator().hasNext() && playQueue.first().first != currentDataSource) {
+                                _managerState.value = MediaPlayerManagerState.SETUP
+                                val nextPair = playQueue.iterator().next()
+                                playQueue.removeAt(0)
+                                mediaPlayer?.setMediaItem(MediaItem.fromUri(nextPair.first))
+                                currentDataSource = nextPair.first
+                                _currentCycledMessage.value = nextPair.second
+                                prepare()
+                            } else {
+                                mediaPlayer?.release()
+                                mediaPlayer = null
+                                _backgroundPlayUIFlow.tryEmit(null)
+                                _currentCycledMessage.value?.let {
+                                    it.resetVoiceMessage = true
+                                    it.isPlayingVoiceMessage = false
+                                    it.voiceMessageSeekbarProgress = 0
+                                    it.voiceMessagePlayedSeconds = 0
+                                }
+                                val completedMessage = _currentCycledMessage.value
+                                _currentCycledMessage.value = null
+                                if (completedMessage != null) {
+                                    scope.launch {
+                                        _mediaPlayerSeekBarPositionMsg.emit(completedMessage)
+                                    }
+                                }
+                                loop = false
+                                _managerState.value = MediaPlayerManagerState.STOPPED
                             }
                         }
-                        loop = false
-                        _managerState.value = MediaPlayerManagerState.STOPPED
                     }
-                }
+                })
             }
         } catch (e: Exception) {
             Log.e(ChatActivity.TAG, "failed to initialize mediaPlayer", e)
@@ -318,8 +333,8 @@ class MediaPlayerManager : LifecycleAwareManager {
         }
     }
 
-    private fun MediaPlayer.onPrepare() {
-        mediaPlayerDuration = this.duration
+    private fun ExoPlayer.onPrepare() {
+        mediaPlayerDuration = this.duration.toInt()
 
         val playBackSpeed = requestedPlaybackSpeed?.value
             ?: if (_currentCycledMessage.value?.actorId == null) {
@@ -327,9 +342,9 @@ class MediaPlayerManager : LifecycleAwareManager {
             } else {
                 appPreferences.getPreferredPlayback(_currentCycledMessage.value?.actorId).value
             }
-        mediaPlayer!!.playbackParams = mediaPlayer!!.playbackParams.setSpeed(playBackSpeed)
+        playbackParameters = PlaybackParameters(playBackSpeed)
 
-        start()
+        play()
         _managerState.value = MediaPlayerManagerState.STARTED
         _currentCycledMessage.value?.let {
             it.isPlayingVoiceMessage = true
