@@ -390,14 +390,7 @@ fun UploadingMediaMessage(
                         )
                     }
 
-                    if (isSent) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .padding(8.dp)
-                                .size(24.dp)
-                        )
-                    } else if (!isFailed) {
+                    if (!isSent && !isFailed) {
                         Box(
                             modifier = Modifier
                                 .matchParentSize()
