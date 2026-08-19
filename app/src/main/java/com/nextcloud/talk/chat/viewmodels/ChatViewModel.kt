@@ -1819,11 +1819,20 @@ class ChatViewModel @AssistedInject constructor(
      * failures with backoff. The server stays the authority — every room list sync re-asserts its
      * read state, so a marker that ultimately could not be sent falls back to the server state
      * instead of leaving the client diverged.
+     *
+     * [markPendingReadMarker] runs synchronously, before anything is launched, so the marker is
+     * armed the instant this returns: leaving the chat commonly races the conversation list's own
+     * resume-triggered sync, and that race is only guarded correctly if the pending marker already
+     * exists by the time the sync's response is merged. [updateLocalReadState] itself does two
+     * suspending database reads before writing - registering the marker only there, inside a
+     * launched coroutine, previously left a real gap (observed at ~250ms, more under main-thread
+     * contention) during which such a sync could see no pending marker yet and apply unguarded.
      */
     fun setChatReadMessage(lastReadMessage: Int) {
         if (!this::currentUser.isInitialized) {
             return
         }
+        chatRepository.markPendingReadMarker(lastReadMessage)
         viewModelScope.launch {
             chatRepository.updateLocalReadState(lastReadMessage)
         }

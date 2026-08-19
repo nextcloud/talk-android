@@ -369,6 +369,10 @@ class OfflineFirstChatRepository @Inject constructor(
         conversationListUpdater.updateLocalReadState(syncTarget, lastReadMessage)
     }
 
+    override fun markPendingReadMarker(lastReadMessage: Int) {
+        conversationListUpdater.markPendingReadMarker(syncTarget.internalConversationId, lastReadMessage)
+    }
+
     override suspend fun loadMoreMessages(
         anchorMessageId: Long,
         direction: ChatMessageRepository.LoadMoreDirection,

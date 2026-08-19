@@ -80,6 +80,17 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun updateLocalReadState(lastReadMessage: Int)
 
     /**
+     * Registers [lastReadMessage] as a pending read marker synchronously, without going through
+     * [updateLocalReadState]'s suspending database reads first. Call this before launching the
+     * actual local write: leaving the chat can race a room list sync triggered by the conversation
+     * list resuming at (almost) the same time, and that sync's response must find the marker
+     * already pending to guard against a server state it computed before the marker was sent -
+     * a gap of even a couple hundred milliseconds while registration waits on database reads is
+     * enough for that race to lose.
+     */
+    fun markPendingReadMarker(lastReadMessage: Int)
+
+    /**
      * Loads messages from local storage. If the messages are not found, then it
      * synchronizes the database with the server, before retrying exactly once. Only
      * emits to [messageFlow] if the message list is not empty.

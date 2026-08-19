@@ -47,6 +47,7 @@ import retrofit2.Response
  * last read message, otherwise the initial window is re-fetched — anchored at the boundary when
  * the unread backlog calls for it.
  */
+@Suppress("TooManyFunctions")
 class OfflineFirstChatRepositoryTest {
 
     private val logger: Logger = mock()
@@ -55,6 +56,7 @@ class OfflineFirstChatRepositoryTest {
     private val conversationsDao: ConversationsDao = mock()
     private val network: ChatNetworkDataSource = mock()
     private val networkMonitor: NetworkMonitor = mock()
+    private val conversationListUpdater = ConversationListUpdater(chatDao, chatBlocksDao, conversationsDao)
 
     private lateinit var repository: OfflineFirstChatRepository
 
@@ -78,9 +80,21 @@ class OfflineFirstChatRepositoryTest {
                 networkMonitor,
                 ConversationListUpdater(chatDao, chatBlocksDao, conversationsDao)
             ),
-            ConversationListUpdater(chatDao, chatBlocksDao, conversationsDao)
+            conversationListUpdater
         )
         repository.initData(user(), CREDENTIALS, CHAT_URL, ROOM_TOKEN, null)
+    }
+
+    @Test
+    fun `markPendingReadMarker registers the marker synchronously, without any suspension`() {
+        // Leaving the chat can race a room list sync triggered by the conversation list resuming
+        // at (almost) the same time - that race is only guarded correctly if the pending marker
+        // already exists by the time the sync's response is merged, so registering it must not
+        // wait on updateLocalReadState's database reads. Calling it outside of runTest/any
+        // coroutine proves no suspension is involved.
+        repository.markPendingReadMarker(42)
+
+        assertEquals(42, conversationListUpdater.pendingReadMarker(INTERNAL_CONVERSATION_ID))
     }
 
     @Test
