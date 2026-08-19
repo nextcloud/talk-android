@@ -135,8 +135,10 @@
     <string name="nc_add_participants">新增成員</string>
     <string name="nc_add_to_favorites">加到我的最愛</string>
     <string name="nc_add_to_home_screen">新增至主畫面</string>
+    <string name="nc_admin_only">僅管理員</string>
     <string name="nc_all_ok_operation">完成</string>
     <string name="nc_announcement">公告</string>
+    <string name="nc_announcement_description">供管理員向固定對象提供資訊的對話，無法離開。</string>
     <string name="nc_attendee_pin">密碼：%1$s</string>
     <string name="nc_biometric_unlock">解鎖 %1$s</string>
     <string name="nc_bluetooth_permission_hint">要啟用藍牙喇叭，請授予「鄰近裝置」權限。</string>
@@ -173,6 +175,8 @@
     <string name="nc_change_cert_auth">變更驗證憑證</string>
     <string name="nc_change_password">變更密碼</string>
     <string name="nc_channel">頻道</string>
+    <string name="nc_channel_description">僅主持人可以張貼，其他人僅能做出反應</string>
+    <string name="nc_channel_only_moderators_can_post">僅主持人可以在此頻道張貼</string>
     <string name="nc_chat_no_messages">目前尚無訊息。快來當第一個打招呼的人吧！</string>
     <string name="nc_classified_conversation">機密對話</string>
     <string name="nc_clear_edit_button">取消編輯</string>

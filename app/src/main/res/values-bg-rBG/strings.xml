@@ -106,6 +106,7 @@
     <string name="nc_certificate_error">Вашата настройка на SSL, предотврати връзката </string>
     <string name="nc_change_cert_auth">Променете сертификата за удостоверяване</string>
     <string name="nc_change_password">Промяна на парола</string>
+    <string name="nc_channel">Канал</string>
     <string name="nc_clear_edit_button">Отказ на редактирането</string>
     <string name="nc_clear_history">Изтриване на всички съобщения</string>
     <string name="nc_clear_history_success">Всички съобщения бяха изтрити </string>

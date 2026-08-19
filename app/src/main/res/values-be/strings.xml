@@ -161,6 +161,7 @@
     <string name="nc_certificate_error">Ваша канфігурацыя SSL перашкодзіла злучэнню</string>
     <string name="nc_change_cert_auth">Змяніць сертыфікат аўтэнтыфікацыі</string>
     <string name="nc_change_password">Змяніць пароль</string>
+    <string name="nc_channel">Канал</string>
     <string name="nc_clear_edit_button">Скасаваць рэдагаванне</string>
     <string name="nc_clear_history">Выдаліць усе паведамленні</string>
     <string name="nc_clear_history_success">Усе паведамленні былі выдалены</string>

@@ -135,8 +135,10 @@
     <string name="nc_add_participants">Teilnehmer hinzufügen</string>
     <string name="nc_add_to_favorites">Zu Favoriten hinzufügen</string>
     <string name="nc_add_to_home_screen">Zum Startbildschirm hinzufügen</string>
+    <string name="nc_admin_only">Nur Administration</string>
     <string name="nc_all_ok_operation">OK, alles erledigt!</string>
     <string name="nc_announcement">Ankündigung</string>
+    <string name="nc_announcement_description">Unterhaltung für die Administration, die nicht verlassen werden kann, um ein bestimmtes Publikum zu informieren.</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">%1$s entsperren</string>
     <string name="nc_bluetooth_permission_hint">Um Bluetooth-Lautsprecher zu aktivieren, bitte die Berechtigung \"Geräte in der Nähe\" erteilen.</string>
@@ -173,6 +175,8 @@
     <string name="nc_change_cert_auth">Authentifizierungs-Zertifikat ändern</string>
     <string name="nc_change_password">Passwort ändern</string>
     <string name="nc_channel">Kanal</string>
+    <string name="nc_channel_description">Nur die Moderation kann posten, alle anderen können nur reagieren</string>
+    <string name="nc_channel_only_moderators_can_post">Nur die Moderation kann auf diesem Kanal posten</string>
     <string name="nc_chat_no_messages">Noch keine Nachrichten. Seien Sie der Erste, der Hallo sagt!</string>
     <string name="nc_classified_conversation">Geheime Unterhaltung</string>
     <string name="nc_clear_edit_button">Bearbeitung abbrechen</string>

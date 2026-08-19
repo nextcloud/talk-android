@@ -135,8 +135,10 @@
     <string name="nc_add_participants">Lisa osalejaid</string>
     <string name="nc_add_to_favorites">Lisa lemmikutesse</string>
     <string name="nc_add_to_home_screen">Lisa avalehel</string>
+    <string name="nc_admin_only">Vaid peakasutajatele</string>
     <string name="nc_all_ok_operation">Tore, kõik on tehtud!</string>
     <string name="nc_announcement">Teadaanne</string>
+    <string name="nc_announcement_description">Vestlus peakasutajatele konkreetse kuulajaskonna teavitamiseks, millest lahkuda ei saa.</string>
     <string name="nc_attendee_pin">PIN-kood: %1$s</string>
     <string name="nc_biometric_unlock">Ava lukustus: %1$s </string>
     <string name="nc_bluetooth_permission_hint">Et saaksid pruukida Bluetoothi abil ühendatud kõlareid, palun luba rakendusel kasutada õigust „Seadmes lähikonnas“.</string>
@@ -173,6 +175,8 @@
     <string name="nc_change_cert_auth">Muuda autentimise sertifikaati</string>
     <string name="nc_change_password">Muuda salasõna</string>
     <string name="nc_channel">Kanal</string>
+    <string name="nc_channel_description">Vaid moderaatorid võivad postitada, teised saavad ainult reageerida</string>
+    <string name="nc_channel_only_moderators_can_post">Vaid moderaatorid võivad siia kanalisse postitada</string>
     <string name="nc_chat_no_messages">Sõnumeid veel pole. Ole esimene, kes ütleb tere!</string>
     <string name="nc_classified_conversation">Salastatud vestlus</string>
     <string name="nc_clear_edit_button">Katkesta muutmine</string>
