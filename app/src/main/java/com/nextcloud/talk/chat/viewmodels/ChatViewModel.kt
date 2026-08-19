@@ -30,8 +30,7 @@ import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.ui.model.toUiModel
-import com.nextcloud.talk.chat.viewmodels.ChatViewModel.Companion.POST_UPLOAD_FETCH_MAX_ATTEMPTS
-import com.nextcloud.talk.chat.viewmodels.ChatViewModel.Companion.POST_UPLOAD_FETCH_RETRY_DELAY_MS
+import com.nextcloud.talk.chat.viewmodels.ChatViewModel.Companion.POST_UPLOAD_FETCH_RETRY_DELAYS_MS
 import com.nextcloud.talk.conversationlist.DirectShareHelper
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
@@ -1358,29 +1357,34 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     /**
-     * Retries [ChatMessageRepository.fetchNewMessages] up to [POST_UPLOAD_FETCH_MAX_ATTEMPTS] times,
-     * waiting [POST_UPLOAD_FETCH_RETRY_DELAY_MS] ms between attempts.  Stops as soon as at least one
-     * new message is received so that the happy-path (server responds quickly) has no unnecessary
-     * delay, while a slow server still gets a few extra chances before we fall back to the regular
-     * insurance-request cycle.
+     * Retries [ChatMessageRepository.fetchNewMessages], waiting [POST_UPLOAD_FETCH_RETRY_DELAYS_MS]
+     * between attempts (one attempt per delay, plus the initial immediate one). Stops as soon as at
+     * least one new message is received so that the happy-path (server responds quickly) has no
+     * unnecessary delay, while a slow/indexing-lagged server still gets ~20s of extra chances
+     * (increasing backoff) before we fall back to the regular insurance-request cycle - which can
+     * otherwise take up to 2 minutes to tick again, leaving the just-sent message stuck showing its
+     * "sent, not yet confirmed" spinner in the meantime.
      */
     private suspend fun fetchNewMessagesWithRetry() {
-        repeat(POST_UPLOAD_FETCH_MAX_ATTEMPTS) { attempt ->
-            if (attempt > 0) {
-                Log.d(
-                    TAG,
-                    "fetchNewMessagesWithRetry: attempt ${attempt + 1}, " +
-                        "waiting ${POST_UPLOAD_FETCH_RETRY_DELAY_MS}ms"
-                )
-                delay(POST_UPLOAD_FETCH_RETRY_DELAY_MS)
-            }
+        val gotFirst = chatRepository.fetchNewMessages()
+        if (gotFirst) {
+            Log.d(TAG, "fetchNewMessagesWithRetry: new messages received on initial attempt")
+            return
+        }
+        POST_UPLOAD_FETCH_RETRY_DELAYS_MS.forEachIndexed { index, delayMs ->
+            Log.d(TAG, "fetchNewMessagesWithRetry: attempt ${index + 2}, waiting ${delayMs}ms")
+            delay(delayMs)
             val gotMessages = chatRepository.fetchNewMessages()
             if (gotMessages) {
-                Log.d(TAG, "fetchNewMessagesWithRetry: new messages received on attempt ${attempt + 1}")
+                Log.d(TAG, "fetchNewMessagesWithRetry: new messages received on attempt ${index + 2}")
                 return
             }
         }
-        Log.d(TAG, "fetchNewMessagesWithRetry: no new messages after $POST_UPLOAD_FETCH_MAX_ATTEMPTS attempts")
+        Log.w(
+            TAG,
+            "fetchNewMessagesWithRetry: no new messages after " +
+                "${POST_UPLOAD_FETCH_RETRY_DELAYS_MS.size + 1} attempts, deferring to the insurance-request cycle"
+        )
     }
     private fun handleSystemMessages(chatMessageList: List<ChatMessage>, isChannel: Boolean): List<ChatMessage> {
         if (isChannel) {
@@ -2428,8 +2432,11 @@ class ChatViewModel @AssistedInject constructor(
         private const val MIN_CHARS_FOR_SEARCH = 2
         private const val CONTEXT_MESSAGES_LIMIT = 50
         private const val LOAD_MORE_MESSAGES_LIMIT = 100
-        private const val POST_UPLOAD_FETCH_MAX_ATTEMPTS = 4
-        private const val POST_UPLOAD_FETCH_RETRY_DELAY_MS = 1_500L
+
+        // Increasing backoff for fetchNewMessagesWithRetry() - covers realistic server indexing
+        // lag (~20s total) so a just-sent upload doesn't sit stuck until the next insurance-request
+        // cycle (up to 2 minutes later) before its "sent, not yet confirmed" spinner clears.
+        private val POST_UPLOAD_FETCH_RETRY_DELAYS_MS = listOf(1_000L, 1_500L, 2_000L, 3_000L, 4_000L, 5_000L, 5_000L)
         private const val LOCAL_PREVIEW_GRACE_PERIOD_MS = 15_000L
         private const val PLAUSIBLE_MESSAGE_ID_BUFFER = 10_000L
 
