@@ -11,6 +11,7 @@ import android.content.Context
 import android.util.Log
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -286,6 +287,7 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
             .build()
         val notificationWork =
             OneTimeWorkRequest.Builder(NotificationWorker::class.java).setInputData(messageData)
+                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .build()
         WorkManager.getInstance(applicationContext).enqueue(notificationWork)
     }

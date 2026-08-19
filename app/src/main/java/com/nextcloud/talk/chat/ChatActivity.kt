@@ -84,6 +84,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -2198,6 +2199,7 @@ class ChatActivity :
         val downloadWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(DownloadFileToCacheWorker::class.java)
             .setInputData(data)
             .addTag(fileId)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .build()
 
         WorkManager.getInstance().enqueue(downloadWorker)
@@ -2355,6 +2357,7 @@ class ChatActivity :
                         .build()
                     val worker = OneTimeWorkRequest.Builder(ShareOperationWorker::class.java)
                         .setInputData(data)
+                        .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                         .build()
                     WorkManager.getInstance().enqueue(worker)
                 }
@@ -3147,7 +3150,10 @@ class ChatActivity :
         data.putString(KEY_ROOM_TOKEN, conversation.token)
 
         val deleteConversationWorker =
-            OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java).setInputData(data.build()).build()
+            OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java)
+                .setInputData(data.build())
+                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                .build()
         WorkManager.getInstance().enqueue(deleteConversationWorker)
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(deleteConversationWorker.id)

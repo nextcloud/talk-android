@@ -18,6 +18,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -498,6 +499,7 @@ class AccountVerificationActivity : BaseActivity() {
         val capabilitiesWork =
             OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java)
                 .setInputData(userData)
+                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .build()
         WorkManager.getInstance().enqueue(capabilitiesWork)
     }
@@ -592,7 +594,9 @@ class AccountVerificationActivity : BaseActivity() {
     @SuppressLint("CheckResult")
     private fun deleteUserAndStartServerSelection(userId: Long) {
         userManager.scheduleUserForDeletionWithId(userId).blockingGet()
-        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
+        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .build()
         WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)

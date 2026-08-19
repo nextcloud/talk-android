@@ -28,6 +28,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -499,7 +500,10 @@ class ConversationInfoActivity : BaseActivity() {
             .build()
 
         val addParticipantsWorker =
-            OneTimeWorkRequest.Builder(AddParticipantsToConversationWorker::class.java).setInputData(data).build()
+            OneTimeWorkRequest.Builder(AddParticipantsToConversationWorker::class.java)
+                .setInputData(data)
+                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                .build()
         WorkManager.getInstance().enqueue(addParticipantsWorker)
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(addParticipantsWorker.id)
             .observeForever { workInfo: WorkInfo? ->
@@ -513,6 +517,7 @@ class ConversationInfoActivity : BaseActivity() {
         workerData?.let { data ->
             val workRequest = OneTimeWorkRequest.Builder(LeaveConversationWorker::class.java)
                 .setInputData(data)
+                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .build()
             WorkManager.getInstance(context).enqueueUniqueWork(
                 "leave_conversation_work",
@@ -585,7 +590,10 @@ class ConversationInfoActivity : BaseActivity() {
     private fun deleteConversation() {
         workerData?.let {
             WorkManager.getInstance(context).enqueue(
-                OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java).setInputData(it).build()
+                OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java)
+                    .setInputData(it)
+                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                    .build()
             )
 
             conversationUser?.id?.let { userId ->
