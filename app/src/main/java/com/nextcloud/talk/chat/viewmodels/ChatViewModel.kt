@@ -40,6 +40,7 @@ import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
+import com.nextcloud.talk.jobs.ReadMarkerSyncWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.logger.Logger
@@ -1799,45 +1800,48 @@ class ChatViewModel @AssistedInject constructor(
     /**
      * Please use with caution to not spam the server
      */
-    fun updateRemoteLastReadMessageIfNeeded(credentials: String, url: String) {
+    fun updateRemoteLastReadMessageIfNeeded() {
         Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, localLastReadMessage: $localLastReadMessage")
-        Log.d(
-            TAG,
-            "updateRemoteLastReadMessageIfNeeded, _uiState.value.conversation!!.lastReadMessage: " +
-                _uiState.value.conversation!!.lastReadMessage
-        )
+        val conversationLastReadMessage = _uiState.value.conversation?.lastReadMessage ?: return
+        Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, conversation.lastReadMessage: $conversationLastReadMessage")
 
-        if (localLastReadMessage > _uiState.value.conversation!!.lastReadMessage) {
+        if (localLastReadMessage > conversationLastReadMessage) {
             Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, setChatReadMessage...")
 
-            setChatReadMessage(credentials, url, localLastReadMessage)
+            setChatReadMessage(localLastReadMessage)
         }
     }
 
     /**
-     * Please use with caution to not spam the server
+     * Marks the chat as read up to [lastReadMessage]: the local conversation entry is updated
+     * immediately (optimistic, so the conversation list reflects it right away) while sending the
+     * marker to the server is delegated to [ReadMarkerSyncWorker], which retries transient
+     * failures with backoff. The server stays the authority — every room list sync re-asserts its
+     * read state, so a marker that ultimately could not be sent falls back to the server state
+     * instead of leaving the client diverged.
+     *
+     * [markPendingReadMarker] runs synchronously, before anything is launched, so the marker is
+     * armed the instant this returns: leaving the chat commonly races the conversation list's own
+     * resume-triggered sync, and that race is only guarded correctly if the pending marker already
+     * exists by the time the sync's response is merged. [updateLocalReadState] itself does two
+     * suspending database reads before writing - registering the marker only there, inside a
+     * launched coroutine, previously left a real gap (observed at ~250ms, more under main-thread
+     * contention) during which such a sync could see no pending marker yet and apply unguarded.
      */
-    fun setChatReadMessage(credentials: String, url: String, lastReadMessage: Int) {
-        chatNetworkDataSource.setChatReadMarker(credentials, url, lastReadMessage)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposableSet.add(d)
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, e.message, e)
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-
-                override fun onNext(t: GenericOverall) {
-                    // unused atm
-                }
-            })
+    fun setChatReadMessage(lastReadMessage: Int) {
+        if (!this::currentUser.isInitialized) {
+            return
+        }
+        chatRepository.markPendingReadMarker(lastReadMessage)
+        viewModelScope.launch {
+            chatRepository.updateLocalReadState(lastReadMessage)
+        }
+        ReadMarkerSyncWorker.enqueue(
+            context = NextcloudTalkApplication.sharedApplication!!.applicationContext,
+            userId = currentUser.id!!,
+            roomToken = chatRoomToken,
+            lastReadMessage = lastReadMessage
+        )
     }
 
     fun shareToNotes(credentials: String, url: String, message: String, displayName: String) {

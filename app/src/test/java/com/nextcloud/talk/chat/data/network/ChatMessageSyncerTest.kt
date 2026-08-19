@@ -9,8 +9,10 @@ package com.nextcloud.talk.chat.data.network
 
 import android.database.sqlite.SQLiteConstraintException
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.conversationlist.data.network.ConversationListUpdater
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
+import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
@@ -52,6 +54,7 @@ class ChatMessageSyncerTest {
 
     private val chatDao: ChatMessagesDao = mock()
     private val chatBlocksDao: ChatBlocksDao = mock()
+    private val conversationsDao: ConversationsDao = mock()
     private val network: ChatNetworkDataSource = mock()
     private val networkMonitor: NetworkMonitor = mock()
 
@@ -59,8 +62,10 @@ class ChatMessageSyncerTest {
 
     @Before
     fun setUp() {
-        syncer = ChatMessageSyncer(chatDao, chatBlocksDao, network, networkMonitor)
+        val conversationListUpdater = ConversationListUpdater(chatDao, chatBlocksDao, conversationsDao)
+        syncer = ChatMessageSyncer(chatDao, chatBlocksDao, network, networkMonitor, conversationListUpdater)
         whenever(networkMonitor.isOnline).thenReturn(MutableStateFlow(true))
+        whenever(conversationsDao.getConversationForUser(any(), any())).thenReturn(flowOf(null))
     }
 
     @Test

@@ -117,6 +117,12 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
         threadId: Long?
     ): Flow<List<ChatMessageEntity>> = flowOf()
 
+    override suspend fun countMessagesNewerThan(
+        internalConversationId: String,
+        messageId: Long,
+        excludedActorId: String
+    ): Int = 0
+
     override fun getCountBetweenMessageIds(
         internalConversationId: String,
         oldestMessageId: Long,
@@ -261,6 +267,17 @@ class DummyConversationDaoImpl : ConversationsDao {
     }
 
     override fun updateConversation(conversationEntity: ConversationEntity) {
+        /* */
+    }
+
+    override suspend fun updateConversationFromCatchUp(
+        internalId: String,
+        lastMessageJson: String,
+        lastActivity: Long,
+        unreadMessages: Int
+    ): Int = 0
+
+    override suspend fun updateReadState(internalId: String, lastReadMessage: Int, unreadMessages: Int) {
         /* */
     }
 

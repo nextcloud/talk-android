@@ -12,6 +12,7 @@ import android.os.SystemClock
 import android.util.Log
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.domain.ChatPullResult
+import com.nextcloud.talk.conversationlist.data.network.ConversationListUpdater
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.mappers.asEntity
@@ -43,12 +44,13 @@ import javax.inject.Inject
  * per-room coalescing bookkeeping of [catchUpRoom], which collapses bursts of catch-up requests
  * (e.g. one push notification per incoming message) into few actual fetches.
  */
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LargeClass")
 class ChatMessageSyncer @Inject constructor(
     private val chatDao: ChatMessagesDao,
     private val chatBlocksDao: ChatBlocksDao,
     private val network: ChatNetworkDataSource,
-    private val networkMonitor: NetworkMonitor
+    private val networkMonitor: NetworkMonitor,
+    private val conversationListUpdater: ConversationListUpdater
 ) {
 
     /**
@@ -91,13 +93,18 @@ class ChatMessageSyncer @Inject constructor(
      * [syncFailed] is true when the sync ended in a transient error (offline, failed request), so
      * callers like a background worker can retry later. It stays false for skips that retrying
      * would not change, e.g. a missing server capability.
+     *
+     * [newestPersistedMessage] is the newest persisted message that qualifies as a conversation's
+     * last message (system messages that never change a conversation's preview are skipped). It
+     * feeds the conversation list update after a background catch-up.
      */
     data class SyncOutcome(
         val persistedNewMessages: Boolean,
         val newestPersistedMessageId: Long?,
         val oldestPersistedMessageId: Long? = null,
         val persistedMessageCount: Int = 0,
-        val syncFailed: Boolean = false
+        val syncFailed: Boolean = false,
+        val newestPersistedMessage: ChatMessageJson? = null
     )
 
     /**
@@ -357,6 +364,8 @@ class ChatMessageSyncer @Inject constructor(
             Log.d(TAG, "Background catch-up for room ${target.roomToken}: no new messages")
         }
 
+        conversationListUpdater.updateConversationFromCatchUp(target, outcome)
+
         return outcome
     }
 
@@ -467,7 +476,8 @@ class ChatMessageSyncer @Inject constructor(
             newestPersistedMessageId = backlogOutcome.newestPersistedMessageId ?: nextAnchor,
             oldestPersistedMessageId = anchorOutcome.oldestPersistedMessageId,
             persistedMessageCount = anchorOutcome.persistedMessageCount + backlogOutcome.persistedMessageCount,
-            syncFailed = backlogOutcome.syncFailed
+            syncFailed = backlogOutcome.syncFailed,
+            newestPersistedMessage = backlogOutcome.newestPersistedMessage ?: anchorOutcome.newestPersistedMessage
         )
     }
 
@@ -497,6 +507,7 @@ class ChatMessageSyncer @Inject constructor(
         var totalCount = 0
         var oldestPersisted: Long? = null
         var newestPersisted: Long? = null
+        var newestPersistedMessage: ChatMessageJson? = null
 
         repeat(MAX_BACKLOG_ROUNDS) {
             val fieldMap = buildFieldMap(
@@ -515,6 +526,7 @@ class ChatMessageSyncer @Inject constructor(
                 totalCount += roundOutcome.persistedMessageCount
                 oldestPersisted = oldestPersisted ?: roundOutcome.oldestPersistedMessageId
                 newestPersisted = roundOutcome.newestPersistedMessageId ?: newestPersisted
+                newestPersistedMessage = roundOutcome.newestPersistedMessage ?: newestPersistedMessage
             }
 
             val caughtUp = !roundOutcome.persistedNewMessages || roundOutcome.persistedMessageCount < limit
@@ -525,7 +537,8 @@ class ChatMessageSyncer @Inject constructor(
                     newestPersistedMessageId = newestPersisted,
                     oldestPersistedMessageId = oldestPersisted,
                     persistedMessageCount = totalCount,
-                    syncFailed = roundOutcome.syncFailed
+                    syncFailed = roundOutcome.syncFailed,
+                    newestPersistedMessage = newestPersistedMessage
                 )
             }
             anchor = nextAnchor
@@ -556,7 +569,8 @@ class ChatMessageSyncer @Inject constructor(
             newestPersistedMessageId = fallbackOutcome.newestPersistedMessageId,
             oldestPersistedMessageId = fallbackOutcome.oldestPersistedMessageId,
             persistedMessageCount = fallbackOutcome.persistedMessageCount,
-            syncFailed = fallbackOutcome.syncFailed
+            syncFailed = fallbackOutcome.syncFailed,
+            newestPersistedMessage = fallbackOutcome.newestPersistedMessage ?: newestPersistedMessage
         )
     }
 
@@ -681,11 +695,19 @@ class ChatMessageSyncer @Inject constructor(
                 events
             )
             persistedMessages.maxOfOrNull { it.id }?.let { recordHttpSyncedMessageId(target, it) }
+            val newestPersistedMessage = if (persistedMessages.isNotEmpty()) {
+                result.messages
+                    .filter { it.systemMessageType !in ConversationListUpdater.LAST_MESSAGE_HIDDEN_SYSTEM_TYPES }
+                    .maxByOrNull { it.id }
+            } else {
+                null
+            }
             SyncOutcome(
                 persistedNewMessages = persistedMessages.isNotEmpty(),
                 newestPersistedMessageId = persistedMessages.maxOfOrNull { it.id },
                 oldestPersistedMessageId = persistedMessages.minOfOrNull { it.id },
-                persistedMessageCount = persistedMessages.size
+                persistedMessageCount = persistedMessages.size,
+                newestPersistedMessage = newestPersistedMessage
             )
         } else {
             Log.d(TAG, "No new messages to update")
@@ -967,6 +989,7 @@ class ChatMessageSyncer @Inject constructor(
             SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null, syncFailed = true)
 
         private const val DEFAULT_MESSAGES_LIMIT = 100
+
         private const val MILLIS_PER_SECOND = 1000L
         private const val ROOM_REFRESH_MAX_AGE_MILLIS = 3 * 60 * 60 * 1000L // 3 hours
         private const val CATCH_UP_COOLDOWN_MILLIS = 5_000L

@@ -30,6 +30,7 @@ import com.nextcloud.talk.conversationcreation.data.ConversationCreationReposito
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepositoryImpl
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
+import com.nextcloud.talk.conversationlist.data.network.ConversationListUpdater
 import com.nextcloud.talk.conversationlist.data.network.ConversationsNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.RetrofitConversationsNetwork
@@ -146,13 +147,28 @@ class RepositoryModule {
         chatMessagesDao: ChatMessagesDao,
         chatBlocksDao: ChatBlocksDao,
         dataSource: ChatNetworkDataSource,
-        networkMonitor: NetworkMonitor
+        networkMonitor: NetworkMonitor,
+        conversationListUpdater: ConversationListUpdater
     ): ChatMessageSyncer =
         ChatMessageSyncer(
             chatMessagesDao,
             chatBlocksDao,
             dataSource,
-            networkMonitor
+            networkMonitor,
+            conversationListUpdater
+        )
+
+    @Provides
+    @Singleton
+    fun provideConversationListUpdater(
+        chatMessagesDao: ChatMessagesDao,
+        chatBlocksDao: ChatBlocksDao,
+        conversationsDao: ConversationsDao
+    ): ConversationListUpdater =
+        ConversationListUpdater(
+            chatMessagesDao,
+            chatBlocksDao,
+            conversationsDao
         )
 
     @Provides
@@ -163,7 +179,8 @@ class RepositoryModule {
         chatBlocksDao: ChatBlocksDao,
         dataSource: ChatNetworkDataSource,
         networkMonitor: NetworkMonitor,
-        syncer: ChatMessageSyncer
+        syncer: ChatMessageSyncer,
+        conversationListUpdater: ConversationListUpdater
     ): ChatMessageRepository =
         OfflineFirstChatRepository(
             logger,
@@ -171,7 +188,8 @@ class RepositoryModule {
             chatBlocksDao,
             dataSource,
             networkMonitor,
-            syncer
+            syncer,
+            conversationListUpdater
         )
 
     @Provides
@@ -183,6 +201,7 @@ class RepositoryModule {
         chatNetworkDataSource: ChatNetworkDataSource,
         networkMonitor: NetworkMonitor,
         chatMessageSyncer: ChatMessageSyncer,
+        conversationListUpdater: ConversationListUpdater,
         context: Context
     ): OfflineConversationsRepository =
         OfflineFirstConversationsRepository(
@@ -191,6 +210,7 @@ class RepositoryModule {
             chatNetworkDataSource,
             networkMonitor,
             chatMessageSyncer,
+            conversationListUpdater,
             context
         )
 

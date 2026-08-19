@@ -16,6 +16,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
+import com.nextcloud.talk.conversationlist.data.network.ConversationListUpdater
 import com.nextcloud.talk.conversationlist.ui.ConversationListEntry
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.data.InvitationsModel
@@ -77,7 +78,8 @@ class ConversationsListViewModel @Inject constructor(
     private val invitationsRepository: InvitationsRepository,
     private val arbitraryStorageManager: ArbitraryStorageManager,
     var userManager: UserManager,
-    private val conversationsRepository: ConversationsRepository
+    private val conversationsRepository: ConversationsRepository,
+    private val conversationListUpdater: ConversationListUpdater
 ) : ViewModel() {
 
     private val _currentUser = currentUserProvider.currentUser.blockingGet()
@@ -124,6 +126,15 @@ class ConversationsListViewModel @Inject constructor(
     private val _favoriteState = MutableStateFlow<FavoriteUiState>(FavoriteUiState.None)
     val favoriteState: StateFlow<FavoriteUiState> = _favoriteState.asStateFlow()
 
+    sealed class ArchiveUiState {
+        data object None : ArchiveUiState()
+        data class Success(val archived: Boolean, val conversationDisplayName: String) : ArchiveUiState()
+        data object Error : ArchiveUiState()
+    }
+
+    private val _archiveState = MutableStateFlow<ArchiveUiState>(ArchiveUiState.None)
+    val archiveState: StateFlow<ArchiveUiState> = _archiveState.asStateFlow()
+
     object GetRoomsStartState : ViewState
     class GetRoomsErrorState(val throwable: Throwable) : ViewState
     open class GetRoomsSuccessState(val listIsNotEmpty: Boolean) : ViewState
@@ -149,6 +160,10 @@ class ConversationsListViewModel @Inject constructor(
 
     val getRoomsStateFlow = repository
         .roomListFlow
+        .catch { throwable ->
+            Log.e(TAG, "Error observing the conversation list", throwable)
+            _getRoomsViewState.value = GetRoomsErrorState(throwable)
+        }
         .stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
 
     /**
@@ -710,8 +725,9 @@ class ConversationsListViewModel @Inject constructor(
         )
         val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
+            messageId?.let { conversationListUpdater.markPendingReadMarker(conversation.internalId, it) }
             withContext(Dispatchers.IO) {
-                repository.updateConversationLocallyAndEmit(currentUser, optimistic)
+                repository.updateConversation(optimistic)
             }
             try {
                 withContext(Dispatchers.IO) {
@@ -719,8 +735,9 @@ class ConversationsListViewModel @Inject constructor(
                 }
                 _readUnreadState.value = ConversationReadUnreadUiState.Success
             } catch (e: Exception) {
+                messageId?.let { conversationListUpdater.clearPendingReadMarker(conversation.internalId, it) }
                 withContext(Dispatchers.IO) {
-                    repository.updateConversationLocallyAndEmit(currentUser, original)
+                    repository.updateConversation(original)
                 }
                 _readUnreadState.value = ConversationReadUnreadUiState.Error
             }
@@ -737,8 +754,9 @@ class ConversationsListViewModel @Inject constructor(
         )
         val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
+            conversationListUpdater.markPendingUnread(conversation.internalId)
             withContext(Dispatchers.IO) {
-                repository.updateConversationLocallyAndEmit(currentUser, optimistic)
+                repository.updateConversation(optimistic)
             }
             try {
                 withContext(Dispatchers.IO) {
@@ -746,8 +764,9 @@ class ConversationsListViewModel @Inject constructor(
                 }
                 _readUnreadState.value = ConversationReadUnreadUiState.Success
             } catch (e: Exception) {
+                conversationListUpdater.clearPendingUnread(conversation.internalId)
                 withContext(Dispatchers.IO) {
-                    repository.updateConversationLocallyAndEmit(currentUser, original)
+                    repository.updateConversation(original)
                 }
                 _readUnreadState.value = ConversationReadUnreadUiState.Error
             }
@@ -758,6 +777,43 @@ class ConversationsListViewModel @Inject constructor(
         _favoriteState.value = FavoriteUiState.None
     }
 
+    fun resetArchiveState() {
+        _archiveState.value = ArchiveUiState.None
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun toggleConversationArchive(conversation: ConversationModel) {
+        val original = conversation.copy()
+        val desiredArchived = !conversation.hasArchived
+        val optimistic = conversation.copy(hasArchived = desiredArchived)
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+        val url = ApiUtils.getUrlForArchive(apiVersion, currentUser.baseUrl, conversation.token)
+        viewModelScope.launch {
+            conversationListUpdater.markPendingArchived(conversation.internalId, desiredArchived)
+            withContext(Dispatchers.IO) {
+                repository.updateConversation(optimistic)
+            }
+            try {
+                withContext(Dispatchers.IO) {
+                    withRetry(1) {
+                        if (desiredArchived) {
+                            conversationsRepository.archiveConversation(credentials, url)
+                        } else {
+                            conversationsRepository.unarchiveConversation(credentials, url)
+                        }
+                    }
+                }
+                _archiveState.value = ArchiveUiState.Success(desiredArchived, conversation.displayName)
+            } catch (e: Exception) {
+                conversationListUpdater.clearPendingArchived(conversation.internalId, desiredArchived)
+                withContext(Dispatchers.IO) {
+                    repository.updateConversation(original)
+                }
+                _archiveState.value = ArchiveUiState.Error
+            }
+        }
+    }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun addConversationToFavorites(conversation: ConversationModel) {
         val original = conversation.copy()
@@ -765,8 +821,9 @@ class ConversationsListViewModel @Inject constructor(
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
         val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
+            conversationListUpdater.markPendingFavorite(conversation.internalId, favorite = true)
             withContext(Dispatchers.IO) {
-                repository.updateConversationLocallyAndEmit(currentUser, optimistic)
+                repository.updateConversation(optimistic)
             }
             try {
                 withContext(Dispatchers.IO) {
@@ -774,8 +831,9 @@ class ConversationsListViewModel @Inject constructor(
                 }
                 _favoriteState.value = FavoriteUiState.Success
             } catch (e: Exception) {
+                conversationListUpdater.clearPendingFavorite(conversation.internalId, favorite = true)
                 withContext(Dispatchers.IO) {
-                    repository.updateConversationLocallyAndEmit(currentUser, original)
+                    repository.updateConversation(original)
                 }
                 _favoriteState.value = FavoriteUiState.Error
             }
@@ -789,8 +847,9 @@ class ConversationsListViewModel @Inject constructor(
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
         val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
+            conversationListUpdater.markPendingFavorite(conversation.internalId, favorite = false)
             withContext(Dispatchers.IO) {
-                repository.updateConversationLocallyAndEmit(currentUser, optimistic)
+                repository.updateConversation(optimistic)
             }
             try {
                 withContext(Dispatchers.IO) {
@@ -798,8 +857,9 @@ class ConversationsListViewModel @Inject constructor(
                 }
                 _favoriteState.value = FavoriteUiState.Success
             } catch (e: Exception) {
+                conversationListUpdater.clearPendingFavorite(conversation.internalId, favorite = false)
                 withContext(Dispatchers.IO) {
-                    repository.updateConversationLocallyAndEmit(currentUser, original)
+                    repository.updateConversation(original)
                 }
                 _favoriteState.value = FavoriteUiState.Error
             }

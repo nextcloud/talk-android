@@ -75,13 +75,22 @@ class RoomListMessagePrefetchIntegrationTest {
 
         whenever(networkMonitor.isOnline).thenReturn(MutableStateFlow(true))
 
-        syncer = ChatMessageSyncer(db.chatMessagesDao(), db.chatBlocksDao(), chatNetwork, networkMonitor)
+        val conversationListUpdater =
+            ConversationListUpdater(db.chatMessagesDao(), db.chatBlocksDao(), db.conversationsDao())
+        syncer = ChatMessageSyncer(
+            db.chatMessagesDao(),
+            db.chatBlocksDao(),
+            chatNetwork,
+            networkMonitor,
+            conversationListUpdater
+        )
         repository = OfflineFirstConversationsRepository(
             db.conversationsDao(),
             conversationsNetwork,
             chatNetwork,
             networkMonitor,
             syncer,
+            conversationListUpdater,
             context
         )
     }
