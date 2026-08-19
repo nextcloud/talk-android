@@ -134,6 +134,47 @@ class ConversationListFreshnessIntegrationTest {
     }
 
     @Test
+    fun `background catch-up does not regress unread while a read marker is pending but not yet committed`() {
+        runBlocking {
+            // Simulates leaving the chat racing a concurrent catch-up: the read marker is
+            // registered as pending, but its own updateReadState write hasn't landed on this row
+            // yet by the time the catch-up reads lastReadMessage.
+            seedConversation(lastActivity = 10, lastReadMessage = 5, unreadMessages = 3)
+            conversationListUpdater.markPendingReadMarker(INTERNAL_CONVERSATION_ID, lastReadMessage = 12)
+
+            wheneverBlocking { chatNetwork.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(message(10), message(11), message(12))))
+
+            syncer.catchUpRoom(target(), lastReadMessage = 5, unreadMessages = 3)
+
+            assertEquals(
+                "catch-up must not derive unread below the pending read marker",
+                0,
+                conversationEntity().unreadMessages
+            )
+        }
+    }
+
+    @Test
+    fun `background catch-up still reports a message newer than the pending read marker as unread`() {
+        runBlocking {
+            seedConversation(lastActivity = 10, lastReadMessage = 5, unreadMessages = 3)
+            conversationListUpdater.markPendingReadMarker(INTERNAL_CONVERSATION_ID, lastReadMessage = 12)
+
+            wheneverBlocking { chatNetwork.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(message(10), message(11), message(12), message(13))))
+
+            syncer.catchUpRoom(target(), lastReadMessage = 5, unreadMessages = 3)
+
+            assertEquals(
+                "a message newer than the pending marker must still count as unread",
+                1,
+                conversationEntity().unreadMessages
+            )
+        }
+    }
+
+    @Test
     fun `a single-room refresh cannot revert the read state while its marker is pending`() {
         val user = user(withKeepNotificationsCapability = false)
         val repository = OfflineFirstConversationsRepository(

@@ -247,6 +247,16 @@ class ConversationListUpdater @Inject constructor(
      * that only applies when the derived state is newer than the stored one, so a concurrently
      * finishing room list sync can neither be overwritten with older data nor interleave with a
      * read-modify-write. Thread catch-ups don't describe the room itself and are skipped.
+     *
+     * Unlike [preservePendingLocalState], this path doesn't merge against a server response, so a
+     * pending read marker can't be guarded the same way — but the marker is still consulted as the
+     * unread count's baseline: a read marker registered here (e.g. from leaving the chat) may not
+     * have committed its own [ConversationsDao.updateReadState] write to this row yet by the time a
+     * concurrently running catch-up reads [ConversationEntity.lastReadMessage], which would
+     * otherwise derive the count from a stale, not-yet-advanced marker and regress an
+     * already-read conversation back to unread. The pending marker is always at least as advanced
+     * as what's actually stored, so taking the higher of the two closes that race without
+     * suppressing unread detection for a message that is genuinely newer than the marker.
      */
     suspend fun updateConversationFromCatchUp(
         target: ChatMessageSyncer.SyncTarget,
@@ -259,7 +269,11 @@ class ConversationListUpdater @Inject constructor(
         val conversation =
             conversationsDao.getConversationForUser(target.accountId, target.roomToken).first() ?: return
 
-        val unreadMessages = deriveUnreadMessagesCount(target, conversation.lastReadMessage)
+        val lastReadMessage = maxOf(
+            conversation.lastReadMessage,
+            pendingReadMarker(target.internalConversationId) ?: 0
+        )
+        val unreadMessages = deriveUnreadMessagesCount(target, lastReadMessage)
         val updatedRows = conversationsDao.updateConversationFromCatchUp(
             internalId = conversation.internalId,
             lastMessageJson = LoganSquare.serialize(newestMessage),
