@@ -229,12 +229,16 @@ class ChatViewModel @AssistedInject constructor(
     private val _uploadedLocalPreviewMap = MutableStateFlow<Map<String, String>>(emptyMap())
     val uploadedLocalPreviewMap: StateFlow<Map<String, String>> = _uploadedLocalPreviewMap
 
-    // Maps referenceId -> fileUri for cancellation support
-    private val uploadReferenceToUri = mutableMapOf<String, String>()
+    // Maps referenceId -> the upload's own WorkRequest id for cancellation support. Uploads within
+    // a conversation are now chained under one shared unique-work name (see
+    // UploadAndShareFilesWorker.upload()) so they run - and therefore get shared to the server - in
+    // send order, so cancellation has to target this specific request's id rather than that shared
+    // name, which would otherwise cancel every other queued upload too.
+    private val uploadReferenceToWorkId = mutableMapOf<String, UUID>()
 
     fun cancelUpload(referenceId: String) {
-        val fileUri = uploadReferenceToUri.remove(referenceId) ?: return
-        UploadAndShareFilesWorker.cancelUpload(referenceId, fileUri)
+        val workId = uploadReferenceToWorkId.remove(referenceId) ?: return
+        UploadAndShareFilesWorker.cancelUpload(referenceId, workId)
         viewModelScope.launch {
             chatRepository.deleteTempMessageByReferenceId(referenceId)
         }
@@ -2095,7 +2099,7 @@ class ChatViewModel @AssistedInject constructor(
             )
 
             if (!isVoiceMessage) {
-                uploadReferenceToUri[referenceId] = fileUri
+                uploadReferenceToWorkId[referenceId] = workerId
                 _uploadedLocalPreviewMap.update { it + (referenceId to fileUri) }
                 observeUploadProgress(workerId, referenceId)
             }
@@ -2132,7 +2136,7 @@ class ChatViewModel @AssistedInject constructor(
                 }
                 if (workInfo.state.isFinished) {
                     _uploadProgressMap.update { it - referenceId }
-                    uploadReferenceToUri.remove(referenceId)
+                    uploadReferenceToWorkId.remove(referenceId)
                     viewModelScope.launch {
                         delay(LOCAL_PREVIEW_GRACE_PERIOD_MS)
                         _uploadedLocalPreviewMap.update { it - referenceId }

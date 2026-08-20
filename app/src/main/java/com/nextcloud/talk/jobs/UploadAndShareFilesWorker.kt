@@ -547,13 +547,29 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                     TimeUnit.MILLISECONDS
                 )
                 .build()
-            WorkManager.getInstance().enqueueUniqueWork(fileUri, ExistingWorkPolicy.KEEP, uploadWorker)
+            // Chained per conversation (not enqueueUniqueWork(fileUri, ...), which ran every upload
+            // fully independently) so multiple files - whether from one multi-file share or several
+            // sends in a row - actually upload and share to the server in the order they were sent,
+            // instead of each finishing (and so appearing in chat) whenever its own network calls
+            // happen to complete. APPEND_OR_REPLACE rather than APPEND: if the file ahead in the
+            // queue was cancelled or failed, this starts a fresh chain instead of cascading that
+            // failure onto every file queued behind it.
+            WorkManager.getInstance().enqueueUniqueWork(
+                uploadQueueName(internalConversationId),
+                ExistingWorkPolicy.APPEND_OR_REPLACE,
+                uploadWorker
+            )
             return uploadWorker.id
         }
 
-        fun cancelUpload(referenceId: String, fileUri: String) {
+        private fun uploadQueueName(internalConversationId: String) = "upload_queue_$internalConversationId"
+
+        // Cancellation is by the WorkRequest's own id (not enqueueUniqueWork's name) since that name
+        // is now shared by every file queued in the same conversation - cancelling by name would
+        // cancel the whole queue instead of just this one upload.
+        fun cancelUpload(referenceId: String, workerId: UUID) {
             cancelledReferenceIds.add(referenceId)
-            WorkManager.getInstance().cancelUniqueWork(fileUri)
+            WorkManager.getInstance().cancelWorkById(workerId)
         }
     }
 }
