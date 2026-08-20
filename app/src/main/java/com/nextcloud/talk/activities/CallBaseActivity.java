@@ -147,21 +147,14 @@ public abstract class CallBaseActivity extends BaseActivity {
         super.onUserLeaveHint();
         Log.d(TAG, "onUserLeaveHint: isInPipMode=" + isInPipMode
                 + " isInPictureInPictureMode=" + isInPictureInPictureMode());
-        // On API 26-30, enter PIP manually.
+        // On API 26-30, enter PIP manually. On API 31+ auto-enter handles swipe-up/home, and plain
+        // backgrounding (e.g. task switch) keeps the activity alive on its own. Deliberately no
+        // moveTaskToBack here: onUserLeaveHint also fires when a transient overlay like the
+        // permission dialog appears at call start, which would throw the call to the background.
         if (!isInPipMode
                 && isPipModePossible()
                 && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             enterPipMode();
-            return;
-        }
-        // On API 31+: if auto-enter didn't handle it (task switch), move the
-        // task to back so the activity survives. The ongoing call notification
-        // is the way back, as the call task is excluded from recents.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-                && !isInPictureInPictureMode()
-                && isPipModePossible()) {
-            Log.d(TAG, "onUserLeaveHint: not PIP, moving task to back to survive task switch");
-            moveTaskToBack(true);
         }
     }
 
