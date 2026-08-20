@@ -63,6 +63,21 @@ class OfflineFirstChatRepository @Inject constructor(
 
     lateinit var currentUser: User
 
+    // Placeholder rows sort by "timestamp ASC, id ASC" (ChatMessagesDao) same as real messages, but
+    // id here is a hash of a random referenceId with no relation to call order - so if several
+    // files are sent at once and their (second-granularity) timestamps tie, as is near-certain,
+    // they'd otherwise sort arbitrarily instead of in the order they were actually sent. Tracking
+    // the last-used value and never handing out the same one twice keeps placeholders strictly in
+    // call order regardless of how many land within the same wall-clock second.
+    private var lastPlaceholderTimestampSeconds = 0L
+
+    private fun nextPlaceholderTimestampSeconds(): Long =
+        synchronized(this) {
+            val timestamp = maxOf(System.currentTimeMillis() / MILLIES, lastPlaceholderTimestampSeconds + 1)
+            lastPlaceholderTimestampSeconds = timestamp
+            timestamp
+        }
+
     override val messageFlow:
         Flow<
             Triple<
@@ -695,8 +710,6 @@ class OfflineFirstChatRepository @Inject constructor(
     ): Flow<Result<ChatMessage?>> =
         flow {
             try {
-                val currentTimeMillis = System.currentTimeMillis()
-
                 // Use referenceId.hashCode() as the placeholder id so that:
                 // 1. It is unique per file even when multiple files are selected simultaneously
                 // 2. It fits in an Int, so it survives the Long→Int cast in ChatMessageUi.id without
@@ -740,7 +753,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     parentMessageId = null,
                     systemMessageType = ChatMessage.SystemMessageType.DUMMY,
                     replyable = false,
-                    timestamp = currentTimeMillis / MILLIES,
+                    timestamp = nextPlaceholderTimestampSeconds(),
                     expirationTimestamp = 0,
                     actorDisplayName = currentUser.displayName!!,
                     referenceId = referenceId,
