@@ -10,8 +10,10 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.ActivityNotFoundException
+import android.content.ContentResolver
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -906,7 +908,7 @@ class ConversationsListActivity : BaseActivity() {
             for (i in 0 until clipData.itemCount) {
                 val item = clipData.getItemAt(i)
                 when {
-                    item.uri != null -> filesToShare!!.add(item.uri.toString())
+                    item.uri != null -> addFileToShareIfTrusted(item.uri)
                     item.text != null -> {
                         textToPaste = item.text.toString()
                         return
@@ -916,7 +918,15 @@ class ConversationsListActivity : BaseActivity() {
                 }
             }
         } else {
-            filesToShare!!.add(intent.data.toString())
+            addFileToShareIfTrusted(intent.data)
+        }
+    }
+
+    private fun addFileToShareIfTrusted(uri: Uri?) {
+        if (uri != null && ContentResolver.SCHEME_CONTENT == uri.scheme && uri.authority != packageName) {
+            filesToShare!!.add(uri.toString())
+        } else {
+            Log.w(TAG, "Rejecting untrusted uri from share intent: $uri")
         }
     }
 

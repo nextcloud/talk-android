@@ -137,10 +137,15 @@ object FileUtils {
         } else if (ContentResolver.SCHEME_CONTENT == scheme) {
             copyFileToCache(context, sourceFileUri, fileName)
         } else if (ContentResolver.SCHEME_FILE == scheme) {
-            if (sourceFileUri.path != null) {
-                sourceFileUri.path?.let { File(it) }
+            val path = sourceFileUri.path
+                ?: throw IllegalArgumentException("uri does not contain path")
+            val cacheRoot = context.applicationContext.cacheDir.canonicalFile
+            val candidate = File(path).canonicalFile
+            if (candidate.path.startsWith(cacheRoot.path + File.separator)) {
+                candidate
             } else {
-                throw IllegalArgumentException("uri does not contain path")
+                Log.w(TAG, "Rejecting file:// uri outside of the app cache directory.")
+                null
             }
         } else {
             throw IllegalArgumentException("unsupported scheme: " + sourceFileUri.path)
