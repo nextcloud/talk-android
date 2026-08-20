@@ -253,21 +253,21 @@ class ChatViewModel @AssistedInject constructor(
     // referenceIdSendSequence above), leaving every other message's position untouched - so this
     // never reorders anything relative to messages with no known hint (other users' messages,
     // messages sent before this screen session, older history, ...), only fixes the relative order
-    // among messages from the SAME batch while some are still catching up on syncing.
+    // among messages from the SAME batch while some are still catching up on syncing. Applied the
+    // same way as applyMessageGrouping()/applySystemMessageGrouping() above it: in place, on the raw
+    // ChatMessage list, before it's mapped to ChatMessageUi.
     @Suppress("Detekt.ReturnCount")
-    private fun reorderKnownSendSequence(messages: List<ChatMessageUi>): List<ChatMessageUi> {
-        if (referenceIdSendSequence.isEmpty()) return messages
+    private fun reorderKnownSendSequence(messages: MutableList<ChatMessage>) {
+        if (referenceIdSendSequence.isEmpty()) return
 
         val hintedIndices = messages.indices.filter { referenceIdSendSequence.containsKey(messages[it].referenceId) }
-        if (hintedIndices.size < 2) return messages
+        if (hintedIndices.size < 2) return
 
         val hintedItems = hintedIndices.map { messages[it] }
         val sortedItems = hintedItems.sortedBy { referenceIdSendSequence[it.referenceId] }
-        if (sortedItems == hintedItems) return messages
+        if (sortedItems == hintedItems) return
 
-        val result = messages.toMutableList()
-        hintedIndices.forEachIndexed { position, index -> result[index] = sortedItems[position] }
-        return result
+        hintedIndices.forEachIndexed { position, index -> messages[index] = sortedItems[position] }
     }
 
     fun cancelUpload(referenceId: String) {
@@ -1123,7 +1123,7 @@ class ChatViewModel @AssistedInject constructor(
             .debounce(MESSAGES_REBUILD_DEBOUNCE_MS)
             .map { input ->
                 val (
-                    messages,
+                    rawMessages,
                     lastCommonRead,
                     parentMap,
                     conversationLastRead,
@@ -1131,6 +1131,10 @@ class ChatViewModel @AssistedInject constructor(
                     conversation,
                     capabilities
                 ) = input
+                // Mutable so reorderKnownSendSequence() can correct send order in place, the same
+                // way applyMessageGrouping()/applySystemMessageGrouping() annotate grouping in place
+                // - all three run before mapping to ChatMessageUi below.
+                val messages = rawMessages.toMutableList()
                 val messageMap: Map<Long, ChatMessage> = messages.associateBy { it.jsonMessageId.toLong() }
                 val combinedMap: Map<Long, ChatMessage> = messageMap + parentMap
 
@@ -1143,18 +1147,17 @@ class ChatViewModel @AssistedInject constructor(
                 val user = currentUserFlow.value
                 applyMessageGrouping(messages)
                 applySystemMessageGrouping(messages)
-                val uiMessages = reorderKnownSendSequence(
-                    messages.map { message ->
-                        val parent: ChatMessage? = combinedMap[message.parentMessageId]
-                        message.toUiModel(
-                            user = user ?: currentUser,
-                            chatMessage = message,
-                            lastCommonReadMessageId = lastCommonRead,
-                            parentMessage = parent,
-                            isClassified = isClassified
-                        )
-                    }
-                )
+                reorderKnownSendSequence(messages)
+                val uiMessages = messages.map { message ->
+                    val parent: ChatMessage? = combinedMap[message.parentMessageId]
+                    message.toUiModel(
+                        user = user ?: currentUser,
+                        chatMessage = message,
+                        lastCommonReadMessageId = lastCommonRead,
+                        parentMessage = parent,
+                        isClassified = isClassified
+                    )
+                }
 
                 val items = buildChatItems(uiMessages, conversationLastRead, expandedParents)
                 ProcessedMessages(items = items, missingParentIds = missingParentIds)
