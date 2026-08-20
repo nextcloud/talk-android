@@ -236,6 +236,40 @@ class ChatViewModel @AssistedInject constructor(
     // name, which would otherwise cancel every other queued upload too.
     private val uploadReferenceToWorkId = mutableMapOf<String, UUID>()
 
+    // Maps referenceId -> the order files were sent in during this screen's session, assigned the
+    // moment each upload starts. Deliberately session-local and never persisted or sent anywhere:
+    // uploads within a conversation are chained sequentially (see UploadAndShareFilesWorker.upload),
+    // so a file can still be mid-upload when an earlier one in the same batch has already synced
+    // back with its real, server-assigned timestamp - which, purely because of how long the earlier
+    // upload took, can be later than the still-pending file's instantly-assigned placeholder
+    // timestamp, flipping their relative order in the timestamp-sorted list. Nudging the DB's own
+    // "timestamp"/"id" values to fix this would risk side effects on anything else that treats
+    // timestamp as the server's authoritative value (message expiry, etc.), so instead this is
+    // applied only as a display-order correction, on top of the otherwise-unmodified DB order.
+    private val referenceIdSendSequence = mutableMapOf<String, Long>()
+    private var nextSendSequenceValue = 0L
+
+    // Corrects the relative order of messages we know the local send sequence for (see
+    // referenceIdSendSequence above), leaving every other message's position untouched - so this
+    // never reorders anything relative to messages with no known hint (other users' messages,
+    // messages sent before this screen session, older history, ...), only fixes the relative order
+    // among messages from the SAME batch while some are still catching up on syncing.
+    @Suppress("Detekt.ReturnCount")
+    private fun reorderKnownSendSequence(messages: List<ChatMessageUi>): List<ChatMessageUi> {
+        if (referenceIdSendSequence.isEmpty()) return messages
+
+        val hintedIndices = messages.indices.filter { referenceIdSendSequence.containsKey(messages[it].referenceId) }
+        if (hintedIndices.size < 2) return messages
+
+        val hintedItems = hintedIndices.map { messages[it] }
+        val sortedItems = hintedItems.sortedBy { referenceIdSendSequence[it.referenceId] }
+        if (sortedItems == hintedItems) return messages
+
+        val result = messages.toMutableList()
+        hintedIndices.forEachIndexed { position, index -> result[index] = sortedItems[position] }
+        return result
+    }
+
     fun cancelUpload(referenceId: String) {
         val workId = uploadReferenceToWorkId.remove(referenceId) ?: return
         UploadAndShareFilesWorker.cancelUpload(referenceId, workId)
@@ -1109,16 +1143,18 @@ class ChatViewModel @AssistedInject constructor(
                 val user = currentUserFlow.value
                 applyMessageGrouping(messages)
                 applySystemMessageGrouping(messages)
-                val uiMessages = messages.map { message ->
-                    val parent: ChatMessage? = combinedMap[message.parentMessageId]
-                    message.toUiModel(
-                        user = user ?: currentUser,
-                        chatMessage = message,
-                        lastCommonReadMessageId = lastCommonRead,
-                        parentMessage = parent,
-                        isClassified = isClassified
-                    )
-                }
+                val uiMessages = reorderKnownSendSequence(
+                    messages.map { message ->
+                        val parent: ChatMessage? = combinedMap[message.parentMessageId]
+                        message.toUiModel(
+                            user = user ?: currentUser,
+                            chatMessage = message,
+                            lastCommonReadMessageId = lastCommonRead,
+                            parentMessage = parent,
+                            isClassified = isClassified
+                        )
+                    }
+                )
 
                 val items = buildChatItems(uiMessages, conversationLastRead, expandedParents)
                 ProcessedMessages(items = items, missingParentIds = missingParentIds)
@@ -2065,6 +2101,7 @@ class ChatViewModel @AssistedInject constructor(
 
         val referenceId = UUID.randomUUID().toString().replace("-", "")
         metaDataMap["referenceId"] = referenceId
+        referenceIdSendSequence[referenceId] = nextSendSequenceValue++
 
         val metaData = Gson().toJson(metaDataMap)
 
