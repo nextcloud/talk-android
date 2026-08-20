@@ -51,12 +51,6 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
         threadId: Long?
     ): Flow<ChatMessageEntity> = flowOf()
 
-    override suspend fun getTempMessageForConversationOnce(
-        internalConversationId: String,
-        referenceId: String,
-        threadId: Long?
-    ): ChatMessageEntity? = null
-
     override suspend fun upsertChatMessages(chatMessages: List<ChatMessageEntity>) {
         /* */
     }
