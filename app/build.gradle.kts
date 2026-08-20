@@ -335,7 +335,7 @@ dependencies {
     implementation("com.github.nextcloud.android-common:core:0.33.2")
     implementation("com.github.nextcloud-deps:android-talk-webrtc:132.6834.0")
 
-    "gplayImplementation"("com.google.android.gms:play-services-base:18.10.0")
+    "gplayImplementation"("com.google.android.gms:play-services-base:18.10.1")
     "gplayImplementation"("com.google.firebase:firebase-messaging:25.1.1")
 
     implementation("org.unifiedpush.android:connector:3.3.3")
