@@ -95,6 +95,28 @@ interface ChatMessagesDao {
         threadId: Long?
     ): Flow<ChatMessageEntity?>
 
+    // One-shot (not Flow) variant used when syncing a real message in: its placeholder's original
+    // timestamp is needed synchronously, before the placeholder itself is overwritten/deleted, to
+    // decide whether the real message should keep that earlier timestamp (see
+    // ChatMessageSyncer.persistChatMessagesAndHandleSystemMessages).
+    @Query(
+        """
+        SELECT *
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND referenceId = :referenceId
+        AND isTemporary = 1
+        AND (:threadId IS NULL OR threadId = :threadId)
+        ORDER BY timestamp DESC, id DESC
+        LIMIT 1
+        """
+    )
+    suspend fun getTempMessageForConversationOnce(
+        internalConversationId: String,
+        referenceId: String,
+        threadId: Long?
+    ): ChatMessageEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatMessages(chatMessages: List<ChatMessageEntity>)
 

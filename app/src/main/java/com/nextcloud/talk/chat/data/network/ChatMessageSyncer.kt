@@ -790,7 +790,26 @@ class ChatMessageSyncer @Inject constructor(
         handleSystemMessagesThatAffectDatabase(target, chatMessages, events)
 
         val chatMessageEntities = chatMessages.map {
-            it.asEntity(target.accountId)
+            val entity = it.asEntity(target.accountId)
+            // If this message has a still-present local placeholder, keep the placeholder's
+            // (earlier) timestamp instead of the server's own. Uploads within a conversation are
+            // chained sequentially, so a file can take real seconds/minutes to actually finish
+            // uploading and sharing - by then, its server timestamp can be later than the
+            // instantly-assigned, still-pending placeholder timestamps of files queued after it in
+            // the same batch, which would otherwise flip their relative chat order once this one
+            // syncs in while those are still just placeholders.
+            val referenceId = entity.referenceId
+            if (referenceId != null) {
+                val placeholder = chatDao.getTempMessageForConversationOnce(
+                    target.internalConversationId,
+                    referenceId,
+                    target.threadId
+                )
+                if (placeholder != null && placeholder.timestamp < entity.timestamp) {
+                    entity.timestamp = placeholder.timestamp
+                }
+            }
+            entity
         }
 
         try {
