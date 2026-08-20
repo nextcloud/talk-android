@@ -176,6 +176,7 @@ class ConversationsListActivity : BaseActivity() {
     private var textToPaste: String? = ""
     private var selectedMessageId: String? = null
     private var pendingDirectShareToken: String? = null
+    private var isDirectShareTarget = false
 
     lateinit var ecosystemManager: EcosystemManager
 
@@ -489,7 +490,10 @@ class ConversationsListActivity : BaseActivity() {
                     if (token != null) {
                         pendingDirectShareToken = null
                         val conversation = list.firstOrNull { it.token == token }
-                        if (conversation != null) handleConversation(conversation)
+                        if (conversation != null) {
+                            isDirectShareTarget = true
+                            handleConversation(conversation)
+                        }
                     }
 
                     // Update dynamic shortcuts for frequent/favorite conversations
@@ -832,6 +836,15 @@ class ConversationsListActivity : BaseActivity() {
 
     private fun showSendFilesConfirmDialog() {
         if (platformPermissionUtil.isFilesPermissionGranted()) {
+            if (isDirectShareTarget) {
+                // Skip the "Send this file to X?" confirmation: the user already picked this exact
+                // conversation directly from Android's share sheet, so re-confirming the target here
+                // would just be a redundant extra tap. Go straight to the upload preview screen.
+                isDirectShareTarget = false
+                openConversation()
+                return
+            }
+
             val fileNamesWithLineBreaks = StringBuilder("\n")
             for (file in filesToShare!!) {
                 val filename = FileUtils.getFileName(file.toUri(), context)
