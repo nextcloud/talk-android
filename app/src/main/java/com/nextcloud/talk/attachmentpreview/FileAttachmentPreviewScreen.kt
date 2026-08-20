@@ -236,6 +236,7 @@ private fun rememberPreviewViewModel(files: List<String>): FileAttachmentPreview
     showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
 )
+@Preview(name = "RTL Arabic", showBackground = true, locale = "ar")
 @Composable
 private fun FileAttachmentPreviewContentPreview() {
     val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
