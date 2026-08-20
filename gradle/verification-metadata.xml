@@ -46,6 +46,7 @@
             <trusting group="androidx.media3"/>
             <trusting group="androidx.sqlite"/>
             <trusting group="androidx.work"/>
+            <trusting group="com.google.android.gms"/>
             <trusting group="com.google.firebase"/>
             <trusting group="^androidx[.]camera($|([.].*))" regex="true"/>
             <trusting group="^androidx[.]compose($|([.].*))" regex="true"/>
@@ -485,8 +486,8 @@
             <trusting group="org.codehaus.mojo"/>
          </trusted-key>
          <trusted-key id="F3184BCD55F4D016E30D4C9BF42E87F9665015C9" group="org.jsoup" name="jsoup" version="1.12.2"/>
-         <trusted-key id="F3FF33E96F18AA62DD580F9651FBF517CE6D6B80" group="gradle" name="gradle"/>
          <trusted-key id="F3BD845679DD6A30F3F50F91597852B0B140F0BC" group="com.caverock" name="androidsvg-aar" version="1.4"/>
+         <trusted-key id="F3FF33E96F18AA62DD580F9651FBF517CE6D6B80" group="gradle" name="gradle"/>
          <trusted-key id="F4DD59C90148BDC52BEB90A4530AA5F25C25011F" group="^org[.]apache($|([.].*))" regex="true"/>
          <trusted-key id="FA77DCFEF2EE6EB2DEBEDD2C012579464D01C06A" group="org.apache" name="apache"/>
          <trusted-key id="FA7929F83AD44C4590F6CC6815C71C0A4E0B8EDD" group="net.java.dev.jna"/>
