@@ -1578,6 +1578,10 @@ class ChatViewModel @AssistedInject constructor(
     fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {
         Log.d(TAG, "Remote server ${conversationModel.remoteServer}")
         if (conversationModel.remoteServer.isNullOrEmpty()) {
+            participantPermissions = ParticipantPermissions(
+                user.capabilities!!.spreedCapability!!,
+                conversationModel
+            )
             if (_getCapabilitiesViewState.value == GetCapabilitiesStartState) {
                 _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(
                     user.capabilities!!.spreedCapability!!,
@@ -1586,10 +1590,6 @@ class ChatViewModel @AssistedInject constructor(
             } else {
                 _getCapabilitiesViewState.value = GetCapabilitiesUpdateState(user.capabilities!!.spreedCapability!!)
             }
-            participantPermissions = ParticipantPermissions(
-                user.capabilities!!.spreedCapability!!,
-                conversationModel
-            )
             _spreedCapabilities.value = user.capabilities!!.spreedCapability!!
         } else {
             chatNetworkDataSource.getCapabilities(user, token)
@@ -1601,6 +1601,10 @@ class ChatViewModel @AssistedInject constructor(
                     }
 
                     override fun onNext(spreedCapabilities: SpreedCapability) {
+                        participantPermissions = ParticipantPermissions(
+                            spreedCapabilities,
+                            conversationModel
+                        )
                         if (_getCapabilitiesViewState.value == GetCapabilitiesStartState) {
                             _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(
                                 spreedCapabilities,
@@ -1609,10 +1613,6 @@ class ChatViewModel @AssistedInject constructor(
                         } else {
                             _getCapabilitiesViewState.value = GetCapabilitiesUpdateState(spreedCapabilities)
                         }
-                        participantPermissions = ParticipantPermissions(
-                            spreedCapabilities,
-                            conversationModel
-                        )
                         _spreedCapabilities.value = spreedCapabilities
                     }
 
