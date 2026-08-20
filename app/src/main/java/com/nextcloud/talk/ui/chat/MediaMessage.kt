@@ -17,6 +17,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -118,6 +119,8 @@ private const val PORTRAIT_WIDTH_FRACTION = 0.80f
 
 private fun mediaWidthFraction(aspectRatio: Float?): Float =
     if (aspectRatio != null && aspectRatio < 1f) PORTRAIT_WIDTH_FRACTION else 1f
+
+private val noPreviewMinSize = 160.dp
 
 @Suppress("Detekt.LongMethod", "LongParameterList", "CyclomaticComplexMethod")
 @Composable
@@ -315,27 +318,46 @@ fun MediaMessage(
                 }
                 val aspectRatio = serverAspectRatio ?: loadedAspectRatio
 
+                val showsGenericIcon = localVideoFramePainter == null && aspectRatio == null
+
                 val mediaModifier = Modifier
                     .fillMaxWidth()
                     .then(if (aspectRatio != null) Modifier.aspectRatio(aspectRatio) else Modifier)
                     .padding(mediaInset)
                     .clip(mediaShape)
 
-                // The bubble wraps to this Box's requested width (ChatMessageScaffold's Surface has
-                // no fillMaxWidth of its own), so shrinking this - not just mediaModifier - is what
-                // actually shrinks the bubble along with the media, instead of leaving empty space
-                // beside a smaller image inside an unchanged-size bubble.
-                Box(modifier = Modifier.fillMaxWidth(mediaWidthFraction(aspectRatio))) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(mediaWidthFraction(aspectRatio))
+                        .then(
+                            if (showsGenericIcon) {
+                                Modifier.defaultMinSize(minWidth = noPreviewMinSize, minHeight = noPreviewMinSize)
+                            } else {
+                                Modifier
+                            }
+                        )
+                ) {
                     val messageLongClickHandler = LocalMessageLongClickHandler.current
                     val clickableModifier = mediaModifier.combinedClickable(
                         onClick = { onImageClick(message.id) },
                         onLongClick = { messageLongClickHandler(message.id) }
                     )
 
-                    // Rendered directly instead of routed through Coil's placeholder/fallback painters,
-                    // since Coil's own null-data handling on a pre-built ImageRequest (see load() below)
-                    // takes priority and never shows a composable-supplied fallback painter here.
-                    if (localVideoFramePainter != null) {
+                    if (showsGenericIcon) {
+                        Icon(
+                            painter = fallbackPainter,
+                            contentDescription = stringResource(R.string.media_message_content_description),
+                            modifier = Modifier
+                                .size(120.dp)
+                                .padding(mediaInset)
+                                .align(Alignment.Center)
+                                .combinedClickable(
+                                    onClick = { onImageClick(message.id) },
+                                    onLongClick = { messageLongClickHandler(message.id) }
+                                ),
+                            tint = Color.Unspecified
+                        )
+                    } else if (localVideoFramePainter != null) {
                         Image(
                             painter = localVideoFramePainter,
                             contentDescription = stringResource(R.string.media_message_content_description),
