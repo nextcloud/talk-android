@@ -9,7 +9,9 @@
  */
 package com.nextcloud.talk.activities
 
+import android.content.ContentResolver
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.TextUtils
@@ -43,6 +45,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -140,7 +143,7 @@ class MainActivity :
     }
 
     private fun handleActionFromContact(intent: Intent) {
-        if (intent.action == Intent.ACTION_VIEW && intent.data != null) {
+        if (intent.action == Intent.ACTION_VIEW && intent.data != null && isTrustedContactsUri(intent.data!!)) {
             val cursor = contentResolver.query(intent.data!!, null, null, null, null)
 
             var userId = ""
@@ -157,9 +160,10 @@ class MainActivity :
                 "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat" -> {
                     val user = userId.substringBeforeLast("@")
                     val baseUrl = userId.substringAfterLast("@")
+                    val isValidBaseUrl = baseUrl.isNotBlank() && "https://$baseUrl".toHttpUrlOrNull() != null
 
                     val currentUser = currentUserProviderOld.currentUser.blockingGet()
-                    if (currentUser?.baseUrl?.endsWith(baseUrl) == true) {
+                    if (isValidBaseUrl && currentUser?.baseUrl?.endsWith(baseUrl) == true) {
                         startConversation(user)
                     } else {
                         Snackbar.make(
@@ -172,6 +176,9 @@ class MainActivity :
             }
         }
     }
+
+    private fun isTrustedContactsUri(uri: Uri): Boolean =
+        uri.scheme == ContentResolver.SCHEME_CONTENT && uri.authority == ContactsContract.AUTHORITY
 
     private fun startConversation(userId: String) {
         val roomType = "1"
