@@ -429,11 +429,13 @@ fun UploadingMediaMessage(
                     modifier = if (isImage || isVideo) Modifier else Modifier.fillMaxWidth()
                 ) {
                     if (isImage && typeContent.localFileUri.isNotEmpty()) {
+                        val ratio = imageAspectRatio
                         AsyncImage(
                             model = typeContent.localFileUri.toUri(),
                             contentDescription = typeContent.fileName,
                             modifier = Modifier
-                                .fillMaxWidth(mediaWidthFraction(imageAspectRatio))
+                                .fillMaxWidth(mediaWidthFraction(ratio))
+                                .then(if (ratio != null) Modifier.aspectRatio(ratio) else Modifier)
                                 .blur(4.dp)
                                 .padding(mediaInset)
                                 .clip(mediaShape),
