@@ -261,8 +261,9 @@ class CallActivity : CallBaseActivity() {
 
     private val callTimeHandler = Handler(Looper.getMainLooper())
 
-    // Track if we're intentionally leaving the call
-    private var isIntentionallyLeavingCall = false
+    // Set when a call for another room is requested while this instance is still alive. The current call
+    // is hung up and a fresh CallActivity is started with this intent once this instance is destroyed.
+    private var pendingCallIntent: Intent? = null
 
     // push to talk
     private var isPushToTalkActive = false
@@ -333,7 +334,6 @@ class CallActivity : CallBaseActivity() {
     private var requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissionMap: Map<String, Boolean> ->
-        // Log permission results
         Log.d(TAG, "Permission request completed with results: $permissionMap")
 
         val rationaleList: MutableList<String> = ArrayList()
@@ -351,7 +351,7 @@ class CallActivity : CallBaseActivity() {
             if (java.lang.Boolean.TRUE == cameraPermission) {
                 Log.d(TAG, "Camera permission was granted")
             } else {
-                Log.d(TAG, "DEBUG: Camera permission was denied")
+                Log.d(TAG, "Camera permission is not yet granted. Request will be made for permission.")
                 rationaleList.add(resources.getString(R.string.nc_camera_permission_hint))
             }
         }
@@ -361,7 +361,7 @@ class CallActivity : CallBaseActivity() {
                 if (java.lang.Boolean.TRUE == bluetoothPermission) {
                     enableBluetoothManager()
                 } else {
-                    Log.d(TAG, "DEBUG: Bluetooth permission was denied")
+                    Log.d(TAG, "Bluetooth permission is not yet granted. Request will be made for permission.")
                     // Only ask for bluetooth when already asking to grant microphone or camera access. Asking
                     // for bluetooth solely is not important enough here and would most likely annoy the user.
                     if (rationaleList.isNotEmpty()) {
@@ -376,7 +376,7 @@ class CallActivity : CallBaseActivity() {
                 if (java.lang.Boolean.TRUE == notificationPermission) {
                     Log.d(TAG, "Notification permission was granted")
                 } else {
-                    Log.w(TAG, "DEBUG: Notification permission was denied - this may cause call hang")
+                    Log.d(TAG, "Notification permission is not yet granted. Request will be made for permission.")
                     rationaleList.add(resources.getString(R.string.nc_notification_permission_hint))
                 }
             }
@@ -385,21 +385,7 @@ class CallActivity : CallBaseActivity() {
             showRationaleDialogForSettings(rationaleList)
         }
 
-        // DEBUG: Check if we should proceed with call despite notification permission
-        val notificationPermissionGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permissionMap[Manifest.permission.POST_NOTIFICATIONS] == true
-        } else {
-            true // Older Android versions have permission by default
-        }
-
-        Log.d(
-            TAG,
-            "Notification permission granted: $notificationPermissionGranted, " +
-                "isConnectionEstablished: $isConnectionEstablished"
-        )
-
         if (!isConnectionEstablished) {
-            Log.d(TAG, "DEBUG: Proceeding with prepareCall() despite notification permission status")
             prepareCall()
         }
     }
@@ -433,8 +419,7 @@ class CallActivity : CallBaseActivity() {
         // Register broadcast receiver for ending call from notification
         val endCallFilter = IntentFilter(END_CALL_FROM_NOTIFICATION)
 
-        // Use the proper utility function with ReceiverFlag for Android 14+ compatibility
-        // This receiver is for internal app use only (notification actions), so it should NOT be exported
+        // internal receiver for notification actions, so not exported
         registerPermissionHandlerBroadcastReceiver(
             endCallFromNotificationReceiver,
             endCallFilter,
@@ -442,8 +427,6 @@ class CallActivity : CallBaseActivity() {
             null,
             ReceiverFlag.NotExported
         )
-
-        Log.d(TAG, "Broadcast receiver registered successfully")
 
         callViewModel = ViewModelProvider(this, viewModelFactory)[CallViewModel::class.java]
 
@@ -725,6 +708,32 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (currentCallStatus === CallStatus.LEAVING) {
+            Log.d(TAG, "onNewIntent: call is already being left, ignoring intent")
+            return
+        }
+        val newRoomToken = intent.getStringExtra(KEY_ROOM_TOKEN)
+        Log.d(TAG, "onNewIntent: newRoomToken=$newRoomToken roomToken=$roomToken")
+
+        when {
+            // notification tap without extras: just bring the current call back to the front
+            newRoomToken.isNullOrEmpty() -> Unit
+
+            // re-entry for the call this instance is already handling (singleTask reuse)
+            newRoomToken == roomToken -> setIntent(intent)
+
+            // a call for another room was requested while this instance lingered in the background:
+            // end the current call and restart cleanly in onDestroy, so no stale state is reused
+            else -> {
+                Log.d(TAG, "onNewIntent: call requested for another room, ending current call first")
+                pendingCallIntent = Intent(intent)
+                hangup(shutDownView = true, endCallForAll = false)
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         if (hasSpreedFeatureCapability(
@@ -760,8 +769,11 @@ class CallActivity : CallBaseActivity() {
 
     override fun onStop() {
         super.onStop()
-        Log.d(TAG, "CallActivity.onStop: isInPipMode=$isInPipMode currentCallStatus=$currentCallStatus" +
-            " isFinishing=$isFinishing isChangingConfigurations=$isChangingConfigurations")
+        Log.d(
+            TAG,
+            "CallActivity.onStop: isInPipMode=$isInPipMode currentCallStatus=$currentCallStatus" +
+                " isFinishing=$isFinishing isChangingConfigurations=$isChangingConfigurations"
+        )
         active = false
 
         if (isMicInputAudioThreadRunning) {
@@ -866,11 +878,9 @@ class CallActivity : CallBaseActivity() {
                 true
             }
             binding!!.hangupButton.setOnClickListener {
-                isIntentionallyLeavingCall = true
                 hangup(shutDownView = true, endCallForAll = true)
             }
             binding!!.endCallPopupMenu.setOnClickListener {
-                isIntentionallyLeavingCall = true
                 hangup(shutDownView = true, endCallForAll = true)
                 binding!!.endCallPopupMenu.visibility = View.GONE
             }
@@ -882,11 +892,9 @@ class CallActivity : CallBaseActivity() {
                 }
             }
             binding!!.hangupButton.setOnClickListener {
-                isIntentionallyLeavingCall = true
                 hangup(shutDownView = true, endCallForAll = false)
             }
             binding!!.endCallPopupMenu.setOnClickListener {
-                isIntentionallyLeavingCall = true
                 hangup(shutDownView = true, endCallForAll = false)
                 binding!!.endCallPopupMenu.visibility = View.GONE
             }
@@ -1140,28 +1148,22 @@ class CallActivity : CallBaseActivity() {
 
     private fun prepareCall() {
         stopCallingSound()
-        Log.d(TAG, "prepareCall() started")
+        basicInitialization()
+        initViews()
+        checkRecordingConsentAndInitiateCall()
 
         if (permissionUtil!!.isMicrophonePermissionGranted()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (permissionUtil!!.isPostNotificationsPermissionGranted()) {
-                    Log.d(TAG, "DEBUG: Starting foreground service with notification permission")
-                    CallForegroundService.start(applicationContext, conversationName, intent.extras)
-                } else {
-                    Log.w(
-                        TAG,
-                        "Notification permission not granted - call will work " +
-                            "but without persistent notification"
-                    )
-                    Snackbar.make(
-                        binding!!.root,
-                        resources.getString(R.string.nc_notification_permission_hint),
-                        SEC_10
-                    ).show()
-                }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                !permissionUtil!!.isPostNotificationsPermissionGranted()
+            ) {
+                // the call works without the persistent notification, but returning to it is harder
+                Log.w(TAG, "Notification permission not granted - no persistent notification will be shown")
+                Snackbar.make(
+                    binding!!.root,
+                    resources.getString(R.string.nc_notification_permission_hint),
+                    SEC_10
+                ).show()
             } else {
-                // Android 12 and below - notification permission is automatically granted
-                Log.d(TAG, "DEBUG: Starting foreground service (Android 12-)")
                 CallForegroundService.start(applicationContext, conversationName, intent.extras)
             }
 
@@ -1172,16 +1174,9 @@ class CallActivity : CallBaseActivity() {
             Log.w(TAG, "DEBUG: Microphone permission not granted - skipping foreground service start")
         }
 
-        Log.d(TAG, "Ensuring call proceeds even without notification permission")
-
-        basicInitialization()
-        initViews()
-        checkRecordingConsentAndInitiateCall()
-
         if (isVoiceOnlyCall) {
             binding!!.selfVideoViewWrapper.visibility = View.GONE
         } else if (permissionUtil!!.isCameraPermissionGranted()) {
-            Log.d(TAG, "DEBUG: Camera permission granted, showing video")
             binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
             // don't enable the camera if call was answered via notification
             if (!isIncomingCallFromNotification) {
@@ -1190,8 +1185,6 @@ class CallActivity : CallBaseActivity() {
             if (cameraEnumerator!!.deviceNames.isEmpty()) {
                 binding!!.cameraButton.visibility = View.GONE
             }
-        } else {
-            Log.w(TAG, "DEBUG: Camera permission not granted, hiding video")
         }
     }
 
@@ -1209,29 +1202,15 @@ class CallActivity : CallBaseActivity() {
             rationalesWithLineBreaks.append(rationale).append("\n\n")
         }
 
-        // Log when permission rationale dialog is shown
-        Log.d(TAG, "Showing permission rationale dialog for permissions: $permissionsToRequest")
-        val hasNotificationPerm = permissionsToRequest
-            .contains(Manifest.permission.POST_NOTIFICATIONS)
-        Log.d(TAG, "Rationale includes notification permission: $hasNotificationPerm")
-
         val dialogBuilder = MaterialAlertDialogBuilder(this)
             .setTitle(R.string.nc_permissions_rationale_dialog_title)
             .setMessage(rationalesWithLineBreaks)
             .setPositiveButton(R.string.nc_permissions_ask) { _, _ ->
-                Log.d(TAG, "DEBUG: User clicked 'Ask' for permissions")
                 requestPermissionLauncher.launch(permissionsToRequest.toTypedArray())
             }
             .setNegativeButton(R.string.nc_common_dismiss) { _, _ ->
-                // DEBUG: Log when user dismisses permission request
-                Log.w(TAG, "DEBUG: User dismissed permission request for: $permissionsToRequest")
-                if (permissionsToRequest.contains(Manifest.permission.POST_NOTIFICATIONS)) {
-                    Log.w(TAG, "DEBUG: Notification permission specifically dismissed - proceeding with call anyway")
-                }
-
-                // Proceed with call even when notification permission is dismissed
+                // Proceed with the call even when permissions (e.g. notifications) are dismissed
                 if (!isConnectionEstablished) {
-                    Log.d(TAG, "DEBUG: Proceeding with prepareCall() after dismissing notification permission")
                     prepareCall()
                 }
             }
@@ -1516,57 +1495,38 @@ class CallActivity : CallBaseActivity() {
     }
 
     public override fun onDestroy() {
-        Log.d(TAG, "onDestroy called")
-        Log.d(TAG, "onDestroy: isIntentionallyLeavingCall=$isIntentionallyLeavingCall")
         Log.d(TAG, "onDestroy: currentCallStatus=$currentCallStatus")
 
-        val isSystemInitiatedDestroy = !isIntentionallyLeavingCall && currentCallStatus !== CallStatus.LEAVING
-
+        // The call cannot survive the activity being destroyed (WebRTC connections, local stream and
+        // signaling listeners all live here), so always clean up and hang up. Background survival is
+        // achieved via moveTaskToBack/PiP, which do not destroy the activity.
         if (signalingMessageReceiver != null) {
-            if (!isSystemInitiatedDestroy) {
-                signalingMessageReceiver!!.removeListener(localParticipantMessageListener)
-                signalingMessageReceiver!!.removeListener(offerMessageListener)
-            } else {
-                Log.d(TAG, "System-initiated destroy, keeping signaling listeners for foreground service")
-            }
+            signalingMessageReceiver!!.removeListener(localParticipantMessageListener)
+            signalingMessageReceiver!!.removeListener(offerMessageListener)
         }
         if (localStream != null) {
-            if (!isSystemInitiatedDestroy) {
-                localStream!!.dispose()
-                localStream = null
-                Log.d(TAG, "Disposed localStream (intentionally leaving)")
-            } else {
-                Log.d(TAG, "System-initiated destroy, keeping localStream alive for foreground service")
-            }
+            localStream!!.dispose()
+            localStream = null
+            Log.d(TAG, "Disposed localStream")
         } else {
             Log.d(TAG, "localStream is null")
         }
         if (currentCallStatus !== CallStatus.LEAVING) {
-            if (isIntentionallyLeavingCall) {
-                hangup(true, false)
-            }
+            hangup(true, false)
         }
         CallForegroundService.stop(applicationContext)
-        Log.d(TAG, "Foreground service stop requested from onDestroy()")
 
-        if (!isSystemInitiatedDestroy) {
-            Log.d(TAG, "onDestroy: Releasing proximity sensor - updating to IDLE state")
-            powerManagerUtils!!.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
-            Log.d(TAG, "onDestroy: Proximity sensor released")
-        } else {
-            Log.d(TAG, "System-initiated destroy, keeping proximity sensor active")
+        powerManagerUtils!!.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
+
+        try {
+            unregisterReceiver(endCallFromNotificationReceiver)
+        } catch (e: IllegalArgumentException) {
+            Log.w(TAG, "Failed to unregister endCallFromNotificationReceiver", e)
         }
 
-        if (!isSystemInitiatedDestroy) {
-            try {
-                Log.d(TAG, "Unregistering endCallFromNotificationReceiver...")
-                unregisterReceiver(endCallFromNotificationReceiver)
-                Log.d(TAG, "endCallFromNotificationReceiver unregistered successfully")
-            } catch (e: IllegalArgumentException) {
-                Log.w(TAG, "Failed to unregister endCallFromNotificationReceiver", e)
-            }
-        } else {
-            Log.d(TAG, "System-initiated destroy, keeping endCallFromNotificationReceiver registered")
+        pendingCallIntent?.let {
+            Log.d(TAG, "onDestroy: starting CallActivity for pending call intent")
+            startActivity(it)
         }
 
         super.onDestroy()
@@ -2096,8 +2056,11 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 "roomJoined" -> {
-                    Log.d(TAG, "onMessageEvent 'roomJoined' joinRoomInitiated=$joinRoomInitiated" +
-                        " currentCallStatus=$currentCallStatus")
+                    Log.d(
+                        TAG,
+                        "onMessageEvent 'roomJoined' joinRoomInitiated=$joinRoomInitiated" +
+                            " currentCallStatus=$currentCallStatus"
+                    )
                     if (!joinRoomInitiated) {
                         Log.d(TAG, "Ignoring stale roomJoined event (joinRoomAndCall not yet called)")
                         return
@@ -2105,8 +2068,11 @@ class CallActivity : CallBaseActivity() {
                     startSendingNick()
                     if (webSocketCommunicationEvent.getHashMap()!!["roomToken"] == roomToken) {
                         if (currentCallStatus === CallStatus.IN_CONVERSATION) {
-                            Log.d(TAG, "Already in conversation, skipping performCall()" +
-                                " (ChatActivity resume triggered spurious roomJoined)")
+                            Log.d(
+                                TAG,
+                                "Already in conversation, skipping performCall()" +
+                                    " (ChatActivity resume triggered spurious roomJoined)"
+                            )
                         } else {
                             roomJoinRefreshes = 0
                             performCall()
@@ -2179,8 +2145,6 @@ class CallActivity : CallBaseActivity() {
     private fun hangup(shutDownView: Boolean, endCallForAll: Boolean) {
         Log.d(TAG, "hangup! shutDownView=$shutDownView, endCallForAll=$endCallForAll")
         joinRoomInitiated = false
-        Log.d(TAG, "hangup! isIntentionallyLeavingCall=$isIntentionallyLeavingCall")
-        Log.d(TAG, "hangup! powerManagerUtils state before cleanup: ${powerManagerUtils != null}")
         if (shutDownView) {
             setCallState(CallStatus.LEAVING)
         }
@@ -2287,7 +2251,14 @@ class CallActivity : CallBaseActivity() {
                 { e -> Log.w(TAG, "Something went wrong when leaving the call", e) }
             )
 
-        if (switchToRoomToken.isNotEmpty()) {
+        val conversationModel = currentConversation?.let {
+            ConversationModel.mapToConversationModel(it, conversationUser)
+        }
+
+        if (conversationModel?.checkIfVoiceRoom() == true) {
+            openConversationListInPrimaryTask()
+            finishAndRemoveTask()
+        } else if (switchToRoomToken.isNotEmpty()) {
             val intent = Intent(context, ChatActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             val bundle = Bundle()
@@ -3279,8 +3250,11 @@ class CallActivity : CallBaseActivity() {
 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        Log.d(TAG, "onPictureInPictureModeChanged: isInPictureInPictureMode=$isInPictureInPictureMode" +
-            " currentCallStatus=$currentCallStatus isIntentionallyLeavingCall=$isIntentionallyLeavingCall")
+        Log.d(
+            TAG,
+            "onPictureInPictureModeChanged: isInPictureInPictureMode=$isInPictureInPictureMode" +
+                " currentCallStatus=$currentCallStatus"
+        )
         isInPipMode = isInPictureInPictureMode
         if (isInPictureInPictureMode) {
             mReceiver = object : BroadcastReceiver() {
@@ -3411,7 +3385,6 @@ class CallActivity : CallBaseActivity() {
     private val endCallFromNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == END_CALL_FROM_NOTIFICATION) {
-                isIntentionallyLeavingCall = true
                 powerManagerUtils?.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
                 hangup(shutDownView = true, endCallForAll = false)
             }

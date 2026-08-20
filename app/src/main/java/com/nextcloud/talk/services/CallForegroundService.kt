@@ -38,7 +38,7 @@ import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 class CallForegroundService : Service() {
 
     private val handler = Handler(Looper.getMainLooper())
-    private var currentNotificationId: Int = NOTIFICATION_ID
+    private var currentCallExtras: Bundle? = null
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -49,6 +49,7 @@ class CallForegroundService : Service() {
 
         val conversationName = intent?.getStringExtra(EXTRA_CONVERSATION_NAME)
         val callExtras = intent?.getBundleExtra(EXTRA_CALL_INTENT_EXTRAS)
+        currentCallExtras = callExtras
         val notification = buildNotification(conversationName, callExtras)
 
         val foregroundServiceType = resolveForegroundServiceType(callExtras)
@@ -117,10 +118,7 @@ class CallForegroundService : Service() {
     }
 
     @SuppressLint("NewApi")
-    private fun buildCallStyleNotification(
-        contentTitle: String,
-        pendingIntent: PendingIntent
-    ): Notification {
+    private fun buildCallStyleNotification(contentTitle: String, pendingIntent: PendingIntent): Notification {
         val caller = Person.Builder()
             .setName(contentTitle)
             .setIcon(Icon.createWithResource(this, R.drawable.ic_call_white_24dp))
@@ -164,7 +162,7 @@ class CallForegroundService : Service() {
                     val conversationName = ApplicationWideCurrentRoomHolder.getInstance()
                         .userInRoom?.displayName
                         ?: getString(R.string.nc_call_ongoing_notification_default_title)
-                    val pendingIntent = createContentIntent(null)
+                    val pendingIntent = createContentIntent(currentCallExtras)
                     val notification = buildCallStyleNotification(conversationName, pendingIntent)
 
                     startForeground(NOTIFICATION_ID, notification)

@@ -13,7 +13,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.util.Log;
 import android.util.Rational;
 import android.view.View;
@@ -156,8 +155,8 @@ public abstract class CallBaseActivity extends BaseActivity {
             return;
         }
         // On API 31+: if auto-enter didn't handle it (task switch), move the
-        // task to back so the activity survives instead of being destroyed
-        // (excludeFromRecents + separate taskAffinity causes task death).
+        // task to back so the activity survives. The ongoing call notification
+        // is the way back, as the call task is excluded from recents.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
                 && !isInPictureInPictureMode()
                 && isPipModePossible()) {
@@ -190,19 +189,6 @@ public abstract class CallBaseActivity extends BaseActivity {
                 android.os.Process.myUid(),
                 BuildConfig.APPLICATION_ID) == AppOpsManager.MODE_ALLOWED;
             return deviceHasPipFeature && isPipFeatureGranted;
-    }
-
-    private boolean shouldFinishOnStop() {
-        if (!isInPipMode) {
-            return false;
-        }
-
-        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        if (powerManager == null) {
-            return true;
-        }
-
-        return powerManager.isInteractive();
     }
 
     public abstract void updateUiForPipMode();
