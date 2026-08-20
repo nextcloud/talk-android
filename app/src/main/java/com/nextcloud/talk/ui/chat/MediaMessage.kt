@@ -41,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
@@ -232,7 +233,7 @@ fun MediaMessage(
                         ?.asImageBitmap()
                         ?.let { BitmapPainter(it) }
                 }
-                val aspectRatio = remember(typeContent.width, typeContent.height) {
+                val serverAspectRatio = remember(typeContent.width, typeContent.height) {
                     val w = typeContent.width
                     val h = typeContent.height
                     if (w != null && h != null && w > 0 && h > 0) w.toFloat() / h else null
@@ -259,6 +260,60 @@ fun MediaMessage(
                 // the actual bytes - for our own just-uploaded file we already have the real image on
                 // disk, so showing blurhash instead would be a needless downgrade.
                 val ownUploadPlaceholder = localPreviewPainter ?: blurhashPainter ?: fallbackPainter
+
+                // Created unconditionally (even for the local-video-frame branch below, where
+                // loadedImage is always null and this just sits in Coil's cheap Empty state) so its
+                // intrinsic size is available as a fallback aspect ratio - see loadedAspectRatio below.
+                val loadedPainter = rememberAsyncImagePainter(
+                    model = loadedImage,
+                    onError = { state ->
+                        val cause = state.result.throwable
+                        val isServerError = cause is HttpException && cause.response.code in 500..599
+                        if (
+                            isServerError &&
+                            !typeContent.previewUrl.isNullOrEmpty() &&
+                            retryCount < PREVIEW_MAX_RETRIES &&
+                            !retryPending
+                        ) {
+                            retryPending = true
+                            scope.launch {
+                                Log.d(
+                                    TAG,
+                                    "Preview returned HTTP ${(cause as HttpException).response.code}, " +
+                                        "scheduling retry ${retryCount + 1}/$PREVIEW_MAX_RETRIES " +
+                                        "for ${typeContent.previewUrl}"
+                                )
+                                delay(PREVIEW_RETRY_DELAY_MS)
+                                retryCount++
+                                retryPending = false
+                            }
+                        }
+                    }
+                )
+                val isLoaded = loadedPainter.state is AsyncImagePainter.State.Success
+                val loadedAlpha by animateFloatAsState(
+                    targetValue = if (isLoaded) 1f else 0f,
+                    animationSpec = tween(durationMillis = MEDIA_CROSSFADE_DURATION_MS),
+                    label = "mediaLoadedAlpha"
+                )
+
+                // The server doesn't always report width/height (observed for some file types, e.g.
+                // screenshots) - without either value, the two matchParentSize() crossfade layers below
+                // have nothing to size the bubble by and it collapses to zero height, hiding the image
+                // even though it loaded successfully. Falling back to the loaded image's own intrinsic
+                // size once available fixes that case without affecting the normal (server-reported)
+                // path, which always takes priority when present.
+                val loadedIntrinsicSize = loadedPainter.intrinsicSize
+                val loadedAspectRatio = if (
+                    loadedIntrinsicSize.isSpecified &&
+                    loadedIntrinsicSize.width > 0f &&
+                    loadedIntrinsicSize.height > 0f
+                ) {
+                    loadedIntrinsicSize.width / loadedIntrinsicSize.height
+                } else {
+                    null
+                }
+                val aspectRatio = serverAspectRatio ?: loadedAspectRatio
 
                 val mediaModifier = Modifier
                     .fillMaxWidth()
@@ -288,39 +343,6 @@ fun MediaMessage(
                             contentScale = ContentScale.Crop
                         )
                     } else {
-                        val loadedPainter = rememberAsyncImagePainter(
-                            model = loadedImage,
-                            onError = { state ->
-                                val cause = state.result.throwable
-                                val isServerError = cause is HttpException && cause.response.code in 500..599
-                                if (
-                                    isServerError &&
-                                    !typeContent.previewUrl.isNullOrEmpty() &&
-                                    retryCount < PREVIEW_MAX_RETRIES &&
-                                    !retryPending
-                                ) {
-                                    retryPending = true
-                                    scope.launch {
-                                        Log.d(
-                                            TAG,
-                                            "Preview returned HTTP ${(cause as HttpException).response.code}, " +
-                                                "scheduling retry ${retryCount + 1}/$PREVIEW_MAX_RETRIES " +
-                                                "for ${typeContent.previewUrl}"
-                                        )
-                                        delay(PREVIEW_RETRY_DELAY_MS)
-                                        retryCount++
-                                        retryPending = false
-                                    }
-                                }
-                            }
-                        )
-                        val isLoaded = loadedPainter.state is AsyncImagePainter.State.Success
-                        val loadedAlpha by animateFloatAsState(
-                            targetValue = if (isLoaded) 1f else 0f,
-                            animationSpec = tween(durationMillis = MEDIA_CROSSFADE_DURATION_MS),
-                            label = "mediaLoadedAlpha"
-                        )
-
                         // Own explicit crossfade instead of relying on Coil's built-in one: the
                         // placeholder is a Compose-supplied Painter (not a Coil-managed Drawable), so
                         // Coil's crossfade transition doesn't reliably fade from what's actually on
