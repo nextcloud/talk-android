@@ -321,8 +321,16 @@ dependencies {
     implementation("com.github.yalantis:ucrop:2.2.11")
 
     implementation("io.github.elye:loaderviewlibrary:3.0.0")
-    implementation("org.maplibre.compose:maplibre-compose:0.14.0")
-    implementation("org.maplibre.compose:maplibre-compose-material3:0.14.0")
+    // android-sdk 13.x defaults to a Vulkan renderer and declares a hard
+    // (required=true) android.hardware.vulkan.version uses-feature, which shrinks
+    // the Play Console "supported devices" count. Use the OpenGL ES variant instead.
+    implementation("org.maplibre.compose:maplibre-compose:0.14.0") {
+        exclude(group = "org.maplibre.gl", module = "android-sdk")
+    }
+    implementation("org.maplibre.compose:maplibre-compose-material3:0.14.0") {
+        exclude(group = "org.maplibre.gl", module = "android-sdk")
+    }
+    implementation("org.maplibre.gl:android-sdk-opengl:13.0.2")
     implementation("fr.dudie:nominatim-api:3.4") {
         //noinspection DuplicatePlatformClasses
         exclude(group = "org.apache.httpcomponents", module = "httpclient")
