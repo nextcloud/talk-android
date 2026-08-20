@@ -112,25 +112,27 @@ internal fun FileAttachmentPreviewContent(
 
             HorizontalDivider()
 
-            if (fileDescriptions.isNotEmpty()) {
-                LargePreview(
-                    descriptions = fileDescriptions,
-                    pagerState = pagerState,
-                    modifier = Modifier.weight(1f)
-                )
+            Column(modifier = Modifier.weight(1f)) {
+                if (fileDescriptions.isNotEmpty()) {
+                    LargePreview(
+                        descriptions = fileDescriptions,
+                        pagerState = pagerState,
+                        modifier = Modifier.weight(1f)
+                    )
 
-                ThumbnailStrip(
-                    descriptions = fileDescriptions,
-                    selectedIndex = pagerState.currentPage,
-                    onSelect = { index -> coroutineScope.launch { pagerState.scrollToPage(index) } },
-                    onRemove = { uri -> viewModel.removeFile(uri) },
-                    onReorder = { from, to -> viewModel.reorder(from, to) },
-                    onAddMore = {
-                        pickMoreMedia.launch(PickVisualMediaRequest(PickVisualMedia.ImageAndVideo))
-                    },
-                    onTakePhoto = cameraCapture.onTakePhoto,
-                    onTakeVideo = cameraCapture.onTakeVideo
-                )
+                    ThumbnailStrip(
+                        descriptions = fileDescriptions,
+                        selectedIndex = pagerState.currentPage,
+                        onSelect = { index -> coroutineScope.launch { pagerState.scrollToPage(index) } },
+                        onRemove = { uri -> viewModel.removeFile(uri) },
+                        onReorder = { from, to -> viewModel.reorder(from, to) },
+                        onAddMore = {
+                            pickMoreMedia.launch(PickVisualMediaRequest(PickVisualMedia.ImageAndVideo))
+                        },
+                        onTakePhoto = cameraCapture.onTakePhoto,
+                        onTakeVideo = cameraCapture.onTakeVideo
+                    )
+                }
             }
 
             if (hasCompressibleMedia) {
