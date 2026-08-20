@@ -436,9 +436,9 @@ fun UploadingMediaMessage(
                             modifier = Modifier
                                 .fillMaxWidth(mediaWidthFraction(ratio))
                                 .then(if (ratio != null) Modifier.aspectRatio(ratio) else Modifier)
-                                .blur(4.dp)
                                 .padding(mediaInset)
-                                .clip(mediaShape),
+                                .clip(mediaShape)
+                                .blur(4.dp),
                             contentScale = ContentScale.Crop
                         )
                     } else if (isVideo && typeContent.localFileUri.isNotEmpty()) {
@@ -550,9 +550,9 @@ private fun UploadingVideoPreview(
             modifier = Modifier
                 .fillMaxWidth(widthFraction)
                 .aspectRatio(aspectRatio)
-                .blur(4.dp)
                 .padding(mediaInset)
-                .clip(mediaShape),
+                .clip(mediaShape)
+                .blur(4.dp),
             contentScale = ContentScale.Crop
         )
     } else {
