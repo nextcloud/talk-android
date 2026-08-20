@@ -405,6 +405,7 @@ class ChatActivity :
 
     private val filesToUpload: MutableList<String> = ArrayList()
     lateinit var sharedText: String
+    private var sharedFilePaths: List<String> = emptyList()
 
     private val _participantPermissionsFlow = MutableStateFlow<ParticipantPermissions?>(null)
     val participantPermissionsFlow: StateFlow<ParticipantPermissions?> = _participantPermissionsFlow.asStateFlow()
@@ -1346,6 +1347,8 @@ class ChatActivity :
         openedViaNotification = extras?.getBoolean(KEY_OPENED_VIA_NOTIFICATION) ?: false
 
         sharedText = extras?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty()
+        sharedFilePaths = extras?.getStringArrayList(BundleKeys.KEY_SHARED_FILE_PATHS) ?: emptyList()
+        intent.removeExtra(BundleKeys.KEY_SHARED_FILE_PATHS)
 
         Log.d(TAG, "   roomToken = $roomToken")
         if (roomToken.isEmpty()) {
@@ -1545,6 +1548,11 @@ class ChatActivity :
                     }
 
                     joinRoomWithPassword()
+
+                    if (sharedFilePaths.isNotEmpty()) {
+                        onChooseFileResult(sharedFilePaths.map { it.toUri() })
+                        sharedFilePaths = emptyList()
+                    }
 
                     refreshScheduledMessages()
 

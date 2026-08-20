@@ -176,6 +176,7 @@ class ConversationsListActivity : BaseActivity() {
     private var textToPaste: String? = ""
     private var selectedMessageId: String? = null
     private var pendingDirectShareToken: String? = null
+    private var isDirectShareTarget = false
 
     lateinit var ecosystemManager: EcosystemManager
 
@@ -489,7 +490,10 @@ class ConversationsListActivity : BaseActivity() {
                     if (token != null) {
                         pendingDirectShareToken = null
                         val conversation = list.firstOrNull { it.token == token }
-                        if (conversation != null) handleConversation(conversation)
+                        if (conversation != null) {
+                            isDirectShareTarget = true
+                            handleConversation(conversation)
+                        }
                     }
 
                     // Update dynamic shortcuts for frequent/favorite conversations
@@ -832,6 +836,15 @@ class ConversationsListActivity : BaseActivity() {
 
     private fun showSendFilesConfirmDialog() {
         if (platformPermissionUtil.isFilesPermissionGranted()) {
+            if (isDirectShareTarget) {
+                // Skip the "Send this file to X?" confirmation: the user already picked this exact
+                // conversation directly from Android's share sheet, so re-confirming the target here
+                // would just be a redundant extra tap. Go straight to the upload preview screen.
+                isDirectShareTarget = false
+                openConversation()
+                return
+            }
+
             val fileNamesWithLineBreaks = StringBuilder("\n")
             for (file in filesToShare!!) {
                 val filename = FileUtils.getFileName(file.toUri(), context)
@@ -853,7 +866,6 @@ class ConversationsListActivity : BaseActivity() {
                 .setTitle(confirmationQuestion)
                 .setMessage(fileNamesWithLineBreaks.toString())
                 .setPositiveButton(R.string.nc_yes) { _, _ ->
-                    upload()
                     openConversation()
                 }
                 .setNegativeButton(R.string.nc_no) { _, _ ->
@@ -927,27 +939,6 @@ class ConversationsListActivity : BaseActivity() {
             filesToShare!!.add(uri.toString())
         } else {
             Log.w(TAG, "Rejecting untrusted uri from share intent: $uri")
-        }
-    }
-
-    private fun upload() {
-        if (selectedConversation == null) {
-            showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
-            Log.e(TAG, "not able to upload any files because conversation was null.")
-            return
-        }
-        try {
-            filesToShare?.forEach {
-                UploadAndShareFilesWorker.upload(
-                    it,
-                    selectedConversation!!.token,
-                    selectedConversation!!.displayName,
-                    null
-                )
-            }
-        } catch (e: IllegalArgumentException) {
-            showSnackbar(context.resources.getString(R.string.nc_upload_failed))
-            Log.e(TAG, "Something went wrong when trying to upload file", e)
         }
     }
 
@@ -1132,6 +1123,9 @@ class ConversationsListActivity : BaseActivity() {
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, selectedConversation!!.token)
         bundle.putString(KEY_SHARED_TEXT, textToPaste)
+        if (!filesToShare.isNullOrEmpty()) {
+            bundle.putStringArrayList(BundleKeys.KEY_SHARED_FILE_PATHS, filesToShare)
+        }
         if (selectedMessageId != null) {
             bundle.putString(BundleKeys.KEY_MESSAGE_ID, selectedMessageId)
             selectedMessageId = null
