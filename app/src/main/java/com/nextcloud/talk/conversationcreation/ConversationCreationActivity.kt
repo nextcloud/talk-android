@@ -244,7 +244,7 @@ fun ConversationCreationScreen(
 
                 if (
                     CapabilitiesUtil.hasSpreedFeatureCapability(
-                        conversationCreationViewModel.currentUser.capabilities?.spreedCapability!!,
+                        conversationCreationViewModel.currentUser.capabilities?.spreedCapability,
                         SpreedFeatures.CONVERSATION_PRESETS
                     )
                 ) {
@@ -362,14 +362,14 @@ fun ConversationNameAndDescription(conversationCreationViewModel: ConversationCr
         onValueChange = {
             if (it.length > CapabilitiesUtil.conversationDescriptionLength(
                     conversationCreationViewModel.currentUser
-                        .capabilities?.spreedCapability!!
+                        .capabilities?.spreedCapability
                 )
             ) {
                 conversationCreationViewModel.updateConversationDescription(
                     it.take(
                         CapabilitiesUtil.conversationDescriptionLength(
                             conversationCreationViewModel.currentUser
-                                .capabilities?.spreedCapability!!
+                                .capabilities?.spreedCapability
                         )
                     )
                 )
