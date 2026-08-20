@@ -150,6 +150,23 @@ interface ChatMessageRepository : LifecycleAwareManager {
         referenceId: String
     ): Flow<Result<ChatMessage?>>
 
+    @Suppress("LongParameterList")
+    suspend fun addUploadPlaceholderMessage(
+        localFileUri: String,
+        fileName: String,
+        caption: String,
+        mimeType: String?,
+        fileSize: Long,
+        referenceId: String
+    ): Flow<Result<ChatMessage?>>
+
+    /**
+     * Deletes the local upload placeholder for [referenceId], but only while it's still PENDING.
+     * Returns false without deleting anything if the upload already finished (and was shared) by
+     * the time this is called, so a late cancel can't hide an already-sent message.
+     */
+    suspend fun deleteTempMessageByReferenceId(referenceId: String): Boolean
+
     suspend fun editChatMessage(credentials: String, url: String, text: String): Flow<Result<ChatOverallSingleMessage>>
 
     suspend fun editTempChatMessage(message: ChatMessage, editedMessageText: String): Flow<Boolean>

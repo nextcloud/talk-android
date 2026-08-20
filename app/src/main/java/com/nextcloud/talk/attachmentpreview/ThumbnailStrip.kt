@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.attachmentpreview
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,9 +26,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.PhotoCamera
-import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.PhotoCamera
+import androidx.compose.material.icons.outlined.PhotoLibrary
+import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -40,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -107,9 +110,27 @@ internal fun ThumbnailStrip(
                 )
             }
         }
-        item { AddMoreTile(onClick = onAddMore) }
-        item { TakePhotoTile(onClick = onTakePhoto) }
-        item { TakeVideoTile(onClick = onTakeVideo) }
+        item {
+            ActionTile(
+                icon = Icons.Outlined.PhotoLibrary,
+                contentDescription = R.string.nc_add_more_files,
+                onClick = onAddMore
+            )
+        }
+        item {
+            ActionTile(
+                icon = Icons.Outlined.PhotoCamera,
+                contentDescription = R.string.take_photo,
+                onClick = onTakePhoto
+            )
+        }
+        item {
+            ActionTile(
+                icon = Icons.Outlined.Videocam,
+                contentDescription = R.string.nc_take_video,
+                onClick = onTakeVideo
+            )
+        }
     }
 }
 
@@ -270,7 +291,7 @@ private fun StripThumbnail(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Delete,
+                    imageVector = Icons.Outlined.Delete,
                     contentDescription = stringResource(R.string.nc_remove_file),
                     tint = Color.White,
                     modifier = Modifier.size(STRIP_ICON_SIZE_DP.dp)
@@ -281,54 +302,19 @@ private fun StripThumbnail(
 }
 
 @Composable
-private fun AddMoreTile(onClick: () -> Unit) {
+private fun ActionTile(icon: ImageVector, @StringRes contentDescription: Int, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .size(STRIP_THUMBNAIL_SIZE_DP.dp)
             .clip(RoundedCornerShape(THUMBNAIL_CORNER_RADIUS_DP.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(MaterialTheme.colorScheme.secondaryContainer)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            painter = painterResource(R.drawable.baseline_photo_library_24),
-            contentDescription = stringResource(R.string.nc_add_more_files),
-            modifier = Modifier.size(STRIP_ICON_SIZE_DP.dp)
-        )
-    }
-}
-
-@Composable
-private fun TakePhotoTile(onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .size(STRIP_THUMBNAIL_SIZE_DP.dp)
-            .clip(RoundedCornerShape(THUMBNAIL_CORNER_RADIUS_DP.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = Icons.Filled.PhotoCamera,
-            contentDescription = stringResource(R.string.take_photo),
-            modifier = Modifier.size(STRIP_ICON_SIZE_DP.dp)
-        )
-    }
-}
-
-@Composable
-private fun TakeVideoTile(onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .size(STRIP_THUMBNAIL_SIZE_DP.dp)
-            .clip(RoundedCornerShape(THUMBNAIL_CORNER_RADIUS_DP.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = Icons.Filled.Videocam,
-            contentDescription = stringResource(R.string.nc_take_video),
+            imageVector = icon,
+            contentDescription = stringResource(contentDescription),
+            tint = MaterialTheme.colorScheme.onSecondaryContainer,
             modifier = Modifier.size(STRIP_ICON_SIZE_DP.dp)
         )
     }

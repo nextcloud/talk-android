@@ -63,6 +63,21 @@ class OfflineFirstChatRepository @Inject constructor(
 
     lateinit var currentUser: User
 
+    // Placeholder rows sort by "timestamp ASC, id ASC" (ChatMessagesDao) same as real messages, but
+    // id here is a hash of a random referenceId with no relation to call order - so if several
+    // files are sent at once and their (second-granularity) timestamps tie, as is near-certain,
+    // they'd otherwise sort arbitrarily instead of in the order they were actually sent. Tracking
+    // the last-used value and never handing out the same one twice keeps placeholders strictly in
+    // call order regardless of how many land within the same wall-clock second.
+    private var lastPlaceholderTimestampSeconds = 0L
+
+    private fun nextPlaceholderTimestampSeconds(): Long =
+        synchronized(this) {
+            val timestamp = maxOf(System.currentTimeMillis() / MILLIES, lastPlaceholderTimestampSeconds + 1)
+            lastPlaceholderTimestampSeconds = timestamp
+            timestamp
+        }
+
     override val messageFlow:
         Flow<
             Triple<
@@ -684,6 +699,78 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
+    @Suppress("Detekt.TooGenericExceptionCaught", "LongMethod")
+    override suspend fun addUploadPlaceholderMessage(
+        localFileUri: String,
+        fileName: String,
+        caption: String,
+        mimeType: String?,
+        fileSize: Long,
+        referenceId: String
+    ): Flow<Result<ChatMessage?>> =
+        flow {
+            try {
+                // Use referenceId.hashCode() as the placeholder id so that:
+                // 1. It is unique per file even when multiple files are selected simultaneously
+                // 2. It fits in an Int, so it survives the Long→Int cast in ChatMessageUi.id without
+                //    truncation, keeping DB lookups consistent when the message is tapped.
+                // 3. It is always negative -> sending the lastReadMessage to server checks "-1 < messageId"
+                //    to avoid temporary/placeholder messages (see createChatMessageEntity)
+                @Suppress("MagicNumber")
+                val placeholderId = -(referenceId.hashCode().toLong() and 0x7FFF_FFFFL)
+
+                Log.d(
+                    TAG,
+                    "addUploadPlaceholderMessage: referenceId=$referenceId " +
+                        "placeholderId=$placeholderId caption=$caption"
+                )
+
+                val fileParams = hashMapOf<String?, String?>(
+                    "type" to "file",
+                    "name" to fileName,
+                    "mimetype" to (mimeType ?: ""),
+                    "size" to fileSize.toString(),
+                    "path" to localFileUri
+                )
+                val messageParameters = hashMapOf<String?, HashMap<String?, String?>>(
+                    "file" to fileParams
+                )
+
+                val entity = ChatMessageEntity(
+                    internalId = "$internalConversationId@_temp_$referenceId",
+                    internalConversationId = internalConversationId,
+                    id = placeholderId,
+                    threadId = threadId,
+                    // "{file}" is the sentinel the server (and rest of this app) uses for "no caption"
+                    message = caption.ifEmpty { "{file}" },
+                    deleted = false,
+                    token = conversationModel.token,
+                    actorId = currentUser.userId!!,
+                    actorType = EnumActorTypeConverter().convertToString(Participant.ActorType.USERS),
+                    accountId = currentUser.id!!,
+                    messageParameters = messageParameters,
+                    messageType = "comment",
+                    parentMessageId = null,
+                    systemMessageType = ChatMessage.SystemMessageType.DUMMY,
+                    replyable = false,
+                    timestamp = nextPlaceholderTimestampSeconds(),
+                    expirationTimestamp = 0,
+                    actorDisplayName = currentUser.displayName!!,
+                    referenceId = referenceId,
+                    isTemporary = true,
+                    sendStatus = SendStatus.PENDING,
+                    silent = false
+                )
+                chatDao.upsertChatMessage(entity)
+            } catch (e: Exception) {
+                Log.e(TAG, "addUploadPlaceholderMessage failed for referenceId=$referenceId", e)
+                emit(Result.failure(e))
+            }
+        }
+
+    override suspend fun deleteTempMessageByReferenceId(referenceId: String): Boolean =
+        chatDao.deleteTempChatMessageIfPending(internalConversationId, referenceId) > 0
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun editChatMessage(
         credentials: String,
@@ -724,7 +811,11 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override suspend fun sendUnsentChatMessages(credentials: String, url: String) {
         val tempMessages = chatDao.getTempUnsentMessagesForConversation(internalConversationId, threadId).first()
-        tempMessages.sortedBy { it.internalId }.onEach {
+        // File-upload placeholders are also temporary messages, but they must never be resent as plain
+        // text here: their "message" field is just the "{file}" sentinel, and a failed/interrupted upload
+        // needs a real re-upload, not a bogus text message reusing its referenceId.
+        val unsentTextMessages = tempMessages.filterNot { it.messageParameters?.containsKey("file") == true }
+        unsentTextMessages.sortedBy { it.internalId }.onEach {
             sendChatMessage(
                 credentials,
                 url,

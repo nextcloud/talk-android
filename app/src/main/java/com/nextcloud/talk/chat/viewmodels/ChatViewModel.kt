@@ -10,6 +10,7 @@ package com.nextcloud.talk.chat.viewmodels
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -29,8 +30,7 @@ import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.ui.model.toUiModel
-import com.nextcloud.talk.chat.viewmodels.ChatViewModel.Companion.POST_UPLOAD_FETCH_MAX_ATTEMPTS
-import com.nextcloud.talk.chat.viewmodels.ChatViewModel.Companion.POST_UPLOAD_FETCH_RETRY_DELAY_MS
+import com.nextcloud.talk.chat.viewmodels.ChatViewModel.Companion.POST_UPLOAD_FETCH_RETRY_DELAYS_MS
 import com.nextcloud.talk.conversationlist.DirectShareHelper
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
@@ -42,6 +42,8 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.ReadMarkerSyncWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
+import androidx.lifecycle.asFlow
+import androidx.work.WorkManager
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
@@ -123,7 +125,9 @@ import java.io.IOException
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.util.UUID
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 @Suppress("TooManyFunctions", "LongParameterList")
 class ChatViewModel @AssistedInject constructor(
@@ -215,6 +219,66 @@ class ChatViewModel @AssistedInject constructor(
     val spreedCapabilities: StateFlow<SpreedCapability?> = _spreedCapabilities
 
     private var lobbyPollingJob: Job? = null
+
+    private val _uploadProgressMap = MutableStateFlow<Map<String, Int>>(emptyMap())
+    val uploadProgressMap: StateFlow<Map<String, Int>> = _uploadProgressMap
+
+    // Maps referenceId -> local device fileUri, kept around for a while after the upload finishes so the
+    // final message can show the file we already have on disk instead of a generic mimetype icon while it
+    // waits for the server-side preview to load for the first time.
+    private val _uploadedLocalPreviewMap = MutableStateFlow<Map<String, String>>(emptyMap())
+    val uploadedLocalPreviewMap: StateFlow<Map<String, String>> = _uploadedLocalPreviewMap
+
+    // Maps referenceId -> the upload's own WorkRequest id for cancellation support. Uploads within
+    // a conversation are now chained under one shared unique-work name (see
+    // UploadAndShareFilesWorker.upload()) so they run - and therefore get shared to the server - in
+    // send order, so cancellation has to target this specific request's id rather than that shared
+    // name, which would otherwise cancel every other queued upload too.
+    private val uploadReferenceToWorkId = mutableMapOf<String, UUID>()
+
+    // Maps referenceId -> the order files were sent in during this screen's session, assigned the
+    // moment each upload starts. Deliberately session-local and never persisted or sent anywhere:
+    // uploads within a conversation are chained sequentially (see UploadAndShareFilesWorker.upload),
+    // so a file can still be mid-upload when an earlier one in the same batch has already synced
+    // back with its real, server-assigned timestamp - which, purely because of how long the earlier
+    // upload took, can be later than the still-pending file's instantly-assigned placeholder
+    // timestamp, flipping their relative order in the timestamp-sorted list. Nudging the DB's own
+    // "timestamp"/"id" values to fix this would risk side effects on anything else that treats
+    // timestamp as the server's authoritative value (message expiry, etc.), so instead this is
+    // applied only as a display-order correction, on top of the otherwise-unmodified DB order.
+    private val referenceIdSendSequence = mutableMapOf<String, Long>()
+    private var nextSendSequenceValue = 0L
+
+    // Corrects the relative order of messages we know the local send sequence for (see
+    // referenceIdSendSequence above), leaving every other message's position untouched - so this
+    // never reorders anything relative to messages with no known hint (other users' messages,
+    // messages sent before this screen session, older history, ...), only fixes the relative order
+    // among messages from the SAME batch while some are still catching up on syncing. Applied the
+    // same way as applyMessageGrouping()/applySystemMessageGrouping() above it: in place, on the raw
+    // ChatMessage list, before it's mapped to ChatMessageUi.
+    @Suppress("Detekt.ReturnCount")
+    private fun reorderKnownSendSequence(messages: MutableList<ChatMessage>) {
+        if (referenceIdSendSequence.isEmpty()) return
+
+        val hintedIndices = messages.indices.filter { referenceIdSendSequence.containsKey(messages[it].referenceId) }
+        if (hintedIndices.size < 2) return
+
+        val hintedItems = hintedIndices.map { messages[it] }
+        val sortedItems = hintedItems.sortedBy { referenceIdSendSequence[it.referenceId] }
+        if (sortedItems == hintedItems) return
+
+        hintedIndices.forEachIndexed { position, index -> messages[index] = sortedItems[position] }
+    }
+
+    fun cancelUpload(referenceId: String) {
+        val workId = uploadReferenceToWorkId.remove(referenceId) ?: return
+        UploadAndShareFilesWorker.cancelUpload(referenceId, workId)
+        viewModelScope.launch {
+            chatRepository.deleteTempMessageByReferenceId(referenceId)
+        }
+        _uploadProgressMap.update { it - referenceId }
+        _uploadedLocalPreviewMap.update { it - referenceId }
+    }
 
     fun getChatRepository(): ChatMessageRepository = chatRepository
 
@@ -1059,7 +1123,7 @@ class ChatViewModel @AssistedInject constructor(
             .debounce(MESSAGES_REBUILD_DEBOUNCE_MS)
             .map { input ->
                 val (
-                    messages,
+                    rawMessages,
                     lastCommonRead,
                     parentMap,
                     conversationLastRead,
@@ -1067,6 +1131,10 @@ class ChatViewModel @AssistedInject constructor(
                     conversation,
                     capabilities
                 ) = input
+                // Mutable so reorderKnownSendSequence() can correct send order in place, the same
+                // way applyMessageGrouping()/applySystemMessageGrouping() annotate grouping in place
+                // - all three run before mapping to ChatMessageUi below.
+                val messages = rawMessages.toMutableList()
                 val messageMap: Map<Long, ChatMessage> = messages.associateBy { it.jsonMessageId.toLong() }
                 val combinedMap: Map<Long, ChatMessage> = messageMap + parentMap
 
@@ -1079,6 +1147,7 @@ class ChatViewModel @AssistedInject constructor(
                 val user = currentUserFlow.value
                 applyMessageGrouping(messages)
                 applySystemMessageGrouping(messages)
+                reorderKnownSendSequence(messages)
                 val uiMessages = messages.map { message ->
                     val parent: ChatMessage? = combinedMap[message.parentMessageId]
                     message.toUiModel(
@@ -1331,29 +1400,34 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     /**
-     * Retries [ChatMessageRepository.fetchNewMessages] up to [POST_UPLOAD_FETCH_MAX_ATTEMPTS] times,
-     * waiting [POST_UPLOAD_FETCH_RETRY_DELAY_MS] ms between attempts.  Stops as soon as at least one
-     * new message is received so that the happy-path (server responds quickly) has no unnecessary
-     * delay, while a slow server still gets a few extra chances before we fall back to the regular
-     * insurance-request cycle.
+     * Retries [ChatMessageRepository.fetchNewMessages], waiting [POST_UPLOAD_FETCH_RETRY_DELAYS_MS]
+     * between attempts (one attempt per delay, plus the initial immediate one). Stops as soon as at
+     * least one new message is received so that the happy-path (server responds quickly) has no
+     * unnecessary delay, while a slow/indexing-lagged server still gets ~20s of extra chances
+     * (increasing backoff) before we fall back to the regular insurance-request cycle - which can
+     * otherwise take up to 2 minutes to tick again, leaving the just-sent message stuck showing its
+     * "sent, not yet confirmed" spinner in the meantime.
      */
     private suspend fun fetchNewMessagesWithRetry() {
-        repeat(POST_UPLOAD_FETCH_MAX_ATTEMPTS) { attempt ->
-            if (attempt > 0) {
-                Log.d(
-                    TAG,
-                    "fetchNewMessagesWithRetry: attempt ${attempt + 1}, " +
-                        "waiting ${POST_UPLOAD_FETCH_RETRY_DELAY_MS}ms"
-                )
-                delay(POST_UPLOAD_FETCH_RETRY_DELAY_MS)
-            }
+        val gotFirst = chatRepository.fetchNewMessages()
+        if (gotFirst) {
+            Log.d(TAG, "fetchNewMessagesWithRetry: new messages received on initial attempt")
+            return
+        }
+        POST_UPLOAD_FETCH_RETRY_DELAYS_MS.forEachIndexed { index, delayMs ->
+            Log.d(TAG, "fetchNewMessagesWithRetry: attempt ${index + 2}, waiting ${delayMs}ms")
+            delay(delayMs)
             val gotMessages = chatRepository.fetchNewMessages()
             if (gotMessages) {
-                Log.d(TAG, "fetchNewMessagesWithRetry: new messages received on attempt ${attempt + 1}")
+                Log.d(TAG, "fetchNewMessagesWithRetry: new messages received on attempt ${index + 2}")
                 return
             }
         }
-        Log.d(TAG, "fetchNewMessagesWithRetry: no new messages after $POST_UPLOAD_FETCH_MAX_ATTEMPTS attempts")
+        Log.w(
+            TAG,
+            "fetchNewMessagesWithRetry: no new messages after " +
+                "${POST_UPLOAD_FETCH_RETRY_DELAYS_MS.size + 1} attempts, deferring to the insurance-request cycle"
+        )
     }
     private fun handleSystemMessages(chatMessageList: List<ChatMessage>, isChannel: Boolean): List<ChatMessage> {
         if (isChannel) {
@@ -2011,6 +2085,11 @@ class ChatViewModel @AssistedInject constructor(
             return
         }
 
+        // Same as a regular text send: once the user has sent something themselves, the unread
+        // marker must never latch onto it once it syncs back with its real (higher) message id -
+        // otherwise the marker can end up sitting right above the file the user just sent.
+        onMessageSent()
+
         if (replyToMessageId != 0) {
             metaDataMap["replyTo"] = replyToMessageId.toString()
         }
@@ -2023,22 +2102,88 @@ class ChatViewModel @AssistedInject constructor(
             metaDataMap["caption"] = caption
         }
 
+        val referenceId = UUID.randomUUID().toString().replace("-", "")
+        metaDataMap["referenceId"] = referenceId
+        referenceIdSendSequence[referenceId] = nextSendSequenceValue++
+
         val metaData = Gson().toJson(metaDataMap)
 
         room = if (roomToken == "") chatRoomToken else roomToken
 
         try {
             require(fileUri.isNotEmpty())
-            UploadAndShareFilesWorker.upload(
-                fileUri,
-                room,
-                displayName,
-                metaData,
-                compressImages
+
+            if (!isVoiceMessage) {
+                val (fileName, mimeType, fileSize) = resolveFileInfo(fileUri)
+                viewModelScope.launch {
+                    chatRepository.addUploadPlaceholderMessage(
+                        localFileUri = fileUri,
+                        fileName = fileName,
+                        caption = caption,
+                        mimeType = mimeType,
+                        fileSize = fileSize,
+                        referenceId = referenceId
+                    ).collect {}
+                }
+            }
+
+            val internalConversationId = "${currentUser.id}@$chatRoomToken"
+            val workerId = UploadAndShareFilesWorker.upload(
+                fileUri = fileUri,
+                roomToken = room,
+                conversationName = displayName,
+                metaData = metaData,
+                referenceId = referenceId,
+                internalConversationId = internalConversationId,
+                compressImages = compressImages
             )
+
+            if (!isVoiceMessage) {
+                uploadReferenceToWorkId[referenceId] = workerId
+                _uploadedLocalPreviewMap.update { it + (referenceId to fileUri) }
+                observeUploadProgress(workerId, referenceId)
+            }
         } catch (e: IllegalArgumentException) {
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
         }
+    }
+
+    private fun resolveFileInfo(fileUri: String): Triple<String, String?, Long> {
+        val uri = fileUri.toUri()
+        val mimeType = NextcloudTalkApplication.sharedApplication!!.contentResolver.getType(uri)
+        val cursor = NextcloudTalkApplication.sharedApplication!!.contentResolver.query(uri, null, null, null, null)
+        cursor?.use {
+            val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            val sizeIndex = it.getColumnIndex(OpenableColumns.SIZE)
+            if (it.moveToFirst()) {
+                val name = if (nameIndex >= 0) it.getString(nameIndex).orEmpty() else uri.lastPathSegment.orEmpty()
+                val size = if (sizeIndex >= 0) it.getLong(sizeIndex) else 0L
+                return Triple(name, mimeType, size)
+            }
+        }
+        return Triple(uri.lastPathSegment.orEmpty(), mimeType, 0L)
+    }
+
+    private fun observeUploadProgress(workerId: UUID, referenceId: String) {
+        WorkManager.getInstance(NextcloudTalkApplication.sharedApplication!!)
+            .getWorkInfoByIdLiveData(workerId)
+            .asFlow()
+            .onEach { workInfo ->
+                if (workInfo == null) return@onEach
+                val progress = workInfo.progress.getInt(UploadAndShareFilesWorker.PROGRESS_KEY, -1)
+                if (progress >= 0) {
+                    _uploadProgressMap.update { it + (referenceId to progress) }
+                }
+                if (workInfo.state.isFinished) {
+                    _uploadProgressMap.update { it - referenceId }
+                    uploadReferenceToWorkId.remove(referenceId)
+                    viewModelScope.launch {
+                        delay(LOCAL_PREVIEW_GRACE_PERIOD_MS)
+                        _uploadedLocalPreviewMap.update { it - referenceId }
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     fun postToRecordTouchObserver(float: Float) {
@@ -2336,9 +2481,12 @@ class ChatViewModel @AssistedInject constructor(
         private const val MIN_CHARS_FOR_SEARCH = 2
         private const val CONTEXT_MESSAGES_LIMIT = 50
         private const val LOAD_MORE_MESSAGES_LIMIT = 100
-        private const val POST_UPLOAD_FETCH_MAX_ATTEMPTS = 4
-        private const val POST_UPLOAD_FETCH_RETRY_DELAY_MS = 1_500L
 
+        // Increasing backoff for fetchNewMessagesWithRetry() - covers realistic server indexing
+        // lag (~20s total) so a just-sent upload doesn't sit stuck until the next insurance-request
+        // cycle (up to 2 minutes later) before its "sent, not yet confirmed" spinner clears.
+        private val POST_UPLOAD_FETCH_RETRY_DELAYS_MS = listOf(1_000L, 1_500L, 2_000L, 3_000L, 4_000L, 5_000L, 5_000L)
+        private const val LOCAL_PREVIEW_GRACE_PERIOD_MS = 15_000L
         private const val PLAUSIBLE_MESSAGE_ID_BUFFER = 10_000L
 
         /**
@@ -2391,7 +2539,12 @@ class ChatViewModel @AssistedInject constructor(
 
         fun stableKey(): Any =
             when (this) {
-                is MessageItem -> "msg_${uiMessage.id}"
+                // Prefer referenceId when present: it survives the swap from the local upload
+                // placeholder (negative placeholderId) to the real synced message (real server id),
+                // so Compose recomposes the existing list slot in place instead of removing and
+                // re-inserting a new one - which is what caused the visible flicker/pop.
+                is MessageItem -> uiMessage.referenceId?.takeIf { it.isNotBlank() }?.let { "msg_ref_$it" }
+                    ?: "msg_${uiMessage.id}"
                 is DateHeaderItem -> "header_$date"
                 is UnreadMessagesMarkerItem -> "last_read_$date"
                 is LoadGapItem -> "load_gap_$anchorMessageId"

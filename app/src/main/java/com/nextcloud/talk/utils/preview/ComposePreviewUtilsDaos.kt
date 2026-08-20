@@ -84,6 +84,8 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
         /* */
     }
 
+    override fun deleteTempChatMessageIfPending(internalConversationId: String, referenceId: String): Int = 0
+
     override fun updateChatMessage(message: ChatMessageEntity) {
         /* */
     }

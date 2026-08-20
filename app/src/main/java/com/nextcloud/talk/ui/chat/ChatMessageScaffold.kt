@@ -422,7 +422,12 @@ private fun ColumnScope.MessageBodyWithMetadata(
         }
 
         MetadataLayoutMode.OVERLAY -> {
-            Box(modifier = Modifier.fillMaxWidth()) {
+            // Not fillMaxWidth(): OVERLAY is media-only, and media's own content already decides
+            // its width (e.g. shrinking narrower for portrait) - forcing full width here would
+            // leave the bubble at full size with empty space beside a narrower image instead of
+            // letting the bubble shrink to match. OverlayMetadataBadge's alignment is relative to
+            // this Box's own bounds either way, so it still lands correctly on the content's corner.
+            Box {
                 content()
                 if (!suppressMetadata) {
                     OverlayMetadataBadge(uiMessage = uiMessage)

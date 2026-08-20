@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -57,6 +58,9 @@ import com.nextcloud.talk.utils.FileUtils
 import kotlinx.coroutines.launch
 
 private const val MAX_ADD_MORE_FILES = 10
+
+private const val APP_BAR_HEIGHT_DP = 64
+private const val APP_BAR_HORIZONTAL_PADDING_DP = 4
 
 /**
  * Full-screen dialog content for reviewing, reordering and captioning files picked for upload,
@@ -161,7 +165,8 @@ private fun PreviewTopBar(conversationName: String, onDismiss: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .height(APP_BAR_HEIGHT_DP.dp)
+            .padding(horizontal = APP_BAR_HORIZONTAL_PADDING_DP.dp)
     ) {
         IconButton(onClick = onDismiss) {
             Icon(
@@ -170,16 +175,21 @@ private fun PreviewTopBar(conversationName: String, onDismiss: () -> Unit) {
             )
         }
 
-        Column(modifier = Modifier.weight(1f)) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = APP_BAR_HORIZONTAL_PADDING_DP.dp)
+        ) {
             Text(
                 text = conversationName,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = stringResource(R.string.nc_add_file),
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -236,6 +246,7 @@ private fun rememberPreviewViewModel(files: List<String>): FileAttachmentPreview
     showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
 )
+@Preview(name = "RTL Arabic", showBackground = true, locale = "ar")
 @Composable
 private fun FileAttachmentPreviewContentPreview() {
     val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
