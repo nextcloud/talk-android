@@ -370,7 +370,6 @@ class ChatActivity :
     private lateinit var path: String
 
     var myFirstMessage: CharSequence? = null
-    var checkingLobbyStatus: Boolean = false
     private var isLeavingRoom: Boolean = false
 
     private var lastHandledHighlightNonce: Long? = null
@@ -424,8 +423,6 @@ class ChatActivity :
 
     val typingParticipants = HashMap<String, TypingParticipant>()
 
-    var callStarted = false
-
     private val leaveRoomObserver = androidx.lifecycle.Observer<ChatViewModel.ViewState> { state ->
         when (state) {
             is ChatViewModel.LeaveRoomSuccessState -> {
@@ -433,22 +430,11 @@ class ChatActivity :
 
                 isLeavingRoom = false
 
-                checkingLobbyStatus = false
-
                 if (getRoomInfoTimerHandler != null) {
                     getRoomInfoTimerHandler?.removeCallbacksAndMessages(null)
                 }
 
                 ApplicationWideCurrentRoomHolder.getInstance().clear()
-
-                if (webSocketInstance != null && currentConversation != null) {
-                    webSocketInstance?.joinRoomWithRoomTokenAndSession(
-                        "",
-                        sessionIdAfterRoomJoined
-                    )
-                }
-
-                sessionIdAfterRoomJoined = "0"
             }
 
             else -> {}
@@ -1855,6 +1841,9 @@ class ChatActivity :
         logConversationInfos("onResume")
 
         pullChatMessagesPending = false
+
+        // reset in case a previously started leave failed (success already resets this in leaveRoomObserver)
+        isLeavingRoom = false
 
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(conversationMessageListener)
