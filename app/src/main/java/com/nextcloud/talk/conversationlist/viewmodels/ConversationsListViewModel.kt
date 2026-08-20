@@ -255,6 +255,14 @@ class ConversationsListViewModel @Inject constructor(
         selectedTagIsFavoritesFlow.value = tagId != null && isFavorites
     }
 
+    private val searchDisplayModeFlow = combine(_isSearchActiveFlow, _currentSearchQueryFlow) { active, query ->
+        when {
+            !active -> SearchDisplayMode.OFF
+            query.isEmpty() -> SearchDisplayMode.ALL_CONVERSATIONS
+            else -> SearchDisplayMode.RESULTS
+        }
+    }
+
     /**
      * Single source of truth for the [ConversationList] LazyColumn.
      * Auto-reacts to rooms, filter, tag filter, search-active and search-result changes.
@@ -262,17 +270,27 @@ class ConversationsListViewModel @Inject constructor(
     val conversationListEntriesFlow: StateFlow<List<ConversationListEntry>> = combine(
         getRoomsStateFlow,
         _filterStateFlow,
-        combine(_isSearchActiveFlow, _currentSearchQueryFlow) { active, query ->
-            when {
-                !active -> SearchDisplayMode.OFF
-                query.isEmpty() -> SearchDisplayMode.ALL_CONVERSATIONS
-                else -> SearchDisplayMode.RESULTS
-            }
-        },
+        searchDisplayModeFlow,
         combine(_selectedTagFilterFlow, selectedTagIsFavoritesFlow, ::TagFilterSelection),
         combine(searchResultEntries, hideRoomToken, ::Pair)
     ) { rooms, filterState, searchMode, tagFilter, (searchResults, hideToken) ->
         buildConversationListEntries(rooms, filterState, searchMode, tagFilter, searchResults, hideToken)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    /**
+     * Rooms that would actually be shown in the list under the current filter chips
+     * (mention/unread/archive) and hidden-room/lobby rules, but *before* narrowing to a
+     * specific tag. Used to decide which tag filter chips currently have a matching,
+     * visible conversation - e.g. a tag whose only conversation is archived should not
+     * show up as a chip unless the "Archived" filter is active.
+     */
+    val visibleRoomsFlow: StateFlow<List<ConversationModel>> = combine(
+        getRoomsStateFlow,
+        _filterStateFlow,
+        searchDisplayModeFlow,
+        hideRoomToken
+    ) { rooms, filterState, searchMode, hideToken ->
+        baseFilterRooms(rooms, filterState, searchMode, hideToken)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     /** Clears the tag filter when the filtered-by tag no longer exists (e.g. it was deleted). */
@@ -640,6 +658,34 @@ class ConversationsListViewModel @Inject constructor(
     ): List<ConversationListEntry> {
         if (searchMode == SearchDisplayMode.RESULTS) return searchResults
 
+        var filtered = baseFilterRooms(rooms, filterState, searchMode, hideToken)
+
+        if (searchMode != SearchDisplayMode.ALL_CONVERSATIONS) {
+            filtered = when {
+                tagFilter.isFavorites -> filtered.filter { it.favorite }
+                tagFilter.tagId != null -> filtered.filter { it.tagIds.contains(tagFilter.tagId) }
+                else -> filtered
+            }
+        }
+
+        val sorted = filtered.sortedWith(
+            compareByDescending<ConversationModel> { it.favorite }
+                .thenByDescending { it.lastActivity }
+        )
+        return sorted.map { ConversationListEntry.ConversationEntry(it) }
+    }
+
+    /**
+     * Applies the hidden-room/lobby rules and the current filter chips (mention/unread/archive),
+     * but not the tag filter. Shared by [buildConversationListEntries] and [visibleRoomsFlow] so
+     * that both the list content and the tag-chip visibility agree on what "visible" means.
+     */
+    private fun baseFilterRooms(
+        rooms: List<ConversationModel>,
+        filterState: Map<String, Boolean>,
+        searchMode: SearchDisplayMode,
+        hideToken: String?
+    ): List<ConversationModel> {
         val hasFilterEnabled = filterState[MENTION] == true ||
             filterState[UNREAD] == true ||
             filterState[ARCHIVE] == true
@@ -655,25 +701,12 @@ class ConversationsListViewModel @Inject constructor(
 
         filtered = when {
             // While search is open with an empty query, all conversations are listed,
-            // ignoring active filters, the tag filter and the default hiding of archived/future-event rooms
+            // ignoring active filters and the default hiding of archived/future-event rooms
             searchMode == SearchDisplayMode.ALL_CONVERSATIONS -> filtered
             hasFilterEnabled -> filtered.filter { filterConversationModel(it, filterState) }
             else -> filtered.filter { !isFutureEvent(it) && !it.hasArchived }
         }
-
-        if (searchMode != SearchDisplayMode.ALL_CONVERSATIONS) {
-            filtered = when {
-                tagFilter.isFavorites -> filtered.filter { it.favorite }
-                tagFilter.tagId != null -> filtered.filter { it.tagIds.contains(tagFilter.tagId) }
-                else -> filtered
-            }
-        }
-
-        val sorted = filtered.sortedWith(
-            compareByDescending<ConversationModel> { it.favorite }
-                .thenByDescending { it.lastActivity }
-        )
-        return sorted.map { ConversationListEntry.ConversationEntry(it) }
+        return filtered
     }
 
     @Suppress("CyclomaticComplexMethod", "NestedBlockDepth")
