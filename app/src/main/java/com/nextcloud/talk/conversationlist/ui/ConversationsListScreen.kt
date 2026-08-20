@@ -140,6 +140,7 @@ fun ConversationsListScreen(
     // ViewModel state
     val entries by viewModel.conversationListEntriesFlow.collectAsStateWithLifecycle()
     val rooms by viewModel.getRoomsStateFlow.collectAsStateWithLifecycle()
+    val visibleRooms by viewModel.visibleRoomsFlow.collectAsStateWithLifecycle()
     val isShimmerVisible by viewModel.isShimmerVisible.collectAsStateWithLifecycle()
     val isSearchActive by viewModel.isSearchActiveFlow.collectAsStateWithLifecycle()
     val searchQuery by viewModel.currentSearchQueryFlow.collectAsStateWithLifecycle()
@@ -184,8 +185,17 @@ fun ConversationsListScreen(
     val hasConversationTagsCapability = state.currentUser?.capabilities?.spreedCapability?.let {
         CapabilitiesUtil.hasSpreedFeatureCapability(it, SpreedFeatures.CONVERSATION_TAGS)
     } == true
+    val nonEmptyConversationTags = remember(conversationTags, visibleRooms) {
+        conversationTags.filter { tag ->
+            if (tag.type == ConversationTag.TYPE_FAVORITES) {
+                visibleRooms.any { it.favorite }
+            } else {
+                visibleRooms.any { it.tagIds.contains(tag.id) }
+            }
+        }
+    }
     val showConversationTagsRow = hasConversationTagsCapability &&
-        conversationTags.isNotEmpty() &&
+        nonEmptyConversationTags.isNotEmpty() &&
         !isSearchActive &&
         !showShareTo &&
         !isForward
@@ -336,7 +346,7 @@ fun ConversationsListScreen(
                                     tagsRowContent = if (showConversationTagsRow) {
                                         {
                                             ConversationTagsRow(
-                                                tags = conversationTags,
+                                                tags = nonEmptyConversationTags,
                                                 selectedTagId = selectedTagFilter,
                                                 onTagSelected = { tagId ->
                                                     val isFavorites = conversationTags.any {
