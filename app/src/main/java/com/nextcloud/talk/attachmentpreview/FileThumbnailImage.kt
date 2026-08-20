@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
+import com.nextcloud.talk.ui.theme.mimetypeIconTint
 import com.nextcloud.talk.utils.DrawableUtils
 
 internal const val THUMBNAIL_CORNER_RADIUS_DP = 16
@@ -74,17 +75,19 @@ internal fun FileThumbnailImage(
                 }
             }
 
-        MediaKind.OTHER ->
+        MediaKind.OTHER -> {
+            val mimetypeIcon = DrawableUtils.getDrawableResourceIdForMimeType(description.mimeType)
             Box(
                 modifier = modifier.clip(shape).background(backgroundColor),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(DrawableUtils.getDrawableResourceIdForMimeType(description.mimeType)),
+                    painter = painterResource(mimetypeIcon),
                     contentDescription = description.name,
-                    tint = Color.Unspecified,
+                    tint = mimetypeIconTint(mimetypeIcon),
                     modifier = Modifier.size(iconSize)
                 )
             }
+        }
     }
 }

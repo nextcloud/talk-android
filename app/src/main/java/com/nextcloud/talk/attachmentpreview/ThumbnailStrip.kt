@@ -25,9 +25,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.PhotoCamera
-import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.PhotoCamera
+import androidx.compose.material.icons.outlined.PhotoLibrary
+import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -270,7 +271,7 @@ private fun StripThumbnail(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Delete,
+                    imageVector = Icons.Outlined.Delete,
                     contentDescription = stringResource(R.string.nc_remove_file),
                     tint = Color.White,
                     modifier = Modifier.size(STRIP_ICON_SIZE_DP.dp)
@@ -291,7 +292,7 @@ private fun AddMoreTile(onClick: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            painter = painterResource(R.drawable.baseline_photo_library_24),
+            imageVector = Icons.Outlined.PhotoLibrary,
             contentDescription = stringResource(R.string.nc_add_more_files),
             modifier = Modifier.size(STRIP_ICON_SIZE_DP.dp)
         )
@@ -309,7 +310,7 @@ private fun TakePhotoTile(onClick: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            imageVector = Icons.Filled.PhotoCamera,
+            imageVector = Icons.Outlined.PhotoCamera,
             contentDescription = stringResource(R.string.take_photo),
             modifier = Modifier.size(STRIP_ICON_SIZE_DP.dp)
         )
@@ -327,7 +328,7 @@ private fun TakeVideoTile(onClick: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            imageVector = Icons.Filled.Videocam,
+            imageVector = Icons.Outlined.Videocam,
             contentDescription = stringResource(R.string.nc_take_video),
             modifier = Modifier.size(STRIP_ICON_SIZE_DP.dp)
         )
