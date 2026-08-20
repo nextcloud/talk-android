@@ -111,6 +111,13 @@ private val playButtonCircleSize = 56.dp
 private val playButtonIconSize = 32.dp
 private const val PLAY_BUTTON_CIRCLE_ALPHA = 0.45f
 
+// Portrait media (taller than wide) filling the full bubble width reads as oversized in the chat -
+// shrink just that case, since landscape media is already reasonably sized at full width.
+private const val PORTRAIT_WIDTH_FRACTION = 0.80f
+
+private fun mediaWidthFraction(aspectRatio: Float?): Float =
+    if (aspectRatio != null && aspectRatio < 1f) PORTRAIT_WIDTH_FRACTION else 1f
+
 @Suppress("Detekt.LongMethod", "LongParameterList", "CyclomaticComplexMethod")
 @Composable
 fun MediaMessage(
@@ -259,7 +266,11 @@ fun MediaMessage(
                     .padding(mediaInset)
                     .clip(mediaShape)
 
-                Box(modifier = Modifier.fillMaxWidth()) {
+                // The bubble wraps to this Box's requested width (ChatMessageScaffold's Surface has
+                // no fillMaxWidth of its own), so shrinking this - not just mediaModifier - is what
+                // actually shrinks the bubble along with the media, instead of leaving empty space
+                // beside a smaller image inside an unchanged-size bubble.
+                Box(modifier = Modifier.fillMaxWidth(mediaWidthFraction(aspectRatio))) {
                     val messageLongClickHandler = LocalMessageLongClickHandler.current
                     val clickableModifier = mediaModifier.combinedClickable(
                         onClick = { onImageClick(message.id) },
@@ -375,15 +386,31 @@ fun UploadingMediaMessage(
     conversationThreadId: Long? = null,
     onCancelUpload: (referenceId: String) -> Unit = {}
 ) {
+    val context = LocalContext.current
     val getProgress = LocalUploadProgressProvider.current
     val progress = getProgress(message.referenceId.orEmpty())
     val isFailed = message.statusIcon == MessageStatusIcon.FAILED
     val isSent = message.statusIcon == MessageStatusIcon.SENT
     val hasCaption = typeContent.caption != null
+    val isImage = typeContent.mimeType?.startsWith(Mimetype.IMAGE_PREFIX) == true
+    val isVideo = typeContent.mimeType?.startsWith(Mimetype.VIDEO_PREFIX) == true
 
     val mediaInset = 4.dp
     val mediaShape = remember(message.incoming, message.isGrouped, message.isGroupedWithNext) {
         shape(message.incoming, message.isGrouped, message.isGroupedWithNext)
+    }
+
+    // Read locally so the placeholder is already sized the same way the final MediaMessage will be
+    // (portrait shrunk to mediaWidthFraction) - otherwise the bubble would visibly resize once the
+    // real message replaces this placeholder.
+    val imageAspectRatio by produceState<Float?>(initialValue = null, key1 = typeContent.localFileUri) {
+        value = if (isImage) {
+            withContext(Dispatchers.IO) {
+                describeFile(context, typeContent.localFileUri, compress = false).aspectRatio
+            }
+        } else {
+            null
+        }
     }
 
     MessageScaffold(
@@ -394,16 +421,19 @@ fun UploadingMediaMessage(
         captionText = typeContent.caption,
         forceTimeOverlay = !hasCaption,
         content = {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    val isImage = typeContent.mimeType?.startsWith(Mimetype.IMAGE_PREFIX) == true
-                    val isVideo = typeContent.mimeType?.startsWith(Mimetype.VIDEO_PREFIX) == true
+            // Not fillMaxWidth(): for image/video, whichever content renders below decides the
+            // width itself (shrinking for portrait), and this wraps to match - forcing full width
+            // here would leave empty space beside a narrower image instead of shrinking the bubble.
+            Column {
+                Box(
+                    modifier = if (isImage || isVideo) Modifier else Modifier.fillMaxWidth()
+                ) {
                     if (isImage && typeContent.localFileUri.isNotEmpty()) {
                         AsyncImage(
                             model = typeContent.localFileUri.toUri(),
                             contentDescription = typeContent.fileName,
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .fillMaxWidth(mediaWidthFraction(imageAspectRatio))
                                 .blur(4.dp)
                                 .padding(mediaInset)
                                 .clip(mediaShape),
@@ -509,13 +539,14 @@ private fun UploadingVideoPreview(
     }
     val aspectRatio = videoDescription?.aspectRatio ?: DEFAULT_VIDEO_ASPECT_RATIO
     val thumbnail = videoDescription?.videoThumbnail
+    val widthFraction = mediaWidthFraction(aspectRatio)
 
     if (thumbnail != null) {
         Image(
             bitmap = thumbnail.asImageBitmap(),
             contentDescription = typeContent.fileName,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(widthFraction)
                 .aspectRatio(aspectRatio)
                 .blur(4.dp)
                 .padding(mediaInset)
@@ -525,7 +556,7 @@ private fun UploadingVideoPreview(
     } else {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(widthFraction)
                 .aspectRatio(aspectRatio)
                 .padding(mediaInset)
                 .clip(mediaShape)
