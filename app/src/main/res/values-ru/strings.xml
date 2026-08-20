@@ -134,6 +134,7 @@
     <string name="nc_add_to_favorites">Добавить в избранное</string>
     <string name="nc_add_to_home_screen">Добавить на главный экран</string>
     <string name="nc_all_ok_operation">Всё готово!</string>
+    <string name="nc_announcement">Оповещение</string>
     <string name="nc_attendee_pin">Пин: %1$s</string>
     <string name="nc_biometric_unlock">Разблокировать %1$s</string>
     <string name="nc_bluetooth_permission_hint">Чтобы включить динамики Bluetooth, предоставьте разрешение «Устройства поблизости».</string>

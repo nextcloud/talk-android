@@ -27,6 +27,7 @@
     <string name="battery_optimization_title">電池設定</string>
     <string name="busy">忙碌</string>
     <string name="calendar">日曆</string>
+    <string name="call_in_progress">通話中</string>
     <string name="call_more_actions_dialog_headline">進階通話選項</string>
     <string name="call_running_since_one_hour">通話已經持續一個小時了。</string>
     <string name="call_without_notification">通話而不通知</string>
