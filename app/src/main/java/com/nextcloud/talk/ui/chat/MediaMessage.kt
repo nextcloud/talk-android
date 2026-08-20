@@ -481,6 +481,13 @@ fun UploadingMediaMessage(
                             modifier = Modifier
                                 .fillMaxWidth(mediaWidthFraction(ratio))
                                 .then(if (ratio != null) Modifier.aspectRatio(ratio) else Modifier)
+                                // Without a floor, height comes solely from the AsyncImage's intrinsic
+                                // size while no aspect ratio is known yet: any moment Coil isn't holding
+                                // a decoded bitmap the bubble collapses to zero height and the
+                                // placeholder disappears from the chat mid-upload. Reading the ratio
+                                // needs the whole file copied out of its content:// uri first, so on a
+                                // large upload that window lasts for most of the transfer.
+                                .defaultMinSize(minHeight = noPreviewMinSize)
                                 .padding(mediaInset)
                                 .clip(mediaShape)
                                 .blur(4.dp),
