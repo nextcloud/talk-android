@@ -43,6 +43,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -157,9 +158,10 @@ class MainActivity :
                 "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat" -> {
                     val user = userId.substringBeforeLast("@")
                     val baseUrl = userId.substringAfterLast("@")
+                    val isValidBaseUrl = baseUrl.isNotBlank() && "https://$baseUrl".toHttpUrlOrNull() != null
 
                     val currentUser = currentUserProviderOld.currentUser.blockingGet()
-                    if (currentUser?.baseUrl?.endsWith(baseUrl) == true) {
+                    if (isValidBaseUrl && currentUser?.baseUrl?.endsWith(baseUrl) == true) {
                         startConversation(user)
                     } else {
                         Snackbar.make(
