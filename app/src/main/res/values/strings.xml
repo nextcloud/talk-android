@@ -796,6 +796,7 @@ How to translate with transifex:
     <string name="nc_dialog_invalid_password">Invalid password</string>
     <string name="nc_dialog_reauth_or_delete">Do you want to reauthorize or delete this account?</string>
     <string name="nc_deleted_user">User %1$s was removed</string>
+    <string name="nc_remote_wipe_logged_out">Credentials for this account were no longer valid</string>
 
     <string name="nc_dialog_outdated_client">App is outdated</string>
     <string name="nc_dialog_outdated_client_description">The app is too old and no longer supported by this server. Please update.</string>

@@ -11,6 +11,7 @@ package com.nextcloud.talk.api
 import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.chat.ChatOverall
+import com.nextcloud.talk.models.json.wipe.WipeCheckResponse
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.chatpostattachment.ChatPostAttachmentOverall
 import com.nextcloud.talk.models.json.chatpostattachment.PostConversationAttachmentRequest
@@ -568,4 +569,12 @@ interface NcApiCoroutines {
         @Url url: String,
         @Body body: RequestBody
     ): Response<GenericOverall>
+
+    @FormUrlEncoded
+    @POST
+    suspend fun checkRemoteWipe(@Url url: String, @Field("token") token: String): Response<WipeCheckResponse>
+
+    @FormUrlEncoded
+    @POST
+    suspend fun reportRemoteWipeSuccess(@Url url: String, @Field("token") token: String): Response<Unit>
 }

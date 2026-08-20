@@ -17,6 +17,8 @@ import com.nextcloud.talk.api.NcApiCoroutines;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.RemoteWipeInterceptor;
+import com.nextcloud.talk.utils.LoggingUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.ssl.KeyManager;
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat;
@@ -183,7 +185,9 @@ public class RestModule {
     OkHttpClient provideHttpClient(Proxy proxy, AppPreferences appPreferences,
                                    TrustManager trustManager,
                                    SSLSocketFactoryCompat sslSocketFactoryCompat, Cache cache,
-                                   CookieManager cookieManager, Dispatcher dispatcher,
+                                   CookieManager cookieManager,
+                                   Dispatcher dispatcher,
+                                   UserManager userManager,
                                    LoggingHttpInterceptor loggingHttpInterceptor) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
@@ -217,6 +221,7 @@ public class RestModule {
         }
 
         httpClient.addInterceptor(new HeadersInterceptor());
+        httpClient.addInterceptor(new RemoteWipeInterceptor(userManager, context, sslSocketFactoryCompat, trustManager));
         httpClient.addInterceptor(loggingHttpInterceptor);
 
         return httpClient.build();

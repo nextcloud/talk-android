@@ -23,6 +23,7 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.webkit.SslErrorHandler
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -38,6 +39,8 @@ import com.nextcloud.talk.account.SwitchAccountActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.events.CertificateEvent
+import com.nextcloud.talk.events.RemoteWipeEvent
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.lock.LockedActivity
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -313,6 +316,14 @@ open class BaseActivity : AppCompatActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: CertificateEvent) {
         showCertificateDialog(event.x509Certificate, event.trustManager, event.sslErrorHandler)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onRemoteWipeEvent(event: RemoteWipeEvent) {
+        Toast.makeText(context, R.string.nc_remote_wipe_logged_out, Toast.LENGTH_LONG).show()
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
     }
 
     override fun startActivity(intent: Intent) {

@@ -597,4 +597,8 @@ object ApiUtils {
 
     fun getUrlForChatAttachmentFolder(version: Int, baseUrl: String?, token: String): String =
         getUrlForChatAttachment(version, baseUrl, token) + "/folder"
+
+    fun getUrlForRemoteWipeCheck(baseUrl: String): String = "$baseUrl/index.php/core/wipe/check"
+
+    fun getUrlForRemoteWipeSuccess(baseUrl: String): String = "$baseUrl/index.php/core/wipe/success"
 }
