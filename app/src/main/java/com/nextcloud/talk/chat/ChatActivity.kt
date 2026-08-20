@@ -251,6 +251,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
+import java.util.concurrent.CancellationException
 import kotlin.math.abs
 
 @Suppress("TooManyFunctions", "LargeClass", "LongMethod")
@@ -1375,7 +1376,11 @@ class ChatActivity :
         mediaControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
 
         mediaControllerFuture?.addListener({
-            mediaController = mediaControllerFuture?.get()
+            mediaController = try {
+                mediaControllerFuture?.get()
+            } catch (_: CancellationException) {
+                null
+            }
 
             mediaController?.addListener(playerListener)
 
