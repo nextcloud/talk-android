@@ -9,7 +9,9 @@
  */
 package com.nextcloud.talk.activities
 
+import android.content.ContentResolver
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.TextUtils
@@ -141,7 +143,7 @@ class MainActivity :
     }
 
     private fun handleActionFromContact(intent: Intent) {
-        if (intent.action == Intent.ACTION_VIEW && intent.data != null) {
+        if (intent.action == Intent.ACTION_VIEW && intent.data != null && isTrustedContactsUri(intent.data!!)) {
             val cursor = contentResolver.query(intent.data!!, null, null, null, null)
 
             var userId = ""
@@ -174,6 +176,9 @@ class MainActivity :
             }
         }
     }
+
+    private fun isTrustedContactsUri(uri: Uri): Boolean =
+        uri.scheme == ContentResolver.SCHEME_CONTENT && uri.authority == ContactsContract.AUTHORITY
 
     private fun startConversation(userId: String) {
         val roomType = "1"
