@@ -68,6 +68,7 @@ import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.contacts.load
+import com.nextcloud.talk.ui.theme.mimetypeIconTint
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.MimetypeUtils
 import com.nextcloud.talk.utils.VideoThumbnailCache
@@ -355,7 +356,7 @@ fun MediaMessage(
                                     onClick = { onImageClick(message.id) },
                                     onLongClick = { messageLongClickHandler(message.id) }
                                 ),
-                            tint = Color.Unspecified
+                            tint = mimetypeIconTint(typeContent.drawableResourceId)
                         )
                     } else if (localVideoFramePainter != null) {
                         Image(
@@ -500,7 +501,7 @@ fun UploadingMediaMessage(
                                 .size(64.dp)
                                 .padding(mediaInset)
                                 .align(Alignment.Center),
-                            tint = Color.Unspecified
+                            tint = mimetypeIconTint(typeContent.drawableResourceId)
                         )
                     }
 
@@ -614,7 +615,7 @@ private fun UploadingVideoPreview(
                 modifier = Modifier
                     .size(64.dp)
                     .align(Alignment.Center),
-                tint = Color.Unspecified
+                tint = mimetypeIconTint(typeContent.drawableResourceId)
             )
         }
     }

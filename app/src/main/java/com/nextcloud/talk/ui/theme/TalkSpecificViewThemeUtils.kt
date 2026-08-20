@@ -225,7 +225,7 @@ class TalkSpecificViewThemeUtils @Inject constructor(
             context,
             drawableResourceId
         )
-        if (drawable != null && THEMEABLE_PLACEHOLDER_IDS.contains(drawableResourceId)) {
+        if (drawable != null && isThemeablePlaceholder(drawableResourceId)) {
             colorDrawable(context, drawable)
         }
         return drawable
@@ -497,6 +497,10 @@ class TalkSpecificViewThemeUtils @Inject constructor(
             R.drawable.ic_mimetype_package_x_generic,
             R.drawable.ic_mimetype_folder
         )
+
+        /** Whether the mimetype placeholder [drawableResourceId] is monochrome and picks up the theme color. */
+        fun isThemeablePlaceholder(@DrawableRes drawableResourceId: Int): Boolean =
+            THEMEABLE_PLACEHOLDER_IDS.contains(drawableResourceId)
 
         private val ALPHA_80_INT: Int = (255 * 0.8).roundToInt()
 
