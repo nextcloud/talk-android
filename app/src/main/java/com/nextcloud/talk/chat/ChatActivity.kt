@@ -1550,7 +1550,7 @@ class ChatActivity :
                     joinRoomWithPassword()
 
                     if (sharedFilePaths.isNotEmpty()) {
-                        uploadFiles(sharedFilePaths.toMutableList())
+                        onChooseFileResult(sharedFilePaths.map { it.toUri() })
                         sharedFilePaths = emptyList()
                     }
 
