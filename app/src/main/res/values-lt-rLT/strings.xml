@@ -27,6 +27,7 @@
     <string name="battery_optimization_title">Akumuliatoriaus nustatymai</string>
     <string name="busy">Užimtas</string>
     <string name="calendar">Kalendorius</string>
+    <string name="call_in_progress">Skambutis vyksta</string>
     <string name="call_more_actions_dialog_headline">Išplėstinės skambučio parinktys</string>
     <string name="call_running_since_one_hour">Skambutis vyksta jau valandą.</string>
     <string name="call_without_notification">Skambinti be įspėjimo</string>
@@ -135,8 +136,10 @@
     <string name="nc_add_participants">Pridėti dalyvių</string>
     <string name="nc_add_to_favorites">Pridėti į mėgstamus</string>
     <string name="nc_add_to_home_screen">Pridėti prie pradinio ekrano</string>
+    <string name="nc_admin_only">Tik administratoriui</string>
     <string name="nc_all_ok_operation">Gerai, viskas atlikta!</string>
     <string name="nc_announcement">Skelbimas</string>
+    <string name="nc_announcement_description">Pokalbis, skirtas administratoriams informuoti konkrečią auditoriją; iš šio pokalbio negalima pasitraukti.</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Atrakinti %1$s</string>
     <string name="nc_bluetooth_permission_hint">Norėdami įjungti „Bluetooth“ garsiakalbius, suteikite leidimą „Artimi įrenginiai“.</string>
@@ -173,6 +176,8 @@
     <string name="nc_change_cert_auth">Keisti tapatybės nustatymo sertifikatą</string>
     <string name="nc_change_password">Pakeisti slaptažodį</string>
     <string name="nc_channel">Kanalas</string>
+    <string name="nc_channel_description">Tik moderatoriai gali skelbti įrašus, o visi kiti gali tik reaguoti</string>
+    <string name="nc_channel_only_moderators_can_post">Šiame kanale skelbti pranešimus gali tik moderatoriai.</string>
     <string name="nc_chat_no_messages">Kol kas nėra žinučių. Būkite pirmas, kuris pasisveikina!</string>
     <string name="nc_classified_conversation">Slaptas pokalbis</string>
     <string name="nc_clear_edit_button">Atšaukti redagavimą</string>
