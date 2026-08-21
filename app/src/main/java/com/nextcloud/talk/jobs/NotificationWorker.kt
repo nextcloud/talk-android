@@ -840,7 +840,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             )
         }
         val personBuilder = Person.Builder()
-            .setKey(signatureVerification.user!!.id.toString() + "@" + notificationUser.id)
+            .setKey(user.id.toString() + "@" + notificationUser.id)
             .setName(EmojiCompat.get().process(notificationUser.name!!))
             .setBot("bot" == userType)
 
@@ -850,8 +850,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
 
         val deviceUser = Person.Builder()
-            .setKey(signatureVerification.user!!.id.toString() + "@" + signatureVerification.user!!.userId)
-            .setName(signatureVerification.user!!.displayName ?: signatureVerification.user!!.userId ?: "You")
+            .setKey(user.id.toString() + "@" + user.userId)
+            .setName(user.displayName ?: user.userId ?: "You")
             .build()
 
         val sender = personBuilder.build()
@@ -884,7 +884,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val userType = notificationUser?.type
         if (userType != "user" && userType != "guest") return null
 
-        val baseUrl = signatureVerification.user!!.baseUrl
+        val baseUrl = user.baseUrl
         val avatarUrl = if ("user" == userType) {
             ApiUtils.getUrlForAvatar(
                 baseUrl!!,
@@ -913,14 +913,14 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return bitmap
     }
 
-    private fun pushConversationShortcut(notificationBuilder: NotificationCompat.Builder) {
+    private fun pushConversationShortcut(notificationBuilder: NotificationCompat.Builder, avatarBitmap: Bitmap?) {
         val notificationUser = pushMessage.notificationUser ?: return
         val roomToken = pushMessage.id ?: return
 
-        val shortcutId = "conversation_${signatureVerification.user!!.id}_$roomToken"
+        val shortcutId = "conversation_${user.id}_$roomToken"
 
         val personBuilder = Person.Builder()
-            .setKey(signatureVerification.user!!.id.toString() + "@" + notificationUser.id)
+            .setKey(user.id.toString() + "@" + notificationUser.id)
             .setName(EmojiCompat.get().process(notificationUser.name!!))
 
         if (avatarBitmap != null) {
@@ -930,7 +930,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val intent = Intent(context, MainActivity::class.java).apply {
             action = Intent.ACTION_VIEW
             putExtra(KEY_ROOM_TOKEN, roomToken)
-            putExtra(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id)
+            putExtra(KEY_INTERNAL_USER_ID, user.id)
         }
 
         val shortcut = ShortcutInfoCompat.Builder(context!!, shortcutId)
