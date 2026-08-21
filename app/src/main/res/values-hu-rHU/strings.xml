@@ -674,7 +674,6 @@
     <string name="set_avatar_from_camera">Profilkép beállítása a kamerával</string>
     <string name="set_status_message">Állapotüzenet beállítása</string>
     <string name="share">Megosztás</string>
-    <string name="share_link_to_conversation">Csatlakozás a(z) %1$s beszélgetéshez ekkor: %2$s</string>
     <string name="shared_items_audio">Hangok</string>
     <string name="shared_items_file">Fájl</string>
     <string name="shared_items_media">Média</string>
@@ -694,14 +693,7 @@
     <string name="switch_to_breakout_room">Szétbontott szobára váltás</string>
     <string name="switch_to_main_room">Fő szobára váltás</string>
     <string name="take_photo">Fénykép készítése</string>
-    <string name="take_photo_error_deleting_picture">Hiba a fénykép készítése során</string>
     <string name="take_photo_permission">Engedély nélkül a fénykép készítése nem lehetséges</string>
-    <string name="take_photo_retake_photo">Fénykép újbóli elkészítése</string>
-    <string name="take_photo_send">Küldés</string>
-    <string name="take_photo_switch_camera">Kamera váltása</string>
-    <string name="take_photo_toggle_crop">Fénykép levágása</string>
-    <string name="take_photo_toggle_lowres">Képméret csökkentése</string>
-    <string name="take_photo_toggle_torch">Lámpa be/ki</string>
     <string name="thirtyMinutes">30 perc</string>
     <string name="thisWeek">Ez a hét</string>
     <string name="this_is_a_test_message">Ez egy tesztüzenet</string>

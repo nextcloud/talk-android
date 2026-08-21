@@ -506,14 +506,7 @@
     <string name="switch_to_breakout_room">Preklopi na ločene skupine</string>
     <string name="switch_to_main_room">Preklopi na skupno mesto</string>
     <string name="take_photo">Zajemi sliko</string>
-    <string name="take_photo_error_deleting_picture">Napaka zajemanja slike</string>
     <string name="take_photo_permission">Zajemanje slik brez ustreznih dovoljenj ni mogoče</string>
-    <string name="take_photo_retake_photo">Ponovno zajemi sliko</string>
-    <string name="take_photo_send">Pošlji</string>
-    <string name="take_photo_switch_camera">Preklopi kamero</string>
-    <string name="take_photo_toggle_crop">Obreži sliko</string>
-    <string name="take_photo_toggle_lowres">Zmanjšaj velikost slike</string>
-    <string name="take_photo_toggle_torch">Preklopi bliskavico</string>
     <string name="thirtyMinutes">30 minut</string>
     <string name="thisWeek">Ta teden</string>
     <string name="today">Danes</string>

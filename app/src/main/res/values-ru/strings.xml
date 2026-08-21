@@ -172,6 +172,7 @@
     <string name="nc_change_password">Изменить пароль</string>
     <string name="nc_channel">Канал</string>
     <string name="nc_chat_no_messages">Сообщений пока нет. Будьте первым, кто поздоровается!</string>
+    <string name="nc_classified_conversation">Засекреченное обсуждение</string>
     <string name="nc_clear_edit_button">Отменить редактирование</string>
     <string name="nc_clear_history">Удалить все сообщения</string>
     <string name="nc_clear_history_success">Все сообщения были удалены</string>
@@ -676,7 +677,6 @@
     <string name="set_avatar_from_camera">Установить аватар со снимка камерой</string>
     <string name="set_status_message">Установить статус</string>
     <string name="share">Поделиться</string>
-    <string name="share_link_to_conversation">Присоединиться к обсуждению %1$s в %2$s</string>
     <string name="shared_items_audio">Звук</string>
     <string name="shared_items_file">Файл</string>
     <string name="shared_items_media">Медиа</string>
@@ -696,14 +696,7 @@
     <string name="switch_to_breakout_room">Перейти в комнат отдыха</string>
     <string name="switch_to_main_room">Перейти в основную комнату</string>
     <string name="take_photo">Сфотографировать</string>
-    <string name="take_photo_error_deleting_picture">Ошибка при фотосъёмке</string>
     <string name="take_photo_permission">Фотосъёмка невозможна без разрешения</string>
-    <string name="take_photo_retake_photo">Переснять</string>
-    <string name="take_photo_send">Отправить</string>
-    <string name="take_photo_switch_camera">Переключить камеру</string>
-    <string name="take_photo_toggle_crop">Обрезать фотографию</string>
-    <string name="take_photo_toggle_lowres">Уменьшить размер изображения</string>
-    <string name="take_photo_toggle_torch">Переключатель фонарика</string>
     <string name="thirtyMinutes">30 минут</string>
     <string name="thisWeek">Эта неделя</string>
     <string name="this_is_a_test_message">Это тестовое сообщение</string>

@@ -614,7 +614,6 @@
     <string name="set_avatar_from_camera">Встановити аватарку з камери</string>
     <string name="set_status_message">Оновити статус</string>
     <string name="share">Спільний доступ</string>
-    <string name="share_link_to_conversation">Приєднуйтесь до розмови %1$s на %2$s</string>
     <string name="shared_items_audio">Аудіо</string>
     <string name="shared_items_file">Файл</string>
     <string name="shared_items_media">Зображення та відео</string>
@@ -633,14 +632,7 @@
     <string name="switch_to_breakout_room">Перейдіть до кімнати для переговорів</string>
     <string name="switch_to_main_room">Перейдіть до головної кімнати</string>
     <string name="take_photo">Сфотографуйте</string>
-    <string name="take_photo_error_deleting_picture">Помилка під час зйомки</string>
     <string name="take_photo_permission">Фотографування неможливе без дозволу</string>
-    <string name="take_photo_retake_photo">Перефотографуйте</string>
-    <string name="take_photo_send">Надіслати</string>
-    <string name="take_photo_switch_camera">Переключити камеру.</string>
-    <string name="take_photo_toggle_crop">Кадрувати зображення</string>
-    <string name="take_photo_toggle_lowres">Зменшити розмір зображення</string>
-    <string name="take_photo_toggle_torch">Тумблерний ліхтар</string>
     <string name="thirtyMinutes">30 хвилин</string>
     <string name="thisWeek">Цього тижня</string>
     <string name="this_is_a_test_message">Це тестове повідомлення</string>

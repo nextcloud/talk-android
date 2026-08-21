@@ -692,7 +692,6 @@
     <string name="set_avatar_from_camera">تنظیم آواتار از دوربین</string>
     <string name="set_status_message">تنظیم پیام وضعیت</string>
     <string name="share">اشتراک‌گذاری</string>
-    <string name="share_link_to_conversation">پیوستن به گفتگو %1$s در %2$s</string>
     <string name="shared_items_audio">صدا</string>
     <string name="shared_items_file">پرونده</string>
     <string name="shared_items_media">رسانه‌ها</string>
@@ -712,14 +711,7 @@
     <string name="switch_to_breakout_room">تغییر به اتاق استراحت</string>
     <string name="switch_to_main_room">تغییر به اتاق اصلی</string>
     <string name="take_photo">عکس گرفتن</string>
-    <string name="take_photo_error_deleting_picture">خطا در گرفتن عکس</string>
     <string name="take_photo_permission">گرفتن عکس بدون مجوز امکان‌پذیر نیست</string>
-    <string name="take_photo_retake_photo">گرفتن مجدد عکس</string>
-    <string name="take_photo_send">ارسال</string>
-    <string name="take_photo_switch_camera">دوربین را عوض کنید</string>
-    <string name="take_photo_toggle_crop">برش عکس</string>
-    <string name="take_photo_toggle_lowres">کاهش اندازه تصویر</string>
-    <string name="take_photo_toggle_torch">تغییر مشعل</string>
     <string name="thirtyMinutes">۳۰ دقیقه</string>
     <string name="thisWeek">این هفته</string>
     <string name="this_is_a_test_message">این یک پیام آزمایشی است</string>

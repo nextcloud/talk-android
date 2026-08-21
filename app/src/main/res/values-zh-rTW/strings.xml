@@ -723,7 +723,6 @@
     <string name="set_avatar_from_camera">從相機設定大頭照</string>
     <string name="set_status_message">設定狀態訊息</string>
     <string name="share">分享</string>
-    <string name="share_link_to_conversation">加入對話 %1$s 於 %2$s</string>
     <string name="shared_items_audio">音樂</string>
     <string name="shared_items_file">檔案</string>
     <string name="shared_items_media">多媒體</string>
@@ -743,14 +742,7 @@
     <string name="switch_to_breakout_room">切換至分組討論室</string>
     <string name="switch_to_main_room">切換至主要聊天室</string>
     <string name="take_photo">拍照</string>
-    <string name="take_photo_error_deleting_picture">拍照時發生錯誤</string>
     <string name="take_photo_permission">沒有權限就無法拍照</string>
-    <string name="take_photo_retake_photo">重新拍照</string>
-    <string name="take_photo_send">傳送</string>
-    <string name="take_photo_switch_camera">切換相機</string>
-    <string name="take_photo_toggle_crop">裁剪照片</string>
-    <string name="take_photo_toggle_lowres">縮小照片大小</string>
-    <string name="take_photo_toggle_torch">切換閃光燈</string>
     <string name="thirtyMinutes">30分鐘</string>
     <string name="thisWeek">這個禮拜</string>
     <string name="this_is_a_test_message">這是測試訊息</string>

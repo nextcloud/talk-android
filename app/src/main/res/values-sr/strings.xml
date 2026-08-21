@@ -617,7 +617,6 @@
     <string name="set_avatar_from_camera">Постави аватар са камере</string>
     <string name="set_status_message">Постави статусну поруку</string>
     <string name="share">Подели</string>
-    <string name="share_link_to_conversation">Придружите се разговору %1$s на %2$s</string>
     <string name="shared_items_audio">Звук</string>
     <string name="shared_items_file">Фајл</string>
     <string name="shared_items_media">Мултимедија</string>
@@ -636,14 +635,7 @@
     <string name="switch_to_breakout_room">Пређи у сепаре</string>
     <string name="switch_to_main_room">Пређи у главну собу</string>
     <string name="take_photo">Сликај</string>
-    <string name="take_photo_error_deleting_picture">Грешка приликом прављења слике</string>
     <string name="take_photo_permission">Прављење слике није могуће без дозвола</string>
-    <string name="take_photo_retake_photo">Поново направи слику</string>
-    <string name="take_photo_send">Пошаљи</string>
-    <string name="take_photo_switch_camera">Пребаци камеру</string>
-    <string name="take_photo_toggle_crop">Опсеци слику</string>
-    <string name="take_photo_toggle_lowres">Умањи величину слике</string>
-    <string name="take_photo_toggle_torch">Пребаци стање лампе</string>
     <string name="thirtyMinutes">30 минута</string>
     <string name="thisWeek">Ове недеље</string>
     <string name="this_is_a_test_message">Ово је тест порука</string>

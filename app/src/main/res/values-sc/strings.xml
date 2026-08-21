@@ -383,9 +383,6 @@
     <string name="starred">Preferidu</string>
     <string name="status_message">Messàgiu de istadu</string>
     <string name="take_photo">Tira una foto</string>
-    <string name="take_photo_send">Imbia</string>
-    <string name="take_photo_switch_camera">Càmbia fotocàmera</string>
-    <string name="take_photo_toggle_torch">Ativa sa tortza</string>
     <string name="thirtyMinutes">30 minutos</string>
     <string name="thisWeek">Custa chida</string>
     <string name="thread_reply">Risponde</string>

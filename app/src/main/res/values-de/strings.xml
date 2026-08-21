@@ -723,7 +723,6 @@
     <string name="set_avatar_from_camera">Avatar mit der Kamera setzen</string>
     <string name="set_status_message">Statusnachricht setzen</string>
     <string name="share">Freigabe</string>
-    <string name="share_link_to_conversation">Unterhaltung %1$s bei %2$s beitreten</string>
     <string name="shared_items_audio">Audio</string>
     <string name="shared_items_file">Datei</string>
     <string name="shared_items_media">Medien</string>
@@ -743,14 +742,7 @@
     <string name="switch_to_breakout_room">Zu Gruppenraum wechseln</string>
     <string name="switch_to_main_room">Zu Hauptraum wechseln</string>
     <string name="take_photo">Ein Foto aufnehmen</string>
-    <string name="take_photo_error_deleting_picture">Fehler beim Aufnehmen des Fotos</string>
     <string name="take_photo_permission">Das Fotografieren ist ohne Berechtigungen nicht möglich</string>
-    <string name="take_photo_retake_photo">Foto nochmals aufnehmen</string>
-    <string name="take_photo_send">Senden</string>
-    <string name="take_photo_switch_camera">Kamera wechseln</string>
-    <string name="take_photo_toggle_crop">Foto beschneiden</string>
-    <string name="take_photo_toggle_lowres">Bildgröße verringern</string>
-    <string name="take_photo_toggle_torch">Taschenlampe umschalten</string>
     <string name="thirtyMinutes">30 Minuten</string>
     <string name="thisWeek">Diese Woche</string>
     <string name="this_is_a_test_message">Dies ist eine Testnachricht</string>

@@ -27,6 +27,7 @@
     <string name="battery_optimization_title">電池設定</string>
     <string name="busy">忙碌</string>
     <string name="calendar">日曆</string>
+    <string name="call_in_progress">正在通話中…</string>
     <string name="call_more_actions_dialog_headline">進階通話選項</string>
     <string name="call_running_since_one_hour">請注意，通話已經持續一個小時了。</string>
     <string name="call_without_notification">通話而不通知</string>
@@ -722,7 +723,6 @@
     <string name="set_avatar_from_camera">從相機設置虛擬化身大頭照</string>
     <string name="set_status_message">設定狀態訊息</string>
     <string name="share">分享</string>
-    <string name="share_link_to_conversation">加入對話 %1$s於 %2$s</string>
     <string name="shared_items_audio">音頻</string>
     <string name="shared_items_file">檔案</string>
     <string name="shared_items_media">多媒體</string>
@@ -742,14 +742,7 @@
     <string name="switch_to_breakout_room">切換到分組討論室</string>
     <string name="switch_to_main_room">切換到主室</string>
     <string name="take_photo">拍照</string>
-    <string name="take_photo_error_deleting_picture">拍照時出錯</string>
     <string name="take_photo_permission">沒有權限就無法拍照</string>
-    <string name="take_photo_retake_photo">重新拍照</string>
-    <string name="take_photo_send">傳送</string>
-    <string name="take_photo_switch_camera">切換相機</string>
-    <string name="take_photo_toggle_crop">裁剪照片</string>
-    <string name="take_photo_toggle_lowres">縮小圖像尺寸</string>
-    <string name="take_photo_toggle_torch">切換 torch</string>
     <string name="thirtyMinutes">30 分鐘</string>
     <string name="thisWeek">本星期</string>
     <string name="this_is_a_test_message">此乃測試訊息</string>

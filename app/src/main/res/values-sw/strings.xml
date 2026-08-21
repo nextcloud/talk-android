@@ -638,7 +638,6 @@
     <string name="set_avatar_from_camera">Pangilia avata kutoka katika kamera </string>
     <string name="set_status_message">Pangilia hali ya ujumbe</string>
     <string name="share">Shirikisha</string>
-    <string name="share_link_to_conversation">Jiunge mazungumzo %1$s katika %2$s</string>
     <string name="shared_items_audio">Sauti</string>
     <string name="shared_items_file">Faili</string>
     <string name="shared_items_media">Midia</string>
@@ -657,14 +656,7 @@
     <string name="switch_to_breakout_room">Badili hadi chumba cha mapumziko</string>
     <string name="switch_to_main_room">Badili hadi chumba kikuu</string>
     <string name="take_photo">Chukua picha</string>
-    <string name="take_photo_error_deleting_picture">Hitilafu wakati wa kuchukua picha</string>
     <string name="take_photo_permission">Kupiga picha hakuwezekani bila ruhusa</string>
-    <string name="take_photo_retake_photo">Chukua picha tena</string>
-    <string name="take_photo_send">Tuma</string>
-    <string name="take_photo_switch_camera">Badili kamera</string>
-    <string name="take_photo_toggle_crop">Dondosha picha</string>
-    <string name="take_photo_toggle_lowres">Punguza ukubwa wa picha</string>
-    <string name="take_photo_toggle_torch">Washa tochi</string>
     <string name="thirtyMinutes">Dakika 30</string>
     <string name="thisWeek">Wiki hii</string>
     <string name="this_is_a_test_message">Huu ni ujumbe wa jaribio</string>

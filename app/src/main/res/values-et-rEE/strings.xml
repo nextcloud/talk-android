@@ -722,7 +722,6 @@
     <string name="set_avatar_from_camera">Lisa tunnuspilt kaamera abil</string>
     <string name="set_status_message">Sisesta olekuteade</string>
     <string name="share">Jaga</string>
-    <string name="share_link_to_conversation">Liitu „%1$s“ vestlusega: %2$s</string>
     <string name="shared_items_audio">Helifailid</string>
     <string name="shared_items_file">Fail</string>
     <string name="shared_items_media">Meedium</string>
@@ -742,14 +741,7 @@
     <string name="switch_to_breakout_room">Mine töötuppa</string>
     <string name="switch_to_main_room">Mine põhilisse jututuppa</string>
     <string name="take_photo">Pildista</string>
-    <string name="take_photo_error_deleting_picture">Viga pildistamisel</string>
     <string name="take_photo_permission">Pildistamine pole võimalik ilma vastavate õigusteta</string>
-    <string name="take_photo_retake_photo">Pildista uuesti</string>
-    <string name="take_photo_send">Saada</string>
-    <string name="take_photo_switch_camera">Vaheta kaamerat</string>
-    <string name="take_photo_toggle_crop">Kadreeri fotot</string>
-    <string name="take_photo_toggle_lowres">Vähenda pildi suurust</string>
-    <string name="take_photo_toggle_torch">Lülita taskulamp sisse/välja</string>
     <string name="thirtyMinutes">30 minutit</string>
     <string name="thisWeek">Käesolev nädal</string>
     <string name="this_is_a_test_message">See on testsõnum</string>

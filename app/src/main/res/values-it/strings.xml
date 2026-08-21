@@ -634,7 +634,6 @@
     <string name="set_avatar_from_camera">Imposta avatar dalla fotocamera</string>
     <string name="set_status_message">Imposta messaggio di stato</string>
     <string name="share">Condividi</string>
-    <string name="share_link_to_conversation">Partecipa alla conversazione %1$s su %2$s</string>
     <string name="shared_items_audio">Audio</string>
     <string name="shared_items_file">File</string>
     <string name="shared_items_media">Media</string>
@@ -653,14 +652,7 @@
     <string name="switch_to_breakout_room">Passa a sessione secondaria</string>
     <string name="switch_to_main_room">Passa a stanza principale</string>
     <string name="take_photo">Scatta una foto</string>
-    <string name="take_photo_error_deleting_picture">Errore acquisizione immagine</string>
     <string name="take_photo_permission">Non è possibile scattare una foto senza autorizzazioni</string>
-    <string name="take_photo_retake_photo">Ri-scatta foto</string>
-    <string name="take_photo_send">Invia</string>
-    <string name="take_photo_switch_camera">Cambia fotocamera</string>
-    <string name="take_photo_toggle_crop">Ritaglia foto</string>
-    <string name="take_photo_toggle_lowres">Riduci dimensione immagine</string>
-    <string name="take_photo_toggle_torch">Accendi/spegni la torcia</string>
     <string name="thirtyMinutes">30 minuti</string>
     <string name="thisWeek">Questa settimana</string>
     <string name="this_is_a_test_message">Questo è un messaggio di test</string>

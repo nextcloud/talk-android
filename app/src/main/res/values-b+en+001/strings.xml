@@ -27,6 +27,7 @@
     <string name="battery_optimization_title">Battery settings</string>
     <string name="busy">Busy</string>
     <string name="calendar">Calendar</string>
+    <string name="call_in_progress">A call is in progress</string>
     <string name="call_more_actions_dialog_headline">Advanced call options</string>
     <string name="call_running_since_one_hour">Note: the call has been going on for an hour already.</string>
     <string name="call_without_notification">Call without notification</string>
@@ -722,7 +723,6 @@
     <string name="set_avatar_from_camera">Set avatar from camera</string>
     <string name="set_status_message">Set status message</string>
     <string name="share">Share</string>
-    <string name="share_link_to_conversation">Join conversation %1$s at %2$s</string>
     <string name="shared_items_audio">Audio</string>
     <string name="shared_items_file">File</string>
     <string name="shared_items_media">Media</string>
@@ -742,14 +742,7 @@
     <string name="switch_to_breakout_room">Switch to breakout room</string>
     <string name="switch_to_main_room">Switch to main room</string>
     <string name="take_photo">Take a photo</string>
-    <string name="take_photo_error_deleting_picture">Error taking picture</string>
     <string name="take_photo_permission">Taking a photo is not possible without permissions</string>
-    <string name="take_photo_retake_photo">Re-take photo</string>
-    <string name="take_photo_send">Send</string>
-    <string name="take_photo_switch_camera">Switch camera</string>
-    <string name="take_photo_toggle_crop">Crop photo</string>
-    <string name="take_photo_toggle_lowres">Reduce image size</string>
-    <string name="take_photo_toggle_torch">Toggle torch</string>
     <string name="thirtyMinutes">30 minutes</string>
     <string name="thisWeek">This week</string>
     <string name="this_is_a_test_message">This is a test message</string>

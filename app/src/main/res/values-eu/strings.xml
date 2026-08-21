@@ -547,14 +547,7 @@
     <string name="switch_to_breakout_room">Aldatu azpitaldearen gelara</string>
     <string name="switch_to_main_room">Aldatu gela nagusira</string>
     <string name="take_photo">Atera argazki bat</string>
-    <string name="take_photo_error_deleting_picture">Errorea argazkia ateratzen</string>
     <string name="take_photo_permission">Ezin dira argazkiak atera baimenik gabe</string>
-    <string name="take_photo_retake_photo">Atera argazkia berriro</string>
-    <string name="take_photo_send">Bidali</string>
-    <string name="take_photo_switch_camera">Aldatu kamera</string>
-    <string name="take_photo_toggle_crop">Moztu argazkia</string>
-    <string name="take_photo_toggle_lowres">Murriztu irudiaren tamaina</string>
-    <string name="take_photo_toggle_torch">Txandakatu linterna</string>
     <string name="thirtyMinutes">30 minutu</string>
     <string name="thisWeek">Aste honetan</string>
     <string name="this_is_a_test_message">Hau probako mezu bat da</string>

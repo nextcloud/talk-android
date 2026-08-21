@@ -657,7 +657,6 @@
     <string name="set_avatar_from_camera">Získat zástupný obrázek z kamery</string>
     <string name="set_status_message">Nastavit stavovou zprávu</string>
     <string name="share">Sdílet</string>
-    <string name="share_link_to_conversation">Připojit se ke konverzaci %1$s na %2$s</string>
     <string name="shared_items_audio">Zvuk</string>
     <string name="shared_items_file">Soubor</string>
     <string name="shared_items_media">Média</string>
@@ -676,14 +675,7 @@
     <string name="switch_to_breakout_room">Přepnout na přestávkovou místnost</string>
     <string name="switch_to_main_room">Přepnout na hlavní místnost</string>
     <string name="take_photo">Vyfotit</string>
-    <string name="take_photo_error_deleting_picture">Chyba při pořizování obrázku</string>
     <string name="take_photo_permission">Focení není možné bez udělení oprávnění</string>
-    <string name="take_photo_retake_photo">Znovu pořídit fotku</string>
-    <string name="take_photo_send">Odeslat</string>
-    <string name="take_photo_switch_camera">Přepnout kameru</string>
-    <string name="take_photo_toggle_crop">Oříznout fotku</string>
-    <string name="take_photo_toggle_lowres">Zmenšit velikost obrázku</string>
-    <string name="take_photo_toggle_torch">Vyp/zap. přisvícení</string>
     <string name="thirtyMinutes">30 minut</string>
     <string name="thisWeek">Tento týden</string>
     <string name="this_is_a_test_message">Toto je zkušební zpráva</string>

@@ -723,7 +723,6 @@
     <string name="set_avatar_from_camera">Nustatyti avatarą iš kameros</string>
     <string name="set_status_message">Nustatyti būsenos žinutę</string>
     <string name="share">Bendrinti</string>
-    <string name="share_link_to_conversation">Prisijunkite prie %1$s pokalbio %2$s</string>
     <string name="shared_items_audio">Garso įrašai</string>
     <string name="shared_items_file">Failas</string>
     <string name="shared_items_media">Medija</string>
@@ -743,14 +742,7 @@
     <string name="switch_to_breakout_room">Pereiti į grupinio darbo kambarį</string>
     <string name="switch_to_main_room">Pereiti į pagrindinį kambarį</string>
     <string name="take_photo">Fotografuoti</string>
-    <string name="take_photo_error_deleting_picture">Klaida fotografuojant</string>
     <string name="take_photo_permission">Be leidimo fotografuoti negalima</string>
-    <string name="take_photo_retake_photo">Fotografuoti iš naujo</string>
-    <string name="take_photo_send">Siųsti</string>
-    <string name="take_photo_switch_camera">Perjungti kamerą</string>
-    <string name="take_photo_toggle_crop">Apkirpti nuotrauką</string>
-    <string name="take_photo_toggle_lowres">Sumažinti paveikslėlio dydį</string>
-    <string name="take_photo_toggle_torch">Perjungti žibintuvėlį</string>
     <string name="thirtyMinutes">30 minučių</string>
     <string name="thisWeek">Šią savaitę</string>
     <string name="this_is_a_test_message">Tai yra bandomoji žinutė</string>

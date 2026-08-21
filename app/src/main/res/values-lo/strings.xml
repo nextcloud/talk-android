@@ -616,7 +616,6 @@
     <string name="set_avatar_from_camera">Set avatar from camera</string>
     <string name="set_status_message">ຕັ້ງຄ່າສະຖານະພາບຂໍ້ຄວາມ</string>
     <string name="share">ແບ່ງປັນ</string>
-    <string name="share_link_to_conversation">Join conversation %1$s at %2$s</string>
     <string name="shared_items_audio">ສຽງ</string>
     <string name="shared_items_file">ຟາຍ</string>
     <string name="shared_items_media">ຊື່ມວນຊົນ</string>
@@ -635,14 +634,7 @@
     <string name="switch_to_breakout_room">Switch to breakout room</string>
     <string name="switch_to_main_room">Switch to main room</string>
     <string name="take_photo">Take a photo</string>
-    <string name="take_photo_error_deleting_picture">Error taking picture</string>
     <string name="take_photo_permission">Taking a photo is not possible without permissions</string>
-    <string name="take_photo_retake_photo">Re-take photo</string>
-    <string name="take_photo_send">ສົ່ງ</string>
-    <string name="take_photo_switch_camera">Switch camera</string>
-    <string name="take_photo_toggle_crop">Crop photo</string>
-    <string name="take_photo_toggle_lowres">Reduce image size</string>
-    <string name="take_photo_toggle_torch">Toggle torch</string>
     <string name="thirtyMinutes">30 ນາທີ</string>
     <string name="thisWeek">ທິດນີ້</string>
     <string name="this_is_a_test_message">This is a test message</string>

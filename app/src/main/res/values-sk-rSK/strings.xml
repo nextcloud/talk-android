@@ -624,7 +624,6 @@
     <string name="set_avatar_from_camera">Nastaviť avatara z fotoaparátu</string>
     <string name="set_status_message">Nastaviť správu o stave</string>
     <string name="share">Sprístupniť</string>
-    <string name="share_link_to_conversation">Pridať sa ku konverzácii %1$s na %2$s</string>
     <string name="shared_items_audio">Zvuk</string>
     <string name="shared_items_file">Súbor</string>
     <string name="shared_items_media">Média</string>
@@ -643,14 +642,7 @@
     <string name="switch_to_breakout_room">Prepnúť do vyhradenej miestnosti</string>
     <string name="switch_to_main_room">Prepnúť do hlavnej miestnosti</string>
     <string name="take_photo">Urobiť fotografiu</string>
-    <string name="take_photo_error_deleting_picture">Chyba pri vytváraní fotografie</string>
     <string name="take_photo_permission">Fotografovanie nie je možné bez oprávnení</string>
-    <string name="take_photo_retake_photo">Znovu vytvoriť fotografiu</string>
-    <string name="take_photo_send">Odoslať</string>
-    <string name="take_photo_switch_camera">Prepnúť kameru</string>
-    <string name="take_photo_toggle_crop">Orezať fotografiu</string>
-    <string name="take_photo_toggle_lowres">Zmenšiť obrázok</string>
-    <string name="take_photo_toggle_torch">Prepnúť baterku</string>
     <string name="thirtyMinutes">30 minút</string>
     <string name="thisWeek">Tento týždeň</string>
     <string name="this_is_a_test_message">Toto je skúšobná správa</string>
