@@ -11,12 +11,14 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.media.AudioAttributes
 import android.net.Uri
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
 import android.util.Log
+import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.net.toUri
 import coil.executeBlocking
@@ -30,6 +32,8 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RingtoneSettings
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 
 @Suppress("TooManyFunctions")
@@ -54,6 +58,8 @@ object NotificationUtils {
     // notification group keys
     const val KEY_UPLOAD_GROUP = "com.nextcloud.talk.utils.KEY_UPLOAD_GROUP"
     const val GROUP_SUMMARY_NOTIFICATION_ID = -1
+
+    private const val BITMAP_COMPRESSION_QUALITY = 100
 
     private fun createNotificationChannel(
         context: Context,
@@ -316,7 +322,12 @@ object NotificationUtils {
         )
 
     fun loadAvatarSync(avatarUrl: String, context: Context): IconCompat? {
-        var avatarIcon: IconCompat? = null
+        val bitmap = loadAvatarBitmapSync(avatarUrl, context)
+        return bitmap?.let { IconCompat.createWithBitmap(it) }
+    }
+
+    fun loadAvatarBitmapSync(avatarUrl: String, context: Context): Bitmap? {
+        var avatarBitmap: Bitmap? = null
 
         val request = ImageRequest.Builder(context)
             .data(avatarUrl)
@@ -324,13 +335,11 @@ object NotificationUtils {
             .placeholder(R.drawable.account_circle_96dp)
             .target(
                 onSuccess = { result ->
-                    val bitmap = (result as BitmapDrawable).bitmap
-                    avatarIcon = IconCompat.createWithBitmap(bitmap)
+                    avatarBitmap = (result as BitmapDrawable).bitmap
                 },
                 onError = { error ->
                     error?.let {
-                        val bitmap = (error as BitmapDrawable).bitmap
-                        avatarIcon = IconCompat.createWithBitmap(bitmap)
+                        avatarBitmap = (error as BitmapDrawable).bitmap
                     }
                     Log.w(TAG, "Can't load avatar for URL: $avatarUrl")
                 }
@@ -339,7 +348,20 @@ object NotificationUtils {
 
         context.imageLoader.executeBlocking(request)
 
-        return avatarIcon
+        return avatarBitmap
+    }
+
+    fun saveBitmapToCache(context: Context, bitmap: Bitmap, fileName: String): Uri? {
+        val cacheFile = File(context.cacheDir, fileName)
+        return try {
+            FileOutputStream(cacheFile).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, BITMAP_COMPRESSION_QUALITY, out)
+            }
+            FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID, cacheFile)
+        } catch (e: IOException) {
+            Log.e(TAG, "Failed to save bitmap to cache", e)
+            null
+        }
     }
 
     private data class Channel(val id: String, val name: String, val description: String, val isImportant: Boolean)

@@ -16,6 +16,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -32,6 +33,9 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import androidx.core.content.ContextCompat
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.drawable.IconCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import androidx.emoji2.text.EmojiCompat
@@ -71,8 +75,8 @@ import com.nextcloud.talk.receivers.MarkAsReadReceiver
 import com.nextcloud.talk.receivers.ShareRecordingToChatReceiver
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.cancelAllNotificationsForAccount
 import com.nextcloud.talk.utils.NotificationUtils.cancelNotification
@@ -110,13 +114,13 @@ import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import java.security.PrivateKey
 import java.util.concurrent.TimeUnit
-import java.util.function.Consumer
 import java.util.zip.CRC32
 import javax.crypto.BadPaddingException
 import javax.crypto.Cipher
 import javax.crypto.NoSuchPaddingException
 import javax.inject.Inject
 
+@Suppress("TooManyFunctions", "LargeClass", "CyclomaticComplexMethod")
 @AutoInjector(NextcloudTalkApplication::class)
 class NotificationWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
 
@@ -700,17 +704,26 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val systemNotificationId: Int =
             activeStatusBarNotification?.id ?: calculateCRC32(System.currentTimeMillis().toString()).toInt()
 
-        if (TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) {
+        if ((TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) && pushMessage.notificationUser != null) {
             notificationBuilder.setOnlyAlertOnce(false)
-            if (pushMessage.notificationUser != null) {
-                if (imagePreviewUrl != null) {
-                    styleImageNotification(notificationBuilder)
-                } else {
-                    styleChatNotification(notificationBuilder, activeStatusBarNotification)
-                }
-                addReplyAction(notificationBuilder, systemNotificationId)
-                addMarkAsReadAction(notificationBuilder, systemNotificationId)
+            val senderAvatar = loadSenderAvatar(pushMessage.notificationUser)
+            val imageUri = imagePreviewUrl?.let { loadImageBitmapSync(it) }?.let {
+                NotificationUtils.saveBitmapToCache(
+                    context!!,
+                    it,
+                    "notification_preview_${pushMessage.id}.png"
+                )
             }
+
+            styleConversationNotification(
+                notificationBuilder,
+                activeStatusBarNotification,
+                senderAvatar,
+                imageUri
+            )
+            addReplyAction(notificationBuilder, systemNotificationId)
+            addMarkAsReadAction(notificationBuilder, systemNotificationId)
+            pushConversationShortcut(notificationBuilder, senderAvatar)
         }
 
         if (TYPE_RECORDING == pushMessage.type && ncNotification != null) {
@@ -811,17 +824,78 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return crc32.value
     }
 
-    private fun styleImageNotification(notificationBuilder: NotificationCompat.Builder) {
-        val bitmap = loadImageBitmapSync(imagePreviewUrl!!)
-        if (bitmap != null) {
-            notificationBuilder
-                .setLargeIcon(bitmap)
-                .setStyle(
-                    NotificationCompat.BigPictureStyle()
-                        .bigPicture(bitmap)
-                        .bigLargeIcon(null as Bitmap?)
-                )
+    private fun styleConversationNotification(
+        notificationBuilder: NotificationCompat.Builder,
+        activeStatusBarNotification: StatusBarNotification?,
+        senderAvatar: Bitmap?,
+        imageUri: Uri?
+    ) {
+        val notificationUser = pushMessage.notificationUser ?: return
+
+        val userType = notificationUser.type
+        var style: NotificationCompat.MessagingStyle? = null
+        if (activeStatusBarNotification != null) {
+            style = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(
+                activeStatusBarNotification.notification
+            )
         }
+        val personBuilder = Person.Builder()
+            .setKey(user.id.toString() + "@" + notificationUser.id)
+            .setName(EmojiCompat.get().process(notificationUser.name!!))
+            .setBot("bot" == userType)
+
+        if (senderAvatar != null) {
+            personBuilder.setIcon(IconCompat.createWithBitmap(senderAvatar))
+            notificationBuilder.setLargeIcon(senderAvatar)
+        }
+
+        val deviceUser = Person.Builder()
+            .setKey(user.id.toString() + "@" + user.userId)
+            .setName(user.displayName ?: user.userId ?: "You")
+            .build()
+
+        val sender = personBuilder.build()
+        val newStyle = NotificationCompat.MessagingStyle(deviceUser)
+        newStyle.conversationTitle = pushMessage.subject.ifEmpty { sender.name }
+        newStyle.isGroupConversation = "one2one" != conversationType
+        style?.messages?.forEach { message ->
+            newStyle.addMessage(
+                NotificationCompat.MessagingStyle.Message(
+                    message.text,
+                    message.timestamp,
+                    message.person
+                )
+            )
+        }
+
+        val message = NotificationCompat.MessagingStyle.Message(
+            pushMessage.text,
+            pushMessage.timestamp,
+            sender
+        )
+        if (imageUri != null) {
+            message.setData(imageMimeType ?: "image/*", imageUri)
+        }
+        newStyle.addMessage(message)
+        notificationBuilder.setStyle(newStyle)
+    }
+
+    private fun loadSenderAvatar(notificationUser: NotificationUser?): Bitmap? {
+        val userType = notificationUser?.type
+        if (userType != "user" && userType != "guest") return null
+
+        val baseUrl = user.baseUrl
+        val avatarUrl = if ("user" == userType) {
+            ApiUtils.getUrlForAvatar(
+                baseUrl!!,
+                notificationUser.id,
+                false,
+                darkMode = DisplayUtils.isDarkModeOn(context!!)
+            )
+        } else {
+            ApiUtils.getUrlForGuestAvatar(baseUrl!!, notificationUser.name, false)
+        }
+        return NotificationUtils.loadAvatarBitmapSync(avatarUrl, context!!)
     }
 
     private fun loadImageBitmapSync(imageUrl: String): Bitmap? {
@@ -839,42 +913,43 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return bitmap
     }
 
-    private fun styleChatNotification(
-        notificationBuilder: NotificationCompat.Builder,
-        activeStatusBarNotification: StatusBarNotification?
-    ) {
+    private fun pushConversationShortcut(notificationBuilder: NotificationCompat.Builder, avatarBitmap: Bitmap?) {
         val notificationUser = pushMessage.notificationUser ?: return
+        val roomToken = pushMessage.id ?: return
 
-        val userType = notificationUser.type
-        var style: NotificationCompat.MessagingStyle? = null
-        if (activeStatusBarNotification != null) {
-            style = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(
-                activeStatusBarNotification.notification
-            )
-        }
-        val person = Person.Builder()
+        val shortcutId = "conversation_${user.id}_$roomToken"
+
+        val personBuilder = Person.Builder()
             .setKey(user.id.toString() + "@" + notificationUser.id)
             .setName(EmojiCompat.get().process(notificationUser.name!!))
-            .setBot("bot" == userType)
 
-        if ("user" == userType || "guest" == userType) {
-            val baseUrl = user.baseUrl
-            val avatarUrl = if ("user" == userType) {
-                ApiUtils.getUrlForAvatar(
-                    baseUrl!!,
-                    notificationUser.id,
-                    false,
-                    darkMode = DisplayUtils.isDarkModeOn(context!!)
-                )
-            } else {
-                ApiUtils.getUrlForGuestAvatar(baseUrl!!, notificationUser.name, false)
-            }
-            person.setIcon(loadAvatarSync(avatarUrl, context!!))
+        if (avatarBitmap != null) {
+            personBuilder.setIcon(IconCompat.createWithBitmap(avatarBitmap))
         }
-        notificationBuilder.setStyle(getStyle(person.build(), style))
+
+        val intent = Intent(context, MainActivity::class.java).apply {
+            action = Intent.ACTION_VIEW
+            putExtra(KEY_ROOM_TOKEN, roomToken)
+            putExtra(KEY_INTERNAL_USER_ID, user.id)
+        }
+
+        val shortcut = ShortcutInfoCompat.Builder(context!!, shortcutId)
+            .setShortLabel(pushMessage.subject.ifEmpty { notificationUser.name ?: "Chat" })
+            .setLongLived(true)
+            .setIntent(intent)
+            .setPerson(personBuilder.build())
+            .build()
+
+        ShortcutManagerCompat.pushDynamicShortcut(context!!, shortcut)
+        notificationBuilder.setShortcutId(shortcutId)
     }
 
-    private fun buildIntentForAction(cls: Class<*>, systemNotificationId: Int, messageId: Int): PendingIntent {
+    private fun buildIntentForAction(
+        cls: Class<*>,
+        systemNotificationId: Int,
+        messageId: Int,
+        mutable: Boolean = false
+    ): PendingIntent {
         val actualIntent = Intent(context, cls)
 
         // NOTE - systemNotificationId is an internal ID used on the device only.
@@ -885,7 +960,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         actualIntent.putExtra(KEY_MESSAGE_ID, messageId)
 
         val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            val mutabilityFlag = if (mutable) PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_IMMUTABLE
+            mutabilityFlag or PendingIntent.FLAG_UPDATE_CURRENT
         } else {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
@@ -904,7 +980,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             val pendingIntent = buildIntentForAction(
                 MarkAsReadReceiver::class.java,
                 systemNotificationId,
-                messageId
+                messageId,
+                mutable = false
             )
             val markAsReadAction = NotificationCompat.Action.Builder(
                 R.drawable.ic_mark_chat_read_24px,
@@ -927,7 +1004,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val replyPendingIntent = buildIntentForAction(
             DirectReplyReceiver::class.java,
             systemNotificationId,
-            0
+            0,
+            mutable = true
         )
         val replyAction = NotificationCompat.Action.Builder(R.drawable.ic_reply, replyLabel, replyPendingIntent)
             .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)
@@ -958,7 +1036,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         dismissIntent.putExtra(KEY_DISMISS_RECORDING_URL, dismissRecordingUrl)
 
         val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         } else {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
@@ -992,7 +1070,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         shareRecordingIntent.putExtra(KEY_ROOM_TOKEN, pushMessage.id)
 
         val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         } else {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
@@ -1012,25 +1090,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setAllowGeneratedReplies(true)
             .build()
         notificationBuilder.addAction(shareRecordingAction)
-    }
-
-    private fun getStyle(person: Person, style: NotificationCompat.MessagingStyle?): NotificationCompat.MessagingStyle {
-        val newStyle = NotificationCompat.MessagingStyle(person)
-        newStyle.conversationTitle = pushMessage.subject
-        newStyle.isGroupConversation = "one2one" != conversationType
-        style?.messages?.forEach(
-            Consumer { message: NotificationCompat.MessagingStyle.Message ->
-                newStyle.addMessage(
-                    NotificationCompat.MessagingStyle.Message(
-                        message.text,
-                        message.timestamp,
-                        message.person
-                    )
-                )
-            }
-        )
-        newStyle.addMessage(pushMessage.text, pushMessage.timestamp, person)
-        return newStyle
     }
 
     @Throws(NumberFormatException::class)
@@ -1210,7 +1269,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         // See https://github.com/nextcloud/talk-android/issues/2111
         val requestCode = System.currentTimeMillis().toInt()
         val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         } else {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
