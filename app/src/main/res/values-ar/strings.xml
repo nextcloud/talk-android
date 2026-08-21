@@ -573,7 +573,6 @@
     <string name="set_avatar_from_camera">التقاط صورة الملف الشخصي الرمزية من الكاميرا</string>
     <string name="set_status_message">تعيين رسالة الحالة</string>
     <string name="share">شارِك</string>
-    <string name="share_link_to_conversation">الانضمام إلى المحادثة %1$s في %2$s</string>
     <string name="shared_items_audio">الصوت</string>
     <string name="shared_items_file">ملف</string>
     <string name="shared_items_media">وسائط</string>
@@ -591,14 +590,7 @@
     <string name="switch_to_breakout_room">تبديل إلى غرفة جانبية</string>
     <string name="switch_to_main_room">تبديل إلى الغرفة الرئيسية</string>
     <string name="take_photo">خُذ صورة</string>
-    <string name="take_photo_error_deleting_picture">خطأ في أخذ الصورة</string>
     <string name="take_photo_permission">لا يمكن أخذ صورة من دون تصريح</string>
-    <string name="take_photo_retake_photo">أعد أخذ الصورة</string>
-    <string name="take_photo_send">إرسال</string>
-    <string name="take_photo_switch_camera">تبديل الكاميرا</string>
-    <string name="take_photo_toggle_crop">قصقصة الصورة</string>
-    <string name="take_photo_toggle_lowres">تصغير حجم الصورة</string>
-    <string name="take_photo_toggle_torch">فتح/قفل الإنارة</string>
     <string name="thirtyMinutes">30 دقيقة</string>
     <string name="thisWeek">هذا الأسبوع</string>
     <string name="this_is_a_test_message">هذه رسالة اختبار</string>

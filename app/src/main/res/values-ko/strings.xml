@@ -482,14 +482,7 @@
     <string name="switch_to_breakout_room">소회의실로 전환</string>
     <string name="switch_to_main_room">주 대화방으로 전환</string>
     <string name="take_photo">사진 찍기</string>
-    <string name="take_photo_error_deleting_picture">사진 촬영 오류</string>
     <string name="take_photo_permission">허가 없이 사진을 찍을 수 없습니다.</string>
-    <string name="take_photo_retake_photo">사진을 다시 찍다</string>
-    <string name="take_photo_send">보내기</string>
-    <string name="take_photo_switch_camera">카메라 전환</string>
-    <string name="take_photo_toggle_crop">사진 자르기</string>
-    <string name="take_photo_toggle_lowres">이미지 크기를 줄이다</string>
-    <string name="take_photo_toggle_torch">토치 전환</string>
     <string name="thirtyMinutes">30분</string>
     <string name="thisWeek">이번 주</string>
     <string name="this_weekend">이번 주말</string>

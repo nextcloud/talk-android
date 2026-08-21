@@ -552,7 +552,6 @@
     <string name="set_avatar_from_camera">Angi avatar fra kamera</string>
     <string name="set_status_message">Velg statusmelding</string>
     <string name="share">Del</string>
-    <string name="share_link_to_conversation">Bli med samtale %1$s på %2$s</string>
     <string name="shared_items_audio">Lyd</string>
     <string name="shared_items_file">Fil</string>
     <string name="shared_items_media">Media</string>
@@ -569,14 +568,7 @@
     <string name="switch_to_breakout_room">Bytt til grupperom</string>
     <string name="switch_to_main_room">Bytt til hovedrom</string>
     <string name="take_photo">Ta et bilde</string>
-    <string name="take_photo_error_deleting_picture">Feil ved å ta bilde</string>
     <string name="take_photo_permission">Å ta et bilde er ikke mulig uten tillatelser</string>
-    <string name="take_photo_retake_photo">Ta bilde på nytt</string>
-    <string name="take_photo_send">Send</string>
-    <string name="take_photo_switch_camera">Bytt kamera</string>
-    <string name="take_photo_toggle_crop">Beskjær bilde</string>
-    <string name="take_photo_toggle_lowres">Reduser bildestørrelse</string>
-    <string name="take_photo_toggle_torch">Lommelykt av/på</string>
     <string name="thirtyMinutes">30 minutter</string>
     <string name="thisWeek">Denne uken</string>
     <string name="this_is_a_test_message">Dette er en testmelding</string>

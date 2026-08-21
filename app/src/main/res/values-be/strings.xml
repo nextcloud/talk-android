@@ -645,7 +645,6 @@
     <string name="set_avatar_from_camera">Задаць аватар з камеры</string>
     <string name="set_status_message">Задаць</string>
     <string name="share">Абагуліць</string>
-    <string name="share_link_to_conversation">Далучайцеся да размовы %1$s у %2$s</string>
     <string name="shared_items_audio">Аўдыя</string>
     <string name="shared_items_file">Файл</string>
     <string name="shared_items_media">Медыя</string>
@@ -664,14 +663,7 @@
     <string name="switch_to_breakout_room">Пераключыцца на групавы пакой</string>
     <string name="switch_to_main_room">Пераключыцца на галоўны пакой</string>
     <string name="take_photo">Зрабіць фота</string>
-    <string name="take_photo_error_deleting_picture">Памылка пры здымку</string>
     <string name="take_photo_permission">Немагчыма зрабіць фота без дазволаў</string>
-    <string name="take_photo_retake_photo">Зрабіць фота паўторна</string>
-    <string name="take_photo_send">Адправіць</string>
-    <string name="take_photo_switch_camera">Пераключыць камеру</string>
-    <string name="take_photo_toggle_crop">Абрэзаць фота</string>
-    <string name="take_photo_toggle_lowres">Зменшыць памер відарыса</string>
-    <string name="take_photo_toggle_torch">Уключыць/выключыць ліхтарык</string>
     <string name="thirtyMinutes">30 хвілін</string>
     <string name="thisWeek">На гэтым тыдні</string>
     <string name="this_is_a_test_message">Гэта тэставае паведамленне</string>

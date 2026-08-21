@@ -567,7 +567,6 @@
     <string name="set_avatar_from_camera">Estableix l\'avatar des de la càmera</string>
     <string name="set_status_message">Estableix un missatge d\'estat</string>
     <string name="share">Compartir</string>
-    <string name="share_link_to_conversation">Uneix-te a la conversa %1$s a %2$s</string>
     <string name="shared_items_audio">Àudio</string>
     <string name="shared_items_file">Fitxer</string>
     <string name="shared_items_media">Multimèdia</string>
@@ -585,14 +584,7 @@
     <string name="switch_to_breakout_room">Canvia a la sala de descans</string>
     <string name="switch_to_main_room">Canvia a la sala principal</string>
     <string name="take_photo">Prendre una fotografia</string>
-    <string name="take_photo_error_deleting_picture">S\'ha produït un error en fer la foto</string>
     <string name="take_photo_permission">No es pot fer una fotografia sense permisos</string>
-    <string name="take_photo_retake_photo">Torna a fer la fotografia</string>
-    <string name="take_photo_send">Envia</string>
-    <string name="take_photo_switch_camera">Canviar la càmera</string>
-    <string name="take_photo_toggle_crop">Retalla la fotografia</string>
-    <string name="take_photo_toggle_lowres">Redueix la mida de la imatge</string>
-    <string name="take_photo_toggle_torch">Commuta la llanterna</string>
     <string name="thirtyMinutes">30 minuts</string>
     <string name="thisWeek">Aquesta setmana</string>
     <string name="this_is_a_test_message">Això és un missatge de prova</string>

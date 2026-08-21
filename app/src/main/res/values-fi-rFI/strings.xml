@@ -416,13 +416,7 @@
     <string name="startCallForbidden">Sinulla ei ole oikeutta aloittaa puhelua</string>
     <string name="status_message">Tilaviesti</string>
     <string name="take_photo">Ota kuva</string>
-    <string name="take_photo_error_deleting_picture">Virhe kuvaa ottaessa</string>
     <string name="take_photo_permission">Kuvan ottaminen ei ole mahdollista ilman käyttöoikeuksia</string>
-    <string name="take_photo_retake_photo">Ota kuva uudelleen</string>
-    <string name="take_photo_send">Lähetä</string>
-    <string name="take_photo_switch_camera">Vaihda kamera</string>
-    <string name="take_photo_toggle_crop">Rajaa kuvaa</string>
-    <string name="take_photo_toggle_lowres">Pienennä kuvan kokoa</string>
     <string name="thirtyMinutes">30 minuuttia</string>
     <string name="thisWeek">Tämä viikko</string>
     <string name="this_weekend">Tämä viikonloppu</string>

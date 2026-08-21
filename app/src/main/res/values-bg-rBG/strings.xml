@@ -487,14 +487,7 @@
     <string name="switch_to_breakout_room">Превключване към стая за отделно събрание</string>
     <string name="switch_to_main_room">Превключване към основна стая</string>
     <string name="take_photo">Направете снимка</string>
-    <string name="take_photo_error_deleting_picture">Грешка при снимане</string>
     <string name="take_photo_permission">Правенето на снимка не е възможно без права</string>
-    <string name="take_photo_retake_photo">Направете отново снимка</string>
-    <string name="take_photo_send">Изпращане</string>
-    <string name="take_photo_switch_camera">Превключване на камера</string>
-    <string name="take_photo_toggle_crop">Изрязване на снимка</string>
-    <string name="take_photo_toggle_lowres">Намаляване на размера на изображение</string>
-    <string name="take_photo_toggle_torch">Превключване на фенерче</string>
     <string name="thirtyMinutes">30 минути</string>
     <string name="thisWeek">Тази седмица</string>
     <string name="today">Днес</string>

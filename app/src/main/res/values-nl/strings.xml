@@ -635,7 +635,6 @@ Kies er eentje van een provider.</string>
     <string name="set_avatar_from_camera">Maak avatar met camera</string>
     <string name="set_status_message">Statusbericht instellen</string>
     <string name="share">Delen</string>
-    <string name="share_link_to_conversation">Neem deel aan gesprek %1$s op %2$s</string>
     <string name="shared_items_audio">Geluid</string>
     <string name="shared_items_file">Bestand</string>
     <string name="shared_items_media">Media</string>
@@ -654,14 +653,7 @@ Kies er eentje van een provider.</string>
     <string name="switch_to_breakout_room">Schakel naar aparte ruimte</string>
     <string name="switch_to_main_room">Schakel naar hoofdruimte</string>
     <string name="take_photo">Neem een foto</string>
-    <string name="take_photo_error_deleting_picture">Fout bij het nemen van een foto</string>
     <string name="take_photo_permission">Een foto nemen is niet mogelijk zonder machtiging</string>
-    <string name="take_photo_retake_photo">Herneem foto</string>
-    <string name="take_photo_send">Verzenden</string>
-    <string name="take_photo_switch_camera">Andere camera</string>
-    <string name="take_photo_toggle_crop">Crop foto</string>
-    <string name="take_photo_toggle_lowres">Reduceer foto resolutie</string>
-    <string name="take_photo_toggle_torch">Schakel zaklamp</string>
     <string name="thirtyMinutes">30 minuten</string>
     <string name="thisWeek">Deze week</string>
     <string name="this_is_a_test_message">Dit is een testbericht</string>

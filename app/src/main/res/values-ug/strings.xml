@@ -618,7 +618,6 @@
     <string name="set_avatar_from_camera">كامېرادىن باش سۈرىتىنى تەڭشەڭ</string>
     <string name="set_status_message">ھالەت ئۇچۇرىنى بەلگىلەڭ</string>
     <string name="share">ھەمبەھىرلەش</string>
-    <string name="share_link_to_conversation">%2$s دىكى سۆھبەتكە قوشۇلۇڭ%1$s</string>
     <string name="shared_items_audio">Audio</string>
     <string name="shared_items_file">ھۆججەت</string>
     <string name="shared_items_media">كۆپ-ۋاستە</string>
@@ -637,14 +636,7 @@
     <string name="switch_to_breakout_room">بۆسۈش ئۆيىگە ئالماشتۇرۇڭ</string>
     <string name="switch_to_main_room">ئاساسلىق ئۆيگە ئالماشتۇرۇڭ</string>
     <string name="take_photo">رەسىمگە تارتىڭ</string>
-    <string name="take_photo_error_deleting_picture">رەسىمگە تارتىشتا خاتالىق</string>
     <string name="take_photo_permission">رۇخسەتسىز رەسىمگە تارتىش مۇمكىن ئەمەس</string>
-    <string name="take_photo_retake_photo">قايتا سۈرەتكە تارتىڭ</string>
-    <string name="take_photo_send">ئەۋەتىڭ</string>
-    <string name="take_photo_switch_camera">كامېرا ئالماشتۇرۇش</string>
-    <string name="take_photo_toggle_crop">رەسىمنى كەس</string>
-    <string name="take_photo_toggle_lowres">رەسىمنىڭ چوڭ-كىچىكلىكىنى ئازايتىش</string>
-    <string name="take_photo_toggle_torch">مەشئەلنى ئالماشتۇرۇڭ</string>
     <string name="thirtyMinutes">30 مىنۇت</string>
     <string name="thisWeek">بۇ ھەپتە</string>
     <string name="this_is_a_test_message">بۇ بىر سىناق ئۇچۇرى</string>

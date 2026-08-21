@@ -543,7 +543,6 @@
     <string name="set_avatar_from_camera">カメラからアバターを設定する</string>
     <string name="set_status_message">メッセージを設定</string>
     <string name="share">共有</string>
-    <string name="share_link_to_conversation">%2$sで会話%1$sに参加する</string>
     <string name="shared_items_audio">オーディオ</string>
     <string name="shared_items_file">ファイル</string>
     <string name="shared_items_media">メディア</string>
@@ -559,14 +558,7 @@
     <string name="switch_to_breakout_room">ブレイクアウトルームに切り替える</string>
     <string name="switch_to_main_room">メインルームに切り替える</string>
     <string name="take_photo">写真を撮る</string>
-    <string name="take_photo_error_deleting_picture">写真の撮影エラー</string>
     <string name="take_photo_permission">写真の撮影は権限なしには行えません</string>
-    <string name="take_photo_retake_photo">再撮影</string>
-    <string name="take_photo_send">送信</string>
-    <string name="take_photo_switch_camera">カメラ切替</string>
-    <string name="take_photo_toggle_crop">写真をクロップ</string>
-    <string name="take_photo_toggle_lowres">画像サイズを削減</string>
-    <string name="take_photo_toggle_torch">フラッシュを切替</string>
     <string name="thirtyMinutes">30分</string>
     <string name="thisWeek">今週</string>
     <string name="this_is_a_test_message">これはテストメッセージです</string>

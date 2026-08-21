@@ -702,7 +702,6 @@
     <string name="set_avatar_from_camera">Ställ in avatar från kameran</string>
     <string name="set_status_message">Sätt statusmeddelande</string>
     <string name="share">Dela</string>
-    <string name="share_link_to_conversation">Gå med i konversationen %1$s %2$s</string>
     <string name="shared_items_audio">Ljud</string>
     <string name="shared_items_file">Fil</string>
     <string name="shared_items_media">Media</string>
@@ -722,14 +721,7 @@
     <string name="switch_to_breakout_room">Byt till grupprum</string>
     <string name="switch_to_main_room">Byt till huvudrum</string>
     <string name="take_photo">Ta en bild</string>
-    <string name="take_photo_error_deleting_picture">Det gick inte att ta bilden</string>
     <string name="take_photo_permission">Det är inte möjligt att ta ett foto utan behörighet</string>
-    <string name="take_photo_retake_photo">Ta om foto</string>
-    <string name="take_photo_send">Skicka</string>
-    <string name="take_photo_switch_camera">Växla kamera</string>
-    <string name="take_photo_toggle_crop">Beskär foto</string>
-    <string name="take_photo_toggle_lowres">Minska bildstorlek</string>
-    <string name="take_photo_toggle_torch">Starta lampa</string>
     <string name="thirtyMinutes">30 minuter</string>
     <string name="thisWeek">Denna vecka</string>
     <string name="this_is_a_test_message">Detta är ett testmeddelande</string>

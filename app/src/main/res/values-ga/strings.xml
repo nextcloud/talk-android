@@ -718,7 +718,6 @@
     <string name="set_avatar_from_camera">Íosluchtaigh avatar ó ceamara</string>
     <string name="set_status_message">Socraigh teachtaireacht stádais</string>
     <string name="share">Comhroinn</string>
-    <string name="share_link_to_conversation">Glac páirt i gcomhrá %1$s ag %2$s</string>
     <string name="shared_items_audio">Fuaime</string>
     <string name="shared_items_file">Comhad</string>
     <string name="shared_items_media">Meáin</string>
@@ -738,14 +737,7 @@
     <string name="switch_to_breakout_room">Athraigh go seomra ar leithligh</string>
     <string name="switch_to_main_room">Téigh go dtí an príomhsheomra</string>
     <string name="take_photo">Glac grianghraf</string>
-    <string name="take_photo_error_deleting_picture">Earráid agus pictiúr á thógáil</string>
     <string name="take_photo_permission">Ní féidir grianghraf a ghlacadh gan ceadanna</string>
-    <string name="take_photo_retake_photo">Glac grianghraf arís</string>
-    <string name="take_photo_send">Seol</string>
-    <string name="take_photo_switch_camera">Athraigh ceamara</string>
-    <string name="take_photo_toggle_crop">Grianghraf barr</string>
-    <string name="take_photo_toggle_lowres">Laghdaigh méid na híomhá</string>
-    <string name="take_photo_toggle_torch">Scoránaigh tóirse</string>
     <string name="thirtyMinutes">30 nóiméad</string>
     <string name="thisWeek">An tseachtain seo</string>
     <string name="this_is_a_test_message">Is teachtaireacht tástála é seo</string>

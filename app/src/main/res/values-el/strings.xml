@@ -467,9 +467,6 @@
     <string name="start_thread">Δημιουργία συζήτησης</string>
     <string name="status_message">Μήνυμα κατάστασης</string>
     <string name="take_photo">Βγάλε μια φωτογραφία</string>
-    <string name="take_photo_send">Αποστολή</string>
-    <string name="take_photo_switch_camera">Εναλλαγή κάμερας</string>
-    <string name="take_photo_toggle_torch">Εναλλαγή φακού</string>
     <string name="thirtyMinutes">30 λεπτά</string>
     <string name="thisWeek">Αυτή την εβδομάδα</string>
     <string name="this_weekend">Αυτό το Σαββατοκύριακο</string>
