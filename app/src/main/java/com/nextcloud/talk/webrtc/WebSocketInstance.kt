@@ -43,6 +43,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.IOException
 import java.lang.Thread.sleep
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -80,6 +81,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     private var messagesQueue: MutableList<String> = ArrayList()
     private val signalingMessageReceiver = ExternalSignalingMessageReceiver()
     val signalingMessageSender = ExternalSignalingMessageSender()
+    private val signalingHttpClient: OkHttpClient by lazy { createSignalingHttpClient(okHttpClient!!) }
 
     init {
         sharedApplication!!.componentApplication.inject(this)
@@ -140,7 +142,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         reconnecting = true
         Log.d(TAG, "restartWebSocket: $connectionUrl")
         val request = Request.Builder().url(connectionUrl).build()
-        okHttpClient!!.newWebSocket(request, this)
+        signalingHttpClient.newWebSocket(request, this)
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
@@ -524,5 +526,13 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         private const val TAG = "WebSocketInstance"
         private const val NORMAL_CLOSURE = 1000
         private const val ONE_SECOND: Long = 1000
+        private const val PING_INTERVAL_SECONDS: Long = 10
+
+        // Dedicated client with pings, so half-open WebSocket connections
+        // (e.g. after a WiFi to cellular switch without TCP reset) fail and trigger the reconnect path.
+        internal fun createSignalingHttpClient(baseClient: OkHttpClient): OkHttpClient =
+            baseClient.newBuilder()
+                .pingInterval(PING_INTERVAL_SECONDS, TimeUnit.SECONDS)
+                .build()
     }
 }
