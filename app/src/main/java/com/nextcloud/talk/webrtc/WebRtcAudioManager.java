@@ -24,7 +24,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.media.AudioAttributes;
 import android.media.AudioDeviceInfo;
+import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.util.Log;
 
@@ -65,6 +67,8 @@ public class WebRtcAudioManager {
 
     private final BroadcastReceiver wiredHeadsetReceiver;
     private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener;
+    private AudioFocusRequest audioFocusRequest;
+    private final AudioFocusState audioFocusState = new AudioFocusState();
 
     private final PowerManagerUtils powerManagerUtils;
 
@@ -157,50 +161,11 @@ public class WebRtcAudioManager {
         savedIsMicrophoneMute = audioManager.isMicrophoneMute();
         hasWiredHeadset = hasWiredHeadset();
 
-        // Create an AudioManager.OnAudioFocusChangeListener instance.
-        audioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
-            // Called on the listener to notify if the audio focus for this listener has been changed.
-            // The |focusChange| value indicates whether the focus was gained, whether the focus was lost,
-            // and whether that loss is transient, or whether the new focus holder will hold it for an
-            // unknown amount of time.
-            // TODO(henrika): possibly extend support of handling audio-focus changes. Only contains
-            // logging for now.
-            @Override
-            public void onAudioFocusChange(int focusChange) {
-                String typeOfChange = "AUDIOFOCUS_NOT_DEFINED";
-                switch (focusChange) {
-                    case AudioManager.AUDIOFOCUS_GAIN:
-                        typeOfChange = "AUDIOFOCUS_GAIN";
-                        break;
-                    case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT:
-                        typeOfChange = "AUDIOFOCUS_GAIN_TRANSIENT";
-                        break;
-                    case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE:
-                        typeOfChange = "AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE";
-                        break;
-                    case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK:
-                        typeOfChange = "AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK";
-                        break;
-                    case AudioManager.AUDIOFOCUS_LOSS:
-                        typeOfChange = "AUDIOFOCUS_LOSS";
-                        break;
-                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                        typeOfChange = "AUDIOFOCUS_LOSS_TRANSIENT";
-                        break;
-                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                        typeOfChange = "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK";
-                        break;
-                    default:
-                        typeOfChange = "AUDIOFOCUS_INVALID";
-                        break;
-                }
-                Log.d(TAG, "onAudioFocusChange: " + typeOfChange);
-            }
-        };
+        audioFocusChangeListener = this::onAudioFocusChange;
 
-        // Request audio playout focus (without ducking) and install listener for changes in focus.
-        int result = audioManager.requestAudioFocus(audioFocusChangeListener,
-                                                    AudioManager.STREAM_VOICE_CALL, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+        // Request audio focus for a long-running call (delivered on the main thread).
+        audioFocusRequest = buildCallAudioFocusRequest(audioFocusChangeListener);
+        int result = audioManager.requestAudioFocus(audioFocusRequest);
         if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             Log.d(TAG, "Audio focus request granted for VOICE_CALL streams");
         } else {
@@ -236,6 +201,58 @@ public class WebRtcAudioManager {
         Log.d(TAG, "AudioManager started");
     }
 
+    /**
+     * Handles audio focus changes (called on the main thread). Re-asserts the communication mode and audio route
+     * when focus returns after a transient loss, see {@link AudioFocusState}.
+     */
+    void onAudioFocusChange(int focusChange) {
+        if (audioFocusState.handle(focusChange) && amState == AudioManagerState.RUNNING) {
+            audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+            updateAudioDeviceState();
+        }
+        Log.d(TAG, "onAudioFocusChange: " + focusChange);
+    }
+
+    static AudioFocusRequest buildCallAudioFocusRequest(AudioManager.OnAudioFocusChangeListener listener) {
+        return new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+            .setAudioAttributes(new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .build())
+            .setAcceptsDelayedFocusGain(true)
+            .setWillPauseWhenDucked(false)
+            .setOnAudioFocusChangeListener(listener)
+            .build();
+    }
+
+    /**
+     * Tracks audio focus losses during a call.
+     *
+     * A transient focus holder such as the telephony stack also switches the global audio mode and restores its own
+     * saved mode on release, clobbering MODE_IN_COMMUNICATION. "handle" reports whether the communication mode must
+     * be re-asserted for a focus change, so the call does not continue without hardware echo cancellation and proper
+     * VoIP routing after an interruption.
+     */
+    static class AudioFocusState {
+        private boolean transientLoss = false;
+
+        boolean handle(int focusChange) {
+            switch (focusChange) {
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    transientLoss = true;
+                    return false;
+                case AudioManager.AUDIOFOCUS_GAIN:
+                    boolean restore = transientLoss;
+                    transientLoss = false;
+                    return restore;
+                default:
+                    transientLoss = false;
+                    return false;
+            }
+        }
+    }
+
     @SuppressLint("WrongConstant")
     public void stop() {
         Log.d(TAG, "stop");
@@ -258,7 +275,10 @@ public class WebRtcAudioManager {
         audioManager.setMode(savedAudioMode);
 
         // Abandon audio focus. Gives the previous focus owner, if any, focus.
-        audioManager.abandonAudioFocus(audioFocusChangeListener);
+        if (audioFocusRequest != null) {
+            audioManager.abandonAudioFocusRequest(audioFocusRequest);
+            audioFocusRequest = null;
+        }
         audioFocusChangeListener = null;
         Log.d(TAG, "Abandoned audio focus for VOICE_CALL streams");
 
