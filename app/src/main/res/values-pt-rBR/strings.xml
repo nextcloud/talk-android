@@ -438,6 +438,7 @@
     <string name="nc_push_notification_fetch_error">Desculpe, algo deu errado, não foi possível obter a mensagem push de teste</string>
     <string name="nc_push_notification_message">A notificação push foi enviada com êxito. Agora você deve receber uma notificação neste dispositivo com o título \'Testando notificações push\'</string>
     <string name="nc_remind">Lembre-me mais tarde</string>
+    <string name="nc_remote_wipe_logged_out">As credenciais desta conta não eram mais válidas</string>
     <string name="nc_remove_color">Remover cor</string>
     <string name="nc_remove_file">Remover arquivo</string>
     <string name="nc_remove_from_favorites">Remover dos favoritos</string>
@@ -520,7 +521,7 @@
     <string name="nc_settings_incognito_keyboard_title">Teclado incógnito</string>
     <string name="nc_settings_logs_subtitle">Exibir arquivos de registro locais</string>
     <string name="nc_settings_logs_title">Registros</string>
-    <string name="nc_settings_media_quality_title">Qualidade da mídia enviada</string>
+    <string name="nc_settings_media_quality_title">Qualidade da mídia transmitida</string>
     <string name="nc_settings_no_ringtone">Sem som</string>
     <string name="nc_settings_no_talk_installed">O aplicativo Talk não está instalado no servidor em que você tentou se autenticar</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notificações</string>

@@ -27,6 +27,7 @@
     <string name="battery_optimization_title">Paramètres pour la batterie</string>
     <string name="busy">Occupé</string>
     <string name="calendar">Agenda</string>
+    <string name="call_in_progress">Un appel est en cours</string>
     <string name="call_more_actions_dialog_headline">Options d\'appel avancées</string>
     <string name="call_running_since_one_hour">L\'appel est en cours depuis une heure.</string>
     <string name="call_without_notification">Appeler sans notification</string>
@@ -433,6 +434,7 @@
     <string name="nc_push_notification_fetch_error">Désolé, quelque chose s\'est mal passé, impossible de récupérer le message de test push</string>
     <string name="nc_push_notification_message">La notification push a été envoyée avec succès. Vous devriez maintenant recevoir une notification sur cet appareil intitulée « Test des notifications push ».</string>
     <string name="nc_remind">Rappelez-moi plus tard</string>
+    <string name="nc_remote_wipe_logged_out">Les informations d\'identification de ce compte ne sont plus valides</string>
     <string name="nc_remove_color">Retirer la couleur</string>
     <string name="nc_remove_file">Retirer le fichier</string>
     <string name="nc_remove_from_favorites">Retirer des favoris</string>
