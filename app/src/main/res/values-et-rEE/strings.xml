@@ -27,6 +27,7 @@
     <string name="battery_optimization_title">Akuseadistused</string>
     <string name="busy">Hõivatud</string>
     <string name="calendar">Kalender</string>
+    <string name="call_in_progress">Kõne on pooleli</string>
     <string name="call_more_actions_dialog_headline">Kõne lisavalikud</string>
     <string name="call_running_since_one_hour">Kõne on kestnud üle tunni.</string>
     <string name="call_without_notification">Kõne ilma teavituseta</string>
@@ -437,6 +438,7 @@
     <string name="nc_push_notification_fetch_error">Vabandust, midagi läks valesti, tõuketeavituse testsõnumit ei õnnestu laadida</string>
     <string name="nc_push_notification_message">Tõuketeavituse saatmine õnnestus. Peaksid selles seadmes nüüd saama tõuketeavituse pealkirjaga „Tõuketeavituse test“</string>
     <string name="nc_remind">Tuleta mulle hiljem meelde</string>
+    <string name="nc_remote_wipe_logged_out">Selle kasutajakonto kasutajanimi/salasõna pole enam kehtivad</string>
     <string name="nc_remove_color">Eemalda värv</string>
     <string name="nc_remove_file">Eemalda fail</string>
     <string name="nc_remove_from_favorites">Eemalda lemmikutest</string>

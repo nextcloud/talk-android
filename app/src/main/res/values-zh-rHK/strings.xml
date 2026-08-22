@@ -438,6 +438,7 @@
     <string name="nc_push_notification_fetch_error">抱歉，出現問題，無法獲取測試推送訊息</string>
     <string name="nc_push_notification_message">推送通知已成功發送。您現在應該在此設備上收到標題為「測試推送通知」的通知</string>
     <string name="nc_remind">稍後提醒我</string>
+    <string name="nc_remote_wipe_logged_out">此帳戶的身份驗證不再有效</string>
     <string name="nc_remove_color">移除顏色</string>
     <string name="nc_remove_file">移除檔案</string>
     <string name="nc_remove_from_favorites">取消我的最愛</string>
