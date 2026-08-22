@@ -3028,14 +3028,23 @@ class CallActivity : CallBaseActivity() {
         @SuppressLint("ClickableViewAccessibility")
         override fun onTouch(v: View, event: MotionEvent): Boolean {
             v.onTouchEvent(event)
-            if (event.action == MotionEvent.ACTION_UP && isPushToTalkActive) {
-                isPushToTalkActive = false
-                binding!!.microphoneButton.setImageResource(R.drawable.ic_mic_off_white_24px)
-                pulseAnimation!!.stop()
-                toggleMedia(false, false)
+            if (isPushToTalkRelease(event.action)) {
+                stopPushToTalk()
             }
             return true
         }
+    }
+
+    // ACTION_CANCEL must end push to talk just like ACTION_UP, otherwise the microphone stays enabled although
+    // the gesture was aborted (e.g. by a system gesture or the notification shade) and the button shows "muted".
+    private fun stopPushToTalk() {
+        if (!isPushToTalkActive) {
+            return
+        }
+        isPushToTalkActive = false
+        binding!!.microphoneButton.setImageResource(R.drawable.ic_mic_off_white_24px)
+        pulseAnimation!!.stop()
+        toggleMedia(false, false)
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -3224,6 +3233,9 @@ class CallActivity : CallBaseActivity() {
 
         private const val CALLING_TIMEOUT: Long = 45000
         private const val PULSE_ANIMATION_DURATION: Int = 310
+
+        internal fun isPushToTalkRelease(action: Int): Boolean =
+            action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL
 
         private const val DELAY_ON_ERROR_STOP_THRESHOLD: Int = 16
 
