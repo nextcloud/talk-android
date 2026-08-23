@@ -319,7 +319,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 Log.d(TAG, "Joining the room was rejected, the room session needs to be refreshed")
                 currentRoomToken = ""
                 currentNormalBackendSession = ""
-                eventBus!!.post(WebSocketCommunicationEvent("roomJoinFailed", null))
+                eventBus!!.post(WebSocketCommunicationEvent("roomJoinFailed", HashMap()))
             }
         }
     }
