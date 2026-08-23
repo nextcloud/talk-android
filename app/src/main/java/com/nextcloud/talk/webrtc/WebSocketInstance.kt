@@ -313,6 +313,13 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 restartWebSocket()
             } else if ("hello_expected" == message.code) {
                 restartWebSocket()
+            } else if ("no_such_room" == message.code) {
+                // The room session is stale (e.g. reaped by the server). Clear the cached join state so a retry
+                // actually sends, and let the call UI fetch a fresh room session via the joinRoom API.
+                Log.d(TAG, "Joining the room was rejected, the room session needs to be refreshed")
+                currentRoomToken = ""
+                currentNormalBackendSession = ""
+                eventBus!!.post(WebSocketCommunicationEvent("roomJoinFailed", null))
             }
         }
     }
