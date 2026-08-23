@@ -160,7 +160,7 @@ fun resolveMentionFallbackIcon(mention: MentionChipModel): Int =
         mention.type == "user-group" -> R.drawable.ic_circular_group_mentions
         mention.type == "circle" -> R.drawable.icon_circular_team
         mention.isSelfMention -> R.drawable.mention_chip
-        else -> R.drawable.accent_circle
+        else -> R.drawable.ic_circular_user
     }
 
 fun estimateMentionChipWidthInEm(label: String, fontSizeSp: Float): Float {
