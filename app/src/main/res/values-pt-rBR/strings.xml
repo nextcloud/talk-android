@@ -297,13 +297,13 @@
     <string name="nc_get_from_provider">Não tem servidor ainda?\nClique aqui para obter um</string>
     <string name="nc_get_source_code">Obtenha o código-fonte</string>
     <string name="nc_group">Grupo</string>
-    <string name="nc_guest">Convidado</string>
-    <string name="nc_guest_access">Acesso para convidados</string>
-    <string name="nc_guest_access_allow_failed">Não é possível ativar/desativar o acesso para convidados.</string>
-    <string name="nc_guest_access_allow_summary">Permitir que os convidados compartilhem um link público para participar desta conversa.</string>
-    <string name="nc_guest_access_allow_title">Permitir convidados</string>
+    <string name="nc_guest">Visitante</string>
+    <string name="nc_guest_access">Acesso para visitantes</string>
+    <string name="nc_guest_access_allow_failed">Não é possível ativar/desativar o acesso para visitantes.</string>
+    <string name="nc_guest_access_allow_summary">Permitir que os visitantes compartilhem um link público para participar desta conversa.</string>
+    <string name="nc_guest_access_allow_title">Permitir visitantes</string>
     <string name="nc_guest_access_password_dialog_hint">Insira uma senha </string>
-    <string name="nc_guest_access_password_dialog_title">Senha de acesso para convidados</string>
+    <string name="nc_guest_access_password_dialog_title">Senha de acesso para visitantes</string>
     <string name="nc_guest_access_password_failed">Erro durante a configuração/desativação da senha.</string>
     <string name="nc_guest_access_password_summary">Definir uma senha para restringir quem pode usar o link público.</string>
     <string name="nc_guest_access_password_title">Proteção por senha</string>
@@ -385,7 +385,7 @@
     <string name="nc_new_mention">Menções não lidas</string>
     <string name="nc_new_messages">Mensagens não lidas</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s não está disponível (não instalado ou restrito pelo administrador)</string>
-    <string name="nc_nick_guest">Convidado</string>
+    <string name="nc_nick_guest">Visitante</string>
     <string name="nc_no">Não</string>
     <string name="nc_no_account_for_server">Nenhuma conta encontrada neste servidor</string>
     <string name="nc_no_account_found">Conta não encontrada</string>
@@ -415,7 +415,7 @@
     <string name="nc_ok">OK</string>
     <string name="nc_ongoing_meeting">Reunião em andamento</string>
     <string name="nc_open_conversation_to_registered_users">Abrir conversa a usuários registrados</string>
-    <string name="nc_open_to_guest_app_users">Também abrir a usuários do aplicativo de convidados</string>
+    <string name="nc_open_to_guest_app_users">Também abrir a usuários do aplicativo Visitantes</string>
     <string name="nc_owner">Proprietário</string>
     <string name="nc_participants">Participantes</string>
     <string name="nc_participants_add">Adicionar participantes</string>
@@ -704,7 +704,7 @@
     <string name="scan_qr_code">Digitalizar Código QR</string>
     <string name="scope_federated_description">Sincronizar apenas com servidores confiáveis</string>
     <string name="scope_federated_title">Federado</string>
-    <string name="scope_local_description">Visível apenas para pessoas nesta instância e convidados</string>
+    <string name="scope_local_description">Visível apenas para pessoas nesta instância e visitantes</string>
     <string name="scope_local_title">Local</string>
     <string name="scope_private_description">Visível apenas para as pessoas correspondentes por meio da integração do número de telefone pelo Talk no celular</string>
     <string name="scope_private_title">Privado</string>
