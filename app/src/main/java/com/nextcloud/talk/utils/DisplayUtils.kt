@@ -182,7 +182,7 @@ object DisplayUtils {
             drawable = if (chipResource == R.xml.chip_you) {
                 R.drawable.mention_chip
             } else {
-                R.drawable.accent_circle
+                R.drawable.ic_circular_user
             }
             chip.setChipIconResource(drawable)
         } else {
