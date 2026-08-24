@@ -346,7 +346,7 @@ dependencies {
     "gplayImplementation"("com.google.android.gms:play-services-base:18.10.1")
     "gplayImplementation"("com.google.firebase:firebase-messaging:25.1.2")
 
-    implementation("org.unifiedpush.android:connector:3.3.3")
+    implementation("org.unifiedpush.android:connector:3.3.5")
     "genericImplementation"("org.unifiedpush.android:embedded-fcm-distributor:3.1.0")
 
     // compose
