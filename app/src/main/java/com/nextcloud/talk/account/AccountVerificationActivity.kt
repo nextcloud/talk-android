@@ -98,6 +98,16 @@ class AccountVerificationActivity : BaseActivity() {
         initSystemBars()
 
         handleIntent()
+
+        if (
+            isAccountImport &&
+            !UriUtils.hasHttpProtocolPrefixed(baseUrl!!) ||
+            isNotSameProtocol(baseUrl!!, originalProtocol)
+        ) {
+            determineBaseUrlProtocol(true)
+        } else {
+            findServerTalkApp()
+        }
     }
 
     private fun handleIntent() {
@@ -110,20 +120,6 @@ class AccountVerificationActivity : BaseActivity() {
         }
         if (extras.containsKey(KEY_ORIGINAL_PROTOCOL)) {
             originalProtocol = extras.getString(KEY_ORIGINAL_PROTOCOL)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        if (
-            isAccountImport &&
-            !UriUtils.hasHttpProtocolPrefixed(baseUrl!!) ||
-            isNotSameProtocol(baseUrl!!, originalProtocol)
-        ) {
-            determineBaseUrlProtocol(true)
-        } else {
-            findServerTalkApp()
         }
     }
 
