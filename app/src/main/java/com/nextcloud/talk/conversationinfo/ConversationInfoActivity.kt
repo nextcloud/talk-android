@@ -727,17 +727,16 @@ class ConversationInfoActivity : BaseActivity() {
         conversationUser?.let { viewModel.banActor(it, conversationToken, actorType, actorId, internalNote) }
     }
 
-    @Suppress("ReturnCount")
     private fun handleParticipantClick(model: ParticipantModel) {
+        viewModel.setParticipantForOps(model)
+    }
+
+    @Suppress("ReturnCount")
+    private fun handleParticipantOpsAction(action: ParticipantOpsAction, model: ParticipantModel) {
         val state = viewModel.uiState.value
         val conv = state.conversation ?: return
         val caps = state.spreedCapabilities ?: return
         if (!ConversationUtils.canModerate(conv, caps)) return
-
-        viewModel.setParticipantForOps(model)
-    }
-
-    private fun handleParticipantOpsAction(action: ParticipantOpsAction, model: ParticipantModel) {
         val user = conversationUser ?: return
         val participant = model.participant
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, 1))

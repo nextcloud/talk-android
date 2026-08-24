@@ -45,20 +45,21 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.ParticipantRole
 import com.nextcloud.talk.utils.ParticipantRoleUtils
 
 private data class RemoveOption(@DrawableRes val iconRes: Int, val label: String)
 
 private data class ParticipantOpsVisibility(
-    val infoPin: String?,
-    val showPromote: Boolean,
-    val showDemote: Boolean,
-    val showPromoteToOwner: Boolean,
-    val showDemoteOwnerToModerator: Boolean,
-    val showDemoteOwnerToUser: Boolean,
-    val remove: RemoveOption?,
-    val showBan: Boolean
+    val infoPin: String? = null,
+    val showPromote: Boolean = false,
+    val showDemote: Boolean = false,
+    val showPromoteToOwner: Boolean = false,
+    val showDemoteOwnerToModerator: Boolean = false,
+    val showDemoteOwnerToUser: Boolean = false,
+    val remove: RemoveOption? = null,
+    val showBan: Boolean = false
 )
 
 @Composable
@@ -73,8 +74,12 @@ private fun computeVisibility(
     val deleteIcon = R.drawable.ic_delete_grey600_24dp
     val canDemoteFromOwner = ParticipantRoleUtils.canBeDemotedFromOwner(participant, conversation, spreedCapabilities)
     val isOwner = participant.type == Participant.ParticipantType.OWNER
+    val canModerate = conversation != null && ConversationUtils.canModerate(conversation, spreedCapabilities)
 
     return when {
+        // Without moderation rights the sheet is informational: the header and nothing else
+        !canModerate -> ParticipantOpsVisibility()
+
         model.isSelf -> ParticipantOpsVisibility(
             infoPin = null,
             showPromote = false,
@@ -344,6 +349,25 @@ private fun ParticipantOperationsSheetUserWithPinPreview() {
                 Participant.ParticipantType.USER,
                 ParticipantRole.NONE,
                 attendeePin = "123456"
+            ),
+            conversation = null,
+            spreedCapabilities = null,
+            onAction = {}
+        )
+    }
+}
+
+/** Without moderation rights the sheet only names the participant and their rank. */
+@Preview(showBackground = true, name = "Light")
+@Preview(showBackground = true, name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun ParticipantOperationsSheetInformationalPreview() {
+    ParticipantOpsPreviewWrapper {
+        ParticipantOperationsContent(
+            model = previewParticipant(
+                "Alice Johnson",
+                Participant.ParticipantType.OWNER,
+                ParticipantRole.OWNER
             ),
             conversation = null,
             spreedCapabilities = null,
