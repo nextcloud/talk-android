@@ -645,7 +645,8 @@ class ConversationInfoActivity : BaseActivity() {
             ncApi.demoteAttendeeFromModerator(
                 credentials,
                 ApiUtils.getUrlForRoomModerators(apiVersion, user.baseUrl!!, conversationToken),
-                participant.attendeeId
+                participant.attendeeId,
+                null
             )?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe(subscriber)
         } else if (participant.type == Participant.ParticipantType.USER ||
             participant.type == Participant.ParticipantType.GUEST
@@ -653,7 +654,8 @@ class ConversationInfoActivity : BaseActivity() {
             ncApi.promoteAttendeeToModerator(
                 credentials,
                 ApiUtils.getUrlForRoomModerators(apiVersion, user.baseUrl!!, conversationToken),
-                participant.attendeeId
+                participant.attendeeId,
+                null
             )?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe(subscriber)
         }
     }

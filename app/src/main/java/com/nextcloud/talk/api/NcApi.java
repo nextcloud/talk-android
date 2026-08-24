@@ -158,15 +158,26 @@ public interface NcApi {
                                                      @Url String url,
                                                      @Query("participant") String participantId);
 
+    /**
+     * @param participantType Target level, or null to only toggle the moderator level. Owner (1) and
+     *                        moderator (2) when promoting, moderator (2) and user (3) when demoting.
+     *                        Requires the "promote-demote-owner" capability.
+     */
     @POST
     Observable<GenericOverall> promoteAttendeeToModerator(@Header("Authorization") String authorization,
                                                           @Url String url,
-                                                          @Query("attendeeId") Long attendeeId);
+                                                          @Query("attendeeId") Long attendeeId,
+                                                          @Query("participantType") Integer participantType);
 
+    /**
+     * @param participantType Target level, or null to only toggle the moderator level. See
+     *                        {@link #promoteAttendeeToModerator}.
+     */
     @DELETE
     Observable<GenericOverall> demoteAttendeeFromModerator(@Header("Authorization") String authorization,
                                                            @Url String url,
-                                                           @Query("attendeeId") Long attendeeId);
+                                                           @Query("attendeeId") Long attendeeId,
+                                                           @Query("participantType") Integer participantType);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/participants/self
