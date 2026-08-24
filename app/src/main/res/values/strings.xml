@@ -581,7 +581,9 @@ How to translate with transifex:
     <string name="nc_participants_add">Add participants</string>
     <string name="nc_start_group_chat">Start group chat</string>
 
+    <!-- Conversation owner, participant with high-level permissions -->
     <string name="nc_owner">Owner</string>
+    <!-- Conversation moderator, participant with elevated permissions -->
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">User</string>
     <string name="nc_guest">Guest</string>
