@@ -89,6 +89,8 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.json.JSONObject
+import retrofit2.HttpException
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -687,7 +689,8 @@ class ConversationInfoActivity : BaseActivity() {
 
             @SuppressLint("LongLogTag")
             override fun onError(e: Throwable) {
-                Log.e(TAG, "Error toggling moderator status", e)
+                Log.e(TAG, "Error changing the participant type", e)
+                showParticipantActionError(e)
             }
             override fun onComplete() { /* unused */ }
         }
@@ -761,6 +764,33 @@ class ConversationInfoActivity : BaseActivity() {
         }
     }
 
+    private fun showParticipantActionError(e: Throwable) {
+        val messageRes = if (participantActionErrorReason(e) == ERROR_LAST_MODERATOR) {
+            R.string.nc_last_moderator_cannot_be_demoted
+        } else {
+            R.string.nc_participant_type_change_failed
+        }
+        lifecycleScope.launch { viewModel.emitSnackbar(messageRes) }
+    }
+
+    /**
+     * The moderators endpoint reports why it refused in the OCS data as
+     * `{"ocs":{"data":{"error":"<reason>"}}}`.
+     */
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private fun participantActionErrorReason(e: Throwable): String? =
+        try {
+            (e as? HttpException)?.response()?.errorBody()?.string()
+                ?.let { JSONObject(it) }
+                ?.optJSONObject("ocs")
+                ?.optJSONObject("data")
+                ?.optString("error")
+                ?.takeIf { it.isNotEmpty() }
+        } catch (exception: Exception) {
+            Log.w(TAG, "Could not read the participant action error", exception)
+            null
+        }
+
     private fun changeParticipantType(
         apiVersion: Int,
         participant: Participant,
@@ -809,6 +839,8 @@ class ConversationInfoActivity : BaseActivity() {
 
     companion object {
         private val TAG = ConversationInfoActivity::class.java.simpleName
+
+        private const val ERROR_LAST_MODERATOR = "last-moderator"
 
         // Participant types the moderators endpoint accepts as a target level
         private const val PARTICIPANT_TYPE_OWNER: Int = 1
