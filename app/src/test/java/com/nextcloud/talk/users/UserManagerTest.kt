@@ -1,0 +1,138 @@
+/*
+ * Nextcloud Talk - Android Client
+ *
+ * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+package com.nextcloud.talk.users
+
+import com.nextcloud.talk.data.user.UsersRepository
+import com.nextcloud.talk.data.user.model.User
+import io.reactivex.Single
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
+
+class UserManagerTest {
+
+    private val usersRepository: UsersRepository = mock()
+    private val userManager = UserManager(usersRepository)
+
+    private fun user(id: Long, username: String, baseUrl: String, current: Boolean = false) =
+        User(id = id, username = username, baseUrl = baseUrl, current = current)
+
+    @Test
+    fun `keeps the current user among duplicates and schedules the rest for deletion`() {
+        val current = user(id = 2, username = "userA", baseUrl = "https://example.com", current = true)
+        val duplicate = user(id = 1, username = "userA", baseUrl = "https://example.com", current = false)
+        whenever(usersRepository.getUsers()).thenReturn(Single.just(listOf(current, duplicate)))
+
+        val scheduledCount = userManager.scheduleDuplicateAccountsForDeletion().blockingGet()
+
+        assertEquals(1, scheduledCount)
+        assertTrue(duplicate.scheduledForDeletion)
+        assertFalse(current.scheduledForDeletion)
+        verify(usersRepository).updateUser(duplicate)
+    }
+
+    @Test
+    fun `keeps the oldest row when none of the duplicates is current`() {
+        val oldest = user(id = 1, username = "userA", baseUrl = "https://example.com")
+        val newer = user(id = 2, username = "userA", baseUrl = "https://example.com")
+        whenever(usersRepository.getUsers()).thenReturn(Single.just(listOf(newer, oldest)))
+
+        val scheduledCount = userManager.scheduleDuplicateAccountsForDeletion().blockingGet()
+
+        assertEquals(1, scheduledCount)
+        assertTrue(newer.scheduledForDeletion)
+        assertFalse(oldest.scheduledForDeletion)
+    }
+
+    @Test
+    fun `does nothing when there are no duplicates`() {
+        val userA = user(id = 1, username = "userA", baseUrl = "https://example.com", current = true)
+        val userB = user(id = 2, username = "userB", baseUrl = "https://example.com")
+        whenever(usersRepository.getUsers()).thenReturn(Single.just(listOf(userA, userB)))
+
+        val scheduledCount = userManager.scheduleDuplicateAccountsForDeletion().blockingGet()
+
+        assertEquals(0, scheduledCount)
+        assertFalse(userA.scheduledForDeletion)
+        assertFalse(userB.scheduledForDeletion)
+    }
+
+    @Test
+    fun `different servers with the same username are not treated as duplicates`() {
+        val userA = user(id = 1, username = "userA", baseUrl = "https://example.com")
+        val userB = user(id = 2, username = "userA", baseUrl = "https://other.example.com")
+        whenever(usersRepository.getUsers()).thenReturn(Single.just(listOf(userA, userB)))
+
+        val scheduledCount = userManager.scheduleDuplicateAccountsForDeletion().blockingGet()
+
+        assertEquals(0, scheduledCount)
+    }
+
+    @Test
+    fun `rows with a null or blank username or baseUrl are never grouped as duplicates`() {
+        val nullUsername = user(id = 1, username = "userA", baseUrl = "https://example.com")
+            .apply { username = null }
+        val anotherNullUsername = user(id = 2, username = "userA", baseUrl = "https://example.com")
+            .apply { username = null }
+        val blankBaseUrl = user(id = 3, username = "userA", baseUrl = "")
+        val anotherBlankBaseUrl = user(id = 4, username = "userA", baseUrl = "")
+        whenever(usersRepository.getUsers()).thenReturn(
+            Single.just(listOf(nullUsername, anotherNullUsername, blankBaseUrl, anotherBlankBaseUrl))
+        )
+
+        val scheduledCount = userManager.scheduleDuplicateAccountsForDeletion().blockingGet()
+
+        assertEquals(0, scheduledCount)
+    }
+
+    @Test
+    fun `keeps only one row out of three or more duplicates`() {
+        val current = user(id = 3, username = "userA", baseUrl = "https://example.com", current = true)
+        val duplicate1 = user(id = 1, username = "userA", baseUrl = "https://example.com")
+        val duplicate2 = user(id = 2, username = "userA", baseUrl = "https://example.com")
+        whenever(usersRepository.getUsers()).thenReturn(Single.just(listOf(duplicate1, duplicate2, current)))
+
+        val scheduledCount = userManager.scheduleDuplicateAccountsForDeletion().blockingGet()
+
+        assertEquals(2, scheduledCount)
+        assertTrue(duplicate1.scheduledForDeletion)
+        assertTrue(duplicate2.scheduledForDeletion)
+        assertFalse(current.scheduledForDeletion)
+    }
+
+    @Test
+    fun `handles multiple independent duplicate groups in one pass`() {
+        val userACurrent = user(id = 1, username = "userA", baseUrl = "https://example.com", current = true)
+        val userADuplicate = user(id = 2, username = "userA", baseUrl = "https://example.com")
+        val userBOldest = user(id = 3, username = "userB", baseUrl = "https://example.com")
+        val userBNewer = user(id = 4, username = "userB", baseUrl = "https://example.com")
+        whenever(usersRepository.getUsers()).thenReturn(
+            Single.just(listOf(userACurrent, userADuplicate, userBNewer, userBOldest))
+        )
+
+        val scheduledCount = userManager.scheduleDuplicateAccountsForDeletion().blockingGet()
+
+        assertEquals(2, scheduledCount)
+        assertTrue(userADuplicate.scheduledForDeletion)
+        assertTrue(userBNewer.scheduledForDeletion)
+        assertFalse(userACurrent.scheduledForDeletion)
+        assertFalse(userBOldest.scheduledForDeletion)
+    }
+
+    @Test
+    fun `does nothing when there are no users at all`() {
+        whenever(usersRepository.getUsers()).thenReturn(Single.just(emptyList()))
+
+        val scheduledCount = userManager.scheduleDuplicateAccountsForDeletion().blockingGet()
+
+        assertEquals(0, scheduledCount)
+    }
+}

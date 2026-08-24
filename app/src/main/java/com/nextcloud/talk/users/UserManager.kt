@@ -74,6 +74,36 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             .map { true }
             .switchIfEmpty(Single.just(false))
 
+    /**
+     * If there is more than one local User row for the same username+baseUrl (e.g. reusing the
+     * same token): Keep the current user if it's one of the duplicates, otherwise the oldest (lowest id) row,
+     * and schedules the rest for deletion so AccountRemovalWorker cleans them up like any other removed account.
+     *
+     * @return the number of duplicate rows scheduled for deletion
+     */
+    fun scheduleDuplicateAccountsForDeletion(): Single<Int> =
+        users.map { allUsers ->
+            allUsers
+                .filter { !it.username.isNullOrEmpty() && !it.baseUrl.isNullOrEmpty() }
+                .groupBy { it.username to it.baseUrl }
+                .values
+                .filter { it.size > 1 }
+        }.map { duplicateGroups ->
+            var scheduledCount = 0
+            duplicateGroups.forEach { duplicates ->
+                val userToKeep = duplicates.firstOrNull { it.current }
+                    ?: duplicates.minByOrNull { it.id ?: Long.MAX_VALUE }
+                duplicates
+                    .filter { it.id != userToKeep?.id }
+                    .forEach { duplicate ->
+                        duplicate.scheduledForDeletion = true
+                        userRepository.updateUser(duplicate)
+                        scheduledCount++
+                    }
+            }
+            scheduledCount
+        }
+
     private fun getAnyUserAndSetAsActive(): Maybe<User> {
         val results = userRepository.getUsersNotScheduledForDeletion()
 
