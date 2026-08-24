@@ -8,5 +8,10 @@
 package com.nextcloud.talk.conversationinfo.model
 
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.utils.ParticipantRole
 
-data class ParticipantModel(val participant: Participant, val isOnline: Boolean)
+data class ParticipantModel(
+    val participant: Participant,
+    val isOnline: Boolean,
+    val role: ParticipantRole = ParticipantRole.NONE
+)
