@@ -730,7 +730,6 @@ class ConversationInfoActivity : BaseActivity() {
         val conv = state.conversation ?: return
         val caps = state.spreedCapabilities ?: return
         if (!ConversationUtils.canModerate(conv, caps)) return
-        if (model.participant.type == Participant.ParticipantType.OWNER && !model.isSelf) return
 
         viewModel.setParticipantForOps(model)
     }
@@ -748,9 +747,36 @@ class ConversationInfoActivity : BaseActivity() {
                     toggleModeratorStatusLegacy(apiVersion, participant)
                 }
 
+            ParticipantOpsAction.PromoteToOwner ->
+                changeParticipantType(apiVersion, participant, promote = true, PARTICIPANT_TYPE_OWNER)
+
+            ParticipantOpsAction.DemoteOwnerToModerator ->
+                changeParticipantType(apiVersion, participant, promote = false, PARTICIPANT_TYPE_MODERATOR)
+
+            ParticipantOpsAction.DemoteOwnerToUser ->
+                changeParticipantType(apiVersion, participant, promote = false, PARTICIPANT_TYPE_USER)
+
             ParticipantOpsAction.RemoveFromConversation -> removeAttendeeFromConversation(apiVersion, participant)
             ParticipantOpsAction.Ban -> handleBan(participant)
         }
+    }
+
+    private fun changeParticipantType(
+        apiVersion: Int,
+        participant: Participant,
+        promote: Boolean,
+        participantType: Int
+    ) {
+        val user = conversationUser ?: return
+        val url = ApiUtils.getUrlForRoomModerators(apiVersion, user.baseUrl!!, conversationToken)
+        val call = if (promote) {
+            ncApi.promoteAttendeeToModerator(credentials, url, participant.attendeeId, participantType)
+        } else {
+            ncApi.demoteAttendeeFromModerator(credentials, url, participant.attendeeId, participantType)
+        }
+        call?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(participantActionObserver())
     }
 
     private fun handleBan(participant: Participant) {
@@ -783,5 +809,10 @@ class ConversationInfoActivity : BaseActivity() {
 
     companion object {
         private val TAG = ConversationInfoActivity::class.java.simpleName
+
+        // Participant types the moderators endpoint accepts as a target level
+        private const val PARTICIPANT_TYPE_OWNER: Int = 1
+        private const val PARTICIPANT_TYPE_MODERATOR: Int = 2
+        private const val PARTICIPANT_TYPE_USER: Int = 3
     }
 }

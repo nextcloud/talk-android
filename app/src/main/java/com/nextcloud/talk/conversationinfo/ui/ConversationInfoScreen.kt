@@ -262,6 +262,7 @@ fun ConversationInfoScreen(
         ) {
             ParticipantOperationsContent(
                 model = participantForOps,
+                conversation = state.conversation,
                 spreedCapabilities = state.spreedCapabilities,
                 onAction = { action ->
                     callbacks.onParticipantOpsDismiss()
