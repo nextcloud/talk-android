@@ -157,7 +157,7 @@ class ConversationInfoViewModel @Inject constructor(
             val role = ParticipantRoleUtils.roleOf(participant, conversationType)
             if (participant.calculatedActorType == USERS && participant.calculatedActorId == userId) {
                 participant.sessionId = "-1"
-                ownUiItem = ParticipantModel(participant, true, role)
+                ownUiItem = ParticipantModel(participant, true, role, isSelf = true)
             } else {
                 uiItems.add(ParticipantModel(participant, isOnline, role))
             }
@@ -818,6 +818,10 @@ class ConversationInfoViewModel @Inject constructor(
 
     fun setUpcomingEvent(summary: String?, time: String?) {
         _uiState.update { it.copy(upcomingEventSummary = summary, upcomingEventTime = time) }
+    }
+
+    fun setParticipantForOps(model: ParticipantModel?) {
+        _uiState.update { it.copy(participantForOps = model) }
     }
 
     suspend fun emitSnackbar(@androidx.annotation.StringRes resId: Int) {

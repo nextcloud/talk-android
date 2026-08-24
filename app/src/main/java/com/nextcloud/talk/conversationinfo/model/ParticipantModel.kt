@@ -13,5 +13,6 @@ import com.nextcloud.talk.utils.ParticipantRole
 data class ParticipantModel(
     val participant: Participant,
     val isOnline: Boolean,
-    val role: ParticipantRole = ParticipantRole.NONE
+    val role: ParticipantRole = ParticipantRole.NONE,
+    val isSelf: Boolean = false
 )
