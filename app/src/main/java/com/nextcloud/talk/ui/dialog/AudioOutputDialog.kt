@@ -44,25 +44,26 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
     }
 
     fun updateOutputDeviceList() {
-        if (callActivity.audioManager?.audioDevices?.contains(WebRtcAudioManager.AudioDevice.BLUETOOTH) == false) {
+        val activeAudioManager = callActivity.audioManager
+        if (activeAudioManager?.audioDevices?.contains(WebRtcAudioManager.AudioDevice.BLUETOOTH) != true) {
             dialogAudioOutputBinding.audioOutputBluetooth.visibility = View.GONE
         } else {
             dialogAudioOutputBinding.audioOutputBluetooth.visibility = View.VISIBLE
         }
 
-        if (callActivity.audioManager?.audioDevices?.contains(WebRtcAudioManager.AudioDevice.EARPIECE) == false) {
+        if (activeAudioManager?.audioDevices?.contains(WebRtcAudioManager.AudioDevice.EARPIECE) != true) {
             dialogAudioOutputBinding.audioOutputEarspeaker.visibility = View.GONE
         } else {
             dialogAudioOutputBinding.audioOutputEarspeaker.visibility = View.VISIBLE
         }
 
-        if (callActivity.audioManager?.audioDevices?.contains(WebRtcAudioManager.AudioDevice.SPEAKER_PHONE) == false) {
+        if (activeAudioManager?.audioDevices?.contains(WebRtcAudioManager.AudioDevice.SPEAKER_PHONE) != true) {
             dialogAudioOutputBinding.audioOutputSpeaker.visibility = View.GONE
         } else {
             dialogAudioOutputBinding.audioOutputSpeaker.visibility = View.VISIBLE
         }
 
-        if (callActivity.audioManager?.currentAudioDevice?.equals(
+        if (activeAudioManager?.currentAudioDevice?.equals(
                 WebRtcAudioManager.AudioDevice.WIRED_HEADSET
             ) == true
         ) {
@@ -77,7 +78,8 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
     }
 
     private fun highlightActiveOutputChannel() {
-        when (callActivity.audioManager?.currentAudioDevice) {
+        viewThemeUtils.platform.themeDialogDark(dialogAudioOutputBinding.root)
+        when (callActivity.audioManager?.audioDeviceForUi) {
             WebRtcAudioManager.AudioDevice.BLUETOOTH -> {
                 viewThemeUtils.platform.colorImageView(
                     dialogAudioOutputBinding.audioOutputBluetoothIcon,
@@ -118,18 +120,21 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
 
     private fun initClickListeners() {
         dialogAudioOutputBinding.audioOutputBluetooth.setOnClickListener {
-            callActivity.setAudioOutputChannel(WebRtcAudioManager.AudioDevice.BLUETOOTH)
-            dismiss()
+            if (callActivity.setAudioOutputChannel(WebRtcAudioManager.AudioDevice.BLUETOOTH)) {
+                dismiss()
+            }
         }
 
         dialogAudioOutputBinding.audioOutputSpeaker.setOnClickListener {
-            callActivity.setAudioOutputChannel(WebRtcAudioManager.AudioDevice.SPEAKER_PHONE)
-            dismiss()
+            if (callActivity.setAudioOutputChannel(WebRtcAudioManager.AudioDevice.SPEAKER_PHONE)) {
+                dismiss()
+            }
         }
 
         dialogAudioOutputBinding.audioOutputEarspeaker.setOnClickListener {
-            callActivity.setAudioOutputChannel(WebRtcAudioManager.AudioDevice.EARPIECE)
-            dismiss()
+            if (callActivity.setAudioOutputChannel(WebRtcAudioManager.AudioDevice.EARPIECE)) {
+                dismiss()
+            }
         }
     }
 

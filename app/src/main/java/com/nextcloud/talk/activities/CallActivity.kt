@@ -921,15 +921,17 @@ class CallActivity : CallBaseActivity() {
     fun setDefaultAudioOutputChannel(selectedAudioDevice: AudioDevice?) {
         if (audioManager != null) {
             audioManager!!.setDefaultAudioDevice(selectedAudioDevice)
-            updateAudioOutputButton(audioManager!!.currentAudioDevice)
+            updateAudioOutputButton(audioManager!!.audioDeviceForUi)
         }
     }
 
-    fun setAudioOutputChannel(selectedAudioDevice: AudioDevice?) {
-        if (audioManager != null) {
-            audioManager!!.selectAudioDevice(selectedAudioDevice)
-            updateAudioOutputButton(audioManager!!.currentAudioDevice)
+    fun setAudioOutputChannel(selectedAudioDevice: AudioDevice?): Boolean {
+        val activeAudioManager = audioManager ?: return false
+        val accepted = activeAudioManager.selectAudioDevice(selectedAudioDevice)
+        if (accepted) {
+            updateAudioOutputButton(activeAudioManager.audioDeviceForUi)
         }
+        return accepted
     }
 
     private fun updateAudioOutputButton(activeAudioDevice: AudioDevice) {
@@ -1144,7 +1146,7 @@ class CallActivity : CallBaseActivity() {
         if (audioOutputDialog != null) {
             audioOutputDialog!!.updateOutputDeviceList()
         }
-        updateAudioOutputButton(currentDevice)
+        updateAudioOutputButton(audioManager?.audioDeviceForUi ?: currentDevice)
     }
 
     private fun cameraInitialization() {

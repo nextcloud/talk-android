@@ -28,6 +28,7 @@ import android.media.AudioAttributes;
 import android.media.AudioDeviceInfo;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
+import android.os.Build;
 import android.util.Log;
 
 import com.nextcloud.talk.events.ProximitySensorEvent;
@@ -42,6 +43,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
 public class WebRtcAudioManager {
     private static final String TAG = WebRtcAudioManager.class.getSimpleName();
     private final Context context;
@@ -54,10 +58,12 @@ public class WebRtcAudioManager {
     private boolean savedIsSpeakerPhoneOn = false;
     private boolean savedIsMicrophoneMute = false;
     private boolean hasWiredHeadset = false;
+    private boolean bluetoothPreferredForCall = false;
 
-    private AudioDevice userSelectedAudioDevice;
-    private AudioDevice currentAudioDevice;
-    private AudioDevice defaultAudioDevice;
+    private AudioDevice userSelectedAudioDevice = AudioDevice.NONE;
+    private AudioDevice currentAudioDevice = AudioDevice.NONE;
+    private AudioDevice defaultAudioDevice = AudioDevice.NONE;
+    private AudioDevice lastReportedAudioDeviceForUi = AudioDevice.NONE;
 
     private ProximitySensor proximitySensor = null;
 
@@ -85,7 +91,6 @@ public class WebRtcAudioManager {
         powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.WITH_PROXIMITY_SENSOR_LOCK);
 
         this.useProximitySensor = useProximitySensor;
-        updateAudioDeviceState();
 
         // Create and initialize the proximity sensor.
         // Tablet devices (e.g. Nexus 7) does not support proximity sensors.
@@ -184,6 +189,8 @@ public class WebRtcAudioManager {
         userSelectedAudioDevice = AudioDevice.NONE;
         currentAudioDevice = AudioDevice.NONE;
         defaultAudioDevice = AudioDevice.NONE;
+        bluetoothPreferredForCall = false;
+        lastReportedAudioDeviceForUi = AudioDevice.NONE;
         audioDevices.clear();
         internalAudioDevices.clear();
 
@@ -208,6 +215,7 @@ public class WebRtcAudioManager {
     void onAudioFocusChange(int focusChange) {
         if (audioFocusState.handle(focusChange) && amState == AudioManagerState.RUNNING) {
             audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+            bluetoothManager.reassertBluetoothAudioAfterFocusGain(bluetoothPreferredForCall, hasWiredHeadset);
             updateAudioDeviceState();
         }
         Log.d(TAG, "onAudioFocusChange: " + focusChange);
@@ -270,8 +278,13 @@ public class WebRtcAudioManager {
         }
 
         // Restore previously stored audio states.
-        setSpeakerphoneOn(savedIsSpeakerPhoneOn);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            setSpeakerphoneOn(savedIsSpeakerPhoneOn);
+        }
         setMicrophoneMute(savedIsMicrophoneMute);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            clearCommunicationDevice();
+        }
         audioManager.setMode(savedAudioMode);
 
         // Abandon audio focus. Gives the previous focus owner, if any, focus.
@@ -301,19 +314,32 @@ public class WebRtcAudioManager {
     private void setAudioDeviceInternal(AudioDevice audioDevice) {
         Log.d(TAG, "setAudioDeviceInternal(device=" + audioDevice + ")");
 
+        if (audioDevice == AudioDevice.NONE) {
+            currentAudioDevice = AudioDevice.NONE;
+            return;
+        }
+
         if (audioDevices.contains(audioDevice)) {
-            switch (audioDevice) {
-                case SPEAKER_PHONE:
-                    setSpeakerphoneOn(true);
-                    break;
-                case EARPIECE:
-                case WIRED_HEADSET:
-                case BLUETOOTH:
-                    setSpeakerphoneOn(false);
-                    break;
-                default:
-                    Log.e(TAG, "Invalid audio device selection");
-                    break;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (!setCommunicationDevice(audioDevice)) {
+                    Log.e(TAG, "Unable to select communication device " + audioDevice);
+                    currentAudioDevice = AudioDevice.NONE;
+                    return;
+                }
+            } else {
+                switch (audioDevice) {
+                    case SPEAKER_PHONE:
+                        setSpeakerphoneOn(true);
+                        break;
+                    case EARPIECE:
+                    case WIRED_HEADSET:
+                    case BLUETOOTH:
+                        setSpeakerphoneOn(false);
+                        break;
+                    default:
+                        Log.e(TAG, "Invalid audio device selection");
+                        break;
+                }
             }
             currentAudioDevice = audioDevice;
         }
@@ -333,14 +359,47 @@ public class WebRtcAudioManager {
 
     /**
      * Changes selection of the currently active audio device.
+     *
+     * @return {@code true} when the route is active or Android accepted/queued the request; {@code false} when no
+     *         selection state was retained
      */
-    public void selectAudioDevice(AudioDevice device) {
+    public boolean selectAudioDevice(AudioDevice device) {
         ThreadUtils.checkIsOnMainThread();
+        if (device == AudioDevice.BLUETOOTH) {
+            AudioDevice previousUserSelectedAudioDevice = userSelectedAudioDevice;
+            boolean wasBluetoothPreferredForCall = bluetoothPreferredForCall;
+            if (!bluetoothManager.requestBluetoothAudioSelection()) {
+                Log.e(TAG, "Bluetooth is not available for communication audio");
+                updateAudioDeviceState();
+                return false;
+            }
+            userSelectedAudioDevice = AudioDevice.BLUETOOTH;
+            bluetoothPreferredForCall = true;
+            updateAudioDeviceState();
+            if (bluetoothManager.isBluetoothSelectionActive()) {
+                return true;
+            }
+            userSelectedAudioDevice = previousUserSelectedAudioDevice;
+            bluetoothPreferredForCall = wasBluetoothPreferredForCall;
+            updateAudioDeviceState();
+            return false;
+        }
         if (!audioDevices.contains(device)) {
             Log.e(TAG, "Can not select " + device + " from available " + audioDevices);
+            return false;
         }
+        AudioDevice previousUserSelectedAudioDevice = userSelectedAudioDevice;
+        boolean wasBluetoothPreferredForCall = bluetoothPreferredForCall;
         userSelectedAudioDevice = device;
+        bluetoothPreferredForCall = false;
         updateAudioDeviceState();
+        if (currentAudioDevice == device) {
+            return true;
+        }
+        userSelectedAudioDevice = previousUserSelectedAudioDevice;
+        bluetoothPreferredForCall = wasBluetoothPreferredForCall;
+        updateAudioDeviceState();
+        return false;
     }
 
     /**
@@ -356,6 +415,20 @@ public class WebRtcAudioManager {
      */
     public AudioDevice getCurrentAudioDevice() {
         ThreadUtils.checkIsOnMainThread();
+        return currentAudioDevice;
+    }
+
+    /**
+     * Returns the active route, or Bluetooth while Android is processing an accepted Bluetooth request.
+     */
+    public AudioDevice getAudioDeviceForUi() {
+        ThreadUtils.checkIsOnMainThread();
+        if (bluetoothPreferredForCall
+                && !hasWiredHeadset
+                && audioDevices.contains(AudioDevice.BLUETOOTH)
+                && bluetoothManager.isBluetoothSelectionActive()) {
+            return AudioDevice.BLUETOOTH;
+        }
         return currentAudioDevice;
     }
 
@@ -384,6 +457,95 @@ public class WebRtcAudioManager {
         audioManager.setSpeakerphoneOn(on);
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
+    private boolean setCommunicationDevice(AudioDevice audioDevice) {
+        if (audioDevice == AudioDevice.BLUETOOTH
+                && bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED) {
+            return true;
+        }
+        try {
+            AudioDeviceInfo currentDevice = getCommunicationDevice();
+            if (currentDevice != null && matchesAudioDevice(currentDevice, audioDevice)) {
+                return true;
+            }
+
+            AudioDeviceInfo selectedDevice = null;
+            int selectedPriority = -1;
+            for (AudioDeviceInfo device : audioManager.getAvailableCommunicationDevices()) {
+                if (matchesAudioDevice(device, audioDevice)) {
+                    int priority = audioDevice == AudioDevice.BLUETOOTH
+                        ? WebRtcBluetoothManager.bluetoothCommunicationDevicePriority(
+                            device.getType(),
+                            Build.VERSION.SDK_INT
+                        )
+                        : 0;
+                    if (priority > selectedPriority) {
+                        selectedDevice = device;
+                        selectedPriority = priority;
+                    }
+                }
+            }
+            if (selectedDevice != null) {
+                boolean selected = audioManager.setCommunicationDevice(selectedDevice);
+                if (!selected) {
+                    Log.w(TAG, "Failed to select communication device " + selectedDevice.getType());
+                }
+                return selected;
+            }
+        } catch (SecurityException | IllegalArgumentException exception) {
+            Log.e(TAG, "Communication device disappeared while it was being selected", exception);
+        }
+        return false;
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private boolean isCommunicationDeviceSelected(AudioDevice audioDevice) {
+        AudioDeviceInfo communicationDevice = getCommunicationDevice();
+        return communicationDevice != null && matchesAudioDevice(communicationDevice, audioDevice);
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private boolean matchesAudioDevice(AudioDeviceInfo device, AudioDevice audioDevice) {
+        int type = device.getType();
+        switch (audioDevice) {
+            case BLUETOOTH:
+                return WebRtcBluetoothManager.isBluetoothCommunicationDeviceType(type);
+            case WIRED_HEADSET:
+                return type == AudioDeviceInfo.TYPE_WIRED_HEADSET
+                    || type == AudioDeviceInfo.TYPE_WIRED_HEADPHONES
+                    || type == AudioDeviceInfo.TYPE_USB_HEADSET
+                    || type == AudioDeviceInfo.TYPE_USB_DEVICE
+                    || type == AudioDeviceInfo.TYPE_USB_ACCESSORY;
+            case EARPIECE:
+                return type == AudioDeviceInfo.TYPE_BUILTIN_EARPIECE;
+            case SPEAKER_PHONE:
+                return type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER
+                    || type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER_SAFE;
+            default:
+                return false;
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    @Nullable
+    private AudioDeviceInfo getCommunicationDevice() {
+        try {
+            return audioManager.getCommunicationDevice();
+        } catch (SecurityException exception) {
+            Log.e(TAG, "Permission was revoked while reading the communication device", exception);
+            return null;
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private void clearCommunicationDevice() {
+        try {
+            audioManager.clearCommunicationDevice();
+        } catch (SecurityException exception) {
+            Log.e(TAG, "Permission was revoked while clearing the communication device", exception);
+        }
+    }
+
     /**
      * Sets the microphone mute state.
      */
@@ -409,7 +571,8 @@ public class WebRtcAudioManager {
      */
     @Deprecated
     private boolean hasWiredHeadset() {
-        @SuppressLint("WrongConstant") final AudioDeviceInfo[] devices = audioManager.getDevices(AudioManager.GET_DEVICES_ALL);
+        @SuppressLint("WrongConstant") final AudioDeviceInfo[] devices =
+            audioManager.getDevices(AudioManager.GET_DEVICES_ALL);
         for (AudioDeviceInfo device : devices) {
             final int type = device.getType();
             if (type == AudioDeviceInfo.TYPE_WIRED_HEADSET) {
@@ -421,6 +584,37 @@ public class WebRtcAudioManager {
             }
         }
         return false;
+    }
+
+    private boolean hasBluetoothCommunicationOutput() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            try {
+                for (AudioDeviceInfo device : audioManager.getAvailableCommunicationDevices()) {
+                    if (WebRtcBluetoothManager.isBluetoothCommunicationDeviceType(device.getType())) {
+                        return true;
+                    }
+                }
+            } catch (SecurityException exception) {
+                Log.e(TAG, "Bluetooth permission was revoked while enumerating communication devices", exception);
+            }
+            return false;
+        }
+
+        for (AudioDeviceInfo device : audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)) {
+            if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isBluetoothSelectionPending() {
+        WebRtcBluetoothManager.State state = bluetoothManager.getState();
+        return bluetoothPreferredForCall
+            && !hasWiredHeadset
+            && (state == WebRtcBluetoothManager.State.SCO_CONNECTING
+                || state == WebRtcBluetoothManager.State.SCO_DISCONNECTING
+                || bluetoothManager.isBluetoothRouteRetryScheduled());
     }
 
     public final void updateAudioDeviceState() {
@@ -436,16 +630,26 @@ public class WebRtcAudioManager {
             + "user selected=" + userSelectedAudioDevice);
 
         if (bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_AVAILABLE
-            || bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_UNAVAILABLE
-            || bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_DISCONNECTING) {
+            || bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_UNAVAILABLE) {
             bluetoothManager.updateDevice();
         }
+
+        boolean bluetoothCommunicationOutputAvailable = hasBluetoothCommunicationOutput();
+        boolean bluetoothExpected = bluetoothManager.started()
+            && (bluetoothCommunicationOutputAvailable || bluetoothManager.isHeadsetProfileExpected());
+        bluetoothPreferredForCall = AudioRoutePolicy.shouldPreferBluetooth(
+            userSelectedAudioDevice,
+            bluetoothPreferredForCall,
+            bluetoothExpected,
+            bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_UNAVAILABLE
+        );
 
         Set<AudioDevice> newInternalAudioDevices = new HashSet<>();
 
         if (bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED
             || bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTING
-            || bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_AVAILABLE) {
+            || bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_AVAILABLE
+            || bluetoothExpected) {
             newInternalAudioDevices.add(AudioDevice.BLUETOOTH);
         }
 
@@ -463,11 +667,8 @@ public class WebRtcAudioManager {
             }
         }
 
-        // Correct user selected audio devices if needed.
-        if (userSelectedAudioDevice == AudioDevice.BLUETOOTH
-            && bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_UNAVAILABLE) {
-            userSelectedAudioDevice = AudioDevice.SPEAKER_PHONE;
-        }
+        // Correct user selected wired audio devices if needed. An explicit Bluetooth selection remains sticky so it
+        // can resume after the endpoint reconnects.
         if (userSelectedAudioDevice == AudioDevice.SPEAKER_PHONE && hasWiredHeadset) {
             userSelectedAudioDevice = AudioDevice.WIRED_HEADSET;
         }
@@ -478,18 +679,19 @@ public class WebRtcAudioManager {
 
         // Need to start Bluetooth if it is available and user either selected it explicitly or
         // user did not select any output device.
-        boolean needBluetoothScoStart =
-            bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_AVAILABLE
-                && (userSelectedAudioDevice == AudioDevice.NONE
-                || userSelectedAudioDevice == AudioDevice.BLUETOOTH);
+        boolean needBluetoothScoStart = WebRtcBluetoothManager.shouldStartBluetoothRoute(
+            bluetoothManager.getState(),
+            bluetoothPreferredForCall,
+            hasWiredHeadset,
+            bluetoothManager.isBluetoothRouteRetryScheduled()
+        );
 
         // Need to stop Bluetooth audio if user selected different device and
         // Bluetooth SCO connection is established or in the process.
         boolean needBluetoothScoStop =
             (bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED
                 || bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTING)
-                && (userSelectedAudioDevice != AudioDevice.NONE
-                && userSelectedAudioDevice != AudioDevice.BLUETOOTH);
+                && (!bluetoothPreferredForCall || hasWiredHeadset);
 
         if (bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_AVAILABLE
             || bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTING
@@ -502,11 +704,8 @@ public class WebRtcAudioManager {
         // Start or stop Bluetooth SCO connection given states set earlier.
         if (needBluetoothScoStop) {
             bluetoothManager.stopScoAudio();
-            bluetoothManager.updateDevice();
         } else if (needBluetoothScoStart && !bluetoothManager.startScoAudio()) {
-            // Remove BLUETOOTH and BLUETOOTH_SCO from list of available devices since SCO start has
-            // reported no longer available or too many failed attempts.
-            newInternalAudioDevices.remove(AudioDevice.BLUETOOTH);
+            // Keep Bluetooth visible so an explicit user selection can reset the bounded retry counter.
             newInternalAudioDevices.remove(AudioDevice.BLUETOOTH_SCO);
         }
 
@@ -517,44 +716,51 @@ public class WebRtcAudioManager {
         audioDevices.remove(AudioDevice.BLUETOOTH_SCO);
 
 
-        // Update selected audio device.
-        AudioDevice newCurrentAudioDevice;
-
-        if ((bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED)
-            && newInternalAudioDevices.contains(AudioDevice.BLUETOOTH_SCO))
-        {
-            // If Bluetooth SCO is connected and available to use, then it has been selected by user or
-            // auto-selected and it should be used as output audio device.
-            newCurrentAudioDevice = AudioDevice.BLUETOOTH;
-        } else if (hasWiredHeadset) {
-            // If a wired headset is connected, but Bluetooth SCO is not, then wired headset is used as
-            // audio device.
-            newCurrentAudioDevice = AudioDevice.WIRED_HEADSET;
-        } else {
-            // No wired headset and no Bluetooth SCO, hence the audio-device list can contain speaker
-            // phone (on a tablet), or speaker phone and earpiece (on mobile phone).
-            // |userSelectedAudioDevice| may contain either AudioDevice.SPEAKER_PHONE or AudioDevice.EARPIECE
-            // depending on the user's selection. |defaultAudioDevice|, which is set in code depending on
-            // call is audio only or video, to be used if user hasn't made an explicit selection
-            if ((userSelectedAudioDevice == AudioDevice.NONE) && (defaultAudioDevice != AudioDevice.NONE))
-                newCurrentAudioDevice = defaultAudioDevice;
-            else
-                newCurrentAudioDevice = userSelectedAudioDevice;
-        }
+        boolean bluetoothConnected = bluetoothPreferredForCall
+            && !hasWiredHeadset
+            && bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED
+            && newInternalAudioDevices.contains(AudioDevice.BLUETOOTH_SCO);
+        AudioDevice newCurrentAudioDevice = AudioRoutePolicy.selectAudioDevice(
+            audioDevices,
+            userSelectedAudioDevice,
+            defaultAudioDevice,
+            hasWiredHeadset,
+            bluetoothConnected
+        );
+        boolean communicationRouteNeedsSelection = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+            && newCurrentAudioDevice != AudioDevice.NONE
+            && !(newCurrentAudioDevice == AudioDevice.BLUETOOTH
+                && bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED)
+            && !isCommunicationDeviceSelected(newCurrentAudioDevice);
+        boolean audioDeviceUpdateNeeded = newCurrentAudioDevice != currentAudioDevice
+            || audioDeviceSetUpdated
+            || communicationRouteNeedsSelection;
+        AudioDevice previousCurrentAudioDevice = currentAudioDevice;
         // Switch to new device but only if there has been any changes.
-        if (newCurrentAudioDevice != currentAudioDevice || audioDeviceSetUpdated) {
-            // Do the required device switch.
-            setAudioDeviceInternal(newCurrentAudioDevice);
+        if (audioDeviceUpdateNeeded) {
+            boolean bluetoothSelectionPending = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                && isBluetoothSelectionPending();
+            if (!bluetoothSelectionPending) {
+                setAudioDeviceInternal(newCurrentAudioDevice);
+            }
             Log.d(TAG, "New device status: "
                 + "internally available=" + internalAudioDevices + ", "
                 + "externally available=" + audioDevices + ", "
-                + "current(new)=" + newCurrentAudioDevice);
-            if (audioManagerListener != null) {
-                // Notify a listening client that audio device has been changed.
-                audioManagerListener.onAudioDeviceChanged(currentAudioDevice, audioDevices);
-            }
+                + "current(new)=" + currentAudioDevice);
         }
+
+        boolean audioDeviceChanged = previousCurrentAudioDevice != currentAudioDevice || audioDeviceSetUpdated;
+        notifyAudioRouteStateIfChanged(audioDeviceChanged);
         Log.d(TAG, "--- updateAudioDeviceState done");
+    }
+
+    private void notifyAudioRouteStateIfChanged(boolean audioDeviceChanged) {
+        AudioDevice audioDeviceForUi = getAudioDeviceForUi();
+        boolean audioDeviceForUiChanged = audioDeviceForUi != lastReportedAudioDeviceForUi;
+        lastReportedAudioDeviceForUi = audioDeviceForUi;
+        if ((audioDeviceChanged || audioDeviceForUiChanged) && audioManagerListener != null) {
+            audioManagerListener.onAudioDeviceChanged(currentAudioDevice, audioDevices);
+        }
     }
 
     /**
