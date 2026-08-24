@@ -468,6 +468,11 @@ How to translate with transifex:
     <string name="nc_demote_owner_to_moderator">Demote from owner to moderator</string>
     <!-- Take the owner rank away, leaving the participant with no elevated permissions -->
     <string name="nc_demote_owner_to_participant">Demote from owner to participant</string>
+    <!-- Shown when the server refuses to change a participant's rank -->
+    <string name="nc_participant_type_change_failed">Could not change the type of the participant</string>
+    <!-- Shown when demoting would leave the conversation without any moderator -->
+    <string name="nc_last_moderator_cannot_be_demoted">The last moderator of a conversation can not be
+        demoted</string>
     <string name="nc_remove_participant">Remove participant</string>
     <string name="nc_remove_team_and_members">Remove team and members</string>
     <string name="nc_remove_group_and_members">Remove group and members</string>
