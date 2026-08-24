@@ -471,8 +471,7 @@ How to translate with transifex:
     <!-- Shown when the server refuses to change a participant's rank -->
     <string name="nc_participant_type_change_failed">Could not change the type of the participant</string>
     <!-- Shown when demoting would leave the conversation without any moderator -->
-    <string name="nc_last_moderator_cannot_be_demoted">The last moderator of a conversation can not be
-        demoted</string>
+    <string name="nc_last_moderator_cannot_be_demoted">The last moderator of a conversation can not be demoted</string>
     <string name="nc_remove_participant">Remove participant</string>
     <string name="nc_remove_team_and_members">Remove team and members</string>
     <string name="nc_remove_group_and_members">Remove group and members</string>
