@@ -41,11 +41,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.nextcloud.talk.R
 import com.nextcloud.talk.conversationinfo.model.ParticipantModel
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ParticipantRole
 import com.nextcloud.talk.utils.ParticipantRoleUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 
 private data class RemoveOption(@DrawableRes val iconRes: Int, val label: String)
 
@@ -53,24 +56,66 @@ private data class ParticipantOpsVisibility(
     val infoPin: String?,
     val showPromote: Boolean,
     val showDemote: Boolean,
+    val showPromoteToOwner: Boolean,
+    val showDemoteOwnerToModerator: Boolean,
+    val showDemoteOwnerToUser: Boolean,
     val remove: RemoveOption?,
     val showBan: Boolean
 )
 
+/**
+ * Conversation types and object types in which the owner rank can be handed out, mirroring the
+ * server. Everything else binds the conversation to an object that assumes a single owner.
+ */
+private val ownerChangeConversationTypes = setOf(
+    ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+    ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
+)
+
+private val ownerChangeObjectTypes = setOf(
+    ConversationEnums.ObjectType.DEFAULT,
+    ConversationEnums.ObjectType.CLASSIFIED,
+    ConversationEnums.ObjectType.INSTANT_MEETING
+)
+
+/**
+ * Only an owner can change ownership, only a user can hold it, and only in conversations that are
+ * not bound to an object with an implicit owner. The server enforces all of this again.
+ */
+private fun canChangeOwnership(
+    participant: Participant,
+    conversation: ConversationModel?,
+    spreedCapabilities: SpreedCapability?
+): Boolean =
+    CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.PROMOTE_DEMOTE_OWNER) &&
+        conversation != null &&
+        conversation.participantType == Participant.ParticipantType.OWNER &&
+        conversation.type in ownerChangeConversationTypes &&
+        conversation.objectType in ownerChangeObjectTypes &&
+        participant.calculatedActorType == Participant.ActorType.USERS
+
 @Composable
+@Suppress("LongMethod")
 private fun computeVisibility(
     model: ParticipantModel,
+    conversation: ConversationModel?,
     spreedCapabilities: SpreedCapability?
 ): ParticipantOpsVisibility {
     val participant = model.participant
     val pin = participant.attendeePin?.takeIf { it.isNotEmpty() }
     val deleteIcon = R.drawable.ic_delete_grey600_24dp
+    val ownership = canChangeOwnership(participant, conversation, spreedCapabilities)
+    val isOwner = participant.type == Participant.ParticipantType.OWNER
 
     return when {
         model.isSelf -> ParticipantOpsVisibility(
             infoPin = null,
             showPromote = false,
             showDemote = false,
+            showPromoteToOwner = false,
+            // An owner may step down, but only as far as moderator, to avoid locking themselves out
+            showDemoteOwnerToModerator = ownership && isOwner,
+            showDemoteOwnerToUser = false,
             remove = pin?.let {
                 RemoveOption(R.drawable.ic_lock_grey600_24px, stringResource(R.string.nc_attendee_pin, it))
             },
@@ -81,6 +126,9 @@ private fun computeVisibility(
             infoPin = null,
             showPromote = false,
             showDemote = false,
+            showPromoteToOwner = false,
+            showDemoteOwnerToModerator = false,
+            showDemoteOwnerToUser = false,
             remove = RemoveOption(deleteIcon, stringResource(R.string.nc_remove_group_and_members)),
             showBan = false
         )
@@ -89,7 +137,21 @@ private fun computeVisibility(
             infoPin = null,
             showPromote = false,
             showDemote = false,
+            showPromoteToOwner = false,
+            showDemoteOwnerToModerator = false,
+            showDemoteOwnerToUser = false,
             remove = RemoveOption(deleteIcon, stringResource(R.string.nc_remove_team_and_members)),
+            showBan = false
+        )
+
+        isOwner -> ParticipantOpsVisibility(
+            infoPin = pin,
+            showPromote = false,
+            showDemote = false,
+            showPromoteToOwner = false,
+            showDemoteOwnerToModerator = ownership,
+            showDemoteOwnerToUser = ownership,
+            remove = null,
             showBan = false
         )
 
@@ -99,19 +161,29 @@ private fun computeVisibility(
                 participant.type == Participant.ParticipantType.GUEST,
             showDemote = participant.type == Participant.ParticipantType.MODERATOR ||
                 participant.type == Participant.ParticipantType.GUEST_MODERATOR,
+            showPromoteToOwner = ownership && participant.type in promotableToOwner,
+            showDemoteOwnerToModerator = false,
+            showDemoteOwnerToUser = false,
             remove = RemoveOption(deleteIcon, stringResource(R.string.nc_remove_participant)),
             showBan = spreedCapabilities != null && CapabilitiesUtil.isBanningAvailable(spreedCapabilities)
         )
     }
 }
 
+private val promotableToOwner = setOf(
+    Participant.ParticipantType.USER,
+    Participant.ParticipantType.USER_FOLLOWING_LINK,
+    Participant.ParticipantType.MODERATOR
+)
+
 @Composable
 fun ParticipantOperationsContent(
     model: ParticipantModel,
+    conversation: ConversationModel?,
     spreedCapabilities: SpreedCapability?,
     onAction: (ParticipantOpsAction) -> Unit
 ) {
-    val visibility = computeVisibility(model, spreedCapabilities)
+    val visibility = computeVisibility(model, conversation, spreedCapabilities)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -121,9 +193,30 @@ fun ParticipantOperationsContent(
         ParticipantOpsHeader(model)
         visibility.infoPin?.let { ParticipantOpsInfoRow(R.drawable.ic_lock_grey600_24px, it) }
         // The icon shows the rank the action leads to, not the action itself
+        if (visibility.showPromoteToOwner) {
+            ParticipantOpsMenuItem(R.drawable.outline_crown_24, stringResource(R.string.nc_promote_to_owner)) {
+                onAction(ParticipantOpsAction.PromoteToOwner)
+            }
+        }
         if (visibility.showPromote) {
             ParticipantOpsMenuItem(R.drawable.outline_shield_24, stringResource(R.string.nc_promote)) {
                 onAction(ParticipantOpsAction.PromoteToModerator)
+            }
+        }
+        if (visibility.showDemoteOwnerToModerator) {
+            ParticipantOpsMenuItem(
+                R.drawable.outline_shield_24,
+                stringResource(R.string.nc_demote_owner_to_moderator)
+            ) {
+                onAction(ParticipantOpsAction.DemoteOwnerToModerator)
+            }
+        }
+        if (visibility.showDemoteOwnerToUser) {
+            ParticipantOpsMenuItem(
+                R.drawable.ic_baseline_person_24,
+                stringResource(R.string.nc_demote_owner_to_participant)
+            ) {
+                onAction(ParticipantOpsAction.DemoteOwnerToUser)
             }
         }
         if (visibility.showDemote) {
@@ -268,6 +361,7 @@ private fun ParticipantOperationsSheetModeratorPreview() {
                 Participant.ParticipantType.MODERATOR,
                 ParticipantRole.MODERATOR
             ),
+            conversation = null,
             spreedCapabilities = null,
             onAction = {}
         )
@@ -286,6 +380,7 @@ private fun ParticipantOperationsSheetUserWithPinPreview() {
                 ParticipantRole.NONE,
                 attendeePin = "123456"
             ),
+            conversation = null,
             spreedCapabilities = null,
             onAction = {}
         )
@@ -303,6 +398,7 @@ private fun ParticipantOperationsSheetOwnerPreview() {
                 Participant.ParticipantType.OWNER,
                 ParticipantRole.OWNER
             ),
+            conversation = null,
             spreedCapabilities = null,
             onAction = {}
         )

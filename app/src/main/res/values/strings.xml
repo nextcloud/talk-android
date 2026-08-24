@@ -462,6 +462,12 @@ How to translate with transifex:
     <!-- Moderation -->
     <string name="nc_demote">Demote from moderator</string>
     <string name="nc_promote">Promote to moderator</string>
+    <!-- Give a participant the conversation owner rank, the highest level of permissions -->
+    <string name="nc_promote_to_owner">Promote to owner</string>
+    <!-- Take the owner rank away, leaving the participant with moderator permissions -->
+    <string name="nc_demote_owner_to_moderator">Demote from owner to moderator</string>
+    <!-- Take the owner rank away, leaving the participant with no elevated permissions -->
+    <string name="nc_demote_owner_to_participant">Demote from owner to participant</string>
     <string name="nc_remove_participant">Remove participant</string>
     <string name="nc_remove_team_and_members">Remove team and members</string>
     <string name="nc_remove_group_and_members">Remove group and members</string>
