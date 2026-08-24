@@ -120,13 +120,14 @@ fun ParticipantOperationsContent(
     ) {
         ParticipantOpsHeader(model)
         visibility.infoPin?.let { ParticipantOpsInfoRow(R.drawable.ic_lock_grey600_24px, it) }
+        // The icon shows the rank the action leads to, not the action itself
         if (visibility.showPromote) {
-            ParticipantOpsMenuItem(R.drawable.ic_pencil_grey600_24dp, stringResource(R.string.nc_promote)) {
+            ParticipantOpsMenuItem(R.drawable.outline_shield_24, stringResource(R.string.nc_promote)) {
                 onAction(ParticipantOpsAction.PromoteToModerator)
             }
         }
         if (visibility.showDemote) {
-            ParticipantOpsMenuItem(R.drawable.ic_pencil_grey600_24dp, stringResource(R.string.nc_demote)) {
+            ParticipantOpsMenuItem(R.drawable.ic_baseline_person_24, stringResource(R.string.nc_demote)) {
                 onAction(ParticipantOpsAction.DemoteFromModerator)
             }
         }
