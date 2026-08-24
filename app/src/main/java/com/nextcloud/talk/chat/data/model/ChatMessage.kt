@@ -290,6 +290,8 @@ data class ChatMessage(
         GROUP_REMOVED,
         CIRCLE_ADDED,
         CIRCLE_REMOVED,
+        OWNER_PROMOTED,
+        OWNER_DEMOTED,
         MODERATOR_PROMOTED,
         MODERATOR_DEMOTED,
         GUEST_MODERATOR_PROMOTED,

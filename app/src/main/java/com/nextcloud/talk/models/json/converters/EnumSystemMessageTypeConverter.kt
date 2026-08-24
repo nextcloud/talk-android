@@ -114,6 +114,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "group_removed" -> GROUP_REMOVED
             "circle_added" -> CIRCLE_ADDED
             "circle_removed" -> CIRCLE_REMOVED
+            "owner_promoted" -> ChatMessage.SystemMessageType.OWNER_PROMOTED
+            "owner_demoted" -> ChatMessage.SystemMessageType.OWNER_DEMOTED
             "moderator_promoted" -> MODERATOR_PROMOTED
             "moderator_demoted" -> MODERATOR_DEMOTED
             "guest_moderator_promoted" -> GUEST_MODERATOR_PROMOTED
@@ -187,6 +189,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             GROUP_REMOVED -> "group_removed"
             CIRCLE_ADDED -> "circle_added"
             CIRCLE_REMOVED -> "circle_removed"
+            ChatMessage.SystemMessageType.OWNER_PROMOTED -> "owner_promoted"
+            ChatMessage.SystemMessageType.OWNER_DEMOTED -> "owner_demoted"
             MODERATOR_PROMOTED -> "moderator_promoted"
             MODERATOR_DEMOTED -> "moderator_demoted"
             GUEST_MODERATOR_PROMOTED -> "guest_moderator_promoted"
