@@ -71,6 +71,7 @@ data class ConversationInfoUiState(
     val showLockConversation: Boolean = false,
 
     val participants: List<ParticipantModel> = emptyList(),
+    val participantForOps: ParticipantModel? = null,
     val showParticipants: Boolean = false,
     val showAddParticipants: Boolean = false,
     val showStartGroupChat: Boolean = false,

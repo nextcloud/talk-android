@@ -46,6 +46,7 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.ParticipantRoleUtils
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import io.reactivex.Observer
@@ -144,6 +145,7 @@ class ConversationInfoViewModel @Inject constructor(
 
     @Suppress("DEPRECATION")
     private fun processParticipants(participants: List<Participant>, userId: String?): List<ParticipantModel> {
+        val conversationType = _uiState.value.conversationType
         val uiItems: MutableList<ParticipantModel> = ArrayList()
         var ownUiItem: ParticipantModel? = null
         for (participant in participants) {
@@ -152,27 +154,15 @@ class ConversationInfoViewModel @Inject constructor(
             } else {
                 participant.sessionIds.isNotEmpty()
             }
+            val role = ParticipantRoleUtils.roleOf(participant, conversationType)
             if (participant.calculatedActorType == USERS && participant.calculatedActorId == userId) {
                 participant.sessionId = "-1"
-                ownUiItem = ParticipantModel(participant, true)
+                ownUiItem = ParticipantModel(participant, true, role, isSelf = true)
             } else {
-                uiItems.add(ParticipantModel(participant, isOnline))
+                uiItems.add(ParticipantModel(participant, isOnline, role))
             }
         }
-        uiItems.sortWith(
-            compareBy(
-                { it.participant.actorType == GROUPS || it.participant.actorType == CIRCLES },
-                { !it.isOnline },
-                {
-                    it.participant.type !in listOf(
-                        Participant.ParticipantType.MODERATOR,
-                        Participant.ParticipantType.OWNER,
-                        Participant.ParticipantType.GUEST_MODERATOR
-                    )
-                },
-                { it.participant.displayName!!.lowercase(Locale.ROOT) }
-            )
-        )
+        uiItems.sortWith(PARTICIPANT_COMPARATOR)
         if (ownUiItem != null) {
             uiItems.add(0, ownUiItem)
         }
@@ -830,6 +820,10 @@ class ConversationInfoViewModel @Inject constructor(
         _uiState.update { it.copy(upcomingEventSummary = summary, upcomingEventTime = time) }
     }
 
+    fun setParticipantForOps(model: ParticipantModel?) {
+        _uiState.update { it.copy(participantForOps = model) }
+    }
+
     suspend fun emitSnackbar(@androidx.annotation.StringRes resId: Int) {
         _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(resId))
     }
@@ -916,6 +910,24 @@ class ConversationInfoViewModel @Inject constructor(
         private const val NOTIFICATION_LEVEL_MENTION: Int = 2
         private const val NOTIFICATION_LEVEL_NEVER: Int = 3
         private const val RECORDING_CONSENT_REQUIRED_FOR_CONVERSATION: Int = 1
+        private val MODERATOR_PARTICIPANT_TYPES = setOf(
+            Participant.ParticipantType.OWNER,
+            Participant.ParticipantType.MODERATOR,
+            Participant.ParticipantType.GUEST_MODERATOR
+        )
+
+        /**
+         * Participants list order: groups and teams last, offline last, then owners before
+         * moderators before everyone else, and display name as the tie breaker. The own
+         * participant is pinned to the top separately and does not go through this.
+         */
+        val PARTICIPANT_COMPARATOR: Comparator<ParticipantModel> = compareBy(
+            { it.participant.actorType == GROUPS || it.participant.actorType == CIRCLES },
+            { !it.isOnline },
+            { it.participant.type != Participant.ParticipantType.OWNER },
+            { it.participant.type !in MODERATOR_PARTICIPANT_TYPES },
+            { it.participant.displayName!!.lowercase(Locale.ROOT) }
+        )
         fun createConversationNameByParticipants(
             originalParticipants: List<String?>,
             allParticipants: List<String?>

@@ -14,7 +14,6 @@ import android.view.LayoutInflater
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
@@ -43,14 +42,14 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.bottomsheet.items.BasicListItemWithImage
-import com.nextcloud.talk.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.contacts.CompanionClass.Companion.KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS
 import com.nextcloud.talk.contacts.ContactsActivity
+import com.nextcloud.talk.conversationinfo.model.ParticipantModel
 import com.nextcloud.talk.conversationinfo.ui.ConversationInfoScreen
 import com.nextcloud.talk.conversationinfo.ui.ConversationInfoScreenCallbacks
+import com.nextcloud.talk.conversationinfo.ui.ParticipantOpsAction
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
 import com.nextcloud.talk.data.user.model.User
@@ -70,7 +69,6 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.CIRCLES
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
-import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEvent
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
@@ -91,6 +89,8 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.json.JSONObject
+import retrofit2.HttpException
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -312,7 +312,9 @@ class ConversationInfoActivity : BaseActivity() {
             onLockConversationClick = {
                 conversationUser?.let { viewModel.toggleLock(it, conversationToken) }
             },
-            onParticipantClick = { model -> handleParticipantClick(model.participant) },
+            onParticipantClick = { model -> handleParticipantClick(model) },
+            onParticipantOpsDismiss = { viewModel.setParticipantForOps(null) },
+            onParticipantOpsAction = { action, model -> handleParticipantOpsAction(action, model) },
             onAddParticipantsClick = {
                 startGroupChat = false
                 selectParticipantsToAdd()
@@ -645,7 +647,8 @@ class ConversationInfoActivity : BaseActivity() {
             ncApi.demoteAttendeeFromModerator(
                 credentials,
                 ApiUtils.getUrlForRoomModerators(apiVersion, user.baseUrl!!, conversationToken),
-                participant.attendeeId
+                participant.attendeeId,
+                null
             )?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe(subscriber)
         } else if (participant.type == Participant.ParticipantType.USER ||
             participant.type == Participant.ParticipantType.GUEST
@@ -653,7 +656,8 @@ class ConversationInfoActivity : BaseActivity() {
             ncApi.promoteAttendeeToModerator(
                 credentials,
                 ApiUtils.getUrlForRoomModerators(apiVersion, user.baseUrl!!, conversationToken),
-                participant.attendeeId
+                participant.attendeeId,
+                null
             )?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe(subscriber)
         }
     }
@@ -685,7 +689,8 @@ class ConversationInfoActivity : BaseActivity() {
 
             @SuppressLint("LongLogTag")
             override fun onError(e: Throwable) {
-                Log.e(TAG, "Error toggling moderator status", e)
+                Log.e(TAG, "Error changing the participant type", e)
+                showParticipantActionError(e)
             }
             override fun onComplete() { /* unused */ }
         }
@@ -722,113 +727,85 @@ class ConversationInfoActivity : BaseActivity() {
         conversationUser?.let { viewModel.banActor(it, conversationToken, actorType, actorId, internalNote) }
     }
 
-    @SuppressLint("CheckResult", "StringFormatInvalid")
+    private fun handleParticipantClick(model: ParticipantModel) {
+        viewModel.setParticipantForOps(model)
+    }
+
     @Suppress("ReturnCount")
-    private fun handleParticipantClick(participant: Participant) {
+    private fun handleParticipantOpsAction(action: ParticipantOpsAction, model: ParticipantModel) {
         val state = viewModel.uiState.value
         val conv = state.conversation ?: return
         val caps = state.spreedCapabilities ?: return
         if (!ConversationUtils.canModerate(conv, caps)) return
         val user = conversationUser ?: return
+        val participant = model.participant
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, 1))
-
-        if (participant.calculatedActorType == USERS && participant.calculatedActorId == user.userId) {
-            if (participant.attendeePin?.isNotEmpty() == true) {
-                launchRemoveAttendeeFromConversationDialog(
-                    participant,
-                    apiVersion,
-                    context.getString(R.string.nc_attendee_pin, participant.attendeePin),
-                    R.drawable.ic_lock_grey600_24px
-                )
-            }
-        } else if (participant.type == Participant.ParticipantType.OWNER) {
-            // Cannot moderate owner
-        } else if (participant.calculatedActorType == GROUPS) {
-            launchRemoveAttendeeFromConversationDialog(
-                participant,
-                apiVersion,
-                context.getString(R.string.nc_remove_group_and_members)
-            )
-        } else if (participant.calculatedActorType == CIRCLES) {
-            launchRemoveAttendeeFromConversationDialog(
-                participant,
-                apiVersion,
-                context.getString(R.string.nc_remove_team_and_members)
-            )
-        } else {
-            launchDefaultActions(participant, apiVersion)
-        }
-    }
-
-    @SuppressLint("CheckResult")
-    @Suppress("CyclomaticComplexMethod")
-    private fun launchDefaultActions(participant: Participant, apiVersion: Int) {
-        val items = getDefaultActionItems(participant)
-        if (CapabilitiesUtil.isBanningAvailable(conversationUser?.capabilities?.spreedCapability!!)) {
-            items.add(BasicListItemWithImage(R.drawable.baseline_block_24, context.getString(R.string.ban_participant)))
-        }
-        when (participant.type) {
-            Participant.ParticipantType.MODERATOR, Participant.ParticipantType.GUEST_MODERATOR -> items.removeAt(1)
-            Participant.ParticipantType.USER, Participant.ParticipantType.GUEST -> items.removeAt(2)
-            else -> {
-                items.removeAt(2)
-                items.removeAt(1)
-            }
-        }
-        if (participant.attendeePin == null || participant.attendeePin!!.isEmpty()) items.removeAt(0)
-        if (items.isNotEmpty()) {
-            MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
-                cornerRadius(res = R.dimen.corner_radius)
-                title(text = participant.displayName)
-                listItemsWithImage(items = items) { _, index, _ ->
-                    var actionToTrigger = index
-                    if (participant.attendeePin == null || participant.attendeePin!!.isEmpty()) actionToTrigger++
-                    if (participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK) actionToTrigger++
-                    when (actionToTrigger) {
-                        DEMOTE_OR_PROMOTE -> {
-                            if (apiVersion >= ApiUtils.API_V4) {
-                                toggleModeratorStatus(apiVersion, participant)
-                            } else {
-                                toggleModeratorStatusLegacy(apiVersion, participant)
-                            }
-                        }
-                        REMOVE_FROM_CONVERSATION -> removeAttendeeFromConversation(apiVersion, participant)
-                        BAN_FROM_CONVERSATION -> handleBan(participant)
-                        else -> { /* unused */ }
-                    }
+        when (action) {
+            ParticipantOpsAction.PromoteToModerator,
+            ParticipantOpsAction.DemoteFromModerator ->
+                if (apiVersion >= ApiUtils.API_V4) {
+                    toggleModeratorStatus(apiVersion, participant)
+                } else {
+                    toggleModeratorStatusLegacy(apiVersion, participant)
                 }
-            }
+
+            ParticipantOpsAction.PromoteToOwner ->
+                changeParticipantType(apiVersion, participant, promote = true, PARTICIPANT_TYPE_OWNER)
+
+            ParticipantOpsAction.DemoteOwnerToModerator ->
+                changeParticipantType(apiVersion, participant, promote = false, PARTICIPANT_TYPE_MODERATOR)
+
+            ParticipantOpsAction.DemoteOwnerToUser ->
+                changeParticipantType(apiVersion, participant, promote = false, PARTICIPANT_TYPE_USER)
+
+            ParticipantOpsAction.RemoveFromConversation -> removeAttendeeFromConversation(apiVersion, participant)
+            ParticipantOpsAction.Ban -> handleBan(participant)
         }
     }
 
-    @SuppressLint("StringFormatInvalid")
-    private fun getDefaultActionItems(participant: Participant): MutableList<BasicListItemWithImage> =
-        mutableListOf(
-            BasicListItemWithImage(
-                R.drawable.ic_lock_grey600_24px,
-                context.getString(R.string.nc_attendee_pin, participant.attendeePin)
-            ),
-            BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_promote)),
-            BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_demote)),
-            BasicListItemWithImage(R.drawable.ic_delete_grey600_24dp, context.getString(R.string.nc_remove_participant))
-        )
-
-    @SuppressLint("CheckResult")
-    private fun launchRemoveAttendeeFromConversationDialog(
-        participant: Participant,
-        apiVersion: Int,
-        itemText: String,
-        @DrawableRes itemIcon: Int = R.drawable.ic_delete_grey600_24dp
-    ) {
-        MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
-            cornerRadius(res = R.dimen.corner_radius)
-            title(text = participant.displayName)
-            listItemsWithImage(
-                items = mutableListOf(BasicListItemWithImage(itemIcon, itemText))
-            ) { _, index, _ ->
-                if (index == 0) removeAttendeeFromConversation(apiVersion, participant)
-            }
+    private fun showParticipantActionError(e: Throwable) {
+        val messageRes = if (participantActionErrorReason(e) == ERROR_LAST_MODERATOR) {
+            R.string.nc_last_moderator_cannot_be_demoted
+        } else {
+            R.string.nc_participant_type_change_failed
         }
+        lifecycleScope.launch { viewModel.emitSnackbar(messageRes) }
+    }
+
+    /**
+     * The moderators endpoint reports why it refused in the OCS data as
+     * `{"ocs":{"data":{"error":"<reason>"}}}`.
+     */
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private fun participantActionErrorReason(e: Throwable): String? =
+        try {
+            (e as? HttpException)?.response()?.errorBody()?.string()
+                ?.let { JSONObject(it) }
+                ?.optJSONObject("ocs")
+                ?.optJSONObject("data")
+                ?.optString("error")
+                ?.takeIf { it.isNotEmpty() }
+        } catch (exception: Exception) {
+            Log.w(TAG, "Could not read the participant action error", exception)
+            null
+        }
+
+    private fun changeParticipantType(
+        apiVersion: Int,
+        participant: Participant,
+        promote: Boolean,
+        participantType: Int
+    ) {
+        val user = conversationUser ?: return
+        val url = ApiUtils.getUrlForRoomModerators(apiVersion, user.baseUrl!!, conversationToken)
+        val call = if (promote) {
+            ncApi.promoteAttendeeToModerator(credentials, url, participant.attendeeId, participantType)
+        } else {
+            ncApi.demoteAttendeeFromModerator(credentials, url, participant.attendeeId, participantType)
+        }
+        call?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(participantActionObserver())
     }
 
     private fun handleBan(participant: Participant) {
@@ -861,8 +838,12 @@ class ConversationInfoActivity : BaseActivity() {
 
     companion object {
         private val TAG = ConversationInfoActivity::class.java.simpleName
-        private const val DEMOTE_OR_PROMOTE = 1
-        private const val REMOVE_FROM_CONVERSATION = 2
-        private const val BAN_FROM_CONVERSATION = 3
+
+        private const val ERROR_LAST_MODERATOR = "last-moderator"
+
+        // Participant types the moderators endpoint accepts as a target level
+        private const val PARTICIPANT_TYPE_OWNER: Int = 1
+        private const val PARTICIPANT_TYPE_MODERATOR: Int = 2
+        private const val PARTICIPANT_TYPE_USER: Int = 3
     }
 }

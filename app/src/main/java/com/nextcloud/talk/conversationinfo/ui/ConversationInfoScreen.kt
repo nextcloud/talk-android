@@ -44,6 +44,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -52,6 +53,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -90,6 +92,8 @@ import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.ParticipantRole
+import com.nextcloud.talk.utils.ParticipantRoleUtils
 import com.nextcloud.talk.utils.withLinks
 
 data class ConversationInfoScreenCallbacks(
@@ -111,6 +115,8 @@ data class ConversationInfoScreenCallbacks(
     val onShareConversationClick: () -> Unit = {},
     val onLockConversationClick: () -> Unit = {},
     val onParticipantClick: (ParticipantModel) -> Unit = {},
+    val onParticipantOpsDismiss: () -> Unit = {},
+    val onParticipantOpsAction: (ParticipantOpsAction, ParticipantModel) -> Unit = { _, _ -> },
     val onAddParticipantsClick: () -> Unit = {},
     val onStartGroupChatClick: () -> Unit = {},
     val onListBansClick: () -> Unit = {},
@@ -127,6 +133,7 @@ fun ConversationInfoScreen(
     state: ConversationInfoUiState,
     callbacks: ConversationInfoScreenCallbacks = ConversationInfoScreenCallbacks()
 ) {
+    val participantOpsSheetState = rememberModalBottomSheetState()
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top),
         topBar = {
@@ -243,6 +250,25 @@ fun ConversationInfoScreen(
 
                 item { DangerZoneSection(state, callbacks) }
             }
+        }
+    }
+
+    val participantForOps = state.participantForOps
+    if (participantForOps != null) {
+        ModalBottomSheet(
+            onDismissRequest = callbacks.onParticipantOpsDismiss,
+            sheetState = participantOpsSheetState,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+        ) {
+            ParticipantOperationsContent(
+                model = participantForOps,
+                conversation = state.conversation,
+                spreedCapabilities = state.spreedCapabilities,
+                onAction = { action ->
+                    callbacks.onParticipantOpsDismiss()
+                    callbacks.onParticipantOpsAction(action, participantForOps)
+                }
+            )
         }
     }
 }
@@ -779,6 +805,7 @@ private fun ParticipantAvatarImage(
 
 private const val PARTICIPANT_STATUS_SIZE_DP = 18f
 private const val PARTICIPANT_OFFLINE_ALPHA = 0.38f
+private const val PARTICIPANT_ROLE_ICON_SIZE_DP = 16f
 private const val PARTICIPANT_STATUS_EMOJI_SCALE = 0.8f
 
 @Composable
@@ -818,18 +845,17 @@ private fun ParticipantStatusOverlay(status: String?, modifier: Modifier = Modif
     }
 }
 
+/** Owner and moderator are omitted here, they are shown as an icon instead. */
 @Composable
-private fun participantRoleLabel(participant: Participant): String =
+private fun participantTypeLabel(participant: Participant): String =
     when (participant.type) {
-        Participant.ParticipantType.OWNER,
-        Participant.ParticipantType.MODERATOR,
-        Participant.ParticipantType.GUEST_MODERATOR -> stringResource(R.string.nc_moderator)
         Participant.ParticipantType.USER -> when (participant.calculatedActorType) {
             Participant.ActorType.GROUPS -> stringResource(R.string.nc_group)
             Participant.ActorType.CIRCLES -> stringResource(R.string.nc_team)
             else -> ""
         }
-        Participant.ParticipantType.GUEST -> stringResource(R.string.nc_guest)
+        Participant.ParticipantType.GUEST,
+        Participant.ParticipantType.GUEST_MODERATOR -> stringResource(R.string.nc_guest)
         Participant.ParticipantType.USER_FOLLOWING_LINK -> stringResource(R.string.nc_following_link)
         else -> ""
     }
@@ -847,35 +873,55 @@ private fun participantEffectiveStatus(participant: Participant): String {
 }
 
 @Composable
-private fun ParticipantNameRow(displayName: String, roleLabel: String, nameColor: Color) {
-    Row {
+private fun ParticipantNameRow(
+    displayName: String,
+    typeLabel: String,
+    role: ParticipantRole,
+    nameColor: Color,
+    contentAlpha: Float
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = displayName,
             style = MaterialTheme.typography.bodyLarge,
             color = nameColor,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .weight(1f, fill = false)
-                .alignByBaseline()
+            modifier = Modifier.weight(1f, fill = false)
         )
-        if (roleLabel.isNotEmpty()) {
+        val roleIconRes = ParticipantRoleUtils.iconRes(role)
+        val roleLabelRes = ParticipantRoleUtils.labelRes(role)
+        if (roleIconRes != null && roleLabelRes != null) {
+            Icon(
+                painter = painterResource(roleIconRes),
+                contentDescription = stringResource(roleLabelRes),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .padding(start = 4.dp)
+                    .size(PARTICIPANT_ROLE_ICON_SIZE_DP.dp)
+                    .alpha(contentAlpha)
+            )
+        }
+        if (typeLabel.isNotEmpty()) {
             Text(
-                text = " ($roleLabel)",
+                text = " ($typeLabel)",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.alignByBaseline()
+                modifier = Modifier.alpha(contentAlpha)
             )
         }
     }
 }
 
 @Composable
-private fun ParticipantStatusRow(statusEmoji: String?, statusText: String) {
+private fun ParticipantStatusRow(statusEmoji: String?, statusText: String, contentAlpha: Float) {
     if (statusEmoji == null && statusText.isEmpty()) return
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = Modifier.alpha(contentAlpha),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         if (statusEmoji != null) {
             val fontSize = with(LocalDensity.current) {
                 (PARTICIPANT_STATUS_SIZE_DP * PARTICIPANT_STATUS_EMOJI_SCALE).dp.toSp()
@@ -922,7 +968,8 @@ private fun ParticipantItemRow(
     } else {
         stringResource(R.string.nc_guest)
     }
-    val roleLabel = participantRoleLabel(participant)
+    val typeLabel = participantTypeLabel(participant)
+    val contentAlpha = if (model.isOnline) 1f else PARTICIPANT_OFFLINE_ALPHA
     val statusText = participantEffectiveStatus(participant)
     val statusEmoji = participant.statusIcon?.takeIf { it.isNotEmpty() }
 
@@ -941,7 +988,7 @@ private fun ParticipantItemRow(
                 conversationToken = conversationToken,
                 modifier = Modifier
                     .size(40.dp)
-                    .alpha(if (model.isOnline) 1f else PARTICIPANT_OFFLINE_ALPHA)
+                    .alpha(contentAlpha)
             )
             ParticipantStatusOverlay(
                 status = participant.status,
@@ -952,8 +999,18 @@ private fun ParticipantItemRow(
         }
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
-            ParticipantNameRow(displayName = displayName, roleLabel = roleLabel, nameColor = nameColor)
-            ParticipantStatusRow(statusEmoji = statusEmoji, statusText = statusText)
+            ParticipantNameRow(
+                displayName = displayName,
+                typeLabel = typeLabel,
+                role = model.role,
+                nameColor = nameColor,
+                contentAlpha = contentAlpha
+            )
+            ParticipantStatusRow(
+                statusEmoji = statusEmoji,
+                statusText = statusText,
+                contentAlpha = contentAlpha
+            )
         }
         val inCallIconRes = when {
             participant.inCall and Participant.InCallFlags.WITH_PHONE.toLong() > 0L ->
@@ -1053,7 +1110,8 @@ private fun previewState(): ConversationInfoUiState {
             type = Participant.ParticipantType.OWNER,
             status = StatusType.ONLINE.string
         ),
-        isOnline = true
+        isOnline = true,
+        role = ParticipantRole.OWNER
     )
     val bob = ParticipantModel(
         participant = Participant(
@@ -1065,7 +1123,8 @@ private fun previewState(): ConversationInfoUiState {
             statusMessage = "In a meeting",
             inCall = Participant.InCallFlags.WITH_VIDEO.toLong()
         ),
-        isOnline = true
+        isOnline = true,
+        role = ParticipantRole.MODERATOR
     )
     val carol = ParticipantModel(
         participant = Participant(
@@ -1084,6 +1143,16 @@ private fun previewState(): ConversationInfoUiState {
             type = Participant.ParticipantType.USER
         ),
         isOnline = false
+    )
+    val erin = ParticipantModel(
+        participant = Participant(
+            actorType = Participant.ActorType.GUESTS,
+            actorId = "guest-erin",
+            displayName = "Erin",
+            type = Participant.ParticipantType.GUEST_MODERATOR
+        ),
+        isOnline = true,
+        role = ParticipantRole.MODERATOR
     )
     return ConversationInfoUiState(
         isLoading = false,
@@ -1121,7 +1190,7 @@ private fun previewState(): ConversationInfoUiState {
         isConversationLocked = false,
         showLockConversation = true,
         showParticipants = true,
-        participants = listOf(alice, bob, carol, dave),
+        participants = listOf(alice, bob, erin, carol, dave),
         showAddParticipants = true,
         showListBans = true,
         showArchiveConversation = true,
@@ -1335,6 +1404,98 @@ private fun ParticipantItemRowPreview() {
     val state = previewState()
     PreviewWrapper {
         state.participants.forEach { participant ->
+            ParticipantItemRow(
+                model = participant,
+                baseUrl = state.serverBaseUrl,
+                credentials = state.credentials,
+                conversationToken = state.conversationToken,
+                onItemClick = {}
+            )
+        }
+    }
+}
+
+/**
+ * The four combinations the name row has to render: role badge alone, badge next to a type label,
+ * type label alone, and neither. Plus the cases that are easy to regress: a name long enough to
+ * ellipsize away from the badge, a rank suppressed because the conversation has no ranks, and the
+ * offline rows where badge and label have to dim along with the name and the avatar.
+ */
+private fun roleBadgePreviewParticipants(): List<ParticipantModel> {
+    fun model(
+        displayName: String,
+        type: Participant.ParticipantType,
+        role: ParticipantRole,
+        actorType: Participant.ActorType = Participant.ActorType.USERS,
+        isOnline: Boolean = true,
+        statusMessage: String? = null
+    ) = ParticipantModel(
+        participant = Participant(
+            actorType = actorType,
+            actorId = displayName.lowercase(),
+            displayName = displayName,
+            type = type,
+            status = if (isOnline) StatusType.ONLINE.string else StatusType.OFFLINE.string,
+            statusMessage = statusMessage
+        ),
+        isOnline = isOnline,
+        role = role
+    )
+
+    return listOf(
+        // Badge only
+        model("Owner, badge only", Participant.ParticipantType.OWNER, ParticipantRole.OWNER),
+        model("Moderator, badge only", Participant.ParticipantType.MODERATOR, ParticipantRole.MODERATOR),
+        // Badge plus a type label
+        model(
+            displayName = "Guest moderator, badge and label",
+            type = Participant.ParticipantType.GUEST_MODERATOR,
+            role = ParticipantRole.MODERATOR,
+            actorType = Participant.ActorType.GUESTS
+        ),
+        // Label only
+        model(
+            displayName = "Group, label only",
+            type = Participant.ParticipantType.USER,
+            role = ParticipantRole.NONE,
+            actorType = Participant.ActorType.GROUPS
+        ),
+        // Neither
+        model("Plain user, no badge", Participant.ParticipantType.USER, ParticipantRole.NONE),
+        // Badge must survive an ellipsized name
+        model(
+            "Wilhelmina Bartholomew-Fitzgerald the Third of Nextcloud GmbH",
+            Participant.ParticipantType.OWNER,
+            ParticipantRole.OWNER
+        ),
+        // Rank suppressed: one-to-one, former one-to-one and changelog conversations have no ranks
+        model("Owner in a one-to-one, suppressed", Participant.ParticipantType.OWNER, ParticipantRole.NONE),
+        // Offline: name, avatar, badge, label and status line all dim together
+        model(
+            displayName = "Offline owner, dimmed badge and status",
+            type = Participant.ParticipantType.OWNER,
+            role = ParticipantRole.OWNER,
+            isOnline = false,
+            statusMessage = "Back on Monday"
+        ),
+        model(
+            displayName = "Offline guest moderator, dimmed badge and label",
+            type = Participant.ParticipantType.GUEST_MODERATOR,
+            role = ParticipantRole.MODERATOR,
+            actorType = Participant.ActorType.GUESTS,
+            isOnline = false
+        )
+    )
+}
+
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "RTL Arabic", locale = "ar")
+@Composable
+private fun ParticipantRoleBadgePreview() {
+    val state = previewState()
+    PreviewWrapper {
+        roleBadgePreviewParticipants().forEach { participant ->
             ParticipantItemRow(
                 model = participant,
                 baseUrl = state.serverBaseUrl,
