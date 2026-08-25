@@ -44,6 +44,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -52,6 +53,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -113,6 +115,8 @@ data class ConversationInfoScreenCallbacks(
     val onShareConversationClick: () -> Unit = {},
     val onLockConversationClick: () -> Unit = {},
     val onParticipantClick: (ParticipantModel) -> Unit = {},
+    val onParticipantOpsDismiss: () -> Unit = {},
+    val onParticipantOpsAction: (ParticipantOpsAction, ParticipantModel) -> Unit = { _, _ -> },
     val onAddParticipantsClick: () -> Unit = {},
     val onStartGroupChatClick: () -> Unit = {},
     val onListBansClick: () -> Unit = {},
@@ -129,6 +133,7 @@ fun ConversationInfoScreen(
     state: ConversationInfoUiState,
     callbacks: ConversationInfoScreenCallbacks = ConversationInfoScreenCallbacks()
 ) {
+    val participantOpsSheetState = rememberModalBottomSheetState()
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top),
         topBar = {
@@ -245,6 +250,25 @@ fun ConversationInfoScreen(
 
                 item { DangerZoneSection(state, callbacks) }
             }
+        }
+    }
+
+    val participantForOps = state.participantForOps
+    if (participantForOps != null) {
+        ModalBottomSheet(
+            onDismissRequest = callbacks.onParticipantOpsDismiss,
+            sheetState = participantOpsSheetState,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+        ) {
+            ParticipantOperationsContent(
+                model = participantForOps,
+                conversation = state.conversation,
+                spreedCapabilities = state.spreedCapabilities,
+                onAction = { action ->
+                    callbacks.onParticipantOpsDismiss()
+                    callbacks.onParticipantOpsAction(action, participantForOps)
+                }
+            )
         }
     }
 }
