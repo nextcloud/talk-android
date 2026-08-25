@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.diagnosis
 
+import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -282,4 +283,18 @@ private fun addPushCommonEntries(context: Context, data: MutableList<DiagnosisEl
             value = boolStr(NotificationUtils.isMessagesNotificationChannelEnabled(context))
         )
     )
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        val canUseFullScreenIntent = context.getSystemService(NotificationManager::class.java)
+            .canUseFullScreenIntent()
+        data.add(
+            DiagnosisElement.DiagnosisEntry(
+                key = context.getString(R.string.nc_diagnosis_full_screen_intent_permission_title),
+                value = if (canUseFullScreenIntent) {
+                    context.getString(R.string.full_screen_intent_permission_granted)
+                } else {
+                    context.getString(R.string.full_screen_intent_permission_not_granted)
+                }
+            )
+        )
+    }
 }
