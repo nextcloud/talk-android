@@ -302,6 +302,7 @@ How to translate with transifex:
     <string name="nc_diagnosis_notification_permission" translatable="false">Notification permissions</string>
     <string name="nc_diagnosis_notification_calls_channel_permission" translatable="false">Calls notification channel enabled?</string>
     <string name="nc_diagnosis_notification_messages_channel_permission" translatable="false">Messages notification channel enabled?</string>
+    <string name="nc_diagnosis_full_screen_intent_permission_title" translatable="false">Show incoming call over lock screen</string>
     <string name="nc_diagnosis_firebase_push_token_title" translatable="false">Firebase push token</string>
     <string name="nc_diagnosis_firebase_push_token_latest_generated" translatable="false">Latest firebase push token generation</string>
     <string name="nc_diagnosis_firebase_push_token_latest_fetch" translatable="false">Latest firebase push token fetch</string>
