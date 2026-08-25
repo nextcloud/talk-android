@@ -189,7 +189,7 @@
     <string name="nc_conversation_tags_manage">Administrér tags</string>
     <string name="nc_conversation_tags_name_hint">Tag navn</string>
     <string name="nc_conversation_tags_new">Nyt tag</string>
-    <string name="nc_conversation_tags_save">Save</string>
+    <string name="nc_conversation_tags_save">Gem</string>
     <string name="nc_conversations_empty">Deltag i en samtale eller start en ny</string>
     <string name="nc_conversations_empty_details">Sig hej til dine venner og kollegaer.</string>
     <string name="nc_copy_message">Kopiér</string>
