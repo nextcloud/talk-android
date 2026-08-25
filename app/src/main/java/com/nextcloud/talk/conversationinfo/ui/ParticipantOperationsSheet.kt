@@ -81,16 +81,14 @@ private fun computeVisibility(
         !canModerate -> ParticipantOpsVisibility()
 
         model.isSelf -> ParticipantOpsVisibility(
-            infoPin = null,
+            infoPin = pin,
             showPromote = false,
             showDemote = false,
             showPromoteToOwner = false,
             // An owner may step down, but only as far as moderator, to avoid locking themselves out
             showDemoteOwnerToModerator = canDemoteFromOwner,
             showDemoteOwnerToUser = false,
-            remove = pin?.let {
-                RemoveOption(R.drawable.ic_lock_grey600_24px, stringResource(R.string.nc_attendee_pin, it))
-            },
+            remove = null,
             showBan = false
         )
 
