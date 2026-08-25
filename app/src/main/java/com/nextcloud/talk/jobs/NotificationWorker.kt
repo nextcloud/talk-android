@@ -158,7 +158,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         logger.d(TAG, "NotificationWorker::doWork")
 
-        initDecryptedData(inputData)
+        if (!initDecryptedData(inputData)) {
+            logger.e(TAG, "Aborting NotificationWorker::doWork because user/pushMessage could not be initialized")
+            return Result.failure()
+        }
         initNcApiAndCredentials()
 
         notificationManager = NotificationManagerCompat.from(context!!)
@@ -423,14 +426,14 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     @Suppress("TooGenericExceptionCaught", "NestedBlockDepth", "ComplexMethod", "LongMethod")
-    private fun initDecryptedData(inputData: Data) {
+    private fun initDecryptedData(inputData: Data): Boolean {
         try {
             if (inputData.hasKeyWithValueOfType(BundleKeys.KEY_NOTIFICATION_CLEARTEXT_SUBJECT, String::class.java)) {
                 val subject = inputData.getString(BundleKeys.KEY_NOTIFICATION_CLEARTEXT_SUBJECT)
                 val id = inputData.getLong(BundleKeys.KEY_NOTIFICATION_USER_ID, -1)
                 user = userManager.getUserWithId(id).blockingGet()
                 pushMessage = LoganSquare.parse(subject, DecryptedPushMessage::class.java)
-                return
+                return true
             }
 
             val subject = inputData.getString(BundleKeys.KEY_NOTIFICATION_SUBJECT)
@@ -453,17 +456,21 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                         DecryptedPushMessage::class.java
                     )
                     user = signatureVerification.user!!
+                    return true
+                } else {
+                    logger.e(TAG, "Signature verification failed, discarding push message")
                 }
             } catch (e: NoSuchAlgorithmException) {
-                Log.e(TAG, "No proper algorithm to decrypt the message ", e)
+                logger.e(TAG, "No proper algorithm to decrypt the message ", e)
             } catch (e: NoSuchPaddingException) {
-                Log.e(TAG, "No proper padding to decrypt the message ", e)
+                logger.e(TAG, "No proper padding to decrypt the message ", e)
             } catch (e: InvalidKeyException) {
-                Log.e(TAG, "Invalid private key ", e)
+                logger.e(TAG, "Invalid private key ", e)
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Error occurred while initializing decoded data ", e)
+            logger.e(TAG, "Error occurred while initializing decoded data ", e)
         }
+        return false
     }
 
     private fun decryptSubject(privateKey: PrivateKey, base64DecodedSubject: ByteArray): ByteArray =
