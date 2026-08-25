@@ -7,7 +7,6 @@
 
 package com.nextcloud.talk.chat
 
-import android.content.Context
 import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
@@ -29,7 +28,6 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.view.animation.LinearInterpolator
-import android.view.inputmethod.InputMethodManager
 import android.widget.Chronometer
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -38,12 +36,10 @@ import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.SeekBar
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.core.content.ContextCompat
 import androidx.compose.material3.MaterialTheme
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import androidx.emoji2.emojipicker.RecentEmojiProvider
 import androidx.emoji2.widget.EmojiTextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -119,7 +115,6 @@ class MessageInputFragment : Fragment() {
     private var typedWhileTypingTimerIsRunning: Boolean = false
     private var typingTimer: CountDownTimer? = null
     private lateinit var chatActivity: ChatActivity
-    private var restoreKeyboardOnEmojiDismiss = false
     private var mentionAutocomplete: Autocomplete<*>? = null
     private var xcounter = 0f
     private var ycounter = 0f
@@ -154,7 +149,6 @@ class MessageInputFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        restoreKeyboardOnEmojiDismiss = false
         super.onDestroyView()
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
@@ -250,7 +244,6 @@ class MessageInputFragment : Fragment() {
             when (state) {
                 is ChatViewModel.GetCapabilitiesUpdateState -> {
                     initMessageInputView(state.spreedCapabilities)
-                    initSmileyKeyboardToggler()
                     setupMentionAutocomplete()
                     initVoiceRecordButton()
                     initThreadHandling()
@@ -260,12 +253,10 @@ class MessageInputFragment : Fragment() {
 
                 is ChatViewModel.GetCapabilitiesInitialLoadState -> {
                     initMessageInputView(state.spreedCapabilities)
-                    initSmileyKeyboardToggler()
                     setupMentionAutocomplete()
                     initVoiceRecordButton()
                     initThreadHandling()
                     updateScheduledMessagesAvailability(hasScheduledMessages)
-                    restoreState()
                     setReactionsOnly(state.spreedCapabilities)
                     initInputState()
                 }
@@ -792,8 +783,6 @@ class MessageInputFragment : Fragment() {
 
     private fun showRecordAudioUi(show: Boolean) {
         if (show) {
-            restoreKeyboardOnEmojiDismiss = false
-            binding.emojiPicker.isVisible = false
             val animation: Animation = AlphaAnimation(FULLY_OPAQUE, FULLY_TRANSPARENT)
             animation.duration = ANIMATION_DURATION
             animation.interpolator = LinearInterpolator()
@@ -806,7 +795,6 @@ class MessageInputFragment : Fragment() {
             binding.fragmentMessageInputView.audioRecordDuration.visibility = View.VISIBLE
             binding.fragmentMessageInputView.slideToCancelDescription.visibility = View.VISIBLE
             binding.fragmentMessageInputView.attachmentButton.visibility = View.GONE
-            binding.fragmentMessageInputView.smileyButton.visibility = View.GONE
             binding.fragmentMessageInputView.messageInput.visibility = View.GONE
             binding.fragmentMessageInputView.messageInput.hint = ""
             binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.GONE
@@ -818,92 +806,9 @@ class MessageInputFragment : Fragment() {
             binding.fragmentMessageInputView.audioRecordDuration.visibility = View.GONE
             binding.fragmentMessageInputView.slideToCancelDescription.visibility = View.GONE
             binding.fragmentMessageInputView.attachmentButton.visibility = View.VISIBLE
-            binding.fragmentMessageInputView.smileyButton.visibility = View.VISIBLE
             binding.fragmentMessageInputView.messageInput.visibility = View.VISIBLE
             binding.fragmentMessageInputView.messageInput.hint =
                 requireContext().resources?.getString(R.string.nc_hint_enter_a_message)
-        }
-    }
-
-    private fun updateSmileyButtonIcon() {
-        val icon = if (binding.emojiPicker.isVisible) {
-            R.drawable.ic_baseline_keyboard_24
-        } else {
-            R.drawable.ic_insert_emoticon_black_24dp
-        }
-        val drawable = ContextCompat.getDrawable(requireContext(), icon)
-        binding.fragmentMessageInputView.smileyButton.setImageDrawable(drawable)
-    }
-
-    private fun showKeyboard() {
-        val editText = binding.fragmentMessageInputView.inputEditText
-        editText.requestFocus()
-        val inputMethodManager =
-            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        inputMethodManager?.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
-    }
-
-    private fun hideKeyboard() {
-        val view = activity?.currentFocus
-        if (view != null) {
-            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.hideSoftInputFromWindow(view.windowToken, 0)
-        }
-    }
-
-    private fun initSmileyKeyboardToggler() {
-        val inputEditText = binding.fragmentMessageInputView.inputEditText
-        val emojiPicker = binding.emojiPicker
-
-        emojiPicker.setRecentEmojiProvider(MessageInputRecentEmojiProvider(requireContext()))
-        emojiPicker.setOnEmojiPickedListener { item ->
-            val start = inputEditText.selectionStart
-            val end = inputEditText.selectionEnd
-            inputEditText.editableText.replace(start, end, item.emoji)
-        }
-
-        viewThemeUtils.talk.themeEmojiPicker(emojiPicker)
-        updateSmileyButtonIcon()
-
-        binding.fragmentMessageInputView.smileyButton.setOnClickListener {
-            if (emojiPicker.isVisible) {
-                showKeyboard()
-                emojiPicker.isVisible = false
-            } else {
-                hideKeyboard()
-                emojiPicker.isVisible = true
-            }
-            updateSmileyButtonIcon()
-        }
-
-        inputEditText.setOnClickListener {
-            if (emojiPicker.isVisible) {
-                emojiPicker.isVisible = false
-                updateSmileyButtonIcon()
-            }
-        }
-    }
-
-    private class MessageInputRecentEmojiProvider(context: Context) : RecentEmojiProvider {
-        private val prefs = context.getSharedPreferences("recent_emojis", Context.MODE_PRIVATE)
-
-        override fun recordSelection(emoji: String) {
-            val updated = listOf(emoji) + getStoredList().filterNot { it == emoji }
-            prefs.edit()
-                .putString("recent", updated.take(MAX_STORED_RECENT_EMOJIS).joinToString(","))
-                .apply()
-        }
-
-        override suspend fun getRecentEmojiList(): List<String> = getStoredList()
-
-        private fun getStoredList(): List<String> =
-            prefs.getString("recent", null)
-                ?.split(",")
-                ?.filter { it.isNotBlank() }
-                ?: emptyList()
-
-        companion object {
-            private const val MAX_STORED_RECENT_EMOJIS = 20
         }
     }
 
