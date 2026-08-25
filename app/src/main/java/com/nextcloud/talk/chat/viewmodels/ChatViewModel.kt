@@ -1845,17 +1845,6 @@ class ChatViewModel @AssistedInject constructor(
         Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, messageId: $messageId")
         Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, localLastReadMessage: $localLastReadMessage")
 
-        val newestKnownRealMessageId = _uiState.value.conversation?.lastMessage?.id
-
-        if (!isPlausibleLastReadMessageId(messageId, newestKnownRealMessageId)) {
-            logger.w(
-                TAG,
-                "advanceLocalLastReadMessageIfNeeded, messageId ($messageId) is implausibly higher than the " +
-                    "conversation's newest known message id ($newestKnownRealMessageId). We won't advance."
-            )
-            return
-        }
-
         if (localLastReadMessage < messageId && -1 < messageId) {
             Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, setting localLastReadMessage to $messageId")
             localLastReadMessage = messageId
@@ -2487,18 +2476,6 @@ class ChatViewModel @AssistedInject constructor(
         // cycle (up to 2 minutes later) before its "sent, not yet confirmed" spinner clears.
         private val POST_UPLOAD_FETCH_RETRY_DELAYS_MS = listOf(1_000L, 1_500L, 2_000L, 3_000L, 4_000L, 5_000L, 5_000L)
         private const val LOCAL_PREVIEW_GRACE_PERIOD_MS = 15_000L
-        private const val PLAUSIBLE_MESSAGE_ID_BUFFER = 10_000L
-
-        /**
-         * A real server-assigned message id is always positive, so a null, zero or negative
-         * [newestKnownRealMessageId] is never a trustworthy ceiling to judge [messageId] against -
-         * e.g. a federated conversation's cached lastMessage can carry an id of 0 when it was
-         * never populated. Without a trustworthy ceiling, [messageId] is accepted unchecked here.
-         */
-        fun isPlausibleLastReadMessageId(messageId: Int, newestKnownRealMessageId: Long?): Boolean {
-            val trustworthyCeiling = newestKnownRealMessageId?.takeIf { it > 0 } ?: return true
-            return messageId <= trustworthyCeiling + PLAUSIBLE_MESSAGE_ID_BUFFER
-        }
     }
 
     sealed class OutOfOfficeUIState {
