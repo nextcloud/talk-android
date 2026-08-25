@@ -41,6 +41,7 @@ import android.view.MotionEvent
 import android.view.OrientationEventListener
 import android.view.View
 import android.view.View.OnTouchListener
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
@@ -311,6 +312,7 @@ class CallActivity : CallBaseActivity() {
     private var webSocketClient: WebSocketInstance? = null
     private var webSocketConnectionHelper: WebSocketConnectionHelper? = null
     private var joinRoomInitiated = false
+    private var roomJoinRefreshes = 0
     private var hasMCU = false
     private var hasExternalSignalingServer = false
     private var conversationPassword: String? = null
@@ -1590,6 +1592,31 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    /**
+     * Joining the room for a call was rejected because the cached room session is stale (reaped by the server).
+     * Drops the cached session so [joinRoomAndCall] fetches a fresh one via the joinRoom API, and retries a few
+     * times; otherwise the call UI would show "Ringing" forever, as the calling timeout is only armed after a
+     * successful join.
+     */
+    private fun handleRoomJoinFailed() {
+        Log.d(TAG, "onMessageEvent 'roomJoinFailed'")
+        if (!shouldRefreshRoomSession(currentCallStatus, roomJoinRefreshes)) {
+            if (currentCallStatus !== CallStatus.IN_CONVERSATION) {
+                Log.e(TAG, "Joining the room for the call failed repeatedly, leaving")
+                runOnUiThread {
+                    Toast.makeText(context, R.string.nc_call_join_failed, Toast.LENGTH_LONG).show()
+                    finish()
+                }
+            }
+            return
+        }
+        roomJoinRefreshes++
+        Log.d(TAG, "Refreshing the room session and retrying the join ($roomJoinRefreshes/$MAX_ROOM_JOIN_REFRESHES)")
+        ApplicationWideCurrentRoomHolder.getInstance().session = ""
+        callSession = null
+        joinRoomAndCall()
+    }
+
     private fun callOrJoinRoomViaWebSocket() {
         if (hasExternalSignalingServer) {
             webSocketClient!!.joinRoomWithRoomTokenAndSession(
@@ -1900,9 +1927,12 @@ class CallActivity : CallBaseActivity() {
                     }
                     startSendingNick()
                     if (webSocketCommunicationEvent.getHashMap()!!["roomToken"] == roomToken) {
+                        roomJoinRefreshes = 0
                         performCall()
                     }
                 }
+
+                "roomJoinFailed" -> handleRoomJoinFailed()
 
                 "recordingStatus" -> {
                     Log.d(TAG, "onMessageEvent 'recordingStatus'")
@@ -3236,6 +3266,11 @@ class CallActivity : CallBaseActivity() {
 
         internal fun isPushToTalkRelease(action: Int): Boolean =
             action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL
+
+        private const val MAX_ROOM_JOIN_REFRESHES: Int = 2
+
+        internal fun shouldRefreshRoomSession(callStatus: CallStatus?, refreshesDone: Int): Boolean =
+            callStatus !== CallStatus.IN_CONVERSATION && refreshesDone < MAX_ROOM_JOIN_REFRESHES
 
         private const val DELAY_ON_ERROR_STOP_THRESHOLD: Int = 16
 

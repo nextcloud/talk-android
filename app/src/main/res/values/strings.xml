@@ -398,6 +398,7 @@ How to translate with transifex:
     <string name="nc_nick_guest">Guest</string>
     <string name="nc_public_call_status">Public conversation</string>
     <string name="nc_call_timeout">No response in 45 seconds, tap to try again</string>
+    <string name="nc_call_join_failed">Could not join the call. Please try again.</string>
     <string name="nc_call_reconnecting">Reconnecting …</string>
     <string name="nc_offline">Currently offline, please check your connectivity</string>
     <string name="nc_leaving_call">Leaving call …</string>
