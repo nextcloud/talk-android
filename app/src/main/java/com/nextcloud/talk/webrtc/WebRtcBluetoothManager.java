@@ -606,12 +606,9 @@ public class WebRtcBluetoothManager {
         if (bluetoothState == State.SCO_CONNECTED) {
             return true;
         }
-        if (bluetoothState == State.SCO_CONNECTING) {
-            // Keep the accepted SCO attempt. A late CONNECTED broadcast from an attempt which was
-            // stopped here could otherwise be mistaken for the new manual request.
-            return true;
-        }
-        if (bluetoothState == State.SCO_DISCONNECTING) {
+        if (isBluetoothTransitionInProgress(bluetoothState)) {
+            // Do not restart SCO while its state is settling. A late CONNECTED broadcast could
+            // otherwise be mistaken for the new manual request.
             return true;
         }
         updateDevice();
