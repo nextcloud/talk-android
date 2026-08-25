@@ -889,8 +889,7 @@ class ChatActivity :
                     LocalUploadProgressProvider provides { refId -> uploadProgressMap[refId] },
                     LocalUploadedLocalPreviewProvider provides { refId -> uploadedLocalPreviewMap[refId] }
                 ) {
-                    val isOneToOneConversation by remember { mutableStateOf(uiState.isOneToOneConversation) }
-                    Log.d(TAG, "isOneToOneConversation=" + isOneToOneConversation)
+                    val isOneToOneConversation = uiState.isOneToOneConversation
 
                     // list of the file ids of messages being downloaded
                     val downloadingFileState = remember { mutableStateOf(listOf<String>()) }
