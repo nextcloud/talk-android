@@ -43,11 +43,13 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.conversationinfo.model.ParticipantModel
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.ParticipantRole
 import com.nextcloud.talk.utils.ParticipantRoleUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 
 private data class RemoveOption(@DrawableRes val iconRes: Int, val label: String)
 
@@ -307,6 +309,37 @@ private fun previewParticipant(
     isSelf = isSelf
 )
 
+/** A group conversation moderated by the previewing user, satisfying canModerate(). */
+private fun previewConversation() =
+    ConversationModel(
+        internalId = "1@token",
+        accountId = 1L,
+        token = "token",
+        name = "conversation",
+        displayName = "Conversation",
+        description = "",
+        type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+        participantType = Participant.ParticipantType.OWNER,
+        sessionId = "",
+        actorId = "self",
+        actorType = "users",
+        objectType = ConversationEnums.ObjectType.DEFAULT,
+        notificationLevel = ConversationEnums.NotificationLevel.DEFAULT,
+        conversationReadOnlyState = ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_WRITE,
+        lobbyState = ConversationEnums.LobbyState.LOBBY_STATE_ALL_PARTICIPANTS,
+        lobbyTimer = 0L,
+        canLeaveConversation = true,
+        canDeleteConversation = true,
+        unreadMentionDirect = false,
+        notificationCalls = 0,
+        avatarVersion = "",
+        hasCustomAvatar = false,
+        callStartTime = 0L
+    )
+
+private fun previewCapabilities(vararg features: SpreedFeatures) =
+    SpreedCapability(features = features.map { it.value }, config = null, version = "")
+
 @Composable
 private fun ParticipantOpsPreviewWrapper(content: @Composable () -> Unit) {
     val colors = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
@@ -374,6 +407,7 @@ private fun ParticipantOperationsSheetInformationalPreview() {
     }
 }
 
+/** With moderation rights and the capability, another owner can be demoted from the sheet. */
 @Preview(showBackground = true, name = "Light")
 @Preview(showBackground = true, name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
@@ -385,8 +419,8 @@ private fun ParticipantOperationsSheetOwnerPreview() {
                 Participant.ParticipantType.OWNER,
                 ParticipantRole.OWNER
             ),
-            conversation = null,
-            spreedCapabilities = null,
+            conversation = previewConversation(),
+            spreedCapabilities = previewCapabilities(SpreedFeatures.PROMOTE_DEMOTE_OWNER),
             onAction = {}
         )
     }
