@@ -251,6 +251,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import java.util.concurrent.CancellationException
@@ -2760,6 +2761,7 @@ class ChatActivity :
     }
 
     private fun uploadFiles(files: MutableList<String>, caption: String = "", compressImages: Boolean = false) {
+        val uploadId = UUID.randomUUID().toString()
         for (i in 0 until files.size) {
             uploadFile(
                 fileUri = files[i],
@@ -2768,7 +2770,9 @@ class ChatActivity :
                 roomToken = roomToken,
                 replyToMessageId = getReplyToMessageId(),
                 displayName = currentConversation?.displayName!!,
-                compressImages = compressImages
+                compressImages = compressImages,
+                uploadId = uploadId,
+                order = i + 1
             )
         }
     }
@@ -4159,7 +4163,9 @@ class ChatActivity :
         roomToken: String = "",
         replyToMessageId: Int? = null,
         displayName: String,
-        compressImages: Boolean = false
+        compressImages: Boolean = false,
+        uploadId: String? = null,
+        order: Int = 1
     ) {
         chatViewModel.uploadFile(
             fileUri,
@@ -4168,7 +4174,9 @@ class ChatActivity :
             roomToken,
             replyToMessageId,
             displayName,
-            compressImages
+            compressImages,
+            uploadId,
+            order
         )
         cancelReply()
     }

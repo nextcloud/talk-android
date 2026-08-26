@@ -28,6 +28,7 @@ import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
+import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.ui.model.toUiModel
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel.Companion.POST_UPLOAD_FETCH_RETRY_DELAYS_MS
@@ -70,11 +71,13 @@ import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.MimetypeUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
+import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
 import dagger.assisted.Assisted
@@ -128,6 +131,96 @@ import java.time.ZoneId
 import java.util.UUID
 import javax.inject.Inject
 import androidx.core.net.toUri
+
+private const val FILE_PLACEHOLDER_MESSAGE = "{file}"
+private const val VCARD_MIMETYPE = "text/vcard"
+
+// Matches referenceIds built by SendMessageUtils.generateGroupedReferenceId():
+// sha256(uploadId)[0:60] + "-" + order, zero-padded to 3 digits. Shared cross-client format,
+// see https://github.com/nextcloud/spreed/pull/19040
+private val groupedReferenceIdRegex = Regex("^([a-f0-9]{60})-[0-9]{3}$")
+
+/**
+ * A file's referenceId marks it as part of an upload batch when it matches the cross-client
+ * format `sha256(uploadId)[0:60]-order`. Returns the shared hash prefix identifying the batch,
+ * or null if the id doesn't match (plain-text messages, or older/unrelated referenceIds).
+ */
+internal fun groupHash(referenceId: String?): String? =
+    referenceId?.let { groupedReferenceIdRegex.matchEntire(it)?.groupValues?.get(1) }
+
+// A run of consecutive, already-synced single-file share messages from the same author, uploaded
+// together in one batch, either kept as-is (Single) or merged into one grouped "album" bubble
+// (Group) - see ChatViewModel.combineFileShareGroups().
+internal sealed interface CombinedUnit {
+    val messages: List<ChatMessageUi>
+
+    data class Single(val message: ChatMessageUi) : CombinedUnit {
+        override val messages: List<ChatMessageUi> get() = listOf(message)
+    }
+
+    data class Group(override val messages: List<ChatMessageUi>) : CombinedUnit
+}
+
+/**
+ * A plain, already-synced single-file share that can be combined with its neighbours.
+ * Mirrors web's isCombinableFileMessage(): excludes system/voice/geo/poll/deck/text messages
+ * (via the content-type check), deleted or failed messages, still-uploading placeholders (their
+ * content is UploadingMedia, not Media), contact cards and audio files.
+ */
+internal fun isCombinableFileShare(message: ChatMessageUi): Boolean {
+    val content = message.content as? MessageTypeContent.Media ?: return false
+    return !message.isDeleted &&
+        message.statusIcon != MessageStatusIcon.FAILED &&
+        content.mimeType != VCARD_MIMETYPE &&
+        !MimetypeUtils.isAudioOnly(content.mimeType)
+}
+
+/** Two file shares belong to the same batch: same reply target and same upload-batch hash. */
+internal fun canCombineFileShares(a: ChatMessageUi, b: ChatMessageUi): Boolean {
+    val hash = groupHash(a.referenceId)
+    return a.parentMessage?.id == b.parentMessage?.id && hash != null && hash == groupHash(b.referenceId)
+}
+
+/**
+ * Replaces consecutive file shares uploaded together in one batch with a single grouped unit.
+ * A message that isn't a plain file share, a reply to a different message, or part of another
+ * batch interrupts the run. A file share with a real caption (not just the "{file}" placeholder)
+ * ends its group - the caption belongs to the group's last item, same as web.
+ */
+internal fun combineFileShareGroups(uiMessages: List<ChatMessageUi>): List<CombinedUnit> {
+    val result = mutableListOf<CombinedUnit>()
+    var pending = mutableListOf<ChatMessageUi>()
+
+    fun flush() {
+        when (pending.size) {
+            0 -> {}
+            1 -> result.add(CombinedUnit.Single(pending[0]))
+            else -> result.add(CombinedUnit.Group(pending.toList()))
+        }
+        pending = mutableListOf()
+    }
+
+    for (message in uiMessages) {
+        if (!isCombinableFileShare(message)) {
+            flush()
+            result.add(CombinedUnit.Single(message))
+            continue
+        }
+
+        if (pending.isNotEmpty() && !canCombineFileShares(pending.last(), message)) {
+            flush()
+        }
+
+        pending.add(message)
+
+        if (message.plainMessage != FILE_PLACEHOLDER_MESSAGE) {
+            flush()
+        }
+    }
+    flush()
+
+    return result
+}
 
 @Suppress("TooManyFunctions", "LongParameterList")
 class ChatViewModel @AssistedInject constructor(
@@ -1185,6 +1278,7 @@ class ChatViewModel @AssistedInject constructor(
     // ------------------------------
     // Build chat items (pure)
     // ------------------------------
+    @Suppress("CyclomaticComplexMethod")
     private fun buildChatItems(
         uiMessages: List<ChatMessageUi>,
         lastReadMessage: Int,
@@ -1203,32 +1297,47 @@ class ChatViewModel @AssistedInject constructor(
                 Log.d(TAG, "conversation.lastReadMessage = $lastReadMessage")
             }
 
-            for (uiMessage in uiMessages) {
-                if (uiMessage.isExpandableParent) {
-                    lastExpandableParentId = uiMessage.id
+            for (unit in combineFileShareGroups(uiMessages)) {
+                val messages = unit.messages
+                // The representative stands in for the whole unit for date/unread-marker purposes -
+                // for a group this is always its last (newest) message. Expandable system-message
+                // collapsing never applies to a group: isCombinableFileShare() excludes system
+                // messages entirely, so system-message-only checks are skipped for groups below.
+                val representative = messages.last()
+
+                if (unit is CombinedUnit.Single && representative.isExpandableParent) {
+                    lastExpandableParentId = representative.id
                 }
 
-                if (uiMessage.isHiddenByCollapse && lastExpandableParentId !in expandedParents) {
+                if (unit is CombinedUnit.Single &&
+                    representative.isHiddenByCollapse &&
+                    lastExpandableParentId !in expandedParents
+                ) {
                     continue
                 }
 
-                val date = uiMessage.date
+                val date = representative.date
 
                 if (date != lastDate) {
                     add(ChatItem.DateHeaderItem(date))
                     lastDate = date
                 }
 
-                if (!oneOrMoreMessagesWereSent && uiMessage.id == firstUnreadMessageId) {
+                if (!oneOrMoreMessagesWereSent && messages.any { it.id == firstUnreadMessageId }) {
                     add(ChatItem.UnreadMessagesMarkerItem(date))
                 }
 
-                val adjustedMessage = if (uiMessage.isExpandableParent) {
-                    uiMessage.copy(isExpanded = uiMessage.id in expandedParents)
-                } else {
-                    uiMessage
+                when (unit) {
+                    is CombinedUnit.Single -> {
+                        val adjustedMessage = if (representative.isExpandableParent) {
+                            representative.copy(isExpanded = representative.id in expandedParents)
+                        } else {
+                            representative
+                        }
+                        add(ChatItem.MessageItem(adjustedMessage))
+                    }
+                    is CombinedUnit.Group -> add(ChatItem.MediaGroupItem(messages))
                 }
-                add(ChatItem.MessageItem(adjustedMessage))
             }
         }.asReversed()
     }
@@ -2057,6 +2166,7 @@ class ChatViewModel @AssistedInject constructor(
 
     fun getCurrentVoiceRecordFile(): String = mediaRecorderManager.currentVoiceRecordFile
 
+    @Suppress("LongParameterList")
     fun uploadFile(
         fileUri: String,
         isVoiceMessage: Boolean,
@@ -2064,7 +2174,9 @@ class ChatViewModel @AssistedInject constructor(
         roomToken: String = "",
         replyToMessageId: Int? = null,
         displayName: String,
-        compressImages: Boolean = false
+        compressImages: Boolean = false,
+        uploadId: String? = null,
+        order: Int = 1
     ) {
         val metaDataMap = mutableMapOf<String, Any>()
         var room = ""
@@ -2091,7 +2203,7 @@ class ChatViewModel @AssistedInject constructor(
             metaDataMap["caption"] = caption
         }
 
-        val referenceId = UUID.randomUUID().toString().replace("-", "")
+        val referenceId = SendMessageUtils().generateGroupedReferenceId(uploadId ?: UUID.randomUUID().toString(), order)
         metaDataMap["referenceId"] = referenceId
         referenceIdSendSequence[referenceId] = nextSendSequenceValue++
 
@@ -2511,7 +2623,13 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     sealed interface ChatItem {
-        fun messageOrNull(): ChatMessageUi? = (this as? MessageItem)?.uiMessage
+        // For a MediaGroupItem, the last (newest) message stands in as the representative -
+        // matches how the grouped bubble itself is anchored (see MediaGroupItem docs below).
+        fun messageOrNull(): ChatMessageUi? = when (this) {
+            is MessageItem -> uiMessage
+            is MediaGroupItem -> messages.lastOrNull()
+            else -> null
+        }
         fun dateOrNull(): LocalDate? = (this as? DateHeaderItem)?.date
 
         fun stableKey(): Any =
@@ -2522,12 +2640,20 @@ class ChatViewModel @AssistedInject constructor(
                 // re-inserting a new one - which is what caused the visible flicker/pop.
                 is MessageItem -> uiMessage.referenceId?.takeIf { it.isNotBlank() }?.let { "msg_ref_$it" }
                     ?: "msg_${uiMessage.id}"
+                is MediaGroupItem -> "msg_group_${groupHash(messages.first().referenceId) ?: messages.first().id}"
                 is DateHeaderItem -> "header_$date"
                 is UnreadMessagesMarkerItem -> "last_read_$date"
                 is LoadGapItem -> "load_gap_$anchorMessageId"
             }
 
         data class MessageItem(val uiMessage: ChatMessageUi) : ChatItem
+
+        // A run of consecutive, already-synced single-file share messages from the same author,
+        // uploaded together in one batch (matching referenceId hash, see groupHash()), rendered as
+        // one grouped "album" bubble instead of N separate bubbles. Ordered chronologically -
+        // messages.last() is the newest and stands in for the group wherever a single representative
+        // message is needed (bubble anchor, reactions, read status, pagination anchor id).
+        data class MediaGroupItem(val messages: List<ChatMessageUi>) : ChatItem
         data class DateHeaderItem(val date: LocalDate) : ChatItem
         data class UnreadMessagesMarkerItem(val date: LocalDate) : ChatItem
         data class LoadGapItem(val anchorMessageId: Int) : ChatItem
