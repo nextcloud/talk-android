@@ -55,6 +55,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -172,6 +173,14 @@ class ConversationsListViewModel @Inject constructor(
             _getRoomsViewState.value = GetRoomsErrorState(throwable)
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
+
+    init {
+        viewModelScope.launch {
+            repository.getRoomsErrorFlow.collect { throwable ->
+                _getRoomsViewState.value = GetRoomsErrorState(throwable)
+            }
+        }
+    }
 
     /**
      * Drives the shimmer skeleton visibility. Visible while rooms are still being loaded for

@@ -88,6 +88,10 @@ class OfflineFirstConversationsRepository @Inject constructor(
         get() = _syncErrorFlow
     private val _syncErrorFlow: MutableSharedFlow<Throwable> = MutableSharedFlow()
 
+    override val getRoomsErrorFlow: Flow<Throwable>
+        get() = _getRoomsErrorFlow
+    private val _getRoomsErrorFlow: MutableSharedFlow<Throwable> = MutableSharedFlow()
+
     private val scope = CoroutineScope(Dispatchers.IO)
 
     sealed interface ConversationResult {
@@ -217,6 +221,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
             scope.launch { catchUpRoomsWithNewMessages(user, roomsWithNewMessages) }
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong when fetching conversations", e)
+            _getRoomsErrorFlow.emit(e)
             val hasCachedConversations = dao.getConversationsForUser(user.id!!).first().isNotEmpty()
             if (!hasCachedConversations) {
                 _syncErrorFlow.emit(e)
