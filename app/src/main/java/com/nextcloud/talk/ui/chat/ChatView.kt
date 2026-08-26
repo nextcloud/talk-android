@@ -455,7 +455,8 @@ fun ChatView(
                                     onReactionLongClick = callbacks.messageCallbacks.onReactionLongClick,
                                     onOpenThreadClick = callbacks.messageCallbacks.onOpenThreadClick,
                                     onQuotedMessageClick = handleQuotedMessageClick,
-                                    onAvatarClick = callbacks.messageCallbacks.onAvatarClick
+                                    onAvatarClick = callbacks.messageCallbacks.onAvatarClick,
+                                    onCancelUpload = callbacks.messageCallbacks.onCancelUpload
                                 )
                             )
                         }
