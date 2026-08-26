@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.FileProvider
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
@@ -48,6 +49,7 @@ class MediaViewerActivity : BaseActivity() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var viewModel: MediaViewerViewModel
+    private lateinit var windowInsetsController: WindowInsetsControllerCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +73,7 @@ class MediaViewerActivity : BaseActivity() {
             statusBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
         )
-        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+        windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
         windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
         // Deliberately no SwipeToCloseLayout here (unlike FullScreenImageActivity/
@@ -88,13 +90,24 @@ class MediaViewerActivity : BaseActivity() {
                     MediaViewerScreen(
                         viewModel = viewModel,
                         onShare = ::shareFile,
-                        onSave = ::showSaveDialog
+                        onSave = ::showSaveDialog,
+                        onControlsVisibilityChanged = { visible ->
+                            if (visible) exitImmersiveMode() else enterImmersiveMode()
+                        }
                     )
                 }
             }
         }
 
         setContentView(composeView)
+    }
+
+    private fun enterImmersiveMode() {
+        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+    }
+
+    private fun exitImmersiveMode() {
+        windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
     }
 
     private fun shareFile(item: MediaViewerItem, localPath: String) {

@@ -105,7 +105,8 @@ private val controlsSlideDistance = 24.dp
 fun MediaViewerScreen(
     viewModel: MediaViewerViewModel,
     onShare: (MediaViewerItem, String) -> Unit,
-    onSave: (MediaViewerItem, String) -> Unit
+    onSave: (MediaViewerItem, String) -> Unit,
+    onControlsVisibilityChanged: (Boolean) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val items = uiState.flattenedItems
@@ -163,6 +164,12 @@ fun MediaViewerScreen(
     // source of truth (see VideoPlayerView) rather than an independently toggled flag, since the
     // controller already auto-hides itself after a timeout.
     var showControls by remember { mutableStateOf(true) }
+
+    // The status/nav bars toggle together with the top bar and thumbnail strip - one tap hides all
+    // of it, matching FullScreenImageScreen/FullScreenMediaScreen's own tap-to-toggle-fullscreen.
+    LaunchedEffect(showControls) {
+        onControlsVisibilityChanged(showControls)
+    }
 
     // Hoisted here (rather than inside ThumbnailStrip) so its scroll position survives showControls
     // toggling the strip in and out of composition - otherwise every reveal remounted a fresh,
