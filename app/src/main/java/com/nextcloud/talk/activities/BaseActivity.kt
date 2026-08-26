@@ -27,9 +27,15 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -128,9 +134,26 @@ open class BaseActivity : AppCompatActivity() {
         setContent {
             val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
             val isMaintenanceMode by maintenanceModeFlow.collectAsStateWithLifecycle()
-            Column {
+            val showBanner = !isOnline || isMaintenanceMode
+            Column(modifier = Modifier.fillMaxSize()) {
                 StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
-                content()
+                // content() itself emits bare sibling composables (e.g. ColoredStatusBar() next to
+                // the screen), which rely on being at the composition root to overlay rather than
+                // stack. Confining them to a single weighted Box here preserves that overlay
+                // behavior while still reserving exactly the space below the banner for them.
+                //
+                // Several screens also apply their own statusBarsPadding()/Scaffold insets that
+                // assume they sit at the true top of the window. Once the banner is visible it has
+                // already claimed that inset (StatusBannerRow pads itself for it), so mark it
+                // consumed here — any statusBarsPadding() further down then adds nothing extra,
+                // avoiding a doubled gap under the banner.
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .let { if (showBanner) it.consumeWindowInsets(WindowInsets.statusBars) else it }
+                ) {
+                    content()
+                }
             }
         }
     }
