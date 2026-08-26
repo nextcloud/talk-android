@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,8 +25,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -46,11 +50,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import coil.compose.rememberAsyncImagePainter
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.FileParameters
 import com.nextcloud.talk.chat.data.model.decodeBlurhashPlaceholder
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
+import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.contacts.load
 import com.nextcloud.talk.ui.theme.mimetypeIconTint
@@ -66,6 +72,9 @@ private const val SQUARE_GRID_ROWS = 2
 private const val PLAY_BUTTON_ALPHA = 0.45f
 private const val OVERFLOW_SCRIM_ALPHA = 0.45f
 private const val OVERFLOW_TEXT_SIZE = 20
+private const val UPLOAD_SCRIM_ALPHA = 0.25f
+private const val UPLOAD_TRACK_ALPHA = 0.3f
+private const val PERCENT = 100
 
 private val gridSpacing = 2.dp
 private val gridTileShape = RoundedCornerShape(4.dp)
@@ -136,7 +145,8 @@ fun MediaGroupMessage(
                                     MediaGrid(
                                         items = mediaItems,
                                         chatViewDownloadingFileState = context.downloadingFileState,
-                                        onItemClick = callbacks.onFileClick
+                                        onItemClick = callbacks.onFileClick,
+                                        onCancelUpload = callbacks.onCancelUpload
                                     )
                                 }
                                 if (fileItems.isNotEmpty()) {
@@ -149,7 +159,8 @@ fun MediaGroupMessage(
                                         fileItems.forEach { message ->
                                             GroupedFileRow(
                                                 message = message,
-                                                onClick = { callbacks.onFileClick(message.id) }
+                                                onClick = { callbacks.onFileClick(message.id) },
+                                                onCancelUpload = callbacks.onCancelUpload
                                             )
                                         }
                                     }
@@ -164,16 +175,21 @@ fun MediaGroupMessage(
 }
 
 private fun ChatMessageUi.isPreviewableMedia(): Boolean {
-    val mimeType = (content as? MessageTypeContent.Media)?.mimeType.orEmpty()
+    val mimeType = when (val currentContent = content) {
+        is MessageTypeContent.Media -> currentContent.mimeType
+        is MessageTypeContent.UploadingMedia -> currentContent.mimeType.orEmpty()
+        else -> ""
+    }
     return mimeType.startsWith(Mimetype.IMAGE_PREFIX) || mimeType.startsWith(Mimetype.VIDEO_PREFIX)
 }
 
-@Suppress("Detekt.LongMethod")
+@Suppress("Detekt.LongMethod", "LongParameterList")
 @Composable
 private fun MediaGrid(
     items: List<ChatMessageUi>,
     chatViewDownloadingFileState: List<String>,
-    onItemClick: (Int) -> Unit
+    onItemClick: (Int) -> Unit,
+    onCancelUpload: (String) -> Unit
 ) {
     val visible = items.take(MAX_VISIBLE_GRID_TILES)
     val overflowCount = items.size - visible.size
@@ -184,6 +200,7 @@ private fun MediaGrid(
             MediaGridTile(
                 message = message,
                 chatViewDownloadingFileState = chatViewDownloadingFileState,
+                onCancelUpload = onCancelUpload,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(singleTileHeight)
@@ -201,6 +218,7 @@ private fun MediaGrid(
                     MediaGridTile(
                         message = message,
                         chatViewDownloadingFileState = chatViewDownloadingFileState,
+                        onCancelUpload = onCancelUpload,
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight()
@@ -220,6 +238,7 @@ private fun MediaGrid(
                 MediaGridTile(
                     message = big,
                     chatViewDownloadingFileState = chatViewDownloadingFileState,
+                    onCancelUpload = onCancelUpload,
                     modifier = Modifier
                         .weight(2f)
                         .fillMaxHeight()
@@ -234,6 +253,7 @@ private fun MediaGrid(
                         MediaGridTile(
                             message = message,
                             chatViewDownloadingFileState = chatViewDownloadingFileState,
+                            onCancelUpload = onCancelUpload,
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxWidth()
@@ -262,6 +282,7 @@ private fun MediaGrid(
                                 MediaGridTile(
                                     message = message,
                                     chatViewDownloadingFileState = chatViewDownloadingFileState,
+                                    onCancelUpload = onCancelUpload,
                                     modifier = Modifier.fillMaxWidth().fillMaxHeight().clip(gridTileShape),
                                     onClick = { onItemClick(message.id) }
                                 )
@@ -291,15 +312,41 @@ private fun MediaGrid(
     }
 }
 
-@Suppress("Detekt.LongMethod")
+// Dispatches a grid slot to the right renderer for the message's current state: already synced
+// (Media) or still mid-upload (UploadingMedia) - a batch groups into one bubble immediately as it
+// starts uploading rather than only once every file in it has synced, so both must render here.
 @Composable
 private fun MediaGridTile(
     message: ChatMessageUi,
     chatViewDownloadingFileState: List<String>,
+    onCancelUpload: (String) -> Unit,
     modifier: Modifier,
     onClick: () -> Unit
 ) {
-    val typeContent = message.content as MessageTypeContent.Media
+    val messageLongClickHandler = LocalMessageLongClickHandler.current
+    val clickableModifier = modifier.combinedClickable(
+        onClick = onClick,
+        onLongClick = { messageLongClickHandler(message.id) }
+    )
+
+    Box(modifier = clickableModifier, contentAlignment = Alignment.Center) {
+        when (val typeContent = message.content) {
+            is MessageTypeContent.Media ->
+                SyncedMediaTileContent(message, typeContent, chatViewDownloadingFileState)
+            is MessageTypeContent.UploadingMedia ->
+                UploadingMediaTileContent(message, typeContent, onCancelUpload)
+            else -> Unit
+        }
+    }
+}
+
+@Suppress("Detekt.LongMethod")
+@Composable
+private fun SyncedMediaTileContent(
+    message: ChatMessageUi,
+    typeContent: MessageTypeContent.Media,
+    chatViewDownloadingFileState: List<String>
+) {
     val context = LocalContext.current
     val fileParameters = remember(message.id) {
         FileParameters(HashMap(message.messageParameters.mapValues { (_, params) -> HashMap(params) }))
@@ -328,77 +375,151 @@ private fun MediaGridTile(
         }
     }
 
-    val messageLongClickHandler = LocalMessageLongClickHandler.current
-    val clickableModifier = modifier.combinedClickable(
-        onClick = onClick,
-        onLongClick = { messageLongClickHandler(message.id) }
-    )
-
-    Box(modifier = clickableModifier, contentAlignment = Alignment.Center) {
-        if (showsGenericIcon) {
-            if (blurhashPainter != null) {
-                Image(
-                    painter = blurhashPainter,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                )
-            }
-            Icon(
-                painter = fallbackPainter,
-                contentDescription = stringResource(R.string.media_message_content_description),
-                modifier = Modifier.size(genericIconSize),
-                tint = mimetypeIconTint(typeContent.drawableResourceId)
+    if (showsGenericIcon) {
+        if (blurhashPainter != null) {
+            Image(
+                painter = blurhashPainter,
+                contentDescription = null,
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                contentScale = ContentScale.Crop
             )
         } else {
-            if (blurhashPainter != null) {
-                Image(
-                    painter = blurhashPainter,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-                    contentScale = ContentScale.Crop
-                )
-            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            )
+        }
+        Icon(
+            painter = fallbackPainter,
+            contentDescription = stringResource(R.string.media_message_content_description),
+            modifier = Modifier.size(genericIconSize),
+            tint = mimetypeIconTint(typeContent.drawableResourceId)
+        )
+    } else {
+        if (blurhashPainter != null) {
             Image(
-                painter = rememberAsyncImagePainter(model = loadedImage),
-                contentDescription = stringResource(R.string.media_message_content_description),
+                painter = blurhashPainter,
+                contentDescription = null,
                 modifier = Modifier.fillMaxWidth().fillMaxHeight(),
                 contentScale = ContentScale.Crop
             )
         }
+        Image(
+            painter = rememberAsyncImagePainter(model = loadedImage),
+            contentDescription = stringResource(R.string.media_message_content_description),
+            modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+            contentScale = ContentScale.Crop
+        )
+    }
 
-        if (showPlayButton) {
-            Box(
-                modifier = Modifier
-                    .size(gridPlayButtonSize)
-                    .clip(CircleShape)
-                    .background(Color.Black.copy(alpha = PLAY_BUTTON_ALPHA)),
-                contentAlignment = Alignment.Center
+    if (showPlayButton) {
+        Box(
+            modifier = Modifier
+                .size(gridPlayButtonSize)
+                .clip(CircleShape)
+                .background(Color.Black.copy(alpha = PLAY_BUTTON_ALPHA)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_baseline_play_arrow_voice_message_24),
+                contentDescription = stringResource(R.string.media_message_content_play),
+                modifier = Modifier.size(gridPlayIconSize),
+                tint = Color.White
+            )
+        }
+    }
+
+    if (chatViewDownloadingFileState.contains(fileParameters.id)) {
+        CircularProgressIndicator(modifier = Modifier.size(28.dp), strokeWidth = 2.dp)
+    }
+}
+
+@Suppress("Detekt.LongMethod")
+@Composable
+private fun UploadingMediaTileContent(
+    message: ChatMessageUi,
+    typeContent: MessageTypeContent.UploadingMedia,
+    onCancelUpload: (String) -> Unit
+) {
+    val progress = LocalUploadProgressProvider.current(message.referenceId.orEmpty())
+    val isSent = message.statusIcon == MessageStatusIcon.SENT
+    val mimeType = typeContent.mimeType.orEmpty()
+    val hasLocalPreview = (mimeType.startsWith(Mimetype.IMAGE_PREFIX) || mimeType.startsWith(Mimetype.VIDEO_PREFIX)) &&
+        typeContent.localFileUri.isNotEmpty()
+
+    if (hasLocalPreview) {
+        Image(
+            painter = rememberAsyncImagePainter(model = typeContent.localFileUri.toUri()),
+            contentDescription = typeContent.fileName,
+            modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+            contentScale = ContentScale.Crop
+        )
+    } else {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+        )
+        Icon(
+            painter = painterResource(typeContent.drawableResourceId),
+            contentDescription = typeContent.fileName,
+            modifier = Modifier.size(genericIconSize),
+            tint = mimetypeIconTint(typeContent.drawableResourceId)
+        )
+    }
+
+    if (!isSent) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .background(Color.Black.copy(alpha = UPLOAD_SCRIM_ALPHA))
+        )
+        Box(modifier = Modifier.size(gridPlayButtonSize), contentAlignment = Alignment.Center) {
+            if (progress != null) {
+                CircularProgressIndicator(
+                    progress = { progress / PERCENT.toFloat() },
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.White,
+                    trackColor = Color.White.copy(alpha = UPLOAD_TRACK_ALPHA),
+                    strokeWidth = 2.dp
+                )
+            } else {
+                CircularProgressIndicator(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.White,
+                    trackColor = Color.White.copy(alpha = UPLOAD_TRACK_ALPHA),
+                    strokeWidth = 2.dp
+                )
+            }
+            IconButton(
+                onClick = { onCancelUpload(message.referenceId.orEmpty()) },
+                modifier = Modifier.align(Alignment.Center)
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_baseline_play_arrow_voice_message_24),
-                    contentDescription = stringResource(R.string.media_message_content_play),
-                    modifier = Modifier.size(gridPlayIconSize),
+                    imageVector = Icons.Default.Close,
+                    contentDescription = stringResource(R.string.nc_cancel),
                     tint = Color.White
                 )
             }
-        }
-
-        if (chatViewDownloadingFileState.contains(fileParameters.id)) {
-            CircularProgressIndicator(modifier = Modifier.size(28.dp), strokeWidth = 2.dp)
         }
     }
 }
 
 @Composable
-private fun GroupedFileRow(message: ChatMessageUi, onClick: () -> Unit) {
+private fun GroupedFileRow(message: ChatMessageUi, onClick: () -> Unit, onCancelUpload: (String) -> Unit) {
+    when (val content = message.content) {
+        is MessageTypeContent.Media -> SyncedFileRow(message, onClick)
+        is MessageTypeContent.UploadingMedia -> UploadingFileRow(message, content, onCancelUpload)
+        else -> Unit
+    }
+}
+
+@Composable
+private fun SyncedFileRow(message: ChatMessageUi, onClick: () -> Unit) {
     val fileParameters = remember(message.id) {
         FileParameters(HashMap(message.messageParameters.mapValues { (_, params) -> HashMap(params) }))
     }
@@ -428,5 +549,46 @@ private fun GroupedFileRow(message: ChatMessageUi, onClick: () -> Unit) {
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodyMedium
         )
+    }
+}
+
+@Composable
+private fun UploadingFileRow(
+    message: ChatMessageUi,
+    typeContent: MessageTypeContent.UploadingMedia,
+    onCancelUpload: (String) -> Unit
+) {
+    val messageLongClickHandler = LocalMessageLongClickHandler.current
+    val isSent = message.statusIcon == MessageStatusIcon.SENT
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .combinedClickable(
+                onClick = {},
+                onLongClick = { messageLongClickHandler(message.id) }
+            )
+            .padding(vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(typeContent.drawableResourceId),
+            contentDescription = null,
+            modifier = Modifier.size(32.dp),
+            tint = mimetypeIconTint(typeContent.drawableResourceId)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = typeContent.fileName,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f)
+        )
+        if (!isSent) {
+            IconButton(onClick = { onCancelUpload(message.referenceId.orEmpty()) }) {
+                Icon(imageVector = Icons.Default.Close, contentDescription = stringResource(R.string.nc_cancel))
+            }
+        }
     }
 }

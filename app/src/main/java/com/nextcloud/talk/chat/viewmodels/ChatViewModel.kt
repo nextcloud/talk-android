@@ -148,9 +148,9 @@ private val groupedReferenceIdRegex = Regex("^([a-f0-9]{60})-[0-9]{3}$")
 internal fun groupHash(referenceId: String?): String? =
     referenceId?.let { groupedReferenceIdRegex.matchEntire(it)?.groupValues?.get(1) }
 
-// A run of consecutive, already-synced single-file share messages from the same author, uploaded
-// together in one batch, either kept as-is (Single) or merged into one grouped "album" bubble
-// (Group) - see ChatViewModel.combineFileShareGroups().
+// A run of consecutive single-file share messages from the same author, uploaded together in one
+// batch - whether still uploading or already synced - either kept as-is (Single) or merged into
+// one grouped "album" bubble (Group) - see ChatViewModel.combineFileShareGroups().
 internal sealed interface CombinedUnit {
     val messages: List<ChatMessageUi>
 
@@ -162,17 +162,22 @@ internal sealed interface CombinedUnit {
 }
 
 /**
- * A plain, already-synced single-file share that can be combined with its neighbours.
- * Mirrors web's isCombinableFileMessage(): excludes system/voice/geo/poll/deck/text messages
- * (via the content-type check), deleted or failed messages, still-uploading placeholders (their
- * content is UploadingMedia, not Media), contact cards and audio files.
+ * A plain single-file share that can be combined with its neighbours - either already synced
+ * (Media) or still mid-upload (UploadingMedia), so a batch groups into one bubble immediately as
+ * it starts uploading rather than only once every file has synced. Mirrors web's
+ * isCombinableFileMessage() otherwise: excludes system/voice/geo/poll/deck/text messages (via the
+ * content-type check), deleted or failed messages, contact cards and audio files.
  */
 internal fun isCombinableFileShare(message: ChatMessageUi): Boolean {
-    val content = message.content as? MessageTypeContent.Media ?: return false
+    val mimeType = when (val content = message.content) {
+        is MessageTypeContent.Media -> content.mimeType
+        is MessageTypeContent.UploadingMedia -> content.mimeType.orEmpty()
+        else -> return false
+    }
     return !message.isDeleted &&
         message.statusIcon != MessageStatusIcon.FAILED &&
-        content.mimeType != VCARD_MIMETYPE &&
-        !MimetypeUtils.isAudioOnly(content.mimeType)
+        mimeType != VCARD_MIMETYPE &&
+        !MimetypeUtils.isAudioOnly(mimeType)
 }
 
 /** Two file shares belong to the same batch: same reply target and same upload-batch hash. */
@@ -2648,9 +2653,10 @@ class ChatViewModel @AssistedInject constructor(
 
         data class MessageItem(val uiMessage: ChatMessageUi) : ChatItem
 
-        // A run of consecutive, already-synced single-file share messages from the same author,
-        // uploaded together in one batch (matching referenceId hash, see groupHash()), rendered as
-        // one grouped "album" bubble instead of N separate bubbles. Ordered chronologically -
+        // A run of consecutive single-file share messages from the same author - whether still
+        // uploading or already synced - uploaded together in one batch (matching referenceId hash,
+        // see groupHash()), rendered as one grouped "album" bubble instead of N separate bubbles.
+        // Ordered chronologically -
         // messages.last() is the newest and stands in for the group wherever a single representative
         // message is needed (bubble anchor, reactions, read status, pagination anchor id).
         data class MediaGroupItem(val messages: List<ChatMessageUi>) : ChatItem

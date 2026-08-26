@@ -17,6 +17,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.LocalDate
 
+@Suppress("TooManyFunctions")
 class ChatViewModelTest {
 
     // The unread marker latch: the marker position must only be derived from the visible window
@@ -144,10 +145,10 @@ class ChatViewModelTest {
     }
 
     @Test
-    fun `still-uploading and failed messages are excluded from grouping`() {
+    fun `a failed message is excluded and breaks the group around it`() {
         val uploadId = "batch-6"
         val messages = listOf(
-            mediaMessage(1, refUtils.generateGroupedReferenceId(uploadId, 1), isTemporary = true),
+            mediaMessage(1, refUtils.generateGroupedReferenceId(uploadId, 1)),
             mediaMessage(2, refUtils.generateGroupedReferenceId(uploadId, 2), statusIcon = MessageStatusIcon.FAILED),
             mediaMessage(3, refUtils.generateGroupedReferenceId(uploadId, 3))
         )
@@ -156,6 +157,37 @@ class ChatViewModelTest {
 
         assertEquals(3, result.size)
         assertTrue(result.all { it is CombinedUnit.Single })
+    }
+
+    @Test
+    fun `still-uploading files from the same batch combine into one group immediately`() {
+        val uploadId = "batch-7"
+        val messages = listOf(
+            mediaMessage(1, refUtils.generateGroupedReferenceId(uploadId, 1), isTemporary = true),
+            mediaMessage(2, refUtils.generateGroupedReferenceId(uploadId, 2), isTemporary = true),
+            mediaMessage(3, refUtils.generateGroupedReferenceId(uploadId, 3), isTemporary = true)
+        )
+
+        val result = combineFileShareGroups(messages)
+
+        assertEquals(1, result.size)
+        assertTrue(result[0] is CombinedUnit.Group)
+        assertEquals(listOf(1, 2, 3), result[0].messages.map { it.id })
+    }
+
+    @Test
+    fun `a mix of an already-synced and a still-uploading file from the same batch combine`() {
+        val uploadId = "batch-8"
+        val messages = listOf(
+            mediaMessage(1, refUtils.generateGroupedReferenceId(uploadId, 1), isTemporary = false),
+            mediaMessage(2, refUtils.generateGroupedReferenceId(uploadId, 2), isTemporary = true)
+        )
+
+        val result = combineFileShareGroups(messages)
+
+        assertEquals(1, result.size)
+        assertTrue(result[0] is CombinedUnit.Group)
+        assertEquals(listOf(1, 2), result[0].messages.map { it.id })
     }
 
     @Test
