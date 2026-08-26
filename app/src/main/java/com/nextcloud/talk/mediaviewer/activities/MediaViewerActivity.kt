@@ -76,8 +76,8 @@ class MediaViewerActivity : BaseActivity() {
         windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
         windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
-        // Deliberately no SwipeToCloseLayout here (unlike FullScreenImageActivity/
-        // FullScreenMediaActivity): its ViewDragHelper intercepts drags at the parent level before
+        // Deliberately no SwipeToCloseLayout here (unlike FullScreenMediaActivity, still used for
+        // audio): its ViewDragHelper intercepts drags at the parent level before
         // the HorizontalPager below ever sees them, and a real swipe is rarely perfectly
         // horizontal - the small vertical component was enough to trigger it, closing the viewer
         // on what the user meant as a page-navigation swipe. Closing is still available via the

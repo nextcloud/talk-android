@@ -212,11 +212,6 @@
             android:theme="@style/AppTheme.CallLauncher" />
 
         <activity
-            android:name=".fullscreenfile.FullScreenImageActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/FullScreenImageTheme" />
-
-        <activity
             android:name=".fullscreenfile.FullScreenMediaActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/FullScreenMediaTheme" />

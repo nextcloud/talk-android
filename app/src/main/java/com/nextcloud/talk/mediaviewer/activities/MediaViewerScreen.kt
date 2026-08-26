@@ -159,14 +159,14 @@ fun MediaViewerScreen(
     }
 
     // Tapping the currently shown item toggles this off, hiding the top bar and thumbnail strip so
-    // only the media itself is visible - mirrors FullScreenImageScreen/FullScreenMediaScreen's own
-    // tap-to-toggle-fullscreen behavior. For video, ExoPlayer's own controller visibility is the
+    // only the media itself is visible - mirrors FullScreenMediaScreen's own tap-to-toggle-fullscreen
+    // behavior (still used for audio). For video, ExoPlayer's own controller visibility is the
     // source of truth (see VideoPlayerView) rather than an independently toggled flag, since the
     // controller already auto-hides itself after a timeout.
     var showControls by remember { mutableStateOf(true) }
 
     // The status/nav bars toggle together with the top bar and thumbnail strip - one tap hides all
-    // of it, matching FullScreenImageScreen/FullScreenMediaScreen's own tap-to-toggle-fullscreen.
+    // of it, matching FullScreenMediaScreen's own tap-to-toggle-fullscreen.
     LaunchedEffect(showControls) {
         onControlsVisibilityChanged(showControls)
     }
