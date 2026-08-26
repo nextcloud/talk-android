@@ -8,6 +8,8 @@ package com.nextcloud.talk.mediaviewer.activities
 
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
+import android.widget.FrameLayout
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -22,10 +24,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -53,16 +57,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
 import com.github.chrisbanes.photoview.PhotoView
@@ -159,6 +167,16 @@ fun MediaViewerScreen(
     val density = LocalDensity.current
     val slideOffsetPx = with(density) { controlsSlideDistance.roundToPx() }
 
+    val group = uiState.currentGroup
+    val hasThumbnailStrip = group != null && group.items.size > 1
+    // Reserved so the video's own ExoPlayer controller (progress bar, play/pause row) never renders
+    // underneath the thumbnail strip - the strip's height is fixed (a constant thumbnail size plus
+    // its own fixed padding), so this is knowable up front rather than measured.
+    val thumbnailStripHeightPx = with(density) {
+        (thumbnailSize + thumbnailStripTopPadding + thumbnailStripBottomPadding).roundToPx()
+    }
+    val controllerExtraBottomInsetPx = if (hasThumbnailStrip) thumbnailStripHeightPx else 0
+
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
         HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
             val item = items.getOrNull(page) ?: return@HorizontalPager
@@ -168,7 +186,8 @@ fun MediaViewerScreen(
                 isCurrentPage = page == pagerState.currentPage,
                 exoPlayer = exoPlayer,
                 onToggleControls = { showControls = !showControls },
-                onControlsVisibilityChanged = { showControls = it }
+                onControlsVisibilityChanged = { showControls = it },
+                controllerExtraBottomInsetPx = controllerExtraBottomInsetPx
             )
         }
 
@@ -204,9 +223,8 @@ fun MediaViewerScreen(
             )
         }
 
-        val group = uiState.currentGroup
         AnimatedVisibility(
-            visible = showControls && group != null && group.items.size > 1,
+            visible = showControls && hasThumbnailStrip,
             enter = fadeIn() + slideInVertically(initialOffsetY = { slideOffsetPx }),
             exit = fadeOut() + slideOutVertically(targetOffsetY = { slideOffsetPx }),
             modifier = Modifier.align(Alignment.BottomCenter)
@@ -253,7 +271,8 @@ private fun MediaPage(
     isCurrentPage: Boolean,
     exoPlayer: ExoPlayer,
     onToggleControls: () -> Unit,
-    onControlsVisibilityChanged: (Boolean) -> Unit
+    onControlsVisibilityChanged: (Boolean) -> Unit,
+    controllerExtraBottomInsetPx: Int
 ) {
     val isVideo = item.mimeType.startsWith(Mimetype.VIDEO_PREFIX)
     val isGif = MimetypeUtils.isGif(item.mimeType)
@@ -262,7 +281,11 @@ private fun MediaPage(
         when {
             localPath == null -> PreviewPlaceholder(item, onToggleControls = onToggleControls)
             isVideo -> if (isCurrentPage) {
-                VideoPlayerView(exoPlayer = exoPlayer, onControlsVisibilityChanged = onControlsVisibilityChanged)
+                VideoPlayerView(
+                    exoPlayer = exoPlayer,
+                    onControlsVisibilityChanged = onControlsVisibilityChanged,
+                    extraBottomInsetPx = controllerExtraBottomInsetPx
+                )
             } else {
                 PreviewPlaceholder(item, onToggleControls = onToggleControls)
             }
@@ -323,9 +346,27 @@ private fun ImagePage(localPath: String, onToggleControls: () -> Unit) {
     )
 }
 
+// Pushes ExoPlayer's own controller (progress bar, play/pause row) up by extraBottomInsetPx (the
+// thumbnail strip's height, when one is showing for the current group) on top of the system nav
+// bar inset, same technique FullScreenMediaScreen's MediaPlayerView already uses to keep the
+// controller clear of the nav bar - so the controller never renders underneath the strip instead
+// of shrinking the video content itself, which would visibly resize the video on every
+// show/hide-controls tap.
 @OptIn(UnstableApi::class)
 @Composable
-private fun VideoPlayerView(exoPlayer: ExoPlayer, onControlsVisibilityChanged: (Boolean) -> Unit) {
+private fun VideoPlayerView(
+    exoPlayer: ExoPlayer,
+    onControlsVisibilityChanged: (Boolean) -> Unit,
+    extraBottomInsetPx: Int
+) {
+    val density = LocalDensity.current
+    val layoutDirection = LocalLayoutDirection.current
+    val systemBarsBottomPx = WindowInsets.systemBars.getBottom(density)
+    val leftPx = WindowInsets.systemBars.getLeft(density, layoutDirection)
+    val rightPx = WindowInsets.systemBars.getRight(density, layoutDirection)
+    val bottomPx = systemBarsBottomPx + extraBottomInsetPx
+    val originalProgressMarginBottom = remember { intArrayOf(-1) }
+
     AndroidView(
         factory = { ctx ->
             PlayerView(ctx).apply {
@@ -337,6 +378,23 @@ private fun VideoPlayerView(exoPlayer: ExoPlayer, onControlsVisibilityChanged: (
                         onControlsVisibilityChanged(visibility == View.VISIBLE)
                     }
                 )
+            }
+        },
+        update = { playerView ->
+            val exoControls = playerView.findViewById<FrameLayout>(R.id.exo_bottom_bar)
+            val exoProgress = playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
+            exoControls?.apply {
+                updateLayoutParams<MarginLayoutParams> { bottomMargin = bottomPx }
+                updatePadding(left = leftPx, right = rightPx)
+            }
+            exoProgress?.apply {
+                if (originalProgressMarginBottom[0] < 0) {
+                    originalProgressMarginBottom[0] = (layoutParams as? MarginLayoutParams)?.bottomMargin ?: 0
+                }
+                updateLayoutParams<MarginLayoutParams> {
+                    bottomMargin = bottomPx + originalProgressMarginBottom[0]
+                }
+                updatePadding(left = leftPx, right = rightPx)
             }
         },
         modifier = Modifier.fillMaxSize()
