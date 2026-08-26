@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nextcloud.talk.R
 import com.nextcloud.talk.components.ColoredStatusBar
+import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.conversationtags.viewmodels.ConversationTagsViewModel
 import com.nextcloud.talk.data.user.model.User
@@ -247,7 +248,7 @@ fun ConversationsListScreen(
         Scaffold(
             contentWindowInsets = WindowInsets.safeDrawing,
             topBar = {
-                Column(modifier = Modifier.fillMaxWidth().statusBarsPadding()) {
+                Column(modifier = Modifier.fillMaxWidth()) {
                     StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
                     ConversationListTopBar(
                         state = ConversationListTopBarState(
@@ -271,7 +272,8 @@ fun ConversationsListScreen(
                             onAvatarClick = callbacks.onAvatarClick,
                             onNavigateBack = callbacks.onNavigateBack,
                             onAccountChooserClick = callbacks.onAccountChooserClick
-                        )
+                        ),
+                        modifier = Modifier.statusBarsPadding()
                     )
                 }
             }

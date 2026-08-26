@@ -94,6 +94,7 @@ import com.nextcloud.talk.components.AvatarEditPanel
 import com.nextcloud.talk.components.AvatarEditPanelCallbacks
 import com.nextcloud.talk.components.AvatarEditPanelState
 import com.nextcloud.talk.components.ColoredStatusBar
+import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.conversationcreation.ui.ConversationPresets
@@ -131,15 +132,20 @@ class ConversationCreationActivity : BaseActivity() {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val context = LocalContext.current
             val currentUser by conversationCreationViewModel.currentUser.collectAsState()
+            val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
+            val isMaintenanceMode by maintenanceModeFlow.collectAsStateWithLifecycle()
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
-                val user = currentUser
-                if (user == null) {
-                    LoadingScreen()
-                } else {
-                    val pickImage = remember(user) { PickImage(this@ConversationCreationActivity, user) }
-                    ConversationCreationScreen(conversationCreationViewModel, context, pickImage)
+                Column {
+                    StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
+                    val user = currentUser
+                    if (user == null) {
+                        LoadingScreen()
+                    } else {
+                        val pickImage = remember(user) { PickImage(this@ConversationCreationActivity, user) }
+                        ConversationCreationScreen(conversationCreationViewModel, context, pickImage)
+                    }
                 }
             }
         }

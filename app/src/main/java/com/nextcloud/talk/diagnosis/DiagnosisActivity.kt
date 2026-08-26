@@ -41,6 +41,7 @@ import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.errorhandling.saveLogsAsZip
+import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.logger.LogsRepository
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -64,9 +65,6 @@ class DiagnosisActivity : BaseActivity() {
 
     @Inject
     lateinit var userManager: UserManager
-
-    @Inject
-    lateinit var networkMonitor: NetworkMonitor
 
     @Inject
     lateinit var platformPermissionUtil: PlatformPermissionUtil
@@ -182,19 +180,22 @@ private fun DiagnosisScreen(
         colorScheme = colorScheme
     ) {
         val isOnline = networkMonitor.isOnline.collectAsState().value
-        ColoredStatusBar()
-        Scaffold(
-            modifier = Modifier
-                .statusBarsPadding()
-                .displayCutoutPadding(),
-            topBar = {
-                StandardAppBar(
-                    title = stringResource(R.string.nc_settings_diagnosis_title),
-                    menuItems
-                )
-            },
-            content = { paddingValues ->
-                val viewState = diagnosisViewModel.notificationViewState.collectAsState().value
+        val isMaintenanceMode = maintenanceModeFlow.collectAsState().value
+                ColoredStatusBar()
+                Column {
+                    StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
+                    Scaffold(
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .displayCutoutPadding(),
+                        topBar = {
+                            StandardAppBar(
+                                title = stringResource(R.string.nc_settings_diagnosis_title),
+                                menuItems
+                            )
+                        },
+                        content = { paddingValues ->
+                            val viewState = diagnosisViewModel.notificationViewState.collectAsState().value
 
                 Column(
                     Modifier

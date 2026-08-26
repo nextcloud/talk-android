@@ -63,6 +63,7 @@ import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.diagnosis.buildDiagnosisReportText
 import com.nextcloud.talk.diagnosis.showShareReportDialog
 import com.nextcloud.talk.errorhandling.saveLogsAsZip
+import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.logger.Level
 import com.nextcloud.talk.logger.LogEntry
 import com.nextcloud.talk.logger.LogsRepository
@@ -125,32 +126,38 @@ class LogsActivity : BaseActivity() {
                     }
                 )
 
+                val isOnline by networkMonitor.isOnline.collectAsState()
+                val isMaintenanceMode by maintenanceModeFlow.collectAsState()
+
                 ColoredStatusBar()
-                Scaffold(
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .displayCutoutPadding(),
-                    topBar = {
-                        StandardAppBar(
-                            title = stringResource(R.string.nc_logs_title),
-                            menuItems = menuItems
+                Column {
+                    StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
+                    Scaffold(
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .displayCutoutPadding(),
+                        topBar = {
+                            StandardAppBar(
+                                title = stringResource(R.string.nc_logs_title),
+                                menuItems = menuItems
+                            )
+                        }
+                    ) { paddingValues ->
+                        LogsContent(
+                            state = LogsUiState(
+                                entries = entries,
+                                isLoading = isLoading,
+                                totalSize = totalSize,
+                                lostEntries = viewModel.lostEntries,
+                                loggingEnabled = loggingEnabled,
+                                advancedLogging = advancedLogging
+                            ),
+                            onLoggingEnabledChange = { viewModel.setLoggingEnabled(it) },
+                            onAdvancedLoggingChange = { viewModel.setAdvancedLogging(it) },
+                            onDisable = { deleteExisting -> viewModel.setLoggingEnabled(false, deleteExisting) },
+                            paddingValues = paddingValues
                         )
                     }
-                ) { paddingValues ->
-                    LogsContent(
-                        state = LogsUiState(
-                            entries = entries,
-                            isLoading = isLoading,
-                            totalSize = totalSize,
-                            lostEntries = viewModel.lostEntries,
-                            loggingEnabled = loggingEnabled,
-                            advancedLogging = advancedLogging
-                        ),
-                        onLoggingEnabledChange = { viewModel.setLoggingEnabled(it) },
-                        onAdvancedLoggingChange = { viewModel.setAdvancedLogging(it) },
-                        onDisable = { deleteExisting -> viewModel.setLoggingEnabled(false, deleteExisting) },
-                        paddingValues = paddingValues
-                    )
                 }
 
                 LaunchedEffect(Unit) {

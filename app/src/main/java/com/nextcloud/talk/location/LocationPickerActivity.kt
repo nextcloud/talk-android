@@ -11,13 +11,17 @@ import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.ColoredStatusBar
+import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.extensions.getParcelableExtraProvider
 import com.nextcloud.talk.location.components.LocationPickerScreen
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CHAT_API_VERSION
@@ -99,14 +103,20 @@ class LocationPickerActivity : BaseActivity() {
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
         setContent {
+            val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
+            val isMaintenanceMode by maintenanceModeFlow.collectAsStateWithLifecycle()
+
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
-                LocationPickerScreen(
-                    viewModel = viewModel,
-                    onSearchClick = { navigateToGeocoding() },
-                    onBack = { onBackPressedDispatcher.onBackPressed() },
-                    onFinish = { finish() }
-                )
+                Column {
+                    StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
+                    LocationPickerScreen(
+                        viewModel = viewModel,
+                        onSearchClick = { navigateToGeocoding() },
+                        onBack = { onBackPressedDispatcher.onBackPressed() },
+                        onFinish = { finish() }
+                    )
+                }
             }
         }
     }
