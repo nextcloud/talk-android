@@ -308,6 +308,12 @@ class MessageInputFragment : Fragment() {
                 binding.fragmentCallStarted.visibility = if (hasCall) View.VISIBLE else View.GONE
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            chatActivity.chatViewModel.maintenanceModeFlow.collect { isMaintenanceMode ->
+                binding.fragmentMaintenanceMode.visibility = if (isMaintenanceMode) View.VISIBLE else View.GONE
+            }
+        }
     }
 
     private fun setReactionsOnly(spreedCapabilities: SpreedCapability) {

@@ -87,6 +87,10 @@ class ChatMessageSyncer @Inject constructor(
         suspend fun onIncomingMessagesFromOthers() {
             // no-op by default
         }
+
+        suspend fun onMaintenanceModeChanged(active: Boolean) {
+            // no-op by default
+        }
     }
 
     /**
@@ -590,6 +594,12 @@ class ChatMessageSyncer @Inject constructor(
                             )
                             HTTP_CODE_NOT_MODIFIED -> ChatPullResult.NotModified
                             HTTP_CODE_PRECONDITION_FAILED -> ChatPullResult.PreconditionFailed
+                            HTTP_CODE_SERVICE_UNAVAILABLE ->
+                                if (response.headers()[MAINTENANCE_MODE_HEADER] == "1") {
+                                    ChatPullResult.MaintenanceMode
+                                } else {
+                                    ChatPullResult.Error(HttpException(response))
+                                }
                             else -> ChatPullResult.Error(HttpException(response))
                         }
 
@@ -631,11 +641,14 @@ class ChatMessageSyncer @Inject constructor(
             val lookIntoFuture = fieldMap["lookIntoFuture"] == 1
 
             return when (val result = pullMessagesFlow(target, fieldMap).first()) {
-                is ChatPullResult.Success ->
+                is ChatPullResult.Success -> {
+                    events.onMaintenanceModeChanged(false)
                     handleSuccessfulPull(target, result, queriedMessageId, lookIntoFuture, events)
+                }
 
                 is ChatPullResult.NotModified -> {
                     Log.d(TAG, "Server returned NOT_MODIFIED, nothing to update")
+                    events.onMaintenanceModeChanged(false)
                     if (lookIntoFuture && queriedMessageId != null) {
                         // the server confirmed there is nothing newer than the queried message, so
                         // the queried message is a valid HTTP-synced anchor
@@ -646,7 +659,14 @@ class ChatMessageSyncer @Inject constructor(
 
                 is ChatPullResult.PreconditionFailed -> {
                     Log.d(TAG, "Server returned PRECONDITION_FAILED, nothing to update")
+                    events.onMaintenanceModeChanged(false)
                     NOTHING_SYNCED
+                }
+
+                is ChatPullResult.MaintenanceMode -> {
+                    Log.d(TAG, "Server is currently in maintenance mode")
+                    events.onMaintenanceModeChanged(true)
+                    SYNC_FAILED
                 }
 
                 is ChatPullResult.Error -> {
@@ -1003,6 +1023,8 @@ class ChatMessageSyncer @Inject constructor(
         private const val HTTP_CODE_OK: Int = 200
         private const val HTTP_CODE_NOT_MODIFIED = 304
         private const val HTTP_CODE_PRECONDITION_FAILED = 412
+        private const val HTTP_CODE_SERVICE_UNAVAILABLE = 503
+        private const val MAINTENANCE_MODE_HEADER = "X-Nextcloud-Maintenance-Mode"
         private const val MAX_PULL_ATTEMPTS = 5
         private const val RETRY_LIMIT_SECOND_ATTEMPT = 50
         private const val RETRY_LIMIT_THIRD_ATTEMPT = 10
