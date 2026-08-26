@@ -40,7 +40,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.events.RemoteWipeEvent
-import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.lock.LockedActivity
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
