@@ -433,6 +433,34 @@ fun ChatView(
                         }
                     }
 
+                    is ChatViewModel.ChatItem.MediaGroupItem -> {
+                        Box(
+                            modifier = Modifier.padding(
+                                top = if (!chatItem.messages.first().isGrouped) 4.dp else 0.dp
+                            )
+                        ) {
+                            MediaGroupMessage(
+                                messages = chatItem.messages,
+                                context = ChatMessageContext(
+                                    isOneToOneConversation = state.isOneToOneConversation,
+                                    conversationThreadId = state.conversationThreadId,
+                                    hasChatPermission = state.hasChatPermission,
+                                    downloadingFileState = state.downloadingFileState
+                                ),
+                                callbacks = ChatMessageCallbacks(
+                                    onLongClick = callbacks.messageCallbacks.onLongClick,
+                                    onSwipeReply = callbacks.messageCallbacks.onSwipeReply,
+                                    onFileClick = callbacks.messageCallbacks.onFileClick,
+                                    onReactionClick = callbacks.messageCallbacks.onReactionClick,
+                                    onReactionLongClick = callbacks.messageCallbacks.onReactionLongClick,
+                                    onOpenThreadClick = callbacks.messageCallbacks.onOpenThreadClick,
+                                    onQuotedMessageClick = handleQuotedMessageClick,
+                                    onAvatarClick = callbacks.messageCallbacks.onAvatarClick
+                                )
+                            )
+                        }
+                    }
+
                     is ChatViewModel.ChatItem.DateHeaderItem -> {
                         Box(modifier = Modifier.padding(top = 6.dp, start = 12.dp, end = 12.dp)) {
                             DateHeader(chatItem.date)
