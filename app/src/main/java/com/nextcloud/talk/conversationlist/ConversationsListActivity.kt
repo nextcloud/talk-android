@@ -91,6 +91,7 @@ import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.ConversationUtils.checkIfVoiceRoom
 import com.nextcloud.talk.utils.FileUtils
+import com.nextcloud.talk.utils.HttpStatusInterceptor
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
@@ -144,6 +145,9 @@ class ConversationsListActivity : BaseActivity() {
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
+
+    @Inject
+    lateinit var httpStatusInterceptor: HttpStatusInterceptor
 
     @Inject
     lateinit var contactsViewModel: ContactsViewModel
@@ -204,6 +208,11 @@ class ConversationsListActivity : BaseActivity() {
         } else {
             currentUserProviderOld.currentUser.blockingGet()
         }
+        currentUser?.id?.let { accountId ->
+            isMaintenanceModeState.value =
+                httpStatusInterceptor.currentStatus(accountId) == ServerStatus.MAINTENANCE_MODE
+        }
+
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
         conversationTagsViewModel = ViewModelProvider(this, viewModelFactory)[ConversationTagsViewModel::class.java]
 
