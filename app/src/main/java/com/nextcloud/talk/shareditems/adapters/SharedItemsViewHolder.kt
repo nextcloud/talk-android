@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.loadImage
+import com.nextcloud.talk.mediaviewer.model.isImageOrVideo
 import com.nextcloud.talk.shareditems.model.SharedDeckCardItem
 import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
@@ -40,7 +41,7 @@ abstract class SharedItemsViewHolder(
     abstract val clickTarget: View
     abstract val progressBar: ProgressBar
 
-    open fun onBind(item: SharedFileItem) {
+    open fun onBind(item: SharedFileItem, openMediaViewer: (SharedFileItem, Context) -> Unit) {
         val placeholder = viewThemeUtils.talk.getPlaceholderImage(image.context, item.mimeType)
         if (item.previewAvailable) {
             image.loadImage(
@@ -50,6 +51,13 @@ abstract class SharedItemsViewHolder(
             )
         } else {
             image.setImageDrawable(placeholder)
+        }
+
+        if (item.isImageOrVideo()) {
+            // Images/videos open the swipeable media viewer, seeded with the sibling media
+            // already loaded in this gallery - see SharedItemsAdapter.openMediaViewer().
+            clickTarget.setOnClickListener { openMediaViewer(item, image.context) }
+            return
         }
 
         /*

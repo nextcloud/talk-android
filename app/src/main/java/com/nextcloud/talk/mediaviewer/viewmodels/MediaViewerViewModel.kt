@@ -20,14 +20,15 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.mediaviewer.model.MediaViewerGroup
 import com.nextcloud.talk.mediaviewer.model.MediaViewerItem
+import com.nextcloud.talk.mediaviewer.model.isImageOrVideo
 import com.nextcloud.talk.mediaviewer.model.toMediaViewerGroups
+import com.nextcloud.talk.mediaviewer.model.toMediaViewerItem
 import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.model.SharedItems
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.FileUtils
-import com.nextcloud.talk.utils.Mimetype
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -222,23 +223,6 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
             _indexShiftEvents.tryEmit(_uiState.value.flattenedItems.size - previousCount)
         }
     }
-
-    private fun SharedFileItem.isImageOrVideo(): Boolean =
-        mimeType.startsWith(Mimetype.IMAGE_PREFIX) || mimeType.startsWith(Mimetype.VIDEO_PREFIX)
-
-    private fun SharedFileItem.toMediaViewerItem() = MediaViewerItem(
-        messageId = messageId,
-        referenceId = referenceId,
-        fileId = id,
-        fileName = name,
-        mimeType = mimeType,
-        path = path,
-        link = link,
-        fileSize = fileSize,
-        previewUrl = previewLink.takeIf { previewAvailable },
-        actorDisplayName = actorName,
-        timestamp = timestamp
-    )
 
     private suspend fun Observable<SharedItems>.awaitFirst(): SharedItems =
         suspendCancellableCoroutine { continuation ->
