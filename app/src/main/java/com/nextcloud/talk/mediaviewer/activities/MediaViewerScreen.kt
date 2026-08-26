@@ -7,6 +7,7 @@
 package com.nextcloud.talk.mediaviewer.activities
 
 import android.util.Log
+import android.view.View
 import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -135,6 +136,13 @@ fun MediaViewerScreen(
         }
     }
 
+    // Tapping the currently shown item toggles this off, hiding the top bar and thumbnail strip so
+    // only the media itself is visible - mirrors FullScreenImageScreen/FullScreenMediaScreen's own
+    // tap-to-toggle-fullscreen behavior. For video, ExoPlayer's own controller visibility is the
+    // source of truth (see VideoPlayerView) rather than an independently toggled flag, since the
+    // controller already auto-hides itself after a timeout.
+    var showControls by remember { mutableStateOf(true) }
+
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
         HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
             val item = items.getOrNull(page) ?: return@HorizontalPager
@@ -142,23 +150,31 @@ fun MediaViewerScreen(
                 item = item,
                 localPath = uiState.cachedFilePaths[item.messageId],
                 isCurrentPage = page == pagerState.currentPage,
-                exoPlayer = exoPlayer
+                exoPlayer = exoPlayer,
+                onToggleControls = { showControls = !showControls },
+                onControlsVisibilityChanged = { showControls = it }
             )
         }
 
-        val toolbarColors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent,
-            titleContentColor = Color.White,
-            navigationIconContentColor = Color.White,
-            actionIconContentColor = Color.White
-        )
-        val menuItems = buildList {
-            if (currentItem != null && currentLocalPath != null) {
-                add(stringResource(R.string.share) to { onShare(currentItem, currentLocalPath) })
-                add(stringResource(R.string.nc_save_message) to { onSave(currentItem, currentLocalPath) })
+        if (showControls) {
+            val toolbarColors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.Transparent,
+                titleContentColor = Color.White,
+                navigationIconContentColor = Color.White,
+                actionIconContentColor = Color.White
+            )
+            val menuItems = buildList {
+                if (currentItem != null && currentLocalPath != null) {
+                    add(stringResource(R.string.share) to { onShare(currentItem, currentLocalPath) })
+                    add(stringResource(R.string.nc_save_message) to { onSave(currentItem, currentLocalPath) })
+                }
             }
+            StandardAppBar(
+                title = currentItem?.actorDisplayName.orEmpty(),
+                menuItems = menuItems,
+                colors = toolbarColors
+            )
         }
-        StandardAppBar(title = currentItem?.actorDisplayName.orEmpty(), menuItems = menuItems, colors = toolbarColors)
 
         if (currentItem != null && currentLocalPath == null) {
             CircularProgressIndicator(
@@ -168,7 +184,7 @@ fun MediaViewerScreen(
         }
 
         val group = uiState.currentGroup
-        if (group != null && group.items.size > 1) {
+        if (showControls && group != null && group.items.size > 1) {
             ThumbnailStrip(
                 group = group,
                 currentItem = currentItem,
@@ -200,53 +216,68 @@ private fun rememberViewerExoPlayer(): ExoPlayer {
     return player
 }
 
+@Suppress("LongParameterList")
 @OptIn(UnstableApi::class)
 @Composable
-private fun MediaPage(item: MediaViewerItem, localPath: String?, isCurrentPage: Boolean, exoPlayer: ExoPlayer) {
+private fun MediaPage(
+    item: MediaViewerItem,
+    localPath: String?,
+    isCurrentPage: Boolean,
+    exoPlayer: ExoPlayer,
+    onToggleControls: () -> Unit,
+    onControlsVisibilityChanged: (Boolean) -> Unit
+) {
     val isVideo = item.mimeType.startsWith(Mimetype.VIDEO_PREFIX)
     val isGif = MimetypeUtils.isGif(item.mimeType)
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         when {
-            localPath == null -> PreviewPlaceholder(item)
+            localPath == null -> PreviewPlaceholder(item, onToggleControls = onToggleControls)
             isVideo -> if (isCurrentPage) {
-                VideoPlayerView(exoPlayer = exoPlayer)
+                VideoPlayerView(exoPlayer = exoPlayer, onControlsVisibilityChanged = onControlsVisibilityChanged)
             } else {
-                PreviewPlaceholder(item)
+                PreviewPlaceholder(item, onToggleControls = onToggleControls)
             }
-            isGif -> GifPage(localPath = localPath)
-            else -> ImagePage(localPath = localPath)
+            isGif -> GifPage(localPath = localPath, onToggleControls = onToggleControls)
+            else -> ImagePage(localPath = localPath, onToggleControls = onToggleControls)
         }
     }
 }
 
 @Composable
-private fun PreviewPlaceholder(item: MediaViewerItem) {
+private fun PreviewPlaceholder(item: MediaViewerItem, onToggleControls: () -> Unit) {
     if (item.previewUrl != null) {
         AsyncImage(
             model = item.previewUrl,
             contentDescription = item.fileName,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().clickable(onClick = onToggleControls),
             contentScale = ContentScale.Fit
         )
     }
 }
 
 @Composable
-private fun GifPage(localPath: String) {
+private fun GifPage(localPath: String, onToggleControls: () -> Unit) {
     AndroidView(
-        factory = { ctx -> GifImageView(ctx).apply { setImageDrawable(GifDrawable(localPath)) } },
+        factory = { ctx ->
+            GifImageView(ctx).apply {
+                setImageDrawable(GifDrawable(localPath))
+                setOnClickListener { onToggleControls() }
+            }
+        },
         modifier = Modifier.fillMaxSize()
     )
 }
 
 @Composable
-private fun ImagePage(localPath: String) {
+private fun ImagePage(localPath: String, onToggleControls: () -> Unit) {
     AndroidView(
         factory = { ctx ->
             PhotoView(ctx).apply {
                 maximumScale = MAX_SCALE
                 mediumScale = MEDIUM_SCALE
+                setOnPhotoTapListener { _, _, _ -> onToggleControls() }
+                setOnOutsidePhotoTapListener { onToggleControls() }
                 val displayMetrics = ctx.resources.displayMetrics
                 val bitmap = BitmapShrinker.shrinkBitmap(
                     localPath,
@@ -266,12 +297,18 @@ private fun ImagePage(localPath: String) {
 
 @OptIn(UnstableApi::class)
 @Composable
-private fun VideoPlayerView(exoPlayer: ExoPlayer) {
+private fun VideoPlayerView(exoPlayer: ExoPlayer, onControlsVisibilityChanged: (Boolean) -> Unit) {
     AndroidView(
         factory = { ctx ->
             PlayerView(ctx).apply {
                 player = exoPlayer
                 useController = true
+                showController()
+                setControllerVisibilityListener(
+                    PlayerView.ControllerVisibilityListener { visibility ->
+                        onControlsVisibilityChanged(visibility == View.VISIBLE)
+                    }
+                )
             }
         },
         modifier = Modifier.fillMaxSize()
