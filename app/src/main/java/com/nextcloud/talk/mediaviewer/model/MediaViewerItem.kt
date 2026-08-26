@@ -7,6 +7,8 @@
 package com.nextcloud.talk.mediaviewer.model
 
 import android.os.Parcelable
+import com.nextcloud.talk.shareditems.model.SharedFileItem
+import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.message.groupHashOf
 import kotlinx.parcelize.Parcelize
 
@@ -71,3 +73,20 @@ fun List<MediaViewerItem>.toMediaViewerGroups(): List<MediaViewerGroup> {
 
     return result
 }
+
+fun SharedFileItem.isImageOrVideo(): Boolean =
+    mimeType.startsWith(Mimetype.IMAGE_PREFIX) || mimeType.startsWith(Mimetype.VIDEO_PREFIX)
+
+fun SharedFileItem.toMediaViewerItem() = MediaViewerItem(
+    messageId = messageId,
+    referenceId = referenceId,
+    fileId = id,
+    fileName = name,
+    mimeType = mimeType,
+    path = path,
+    link = link,
+    fileSize = fileSize,
+    previewUrl = previewLink.takeIf { previewAvailable },
+    actorDisplayName = actorName,
+    timestamp = timestamp
+)
