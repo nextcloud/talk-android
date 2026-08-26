@@ -15,6 +15,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
@@ -44,6 +45,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.components.ColoredStatusBar
+import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.contacts.CompanionClass.Companion.KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.conversationinfo.model.ParticipantModel
@@ -239,12 +241,18 @@ class ConversationInfoActivity : BaseActivity() {
                 }
             }
 
+            val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
+            val isMaintenanceMode by maintenanceModeFlow.collectAsStateWithLifecycle()
+
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
-                ConversationInfoScreen(
-                    state = uiState,
-                    callbacks = buildCallbacks()
-                )
+                Column {
+                    StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
+                    ConversationInfoScreen(
+                        state = uiState,
+                        callbacks = buildCallbacks()
+                    )
+                }
             }
         }
     }

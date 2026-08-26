@@ -38,9 +38,14 @@ import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.account.SwitchAccountActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.events.RemoteWipeEvent
+import com.nextcloud.talk.events.ServerStatus
+import com.nextcloud.talk.events.ServerStatusEvent
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.lock.LockedActivity
+import com.nextcloud.talk.utils.HttpStatusInterceptor
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -54,6 +59,9 @@ import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.utils.ssl.TrustManager
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -96,6 +104,15 @@ open class BaseActivity : AppCompatActivity() {
     @Inject
     lateinit var logger: Logger
 
+    @Inject
+    lateinit var networkMonitor: NetworkMonitor
+
+    @Inject
+    lateinit var httpStatusInterceptor: HttpStatusInterceptor
+
+    private val maintenanceModeState = MutableStateFlow(false)
+    val maintenanceModeFlow: StateFlow<Boolean> = maintenanceModeState.asStateFlow()
+
     open val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.TOOLBAR
 
@@ -134,6 +151,33 @@ open class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         cleanTempCertPreference()
+    }
+
+    /**
+     * The account whose [ServerStatusEvent]s should drive [maintenanceModeFlow] for this screen.
+     * Defaults to the globally active account; override when a screen shows a different,
+     * specific account (e.g. a non-active account selected via an intent extra).
+     */
+    protected open fun accountIdForStatusBanner(): Long? = currentUserProviderOld.currentUser.blockingGet()?.id
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        maintenanceModeState.value = accountIdForStatusBanner()?.let {
+            httpStatusInterceptor.currentStatus(it) == ServerStatus.MAINTENANCE_MODE
+        } ?: false
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    open fun onServerStatusEvent(event: ServerStatusEvent) {
+        if (event.accountId != accountIdForStatusBanner()) return
+
+        when (event.status) {
+            ServerStatus.MAINTENANCE_MODE -> maintenanceModeState.value = true
+            ServerStatus.OK -> maintenanceModeState.value = false
+            else -> {
+                // UNAUTHORIZED / CLIENT_UPDATE_REQUIRED are handled by ConversationsListActivity's dialogs
+            }
+        }
     }
 
     public override fun onStart() {

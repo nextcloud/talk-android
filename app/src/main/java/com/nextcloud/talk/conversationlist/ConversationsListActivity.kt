@@ -59,7 +59,6 @@ import com.nextcloud.talk.conversationlist.ui.ConversationsListScreenCallbacks
 import com.nextcloud.talk.conversationlist.ui.ConversationsListScreenState
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.conversationtags.viewmodels.ConversationTagsViewModel
-import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
 import com.nextcloud.talk.events.EventStatus
@@ -91,7 +90,6 @@ import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.ConversationUtils.checkIfVoiceRoom
 import com.nextcloud.talk.utils.FileUtils
-import com.nextcloud.talk.utils.HttpStatusInterceptor
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
@@ -144,12 +142,6 @@ class ConversationsListActivity : BaseActivity() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var networkMonitor: NetworkMonitor
-
-    @Inject
-    lateinit var httpStatusInterceptor: HttpStatusInterceptor
-
-    @Inject
     lateinit var contactsViewModel: ContactsViewModel
 
     lateinit var conversationsListViewModel: ConversationsListViewModel
@@ -158,7 +150,6 @@ class ConversationsListActivity : BaseActivity() {
 
     private var currentUser: User? = null
     private val snackbarHostState = SnackbarHostState()
-    private val isMaintenanceModeState = MutableStateFlow(false)
     private val showUnreadBubbleState = MutableStateFlow(false)
     private val isFabVisibleState = MutableStateFlow(true)
     private val showNotificationWarningState = MutableStateFlow(false)
@@ -208,10 +199,6 @@ class ConversationsListActivity : BaseActivity() {
         } else {
             currentUserProviderOld.currentUser.blockingGet()
         }
-        currentUser?.id?.let { accountId ->
-            isMaintenanceModeState.value =
-                httpStatusInterceptor.currentStatus(accountId) == ServerStatus.MAINTENANCE_MODE
-        }
 
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
         conversationTagsViewModel = ViewModelProvider(this, viewModelFactory)[ConversationTagsViewModel::class.java]
@@ -238,6 +225,8 @@ class ConversationsListActivity : BaseActivity() {
         initObservers()
     }
 
+    override fun accountIdForStatusBanner(): Long? = currentUser?.id
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, showAccountDialogState.value)
@@ -259,7 +248,7 @@ class ConversationsListActivity : BaseActivity() {
             viewThemeUtils = viewThemeUtils,
             isShowEcosystem = appPreferences.isShowEcosystem && !resources.getBoolean(R.bool.is_branded_client),
             snackbarHostState = snackbarHostState,
-            isMaintenanceModeFlow = isMaintenanceModeState,
+            isMaintenanceModeFlow = maintenanceModeFlow,
             isOnlineFlow = networkMonitor.isOnline,
             showUnreadBubbleFlow = showUnreadBubbleState,
             isFabVisibleFlow = isFabVisibleState,
@@ -284,7 +273,6 @@ class ConversationsListActivity : BaseActivity() {
             onContactClick = { contactsViewModel.createRoom(ROOM_TYPE_ONE_ONE, null, it.actorId!!, null) },
             onLoadMoreClick = { conversationsListViewModel.loadMoreMessages(context) },
             onRefresh = {
-                isMaintenanceModeState.value = false
                 isRefreshingState.value = true
                 appPreferences.setConversationListPositionAndOffset(0, 0)
                 fetchRooms()
@@ -682,14 +670,16 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onServerStatusEvent(event: ServerStatusEvent) {
+    override fun onServerStatusEvent(event: ServerStatusEvent) {
+        super.onServerStatusEvent(event)
         if (event.accountId != currentUser?.id) return
 
         when (event.status) {
             ServerStatus.UNAUTHORIZED -> showUnauthorizedDialog()
             ServerStatus.CLIENT_UPDATE_REQUIRED -> showOutdatedClientDialog()
-            ServerStatus.MAINTENANCE_MODE -> isMaintenanceModeState.value = true
-            ServerStatus.OK -> isMaintenanceModeState.value = false
+            else -> {
+                // MAINTENANCE_MODE / OK are handled by BaseActivity's maintenanceModeFlow
+            }
         }
     }
 

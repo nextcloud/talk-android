@@ -9,6 +9,7 @@ package com.nextcloud.talk.openconversations
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModelProvider
@@ -18,6 +19,7 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.components.ColoredStatusBar
+import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
 import com.nextcloud.talk.utils.adjustUIForAPILevel35
@@ -47,21 +49,27 @@ class ListOpenConversationsActivity : BaseActivity() {
             val viewState by openConversationsViewModel.viewState.collectAsStateWithLifecycle()
             val searchTerm by openConversationsViewModel.searchTerm.collectAsStateWithLifecycle()
 
+            val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
+            val isMaintenanceMode by maintenanceModeFlow.collectAsStateWithLifecycle()
+
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
-                OpenConversationsScreen(
-                    viewState = viewState,
-                    searchTerm = searchTerm,
-                    userBaseUrl = user?.baseUrl,
-                    listenerInput = OpenConversationsScreenListenerInput(
-                        onSearchTermChange = { term ->
-                            openConversationsViewModel.updateSearchTerm(term)
-                            openConversationsViewModel.fetchConversations()
-                        },
-                        onConversationClick = { conversation -> navigateToChat(conversation) },
-                        onBackClick = { onBackPressedDispatcher.onBackPressed() }
+                Column {
+                    StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
+                    OpenConversationsScreen(
+                        viewState = viewState,
+                        searchTerm = searchTerm,
+                        userBaseUrl = user?.baseUrl,
+                        listenerInput = OpenConversationsScreenListenerInput(
+                            onSearchTermChange = { term ->
+                                openConversationsViewModel.updateSearchTerm(term)
+                                openConversationsViewModel.fetchConversations()
+                            },
+                            onConversationClick = { conversation -> navigateToChat(conversation) },
+                            onBackClick = { onBackPressedDispatcher.onBackPressed() }
+                        )
                     )
-                )
+                }
             }
         }
     }

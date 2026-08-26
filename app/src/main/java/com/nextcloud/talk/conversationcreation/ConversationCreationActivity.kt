@@ -89,6 +89,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
@@ -99,6 +100,7 @@ import com.nextcloud.talk.components.AvatarEditPanel
 import com.nextcloud.talk.components.AvatarEditPanelCallbacks
 import com.nextcloud.talk.components.AvatarEditPanelState
 import com.nextcloud.talk.components.ColoredStatusBar
+import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationViewModel
@@ -131,10 +133,15 @@ class ConversationCreationActivity : BaseActivity() {
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val context = LocalContext.current
+            val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
+            val isMaintenanceMode by maintenanceModeFlow.collectAsStateWithLifecycle()
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
-                ConversationCreationScreen(conversationCreationViewModel, context, pickImage)
+                Column {
+                    StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
+                    ConversationCreationScreen(conversationCreationViewModel, context, pickImage)
+                }
             }
         }
     }

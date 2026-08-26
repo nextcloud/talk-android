@@ -132,7 +132,6 @@ import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.data.database.model.SendStatus
-import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityChatBinding
 import com.nextcloud.talk.events.ServerStatus
@@ -197,7 +196,6 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.FileViewerUtils
-import com.nextcloud.talk.utils.HttpStatusInterceptor
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
@@ -289,12 +287,6 @@ class ChatActivity :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var networkMonitor: NetworkMonitor
-
-    @Inject
-    lateinit var httpStatusInterceptor: HttpStatusInterceptor
 
     @Inject
     lateinit var chatViewModelFactory: ChatViewModel.ChatViewModelFactory
@@ -4042,7 +4034,8 @@ class ChatActivity :
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onServerStatusEvent(event: ServerStatusEvent) {
+    override fun onServerStatusEvent(event: ServerStatusEvent) {
+        super.onServerStatusEvent(event)
         if (!::conversationUser.isInitialized || event.accountId != conversationUser.id) return
         chatViewModel.setMaintenanceMode(event.status == ServerStatus.MAINTENANCE_MODE)
     }
