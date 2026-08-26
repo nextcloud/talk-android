@@ -9,6 +9,11 @@ package com.nextcloud.talk.mediaviewer.activities
 import android.util.Log
 import android.view.View
 import androidx.annotation.OptIn
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,6 +26,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -46,6 +52,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -80,6 +87,7 @@ private val thumbnailSize = 48.dp
 private val thumbnailSpacing = 4.dp
 private val thumbnailStripTopPadding = 12.dp
 private val thumbnailStripBottomPadding = 24.dp
+private val controlsSlideDistance = 24.dp
 
 @Suppress("Detekt.LongMethod", "CyclomaticComplexMethod")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -143,6 +151,14 @@ fun MediaViewerScreen(
     // controller already auto-hides itself after a timeout.
     var showControls by remember { mutableStateOf(true) }
 
+    // Hoisted here (rather than inside ThumbnailStrip) so its scroll position survives showControls
+    // toggling the strip in and out of composition - otherwise every reveal remounted a fresh,
+    // unscrolled LazyListState and re-animated the scroll from the start, reading as the thumbnails
+    // sliding in from the side instead of the intended plain fade.
+    val thumbnailListState = rememberLazyListState()
+    val density = LocalDensity.current
+    val slideOffsetPx = with(density) { controlsSlideDistance.roundToPx() }
+
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
         HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
             val item = items.getOrNull(page) ?: return@HorizontalPager
@@ -156,7 +172,12 @@ fun MediaViewerScreen(
             )
         }
 
-        if (showControls) {
+        AnimatedVisibility(
+            visible = showControls,
+            enter = fadeIn() + slideInVertically(initialOffsetY = { -slideOffsetPx }),
+            exit = fadeOut() + slideOutVertically(targetOffsetY = { -slideOffsetPx }),
+            modifier = Modifier.align(Alignment.TopCenter)
+        ) {
             val toolbarColors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.Transparent,
                 titleContentColor = Color.White,
@@ -184,18 +205,25 @@ fun MediaViewerScreen(
         }
 
         val group = uiState.currentGroup
-        if (showControls && group != null && group.items.size > 1) {
-            ThumbnailStrip(
-                group = group,
-                currentItem = currentItem,
-                modifier = Modifier.align(Alignment.BottomCenter),
-                onThumbnailClick = { clickedItem ->
-                    val globalIndex = items.indexOfFirst { it.messageId == clickedItem.messageId }
-                    if (globalIndex >= 0) {
-                        coroutineScope.launch { pagerState.animateScrollToPage(globalIndex) }
+        AnimatedVisibility(
+            visible = showControls && group != null && group.items.size > 1,
+            enter = fadeIn() + slideInVertically(initialOffsetY = { slideOffsetPx }),
+            exit = fadeOut() + slideOutVertically(targetOffsetY = { slideOffsetPx }),
+            modifier = Modifier.align(Alignment.BottomCenter)
+        ) {
+            if (group != null) {
+                ThumbnailStrip(
+                    group = group,
+                    currentItem = currentItem,
+                    listState = thumbnailListState,
+                    onThumbnailClick = { clickedItem ->
+                        val globalIndex = items.indexOfFirst { it.messageId == clickedItem.messageId }
+                        if (globalIndex >= 0) {
+                            coroutineScope.launch { pagerState.animateScrollToPage(globalIndex) }
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }
@@ -319,10 +347,10 @@ private fun VideoPlayerView(exoPlayer: ExoPlayer, onControlsVisibilityChanged: (
 private fun ThumbnailStrip(
     group: MediaViewerGroup,
     currentItem: MediaViewerItem?,
+    listState: LazyListState,
     modifier: Modifier = Modifier,
     onThumbnailClick: (MediaViewerItem) -> Unit
 ) {
-    val listState = rememberLazyListState()
     val currentIndex = currentItem?.let { item -> group.items.indexOfFirst { it.messageId == item.messageId } } ?: -1
 
     BoxWithConstraints(
