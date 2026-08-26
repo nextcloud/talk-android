@@ -311,38 +311,40 @@ public class WebRtcAudioManager {
     /**
      * Changes selection of the currently active audio device.
      */
-    private void setAudioDeviceInternal(AudioDevice audioDevice) {
+    private boolean setAudioDeviceInternal(AudioDevice audioDevice) {
         Log.d(TAG, "setAudioDeviceInternal(device=" + audioDevice + ")");
 
         if (audioDevice == AudioDevice.NONE) {
             currentAudioDevice = AudioDevice.NONE;
-            return;
+            return true;
         }
 
-        if (audioDevices.contains(audioDevice)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (!setCommunicationDevice(audioDevice)) {
-                    Log.e(TAG, "Unable to select communication device " + audioDevice);
-                    currentAudioDevice = AudioDevice.NONE;
-                    return;
-                }
-            } else {
-                switch (audioDevice) {
-                    case SPEAKER_PHONE:
-                        setSpeakerphoneOn(true);
-                        break;
-                    case EARPIECE:
-                    case WIRED_HEADSET:
-                    case BLUETOOTH:
-                        setSpeakerphoneOn(false);
-                        break;
-                    default:
-                        Log.e(TAG, "Invalid audio device selection");
-                        break;
-                }
-            }
-            currentAudioDevice = audioDevice;
+        if (!audioDevices.contains(audioDevice)) {
+            return false;
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!setCommunicationDevice(audioDevice)) {
+                Log.e(TAG, "Unable to select communication device " + audioDevice);
+                return false;
+            }
+        } else {
+            switch (audioDevice) {
+                case SPEAKER_PHONE:
+                    setSpeakerphoneOn(true);
+                    break;
+                case EARPIECE:
+                case WIRED_HEADSET:
+                case BLUETOOTH:
+                    setSpeakerphoneOn(false);
+                    break;
+                default:
+                    Log.e(TAG, "Invalid audio device selection");
+                    return false;
+            }
+        }
+        currentAudioDevice = audioDevice;
+        return true;
     }
 
     /**
@@ -392,6 +394,20 @@ public class WebRtcAudioManager {
         boolean wasBluetoothPreferredForCall = bluetoothPreferredForCall;
         userSelectedAudioDevice = device;
         bluetoothPreferredForCall = false;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // Ask Android to switch first. If the request is rejected, Bluetooth remains the active route and the
+            // previous preference can be restored without waiting for the asynchronous Bluetooth teardown timeout.
+            if (!setAudioDeviceInternal(device)) {
+                userSelectedAudioDevice = previousUserSelectedAudioDevice;
+                bluetoothPreferredForCall = wasBluetoothPreferredForCall;
+                return false;
+            }
+            bluetoothManager.onNonBluetoothCommunicationDeviceSelected();
+            updateAudioDeviceState();
+            return currentAudioDevice == device;
+        }
+
         updateAudioDeviceState();
         if (currentAudioDevice == device) {
             return true;
@@ -465,7 +481,10 @@ public class WebRtcAudioManager {
         }
         try {
             AudioDeviceInfo currentDevice = getCommunicationDevice();
-            if (currentDevice != null && matchesAudioDevice(currentDevice, audioDevice)) {
+            boolean currentRouteMatches = currentDevice != null && matchesAudioDevice(currentDevice, audioDevice);
+            if (!AudioRoutePolicy.shouldSetCommunicationDevice(
+                    currentRouteMatches,
+                    bluetoothManager.isBluetoothSelectionActive())) {
                 return true;
             }
 
@@ -511,11 +530,7 @@ public class WebRtcAudioManager {
             case BLUETOOTH:
                 return WebRtcBluetoothManager.isBluetoothCommunicationDeviceType(type);
             case WIRED_HEADSET:
-                return type == AudioDeviceInfo.TYPE_WIRED_HEADSET
-                    || type == AudioDeviceInfo.TYPE_WIRED_HEADPHONES
-                    || type == AudioDeviceInfo.TYPE_USB_HEADSET
-                    || type == AudioDeviceInfo.TYPE_USB_DEVICE
-                    || type == AudioDeviceInfo.TYPE_USB_ACCESSORY;
+                return AudioRoutePolicy.isWiredCommunicationDeviceType(type);
             case EARPIECE:
                 return type == AudioDeviceInfo.TYPE_BUILTIN_EARPIECE;
             case SPEAKER_PHONE:
@@ -574,12 +589,8 @@ public class WebRtcAudioManager {
         @SuppressLint("WrongConstant") final AudioDeviceInfo[] devices =
             audioManager.getDevices(AudioManager.GET_DEVICES_ALL);
         for (AudioDeviceInfo device : devices) {
-            final int type = device.getType();
-            if (type == AudioDeviceInfo.TYPE_WIRED_HEADSET) {
-                Log.d(TAG, "hasWiredHeadset: found wired headset");
-                return true;
-            } else if (type == AudioDeviceInfo.TYPE_USB_DEVICE) {
-                Log.d(TAG, "hasWiredHeadset: found USB audio device");
+            if (AudioRoutePolicy.isWiredCommunicationDeviceType(device.getType())) {
+                Log.d(TAG, "hasWiredHeadset: found wired or USB audio device");
                 return true;
             }
         }
@@ -683,7 +694,8 @@ public class WebRtcAudioManager {
             bluetoothManager.getState(),
             bluetoothPreferredForCall,
             hasWiredHeadset,
-            bluetoothManager.isBluetoothRouteRetryScheduled()
+            bluetoothManager.isBluetoothRouteRetryScheduled(),
+            bluetoothManager.hasRemainingScoConnectionAttempts()
         );
 
         // Need to stop Bluetooth audio if user selected different device and
