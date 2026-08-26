@@ -11,7 +11,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.util.Log
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,7 +37,6 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -48,7 +46,6 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.ChatActivity.Companion.TAG
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
-import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.models.json.threads.ThreadInfo
 import com.nextcloud.talk.threadsoverview.components.ThreadRow
@@ -89,45 +86,40 @@ class ThreadsOverviewActivity : BaseActivity() {
         threadsSourceUrl = extras?.getString(KEY_THREADS_SOURCE_URL).orEmpty()
         appbarTitle = extras?.getString(KEY_APPBAR_TITLE).orEmpty()
 
-        setContent {
+        setContentWithStatusBanner {
             val backgroundColor = colorResource(id = R.color.bg_default)
-            val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
-            val isMaintenanceMode by maintenanceModeFlow.collectAsStateWithLifecycle()
 
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
                 ColoredStatusBar()
-                Column {
-                    StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
-                    Scaffold(
-                        modifier = Modifier
-                            .statusBarsPadding(),
-                        topBar = {
-                            StandardAppBar(
-                                title = appbarTitle,
-                                null
-                            )
-                        },
-                        content = { paddingValues ->
-                            val uiState by threadsOverviewViewModel.threadsListState.collectAsState()
+                Scaffold(
+                    modifier = Modifier
+                        .statusBarsPadding(),
+                    topBar = {
+                        StandardAppBar(
+                            title = appbarTitle,
+                            null
+                        )
+                    },
+                    content = { paddingValues ->
+                        val uiState by threadsOverviewViewModel.threadsListState.collectAsState()
 
-                            Column(
-                                Modifier
-                                    .padding(0.dp, paddingValues.calculateTopPadding(), 0.dp, 0.dp)
-                                    .background(backgroundColor)
-                                    .fillMaxSize()
-                            ) {
-                                ThreadsOverviewScreen(
-                                    uiState,
-                                    onThreadClick = { roomToken, threadId ->
-                                        navigateToChatActivity(roomToken, threadId)
-                                    }
-                                )
-                            }
+                        Column(
+                            Modifier
+                                .padding(0.dp, paddingValues.calculateTopPadding(), 0.dp, 0.dp)
+                                .background(backgroundColor)
+                                .fillMaxSize()
+                        ) {
+                            ThreadsOverviewScreen(
+                                uiState,
+                                onThreadClick = { roomToken, threadId ->
+                                    navigateToChatActivity(roomToken, threadId)
+                                }
+                            )
                         }
-                    )
-                }
+                    }
+                )
             }
         }
     }

@@ -9,10 +9,8 @@ package com.nextcloud.talk.conversationinfoedit
 
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
@@ -28,7 +26,6 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.ColoredStatusBar
-import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.conversationinfoedit.ui.ConversationInfoEditCallbacks
 import com.nextcloud.talk.conversationinfoedit.ui.ConversationInfoEditScreen
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
@@ -103,7 +100,7 @@ class ConversationInfoEditActivity : BaseActivity() {
 
     private fun setupCompose() {
         val colorScheme = viewThemeUtils.getColorScheme(this)
-        setContent {
+        setContentWithStatusBanner {
             val uiState by conversationInfoEditViewModel.uiState.collectAsStateWithLifecycle()
             val snackbarHostState = remember { SnackbarHostState() }
             val userMessage = uiState.userMessage
@@ -124,41 +121,35 @@ class ConversationInfoEditActivity : BaseActivity() {
                 }
             }
 
-            val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
-            val isMaintenanceMode by maintenanceModeFlow.collectAsStateWithLifecycle()
-
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
-                Column {
-                    StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
-                    ConversationInfoEditScreen(
-                        uiState = uiState,
-                        callbacks = ConversationInfoEditCallbacks(
-                            onNavigateBack = { onBackPressedDispatcher.onBackPressed() },
-                            onSaveClick = { conversationInfoEditViewModel.saveNameAndDescription() },
-                            onAvatarUploadClick = {
-                                pickImage?.selectLocal(startImagePickerForResult = startImagePickerForResult)
-                            },
-                            onAvatarChooseClick = {
-                                pickImage?.selectRemote(
-                                    startSelectRemoteFilesIntentForResult = startSelectRemoteFilesIntentForResult
-                                )
-                            },
-                            onAvatarCameraClick = {
-                                pickImage?.takePicture(
-                                    startTakePictureIntentForResult = startTakePictureIntentForResult
-                                )
-                            },
-                            onAvatarDeleteClick = { conversationInfoEditViewModel.deleteAvatar() },
-                            onAvatarEmojiAvatarConfirmed = { emoji, color ->
-                                conversationInfoEditViewModel.onEmojiAvatarConfirmed(emoji, color)
-                            },
-                            onNameChange = { conversationInfoEditViewModel.updateConversationName(it) },
-                            onDescriptionChange = { conversationInfoEditViewModel.updateConversationDescription(it) }
-                        ),
-                        snackbarHostState = snackbarHostState
-                    )
-                }
+                ConversationInfoEditScreen(
+                    uiState = uiState,
+                    callbacks = ConversationInfoEditCallbacks(
+                        onNavigateBack = { onBackPressedDispatcher.onBackPressed() },
+                        onSaveClick = { conversationInfoEditViewModel.saveNameAndDescription() },
+                        onAvatarUploadClick = {
+                            pickImage?.selectLocal(startImagePickerForResult = startImagePickerForResult)
+                        },
+                        onAvatarChooseClick = {
+                            pickImage?.selectRemote(
+                                startSelectRemoteFilesIntentForResult = startSelectRemoteFilesIntentForResult
+                            )
+                        },
+                        onAvatarCameraClick = {
+                            pickImage?.takePicture(
+                                startTakePictureIntentForResult = startTakePictureIntentForResult
+                            )
+                        },
+                        onAvatarDeleteClick = { conversationInfoEditViewModel.deleteAvatar() },
+                        onAvatarEmojiAvatarConfirmed = { emoji, color ->
+                            conversationInfoEditViewModel.onEmojiAvatarConfirmed(emoji, color)
+                        },
+                        onNameChange = { conversationInfoEditViewModel.updateConversationName(it) },
+                        onDescriptionChange = { conversationInfoEditViewModel.updateConversationDescription(it) }
+                    ),
+                    snackbarHostState = snackbarHostState
+                )
             }
         }
     }

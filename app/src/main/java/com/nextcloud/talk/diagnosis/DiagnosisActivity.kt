@@ -101,7 +101,7 @@ class DiagnosisActivity : BaseActivity() {
         val useEmbeddedDistrib = UnifiedPushUtils.hasEmbeddedDistributor(context) && !useUnifiedPush
         val showTestPushButton = isGooglePlayServicesAvailable || useUnifiedPush || useEmbeddedDistrib
 
-        setContent {
+        setContentWithStatusBanner {
             DiagnosisScreen(
                 colorScheme = colorScheme,
                 networkMonitor = networkMonitor,
@@ -176,26 +176,23 @@ private fun DiagnosisScreen(
         stringResource(R.string.nc_settings_share_report_title) to onShareReportClick
     )
 
-    MaterialTheme(
-        colorScheme = colorScheme
-    ) {
-        val isOnline = networkMonitor.isOnline.collectAsState().value
-        val isMaintenanceMode = maintenanceModeFlow.collectAsState().value
+            MaterialTheme(
+                colorScheme = colorScheme
+            ) {
+                val isOnline = networkMonitor.isOnline.collectAsState().value
                 ColoredStatusBar()
-                Column {
-                    StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
-                    Scaffold(
-                        modifier = Modifier
-                            .statusBarsPadding()
-                            .displayCutoutPadding(),
-                        topBar = {
-                            StandardAppBar(
-                                title = stringResource(R.string.nc_settings_diagnosis_title),
-                                menuItems
-                            )
-                        },
-                        content = { paddingValues ->
-                            val viewState = diagnosisViewModel.notificationViewState.collectAsState().value
+                Scaffold(
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .displayCutoutPadding(),
+                    topBar = {
+                        StandardAppBar(
+                            title = stringResource(R.string.nc_settings_diagnosis_title),
+                            menuItems
+                        )
+                    },
+                    content = { paddingValues ->
+                        val viewState = diagnosisViewModel.notificationViewState.collectAsState().value
 
                 Column(
                     Modifier

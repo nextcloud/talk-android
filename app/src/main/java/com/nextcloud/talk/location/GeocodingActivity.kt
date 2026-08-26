@@ -8,19 +8,14 @@ package com.nextcloud.talk.location
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.ColoredStatusBar
-import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.location.components.GeocodingScreen
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.location.viewmodels.GeoCodingViewModel
@@ -61,21 +56,16 @@ class GeocodingActivity : BaseActivity() {
         val email = context.getString(R.string.osm_geocoder_contact)
         TalkJsonNominatimClient(baseUrl, okHttpClient, email)
 
-        setContent {
+        setContentWithStatusBanner {
             val colorScheme = viewThemeUtils.getColorScheme(this)
-            val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
-            val isMaintenanceMode by maintenanceModeFlow.collectAsStateWithLifecycle()
 
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
-                Column {
-                    StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
-                    GeocodingScreen(
-                        viewModel = viewModel,
-                        onBack = { onBackPressedDispatcher.onBackPressed() },
-                        onAddressSelected = { address -> navigateToLocationPicker(address) }
-                    )
-                }
+                GeocodingScreen(
+                    viewModel = viewModel,
+                    onBack = { onBackPressedDispatcher.onBackPressed() },
+                    onAddressSelected = { address -> navigateToLocationPicker(address) }
+                )
             }
         }
     }

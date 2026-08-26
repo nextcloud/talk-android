@@ -10,10 +10,7 @@ package com.nextcloud.talk.contacts
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -21,7 +18,6 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.ColoredStatusBar
-import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.contacts.CompanionClass.Companion.KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
@@ -40,7 +36,7 @@ class ContactsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         contactsViewModel = ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class.java]
-        setContent {
+        setContentWithStatusBanner {
             val isAddParticipants = intent.getBooleanExtra(BundleKeys.KEY_ADD_PARTICIPANTS, false)
             val hideAlreadyAddedParticipants = intent.getBooleanExtra(KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS, false)
             contactsViewModel.getContactsFromSearchParams()
@@ -65,20 +61,14 @@ class ContactsActivity : BaseActivity() {
             }.toSet().toMutableList()
             contactsViewModel.updateSelectedParticipants(selectedParticipants)
 
-            val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
-            val isMaintenanceMode by maintenanceModeFlow.collectAsStateWithLifecycle()
-
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
                 ColoredStatusBar()
-                Column {
-                    StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
-                    ContactsScreen(
-                        contactsViewModel = contactsViewModel,
-                        uiState = uiState.value
-                    )
-                }
+                ContactsScreen(
+                    contactsViewModel = contactsViewModel,
+                    uiState = uiState.value
+                )
             }
         }
     }

@@ -105,7 +105,7 @@ class LogsActivity : BaseActivity() {
         val viewModel = ViewModelProvider(this, viewModelFactory)[LogsViewModel::class.java]
         val colorScheme = viewThemeUtils.getColorScheme(this)
 
-        setContent {
+        setContentWithStatusBanner {
             MaterialTheme(colorScheme = colorScheme) {
                 val entries = viewModel.entries.collectAsState().value
                 val isLoading = viewModel.isLoading.collectAsState().value
@@ -126,38 +126,32 @@ class LogsActivity : BaseActivity() {
                     }
                 )
 
-                val isOnline by networkMonitor.isOnline.collectAsState()
-                val isMaintenanceMode by maintenanceModeFlow.collectAsState()
-
                 ColoredStatusBar()
-                Column {
-                    StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
-                    Scaffold(
-                        modifier = Modifier
-                            .statusBarsPadding()
-                            .displayCutoutPadding(),
-                        topBar = {
-                            StandardAppBar(
-                                title = stringResource(R.string.nc_logs_title),
-                                menuItems = menuItems
-                            )
-                        }
-                    ) { paddingValues ->
-                        LogsContent(
-                            state = LogsUiState(
-                                entries = entries,
-                                isLoading = isLoading,
-                                totalSize = totalSize,
-                                lostEntries = viewModel.lostEntries,
-                                loggingEnabled = loggingEnabled,
-                                advancedLogging = advancedLogging
-                            ),
-                            onLoggingEnabledChange = { viewModel.setLoggingEnabled(it) },
-                            onAdvancedLoggingChange = { viewModel.setAdvancedLogging(it) },
-                            onDisable = { deleteExisting -> viewModel.setLoggingEnabled(false, deleteExisting) },
-                            paddingValues = paddingValues
+                Scaffold(
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .displayCutoutPadding(),
+                    topBar = {
+                        StandardAppBar(
+                            title = stringResource(R.string.nc_logs_title),
+                            menuItems = menuItems
                         )
                     }
+                ) { paddingValues ->
+                    LogsContent(
+                        state = LogsUiState(
+                            entries = entries,
+                            isLoading = isLoading,
+                            totalSize = totalSize,
+                            lostEntries = viewModel.lostEntries,
+                            loggingEnabled = loggingEnabled,
+                            advancedLogging = advancedLogging
+                        ),
+                        onLoggingEnabledChange = { viewModel.setLoggingEnabled(it) },
+                        onAdvancedLoggingChange = { viewModel.setAdvancedLogging(it) },
+                        onDisable = { deleteExisting -> viewModel.setLoggingEnabled(false, deleteExisting) },
+                        paddingValues = paddingValues
+                    )
                 }
 
                 LaunchedEffect(Unit) {
