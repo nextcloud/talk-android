@@ -130,11 +130,6 @@ class OfflineFirstChatRepository @Inject constructor(
 
     private val _isLoadingFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    override val maintenanceModeFlow: Flow<Boolean>
-        get() = _maintenanceModeFlow
-
-    private val _maintenanceModeFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
-
     private var newXChatLastCommonRead: Int? = null
     private var itIsPaused = false
 
@@ -192,10 +187,6 @@ class OfflineFirstChatRepository @Inject constructor(
 
         override suspend fun onIncomingMessagesFromOthers() {
             _incomingMessageFlow.emit(Unit)
-        }
-
-        override suspend fun onMaintenanceModeChanged(active: Boolean) {
-            _maintenanceModeFlow.value = active
         }
     }
 
