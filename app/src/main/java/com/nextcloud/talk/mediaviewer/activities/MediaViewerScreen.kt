@@ -203,7 +203,7 @@ fun MediaViewerScreen(
             modifier = Modifier.align(Alignment.TopCenter)
         ) {
             val toolbarColors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent,
+                containerColor = Color.Black.copy(alpha = TOOLBAR_ALPHA),
                 titleContentColor = Color.White,
                 navigationIconContentColor = Color.White,
                 actionIconContentColor = Color.White
