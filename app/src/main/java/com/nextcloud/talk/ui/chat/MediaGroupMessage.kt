@@ -88,6 +88,10 @@ private const val UPLOAD_TRACK_ALPHA = 0.3f
 private const val PERCENT = 100
 private const val TILE_CROSSFADE_DURATION_MS = 300
 
+// Matches MediaMessage's own mediaInset - so the grid, as a whole, nests inside the bubble's corner
+// with the same inset gap a single image has, rather than sitting flush against the bubble edge.
+private val mediaGroupInset = 4.dp
+
 private val gridSpacing = 2.dp
 private val gridTileShape = RoundedCornerShape(4.dp)
 private val singleTileHeight = 220.dp
@@ -119,6 +123,13 @@ fun MediaGroupMessage(
 
     val hasExplicitCaption = representative.plainMessage != FILE_PLACEHOLDER_MESSAGE
     val captionText = if (hasExplicitCaption) representative.message else null
+
+    // Same corner-shape function MediaMessage uses for a single image, so the grid's own outer
+    // corner nests inside the bubble's corner the same way a single image's does, instead of a
+    // fixed, position-unaware radius.
+    val groupShape = remember(representative.incoming, representative.isGrouped, representative.isGroupedWithNext) {
+        shape(representative.incoming, representative.isGrouped, representative.isGroupedWithNext)
+    }
 
     CompositionLocalProvider(
         LocalMessageLongClickHandler provides { id -> callbacks.onLongClick?.invoke(id) ?: Unit },
@@ -154,12 +165,18 @@ fun MediaGroupMessage(
                         content = {
                             Column {
                                 if (mediaItems.isNotEmpty()) {
-                                    MediaGrid(
-                                        items = mediaItems,
-                                        chatViewDownloadingFileState = context.downloadingFileState,
-                                        onItemClick = callbacks.onFileClick,
-                                        onCancelUpload = callbacks.onCancelUpload
-                                    )
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(mediaGroupInset)
+                                            .clip(groupShape)
+                                    ) {
+                                        MediaGrid(
+                                            items = mediaItems,
+                                            chatViewDownloadingFileState = context.downloadingFileState,
+                                            onItemClick = callbacks.onFileClick,
+                                            onCancelUpload = callbacks.onCancelUpload
+                                        )
+                                    }
                                 }
                                 if (fileItems.isNotEmpty()) {
                                     Column(
