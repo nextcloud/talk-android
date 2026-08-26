@@ -369,8 +369,14 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun cancelUpload(referenceId: String) {
-        val workId = uploadReferenceToWorkId.remove(referenceId) ?: return
-        UploadAndShareFilesWorker.cancelUpload(referenceId, workId)
+        // uploadReferenceToWorkId is session-local (never persisted) - after an app restart it's
+        // empty even for an upload that's still stuck showing as "uploading" from a previous
+        // session, so a placeholder must still be removable even when there's no known work id to
+        // also cancel. Without this, cancel silently did nothing for any such placeholder, leaving
+        // the user with no way to clear a permanently stuck upload.
+        uploadReferenceToWorkId.remove(referenceId)?.let { workId ->
+            UploadAndShareFilesWorker.cancelUpload(referenceId, workId)
+        }
         viewModelScope.launch {
             chatRepository.deleteTempMessageByReferenceId(referenceId)
         }
