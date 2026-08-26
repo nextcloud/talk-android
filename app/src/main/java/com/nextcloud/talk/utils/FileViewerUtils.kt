@@ -29,7 +29,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.fullscreenfile.FullScreenImageActivity
 import com.nextcloud.talk.fullscreenfile.FullScreenMediaActivity
 import com.nextcloud.talk.fullscreenfile.FullScreenTextViewerActivity
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
@@ -43,6 +42,7 @@ import com.nextcloud.talk.utils.Mimetype.IMAGE_GIF
 import com.nextcloud.talk.utils.Mimetype.IMAGE_HEIC
 import com.nextcloud.talk.utils.Mimetype.IMAGE_JPEG
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PNG
+import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX
 import com.nextcloud.talk.utils.Mimetype.TEXT_MARKDOWN
 import com.nextcloud.talk.utils.Mimetype.TEXT_PLAIN
 import com.nextcloud.talk.utils.Mimetype.VIDEO_MP4
@@ -51,7 +51,6 @@ import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX
 import com.nextcloud.talk.utils.Mimetype.VIDEO_QUICKTIME
 import com.nextcloud.talk.utils.Mimetype.VIDEO_WEBM
 import com.nextcloud.talk.utils.MimetypeUtils.isAudioOnly
-import com.nextcloud.talk.utils.MimetypeUtils.isGif
 import com.nextcloud.talk.utils.MimetypeUtils.isMarkdown
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
@@ -73,10 +72,14 @@ class FileViewerUtils(private val context: Context, private val user: User) {
     ) {
         val mimetype = message.fileParameters.mimetype
 
-        // Video is fully covered by the swipeable media viewer now, so it skips the single-item
-        // FullScreenMediaActivity entirely - unlike audio, which that activity still owns.
-        if (mimetype != null && mimetype.startsWith(VIDEO_PREFIX) && isSupportedForInternalViewer(mimetype)) {
-            openVideoInMediaViewer(message)
+        // Images/videos are fully covered by the swipeable media viewer now, so they skip the
+        // single-item FullScreenImageActivity/FullScreenMediaActivity entirely - unlike audio,
+        // which FullScreenMediaActivity still owns.
+        val isViewableMedia = mimetype != null &&
+            (mimetype.startsWith(IMAGE_PREFIX) || mimetype.startsWith(VIDEO_PREFIX)) &&
+            isSupportedForInternalViewer(mimetype)
+        if (isViewableMedia) {
+            openInMediaViewer(message)
             return
         }
 
@@ -95,12 +98,12 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         )
     }
 
-    private fun openVideoInMediaViewer(message: ChatMessage) {
+    private fun openInMediaViewer(message: ChatMessage) {
         val fileParameters = message.fileParameters
         val fileId = fileParameters.id
         val roomToken = message.token
         if (fileId == null || roomToken == null) {
-            Log.e(TAG, "Missing fileId or roomToken, can't open video in media viewer")
+            Log.e(TAG, "Missing fileId or roomToken, can't open in media viewer")
             return
         }
 
@@ -205,11 +208,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
                 VIDEO_OGG,
                 VIDEO_WEBM -> openVideoView(filename, mimetype)
 
-                IMAGE_PNG,
-                IMAGE_JPEG,
-                IMAGE_GIF,
-                IMAGE_HEIC -> openImageView(filename, mimetype)
-
                 TEXT_MARKDOWN,
                 TEXT_PLAIN -> openTextView(filename, mimetype, link, fileId)
 
@@ -274,13 +272,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(browserIntent)
         }
-    }
-
-    private fun openImageView(filename: String, mimetype: String) {
-        val fullScreenImageIntent = Intent(context, FullScreenImageActivity::class.java)
-        fullScreenImageIntent.putExtra("FILE_NAME", filename)
-        fullScreenImageIntent.putExtra("IS_GIF", isGif(mimetype))
-        context.startActivity(fullScreenImageIntent)
     }
 
     private fun openAudioView(filename: String, mimetype: String) {
