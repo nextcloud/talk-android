@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.ui.chat
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -35,6 +36,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import coil.compose.rememberAsyncImagePainter
 import com.nextcloud.talk.R
+import com.nextcloud.talk.attachmentpreview.describeFile
 import com.nextcloud.talk.chat.data.model.FileParameters
 import com.nextcloud.talk.chat.data.model.decodeBlurhashPlaceholder
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
@@ -63,6 +67,9 @@ import com.nextcloud.talk.ui.theme.mimetypeIconTint
 import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.MimetypeUtils
+import com.nextcloud.talk.utils.VideoThumbnailCache
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 private const val FILE_PLACEHOLDER_MESSAGE = "{file}"
 private const val MAX_VISIBLE_GRID_TILES = 4
@@ -340,7 +347,7 @@ private fun MediaGridTile(
     }
 }
 
-@Suppress("Detekt.LongMethod")
+@Suppress("Detekt.LongMethod", "CyclomaticComplexMethod")
 @Composable
 private fun SyncedMediaTileContent(
     message: ChatMessageUi,
@@ -354,7 +361,39 @@ private fun SyncedMediaTileContent(
     val isVideo = typeContent.mimeType.startsWith(Mimetype.VIDEO_PREFIX)
     val isGif = MimetypeUtils.isGif(typeContent.mimeType)
     val showPlayButton = isVideo || (isGif && !typeContent.animateGif)
-    val showsGenericIcon = typeContent.previewUrl.isNullOrEmpty()
+    val hasServerPreview = !typeContent.previewUrl.isNullOrEmpty()
+
+    // Bridges the gap right after this message synced but before the server has a preview link
+    // ready for it (or we just haven't fetched it yet) - same as the single-message MediaMessage,
+    // reusing the local file we already have on disk instead of falling back to the bare mimetype
+    // icon, which would otherwise flash for a moment on every upload.
+    val getLocalPreviewUri = LocalUploadedLocalPreviewProvider.current
+    val localPreviewUri = if (typeContent.mimeType.startsWith(Mimetype.IMAGE_PREFIX) || isVideo) {
+        message.referenceId?.let(getLocalPreviewUri)
+    } else {
+        null
+    }
+    val localPreviewPainter = if (!isVideo && !localPreviewUri.isNullOrEmpty()) {
+        rememberAsyncImagePainter(model = localPreviewUri.toUri())
+    } else {
+        null
+    }
+    val localVideoFramePainter = if (isVideo && !hasServerPreview) {
+        val refId = message.referenceId
+        val videoFrame by produceState<Bitmap?>(initialValue = null, key1 = refId, key2 = localPreviewUri) {
+            value = withContext(Dispatchers.IO) {
+                refId?.let { VideoThumbnailCache.get(context, it) }
+                    ?: localPreviewUri?.let { uri ->
+                        describeFile(context, uri, compress = false).videoThumbnail?.also { bitmap ->
+                            refId?.let { VideoThumbnailCache.put(context, it, bitmap) }
+                        }
+                    }
+            }
+        }
+        videoFrame?.let { BitmapPainter(it.asImageBitmap()) }
+    } else {
+        null
+    }
 
     val blurhashPainter = remember(typeContent.blurhash, typeContent.width, typeContent.height) {
         decodeBlurhashPlaceholder(typeContent.blurhash, typeContent.width, typeContent.height)
@@ -362,6 +401,9 @@ private fun SyncedMediaTileContent(
             ?.let { BitmapPainter(it) }
     }
     val fallbackPainter = painterResource(typeContent.drawableResourceId)
+    val basePainter = localVideoFramePainter ?: localPreviewPainter ?: blurhashPainter
+    val showsGenericIcon = !hasServerPreview && basePainter == null
+
     val loadedImage = remember(typeContent.previewUrl, typeContent.isClassified) {
         if (typeContent.isClassified || typeContent.previewUrl.isNullOrEmpty()) {
             null
@@ -376,21 +418,12 @@ private fun SyncedMediaTileContent(
     }
 
     if (showsGenericIcon) {
-        if (blurhashPainter != null) {
-            Image(
-                painter = blurhashPainter,
-                contentDescription = null,
-                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-                contentScale = ContentScale.Crop
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-            )
-        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+        )
         Icon(
             painter = fallbackPainter,
             contentDescription = stringResource(R.string.media_message_content_description),
@@ -398,20 +431,22 @@ private fun SyncedMediaTileContent(
             tint = mimetypeIconTint(typeContent.drawableResourceId)
         )
     } else {
-        if (blurhashPainter != null) {
+        if (basePainter != null) {
             Image(
-                painter = blurhashPainter,
+                painter = basePainter,
                 contentDescription = null,
                 modifier = Modifier.fillMaxWidth().fillMaxHeight(),
                 contentScale = ContentScale.Crop
             )
         }
-        Image(
-            painter = rememberAsyncImagePainter(model = loadedImage),
-            contentDescription = stringResource(R.string.media_message_content_description),
-            modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-            contentScale = ContentScale.Crop
-        )
+        if (hasServerPreview) {
+            Image(
+                painter = rememberAsyncImagePainter(model = loadedImage),
+                contentDescription = stringResource(R.string.media_message_content_description),
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                contentScale = ContentScale.Crop
+            )
+        }
     }
 
     if (showPlayButton) {
