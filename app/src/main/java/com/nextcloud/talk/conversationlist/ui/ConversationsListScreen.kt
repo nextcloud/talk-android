@@ -248,6 +248,7 @@ fun ConversationsListScreen(
         Scaffold(
             contentWindowInsets = WindowInsets.safeDrawing,
             topBar = {
+                val showBanner = !isOnline || isMaintenanceMode
                 Column(modifier = Modifier.fillMaxWidth()) {
                     StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
                     ConversationListTopBar(
@@ -273,7 +274,7 @@ fun ConversationsListScreen(
                             onNavigateBack = callbacks.onNavigateBack,
                             onAccountChooserClick = callbacks.onAccountChooserClick
                         ),
-                        modifier = Modifier.statusBarsPadding()
+                        modifier = if (showBanner) Modifier else Modifier.statusBarsPadding()
                     )
                 }
             }
