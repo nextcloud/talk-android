@@ -25,7 +25,8 @@ class MediaViewerItemTest {
             link = "https://example.com/f/$messageId",
             fileSize = 1024L,
             previewUrl = null,
-            actorDisplayName = "Jane Doe"
+            actorDisplayName = "Jane Doe",
+            timestamp = messageId
         )
 
     @Test
