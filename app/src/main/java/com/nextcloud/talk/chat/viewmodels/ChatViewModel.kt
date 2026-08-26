@@ -2677,11 +2677,12 @@ class ChatViewModel @AssistedInject constructor(
     sealed interface ChatItem {
         // For a MediaGroupItem, the last (newest) message stands in as the representative -
         // matches how the grouped bubble itself is anchored (see MediaGroupItem docs below).
-        fun messageOrNull(): ChatMessageUi? = when (this) {
-            is MessageItem -> uiMessage
-            is MediaGroupItem -> messages.lastOrNull()
-            else -> null
-        }
+        fun messageOrNull(): ChatMessageUi? =
+            when (this) {
+                is MessageItem -> uiMessage
+                is MediaGroupItem -> messages.lastOrNull()
+                else -> null
+            }
         fun dateOrNull(): LocalDate? = (this as? DateHeaderItem)?.date
 
         fun stableKey(): Any =
