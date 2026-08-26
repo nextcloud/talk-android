@@ -14,6 +14,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,7 +45,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -77,7 +77,8 @@ private const val MEDIUM_SCALE = 2.45f
 
 private val thumbnailSize = 48.dp
 private val thumbnailSpacing = 4.dp
-private val thumbnailStripPadding = 12.dp
+private val thumbnailStripTopPadding = 12.dp
+private val thumbnailStripBottomPadding = 24.dp
 
 @Suppress("Detekt.LongMethod", "CyclomaticComplexMethod")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -285,32 +286,38 @@ private fun ThumbnailStrip(
     onThumbnailClick: (MediaViewerItem) -> Unit
 ) {
     val listState = rememberLazyListState()
-    val density = LocalDensity.current
     val currentIndex = currentItem?.let { item -> group.items.indexOfFirst { it.messageId == item.messageId } } ?: -1
 
-    LaunchedEffect(group.key, currentIndex) {
-        if (currentIndex < 0) return@LaunchedEffect
-        val itemWidthPx = with(density) { (thumbnailSize + thumbnailSpacing).toPx() }
-        val viewportWidthPx = listState.layoutInfo.viewportSize.width
-        val centerOffset = (viewportWidthPx / 2f - itemWidthPx / 2f).toInt()
-        listState.animateScrollToItem(currentIndex, -centerOffset)
-    }
-
-    LazyRow(
-        state = listState,
-        horizontalArrangement = Arrangement.spacedBy(thumbnailSpacing),
-        contentPadding = PaddingValues(horizontal = thumbnailStripPadding),
+    BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.Black.copy(alpha = TOOLBAR_ALPHA))
-            .padding(vertical = thumbnailStripPadding)
+            .padding(top = thumbnailStripTopPadding, bottom = thumbnailStripBottomPadding)
     ) {
-        items(group.items, key = { it.messageId }) { item ->
-            ThumbnailTile(
-                item = item,
-                isSelected = item.messageId == currentItem?.messageId,
-                onClick = { onThumbnailClick(item) }
-            )
+        // Side padding equal to half the leftover viewport width, so the row can scroll any item -
+        // including the first/last - all the way to the exact horizontal center, not just as close
+        // to it as the natural content bounds allow.
+        val sidePadding = ((maxWidth - thumbnailSize) / 2).coerceAtLeast(0.dp)
+
+        LaunchedEffect(group.key, currentIndex) {
+            if (currentIndex >= 0) {
+                listState.animateScrollToItem(currentIndex)
+            }
+        }
+
+        LazyRow(
+            state = listState,
+            horizontalArrangement = Arrangement.spacedBy(thumbnailSpacing),
+            contentPadding = PaddingValues(horizontal = sidePadding),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            items(group.items, key = { it.messageId }) { item ->
+                ThumbnailTile(
+                    item = item,
+                    isSelected = item.messageId == currentItem?.messageId,
+                    onClick = { onThumbnailClick(item) }
+                )
+            }
         }
     }
 }
