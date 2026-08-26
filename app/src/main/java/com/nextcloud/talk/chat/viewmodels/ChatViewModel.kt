@@ -74,6 +74,7 @@ import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.MimetypeUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.SpreedFeatures
@@ -227,11 +228,16 @@ internal fun combineFileShareGroups(uiMessages: List<ChatMessageUi>): List<Combi
 
 /**
  * Converts an already-synced media message into a media-viewer item, or null if it isn't one
- * (text/system/voice/geo/poll/deck messages, or a still-uploading placeholder - the viewer is only
- * ever entered by tapping an already-synced Media message, so those are never navigable anyway).
+ * (text/system/voice/geo/poll/deck messages, a still-uploading placeholder, or a Media message
+ * whose file isn't actually an image/video - MessageTypeContent.Media covers every file
+ * attachment, not just image/video, e.g. a PDF grouped into the same upload batch as a photo).
+ * The viewer is only ever entered by tapping an already-synced image/video message, so anything
+ * else is never navigable to anyway.
  */
 private fun ChatMessageUi.toMediaViewerItem(): MediaViewerItem? {
-    val content = content as? MessageTypeContent.Media ?: return null
+    val content = (content as? MessageTypeContent.Media)
+        ?.takeIf { it.mimeType.startsWith(Mimetype.IMAGE_PREFIX) || it.mimeType.startsWith(Mimetype.VIDEO_PREFIX) }
+        ?: return null
     val fileParameters = FileParameters(HashMap(messageParameters.mapValues { (_, params) -> HashMap(params) }))
     val fileId = fileParameters.id ?: return null
     return MediaViewerItem(
