@@ -8,6 +8,8 @@
 package com.nextcloud.talk.ui.chat
 
 import android.graphics.Bitmap
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -41,6 +43,7 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -54,6 +57,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.nextcloud.talk.R
 import com.nextcloud.talk.attachmentpreview.describeFile
@@ -82,6 +86,7 @@ private const val OVERFLOW_TEXT_SIZE = 20
 private const val UPLOAD_SCRIM_ALPHA = 0.25f
 private const val UPLOAD_TRACK_ALPHA = 0.3f
 private const val PERCENT = 100
+private const val TILE_CROSSFADE_DURATION_MS = 300
 
 private val gridSpacing = 2.dp
 private val gridTileShape = RoundedCornerShape(4.dp)
@@ -440,10 +445,21 @@ private fun SyncedMediaTileContent(
             )
         }
         if (hasServerPreview) {
+            // rememberAsyncImagePainter() paints the request's own placeholder (the generic
+            // mimetype icon, set by load() below) while the real image is still loading - shown
+            // unconditionally, that placeholder would sit fully opaque on top of basePainter above.
+            // Only fading it in once actually loaded keeps the base layer visible until then.
+            val loadedPainter = rememberAsyncImagePainter(model = loadedImage)
+            val isLoaded = loadedPainter.state is AsyncImagePainter.State.Success
+            val loadedAlpha by animateFloatAsState(
+                targetValue = if (isLoaded) 1f else 0f,
+                animationSpec = tween(durationMillis = TILE_CROSSFADE_DURATION_MS),
+                label = "gridTileLoadedAlpha"
+            )
             Image(
-                painter = rememberAsyncImagePainter(model = loadedImage),
+                painter = loadedPainter,
                 contentDescription = stringResource(R.string.media_message_content_description),
-                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                modifier = Modifier.fillMaxWidth().fillMaxHeight().alpha(loadedAlpha),
                 contentScale = ContentScale.Crop
             )
         }
