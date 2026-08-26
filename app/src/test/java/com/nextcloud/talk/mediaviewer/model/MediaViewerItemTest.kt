@@ -92,4 +92,52 @@ class MediaViewerItemTest {
 
         assertEquals(keys.size, keys.toSet().size)
     }
+
+    @Test
+    fun `capSeedAroundMessage leaves a list at or below the cap untouched`() {
+        val items = (1L..10L).map { item(it, null) }
+
+        val capped = items.capSeedAroundMessage(anchorMessageId = 5L, maxItems = 10)
+
+        assertEquals(items, capped)
+    }
+
+    @Test
+    fun `capSeedAroundMessage centers the window on the anchor`() {
+        val items = (1L..100L).map { item(it, null) }
+
+        val capped = items.capSeedAroundMessage(anchorMessageId = 50L, maxItems = 10)
+
+        assertEquals(10, capped.size)
+        assertEquals((45L..54L).toList(), capped.map { it.messageId })
+    }
+
+    @Test
+    fun `capSeedAroundMessage clamps the window at the start of the list`() {
+        val items = (1L..100L).map { item(it, null) }
+
+        val capped = items.capSeedAroundMessage(anchorMessageId = 2L, maxItems = 10)
+
+        assertEquals(10, capped.size)
+        assertEquals((1L..10L).toList(), capped.map { it.messageId })
+    }
+
+    @Test
+    fun `capSeedAroundMessage clamps the window at the end of the list`() {
+        val items = (1L..100L).map { item(it, null) }
+
+        val capped = items.capSeedAroundMessage(anchorMessageId = 99L, maxItems = 10)
+
+        assertEquals(10, capped.size)
+        assertEquals((91L..100L).toList(), capped.map { it.messageId })
+    }
+
+    @Test
+    fun `capSeedAroundMessage still returns a bounded window when the anchor is missing`() {
+        val items = (1L..100L).map { item(it, null) }
+
+        val capped = items.capSeedAroundMessage(anchorMessageId = -1L, maxItems = 10)
+
+        assertEquals(10, capped.size)
+    }
 }

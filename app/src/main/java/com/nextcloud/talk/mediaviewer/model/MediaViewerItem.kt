@@ -74,6 +74,31 @@ fun List<MediaViewerItem>.toMediaViewerGroups(): List<MediaViewerGroup> {
     return result
 }
 
+/**
+ * Caps a chronologically ordered item list to at most [maxItems] centered on the item with
+ * [anchorMessageId], so the seed passed through the launching Intent's Parcelable extras stays
+ * well under Android's ~1MB Binder transaction limit. Left uncapped, e.g. every image/video a user
+ * has scrolled through in the Shared Items gallery (which keeps accumulating pages, unbounded) gets
+ * Parcelled at once and risks a TransactionTooLargeException crash.
+ *
+ * Trimming is safe in the "older" direction - MediaViewerViewModel.loadOlderGroups() pages further
+ * back via the network once the seed's oldest item is reached. There's no equivalent for "newer":
+ * the shared-items endpoint only supports paging backwards, so items newer than the window are
+ * simply unreachable by swiping - an existing, accepted limitation (see MediaViewerViewModel's
+ * class doc), just with a lower ceiling than "everything currently loaded".
+ */
+fun List<MediaViewerItem>.capSeedAroundMessage(
+    anchorMessageId: Long,
+    maxItems: Int = MAX_SEED_ITEMS
+): List<MediaViewerItem> {
+    if (size <= maxItems) return this
+    val anchorIndex = indexOfFirst { it.messageId == anchorMessageId }.coerceAtLeast(0)
+    val start = (anchorIndex - maxItems / 2).coerceIn(0, size - maxItems)
+    return subList(start, start + maxItems)
+}
+
+private const val MAX_SEED_ITEMS = 200
+
 fun SharedFileItem.isImageOrVideo(): Boolean =
     mimeType.startsWith(Mimetype.IMAGE_PREFIX) || mimeType.startsWith(Mimetype.VIDEO_PREFIX)
 
