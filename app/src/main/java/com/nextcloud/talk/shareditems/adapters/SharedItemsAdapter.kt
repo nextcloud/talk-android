@@ -15,6 +15,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.SharedItemGridBinding
 import com.nextcloud.talk.databinding.SharedItemListBinding
 import com.nextcloud.talk.mediaviewer.activities.MediaViewerActivity
+import com.nextcloud.talk.mediaviewer.model.capSeedAroundMessage
 import com.nextcloud.talk.mediaviewer.model.isImageOrVideo
 import com.nextcloud.talk.mediaviewer.model.toMediaViewerItem
 import com.nextcloud.talk.polls.ui.PollMainDialogFragment
@@ -116,6 +117,7 @@ class SharedItemsAdapter(
             .filter { it.isImageOrVideo() }
             .sortedBy { it.messageId }
             .map { it.toMediaViewerItem() }
+            .capSeedAroundMessage(item.messageId)
         context.startActivity(MediaViewerActivity.newIntent(context, roomToken, seedItems, item.messageId))
     }
 

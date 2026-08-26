@@ -143,6 +143,7 @@ import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.location.LocationPickerActivity
 import com.nextcloud.talk.mediaviewer.activities.MediaViewerActivity
+import com.nextcloud.talk.mediaviewer.model.capSeedAroundMessage
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
@@ -1295,7 +1296,11 @@ class ChatActivity :
             val isViewableMedia = mimetype != null &&
                 (mimetype.startsWith(Mimetype.IMAGE_PREFIX) || mimetype.startsWith(Mimetype.VIDEO_PREFIX)) &&
                 fileViewerUtils.isSupportedForInternalViewer(mimetype)
-            val seedItems = if (isViewableMedia) chatViewModel.mediaViewerSeed().flatMap { it.items } else emptyList()
+            val seedItems = if (isViewableMedia) {
+                chatViewModel.mediaViewerSeed().flatMap { it.items }.capSeedAroundMessage(messageId.toLong())
+            } else {
+                emptyList()
+            }
 
             if (isViewableMedia && seedItems.any { it.messageId == messageId.toLong() }) {
                 startActivity(
