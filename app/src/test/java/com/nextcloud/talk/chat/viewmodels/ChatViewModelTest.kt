@@ -190,6 +190,28 @@ class ChatViewModelTest {
         assertEquals(listOf(1, 2), result[0].messages.map { it.id })
     }
 
+    // Regression test: a failed upload in the middle of a batch excludes that one message and
+    // splits the rest into two separate groups (see combineFileShareGroups()) - both halves share
+    // the same batch hash from groupHash(), which crashed the LazyColumn when MediaGroupItem's
+    // stableKey() was derived from that shared hash instead of from the group's own first message.
+    @Test
+    fun `two groups split by a failed upload in the same batch get distinct stable keys`() {
+        val uploadId = "batch-9"
+        val messages = listOf(
+            mediaMessage(1, refUtils.generateGroupedReferenceId(uploadId, 1)),
+            mediaMessage(2, refUtils.generateGroupedReferenceId(uploadId, 2)),
+            mediaMessage(3, refUtils.generateGroupedReferenceId(uploadId, 3), statusIcon = MessageStatusIcon.FAILED),
+            mediaMessage(4, refUtils.generateGroupedReferenceId(uploadId, 4)),
+            mediaMessage(5, refUtils.generateGroupedReferenceId(uploadId, 5))
+        )
+
+        val groups = combineFileShareGroups(messages).filterIsInstance<CombinedUnit.Group>()
+        assertEquals(2, groups.size)
+
+        val keys = groups.map { ChatViewModel.ChatItem.MediaGroupItem(it.messages).stableKey() }
+        assertEquals(keys.size, keys.toSet().size)
+    }
+
     @Test
     fun `messages with non-grouped referenceIds never combine`() {
         val messages = listOf(
