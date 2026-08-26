@@ -20,5 +20,7 @@ data class SharedFileItem(
     val previewAvailable: Boolean = false,
     val previewLink: String,
     val messageId: Long,
-    val referenceId: String?
+    val referenceId: String?,
+    /** Epoch seconds, matching ChatMessage/ChatMessageJson's own timestamp convention. */
+    val timestamp: Long
 ) : SharedItem

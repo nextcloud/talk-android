@@ -80,6 +80,8 @@ import com.nextcloud.talk.mediaviewer.model.MediaViewerGroup
 import com.nextcloud.talk.mediaviewer.model.MediaViewerItem
 import com.nextcloud.talk.mediaviewer.viewmodels.MediaViewerViewModel
 import com.nextcloud.talk.utils.BitmapShrinker
+import com.nextcloud.talk.utils.DateConstants
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.MimetypeUtils
@@ -108,6 +110,9 @@ fun MediaViewerScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val items = uiState.flattenedItems
     if (items.isEmpty()) return
+
+    val context = LocalContext.current
+    val dateUtils = remember { DateUtils(context) }
 
     val pagerState = rememberPagerState(initialPage = uiState.currentGlobalIndex.coerceIn(0, items.size - 1)) {
         items.size
@@ -209,10 +214,14 @@ fun MediaViewerScreen(
                     add(stringResource(R.string.nc_save_message) to { onSave(currentItem, currentLocalPath) })
                 }
             }
+            val sentDateTime = currentItem?.let {
+                dateUtils.getLocalDateTimeStringFromTimestamp(it.timestamp * DateConstants.SECOND_DIVIDER)
+            }
             StandardAppBar(
                 title = currentItem?.actorDisplayName.orEmpty(),
                 menuItems = menuItems,
-                colors = toolbarColors
+                colors = toolbarColors,
+                subtitle = sentDateTime
             )
         }
 

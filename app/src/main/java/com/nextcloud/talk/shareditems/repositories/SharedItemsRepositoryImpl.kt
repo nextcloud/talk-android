@@ -52,6 +52,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
         ).map { map(it, parameters, type) }
     }
 
+    @Suppress("LongMethod")
     private fun map(
         response: Response<ChatShareOverall>,
         parameters: SharedItemsRepository.Parameters,
@@ -105,7 +106,8 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
                         previewAvailable,
                         previewLink(fileParameters["id"], parameters.baseUrl!!),
                         it.value.id,
-                        it.value.referenceId
+                        it.value.referenceId,
+                        it.value.timestamp
                     )
                 } else if (it.value.messageParameters?.containsKey("object") == true) {
                     val objectParameters = it.value.messageParameters!!["object"]!!

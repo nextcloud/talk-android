@@ -244,7 +244,8 @@ private fun ChatMessageUi.toMediaViewerItem(): MediaViewerItem? {
         link = fileParameters.link.orEmpty(),
         fileSize = fileParameters.size ?: 0L,
         previewUrl = content.previewUrl,
-        actorDisplayName = actorDisplayName
+        actorDisplayName = actorDisplayName,
+        timestamp = timestamp
     )
 }
 

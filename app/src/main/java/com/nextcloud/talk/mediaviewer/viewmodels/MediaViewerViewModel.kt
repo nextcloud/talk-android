@@ -236,7 +236,8 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
         link = link,
         fileSize = fileSize,
         previewUrl = previewLink.takeIf { previewAvailable },
-        actorDisplayName = actorName
+        actorDisplayName = actorName,
+        timestamp = timestamp
     )
 
     private suspend fun Observable<SharedItems>.awaitFirst(): SharedItems =
