@@ -239,20 +239,21 @@ private fun ChatMessageUi.toMediaViewerItem(): MediaViewerItem? {
         ?.takeIf { it.mimeType.startsWith(Mimetype.IMAGE_PREFIX) || it.mimeType.startsWith(Mimetype.VIDEO_PREFIX) }
         ?: return null
     val fileParameters = FileParameters(HashMap(messageParameters.mapValues { (_, params) -> HashMap(params) }))
-    val fileId = fileParameters.id ?: return null
-    return MediaViewerItem(
-        messageId = id.toLong(),
-        referenceId = referenceId,
-        fileId = fileId,
-        fileName = fileParameters.name.orEmpty(),
-        mimeType = content.mimeType,
-        path = fileParameters.path.orEmpty(),
-        link = fileParameters.link.orEmpty(),
-        fileSize = fileParameters.size ?: 0L,
-        previewUrl = content.previewUrl,
-        actorDisplayName = actorDisplayName,
-        timestamp = timestamp
-    )
+    return fileParameters.id?.let { fileId ->
+        MediaViewerItem(
+            messageId = id.toLong(),
+            referenceId = referenceId,
+            fileId = fileId,
+            fileName = fileParameters.name.orEmpty(),
+            mimeType = content.mimeType,
+            path = fileParameters.path.orEmpty(),
+            link = fileParameters.link.orEmpty(),
+            fileSize = fileParameters.size ?: 0L,
+            previewUrl = content.previewUrl,
+            actorDisplayName = actorDisplayName,
+            timestamp = timestamp
+        )
+    }
 }
 
 @Suppress("TooManyFunctions", "LongParameterList")
