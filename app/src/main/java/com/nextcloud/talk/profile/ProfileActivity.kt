@@ -10,18 +10,15 @@ import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.ImagePicker.Companion.getError
@@ -31,7 +28,6 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.ColoredStatusBar
-import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.userprofile.Scope
@@ -130,25 +126,19 @@ class ProfileActivity : BaseActivity() {
         }
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
-        setContent {
-            val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
-            val isMaintenanceMode by maintenanceModeFlow.collectAsStateWithLifecycle()
-
+        setContentWithStatusBanner {
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
-                Column {
-                    StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
-                    ProfileScreen(
-                        state = profileUiState,
-                        callbacks = buildProfileCallbacks()
+                ProfileScreen(
+                    state = profileUiState,
+                    callbacks = buildProfileCallbacks()
+                )
+                scopeSheetRequest?.let { req ->
+                    ScopeModalBottomSheet(
+                        showPrivate = req.field != Field.DISPLAYNAME && req.field != Field.EMAIL,
+                        onScopeSelected = { scope -> updateItemScope(req.position, scope) },
+                        onDismiss = { scopeSheetRequest = null }
                     )
-                    scopeSheetRequest?.let { req ->
-                        ScopeModalBottomSheet(
-                            showPrivate = req.field != Field.DISPLAYNAME && req.field != Field.EMAIL,
-                            onScopeSelected = { scope -> updateItemScope(req.position, scope) },
-                            onDismiss = { scopeSheetRequest = null }
-                        )
-                    }
                 }
             }
         }

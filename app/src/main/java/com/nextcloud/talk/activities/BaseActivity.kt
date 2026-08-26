@@ -24,11 +24,16 @@ import android.view.inputmethod.EditorInfo
 import android.webkit.SslErrorHandler
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
@@ -38,6 +43,7 @@ import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.account.SwitchAccountActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.events.RemoteWipeEvent
@@ -112,6 +118,22 @@ open class BaseActivity : AppCompatActivity() {
 
     private val maintenanceModeState = MutableStateFlow(false)
     val maintenanceModeFlow: StateFlow<Boolean> = maintenanceModeState.asStateFlow()
+
+    /**
+     * [setContent] with the offline/maintenance-mode [StatusBannerRow] pushed above [content],
+     * for screens that are fully written in Compose. Chat is XML-rooted with Compose islands and
+     * keeps its own banner instead of using this.
+     */
+    protected fun setContentWithStatusBanner(content: @Composable () -> Unit) {
+        setContent {
+            val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
+            val isMaintenanceMode by maintenanceModeFlow.collectAsStateWithLifecycle()
+            Column {
+                StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
+                content()
+            }
+        }
+    }
 
     open val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.TOOLBAR

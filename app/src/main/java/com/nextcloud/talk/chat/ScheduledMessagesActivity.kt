@@ -11,7 +11,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -93,7 +92,6 @@ import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.ui.model.toScheduledMessageUiModel
 import com.nextcloud.talk.chat.viewmodels.ScheduledMessagesViewModel
 import com.nextcloud.talk.components.ColoredStatusBar
-import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.models.json.chat.ChatUtils
@@ -163,11 +161,9 @@ class ScheduledMessagesActivity : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         scheduledMessagesViewModel = ViewModelProvider(this, viewModelFactory)[ScheduledMessagesViewModel::class.java]
 
-        setContent {
+        setContentWithStatusBanner {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val currentUser by scheduledMessagesViewModel.currentUserState.collectAsStateWithLifecycle()
-            val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
-            val isMaintenanceMode by maintenanceModeFlow.collectAsStateWithLifecycle()
             LaunchedEffect(Unit) {
                 scheduledMessagesViewModel.loadCurrentUser()
             }
@@ -178,40 +174,37 @@ class ScheduledMessagesActivity : BaseActivity() {
                     LocalShowThreadButton provides false
                 ) {
                     ColoredStatusBar()
-                    Column {
-                        StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
-                        currentUser?.let { user ->
-                            ScheduledMessagesScreen(
-                                user = user,
-                                conversationName = conversationName,
-                                scheduledMessagesViewModel = scheduledMessagesViewModel,
-                                dateUtils = dateUtils,
-                                viewThemeUtils = viewThemeUtils,
-                                onBack = { finish() },
-                                onLoadScheduledMessages = { loadScheduledMessages(user) },
-                                onSendNow = { message ->
-                                    sendNow(message, user)
-                                },
-                                onReschedule = { message, sendAt, sendWithoutNotification ->
-                                    reschedule(message, sendAt, sendWithoutNotification, user)
-                                },
-                                onEdit = { message, sendAt ->
-                                    edit(message, sendAt, user)
-                                },
-                                onDeleteScheduledMessage = { message -> deleteScheduledMessage(message, user) },
-                                onOpenParentMessage = { messageId ->
-                                    openParentMessage(messageId)
-                                },
-                                onOpenThread = { threadId ->
-                                    openThread(threadId)
-                                },
-                                threadTitle = threadTitle,
-                                isThreadView = isThreadView,
-                                onCopyScheduledMessage = { message ->
-                                    copyScheduledMessage(message)
-                                }
-                            )
-                        }
+                    currentUser?.let { user ->
+                        ScheduledMessagesScreen(
+                            user = user,
+                            conversationName = conversationName,
+                            scheduledMessagesViewModel = scheduledMessagesViewModel,
+                            dateUtils = dateUtils,
+                            viewThemeUtils = viewThemeUtils,
+                            onBack = { finish() },
+                            onLoadScheduledMessages = { loadScheduledMessages(user) },
+                            onSendNow = { message ->
+                                sendNow(message, user)
+                            },
+                            onReschedule = { message, sendAt, sendWithoutNotification ->
+                                reschedule(message, sendAt, sendWithoutNotification, user)
+                            },
+                            onEdit = { message, sendAt ->
+                                edit(message, sendAt, user)
+                            },
+                            onDeleteScheduledMessage = { message -> deleteScheduledMessage(message, user) },
+                            onOpenParentMessage = { messageId ->
+                                openParentMessage(messageId)
+                            },
+                            onOpenThread = { threadId ->
+                                openThread(threadId)
+                            },
+                            threadTitle = threadTitle,
+                            isThreadView = isThreadView,
+                            onCopyScheduledMessage = { message ->
+                                copyScheduledMessage(message)
+                            }
+                        )
                     }
                 } // CompositionLocalProvider
             }
