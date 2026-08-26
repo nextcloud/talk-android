@@ -10,7 +10,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.FrameLayout
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +29,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.mediaviewer.model.MediaViewerItem
 import com.nextcloud.talk.mediaviewer.viewmodels.MediaViewerViewModel
-import com.nextcloud.talk.ui.SwipeToCloseLayout
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX_GENERIC
@@ -76,13 +74,12 @@ class MediaViewerActivity : BaseActivity() {
         val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
         windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
-        val swipeToCloseLayout = SwipeToCloseLayout(this)
-        swipeToCloseLayout.setOnSwipeToCloseListener(object : SwipeToCloseLayout.OnSwipeToCloseListener {
-            override fun onSwipeToClose() {
-                finish()
-            }
-        })
-
+        // Deliberately no SwipeToCloseLayout here (unlike FullScreenImageActivity/
+        // FullScreenMediaActivity): its ViewDragHelper intercepts drags at the parent level before
+        // the HorizontalPager below ever sees them, and a real swipe is rarely perfectly
+        // horizontal - the small vertical component was enough to trigger it, closing the viewer
+        // on what the user meant as a page-navigation swipe. Closing is still available via the
+        // top bar's Close button and the system back gesture/button.
         val composeView = ComposeView(this).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
@@ -97,11 +94,7 @@ class MediaViewerActivity : BaseActivity() {
             }
         }
 
-        swipeToCloseLayout.addView(
-            composeView,
-            FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-        )
-        setContentView(swipeToCloseLayout)
+        setContentView(composeView)
     }
 
     private fun shareFile(item: MediaViewerItem, localPath: String) {
