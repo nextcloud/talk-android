@@ -33,8 +33,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,7 +79,7 @@ private val thumbnailSize = 48.dp
 private val thumbnailSpacing = 4.dp
 private val thumbnailStripPadding = 12.dp
 
-@Suppress("Detekt.LongMethod")
+@Suppress("Detekt.LongMethod", "CyclomaticComplexMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MediaViewerScreen(
@@ -113,11 +115,19 @@ fun MediaViewerScreen(
     val exoPlayer = rememberViewerExoPlayer()
     val currentItem = uiState.currentItem
     val currentLocalPath = currentItem?.let { uiState.cachedFilePaths[it.messageId] }
+
+    // Autoplay only the item the viewer was directly opened on from chat - once the user has
+    // swiped to any other item, nothing autoplays again, even swiping back to this one.
+    val initialMessageId = remember { items.getOrNull(uiState.currentGlobalIndex)?.messageId }
+    var hasAutoPlayed by remember { mutableStateOf(false) }
+
     LaunchedEffect(currentItem?.messageId, currentLocalPath) {
         val isVideo = currentItem?.mimeType?.startsWith(Mimetype.VIDEO_PREFIX) == true
         if (isVideo && currentLocalPath != null) {
             exoPlayer.setMediaItem(MediaItem.fromUri(currentLocalPath.toUri()))
-            exoPlayer.playWhenReady = true
+            val shouldAutoPlay = !hasAutoPlayed && currentItem.messageId == initialMessageId
+            exoPlayer.playWhenReady = shouldAutoPlay
+            if (shouldAutoPlay) hasAutoPlayed = true
             exoPlayer.prepare()
         } else {
             exoPlayer.stop()
