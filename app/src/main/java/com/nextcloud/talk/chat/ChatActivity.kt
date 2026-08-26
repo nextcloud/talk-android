@@ -135,6 +135,8 @@ import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityChatBinding
+import com.nextcloud.talk.events.ServerStatus
+import com.nextcloud.talk.events.ServerStatusEvent
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.jobs.DeleteConversationWorker
@@ -4028,6 +4030,12 @@ class ChatActivity :
         ) {
             joinOneToOneConversation(userMentionClickEvent.userId)
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onServerStatusEvent(event: ServerStatusEvent) {
+        if (!::conversationUser.isInitialized || event.accountId != conversationUser.id) return
+        chatViewModel.setMaintenanceMode(event.status == ServerStatus.MAINTENANCE_MODE)
     }
 
     fun sendPictureFromCamIntent() {
