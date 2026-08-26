@@ -158,7 +158,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         logger.d(TAG, "NotificationWorker::doWork")
 
-        initDecryptedData(inputData)
+        if (!initDecryptedData(inputData)) {
+            logger.e(TAG, "Aborting NotificationWorker::doWork because user/pushMessage could not be initialized")
+            return Result.failure()
+        }
         initNcApiAndCredentials()
 
         notificationManager = NotificationManagerCompat.from(context!!)
@@ -422,47 +425,62 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         )
     }
 
-    @Suppress("TooGenericExceptionCaught", "NestedBlockDepth", "ComplexMethod", "LongMethod")
-    private fun initDecryptedData(inputData: Data) {
+    @Suppress("TooGenericExceptionCaught")
+    private fun initDecryptedData(inputData: Data): Boolean =
         try {
             if (inputData.hasKeyWithValueOfType(BundleKeys.KEY_NOTIFICATION_CLEARTEXT_SUBJECT, String::class.java)) {
-                val subject = inputData.getString(BundleKeys.KEY_NOTIFICATION_CLEARTEXT_SUBJECT)
-                val id = inputData.getLong(BundleKeys.KEY_NOTIFICATION_USER_ID, -1)
-                user = userManager.getUserWithId(id).blockingGet()
-                pushMessage = LoganSquare.parse(subject, DecryptedPushMessage::class.java)
-                return
-            }
-
-            val subject = inputData.getString(BundleKeys.KEY_NOTIFICATION_SUBJECT)
-            val signature = inputData.getString(BundleKeys.KEY_NOTIFICATION_SIGNATURE)
-
-            val base64DecodedSubject = Base64.decode(subject, Base64.DEFAULT)
-            val base64DecodedSignature = Base64.decode(signature, Base64.DEFAULT)
-            val pushUtils = PushUtils()
-            val privateKey = pushUtils.readKeyFromFile(false) as PrivateKey
-            try {
-                val signatureVerification = pushUtils.verifySignature(
-                    base64DecodedSignature,
-                    base64DecodedSubject
-                )
-                if (signatureVerification.signatureValid) {
-                    val decryptedSubject = decryptSubject(privateKey, base64DecodedSubject)
-
-                    pushMessage = LoganSquare.parse(
-                        String(decryptedSubject),
-                        DecryptedPushMessage::class.java
-                    )
-                    user = signatureVerification.user!!
-                }
-            } catch (e: NoSuchAlgorithmException) {
-                Log.e(TAG, "No proper algorithm to decrypt the message ", e)
-            } catch (e: NoSuchPaddingException) {
-                Log.e(TAG, "No proper padding to decrypt the message ", e)
-            } catch (e: InvalidKeyException) {
-                Log.e(TAG, "Invalid private key ", e)
+                initFromCleartextSubject(inputData)
+            } else {
+                initFromEncryptedSubject(inputData)
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Error occurred while initializing decoded data ", e)
+            logger.e(TAG, "Error occurred while initializing decoded data ", e)
+            false
+        }
+
+    private fun initFromCleartextSubject(inputData: Data): Boolean {
+        val subject = inputData.getString(BundleKeys.KEY_NOTIFICATION_CLEARTEXT_SUBJECT)
+        val id = inputData.getLong(BundleKeys.KEY_NOTIFICATION_USER_ID, -1)
+        user = userManager.getUserWithId(id).blockingGet()
+        pushMessage = LoganSquare.parse(subject, DecryptedPushMessage::class.java)
+        return true
+    }
+
+    private fun initFromEncryptedSubject(inputData: Data): Boolean {
+        val subject = inputData.getString(BundleKeys.KEY_NOTIFICATION_SUBJECT)
+        val signature = inputData.getString(BundleKeys.KEY_NOTIFICATION_SIGNATURE)
+
+        val base64DecodedSubject = Base64.decode(subject, Base64.DEFAULT)
+        val base64DecodedSignature = Base64.decode(signature, Base64.DEFAULT)
+        val pushUtils = PushUtils()
+        val privateKey = pushUtils.readKeyFromFile(false) as PrivateKey
+        return try {
+            val signatureVerification = pushUtils.verifySignature(
+                base64DecodedSignature,
+                base64DecodedSubject
+            )
+            if (signatureVerification.signatureValid) {
+                val decryptedSubject = decryptSubject(privateKey, base64DecodedSubject)
+
+                pushMessage = LoganSquare.parse(
+                    String(decryptedSubject),
+                    DecryptedPushMessage::class.java
+                )
+                user = signatureVerification.user!!
+                true
+            } else {
+                logger.e(TAG, "Signature verification failed, discarding push message")
+                false
+            }
+        } catch (e: NoSuchAlgorithmException) {
+            logger.e(TAG, "No proper algorithm to decrypt the message ", e)
+            false
+        } catch (e: NoSuchPaddingException) {
+            logger.e(TAG, "No proper padding to decrypt the message ", e)
+            false
+        } catch (e: InvalidKeyException) {
+            logger.e(TAG, "Invalid private key ", e)
+            false
         }
     }
 
