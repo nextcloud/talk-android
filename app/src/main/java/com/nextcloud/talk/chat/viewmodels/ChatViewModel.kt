@@ -26,6 +26,7 @@ import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.data.model.FileParameters
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
@@ -47,6 +48,8 @@ import androidx.lifecycle.asFlow
 import androidx.work.WorkManager
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.logger.Logger
+import com.nextcloud.talk.mediaviewer.model.MediaViewerGroup
+import com.nextcloud.talk.mediaviewer.model.MediaViewerItem
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -78,6 +81,7 @@ import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import com.nextcloud.talk.utils.message.SendMessageUtils
+import com.nextcloud.talk.utils.message.groupHashOf
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
 import dagger.assisted.Assisted
@@ -135,18 +139,12 @@ import androidx.core.net.toUri
 private const val FILE_PLACEHOLDER_MESSAGE = "{file}"
 private const val VCARD_MIMETYPE = "text/vcard"
 
-// Matches referenceIds built by SendMessageUtils.generateGroupedReferenceId():
-// sha256(uploadId)[0:60] + "-" + order, zero-padded to 3 digits. Shared cross-client format,
-// see https://github.com/nextcloud/spreed/pull/19040
-private val groupedReferenceIdRegex = Regex("^([a-f0-9]{60})-[0-9]{3}$")
-
 /**
  * A file's referenceId marks it as part of an upload batch when it matches the cross-client
  * format `sha256(uploadId)[0:60]-order`. Returns the shared hash prefix identifying the batch,
  * or null if the id doesn't match (plain-text messages, or older/unrelated referenceIds).
  */
-internal fun groupHash(referenceId: String?): String? =
-    referenceId?.let { groupedReferenceIdRegex.matchEntire(it)?.groupValues?.get(1) }
+internal fun groupHash(referenceId: String?): String? = groupHashOf(referenceId)
 
 // A run of consecutive single-file share messages from the same author, uploaded together in one
 // batch - whether still uploading or already synced - either kept as-is (Single) or merged into
@@ -225,6 +223,29 @@ internal fun combineFileShareGroups(uiMessages: List<ChatMessageUi>): List<Combi
     flush()
 
     return result
+}
+
+/**
+ * Converts an already-synced media message into a media-viewer item, or null if it isn't one
+ * (text/system/voice/geo/poll/deck messages, or a still-uploading placeholder - the viewer is only
+ * ever entered by tapping an already-synced Media message, so those are never navigable anyway).
+ */
+private fun ChatMessageUi.toMediaViewerItem(): MediaViewerItem? {
+    val content = content as? MessageTypeContent.Media ?: return null
+    val fileParameters = FileParameters(HashMap(messageParameters.mapValues { (_, params) -> HashMap(params) }))
+    val fileId = fileParameters.id ?: return null
+    return MediaViewerItem(
+        messageId = id.toLong(),
+        referenceId = referenceId,
+        fileId = fileId,
+        fileName = fileParameters.name.orEmpty(),
+        mimeType = content.mimeType,
+        path = fileParameters.path.orEmpty(),
+        link = fileParameters.link.orEmpty(),
+        fileSize = fileParameters.size ?: 0L,
+        previewUrl = content.previewUrl,
+        actorDisplayName = actorDisplayName
+    )
 }
 
 @Suppress("TooManyFunctions", "LongParameterList")
@@ -385,6 +406,25 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun getChatRepository(): ChatMessageRepository = chatRepository
+
+    /**
+     * The locally known media (image/video) groups for the media viewer, oldest first - every
+     * already-synced MessageItem/MediaGroupItem currently loaded in this chat. This is what lets
+     * the viewer navigate toward newer items instantly (bounded by what's already loaded here) and
+     * toward older items without a network round trip until this local knowledge is exhausted -
+     * see MediaViewerViewModel.loadOlderGroups(). The caller locates the tapped message's own
+     * position within the result.
+     */
+    fun mediaViewerSeed(): List<MediaViewerGroup> =
+        uiState.value.items.asReversed().mapNotNull { item ->
+            when (item) {
+                is ChatItem.MessageItem -> item.uiMessage.toMediaViewerItem()?.let { MediaViewerGroup(listOf(it)) }
+                is ChatItem.MediaGroupItem -> item.messages.mapNotNull { it.toMediaViewerItem() }
+                    .takeIf { it.isNotEmpty() }
+                    ?.let { MediaViewerGroup(it) }
+                else -> null
+            }
+        }
 
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)

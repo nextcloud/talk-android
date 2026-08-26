@@ -1,0 +1,71 @@
+/*
+ * Nextcloud Talk - Android Client
+ *
+ * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+package com.nextcloud.talk.mediaviewer.model
+
+import android.os.Parcelable
+import com.nextcloud.talk.utils.message.groupHashOf
+import kotlinx.parcelize.Parcelize
+
+/**
+ * A single swipeable item in the media viewer - built from either a locally loaded chat message
+ * (already-synced upload batches) or a network-fetched [com.nextcloud.talk.shareditems.model.SharedFileItem]
+ * (older history beyond what's loaded locally). Both sources converge on this shape so the viewer
+ * and its grouping logic don't need to know which one an item came from. Parcelable so a seed list
+ * of these can be passed directly through the Intent that launches the viewer.
+ */
+@Parcelize
+data class MediaViewerItem(
+    val messageId: Long,
+    val referenceId: String?,
+    val fileId: String,
+    val fileName: String,
+    val mimeType: String,
+    val path: String,
+    val link: String,
+    val fileSize: Long,
+    val previewUrl: String?,
+    val actorDisplayName: String
+) : Parcelable
+
+/**
+ * A run of consecutive [MediaViewerItem]s uploaded together in one batch (matching referenceId
+ * hash, see [groupHashOf]), or a single lone item - mirrors ChatViewModel.MediaGroupItem, but
+ * independent of it since it must also represent items fetched from the network. Ordered
+ * chronologically, oldest first.
+ */
+data class MediaViewerGroup(val items: List<MediaViewerItem>) {
+    val key: Any get() = items.first().referenceId?.takeIf { it.isNotBlank() } ?: items.first().messageId
+}
+
+/**
+ * Clusters a chronologically ordered (oldest first) list of items into [MediaViewerGroup]s,
+ * exactly like ChatViewModel.combineFileShareGroups() does for the chat list - consecutive items
+ * sharing the same upload-batch hash become one group, anything else stays a group of one.
+ */
+fun List<MediaViewerItem>.toMediaViewerGroups(): List<MediaViewerGroup> {
+    val result = mutableListOf<MediaViewerGroup>()
+    var pending = mutableListOf<MediaViewerItem>()
+
+    fun flush() {
+        if (pending.isNotEmpty()) {
+            result.add(MediaViewerGroup(pending.toList()))
+        }
+        pending = mutableListOf()
+    }
+
+    for (item in this) {
+        val pendingHash = pending.lastOrNull()?.let { groupHashOf(it.referenceId) }
+        val itemHash = groupHashOf(item.referenceId)
+        if (pending.isNotEmpty() && (pendingHash == null || pendingHash != itemHash)) {
+            flush()
+        }
+        pending.add(item)
+    }
+    flush()
+
+    return result
+}
