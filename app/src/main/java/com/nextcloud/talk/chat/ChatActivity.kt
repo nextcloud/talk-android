@@ -142,6 +142,7 @@ import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.location.LocationPickerActivity
+import com.nextcloud.talk.mediaviewer.activities.MediaViewerActivity
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
@@ -1286,11 +1287,23 @@ class ChatActivity :
     ) {
         lifecycleScope.launch {
             val chatMessage = chatViewModel.getMessageById(messageId.toLong()).first()
-            FileViewerUtils(this@ChatActivity, conversationUser).openFile(
-                chatMessage,
-                openWhenDownloadState,
-                downloadState
-            )
+            val mimetype = chatMessage.fileParameters.mimetype
+            val fileViewerUtils = FileViewerUtils(this@ChatActivity, conversationUser)
+
+            // Images/videos open the swipeable media viewer instead of the single-item viewer -
+            // everything else (audio, text, generic files) keeps today's behavior unchanged.
+            val isViewableMedia = mimetype != null &&
+                (mimetype.startsWith(Mimetype.IMAGE_PREFIX) || mimetype.startsWith(Mimetype.VIDEO_PREFIX)) &&
+                fileViewerUtils.isSupportedForInternalViewer(mimetype)
+            val seedItems = if (isViewableMedia) chatViewModel.mediaViewerSeed().flatMap { it.items } else emptyList()
+
+            if (isViewableMedia && seedItems.any { it.messageId == messageId.toLong() }) {
+                startActivity(
+                    MediaViewerActivity.newIntent(this@ChatActivity, roomToken, seedItems, messageId.toLong())
+                )
+            } else {
+                fileViewerUtils.openFile(chatMessage, openWhenDownloadState, downloadState)
+            }
         }
     }
 

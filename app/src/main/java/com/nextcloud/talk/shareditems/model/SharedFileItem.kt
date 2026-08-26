@@ -18,5 +18,7 @@ data class SharedFileItem(
     val link: String,
     val mimeType: String,
     val previewAvailable: Boolean = false,
-    val previewLink: String
+    val previewLink: String,
+    val messageId: Long,
+    val referenceId: String?
 ) : SharedItem

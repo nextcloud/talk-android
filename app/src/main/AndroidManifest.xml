@@ -227,6 +227,11 @@
             android:theme="@style/FullScreenTextTheme" />
 
         <activity
+            android:name=".mediaviewer.activities.MediaViewerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/FullScreenImageTheme" />
+
+        <activity
             android:name=".shareditems.activities.SharedItemsActivity"
             android:theme="@style/AppTheme" />
 

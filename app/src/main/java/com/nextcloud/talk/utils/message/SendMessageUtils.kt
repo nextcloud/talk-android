@@ -10,6 +10,20 @@ import java.security.MessageDigest
 import java.util.Calendar
 import java.util.UUID
 
+// Matches referenceIds built by SendMessageUtils.generateGroupedReferenceId():
+// sha256(uploadId)[0:60] + "-" + order, zero-padded to 3 digits. Shared cross-client format,
+// see https://github.com/nextcloud/spreed/pull/19040
+private val groupedReferenceIdRegex = Regex("^([a-f0-9]{60})-[0-9]{3}$")
+
+/**
+ * Returns the shared upload-batch hash from a referenceId built by
+ * [SendMessageUtils.generateGroupedReferenceId] (or an equivalent from another client), or null if
+ * [referenceId] doesn't match that format. Two items belong to the same upload batch when this
+ * returns the same non-null value for both.
+ */
+fun groupHashOf(referenceId: String?): String? =
+    referenceId?.let { groupedReferenceIdRegex.matchEntire(it)?.groupValues?.get(1) }
+
 class SendMessageUtils {
     fun generateReferenceId(): String {
         val randomString = UUID.randomUUID().toString()
