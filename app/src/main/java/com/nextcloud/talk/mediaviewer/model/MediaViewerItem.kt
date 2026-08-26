@@ -77,16 +77,17 @@ fun List<MediaViewerItem>.toMediaViewerGroups(): List<MediaViewerGroup> {
 fun SharedFileItem.isImageOrVideo(): Boolean =
     mimeType.startsWith(Mimetype.IMAGE_PREFIX) || mimeType.startsWith(Mimetype.VIDEO_PREFIX)
 
-fun SharedFileItem.toMediaViewerItem() = MediaViewerItem(
-    messageId = messageId,
-    referenceId = referenceId,
-    fileId = id,
-    fileName = name,
-    mimeType = mimeType,
-    path = path,
-    link = link,
-    fileSize = fileSize,
-    previewUrl = previewLink.takeIf { previewAvailable },
-    actorDisplayName = actorName,
-    timestamp = timestamp
-)
+fun SharedFileItem.toMediaViewerItem() =
+    MediaViewerItem(
+        messageId = messageId,
+        referenceId = referenceId,
+        fileId = id,
+        fileName = name,
+        mimeType = mimeType,
+        path = path,
+        link = link,
+        fileSize = fileSize,
+        previewUrl = previewLink.takeIf { previewAvailable },
+        actorDisplayName = actorName,
+        timestamp = timestamp
+    )
