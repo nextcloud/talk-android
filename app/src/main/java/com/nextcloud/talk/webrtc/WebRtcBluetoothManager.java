@@ -162,19 +162,20 @@ public class WebRtcBluetoothManager {
             State state,
             boolean bluetoothPreferred,
             boolean hasWiredHeadset,
-            boolean retryScheduled) {
+            boolean retryScheduled,
+            boolean attemptsAvailable) {
         return state == State.HEADSET_AVAILABLE
             && bluetoothPreferred
             && !hasWiredHeadset
-            && !retryScheduled;
+            && !retryScheduled
+            && attemptsAvailable;
     }
 
     static boolean shouldAcceptModernBluetoothCallback(
             State state,
             boolean routeSelectionControlled,
             boolean routeClearPending,
-            boolean pendingRequestMatches,
-            boolean callbackMatchesCurrentRoute) {
+            boolean pendingRequestMatches) {
         if (state == State.SCO_DISCONNECTING || routeClearPending) {
             return false;
         }
@@ -184,7 +185,7 @@ public class WebRtcBluetoothManager {
         if (state == State.SCO_CONNECTED) {
             return true;
         }
-        return !routeSelectionControlled || callbackMatchesCurrentRoute;
+        return !routeSelectionControlled;
     }
 
     static boolean shouldAcceptLegacyScoConnected(State state) {
@@ -206,11 +207,13 @@ public class WebRtcBluetoothManager {
             State state,
             boolean bluetoothPreferred,
             boolean hasWiredHeadset,
-            int sdkInt) {
+            int sdkInt,
+            boolean attemptsAvailable) {
         return sdkInt >= Build.VERSION_CODES.S
             && state == State.SCO_CONNECTED
             && bluetoothPreferred
-            && !hasWiredHeadset;
+            && !hasWiredHeadset
+            && attemptsAvailable;
     }
 
     /**
@@ -246,6 +249,11 @@ public class WebRtcBluetoothManager {
         return bluetoothRouteRetryScheduled;
     }
 
+    boolean hasRemainingScoConnectionAttempts() {
+        ThreadUtils.checkIsOnMainThread();
+        return scoConnectionAttempts < MAX_SCO_CONNECTION_ATTEMPTS;
+    }
+
     public void resetScoConnectionAttempts() {
         ThreadUtils.checkIsOnMainThread();
         scoConnectionAttempts = 0;
@@ -260,13 +268,14 @@ public class WebRtcBluetoothManager {
                     bluetoothState,
                     bluetoothPreferred,
                     hasWiredHeadset,
-                    Build.VERSION.SDK_INT
+                    Build.VERSION.SDK_INT,
+                    hasRemainingScoConnectionAttempts()
                 )) {
             return;
         }
 
         cancelTimer();
-        resetScoConnectionAttempts();
+        cancelBluetoothRouteRetry();
         if (!modernBluetoothRoute.hasConfirmedBluetoothDevice()) {
             modernBluetoothRoute.clearConfirmedBluetoothDevice();
             bluetoothState = stateAfterModernRouteClear(modernBluetoothRoute.hasBluetoothDevice());
@@ -287,6 +296,18 @@ public class WebRtcBluetoothManager {
         }
         startTimer();
         Log.d(TAG, "Reasserting the confirmed Bluetooth route after audio focus returned");
+    }
+
+    void onNonBluetoothCommunicationDeviceSelected() {
+        ThreadUtils.checkIsOnMainThread();
+        if (!started || modernBluetoothRoute == null) {
+            return;
+        }
+        cancelTimer();
+        cancelBluetoothRouteRetry();
+        modernBluetoothRoute.confirmNonBluetoothRouteSelection();
+        bluetoothState = stateAfterModernRouteClear(modernBluetoothRoute.hasBluetoothDevice());
+        Log.d(TAG, "A non-Bluetooth communication device was selected without clearing the accepted route");
     }
 
     /**
@@ -937,6 +958,14 @@ public class WebRtcBluetoothManager {
             }
         }
 
+        void confirmNonBluetoothRouteSelection() {
+            routeSelectionControlled = true;
+            routeClearPending = false;
+            routeRequestPending = false;
+            requestedBluetoothDeviceId = NO_DEVICE_ID;
+            confirmedBluetoothDeviceId = NO_DEVICE_ID;
+        }
+
         boolean hasBluetoothDevice() {
             return findBluetoothDevice() != null;
         }
@@ -995,16 +1024,6 @@ public class WebRtcBluetoothManager {
                 && device.getId() == requestedBluetoothDeviceId
                 && isBluetoothCommunicationDeviceType(device.getType())
                 && isBluetoothDeviceAvailable(device.getId());
-        }
-
-        boolean matchesCurrentCommunicationDevice(AudioDeviceInfo expectedDevice) {
-            try {
-                AudioDeviceInfo currentDevice = audioManager.getCommunicationDevice();
-                return currentDevice != null && currentDevice.getId() == expectedDevice.getId();
-            } catch (SecurityException exception) {
-                Log.e(TAG, "Unable to verify the current Bluetooth communication device", exception);
-                return false;
-            }
         }
 
         void confirmRequestedBluetoothRoute() {
@@ -1146,13 +1165,11 @@ public class WebRtcBluetoothManager {
             boolean bluetoothSelected = device != null && isBluetoothCommunicationDeviceType(device.getType());
             if (bluetoothSelected) {
                 boolean pendingRequestMatches = matchesPendingBluetoothRequest(device);
-                boolean callbackMatchesCurrentRoute = matchesCurrentCommunicationDevice(device);
                 if (!shouldAcceptModernBluetoothCallback(
                         bluetoothState,
                         routeSelectionControlled,
                         routeClearPending,
-                        pendingRequestMatches,
-                        callbackMatchesCurrentRoute)) {
+                        pendingRequestMatches)) {
                     Log.d(TAG, "Ignoring a Bluetooth callback for an inactive or cleared route request");
                     return;
                 }
