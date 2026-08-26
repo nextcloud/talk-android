@@ -14,5 +14,6 @@ sealed class ChatPullResult {
 
     object NotModified : ChatPullResult()
     object PreconditionFailed : ChatPullResult()
+    object MaintenanceMode : ChatPullResult()
     data class Error(val throwable: Throwable) : ChatPullResult()
 }
