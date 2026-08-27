@@ -448,7 +448,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 return@flow
             }
 
-            getAndPersistMessages(bundle)
+            fetchAndPersistSingleMessage(messageId)
 
             emitAll(
                 observeMessageNonNull(internalConversationId, messageId)
@@ -456,6 +456,18 @@ class OfflineFirstChatRepository @Inject constructor(
                     .take(1)
             )
         }
+
+    private suspend fun fetchAndPersistSingleMessage(messageId: Long) {
+        val messages = network.getContextForChatMessage(
+            credentials = credentials,
+            baseUrl = currentUser.baseUrl!!,
+            token = roomToken,
+            messageId = messageId.toString(),
+            limit = 1,
+            threadId = threadId?.toInt()
+        )
+        persistChatMessagesAndHandleSystemMessages(messages)
+    }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun loadMessageContext(
@@ -542,8 +554,12 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
+    // Callers must put a KEY_FIELD_MAP (see getFieldMap/syncer.buildFieldMap) into bundle before
+    // calling this.
     private suspend fun getAndPersistMessages(bundle: Bundle): Boolean {
-        val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
+        val fieldMap = requireNotNull(bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as? HashMap<String, Int>) {
+            "getAndPersistMessages requires bundle to carry KEY_FIELD_MAP"
+        }
         val outcome = syncer.pullAndPersistMessages(syncTarget, fieldMap, syncEvents)
         return outcome.persistedNewMessages
     }
