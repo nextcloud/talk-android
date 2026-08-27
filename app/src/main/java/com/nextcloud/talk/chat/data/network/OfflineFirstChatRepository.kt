@@ -448,7 +448,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 return@flow
             }
 
-            getAndPersistMessages(bundle)
+            fetchAndPersistSingleMessage(messageId)
 
             emitAll(
                 observeMessageNonNull(internalConversationId, messageId)
@@ -456,6 +456,21 @@ class OfflineFirstChatRepository @Inject constructor(
                     .take(1)
             )
         }
+
+    // getMessage's callers never populate bundle's KEY_FIELD_MAP (unlike the loadMoreMessages /
+    // longpolling call sites), so this fetches the message directly by id instead of routing
+    // through getAndPersistMessages, which requires that field map.
+    private suspend fun fetchAndPersistSingleMessage(messageId: Long) {
+        val messages = network.getContextForChatMessage(
+            credentials = credentials,
+            baseUrl = currentUser.baseUrl!!,
+            token = roomToken,
+            messageId = messageId.toString(),
+            limit = 1,
+            threadId = threadId?.toInt()
+        )
+        persistChatMessagesAndHandleSystemMessages(messages)
+    }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun loadMessageContext(
