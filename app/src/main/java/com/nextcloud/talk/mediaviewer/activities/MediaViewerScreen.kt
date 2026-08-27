@@ -195,7 +195,11 @@ fun MediaViewerScreen(
             MediaPage(
                 item = item,
                 localPath = uiState.cachedFilePaths[item.messageId],
-                isCurrentPage = page == pagerState.currentPage,
+                // Gated on settledPage, not the live currentPage: the shared exoPlayer's media
+                // source is only swapped once the pager settles too (see the LaunchedEffect keyed
+                // on currentItem below), so mounting VideoPlayerView any earlier would attach it
+                // to a page whose video hasn't been loaded into the player yet.
+                isCurrentPage = page == pagerState.settledPage,
                 exoPlayer = exoPlayer,
                 onToggleControls = { showControls = !showControls },
                 onControlsVisibilityChanged = { showControls = it },
@@ -232,7 +236,12 @@ fun MediaViewerScreen(
             )
         }
 
-        if (currentItem != null && currentLocalPath == null) {
+        // Keyed on the live pager page (pagerState.currentPage), not the settle-driven currentItem
+        // above - otherwise, after a quick swipe that outruns settling, this kept showing the
+        // spinner for the page the user had already left rather than the one on screen.
+        val livePageItem = items.getOrNull(pagerState.currentPage)
+        val livePageLocalPath = livePageItem?.let { uiState.cachedFilePaths[it.messageId] }
+        if (livePageItem != null && livePageLocalPath == null) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center).size(48.dp),
                 color = Color.White
@@ -413,6 +422,11 @@ private fun VideoPlayerView(
                 updatePadding(left = leftPx, right = rightPx)
             }
         },
+        // The player instance is shared across pages (see rememberViewerExoPlayer), so when this
+        // page's PlayerView leaves composition it must let go of it explicitly - otherwise it stays
+        // registered as a Player.Listener and keeps its (by-then-detached) surface referenced, which
+        // piles up across swipes instead of being released with the view.
+        onRelease = { playerView -> playerView.player = null },
         modifier = Modifier.fillMaxSize()
     )
 }
