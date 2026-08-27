@@ -2699,21 +2699,8 @@ class ChatViewModel @AssistedInject constructor(
 
         fun stableKey(): Any =
             when (this) {
-                // Prefer referenceId when present: it survives the swap from the local upload
-                // placeholder (negative placeholderId) to the real synced message (real server id),
-                // so Compose recomposes the existing list slot in place instead of removing and
-                // re-inserting a new one - which is what caused the visible flicker/pop.
-                is MessageItem -> uiMessage.referenceId?.takeIf { it.isNotBlank() }?.let { "msg_ref_$it" }
-                    ?: "msg_${uiMessage.id}"
-                // Keyed off the group's first message specifically (not the shared batch hash from
-                // groupHash()) - a failed upload mid-batch excludes that one message and splits the
-                // rest into two separate groups (see combineFileShareGroups()), and both halves
-                // share the same batch hash, which collided here and crashed the LazyColumn (two
-                // items must never report the same key). Each message's own referenceId is unique,
-                // so keying off the first one is unique per group instance while still surviving the
-                // swap from upload placeholder to synced message, same as MessageItem above.
-                is MediaGroupItem -> messages.first().referenceId?.takeIf { it.isNotBlank() }
-                    ?.let { "msg_group_$it" } ?: "msg_group_${messages.first().id}"
+                is MessageItem -> "msg_${uiMessage.id}"
+                is MediaGroupItem -> "msg_group_${messages.first().id}"
                 is DateHeaderItem -> "header_$date"
                 is UnreadMessagesMarkerItem -> "last_read_$date"
                 is LoadGapItem -> "load_gap_$anchorMessageId"
