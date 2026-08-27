@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -95,8 +96,7 @@ private const val MEDIUM_SCALE = 2.45f
 
 private val thumbnailSize = 48.dp
 private val thumbnailSpacing = 4.dp
-private val thumbnailStripTopPadding = 12.dp
-private val thumbnailStripBottomPadding = 24.dp
+private val thumbnailStripVerticalPadding = 12.dp
 private val controlsSlideDistance = 24.dp
 
 @Suppress("Detekt.LongMethod", "CyclomaticComplexMethod")
@@ -183,9 +183,10 @@ fun MediaViewerScreen(
     val hasThumbnailStrip = group != null && group.items.size > 1
     // Reserved so the video's own ExoPlayer controller (progress bar, play/pause row) never renders
     // underneath the thumbnail strip - the strip's height is fixed (a constant thumbnail size plus
-    // its own fixed padding), so this is knowable up front rather than measured.
+    // its own fixed padding), so this is knowable up front rather than measured. The strip's
+    // navigation bar inset is excluded here: VideoPlayerView adds that inset itself.
     val thumbnailStripHeightPx = with(density) {
-        (thumbnailSize + thumbnailStripTopPadding + thumbnailStripBottomPadding).roundToPx()
+        (thumbnailSize + thumbnailStripVerticalPadding * 2).roundToPx()
     }
     val controllerExtraBottomInsetPx = if (hasThumbnailStrip) thumbnailStripHeightPx else 0
 
@@ -445,7 +446,8 @@ private fun ThumbnailStrip(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.Black.copy(alpha = TOOLBAR_ALPHA))
-            .padding(top = thumbnailStripTopPadding, bottom = thumbnailStripBottomPadding)
+            .navigationBarsPadding()
+            .padding(vertical = thumbnailStripVerticalPadding)
     ) {
         // Side padding equal to half the leftover viewport width, so the row can scroll any item -
         // including the first/last - all the way to the exact horizontal center, not just as close
