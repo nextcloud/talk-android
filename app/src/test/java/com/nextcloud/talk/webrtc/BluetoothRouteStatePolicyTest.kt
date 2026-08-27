@@ -6,7 +6,6 @@
  */
 package com.nextcloud.talk.webrtc
 
-import android.os.Build
 import com.nextcloud.talk.webrtc.WebRtcBluetoothManager.State.HEADSET_AVAILABLE
 import com.nextcloud.talk.webrtc.WebRtcBluetoothManager.State.HEADSET_UNAVAILABLE
 import com.nextcloud.talk.webrtc.WebRtcBluetoothManager.State.SCO_CONNECTED
@@ -38,13 +37,50 @@ class BluetoothRouteStatePolicyTest {
 
     @Test
     fun `scheduled retry prevents an immediate second Bluetooth attempt`() {
-        assertFalse(WebRtcBluetoothManager.shouldStartBluetoothRoute(HEADSET_AVAILABLE, true, false, true, true))
-        assertTrue(WebRtcBluetoothManager.shouldStartBluetoothRoute(HEADSET_AVAILABLE, true, false, false, true))
+        assertFalse(
+            WebRtcBluetoothManager.shouldStartBluetoothRoute(
+                HEADSET_AVAILABLE,
+                true,
+                false,
+                true,
+                true,
+                false
+            )
+        )
+        assertTrue(
+            WebRtcBluetoothManager.shouldStartBluetoothRoute(
+                HEADSET_AVAILABLE,
+                true,
+                false,
+                false,
+                true,
+                false
+            )
+        )
     }
 
     @Test
-    fun `exhausted attempts prevent automatic Bluetooth restarts`() {
-        assertFalse(WebRtcBluetoothManager.shouldStartBluetoothRoute(HEADSET_AVAILABLE, true, false, false, false))
+    fun `automatic Bluetooth restarts wait for focus and remaining attempts`() {
+        assertFalse(
+            WebRtcBluetoothManager.shouldStartBluetoothRoute(
+                HEADSET_AVAILABLE,
+                true,
+                false,
+                false,
+                false,
+                false
+            )
+        )
+        assertFalse(
+            WebRtcBluetoothManager.shouldStartBluetoothRoute(
+                HEADSET_AVAILABLE,
+                true,
+                false,
+                false,
+                true,
+                true
+            )
+        )
     }
 
     @Test
@@ -74,8 +110,8 @@ class BluetoothRouteStatePolicyTest {
     }
 
     @Test
-    fun `late Bluetooth callback after rejected request is rejected`() {
-        assertFalse(WebRtcBluetoothManager.shouldAcceptModernBluetoothCallback(HEADSET_AVAILABLE, true, false, false))
+    fun `late matching Bluetooth callback after rejected request is rejected`() {
+        assertFalse(WebRtcBluetoothManager.shouldAcceptModernBluetoothCallback(HEADSET_AVAILABLE, true, false, true))
     }
 
     @Test
@@ -92,7 +128,7 @@ class BluetoothRouteStatePolicyTest {
 
     @Test
     fun `queued Bluetooth callback cannot restore app-controlled non-Bluetooth route`() {
-        assertFalse(WebRtcBluetoothManager.shouldAcceptModernBluetoothCallback(HEADSET_AVAILABLE, true, false, true))
+        assertFalse(WebRtcBluetoothManager.shouldAcceptModernBluetoothCallback(HEADSET_AVAILABLE, true, false, false))
     }
 
     @Test
@@ -114,60 +150,66 @@ class BluetoothRouteStatePolicyTest {
     }
 
     @Test
-    fun `focus gain reasserts only preferred modern Bluetooth route with retries available`() {
+    fun `focus gain recovery requires connected preferred Bluetooth without wired output`() {
         assertTrue(
-            WebRtcBluetoothManager.shouldReassertModernBluetoothAfterFocusGain(
+            WebRtcBluetoothManager.shouldReassertBluetoothAfterFocusGain(
                 SCO_CONNECTED,
                 true,
-                false,
-                Build.VERSION_CODES.S,
-                true
-            )
-        )
-        assertFalse(
-            WebRtcBluetoothManager.shouldReassertModernBluetoothAfterFocusGain(
-                SCO_CONNECTED,
-                true,
-                false,
-                Build.VERSION_CODES.R,
-                true
-            )
-        )
-        assertFalse(
-            WebRtcBluetoothManager.shouldReassertModernBluetoothAfterFocusGain(
-                SCO_CONNECTED,
-                false,
-                false,
-                Build.VERSION_CODES.S,
-                true
-            )
-        )
-        assertFalse(
-            WebRtcBluetoothManager.shouldReassertModernBluetoothAfterFocusGain(
-                SCO_CONNECTED,
-                true,
-                true,
-                Build.VERSION_CODES.S,
-                true
-            )
-        )
-        assertFalse(
-            WebRtcBluetoothManager.shouldReassertModernBluetoothAfterFocusGain(
-                HEADSET_AVAILABLE,
-                true,
-                false,
-                Build.VERSION_CODES.S,
-                true
-            )
-        )
-        assertFalse(
-            WebRtcBluetoothManager.shouldReassertModernBluetoothAfterFocusGain(
-                SCO_CONNECTED,
-                true,
-                false,
-                Build.VERSION_CODES.S,
                 false
             )
+        )
+        assertFalse(
+            WebRtcBluetoothManager.shouldReassertBluetoothAfterFocusGain(
+                SCO_CONNECTED,
+                false,
+                false
+            )
+        )
+        assertFalse(
+            WebRtcBluetoothManager.shouldReassertBluetoothAfterFocusGain(
+                SCO_CONNECTED,
+                true,
+                true
+            )
+        )
+        assertFalse(
+            WebRtcBluetoothManager.shouldReassertBluetoothAfterFocusGain(
+                HEADSET_AVAILABLE,
+                true,
+                false
+            )
+        )
+    }
+
+    @Test
+    fun `modern focus recovery preserves the retry limit`() {
+        assertEquals(
+            WebRtcBluetoothManager.ModernFocusRecoveryAction.REASSERT,
+            WebRtcBluetoothManager.modernFocusRecoveryAction(true)
+        )
+        assertEquals(
+            WebRtcBluetoothManager.ModernFocusRecoveryAction.FALL_BACK,
+            WebRtcBluetoothManager.modernFocusRecoveryAction(false)
+        )
+    }
+
+    @Test
+    fun `legacy focus recovery distinguishes reclaim restart and fallback`() {
+        assertEquals(
+            WebRtcBluetoothManager.LegacyFocusRecoveryAction.RECLAIM_CONNECTED,
+            WebRtcBluetoothManager.legacyFocusRecoveryAction(true, true, false)
+        )
+        assertEquals(
+            WebRtcBluetoothManager.LegacyFocusRecoveryAction.RESTART_DISCONNECTED,
+            WebRtcBluetoothManager.legacyFocusRecoveryAction(true, false, true)
+        )
+        assertEquals(
+            WebRtcBluetoothManager.LegacyFocusRecoveryAction.FALL_BACK,
+            WebRtcBluetoothManager.legacyFocusRecoveryAction(true, false, false)
+        )
+        assertEquals(
+            WebRtcBluetoothManager.LegacyFocusRecoveryAction.FALL_BACK,
+            WebRtcBluetoothManager.legacyFocusRecoveryAction(false, true, true)
         )
     }
 

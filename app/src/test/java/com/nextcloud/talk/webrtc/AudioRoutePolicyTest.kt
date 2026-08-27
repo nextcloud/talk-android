@@ -13,6 +13,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
+@Suppress("TooManyFunctions")
 class AudioRoutePolicyTest {
     @Test
     fun `Bluetooth connection has priority`() {
@@ -78,11 +79,11 @@ class AudioRoutePolicyTest {
     }
 
     @Test
-    fun `active Bluetooth selection forces a superseding request despite a stale matching getter`() {
+    fun `active route reconciliation forces a request despite a stale matching getter`() {
         assertTrue(
             AudioRoutePolicy.shouldSetCommunicationDevice(
                 currentRouteMatches = true,
-                bluetoothSelectionActive = true
+                routeSelectionMustBeReasserted = true
             )
         )
     }
@@ -92,7 +93,7 @@ class AudioRoutePolicyTest {
         assertFalse(
             AudioRoutePolicy.shouldSetCommunicationDevice(
                 currentRouteMatches = true,
-                bluetoothSelectionActive = false
+                routeSelectionMustBeReasserted = false
             )
         )
     }
@@ -102,22 +103,82 @@ class AudioRoutePolicyTest {
         assertTrue(
             AudioRoutePolicy.shouldSetCommunicationDevice(
                 currentRouteMatches = false,
-                bluetoothSelectionActive = false
+                routeSelectionMustBeReasserted = false
             )
         )
     }
 
     @Test
-    fun `wired detection covers every selectable wired communication device`() {
-        assertTrue(AudioRoutePolicy.isWiredCommunicationDeviceType(AudioDeviceInfo.TYPE_WIRED_HEADSET))
-        assertTrue(AudioRoutePolicy.isWiredCommunicationDeviceType(AudioDeviceInfo.TYPE_WIRED_HEADPHONES))
-        assertTrue(AudioRoutePolicy.isWiredCommunicationDeviceType(AudioDeviceInfo.TYPE_USB_HEADSET))
-        assertTrue(AudioRoutePolicy.isWiredCommunicationDeviceType(AudioDeviceInfo.TYPE_USB_DEVICE))
-        assertTrue(AudioRoutePolicy.isWiredCommunicationDeviceType(AudioDeviceInfo.TYPE_USB_ACCESSORY))
-        assertFalse(AudioRoutePolicy.isWiredCommunicationDeviceType(AudioDeviceInfo.TYPE_BLUETOOTH_SCO))
+    fun `Bluetooth teardown waits for a required target selection`() {
+        assertTrue(
+            AudioRoutePolicy.shouldSelectBeforeBluetoothTeardown(
+                bluetoothStopNeeded = true,
+                targetDevice = AudioDevice.WIRED_HEADSET
+            )
+        )
+        assertTrue(
+            AudioRoutePolicy.shouldSelectBeforeBluetoothTeardown(
+                bluetoothStopNeeded = true,
+                targetDevice = AudioDevice.SPEAKER_PHONE
+            )
+        )
+        assertFalse(
+            AudioRoutePolicy.shouldSelectBeforeBluetoothTeardown(
+                bluetoothStopNeeded = false,
+                targetDevice = AudioDevice.WIRED_HEADSET
+            )
+        )
+        assertFalse(
+            AudioRoutePolicy.shouldSelectBeforeBluetoothTeardown(
+                bluetoothStopNeeded = true,
+                targetDevice = AudioDevice.BLUETOOTH
+            )
+        )
+        assertFalse(
+            AudioRoutePolicy.shouldSelectBeforeBluetoothTeardown(
+                bluetoothStopNeeded = true,
+                targetDevice = AudioDevice.NONE
+            )
+        )
+        assertFalse(
+            AudioRoutePolicy.canFinishBluetoothTeardown(
+                bluetoothStopNeeded = true,
+                targetMustBeSelectedFirst = true,
+                targetSelectionSucceeded = false
+            )
+        )
+        assertTrue(
+            AudioRoutePolicy.canFinishBluetoothTeardown(
+                bluetoothStopNeeded = true,
+                targetMustBeSelectedFirst = true,
+                targetSelectionSucceeded = true
+            )
+        )
+        assertTrue(
+            AudioRoutePolicy.canFinishBluetoothTeardown(
+                bluetoothStopNeeded = true,
+                targetMustBeSelectedFirst = false,
+                targetSelectionSucceeded = false
+            )
+        )
+    }
+
+    @Test
+    fun `wired communication routes require an output sink`() {
+        assertWiredOutput(AudioDeviceInfo.TYPE_WIRED_HEADSET)
+        assertWiredOutput(AudioDeviceInfo.TYPE_WIRED_HEADPHONES)
+        assertWiredOutput(AudioDeviceInfo.TYPE_USB_HEADSET)
+        assertWiredOutput(AudioDeviceInfo.TYPE_USB_DEVICE)
+        assertWiredOutput(AudioDeviceInfo.TYPE_USB_ACCESSORY)
+        assertFalse(AudioRoutePolicy.isWiredCommunicationOutput(AudioDeviceInfo.TYPE_USB_DEVICE, isSink = false))
+        assertFalse(AudioRoutePolicy.isWiredCommunicationOutput(AudioDeviceInfo.TYPE_BLUETOOTH_SCO, isSink = true))
     }
 
     private fun devices(vararg devices: AudioDevice): Set<AudioDevice> = setOf(*devices)
+
+    private fun assertWiredOutput(type: Int) {
+        assertTrue(AudioRoutePolicy.isWiredCommunicationOutput(type, isSink = true))
+    }
 
     @Suppress("LongParameterList")
     private fun assertSelected(

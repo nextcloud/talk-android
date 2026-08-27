@@ -77,6 +77,7 @@ public class WebRtcBluetoothManager {
     private final Runnable bluetoothTimeoutRunnable = this::bluetoothTimeout;
     private final Runnable bluetoothRouteRetryRunnable = this::retryBluetoothRoute;
     private boolean bluetoothRouteRetryScheduled;
+    private boolean nonBluetoothFallbackPending;
     private boolean started = false;
 
     protected WebRtcBluetoothManager(Context context, WebRtcAudioManager audioManager) {
@@ -163,12 +164,14 @@ public class WebRtcBluetoothManager {
             boolean bluetoothPreferred,
             boolean hasWiredHeadset,
             boolean retryScheduled,
-            boolean attemptsAvailable) {
+            boolean attemptsAvailable,
+            boolean transientFocusLoss) {
         return state == State.HEADSET_AVAILABLE
             && bluetoothPreferred
             && !hasWiredHeadset
             && !retryScheduled
-            && attemptsAvailable;
+            && attemptsAvailable
+            && !transientFocusLoss;
     }
 
     static boolean shouldAcceptModernBluetoothCallback(
@@ -203,17 +206,43 @@ public class WebRtcBluetoothManager {
         return routeClearPending && (!currentRouteKnown || bluetoothSelected);
     }
 
-    static boolean shouldReassertModernBluetoothAfterFocusGain(
+    static boolean shouldReassertBluetoothAfterFocusGain(
             State state,
             boolean bluetoothPreferred,
-            boolean hasWiredHeadset,
-            int sdkInt,
-            boolean attemptsAvailable) {
-        return sdkInt >= Build.VERSION_CODES.S
-            && state == State.SCO_CONNECTED
+            boolean hasWiredHeadset) {
+        return state == State.SCO_CONNECTED
             && bluetoothPreferred
-            && !hasWiredHeadset
-            && attemptsAvailable;
+            && !hasWiredHeadset;
+    }
+
+    enum ModernFocusRecoveryAction {
+        REASSERT,
+        FALL_BACK
+    }
+
+    static ModernFocusRecoveryAction modernFocusRecoveryAction(boolean attemptsAvailable) {
+        return attemptsAvailable ? ModernFocusRecoveryAction.REASSERT : ModernFocusRecoveryAction.FALL_BACK;
+    }
+
+    enum LegacyFocusRecoveryAction {
+        RECLAIM_CONNECTED,
+        RESTART_DISCONNECTED,
+        FALL_BACK
+    }
+
+    static LegacyFocusRecoveryAction legacyFocusRecoveryAction(
+            boolean headsetAvailable,
+            boolean headsetAudioConnected,
+            boolean attemptsAvailable) {
+        if (!headsetAvailable) {
+            return LegacyFocusRecoveryAction.FALL_BACK;
+        }
+        if (headsetAudioConnected) {
+            return LegacyFocusRecoveryAction.RECLAIM_CONNECTED;
+        }
+        return attemptsAvailable
+            ? LegacyFocusRecoveryAction.RESTART_DISCONNECTED
+            : LegacyFocusRecoveryAction.FALL_BACK;
     }
 
     /**
@@ -254,23 +283,31 @@ public class WebRtcBluetoothManager {
         return scoConnectionAttempts < MAX_SCO_CONNECTION_ATTEMPTS;
     }
 
+    boolean isNonBluetoothFallbackPending() {
+        ThreadUtils.checkIsOnMainThread();
+        return nonBluetoothFallbackPending;
+    }
+
     public void resetScoConnectionAttempts() {
         ThreadUtils.checkIsOnMainThread();
         scoConnectionAttempts = 0;
+        nonBluetoothFallbackPending = false;
         cancelBluetoothRouteRetry();
     }
 
     public void reassertBluetoothAudioAfterFocusGain(boolean bluetoothPreferred, boolean hasWiredHeadset) {
         ThreadUtils.checkIsOnMainThread();
         if (!started
-                || modernBluetoothRoute == null
-                || !shouldReassertModernBluetoothAfterFocusGain(
-                    bluetoothState,
-                    bluetoothPreferred,
-                    hasWiredHeadset,
-                    Build.VERSION.SDK_INT,
-                    hasRemainingScoConnectionAttempts()
-                )) {
+            || !shouldReassertBluetoothAfterFocusGain(
+                bluetoothState,
+                bluetoothPreferred,
+                hasWiredHeadset
+            )) {
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || modernBluetoothRoute == null) {
+            reassertLegacyBluetoothAudioAfterFocusGain();
             return;
         }
 
@@ -279,6 +316,11 @@ public class WebRtcBluetoothManager {
         if (!modernBluetoothRoute.hasConfirmedBluetoothDevice()) {
             modernBluetoothRoute.clearConfirmedBluetoothDevice();
             bluetoothState = stateAfterModernRouteClear(modernBluetoothRoute.hasBluetoothDevice());
+            return;
+        }
+        if (modernFocusRecoveryAction(hasRemainingScoConnectionAttempts())
+                == ModernFocusRecoveryAction.FALL_BACK) {
+            nonBluetoothFallbackPending = true;
             return;
         }
         bluetoothState = State.SCO_CONNECTING;
@@ -298,6 +340,33 @@ public class WebRtcBluetoothManager {
         Log.d(TAG, "Reasserting the confirmed Bluetooth route after audio focus returned");
     }
 
+    @SuppressLint("MissingPermission")
+    private void reassertLegacyBluetoothAudioAfterFocusGain() {
+        boolean headsetAvailable = bluetoothHeadset != null
+            && bluetoothDevice != null
+            && bluetoothHeadset.getConnectionState(bluetoothDevice) == BluetoothProfile.STATE_CONNECTED;
+        boolean headsetAudioConnected = headsetAvailable
+            && bluetoothHeadset.isAudioConnected(bluetoothDevice);
+        LegacyFocusRecoveryAction action = legacyFocusRecoveryAction(
+            headsetAvailable,
+            headsetAudioConnected,
+            hasRemainingScoConnectionAttempts()
+        );
+        if (action == LegacyFocusRecoveryAction.RECLAIM_CONNECTED) {
+            audioManager.setBluetoothScoOn(true);
+            Log.d(TAG, "Reasserted the connected legacy Bluetooth SCO route after audio focus returned");
+            return;
+        }
+
+        bluetoothState = headsetAvailable ? State.HEADSET_AVAILABLE : State.HEADSET_UNAVAILABLE;
+        if (action == LegacyFocusRecoveryAction.RESTART_DISCONNECTED) {
+            Log.w(TAG, "Legacy Bluetooth SCO was lost while audio focus was away; restarting it");
+            startScoAudio();
+        } else {
+            Log.w(TAG, "Legacy Bluetooth SCO cannot be recovered after audio focus returned");
+        }
+    }
+
     void onNonBluetoothCommunicationDeviceSelected() {
         ThreadUtils.checkIsOnMainThread();
         if (!started || modernBluetoothRoute == null) {
@@ -305,6 +374,7 @@ public class WebRtcBluetoothManager {
         }
         cancelTimer();
         cancelBluetoothRouteRetry();
+        nonBluetoothFallbackPending = false;
         modernBluetoothRoute.confirmNonBluetoothRouteSelection();
         bluetoothState = stateAfterModernRouteClear(modernBluetoothRoute.hasBluetoothDevice());
         Log.d(TAG, "A non-Bluetooth communication device was selected without clearing the accepted route");
@@ -335,6 +405,7 @@ public class WebRtcBluetoothManager {
         bluetoothDevice = null;
         scoConnectionAttempts = 0;
         bluetoothRouteRetryScheduled = false;
+        nonBluetoothFallbackPending = false;
         headsetProfileExpected = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             bluetoothState = State.HEADSET_UNAVAILABLE;

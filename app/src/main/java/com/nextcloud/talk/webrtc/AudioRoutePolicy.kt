@@ -45,14 +45,28 @@ internal object AudioRoutePolicy {
         }
 
     @JvmStatic
-    fun shouldSetCommunicationDevice(currentRouteMatches: Boolean, bluetoothSelectionActive: Boolean): Boolean =
-        !currentRouteMatches || bluetoothSelectionActive
+    fun shouldSetCommunicationDevice(currentRouteMatches: Boolean, routeSelectionMustBeReasserted: Boolean): Boolean =
+        !currentRouteMatches || routeSelectionMustBeReasserted
 
     @JvmStatic
-    fun isWiredCommunicationDeviceType(type: Int): Boolean =
-        type == AudioDeviceInfo.TYPE_WIRED_HEADSET ||
-            type == AudioDeviceInfo.TYPE_WIRED_HEADPHONES ||
-            type == AudioDeviceInfo.TYPE_USB_HEADSET ||
-            type == AudioDeviceInfo.TYPE_USB_DEVICE ||
-            type == AudioDeviceInfo.TYPE_USB_ACCESSORY
+    fun shouldSelectBeforeBluetoothTeardown(bluetoothStopNeeded: Boolean, targetDevice: AudioDevice): Boolean =
+        bluetoothStopNeeded && targetDevice != AudioDevice.NONE && targetDevice != AudioDevice.BLUETOOTH
+
+    @JvmStatic
+    fun canFinishBluetoothTeardown(
+        bluetoothStopNeeded: Boolean,
+        targetMustBeSelectedFirst: Boolean,
+        targetSelectionSucceeded: Boolean
+    ): Boolean = bluetoothStopNeeded && (!targetMustBeSelectedFirst || targetSelectionSucceeded)
+
+    @JvmStatic
+    fun isWiredCommunicationOutput(type: Int, isSink: Boolean): Boolean =
+        when (type) {
+            AudioDeviceInfo.TYPE_WIRED_HEADSET,
+            AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
+            AudioDeviceInfo.TYPE_USB_HEADSET,
+            AudioDeviceInfo.TYPE_USB_DEVICE,
+            AudioDeviceInfo.TYPE_USB_ACCESSORY -> isSink
+            else -> false
+        }
 }
