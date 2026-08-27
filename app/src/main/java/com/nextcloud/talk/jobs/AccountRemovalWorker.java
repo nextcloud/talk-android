@@ -19,6 +19,7 @@ import com.nextcloud.talk.data.database.dao.ChatBlocksDao;
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao;
 import com.nextcloud.talk.data.database.dao.ConversationsDao;
 import com.nextcloud.talk.data.user.model.User;
+import com.nextcloud.talk.logger.Logger;
 import com.nextcloud.talk.models.json.generic.GenericMeta;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.push.PushConfigurationState;
@@ -66,6 +67,8 @@ public class AccountRemovalWorker extends Worker {
 
     @Inject ChatBlocksDao chatBlocksDao;
 
+    @Inject Logger logger;
+
     NcApi ncApi;
 
     public AccountRemovalWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
@@ -76,6 +79,12 @@ public class AccountRemovalWorker extends Worker {
     @Override
     public Result doWork() {
         Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getComponentApplication().inject(this);
+
+        int duplicateAccountsScheduled = userManager.scheduleDuplicateAccountsForDeletion().blockingGet();
+        if (duplicateAccountsScheduled > 0) {
+            logger.w(TAG, "Found and scheduled " + duplicateAccountsScheduled +
+                " duplicate account(s) for deletion");
+        }
 
         List<User> users = userManager.getUsersScheduledForDeletion().blockingGet();
         for (User user : users) {
