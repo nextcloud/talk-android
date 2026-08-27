@@ -776,7 +776,12 @@ class ChatMessageSyncer @Inject constructor(
             newestMessageId = newestMessageIdForNewChatBlock,
             hasHistory = hasHistory
         )
-        chatBlocksDao.upsertAndMergeConnectedChatBlocks(newChatBlock)
+        try {
+            chatBlocksDao.upsertAndMergeConnectedChatBlocks(newChatBlock)
+        } catch (e: SQLiteConstraintException) {
+            Log.w(TAG, "Skip chat block update: conversation ${target.internalConversationId} gone. Swallowed: $e")
+            return emptyList()
+        }
 
         return chatMessageEntities
     }
