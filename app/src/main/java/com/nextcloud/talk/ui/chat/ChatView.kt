@@ -296,9 +296,9 @@ fun ChatView(
 
                 val oldestLoadedMessageId = latestChatItems
                     .asReversed()
-                    .firstNotNullOfOrNull { (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id }
+                    .firstNotNullOfOrNull { it.messageOrNull()?.id }
                 val newestLoadedMessageId = latestChatItems
-                    .firstNotNullOfOrNull { (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id }
+                    .firstNotNullOfOrNull { it.messageOrNull()?.id }
 
                 if (shouldLoadOlder && oldestLoadedMessageId != null) {
                     callbacks.onLoadMore?.invoke(oldestLoadedMessageId, ChatViewModel.LoadMoreDirection.OLDER)
@@ -358,7 +358,7 @@ fun ChatView(
         if (!isAtNewest) return@LaunchedEffect
 
         state.chatItems
-            .firstNotNullOfOrNull { (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id }
+            .firstNotNullOfOrNull { it.messageOrNull()?.id }
             ?.let { newestId ->
                 callbacks.advanceLocalLastReadMessageIfNeeded?.invoke(newestId)
             }
