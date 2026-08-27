@@ -11,8 +11,12 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,15 +27,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.EditOff
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
@@ -47,8 +59,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -67,20 +79,22 @@ private const val APP_BAR_HORIZONTAL_PADDING_DP = 4
  * hosted by [FileAttachmentPreviewFragment]. [viewModel] owns the file list and its (IO-derived)
  * descriptions so both survive configuration changes; everything else here is ephemeral UI state.
  */
-@Suppress("LongMethod")
+@Suppress("LongMethod", "LongParameterList")
 @Composable
 internal fun FileAttachmentPreviewContent(
     viewModel: FileAttachmentPreviewViewModel,
     conversationName: String,
     initialCompressImages: Boolean,
+    showFilePermissionsOption: Boolean = false,
     onDismiss: () -> Unit,
-    onSend: (files: List<String>, caption: String, compressImages: Boolean) -> Unit
+    onSend: (files: List<String>, caption: String, compressImages: Boolean, allowUpdate: Boolean) -> Unit
 ) {
     val context = LocalContext.current
     val currentFiles = viewModel.files
     val hasCompressibleMedia = currentFiles.any { isCompressible(FileUtils.resolveMimeType(context, it.toUri())) }
     var caption by rememberSaveable { mutableStateOf("") }
     var compressImages by rememberSaveable { mutableStateOf(hasCompressibleMedia && initialCompressImages) }
+    var allowUpdate by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(currentFiles.toSet(), compressImages) {
         viewModel.describeFiles(compressImages)
@@ -139,21 +153,34 @@ internal fun FileAttachmentPreviewContent(
                 }
             }
 
-            if (hasCompressibleMedia) {
-                MediaQualitySegmentedButton(
-                    highQuality = !compressImages,
-                    onHighQualityChange = { highQuality -> compressImages = !highQuality },
+            if (showFilePermissionsOption || hasCompressibleMedia) {
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                )
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+                ) {
+                    if (showFilePermissionsOption) {
+                        FilePermissionOptionButton(
+                            allowUpdate = allowUpdate,
+                            onAllowUpdateChange = { allowUpdate = it }
+                        )
+                    }
+
+                    if (hasCompressibleMedia) {
+                        MediaQualityOptionButton(
+                            highQuality = !compressImages,
+                            onHighQualityChange = { highQuality -> compressImages = !highQuality }
+                        )
+                    }
+                }
             }
 
             CaptionInputBar(
                 caption = caption,
                 onCaptionChange = { caption = it },
                 sendEnabled = currentFiles.isNotEmpty(),
-                onSend = { onSend(currentFiles.toList(), caption, compressImages) }
+                onSend = { onSend(currentFiles.toList(), caption, compressImages, allowUpdate) }
             )
         }
     }
@@ -198,39 +225,134 @@ private fun PreviewTopBar(conversationName: String, onDismiss: () -> Unit) {
     }
 }
 
+private const val OPTION_BUTTON_ICON_SIZE_DP = 16
+private const val OPTION_BUTTON_HORIZONTAL_PADDING_DP = 12
+private const val OPTION_BUTTON_VERTICAL_PADDING_DP = 6
+private const val OPTION_BUTTON_LABEL_PADDING_DP = 4
+private const val TEXT_BADGE_BORDER_DP = 1
+private const val TEXT_BADGE_CORNER_RADIUS_DP = 4
+private const val TEXT_BADGE_HORIZONTAL_PADDING_DP = 3
+
 @Composable
-private fun MediaQualitySegmentedButton(
-    highQuality: Boolean,
-    onHighQualityChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    SingleChoiceSegmentedButtonRow(modifier = modifier) {
-        SegmentedButton(
-            selected = highQuality,
-            onClick = { onHighQualityChange(true) },
-            shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
+private fun OptionButton(label: String, onClick: () -> Unit, icon: @Composable () -> Unit) {
+    Button(
+        onClick = onClick,
+        shape = CircleShape,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        ),
+        contentPadding = PaddingValues(
+            horizontal = OPTION_BUTTON_HORIZONTAL_PADDING_DP.dp,
+            vertical = OPTION_BUTTON_VERTICAL_PADDING_DP.dp
+        )
+    ) {
+        icon()
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(horizontal = OPTION_BUTTON_LABEL_PADDING_DP.dp)
+        )
+        Icon(
+            imageVector = Icons.Filled.ArrowDropDown,
+            contentDescription = null,
+            modifier = Modifier.size(OPTION_BUTTON_ICON_SIZE_DP.dp)
+        )
+    }
+}
+
+@Composable
+private fun TextBadge(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelSmall,
+        fontWeight = FontWeight.Bold,
+        color = LocalContentColor.current,
+        modifier = Modifier
+            .border(
+                width = TEXT_BADGE_BORDER_DP.dp,
+                color = LocalContentColor.current,
+                shape = RoundedCornerShape(TEXT_BADGE_CORNER_RADIUS_DP.dp)
+            )
+            .padding(horizontal = TEXT_BADGE_HORIZONTAL_PADDING_DP.dp)
+    )
+}
+
+@Composable
+private fun MediaQualityOptionButton(highQuality: Boolean, onHighQualityChange: (Boolean) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box {
+        OptionButton(
+            label = stringResource(
+                if (highQuality) R.string.nc_media_quality_original else R.string.nc_media_quality_reduced
+            ),
+            onClick = { expanded = true },
+            icon = { TextBadge(if (highQuality) "HD" else "SD") }
+        )
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.nc_media_quality_original)) },
+                leadingIcon = { TextBadge("HD") },
+                trailingIcon = { if (highQuality) Icon(Icons.Filled.Check, contentDescription = null) },
+                onClick = {
+                    onHighQualityChange(true)
+                    expanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.nc_media_quality_reduced)) },
+                leadingIcon = { TextBadge("SD") },
+                trailingIcon = { if (!highQuality) Icon(Icons.Filled.Check, contentDescription = null) },
+                onClick = {
+                    onHighQualityChange(false)
+                    expanded = false
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun FilePermissionOptionButton(allowUpdate: Boolean, onAllowUpdateChange: (Boolean) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box {
+        OptionButton(
+            label = stringResource(
+                if (allowUpdate) R.string.nc_file_permission_editable else R.string.nc_file_permission_view_only
+            ),
+            onClick = { expanded = true },
             icon = {
                 Icon(
-                    painter = painterResource(R.drawable.high_quality_24px),
+                    imageVector = if (allowUpdate) Icons.Filled.Edit else Icons.Filled.EditOff,
                     contentDescription = null,
-                    modifier = Modifier.size(SegmentedButtonDefaults.IconSize)
+                    modifier = Modifier.size(OPTION_BUTTON_ICON_SIZE_DP.dp)
                 )
-            },
-            label = { Text(stringResource(R.string.nc_media_quality_original)) }
+            }
         )
-        SegmentedButton(
-            selected = !highQuality,
-            onClick = { onHighQualityChange(false) },
-            shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.high_quality_off_24px),
-                    contentDescription = null,
-                    modifier = Modifier.size(SegmentedButtonDefaults.IconSize)
-                )
-            },
-            label = { Text(stringResource(R.string.nc_media_quality_reduced)) }
-        )
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.nc_file_permission_view_only)) },
+                leadingIcon = { Icon(Icons.Filled.EditOff, contentDescription = null) },
+                trailingIcon = { if (!allowUpdate) Icon(Icons.Filled.Check, contentDescription = null) },
+                onClick = {
+                    onAllowUpdateChange(false)
+                    expanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.nc_file_permission_editable)) },
+                leadingIcon = { Icon(Icons.Filled.Edit, contentDescription = null) },
+                trailingIcon = { if (allowUpdate) Icon(Icons.Filled.Check, contentDescription = null) },
+                onClick = {
+                    onAllowUpdateChange(true)
+                    expanded = false
+                }
+            )
+        }
     }
 }
 
@@ -263,7 +385,7 @@ private fun FileAttachmentPreviewContentPreview() {
             conversationName = "Team Chat",
             initialCompressImages = true,
             onDismiss = {},
-            onSend = { _, _, _ -> }
+            onSend = { _, _, _, _ -> }
         )
     }
 }
@@ -277,7 +399,7 @@ private fun FileAttachmentPreviewContentSingleFilePreview() {
             conversationName = "Team Chat",
             initialCompressImages = true,
             onDismiss = {},
-            onSend = { _, _, _ -> }
+            onSend = { _, _, _, _ -> }
         )
     }
 }

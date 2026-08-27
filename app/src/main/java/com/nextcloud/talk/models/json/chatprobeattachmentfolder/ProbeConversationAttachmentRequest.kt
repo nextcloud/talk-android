@@ -15,4 +15,7 @@ class ProbeConversationAttachmentRequest {
 
     @JsonField(name = ["fileNames"])
     var fileNames: List<String>? = null
+
+    @JsonField(name = ["allowUpdate"])
+    var allowUpdate: Boolean? = false
 }

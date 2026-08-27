@@ -24,4 +24,7 @@ class PostConversationAttachmentRequest {
 
     @JsonField(name = ["fileName"])
     var fileName: String? = null
+
+    @JsonField(name = ["allowUpdate"])
+    var allowUpdate: Boolean? = false
 }

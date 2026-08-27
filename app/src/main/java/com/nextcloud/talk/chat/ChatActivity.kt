@@ -2578,10 +2578,11 @@ class ChatActivity :
 
             val newFragment = FileAttachmentPreviewFragment.newInstance(
                 filesToUpload.map { it.toString() }.toMutableList(),
-                currentConversation?.displayName ?: ""
+                currentConversation?.displayName ?: "",
+                CapabilitiesUtil.hasConversationSubfoldersForAttachments(spreedCapabilities)
             )
-            newFragment.setListener { files, caption, compressImages ->
-                uploadFiles(files, caption, compressImages)
+            newFragment.setListener { files, caption, compressImages, allowUpdate ->
+                uploadFiles(files, caption, compressImages, allowUpdate)
             }
             newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
         } catch (e: IllegalStateException) {
@@ -2663,10 +2664,11 @@ class ChatActivity :
             if (permissionUtil.isFilesPermissionGranted()) {
                 val newFragment = FileAttachmentPreviewFragment.newInstance(
                     filesToUpload,
-                    currentConversation?.displayName ?: ""
+                    currentConversation?.displayName ?: "",
+                    CapabilitiesUtil.hasConversationSubfoldersForAttachments(spreedCapabilities)
                 )
-                newFragment.setListener { files, caption, compressImages ->
-                    uploadFiles(files, caption, compressImages)
+                newFragment.setListener { files, caption, compressImages, allowUpdate ->
+                    uploadFiles(files, caption, compressImages, allowUpdate)
                 }
                 newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
             } else {
@@ -2775,7 +2777,12 @@ class ChatActivity :
         }
     }
 
-    private fun uploadFiles(files: MutableList<String>, caption: String = "", compressImages: Boolean = false) {
+    private fun uploadFiles(
+        files: MutableList<String>,
+        caption: String = "",
+        compressImages: Boolean = false,
+        allowUpdate: Boolean = false
+    ) {
         val uploadId = UUID.randomUUID().toString()
         for (i in 0 until files.size) {
             uploadFile(
@@ -2787,7 +2794,8 @@ class ChatActivity :
                 displayName = currentConversation?.displayName!!,
                 compressImages = compressImages,
                 uploadId = uploadId,
-                order = i + 1
+                order = i + 1,
+                allowUpdate = allowUpdate
             )
         }
     }
@@ -4180,7 +4188,8 @@ class ChatActivity :
         displayName: String,
         compressImages: Boolean = false,
         uploadId: String? = null,
-        order: Int = 1
+        order: Int = 1,
+        allowUpdate: Boolean = false
     ) {
         chatViewModel.uploadFile(
             fileUri,
@@ -4191,7 +4200,8 @@ class ChatActivity :
             displayName,
             compressImages,
             uploadId,
-            order
+            order,
+            allowUpdate
         )
         cancelReply()
     }
