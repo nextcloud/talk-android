@@ -545,7 +545,7 @@ class ScheduledMessagesActivity : BaseActivity() {
 
                                         items(
                                             items = grouped[date].orEmpty(),
-                                            key = { it.token ?: "" }
+                                            key = { it.jsonMessageId }
                                         ) { message ->
 
                                             val parentId = message.parentMessageId
