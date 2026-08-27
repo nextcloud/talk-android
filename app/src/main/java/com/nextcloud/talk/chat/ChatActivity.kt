@@ -1291,11 +1291,8 @@ class ChatActivity :
             val mimetype = chatMessage.fileParameters.mimetype
             val fileViewerUtils = FileViewerUtils(this@ChatActivity, conversationUser)
 
-            // Images/videos open the swipeable media viewer instead of the single-item viewer -
-            // everything else (audio, text, generic files) keeps today's behavior unchanged.
-            val isViewableMedia = mimetype != null &&
-                (mimetype.startsWith(Mimetype.IMAGE_PREFIX) || mimetype.startsWith(Mimetype.VIDEO_PREFIX)) &&
-                fileViewerUtils.isSupportedForInternalViewer(mimetype)
+            val isViewableMedia = mimetype.startsWith(Mimetype.IMAGE_PREFIX) ||
+                mimetype.startsWith(Mimetype.VIDEO_PREFIX)
             val seedItems = if (isViewableMedia) {
                 chatViewModel.mediaViewerSeed().flatMap { it.items }.capSeedAroundMessage(messageId.toLong())
             } else {

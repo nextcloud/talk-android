@@ -72,12 +72,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
     ) {
         val mimetype = message.fileParameters.mimetype
 
-        // Images/videos are fully covered by the swipeable media viewer now, so they skip the
-        // single-item FullScreenImageActivity/FullScreenMediaActivity entirely - unlike audio,
-        // which FullScreenMediaActivity still owns.
-        val isViewableMedia = mimetype != null &&
-            (mimetype.startsWith(IMAGE_PREFIX) || mimetype.startsWith(VIDEO_PREFIX)) &&
-            isSupportedForInternalViewer(mimetype)
+        val isViewableMedia = mimetype.startsWith(IMAGE_PREFIX) || mimetype.startsWith(VIDEO_PREFIX)
         if (isViewableMedia) {
             openInMediaViewer(message)
             return
