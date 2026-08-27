@@ -311,6 +311,10 @@ public class WebRtcBluetoothManager {
             return;
         }
 
+        reassertModernBluetoothAudioAfterFocusGain();
+    }
+
+    private void reassertModernBluetoothAudioAfterFocusGain() {
         cancelTimer();
         cancelBluetoothRouteRetry();
         if (!modernBluetoothRoute.hasConfirmedBluetoothDevice()) {
