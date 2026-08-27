@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.media.AudioAttributes;
+import android.media.AudioDeviceCallback;
 import android.media.AudioDeviceInfo;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
@@ -39,6 +40,7 @@ import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.webrtc.ThreadUtils;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -72,6 +74,8 @@ public class WebRtcAudioManager {
     private Set<AudioDevice> internalAudioDevices = new HashSet<>();
 
     private final BroadcastReceiver wiredHeadsetReceiver;
+    private final AudioDeviceCallback wiredAudioDeviceCallback;
+    private boolean wiredRouteRefreshPending;
     private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener;
     private AudioFocusRequest audioFocusRequest;
     private final AudioFocusState audioFocusState = new AudioFocusState();
@@ -85,6 +89,17 @@ public class WebRtcAudioManager {
         audioManager = ((AudioManager) context.getSystemService(Context.AUDIO_SERVICE));
         bluetoothManager = WebRtcBluetoothManager.create(context, this);
         wiredHeadsetReceiver = new WiredHeadsetReceiver();
+        wiredAudioDeviceCallback = new AudioDeviceCallback() {
+            @Override
+            public void onAudioDevicesAdded(AudioDeviceInfo[] addedDevices) {
+                onWiredAudioDevicesChanged(addedDevices);
+            }
+
+            @Override
+            public void onAudioDevicesRemoved(AudioDeviceInfo[] removedDevices) {
+                onWiredAudioDevicesChanged(removedDevices);
+            }
+        };
         amState = AudioManagerState.UNINITIALIZED;
 
         powerManagerUtils = new PowerManagerUtils();
@@ -190,10 +205,14 @@ public class WebRtcAudioManager {
         currentAudioDevice = AudioDevice.NONE;
         defaultAudioDevice = AudioDevice.NONE;
         bluetoothPreferredForCall = false;
+        audioFocusState.reset();
         lastReportedAudioDeviceForUi = AudioDevice.NONE;
         audioDevices.clear();
         internalAudioDevices.clear();
+        wiredRouteRefreshPending = false;
 
+        audioManager.registerAudioDeviceCallback(wiredAudioDeviceCallback, null);
+        hasWiredHeadset = hasWiredHeadset();
         startBluetoothManager();
 
         // Do initial selection of audio device. This setting can later be changed
@@ -216,6 +235,11 @@ public class WebRtcAudioManager {
         if (audioFocusState.handle(focusChange) && amState == AudioManagerState.RUNNING) {
             audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
             bluetoothManager.reassertBluetoothAudioAfterFocusGain(bluetoothPreferredForCall, hasWiredHeadset);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S
+                && currentAudioDevice != AudioDevice.NONE
+                && currentAudioDevice != AudioDevice.BLUETOOTH) {
+                setAudioDeviceInternal(currentAudioDevice);
+            }
             updateAudioDeviceState();
         }
         Log.d(TAG, "onAudioFocusChange: " + focusChange);
@@ -259,6 +283,14 @@ public class WebRtcAudioManager {
                     return false;
             }
         }
+
+        boolean hasTransientLoss() {
+            return transientLoss;
+        }
+
+        void reset() {
+            transientLoss = false;
+        }
     }
 
     @SuppressLint("WrongConstant")
@@ -272,6 +304,7 @@ public class WebRtcAudioManager {
         amState = AudioManagerState.UNINITIALIZED;
 
         unregisterReceiver(wiredHeadsetReceiver);
+        audioManager.unregisterAudioDeviceCallback(wiredAudioDeviceCallback);
 
         if(bluetoothManager.started()) {
             bluetoothManager.stop();
@@ -343,6 +376,7 @@ public class WebRtcAudioManager {
                     return false;
             }
         }
+
         currentAudioDevice = audioDevice;
         return true;
     }
@@ -484,7 +518,7 @@ public class WebRtcAudioManager {
             boolean currentRouteMatches = currentDevice != null && matchesAudioDevice(currentDevice, audioDevice);
             if (!AudioRoutePolicy.shouldSetCommunicationDevice(
                     currentRouteMatches,
-                    bluetoothManager.isBluetoothSelectionActive())) {
+                    bluetoothManager.isBluetoothSelectionActive() || wiredRouteRefreshPending)) {
                 return true;
             }
 
@@ -530,7 +564,7 @@ public class WebRtcAudioManager {
             case BLUETOOTH:
                 return WebRtcBluetoothManager.isBluetoothCommunicationDeviceType(type);
             case WIRED_HEADSET:
-                return AudioRoutePolicy.isWiredCommunicationDeviceType(type);
+                return AudioRoutePolicy.isWiredCommunicationOutput(type, device.isSink());
             case EARPIECE:
                 return type == AudioDeviceInfo.TYPE_BUILTIN_EARPIECE;
             case SPEAKER_PHONE:
@@ -580,21 +614,46 @@ public class WebRtcAudioManager {
     }
 
     /**
-     * Checks whether a wired headset is connected or not. This is not a valid indication that audio playback is
-     * actually over the wired headset as audio routing depends on other conditions. We only use it as an early
-     * indicator (during initialization) of an attached wired headset.
+     * Checks whether a wired or USB output sink is currently available. Input-only USB devices are not routes.
      */
-    @Deprecated
     private boolean hasWiredHeadset() {
-        @SuppressLint("WrongConstant") final AudioDeviceInfo[] devices =
-            audioManager.getDevices(AudioManager.GET_DEVICES_ALL);
+        Iterable<AudioDeviceInfo> devices = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+            ? audioManager.getAvailableCommunicationDevices()
+            : Arrays.asList(audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS));
         for (AudioDeviceInfo device : devices) {
-            if (AudioRoutePolicy.isWiredCommunicationDeviceType(device.getType())) {
+            if (AudioRoutePolicy.isWiredCommunicationOutput(device.getType(), device.isSink())) {
                 Log.d(TAG, "hasWiredHeadset: found wired or USB audio device");
                 return true;
             }
         }
         return false;
+    }
+
+    private void onWiredAudioDevicesChanged(AudioDeviceInfo[] changedDevices) {
+        ThreadUtils.checkIsOnMainThread();
+        for (AudioDeviceInfo device : changedDevices) {
+            if (AudioRoutePolicy.isWiredCommunicationOutput(device.getType(), device.isSink())) {
+                wiredRouteRefreshPending = true;
+                refreshWiredHeadsetState();
+                return;
+            }
+        }
+    }
+
+    private void refreshWiredHeadsetState() {
+        ThreadUtils.checkIsOnMainThread();
+        if (amState != AudioManagerState.RUNNING) {
+            return;
+        }
+        boolean wiredHeadsetAvailable = hasWiredHeadset();
+        if (!wiredHeadsetAvailable && hasWiredHeadset == wiredHeadsetAvailable) {
+            wiredRouteRefreshPending = false;
+        }
+        if (hasWiredHeadset == wiredHeadsetAvailable && !wiredRouteRefreshPending) {
+            return;
+        }
+        hasWiredHeadset = wiredHeadsetAvailable;
+        updateAudioDeviceState();
     }
 
     private boolean hasBluetoothCommunicationOutput() {
@@ -695,15 +754,17 @@ public class WebRtcAudioManager {
             bluetoothPreferredForCall,
             hasWiredHeadset,
             bluetoothManager.isBluetoothRouteRetryScheduled(),
-            bluetoothManager.hasRemainingScoConnectionAttempts()
+            bluetoothManager.hasRemainingScoConnectionAttempts(),
+            audioFocusState.hasTransientLoss()
         );
+        boolean nonBluetoothFallbackPending = bluetoothManager.isNonBluetoothFallbackPending();
 
         // Need to stop Bluetooth audio if user selected different device and
         // Bluetooth SCO connection is established or in the process.
         boolean needBluetoothScoStop =
             (bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED
                 || bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTING)
-                && (!bluetoothPreferredForCall || hasWiredHeadset);
+                && (!bluetoothPreferredForCall || hasWiredHeadset || nonBluetoothFallbackPending);
 
         if (bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_AVAILABLE
             || bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTING
@@ -713,10 +774,8 @@ public class WebRtcAudioManager {
                 + "BT state=" + bluetoothManager.getState());
         }
 
-        // Start or stop Bluetooth SCO connection given states set earlier.
-        if (needBluetoothScoStop) {
-            bluetoothManager.stopScoAudio();
-        } else if (needBluetoothScoStart && !bluetoothManager.startScoAudio()) {
+        // Start Bluetooth SCO when no transition away from it is required.
+        if (!needBluetoothScoStop && needBluetoothScoStart && !bluetoothManager.startScoAudio()) {
             // Keep Bluetooth visible so an explicit user selection can reset the bounded retry counter.
             newInternalAudioDevices.remove(AudioDevice.BLUETOOTH_SCO);
         }
@@ -730,14 +789,21 @@ public class WebRtcAudioManager {
 
         boolean bluetoothConnected = bluetoothPreferredForCall
             && !hasWiredHeadset
+            && !nonBluetoothFallbackPending
             && bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED
             && newInternalAudioDevices.contains(AudioDevice.BLUETOOTH_SCO);
+        AudioDevice selectableDefaultAudioDevice = nonBluetoothFallbackPending
+            && defaultAudioDevice == AudioDevice.BLUETOOTH ? AudioDevice.NONE : defaultAudioDevice;
         AudioDevice newCurrentAudioDevice = AudioRoutePolicy.selectAudioDevice(
             audioDevices,
             userSelectedAudioDevice,
-            defaultAudioDevice,
+            selectableDefaultAudioDevice,
             hasWiredHeadset,
             bluetoothConnected
+        );
+        boolean selectBeforeBluetoothTeardown = AudioRoutePolicy.shouldSelectBeforeBluetoothTeardown(
+            needBluetoothScoStop,
+            newCurrentAudioDevice
         );
         boolean communicationRouteNeedsSelection = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
             && newCurrentAudioDevice != AudioDevice.NONE
@@ -746,19 +812,44 @@ public class WebRtcAudioManager {
             && !isCommunicationDeviceSelected(newCurrentAudioDevice);
         boolean audioDeviceUpdateNeeded = newCurrentAudioDevice != currentAudioDevice
             || audioDeviceSetUpdated
-            || communicationRouteNeedsSelection;
+            || communicationRouteNeedsSelection
+            || selectBeforeBluetoothTeardown
+            || wiredRouteRefreshPending;
         AudioDevice previousCurrentAudioDevice = currentAudioDevice;
+        boolean routeSelectionSucceeded = false;
         // Switch to new device but only if there has been any changes.
         if (audioDeviceUpdateNeeded) {
             boolean bluetoothSelectionPending = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-                && isBluetoothSelectionPending();
+                && isBluetoothSelectionPending()
+                && !selectBeforeBluetoothTeardown;
             if (!bluetoothSelectionPending) {
-                setAudioDeviceInternal(newCurrentAudioDevice);
+                routeSelectionSucceeded = setAudioDeviceInternal(newCurrentAudioDevice);
             }
             Log.d(TAG, "New device status: "
                 + "internally available=" + internalAudioDevices + ", "
                 + "externally available=" + audioDevices + ", "
                 + "current(new)=" + currentAudioDevice);
+        }
+
+        if (wiredRouteRefreshPending
+                && (routeSelectionSucceeded || newCurrentAudioDevice == AudioDevice.NONE)) {
+            wiredRouteRefreshPending = false;
+        }
+
+        if ((selectBeforeBluetoothTeardown || nonBluetoothFallbackPending)
+                && newCurrentAudioDevice != AudioDevice.BLUETOOTH
+                && routeSelectionSucceeded) {
+            newInternalAudioDevices.remove(AudioDevice.BLUETOOTH_SCO);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                bluetoothManager.onNonBluetoothCommunicationDeviceSelected();
+            } else if (selectBeforeBluetoothTeardown) {
+                bluetoothManager.stopScoAudio();
+            }
+        } else if (AudioRoutePolicy.canFinishBluetoothTeardown(
+                needBluetoothScoStop,
+                selectBeforeBluetoothTeardown,
+                routeSelectionSucceeded)) {
+            bluetoothManager.stopScoAudio();
         }
 
         boolean audioDeviceChanged = previousCurrentAudioDevice != currentAudioDevice || audioDeviceSetUpdated;
@@ -803,17 +894,9 @@ public class WebRtcAudioManager {
 
     /* Receiver which handles changes in wired headset availability. */
     private class WiredHeadsetReceiver extends BroadcastReceiver {
-        private static final int STATE_UNPLUGGED = 0;
-        private static final int STATE_PLUGGED = 1;
-        private static final int HAS_NO_MIC = 0;
-
         @Override
         public void onReceive(Context context, Intent intent) {
-            int state = intent.getIntExtra("state", STATE_UNPLUGGED);
-            // int microphone = intent.getIntExtra("microphone", HAS_NO_MIC);
-            // String name = intent.getStringExtra("name");
-            hasWiredHeadset = (state == STATE_PLUGGED);
-            updateAudioDeviceState();
+            refreshWiredHeadsetState();
         }
     }
 }
