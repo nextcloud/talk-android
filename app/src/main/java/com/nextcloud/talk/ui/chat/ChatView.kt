@@ -296,9 +296,9 @@ fun ChatView(
 
                 val oldestLoadedMessageId = latestChatItems
                     .asReversed()
-                    .firstNotNullOfOrNull { (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id }
+                    .firstNotNullOfOrNull { it.messageOrNull()?.id }
                 val newestLoadedMessageId = latestChatItems
-                    .firstNotNullOfOrNull { (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id }
+                    .firstNotNullOfOrNull { it.messageOrNull()?.id }
 
                 if (shouldLoadOlder && oldestLoadedMessageId != null) {
                     callbacks.onLoadMore?.invoke(oldestLoadedMessageId, ChatViewModel.LoadMoreDirection.OLDER)
@@ -328,18 +328,8 @@ fun ChatView(
             }
             targetItem?.let { itemInfo ->
                 state.chatItems.getOrNull(itemInfo.index)?.let { item ->
-                    when (item) {
-                        is ChatViewModel.ChatItem.MessageItem ->
-                            formatTime(item.uiMessage.timestamp * LONG_1000)
-
-                        is ChatViewModel.ChatItem.DateHeaderItem ->
-                            formatTime(item.date)
-
-                        is ChatViewModel.ChatItem.UnreadMessagesMarkerItem ->
-                            formatTime(item.date)
-
-                        else -> ""
-                    }
+                    item.dateOrNull()?.let { formatTime(it) }
+                        ?: item.messageOrNull()?.let { formatTime(it.timestamp * LONG_1000) }
                 } ?: ""
             } ?: ""
         }
@@ -368,7 +358,7 @@ fun ChatView(
         if (!isAtNewest) return@LaunchedEffect
 
         state.chatItems
-            .firstNotNullOfOrNull { (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id }
+            .firstNotNullOfOrNull { it.messageOrNull()?.id }
             ?.let { newestId ->
                 callbacks.advanceLocalLastReadMessageIfNeeded?.invoke(newestId)
             }
@@ -426,6 +416,35 @@ fun ChatView(
                                     onOpenThreadClick = callbacks.messageCallbacks.onOpenThreadClick,
                                     onQuotedMessageClick = handleQuotedMessageClick,
                                     onSystemMessageExpandClick = callbacks.messageCallbacks.onSystemMessageExpandClick,
+                                    onAvatarClick = callbacks.messageCallbacks.onAvatarClick,
+                                    onCancelUpload = callbacks.messageCallbacks.onCancelUpload
+                                )
+                            )
+                        }
+                    }
+
+                    is ChatViewModel.ChatItem.MediaGroupItem -> {
+                        Box(
+                            modifier = Modifier.padding(
+                                top = if (!chatItem.messages.first().isGrouped) 4.dp else 0.dp
+                            )
+                        ) {
+                            MediaGroupMessage(
+                                messages = chatItem.messages,
+                                context = ChatMessageContext(
+                                    isOneToOneConversation = state.isOneToOneConversation,
+                                    conversationThreadId = state.conversationThreadId,
+                                    hasChatPermission = state.hasChatPermission,
+                                    downloadingFileState = state.downloadingFileState
+                                ),
+                                callbacks = ChatMessageCallbacks(
+                                    onLongClick = callbacks.messageCallbacks.onLongClick,
+                                    onSwipeReply = callbacks.messageCallbacks.onSwipeReply,
+                                    onFileClick = callbacks.messageCallbacks.onFileClick,
+                                    onReactionClick = callbacks.messageCallbacks.onReactionClick,
+                                    onReactionLongClick = callbacks.messageCallbacks.onReactionLongClick,
+                                    onOpenThreadClick = callbacks.messageCallbacks.onOpenThreadClick,
+                                    onQuotedMessageClick = handleQuotedMessageClick,
                                     onAvatarClick = callbacks.messageCallbacks.onAvatarClick,
                                     onCancelUpload = callbacks.messageCallbacks.onCancelUpload
                                 )

@@ -142,6 +142,8 @@ import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.location.LocationPickerActivity
+import com.nextcloud.talk.mediaviewer.activities.MediaViewerActivity
+import com.nextcloud.talk.mediaviewer.model.capSeedAroundMessage
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
@@ -251,6 +253,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import java.util.concurrent.CancellationException
@@ -1285,11 +1288,24 @@ class ChatActivity :
     ) {
         lifecycleScope.launch {
             val chatMessage = chatViewModel.getMessageById(messageId.toLong()).first()
-            FileViewerUtils(this@ChatActivity, conversationUser).openFile(
-                chatMessage,
-                openWhenDownloadState,
-                downloadState
-            )
+            val mimetype = chatMessage.fileParameters.mimetype
+            val fileViewerUtils = FileViewerUtils(this@ChatActivity, conversationUser)
+
+            val isViewableMedia = mimetype.startsWith(Mimetype.IMAGE_PREFIX) ||
+                mimetype.startsWith(Mimetype.VIDEO_PREFIX)
+            val seedItems = if (isViewableMedia) {
+                chatViewModel.mediaViewerSeed().flatMap { it.items }.capSeedAroundMessage(messageId.toLong())
+            } else {
+                emptyList()
+            }
+
+            if (isViewableMedia && seedItems.any { it.messageId == messageId.toLong() }) {
+                startActivity(
+                    MediaViewerActivity.newIntent(this@ChatActivity, roomToken, seedItems, messageId.toLong())
+                )
+            } else {
+                fileViewerUtils.openFile(chatMessage, openWhenDownloadState, downloadState)
+            }
         }
     }
 
@@ -2760,6 +2776,7 @@ class ChatActivity :
     }
 
     private fun uploadFiles(files: MutableList<String>, caption: String = "", compressImages: Boolean = false) {
+        val uploadId = UUID.randomUUID().toString()
         for (i in 0 until files.size) {
             uploadFile(
                 fileUri = files[i],
@@ -2768,7 +2785,9 @@ class ChatActivity :
                 roomToken = roomToken,
                 replyToMessageId = getReplyToMessageId(),
                 displayName = currentConversation?.displayName!!,
-                compressImages = compressImages
+                compressImages = compressImages,
+                uploadId = uploadId,
+                order = i + 1
             )
         }
     }
@@ -4159,7 +4178,9 @@ class ChatActivity :
         roomToken: String = "",
         replyToMessageId: Int? = null,
         displayName: String,
-        compressImages: Boolean = false
+        compressImages: Boolean = false,
+        uploadId: String? = null,
+        order: Int = 1
     ) {
         chatViewModel.uploadFile(
             fileUri,
@@ -4168,7 +4189,9 @@ class ChatActivity :
             roomToken,
             replyToMessageId,
             displayName,
-            compressImages
+            compressImages,
+            uploadId,
+            order
         )
         cancelReply()
     }

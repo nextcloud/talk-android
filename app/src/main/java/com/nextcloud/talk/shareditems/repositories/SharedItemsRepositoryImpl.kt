@@ -52,6 +52,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
         ).map { map(it, parameters, type) }
     }
 
+    @Suppress("LongMethod")
     private fun map(
         response: Response<ChatShareOverall>,
         parameters: SharedItemsRepository.Parameters,
@@ -103,7 +104,10 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
                         fileParameters["link"]!!,
                         fileParameters["mimetype"]!!,
                         previewAvailable,
-                        previewLink(fileParameters["id"], parameters.baseUrl!!)
+                        previewLink(fileParameters["id"], parameters.baseUrl!!),
+                        it.value.id,
+                        it.value.referenceId,
+                        it.value.timestamp
                     )
                 } else if (it.value.messageParameters?.containsKey("object") == true) {
                     val objectParameters = it.value.messageParameters!!["object"]!!
@@ -115,7 +119,10 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
             }
         }
 
-        val sortedMutableItems = items.toSortedMap().values.toList().reversed().toMutableList()
+        // Sort by numeric message id, not the map key's lexicographic String order (which would
+        // sort "10" before "9") - the viewer that consumes this list depends on true chronological
+        // order to reconstruct upload-batch groups and page adjacency correctly.
+        val sortedMutableItems = items.toSortedMap(compareBy { it.toLong() }).values.toList().reversed().toMutableList()
         val moreItemsExisting = items.count() == BATCH_SIZE
 
         return SharedItems(

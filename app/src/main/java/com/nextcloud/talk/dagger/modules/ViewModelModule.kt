@@ -25,6 +25,7 @@ import com.nextcloud.talk.conversationtags.viewmodels.ConversationTagsViewModel
 import com.nextcloud.talk.diagnosis.DiagnosisViewModel
 import com.nextcloud.talk.logger.ui.LogsViewModel
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
+import com.nextcloud.talk.mediaviewer.viewmodels.MediaViewerViewModel
 import com.nextcloud.talk.messagesearch.MessageSearchViewModel
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
 import com.nextcloud.talk.ui.chooseaccount.ChooseAccountShareToViewModel
@@ -77,6 +78,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SharedItemsViewModel::class)
     abstract fun sharedItemsViewModel(viewModel: SharedItemsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MediaViewerViewModel::class)
+    abstract fun mediaViewerViewModel(viewModel: MediaViewerViewModel): ViewModel
 
     @Binds
     @IntoMap

@@ -14,6 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.SharedItemGridBinding
 import com.nextcloud.talk.databinding.SharedItemListBinding
+import com.nextcloud.talk.mediaviewer.activities.MediaViewerActivity
+import com.nextcloud.talk.mediaviewer.model.capSeedAroundMessage
+import com.nextcloud.talk.mediaviewer.model.isImageOrVideo
+import com.nextcloud.talk.mediaviewer.model.toMediaViewerItem
 import com.nextcloud.talk.polls.ui.PollMainDialogFragment
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.shareditems.model.SharedDeckCardItem
@@ -64,7 +68,7 @@ class SharedItemsAdapter(
     override fun onBindViewHolder(holder: SharedItemsViewHolder, position: Int) {
         when (val item = items[position]) {
             is SharedPollItem -> holder.onBind(item, ::showPoll)
-            is SharedFileItem -> holder.onBind(item)
+            is SharedFileItem -> holder.onBind(item, ::openMediaViewer)
             is SharedLocationItem -> holder.onBind(item)
             is SharedOtherItem -> holder.onBind(item)
             is SharedDeckCardItem -> holder.onBind(item)
@@ -101,6 +105,20 @@ class SharedItemsAdapter(
                 this.notifyItemRemoved(index)
             }
         }
+    }
+
+    // Seeds the swipeable viewer with every image/video currently loaded in this gallery (not just
+    // the tapped item), so swiping crosses between them the same way it does from the chat screen.
+    // Items are displayed newest-first (see SharedItemsRepositoryImpl.map()); toMediaViewerGroups()
+    // expects oldest-first, so the seed is sorted back before being passed along.
+    private fun openMediaViewer(item: SharedFileItem, context: Context) {
+        val seedItems = items
+            .filterIsInstance<SharedFileItem>()
+            .filter { it.isImageOrVideo() }
+            .sortedBy { it.messageId }
+            .map { it.toMediaViewerItem() }
+            .capSeedAroundMessage(item.messageId)
+        context.startActivity(MediaViewerActivity.newIntent(context, roomToken, seedItems, item.messageId))
     }
 
     private fun openMessage(item: SharedItem, context: Context) {
