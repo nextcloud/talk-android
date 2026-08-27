@@ -67,20 +67,23 @@ private const val APP_BAR_HORIZONTAL_PADDING_DP = 4
  * hosted by [FileAttachmentPreviewFragment]. [viewModel] owns the file list and its (IO-derived)
  * descriptions so both survive configuration changes; everything else here is ephemeral UI state.
  */
-@Suppress("LongMethod")
+@Suppress("LongMethod", "LongParameterList")
 @Composable
 internal fun FileAttachmentPreviewContent(
     viewModel: FileAttachmentPreviewViewModel,
     conversationName: String,
     initialCompressImages: Boolean,
+    showFilePermissionsOption: Boolean = false,
     onDismiss: () -> Unit,
-    onSend: (files: List<String>, caption: String, compressImages: Boolean) -> Unit
+    onSend: (files: List<String>, caption: String, compressImages: Boolean, allowUpdate: Boolean) -> Unit
 ) {
     val context = LocalContext.current
     val currentFiles = viewModel.files
     val hasCompressibleMedia = currentFiles.any { isCompressible(FileUtils.resolveMimeType(context, it.toUri())) }
     var caption by rememberSaveable { mutableStateOf("") }
     var compressImages by rememberSaveable { mutableStateOf(hasCompressibleMedia && initialCompressImages) }
+    // Deliberately not remembered between uploads, so an exception stays an exception.
+    var allowUpdate by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(currentFiles.toSet(), compressImages) {
         viewModel.describeFiles(compressImages)
@@ -149,11 +152,21 @@ internal fun FileAttachmentPreviewContent(
                 )
             }
 
+            if (showFilePermissionsOption) {
+                FilePermissionSegmentedButton(
+                    allowUpdate = allowUpdate,
+                    onAllowUpdateChange = { allowUpdate = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+            }
+
             CaptionInputBar(
                 caption = caption,
                 onCaptionChange = { caption = it },
                 sendEnabled = currentFiles.isNotEmpty(),
-                onSend = { onSend(currentFiles.toList(), caption, compressImages) }
+                onSend = { onSend(currentFiles.toList(), caption, compressImages, allowUpdate) }
             )
         }
     }
@@ -235,6 +248,42 @@ private fun MediaQualitySegmentedButton(
 }
 
 @Composable
+private fun FilePermissionSegmentedButton(
+    allowUpdate: Boolean,
+    onAllowUpdateChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    SingleChoiceSegmentedButtonRow(modifier = modifier) {
+        SegmentedButton(
+            selected = !allowUpdate,
+            onClick = { onAllowUpdateChange(false) },
+            shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.lock_24px),
+                    contentDescription = null,
+                    modifier = Modifier.size(SegmentedButtonDefaults.IconSize)
+                )
+            },
+            label = { Text(stringResource(R.string.nc_file_permission_view_only)) }
+        )
+        SegmentedButton(
+            selected = allowUpdate,
+            onClick = { onAllowUpdateChange(true) },
+            shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.edit_24px),
+                    contentDescription = null,
+                    modifier = Modifier.size(SegmentedButtonDefaults.IconSize)
+                )
+            },
+            label = { Text(stringResource(R.string.nc_file_permission_editable)) }
+        )
+    }
+}
+
+@Composable
 private fun rememberPreviewViewModel(files: List<String>): FileAttachmentPreviewViewModel {
     val context = LocalContext.current
     return remember { FileAttachmentPreviewViewModel(context).apply { setInitialFiles(files) } }
@@ -263,7 +312,7 @@ private fun FileAttachmentPreviewContentPreview() {
             conversationName = "Team Chat",
             initialCompressImages = true,
             onDismiss = {},
-            onSend = { _, _, _ -> }
+            onSend = { _, _, _, _ -> }
         )
     }
 }
@@ -277,7 +326,7 @@ private fun FileAttachmentPreviewContentSingleFilePreview() {
             conversationName = "Team Chat",
             initialCompressImages = true,
             onDismiss = {},
-            onSend = { _, _, _ -> }
+            onSend = { _, _, _, _ -> }
         )
     }
 }
