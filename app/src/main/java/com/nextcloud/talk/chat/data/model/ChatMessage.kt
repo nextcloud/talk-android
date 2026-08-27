@@ -260,7 +260,9 @@ data class ChatMessage(
      * see https://nextcloud-talk.readthedocs.io/en/latest/chat/#system-messages
      */
     enum class SystemMessageType {
+        // No system message at all, as opposed to UNKNOWN which is a system message of an unknown type
         DUMMY,
+        UNKNOWN,
         CONVERSATION_CREATED,
         CONVERSATION_RENAMED,
         DESCRIPTION_REMOVED,
@@ -277,6 +279,8 @@ data class ChatMessage(
         LISTABLE_NONE,
         LISTABLE_USERS,
         LISTABLE_ALL,
+        PRESERVE_CONVERSATION,
+        PRESERVE_CONVERSATION_OFF,
         LOBBY_NONE,
         LOBBY_NON_MODERATORS,
         LOBBY_OPEN_TO_EVERYONE,
@@ -325,6 +329,7 @@ data class ChatMessage(
         FEDERATED_USER_ADDED,
         FEDERATED_USER_REMOVED,
         PHONE_ADDED,
+        PHONE_REMOVED,
         THREAD_CREATED,
         THREAD_RENAMED,
         MESSAGE_PINNED,
