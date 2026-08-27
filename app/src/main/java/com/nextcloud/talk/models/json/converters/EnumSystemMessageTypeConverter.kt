@@ -62,8 +62,11 @@ import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.OBJECT_S
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.PASSWORD_REMOVED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.PASSWORD_SET
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.PHONE_ADDED
+import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.PHONE_REMOVED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.POLL_CLOSED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.POLL_VOTED
+import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.PRESERVE_CONVERSATION
+import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.PRESERVE_CONVERSATION_OFF
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.REACTION
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.REACTION_DELETED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.REACTION_REVOKED
@@ -74,6 +77,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.RECORDIN
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.RECORDING_STOPPED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.THREAD_CREATED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.THREAD_RENAMED
+import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.UNKNOWN
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.USER_ADDED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.USER_REMOVED
 
@@ -83,7 +87,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.USER_REM
 */
 class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.SystemMessageType>() {
     @Suppress("Detekt.LongMethod")
-    override fun getFromString(string: String): ChatMessage.SystemMessageType =
+    override fun getFromString(string: String?): ChatMessage.SystemMessageType =
         when (string) {
             "conversation_created" -> CONVERSATION_CREATED
             "conversation_renamed" -> CONVERSATION_RENAMED
@@ -101,6 +105,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "listable_none" -> LISTABLE_NONE
             "listable_users" -> LISTABLE_USERS
             "listable_all" -> LISTABLE_ALL
+            "preserve_conversation" -> PRESERVE_CONVERSATION
+            "preserve_conversation_off" -> PRESERVE_CONVERSATION_OFF
             "lobby_none" -> LOBBY_NONE
             "lobby_non_moderators" -> LOBBY_NON_MODERATORS
             "lobby_timer_reached" -> LOBBY_OPEN_TO_EVERYONE
@@ -149,11 +155,15 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "federated_user_added" -> FEDERATED_USER_ADDED
             "federated_user_removed" -> FEDERATED_USER_REMOVED
             "phone_added" -> PHONE_ADDED
+            "phone_removed" -> PHONE_REMOVED
             "thread_created" -> THREAD_CREATED
             "thread_renamed" -> THREAD_RENAMED
             "message_pinned" -> MESSAGE_PINNED
             "message_unpinned" -> MESSAGE_UNPINNED
-            else -> DUMMY
+            null, "" -> DUMMY
+            // An identifier added by a newer server is still a system message. Its text is rendered from
+            // the server, so it must not fall back to DUMMY, which marks a regular chat message.
+            else -> UNKNOWN
         }
 
     @Suppress("Detekt.ComplexMethod", "Detekt.LongMethod")
@@ -176,6 +186,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             LISTABLE_NONE -> "listable_none"
             LISTABLE_USERS -> "listable_users"
             LISTABLE_ALL -> "listable_all"
+            PRESERVE_CONVERSATION -> "preserve_conversation"
+            PRESERVE_CONVERSATION_OFF -> "preserve_conversation_off"
             LOBBY_NONE -> "lobby_none"
             LOBBY_NON_MODERATORS -> "lobby_non_moderators"
             LOBBY_OPEN_TO_EVERYONE -> "lobby_timer_reached"
@@ -204,7 +216,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             MATTERBRIDGE_CONFIG_REMOVED -> "matterbridge_config_removed"
             MATTERBRIDGE_CONFIG_ENABLED -> "matterbridge_config_enabled"
             MATTERBRIDGE_CONFIG_DISABLED -> "matterbridge_config_disabled"
-            CLEARED_CHAT -> "clear_history"
+            CLEARED_CHAT -> "history_cleared"
             REACTION -> "reaction"
             REACTION_DELETED -> "reaction_deleted"
             REACTION_REVOKED -> "reaction_revoked"
@@ -224,9 +236,16 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             FEDERATED_USER_ADDED -> "federated_user_added"
             FEDERATED_USER_REMOVED -> "federated_user_removed"
             PHONE_ADDED -> "phone_added"
+            PHONE_REMOVED -> "phone_removed"
             THREAD_CREATED -> "thread_created"
+            THREAD_RENAMED -> "thread_renamed"
             MESSAGE_PINNED -> "message_pinned"
             MESSAGE_UNPINNED -> "message_unpinned"
+            UNKNOWN -> UNKNOWN_IDENTIFIER
             else -> ""
         }
+
+    companion object {
+        private const val UNKNOWN_IDENTIFIER = "unknown_system_message"
+    }
 }
