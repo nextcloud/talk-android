@@ -2235,7 +2235,8 @@ class ChatViewModel @AssistedInject constructor(
         displayName: String,
         compressImages: Boolean = false,
         uploadId: String? = null,
-        order: Int = 1
+        order: Int = 1,
+        allowUpdate: Boolean = false
     ) {
         val metaDataMap = mutableMapOf<String, Any>()
         var room = ""
@@ -2295,7 +2296,8 @@ class ChatViewModel @AssistedInject constructor(
                 metaData = metaData,
                 referenceId = referenceId,
                 internalConversationId = internalConversationId,
-                compressImages = compressImages
+                compressImages = compressImages,
+                allowUpdate = allowUpdate
             )
 
             if (!isVoiceMessage) {
