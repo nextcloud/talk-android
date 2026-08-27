@@ -457,9 +457,6 @@ class OfflineFirstChatRepository @Inject constructor(
             )
         }
 
-    // getMessage's callers never populate bundle's KEY_FIELD_MAP (unlike the loadMoreMessages /
-    // longpolling call sites), so this fetches the message directly by id instead of routing
-    // through getAndPersistMessages, which requires that field map.
     private suspend fun fetchAndPersistSingleMessage(messageId: Long) {
         val messages = network.getContextForChatMessage(
             credentials = credentials,
@@ -557,8 +554,12 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
+    // Callers must put a KEY_FIELD_MAP (see getFieldMap/syncer.buildFieldMap) into bundle before
+    // calling this.
     private suspend fun getAndPersistMessages(bundle: Bundle): Boolean {
-        val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
+        val fieldMap = requireNotNull(bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as? HashMap<String, Int>) {
+            "getAndPersistMessages requires bundle to carry KEY_FIELD_MAP"
+        }
         val outcome = syncer.pullAndPersistMessages(syncTarget, fieldMap, syncEvents)
         return outcome.persistedNewMessages
     }
