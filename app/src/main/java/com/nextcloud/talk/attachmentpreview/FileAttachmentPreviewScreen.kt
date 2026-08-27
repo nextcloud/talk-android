@@ -94,7 +94,6 @@ internal fun FileAttachmentPreviewContent(
     val hasCompressibleMedia = currentFiles.any { isCompressible(FileUtils.resolveMimeType(context, it.toUri())) }
     var caption by rememberSaveable { mutableStateOf("") }
     var compressImages by rememberSaveable { mutableStateOf(hasCompressibleMedia && initialCompressImages) }
-    // Deliberately not remembered between uploads, so an exception stays an exception.
     var allowUpdate by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(currentFiles.toSet(), compressImages) {
@@ -155,9 +154,6 @@ internal fun FileAttachmentPreviewContent(
             }
 
             if (showFilePermissionsOption || hasCompressibleMedia) {
-                // Both options are filled in from the same state they control on purpose: letting a
-                // button show its selection independently of what is uploaded would leave the two
-                // free to drift apart.
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -237,30 +233,15 @@ private const val TEXT_BADGE_BORDER_DP = 1
 private const val TEXT_BADGE_CORNER_RADIUS_DP = 4
 private const val TEXT_BADGE_HORIZONTAL_PADDING_DP = 3
 
-/**
- * A button that shows the option it currently has selected and offers the alternatives in a
- * dropdown menu: gray as long as it holds the option a share starts with (the default), and
- * filled with the theme color once it does not - the same pair of colors and the same
- * gray-unless-an-exception idea the upload option buttons of the iOS app use.
- */
 @Composable
-private fun OptionButton(label: String, isDefault: Boolean, onClick: () -> Unit, icon: @Composable () -> Unit) {
-    val colors = if (isDefault) {
-        ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    } else {
-        ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
-        )
-    }
-
+private fun OptionButton(label: String, onClick: () -> Unit, icon: @Composable () -> Unit) {
     Button(
         onClick = onClick,
         shape = CircleShape,
-        colors = colors,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        ),
         contentPadding = PaddingValues(
             horizontal = OPTION_BUTTON_HORIZONTAL_PADDING_DP.dp,
             vertical = OPTION_BUTTON_VERTICAL_PADDING_DP.dp
@@ -282,10 +263,6 @@ private fun OptionButton(label: String, isDefault: Boolean, onClick: () -> Unit,
     }
 }
 
-/**
- * A short text in a bordered box, standing in for the SD/HD badges iOS draws next to its quality
- * option - SF Symbols has no equivalent, so the iOS app renders them the same way.
- */
 @Composable
 private fun TextBadge(text: String) {
     Text(
@@ -312,7 +289,6 @@ private fun MediaQualityOptionButton(highQuality: Boolean, onHighQualityChange: 
             label = stringResource(
                 if (highQuality) R.string.nc_media_quality_original else R.string.nc_media_quality_reduced
             ),
-            isDefault = !highQuality,
             onClick = { expanded = true },
             icon = { TextBadge(if (highQuality) "HD" else "SD") }
         )
@@ -348,7 +324,6 @@ private fun FilePermissionOptionButton(allowUpdate: Boolean, onAllowUpdateChange
             label = stringResource(
                 if (allowUpdate) R.string.nc_file_permission_editable else R.string.nc_file_permission_view_only
             ),
-            isDefault = !allowUpdate,
             onClick = { expanded = true },
             icon = {
                 Icon(
