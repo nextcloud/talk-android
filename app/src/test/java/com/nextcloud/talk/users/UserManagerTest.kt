@@ -8,10 +8,12 @@ package com.nextcloud.talk.users
 
 import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.model.User
+import io.reactivex.Maybe
 import io.reactivex.Single
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
@@ -24,6 +26,14 @@ class UserManagerTest {
 
     private fun user(id: Long, username: String, baseUrl: String, current: Boolean = false) =
         User(id = id, username = username, baseUrl = baseUrl, current = current)
+
+    @Before
+    fun setUp() {
+        // No row resolves as "the" active user unless a test overrides this, so
+        // scheduleDuplicateAccountsForDeletion() falls back to the `current` flag / oldest row,
+        // matching the behavior asserted by the tests below that don't care about this priority.
+        whenever(usersRepository.getActiveUser()).thenReturn(Maybe.empty())
+    }
 
     @Test
     fun `keeps the current user among duplicates and schedules the rest for deletion`() {
@@ -134,5 +144,24 @@ class UserManagerTest {
         val scheduledCount = userManager.scheduleDuplicateAccountsForDeletion().blockingGet()
 
         assertEquals(0, scheduledCount)
+    }
+
+    @Test
+    fun `keeps whichever row getActiveUser resolves to, even over a different row flagged current`() {
+        // Simulates a past bug leaving two rows marked current=true for the same account: the
+        // active-user lookup (deterministically) resolves to one of them, but the other still
+        // carries the current flag too. The actively-resolved row must win, since it may be the
+        // one a live session/background sync is still bound to.
+        val staleCurrentFlag = user(id = 1, username = "userA", baseUrl = "https://example.com", current = true)
+        val actuallyActive = user(id = 2, username = "userA", baseUrl = "https://example.com", current = true)
+        whenever(usersRepository.getUsers()).thenReturn(Single.just(listOf(staleCurrentFlag, actuallyActive)))
+        whenever(usersRepository.getActiveUser()).thenReturn(Maybe.just(actuallyActive))
+
+        val scheduledCount = userManager.scheduleDuplicateAccountsForDeletion().blockingGet()
+
+        assertEquals(1, scheduledCount)
+        assertTrue(staleCurrentFlag.scheduledForDeletion)
+        assertFalse(actuallyActive.scheduledForDeletion)
+        verify(usersRepository).updateUser(staleCurrentFlag)
     }
 }

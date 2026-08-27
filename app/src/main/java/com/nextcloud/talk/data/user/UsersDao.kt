@@ -22,15 +22,17 @@ import io.reactivex.Single
 @Dao
 @Suppress("TooManyFunctions")
 abstract class UsersDao {
-    // get active user
-    @Query("SELECT * FROM User where current = 1")
+    // get active user. ORDER BY/LIMIT make this deterministic if more than one row is ever
+    // marked current=1 (e.g. a duplicate-account row left over from a past bug), instead of
+    // relying on whatever order an unordered full-table scan happens to return.
+    @Query("SELECT * FROM User where current = 1 ORDER BY id DESC LIMIT 1")
     abstract fun getActiveUser(): Maybe<UserEntity>
 
     // get active user
-    @Query("SELECT * FROM User where current = 1")
+    @Query("SELECT * FROM User where current = 1 ORDER BY id DESC LIMIT 1")
     abstract fun getActiveUserObservable(): Observable<UserEntity>
 
-    @Query("SELECT * FROM User where current = 1")
+    @Query("SELECT * FROM User where current = 1 ORDER BY id DESC LIMIT 1")
     abstract fun getActiveUserSynchronously(): UserEntity?
 
     @Delete

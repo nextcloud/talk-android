@@ -76,22 +76,34 @@ class UserManager internal constructor(private val userRepository: UsersReposito
 
     /**
      * If there is more than one local User row for the same username+baseUrl (e.g. reusing the
-     * same token): Keep the current user if it's one of the duplicates, otherwise the oldest (lowest id) row,
-     * and schedules the rest for deletion so AccountRemovalWorker cleans them up like any other removed account.
+     * same token): keep whichever row [UsersRepository.getActiveUser] actually resolves to if
+     * it's one of the duplicates, otherwise a duplicate marked current, otherwise the oldest
+     * (lowest id) row, and schedules the rest for deletion so AccountRemovalWorker cleans them up
+     * like any other removed account.
+     *
+     * The active user is resolved first, rather than trusting each row's own `current` flag,
+     * because a past(?) bug could leave more than one row marked current=true for the same account.
+     * Picking a duplicate to keep by its `current` flag alone could then disagree with whichever
+     * row a live session/background sync is still bound to, and deleting that row here would trip
+     * a foreign key constraint on any in-flight write still referencing it.
      *
      * @return the number of duplicate rows scheduled for deletion
      */
     fun scheduleDuplicateAccountsForDeletion(): Single<Int> =
-        users.map { allUsers ->
-            allUsers
+        Single.zip(
+            users,
+            userRepository.getActiveUser().map { it.id }.toSingle(NO_ACTIVE_USER_ID)
+        ) { allUsers, activeUserId ->
+            val duplicateGroups = allUsers
                 .filter { !it.username.isNullOrEmpty() && !it.baseUrl.isNullOrEmpty() }
                 .groupBy { it.username to it.baseUrl }
                 .values
                 .filter { it.size > 1 }
-        }.map { duplicateGroups ->
+
             var scheduledCount = 0
             duplicateGroups.forEach { duplicates ->
-                val userToKeep = duplicates.firstOrNull { it.current }
+                val userToKeep = duplicates.firstOrNull { it.id == activeUserId }
+                    ?: duplicates.firstOrNull { it.current }
                     ?: duplicates.minByOrNull { it.id ?: Long.MAX_VALUE }
                 duplicates
                     .filter { it.id != userToKeep?.id }
@@ -248,6 +260,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
 
     companion object {
         const val TAG = "UserManager"
+        private const val NO_ACTIVE_USER_ID = -1L
     }
 
     data class UserAttributes(
