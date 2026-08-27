@@ -10,11 +10,14 @@ package com.nextcloud.talk.components
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.text.style.TextOverflow
@@ -33,19 +36,22 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.nextcloud.talk.R
 
+private const val SUBTITLE_ALPHA = 0.75f
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StandardAppBar(
     title: String,
     menuItems: List<Pair<String, () -> Unit>>?,
-    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors()
+    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),
+    subtitle: String? = null
 ) {
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
     var expanded by remember { mutableStateOf(false) }
 
     TopAppBar(
-        title = { Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+        title = { StandardAppBarTitle(title = title, subtitle = subtitle) },
         colors = colors,
         navigationIcon = {
             IconButton(
@@ -86,6 +92,24 @@ fun StandardAppBar(
             }
         }
     )
+}
+
+@Composable
+private fun StandardAppBarTitle(title: String, subtitle: String?) {
+    if (subtitle != null) {
+        Column {
+            Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                text = subtitle,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodySmall,
+                color = LocalContentColor.current.copy(alpha = SUBTITLE_ALPHA)
+            )
+        }
+    } else {
+        Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    }
 }
 
 @Preview(name = "Light Mode")

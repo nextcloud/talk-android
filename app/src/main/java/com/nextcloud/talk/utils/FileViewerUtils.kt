@@ -29,10 +29,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.fullscreenfile.FullScreenImageActivity
 import com.nextcloud.talk.fullscreenfile.FullScreenMediaActivity
 import com.nextcloud.talk.fullscreenfile.FullScreenTextViewerActivity
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
+import com.nextcloud.talk.mediaviewer.activities.MediaViewerActivity
+import com.nextcloud.talk.mediaviewer.model.MediaViewerItem
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
 import com.nextcloud.talk.utils.Mimetype.AUDIO_MPEG
 import com.nextcloud.talk.utils.Mimetype.AUDIO_OGG
@@ -41,14 +42,15 @@ import com.nextcloud.talk.utils.Mimetype.IMAGE_GIF
 import com.nextcloud.talk.utils.Mimetype.IMAGE_HEIC
 import com.nextcloud.talk.utils.Mimetype.IMAGE_JPEG
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PNG
+import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX
 import com.nextcloud.talk.utils.Mimetype.TEXT_MARKDOWN
 import com.nextcloud.talk.utils.Mimetype.TEXT_PLAIN
 import com.nextcloud.talk.utils.Mimetype.VIDEO_MP4
 import com.nextcloud.talk.utils.Mimetype.VIDEO_OGG
+import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX
 import com.nextcloud.talk.utils.Mimetype.VIDEO_QUICKTIME
 import com.nextcloud.talk.utils.Mimetype.VIDEO_WEBM
 import com.nextcloud.talk.utils.MimetypeUtils.isAudioOnly
-import com.nextcloud.talk.utils.MimetypeUtils.isGif
 import com.nextcloud.talk.utils.MimetypeUtils.isMarkdown
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
@@ -60,6 +62,7 @@ import java.util.concurrent.ExecutionException
  * Example:
  *   - SharedItemsViewHolder
  */
+@Suppress("TooManyFunctions")
 class FileViewerUtils(private val context: Context, private val user: User) {
 
     fun openFile(
@@ -67,8 +70,15 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         openWhenDownloadState: MutableState<Boolean>,
         downloadState: MutableState<List<String>>
     ) {
-        val fileName = message.fileParameters.name
         val mimetype = message.fileParameters.mimetype
+
+        val isViewableMedia = mimetype.startsWith(IMAGE_PREFIX) || mimetype.startsWith(VIDEO_PREFIX)
+        if (isViewableMedia) {
+            openInMediaViewer(message)
+            return
+        }
+
+        val fileName = message.fileParameters.name
         val link = message.fileParameters.link
 
         val fileId = message.fileParameters.id
@@ -81,6 +91,38 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             openWhenDownloadState,
             downloadState
         )
+    }
+
+    private fun openInMediaViewer(message: ChatMessage) {
+        val fileParameters = message.fileParameters
+        val fileId = fileParameters.id
+        val roomToken = message.token
+        if (fileId == null || roomToken == null) {
+            Log.e(TAG, "Missing fileId or roomToken, can't open in media viewer")
+            return
+        }
+
+        val previewUrl = user.baseUrl?.let {
+            ApiUtils.getUrlForFilePreviewWithFileId(
+                it,
+                fileId,
+                context.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size)
+            )
+        }
+        val item = MediaViewerItem(
+            messageId = message.jsonMessageId.toLong(),
+            referenceId = message.referenceId,
+            fileId = fileId,
+            fileName = fileParameters.name.orEmpty(),
+            mimeType = fileParameters.mimetype.orEmpty(),
+            path = fileParameters.path.orEmpty(),
+            link = fileParameters.link.orEmpty(),
+            fileSize = fileParameters.size ?: 0L,
+            previewUrl = previewUrl,
+            actorDisplayName = message.actorDisplayName.orEmpty(),
+            timestamp = message.timestamp
+        )
+        context.startActivity(MediaViewerActivity.newIntent(context, roomToken, listOf(item), item.messageId))
     }
 
     fun openFile(
@@ -151,16 +193,15 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             when (mimetype) {
                 AUDIO_MPEG,
                 AUDIO_WAV,
-                AUDIO_OGG,
+                AUDIO_OGG -> openAudioView(filename, mimetype)
+
+                // Reachable only if a future caller ends up here without the message/room context
+                // openFile(ChatMessage, ...) needs to route video to the media viewer instead - see
+                // openVideoInMediaViewer(). Kept as a safety net so video is never left unopenable.
                 VIDEO_MP4,
                 VIDEO_QUICKTIME,
                 VIDEO_OGG,
-                VIDEO_WEBM -> openMediaView(filename, mimetype)
-
-                IMAGE_PNG,
-                IMAGE_JPEG,
-                IMAGE_GIF,
-                IMAGE_HEIC -> openImageView(filename, mimetype)
+                VIDEO_WEBM -> openVideoView(filename, mimetype)
 
                 TEXT_MARKDOWN,
                 TEXT_PLAIN -> openTextView(filename, mimetype, link, fileId)
@@ -228,14 +269,14 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         }
     }
 
-    private fun openImageView(filename: String, mimetype: String) {
-        val fullScreenImageIntent = Intent(context, FullScreenImageActivity::class.java)
-        fullScreenImageIntent.putExtra("FILE_NAME", filename)
-        fullScreenImageIntent.putExtra("IS_GIF", isGif(mimetype))
-        context.startActivity(fullScreenImageIntent)
+    private fun openAudioView(filename: String, mimetype: String) {
+        val fullScreenMediaIntent = Intent(context, FullScreenMediaActivity::class.java)
+        fullScreenMediaIntent.putExtra("FILE_NAME", filename)
+        fullScreenMediaIntent.putExtra("AUDIO_ONLY", isAudioOnly(mimetype))
+        context.startActivity(fullScreenMediaIntent)
     }
 
-    private fun openMediaView(filename: String, mimetype: String) {
+    private fun openVideoView(filename: String, mimetype: String) {
         val fullScreenMediaIntent = Intent(context, FullScreenMediaActivity::class.java)
         fullScreenMediaIntent.putExtra("FILE_NAME", filename)
         fullScreenMediaIntent.putExtra("AUDIO_ONLY", isAudioOnly(mimetype))
