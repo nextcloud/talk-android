@@ -3920,8 +3920,12 @@ class ChatActivity :
     fun openInFilesApp(message: ChatMessage) {
         val keyID = message.fileParameters.id
         val link = message.fileParameters.link
-        val fileViewerUtils = FileViewerUtils(this, message.activeUser!!)
-        fileViewerUtils.openFileInFilesApp(link!!, keyID!!)
+        if (keyID.isEmpty() || link.isEmpty()) {
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            return
+        }
+        val fileViewerUtils = FileViewerUtils(this, conversationUser)
+        fileViewerUtils.openFileInFilesApp(link, keyID)
     }
 
     private fun hasVisibleItems(message: ChatMessage): Boolean =
