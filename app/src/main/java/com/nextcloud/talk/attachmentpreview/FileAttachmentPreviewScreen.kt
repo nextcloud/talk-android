@@ -12,7 +12,10 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,15 +26,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
@@ -46,6 +53,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -142,24 +150,30 @@ internal fun FileAttachmentPreviewContent(
                 }
             }
 
-            if (hasCompressibleMedia) {
-                MediaQualitySegmentedButton(
-                    highQuality = !compressImages,
-                    onHighQualityChange = { highQuality -> compressImages = !highQuality },
+            if (showFilePermissionsOption || hasCompressibleMedia) {
+                // Both options are filled in from the same state they control on purpose: letting a
+                // button show its selection independently of what is uploaded would leave the two
+                // free to drift apart.
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                )
-            }
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (showFilePermissionsOption) {
+                        FilePermissionOptionButton(
+                            allowUpdate = allowUpdate,
+                            onAllowUpdateChange = { allowUpdate = it }
+                        )
+                    }
 
-            if (showFilePermissionsOption) {
-                FilePermissionSegmentedButton(
-                    allowUpdate = allowUpdate,
-                    onAllowUpdateChange = { allowUpdate = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                )
+                    if (hasCompressibleMedia) {
+                        MediaQualityOptionButton(
+                            highQuality = !compressImages,
+                            onHighQualityChange = { highQuality -> compressImages = !highQuality }
+                        )
+                    }
+                }
             }
 
             CaptionInputBar(
@@ -211,75 +225,127 @@ private fun PreviewTopBar(conversationName: String, onDismiss: () -> Unit) {
     }
 }
 
+private const val OPTION_BUTTON_ICON_SIZE_DP = 16
+private const val OPTION_BUTTON_HORIZONTAL_PADDING_DP = 12
+private const val OPTION_BUTTON_VERTICAL_PADDING_DP = 6
+private const val OPTION_BUTTON_LABEL_PADDING_DP = 4
+
+/**
+ * A button that shows the option it currently has selected and offers the alternatives in a
+ * dropdown menu: gray as long as it holds the option a share starts with (the default), and
+ * filled with the theme color once it does not - the same pair of colors and the same
+ * gray-unless-an-exception idea the upload option buttons of the iOS app use.
+ */
 @Composable
-private fun MediaQualitySegmentedButton(
-    highQuality: Boolean,
-    onHighQualityChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    SingleChoiceSegmentedButtonRow(modifier = modifier) {
-        SegmentedButton(
-            selected = highQuality,
-            onClick = { onHighQualityChange(true) },
-            shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.high_quality_24px),
-                    contentDescription = null,
-                    modifier = Modifier.size(SegmentedButtonDefaults.IconSize)
-                )
-            },
-            label = { Text(stringResource(R.string.nc_media_quality_original)) }
+private fun OptionButton(label: String, icon: Painter, isDefault: Boolean, onClick: () -> Unit) {
+    val colors = if (isDefault) {
+        ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        SegmentedButton(
-            selected = !highQuality,
-            onClick = { onHighQualityChange(false) },
-            shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.high_quality_off_24px),
-                    contentDescription = null,
-                    modifier = Modifier.size(SegmentedButtonDefaults.IconSize)
-                )
-            },
-            label = { Text(stringResource(R.string.nc_media_quality_reduced)) }
+    } else {
+        ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        )
+    }
+
+    Button(
+        onClick = onClick,
+        shape = CircleShape,
+        colors = colors,
+        contentPadding = PaddingValues(
+            horizontal = OPTION_BUTTON_HORIZONTAL_PADDING_DP.dp,
+            vertical = OPTION_BUTTON_VERTICAL_PADDING_DP.dp
+        )
+    ) {
+        Icon(painter = icon, contentDescription = null, modifier = Modifier.size(OPTION_BUTTON_ICON_SIZE_DP.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(horizontal = OPTION_BUTTON_LABEL_PADDING_DP.dp)
+        )
+        Icon(
+            imageVector = Icons.Filled.ArrowDropDown,
+            contentDescription = null,
+            modifier = Modifier.size(OPTION_BUTTON_ICON_SIZE_DP.dp)
         )
     }
 }
 
 @Composable
-private fun FilePermissionSegmentedButton(
-    allowUpdate: Boolean,
-    onAllowUpdateChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    SingleChoiceSegmentedButtonRow(modifier = modifier) {
-        SegmentedButton(
-            selected = !allowUpdate,
-            onClick = { onAllowUpdateChange(false) },
-            shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.lock_24px),
-                    contentDescription = null,
-                    modifier = Modifier.size(SegmentedButtonDefaults.IconSize)
-                )
-            },
-            label = { Text(stringResource(R.string.nc_file_permission_view_only)) }
+private fun MediaQualityOptionButton(highQuality: Boolean, onHighQualityChange: (Boolean) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box {
+        OptionButton(
+            label = stringResource(
+                if (highQuality) R.string.nc_media_quality_original else R.string.nc_media_quality_reduced
+            ),
+            icon = painterResource(
+                if (highQuality) R.drawable.high_quality_24px else R.drawable.high_quality_off_24px
+            ),
+            isDefault = !highQuality,
+            onClick = { expanded = true }
         )
-        SegmentedButton(
-            selected = allowUpdate,
-            onClick = { onAllowUpdateChange(true) },
-            shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.edit_24px),
-                    contentDescription = null,
-                    modifier = Modifier.size(SegmentedButtonDefaults.IconSize)
-                )
-            },
-            label = { Text(stringResource(R.string.nc_file_permission_editable)) }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.nc_media_quality_original)) },
+                leadingIcon = { Icon(painterResource(R.drawable.high_quality_24px), contentDescription = null) },
+                trailingIcon = { if (highQuality) Icon(Icons.Filled.Check, contentDescription = null) },
+                onClick = {
+                    onHighQualityChange(true)
+                    expanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.nc_media_quality_reduced)) },
+                leadingIcon = { Icon(painterResource(R.drawable.high_quality_off_24px), contentDescription = null) },
+                trailingIcon = { if (!highQuality) Icon(Icons.Filled.Check, contentDescription = null) },
+                onClick = {
+                    onHighQualityChange(false)
+                    expanded = false
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun FilePermissionOptionButton(allowUpdate: Boolean, onAllowUpdateChange: (Boolean) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box {
+        OptionButton(
+            label = stringResource(
+                if (allowUpdate) R.string.nc_file_permission_editable else R.string.nc_file_permission_view_only
+            ),
+            icon = painterResource(if (allowUpdate) R.drawable.edit_24px else R.drawable.lock_24px),
+            isDefault = !allowUpdate,
+            onClick = { expanded = true }
         )
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.nc_file_permission_view_only)) },
+                leadingIcon = { Icon(painterResource(R.drawable.lock_24px), contentDescription = null) },
+                trailingIcon = { if (!allowUpdate) Icon(Icons.Filled.Check, contentDescription = null) },
+                onClick = {
+                    onAllowUpdateChange(false)
+                    expanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.nc_file_permission_editable)) },
+                leadingIcon = { Icon(painterResource(R.drawable.edit_24px), contentDescription = null) },
+                trailingIcon = { if (allowUpdate) Icon(Icons.Filled.Check, contentDescription = null) },
+                onClick = {
+                    onAllowUpdateChange(true)
+                    expanded = false
+                }
+            )
+        }
     }
 }
 
