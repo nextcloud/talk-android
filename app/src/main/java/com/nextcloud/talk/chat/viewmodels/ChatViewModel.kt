@@ -2690,7 +2690,12 @@ class ChatViewModel @AssistedInject constructor(
                 is MediaGroupItem -> messages.lastOrNull()
                 else -> null
             }
-        fun dateOrNull(): LocalDate? = (this as? DateHeaderItem)?.date
+        fun dateOrNull(): LocalDate? =
+            when (this) {
+                is DateHeaderItem -> date
+                is UnreadMessagesMarkerItem -> date
+                else -> null
+            }
 
         fun stableKey(): Any =
             when (this) {

@@ -328,15 +328,8 @@ fun ChatView(
             }
             targetItem?.let { itemInfo ->
                 state.chatItems.getOrNull(itemInfo.index)?.let { item ->
-                    when (item) {
-                        is ChatViewModel.ChatItem.DateHeaderItem ->
-                            formatTime(item.date)
-
-                        is ChatViewModel.ChatItem.UnreadMessagesMarkerItem ->
-                            formatTime(item.date)
-
-                        else -> item.messageOrNull()?.let { formatTime(it.timestamp * LONG_1000) } ?: ""
-                    }
+                    item.dateOrNull()?.let { formatTime(it) }
+                        ?: item.messageOrNull()?.let { formatTime(it.timestamp * LONG_1000) }
                 } ?: ""
             } ?: ""
         }
