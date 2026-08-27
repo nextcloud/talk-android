@@ -9,6 +9,7 @@
 package com.nextcloud.talk.conversationlist.data.network
 
 import android.content.Context
+import android.database.sqlite.SQLiteConstraintException
 import android.net.ConnectivityManager
 import android.os.PowerManager
 import android.util.Log
@@ -148,7 +149,11 @@ class OfflineFirstConversationsRepository @Inject constructor(
                                 previous,
                                 listOf(model.asEntity())
                             )
-                            dao.upsertConversations(user.id!!, entityList)
+                            try {
+                                dao.upsertConversations(user.id!!, entityList)
+                            } catch (e: SQLiteConstraintException) {
+                                Log.w(TAG, "Skipping conversation upsert for removed account ${user.id}", e)
+                            }
                         }
                     }
                 })
