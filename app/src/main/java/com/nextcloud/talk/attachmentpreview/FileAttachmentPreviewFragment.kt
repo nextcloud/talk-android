@@ -32,8 +32,10 @@ import javax.inject.Inject
 class FileAttachmentPreviewFragment : DialogFragment() {
     private lateinit var filesList: ArrayList<String>
     private var conversationName: String = ""
-    private var uploadFiles: (files: MutableList<String>, caption: String, compressImages: Boolean) -> Unit =
-        { _, _, _ -> }
+    private var showFilePermissionsOption: Boolean = false
+    private var uploadFiles:
+        (files: MutableList<String>, caption: String, compressImages: Boolean, allowUpdate: Boolean) -> Unit =
+        { _, _, _, _ -> }
     private var composeView: ComposeView? = null
 
     @Inject
@@ -49,7 +51,14 @@ class FileAttachmentPreviewFragment : DialogFragment() {
         ViewModelProvider(this, viewModelFactory)[FileAttachmentPreviewViewModel::class.java]
     }
 
-    fun setListener(uploadFiles: (files: MutableList<String>, caption: String, compressImages: Boolean) -> Unit) {
+    fun setListener(
+        uploadFiles: (
+            files: MutableList<String>,
+            caption: String,
+            compressImages: Boolean,
+            allowUpdate: Boolean
+        ) -> Unit
+    ) {
         this.uploadFiles = uploadFiles
     }
 
@@ -57,6 +66,7 @@ class FileAttachmentPreviewFragment : DialogFragment() {
         arguments?.let {
             filesList = it.getStringArrayList(FILES_TO_UPLOAD_ARG)!!
             conversationName = it.getString(CONVERSATION_NAME_ARG, "")
+            showFilePermissionsOption = it.getBoolean(FILE_PERMISSIONS_OPTION_ARG, false)
         }
 
         composeView = ComposeView(requireContext())
@@ -102,9 +112,10 @@ class FileAttachmentPreviewFragment : DialogFragment() {
                         viewModel = viewModel,
                         conversationName = conversationName,
                         initialCompressImages = appPreferences.compressUploadImages,
+                        showFilePermissionsOption = showFilePermissionsOption,
                         onDismiss = { dismiss() },
-                        onSend = { files, caption, compressImages ->
-                            uploadFiles(files.toMutableList(), caption, compressImages)
+                        onSend = { files, caption, compressImages, allowUpdate ->
+                            uploadFiles(files.toMutableList(), caption, compressImages, allowUpdate)
                             dismiss()
                         }
                     )
@@ -123,13 +134,19 @@ class FileAttachmentPreviewFragment : DialogFragment() {
         private const val LIGHT_LUMINANCE_THRESHOLD = 0.5f
         private const val FILES_TO_UPLOAD_ARG = "FILES_TO_UPLOAD_ARG"
         private const val CONVERSATION_NAME_ARG = "CONVERSATION_NAME_ARG"
+        private const val FILE_PERMISSIONS_OPTION_ARG = "FILE_PERMISSIONS_OPTION_ARG"
 
         @JvmStatic
-        fun newInstance(filesToUpload: MutableList<String>, conversationName: String): FileAttachmentPreviewFragment {
+        fun newInstance(
+            filesToUpload: MutableList<String>,
+            conversationName: String,
+            showFilePermissionsOption: Boolean = false
+        ): FileAttachmentPreviewFragment {
             val fileAttachmentFragment = FileAttachmentPreviewFragment()
             val args = Bundle()
             args.putStringArrayList(FILES_TO_UPLOAD_ARG, ArrayList(filesToUpload))
             args.putString(CONVERSATION_NAME_ARG, conversationName)
+            args.putBoolean(FILE_PERMISSIONS_OPTION_ARG, showFilePermissionsOption)
             fileAttachmentFragment.arguments = args
             return fileAttachmentFragment
         }

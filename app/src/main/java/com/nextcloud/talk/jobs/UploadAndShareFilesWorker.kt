@@ -170,12 +170,14 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             val useConversationSubfolders = CapabilitiesUtil.hasConversationSubfoldersForAttachments(
                 currentUser.capabilities!!.spreedCapability!!
             )
+            val allowUpdate = inputData.getBoolean(ALLOW_UPDATE, false)
             file?.let { isChunkedUploading = it.length() > CHUNK_UPLOAD_THRESHOLD_SIZE }
             val uploadSuccess: Boolean = uploadFile(
                 sourceFileUri = sourceFileUri,
                 metaData = metaData,
                 remotePath = remotePath,
-                useConversationSubfolders = useConversationSubfolders
+                useConversationSubfolders = useConversationSubfolders,
+                allowUpdate = allowUpdate
             )
 
             if (uploadSuccess && (isStopped || isCancelled())) {
@@ -253,12 +255,13 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         sourceFileUri: Uri,
         metaData: String?,
         remotePath: String,
-        useConversationSubfolders: Boolean
+        useConversationSubfolders: Boolean,
+        allowUpdate: Boolean
     ): Boolean =
         if (file == null) {
             false
         } else if (useConversationSubfolders) {
-            uploadUsingConversationSubfolders(sourceFileUri, metaData)
+            uploadUsingConversationSubfolders(sourceFileUri, metaData, allowUpdate)
         } else if (isChunkedUploading) {
             Log.d(TAG, "starting chunked upload because size is " + file!!.length())
             val mimeType = context.contentResolver.getType(sourceFileUri)?.toMediaTypeOrNull()
@@ -312,7 +315,11 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         return result
     }
 
-    private fun uploadUsingConversationSubfolders(sourceFileUri: Uri, metaData: String?): Boolean =
+    private fun uploadUsingConversationSubfolders(
+        sourceFileUri: Uri,
+        metaData: String?,
+        allowUpdate: Boolean
+    ): Boolean =
         runBlocking {
             val credentials = ApiUtils.getCredentials(
                 currentUser.username,
@@ -321,6 +328,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             val uploadId = UUID.randomUUID().toString()
             val fileNames = ProbeConversationAttachmentRequest().apply {
                 fileNames = listOf(fileName)
+                this.allowUpdate = allowUpdate
             }
 
             val probeResponse = ncApiCoroutines.probeConversationAttachmentFolder(
@@ -360,6 +368,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 referenceId = this@UploadAndShareFilesWorker.referenceId.orEmpty()
                 talkMetaData = metaData
                 fileName = predictedName
+                this.allowUpdate = allowUpdate
             }
 
             runCatching {
@@ -458,6 +467,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         const val KEY_INTERNAL_CONVERSATION_ID = "INTERNAL_CONVERSATION_ID"
         const val PROGRESS_KEY = "UPLOAD_PROGRESS"
         private const val COMPRESS_IMAGES = "COMPRESS_IMAGES"
+        private const val ALLOW_UPDATE = "ALLOW_UPDATE"
         private const val CHUNK_UPLOAD_THRESHOLD_SIZE: Long = 1024 * 1024
 
         // Total attempts allowed for a single upload (1 initial run + retries) before giving up on a
@@ -523,7 +533,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             metaData: String?,
             referenceId: String = "",
             internalConversationId: String = "",
-            compressImages: Boolean = false
+            compressImages: Boolean = false,
+            allowUpdate: Boolean = false
         ): UUID {
             val data: Data = Data.Builder()
                 .putString(DEVICE_SOURCE_FILE, fileUri)
@@ -533,6 +544,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 .putString(KEY_REFERENCE_ID, referenceId)
                 .putString(KEY_INTERNAL_CONVERSATION_ID, internalConversationId)
                 .putBoolean(COMPRESS_IMAGES, compressImages)
+                .putBoolean(ALLOW_UPDATE, allowUpdate)
                 .build()
             val uploadWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(UploadAndShareFilesWorker::class.java)
                 .setInputData(data)
