@@ -11,6 +11,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,10 +28,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.EditOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -38,6 +42,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -53,10 +58,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -229,6 +233,9 @@ private const val OPTION_BUTTON_ICON_SIZE_DP = 16
 private const val OPTION_BUTTON_HORIZONTAL_PADDING_DP = 12
 private const val OPTION_BUTTON_VERTICAL_PADDING_DP = 6
 private const val OPTION_BUTTON_LABEL_PADDING_DP = 4
+private const val TEXT_BADGE_BORDER_DP = 1
+private const val TEXT_BADGE_CORNER_RADIUS_DP = 4
+private const val TEXT_BADGE_HORIZONTAL_PADDING_DP = 3
 
 /**
  * A button that shows the option it currently has selected and offers the alternatives in a
@@ -237,7 +244,7 @@ private const val OPTION_BUTTON_LABEL_PADDING_DP = 4
  * gray-unless-an-exception idea the upload option buttons of the iOS app use.
  */
 @Composable
-private fun OptionButton(label: String, icon: Painter, isDefault: Boolean, onClick: () -> Unit) {
+private fun OptionButton(label: String, isDefault: Boolean, onClick: () -> Unit, icon: @Composable () -> Unit) {
     val colors = if (isDefault) {
         ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -259,7 +266,7 @@ private fun OptionButton(label: String, icon: Painter, isDefault: Boolean, onCli
             vertical = OPTION_BUTTON_VERTICAL_PADDING_DP.dp
         )
     ) {
-        Icon(painter = icon, contentDescription = null, modifier = Modifier.size(OPTION_BUTTON_ICON_SIZE_DP.dp))
+        icon()
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
@@ -275,6 +282,27 @@ private fun OptionButton(label: String, icon: Painter, isDefault: Boolean, onCli
     }
 }
 
+/**
+ * A short text in a bordered box, standing in for the SD/HD badges iOS draws next to its quality
+ * option - SF Symbols has no equivalent, so the iOS app renders them the same way.
+ */
+@Composable
+private fun TextBadge(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelSmall,
+        fontWeight = FontWeight.Bold,
+        color = LocalContentColor.current,
+        modifier = Modifier
+            .border(
+                width = TEXT_BADGE_BORDER_DP.dp,
+                color = LocalContentColor.current,
+                shape = RoundedCornerShape(TEXT_BADGE_CORNER_RADIUS_DP.dp)
+            )
+            .padding(horizontal = TEXT_BADGE_HORIZONTAL_PADDING_DP.dp)
+    )
+}
+
 @Composable
 private fun MediaQualityOptionButton(highQuality: Boolean, onHighQualityChange: (Boolean) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
@@ -284,16 +312,14 @@ private fun MediaQualityOptionButton(highQuality: Boolean, onHighQualityChange: 
             label = stringResource(
                 if (highQuality) R.string.nc_media_quality_original else R.string.nc_media_quality_reduced
             ),
-            icon = painterResource(
-                if (highQuality) R.drawable.high_quality_24px else R.drawable.high_quality_off_24px
-            ),
             isDefault = !highQuality,
-            onClick = { expanded = true }
+            onClick = { expanded = true },
+            icon = { TextBadge(if (highQuality) "HD" else "SD") }
         )
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.nc_media_quality_original)) },
-                leadingIcon = { Icon(painterResource(R.drawable.high_quality_24px), contentDescription = null) },
+                leadingIcon = { TextBadge("HD") },
                 trailingIcon = { if (highQuality) Icon(Icons.Filled.Check, contentDescription = null) },
                 onClick = {
                     onHighQualityChange(true)
@@ -302,7 +328,7 @@ private fun MediaQualityOptionButton(highQuality: Boolean, onHighQualityChange: 
             )
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.nc_media_quality_reduced)) },
-                leadingIcon = { Icon(painterResource(R.drawable.high_quality_off_24px), contentDescription = null) },
+                leadingIcon = { TextBadge("SD") },
                 trailingIcon = { if (!highQuality) Icon(Icons.Filled.Check, contentDescription = null) },
                 onClick = {
                     onHighQualityChange(false)
@@ -322,14 +348,20 @@ private fun FilePermissionOptionButton(allowUpdate: Boolean, onAllowUpdateChange
             label = stringResource(
                 if (allowUpdate) R.string.nc_file_permission_editable else R.string.nc_file_permission_view_only
             ),
-            icon = painterResource(if (allowUpdate) R.drawable.edit_24px else R.drawable.lock_24px),
             isDefault = !allowUpdate,
-            onClick = { expanded = true }
+            onClick = { expanded = true },
+            icon = {
+                Icon(
+                    imageVector = if (allowUpdate) Icons.Filled.Edit else Icons.Filled.EditOff,
+                    contentDescription = null,
+                    modifier = Modifier.size(OPTION_BUTTON_ICON_SIZE_DP.dp)
+                )
+            }
         )
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.nc_file_permission_view_only)) },
-                leadingIcon = { Icon(painterResource(R.drawable.lock_24px), contentDescription = null) },
+                leadingIcon = { Icon(Icons.Filled.EditOff, contentDescription = null) },
                 trailingIcon = { if (!allowUpdate) Icon(Icons.Filled.Check, contentDescription = null) },
                 onClick = {
                     onAllowUpdateChange(false)
@@ -338,7 +370,7 @@ private fun FilePermissionOptionButton(allowUpdate: Boolean, onAllowUpdateChange
             )
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.nc_file_permission_editable)) },
-                leadingIcon = { Icon(painterResource(R.drawable.edit_24px), contentDescription = null) },
+                leadingIcon = { Icon(Icons.Filled.Edit, contentDescription = null) },
                 trailingIcon = { if (allowUpdate) Icon(Icons.Filled.Check, contentDescription = null) },
                 onClick = {
                     onAllowUpdateChange(true)
