@@ -330,7 +330,7 @@ dependencies {
     implementation("org.maplibre.compose:maplibre-compose-material3:0.14.0") {
         exclude(group = "org.maplibre.gl", module = "android-sdk")
     }
-    implementation("org.maplibre.gl:android-sdk-opengl:13.0.2")
+    implementation("org.maplibre.gl:android-sdk-opengl:13.6.0")
     implementation("fr.dudie:nominatim-api:3.4") {
         //noinspection DuplicatePlatformClasses
         exclude(group = "org.apache.httpcomponents", module = "httpclient")
