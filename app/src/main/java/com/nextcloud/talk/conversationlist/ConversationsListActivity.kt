@@ -1167,7 +1167,7 @@ class ConversationsListActivity : BaseActivity() {
             is ConversationOpsAction.Rename -> renameConversation(conversation)
             is ConversationOpsAction.ToggleArchive -> handleArchiving(conversation)
             is ConversationOpsAction.AddToHomeScreen -> addConversationToHomeScreen(conversation)
-            is ConversationOpsAction.Leave -> leaveConversation(conversation)
+            is ConversationOpsAction.Leave -> showLeaveConversationDialog(conversation)
             is ConversationOpsAction.Delete -> showDeleteConversationDialog(conversation)
             is ConversationOpsAction.ManageTags -> conversationTagsViewModel.setConversationForTagAssignment(
                 conversation
@@ -1221,6 +1221,29 @@ class ConversationsListActivity : BaseActivity() {
                 .newInstance(conversation.token!!, conversation.displayName!!)
                 .show(supportFragmentManager, RenameConversationDialogFragment::class.simpleName)
         }
+    }
+
+    private fun showLeaveConversationDialog(conversation: ConversationModel) {
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setIcon(
+                viewThemeUtils.dialog
+                    .colorMaterialAlertDialogIcon(context, R.drawable.ic_exit_to_app_black_24dp)
+            )
+            .setTitle(R.string.nc_leave)
+            .setMessage(R.string.nc_leave_conversation_warning)
+            .setPositiveButton(R.string.nc_leave) { _, _ ->
+                leaveConversation(conversation)
+            }
+            .setNegativeButton(R.string.nc_cancel) { _, _ ->
+            }
+
+        viewThemeUtils.dialog
+            .colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
     @SuppressLint("StringFormatInvalid")
