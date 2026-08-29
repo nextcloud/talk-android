@@ -312,7 +312,7 @@ dependencies {
     // Computer Vision - for background effects during video calls (gplay only; generic/F-Droid
     // build excludes this because it transitively pulls in com.google.firebase:firebase-encoders*
     // via datatransport, which F-Droid's APK scanner rejects)
-    "gplayImplementation"("com.google.mediapipe:tasks-vision:0.10.26")
+    "gplayImplementation"("com.google.mediapipe:tasks-vision:1.0.0")
     implementation("io.github.crow-misia.libyuv:libyuv-android:0.43.2")
 
     // Avatar picker
