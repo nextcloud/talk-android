@@ -327,7 +327,7 @@ dependencies {
     implementation("org.maplibre.compose:maplibre-compose:0.14.0") {
         exclude(group = "org.maplibre.gl", module = "android-sdk")
     }
-    implementation("org.maplibre.compose:maplibre-compose-material3:0.14.0") {
+    implementation("org.maplibre.compose:maplibre-compose-material3:0.15.0") {
         exclude(group = "org.maplibre.gl", module = "android-sdk")
     }
     implementation("org.maplibre.gl:android-sdk-opengl:13.0.2")
