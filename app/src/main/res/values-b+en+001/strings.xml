@@ -246,6 +246,8 @@
     <string name="nc_delete_now">Delete now</string>
     <string name="nc_deleted_user">User %1$s was removed</string>
     <string name="nc_demote">Demote from moderator</string>
+    <string name="nc_demote_owner_to_moderator">Demote from owner to moderator</string>
+    <string name="nc_demote_owner_to_participant">Demote from owner to participant</string>
     <string name="nc_description_record_voice">Record voice message</string>
     <string name="nc_description_send_message_button">Send message</string>
     <string name="nc_diagnosis_dialog_open_checklist">Open troubleshooting checklist</string>
@@ -287,6 +289,7 @@
     <string name="nc_federation_no_invitations">No pending invitations</string>
     <string name="nc_federation_pending_invitation_hint">You have pending invitations</string>
     <string name="nc_file_browser_back">Back</string>
+    <string name="nc_file_permission_editable">Editable</string>
     <string name="nc_file_storage_permission">Permission for file access is required</string>
     <string name="nc_filter">Filter conversations</string>
     <string name="nc_following_link">User following a public link</string>
@@ -323,6 +326,7 @@
     <string name="nc_invitations">Invitations</string>
     <string name="nc_join_open_conversations">Join open conversations</string>
     <string name="nc_keep">Keep</string>
+    <string name="nc_last_moderator_cannot_be_demoted">The last moderator of a conversation can not be demoted</string>
     <string name="nc_last_moderator_leaving_room_warning">You need to promote a new moderator before you can leave the conversation</string>
     <string name="nc_last_modified">%1$s | Last modified: %2$s</string>
     <string name="nc_leave">Leave conversation</string>
@@ -417,6 +421,7 @@
     <string name="nc_open_conversation_to_registered_users">Open conversation to registered users</string>
     <string name="nc_open_to_guest_app_users">Also open to guest app users</string>
     <string name="nc_owner">Owner</string>
+    <string name="nc_participant_type_change_failed">Could not change the type of the participant</string>
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Add participants</string>
     <string name="nc_password">Password</string>
@@ -432,6 +437,7 @@
     <string name="nc_plain_old_messages">Messages</string>
     <string name="nc_profile_personal_info_title">Personal Info</string>
     <string name="nc_promote">Promote to moderator</string>
+    <string name="nc_promote_to_owner">Promote to owner</string>
     <string name="nc_public_call_status">Public conversation</string>
     <string name="nc_push_disabled">Push notifications disabled</string>
     <string name="nc_push_notification_error">Sorry something went wrong, error is %1$s</string>

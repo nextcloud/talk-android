@@ -231,6 +231,7 @@
     <string name="nc_federation_no_invitations">Ingen ventende invitasjoner</string>
     <string name="nc_federation_pending_invitation_hint">Du har ventende invitasjoner</string>
     <string name="nc_file_browser_back">Tilbake</string>
+    <string name="nc_file_permission_editable">Kan redigeres</string>
     <string name="nc_file_storage_permission">Tillatelse til filtilgang kreves</string>
     <string name="nc_following_link">Bruker følger en offentlig lenke</string>
     <string name="nc_formatted_message_you">Du: %1$s</string>

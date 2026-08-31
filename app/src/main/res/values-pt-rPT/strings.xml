@@ -259,6 +259,7 @@
     <string name="nc_federation_invited_to_room">de %1$s em %2$s</string>
     <string name="nc_federation_no_invitations">Nenhum convite pendente</string>
     <string name="nc_file_browser_back">Anterior</string>
+    <string name="nc_file_permission_editable">Editável</string>
     <string name="nc_file_storage_permission">É necessária permissão para acesso aos arquivos</string>
     <string name="nc_filter">Filtrar conversas</string>
     <string name="nc_following_link">Utilizador a seguir uma hiperligação pública</string>

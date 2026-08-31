@@ -152,6 +152,7 @@
     <string name="nc_call_button_content_description_pip">Ava pilt-pildis vaade</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Näita oma videovaadet</string>
     <string name="nc_call_incoming">SAABUV</string>
+    <string name="nc_call_join_failed">Kõnega liitumine ei õnnestunud. Palun proovi uuesti.</string>
     <string name="nc_call_name">Vestluse nimi</string>
     <string name="nc_call_notifications">Kõne teavitus</string>
     <string name="nc_call_ongoing_notification_content">Klõpsa oma kõne juurde tagasi pöördumiseks.</string>
@@ -246,6 +247,8 @@
     <string name="nc_delete_now">Kustuta kohe</string>
     <string name="nc_deleted_user">Kasutaja „%1$s“ on eemaldatud</string>
     <string name="nc_demote">Võta ära moderaatori õigused</string>
+    <string name="nc_demote_owner_to_moderator">Muuda omanikust moderaatoriks</string>
+    <string name="nc_demote_owner_to_participant">Muuda omanikust tavaosalejaks</string>
     <string name="nc_description_record_voice">Salvesta häälsõnum</string>
     <string name="nc_description_send_message_button">Saada sõnum</string>
     <string name="nc_diagnosis_dialog_open_checklist">Ava veaotsingu kontrollnimekiri</string>
@@ -287,6 +290,8 @@
     <string name="nc_federation_no_invitations">Ootel kutseid pole</string>
     <string name="nc_federation_pending_invitation_hint">Sul on ootel kutseid</string>
     <string name="nc_file_browser_back">Tagasi</string>
+    <string name="nc_file_permission_editable">Muudetav</string>
+    <string name="nc_file_permission_view_only">Ainult vaatamiseks</string>
     <string name="nc_file_storage_permission">Vajalikud on õigused ligipääsuks failile</string>
     <string name="nc_filter">Filtreeri vestlusi</string>
     <string name="nc_following_link">Kasutaja, kes järgnes avalikule lingile</string>
@@ -323,6 +328,7 @@
     <string name="nc_invitations">Kutsed</string>
     <string name="nc_join_open_conversations">Liitu avalike vestlustega</string>
     <string name="nc_keep">Hoia alles</string>
+    <string name="nc_last_moderator_cannot_be_demoted">Vestluse viimase moderaatori õiguste vähendamine pole võimalik</string>
     <string name="nc_last_moderator_leaving_room_warning">Pead määrama uue moderaatori enne, kui saad siit vestlusest lahkuda</string>
     <string name="nc_last_modified">%1$s | Viimati muudetud: %2$s</string>
     <string name="nc_leave">Lahku vestlusest</string>
@@ -417,6 +423,7 @@
     <string name="nc_open_conversation_to_registered_users">Ava vestlus registreeritud kasutajatele</string>
     <string name="nc_open_to_guest_app_users">Lisaks ava ka rakenduse külaliskasutajatele</string>
     <string name="nc_owner">Omanik</string>
+    <string name="nc_participant_type_change_failed">Seda rolli ei õnnestunud muuta tavakasutajaks</string>
     <string name="nc_participants">Osalejad</string>
     <string name="nc_participants_add">Lisa osalejaid</string>
     <string name="nc_password">Salasõna</string>
@@ -432,6 +439,7 @@
     <string name="nc_plain_old_messages">Sõnumid</string>
     <string name="nc_profile_personal_info_title">Isiklik teave</string>
     <string name="nc_promote">Määra moderaatoriks</string>
+    <string name="nc_promote_to_owner">Muuda omanikuks</string>
     <string name="nc_public_call_status">Avalik vestlus</string>
     <string name="nc_push_disabled">Tõuketeavitused pole kasutusel</string>
     <string name="nc_push_notification_error">Vabandust, midagi läks valesti, veateade on: %1$s</string>

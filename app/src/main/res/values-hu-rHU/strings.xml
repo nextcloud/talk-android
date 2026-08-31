@@ -269,6 +269,7 @@
     <string name="nc_federation_no_invitations">Nincs függőben lévő meghívás</string>
     <string name="nc_federation_pending_invitation_hint">Függőben lévő meghívásai vannak</string>
     <string name="nc_file_browser_back">Vissza</string>
+    <string name="nc_file_permission_editable">Szerkeszthető</string>
     <string name="nc_file_storage_permission">Fájlelérési jogosultság szükséges</string>
     <string name="nc_filter">Beszélgetések szűrése</string>
     <string name="nc_following_link">Nyilvános hivatkozást használó felhasználó</string>

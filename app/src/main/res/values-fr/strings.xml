@@ -136,8 +136,10 @@
     <string name="nc_add_participants">Ajouter des participants</string>
     <string name="nc_add_to_favorites">Ajouter aux favoris</string>
     <string name="nc_add_to_home_screen">Ajouter à l\'écran d\'accueil</string>
+    <string name="nc_admin_only">Administrateurs uniquement</string>
     <string name="nc_all_ok_operation">OK, tout est fini !</string>
     <string name="nc_announcement">Annonce</string>
+    <string name="nc_announcement_description">Conversation pour les administrateurs, destinée à informer une audience fixe, qui ne peut pas être quittée.</string>
     <string name="nc_attendee_pin">Épingler : %1$s</string>
     <string name="nc_biometric_unlock">Déverrouiller %1$s</string>
     <string name="nc_bluetooth_permission_hint">Pour activer les écouteurs Bluetooth, merci de donner la permission « Appareils à proximité ».</string>
@@ -150,6 +152,7 @@
     <string name="nc_call_button_content_description_pip">Lancer le mode Image dans l\'Image</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Basculer mode selfie</string>
     <string name="nc_call_incoming">ENTRANT</string>
+    <string name="nc_call_join_failed">Impossible de rejoindre l\'appel. Veuillez réessayer.</string>
     <string name="nc_call_name">Nom de la conversation</string>
     <string name="nc_call_notifications">Notifications d\'appel</string>
     <string name="nc_call_ongoing_notification_content">Appuyez pour revenir à votre appel.</string>
@@ -174,6 +177,8 @@
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
     <string name="nc_change_password">Changer son mot de passe</string>
     <string name="nc_channel">Canal</string>
+    <string name="nc_channel_description">Seuls les modérateurs peuvent poster, les autres ne peuvent que réagir</string>
+    <string name="nc_channel_only_moderators_can_post">Seuls les modérateurs peuvent poster dans ce canal</string>
     <string name="nc_chat_no_messages">Pas encore de message. Soyez le premier à dire salut !</string>
     <string name="nc_classified_conversation">Conversation classifiée</string>
     <string name="nc_clear_edit_button">Annuler la modification</string>
@@ -242,6 +247,8 @@
     <string name="nc_delete_now">Supprimer maintenant</string>
     <string name="nc_deleted_user">L\'utilisateur %1$s a été supprimé</string>
     <string name="nc_demote">Retirer le statut de modérateur</string>
+    <string name="nc_demote_owner_to_moderator">Rétrograder de propriétaire à modérateur</string>
+    <string name="nc_demote_owner_to_participant">Rétrograder de propriétaire à participant</string>
     <string name="nc_description_record_voice">Enregistrer un message vocal</string>
     <string name="nc_description_send_message_button">Envoyer un message</string>
     <string name="nc_diagnosis_dialog_open_checklist">Ouvrir la liste de vérifications des erreurs communes</string>
@@ -283,6 +290,8 @@
     <string name="nc_federation_no_invitations">Aucune invitation en attente</string>
     <string name="nc_federation_pending_invitation_hint">Vous avez des invitations en attente</string>
     <string name="nc_file_browser_back">Retour</string>
+    <string name="nc_file_permission_editable">Modifiable</string>
+    <string name="nc_file_permission_view_only">Visualisation seule</string>
     <string name="nc_file_storage_permission">La permission d\'accès aux fichiers est requise</string>
     <string name="nc_filter">Filtrer les conversations</string>
     <string name="nc_following_link">Utilisateur suivant un lien public</string>
@@ -319,6 +328,7 @@
     <string name="nc_invitations">Invitations</string>
     <string name="nc_join_open_conversations">Rejoindre des conversations ouvertes</string>
     <string name="nc_keep">Conserver</string>
+    <string name="nc_last_moderator_cannot_be_demoted">Le dernier modérateur d’une conversation ne peut pas perdre son rôle de modérateur</string>
     <string name="nc_last_moderator_leaving_room_warning">Vous devez promouvoir un nouveau modérateur avant de pouvoir quitter la conversation.</string>
     <string name="nc_last_modified">%1$s | Dernière modification : %2$s</string>
     <string name="nc_leave">Quitter la conversation</string>
@@ -413,6 +423,7 @@
     <string name="nc_open_conversation_to_registered_users">Ouvrir la conversation aux utilisateurs enregistrés</string>
     <string name="nc_open_to_guest_app_users">Également ouvert aux utilisateurs invités de l\'application</string>
     <string name="nc_owner">Propriétaire</string>
+    <string name="nc_participant_type_change_failed">Impossible de modifier le type du participant</string>
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Ajouter des participants</string>
     <string name="nc_password">Mot de passe</string>
@@ -428,6 +439,7 @@
     <string name="nc_plain_old_messages">Messages</string>
     <string name="nc_profile_personal_info_title">Informations personnelles</string>
     <string name="nc_promote">Promouvoir comme modérateur</string>
+    <string name="nc_promote_to_owner">Promouvoir comme propriétaire</string>
     <string name="nc_public_call_status">Conversation publique</string>
     <string name="nc_push_disabled">Notifications push désactivées</string>
     <string name="nc_push_notification_error">Désolé, quelque chose s\'est mal passé, l\'erreur est %1$s</string>

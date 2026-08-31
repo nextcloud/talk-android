@@ -255,6 +255,7 @@
     <string name="nc_federation_no_invitations">Sin invitaciones pendientes</string>
     <string name="nc_federation_pending_invitation_hint">Tiene invitaciones pendientes</string>
     <string name="nc_file_browser_back">Volver</string>
+    <string name="nc_file_permission_editable">Editable</string>
     <string name="nc_file_storage_permission">Se requieren permisos para acceso a archivos</string>
     <string name="nc_filter">Filtrar conversaciones</string>
     <string name="nc_following_link">Usuario que sigue un enlace público</string>

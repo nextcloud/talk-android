@@ -250,6 +250,7 @@
     <string name="nc_federation_no_invitations">Немає очікуваних запрошень</string>
     <string name="nc_federation_pending_invitation_hint">У вас є очікувані запрошення</string>
     <string name="nc_file_browser_back">Назад</string>
+    <string name="nc_file_permission_editable">Редагувати</string>
     <string name="nc_file_storage_permission">Потрібен дозвіл на доступ до файлів</string>
     <string name="nc_filter">Фільтрувати розмови</string>
     <string name="nc_following_link">Користувач, який увійшов за посиланням</string>

@@ -252,6 +252,7 @@
     <string name="nc_federation_no_invitations">Нема позивница на чекању</string>
     <string name="nc_federation_pending_invitation_hint">Имате позивнице на чекању</string>
     <string name="nc_file_browser_back">Назад</string>
+    <string name="nc_file_permission_editable">Може да се уређује</string>
     <string name="nc_file_storage_permission">Потребна је дозвола за приступ фајлу</string>
     <string name="nc_filter">Филтрирај разговоре</string>
     <string name="nc_following_link">Корисник који је пратио јавну везу</string>

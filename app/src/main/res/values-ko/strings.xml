@@ -181,6 +181,7 @@
     <string name="nc_federation_invitation_accept">수락</string>
     <string name="nc_federation_invitation_reject">거부</string>
     <string name="nc_file_browser_back">뒤로</string>
+    <string name="nc_file_permission_editable">수정 가능</string>
     <string name="nc_following_link">공개 링크를 따르는 사용자</string>
     <string name="nc_formatted_message_you">나: %1$s</string>
     <string name="nc_forward_message">전달</string>
