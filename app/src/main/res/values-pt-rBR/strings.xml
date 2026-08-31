@@ -152,6 +152,7 @@
     <string name="nc_call_button_content_description_pip">Abrir modo imagem-em-imagem</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Mudar para próprio vídeo</string>
     <string name="nc_call_incoming">ENTRADA </string>
+    <string name="nc_call_join_failed">Não foi possível entrar na chamada. Por favor, tente novamente.</string>
     <string name="nc_call_name">Nome de conversação</string>
     <string name="nc_call_notifications">Notificações de chamadas </string>
     <string name="nc_call_ongoing_notification_content">Toque para voltar à sua chamada.</string>
@@ -246,6 +247,8 @@
     <string name="nc_delete_now">Excluir agora</string>
     <string name="nc_deleted_user">Usuário %1$s foi removido</string>
     <string name="nc_demote">Rebaixar de moderador</string>
+    <string name="nc_demote_owner_to_moderator">Rebaixar de proprietário para moderador</string>
+    <string name="nc_demote_owner_to_participant">Rebaixar de proprietário para participante</string>
     <string name="nc_description_record_voice">Gravar mensagem de voz</string>
     <string name="nc_description_send_message_button">Enviar mensagem</string>
     <string name="nc_diagnosis_dialog_open_checklist">Abrir lista de verificação de solução de problemas</string>
@@ -287,6 +290,8 @@
     <string name="nc_federation_no_invitations">Nenhum convite pendente</string>
     <string name="nc_federation_pending_invitation_hint">Você tem convites pendentes</string>
     <string name="nc_file_browser_back">Voltar</string>
+    <string name="nc_file_permission_editable">Editável</string>
+    <string name="nc_file_permission_view_only">Somente visualização</string>
     <string name="nc_file_storage_permission">É necessária permissão para acesso aos arquivos</string>
     <string name="nc_filter">Filtrar conversas</string>
     <string name="nc_following_link">Usuário seguindo um link público</string>
@@ -323,6 +328,7 @@
     <string name="nc_invitations">Convites</string>
     <string name="nc_join_open_conversations">Entrar em conversas abertas</string>
     <string name="nc_keep">Manter</string>
+    <string name="nc_last_moderator_cannot_be_demoted">O último moderador de uma conversa não pode ser rebaixado</string>
     <string name="nc_last_moderator_leaving_room_warning">Você precisa promover um novo moderador antes de sair da conversa</string>
     <string name="nc_last_modified">%1$s | Modificado recentemente: %2$s</string>
     <string name="nc_leave">Sair da conversa</string>
@@ -417,6 +423,7 @@
     <string name="nc_open_conversation_to_registered_users">Abrir conversa a usuários registrados</string>
     <string name="nc_open_to_guest_app_users">Também abrir a usuários do aplicativo Visitantes</string>
     <string name="nc_owner">Proprietário</string>
+    <string name="nc_participant_type_change_failed">Não foi possível alterar o tipo do participante</string>
     <string name="nc_participants">Participantes</string>
     <string name="nc_participants_add">Adicionar participantes</string>
     <string name="nc_password">Senha</string>
@@ -432,6 +439,7 @@
     <string name="nc_plain_old_messages">Mensagens</string>
     <string name="nc_profile_personal_info_title">Informações Pessoais</string>
     <string name="nc_promote">Promover a moderador</string>
+    <string name="nc_promote_to_owner">Promover a proprietário</string>
     <string name="nc_public_call_status">Conversa pública</string>
     <string name="nc_push_disabled">Notificações push desativadas</string>
     <string name="nc_push_notification_error">Desculpe, algo deu errado. O erro é %1$s.</string>

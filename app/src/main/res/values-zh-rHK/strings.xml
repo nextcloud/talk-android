@@ -246,6 +246,8 @@
     <string name="nc_delete_now">立刻刪除</string>
     <string name="nc_deleted_user">用户 %1$s 已被移除</string>
     <string name="nc_demote">從主持人降級</string>
+    <string name="nc_demote_owner_to_moderator">從擁有者降級為主持人</string>
+    <string name="nc_demote_owner_to_participant">從擁有者降級為參與者</string>
     <string name="nc_description_record_voice">錄製話音短訊</string>
     <string name="nc_description_send_message_button">傳送訊息</string>
     <string name="nc_diagnosis_dialog_open_checklist">打開排憂解難清單：</string>
@@ -287,6 +289,7 @@
     <string name="nc_federation_no_invitations">沒有擱置的邀請</string>
     <string name="nc_federation_pending_invitation_hint">您有擱置的邀請</string>
     <string name="nc_file_browser_back">返回</string>
+    <string name="nc_file_permission_editable">可編輯</string>
     <string name="nc_file_storage_permission">需要檔案存取權限</string>
     <string name="nc_filter">篩選對話</string>
     <string name="nc_following_link">用戶關注公共連結</string>
@@ -323,6 +326,7 @@
     <string name="nc_invitations">邀請</string>
     <string name="nc_join_open_conversations">加入公開對話</string>
     <string name="nc_keep">保留</string>
+    <string name="nc_last_moderator_cannot_be_demoted">無法將對話中的最後一名主持人降級</string>
     <string name="nc_last_moderator_leaving_room_warning">在您離開對話之前您需要推舉一位新的主持人</string>
     <string name="nc_last_modified">%1$s | 上次修改時間：%2$s</string>
     <string name="nc_leave">結束對話</string>
@@ -417,6 +421,7 @@
     <string name="nc_open_conversation_to_registered_users">開放對話與註冊用戶</string>
     <string name="nc_open_to_guest_app_users">也向使用應用程式的來賓用戶開放</string>
     <string name="nc_owner">擁有者</string>
+    <string name="nc_participant_type_change_failed">無法更改參與者類型</string>
     <string name="nc_participants">參與者</string>
     <string name="nc_participants_add">添加參與者</string>
     <string name="nc_password">密碼</string>
@@ -432,6 +437,7 @@
     <string name="nc_plain_old_messages">訊息</string>
     <string name="nc_profile_personal_info_title">個人資訊</string>
     <string name="nc_promote">晉升為主持人</string>
+    <string name="nc_promote_to_owner">提升為擁有者</string>
     <string name="nc_public_call_status">公開對話</string>
     <string name="nc_push_disabled">取消推送通知</string>
     <string name="nc_push_notification_error">抱歉，發生了一點問題，錯誤為 %1$s</string>

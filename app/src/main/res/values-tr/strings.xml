@@ -53,7 +53,7 @@
     <string name="danger_zone">Tehlikeli bölge</string>
     <string name="deck_card_description">%1$s, %2$s içinde</string>
     <string name="default_room">Varsayılan</string>
-    <string name="default_room_preset">İletiler gönderin, konular oluşturun ve sesli veya görüntülü görüşmeler yapın</string>
+    <string name="default_room_preset">İletiler gönderin, yazışmalar oluşturun ve sesli veya görüntülü görüşmeler yapın</string>
     <string name="delete_avatar">Avatarı sil</string>
     <string name="delete_voice_recording">Ses kaydını sil</string>
     <string name="deleted_conversation">%1$s görüşmesi silindi</string>
@@ -152,6 +152,7 @@
     <string name="nc_call_button_content_description_pip">Resim içinde resim kipini aç</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Benim görüntüme geç</string>
     <string name="nc_call_incoming">GELEN</string>
+    <string name="nc_call_join_failed">Çağrıya katılınamadı. Lütfen yeniden deneyin.</string>
     <string name="nc_call_name">Görüşme adı</string>
     <string name="nc_call_notifications">Çağrı bildirimleri</string>
     <string name="nc_call_ongoing_notification_content">Çağrıya dönmek için Geri dön üzerine dokunun.</string>
@@ -246,6 +247,8 @@
     <string name="nc_delete_now">Şimdi sil</string>
     <string name="nc_deleted_user">%1$s kullanıcısı kaldırıldı</string>
     <string name="nc_demote">Sorumluluktan çıkar</string>
+    <string name="nc_demote_owner_to_moderator">Sahiplikten sorumluluğa düşür</string>
+    <string name="nc_demote_owner_to_participant">Sahiplikten katılımcılığa düşür</string>
     <string name="nc_description_record_voice">Ses iletisi kaydet</string>
     <string name="nc_description_send_message_button">İleti gönder</string>
     <string name="nc_diagnosis_dialog_open_checklist">Sorun çözme kontrol listesini aç</string>
@@ -287,6 +290,8 @@
     <string name="nc_federation_no_invitations">Bekleyen bir davet yok</string>
     <string name="nc_federation_pending_invitation_hint">Bekleyen davetleriniz var</string>
     <string name="nc_file_browser_back">Geri</string>
+    <string name="nc_file_permission_editable">Düzenlenebilir</string>
+    <string name="nc_file_permission_view_only">Yalnızca görüntülenebilir</string>
     <string name="nc_file_storage_permission">Dosyalara erişme izni gereklidir</string>
     <string name="nc_filter">Görüşmeleri süz</string>
     <string name="nc_following_link">Herkese açık bir bağlantıyı izleyen kullanıcı</string>
@@ -323,6 +328,7 @@
     <string name="nc_invitations">Davetler</string>
     <string name="nc_join_open_conversations">Açık görüşmelere katıl</string>
     <string name="nc_keep">Tut</string>
+    <string name="nc_last_moderator_cannot_be_demoted">Bir görüşmedeki son sorumlunun yetkisi kaldırılamaz</string>
     <string name="nc_last_moderator_leaving_room_warning">Görüşmeden çıkmadan önce başka bir kullanıcıyı sorumluluğa yükseltmelisiniz</string>
     <string name="nc_last_modified">%1$s | Son değişiklik: %2$s</string>
     <string name="nc_leave">Görüşmeden çık</string>
@@ -417,6 +423,7 @@
     <string name="nc_open_conversation_to_registered_users">Görüşmeyi kayıtlı kullanıcılara aç</string>
     <string name="nc_open_to_guest_app_users">Ayrıca konuk uygulama kullanıcılarına da açılsın</string>
     <string name="nc_owner">Sahip</string>
+    <string name="nc_participant_type_change_failed">Katılımcının türü değiştirilemedi</string>
     <string name="nc_participants">Katılımcılar</string>
     <string name="nc_participants_add">Katılımcı ekle</string>
     <string name="nc_password">Parola</string>
@@ -432,6 +439,7 @@
     <string name="nc_plain_old_messages">İletiler</string>
     <string name="nc_profile_personal_info_title">Kişisel bilgiler</string>
     <string name="nc_promote">Sorumluluğa yükselt</string>
+    <string name="nc_promote_to_owner">Sahipliğe yükselt</string>
     <string name="nc_public_call_status">Herkese açık görüşme</string>
     <string name="nc_push_disabled">Anında bildirimler kapalı</string>
     <string name="nc_push_notification_error">Ne yazık ki bir sorun çıktı. Hata: %1$s</string>
@@ -450,7 +458,7 @@
     <string name="nc_rename_confirm">Yeniden adlandır</string>
     <string name="nc_reply">Yanıtla</string>
     <string name="nc_reply_privately">Kişisel yanıt gönder</string>
-    <string name="nc_reply_to_thread">Şu konuya yanıt: %1$s</string>
+    <string name="nc_reply_to_thread">Şu yazışmaya yanıt: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Bildirim ile yeniden zamanla</string>
     <string name="nc_reschedule_message_without_notification">Bildirim olmadan yeniden zamanla</string>
     <string name="nc_room_retention">Oda tutuldu</string>
@@ -461,7 +469,7 @@
     <string name="nc_schedule_message_without_notification">Bildirim olmadan daha sonra gönder</string>
     <string name="nc_scheduled_messages">Zamanlanmış iletiler</string>
     <string name="nc_scheduled_messages_empty">Zamanlanmış bir ileti yok</string>
-    <string name="nc_scheduled_thread">Zamanlanmış konu</string>
+    <string name="nc_scheduled_thread">Zamanlanmış yazışma</string>
     <string name="nc_scheduled_time">Zamanlama</string>
     <string name="nc_screen_lock_timeout_30">30 saniye</string>
     <string name="nc_screen_lock_timeout_300">5 dakika</string>
@@ -490,7 +498,7 @@
     <string name="nc_sent_an_audio_you">Bir ses gönderdiniz.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s bir görsel gönderdi.</string>
     <string name="nc_sent_an_image_you">Bir görsel gönderdiniz.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s bir tahta kartı gönderdi</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s bir Deste kartı gönderdi</string>
     <string name="nc_server_connect">Sunucu bağlantısını sına</string>
     <string name="nc_server_db_upgrade_needed">Lütfen %1$s veri tabanınızı güncelleyin</string>
     <string name="nc_server_failed_to_import_account">Seçilmiş hesap içe aktarılamadı</string>
@@ -582,14 +590,14 @@
     <string name="nc_share_this_location">Bu konumu paylaş</string>
     <string name="nc_share_to_choose_account">Hesap seçin</string>
     <string name="nc_shared_items">Paylaşılmış ögeler</string>
-    <string name="nc_shared_items_deck_card">Tahta kartı</string>
+    <string name="nc_shared_items_deck_card">Deste kartı</string>
     <string name="nc_shared_items_description">Görseller, dosyalar, ses iletileri…</string>
     <string name="nc_shared_items_empty">Paylaşılmış bir öge yok</string>
     <string name="nc_shared_items_location">Konum</string>
     <string name="nc_shared_location">Paylaşılan konum</string>
     <string name="nc_shortcut_conversation_deleted">Bu yazışma artık yok</string>
     <string name="nc_shortcut_created">Kısayol oluşturuldu</string>
-    <string name="nc_show_ecosystem_description">Hesap seçme penceresinde Nextcloud uygulamaları önerileri</string>
+    <string name="nc_show_ecosystem_description">Hesap seçme iletişim kutusunda Nextcloud uygulamaları önerileri</string>
     <string name="nc_show_ecosystem_title">Uygulama değiştiriciyi görüntüle</string>
     <string name="nc_show_notification_warning_description">Bildirimler doğru olarak ayarlanmamışsa standart uyarı görüntülensin</string>
     <string name="nc_show_notification_warning_title">Standart uyarı bildirimi görüntülensin</string>

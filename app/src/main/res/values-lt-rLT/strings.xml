@@ -246,6 +246,8 @@
     <string name="nc_delete_now">Ištrinti dabar</string>
     <string name="nc_deleted_user">%1$s vartotojas buvo pašalintas</string>
     <string name="nc_demote">Pašalinti iš moderatorių</string>
+    <string name="nc_demote_owner_to_moderator">Pakeisti statusą iš savininko į moderatorių</string>
+    <string name="nc_demote_owner_to_participant">Pakeisti statusą iš savininko į dalyvį</string>
     <string name="nc_description_record_voice">Įrašyti balso pranešimą</string>
     <string name="nc_description_send_message_button">Siųsti žinutę</string>
     <string name="nc_diagnosis_dialog_open_checklist">Atidaryti trikčių šalinimo kontrolinį sąrašą</string>
@@ -287,6 +289,7 @@
     <string name="nc_federation_no_invitations">Nėra laukiančių kvietimų</string>
     <string name="nc_federation_pending_invitation_hint">Turite laukiančių kvietimų</string>
     <string name="nc_file_browser_back">Atgal</string>
+    <string name="nc_file_permission_editable">Redaguotina</string>
     <string name="nc_file_storage_permission">Reikalingas leidimas pasiekti failus</string>
     <string name="nc_filter">Filtruoti pokalbius</string>
     <string name="nc_following_link">Vartotojas seka viešą nuorodą</string>
@@ -323,6 +326,7 @@
     <string name="nc_invitations">Pakvietimai</string>
     <string name="nc_join_open_conversations">Prisijungti prie atvirų pokalbių</string>
     <string name="nc_keep">Palikti</string>
+    <string name="nc_last_moderator_cannot_be_demoted">Paskutinio pokalbio moderatoriaus statuso negalima pažeminti</string>
     <string name="nc_last_moderator_leaving_room_warning">Prieš išeidami iš pokalbio turite paskirti naują moderatorių</string>
     <string name="nc_last_modified">%1$s | Paskutinį kartą modifikuota: %2$s</string>
     <string name="nc_leave">Išeiti iš pokalbio</string>
@@ -417,6 +421,7 @@
     <string name="nc_open_conversation_to_registered_users">Atviras pokalbis registruotiems vartotojams</string>
     <string name="nc_open_to_guest_app_users">Taip pat prieinama svečių programėlės vartotojams</string>
     <string name="nc_owner">Savininkas</string>
+    <string name="nc_participant_type_change_failed">Nepavyko pakeisti dalyvio tipo</string>
     <string name="nc_participants">Dalyviai</string>
     <string name="nc_participants_add">Pridėti dalyvius</string>
     <string name="nc_password">Slaptažodis</string>
@@ -432,6 +437,7 @@
     <string name="nc_plain_old_messages">Žinutės</string>
     <string name="nc_profile_personal_info_title">Asmeninė informacija</string>
     <string name="nc_promote">Paaukštinti į moderatorius</string>
+    <string name="nc_promote_to_owner">Priskirti būti savininku</string>
     <string name="nc_public_call_status">Viešas pokalbis</string>
     <string name="nc_push_disabled">Tiesioginiai pranešimai yra išjungti</string>
     <string name="nc_push_notification_error">Atsiprašome, įvyko klaida, klaida - %1$s </string>

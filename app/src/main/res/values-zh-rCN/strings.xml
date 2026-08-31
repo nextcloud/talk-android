@@ -212,6 +212,7 @@
     <string name="nc_federation_invitation_reject">拒绝</string>
     <string name="nc_federation_no_invitations">没有待处理的邀请</string>
     <string name="nc_file_browser_back">返回</string>
+    <string name="nc_file_permission_editable">可编辑</string>
     <string name="nc_file_storage_permission">需要文件访问权限</string>
     <string name="nc_following_link">使用公共链接的用户</string>
     <string name="nc_formatted_message_you">您：%1$s</string>

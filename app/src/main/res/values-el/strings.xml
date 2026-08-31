@@ -182,6 +182,7 @@
     <string name="nc_federation_invitation_reject">Απόρριψη</string>
     <string name="nc_federation_no_invitations">Δεν υπάρχουν εκκρεμείς προσκλήσεις</string>
     <string name="nc_file_browser_back">Πίσω</string>
+    <string name="nc_file_permission_editable">Επεξεργάσιμο</string>
     <string name="nc_following_link">Χρήστης από δημόσιο σύνδεσμο</string>
     <string name="nc_formatted_message_you">Εσείς: %1$s</string>
     <string name="nc_forward_message">Προώθηση</string>

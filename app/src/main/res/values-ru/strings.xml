@@ -230,6 +230,8 @@
     <string name="nc_delete_now">Удалить сейчас</string>
     <string name="nc_deleted_user">Пользователь %1$s был удален</string>
     <string name="nc_demote">Исключить из модераторов</string>
+    <string name="nc_demote_owner_to_moderator">Понизить с владельца до модератора</string>
+    <string name="nc_demote_owner_to_participant">Понизить с владельца до участника</string>
     <string name="nc_description_record_voice">Запись голосового сообщения</string>
     <string name="nc_description_send_message_button">Отправить сообщение</string>
     <string name="nc_diagnosis_dialog_open_checklist">Открыть контрольный список устранения неполадок</string>
@@ -271,6 +273,7 @@
     <string name="nc_federation_no_invitations">Нет ожидающих приглашений</string>
     <string name="nc_federation_pending_invitation_hint">У вас есть ожидающие приглашения</string>
     <string name="nc_file_browser_back">Назад</string>
+    <string name="nc_file_permission_editable">Редактируемый</string>
     <string name="nc_file_storage_permission">Требуется разрешение на доступ к файлу</string>
     <string name="nc_filter">Фильтровать обсуждения</string>
     <string name="nc_following_link">Пользователь, вошедший по публичной ссылке</string>
@@ -305,6 +308,7 @@
     <string name="nc_invitations">Приглашения</string>
     <string name="nc_join_open_conversations">Присоединиться к открытым обсуждениям</string>
     <string name="nc_keep">Сохранить</string>
+    <string name="nc_last_moderator_cannot_be_demoted">Последний модератор в обсуждении не может быть исключен</string>
     <string name="nc_last_moderator_leaving_room_warning">Вам нужно назначить нового модератора перед тем, как покинуть обсуждение</string>
     <string name="nc_last_modified">%1$s | Последнее изменение: %2$s</string>
     <string name="nc_leave">Покинуть обсуждение</string>
@@ -378,6 +382,7 @@
     <string name="nc_open_conversation_to_registered_users">Открыть обсуждение для зарегистрированных пользователей</string>
     <string name="nc_open_to_guest_app_users">Открыть для гостей</string>
     <string name="nc_owner">Владелец</string>
+    <string name="nc_participant_type_change_failed">Не удалось изменить роль для участника</string>
     <string name="nc_participants">Участники</string>
     <string name="nc_participants_add">Добавить участников</string>
     <string name="nc_password">Пароль</string>
@@ -393,6 +398,7 @@
     <string name="nc_plain_old_messages">Сообщения</string>
     <string name="nc_profile_personal_info_title">Личная информация</string>
     <string name="nc_promote">Назначить модератором</string>
+    <string name="nc_promote_to_owner">Сделать владельцем</string>
     <string name="nc_public_call_status">Открытое обсуждение</string>
     <string name="nc_push_disabled">Всплывающие уведомления отключены</string>
     <string name="nc_push_notification_error">Что-то пошло не так, ошибка %1$s</string>

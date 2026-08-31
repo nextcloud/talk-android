@@ -152,6 +152,7 @@
     <string name="nc_call_button_content_description_pip">Bild-in-Bild-Modus öffnen</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Wechseln Sie zum Eigenen Video</string>
     <string name="nc_call_incoming">EINGEHEND</string>
+    <string name="nc_call_join_failed">Konnte dem Anruf nicht beitreten. Bitte erneut versuchen.</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
     <string name="nc_call_notifications">Anrufbenachrichtigungen</string>
     <string name="nc_call_ongoing_notification_content">Tippen um zum Anruf zurückzukehren</string>
@@ -246,6 +247,8 @@
     <string name="nc_delete_now">Jetzt löschen</string>
     <string name="nc_deleted_user">Benutzer %1$s wurde entfernt</string>
     <string name="nc_demote">Moderator absetzen</string>
+    <string name="nc_demote_owner_to_moderator">Vom Besitzer zum Moderator ändern</string>
+    <string name="nc_demote_owner_to_participant">Von Besitzer zu Teilnehmer ändern</string>
     <string name="nc_description_record_voice">Sprachnachricht aufnehmen</string>
     <string name="nc_description_send_message_button">Nachricht senden</string>
     <string name="nc_diagnosis_dialog_open_checklist">Checkliste zur Fehlerbehebung öffnen</string>
@@ -287,6 +290,8 @@
     <string name="nc_federation_no_invitations">Keine ausstehenden Einladungen</string>
     <string name="nc_federation_pending_invitation_hint">Sie haben ausstehende Einladungen</string>
     <string name="nc_file_browser_back">Zurück</string>
+    <string name="nc_file_permission_editable">Bearbeitbar</string>
+    <string name="nc_file_permission_view_only">Nur anzeigen</string>
     <string name="nc_file_storage_permission">Erlaubnis für Dateizugriff ist erforderlich</string>
     <string name="nc_filter">Unterhaltungen filtern</string>
     <string name="nc_following_link">Benutzer kommt von einem öffentlichen Link</string>
@@ -323,6 +328,7 @@
     <string name="nc_invitations">Einladungen</string>
     <string name="nc_join_open_conversations">Offenen Unterhaltungen beitreten</string>
     <string name="nc_keep">Behalten</string>
+    <string name="nc_last_moderator_cannot_be_demoted">Eine Person muss Moderationsrechte behalten</string>
     <string name="nc_last_moderator_leaving_room_warning">Sie müssen einen neuen Moderator bestimmen, bevor Sie die Unterhaltung verlassen können.</string>
     <string name="nc_last_modified">%1$s | Zuletzt geändert: %2$s</string>
     <string name="nc_leave">Unterhaltung verlassen</string>
@@ -417,6 +423,7 @@
     <string name="nc_open_conversation_to_registered_users">Unterhaltung für registrierte Benutzer öffnen</string>
     <string name="nc_open_to_guest_app_users">Auch für Gast-App-Benutzer öffnen</string>
     <string name="nc_owner">Besitzer</string>
+    <string name="nc_participant_type_change_failed">Typ des Teilnehmers konnte nicht geändert werden</string>
     <string name="nc_participants">Teilnehmer</string>
     <string name="nc_participants_add">Teilnehmer hinzufügen</string>
     <string name="nc_password">Passwort</string>
@@ -432,6 +439,7 @@
     <string name="nc_plain_old_messages">Nachrichten</string>
     <string name="nc_profile_personal_info_title">Persönliche Informationen</string>
     <string name="nc_promote">Zum Moderator ernennen</string>
+    <string name="nc_promote_to_owner">Zum Besitzer ernennen</string>
     <string name="nc_public_call_status">Öffentliche Unterhaltung</string>
     <string name="nc_push_disabled">Push-Benachrichtigungen sind deaktiviert</string>
     <string name="nc_push_notification_error">Leider ist etwas schief gelaufen, der Fehler ist %1$s</string>

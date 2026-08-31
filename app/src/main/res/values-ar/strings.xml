@@ -237,6 +237,7 @@
     <string name="nc_federation_no_invitations">لا توجد دعوات معلقة</string>
     <string name="nc_federation_pending_invitation_hint">لديك دعوات معلقة</string>
     <string name="nc_file_browser_back">العودة</string>
+    <string name="nc_file_permission_editable">قابل للتعديل</string>
     <string name="nc_file_storage_permission">إذن الوصول إلى الملف مطلوب</string>
     <string name="nc_following_link">المستخدم يتابع رابط عام</string>
     <string name="nc_formatted_message_you">أنت: %1$s</string>

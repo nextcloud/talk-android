@@ -184,6 +184,7 @@
     <string name="nc_federation_invitation_accept">Aceptar</string>
     <string name="nc_federation_invitation_reject">Rechazar</string>
     <string name="nc_file_browser_back">Atrás</string>
+    <string name="nc_file_permission_editable">Editable</string>
     <string name="nc_file_storage_permission">Se requiere permiso para acceder a archivos</string>
     <string name="nc_following_link">Usuario que sigue un enlace público</string>
     <string name="nc_formatted_message_you">Tú: %1$s</string>
