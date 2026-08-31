@@ -23,7 +23,9 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
@@ -1167,7 +1169,7 @@ class ConversationsListActivity : BaseActivity() {
             is ConversationOpsAction.Rename -> renameConversation(conversation)
             is ConversationOpsAction.ToggleArchive -> handleArchiving(conversation)
             is ConversationOpsAction.AddToHomeScreen -> addConversationToHomeScreen(conversation)
-            is ConversationOpsAction.Leave -> showLeaveConversationDialog(conversation)
+            is ConversationOpsAction.Leave -> showLeaveConversationSnackbar(conversation)
             is ConversationOpsAction.Delete -> showDeleteConversationDialog(conversation)
             is ConversationOpsAction.ManageTags -> conversationTagsViewModel.setConversationForTagAssignment(
                 conversation
@@ -1223,33 +1225,33 @@ class ConversationsListActivity : BaseActivity() {
         }
     }
 
-    private fun showLeaveConversationDialog(conversation: ConversationModel) {
-        val dialogBuilder = MaterialAlertDialogBuilder(this)
-            .setIcon(
-                viewThemeUtils.dialog
-                    .colorMaterialAlertDialogIcon(context, R.drawable.ic_exit_to_app_black_24dp)
+    /**
+     * Rather than blocking with a confirmation dialog, hide the conversation immediately and offer
+     * an "Undo" snackbar. The actual leave-conversation network call is deferred until the snackbar
+     * goes away without being undone, so a room only needs to be rejoined if the user missed the
+     * undo window.
+     */
+    @SuppressLint("StringFormatInvalid")
+    private fun showLeaveConversationSnackbar(conversation: ConversationModel) {
+        val token = conversation.token ?: return
+        conversationsListViewModel.markConversationPendingLeave(token)
+        lifecycleScope.launch {
+            val result = snackbarHostState.showSnackbar(
+                message = String.format(resources.getString(R.string.left_conversation), conversation.displayName),
+                actionLabel = getString(R.string.nc_undo),
+                duration = SnackbarDuration.Long
             )
-            .setTitle(R.string.nc_leave)
-            .setMessage(R.string.nc_leave_conversation_warning)
-            .setPositiveButton(R.string.nc_leave) { _, _ ->
-                leaveConversation(conversation)
+            when (result) {
+                SnackbarResult.ActionPerformed -> conversationsListViewModel.clearConversationPendingLeave(token)
+                SnackbarResult.Dismissed -> leaveConversation(conversation)
             }
-            .setNegativeButton(R.string.nc_cancel) { _, _ ->
-            }
-
-        viewThemeUtils.dialog
-            .colorMaterialAlertDialogBackground(this, dialogBuilder)
-        val dialog = dialogBuilder.show()
-        viewThemeUtils.platform.colorTextButtons(
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-        )
+        }
     }
 
-    @SuppressLint("StringFormatInvalid")
     private fun leaveConversation(conversation: ConversationModel) {
+        val token = conversation.token ?: return
         val data = Data.Builder()
-            .putString(KEY_ROOM_TOKEN, conversation.token)
+            .putString(KEY_ROOM_TOKEN, token)
             .putLong(KEY_INTERNAL_USER_ID, currentUser?.id!!)
             .build()
         val worker = OneTimeWorkRequest.Builder(LeaveConversationWorker::class.java)
@@ -1263,17 +1265,18 @@ class ConversationsListActivity : BaseActivity() {
                     currentUser?.id?.let { userId ->
                         ShortcutManagerHelper.disableConversationShortcut(
                             this,
-                            conversation.token,
+                            token,
                             userId,
                             resources.getString(R.string.nc_shortcut_conversation_deleted)
                         )
                     }
-                    showSnackbar(
-                        String.format(resources.getString(R.string.left_conversation), conversation.displayName)
-                    )
-                    startActivity(Intent(this, MainActivity::class.java))
+                    conversationsListViewModel.clearConversationPendingLeave(token)
+                    fetchRooms()
                 }
-                WorkInfo.State.FAILED -> showSnackbar(resources.getString(R.string.nc_common_error_sorry))
+                WorkInfo.State.FAILED -> {
+                    conversationsListViewModel.clearConversationPendingLeave(token)
+                    showSnackbar(resources.getString(R.string.nc_common_error_sorry))
+                }
                 else -> {}
             }
         }

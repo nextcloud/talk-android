@@ -334,7 +334,7 @@ How to translate with transifex:
 
     <!-- Conversation menu -->
     <string name="nc_leave">Leave conversation</string>
-    <string name="nc_leave_conversation_warning">Do you really want to leave this conversation?</string>
+    <string name="nc_undo">Undo</string>
     <string name="nc_clear_history">Delete all messages</string>
     <string name="nc_clear_history_warning">Do you really want to delete all messages in this conversation?</string>
     <string name="nc_clear_history_success">All messages were deleted</string>
