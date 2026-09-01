@@ -69,7 +69,9 @@ import com.nextcloud.talk.chat.ui.model.MessageReactionUi
 import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.contacts.loadImage
+import com.nextcloud.talk.ui.ActorAvatarImage
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
+import com.nextcloud.talk.utils.CharacterAvatarUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
@@ -259,22 +261,38 @@ fun MessageScaffold(
 private fun RowScope.MessageLeadingDecoration(uiMessage: ChatMessageUi, isOneToOneConversation: Boolean) {
     val onAvatarClick = LocalAvatarClickHandler.current
     if (uiMessage.incoming && isOneToOneConversation && !uiMessage.isGrouped) {
-        val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
-        val avatarContext = LocalContext.current
-        val loadedImage = remember(uiMessage.avatarUrl) {
-            loadImage(uiMessage.avatarUrl, avatarContext, errorPlaceholderImage)
+        val avatarModifier = Modifier
+            .size(48.dp)
+            .align(Alignment.Top)
+            .padding(end = 8.dp)
+            .combinedClickable(
+                onClick = { onAvatarClick(uiMessage.id) }
+            )
+        val guestLabel = stringResource(R.string.nc_guest)
+        // Guests, email participants and bots have no avatar on the server, so theirs is drawn here
+        val actorAvatar = remember(uiMessage.actorType, uiMessage.actorId, uiMessage.actorDisplayName, guestLabel) {
+            CharacterAvatarUtils.avatarFor(
+                actorType = uiMessage.actorType,
+                actorId = uiMessage.actorId,
+                displayName = uiMessage.actorDisplayName,
+                guestLabel = guestLabel
+            )
         }
-        AsyncImage(
-            model = loadedImage,
-            contentDescription = stringResource(R.string.user_avatar),
-            modifier = Modifier
-                .size(48.dp)
-                .align(Alignment.Top)
-                .padding(end = 8.dp)
-                .combinedClickable(
-                    onClick = { onAvatarClick(uiMessage.id) }
-                )
-        )
+
+        if (actorAvatar != null) {
+            ActorAvatarImage(avatar = actorAvatar, modifier = avatarModifier)
+        } else {
+            val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
+            val avatarContext = LocalContext.current
+            val loadedImage = remember(uiMessage.avatarUrl) {
+                loadImage(uiMessage.avatarUrl, avatarContext, errorPlaceholderImage)
+            }
+            AsyncImage(
+                model = loadedImage,
+                contentDescription = stringResource(R.string.user_avatar),
+                modifier = avatarModifier
+            )
+        }
     } else if (uiMessage.incoming && isOneToOneConversation) {
         Spacer(Modifier.width(48.dp))
     } else if (uiMessage.incoming) {

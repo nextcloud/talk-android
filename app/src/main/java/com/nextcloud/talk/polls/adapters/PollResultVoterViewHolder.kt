@@ -7,10 +7,7 @@
 package com.nextcloud.talk.polls.adapters
 
 import android.annotation.SuppressLint
-import android.text.TextUtils
 import android.widget.ImageView
-import com.nextcloud.talk.R
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.PollResultVoterItemBinding
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
@@ -42,11 +39,7 @@ class PollResultVoterViewHolder(
     private fun loadAvatar(pollDetail: PollDetails, avatar: ImageView) {
         when (pollDetail.actorType) {
             Participant.ActorType.GUESTS -> {
-                var displayName = NextcloudTalkApplication.sharedApplication?.resources?.getString(R.string.nc_guest)
-                if (!TextUtils.isEmpty(pollDetail.actorDisplayName)) {
-                    displayName = pollDetail.actorDisplayName!!
-                }
-                avatar.loadGuestAvatar(user, displayName!!, false)
+                avatar.loadGuestAvatar(pollDetail.actorDisplayName, viewThemeUtils)
             }
 
             Participant.ActorType.FEDERATED -> {

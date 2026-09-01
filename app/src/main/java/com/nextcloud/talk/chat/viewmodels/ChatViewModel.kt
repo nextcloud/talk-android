@@ -73,6 +73,7 @@ import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.CharacterAvatarUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.MimetypeUtils
@@ -1691,8 +1692,12 @@ class ChatViewModel @AssistedInject constructor(
 
     // val timeString = DateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
+    /**
+     * Avatar to request from the server for a message, empty for the actors the server has none for
+     * - those get their avatar drawn on the client instead, see [CharacterAvatarUtils].
+     */
     fun getAvatarUrl(message: ChatMessage): String =
-        if (this::currentUser.isInitialized) {
+        if (this::currentUser.isInitialized && !message.hasClientSideAvatar()) {
             ApiUtils.getUrlForAvatar(
                 currentUser.baseUrl,
                 message.actorId,
@@ -1701,6 +1706,9 @@ class ChatViewModel @AssistedInject constructor(
         } else {
             ""
         }
+
+    private fun ChatMessage.hasClientSideAvatar(): Boolean =
+        CharacterAvatarUtils.avatarFor(actorType, actorId, actorDisplayName, guestLabel = null) != null
 
     fun initData(user: User, credentials: String, urlForChatting: String, threadId: Long?) {
         currentUser = user
