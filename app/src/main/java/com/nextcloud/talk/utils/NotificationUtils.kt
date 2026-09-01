@@ -352,7 +352,8 @@ object NotificationUtils {
     }
 
     fun saveBitmapToCache(context: Context, bitmap: Bitmap, fileName: String): Uri? {
-        val cacheFile = File(context.cacheDir, fileName)
+        val sharedAttachmentsDir = FileUtils.getSharedAttachmentsDirectory(context.cacheDir) ?: return null
+        val cacheFile = File(sharedAttachmentsDir, fileName)
         return try {
             FileOutputStream(cacheFile).use { out ->
                 bitmap.compress(Bitmap.CompressFormat.PNG, BITMAP_COMPRESSION_QUALITY, out)
