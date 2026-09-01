@@ -29,6 +29,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,6 +42,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -105,6 +108,7 @@ fun MarkdownText(
     val hasTable = remember(message.plainMessage) {
         message.plainMessage.contains(TABLE_SEPARATOR_REGEX)
     }
+    val accessibleText = remember(message) { resolveMarkdownSource(message) }
 
     if (LocalInspectionMode.current) {
         Text(
@@ -115,97 +119,108 @@ fun MarkdownText(
             fontSize = textSizeSp.sp
         )
     } else {
-        AndroidView(
-            modifier = if (hasTable) modifier.fillMaxWidth() else modifier,
-            factory = { ctx ->
-                val gestureDetector = GestureDetector(
-                    ctx,
-                    object : GestureDetector.SimpleOnGestureListener() {
-                        override fun onLongPress(e: MotionEvent) {
-                            onLongClickState.value(messageId)
+        Box(
+            modifier = modifier.semantics { contentDescription = accessibleText }
+        ) {
+            AndroidView(
+                modifier = if (hasTable) Modifier.fillMaxWidth() else Modifier,
+                factory = { ctx ->
+                    val gestureDetector = GestureDetector(
+                        ctx,
+                        object : GestureDetector.SimpleOnGestureListener() {
+                            override fun onLongPress(e: MotionEvent) {
+                                onLongClickState.value(messageId)
+                            }
                         }
+                    )
+                    val longPressListener = View.OnTouchListener { view, event ->
+                        if (event.action == MotionEvent.ACTION_UP) {
+                            view.performClick()
+                        }
+                        gestureDetector.onTouchEvent(event)
+                        false
                     }
-                )
-                val longPressListener = View.OnTouchListener { view, event ->
-                    if (event.action == MotionEvent.ACTION_UP) {
-                        view.performClick()
+                    LongPressTextView(ctx).apply {
+                        isFocusable = false
+                        isFocusableInTouchMode = false
+                        // The wrapping Box's semantics (contentDescription = accessibleText) is what
+                        // TalkBack/Select-to-Speak actually read; hide this native view's own
+                        // accessibility node so its raw text isn't announced a second time.
+                        importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+                        tag = longPressListener
                     }
-                    gestureDetector.onTouchEvent(event)
-                    false
-                }
-                LongPressTextView(ctx).apply {
-                    isFocusable = false
-                    isFocusableInTouchMode = false
-                    tag = longPressListener
-                }
-            },
-            update = { textView ->
-                textView.setTextColor(textColorArgb)
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeSp)
-                textView.maxLines = maxLines
-                textView.ellipsize = if (maxLines != Int.MAX_VALUE) TextUtils.TruncateAt.END else null
-                textView.setLineSpacing(0f, textView.textSize * LINE_HEIGHT_MULTIPLIER / textView.paint.fontSpacing)
-                val markwon = MessageUtils.buildMarkwon(context, textColorArgb)
-                markwon.setMarkdown(textView, resolveNonMentionParams(message))
-                val ssb = SpannableStringBuilder(textView.text)
-                val hasClickableChips = applyMentionChips(
-                    spannable = ssb,
-                    message = message,
-                    context = context,
-                    textView = textView,
-                    chipBgColor = chipBgColor,
-                    chipTextColor = chipTextColor,
-                    selfChipBgColor = selfChipBgColor,
-                    selfChipTextColor = selfChipTextColor,
-                    textSizePx = textView.textSize,
-                    startPaddingPx = chipStartPaddingPx,
-                    endPaddingPx = chipEndPaddingPx,
-                    verticalPaddingPx = chipVerticalPaddingPx,
-                    cornerRadiusPx = chipCornerRadiusPx,
-                    avatarSizePx = avatarSizePx,
-                    avatarGapPx = avatarGapPx
-                )
+                },
+                update = { textView ->
+                    textView.setTextColor(textColorArgb)
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeSp)
+                    textView.maxLines = maxLines
+                    textView.ellipsize = if (maxLines != Int.MAX_VALUE) TextUtils.TruncateAt.END else null
+                    textView.setLineSpacing(
+                        0f,
+                        textView.textSize * LINE_HEIGHT_MULTIPLIER / textView.paint.fontSpacing
+                    )
+                    val markwon = MessageUtils.buildMarkwon(context, textColorArgb)
+                    markwon.setMarkdown(textView, resolveNonMentionParams(message))
+                    val ssb = SpannableStringBuilder(textView.text)
+                    val hasClickableChips = applyMentionChips(
+                        spannable = ssb,
+                        message = message,
+                        context = context,
+                        textView = textView,
+                        chipBgColor = chipBgColor,
+                        chipTextColor = chipTextColor,
+                        selfChipBgColor = selfChipBgColor,
+                        selfChipTextColor = selfChipTextColor,
+                        textSizePx = textView.textSize,
+                        startPaddingPx = chipStartPaddingPx,
+                        endPaddingPx = chipEndPaddingPx,
+                        verticalPaddingPx = chipVerticalPaddingPx,
+                        cornerRadiusPx = chipCornerRadiusPx,
+                        avatarSizePx = avatarSizePx,
+                        avatarGapPx = avatarGapPx
+                    )
 
-                val skipExistingLinks = Linkify.MatchFilter { s, start, end ->
-                    s !is Spanned || s.getSpans(start, end, URLSpan::class.java).isEmpty()
-                }
-                val hasUrlLinks = Linkify.addLinks(ssb, validLinkRegex.toPattern(), null, null) { _, url ->
-                    val schemeEnd = url.indexOf("://")
-                    if (schemeEnd > 0) url.substring(0, schemeEnd).lowercase() + url.substring(schemeEnd) else url
-                }
-                val hasPhoneLinks = Linkify.addLinks(
-                    ssb,
-                    Patterns.PHONE,
-                    "tel:",
-                    null,
-                    skipExistingLinks,
-                    null
-                )
-                val hasEmailLinks = Linkify.addLinks(
-                    ssb,
-                    Patterns.EMAIL_ADDRESS,
-                    "mailto:",
-                    null,
-                    skipExistingLinks,
-                    null
-                )
-                val hasMarkdownLinks = ssb.getSpans(0, ssb.length, LinkSpan::class.java).isNotEmpty()
-                val hasLinks = hasUrlLinks || hasPhoneLinks || hasEmailLinks || hasMarkdownLinks
+                    val skipExistingLinks = Linkify.MatchFilter { s, start, end ->
+                        s !is Spanned || s.getSpans(start, end, URLSpan::class.java).isEmpty()
+                    }
+                    val hasUrlLinks = Linkify.addLinks(ssb, validLinkRegex.toPattern(), null, null) { _, url ->
+                        val schemeEnd = url.indexOf("://")
+                        if (schemeEnd > 0) url.substring(0, schemeEnd).lowercase() + url.substring(schemeEnd) else url
+                    }
+                    val hasPhoneLinks = Linkify.addLinks(
+                        ssb,
+                        Patterns.PHONE,
+                        "tel:",
+                        null,
+                        skipExistingLinks,
+                        null
+                    )
+                    val hasEmailLinks = Linkify.addLinks(
+                        ssb,
+                        Patterns.EMAIL_ADDRESS,
+                        "mailto:",
+                        null,
+                        skipExistingLinks,
+                        null
+                    )
+                    val hasMarkdownLinks = ssb.getSpans(0, ssb.length, LinkSpan::class.java).isNotEmpty()
+                    val hasLinks = hasUrlLinks || hasPhoneLinks || hasEmailLinks || hasMarkdownLinks
 
-                resolveFileParams(ssb, message)
-                applySearchHighlight(ssb, highlightSearchTerm, searchHighlightColorArgb)
-                markwon.setParsedMarkdown(textView, ssb)
-                textView.setLinkTextColor(linkColorArgb)
-                val needsMovementMethod = (hasClickableChips || hasLinks) && maxLines == Int.MAX_VALUE
-                if (needsMovementMethod) {
-                    textView.movementMethod = LinkMovementMethod.getInstance()
-                    textView.setOnTouchListener(textView.tag as? View.OnTouchListener)
-                } else {
-                    textView.movementMethod = null
-                    textView.setOnTouchListener(null)
+                    resolveFileParams(ssb, message)
+                    applySearchHighlight(ssb, highlightSearchTerm, searchHighlightColorArgb)
+                    markwon.setParsedMarkdown(textView, ssb)
+                    textView.setLinkTextColor(linkColorArgb)
+                    val needsMovementMethod = (hasClickableChips || hasLinks) && maxLines == Int.MAX_VALUE
+                    if (needsMovementMethod) {
+                        textView.movementMethod = LinkMovementMethod.getInstance()
+                        textView.setOnTouchListener(textView.tag as? View.OnTouchListener)
+                    } else {
+                        textView.movementMethod = null
+                        textView.setOnTouchListener(null)
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 }
 
