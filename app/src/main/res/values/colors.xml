@@ -56,6 +56,16 @@
     <color name="grey950">#111111</color>
     <color name="textColorMaxContrast">#767676</color>
 
+    <!--
+      Client-side avatars for actors without an avatar on the server, mirroring the web client's
+      AvatarWrapper: a guest sits on the server's text-maxcontrast-default colour in white, a bot
+      on its background-darker colour in the regular text colour.
+    -->
+    <color name="character_avatar_background_guest">#6B6B6B</color>
+    <color name="character_avatar_background_bot">#DBDBDB</color>
+    <color name="character_avatar_text_guest">@color/white</color>
+    <color name="character_avatar_text_bot">@color/high_emphasis_text</color>
+
     <color name="fg_default">#666666</color>
     <color name="fg_inverse">#FFFFFF</color>
 

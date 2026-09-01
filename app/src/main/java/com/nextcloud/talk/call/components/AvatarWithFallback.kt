@@ -25,7 +25,9 @@ import coil.compose.AsyncImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.ParticipantUiState
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.ui.ActorAvatarImage
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CharacterAvatarUtils
 import com.nextcloud.talk.utils.DisplayUtils.isDarkModeOn
 
 @Composable
@@ -35,21 +37,31 @@ fun AvatarWithFallback(participant: ParticipantUiState, displayName: String, mod
             .clip(CircleShape),
         contentAlignment = Alignment.Center
     ) {
-        val avatarUrl = getUrlForAvatar(
-            participant = participant,
-            displayName = displayName
-        )
-        if (avatarUrl.isNotEmpty()) {
-            AsyncImage(
-                model = avatarUrl,
-                contentDescription = stringResource(R.string.avatar),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(CircleShape)
-            )
+        // Guests and email participants have no avatar on the server, so theirs is drawn here
+        val isGuest = Participant.ActorType.GUESTS == participant.actorType ||
+            Participant.ActorType.EMAILS == participant.actorType
+        val guestAvatar = if (isGuest) {
+            CharacterAvatarUtils.guestAvatar(displayName, stringResource(R.string.nc_guest))
         } else {
-            FallbackAvatar(participant = participant)
+            null
+        }
+
+        if (guestAvatar != null) {
+            ActorAvatarImage(avatar = guestAvatar, modifier = Modifier.fillMaxSize())
+        } else {
+            val avatarUrl = getUrlForAvatar(participant = participant)
+            if (avatarUrl.isNotEmpty()) {
+                AsyncImage(
+                    model = avatarUrl,
+                    contentDescription = stringResource(R.string.avatar),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(CircleShape)
+                )
+            } else {
+                FallbackAvatar(participant = participant)
+            }
         }
     }
 }
@@ -76,31 +88,20 @@ private fun FallbackAvatar(participant: ParticipantUiState) {
 }
 
 @Composable
-fun getUrlForAvatar(participant: ParticipantUiState, displayName: String): String {
-    var url = ApiUtils.getUrlForAvatar(
-        participant.baseUrl,
-        participant.actorId,
-        true,
-        darkMode = isDarkModeOn(LocalContext.current)
-    )
-    if (Participant.ActorType.GUESTS == participant.actorType ||
-        Participant.ActorType.EMAILS == participant.actorType
-    ) {
-        url = ApiUtils.getUrlForGuestAvatar(
-            participant.baseUrl,
-            displayName,
-            true
-        )
-    }
+fun getUrlForAvatar(participant: ParticipantUiState): String =
     if (participant.actorType == Participant.ActorType.FEDERATED) {
-        val darkTheme = if (isDarkModeOn(LocalContext.current)) 1 else 0
-        url = ApiUtils.getUrlForFederatedAvatar(
+        ApiUtils.getUrlForFederatedAvatar(
             participant.baseUrl,
             participant.roomToken,
             participant.actorId!!,
-            darkTheme,
+            if (isDarkModeOn(LocalContext.current)) 1 else 0,
             true
         )
+    } else {
+        ApiUtils.getUrlForAvatar(
+            participant.baseUrl,
+            participant.actorId,
+            true,
+            darkMode = isDarkModeOn(LocalContext.current)
+        )
     }
-    return url
-}

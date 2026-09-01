@@ -52,8 +52,11 @@ import coil.compose.AsyncImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.events.UserMentionClickEvent
+import com.nextcloud.talk.ui.ActorAvatarImage
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
+import com.nextcloud.talk.utils.ActorAvatar
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CharacterAvatarUtils
 import org.greenrobot.eventbus.EventBus
 
 val mentionParameterTypes = setOf("user", "guest", "call", "user-group", "email", "circle")
@@ -103,7 +106,6 @@ fun parseMentionChipModel(
             val isSelfMention = rawId == activeUserId
             val avatarUrl = resolveMentionAvatarUrl(
                 rawId = rawId,
-                name = name,
                 type = type,
                 mentionId = mentionId,
                 isFederated = isFederated,
@@ -126,7 +128,6 @@ fun parseMentionChipModel(
 @Suppress("LongParameterList")
 fun resolveMentionAvatarUrl(
     rawId: String,
-    name: String,
     type: String,
     mentionId: String,
     isFederated: Boolean,
@@ -142,11 +143,9 @@ fun resolveMentionAvatarUrl(
             darkTheme = 0,
             requestBigSize = false
         )
-        type == "guest" || type == "email" -> ApiUtils.getUrlForGuestAvatar(
-            baseUrl = baseUrl,
-            name = name,
-            requestBigSize = true
-        )
+        // Guests and email participants have no avatar on the server, so nothing is requested for
+        // them - their chip is drawn from resolveMentionCharacter instead, as on web
+        type == "guest" || type == "email" -> null
         type == "call" || type == "user-group" || type == "circle" -> null
         rawId.isNotEmpty() -> ApiUtils.getUrlForAvatar(baseUrl, rawId, false, false)
         else -> null
@@ -301,12 +300,25 @@ fun MentionChip(
 
 @Composable
 fun MentionChipIcon(mention: MentionChipModel, fallbackIcon: Int) {
-    if (mention.avatarUrl != null) {
-        val context = LocalContext.current
-        val loadedImage = remember(mention.avatarUrl) { loadImage(mention.avatarUrl, context, fallbackIcon) }
-        AsyncImage(model = loadedImage, contentDescription = null, modifier = Modifier.size(mentionAvatarSize))
-    } else {
-        Icon(
+    val guestLabel = stringResource(R.string.nc_guest)
+    // A mentioned guest has no avatar on the server, so their chip is drawn from their name
+    val character = remember(mention.type, mention.rawId, mention.name, guestLabel) {
+        CharacterAvatarUtils.avatarFor(mention.type, mention.rawId, mention.name, guestLabel)
+            as? ActorAvatar.Character
+    }
+    when {
+        character != null -> ActorAvatarImage(
+            avatar = character,
+            modifier = Modifier.size(mentionAvatarSize)
+        )
+
+        mention.avatarUrl != null -> {
+            val context = LocalContext.current
+            val loadedImage = remember(mention.avatarUrl) { loadImage(mention.avatarUrl, context, fallbackIcon) }
+            AsyncImage(model = loadedImage, contentDescription = null, modifier = Modifier.size(mentionAvatarSize))
+        }
+
+        else -> Icon(
             painter = painterResource(fallbackIcon),
             contentDescription = null,
             modifier = Modifier.size(mentionIconSize),

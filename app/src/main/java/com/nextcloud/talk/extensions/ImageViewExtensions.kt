@@ -10,11 +10,9 @@
 
 package com.nextcloud.talk.extensions
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapShader
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.Matrix
 import android.graphics.Paint
@@ -28,11 +26,9 @@ import android.graphics.drawable.LayerDrawable
 import android.util.Log
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.graphics.drawable.toDrawable
 import coil.annotation.ExperimentalCoilApi
+import coil.dispose
 import coil.imageLoader
 import coil.load
 import coil.request.CachePolicy
@@ -48,10 +44,11 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.toDrawable
+import com.nextcloud.talk.utils.ActorAvatar
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CharacterAvatarUtils
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.TextDrawable
-import java.util.Locale
 import kotlin.math.min
 
 private const val ROUNDING_PIXEL = 16f
@@ -311,37 +308,6 @@ fun ImageView.loadNoteToSelfAvatar() {
     setImageDrawable(CircularDrawable(layerDrawable))
 }
 
-fun ImageView.loadFirstLetterAvatar(name: String): io.reactivex.disposables.Disposable {
-    val layers = arrayOfNulls<Drawable>(2)
-    layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
-    layers[1] = createTextDrawable(context, name.trimStart().uppercase(Locale.ROOT))
-
-    val layerDrawable = LayerDrawable(layers)
-    val data: Any = layerDrawable
-
-    return DisposableWrapper(
-        load(data) {
-            transformations(CircleCropTransformation())
-        }
-    )
-}
-
-fun ImageView.loadChangelogBotAvatar(): io.reactivex.disposables.Disposable = loadSystemAvatar()
-
-fun ImageView.loadBotsAvatar(): io.reactivex.disposables.Disposable {
-    val layers = arrayOfNulls<Drawable>(2)
-    layers[0] = context.getColor(R.color.black).toDrawable()
-    layers[1] = TextDrawable(context, ">")
-    val layerDrawable = LayerDrawable(layers)
-    val data: Any = layerDrawable
-
-    return DisposableWrapper(
-        load(data) {
-            transformations(CircleCropTransformation())
-        }
-    )
-}
-
 fun ImageView.loadDefaultGroupCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
     val data: Any = viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_group_small) as Any
     return loadUserAvatar(data)
@@ -367,49 +333,24 @@ fun ImageView.loadMailAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.dispo
     return loadUserAvatar(data)
 }
 
-fun ImageView.loadGuestAvatar(user: User, name: String, big: Boolean): io.reactivex.disposables.Disposable =
-    loadGuestAvatar(user.baseUrl!!, name, big)
-
-fun ImageView.loadGuestAvatar(baseUrl: String, name: String, big: Boolean): io.reactivex.disposables.Disposable {
-    val imageRequestUri = ApiUtils.getUrlForGuestAvatar(
-        baseUrl,
-        name,
-        big
-    )
-    return DisposableWrapper(
-        load(imageRequestUri) {
-            transformations(CircleCropTransformation())
-            listener(onError = { _, result ->
-                Log.w(TAG, "Can't load guest avatar with URL: $imageRequestUri", result.throwable)
-            })
+/**
+ * Client-side avatar for guest and email actors, which have no avatar on the server: a guest who
+ * gave us their name gets the first character of it drawn on a circle, an unnamed one the generic
+ * person icon. Nothing is requested from the server for either, matching the web client.
+ *
+ * Any avatar request still in flight for the view is cancelled first, so a recycled view cannot be
+ * overwritten by its predecessor's avatar.
+ */
+fun ImageView.loadGuestAvatar(displayName: String?, viewThemeUtils: ViewThemeUtils) {
+    when (val avatar = CharacterAvatarUtils.guestAvatar(displayName, context.getString(R.string.nc_guest))) {
+        is ActorAvatar.Character -> {
+            dispose()
+            setImageDrawable(avatar.toDrawable(context))
         }
-    )
-}
 
-@Suppress("MagicNumber")
-private fun createTextDrawable(context: Context, letter: String): Drawable {
-    val size = 100
-    val bitmap = createBitmap(size, size)
-    val canvas = Canvas(bitmap)
-
-    val paint = Paint().apply {
-        color = ResourcesCompat.getColor(context.resources, R.color.grey_600, null)
-        style = Paint.Style.FILL
+        ActorAvatar.AppIcon -> loadSystemAvatar()
+        ActorAvatar.PersonIcon -> loadDefaultAvatar(viewThemeUtils)
     }
-    canvas.drawRect(0f, 0f, size.toFloat(), size.toFloat(), paint)
-
-    val textPaint = Paint().apply {
-        color = Color.WHITE
-        textSize = size / 2f
-        isAntiAlias = true
-        textAlign = Paint.Align.CENTER
-    }
-
-    val xPos = size / 2f
-    val yPos = (canvas.height / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
-    canvas.drawText(letter.take(1), xPos, yPos, textPaint)
-
-    return bitmap.toDrawable(context.resources)
 }
 
 private class DisposableWrapper(private val disposable: coil.request.Disposable) :

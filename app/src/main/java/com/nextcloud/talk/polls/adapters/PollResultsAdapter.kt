@@ -49,7 +49,7 @@ class PollResultsAdapter(
                     parent,
                     false
                 )
-                viewHolder = PollResultVotersOverviewViewHolder(user, roomToken, itemBinding)
+                viewHolder = PollResultVotersOverviewViewHolder(user, roomToken, itemBinding, viewThemeUtils)
             }
         }
         return viewHolder!!

@@ -54,7 +54,10 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.reactions.ReactionVoter
+import com.nextcloud.talk.ui.ActorAvatarImage
+import com.nextcloud.talk.utils.ActorAvatar
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CharacterAvatarUtils
 import java.util.Collections
 
 private const val TAG = "ShowReactionsSheet"
@@ -222,30 +225,24 @@ private fun ReactionVoterRow(
     val canDelete = hasReactPermission && reactionItem.reactionVoter.actorId == user.userId
     val guestLabel = stringResource(R.string.nc_guest)
 
-    val avatarUrl = remember(reactionItem, isDark) {
-        when (reactionItem.reactionVoter.actorType) {
-            ReactionVoter.ReactionActorType.GUESTS -> {
-                val displayName = reactionItem.reactionVoter.actorDisplayName
-                    ?.takeIf { it.isNotEmpty() }
-                    ?: guestLabel
-                ApiUtils.getUrlForGuestAvatar(user.baseUrl, displayName, false)
-            }
-
-            ReactionVoter.ReactionActorType.USERS -> {
-                ApiUtils.getUrlForAvatar(user.baseUrl, reactionItem.reactionVoter.actorId, false, isDark)
-            }
-
-            else -> null
+    // Guests have no avatar on the server, so theirs is drawn from their name here
+    val guestAvatar = remember(reactionItem, guestLabel) {
+        if (reactionItem.reactionVoter.actorType == ReactionVoter.ReactionActorType.GUESTS) {
+            CharacterAvatarUtils.guestAvatar(reactionItem.reactionVoter.actorDisplayName, guestLabel)
+        } else {
+            null
         }
     }
 
-    val avatarRequest = remember(avatarUrl, credentials) {
-        avatarUrl?.let {
+    val avatarRequest = remember(reactionItem, isDark, credentials) {
+        if (reactionItem.reactionVoter.actorType == ReactionVoter.ReactionActorType.USERS) {
             ImageRequest.Builder(context)
-                .data(it)
+                .data(ApiUtils.getUrlForAvatar(user.baseUrl, reactionItem.reactionVoter.actorId, false, isDark))
                 .transformations(CircleCropTransformation())
                 .addHeader("Authorization", credentials ?: "")
                 .build()
+        } else {
+            null
         }
     }
 
@@ -258,13 +255,7 @@ private fun ReactionVoterRow(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.Companion.CenterVertically
     ) {
-        AsyncImage(
-            model = avatarRequest ?: R.drawable.account_circle_96dp,
-            contentDescription = null,
-            placeholder = painterResource(R.drawable.account_circle_96dp),
-            error = painterResource(R.drawable.account_circle_96dp),
-            modifier = Modifier.Companion.size(40.dp)
-        )
+        ReactionVoterAvatar(guestAvatar = guestAvatar, avatarRequest = avatarRequest)
         Spacer(modifier = Modifier.Companion.width(16.dp))
         Text(
             text = reactionItem.reactionVoter.actorDisplayName ?: "",
@@ -275,6 +266,27 @@ private fun ReactionVoterRow(
             text = reactionItem.reaction ?: "",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.Companion.padding(start = 8.dp)
+        )
+    }
+}
+
+/**
+ * The voter's avatar: the one drawn for a guest, otherwise the avatar loaded from the server.
+ */
+@Composable
+private fun ReactionVoterAvatar(guestAvatar: ActorAvatar?, avatarRequest: ImageRequest?) {
+    if (guestAvatar != null) {
+        ActorAvatarImage(
+            avatar = guestAvatar,
+            modifier = Modifier.Companion.size(40.dp)
+        )
+    } else {
+        AsyncImage(
+            model = avatarRequest ?: R.drawable.account_circle_96dp,
+            contentDescription = null,
+            placeholder = painterResource(R.drawable.account_circle_96dp),
+            error = painterResource(R.drawable.account_circle_96dp),
+            modifier = Modifier.Companion.size(40.dp)
         )
     }
 }

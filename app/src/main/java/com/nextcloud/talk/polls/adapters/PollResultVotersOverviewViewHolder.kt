@@ -8,12 +8,9 @@
 package com.nextcloud.talk.polls.adapters
 
 import android.annotation.SuppressLint
-import android.text.TextUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.nextcloud.talk.R
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.PollResultVotersOverviewItemBinding
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
@@ -21,12 +18,14 @@ import com.nextcloud.talk.extensions.loadGuestAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.polls.model.PollDetails
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 
 class PollResultVotersOverviewViewHolder(
     private val user: User,
     private val roomToken: String,
-    override val binding: PollResultVotersOverviewItemBinding
+    override val binding: PollResultVotersOverviewItemBinding,
+    private val viewThemeUtils: ViewThemeUtils
 ) : PollResultViewHolder(binding) {
 
     @SuppressLint("SetTextI18n")
@@ -72,11 +71,7 @@ class PollResultVotersOverviewViewHolder(
     private fun loadAvatar(pollDetail: PollDetails, avatar: ImageView) {
         when (pollDetail.actorType) {
             Participant.ActorType.GUESTS -> {
-                var displayName = NextcloudTalkApplication.sharedApplication?.resources?.getString(R.string.nc_guest)
-                if (!TextUtils.isEmpty(pollDetail.actorDisplayName)) {
-                    displayName = pollDetail.actorDisplayName!!
-                }
-                avatar.loadGuestAvatar(user, displayName!!, false)
+                avatar.loadGuestAvatar(pollDetail.actorDisplayName, viewThemeUtils)
             }
 
             Participant.ActorType.FEDERATED -> {
