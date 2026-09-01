@@ -76,6 +76,7 @@
             <trusting group="androidx.exifinterface" name="exifinterface" version="1.4.0"/>
             <trusting group="androidx.exifinterface" name="exifinterface" version="1.4.1"/>
             <trusting group="androidx.exifinterface" name="exifinterface" version="1.4.2"/>
+            <trusting group="androidx.fragment"/>
             <trusting group="androidx.graphics"/>
             <trusting group="androidx.lifecycle"/>
             <trusting group="androidx.media3"/>
@@ -138,6 +139,7 @@
          <trusted-key id="1EB0CEA42D72C81A21C6B83F0A5DB758AC25D049">
             <trusting group="org.maplibre.gl" name="android-sdk" version="13.0.2"/>
             <trusting group="org.maplibre.gl" name="android-sdk-opengl" version="13.0.2"/>
+            <trusting group="org.maplibre.gl" name="android-sdk-opengl" version="13.6.0"/>
          </trusted-key>
          <trusted-key id="20723A6399BC060154283B37CFAE163B64AC9189">
             <trusting group="org.jetbrains.androidx.lifecycle"/>
