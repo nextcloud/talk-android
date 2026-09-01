@@ -15,13 +15,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,11 +44,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,6 +56,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
@@ -108,7 +111,8 @@ private const val UPLOAD_SPINNER_TRACK_ALPHA = 0.3f
 // Used to size the uploading-video placeholder before its real aspect ratio is known (or if it can't
 // be read at all), so the bubble doesn't collapse to icon-size. 16:9 is the most common video shape.
 private const val DEFAULT_VIDEO_ASPECT_RATIO = 16f / 9f
-private const val VIDEO_PLACEHOLDER_BACKGROUND_ALPHA = 0.4f
+private const val MEDIA_PLACEHOLDER_BACKGROUND_ALPHA = 0.4f
+private val genericIconSize = 64.dp
 
 private val playButtonCircleSize = 56.dp
 private val playButtonIconSize = 32.dp
@@ -120,6 +124,44 @@ private const val PORTRAIT_WIDTH_FRACTION = 0.80f
 
 private fun mediaWidthFraction(aspectRatio: Float?): Float =
     if (aspectRatio != null && aspectRatio < 1f) PORTRAIT_WIDTH_FRACTION else 1f
+
+private const val MAX_HEIGHT_FRACTION = 0.4f
+
+@Composable
+private fun screenMediaMaxHeight(): Dp = LocalConfiguration.current.screenHeightDp.dp * MAX_HEIGHT_FRACTION
+
+private val minMediaPreviewHeight = 48.dp
+private val minMediaPreviewWidth = 88.dp
+
+private fun fittedMediaSize(baseWidth: Dp, aspectRatio: Float, maxHeight: Dp): DpSize {
+    val naturalHeight = baseWidth / aspectRatio
+    val fittedSize = if (naturalHeight <= maxHeight) {
+        DpSize(baseWidth, naturalHeight)
+    } else {
+        DpSize(maxHeight * aspectRatio, maxHeight)
+    }
+    val minHeight = minOf(minMediaPreviewHeight, maxHeight)
+    val heightClampedSize = if (fittedSize.height < minHeight) {
+        fittedSize.copy(height = minHeight)
+    } else {
+        fittedSize
+    }
+    val minWidth = minOf(minMediaPreviewWidth, baseWidth)
+    return if (heightClampedSize.width < minWidth) {
+        heightClampedSize.copy(width = minWidth)
+    } else {
+        heightClampedSize
+    }
+}
+
+private fun mediaContentWidthFraction(availableWidth: Dp, aspectRatio: Float?, mediaMaxHeight: Dp): Float =
+    if (aspectRatio != null) {
+        val baseWidth = availableWidth * mediaWidthFraction(aspectRatio)
+        val fittedWidth = fittedMediaSize(baseWidth, aspectRatio, mediaMaxHeight).width
+        fittedWidth.value / availableWidth.value
+    } else {
+        1f
+    }
 
 private val noPreviewMinSize = 160.dp
 
@@ -196,6 +238,76 @@ fun MediaMessage(
     val mediaShape = remember(message.incoming, message.isGrouped, message.isGroupedWithNext) {
         shape(message.incoming, message.isGrouped, message.isGroupedWithNext)
     }
+    val serverAspectRatio = remember(typeContent.width, typeContent.height) {
+        val w = typeContent.width
+        val h = typeContent.height
+        if (w != null && h != null && w > 0 && h > 0) w.toFloat() / h else null
+    }
+    val mediaMaxHeight = screenMediaMaxHeight()
+
+    val scope = rememberCoroutineScope()
+    var retryCount by remember(typeContent.previewUrl) { mutableIntStateOf(0) }
+    var retryPending by remember(typeContent.previewUrl) { mutableStateOf(false) }
+    val retryAwarePreviewUrl = remember(typeContent.previewUrl, retryCount) {
+        typeContent.previewUrl?.let { previewUrl ->
+            if (retryCount == 0) {
+                previewUrl
+            } else {
+                val delimiter = if (previewUrl.contains("?")) "&" else "?"
+                "$previewUrl${delimiter}retryAttempt=$retryCount"
+            }
+        }
+    }
+    val loadedImage = remember(retryAwarePreviewUrl, typeContent.isClassified) {
+        if (typeContent.isClassified || retryAwarePreviewUrl == null) {
+            null
+        } else {
+            load(
+                imageUri = retryAwarePreviewUrl,
+                context = context,
+                errorPlaceholderImage = typeContent.drawableResourceId,
+                animated = typeContent.animateGif
+            )
+        }
+    }
+
+    val loadedPainter = rememberAsyncImagePainter(
+        model = loadedImage,
+        onError = { state ->
+            val cause = state.result.throwable
+            val isServerError = cause is HttpException && cause.response.code in 500..599
+            if (
+                isServerError &&
+                !typeContent.previewUrl.isNullOrEmpty() &&
+                retryCount < PREVIEW_MAX_RETRIES &&
+                !retryPending
+            ) {
+                retryPending = true
+                scope.launch {
+                    Log.d(
+                        TAG,
+                        "Preview returned HTTP ${(cause as HttpException).response.code}, " +
+                            "scheduling retry ${retryCount + 1}/$PREVIEW_MAX_RETRIES " +
+                            "for ${typeContent.previewUrl}"
+                    )
+                    delay(PREVIEW_RETRY_DELAY_MS)
+                    retryCount++
+                    retryPending = false
+                }
+            }
+        }
+    )
+
+    val loadedAspectRatio = (loadedPainter.state as? AsyncImagePainter.State.Success)
+        ?.result?.drawable
+        ?.let { drawable ->
+            if (drawable.intrinsicWidth > 0 && drawable.intrinsicHeight > 0) {
+                drawable.intrinsicWidth.toFloat() / drawable.intrinsicHeight
+            } else {
+                null
+            }
+        }
+    val aspectRatio = loadedAspectRatio ?: serverAspectRatio
 
     MessageScaffold(
         uiMessage = message,
@@ -204,9 +316,11 @@ fun MediaMessage(
         includePadding = false,
         captionText = captionText,
         forceTimeOverlay = !hasCaption,
+        contentWidthFraction = { availableWidth ->
+            mediaContentWidthFraction(availableWidth, aspectRatio, mediaMaxHeight)
+        },
         content = {
             Column {
-                val scope = rememberCoroutineScope()
                 val isGif = MimetypeUtils.isGif(typeContent.mimeType)
                 // Every video gets a play button overlay, regardless of whether its preview came from
                 // the server or our own local-first-frame fallback (or neither, yet).
@@ -219,43 +333,10 @@ fun MediaMessage(
                                 )
                         )
 
-                var retryCount by remember(typeContent.previewUrl) { mutableIntStateOf(0) }
-                var retryPending by remember(typeContent.previewUrl) { mutableStateOf(false) }
-                val retryAwarePreviewUrl = remember(typeContent.previewUrl, retryCount) {
-                    typeContent.previewUrl?.let { previewUrl ->
-                        if (retryCount == 0) {
-                            previewUrl
-                        } else {
-                            val delimiter = if (previewUrl.contains("?")) "&" else "?"
-                            "$previewUrl${delimiter}retryAttempt=$retryCount"
-                        }
-                    }
-                }
-
                 val blurhashPainter = remember(typeContent.blurhash, typeContent.width, typeContent.height) {
                     decodeBlurhashPlaceholder(typeContent.blurhash, typeContent.width, typeContent.height)
                         ?.asImageBitmap()
                         ?.let { BitmapPainter(it) }
-                }
-                val serverAspectRatio = remember(typeContent.width, typeContent.height) {
-                    val w = typeContent.width
-                    val h = typeContent.height
-                    if (w != null && h != null && w > 0 && h > 0) w.toFloat() / h else null
-                }
-                val loadedImage = remember(retryAwarePreviewUrl, typeContent.isClassified) {
-                    if (typeContent.isClassified || retryAwarePreviewUrl == null) {
-                        // Passing an ImageRequest built with null data (rather than a null model) here
-                        // would make Coil resolve its own null-data handling instead of ever showing the
-                        // fallback painter passed to AsyncImage below.
-                        null
-                    } else {
-                        load(
-                            imageUri = retryAwarePreviewUrl,
-                            context = context,
-                            errorPlaceholderImage = typeContent.drawableResourceId,
-                            animated = typeContent.animateGif
-                        )
-                    }
                 }
                 val fallbackPainter = painterResource(typeContent.drawableResourceId)
 
@@ -263,37 +344,8 @@ fun MediaMessage(
                 // color-blob approximation meant for messages from other users where we don't have
                 // the actual bytes - for our own just-uploaded file we already have the real image on
                 // disk, so showing blurhash instead would be a needless downgrade.
-                val ownUploadPlaceholder = localPreviewPainter ?: blurhashPainter ?: fallbackPainter
+                val ownUploadPlaceholder = localPreviewPainter ?: blurhashPainter
 
-                // Created unconditionally (even for the local-video-frame branch below, where
-                // loadedImage is always null and this just sits in Coil's cheap Empty state) so its
-                // intrinsic size is available as a fallback aspect ratio - see loadedAspectRatio below.
-                val loadedPainter = rememberAsyncImagePainter(
-                    model = loadedImage,
-                    onError = { state ->
-                        val cause = state.result.throwable
-                        val isServerError = cause is HttpException && cause.response.code in 500..599
-                        if (
-                            isServerError &&
-                            !typeContent.previewUrl.isNullOrEmpty() &&
-                            retryCount < PREVIEW_MAX_RETRIES &&
-                            !retryPending
-                        ) {
-                            retryPending = true
-                            scope.launch {
-                                Log.d(
-                                    TAG,
-                                    "Preview returned HTTP ${(cause as HttpException).response.code}, " +
-                                        "scheduling retry ${retryCount + 1}/$PREVIEW_MAX_RETRIES " +
-                                        "for ${typeContent.previewUrl}"
-                                )
-                                delay(PREVIEW_RETRY_DELAY_MS)
-                                retryCount++
-                                retryPending = false
-                            }
-                        }
-                    }
-                )
                 val isLoaded = loadedPainter.state is AsyncImagePainter.State.Success
                 val loadedAlpha by animateFloatAsState(
                     targetValue = if (isLoaded) 1f else 0f,
@@ -301,43 +353,31 @@ fun MediaMessage(
                     label = "mediaLoadedAlpha"
                 )
 
-                // The server doesn't always report width/height (observed for some file types, e.g.
-                // screenshots) - without either value, the two matchParentSize() crossfade layers below
-                // have nothing to size the bubble by and it collapses to zero height, hiding the image
-                // even though it loaded successfully. Falling back to the loaded image's own intrinsic
-                // size once available fixes that case without affecting the normal (server-reported)
-                // path, which always takes priority when present.
-                val loadedIntrinsicSize = loadedPainter.intrinsicSize
-                val loadedAspectRatio = if (
-                    loadedIntrinsicSize.isSpecified &&
-                    loadedIntrinsicSize.width > 0f &&
-                    loadedIntrinsicSize.height > 0f
-                ) {
-                    loadedIntrinsicSize.width / loadedIntrinsicSize.height
-                } else {
-                    null
-                }
-                val aspectRatio = serverAspectRatio ?: loadedAspectRatio
-
                 val showsGenericIcon = localVideoFramePainter == null && aspectRatio == null
 
-                val mediaModifier = Modifier
-                    .fillMaxWidth()
-                    .then(if (aspectRatio != null) Modifier.aspectRatio(aspectRatio) else Modifier)
-                    .padding(mediaInset)
-                    .clip(mediaShape)
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(mediaWidthFraction(aspectRatio))
+                BoxWithConstraints(
+                    modifier = if (showsGenericIcon) {
+                        Modifier
+                            .fillMaxWidth()
+                            .defaultMinSize(minWidth = noPreviewMinSize, minHeight = noPreviewMinSize)
+                    } else {
+                        Modifier
+                    }
+                ) {
+                    val fittedSize = aspectRatio?.let {
+                        fittedMediaSize(maxWidth * mediaWidthFraction(it), it, mediaMaxHeight)
+                    }
+                    val mediaModifier = Modifier
                         .then(
-                            if (showsGenericIcon) {
-                                Modifier.defaultMinSize(minWidth = noPreviewMinSize, minHeight = noPreviewMinSize)
+                            if (fittedSize != null) {
+                                Modifier.width(fittedSize.width).height(fittedSize.height)
                             } else {
-                                Modifier
+                                Modifier.fillMaxWidth()
                             }
                         )
-                ) {
+                        .padding(mediaInset)
+                        .clip(mediaShape)
+
                     val messageLongClickHandler = LocalMessageLongClickHandler.current
                     val clickableModifier = mediaModifier.combinedClickable(
                         onClick = { onImageClick(message.id) },
@@ -373,12 +413,32 @@ fun MediaMessage(
                         // than a fade. Keeping the placeholder as a permanent base layer and fading the
                         // loaded image in on top guarantees a smooth, controllable transition instead.
                         Box(modifier = clickableModifier) {
-                            Image(
-                                painter = ownUploadPlaceholder,
-                                contentDescription = stringResource(R.string.media_message_content_description),
-                                modifier = Modifier.matchParentSize(),
-                                contentScale = ContentScale.Crop
-                            )
+                            val placeholder = ownUploadPlaceholder
+                            if (placeholder != null) {
+                                Image(
+                                    painter = placeholder,
+                                    contentDescription = stringResource(R.string.media_message_content_description),
+                                    modifier = Modifier.matchParentSize(),
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else {
+                                Box(
+                                    modifier = Modifier
+                                        .matchParentSize()
+                                        .background(Color.Black.copy(alpha = MEDIA_PLACEHOLDER_BACKGROUND_ALPHA))
+                                ) {
+                                    Icon(
+                                        painter = fallbackPainter,
+                                        contentDescription = stringResource(
+                                            R.string.media_message_content_description
+                                        ),
+                                        modifier = Modifier
+                                            .size(genericIconSize)
+                                            .align(Alignment.Center),
+                                        tint = mimetypeIconTint(typeContent.drawableResourceId)
+                                    )
+                                }
+                            }
                             Image(
                                 painter = loadedPainter,
                                 contentDescription = stringResource(R.string.media_message_content_description),
@@ -444,6 +504,7 @@ fun UploadingMediaMessage(
     val mediaShape = remember(message.incoming, message.isGrouped, message.isGroupedWithNext) {
         shape(message.incoming, message.isGrouped, message.isGroupedWithNext)
     }
+    val mediaMaxHeight = screenMediaMaxHeight()
 
     // Read locally so the placeholder is already sized the same way the final MediaMessage will be
     // (portrait shrunk to mediaWidthFraction) - otherwise the bubble would visibly resize once the
@@ -465,22 +526,33 @@ fun UploadingMediaMessage(
         includePadding = false,
         captionText = typeContent.caption,
         forceTimeOverlay = !hasCaption,
+        contentWidthFraction = { availableWidth ->
+            mediaContentWidthFraction(availableWidth, imageAspectRatio, mediaMaxHeight)
+        },
         content = {
             // Not fillMaxWidth(): for image/video, whichever content renders below decides the
             // width itself (shrinking for portrait), and this wraps to match - forcing full width
             // here would leave empty space beside a narrower image instead of shrinking the bubble.
             Column {
-                Box(
+                BoxWithConstraints(
                     modifier = if (isImage || isVideo) Modifier else Modifier.fillMaxWidth()
                 ) {
                     if (isImage && typeContent.localFileUri.isNotEmpty()) {
                         val ratio = imageAspectRatio
+                        val fittedSize = ratio?.let {
+                            fittedMediaSize(maxWidth * mediaWidthFraction(it), it, mediaMaxHeight)
+                        }
                         AsyncImage(
                             model = typeContent.localFileUri.toUri(),
                             contentDescription = typeContent.fileName,
                             modifier = Modifier
-                                .fillMaxWidth(mediaWidthFraction(ratio))
-                                .then(if (ratio != null) Modifier.aspectRatio(ratio) else Modifier)
+                                .then(
+                                    if (fittedSize != null) {
+                                        Modifier.width(fittedSize.width).height(fittedSize.height)
+                                    } else {
+                                        Modifier.fillMaxWidth()
+                                    }
+                                )
                                 // Without a floor, height comes solely from the AsyncImage's intrinsic
                                 // size while no aspect ratio is known yet: any moment Coil isn't holding
                                 // a decoded bitmap the bubble collapses to zero height and the
@@ -498,7 +570,9 @@ fun UploadingMediaMessage(
                             typeContent = typeContent,
                             referenceId = message.referenceId,
                             mediaInset = mediaInset,
-                            mediaShape = mediaShape
+                            mediaShape = mediaShape,
+                            availableWidth = maxWidth,
+                            mediaMaxHeight = mediaMaxHeight
                         )
                     } else {
                         Icon(
@@ -571,12 +645,15 @@ fun UploadingMediaMessage(
  * back to a fixed 16:9 box with the generic file icon while that's being read, or if it can't be
  * read at all.
  */
+@Suppress("LongParameterList")
 @Composable
 private fun UploadingVideoPreview(
     typeContent: MessageTypeContent.UploadingMedia,
     referenceId: String?,
     mediaInset: Dp,
-    mediaShape: RoundedCornerShape
+    mediaShape: RoundedCornerShape,
+    availableWidth: Dp,
+    mediaMaxHeight: Dp
 ) {
     val context = LocalContext.current
     val videoDescription by produceState<FileDescription?>(
@@ -593,15 +670,15 @@ private fun UploadingVideoPreview(
     }
     val aspectRatio = videoDescription?.aspectRatio ?: DEFAULT_VIDEO_ASPECT_RATIO
     val thumbnail = videoDescription?.videoThumbnail
-    val widthFraction = mediaWidthFraction(aspectRatio)
+    val fittedSize = fittedMediaSize(availableWidth * mediaWidthFraction(aspectRatio), aspectRatio, mediaMaxHeight)
 
     if (thumbnail != null) {
         Image(
             bitmap = thumbnail.asImageBitmap(),
             contentDescription = typeContent.fileName,
             modifier = Modifier
-                .fillMaxWidth(widthFraction)
-                .aspectRatio(aspectRatio)
+                .width(fittedSize.width)
+                .height(fittedSize.height)
                 .padding(mediaInset)
                 .clip(mediaShape)
                 .blur(4.dp),
@@ -610,17 +687,17 @@ private fun UploadingVideoPreview(
     } else {
         Box(
             modifier = Modifier
-                .fillMaxWidth(widthFraction)
-                .aspectRatio(aspectRatio)
+                .width(fittedSize.width)
+                .height(fittedSize.height)
                 .padding(mediaInset)
                 .clip(mediaShape)
-                .background(Color.Black.copy(alpha = VIDEO_PLACEHOLDER_BACKGROUND_ALPHA))
+                .background(Color.Black.copy(alpha = MEDIA_PLACEHOLDER_BACKGROUND_ALPHA))
         ) {
             Icon(
                 painter = painterResource(typeContent.drawableResourceId),
                 contentDescription = typeContent.fileName,
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(genericIconSize)
                     .align(Alignment.Center),
                 tint = mimetypeIconTint(typeContent.drawableResourceId)
             )
