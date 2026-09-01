@@ -57,6 +57,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CollectionInfo
+import androidx.compose.ui.semantics.collectionInfo
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -87,6 +90,8 @@ private const val STICKY_HEADER_HIDE_DELAY_MILLIS = 1200L
 private const val UNREAD_MARKER_LAYOUT_TIMEOUT_MS = 500L
 private const val PREVIEW_SAMPLE_CHAT_COUNT = 50
 private const val PREVIEW_UNREAD_MARKER_OFFSET = 15
+
+private const val NO_COLLECTION_INFO_COUNT = 1
 
 private data class QuoteHighlightEvent(val messageId: Int, val nonce: Long)
 
@@ -378,6 +383,12 @@ fun ChatView(
             contentPadding = PaddingValues(bottom = 20.dp),
             modifier = Modifier
                 .fillMaxSize()
+                .semantics {
+                    collectionInfo = CollectionInfo(
+                        rowCount = NO_COLLECTION_INFO_COUNT,
+                        columnCount = NO_COLLECTION_INFO_COUNT
+                    )
+                }
         ) {
             items(
                 items = state.chatItems,
