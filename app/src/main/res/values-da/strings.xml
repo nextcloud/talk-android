@@ -507,7 +507,7 @@
     <string name="nc_server_maintenance">Få venligst  %1$s ud fra vedligeholdelse </string>
     <string name="nc_server_not_installed">Afslut venligst din %1$s installation</string>
     <string name="nc_server_testing_connection">Tester forbindelsen</string>
-    <string name="nc_server_unsupported">Server har ikke understøttet Snak app installeret</string>
+    <string name="nc_server_unsupported">Server har ikke understøttet Talk app installeret</string>
     <string name="nc_server_url">Serveradresse https://…</string>
     <string name="nc_server_version">%1$svirker kun med %2$s 13 og nyere</string>
     <string name="nc_set_emoji_as_conversation_picture">Sæt emoji som samtalebillede</string>
@@ -528,12 +528,12 @@
     <string name="nc_settings_logs_title">Logs</string>
     <string name="nc_settings_media_quality_title">Sendt mediekvalitet</string>
     <string name="nc_settings_no_ringtone">Ingen lyd</string>
-    <string name="nc_settings_no_talk_installed">Snak appen er ikke installeret på serveren du prøver at blive godkendt på</string>
+    <string name="nc_settings_no_talk_installed">Talk appen er ikke installeret på serveren du prøver at blive godkendt på</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notifikationer</string>
     <string name="nc_settings_notifications_declined">Notifikationer er afvist</string>
     <string name="nc_settings_notifications_granted">Notifikationer er tilladte</string>
     <string name="nc_settings_other_notifications_ringtone">Beskeder</string>
-    <string name="nc_settings_phone_book_integration_desc">Match kontakter baseret på telefonnummer for at integrere. Snak genvej til system kontakt app</string>
+    <string name="nc_settings_phone_book_integration_desc">Match kontakter baseret på telefonnummer for at integrere. Talk genvej til systemkontakt-app</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Fejl429 For mange forespørgsler</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Du kan angive dit telefonnummer så andre brugere kan finde dig</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Indtast telefonnummer</string>
@@ -711,7 +711,7 @@
     <string name="scope_federated_title">Forbundet</string>
     <string name="scope_local_description">Kun synlig for personer i denne instans og gæster</string>
     <string name="scope_local_title">Lokal</string>
-    <string name="scope_private_description">Kun synlig for personer, der matches via telefonnummerintegration via Snak på mobil</string>
+    <string name="scope_private_description">Kun synlig for personer, der matches via telefonnummerintegration via Talk på mobil</string>
     <string name="scope_private_title">Privat</string>
     <string name="scope_published_description">Synkroniser til betroede servere og den globale og offentlige adressebog</string>
     <string name="scope_published_title">Udgivet</string>
