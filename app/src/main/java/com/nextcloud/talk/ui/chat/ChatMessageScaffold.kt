@@ -158,6 +158,7 @@ fun MessageScaffold(
     forceTimeBelow: Boolean = false,
     forceTimeOverlay: Boolean = false,
     bubbleColor: Color? = null,
+    contentWidthFraction: (availableWidth: Dp) -> Float = { 1f },
     content: @Composable () -> Unit
 ) {
     val incoming = uiMessage.incoming
@@ -227,6 +228,7 @@ fun MessageScaffold(
 
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
         val messageBubbleMaxWidth = maxWidth * MESSAGE_BUBBLE_MAX_WIDTH_FRACTION
+        val resolvedContentMinWidth = messageBubbleMaxWidth * contentWidthFraction(messageBubbleMaxWidth)
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -249,6 +251,7 @@ fun MessageScaffold(
                 captionText = captionText,
                 showInlineMetadata = showInlineMetadata,
                 showQuote = showQuote,
+                contentMinWidth = resolvedContentMinWidth,
                 content = content
             )
         }
@@ -297,6 +300,7 @@ private fun MessageBubbleWithReactions(
     captionText: String?,
     showInlineMetadata: Boolean,
     showQuote: Boolean,
+    contentMinWidth: Dp,
     content: @Composable () -> Unit
 ) {
     val bubbleModifier = Modifier
@@ -328,6 +332,8 @@ private fun MessageBubbleWithReactions(
                 captionText = captionText,
                 showInlineMetadata = showInlineMetadata,
                 showQuote = showQuote,
+                contentMinWidth = contentMinWidth,
+                contentMaxWidth = maxBubbleWidth,
                 content = content
             )
         }
@@ -353,6 +359,8 @@ private fun MessageBubbleContent(
     captionText: String?,
     showInlineMetadata: Boolean,
     showQuote: Boolean,
+    contentMinWidth: Dp,
+    contentMaxWidth: Dp,
     content: @Composable () -> Unit
 ) {
     val bubbleContentModifier = if (includePadding) {
@@ -369,13 +377,16 @@ private fun MessageBubbleContent(
             uiMessage = uiMessage,
             paddingAlreadyApplied = includePadding,
             showQuote = showQuote,
-            conversationThreadId = conversationThreadId
+            conversationThreadId = conversationThreadId,
+            contentMinWidth = contentMinWidth
         )
         MessageBodyWithMetadata(
             uiMessage = uiMessage,
             metadataLayoutMode = metadataLayoutMode,
             captionText = captionText,
             showInlineMetadata = showInlineMetadata,
+            contentMinWidth = contentMinWidth,
+            contentMaxWidth = contentMaxWidth,
             content = content
         )
     }
@@ -386,11 +397,12 @@ private fun MessageHeader(
     uiMessage: ChatMessageUi,
     paddingAlreadyApplied: Boolean,
     showQuote: Boolean,
-    conversationThreadId: Long?
+    conversationThreadId: Long?,
+    contentMinWidth: Dp
 ) {
     if (showQuote) {
         uiMessage.parentMessage?.let {
-            CommonMessageQuote(it)
+            CommonMessageQuote(it, contentMinWidth = contentMinWidth)
         }
     }
 
@@ -401,12 +413,15 @@ private fun MessageHeader(
     )
 }
 
+@Suppress("LongParameterList")
 @Composable
 private fun ColumnScope.MessageBodyWithMetadata(
     uiMessage: ChatMessageUi,
     metadataLayoutMode: MetadataLayoutMode,
     captionText: String?,
     showInlineMetadata: Boolean,
+    contentMinWidth: Dp,
+    contentMaxWidth: Dp,
     suppressMetadata: Boolean = false,
     content: @Composable () -> Unit
 ) {
@@ -417,6 +432,8 @@ private fun ColumnScope.MessageBodyWithMetadata(
                 captionText = captionText.orEmpty(),
                 uiMessage = uiMessage,
                 showInlineMetadata = showInlineMetadata,
+                contentMinWidth = contentMinWidth,
+                contentMaxWidth = contentMaxWidth,
                 suppressMetadata = suppressMetadata
             )
         }
@@ -425,8 +442,7 @@ private fun ColumnScope.MessageBodyWithMetadata(
             // Not fillMaxWidth(): OVERLAY is media-only, and media's own content already decides
             // its width (e.g. shrinking narrower for portrait) - forcing full width here would
             // leave the bubble at full size with empty space beside a narrower image instead of
-            // letting the bubble shrink to match. OverlayMetadataBadge's alignment is relative to
-            // this Box's own bounds either way, so it still lands correctly on the content's corner.
+            // letting the bubble shrink to match.
             Box {
                 content()
                 if (!suppressMetadata) {
@@ -477,14 +493,16 @@ private fun ColumnScope.MessageBodyWithMetadata(
 
 @Composable
 private fun BoxScope.OverlayMetadataBadge(uiMessage: ChatMessageUi) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .align(Alignment.BottomEnd)
-            .padding(bottom = 8.dp, end = 8.dp)
-            .background(Color.Black.copy(alpha = 0.4f), RoundedCornerShape(10.dp))
-    ) {
-        MessageMetadata(uiMessage = uiMessage, color = Color.White)
+    Box(modifier = Modifier.matchParentSize()) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 8.dp, end = 8.dp)
+                .background(Color.Black.copy(alpha = 0.4f), RoundedCornerShape(10.dp))
+        ) {
+            MessageMetadata(uiMessage = uiMessage, color = Color.White)
+        }
     }
 }
 
@@ -618,21 +636,22 @@ private fun ColumnScope.CaptionWithMetadata(
     captionText: String,
     uiMessage: ChatMessageUi,
     showInlineMetadata: Boolean,
+    contentMinWidth: Dp,
+    contentMaxWidth: Dp,
     suppressMetadata: Boolean = false
 ) {
     val highlightSearchTerm = LocalHighlightSearchTerm.current
     if (!suppressMetadata && showInlineMetadata) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+                .widthIn(min = contentMinWidth)
                 .padding(horizontal = 8.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
             EnrichedText(
                 uiMessage,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp),
+                modifier = Modifier.padding(end = 8.dp),
                 highlightSearchTerm = highlightSearchTerm
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -643,7 +662,7 @@ private fun ColumnScope.CaptionWithMetadata(
         EnrichedText(
             uiMessage,
             modifier = Modifier
-                // .widthIn(20.dp, 280.dp)
+                .widthIn(min = contentMinWidth, max = contentMaxWidth)
                 .padding(start = 8.dp, end = 8.dp),
             highlightSearchTerm = highlightSearchTerm
         )
@@ -662,7 +681,7 @@ private fun ColumnScope.CaptionWithMetadata(
 
 @Suppress("LongMethod")
 @Composable
-fun CommonMessageQuote(message: ChatMessageUi) {
+fun CommonMessageQuote(message: ChatMessageUi, contentMinWidth: Dp = 0.dp) {
     val lineColor = if (!message.incoming) {
         colorScheme.primary
     } else {
@@ -674,7 +693,7 @@ fun CommonMessageQuote(message: ChatMessageUi) {
         modifier = Modifier
             .padding(vertical = 4.dp)
             .combinedClickable(onClick = { onQuotedMessageClick(message.id) })
-            .fillMaxWidth()
+            .widthIn(min = contentMinWidth)
             .drawBehind {
                 val barWidth = 4.dp.toPx()
                 val r = 8.dp.toPx()
