@@ -722,7 +722,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val systemNotificationId: Int =
             activeStatusBarNotification?.id ?: calculateCRC32(System.currentTimeMillis().toString()).toInt()
 
-        if ((TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) && pushMessage.notificationUser != null) {
+        if ((TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) &&
+            pushMessage.notificationUser != null
+        ) {
             notificationBuilder.setOnlyAlertOnce(false)
             val senderAvatar = loadSenderAvatar(pushMessage.notificationUser)
             val imageUri = imagePreviewUrl?.let { loadImageBitmapSync(it) }?.let {
