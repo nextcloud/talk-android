@@ -7,9 +7,11 @@
 
 package com.nextcloud.talk.utils
 
+import kotlinx.coroutines.test.currentTime
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertSame
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 @Suppress("TooGenericExceptionThrown")
@@ -75,5 +77,64 @@ class CoroutineUtilsTest {
                 }
             }
             assertEquals(1, callCount)
+        }
+
+    @Test
+    fun `withRetry waits initialDelayMillis before the first retry`() =
+        runTest {
+            var callCount = 0
+            withRetry(retries = 1, initialDelayMillis = 1000) {
+                callCount++
+                if (callCount < 2) throw RuntimeException("transient error")
+                "success"
+            }
+            assertEquals(2, callCount)
+            assertEquals(1000, currentTime)
+        }
+
+    @Test
+    fun `withRetry does not wait when initialDelayMillis is zero`() =
+        runTest {
+            var callCount = 0
+            withRetry(retries = 2, initialDelayMillis = 0) {
+                callCount++
+                if (callCount < 3) throw RuntimeException("transient error")
+                "success"
+            }
+            assertEquals(3, callCount)
+            assertTrue(currentTime == 0L)
+        }
+
+    @Test
+    fun `withRetry backs off exponentially between attempts`() =
+        runTest {
+            var callCount = 0
+            withRetry(retries = 2, initialDelayMillis = 1000, backoffFactor = 2.0) {
+                callCount++
+                if (callCount < 3) throw RuntimeException("transient error")
+                "success"
+            }
+            assertEquals(3, callCount)
+            // 1000ms before the 2nd attempt, then 2000ms before the 3rd
+            assertEquals(3000, currentTime)
+        }
+
+    @Test
+    fun `withRetry caps the backoff delay at maxDelayMillis`() =
+        runTest {
+            var callCount = 0
+            withRetry(
+                retries = 3,
+                initialDelayMillis = 1000,
+                backoffFactor = 2.0,
+                maxDelayMillis = 1500
+            ) {
+                callCount++
+                if (callCount < 4) throw RuntimeException("transient error")
+                "success"
+            }
+            assertEquals(4, callCount)
+            // Uncapped would be 1000 + 2000 + 4000; capped at 1500 each time it exceeds it
+            assertEquals(1000 + 1500 + 1500, currentTime)
         }
 }

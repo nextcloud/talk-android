@@ -186,7 +186,11 @@ class OfflineFirstConversationsRepository @Inject constructor(
         val includeStatus = isUserStatusAvailable(user)
 
         try {
-            val conversationsList = withRetry(NETWORK_FETCH_RETRIES) {
+            val conversationsList = withRetry(
+                retries = NETWORK_FETCH_RETRIES,
+                initialDelayMillis = NETWORK_FETCH_RETRY_INITIAL_DELAY_MS,
+                maxDelayMillis = NETWORK_FETCH_RETRY_MAX_DELAY_MS
+            ) {
                 network.getRooms(user, user.baseUrl!!, includeStatus)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -352,5 +356,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
         private const val MAX_ROOMS_TO_CATCH_UP = 20
         private const val MAX_CONCURRENT_CATCH_UPS = 3
         private const val NETWORK_FETCH_RETRIES = 3
+        private const val NETWORK_FETCH_RETRY_INITIAL_DELAY_MS = 1000L
+        private const val NETWORK_FETCH_RETRY_MAX_DELAY_MS = 8000L
     }
 }
