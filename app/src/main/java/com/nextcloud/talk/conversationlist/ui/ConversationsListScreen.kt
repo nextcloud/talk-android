@@ -74,6 +74,7 @@ import kotlinx.coroutines.launch
 
 private const val SEARCH_DEBOUNCE_MS = 300
 private const val SEARCH_MIN_CHARS = 1
+private const val OVERLAY_MARGIN = 16
 
 @Suppress("LongParameterList")
 data class ConversationsListScreenState(
@@ -273,19 +274,6 @@ fun ConversationsListScreen(
                         )
                     )
                 }
-            },
-            floatingActionButton = {
-                ConversationListFab(
-                    isVisible = isFabVisible && !isSearchActive,
-                    isEnabled = isOnline,
-                    onClick = callbacks.onFabClick
-                )
-            },
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = state.snackbarHostState,
-                    modifier = Modifier.navigationBarsPadding()
-                )
             }
         ) { paddingValues ->
             val layoutDirection = LocalLayoutDirection.current
@@ -386,15 +374,31 @@ fun ConversationsListScreen(
                     }
                 }
 
-                // Unread-mention bubble (bottom-center overlay)
-                UnreadMentionBubble(
-                    visible = showUnreadBubble && !isSearchActive,
-                    onClick = callbacks.onUnreadBubbleClick,
+                Column(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .navigationBarsPadding()
-                        .padding(bottom = 16.dp)
-                )
+                        .fillMaxWidth()
+                        .padding(bottom = paddingValues.calculateBottomPadding())
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        UnreadMentionBubble(
+                            visible = showUnreadBubble && !isSearchActive,
+                            onClick = callbacks.onUnreadBubbleClick,
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(bottom = OVERLAY_MARGIN.dp)
+                        )
+                        ConversationListFab(
+                            isVisible = isFabVisible && !isSearchActive,
+                            isEnabled = isOnline,
+                            onClick = callbacks.onFabClick,
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(end = OVERLAY_MARGIN.dp, bottom = OVERLAY_MARGIN.dp)
+                        )
+                    }
+                    SnackbarHost(hostState = state.snackbarHostState)
+                }
             }
 
             // Account-chooser dialog
