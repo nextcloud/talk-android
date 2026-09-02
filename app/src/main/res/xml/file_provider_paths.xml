@@ -8,6 +8,9 @@
     <cache-path
         name="shared_attachments"
         path="shared_attachments/" />
+    <cache-path
+        name="photos"
+        path="photos/" />
     <files-path
         name="logs"
         path="logs/" />
