@@ -82,6 +82,12 @@
                 android:visibility="gone"
                 tools:visibility="visible" />
 
+            <include
+                android:id="@+id/emojiSearchPanel"
+                layout="@layout/emoji_search_panel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <androidx.emoji2.emojipicker.EmojiPickerView
                 android:id="@+id/emoji_picker"
                 android:layout_width="match_parent"
