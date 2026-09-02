@@ -41,9 +41,10 @@ private const val FAB_ANIM_DURATION = 200
 private const val UNREAD_MENTIONS_HORIZONTAL_SPACING = 88
 
 @Composable
-fun ConversationListFab(isVisible: Boolean, isEnabled: Boolean, onClick: () -> Unit) {
+fun ConversationListFab(isVisible: Boolean, isEnabled: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     AnimatedVisibility(
         visible = isVisible,
+        modifier = modifier,
         enter = scaleIn(animationSpec = tween(FAB_ANIM_DURATION)) + fadeIn(animationSpec = tween(FAB_ANIM_DURATION)),
         exit = scaleOut(animationSpec = tween(FAB_ANIM_DURATION)) + fadeOut(animationSpec = tween(FAB_ANIM_DURATION))
     ) {
