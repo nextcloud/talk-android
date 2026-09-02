@@ -25,7 +25,6 @@ import com.nextcloud.talk.adapters.items.MentionAutocompleteItem.Companion.SOURC
 import com.nextcloud.talk.adapters.items.MentionAutocompleteItem.Companion.SOURCE_TEAMS
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemConversationInfoParticipantBinding
-import com.nextcloud.talk.extensions.loadDefaultAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.extensions.loadGuestAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
@@ -138,11 +137,7 @@ class MentionAutocompleteAdapter(
             }
 
             SOURCE_GUESTS, SOURCE_EMAILS -> {
-                if (item.displayName.equals(context.resources.getString(R.string.nc_guest))) {
-                    avatarView.loadDefaultAvatar(viewThemeUtils)
-                } else {
-                    avatarView.loadGuestAvatar(currentUser, item.displayName!!, false)
-                }
+                avatarView.loadGuestAvatar(item.displayName, viewThemeUtils)
             }
 
             SOURCE_TEAMS ->

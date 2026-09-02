@@ -62,7 +62,6 @@ import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils.getUrlForAvatar
 import com.nextcloud.talk.utils.ApiUtils.getUrlForFederatedAvatar
-import com.nextcloud.talk.utils.ApiUtils.getUrlForGuestAvatar
 import com.nextcloud.talk.utils.preferences.AppPreferencesImpl
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -196,15 +195,11 @@ object DisplayUtils {
             chip.setChipIconResource(R.drawable.icon_circular_phone)
         }
         chip.setBounds(0, 0, chip.intrinsicWidth, chip.intrinsicHeight)
-        if (!isGroup) {
+        // Guests and email participants have no avatar on the server, so their chip keeps the
+        // person icon set above instead of requesting one, matching the web client
+        val isGuest = "guests" == type || "guest" == type || "email" == type
+        if (!isGroup && !isGuest) {
             var url = getUrlForAvatar(conversationUser.baseUrl, id, false, isDarkModeOn(context))
-            if ("guests" == type || "guest" == type || "email" == type) {
-                url = getUrlForGuestAvatar(
-                    conversationUser.baseUrl,
-                    label.toString(),
-                    true
-                )
-            }
             if (isFederated) {
                 val darkTheme = if (isDarkModeOn(context)) 1 else 0
                 url = getUrlForFederatedAvatar(

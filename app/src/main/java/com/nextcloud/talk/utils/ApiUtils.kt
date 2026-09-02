@@ -376,12 +376,6 @@ object ApiUtils {
         return "$url?cloudId=$cloudId&darkTheme=$darkTheme"
     }
 
-    @JvmStatic
-    fun getUrlForGuestAvatar(baseUrl: String?, name: String?, requestBigSize: Boolean): String {
-        val avatarSize = if (requestBigSize) AVATAR_SIZE_BIG else AVATAR_SIZE_SMALL
-        return baseUrl + "/index.php/avatar/guest/" + Uri.encode(name) + "/" + avatarSize
-    }
-
     fun getUrlForConversationAvatar(version: Int, baseUrl: String?, token: String?): String =
         getUrlForRoom(version, baseUrl, token) + "/avatar"
 

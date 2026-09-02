@@ -74,7 +74,9 @@ import com.nextcloud.talk.receivers.DismissRecordingAvailableReceiver
 import com.nextcloud.talk.receivers.MarkAsReadReceiver
 import com.nextcloud.talk.receivers.ShareRecordingToChatReceiver
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ActorAvatar
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CharacterAvatarUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils
@@ -901,21 +903,26 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     private fun loadSenderAvatar(notificationUser: NotificationUser?): Bitmap? {
-        val userType = notificationUser?.type
-        if (userType != "user" && userType != "guest") return null
+        val userType = notificationUser?.type ?: return null
 
-        val baseUrl = user.baseUrl
-        val avatarUrl = if ("user" == userType) {
-            ApiUtils.getUrlForAvatar(
-                baseUrl!!,
+        return if ("user" == userType) {
+            val avatarUrl = ApiUtils.getUrlForAvatar(
+                user.baseUrl!!,
                 notificationUser.id,
                 false,
                 darkMode = DisplayUtils.isDarkModeOn(context!!)
             )
+            NotificationUtils.loadAvatarBitmapSync(avatarUrl, context!!)
         } else {
-            ApiUtils.getUrlForGuestAvatar(baseUrl!!, notificationUser.name, false)
+            // Guests and bots have no avatar on the server, so theirs is drawn from their name here
+            val avatar = CharacterAvatarUtils.avatarFor(
+                actorType = userType,
+                actorId = notificationUser.id,
+                displayName = notificationUser.name,
+                guestLabel = context!!.getString(R.string.nc_guest)
+            )
+            (avatar as? ActorAvatar.Character)?.let { NotificationUtils.characterAvatarBitmap(context!!, it) }
         }
-        return NotificationUtils.loadAvatarBitmapSync(avatarUrl, context!!)
     }
 
     private fun loadImageBitmapSync(imageUrl: String): Bitmap? {

@@ -20,6 +20,7 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.IconCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import coil.executeBlocking
 import coil.imageLoader
@@ -30,6 +31,7 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RingtoneSettings
+import com.nextcloud.talk.ui.toDrawable
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import java.io.File
@@ -363,6 +365,19 @@ object NotificationUtils {
             null
         }
     }
+
+    /**
+     * Notification avatar for actors without an avatar on the server, drawn by the client as
+     * resolved by [CharacterAvatarUtils] instead of being requested.
+     */
+    fun characterAvatarBitmap(context: Context, avatar: ActorAvatar.Character): Bitmap =
+        avatar.toDrawable(context).toBitmap(CHARACTER_AVATAR_ICON_SIZE, CHARACTER_AVATAR_ICON_SIZE)
+
+    /**
+     * Pixel size the character avatar is rasterized to for notifications, which cannot scale a
+     * drawable themselves.
+     */
+    private const val CHARACTER_AVATAR_ICON_SIZE = 128
 
     private data class Channel(val id: String, val name: String, val description: String, val isImportant: Boolean)
 }

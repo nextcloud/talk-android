@@ -23,10 +23,9 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.conversationinfo.model.ParticipantModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemConversationInfoParticipantBinding
-import com.nextcloud.talk.extensions.loadDefaultAvatar
 import com.nextcloud.talk.extensions.loadDefaultGroupCallAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
-import com.nextcloud.talk.extensions.loadFirstLetterAvatar
+import com.nextcloud.talk.extensions.loadGuestAvatar
 import com.nextcloud.talk.extensions.loadPhoneAvatar
 import com.nextcloud.talk.extensions.loadTeamAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
@@ -210,12 +209,7 @@ class ParticipantItemAdapter(
             }
 
             Participant.ActorType.GUESTS, Participant.ActorType.EMAILS -> {
-                val actorName = model.displayName
-                if (!actorName.isNullOrBlank()) {
-                    binding.avatarView.loadFirstLetterAvatar(actorName)
-                } else {
-                    binding.avatarView.loadDefaultAvatar(viewThemeUtils)
-                }
+                binding.avatarView.loadGuestAvatar(model.displayName, viewThemeUtils)
             }
 
             Participant.ActorType.FEDERATED -> {
