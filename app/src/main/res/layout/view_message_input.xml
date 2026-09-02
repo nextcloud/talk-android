@@ -44,13 +44,25 @@
                 android:src="@drawable/ic_baseline_attach_file_24"
                 app:tint="?attr/colorControlNormal" />
 
+            <ImageButton
+                android:id="@+id/smileyButton"
+                android:layout_width="@dimen/min_size_clickable_area"
+                android:layout_height="@dimen/min_size_clickable_area"
+                android:layout_alignBottom="@id/messageInput"
+                android:layout_toEndOf="@id/attachmentButton"
+                android:background="@color/transparent"
+                android:contentDescription="@string/nc_add_emojis"
+                android:gravity="bottom"
+                android:src="@drawable/ic_insert_emoticon_black_24dp"
+                app:tint="?attr/colorControlNormal" />
+
             <com.nextcloud.talk.utils.ImageEmojiEditText
                 android:id="@+id/messageInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginEnd="48dp"
-                android:layout_toEndOf="@id/attachmentButton"
+                android:layout_toEndOf="@id/smileyButton"
                 android:background="@null"
                 android:imeOptions="actionDone"
                 android:inputType="textAutoCorrect|textMultiLine|textCapSentences"
