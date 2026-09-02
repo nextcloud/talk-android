@@ -32,7 +32,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
-import androidx.work.OutOfQuotaPolicy
+import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -1231,7 +1231,7 @@ class ConversationsListActivity : BaseActivity() {
             .build()
         val worker = OneTimeWorkRequest.Builder(LeaveConversationWorker::class.java)
             .setInputData(data)
-            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .setExpeditedIfSupported()
             .build()
         WorkManager.getInstance().enqueue(worker)
         WorkManager.getInstance(this).getWorkInfoByIdLiveData(worker.id).observeForever { workInfo ->
@@ -1336,7 +1336,7 @@ class ConversationsListActivity : BaseActivity() {
     private fun deleteUserAndRestartApp() {
         userManager.scheduleUserForDeletionWithId(currentUser!!.id!!).blockingGet()
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
-            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .setExpeditedIfSupported()
             .build()
         WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
 
@@ -1476,7 +1476,7 @@ class ConversationsListActivity : BaseActivity() {
         val deleteConversationWorker =
             OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java)
                 .setInputData(data.build())
-                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                .setExpeditedIfSupported()
                 .build()
         WorkManager.getInstance().enqueue(deleteConversationWorker)
 
