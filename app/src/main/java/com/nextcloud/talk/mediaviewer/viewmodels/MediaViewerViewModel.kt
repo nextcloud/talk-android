@@ -12,7 +12,7 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
-import androidx.work.OutOfQuotaPolicy
+import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -152,7 +152,7 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
         val request = OneTimeWorkRequest.Builder(DownloadFileToCacheWorker::class.java)
             .setInputData(data)
             .addTag(item.fileId)
-            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .setExpeditedIfSupported()
             .build()
         WorkManager.getInstance(context).enqueue(request)
 

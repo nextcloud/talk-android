@@ -92,7 +92,7 @@ import androidx.media3.session.SessionToken
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
-import androidx.work.OutOfQuotaPolicy
+import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -2380,7 +2380,7 @@ class ChatActivity :
         val downloadWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(DownloadFileToCacheWorker::class.java)
             .setInputData(data)
             .addTag(fileId)
-            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .setExpeditedIfSupported()
             .build()
 
         WorkManager.getInstance().enqueue(downloadWorker)
@@ -2538,7 +2538,7 @@ class ChatActivity :
                         .build()
                     val worker = OneTimeWorkRequest.Builder(ShareOperationWorker::class.java)
                         .setInputData(data)
-                        .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                        .setExpeditedIfSupported()
                         .build()
                     WorkManager.getInstance().enqueue(worker)
                 }
@@ -3344,7 +3344,7 @@ class ChatActivity :
         val deleteConversationWorker =
             OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java)
                 .setInputData(data.build())
-                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                .setExpeditedIfSupported()
                 .build()
         WorkManager.getInstance().enqueue(deleteConversationWorker)
 

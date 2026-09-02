@@ -27,7 +27,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
-import androidx.work.OutOfQuotaPolicy
+import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -504,7 +504,7 @@ class ConversationInfoActivity : BaseActivity() {
         val addParticipantsWorker =
             OneTimeWorkRequest.Builder(AddParticipantsToConversationWorker::class.java)
                 .setInputData(data)
-                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                .setExpeditedIfSupported()
                 .build()
         WorkManager.getInstance().enqueue(addParticipantsWorker)
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(addParticipantsWorker.id)
@@ -519,7 +519,7 @@ class ConversationInfoActivity : BaseActivity() {
         workerData?.let { data ->
             val workRequest = OneTimeWorkRequest.Builder(LeaveConversationWorker::class.java)
                 .setInputData(data)
-                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                .setExpeditedIfSupported()
                 .build()
             WorkManager.getInstance(context).enqueueUniqueWork(
                 "leave_conversation_work",
@@ -594,7 +594,7 @@ class ConversationInfoActivity : BaseActivity() {
             WorkManager.getInstance(context).enqueue(
                 OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java)
                     .setInputData(it)
-                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                    .setExpeditedIfSupported()
                     .build()
             )
 
