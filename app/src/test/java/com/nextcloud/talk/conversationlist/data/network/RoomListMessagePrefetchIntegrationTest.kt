@@ -71,7 +71,9 @@ class RoomListMessagePrefetchIntegrationTest {
         db = Room.inMemoryDatabaseBuilder(context, TalkDatabase::class.java)
             .allowMainThreadQueries()
             .build()
-        db.usersDao().saveUser(UserEntity(id = ACCOUNT_ID, userId = "me", username = "me", baseUrl = BASE_URL))
+        runBlocking {
+            db.usersDao().saveUser(UserEntity(id = ACCOUNT_ID, userId = "me", username = "me", baseUrl = BASE_URL))
+        }
 
         whenever(networkMonitor.isOnline).thenReturn(MutableStateFlow(true))
 
