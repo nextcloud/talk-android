@@ -529,6 +529,7 @@ class AccountVerificationActivity : BaseActivity() {
                         ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
                 }
                 val intent = Intent(context, ConversationsListActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(intent)
             }
         } else {
