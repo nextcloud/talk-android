@@ -7,6 +7,7 @@
 package com.nextcloud.talk.emojipicker
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -96,8 +97,8 @@ class EmojiPickerPanel @JvmOverloads constructor(
      * Applies the host's dynamic per-server branding to every themeable part of the panel:
      * the picker's background and selected-category tab (see [themeEmojiPickerCategoryTabs]),
      * its scroll-gesture fix (see [protectEmojiPickerScrollGesture]), and the search field's
-     * hint/text colors, which otherwise fall back to the static app theme instead of following
-     * that branding.
+     * hint/text/icon colors, which otherwise fall back to the static app theme instead of
+     * following that branding.
      */
     fun applyTheme(
         backgroundColor: Int,
@@ -109,6 +110,10 @@ class EmojiPickerPanel @JvmOverloads constructor(
         setBackgroundColor(backgroundColor)
         binding.emojiSearchInput.setHintTextColor(hintTextColor)
         binding.emojiSearchInput.setTextColor(textColor)
+        val iconTint = ColorStateList.valueOf(hintTextColor)
+        binding.emojiSearchIcon.imageTintList = iconTint
+        binding.emojiSearchClear.imageTintList = iconTint
+        binding.emojiBackspaceButton.imageTintList = iconTint
         themeEmojiPickerCategoryTabs(emojiPickerView, selectedTabColor, unselectedTabColor)
         protectEmojiPickerScrollGesture(emojiPickerView)
     }
