@@ -14,6 +14,7 @@ import com.nextcloud.talk.users.UserManager
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module(includes = [DatabaseModule::class])
 abstract class UserModule {
@@ -28,6 +29,7 @@ abstract class UserModule {
 
     companion object {
         @Provides
+        @Singleton
         fun provideUserManager(userRepository: UsersRepository): UserManager = UserManager(userRepository)
     }
 }

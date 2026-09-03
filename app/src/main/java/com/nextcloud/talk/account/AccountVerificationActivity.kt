@@ -240,7 +240,7 @@ class AccountVerificationActivity : BaseActivity() {
             UserManager.UserAttributes(
                 id = null,
                 serverUrl = baseUrl,
-                currentUser = true,
+                currentUser = false,
                 userId = userId,
                 token = token,
                 displayName = displayName,
@@ -519,32 +519,22 @@ class AccountVerificationActivity : BaseActivity() {
     private fun proceedWithLogin() {
         cookieManager.cookieStore.removeAll()
 
-        if (userManager.users.blockingGet().size == 1 ||
-            currentUserProviderOld.currentUser.blockingGet().id != internalAccountId
-        ) {
-            val userToSetAsActive = userManager.getUserWithId(internalAccountId).blockingGet()
-            Log.d(TAG, "userToSetAsActive: " + userToSetAsActive.username)
+        val userToSetAsActive = userManager.getUserWithId(internalAccountId).blockingGet()
+        Log.d(TAG, "userToSetAsActive: " + userToSetAsActive.username)
 
-            if (userManager.setUserAsActive(userToSetAsActive).blockingGet()) {
-                runOnUiThread {
-                    if (userManager.users.blockingGet().size == 1) {
-                        val intent = Intent(context, ConversationsListActivity::class.java)
-                        startActivity(intent)
-                    } else {
-                        if (isAccountImport) {
-                            ApplicationWideMessageHolder.getInstance().messageType =
-                                ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
-                        }
-                        val intent = Intent(context, ConversationsListActivity::class.java)
-                        startActivity(intent)
-                    }
+        if (userManager.setUserAsActive(userToSetAsActive).blockingGet()) {
+            runOnUiThread {
+                if (userManager.users.blockingGet().size > 1 && isAccountImport) {
+                    ApplicationWideMessageHolder.getInstance().messageType =
+                        ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
                 }
-            } else {
-                Log.e(TAG, "failed to set active user")
-                Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                val intent = Intent(context, ConversationsListActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(intent)
             }
         } else {
-            Log.d(TAG, "continuing proceedWithLogin was skipped for this user")
+            Log.e(TAG, "failed to set active user")
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
         }
     }
 
