@@ -240,7 +240,7 @@ class AccountVerificationActivity : BaseActivity() {
             UserManager.UserAttributes(
                 id = null,
                 serverUrl = baseUrl,
-                currentUser = true,
+                currentUser = false,
                 userId = userId,
                 token = token,
                 displayName = displayName,
