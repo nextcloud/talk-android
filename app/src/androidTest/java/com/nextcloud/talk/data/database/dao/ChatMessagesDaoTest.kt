@@ -60,8 +60,8 @@ class ChatMessagesDaoTest {
             usersDao.saveUser(createUserEntity("account1", "Account 1"))
             usersDao.saveUser(createUserEntity("account2", "Account 2"))
 
-            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
-            val account2 = usersDao.getUserWithUserId("account2").blockingGet()
+            val account1 = usersDao.getUserWithUserId("account1")!!
+            val account2 = usersDao.getUserWithUserId("account2")!!
 
             // Problem: lets say we want to update the conv list -> We don#t know the primary keys!
             // with account@token that would be easier!
