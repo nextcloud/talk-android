@@ -21,6 +21,8 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Suppress("TooManyFunctions")
 class UserManager internal constructor(private val userRepository: UsersRepository) {
@@ -45,14 +47,31 @@ class UserManager internal constructor(private val userRepository: UsersReposito
      * knows about it - e.g. launching a screen for the new user before its avatar/data had actually updated.
      * Room's own observable is still relied on underneath to seed this and to catch any change to the `current`
      * flag that doesn't go through [setUserAsActive].
+     *
+     * RxJava-based for CurrentUserProviderOld, the still-used but deprecated consumer. Coroutine-based code
+     * should prefer [currentUserFlow] instead, which is updated at the exact same point and needs no RxJava
+     * bridging on the consuming side.
      */
     val currentUserObservable: Observable<User>
         get() = activeUserSubject
+
+    /**
+     * Coroutine-native counterpart to [currentUserObservable] - see its doc for why this exists. Both are
+     * updated synchronously, at the same point in [setUserAsActive], from Room's same underlying query.
+     */
+    val currentUserFlow: StateFlow<User?>
+        get() = activeUserStateFlow
 
     private val activeUserSubject: Subject<User> by lazy {
         val subject = BehaviorSubject.create<User>().toSerialized()
         userRepository.getActiveUserObservable().subscribe(subject::onNext) { }
         subject
+    }
+
+    private val activeUserStateFlow: MutableStateFlow<User?> by lazy {
+        val flow = MutableStateFlow<User?>(null)
+        userRepository.getActiveUserObservable().subscribe({ flow.value = it }) { }
+        flow
     }
 
     fun deleteUser(internalId: Long): Int =
@@ -175,6 +194,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             .doOnSuccess { success ->
                 if (success) {
                     activeUserSubject.onNext(user)
+                    activeUserStateFlow.value = user
                 }
             }
     }
