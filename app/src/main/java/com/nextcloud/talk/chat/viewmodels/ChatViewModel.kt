@@ -1607,7 +1607,8 @@ class ChatViewModel @AssistedInject constructor(
                 isReactionsMessage(currentMessage) ||
                 isPollVotedMessage(currentMessage) ||
                 isEditMessage(currentMessage) ||
-                isThreadCreatedMessage(currentMessage)
+                isThreadCreatedMessage(currentMessage) ||
+                isUnpinnedMessage(currentMessage)
 
         val chatMessageMap = chatMessageList.associateBy { it.jsonMessageId }.toMutableMap()
         val chatMessageIterator = chatMessageMap.iterator()
@@ -1667,6 +1668,9 @@ class ChatViewModel @AssistedInject constructor(
 
     private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<Int, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
+
+    private fun isUnpinnedMessage(currentMessage: MutableMap.MutableEntry<Int, ChatMessage>): Boolean =
+        currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.MESSAGE_UNPINNED
 
     private fun handleThreadMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
         fun isThreadChildMessage(currentMessage: MutableMap.MutableEntry<Int, ChatMessage>): Boolean =
