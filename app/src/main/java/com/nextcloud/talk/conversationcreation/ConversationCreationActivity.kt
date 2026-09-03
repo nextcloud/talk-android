@@ -934,6 +934,7 @@ fun ShowPasswordDialog(
                         conversationCreationViewModel.updatePassword(password)
                         conversationCreationViewModel.isPasswordEnabled(true)
                         conversationCreationViewModel.resetPasswordViewState()
+                        onDismiss()
                     }
                 }
             ) {

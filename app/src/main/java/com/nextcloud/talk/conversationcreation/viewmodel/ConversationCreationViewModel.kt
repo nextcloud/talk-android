@@ -18,9 +18,7 @@ import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.generic.GenericMeta
 import com.nextcloud.talk.models.json.passwordResult.PasswordResult
-import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl.Companion.STATUS_CODE_OK
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
@@ -116,7 +114,6 @@ class ConversationCreationViewModel @Inject constructor(
         _validPasswordViewState.value = ValidPasswordUiState.None
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     fun updateConversationPreset(preset: String) {
         conversationPreset.value = preset
         when (preset) {

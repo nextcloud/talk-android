@@ -1,4 +1,3 @@
-
 /*
  * Nextcloud Talk - Android Client
  *
@@ -12,9 +11,11 @@ import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
 @Parcelize
 @JsonObject
+@Serializable
 data class ProvisioningCapability(
     @JsonField(name = ["AccountPropertyScopesVersion"])
     var accountPropertyScopesVersion: Int?
