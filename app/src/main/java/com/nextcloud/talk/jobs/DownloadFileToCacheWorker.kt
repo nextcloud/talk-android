@@ -112,7 +112,7 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
         count = bis.read(data)
 
         while (count != -1) {
-            if (totalFileSize > -1) {
+            if (totalFileSize > 0) {
                 total += count.toLong()
                 val progress = (total * COMPLETE_PERCENTAGE / totalFileSize).toInt()
                 val currentTime = System.currentTimeMillis() - startTime
