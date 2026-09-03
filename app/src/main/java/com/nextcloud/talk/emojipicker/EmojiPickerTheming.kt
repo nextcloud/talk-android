@@ -4,7 +4,7 @@
  * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.ui.theme
+package com.nextcloud.talk.emojipicker
 
 import android.content.res.ColorStateList
 import android.view.MotionEvent

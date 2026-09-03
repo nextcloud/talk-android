@@ -69,11 +69,10 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.util.Consumer
-import androidx.emoji2.emojipicker.EmojiPickerView
 import com.nextcloud.talk.R
-import com.nextcloud.talk.ui.theme.protectEmojiPickerScrollGesture
-import com.nextcloud.talk.ui.theme.themeEmojiPickerCategoryTabs
+import com.nextcloud.talk.emojipicker.EmojiPickerPanel
+import com.nextcloud.talk.emojipicker.protectEmojiPickerScrollGesture
+import com.nextcloud.talk.emojipicker.themeEmojiPickerCategoryTabs
 import com.nextcloud.talk.utils.ColorGenerator
 import kotlin.math.roundToInt
 
@@ -346,11 +345,13 @@ private fun EmojiGrid(onEmojiSelected: (String) -> Unit, modifier: Modifier = Mo
     AndroidView(
         modifier = modifier.fillMaxWidth(),
         factory = { ctx ->
-            EmojiPickerView(ContextThemeWrapper(ctx, R.style.ThemeOverlay_App_EmojiPicker)).apply {
+            EmojiPickerPanel(ContextThemeWrapper(ctx, R.style.ThemeOverlay_App_EmojiPicker)).apply {
                 setBackgroundColor(backgroundColor.toArgb())
-                setOnEmojiPickedListener(Consumer { item -> onEmojiSelected(item.emoji) })
-                themeEmojiPickerCategoryTabs(this, selectedTabColor, unselectedTabColor)
-                protectEmojiPickerScrollGesture(this)
+                searchEnabled = true
+                backspaceEnabled = false
+                onEmojiPicked = onEmojiSelected
+                themeEmojiPickerCategoryTabs(emojiPickerView, selectedTabColor, unselectedTabColor)
+                protectEmojiPickerScrollGesture(emojiPickerView)
             }
         }
     )

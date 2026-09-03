@@ -38,14 +38,12 @@ import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.SeekBar
-import android.widget.TextView
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.compose.material3.MaterialTheme
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import androidx.emoji2.emojipicker.RecentEmojiProvider
 import androidx.emoji2.widget.EmojiTextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -67,6 +65,7 @@ import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.FragmentMessageInputBinding
+import com.nextcloud.talk.emojipicker.SharedPreferencesRecentEmojiProvider
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatUtils
@@ -83,7 +82,6 @@ import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CharPolicy
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateUtils
-import com.nextcloud.talk.utils.EmojiKeywordProvider
 import com.nextcloud.talk.utils.EmojiTextInputEditText
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.SpreedFeatures
@@ -92,8 +90,6 @@ import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -133,9 +129,7 @@ class MessageInputFragment : Fragment() {
     private var hasScheduledMessages = false
     private lateinit var spreedCapabilities: SpreedCapability
     private var hasSharedText = false
-    private val emojiKeywordProvider: EmojiKeywordProvider by lazy { EmojiKeywordProvider(requireContext()) }
-    private lateinit var recentEmojiProvider: MessageInputRecentEmojiProvider
-    private var emojiSearchJob: Job? = null
+    private lateinit var recentEmojiProvider: SharedPreferencesRecentEmojiProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -832,22 +826,15 @@ class MessageInputFragment : Fragment() {
         binding.fragmentMessageInputView.smileyButton.setImageDrawable(drawable)
     }
 
-    private fun isEmojiAreaVisible(): Boolean = binding.emojiSearchPanel.emojiSearchPanel.isVisible
+    private fun isEmojiAreaVisible(): Boolean = binding.emojiPickerPanel.isVisible
 
     private fun showEmojiKeyboardArea() {
-        binding.emojiSearchPanel.emojiSearchPanel.isVisible = true
-        binding.emojiSearchPanel.emojiSearchInput.setText("")
-        binding.emojiPicker.isVisible = true
-        binding.emojiSearchPanel.emojiSearchResultsScroll.isVisible = false
-        binding.emojiSearchPanel.emojiSearchNoResults.isVisible = false
+        binding.emojiPickerPanel.isVisible = true
+        binding.emojiPickerPanel.reset()
     }
 
     private fun hideEmojiKeyboardArea() {
-        emojiSearchJob?.cancel()
-        binding.emojiSearchPanel.emojiSearchPanel.isVisible = false
-        binding.emojiPicker.isVisible = false
-        binding.emojiSearchPanel.emojiSearchResultsScroll.isVisible = false
-        binding.emojiSearchPanel.emojiSearchNoResults.isVisible = false
+        binding.emojiPickerPanel.isVisible = false
     }
 
     private fun insertEmoji(emoji: String) {
@@ -855,11 +842,6 @@ class MessageInputFragment : Fragment() {
         val start = inputEditText.selectionStart
         val end = inputEditText.selectionEnd
         inputEditText.editableText.replace(start, end, emoji)
-    }
-
-    private fun onEmojiSearchResultSelected(emoji: String) {
-        insertEmoji(emoji)
-        recentEmojiProvider.recordSelection(emoji)
     }
 
     private fun deleteEmojiOrCharacterBeforeCursor() {
@@ -885,84 +867,6 @@ class MessageInputFragment : Fragment() {
         rangeToDelete()?.let { (deleteStart, deleteEnd) -> text.delete(deleteStart, deleteEnd) }
     }
 
-    private fun initEmojiSearchPanel() {
-        val searchPanel = binding.emojiSearchPanel
-
-        searchPanel.emojiSearchInput.doAfterTextChanged { editable ->
-            onEmojiSearchTextChanged(editable?.toString().orEmpty())
-        }
-
-        searchPanel.emojiSearchClear.setOnClickListener {
-            searchPanel.emojiSearchInput.setText("")
-        }
-
-        searchPanel.emojiBackspaceButton.setOnClickListener {
-            deleteEmojiOrCharacterBeforeCursor()
-        }
-    }
-
-    private fun onEmojiSearchTextChanged(query: String) {
-        val searchPanel = binding.emojiSearchPanel
-        searchPanel.emojiSearchClear.isVisible = query.isNotEmpty()
-
-        emojiSearchJob?.cancel()
-
-        if (query.isBlank()) {
-            binding.emojiPicker.isVisible = true
-            searchPanel.emojiSearchResultsScroll.isVisible = false
-            searchPanel.emojiSearchNoResults.isVisible = false
-            return
-        }
-
-        emojiSearchJob = viewLifecycleOwner.lifecycleScope.launch {
-            delay(EMOJI_SEARCH_DEBOUNCE_MS)
-            val results = emojiKeywordProvider.search(query)
-            binding.emojiPicker.isVisible = false
-            populateEmojiSearchResults(results)
-        }
-    }
-
-    private fun populateEmojiSearchResults(results: List<String>) {
-        val searchPanel = binding.emojiSearchPanel
-        searchPanel.emojiSearchResultsFlexbox.removeAllViews()
-
-        if (results.isEmpty()) {
-            searchPanel.emojiSearchResultsScroll.isVisible = false
-            searchPanel.emojiSearchNoResults.isVisible = true
-            return
-        }
-
-        searchPanel.emojiSearchNoResults.isVisible = false
-        searchPanel.emojiSearchResultsScroll.isVisible = true
-
-        val rippleBackground = TypedValue()
-        requireContext().theme.resolveAttribute(
-            android.R.attr.selectableItemBackgroundBorderless,
-            rippleBackground,
-            true
-        )
-        val paddingPx = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            EMOJI_SEARCH_RESULT_PADDING_DP.toFloat(),
-            resources.displayMetrics
-        ).toInt()
-
-        results.forEach { emoji ->
-            val emojiView = TextView(requireContext()).apply {
-                text = emoji
-                textSize = EMOJI_SEARCH_RESULT_TEXT_SIZE_SP
-                setPadding(paddingPx, paddingPx, paddingPx, paddingPx)
-                setBackgroundResource(rippleBackground.resourceId)
-                isClickable = true
-                isFocusable = true
-                setOnClickListener {
-                    onEmojiSearchResultSelected(emoji)
-                }
-            }
-            searchPanel.emojiSearchResultsFlexbox.addView(emojiView)
-        }
-    }
-
     private fun showKeyboard() {
         val editText = binding.fragmentMessageInputView.inputEditText
         editText.requestFocus()
@@ -981,16 +885,16 @@ class MessageInputFragment : Fragment() {
 
     private fun initSmileyKeyboardToggler() {
         val inputEditText = binding.fragmentMessageInputView.inputEditText
-        val emojiPicker = binding.emojiPicker
+        val emojiPickerPanel = binding.emojiPickerPanel
 
-        recentEmojiProvider = MessageInputRecentEmojiProvider(requireContext())
-        emojiPicker.setRecentEmojiProvider(recentEmojiProvider)
-        emojiPicker.setOnEmojiPickedListener { item ->
-            insertEmoji(item.emoji)
-        }
+        recentEmojiProvider = SharedPreferencesRecentEmojiProvider(requireContext(), RECENT_EMOJIS_PREFS)
+        emojiPickerPanel.searchEnabled = true
+        emojiPickerPanel.backspaceEnabled = true
+        emojiPickerPanel.setRecentEmojiProvider(recentEmojiProvider)
+        emojiPickerPanel.onEmojiPicked = { emoji -> insertEmoji(emoji) }
+        emojiPickerPanel.onBackspaceClicked = { deleteEmojiOrCharacterBeforeCursor() }
 
-        viewThemeUtils.talk.themeEmojiPicker(emojiPicker)
-        initEmojiSearchPanel()
+        viewThemeUtils.talk.themeEmojiPicker(emojiPickerPanel.emojiPickerView)
         updateSmileyButtonIcon()
 
         binding.fragmentMessageInputView.smileyButton.setOnClickListener {
@@ -1009,29 +913,6 @@ class MessageInputFragment : Fragment() {
                 hideEmojiKeyboardArea()
                 updateSmileyButtonIcon()
             }
-        }
-    }
-
-    private class MessageInputRecentEmojiProvider(context: Context) : RecentEmojiProvider {
-        private val prefs = context.getSharedPreferences("recent_emojis", Context.MODE_PRIVATE)
-
-        override fun recordSelection(emoji: String) {
-            val updated = listOf(emoji) + getStoredList().filterNot { it == emoji }
-            prefs.edit()
-                .putString("recent", updated.take(MAX_STORED_RECENT_EMOJIS).joinToString(","))
-                .apply()
-        }
-
-        override suspend fun getRecentEmojiList(): List<String> = getStoredList()
-
-        private fun getStoredList(): List<String> =
-            prefs.getString("recent", null)
-                ?.split(",")
-                ?.filter { it.isNotBlank() }
-                ?: emptyList()
-
-        companion object {
-            private const val MAX_STORED_RECENT_EMOJIS = 20
         }
     }
 
@@ -1419,8 +1300,6 @@ class MessageInputFragment : Fragment() {
         private const val FULLY_OPAQUE: Float = 1.0f
         private const val FULLY_TRANSPARENT: Float = 0.0f
         private const val OPACITY_DISABLED = 0.7f
-        private const val EMOJI_SEARCH_DEBOUNCE_MS = 150L
-        private const val EMOJI_SEARCH_RESULT_TEXT_SIZE_SP = 28f
-        private const val EMOJI_SEARCH_RESULT_PADDING_DP = 8
+        private const val RECENT_EMOJIS_PREFS = "recent_emojis"
     }
 }

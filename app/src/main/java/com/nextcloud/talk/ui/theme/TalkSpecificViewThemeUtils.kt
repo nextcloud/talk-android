@@ -47,6 +47,8 @@ import com.nextcloud.android.common.ui.util.buildColorStateList
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
+import com.nextcloud.talk.emojipicker.protectEmojiPickerScrollGesture
+import com.nextcloud.talk.emojipicker.themeEmojiPickerCategoryTabs
 import com.nextcloud.talk.ui.MicInputCloud
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.WaveformSeekBar

@@ -4,7 +4,7 @@
  * SPDX-FileCopyrightText: 2026 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.utils
+package com.nextcloud.talk.emojipicker
 
 import android.content.Context
 import android.util.Log
@@ -21,9 +21,9 @@ data class EmojiKeywordEntry(val emoji: String, val name: String, val keywords: 
 
 /**
  * Looks up emoji by keyword against a dataset bundled in assets/emoji_keywords.json.
- * The androidx emoji2-emojipicker library used for the chat emoji panel has no search
- * API and its own emoji dataset is not accessible from app code, so this ships its own
- * keyword list (derived from the Unicode CLDR emoji short names).
+ * The androidx emoji2-emojipicker library used for the emoji pickers throughout the app
+ * has no search API and its own emoji dataset is not accessible from app code, so this
+ * ships its own keyword list (derived from the Unicode CLDR emoji short names).
  */
 class EmojiKeywordProvider(private val context: Context) {
 
