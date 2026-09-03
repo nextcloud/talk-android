@@ -608,6 +608,7 @@
     <string name="nc_test_results">Test results</string>
     <string name="nc_today_meeting">Today at %1$s</string>
     <string name="nc_tomorrow_meeting">Tomorrow at %1$s</string>
+    <string name="nc_undo">Undo</string>
     <string name="nc_upcoming_event_dismissed">Upcoming call can be viewed in conversation info</string>
     <string name="nc_upload_choose_local_files">Choose files</string>
     <string name="nc_upload_confirm_send_multiple">Send these files to %1$s?</string>

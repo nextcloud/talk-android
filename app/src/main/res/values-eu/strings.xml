@@ -444,6 +444,7 @@
     <string name="nc_start_time">Hasiera-ordua</string>
     <string name="nc_switch_account">Aldatu kontua</string>
     <string name="nc_team">Lantaldea</string>
+    <string name="nc_undo">Desegin</string>
     <string name="nc_upload_choose_local_files">Hautatu fitxategiak</string>
     <string name="nc_upload_confirm_send_multiple">Fitxategi hauek bidali %1$s(r)i?</string>
     <string name="nc_upload_confirm_send_single">Fitxategi hau bidali %1$s(r)i?</string>

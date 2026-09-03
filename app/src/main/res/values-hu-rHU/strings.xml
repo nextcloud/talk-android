@@ -134,6 +134,7 @@
     <string name="nc_add_to_favorites">Hozzáadás a kedvencekhez</string>
     <string name="nc_add_to_home_screen">Hozzáadás a kezdőképernyőhöz</string>
     <string name="nc_all_ok_operation">Rendben, minden kész!</string>
+    <string name="nc_announcement">Bejelentés</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">%1$s feloldása</string>
     <string name="nc_bluetooth_permission_hint">A bluetooth-os hangszórók engedélyezéséhez adja meg a „Közeli eszközök” engedélyt.</string>
@@ -171,6 +172,7 @@
     <string name="nc_change_password">Jelszó módosítása</string>
     <string name="nc_channel">Csatorna</string>
     <string name="nc_chat_no_messages">Még nincsenek üzenetek. Legyen Ön az első, aki köszön!</string>
+    <string name="nc_classified_conversation">Bizalmas beszélgetés</string>
     <string name="nc_clear_edit_button">Szerkesztés megszakítása</string>
     <string name="nc_clear_history">Összes üzenet törlése</string>
     <string name="nc_clear_history_success">Az összes üzenet törölve lett</string>
@@ -228,6 +230,8 @@
     <string name="nc_delete_now">Törlés most</string>
     <string name="nc_deleted_user">%1$s felhasználó el lett távolítva</string>
     <string name="nc_demote">Lefokozás moderátorról</string>
+    <string name="nc_demote_owner_to_moderator">Lefokozás tulajdonosról moderátorrá</string>
+    <string name="nc_demote_owner_to_participant">Lefokozás tulajdonosról résztvevővé</string>
     <string name="nc_description_record_voice">Hangüzenet felvétele</string>
     <string name="nc_description_send_message_button">Üzenet küldése</string>
     <string name="nc_diagnosis_dialog_open_checklist">Hibaelhárítási ellenőrzőlista megnyitása</string>
@@ -304,6 +308,7 @@
     <string name="nc_invitations">Meghívások</string>
     <string name="nc_join_open_conversations">Csatlakozás a nyílt beszélgetésekhez</string>
     <string name="nc_keep">Megtartás</string>
+    <string name="nc_last_moderator_cannot_be_demoted">A beszélgetés utolsó moderátora nem fokozható le</string>
     <string name="nc_last_moderator_leaving_room_warning">Új moderátort kell kineveznie, mielőtt elhagyhatja a beszélgetést</string>
     <string name="nc_last_modified">%1$s | Utoljára módosítva: %2$s</string>
     <string name="nc_leave">Beszélgetés elhagyása</string>
@@ -376,6 +381,7 @@
     <string name="nc_open_conversation_to_registered_users">Beszélgetés megnyitása a regisztrált felhasználók számára</string>
     <string name="nc_open_to_guest_app_users">Megnyitás a vendégfelhasználók számára is</string>
     <string name="nc_owner">Tulajdonos</string>
+    <string name="nc_participant_type_change_failed">Nem sikerült a résztvevő típusának módosítása</string>
     <string name="nc_participants">Résztvevők</string>
     <string name="nc_participants_add">Résztvevők hozzáadása</string>
     <string name="nc_password">Jelszó</string>
@@ -391,6 +397,7 @@
     <string name="nc_plain_old_messages">Üzenetek</string>
     <string name="nc_profile_personal_info_title">Személyes információk</string>
     <string name="nc_promote">Kinevezés moderátorrá</string>
+    <string name="nc_promote_to_owner">Kinevezés tulajdonossá</string>
     <string name="nc_public_call_status">Nyilvános beszélgetés</string>
     <string name="nc_push_disabled">Leküldéses értesítések kikapcsolva</string>
     <string name="nc_push_notification_error">Sajnos valamilyen hiba történt, a hiba: %1$s</string>
@@ -554,6 +561,7 @@
     <string name="nc_test_results">Teszteredmények</string>
     <string name="nc_today_meeting">Ma ekkor: %1$s</string>
     <string name="nc_tomorrow_meeting">Holnap ekkor: %1$s</string>
+    <string name="nc_undo">Visszavonás</string>
     <string name="nc_upcoming_event_dismissed">A következő hívás megtekinthető a beszélgetésinformációk között</string>
     <string name="nc_upload_choose_local_files">Válasszon fájlokat</string>
     <string name="nc_upload_confirm_send_multiple">Fájlok küldése ide: %1$s?</string>

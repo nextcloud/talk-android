@@ -611,6 +611,7 @@
     <string name="nc_test_results">Testresultat</string>
     <string name="nc_today_meeting">Idag kl. %1$s</string>
     <string name="nc_tomorrow_meeting">Imorgon kl. %1$s</string>
+    <string name="nc_undo">Ångra</string>
     <string name="nc_upcoming_event_dismissed">Kommande samtal kan visas i konversationsinformationen</string>
     <string name="nc_upload_choose_local_files">Välj filer</string>
     <string name="nc_upload_confirm_send_multiple">Skicka dessa filer till %1$s?</string>

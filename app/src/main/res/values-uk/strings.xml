@@ -511,6 +511,7 @@
     <string name="nc_test_results">Результати тестування</string>
     <string name="nc_today_meeting">Сьогодні на %1$s</string>
     <string name="nc_tomorrow_meeting">Завтра в %1$s</string>
+    <string name="nc_undo">Скасувати</string>
     <string name="nc_upload_choose_local_files">Виберіть файли</string>
     <string name="nc_upload_confirm_send_multiple">Надіслати ці файли на %1$s?</string>
     <string name="nc_upload_confirm_send_single">Надіслати цей файл на %1$s?</string>

@@ -477,6 +477,7 @@
     <string name="nc_start_time">وقت البدء</string>
     <string name="nc_switch_account">تبديل الحساب</string>
     <string name="nc_team">الفريق</string>
+    <string name="nc_undo">تراجع</string>
     <string name="nc_upload_choose_local_files">اختر الملفات</string>
     <string name="nc_upload_confirm_send_multiple">إرسال هذه الملفات إلى %1$s؟</string>
     <string name="nc_upload_confirm_send_single">إرسال هذا الملف إلى %1$s؟</string>

@@ -460,6 +460,7 @@
     <string name="nc_start_time">Start tidspunkt</string>
     <string name="nc_switch_account">Bytt konto</string>
     <string name="nc_team">Lag</string>
+    <string name="nc_undo">Angre</string>
     <string name="nc_upload_choose_local_files">Velg filer</string>
     <string name="nc_upload_confirm_send_multiple">Sende disse filene til %1$s?</string>
     <string name="nc_upload_confirm_send_single">Sende denne filen til %1$s?</string>

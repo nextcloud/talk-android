@@ -513,6 +513,7 @@
     <string name="nc_test_results">Резултати теста</string>
     <string name="nc_today_meeting">Данас у %1$s</string>
     <string name="nc_tomorrow_meeting">Сутра у %1$s</string>
+    <string name="nc_undo">Опозови</string>
     <string name="nc_upload_choose_local_files">Изаберите фајлове</string>
     <string name="nc_upload_confirm_send_multiple">Да ли да пошаљем ове фајлове %1$s?</string>
     <string name="nc_upload_confirm_send_single">Да ли да пошаљем овај фајл %1$s?</string>

@@ -512,6 +512,7 @@
     <string name="nc_test_results">سىناش نەتىنجىسى</string>
     <string name="nc_today_meeting">بۈگۈن %1$s</string>
     <string name="nc_tomorrow_meeting">ئەتە %1$s</string>
+    <string name="nc_undo">ئەمەلدىن قالدۇرۇش</string>
     <string name="nc_upload_choose_local_files">ھۆججەتلەرنى تاللاڭ</string>
     <string name="nc_upload_confirm_send_multiple">بۇ ھۆججەتلەرنى%1$s غا ئەۋەتىڭ؟</string>
     <string name="nc_upload_confirm_send_single">بۇ ھۆججەتنى %1$s غا ئەۋەتىڭ؟</string>
