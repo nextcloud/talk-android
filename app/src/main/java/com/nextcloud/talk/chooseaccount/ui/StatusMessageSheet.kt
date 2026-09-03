@@ -44,8 +44,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chooseaccount.viewmodel.StatusMessageViewModel
 import com.nextcloud.talk.emojipicker.EmojiPickerPanel
-import com.nextcloud.talk.emojipicker.protectEmojiPickerScrollGesture
-import com.nextcloud.talk.emojipicker.themeEmojiPickerCategoryTabs
 import com.nextcloud.talk.models.json.status.Status
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
 
@@ -91,9 +89,11 @@ fun StatusMessageModalBottomSheet(currentStatus: Status, viewModel: StatusMessag
 
 @Composable
 private fun EmojiPickerSheetContent(onEmojiSelected: (String) -> Unit, onBack: () -> Unit) {
-    val backgroundColor = MaterialTheme.colorScheme.surfaceContainerLow
+    val backgroundColor = MaterialTheme.colorScheme.surfaceContainerLow.toArgb()
     val selectedTabColor = MaterialTheme.colorScheme.primary.toArgb()
     val unselectedTabColor = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
+    val hintTextColor = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
+    val textColor = MaterialTheme.colorScheme.onSurface.toArgb()
 
     Column(
         modifier = Modifier
@@ -107,12 +107,10 @@ private fun EmojiPickerSheetContent(onEmojiSelected: (String) -> Unit, onBack: (
             modifier = Modifier.fillMaxWidth(),
             factory = { ctx ->
                 EmojiPickerPanel(ContextThemeWrapper(ctx, R.style.ThemeOverlay_App_EmojiPicker)).apply {
-                    setBackgroundColor(backgroundColor.toArgb())
                     searchEnabled = true
                     backspaceEnabled = false
                     onEmojiPicked = onEmojiSelected
-                    themeEmojiPickerCategoryTabs(emojiPickerView, selectedTabColor, unselectedTabColor)
-                    protectEmojiPickerScrollGesture(emojiPickerView)
+                    applyTheme(backgroundColor, selectedTabColor, unselectedTabColor, hintTextColor, textColor)
                 }
             }
         )

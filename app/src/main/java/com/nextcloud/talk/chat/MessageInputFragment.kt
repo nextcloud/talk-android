@@ -894,7 +894,7 @@ class MessageInputFragment : Fragment() {
         emojiPickerPanel.onEmojiPicked = { emoji -> insertEmoji(emoji) }
         emojiPickerPanel.onBackspaceClicked = { deleteEmojiOrCharacterBeforeCursor() }
 
-        viewThemeUtils.talk.themeEmojiPicker(emojiPickerPanel.emojiPickerView)
+        viewThemeUtils.talk.themeEmojiPicker(emojiPickerPanel)
         updateSmileyButtonIcon()
 
         binding.fragmentMessageInputView.smileyButton.setOnClickListener {

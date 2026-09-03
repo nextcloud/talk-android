@@ -92,6 +92,27 @@ class EmojiPickerPanel @JvmOverloads constructor(
         showGrid()
     }
 
+    /**
+     * Applies the host's dynamic per-server branding to every themeable part of the panel:
+     * the picker's background and selected-category tab (see [themeEmojiPickerCategoryTabs]),
+     * its scroll-gesture fix (see [protectEmojiPickerScrollGesture]), and the search field's
+     * hint/text colors, which otherwise fall back to the static app theme instead of following
+     * that branding.
+     */
+    fun applyTheme(
+        backgroundColor: Int,
+        selectedTabColor: Int,
+        unselectedTabColor: Int,
+        hintTextColor: Int,
+        textColor: Int
+    ) {
+        setBackgroundColor(backgroundColor)
+        binding.emojiSearchInput.setHintTextColor(hintTextColor)
+        binding.emojiSearchInput.setTextColor(textColor)
+        themeEmojiPickerCategoryTabs(emojiPickerView, selectedTabColor, unselectedTabColor)
+        protectEmojiPickerScrollGesture(emojiPickerView)
+    }
+
     private fun updateSearchRowVisibility() {
         binding.emojiSearchRow.isVisible = searchEnabled || backspaceEnabled
     }
