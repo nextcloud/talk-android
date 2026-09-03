@@ -17,7 +17,6 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationcreation.data.ConversationCreationRepository
-import com.nextcloud.talk.conversationcreation.ConversationCreationRepository
 import com.nextcloud.talk.conversationinfo.ConversationInfoUiEvent
 import com.nextcloud.talk.conversationinfo.ConversationInfoUiState
 import com.nextcloud.talk.conversationinfo.CreateRoomRequest
@@ -180,10 +179,6 @@ class ConversationInfoViewModel @Inject constructor(
     private val _securePasswordViewState = MutableLiveData<SecurePasswordViewState>(SecurePasswordViewState.None)
     val securePasswordViewState: LiveData<SecurePasswordViewState> = _securePasswordViewState
 
-    private val _getCapabilitiesViewState: MutableLiveData<ViewState> = MutableLiveData(GetCapabilitiesStartState)
-    val getCapabilitiesViewState: LiveData<ViewState>
-        get() = _getCapabilitiesViewState
-
     private val _clearChatHistoryViewState: MutableLiveData<ClearChatHistoryViewState> =
         MutableLiveData(ClearChatHistoryViewState.None)
     val clearChatHistoryViewState: LiveData<ClearChatHistoryViewState>
@@ -205,10 +200,6 @@ class ConversationInfoViewModel @Inject constructor(
         MutableLiveData<MarkConversationAsUnimportantViewState>(MarkConversationAsUnimportantViewState.None)
     val markAsUnimportantResult: LiveData<MarkConversationAsUnimportantViewState>
         get() = _markConversationAsUnimportantResult
-
-    private val _createRoomViewState = MutableLiveData<CreateRoomUIState>(CreateRoomUIState.None)
-    val createRoomViewState: LiveData<CreateRoomUIState>
-        get() = _createRoomViewState
 
     object GetProfileErrorState : ViewState
     class GetProfileSuccessState(val profile: Profile) : ViewState
@@ -1053,12 +1044,6 @@ class ConversationInfoViewModel @Inject constructor(
         data object None : AllowGuestsUIState()
         data class Success(val allow: Boolean) : AllowGuestsUIState()
         data class Error(val exception: Exception) : AllowGuestsUIState()
-    }
-
-    sealed class CreateRoomUIState {
-        data object None : CreateRoomUIState()
-        data class Success(val room: RoomOverall) : CreateRoomUIState()
-        data class Error(val exception: Exception) : CreateRoomUIState()
     }
 
     sealed class PasswordUiState {
