@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.contextchat
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import autodagger.AutoInjector
@@ -50,32 +51,37 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
                 _getContextChatMessagesState.value = ContextChatRetrieveUiState.Error
             }
 
-            var messages = chatNetworkDataSource.getContextForChatMessage(
-                credentials = credentials,
-                baseUrl = baseUrl,
-                token = token,
-                messageId = messageId,
-                limit = LIMIT,
-                threadId = threadId?.toIntOrNull()
-            )
+            try {
+                var messages = chatNetworkDataSource.getContextForChatMessage(
+                    credentials = credentials,
+                    baseUrl = baseUrl,
+                    token = token,
+                    messageId = messageId,
+                    limit = LIMIT,
+                    threadId = threadId?.toIntOrNull()
+                )
 
-            if (threadId.isNullOrEmpty()) {
-                messages = messages.filter { !isThreadChildMessage(it) }
+                if (threadId.isNullOrEmpty()) {
+                    messages = messages.filter { !isThreadChildMessage(it) }
+                }
+
+                val subTitle = if (threadId?.isNotEmpty() == true) {
+                    messages.firstOrNull()?.threadTitle
+                } else {
+                    ""
+                }
+
+                _getContextChatMessagesState.value = ContextChatRetrieveUiState.Success(
+                    messageId = messageId,
+                    threadId = threadId,
+                    messages = messages,
+                    title = title,
+                    subTitle = subTitle
+                )
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to load chat message context", e)
+                _getContextChatMessagesState.value = ContextChatRetrieveUiState.Error
             }
-
-            val subTitle = if (threadId?.isNotEmpty() == true) {
-                messages.firstOrNull()?.threadTitle
-            } else {
-                ""
-            }
-
-            _getContextChatMessagesState.value = ContextChatRetrieveUiState.Success(
-                messageId = messageId,
-                threadId = threadId,
-                messages = messages,
-                title = title,
-                subTitle = subTitle
-            )
         }
     }
 
@@ -96,6 +102,7 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
     }
 
     companion object {
+        private val TAG = ContextChatViewModel::class.java.simpleName
         private const val LIMIT = 50
     }
 }
