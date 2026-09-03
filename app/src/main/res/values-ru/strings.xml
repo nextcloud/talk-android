@@ -562,6 +562,7 @@
     <string name="nc_test_results">Результаты теста</string>
     <string name="nc_today_meeting">Сегодня в %1$s</string>
     <string name="nc_tomorrow_meeting">Завтра в %1$s</string>
+    <string name="nc_undo">Отменить</string>
     <string name="nc_upcoming_event_dismissed">Предстоящий звонок можно просмотреть в информации о разговоре</string>
     <string name="nc_upload_choose_local_files">Выберите файлы</string>
     <string name="nc_upload_confirm_send_multiple">Отправить эти файлы %1$s?</string>

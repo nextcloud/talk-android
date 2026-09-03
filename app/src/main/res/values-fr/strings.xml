@@ -611,6 +611,7 @@
     <string name="nc_test_results">Résultats des tests</string>
     <string name="nc_today_meeting">Aujourd\'hui à %1$s</string>
     <string name="nc_tomorrow_meeting">Demain à %1$s</string>
+    <string name="nc_undo">Annuler</string>
     <string name="nc_upcoming_event_dismissed">Les appels entrants peuvent être vus dans les informations de conversation</string>
     <string name="nc_upload_choose_local_files">Choisir des fichiers</string>
     <string name="nc_upload_confirm_send_multiple">Envoyer ces fichiers à %1$s ?</string>

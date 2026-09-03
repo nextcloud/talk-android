@@ -572,6 +572,7 @@
     <string name="nc_test_results">نتایج تست</string>
     <string name="nc_today_meeting">امروز در %1$s</string>
     <string name="nc_tomorrow_meeting">فردا در %1$s</string>
+    <string name="nc_undo">برگرداندن</string>
     <string name="nc_upcoming_event_dismissed">تماس آینده در اطلاعات گفتگو قابل مشاهده است</string>
     <string name="nc_upload_choose_local_files">انتخاب پرونده‌ها</string>
     <string name="nc_upload_confirm_send_multiple">این پرونده‌ها را به %1$s بفرستم؟</string>
