@@ -73,8 +73,11 @@ class ExceptionHandler(
                 }
             }
         } catch (fatal: Exception) {
+            // Forward the original crash, not this secondary failure, so crash
+            // reporting reflects why the app actually died rather than why we
+            // failed to show the crash screen for it.
             Log.e(TAG, "Fatal error in ExceptionHandler itself", fatal)
-            defaultExceptionHandler.uncaughtException(thread, fatal)
+            defaultExceptionHandler.uncaughtException(thread, exception)
             return
         }
         // Forward to the default handler so AMS records the crash as REASON_CRASH and
