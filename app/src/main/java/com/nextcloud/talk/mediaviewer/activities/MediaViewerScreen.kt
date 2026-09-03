@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.mediaviewer.activities
 
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
@@ -74,18 +75,21 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
+import coil.imageLoader
+import coil.request.ImageRequest
+import coil.request.SuccessResult
 import com.github.chrisbanes.photoview.PhotoView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.mediaviewer.model.MediaViewerGroup
 import com.nextcloud.talk.mediaviewer.model.MediaViewerItem
 import com.nextcloud.talk.mediaviewer.viewmodels.MediaViewerViewModel
-import com.nextcloud.talk.utils.BitmapShrinker
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.MimetypeUtils
+import java.io.File
 import kotlinx.coroutines.launch
 import pl.droidsonroids.gif.GifDrawable
 import pl.droidsonroids.gif.GifImageView
@@ -348,6 +352,23 @@ private fun GifPage(localPath: String, onToggleControls: () -> Unit) {
 
 @Composable
 private fun ImagePage(localPath: String, onToggleControls: () -> Unit) {
+    val context = LocalContext.current
+    var drawable by remember(localPath) { mutableStateOf<Drawable?>(null) }
+
+    LaunchedEffect(localPath) {
+        val displayMetrics = context.resources.displayMetrics
+        val request = ImageRequest.Builder(context)
+            .data(File(localPath))
+            .size(displayMetrics.widthPixels * 2, displayMetrics.heightPixels * 2)
+            .build()
+        val result = context.imageLoader.execute(request)
+        if (result is SuccessResult) {
+            drawable = result.drawable
+        } else {
+            Log.e(TAG, "image could not be decoded from path: $localPath")
+        }
+    }
+
     AndroidView(
         factory = { ctx ->
             PhotoView(ctx).apply {
@@ -355,19 +376,9 @@ private fun ImagePage(localPath: String, onToggleControls: () -> Unit) {
                 mediumScale = MEDIUM_SCALE
                 setOnPhotoTapListener { _, _, _ -> onToggleControls() }
                 setOnOutsidePhotoTapListener { onToggleControls() }
-                val displayMetrics = ctx.resources.displayMetrics
-                val bitmap = BitmapShrinker.shrinkBitmap(
-                    localPath,
-                    displayMetrics.widthPixels * 2,
-                    displayMetrics.heightPixels * 2
-                )
-                if (bitmap != null) {
-                    setImageBitmap(bitmap)
-                } else {
-                    Log.e(TAG, "bitmap could not be decoded from path: $localPath")
-                }
             }
         },
+        update = { photoView -> drawable?.let { photoView.setImageDrawable(it) } },
         modifier = Modifier.fillMaxSize()
     )
 }
