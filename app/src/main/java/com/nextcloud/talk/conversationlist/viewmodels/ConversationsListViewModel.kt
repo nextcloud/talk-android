@@ -58,6 +58,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -149,6 +150,12 @@ class ConversationsListViewModel @Inject constructor(
         }.catch {
             _getRoomsViewState.value = GetRoomsErrorState(it)
         }
+
+    init {
+        repository.syncErrorFlow
+            .onEach { throwable -> _getRoomsViewState.value = GetRoomsErrorState(throwable) }
+            .launchIn(viewModelScope)
+    }
 
     private val _isLoadingRooms = MutableStateFlow(true)
 
