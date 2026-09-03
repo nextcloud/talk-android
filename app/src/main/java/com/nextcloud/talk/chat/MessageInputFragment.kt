@@ -468,6 +468,7 @@ class MessageInputFragment : Fragment() {
                 val text = binding.fragmentMessageInputView.messageInput.text.toString()
                 chatActivity.chatViewModel.messageDraft.messageCursor = cursor
                 chatActivity.chatViewModel.messageDraft.messageText = text
+                binding.emojiPickerPanel.backspaceActionAvailable = s.isNotEmpty()
                 handleButtonsVisibility()
             }
         })
@@ -893,6 +894,7 @@ class MessageInputFragment : Fragment() {
         emojiPickerPanel.setRecentEmojiProvider(recentEmojiProvider)
         emojiPickerPanel.onEmojiPicked = { emoji -> insertEmoji(emoji) }
         emojiPickerPanel.onBackspaceClicked = { deleteEmojiOrCharacterBeforeCursor() }
+        emojiPickerPanel.backspaceActionAvailable = inputEditText.text?.isNotEmpty() == true
 
         viewThemeUtils.talk.themeEmojiPicker(emojiPickerPanel)
         updateSmileyButtonIcon()

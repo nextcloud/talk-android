@@ -60,6 +60,14 @@ class EmojiPickerPanel @JvmOverloads constructor(
             updateSearchRowVisibility()
         }
 
+    /** Whether the host's target text actually has something for the backspace button to delete. */
+    var backspaceActionAvailable: Boolean = true
+        set(value) {
+            field = value
+            binding.emojiBackspaceButton.isEnabled = value
+            binding.emojiBackspaceButton.alpha = if (value) ENABLED_ALPHA else DISABLED_ALPHA
+        }
+
     var onEmojiPicked: ((String) -> Unit)? = null
     var onBackspaceClicked: (() -> Unit)? = null
 
@@ -70,6 +78,7 @@ class EmojiPickerPanel @JvmOverloads constructor(
         binding.emojiSearchFieldGroup.isVisible = searchEnabled
         updateBackspaceVisibility()
         updateSearchRowVisibility()
+        binding.emojiBackspaceButton.alpha = ENABLED_ALPHA
 
         binding.emojiPicker.setOnEmojiPickedListener { item -> onEmojiPicked?.invoke(item.emoji) }
         binding.emojiSearchInput.doAfterTextChanged { editable -> onSearchTextChanged(editable?.toString().orEmpty()) }
@@ -201,5 +210,7 @@ class EmojiPickerPanel @JvmOverloads constructor(
         private const val SEARCH_DEBOUNCE_MS = 150L
         private const val RESULT_TEXT_SIZE_SP = 28f
         private const val RESULT_PADDING_DP = 8
+        private const val ENABLED_ALPHA = 1f
+        private const val DISABLED_ALPHA = 0.38f
     }
 }
