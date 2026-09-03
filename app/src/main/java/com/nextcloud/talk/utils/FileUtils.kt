@@ -49,6 +49,21 @@ object FileUtils {
     }
 
     /**
+     * Resolves a shared attachment file inside a per-[fileId] subdirectory of the dedicated cache
+     * directory. [untrustedFileName] alone is sender-controlled and not unique - two different
+     * attachments (e.g. two pasted screenshots both named "image.png") can share it, which would
+     * otherwise let concurrent downloads (see MediaViewerViewModel's prefetch) resolve to, and
+     * overwrite, the very same cache file. Nesting under the server-assigned [fileId] keeps every
+     * attachment's cache slot unique regardless of what its sender named it.
+     */
+    fun resolveSharedAttachmentFile(cacheDir: File, fileId: String, untrustedFileName: String?): File? {
+        val sharedDirectory = getSharedAttachmentsDirectory(cacheDir) ?: return null
+        val fileIdDirectory = resolveFileInDirectory(sharedDirectory, fileId) ?: return null
+        if (!fileIdDirectory.exists() && !fileIdDirectory.mkdirs()) return null
+        return resolveFileInDirectory(fileIdDirectory, untrustedFileName)
+    }
+
+    /**
      * Resolves an untrusted file name inside [baseDirectory] and rejects traversal attempts.
      */
     fun resolveFileInDirectory(baseDirectory: File, untrustedFileName: String?): File? {

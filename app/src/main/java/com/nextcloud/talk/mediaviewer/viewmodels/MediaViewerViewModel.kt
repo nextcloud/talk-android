@@ -127,7 +127,7 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
         }
 
         val context = NextcloudTalkApplication.sharedApplication!!
-        val existing = FileUtils.resolveSharedAttachmentFile(context.cacheDir, item.fileName)
+        val existing = FileUtils.resolveSharedAttachmentFile(context.cacheDir, item.fileId, item.fileName)
         if (existing != null && existing.exists()) {
             _uiState.update {
                 it.copy(cachedFilePaths = it.cachedFilePaths + (item.messageId to existing.absolutePath))
@@ -144,6 +144,7 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
                 DownloadFileToCacheWorker.KEY_ATTACHMENT_FOLDER,
                 CapabilitiesUtil.getAttachmentFolder(user.capabilities!!.spreedCapability!!)
             )
+            .putString(DownloadFileToCacheWorker.KEY_FILE_ID, item.fileId)
             .putString(DownloadFileToCacheWorker.KEY_FILE_NAME, item.fileName)
             .putString(DownloadFileToCacheWorker.KEY_FILE_PATH, item.path)
             .putLong(DownloadFileToCacheWorker.KEY_FILE_SIZE, item.fileSize)
@@ -161,7 +162,11 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
                 if (workInfo == null) return@collect
                 when (workInfo.state) {
                     WorkInfo.State.SUCCEEDED -> {
-                        val downloaded = FileUtils.resolveSharedAttachmentFile(context.cacheDir, item.fileName)
+                        val downloaded = FileUtils.resolveSharedAttachmentFile(
+                            context.cacheDir,
+                            item.fileId,
+                            item.fileName
+                        )
                         _uiState.update {
                             it.copy(
                                 downloadingMessageIds = it.downloadingMessageIds - item.messageId,

@@ -59,6 +59,7 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
             val baseUrl = inputData.getString(KEY_BASE_URL)
             val userId = inputData.getString(KEY_USER_ID)
             val attachmentFolder = inputData.getString(KEY_ATTACHMENT_FOLDER)
+            val fileId = inputData.getString(KEY_FILE_ID)
             val fileName = inputData.getString(KEY_FILE_NAME)
             val remotePath = inputData.getString(KEY_FILE_PATH)
             totalFileSize = (inputData.getLong(KEY_FILE_SIZE, -1))
@@ -72,24 +73,28 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
 
             val url = ApiUtils.getUrlForFileDownload(baseUrl, userId, remotePath)
 
-            return downloadFile(currentUser, url, fileName)
+            return downloadFile(currentUser, url, fileId, fileName)
         } catch (e: IllegalStateException) {
             Log.e(javaClass.simpleName, "Something went wrong when trying to download file", e)
             return Result.failure()
         }
     }
 
-    private fun downloadFile(currentUser: User, url: String, fileName: String): Result {
+    private fun downloadFile(currentUser: User, url: String, fileId: String?, fileName: String): Result {
         val downloadCall = ncApi.downloadFile(
             ApiUtils.getCredentials(currentUser.username, currentUser.token),
             url
         )
 
-        return executeDownload(downloadCall.execute().body(), fileName)
+        return executeDownload(downloadCall.execute().body(), fileId, fileName)
     }
 
-    private fun executeDownload(body: ResponseBody?, fileName: String): Result {
-        val targetFile = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileName)
+    private fun executeDownload(body: ResponseBody?, fileId: String?, fileName: String): Result {
+        val targetFile = if (fileId.isNullOrEmpty()) {
+            FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileName)
+        } else {
+            FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileId, fileName)
+        }
         if (body == null || targetFile == null) {
             if (body == null) {
                 Log.e(TAG, "Response body when downloading $fileName is null!")
@@ -145,6 +150,7 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
         const val KEY_BASE_URL = "KEY_BASE_URL"
         const val KEY_USER_ID = "KEY_USER_ID"
         const val KEY_ATTACHMENT_FOLDER = "KEY_ATTACHMENT_FOLDER"
+        const val KEY_FILE_ID = "KEY_FILE_ID"
         const val KEY_FILE_NAME = "KEY_FILE_NAME"
         const val KEY_FILE_PATH = "KEY_FILE_PATH"
         const val KEY_FILE_SIZE = "KEY_FILE_SIZE"
