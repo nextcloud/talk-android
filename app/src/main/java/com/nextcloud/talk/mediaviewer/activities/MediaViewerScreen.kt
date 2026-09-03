@@ -120,13 +120,13 @@ fun MediaViewerScreen(
     }
     val coroutineScope = rememberCoroutineScope()
 
-    // See MediaViewerViewModel.indexShiftEvents: prepending older groups shifts every existing
-    // index, so the pager must silently jump to keep the same item on screen.
-    LaunchedEffect(viewModel) {
-        viewModel.indexShiftEvents.collect { shift ->
-            if (shift != 0) {
-                pagerState.scrollToPage((pagerState.currentPage + shift).coerceIn(0, items.size - 1))
+    LaunchedEffect(uiState.pendingShift?.id) {
+        val shift = uiState.pendingShift
+        if (shift != null) {
+            if (shift.amount != 0) {
+                pagerState.scrollToPage((pagerState.currentPage + shift.amount).coerceIn(0, items.size - 1))
             }
+            viewModel.consumePendingShift(shift.id)
         }
     }
 

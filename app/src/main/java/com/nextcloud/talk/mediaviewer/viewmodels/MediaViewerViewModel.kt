@@ -30,7 +30,6 @@ import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.FileUtils
 import io.reactivex.Observable
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -52,13 +51,16 @@ import kotlin.coroutines.resumeWithException
 class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository: SharedItemsRepository) :
     ViewModel() {
 
+    data class PendingShift(val id: Long, val amount: Int)
+
     data class UiState(
         val groups: List<MediaViewerGroup> = emptyList(),
         val currentGlobalIndex: Int = 0,
         val loadingOlder: Boolean = false,
         val canLoadOlder: Boolean = true,
         val cachedFilePaths: Map<Long, String> = emptyMap(),
-        val downloadingMessageIds: Set<Long> = emptySet()
+        val downloadingMessageIds: Set<Long> = emptySet(),
+        val pendingShift: PendingShift? = null
     ) {
         val flattenedItems: List<MediaViewerItem> get() = groups.flatMap { it.items }
         val currentItem: MediaViewerItem? get() = flattenedItems.getOrNull(currentGlobalIndex)
@@ -71,14 +73,7 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState
-
-    // HorizontalPager indexes into the flattened item list; prepending older groups shifts every
-    // existing index by the number of items prepended. This is a one-shot event (not part of
-    // UiState) so the pager can silently jump to the shifted position - via
-    // pagerState.scrollToPage(pagerState.currentPage + shift) - the moment it fires, keeping the
-    // same item on screen instead of visually jumping to whatever is now at the old index.
-    private val _indexShiftEvents = MutableSharedFlow<Int>(extraBufferCapacity = 1)
-    val indexShiftEvents = _indexShiftEvents
+    private var nextShiftId = 0L
 
     private lateinit var user: User
     private lateinit var repositoryParameters: SharedItemsRepository.Parameters
@@ -110,6 +105,10 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
 
     fun jumpTo(globalIndex: Int) {
         onPageSettled(globalIndex)
+    }
+
+    fun consumePendingShift(id: Long) {
+        _uiState.update { if (it.pendingShift?.id == id) it.copy(pendingShift = null) else it }
     }
 
     private fun ensureCachedAround(globalIndex: Int) {
@@ -215,17 +214,16 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
             }
 
             oldestKnownMessageId = olderItems.first().messageId
-            val previousCount = _uiState.value.flattenedItems.size
             _uiState.update { current ->
                 val combined = (olderItems + current.flattenedItems).toMediaViewerGroups()
                 current.copy(
                     groups = combined,
                     currentGlobalIndex = current.currentGlobalIndex + olderItems.size,
                     loadingOlder = false,
-                    canLoadOlder = sharedItems?.moreItemsExisting == true
+                    canLoadOlder = sharedItems?.moreItemsExisting == true,
+                    pendingShift = PendingShift(id = nextShiftId++, amount = olderItems.size)
                 )
             }
-            _indexShiftEvents.tryEmit(_uiState.value.flattenedItems.size - previousCount)
         }
     }
 
