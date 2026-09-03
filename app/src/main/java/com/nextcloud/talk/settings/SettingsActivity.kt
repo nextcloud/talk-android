@@ -43,7 +43,7 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.work.OneTimeWorkRequest
-import androidx.work.OutOfQuotaPolicy
+import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -311,7 +311,7 @@ class SettingsActivity :
 
     private fun loadCapabilitiesAndUpdateSettings(isOnline: Boolean) {
         val capabilitiesWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java)
-            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .setExpeditedIfSupported()
             .build()
         WorkManager.getInstance(context).enqueue(capabilitiesWork)
 
@@ -988,7 +988,7 @@ class SettingsActivity :
     private fun removeCurrentAccount() {
         userManager.scheduleUserForDeletionWithId(currentUser!!.id!!).blockingGet()
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
-            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .setExpeditedIfSupported()
             .build()
         WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
 

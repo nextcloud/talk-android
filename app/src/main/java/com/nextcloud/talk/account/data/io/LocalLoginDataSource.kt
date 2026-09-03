@@ -10,7 +10,7 @@ package com.nextcloud.talk.account.data.io
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.work.OneTimeWorkRequest
-import androidx.work.OutOfQuotaPolicy
+import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.nextcloud.talk.account.data.model.LoginCompletion
@@ -33,7 +33,7 @@ class LocalLoginDataSource(val userManager: UserManager, val appPreferences: App
 
     fun startAccountRemovalWorker(): LiveData<WorkInfo?> {
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
-            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .setExpeditedIfSupported()
             .build()
         WorkManager.getInstance(context).enqueue(accountRemovalWork)
 
