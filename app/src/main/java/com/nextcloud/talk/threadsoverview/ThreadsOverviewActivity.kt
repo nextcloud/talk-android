@@ -11,7 +11,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.util.Log
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -87,7 +86,7 @@ class ThreadsOverviewActivity : BaseActivity() {
         threadsSourceUrl = extras?.getString(KEY_THREADS_SOURCE_URL).orEmpty()
         appbarTitle = extras?.getString(KEY_APPBAR_TITLE).orEmpty()
 
-        setContent {
+        setContentWithStatusBanner {
             val backgroundColor = colorResource(id = R.color.bg_default)
 
             MaterialTheme(

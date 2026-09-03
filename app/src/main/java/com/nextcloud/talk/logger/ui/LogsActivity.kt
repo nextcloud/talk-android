@@ -63,6 +63,7 @@ import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.diagnosis.buildDiagnosisReportText
 import com.nextcloud.talk.diagnosis.showShareReportDialog
 import com.nextcloud.talk.errorhandling.saveLogsAsZip
+import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.logger.Level
 import com.nextcloud.talk.logger.LogEntry
 import com.nextcloud.talk.logger.LogsRepository
@@ -104,7 +105,7 @@ class LogsActivity : BaseActivity() {
         val viewModel = ViewModelProvider(this, viewModelFactory)[LogsViewModel::class.java]
         val colorScheme = viewThemeUtils.getColorScheme(this)
 
-        setContent {
+        setContentWithStatusBanner {
             MaterialTheme(colorScheme = colorScheme) {
                 val entries = viewModel.entries.collectAsState().value
                 val isLoading = viewModel.isLoading.collectAsState().value

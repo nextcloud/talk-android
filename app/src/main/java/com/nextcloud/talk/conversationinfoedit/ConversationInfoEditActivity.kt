@@ -9,7 +9,6 @@ package com.nextcloud.talk.conversationinfoedit
 
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.MaterialTheme
@@ -101,7 +100,7 @@ class ConversationInfoEditActivity : BaseActivity() {
 
     private fun setupCompose() {
         val colorScheme = viewThemeUtils.getColorScheme(this)
-        setContent {
+        setContentWithStatusBanner {
             val uiState by conversationInfoEditViewModel.uiState.collectAsStateWithLifecycle()
             val snackbarHostState = remember { SnackbarHostState() }
             val userMessage = uiState.userMessage
@@ -138,7 +137,9 @@ class ConversationInfoEditActivity : BaseActivity() {
                             )
                         },
                         onAvatarCameraClick = {
-                            pickImage?.takePicture(startTakePictureIntentForResult = startTakePictureIntentForResult)
+                            pickImage?.takePicture(
+                                startTakePictureIntentForResult = startTakePictureIntentForResult
+                            )
                         },
                         onAvatarDeleteClick = { conversationInfoEditViewModel.deleteAvatar() },
                         onAvatarEmojiAvatarConfirmed = { emoji, color ->

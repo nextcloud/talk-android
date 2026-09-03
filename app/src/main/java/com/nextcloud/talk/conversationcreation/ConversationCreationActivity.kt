@@ -17,7 +17,6 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -128,7 +127,7 @@ class ConversationCreationActivity : BaseActivity() {
         val conversationUser = conversationCreationViewModel.currentUser
         pickImage = PickImage(this, conversationUser)
 
-        setContent {
+        setContentWithStatusBanner {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val context = LocalContext.current
             MaterialTheme(

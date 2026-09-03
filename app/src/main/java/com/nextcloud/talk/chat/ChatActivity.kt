@@ -132,9 +132,10 @@ import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.data.database.model.SendStatus
-import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityChatBinding
+import com.nextcloud.talk.events.ServerStatus
+import com.nextcloud.talk.events.ServerStatusEvent
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.jobs.DeleteConversationWorker
@@ -286,9 +287,6 @@ class ChatActivity :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var networkMonitor: NetworkMonitor
 
     @Inject
     lateinit var chatViewModelFactory: ChatViewModel.ChatViewModelFactory
@@ -620,6 +618,11 @@ class ChatActivity :
             currentUserProvider.getCurrentUser()
                 .onSuccess { user ->
                     conversationUser = user
+                    user.id?.let { accountId ->
+                        chatViewModel.setMaintenanceMode(
+                            httpStatusInterceptor.currentStatus(accountId) == ServerStatus.MAINTENANCE_MODE
+                        )
+                    }
                     handleIntent(intent)
                     val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
                     val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
@@ -4028,6 +4031,13 @@ class ChatActivity :
         ) {
             joinOneToOneConversation(userMentionClickEvent.userId)
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    override fun onServerStatusEvent(event: ServerStatusEvent) {
+        super.onServerStatusEvent(event)
+        if (!::conversationUser.isInitialized || event.accountId != conversationUser.id) return
+        chatViewModel.setMaintenanceMode(event.status == ServerStatus.MAINTENANCE_MODE)
     }
 
     fun sendPictureFromCamIntent() {

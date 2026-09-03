@@ -59,10 +59,11 @@ import com.nextcloud.talk.conversationlist.ui.ConversationsListScreenCallbacks
 import com.nextcloud.talk.conversationlist.ui.ConversationsListScreenState
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.conversationtags.viewmodels.ConversationTagsViewModel
-import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
 import com.nextcloud.talk.events.EventStatus
+import com.nextcloud.talk.events.ServerStatus
+import com.nextcloud.talk.events.ServerStatusEvent
 import com.nextcloud.talk.invitation.InvitationsActivity
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.run
@@ -120,7 +121,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.HttpException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -142,9 +142,6 @@ class ConversationsListActivity : BaseActivity() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var networkMonitor: NetworkMonitor
-
-    @Inject
     lateinit var contactsViewModel: ContactsViewModel
 
     lateinit var conversationsListViewModel: ConversationsListViewModel
@@ -153,7 +150,6 @@ class ConversationsListActivity : BaseActivity() {
 
     private var currentUser: User? = null
     private val snackbarHostState = SnackbarHostState()
-    private val isMaintenanceModeState = MutableStateFlow(false)
     private val showUnreadBubbleState = MutableStateFlow(false)
     private val isFabVisibleState = MutableStateFlow(true)
     private val showNotificationWarningState = MutableStateFlow(false)
@@ -229,6 +225,8 @@ class ConversationsListActivity : BaseActivity() {
         initObservers()
     }
 
+    override fun accountIdForStatusBanner(): Long? = currentUser?.id
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, showAccountDialogState.value)
@@ -250,7 +248,7 @@ class ConversationsListActivity : BaseActivity() {
             viewThemeUtils = viewThemeUtils,
             isShowEcosystem = appPreferences.isShowEcosystem && !resources.getBoolean(R.bool.is_branded_client),
             snackbarHostState = snackbarHostState,
-            isMaintenanceModeFlow = isMaintenanceModeState,
+            isMaintenanceModeFlow = maintenanceModeFlow,
             isOnlineFlow = networkMonitor.isOnline,
             showUnreadBubbleFlow = showUnreadBubbleState,
             isFabVisibleFlow = isFabVisibleState,
@@ -275,7 +273,6 @@ class ConversationsListActivity : BaseActivity() {
             onContactClick = { contactsViewModel.createRoom(ROOM_TYPE_ONE_ONE, null, it.actorId!!, null) },
             onLoadMoreClick = { conversationsListViewModel.loadMoreMessages(context) },
             onRefresh = {
-                isMaintenanceModeState.value = false
                 isRefreshingState.value = true
                 appPreferences.setConversationListPositionAndOffset(0, 0)
                 fetchRooms()
@@ -452,7 +449,8 @@ class ConversationsListActivity : BaseActivity() {
             when (state) {
                 is ConversationsListViewModel.GetRoomsErrorState -> {
                     isRefreshingState.value = false
-                    handleHttpExceptions(state.throwable)
+                    Log.e(TAG, "Error observing the conversation list", state.throwable)
+                    showErrorDialog()
                 }
 
                 else -> {}
@@ -671,22 +669,17 @@ class ConversationsListActivity : BaseActivity() {
         }
     }
 
-    private fun handleHttpExceptions(throwable: Throwable) {
-        if (!networkMonitor.isOnline.value) return
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    override fun onServerStatusEvent(event: ServerStatusEvent) {
+        super.onServerStatusEvent(event)
+        if (event.accountId != currentUser?.id) return
 
-        if (throwable is HttpException) {
-            when (throwable.code()) {
-                HTTP_UNAUTHORIZED -> showUnauthorizedDialog()
-                HTTP_CLIENT_UPGRADE_REQUIRED -> showOutdatedClientDialog()
-                HTTP_SERVICE_UNAVAILABLE -> showServiceUnavailableDialog(throwable)
-                else -> {
-                    Log.e(TAG, "Http Exception in ConversationListActivity", throwable)
-                    showErrorDialog()
-                }
+        when (event.status) {
+            ServerStatus.UNAUTHORIZED -> showUnauthorizedDialog()
+            ServerStatus.CLIENT_UPDATE_REQUIRED -> showOutdatedClientDialog()
+            else -> {
+                // MAINTENANCE_MODE / OK are handled by BaseActivity's maintenanceModeFlow
             }
-        } else {
-            Log.e(TAG, "Exception in ConversationListActivity", throwable)
-            showErrorDialog()
         }
     }
 
@@ -1450,14 +1443,6 @@ class ConversationsListActivity : BaseActivity() {
         )
     }
 
-    private fun showServiceUnavailableDialog(httpException: HttpException) {
-        if (httpException.response()?.headers()?.get(MAINTENANCE_MODE_HEADER_KEY) == "1") {
-            isMaintenanceModeState.value = true
-        } else {
-            showErrorDialog()
-        }
-    }
-
     private fun showServerEOLDialog() {
         val dialogBuilder = MaterialAlertDialogBuilder(this)
             .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.ic_warning_white))
@@ -1556,12 +1541,8 @@ class ConversationsListActivity : BaseActivity() {
         private val TAG = ConversationsListActivity::class.java.simpleName
         const val BOTTOM_SHEET_DELAY: Long = 2500
         const val SEARCH_DEBOUNCE_INTERVAL_MS = 300
-        const val HTTP_UNAUTHORIZED = 401
-        const val HTTP_CLIENT_UPGRADE_REQUIRED = 426
         const val CLIENT_UPGRADE_MARKET_LINK = "market://details?id="
         const val CLIENT_UPGRADE_GPLAY_LINK = "https://play.google.com/store/apps/details?id="
-        const val HTTP_SERVICE_UNAVAILABLE = 503
-        const val MAINTENANCE_MODE_HEADER_KEY = "X-Nextcloud-Maintenance-Mode"
         const val REQUEST_POST_NOTIFICATIONS_PERMISSION = 111
         const val DAYS_FOR_NOTIFICATION_WARNING = 5L
         const val NOTIFICATION_WARNING_DATE_NOT_SET = 0L

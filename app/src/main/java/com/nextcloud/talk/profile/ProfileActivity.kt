@@ -10,7 +10,6 @@ import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
@@ -127,36 +126,12 @@ class ProfileActivity : BaseActivity() {
         }
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
-        setContent {
+        setContentWithStatusBanner {
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
                 ProfileScreen(
                     state = profileUiState,
-                    callbacks = ProfileCallbacks(
-                        onNavigateBack = { onBackPressedDispatcher.onBackPressed() },
-                        onEditSave = ::handleEditSave,
-                        onAvatarUploadClick = {
-                            pickImage.selectLocal(startImagePickerForResult = startImagePickerForResult)
-                        },
-                        onAvatarChooseClick = {
-                            pickImage.selectRemote(
-                                startSelectRemoteFilesIntentForResult = startSelectRemoteFilesIntentForResult
-                            )
-                        },
-                        onAvatarCameraClick = {
-                            pickImage.takePicture(startTakePictureIntentForResult = startTakePictureIntentForResult)
-                        },
-                        onAvatarDeleteClick = ::deleteAvatar,
-                        onProfileEnabledChange = { enabled ->
-                            profileUiState = profileUiState.copy(isProfileEnabled = enabled)
-                        },
-                        onTextChange = { position, newText ->
-                            profileItems.getOrNull(position)?.text = newText
-                        },
-                        onScopeClick = { position, field ->
-                            scopeSheetRequest = ScopeSheetRequest(position, field)
-                        }
-                    )
+                    callbacks = buildProfileCallbacks()
                 )
                 scopeSheetRequest?.let { req ->
                     ScopeModalBottomSheet(
@@ -168,6 +143,33 @@ class ProfileActivity : BaseActivity() {
             }
         }
     }
+
+    private fun buildProfileCallbacks() =
+        ProfileCallbacks(
+            onNavigateBack = { onBackPressedDispatcher.onBackPressed() },
+            onEditSave = ::handleEditSave,
+            onAvatarUploadClick = {
+                pickImage.selectLocal(startImagePickerForResult = startImagePickerForResult)
+            },
+            onAvatarChooseClick = {
+                pickImage.selectRemote(
+                    startSelectRemoteFilesIntentForResult = startSelectRemoteFilesIntentForResult
+                )
+            },
+            onAvatarCameraClick = {
+                pickImage.takePicture(startTakePictureIntentForResult = startTakePictureIntentForResult)
+            },
+            onAvatarDeleteClick = ::deleteAvatar,
+            onProfileEnabledChange = { enabled ->
+                profileUiState = profileUiState.copy(isProfileEnabled = enabled)
+            },
+            onTextChange = { position, newText ->
+                profileItems.getOrNull(position)?.text = newText
+            },
+            onScopeClick = { position, field ->
+                scopeSheetRequest = ScopeSheetRequest(position, field)
+            }
+        )
 
     override fun onResume() {
         super.onResume()

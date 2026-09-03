@@ -8,7 +8,6 @@ package com.nextcloud.talk.openconversations
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModelProvider
@@ -42,7 +41,7 @@ class ListOpenConversationsActivity : BaseActivity() {
 
         val user = currentUserProviderOld.currentUser.blockingGet()
 
-        setContent {
+        setContentWithStatusBanner {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val viewState by openConversationsViewModel.viewState.collectAsStateWithLifecycle()
             val searchTerm by openConversationsViewModel.searchTerm.collectAsStateWithLifecycle()

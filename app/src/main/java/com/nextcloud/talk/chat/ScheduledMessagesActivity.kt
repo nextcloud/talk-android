@@ -11,7 +11,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -93,7 +92,6 @@ import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.ui.model.toScheduledMessageUiModel
 import com.nextcloud.talk.chat.viewmodels.ScheduledMessagesViewModel
 import com.nextcloud.talk.components.ColoredStatusBar
-import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.models.json.chat.ChatUtils
@@ -134,9 +132,6 @@ class ScheduledMessagesActivity : BaseActivity() {
 
     private lateinit var scheduledMessagesViewModel: ScheduledMessagesViewModel
 
-    @Inject
-    lateinit var networkMonitor: NetworkMonitor
-
     private val roomToken: String by lazy {
         intent.getStringExtra(ROOM_TOKEN).orEmpty()
     }
@@ -166,7 +161,7 @@ class ScheduledMessagesActivity : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         scheduledMessagesViewModel = ViewModelProvider(this, viewModelFactory)[ScheduledMessagesViewModel::class.java]
 
-        setContent {
+        setContentWithStatusBanner {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val currentUser by scheduledMessagesViewModel.currentUserState.collectAsStateWithLifecycle()
             LaunchedEffect(Unit) {
