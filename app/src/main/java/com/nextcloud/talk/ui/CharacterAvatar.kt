@@ -36,12 +36,7 @@ import com.nextcloud.talk.utils.ActorAvatar
  * character scales with the space the avatar is given, so callers only size the modifier.
  */
 @Composable
-fun CharacterAvatar(
-    character: String,
-    backgroundColor: Color,
-    textColor: Color,
-    modifier: Modifier = Modifier
-) {
+fun CharacterAvatar(character: String, backgroundColor: Color, textColor: Color, modifier: Modifier = Modifier) {
     BoxWithConstraints(modifier = modifier, contentAlignment = Alignment.Center) {
         // Sized to the shorter side and centered, so a circle stays a circle instead of being
         // stretched into a pill when the space the avatar is given is not square

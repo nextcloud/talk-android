@@ -22,11 +22,8 @@ sealed interface ActorAvatar {
      * A character on a coloured circle: the first character of a guest's name, or the shell prompt
      * of a bot. Both colours are theme-aware resources, as the web client's are.
      */
-    data class Character(
-        val character: String,
-        @ColorRes val backgroundColor: Int,
-        @ColorRes val textColor: Int
-    ) : ActorAvatar
+    data class Character(val character: String, @ColorRes val backgroundColor: Int, @ColorRes val textColor: Int) :
+        ActorAvatar
 
     /**
      * The app's own icon, for the bots that ship their avatar with the app.

@@ -23,6 +23,15 @@ interface OfflineConversationsRepository {
     val roomListFlow: Flow<List<ConversationModel>>
 
     /**
+     * Emits when [getRooms] fails to sync with the server (e.g. a dropped/reset connection on a
+     * slow network) while there are no locally cached conversations to fall back on for that
+     * account, so the UI can tell the user why the list is empty instead of failing silently.
+     * A failed sync while conversations are already cached does not emit here, since
+     * [roomListFlow] already has data to show and the sync is a best-effort background refresh.
+     */
+    val syncErrorFlow: Flow<Throwable>
+
+    /**
      * Stream of a single conversation, for use in each conversations settings.
      */
     @Deprecated("use observeConversation")
