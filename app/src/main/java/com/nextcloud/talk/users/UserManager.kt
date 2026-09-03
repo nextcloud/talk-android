@@ -19,6 +19,8 @@ import com.nextcloud.talk.models.json.push.PushConfigurationState
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.Subject
 
 @Suppress("TooManyFunctions")
 class UserManager internal constructor(private val userRepository: UsersRepository) {
@@ -34,10 +36,24 @@ class UserManager internal constructor(private val userRepository: UsersReposito
                 .switchIfEmpty(Maybe.defer { getAnyUserAndSetAsActive() })
         }
 
+    /**
+     * Backed by [activeUserSubject] rather than [UsersRepository.getActiveUserObservable] directly, so that
+     * [setUserAsActive] can push the newly-active user out synchronously the moment it succeeds, instead of
+     * consumers having to wait for Room's invalidation-tracker round trip to notice the DB write and re-query.
+     * That round trip is asynchronous and was racing against code (e.g. AccountVerificationActivity.
+     * proceedWithLogin()) that both changes the active user and immediately acts as if every observer already
+     * knows about it - e.g. launching a screen for the new user before its avatar/data had actually updated.
+     * Room's own observable is still relied on underneath to seed this and to catch any change to the `current`
+     * flag that doesn't go through [setUserAsActive].
+     */
     val currentUserObservable: Observable<User>
-        get() {
-            return userRepository.getActiveUserObservable()
-        }
+        get() = activeUserSubject
+
+    private val activeUserSubject: Subject<User> by lazy {
+        val subject = BehaviorSubject.create<User>().toSerialized()
+        userRepository.getActiveUserObservable().subscribe(subject::onNext) { }
+        subject
+    }
 
     fun deleteUser(internalId: Long): Int =
         userRepository.deleteUser(userRepository.getUserWithId(internalId).blockingGet())
@@ -156,6 +172,11 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     fun setUserAsActive(user: User): Single<Boolean> {
         Log.d(TAG, "setUserAsActive:" + user.id!!)
         return userRepository.setUserAsActiveWithId(user.id!!)
+            .doOnSuccess { success ->
+                if (success) {
+                    activeUserSubject.onNext(user)
+                }
+            }
     }
 
     fun storeProfile(username: String?, userAttributes: UserAttributes): Maybe<User> =
