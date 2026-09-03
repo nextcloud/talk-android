@@ -8,6 +8,7 @@ package com.nextcloud.talk.logger.ui
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -52,14 +53,22 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
+import com.nextcloud.talk.diagnosis.buildDiagnosisReportText
+import com.nextcloud.talk.diagnosis.showShareReportDialog
+import com.nextcloud.talk.errorhandling.saveLogsAsZip
 import com.nextcloud.talk.logger.Level
 import com.nextcloud.talk.logger.LogEntry
+import com.nextcloud.talk.logger.LogsRepository
+import com.nextcloud.talk.users.UserManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
@@ -69,6 +78,24 @@ class LogsActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var logsRepository: LogsRepository
+
+    private val saveZipLauncher =
+        registerForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uri ->
+            if (uri != null) {
+                val diagnosisText = buildDiagnosisReportText(this, userManager, appPreferences, logsRepository)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    contentResolver.openOutputStream(uri)?.use { os ->
+                        saveLogsAsZip(this@LogsActivity, os, diagnosisText)
+                    }
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +113,16 @@ class LogsActivity : BaseActivity() {
                 val advancedLogging = viewModel.advancedLogging.collectAsState().value
 
                 val menuItems = listOf(
-                    stringResource(R.string.nc_logs_delete_all) to { viewModel.deleteAll() }
+                    stringResource(R.string.nc_logs_delete_all) to { viewModel.deleteAll() },
+                    stringResource(R.string.nc_settings_share_report_title) to {
+                        showShareReportDialog(
+                            this@LogsActivity,
+                            userManager,
+                            appPreferences,
+                            logsRepository,
+                            saveZipLauncher
+                        )
+                    }
                 )
 
                 ColoredStatusBar()

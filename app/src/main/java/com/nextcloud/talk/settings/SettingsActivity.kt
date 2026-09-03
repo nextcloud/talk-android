@@ -65,10 +65,9 @@ import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySettingsBinding
 import com.nextcloud.talk.diagnosis.DiagnosisActivity
-import com.nextcloud.talk.diagnosis.buildDiagnosisElements
-import com.nextcloud.talk.diagnosis.toMarkdown
+import com.nextcloud.talk.diagnosis.buildDiagnosisReportText
+import com.nextcloud.talk.diagnosis.showShareReportDialog
 import com.nextcloud.talk.errorhandling.saveLogsAsZip
-import com.nextcloud.talk.errorhandling.shareLogsAndDiagnosis
 import com.nextcloud.talk.logger.Level
 import com.nextcloud.talk.logger.LogsRepository
 import com.nextcloud.talk.logger.ui.LogsActivity
@@ -83,7 +82,6 @@ import com.nextcloud.talk.profile.ProfileActivity
 import com.nextcloud.talk.ui.dialog.SetPhoneNumberDialogFragment
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DisplayUtils
@@ -147,7 +145,7 @@ class SettingsActivity :
     private val saveZipLauncher =
         registerForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uri ->
             if (uri != null) {
-                val diagnosisText = buildDiagnosisReport()
+                val diagnosisText = buildDiagnosisReportText(this, userManager, appPreferences, logsRepository)
                 lifecycleScope.launch(Dispatchers.IO) {
                     contentResolver.openOutputStream(uri)?.use { os ->
                         saveLogsAsZip(this@SettingsActivity, os, diagnosisText)
@@ -699,123 +697,8 @@ class SettingsActivity :
             startActivity(Intent(context, LogsActivity::class.java))
         }
         binding.shareReportWrapper.setOnClickListener {
-            showShareReportDialog()
+            showShareReportDialog(this, userManager, appPreferences, logsRepository, saveZipLauncher)
         }
-    }
-
-    private fun showShareReportDialog() {
-        val options = buildShareReportOptions()
-        var dialog: AlertDialog? = null
-        val view = buildShareDialogContentView(options) { dialog?.dismiss() }
-        dialog = MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.nc_settings_share_report_title)
-            .setView(view)
-            .show()
-    }
-
-    private fun buildShareReportOptions(): List<Pair<String, () -> Unit>> {
-        val options = mutableListOf(
-            getString(R.string.nc_logs_share) to {
-                val diagnosisText = buildDiagnosisReport()
-                shareLogsAndDiagnosis(
-                    context = this,
-                    subject = getString(R.string.nc_logs_share_subject, getString(R.string.nc_app_product_name)),
-                    diagnosisText = diagnosisText
-                )
-            },
-            getString(R.string.nc_logs_download_zip) to {
-                saveZipLauncher.launch("nc_talk_logs.zip")
-            }
-        )
-        if (BrandingUtils.isOriginalNextcloudClient(applicationContext)) {
-            options.add(
-                getString(R.string.create_issue) to {
-                    val diagnosisText = buildDiagnosisReport()
-                    val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                    clipboard.setPrimaryClip(
-                        android.content.ClipData.newPlainText(getString(R.string.nc_app_product_name), diagnosisText)
-                    )
-                    Toast.makeText(this, getString(R.string.nc_common_copy_success), Toast.LENGTH_LONG).show()
-                    startActivity(Intent(Intent.ACTION_VIEW, getString(R.string.nc_talk_android_issues_url).toUri()))
-                }
-            )
-        }
-        return options
-    }
-
-    @Suppress("Detekt.LongMethod")
-    private fun buildDiagnosisReport(): String =
-        buildDiagnosisElements(
-            context = this,
-            userManager = userManager,
-            appPreferences = appPreferences,
-            logsRepository = logsRepository
-        ).toMarkdown()
-
-    private fun buildShareDialogContentView(
-        options: List<Pair<String, () -> Unit>>,
-        onDismiss: () -> Unit
-    ): android.widget.ScrollView {
-        val density = resources.displayMetrics.density
-        fun dp(value: Int) = (value * density).toInt()
-        val selectableBackground = with(android.util.TypedValue()) {
-            theme.resolveAttribute(android.R.attr.selectableItemBackground, this, true)
-            resourceId
-        }
-        val list = android.widget.LinearLayout(this).apply {
-            orientation = android.widget.LinearLayout.VERTICAL
-            addView(
-                android.widget.TextView(context).apply {
-                    text = getString(R.string.nc_logs_advanced_logging_privacy_warning)
-                    val h = dp(DIALOG_PADDING_H_DP)
-                    val v = dp(DIALOG_PADDING_V_DP)
-                    setPadding(h, v, h, v)
-                    setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium)
-                }
-            )
-            addView(
-                android.view.View(context).apply {
-                    layoutParams = android.widget.LinearLayout.LayoutParams(
-                        android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-                        dp(1)
-                    ).also { it.setMargins(0, 0, 0, dp(DIALOG_SPACING_DP)) }
-                    setBackgroundColor(
-                        com.google.android.material.color.MaterialColors.getColor(
-                            context,
-                            com.google.android.material.R.attr.colorOutlineVariant,
-                            0
-                        )
-                    )
-                }
-            )
-            options.forEach { (label, action) ->
-                addView(
-                    android.widget.TextView(context).apply {
-                        text = label
-                        val h = dp(DIALOG_PADDING_H_DP)
-                        val v = dp(DIALOG_PADDING_V_DP)
-                        setPadding(h, v, h, v)
-                        setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge)
-                        setBackgroundResource(selectableBackground)
-                        isClickable = true
-                        isFocusable = true
-                        setOnClickListener {
-                            onDismiss()
-                            action()
-                        }
-                    }
-                )
-            }
-            addView(
-                View(context).apply {
-                    layoutParams = android.widget.LinearLayout.LayoutParams(
-                        android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-                        dp(DIALOG_SPACING_DP)
-                    )
-                }
-            )
-        }
-        return android.widget.ScrollView(this).apply { addView(list) }
     }
 
     private fun setupPrivacyUrl(isOnline: Boolean) {
