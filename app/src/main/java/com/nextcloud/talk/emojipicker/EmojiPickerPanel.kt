@@ -44,6 +44,7 @@ class EmojiPickerPanel @JvmOverloads constructor(
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var searchJob: Job? = null
     private var recentEmojiProvider: RecentEmojiProvider? = null
+    private var searchFieldFocused = false
 
     var searchEnabled: Boolean = true
         set(value) {
@@ -55,7 +56,7 @@ class EmojiPickerPanel @JvmOverloads constructor(
     var backspaceEnabled: Boolean = false
         set(value) {
             field = value
-            binding.emojiBackspaceButton.isVisible = value
+            updateBackspaceVisibility()
             updateSearchRowVisibility()
         }
 
@@ -67,11 +68,15 @@ class EmojiPickerPanel @JvmOverloads constructor(
     init {
         orientation = VERTICAL
         binding.emojiSearchFieldGroup.isVisible = searchEnabled
-        binding.emojiBackspaceButton.isVisible = backspaceEnabled
+        updateBackspaceVisibility()
         updateSearchRowVisibility()
 
         binding.emojiPicker.setOnEmojiPickedListener { item -> onEmojiPicked?.invoke(item.emoji) }
         binding.emojiSearchInput.doAfterTextChanged { editable -> onSearchTextChanged(editable?.toString().orEmpty()) }
+        binding.emojiSearchInput.setOnFocusChangeListener { _, hasFocus ->
+            searchFieldFocused = hasFocus
+            updateBackspaceVisibility()
+        }
         binding.emojiSearchClear.setOnClickListener { binding.emojiSearchInput.setText("") }
         binding.emojiBackspaceButton.setOnClickListener { onBackspaceClicked?.invoke() }
     }
@@ -90,6 +95,7 @@ class EmojiPickerPanel @JvmOverloads constructor(
     fun reset() {
         searchJob?.cancel()
         binding.emojiSearchInput.setText("")
+        binding.emojiSearchInput.clearFocus()
         showGrid()
     }
 
@@ -120,6 +126,15 @@ class EmojiPickerPanel @JvmOverloads constructor(
 
     private fun updateSearchRowVisibility() {
         binding.emojiSearchRow.isVisible = searchEnabled || backspaceEnabled
+    }
+
+    /**
+     * Hidden while the search field has focus - with the keyboard open for typing a search
+     * term, a backspace button right next to it reads as belonging to the search field rather
+     * than to whatever text field the host's own [onBackspaceClicked] actually edits.
+     */
+    private fun updateBackspaceVisibility() {
+        binding.emojiBackspaceButton.isVisible = backspaceEnabled && !searchFieldFocused
     }
 
     private fun onSearchTextChanged(query: String) {
