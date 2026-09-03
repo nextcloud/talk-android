@@ -1180,6 +1180,11 @@ class CallActivity : CallBaseActivity() {
 
     @SuppressLint("MissingPermission")
     private fun startMicInputDetection() {
+        // concurrent audio capture isn't supported before Android 10
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            return
+        }
+
         if (permissionUtil!!.isMicrophonePermissionGranted() && micInputAudioRecordThread == null) {
             micInputAudioRecorder = AudioRecord(
                 MediaRecorder.AudioSource.MIC,
