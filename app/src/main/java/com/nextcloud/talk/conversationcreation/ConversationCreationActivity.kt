@@ -107,7 +107,6 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.PickImage
-import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 import javax.inject.Inject
@@ -242,12 +241,7 @@ fun ConversationCreationScreen(
 
                 ConversationNameAndDescription(conversationCreationViewModel)
 
-                if (
-                    CapabilitiesUtil.hasSpreedFeatureCapability(
-                        conversationCreationViewModel.currentUser.capabilities?.spreedCapability,
-                        SpreedFeatures.CONVERSATION_PRESETS
-                    )
-                ) {
+                if (conversationCreationViewModel.showPresetSelection) {
                     ConversationPresets(conversationCreationViewModel)
                 }
                 AddParticipants(launcher, context, conversationCreationViewModel)
@@ -389,12 +383,6 @@ fun ConversationNameAndDescription(conversationCreationViewModel: ConversationCr
 @Composable
 fun ConversationPresets(conversationCreationViewModel: ConversationCreationViewModel) {
     val preset by conversationCreationViewModel.conversationPreset
-    val hasAnnouncementPresetCapability = CapabilitiesUtil.hasSpreedFeatureCapability(
-        conversationCreationViewModel.currentUser.capabilities?.spreedCapability,
-        SpreedFeatures.ANNOUNCEMENT_PRESET
-    )
-    val showAnnouncementPreset = hasAnnouncementPresetCapability &&
-        CapabilitiesUtil.isAdmin(conversationCreationViewModel.currentUser.capabilities?.spreedCapability)
 
     Column(
         modifier = Modifier
@@ -410,21 +398,25 @@ fun ConversationPresets(conversationCreationViewModel: ConversationCreationViewM
                 title = stringResource(R.string.default_room),
                 subtitle = stringResource(R.string.default_room_preset),
                 icon = Icons.Outlined.Chat,
-                isSelected = preset == "default",
-                onClick = { conversationCreationViewModel.updateConversationPreset("default") }
+                isSelected = preset == ConversationPreset.DEFAULT,
+                onClick = { conversationCreationViewModel.updateConversationPreset(ConversationPreset.DEFAULT) }
             )
 
-            SelectableCard(
-                modifier = Modifier.weight(1f),
-                title = stringResource(R.string.voice_room),
-                subtitle = stringResource(R.string.voice_room_preset),
-                icon = Icons.Outlined.VolumeUp,
-                isSelected = preset == "voiceroom",
-                onClick = { conversationCreationViewModel.updateConversationPreset("voiceroom") }
-            )
+            if (conversationCreationViewModel.canCreateVoiceRoom) {
+                SelectableCard(
+                    modifier = Modifier.weight(1f),
+                    title = stringResource(R.string.voice_room),
+                    subtitle = stringResource(R.string.voice_room_preset),
+                    icon = Icons.Outlined.VolumeUp,
+                    isSelected = preset == ConversationPreset.VOICE_ROOM,
+                    onClick = { conversationCreationViewModel.updateConversationPreset(ConversationPreset.VOICE_ROOM) }
+                )
+            } else {
+                Spacer(modifier = Modifier.weight(1f))
+            }
         }
 
-        if (hasAnnouncementPresetCapability) {
+        if (conversationCreationViewModel.canCreateChannel) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -433,18 +425,22 @@ fun ConversationPresets(conversationCreationViewModel: ConversationCreationViewM
                     title = stringResource(R.string.nc_channel),
                     subtitle = stringResource(R.string.nc_channel_description),
                     icon = Icons.Outlined.Podcasts,
-                    isSelected = preset == "channel",
-                    onClick = { conversationCreationViewModel.updateConversationPreset("channel") }
+                    isSelected = preset == ConversationPreset.CHANNEL,
+                    onClick = { conversationCreationViewModel.updateConversationPreset(ConversationPreset.CHANNEL) }
                 )
 
-                if (showAnnouncementPreset) {
+                if (conversationCreationViewModel.canCreateAnnouncement) {
                     SelectableCard(
                         modifier = Modifier.weight(1f),
                         title = stringResource(R.string.nc_announcement),
                         subtitle = stringResource(R.string.nc_announcement_description),
                         icon = Icons.Outlined.Campaign,
-                        isSelected = preset == "announcement",
-                        onClick = { conversationCreationViewModel.updateConversationPreset("announcement") }
+                        isSelected = preset == ConversationPreset.ANNOUNCEMENT,
+                        onClick = {
+                            conversationCreationViewModel.updateConversationPreset(
+                                ConversationPreset.ANNOUNCEMENT
+                            )
+                        }
                     )
                 } else {
                     Spacer(modifier = Modifier.weight(1f))
@@ -614,12 +610,12 @@ fun AddParticipants(
 @Suppress("LongMethod")
 @Composable
 fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewModel) {
-    val isGuestsAllowed = conversationCreationViewModel.isGuestsAllowed.value
+    val isGuestsAllowed = conversationCreationViewModel.isGuestsAllowed
     val isConversationAvailableForRegisteredUsers = conversationCreationViewModel
-        .isConversationAvailableForRegisteredUsers.value
-    val isOpenForGuestAppUsers = conversationCreationViewModel.openForGuestAppUsers.value
+        .isConversationAvailableForRegisteredUsers
+    val isOpenForGuestAppUsers = conversationCreationViewModel.isOpenForGuestAppUsers
 
-    val isPasswordSet = conversationCreationViewModel.isPasswordEnabled.value
+    val isPasswordSet = conversationCreationViewModel.password.collectAsState().value.isNotEmpty()
 
     Text(
         text = stringResource(id = R.string.nc_new_conversation_visibility),
@@ -633,9 +629,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
         switch = {
             Switch(
                 checked = isGuestsAllowed,
-                onCheckedChange = {
-                    conversationCreationViewModel.isGuestsAllowed.value = it
-                }
+                onCheckedChange = { conversationCreationViewModel.allowGuests(it) }
             )
         },
         conversationCreationViewModel = conversationCreationViewModel
@@ -663,9 +657,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
         switch = {
             Switch(
                 checked = isConversationAvailableForRegisteredUsers,
-                onCheckedChange = {
-                    conversationCreationViewModel.isConversationAvailableForRegisteredUsers.value = it
-                }
+                onCheckedChange = { conversationCreationViewModel.openConversationToRegisteredUsers(it) }
             )
         },
         conversationCreationViewModel = conversationCreationViewModel
@@ -677,9 +669,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
             switch = {
                 Switch(
                     checked = isOpenForGuestAppUsers,
-                    onCheckedChange = {
-                        conversationCreationViewModel.openForGuestAppUsers.value = it
-                    }
+                    onCheckedChange = { conversationCreationViewModel.openConversationToGuestAppUsers(it) }
                 )
             },
             conversationCreationViewModel = conversationCreationViewModel
@@ -701,16 +691,12 @@ fun ConversationOption(
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
             .then(
-                if (!conversationCreationViewModel.isPasswordEnabled.value) {
-                    Modifier.clickable {
-                        showPasswordDialog = true
-                    }
-                } else if (conversationCreationViewModel.isPasswordEnabled.value) {
-                    Modifier.clickable {
-                        showPasswordChangeDialog = true
-                    }
-                } else {
-                    Modifier
+                when {
+                    switch != null -> Modifier
+                    conversationCreationViewModel.password.collectAsState().value.isEmpty() ->
+                        Modifier.clickable { showPasswordDialog = true }
+
+                    else -> Modifier.clickable { showPasswordChangeDialog = true }
                 }
             ),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -794,7 +780,6 @@ fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: Con
                     TextButton(
                         onClick = {
                             conversationCreationViewModel.updatePassword(changedPassword)
-                            conversationCreationViewModel.isPasswordEnabled.value = true
                             onDismiss()
                         },
                         enabled = changedPassword.isNotEmpty() && changedPassword.isNotBlank(),
@@ -805,7 +790,7 @@ fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: Con
                     Spacer(modifier = Modifier.height(4.dp))
                     TextButton(
                         onClick = {
-                            conversationCreationViewModel.isPasswordEnabled.value = false
+                            conversationCreationViewModel.updatePassword("")
                             onDismiss()
                         },
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
@@ -849,7 +834,6 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
                 onClick = {
                     if (password.isNotEmpty() && password.isNotBlank()) {
                         conversationCreationViewModel.updatePassword(password)
-                        conversationCreationViewModel.isPasswordEnabled(true)
                         onDismiss()
                     }
                 }
@@ -867,7 +851,6 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
 
 @Composable
 fun CreateConversation(conversationCreationViewModel: ConversationCreationViewModel, context: Context) {
-    val selectedParticipants by conversationCreationViewModel.selectedParticipants.collectAsState()
     val isCreatingRoom by conversationCreationViewModel.isCreatingRoom.collectAsState()
     Box(
         modifier = Modifier
@@ -878,12 +861,7 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
         Button(
             enabled = !isCreatingRoom,
             onClick = {
-                conversationCreationViewModel.createRoomAndAddParticipants(
-                    roomType = CompanionClass.ROOM_TYPE_GROUP,
-                    conversationName = conversationCreationViewModel.roomName.value,
-                    participants = selectedParticipants.toSet(),
-                    preset = conversationCreationViewModel.conversationPreset.value
-                ) { roomToken ->
+                conversationCreationViewModel.createRoomAndAddParticipants { roomToken ->
                     val bundle = Bundle()
                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
                     val chatIntent = Intent(context, ChatActivity::class.java)
@@ -903,13 +881,6 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
             }
             Text(text = stringResource(id = R.string.create_conversation))
         }
-    }
-}
-
-class CompanionClass {
-    companion object {
-        internal val TAG = ConversationCreationActivity::class.simpleName
-        internal const val ROOM_TYPE_GROUP = "2"
     }
 }
 

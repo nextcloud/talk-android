@@ -10,16 +10,20 @@ package com.nextcloud.talk.conversationcreation.viewmodel
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.net.toFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nextcloud.talk.conversationcreation.data.ConversationCreationRepository
-import com.nextcloud.talk.conversationinfo.CreateRoomRequest
+import com.nextcloud.talk.conversationcreation.ConversationCreator
+import com.nextcloud.talk.conversationcreation.ConversationPreset
+import com.nextcloud.talk.conversationcreation.ConversationPresetParameters
+import com.nextcloud.talk.conversationcreation.CreateConversationParams
+import com.nextcloud.talk.conversationcreation.NewConversation
+import com.nextcloud.talk.conversationcreation.withParameters
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.ParticipantPermissions
+import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +31,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ConversationCreationViewModel @Inject constructor(
-    private val repository: ConversationCreationRepository,
+    private val conversationCreator: ConversationCreator,
     private val currentUserProvider: CurrentUserProviderOld
 ) : ViewModel() {
     private val _selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
@@ -49,15 +53,24 @@ class ConversationCreationViewModel @Inject constructor(
     private val _currentUser = currentUserProvider.currentUser.blockingGet()
     val currentUser: User = _currentUser
 
-    private val _isPasswordEnabled = mutableStateOf(false)
-    val isPasswordEnabled = _isPasswordEnabled
+    private val spreedCapabilities = _currentUser.capabilities?.spreedCapability
+
+    val showPresetSelection = CapabilitiesUtil.hasSpreedFeatureCapability(
+        spreedCapabilities,
+        SpreedFeatures.CONVERSATION_PRESETS
+    )
+
+    val canCreateVoiceRoom = spreedCapabilities != null && CapabilitiesUtil.isAbleToCall(spreedCapabilities)
+
+    val canCreateChannel = CapabilitiesUtil.hasSpreedFeatureCapability(
+        spreedCapabilities,
+        SpreedFeatures.ANNOUNCEMENT_PRESET
+    )
+
+    val canCreateAnnouncement = canCreateChannel && CapabilitiesUtil.isAdmin(spreedCapabilities)
 
     fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
         _selectedParticipants.value = participants
-    }
-
-    fun isPasswordEnabled(value: Boolean) {
-        _isPasswordEnabled.value = value
     }
 
     fun updateSelectedImageUri(uri: Uri?) {
@@ -89,11 +102,10 @@ class ConversationCreationViewModel @Inject constructor(
     val password: StateFlow<String> = _password
     private val _conversationDescription = MutableStateFlow("")
     val conversationDescription: StateFlow<String> = _conversationDescription
-    var isGuestsAllowed = mutableStateOf(false)
-    var isConversationAvailableForRegisteredUsers = mutableStateOf(false)
-    val conversationPreset = mutableStateOf("default")
-    var openForGuestAppUsers = mutableStateOf(false)
-    private val allowGuestsResult = MutableStateFlow<AllowGuestsUiState>(AllowGuestsUiState.None)
+    val conversationPreset = mutableStateOf(ConversationPreset.DEFAULT)
+
+    private val conversationParams = mutableStateOf(CreateConversationParams())
+
     fun updateRoomName(roomName: String) {
         _roomName.value = roomName
     }
@@ -108,170 +120,96 @@ class ConversationCreationViewModel @Inject constructor(
 
     fun updateConversationPreset(preset: String) {
         conversationPreset.value = preset
-        when (preset) {
-            "default", "voiceroom" -> {
-                isConversationAvailableForRegisteredUsers.value = false
-                openForGuestAppUsers.value = false
-            }
-            "channel" -> {
-                isConversationAvailableForRegisteredUsers.value = true
-                openForGuestAppUsers.value = false
-            }
-            "announcement" -> {
-                isConversationAvailableForRegisteredUsers.value = false
-                openForGuestAppUsers.value = false
-            }
-        }
+        val visibilityChosenByUser = CreateConversationParams(roomType = conversationParams.value.roomType)
+        updateParams(visibilityChosenByUser.withParameters(ConversationPresetParameters.of(preset)))
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught", "LongMethod")
-    fun createRoomAndAddParticipants(
-        roomType: String,
-        conversationName: String,
-        preset: String = "default",
-        participants: Set<AutocompleteUser>,
-        onRoomCreated: (String) -> Unit
-    ) {
+    val isGuestsAllowed: Boolean
+        get() = conversationParams.value.roomType == CreateConversationParams.ROOM_TYPE_PUBLIC
+
+    val isConversationAvailableForRegisteredUsers: Boolean
+        get() = conversationParams.value.listable != CreateConversationParams.LISTABLE_NONE
+
+    val isOpenForGuestAppUsers: Boolean
+        get() = conversationParams.value.listable == CreateConversationParams.LISTABLE_ALL
+
+    fun allowGuests(allow: Boolean) {
+        val roomType = if (allow) {
+            CreateConversationParams.ROOM_TYPE_PUBLIC
+        } else {
+            CreateConversationParams.ROOM_TYPE_GROUP
+        }
+        updateParams(conversationParams.value.copy(roomType = roomType))
+    }
+
+    fun openConversationToRegisteredUsers(open: Boolean) {
+        val listable = if (open) {
+            CreateConversationParams.LISTABLE_USERS
+        } else {
+            CreateConversationParams.LISTABLE_NONE
+        }
+        updateParams(conversationParams.value.copy(listable = listable))
+    }
+
+    fun openConversationToGuestAppUsers(open: Boolean) {
+        val listable = if (open) {
+            CreateConversationParams.LISTABLE_ALL
+        } else {
+            CreateConversationParams.LISTABLE_USERS
+        }
+        updateParams(conversationParams.value.copy(listable = listable))
+    }
+
+    private fun updateParams(params: CreateConversationParams) {
+        conversationParams.value = params
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun createRoomAndAddParticipants(onRoomCreated: (String) -> Unit) {
         if (_isCreatingRoom.value) {
             return
         }
         _isCreatingRoom.value = true
 
-        val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token)
-        val scope = when {
-            isConversationAvailableForRegisteredUsers.value && !openForGuestAppUsers.value -> 1
-            isConversationAvailableForRegisteredUsers.value && openForGuestAppUsers.value -> 2
-            else -> 0
-        }
         viewModelScope.launch {
             roomViewState.value = RoomUIState.None
             try {
-                val apiVersion =
-                    ApiUtils.getConversationApiVersion(_currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-                val url = ApiUtils.getUrlForRooms(apiVersion, _currentUser.baseUrl)
-                val body = CreateRoomRequest().apply {
-                    this.roomType = roomType
-                    this.roomName = conversationName
-                    this.preset = preset
-                    this.description = _conversationDescription.value
-                    this.listable = scope
-                    this.participants = convertAutocompleteUserToParticipants(participants)
-
-                    if (preset == "channel" || preset == "announcement") {
-                        this.permissions = ParticipantPermissions.DEFAULT_GROUP_PERMISSIONS and
-                            ParticipantPermissions.CHAT.inv()
-                    }
-                }
-                val roomResult = repository.createRoomWithBody(
-                    credentials,
-                    url,
-                    body
+                val conversation = conversationCreator.create(
+                    _currentUser,
+                    NewConversation(
+                        name = _roomName.value,
+                        description = _conversationDescription.value,
+                        preset = conversationPreset.value,
+                        params = conversationParams.value,
+                        password = _password.value,
+                        participants = _selectedParticipants.value.distinctBy { it.source to it.id },
+                        emoji = _selectedEmoji.value,
+                        emojiColor = _selectedEmojiColor.value,
+                        imageUri = _selectedImageUri.value
+                    )
                 )
-                val conversation = roomResult.ocs?.data
-
-                if (conversation != null) {
-                    val token = conversation.token
-                    if (token != null) {
-                        try {
-                            if (_password.value.isNotEmpty()) {
-                                val url = ApiUtils.getUrlForRoomPassword(
-                                    apiVersion,
-                                    _currentUser.baseUrl!!,
-                                    token
-                                )
-                                repository.setPassword(
-                                    credentials,
-                                    url,
-                                    token,
-                                    _password.value
-                                )
-                            }
-
-                            val urlForOpeningConversations = ApiUtils.getUrlForOpeningConversations(
-                                apiVersion,
-                                _currentUser.baseUrl,
-                                token
-                            )
-
-                            repository.openConversation(
-                                credentials,
-                                urlForOpeningConversations,
-                                token,
-                                scope
-                            )
-
-                            saveAvatar(credentials, token)
-                            onRoomCreated(token)
-                        } catch (exception: Exception) {
-                            allowGuestsResult.value = AllowGuestsUiState.Error(exception.message ?: "")
-                        }
-                    }
+                val token = conversation?.token
+                if (!token.isNullOrEmpty()) {
                     roomViewState.value = RoomUIState.Success(conversation)
+                    onRoomCreated(token)
                 } else {
                     roomViewState.value = RoomUIState.Error("Conversation is null")
                 }
             } catch (e: Exception) {
                 roomViewState.value = RoomUIState.Error(e.message ?: "Unknown error")
-                Log.e("ConversationCreationViewModel", "Error - ${e.message}")
+                Log.e(TAG, "Error - ${e.message}")
             } finally {
                 _isCreatingRoom.value = false
             }
         }
     }
 
-    private fun convertAutocompleteUserToParticipants(
-        autocompleteUsers: Set<AutocompleteUser>
-    ): com.nextcloud.talk.conversationinfo.Participants {
-        val participants = com.nextcloud.talk.conversationinfo.Participants()
-        autocompleteUsers.forEach { autocompleteUser ->
-            when (autocompleteUser.source) {
-                "groups" -> participants.groups.add(autocompleteUser.id!!)
-                "emails" -> participants.emails.add(autocompleteUser.id!!)
-                "circles" -> participants.teams.add(autocompleteUser.id!!)
-                "federated" -> participants.federatedUsers.add(autocompleteUser.id!!)
-                "phones" -> participants.phones.add(autocompleteUser.id!!)
-                else -> participants.users.add(autocompleteUser.id!!)
-            }
-        }
-        return participants
-    }
-
     fun getImageUri(avatarId: String, requestBigSize: Boolean, isDarkMode: Boolean): String =
         ApiUtils.getUrlForAvatar(_currentUser.baseUrl, avatarId, requestBigSize, darkMode = isDarkMode)
 
-    private suspend fun saveAvatar(credentials: String?, token: String) {
-        val emoji = _selectedEmoji.value
-        if (emoji != null) {
-            val urlForConversationEmojiAvatar = ApiUtils.getUrlForConversationEmojiAvatar(
-                1,
-                _currentUser.baseUrl!!,
-                token
-            )
-            val color = _selectedEmojiColor.value?.let { "%06X".format(COLOR_HEX_MASK and it) }
-            repository.setConversationEmojiAvatar(credentials, urlForConversationEmojiAvatar, emoji, color)
-        } else {
-            selectedImageUri.value?.let {
-                val urlForConversationAvatar = ApiUtils.getUrlForConversationAvatar(1, _currentUser.baseUrl!!, token)
-                repository.uploadConversationAvatar(
-                    credentials,
-                    _currentUser,
-                    urlForConversationAvatar,
-                    it.toFile(),
-                    token
-                )
-            }
-        }
-    }
-
     companion object {
-        private const val COLOR_HEX_MASK = 0xFFFFFF
+        private val TAG = ConversationCreationViewModel::class.simpleName
     }
-}
-
-sealed class AllowGuestsUiState {
-    data object None : AllowGuestsUiState()
-    data class Success(val result: Boolean) : AllowGuestsUiState()
-    data class Error(val message: String) : AllowGuestsUiState()
 }
 
 sealed class RoomUIState {
