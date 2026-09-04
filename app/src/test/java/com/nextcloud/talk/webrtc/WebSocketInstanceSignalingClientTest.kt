@@ -29,7 +29,7 @@ class WebSocketInstanceSignalingClientTest {
         // hardcoded on purpose: fails if the ping interval in WebSocketInstance changes or is removed
         assertEquals(
             "signaling WebSocket client must send pings to detect half-open connections",
-            10_000,
+            30_000,
             signalingClient.pingIntervalMillis
         )
     }

@@ -533,7 +533,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         private const val TAG = "WebSocketInstance"
         private const val NORMAL_CLOSURE = 1000
         private const val ONE_SECOND: Long = 1000
-        private const val PING_INTERVAL_SECONDS: Long = 10
+        private const val PING_INTERVAL_SECONDS: Long = 30
 
         // Dedicated client with pings, so half-open WebSocket connections
         // (e.g. after a WiFi to cellular switch without TCP reset) fail and trigger the reconnect path.
