@@ -16,6 +16,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.conversationcreation.data.ConversationCreationRepository
 import com.nextcloud.talk.conversationinfo.ConversationInfoUiEvent
 import com.nextcloud.talk.conversationinfo.ConversationInfoUiState
 import com.nextcloud.talk.conversationinfo.CreateRoomRequest
@@ -36,6 +37,7 @@ import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
+import com.nextcloud.talk.models.json.passwordResult.PasswordResult
 import com.nextcloud.talk.models.json.profile.Profile
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository.ResendInvitationsResult
@@ -74,7 +76,8 @@ import javax.inject.Inject
 class ConversationInfoViewModel @Inject constructor(
     private val chatNetworkDataSource: ChatNetworkDataSource,
     private val conversationsRepository: ConversationsRepository,
-    private val ncApi: NcApi
+    private val ncApi: NcApi,
+    private val conversationCreationRepository: ConversationCreationRepository
 ) : ViewModel() {
     object LifeCycleObserver : DefaultLifecycleObserver {
         enum class LifeCycleFlag {
@@ -168,6 +171,54 @@ class ConversationInfoViewModel @Inject constructor(
         }
         return uiItems
     }
+
+    private val _passwordViewState = MutableLiveData<PasswordUiState>(PasswordUiState.None)
+    val passwordViewState: LiveData<PasswordUiState>
+        get() = _passwordViewState
+
+    private val _securePasswordViewState = MutableLiveData<SecurePasswordViewState>(SecurePasswordViewState.None)
+    val securePasswordViewState: LiveData<SecurePasswordViewState> = _securePasswordViewState
+
+    private val _clearChatHistoryViewState: MutableLiveData<ClearChatHistoryViewState> =
+        MutableLiveData(ClearChatHistoryViewState.None)
+    val clearChatHistoryViewState: LiveData<ClearChatHistoryViewState>
+        get() = _clearChatHistoryViewState
+
+    private val _getConversationReadOnlyState: MutableLiveData<SetConversationReadOnlyViewState> =
+        MutableLiveData(SetConversationReadOnlyViewState.None)
+    val getConversationReadOnlyState: LiveData<SetConversationReadOnlyViewState>
+        get() = _getConversationReadOnlyState
+
+    @Suppress("PropertyName")
+    private val _markConversationAsImportantResult =
+        MutableLiveData<MarkConversationAsImportantViewState>(MarkConversationAsImportantViewState.None)
+    val markAsImportantResult: LiveData<MarkConversationAsImportantViewState>
+        get() = _markConversationAsImportantResult
+
+    @Suppress("PropertyName")
+    private val _markConversationAsUnimportantResult =
+        MutableLiveData<MarkConversationAsUnimportantViewState>(MarkConversationAsUnimportantViewState.None)
+    val markAsUnimportantResult: LiveData<MarkConversationAsUnimportantViewState>
+        get() = _markConversationAsUnimportantResult
+
+    object GetProfileErrorState : ViewState
+    class GetProfileSuccessState(val profile: Profile) : ViewState
+    private val _getProfileViewState = MutableLiveData<ViewState>()
+    val getProfileViewState: LiveData<ViewState>
+        get() = _getProfileViewState
+
+    @Suppress("PropertyName")
+    private val _markConversationAsSensitiveResult =
+        MutableLiveData<MarkConversationAsSensitiveViewState>(MarkConversationAsSensitiveViewState.None)
+    val markAsSensitiveResult: LiveData<MarkConversationAsSensitiveViewState>
+        get() = _markConversationAsSensitiveResult
+
+    @Suppress("PropertyName")
+    private val _markConversationAsInsensitiveResult =
+        MutableLiveData<MarkConversationAsInsensitiveViewState>(MarkConversationAsInsensitiveViewState.None)
+    val markAsInsensitiveResult: LiveData<MarkConversationAsInsensitiveViewState>
+        get() = _markConversationAsInsensitiveResult
+
     fun getRoom(user: User, token: String) {
         currentUser = user
         currentToken = token
@@ -179,6 +230,10 @@ class ConversationInfoViewModel @Inject constructor(
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(GetRoomObserver())
+    }
+
+    fun resetSecurePasswordViewState() {
+        _securePasswordViewState.value = SecurePasswordViewState.None
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -224,6 +279,24 @@ class ConversationInfoViewModel @Inject constructor(
             }
         }
     }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun securePassword(credentials: String, url: String, password: String) {
+        viewModelScope.launch {
+            try {
+                val passwordResult = conversationCreationRepository.validatePassword(
+                    credentials,
+                    url,
+                    password
+                )
+
+                _securePasswordViewState.value = SecurePasswordViewState.Success(passwordResult.ocs?.data!!)
+            } catch (exception: Exception) {
+                _securePasswordViewState.value = SecurePasswordViewState.Error(exception.message ?: "")
+            }
+        }
+    }
+
     private fun convertAutocompleteUserToParticipant(autocompleteUsers: List<AutocompleteUser>): Participants {
         val participants = Participants()
         autocompleteUsers.forEach { autocompleteUser ->
@@ -941,5 +1014,59 @@ class ConversationInfoViewModel @Inject constructor(
                 addedParticipants.mapNotNull { it }.sortedJoined()
             return DisplayUtils.ellipsize(conversationName, MAX_ROOM_NAME_LENGTH)
         }
+    }
+
+    sealed class ClearChatHistoryViewState {
+        data object None : ClearChatHistoryViewState()
+        data object Success : ClearChatHistoryViewState()
+        data class Error(val exception: Exception) : ClearChatHistoryViewState()
+    }
+
+    sealed class MarkConversationAsSensitiveViewState {
+        data object None : MarkConversationAsSensitiveViewState()
+        data class Success(val statusCode: Int) : MarkConversationAsSensitiveViewState()
+        data class Error(val exception: Exception) : MarkConversationAsSensitiveViewState()
+    }
+
+    sealed class MarkConversationAsInsensitiveViewState {
+        data object None : MarkConversationAsInsensitiveViewState()
+        data class Success(val statusCode: Int) : MarkConversationAsInsensitiveViewState()
+        data class Error(val exception: Exception) : MarkConversationAsInsensitiveViewState()
+    }
+
+    sealed class SetConversationReadOnlyViewState {
+        data object None : SetConversationReadOnlyViewState()
+        data object Success : SetConversationReadOnlyViewState()
+        data class Error(val exception: Exception) : SetConversationReadOnlyViewState()
+    }
+
+    sealed class AllowGuestsUIState {
+        data object None : AllowGuestsUIState()
+        data class Success(val allow: Boolean) : AllowGuestsUIState()
+        data class Error(val exception: Exception) : AllowGuestsUIState()
+    }
+
+    sealed class PasswordUiState {
+        data object None : PasswordUiState()
+        data object Success : PasswordUiState()
+        data class Error(val exception: Exception) : PasswordUiState()
+    }
+
+    sealed class MarkConversationAsImportantViewState {
+        data object None : MarkConversationAsImportantViewState()
+        data class Success(val statusCode: Int) : MarkConversationAsImportantViewState()
+        data class Error(val exception: Exception) : MarkConversationAsImportantViewState()
+    }
+
+    sealed class MarkConversationAsUnimportantViewState {
+        data object None : MarkConversationAsUnimportantViewState()
+        data class Success(val statusCode: Int) : MarkConversationAsUnimportantViewState()
+        data class Error(val exception: Exception) : MarkConversationAsUnimportantViewState()
+    }
+
+    sealed class SecurePasswordViewState {
+        data object None : SecurePasswordViewState()
+        data class Success(val result: PasswordResult) : SecurePasswordViewState()
+        data class Error(val message: String) : SecurePasswordViewState()
     }
 }
