@@ -44,13 +44,12 @@ class ContactsActivity : BaseActivity() {
             contactsViewModel.updateIsAddParticipants(isAddParticipants)
             contactsViewModel.hideAlreadyAddedParticipants(hideAlreadyAddedParticipants)
             if (isAddParticipants) {
-                contactsViewModel.updateShareTypes(
-                    listOf(
-                        ShareType.Group.shareType,
-                        ShareType.Email.shareType,
-                        ShareType.Circle.shareType
-                    )
-                )
+                val onlyLocal = intent.getBooleanExtra(BundleKeys.KEY_ONLY_LOCAL_PARTICIPANTS, false)
+                val shareTypes = mutableListOf(ShareType.Group.shareType, ShareType.Circle.shareType)
+                if (!onlyLocal) {
+                    shareTypes.add(ShareType.Email.shareType)
+                }
+                contactsViewModel.updateShareTypes(shareTypes)
                 contactsViewModel.getContactsFromSearchParams()
             }
             val colorScheme = viewThemeUtils.getColorScheme(this)

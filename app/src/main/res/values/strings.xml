@@ -926,6 +926,24 @@ How to translate with transifex:
     <string name="default_room_preset">Send messages, create threads, and start voice and video calls</string>
     <string name="voice_room_preset">Directly join the call, ideal for catch-ups or spontaneous meetings</string>
     <string name="nc_conversation_types_error">Conversation types could not be loaded</string>
+    <string name="nc_webinar_description">Restricted conversation with lobby enabled, ideal for public webinars</string>
+    <string name="nc_presentation">Presentation</string>
+    <string name="nc_presentation_description">Restricted conversation for internal presentations</string>
+    <string name="nc_classified_conversation_description">Locked down conversation for confidential topics, with public access, guests, SIP and recordings disabled</string>
+    <string name="nc_conversation_type_defaults">Default settings of this conversation type:</string>
+    <string name="nc_conversation_type_defaults_hint">These settings can be changed once the conversation is created</string>
+    <string name="nc_conversation_type_message_expiration">Messages expire after %1$s</string>
+    <string name="nc_conversation_type_message_expiration_custom">Message expiration is enabled</string>
+    <string name="nc_conversation_type_lobby">Lobby enabled, restricting the conversation to moderators</string>
+    <string name="nc_conversation_type_mentions_moderators">Only moderators are allowed to mention everyone</string>
+    <string name="nc_conversation_type_sip">Phone and SIP dial-in enabled</string>
+    <string name="nc_conversation_type_sip_no_pin">Dial-in without a PIN allowed</string>
+    <string name="nc_conversation_created_title">Conversation created</string>
+    <string name="nc_conversation_created_public">Guests can join this conversation with its link. Share it now or later from the conversation settings.</string>
+    <string name="nc_copy_password">Copy password</string>
+    <string name="nc_password_copied">Password copied</string>
+    <string name="nc_open_conversation">Open conversation</string>
+    <string name="nc_conversation_created_invalid_participants">Some participants could not be added</string>
     <string name="nc_retry">Retry</string>
 
     <!-- Invitations -->
