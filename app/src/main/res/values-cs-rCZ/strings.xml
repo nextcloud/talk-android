@@ -537,6 +537,7 @@
     <string name="nc_test_results">Výsledky testu</string>
     <string name="nc_today_meeting">Dnes v%1$s</string>
     <string name="nc_tomorrow_meeting">Zítra v %1$s</string>
+    <string name="nc_undo">Zpět</string>
     <string name="nc_upcoming_event_dismissed">Nadcházející hovory je možné si zobrazovat v informacích o konverzaci</string>
     <string name="nc_upload_choose_local_files">Vyberte soubory</string>
     <string name="nc_upload_confirm_send_multiple">Odeslat tyto soubory k %1$s?</string>
