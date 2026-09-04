@@ -15,59 +15,57 @@ import androidx.room.Query
 import androidx.room.Update
 import com.nextcloud.talk.data.user.model.UserEntity
 import com.nextcloud.talk.models.json.push.PushConfigurationState
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 @Suppress("TooManyFunctions")
-abstract class UsersDao {
+interface UsersDao {
     // get active user. ORDER BY/LIMIT make this deterministic if more than one row is ever
     // marked current=1 (e.g. a duplicate-account row left over from a past bug), instead of
     // relying on whatever order an unordered full-table scan happens to return.
     @Query("SELECT * FROM User where current = 1 ORDER BY id DESC LIMIT 1")
-    abstract fun getActiveUser(): Maybe<UserEntity>
+    suspend fun getActiveUser(): UserEntity?
 
     // get active user
     @Query("SELECT * FROM User where current = 1 ORDER BY id DESC LIMIT 1")
-    abstract fun getActiveUserObservable(): Observable<UserEntity>
+    fun getActiveUserFlow(): Flow<UserEntity?>
 
     @Query("SELECT * FROM User where current = 1 ORDER BY id DESC LIMIT 1")
-    abstract fun getActiveUserSynchronously(): UserEntity?
+    fun getActiveUserSynchronously(): UserEntity?
 
     @Delete
-    abstract fun deleteUser(user: UserEntity): Int
+    suspend fun deleteUser(user: UserEntity): Int
 
     @Update
-    abstract fun updateUser(user: UserEntity): Int
+    suspend fun updateUser(user: UserEntity): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun saveUser(user: UserEntity): Long
+    suspend fun saveUser(user: UserEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun saveUsers(vararg users: UserEntity): List<Long>
+    suspend fun saveUsers(vararg users: UserEntity): List<Long>
 
     // get all users not scheduled for deletion
     @Query("SELECT * FROM User where scheduledForDeletion != 1")
-    abstract fun getUsers(): Single<List<UserEntity>>
+    suspend fun getUsers(): List<UserEntity>
 
     @Query("SELECT * FROM User where id = :id")
-    abstract fun getUserWithId(id: Long): Maybe<UserEntity>
+    suspend fun getUserWithId(id: Long): UserEntity?
 
     @Query("SELECT * FROM User where id = :id AND scheduledForDeletion != 1")
-    abstract fun getUserWithIdNotScheduledForDeletion(id: Long): Maybe<UserEntity>
+    suspend fun getUserWithIdNotScheduledForDeletion(id: Long): UserEntity?
 
     @Query("SELECT * FROM User where userId = :userId")
-    abstract fun getUserWithUserId(userId: String): Maybe<UserEntity>
+    suspend fun getUserWithUserId(userId: String): UserEntity?
 
     @Query("SELECT * FROM User where scheduledForDeletion = 1")
-    abstract fun getUsersScheduledForDeletion(): Single<List<UserEntity>>
+    suspend fun getUsersScheduledForDeletion(): List<UserEntity>
 
     @Query("SELECT * FROM User where scheduledForDeletion = 0")
-    abstract fun getUsersNotScheduledForDeletion(): Single<List<UserEntity>>
+    suspend fun getUsersNotScheduledForDeletion(): List<UserEntity>
 
     @Query("SELECT * FROM User WHERE username = :username AND baseUrl = :server")
-    abstract fun getUserWithUsernameAndServer(username: String, server: String): Maybe<UserEntity>
+    suspend fun getUserWithUsernameAndServer(username: String, server: String): UserEntity?
 
     @Query(
         "UPDATE User SET current = CASE " +
@@ -75,10 +73,10 @@ abstract class UsersDao {
             "WHEN id != :id THEN 0 " +
             "END"
     )
-    abstract fun setUserAsActiveWithId(id: Long): Int
+    suspend fun setUserAsActiveWithId(id: Long): Int
 
     @Query("Update User SET pushConfigurationState = :state WHERE id == :id")
-    abstract fun updatePushState(id: Long, state: PushConfigurationState): Single<Int>
+    suspend fun updatePushState(id: Long, state: PushConfigurationState): Int
 
     companion object {
         const val TAG = "UsersDao"

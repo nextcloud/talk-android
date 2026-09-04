@@ -9,24 +9,22 @@ package com.nextcloud.talk.data.user
 
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.push.PushConfigurationState
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 
 @Suppress("TooManyFunctions")
 interface UsersRepository {
-    fun getActiveUser(): Maybe<User>
-    fun getActiveUserObservable(): Observable<User>
-    fun getUsers(): Single<List<User>>
-    fun getUserWithId(id: Long): Maybe<User>
-    fun getUserWithIdNotScheduledForDeletion(id: Long): Maybe<User>
-    fun getUserWithUserId(userId: String): Maybe<User>
-    fun getUsersScheduledForDeletion(): Single<List<User>>
-    fun getUsersNotScheduledForDeletion(): Single<List<User>>
-    fun getUserWithUsernameAndServer(username: String, server: String): Maybe<User>
-    fun updateUser(user: User): Int
-    fun insertUser(user: User): Long
-    fun setUserAsActiveWithId(id: Long): Single<Boolean>
-    fun deleteUser(user: User): Int
-    fun updatePushState(id: Long, state: PushConfigurationState): Single<Int>
+    suspend fun getActiveUser(): User?
+    fun getActiveUserFlow(): Flow<User?>
+    suspend fun getUsers(): List<User>
+    suspend fun getUserWithId(id: Long): User?
+    suspend fun getUserWithIdNotScheduledForDeletion(id: Long): User?
+    suspend fun getUserWithUserId(userId: String): User?
+    suspend fun getUsersScheduledForDeletion(): List<User>
+    suspend fun getUsersNotScheduledForDeletion(): List<User>
+    suspend fun getUserWithUsernameAndServer(username: String, server: String): User?
+    suspend fun updateUser(user: User): Int
+    suspend fun insertUser(user: User): Long
+    suspend fun setUserAsActiveWithId(id: Long): Boolean
+    suspend fun deleteUser(user: User): Int
+    suspend fun updatePushState(id: Long, state: PushConfigurationState): Int
 }

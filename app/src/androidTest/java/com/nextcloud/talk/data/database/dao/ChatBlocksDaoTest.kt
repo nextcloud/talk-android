@@ -58,7 +58,7 @@ class ChatBlocksDaoTest {
         runTest {
             val user = createUserEntity("account1", "Account 1")
             usersDao.saveUser(user)
-            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
+            val account1 = usersDao.getUserWithUserId("account1")!!
 
             conversationsDao.upsertConversations(
                 accountId = user.id,
@@ -126,7 +126,7 @@ class ChatBlocksDaoTest {
         runTest {
             val user = createUserEntity("account1", "Account 1")
             usersDao.saveUser(user)
-            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
+            val account1 = usersDao.getUserWithUserId("account1")!!
 
             conversationsDao.upsertConversations(
                 account1.id,
@@ -252,7 +252,7 @@ class ChatBlocksDaoTest {
         runTest {
             val user = createUserEntity("account1", "Account 1")
             usersDao.saveUser(user)
-            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
+            val account1 = usersDao.getUserWithUserId("account1")!!
 
             conversationsDao.upsertConversations(
                 account1.id,
@@ -331,7 +331,7 @@ class ChatBlocksDaoTest {
         runTest {
             val user = createUserEntity("account1", "Account 1")
             usersDao.saveUser(user)
-            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
+            val account1 = usersDao.getUserWithUserId("account1")!!
 
             conversationsDao.upsertConversations(
                 account1.id,
@@ -421,7 +421,7 @@ class ChatBlocksDaoTest {
         runTest {
             val user = createUserEntity("account1", "Account 1")
             usersDao.saveUser(user)
-            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
+            val account1 = usersDao.getUserWithUserId("account1")!!
 
             conversationsDao.upsertConversations(
                 account1.id,
@@ -484,7 +484,7 @@ class ChatBlocksDaoTest {
         runTest {
             val user = createUserEntity("account1", "Account 1")
             usersDao.saveUser(user)
-            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
+            val account1 = usersDao.getUserWithUserId("account1")!!
 
             conversationsDao.upsertConversations(
                 account1.id,
@@ -532,7 +532,7 @@ class ChatBlocksDaoTest {
         runTest {
             val user = createUserEntity("account1", "Account 1")
             usersDao.saveUser(user)
-            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
+            val account1 = usersDao.getUserWithUserId("account1")!!
 
             conversationsDao.upsertConversations(
                 account1.id,
@@ -575,7 +575,7 @@ class ChatBlocksDaoTest {
         runTest {
             val user = createUserEntity("account1", "Account 1")
             usersDao.saveUser(user)
-            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
+            val account1 = usersDao.getUserWithUserId("account1")!!
 
             conversationsDao.upsertConversations(
                 account1.id,
