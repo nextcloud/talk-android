@@ -1676,6 +1676,7 @@ class ChatViewModel @AssistedInject constructor(
     private fun handleThreadMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
         fun isThreadChildMessage(currentMessage: MutableMap.MutableEntry<Int, ChatMessage>): Boolean =
             currentMessage.value.isThread &&
+                currentMessage.value.threadId != null &&
                 currentMessage.value.threadId?.toInt() != currentMessage.value.jsonMessageId
 
         val chatMessageMap = chatMessageList.associateBy { it.jsonMessageId }.toMutableMap()

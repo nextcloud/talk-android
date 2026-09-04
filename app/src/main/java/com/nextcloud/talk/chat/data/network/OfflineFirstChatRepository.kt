@@ -608,22 +608,17 @@ class OfflineFirstChatRepository @Inject constructor(
                 threadTitle
             )
 
-            val chatMessageModel = response.ocs?.data?.toDomainModel()
+            val messageJson = response.ocs?.data
+            val chatMessageModel = messageJson?.toDomainModel()
 
-            val sentMessage = if (this@OfflineFirstChatRepository::internalConversationId.isInitialized) {
-                chatDao
-                    .getTempMessageForConversation(
-                        internalConversationId,
-                        referenceId,
-                        threadId
-                    ).firstOrNull()
-            } else {
-                null
-            }
-
-            sentMessage?.let {
-                it.sendStatus = SendStatus.SENT_PENDING_ACK
-                chatDao.updateChatMessage(it)
+            if (messageJson != null && this@OfflineFirstChatRepository::internalConversationId.isInitialized) {
+                // Persist the authoritative response immediately (correct isThread/threadId/threadTitle
+                // included) instead of leaving the client-side guess in the temp row until the next sync -
+                // otherwise a thread indicator only appears after reopening the chat.
+                chatDao.upsertChatMessagesAndDeleteTemp(
+                    internalConversationId,
+                    listOf(messageJson.asEntity(currentUser.id!!))
+                )
             }
 
             Log.d(TAG, "sending chat message succeeded: " + message)
@@ -691,13 +686,14 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
+    @Suppress("Detekt.TooGenericExceptionCaught", "LongParameterList")
     override suspend fun addTemporaryMessage(
         message: CharSequence,
         displayName: String,
         replyTo: Int,
         sendWithoutNotification: Boolean,
-        referenceId: String
+        referenceId: String,
+        threadTitle: String?
     ): Flow<Result<ChatMessage?>> =
         flow {
             try {
@@ -706,7 +702,8 @@ class OfflineFirstChatRepository @Inject constructor(
                     message.toString(),
                     replyTo,
                     sendWithoutNotification,
-                    referenceId
+                    referenceId,
+                    threadTitle
                 )
                 chatDao.upsertChatMessage(tempChatMessageEntity)
             } catch (e: Exception) {
@@ -1037,12 +1034,14 @@ class OfflineFirstChatRepository @Inject constructor(
             emit(Result.failure(e))
         }
 
+    @Suppress("LongParameterList")
     private fun createChatMessageEntity(
         internalConversationId: String,
         message: String,
         replyTo: Int,
         sendWithoutNotification: Boolean,
-        referenceId: String
+        referenceId: String,
+        threadTitle: String?
     ): ChatMessageEntity {
         val currentTimeMillis = System.currentTimeMillis()
 
@@ -1063,6 +1062,8 @@ class OfflineFirstChatRepository @Inject constructor(
             internalConversationId = internalConversationId,
             id = negativeTimeOfDayMillis,
             threadId = threadId,
+            isThread = threadTitle != null,
+            threadTitle = threadTitle,
             message = message,
             deleted = false,
             token = conversationModel.token,
