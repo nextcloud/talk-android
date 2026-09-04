@@ -121,6 +121,7 @@
     <string name="nc_add_participants">Pridať účastníkov</string>
     <string name="nc_add_to_favorites">Pridať do obľúbených</string>
     <string name="nc_all_ok_operation">OK, všetko hotovo!</string>
+    <string name="nc_announcement">Oznámenie</string>
     <string name="nc_attendee_pin">Špendlík: %1$s</string>
     <string name="nc_biometric_unlock">Odomknúť %1$s</string>
     <string name="nc_bluetooth_permission_hint">Ak chcete povoliť reproduktory bluetooth, udeľte povolenie „Zariadenia v blízkosti“.</string>
@@ -157,6 +158,7 @@
     <string name="nc_change_cert_auth">Zmeniť autentifikačný certifikát</string>
     <string name="nc_change_password">Zmeniť heslo</string>
     <string name="nc_channel">Kanál</string>
+    <string name="nc_classified_conversation">Dôverná konverzácia</string>
     <string name="nc_clear_edit_button">Zrušiť úpravy</string>
     <string name="nc_clear_history">Vymazať všetky správy</string>
     <string name="nc_clear_history_success">Všetky správy boli vymazané</string>
@@ -214,6 +216,8 @@
     <string name="nc_delete_now">Odstrániť teraz</string>
     <string name="nc_deleted_user">Používateľ %1$s bol vymazaný</string>
     <string name="nc_demote">Odobrať moderovanie</string>
+    <string name="nc_demote_owner_to_moderator">Zmeniť vlastníka na moderátora</string>
+    <string name="nc_demote_owner_to_participant">Zmeniť vlastníka na účastníka</string>
     <string name="nc_description_record_voice">Nahrať hlasovú správu</string>
     <string name="nc_description_send_message_button">Odoslať správu</string>
     <string name="nc_diagnosis_dialog_open_checklist">Otvoriť kontrolný zoznam na riešenie problémov</string>
@@ -288,6 +292,7 @@
     <string name="nc_invitations">Pozvánky</string>
     <string name="nc_join_open_conversations">Pripojiť sa k prebiehajúcim konverzáciam</string>
     <string name="nc_keep">Ponechať</string>
+    <string name="nc_last_moderator_cannot_be_demoted">Poslednému moderátorovi konverzácie nemožno odobrať rolu moderátora.</string>
     <string name="nc_last_moderator_leaving_room_warning">Skôr než budete môcť opustiť rozhovor, je potrebné niekomu odovzdať rolu moderátora.</string>
     <string name="nc_last_modified">%1$s | Posledná úprava: %2$s</string>
     <string name="nc_leave">Opustiť konverzáciu</string>
@@ -354,6 +359,7 @@
     <string name="nc_open_conversation_to_registered_users">Otvoriť konverzáciu pre registrovaných používateľov</string>
     <string name="nc_open_to_guest_app_users">Povoliť i pre používateľov aplikácií pre hostí</string>
     <string name="nc_owner">Vlastník</string>
+    <string name="nc_participant_type_change_failed">Typ účastníka sa nepodarilo zmeniť</string>
     <string name="nc_participants">Účastníci</string>
     <string name="nc_participants_add">Pridať účastníkov</string>
     <string name="nc_password">Heslo</string>
@@ -369,6 +375,7 @@
     <string name="nc_plain_old_messages">Správy</string>
     <string name="nc_profile_personal_info_title">Osobné informácie</string>
     <string name="nc_promote">Povýšiť na moderátora</string>
+    <string name="nc_promote_to_owner">Povýšiť na vlastníka</string>
     <string name="nc_public_call_status">Verejný rozhovor</string>
     <string name="nc_push_disabled">Push notifikácie vypnuté</string>
     <string name="nc_push_notification_fetch_error">Prepáčte, niečo sa pokazilo, nepodarilo sa načítať testovaciu push správu.</string>
