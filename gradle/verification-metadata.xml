@@ -220,6 +220,7 @@
             <trusting group="org.conscrypt" name="conscrypt-android" version="2.6.1"/>
             <trusting group="org.conscrypt" name="conscrypt-android" version="2.6.2"/>
             <trusting group="org.conscrypt" name="conscrypt-android" version="2.6.3"/>
+            <trusting group="org.conscrypt" name="conscrypt-android" version="2.7.0"/>
             <trusting group="org.conscrypt" name="conscrypt-openjdk-uber" version="2.6.1"/>
             <trusting group="org.conscrypt" name="conscrypt-openjdk-uber" version="2.6.2"/>
             <trusting group="org.conscrypt" name="conscrypt-openjdk-uber" version="2.6.3"/>
