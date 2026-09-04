@@ -41,16 +41,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.util.Consumer
-import androidx.emoji2.emojipicker.EmojiPickerView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chooseaccount.viewmodel.StatusMessageViewModel
+import com.nextcloud.talk.emojipicker.EmojiPickerPanel
 import com.nextcloud.talk.models.json.status.Status
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
-import com.nextcloud.talk.ui.theme.protectEmojiPickerScrollGesture
-import com.nextcloud.talk.ui.theme.themeEmojiPickerCategoryTabs
-
-private val emojiPickerHeight = 360.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -94,9 +89,11 @@ fun StatusMessageModalBottomSheet(currentStatus: Status, viewModel: StatusMessag
 
 @Composable
 private fun EmojiPickerSheetContent(onEmojiSelected: (String) -> Unit, onBack: () -> Unit) {
-    val backgroundColor = MaterialTheme.colorScheme.surfaceContainerLow
+    val backgroundColor = MaterialTheme.colorScheme.surfaceContainerLow.toArgb()
     val selectedTabColor = MaterialTheme.colorScheme.primary.toArgb()
     val unselectedTabColor = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
+    val hintTextColor = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
+    val textColor = MaterialTheme.colorScheme.onSurface.toArgb()
 
     Column(
         modifier = Modifier
@@ -107,15 +104,13 @@ private fun EmojiPickerSheetContent(onEmojiSelected: (String) -> Unit, onBack: (
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_button))
         }
         AndroidView(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(emojiPickerHeight),
+            modifier = Modifier.fillMaxWidth(),
             factory = { ctx ->
-                EmojiPickerView(ContextThemeWrapper(ctx, R.style.ThemeOverlay_App_EmojiPicker)).apply {
-                    setBackgroundColor(backgroundColor.toArgb())
-                    setOnEmojiPickedListener(Consumer { item -> onEmojiSelected(item.emoji) })
-                    themeEmojiPickerCategoryTabs(this, selectedTabColor, unselectedTabColor)
-                    protectEmojiPickerScrollGesture(this)
+                EmojiPickerPanel(ContextThemeWrapper(ctx, R.style.ThemeOverlay_App_EmojiPicker)).apply {
+                    searchEnabled = true
+                    backspaceEnabled = false
+                    onEmojiPicked = onEmojiSelected
+                    applyTheme(backgroundColor, selectedTabColor, unselectedTabColor, hintTextColor, textColor)
                 }
             }
         )

@@ -7,7 +7,6 @@
 
 package com.nextcloud.talk.chat.ui
 
-import android.content.Context
 import android.content.res.Configuration
 import android.view.ContextThemeWrapper
 import androidx.activity.compose.BackHandler
@@ -61,20 +60,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.util.Consumer
-import androidx.emoji2.emojipicker.EmojiPickerView
 import androidx.emoji2.emojipicker.RecentEmojiProvider
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.emojipicker.EmojiPickerPanel
+import com.nextcloud.talk.emojipicker.SharedPreferencesRecentEmojiProvider
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.ui.theme.protectEmojiPickerScrollGesture
-import com.nextcloud.talk.ui.theme.themeEmojiPickerCategoryTabs
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
@@ -90,30 +86,8 @@ private const val AGE_THRESHOLD_FOR_DELETE_MESSAGE = 21600000L
 private const val MAX_RECENTS = 8
 private const val ACTOR_BOTS = "bots"
 private const val RECENT_REACTIONS_PREFS = "recent_reaction_emojis"
-private const val RECENT_REACTIONS_KEY = "recent"
-private const val MAX_STORED_RECENT_REACTIONS = 20
 
 private val defaultReactionEmojis = listOf("👍", "👎", "❤️", "😂", "😕", "😢", "🙏", "🔥")
-private val emojiPickerHeight = 360.dp
-
-private class ReactionRecentEmojiProvider(context: Context) : RecentEmojiProvider {
-    private val prefs = context.getSharedPreferences(RECENT_REACTIONS_PREFS, Context.MODE_PRIVATE)
-
-    override fun recordSelection(emoji: String) {
-        val updated = listOf(emoji) + getStoredList().filterNot { it == emoji }
-        prefs.edit()
-            .putString(RECENT_REACTIONS_KEY, updated.take(MAX_STORED_RECENT_REACTIONS).joinToString(","))
-            .apply()
-    }
-
-    override suspend fun getRecentEmojiList(): List<String> = getStoredList()
-
-    private fun getStoredList(): List<String> =
-        prefs.getString(RECENT_REACTIONS_KEY, null)
-            ?.split(",")
-            ?.filter { it.isNotBlank() }
-            ?: emptyList()
-}
 
 data class MessageActionsState(
     val showEmojiBar: Boolean,
@@ -300,7 +274,9 @@ fun MessageActionsBottomSheet(
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
-    val recentEmojiProvider = remember(context) { ReactionRecentEmojiProvider(context) }
+    val recentEmojiProvider = remember(context) {
+        SharedPreferencesRecentEmojiProvider(context, RECENT_REACTIONS_PREFS)
+    }
     var showEmojiPicker by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
@@ -692,9 +668,11 @@ private fun EmojiPickerSheetContent(
     onEmojiSelected: (String) -> Unit,
     onBack: () -> Unit
 ) {
-    val backgroundColor = MaterialTheme.colorScheme.surfaceContainerLow
+    val backgroundColor = MaterialTheme.colorScheme.surfaceContainerLow.toArgb()
     val selectedTabColor = MaterialTheme.colorScheme.primary.toArgb()
     val unselectedTabColor = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
+    val hintTextColor = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
+    val textColor = MaterialTheme.colorScheme.onSurface.toArgb()
 
     Column(
         modifier = Modifier
@@ -705,16 +683,14 @@ private fun EmojiPickerSheetContent(
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_button))
         }
         AndroidView(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(emojiPickerHeight),
+            modifier = Modifier.fillMaxWidth(),
             factory = { ctx ->
-                EmojiPickerView(ContextThemeWrapper(ctx, R.style.ThemeOverlay_App_EmojiPicker)).apply {
-                    setBackgroundColor(backgroundColor.toArgb())
+                EmojiPickerPanel(ContextThemeWrapper(ctx, R.style.ThemeOverlay_App_EmojiPicker)).apply {
+                    searchEnabled = true
+                    backspaceEnabled = false
                     setRecentEmojiProvider(recentEmojiProvider)
-                    setOnEmojiPickedListener(Consumer { item -> onEmojiSelected(item.emoji) })
-                    themeEmojiPickerCategoryTabs(this, selectedTabColor, unselectedTabColor)
-                    protectEmojiPickerScrollGesture(this)
+                    onEmojiPicked = onEmojiSelected
+                    applyTheme(backgroundColor, selectedTabColor, unselectedTabColor, hintTextColor, textColor)
                 }
             }
         )
@@ -809,7 +785,10 @@ private fun PreviewEmojiBar() {
         Surface(color = MaterialTheme.colorScheme.surfaceContainerLow) {
             EmojiBar(
                 selfReactions = setOf("👍", "❤️"),
-                recentEmojiProvider = ReactionRecentEmojiProvider(LocalContext.current),
+                recentEmojiProvider = SharedPreferencesRecentEmojiProvider(
+                    LocalContext.current,
+                    RECENT_REACTIONS_PREFS
+                ),
                 onEmojiClick = {},
                 onMoreEmojiClick = {}
             )
@@ -851,7 +830,10 @@ private fun PreviewMessageActionsSheetContent() {
         Surface(color = MaterialTheme.colorScheme.surfaceContainerLow) {
             MessageActionsSheetContent(
                 actionsState = previewState,
-                recentEmojiProvider = ReactionRecentEmojiProvider(LocalContext.current),
+                recentEmojiProvider = SharedPreferencesRecentEmojiProvider(
+                    LocalContext.current,
+                    RECENT_REACTIONS_PREFS
+                ),
                 onEmojiClick = {},
                 onMoreEmojiClick = {},
                 onReply = {},
@@ -907,7 +889,10 @@ private fun PreviewMessageActionsSheetPinned() {
                     showOpenInFiles = false,
                     showDelete = false
                 ),
-                recentEmojiProvider = ReactionRecentEmojiProvider(LocalContext.current),
+                recentEmojiProvider = SharedPreferencesRecentEmojiProvider(
+                    LocalContext.current,
+                    RECENT_REACTIONS_PREFS
+                ),
                 onEmojiClick = {},
                 onMoreEmojiClick = {},
                 onReply = {},
