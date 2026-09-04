@@ -163,7 +163,7 @@ class CreateConversationParamsTest {
                     ConversationParameter.RECORDING_CONSENT to 2,
                     ConversationParameter.ROOM_TYPE to 1,
                     ConversationParameter.MESSAGE_EXPIRATION to -1,
-                    ConversationParameter.PERMISSIONS to 512
+                    ConversationParameter.PERMISSIONS to CreateConversationParams.PERMISSIONS_MAX + 1
                 )
             )
         )
@@ -199,6 +199,51 @@ class CreateConversationParamsTest {
         val params = presets.parametersFor(ConversationPresetId.CHANNEL, chosenByUser)
 
         assertEquals(CreateConversationParams.LISTABLE_NONE, params.listable)
+    }
+
+    @Test
+    fun `the summary leaves out the parameters an administrator pinned`() {
+        val presets = listOf(
+            preset(
+                ConversationPresetId.FORCED,
+                mapOf(ConversationParameter.MESSAGE_EXPIRATION to CreateConversationParams.MESSAGE_EXPIRATION_ONE_HOUR)
+            ),
+            preset(
+                ConversationPresetId.VOICE_ROOM,
+                mapOf(
+                    ConversationParameter.MESSAGE_EXPIRATION to CreateConversationParams.MESSAGE_EXPIRATION_ONE_HOUR,
+                    ConversationParameter.LISTABLE to CreateConversationParams.LISTABLE_USERS
+                )
+            )
+        )
+
+        val preview = presets.parametersToPreviewFor(ConversationPresetId.VOICE_ROOM)
+
+        assertEquals(mapOf(ConversationParameter.LISTABLE to CreateConversationParams.LISTABLE_USERS), preview)
+    }
+
+    @Test
+    fun `the summary also lists what the administrator configured as the default`() {
+        val presets = listOf(
+            preset(
+                ConversationPresetId.DEFAULT,
+                mapOf(ConversationParameter.MESSAGE_EXPIRATION to CreateConversationParams.MESSAGE_EXPIRATION_ONE_HOUR)
+            ),
+            preset(
+                ConversationPresetId.WEBINAR,
+                mapOf(ConversationParameter.LOBBY_STATE to 1)
+            )
+        )
+
+        val preview = presets.parametersToPreviewFor(ConversationPresetId.WEBINAR)
+
+        assertEquals(
+            mapOf(
+                ConversationParameter.MESSAGE_EXPIRATION to CreateConversationParams.MESSAGE_EXPIRATION_ONE_HOUR,
+                ConversationParameter.LOBBY_STATE to 1
+            ),
+            preview
+        )
     }
 
     @Test
