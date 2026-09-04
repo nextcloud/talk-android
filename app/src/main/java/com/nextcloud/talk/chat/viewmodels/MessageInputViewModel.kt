@@ -23,12 +23,15 @@ import com.nextcloud.talk.chat.data.io.AudioRecorderManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
+import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,6 +40,18 @@ import javax.inject.Inject
 class MessageInputViewModel :
     ViewModel(),
     DefaultLifecycleObserver {
+
+    data class MessageInputState(
+        val messageText: String = "",
+        val messageCursor: Int = 0,
+        val quotedJsonId: Int? = null,
+        val quotedDisplayName: String? = null,
+        val quotedMessageText: String? = null,
+        val quotedImageUrl: String? = null,
+        val threadTitle: String? = null,
+        val editMessage: ChatMessage? = null,
+        val isThreadCreationInProgress: Boolean = false
+    )
 
     enum class LifeCycleFlag {
         PAUSED,
@@ -234,12 +249,93 @@ class MessageInputViewModel :
         }
     }
 
+    private val _inputState = MutableStateFlow(MessageInputState())
+    val inputState: StateFlow<MessageInputState> = _inputState
+
+    fun updateMessageText(text: String) {
+        _inputState.update { it.copy(messageText = text) }
+    }
+
+    fun updateMessageCursor(cursor: Int) {
+        _inputState.update { it.copy(messageCursor = cursor) }
+    }
+
+    fun updateThreadTitle(title: String) {
+        _inputState.update { it.copy(threadTitle = title) }
+    }
+
+    fun initFromDraft(draft: MessageDraft) {
+        _inputState.update {
+            it.copy(
+                messageText = draft.messageText,
+                messageCursor = draft.messageCursor,
+                quotedJsonId = draft.quotedJsonId,
+                quotedDisplayName = draft.quotedDisplayName,
+                quotedMessageText = draft.quotedMessageText,
+                quotedImageUrl = draft.quotedImageUrl,
+                threadTitle = draft.threadTitle,
+                isThreadCreationInProgress = false
+            )
+        }
+    }
+
+    fun toDraft(): MessageDraft =
+        MessageDraft(
+            messageText = _inputState.value.messageText,
+            messageCursor = _inputState.value.messageCursor,
+            quotedJsonId = _inputState.value.quotedJsonId,
+            quotedDisplayName = _inputState.value.quotedDisplayName,
+            quotedMessageText = _inputState.value.quotedMessageText,
+            quotedImageUrl = _inputState.value.quotedImageUrl,
+            threadTitle = _inputState.value.threadTitle
+        )
+
     fun reply(message: ChatMessage?) {
+        _inputState.update {
+            it.copy(
+                quotedJsonId = message?.jsonMessageId,
+                quotedDisplayName = message?.actorDisplayName,
+                quotedMessageText = message?.getRichText(),
+                quotedImageUrl = "" // TODO
+            )
+        }
         _getReplyChatMessage.postValue(message)
     }
 
+    fun cancelReply() {
+        _inputState.update {
+            it.copy(
+                quotedJsonId = null,
+                quotedDisplayName = null,
+                quotedMessageText = null,
+                quotedImageUrl = null
+            )
+        }
+        _getReplyChatMessage.postValue(null)
+    }
+
     fun edit(message: ChatMessage?) {
+        val text = message?.let {
+            ChatUtils.getParsedMessage(it.message, it.messageParameters)
+        } ?: ""
+        _inputState.update {
+            it.copy(
+                editMessage = message,
+                messageText = text,
+                messageCursor = text.length
+            )
+        }
         _getEditChatMessage.value = message
+    }
+
+    fun cancelEdit() {
+        _inputState.update { it.copy(editMessage = null) }
+        _getEditChatMessage.value = null
+    }
+
+    fun cancelCreateThread() {
+        _inputState.update { it.copy(threadTitle = "") }
+        stopThreadCreation()
     }
 
     fun startMicInput(context: Context) {
@@ -284,10 +380,12 @@ class MessageInputViewModel :
     }
 
     fun startThreadCreation() {
+        _inputState.update { it.copy(isThreadCreationInProgress = true) }
         _createThreadViewState.postValue(CreateThreadEditState())
     }
 
     fun stopThreadCreation() {
+        _inputState.update { it.copy(isThreadCreationInProgress = false) }
         _createThreadViewState.postValue(CreateThreadStartState)
     }
 
