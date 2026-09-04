@@ -12,6 +12,7 @@ import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.conversations.ConversationPreset
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
@@ -24,6 +25,9 @@ import javax.inject.Inject
 
 class ConversationCreationRepositoryImpl @Inject constructor(private val ncApiCoroutines: NcApiCoroutines) :
     ConversationCreationRepository {
+
+    override suspend fun getConversationPresets(credentials: String?, url: String): List<ConversationPreset> =
+        ncApiCoroutines.getConversationPresets(credentials, url).ocs?.data.orEmpty()
 
     override suspend fun setConversationDescription(
         credentials: String?,

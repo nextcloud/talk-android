@@ -17,6 +17,7 @@ import com.nextcloud.talk.models.json.chatpostattachment.ChatPostAttachmentOvera
 import com.nextcloud.talk.models.json.chatpostattachment.PostConversationAttachmentRequest
 import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachmentFolderOverall
 import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ProbeConversationAttachmentRequest
+import com.nextcloud.talk.models.json.conversations.ConversationPresetsOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -91,6 +92,12 @@ interface NcApiCoroutines {
         @Url url: String?,
         @FieldMap options: Map<String, String>?
     ): RoomOverall
+
+    @GET
+    suspend fun getConversationPresets(
+        @Header("Authorization") authorization: String?,
+        @Url url: String
+    ): ConversationPresetsOverall
 
     @POST
     suspend fun createRoomWithBody(
