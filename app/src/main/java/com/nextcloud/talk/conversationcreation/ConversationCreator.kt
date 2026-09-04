@@ -46,6 +46,7 @@ data class NewConversation(
  */
 class ConversationCreator @Inject constructor(private val repository: ConversationCreationRepository) {
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     suspend fun create(user: User, newConversation: NewConversation): Conversation? {
         val capabilities = user.capabilities?.spreedCapability
         val credentials = ApiUtils.getCredentials(user.username, user.token)
@@ -67,7 +68,13 @@ class ConversationCreator @Inject constructor(private val repository: Conversati
             createWithFollowUpRequests(context, newConversation)
         }
 
-        conversation?.token?.let { saveAvatar(context, newConversation, it) }
+        conversation?.token?.let { token ->
+            try {
+                saveAvatar(context, newConversation, token)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to set the avatar of the created conversation", e)
+            }
+        }
         return conversation
     }
 
@@ -81,7 +88,7 @@ class ConversationCreator @Inject constructor(private val repository: Conversati
         val body = CreateRoomRequest().apply {
             roomType = params.roomType.toString()
             roomName = newConversation.name
-            preset = newConversation.preset.takeIf { it != ConversationPreset.DEFAULT }
+            preset = newConversation.preset.takeIf { it != ConversationPresetId.DEFAULT }
             description = newConversation.description
             readOnly = params.readOnly
             listable = params.listable
@@ -116,7 +123,7 @@ class ConversationCreator @Inject constructor(private val repository: Conversati
             roomType = params.roomType.toString(),
             baseUrl = context.user.baseUrl,
             conversationName = newConversation.name,
-            preset = newConversation.preset.takeIf { it != ConversationPreset.DEFAULT }
+            preset = newConversation.preset.takeIf { it != ConversationPresetId.DEFAULT }
         )
         val conversation = repository.createRoom(context.credentials, retrofitBucket).ocs?.data
         val token = conversation?.token?.takeIf { it.isNotEmpty() } ?: return conversation

@@ -11,75 +11,207 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /**
- * Preset parameters and how they fold onto the parameters of a new conversation.
+ * How the parameters the presets endpoint reports are folded onto the parameters of a new
+ * conversation.
  *
- * The expected values mirror the preset definitions of the server in `lib/RoomPresets` of the
- * `spreed` app, which the client has to apply itself: the creation endpoint derives only the
- * conversation attributes from the preset identifier and stores whatever parameters the request
- * carried.
+ * The client has to apply them itself: the creation endpoint derives only the conversation
+ * attributes from the preset identifier and stores whatever parameters the request carried. The
+ * documented order is default preset, then selected preset, then the user's own selection, and
+ * finally the forced preset, which the server applies on top by itself.
  */
 class CreateConversationParamsTest {
 
-    @Test
-    fun `default preset applies no parameters of its own`() {
-        val params = CreateConversationParams().withParameters(
-            ConversationPresetParameters.of(ConversationPreset.DEFAULT)
-        )
-
-        assertEquals(CreateConversationParams(), params)
-    }
-
-    @Test
-    fun `voice room is listable for users and expires messages after an hour`() {
-        val params = CreateConversationParams().withParameters(
-            ConversationPresetParameters.of(ConversationPreset.VOICE_ROOM)
-        )
-
-        assertEquals(CreateConversationParams.LISTABLE_USERS, params.listable)
-        assertEquals(CreateConversationParams.MESSAGE_EXPIRATION_ONE_HOUR, params.messageExpiration)
-    }
-
-    @Test
-    fun `channel grants reactions only and is listable for users`() {
-        val params = CreateConversationParams().withParameters(
-            ConversationPresetParameters.of(ConversationPreset.CHANNEL)
-        )
-
-        assertEquals(
-            ParticipantPermissions.CUSTOM or ParticipantPermissions.REACT,
-            params.permissions
-        )
-        assertEquals(CreateConversationParams.LISTABLE_USERS, params.listable)
-    }
-
-    @Test
-    fun `announcement is a channel that is not listable`() {
-        val channel = CreateConversationParams().withParameters(
-            ConversationPresetParameters.of(ConversationPreset.CHANNEL)
-        )
-        val announcement = CreateConversationParams().withParameters(
-            ConversationPresetParameters.of(ConversationPreset.ANNOUNCEMENT)
-        )
-
-        assertEquals(channel.permissions, announcement.permissions)
-        assertEquals(CreateConversationParams.LISTABLE_NONE, announcement.listable)
-    }
+    private fun preset(identifier: String, parameters: Map<String, Int>) =
+        ConversationPresetModel(identifier = identifier, name = identifier, description = "", parameters = parameters)
 
     @Test
     fun `parameters the preset does not address are left untouched`() {
         val chosenByUser = CreateConversationParams(roomType = CreateConversationParams.ROOM_TYPE_PUBLIC)
 
         val params = chosenByUser.withParameters(
-            ConversationPresetParameters.of(ConversationPreset.CHANNEL)
+            mapOf(ConversationParameter.LISTABLE to CreateConversationParams.LISTABLE_USERS)
         )
+
+        assertEquals(CreateConversationParams.ROOM_TYPE_PUBLIC, params.roomType)
+        assertEquals(CreateConversationParams.LISTABLE_USERS, params.listable)
+    }
+
+    @Test
+    fun `every documented parameter is folded in`() {
+        val params = CreateConversationParams().withParameters(
+            mapOf(
+                ConversationParameter.ROOM_TYPE to CreateConversationParams.ROOM_TYPE_PUBLIC,
+                ConversationParameter.READ_ONLY to 1,
+                ConversationParameter.LISTABLE to CreateConversationParams.LISTABLE_ALL,
+                ConversationParameter.MESSAGE_EXPIRATION to CreateConversationParams.MESSAGE_EXPIRATION_ONE_HOUR,
+                ConversationParameter.LOBBY_STATE to 1,
+                ConversationParameter.SIP_ENABLED to 1,
+                ConversationParameter.PERMISSIONS to ParticipantPermissions.CUSTOM,
+                ConversationParameter.RECORDING_CONSENT to 1,
+                ConversationParameter.MENTION_PERMISSIONS to 1
+            )
+        )
+
+        assertEquals(
+            CreateConversationParams(
+                roomType = CreateConversationParams.ROOM_TYPE_PUBLIC,
+                readOnly = 1,
+                listable = CreateConversationParams.LISTABLE_ALL,
+                messageExpiration = CreateConversationParams.MESSAGE_EXPIRATION_ONE_HOUR,
+                lobbyState = 1,
+                sipEnabled = 1,
+                permissions = ParticipantPermissions.CUSTOM,
+                recordingConsent = 1,
+                mentionPermissions = 1
+            ),
+            params
+        )
+    }
+
+    @Test
+    fun `the selected preset overrides the administrator configured default`() {
+        val presets = listOf(
+            preset(
+                ConversationPresetId.DEFAULT,
+                mapOf(
+                    ConversationParameter.LISTABLE to CreateConversationParams.LISTABLE_ALL,
+                    ConversationParameter.MENTION_PERMISSIONS to 1
+                )
+            ),
+            preset(
+                ConversationPresetId.CHANNEL,
+                mapOf(ConversationParameter.LISTABLE to CreateConversationParams.LISTABLE_USERS)
+            )
+        )
+
+        val params = presets.parametersFor(ConversationPresetId.CHANNEL)
+
+        assertEquals(CreateConversationParams.LISTABLE_USERS, params.listable)
+        assertEquals(1, params.mentionPermissions)
+    }
+
+    @Test
+    fun `the default preset alone applies the administrator configured values`() {
+        val presets = listOf(
+            preset(
+                ConversationPresetId.DEFAULT,
+                mapOf(ConversationParameter.MESSAGE_EXPIRATION to CreateConversationParams.MESSAGE_EXPIRATION_ONE_HOUR)
+            )
+        )
+
+        val params = presets.parametersFor(ConversationPresetId.DEFAULT)
+
+        assertEquals(CreateConversationParams.MESSAGE_EXPIRATION_ONE_HOUR, params.messageExpiration)
+    }
+
+    @Test
+    fun `what the user chose wins over both the default and the selected preset`() {
+        val presets = listOf(
+            preset(
+                ConversationPresetId.DEFAULT,
+                mapOf(ConversationParameter.ROOM_TYPE to CreateConversationParams.ROOM_TYPE_GROUP)
+            ),
+            preset(
+                ConversationPresetId.VOICE_ROOM,
+                mapOf(ConversationParameter.LISTABLE to CreateConversationParams.LISTABLE_USERS)
+            )
+        )
+        val chosenByUser = mapOf(
+            ConversationParameter.ROOM_TYPE to CreateConversationParams.ROOM_TYPE_PUBLIC,
+            ConversationParameter.LISTABLE to CreateConversationParams.LISTABLE_ALL
+        )
+
+        val params = presets.parametersFor(ConversationPresetId.VOICE_ROOM, chosenByUser)
+
+        assertEquals(CreateConversationParams.ROOM_TYPE_PUBLIC, params.roomType)
+        assertEquals(CreateConversationParams.LISTABLE_ALL, params.listable)
+    }
+
+    @Test
+    fun `a preset overrides the default it does not agree with`() {
+        val presets = listOf(
+            preset(
+                ConversationPresetId.DEFAULT,
+                mapOf(ConversationParameter.LISTABLE to CreateConversationParams.LISTABLE_NONE)
+            ),
+            preset(
+                ConversationPresetId.CHANNEL,
+                mapOf(ConversationParameter.LISTABLE to CreateConversationParams.LISTABLE_USERS)
+            )
+        )
+
+        val params = presets.parametersFor(ConversationPresetId.CHANNEL)
+
+        assertEquals(CreateConversationParams.LISTABLE_USERS, params.listable)
+    }
+
+    @Test
+    fun `a preset the server does not offer leaves the parameters untouched`() {
+        val presets = listOf(preset(ConversationPresetId.DEFAULT, emptyMap()))
+
+        val params = presets.parametersFor(ConversationPresetId.WEBINAR)
+
+        assertEquals(CreateConversationParams(), params)
+    }
+
+    @Test
+    fun `a value the creation endpoint would refuse is ignored`() {
+        val presets = listOf(
+            preset(
+                ConversationPresetId.DEFAULT,
+                mapOf(
+                    ConversationParameter.RECORDING_CONSENT to 2,
+                    ConversationParameter.ROOM_TYPE to 1,
+                    ConversationParameter.MESSAGE_EXPIRATION to -1,
+                    ConversationParameter.PERMISSIONS to 512
+                )
+            )
+        )
+
+        val params = presets.parametersFor(ConversationPresetId.DEFAULT)
+
+        assertEquals(CreateConversationParams(), params)
+    }
+
+    @Test
+    fun `without any presets the parameters the user chose still apply`() {
+        val chosenByUser = mapOf(ConversationParameter.ROOM_TYPE to CreateConversationParams.ROOM_TYPE_PUBLIC)
+
+        val params = emptyList<ConversationPresetModel>().parametersFor(ConversationPresetId.DEFAULT, chosenByUser)
 
         assertEquals(CreateConversationParams.ROOM_TYPE_PUBLIC, params.roomType)
     }
 
     @Test
-    fun `an unknown preset leaves the parameters at their defaults`() {
-        val params = CreateConversationParams().withParameters(ConversationPresetParameters.of("webinar"))
+    fun `what an administrator pinned wins over everything else`() {
+        val presets = listOf(
+            preset(
+                ConversationPresetId.FORCED,
+                mapOf(ConversationParameter.LISTABLE to CreateConversationParams.LISTABLE_NONE)
+            ),
+            preset(
+                ConversationPresetId.CHANNEL,
+                mapOf(ConversationParameter.LISTABLE to CreateConversationParams.LISTABLE_USERS)
+            )
+        )
+        val chosenByUser = mapOf(ConversationParameter.LISTABLE to CreateConversationParams.LISTABLE_ALL)
 
-        assertEquals(CreateConversationParams(), params)
+        val params = presets.parametersFor(ConversationPresetId.CHANNEL, chosenByUser)
+
+        assertEquals(CreateConversationParams.LISTABLE_NONE, params.listable)
+    }
+
+    @Test
+    fun `the forced preset is not offered as a conversation type`() {
+        val presets = listOf(
+            preset(ConversationPresetId.DEFAULT, emptyMap()),
+            preset(ConversationPresetId.FORCED, mapOf(ConversationParameter.LISTABLE to 0)),
+            preset(ConversationPresetId.CHANNEL, emptyMap())
+        )
+
+        assertEquals(
+            listOf(ConversationPresetId.DEFAULT, ConversationPresetId.CHANNEL),
+            presets.selectable().map { it.identifier }
+        )
     }
 }
