@@ -20,7 +20,7 @@ import java.io.IOException
 object ImageCompressor {
 
     private val TAG = ImageCompressor::class.java.simpleName
-    private const val MAX_DIMENSION = 2048
+    private const val MAX_DIMENSION = 1280
     private const val JPEG_QUALITY = 80
     private const val COMPRESSED_FILE_SUFFIX = "_compressed.jpg"
 
