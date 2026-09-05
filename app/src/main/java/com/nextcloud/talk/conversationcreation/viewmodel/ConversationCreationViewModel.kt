@@ -19,6 +19,7 @@ import com.nextcloud.talk.conversationcreation.ConversationPresetId
 import com.nextcloud.talk.conversationcreation.ConversationPresetModel
 import com.nextcloud.talk.conversationcreation.CreateConversationParams
 import com.nextcloud.talk.conversationcreation.NewConversation
+import com.nextcloud.talk.conversationcreation.ParticipantSource
 import com.nextcloud.talk.conversationcreation.data.ConversationCreationRepository
 import com.nextcloud.talk.conversationcreation.parametersFor
 import com.nextcloud.talk.conversationcreation.parametersOf
@@ -44,6 +45,7 @@ class ConversationCreationViewModel @Inject constructor(
     private val _selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
     val selectedParticipants: StateFlow<List<AutocompleteUser>> = _selectedParticipants
     private val roomViewState = MutableStateFlow<RoomUIState>(RoomUIState.None)
+    val creationState: StateFlow<RoomUIState> = roomViewState
 
     private val _selectedImageUri = MutableStateFlow<Uri?>(null)
     val selectedImageUri: StateFlow<Uri?> = _selectedImageUri
@@ -157,8 +159,17 @@ class ConversationCreationViewModel @Inject constructor(
         conversationPreset.value = preset
         val loaded = (_presets.value as? PresetsUiState.Success)?.presets.orEmpty()
         parametersChosenByUser.value -= loaded.parametersOf(preset).keys
+        if (isLockedDown) {
+            parametersChosenByUser.value -= setOf(ConversationParameter.ROOM_TYPE, ConversationParameter.LISTABLE)
+            _selectedParticipants.value = _selectedParticipants.value.filter {
+                (it.source ?: ParticipantSource.USERS) in ParticipantSource.local
+            }
+        }
         recomputeParams()
     }
+
+    val isLockedDown: Boolean
+        get() = conversationPreset.value in ConversationPresetId.lockedDown
 
     val isGuestsAllowed: Boolean
         get() = conversationParams.value.roomType == CreateConversationParams.ROOM_TYPE_PUBLIC
@@ -206,7 +217,7 @@ class ConversationCreationViewModel @Inject constructor(
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun createRoomAndAddParticipants(onRoomCreated: (String) -> Unit) {
+    fun createRoomAndAddParticipants() {
         if (_isCreatingRoom.value) {
             return
         }
@@ -232,7 +243,6 @@ class ConversationCreationViewModel @Inject constructor(
                 val token = conversation?.token
                 if (!token.isNullOrEmpty()) {
                     roomViewState.value = RoomUIState.Success(conversation)
-                    onRoomCreated(token)
                 } else {
                     roomViewState.value = RoomUIState.Error("Conversation is null")
                 }
@@ -245,8 +255,9 @@ class ConversationCreationViewModel @Inject constructor(
         }
     }
 
-    fun getImageUri(avatarId: String, requestBigSize: Boolean, isDarkMode: Boolean): String =
-        ApiUtils.getUrlForAvatar(_currentUser.baseUrl, avatarId, requestBigSize, darkMode = isDarkMode)
+    fun clearCreationState() {
+        roomViewState.value = RoomUIState.None
+    }
 
     companion object {
         private val TAG = ConversationCreationViewModel::class.simpleName

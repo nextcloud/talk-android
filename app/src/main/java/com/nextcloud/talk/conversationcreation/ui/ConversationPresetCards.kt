@@ -23,7 +23,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Campaign
 import androidx.compose.material.icons.automirrored.outlined.Chat
+import androidx.compose.material.icons.outlined.CoPresent
+import androidx.compose.material.icons.outlined.DesktopWindows
 import androidx.compose.material.icons.outlined.Podcasts
+import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material.icons.automirrored.outlined.VolumeUp
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -37,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -44,8 +48,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nextcloud.talk.R
+import com.nextcloud.talk.conversationcreation.ConversationParameter
 import com.nextcloud.talk.conversationcreation.ConversationPresetId
 import com.nextcloud.talk.conversationcreation.ConversationPresetModel
+import com.nextcloud.talk.conversationcreation.parametersToPreviewFor
 import com.nextcloud.talk.conversationcreation.selectable
 import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationViewModel
 import com.nextcloud.talk.conversationcreation.viewmodel.PresetsUiState
@@ -58,11 +64,15 @@ fun ConversationPresets(conversationCreationViewModel: ConversationCreationViewM
     when (val state = conversationCreationViewModel.presets.value) {
         is PresetsUiState.Loading -> PresetsLoading()
         is PresetsUiState.Error -> PresetsError { conversationCreationViewModel.loadPresets() }
-        is PresetsUiState.Success -> PresetCards(
-            presets = state.presets.selectable(),
-            selected = conversationCreationViewModel.conversationPreset.value,
-            onSelect = { conversationCreationViewModel.updateConversationPreset(it) }
-        )
+        is PresetsUiState.Success -> {
+            val selected = conversationCreationViewModel.conversationPreset.value
+            PresetCards(
+                presets = state.presets.selectable(),
+                selected = selected,
+                onSelect = { conversationCreationViewModel.updateConversationPreset(it) }
+            )
+            PresetSummary(state.presets.parametersToPreviewFor(selected))
+        }
     }
 }
 
@@ -136,6 +146,78 @@ private fun PresetCards(presets: List<ConversationPresetModel>, selected: String
 data class SelectableCardContent(val title: String, val subtitle: String, val icon: ImageVector)
 
 @Composable
+private fun PresetSummary(parameters: Map<String, Int>) {
+    val lines = summaryLines(parameters)
+    if (lines.isEmpty()) {
+        return
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.nc_conversation_type_defaults),
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        lines.forEach { line ->
+            Text(
+                text = "• $line",
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Text(
+            text = stringResource(R.string.nc_conversation_type_defaults_hint),
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+private fun summaryLines(parameters: Map<String, Int>): List<String> =
+    buildList {
+        parameters[ConversationParameter.MESSAGE_EXPIRATION]?.takeIf { it > 0 }?.let { seconds ->
+            add(messageExpirationLine(seconds))
+        }
+        if (parameters[ConversationParameter.READ_ONLY] == 1) {
+            add(stringResource(R.string.conversation_is_read_only))
+        }
+        if (parameters[ConversationParameter.LOBBY_STATE] == 1) {
+            add(stringResource(R.string.nc_conversation_type_lobby))
+        }
+        if (parameters[ConversationParameter.RECORDING_CONSENT] == 1) {
+            add(stringResource(R.string.recording_consent_for_conversation_description))
+        }
+        if (parameters[ConversationParameter.MENTION_PERMISSIONS] == 1) {
+            add(stringResource(R.string.nc_conversation_type_mentions_moderators))
+        }
+        val sip = parameters[ConversationParameter.SIP_ENABLED] ?: 0
+        if (sip >= 1) {
+            add(stringResource(R.string.nc_conversation_type_sip))
+        }
+        if (sip == 2) {
+            add(stringResource(R.string.nc_conversation_type_sip_no_pin))
+        }
+    }
+
+@Composable
+private fun messageExpirationLine(seconds: Int): String {
+    val values = stringArrayResource(R.array.message_expiring_values)
+    val descriptions = stringArrayResource(R.array.message_expiring_descriptions)
+    val index = values.indexOf("expire_$seconds")
+    return if (index in descriptions.indices) {
+        stringResource(R.string.nc_conversation_type_message_expiration, descriptions[index])
+    } else {
+        stringResource(R.string.nc_conversation_type_message_expiration_custom)
+    }
+}
+
+@Suppress("LongParameterList")
+@Composable
 fun SelectableCard(
     content: SelectableCardContent,
     isSelected: Boolean,
@@ -200,6 +282,15 @@ private val presetLabels = mapOf(
     ConversationPresetId.ANNOUNCEMENT to PresetLabel(
         R.string.nc_announcement,
         R.string.nc_announcement_description
+    ),
+    ConversationPresetId.WEBINAR to PresetLabel(R.string.nc_webinar, R.string.nc_webinar_description),
+    ConversationPresetId.PRESENTATION to PresetLabel(
+        R.string.nc_presentation,
+        R.string.nc_presentation_description
+    ),
+    ConversationPresetId.CLASSIFIED to PresetLabel(
+        R.string.nc_classified_conversation,
+        R.string.nc_classified_conversation_description
     )
 )
 
@@ -207,5 +298,8 @@ private val presetIcons = mapOf(
     ConversationPresetId.DEFAULT to Icons.AutoMirrored.Outlined.Chat,
     ConversationPresetId.VOICE_ROOM to Icons.AutoMirrored.Outlined.VolumeUp,
     ConversationPresetId.CHANNEL to Icons.Outlined.Podcasts,
-    ConversationPresetId.ANNOUNCEMENT to Icons.Outlined.Campaign
+    ConversationPresetId.ANNOUNCEMENT to Icons.Outlined.Campaign,
+    ConversationPresetId.WEBINAR to Icons.Outlined.DesktopWindows,
+    ConversationPresetId.PRESENTATION to Icons.Outlined.CoPresent,
+    ConversationPresetId.CLASSIFIED to Icons.Outlined.Shield
 )

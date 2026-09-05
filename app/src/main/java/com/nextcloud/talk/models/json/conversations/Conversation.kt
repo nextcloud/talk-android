@@ -184,5 +184,8 @@ data class Conversation(
 
     // https://nextcloud-talk.readthedocs.io/en/latest/constants/#conversation-attributes)
     @JsonField(name = ["attributes"])
-    var attributes: Int? = null
+    var attributes: Int? = null,
+
+    @JsonField(name = ["invalidParticipants"])
+    var invalidParticipants: HashMap<String, List<String>>? = null
 ) : Parcelable

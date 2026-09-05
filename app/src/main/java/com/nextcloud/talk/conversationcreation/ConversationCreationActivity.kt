@@ -87,7 +87,6 @@ import coil.compose.AsyncImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.components.AvatarEditPanel
 import com.nextcloud.talk.components.AvatarEditPanelCallbacks
 import com.nextcloud.talk.components.AvatarEditPanelState
@@ -95,9 +94,14 @@ import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.conversationcreation.ui.ConversationPresets
+import com.nextcloud.talk.conversationcreation.ui.CreationResultEffect
+import com.nextcloud.talk.conversationcreation.ui.ShareCreatedConversation
+import com.nextcloud.talk.conversationcreation.ui.openConversation
 import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationViewModel
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.PickImage
@@ -409,6 +413,10 @@ fun AddParticipants(
                             )
                             intent.putExtra(BundleKeys.KEY_ADD_PARTICIPANTS, true)
                             intent.putExtra("isAddParticipantsEdit", true)
+                            intent.putExtra(
+                                BundleKeys.KEY_ONLY_LOCAL_PARTICIPANTS,
+                                conversationCreationViewModel.isLockedDown
+                            )
                             launcher.launch(intent)
                         },
                     textAlign = TextAlign.Right
@@ -418,7 +426,7 @@ fun AddParticipants(
         participants.toSet().forEach { participant ->
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 val imageUri = participant.id?.let {
-                    conversationCreationViewModel.getImageUri(it, true, DisplayUtils.isDarkModeOn(LocalContext.current))
+                    avatarUri(conversationCreationViewModel.currentUser, it, DisplayUtils.isDarkModeOn(context))
                 }
                 val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
                 val loadedImage = loadImage(imageUri, context, errorPlaceholderImage)
@@ -444,6 +452,10 @@ fun AddParticipants(
                 .clickable {
                     val intent = Intent(context, ContactsActivity::class.java)
                     intent.putExtra(BundleKeys.KEY_ADD_PARTICIPANTS, true)
+                    intent.putExtra(
+                        BundleKeys.KEY_ONLY_LOCAL_PARTICIPANTS,
+                        conversationCreationViewModel.isLockedDown
+                    )
                     launcher.launch(intent)
                 },
             verticalAlignment = Alignment.CenterVertically
@@ -472,7 +484,9 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
     val isOpenForGuestAppUsers = conversationCreationViewModel.isOpenForGuestAppUsers
 
     val isPasswordSet = conversationCreationViewModel.password.collectAsState().value.isNotEmpty()
-    val isListablePinned = ConversationParameter.LISTABLE in conversationCreationViewModel.pinnedParameters
+    val isLockedDown = conversationCreationViewModel.isLockedDown
+    val isListableFixed = isLockedDown ||
+        ConversationParameter.LISTABLE in conversationCreationViewModel.pinnedParameters
 
     Text(
         text = stringResource(id = R.string.nc_new_conversation_visibility),
@@ -486,6 +500,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
         switch = {
             Switch(
                 checked = isGuestsAllowed,
+                enabled = !isLockedDown,
                 onCheckedChange = { conversationCreationViewModel.allowGuests(it) }
             )
         },
@@ -514,7 +529,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
         switch = {
             Switch(
                 checked = isConversationAvailableForRegisteredUsers,
-                enabled = !isListablePinned,
+                enabled = !isListableFixed,
                 onCheckedChange = { conversationCreationViewModel.openConversationToRegisteredUsers(it) }
             )
         },
@@ -527,7 +542,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
             switch = {
                 Switch(
                     checked = isOpenForGuestAppUsers,
-                    enabled = !isListablePinned,
+                    enabled = !isListableFixed,
                     onCheckedChange = { conversationCreationViewModel.openConversationToGuestAppUsers(it) }
                 )
             },
@@ -711,6 +726,34 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
 @Composable
 fun CreateConversation(conversationCreationViewModel: ConversationCreationViewModel, context: Context) {
     val isCreatingRoom by conversationCreationViewModel.isCreatingRoom.collectAsState()
+    val creationState by conversationCreationViewModel.creationState.collectAsState()
+    var createdPublicConversation by rememberSaveable { mutableStateOf<String?>(null) }
+    var createdWithPassword by rememberSaveable { mutableStateOf(false) }
+
+    CreationResultEffect(
+        creationState = creationState,
+        context = context,
+        onPublicConversation = { roomToken, hasPassword ->
+            createdPublicConversation = roomToken
+            createdWithPassword = hasPassword
+        },
+        onHandled = { conversationCreationViewModel.clearCreationState() }
+    )
+
+    createdPublicConversation?.let { roomToken ->
+        ShareCreatedConversation(
+            roomToken = roomToken,
+            password = conversationCreationViewModel.password.value.takeIf { createdWithPassword },
+            currentUser = conversationCreationViewModel.currentUser,
+            context = context,
+            onDismiss = {
+                createdPublicConversation = null
+                conversationCreationViewModel.clearCreationState()
+                openConversation(context, roomToken)
+            }
+        )
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -720,14 +763,7 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
         Button(
             enabled = !isCreatingRoom && !conversationCreationViewModel.isLoadingPresets,
             onClick = {
-                conversationCreationViewModel.createRoomAndAddParticipants { roomToken ->
-                    val bundle = Bundle()
-                    bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
-                    val chatIntent = Intent(context, ChatActivity::class.java)
-                    chatIntent.putExtras(bundle)
-                    chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    context.startActivity(chatIntent)
-                }
+                conversationCreationViewModel.createRoomAndAddParticipants()
             }
         ) {
             if (isCreatingRoom) {
@@ -758,3 +794,6 @@ fun ConversationCreationScreenPreview() {
         )
     }
 }
+
+private fun avatarUri(user: User, avatarId: String, isDarkMode: Boolean): String =
+    ApiUtils.getUrlForAvatar(user.baseUrl, avatarId, true, darkMode = isDarkMode)
