@@ -152,6 +152,7 @@
     <string name="nc_call_button_content_description_pip">Open picture-in-picture mode</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Switch to self video</string>
     <string name="nc_call_incoming">INCOMING</string>
+    <string name="nc_call_join_failed">Could not join the call. Please try again.</string>
     <string name="nc_call_name">Conversation name</string>
     <string name="nc_call_notifications">Call notifications</string>
     <string name="nc_call_ongoing_notification_content">Tap to return to your call.</string>
@@ -290,6 +291,7 @@
     <string name="nc_federation_pending_invitation_hint">You have pending invitations</string>
     <string name="nc_file_browser_back">Back</string>
     <string name="nc_file_permission_editable">Editable</string>
+    <string name="nc_file_permission_view_only">View-only</string>
     <string name="nc_file_storage_permission">Permission for file access is required</string>
     <string name="nc_filter">Filter conversations</string>
     <string name="nc_following_link">User following a public link</string>
@@ -444,6 +446,7 @@
     <string name="nc_push_notification_fetch_error">Sorry something went wrong, cannot fetch test push message</string>
     <string name="nc_push_notification_message">Push notification is sent successfully. You should now receive a notification on this device with the title \'Testing push notifications\'</string>
     <string name="nc_remind">Remind me later</string>
+    <string name="nc_remote_wipe_logged_out">Credentials for this account were no longer valid</string>
     <string name="nc_remove_color">Remove colour</string>
     <string name="nc_remove_file">Remove file</string>
     <string name="nc_remove_from_favorites">Remove from favourites</string>
