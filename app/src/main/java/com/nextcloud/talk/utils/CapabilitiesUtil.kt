@@ -301,16 +301,6 @@ object CapabilitiesUtil {
     fun isBanningAvailable(spreedCapabilities: SpreedCapability): Boolean =
         hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.BAN_V1)
 
-    fun isAdmin(spreedCapabilities: SpreedCapability?): Boolean {
-        if (spreedCapabilities?.config?.containsKey("conversations") == true) {
-            val map = spreedCapabilities.config!!["conversations"]
-            if (map?.containsKey("is-admin") == true) {
-                return map["is-admin"].toString().toBoolean()
-            }
-        }
-        return false
-    }
-
     // endregion
 
     //region SpreedCapabilities that can't be used with federation as the settings for them are global
