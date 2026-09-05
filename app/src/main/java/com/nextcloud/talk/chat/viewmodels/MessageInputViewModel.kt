@@ -166,7 +166,8 @@ class MessageInputViewModel :
                 displayName,
                 replyTo,
                 sendWithoutNotification,
-                referenceId
+                referenceId,
+                threadTitle
             ).collect { result ->
                 if (result.isSuccess) {
                     Log.d(TAG, "temp message ref id: " + (result.getOrNull()?.referenceId ?: "none"))
