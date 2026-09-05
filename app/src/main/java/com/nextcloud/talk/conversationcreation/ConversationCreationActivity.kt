@@ -21,7 +21,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,11 +41,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Campaign
-import androidx.compose.material.icons.outlined.Chat
-import androidx.compose.material.icons.outlined.Podcasts
-import androidx.compose.material.icons.outlined.VolumeUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -59,7 +53,6 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -101,6 +94,7 @@ import com.nextcloud.talk.components.AvatarEditPanelState
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.loadImage
+import com.nextcloud.talk.conversationcreation.ui.ConversationPresets
 import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationViewModel
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
@@ -234,7 +228,7 @@ fun ConversationCreationScreen(
                         },
                         onDeleteAvatar = {
                             conversationCreationViewModel.updateSelectedImageUri(null)
-                            conversationCreationViewModel.updateSelectedEmoji(null)
+                            conversationCreationViewModel.updateSelectedEmojiAvatar(null)
                         }
                     )
                 }
@@ -381,144 +375,6 @@ fun ConversationNameAndDescription(conversationCreationViewModel: ConversationCr
 @Suppress("LongMethod")
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun ConversationPresets(conversationCreationViewModel: ConversationCreationViewModel) {
-    val preset by conversationCreationViewModel.conversationPreset
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            SelectableCard(
-                modifier = Modifier.weight(1f),
-                title = stringResource(R.string.default_room),
-                subtitle = stringResource(R.string.default_room_preset),
-                icon = Icons.Outlined.Chat,
-                isSelected = preset == ConversationPreset.DEFAULT,
-                onClick = { conversationCreationViewModel.updateConversationPreset(ConversationPreset.DEFAULT) }
-            )
-
-            if (conversationCreationViewModel.canCreateVoiceRoom) {
-                SelectableCard(
-                    modifier = Modifier.weight(1f),
-                    title = stringResource(R.string.voice_room),
-                    subtitle = stringResource(R.string.voice_room_preset),
-                    icon = Icons.Outlined.VolumeUp,
-                    isSelected = preset == ConversationPreset.VOICE_ROOM,
-                    onClick = { conversationCreationViewModel.updateConversationPreset(ConversationPreset.VOICE_ROOM) }
-                )
-            } else {
-                Spacer(modifier = Modifier.weight(1f))
-            }
-        }
-
-        if (conversationCreationViewModel.canCreateChannel) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                SelectableCard(
-                    modifier = Modifier.weight(1f),
-                    title = stringResource(R.string.nc_channel),
-                    subtitle = stringResource(R.string.nc_channel_description),
-                    icon = Icons.Outlined.Podcasts,
-                    isSelected = preset == ConversationPreset.CHANNEL,
-                    onClick = { conversationCreationViewModel.updateConversationPreset(ConversationPreset.CHANNEL) }
-                )
-
-                if (conversationCreationViewModel.canCreateAnnouncement) {
-                    SelectableCard(
-                        modifier = Modifier.weight(1f),
-                        title = stringResource(R.string.nc_announcement),
-                        subtitle = stringResource(R.string.nc_announcement_description),
-                        icon = Icons.Outlined.Campaign,
-                        isSelected = preset == ConversationPreset.ANNOUNCEMENT,
-                        onClick = {
-                            conversationCreationViewModel.updateConversationPreset(
-                                ConversationPreset.ANNOUNCEMENT
-                            )
-                        }
-                    )
-                } else {
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-            }
-        }
-    }
-}
-
-@Suppress("LongParameterList")
-@Composable
-fun SelectableCard(
-    modifier: Modifier = Modifier,
-    title: String,
-    subtitle: String,
-    icon: ImageVector,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    badgeText: String? = null
-) {
-    val borderColor = if (isSelected) Color.LightGray else Color.Transparent
-    val borderWidth = 1.dp
-
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .clickable { onClick() }
-            .border(
-                width = borderWidth,
-                color = borderColor,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .padding(16.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier.size(20.dp)
-            )
-            Text(
-                text = title,
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp,
-                modifier = Modifier.weight(1f, fill = false)
-            )
-        }
-
-        if (badgeText != null) {
-            Surface(
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = RoundedCornerShape(4.dp)
-            ) {
-                Text(
-                    text = badgeText,
-                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Text(
-            text = subtitle,
-            fontSize = 13.sp,
-            lineHeight = 18.sp
-        )
-    }
-}
-
-@Suppress("LongMethod")
-@SuppressLint("SuspiciousIndentation")
-@Composable
 fun AddParticipants(
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     context: Context,
@@ -616,6 +472,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
     val isOpenForGuestAppUsers = conversationCreationViewModel.isOpenForGuestAppUsers
 
     val isPasswordSet = conversationCreationViewModel.password.collectAsState().value.isNotEmpty()
+    val isListablePinned = ConversationParameter.LISTABLE in conversationCreationViewModel.pinnedParameters
 
     Text(
         text = stringResource(id = R.string.nc_new_conversation_visibility),
@@ -657,6 +514,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
         switch = {
             Switch(
                 checked = isConversationAvailableForRegisteredUsers,
+                enabled = !isListablePinned,
                 onCheckedChange = { conversationCreationViewModel.openConversationToRegisteredUsers(it) }
             )
         },
@@ -669,6 +527,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
             switch = {
                 Switch(
                     checked = isOpenForGuestAppUsers,
+                    enabled = !isListablePinned,
                     onCheckedChange = { conversationCreationViewModel.openConversationToGuestAppUsers(it) }
                 )
             },
@@ -859,7 +718,7 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
         contentAlignment = Alignment.Center
     ) {
         Button(
-            enabled = !isCreatingRoom,
+            enabled = !isCreatingRoom && !conversationCreationViewModel.isLoadingPresets,
             onClick = {
                 conversationCreationViewModel.createRoomAndAddParticipants { roomToken ->
                     val bundle = Bundle()

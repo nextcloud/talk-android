@@ -244,8 +244,7 @@ class ComposePreviewUtils private constructor(context: Context) {
         get() = ContactsViewModel(contactsRepository, currentUserProvider)
 
     val conversationCreationViewModel: ConversationCreationViewModel
-        get() = ConversationCreationViewModel(
-            ConversationCreator(ConversationCreationRepositoryImpl(ncApiCoroutines)),
-            userProvider
-        )
+        get() = ConversationCreationRepositoryImpl(ncApiCoroutines).let { repository ->
+            ConversationCreationViewModel(repository, ConversationCreator(repository), userProvider)
+        }
 }
