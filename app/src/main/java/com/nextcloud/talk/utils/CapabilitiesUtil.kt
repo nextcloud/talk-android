@@ -59,6 +59,7 @@ enum class SpreedFeatures(val value: String) {
     EDIT_MESSAGES_NOTE_TO_SELF("edit-messages-note-to-self"),
     ARCHIVE_CONVERSATIONS("archived-conversations-v2"),
     CONVERSATION_CREATION_ALL("conversation-creation-all"),
+    CONVERSATION_CREATION_PASSWORD("conversation-creation-password"),
     UNBIND_CONVERSATION("unbind-conversation"),
     SENSITIVE_CONVERSATIONS("sensitive-conversations"),
     IMPORTANT_CONVERSATIONS("important-conversations"),
