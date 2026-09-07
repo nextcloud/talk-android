@@ -185,6 +185,9 @@ object ApiUtils {
     fun getUrlForNoteToSelf(version: Int, baseUrl: String?): String =
         getUrlForApi(version, baseUrl) + "/room/note-to-self"
 
+    fun getUrlForConversationPresets(baseUrl: String?): String =
+        "$baseUrl$OCS_API_VERSION$SPREED_API_VERSION/presets/room"
+
     @JvmStatic
     fun getUrlForRoom(version: Int, baseUrl: String?, token: String?): String =
         getUrlForRooms(version, baseUrl) + "/" + token

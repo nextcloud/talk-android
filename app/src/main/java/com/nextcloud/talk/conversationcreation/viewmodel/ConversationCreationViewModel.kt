@@ -9,15 +9,19 @@ package com.nextcloud.talk.conversationcreation.viewmodel
 
 import android.net.Uri
 import android.util.Log
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.conversationcreation.ConversationCreator
-import com.nextcloud.talk.conversationcreation.ConversationPreset
-import com.nextcloud.talk.conversationcreation.ConversationPresetParameters
+import com.nextcloud.talk.conversationcreation.ConversationParameter
+import com.nextcloud.talk.conversationcreation.ConversationPresetId
+import com.nextcloud.talk.conversationcreation.ConversationPresetModel
 import com.nextcloud.talk.conversationcreation.CreateConversationParams
 import com.nextcloud.talk.conversationcreation.NewConversation
-import com.nextcloud.talk.conversationcreation.withParameters
+import com.nextcloud.talk.conversationcreation.data.ConversationCreationRepository
+import com.nextcloud.talk.conversationcreation.parametersFor
+import com.nextcloud.talk.conversationcreation.parametersOf
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
@@ -25,12 +29,15 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ConversationCreationViewModel @Inject constructor(
+    private val repository: ConversationCreationRepository,
     private val conversationCreator: ConversationCreator,
     private val currentUserProvider: CurrentUserProviderOld
 ) : ViewModel() {
@@ -60,15 +67,6 @@ class ConversationCreationViewModel @Inject constructor(
         SpreedFeatures.CONVERSATION_PRESETS
     )
 
-    val canCreateVoiceRoom = spreedCapabilities != null && CapabilitiesUtil.isAbleToCall(spreedCapabilities)
-
-    val canCreateChannel = CapabilitiesUtil.hasSpreedFeatureCapability(
-        spreedCapabilities,
-        SpreedFeatures.ANNOUNCEMENT_PRESET
-    )
-
-    val canCreateAnnouncement = canCreateChannel && CapabilitiesUtil.isAdmin(spreedCapabilities)
-
     fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
         _selectedParticipants.value = participants
     }
@@ -81,19 +79,12 @@ class ConversationCreationViewModel @Inject constructor(
         }
     }
 
-    fun updateSelectedEmoji(emoji: String?) {
+    fun updateSelectedEmojiAvatar(emoji: String?, color: Int? = null) {
         _selectedEmoji.value = emoji
+        _selectedEmojiColor.value = color.takeIf { emoji != null }
         if (emoji != null) {
             _selectedImageUri.value = null
-        } else {
-            _selectedEmojiColor.value = null
         }
-    }
-
-    fun updateSelectedEmojiAvatar(emoji: String, color: Int?) {
-        _selectedEmoji.value = emoji
-        _selectedEmojiColor.value = color
-        _selectedImageUri.value = null
     }
 
     private val _roomName = MutableStateFlow("")
@@ -102,9 +93,53 @@ class ConversationCreationViewModel @Inject constructor(
     val password: StateFlow<String> = _password
     private val _conversationDescription = MutableStateFlow("")
     val conversationDescription: StateFlow<String> = _conversationDescription
-    val conversationPreset = mutableStateOf(ConversationPreset.DEFAULT)
+    val conversationPreset = mutableStateOf(ConversationPresetId.DEFAULT)
 
     private val conversationParams = mutableStateOf(CreateConversationParams())
+
+    private val parametersChosenByUser = mutableStateOf<Map<String, Int>>(emptyMap())
+
+    private val _presets = mutableStateOf<PresetsUiState>(PresetsUiState.Loading)
+    val presets: State<PresetsUiState> = _presets
+
+    private var presetsJob: Job? = null
+
+    val isLoadingPresets: Boolean
+        get() = showPresetSelection && _presets.value is PresetsUiState.Loading
+
+    val pinnedParameters: Set<String>
+        get() = (_presets.value as? PresetsUiState.Success)
+            ?.presets
+            ?.parametersOf(ConversationPresetId.FORCED)
+            ?.keys
+            .orEmpty()
+
+    init {
+        if (showPresetSelection) {
+            loadPresets()
+        }
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun loadPresets() {
+        presetsJob?.cancel()
+        _presets.value = PresetsUiState.Loading
+        presetsJob = viewModelScope.launch {
+            try {
+                val presets = repository.getConversationPresets(
+                    ApiUtils.getCredentials(_currentUser.username, _currentUser.token),
+                    ApiUtils.getUrlForConversationPresets(_currentUser.baseUrl)
+                ).mapNotNull { ConversationPresetModel.mapToConversationPresetModel(it) }
+                _presets.value = PresetsUiState.Success(presets)
+                recomputeParams()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to load the conversation presets", e)
+                _presets.value = PresetsUiState.Error
+            }
+        }
+    }
 
     fun updateRoomName(roomName: String) {
         _roomName.value = roomName
@@ -120,8 +155,9 @@ class ConversationCreationViewModel @Inject constructor(
 
     fun updateConversationPreset(preset: String) {
         conversationPreset.value = preset
-        val visibilityChosenByUser = CreateConversationParams(roomType = conversationParams.value.roomType)
-        updateParams(visibilityChosenByUser.withParameters(ConversationPresetParameters.of(preset)))
+        val loaded = (_presets.value as? PresetsUiState.Success)?.presets.orEmpty()
+        parametersChosenByUser.value -= loaded.parametersOf(preset).keys
+        recomputeParams()
     }
 
     val isGuestsAllowed: Boolean
@@ -139,7 +175,8 @@ class ConversationCreationViewModel @Inject constructor(
         } else {
             CreateConversationParams.ROOM_TYPE_GROUP
         }
-        updateParams(conversationParams.value.copy(roomType = roomType))
+        parametersChosenByUser.value += ConversationParameter.ROOM_TYPE to roomType
+        recomputeParams()
     }
 
     fun openConversationToRegisteredUsers(open: Boolean) {
@@ -148,7 +185,8 @@ class ConversationCreationViewModel @Inject constructor(
         } else {
             CreateConversationParams.LISTABLE_NONE
         }
-        updateParams(conversationParams.value.copy(listable = listable))
+        parametersChosenByUser.value += ConversationParameter.LISTABLE to listable
+        recomputeParams()
     }
 
     fun openConversationToGuestAppUsers(open: Boolean) {
@@ -157,10 +195,13 @@ class ConversationCreationViewModel @Inject constructor(
         } else {
             CreateConversationParams.LISTABLE_USERS
         }
-        updateParams(conversationParams.value.copy(listable = listable))
+        parametersChosenByUser.value += ConversationParameter.LISTABLE to listable
+        recomputeParams()
     }
 
-    private fun updateParams(params: CreateConversationParams) {
+    private fun recomputeParams() {
+        val loaded = (_presets.value as? PresetsUiState.Success)?.presets.orEmpty()
+        val params = loaded.parametersFor(conversationPreset.value, parametersChosenByUser.value)
         conversationParams.value = params
     }
 
@@ -210,6 +251,12 @@ class ConversationCreationViewModel @Inject constructor(
     companion object {
         private val TAG = ConversationCreationViewModel::class.simpleName
     }
+}
+
+sealed interface PresetsUiState {
+    data object Loading : PresetsUiState
+    data class Success(val presets: List<ConversationPresetModel>) : PresetsUiState
+    data object Error : PresetsUiState
 }
 
 sealed class RoomUIState {
