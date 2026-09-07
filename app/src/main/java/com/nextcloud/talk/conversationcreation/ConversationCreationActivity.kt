@@ -616,6 +616,8 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
     val isOpenForGuestAppUsers = conversationCreationViewModel.isOpenForGuestAppUsers
 
     val isPasswordSet = conversationCreationViewModel.password.collectAsState().value.isNotEmpty()
+    var showPasswordDialog by rememberSaveable { mutableStateOf(false) }
+    var showPasswordChangeDialog by rememberSaveable { mutableStateOf(false) }
 
     Text(
         text = stringResource(id = R.string.nc_new_conversation_visibility),
@@ -631,15 +633,14 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
                 checked = isGuestsAllowed,
                 onCheckedChange = { conversationCreationViewModel.allowGuests(it) }
             )
-        },
-        conversationCreationViewModel = conversationCreationViewModel
+        }
     )
 
     if (isGuestsAllowed && !isPasswordSet) {
         ConversationOption(
             icon = R.drawable.baseline_lock_open_24,
             text = R.string.nc_set_password,
-            conversationCreationViewModel = conversationCreationViewModel
+            onClick = { showPasswordDialog = true }
         )
     }
 
@@ -647,7 +648,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
         ConversationOption(
             icon = R.drawable.ic_lock_grey600_24px,
             text = R.string.nc_change_password,
-            conversationCreationViewModel = conversationCreationViewModel
+            onClick = { showPasswordChangeDialog = true }
         )
     }
 
@@ -659,8 +660,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
                 checked = isConversationAvailableForRegisteredUsers,
                 onCheckedChange = { conversationCreationViewModel.openConversationToRegisteredUsers(it) }
             )
-        },
-        conversationCreationViewModel = conversationCreationViewModel
+        }
     )
 
     if (isConversationAvailableForRegisteredUsers) {
@@ -671,7 +671,19 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
                     checked = isOpenForGuestAppUsers,
                     onCheckedChange = { conversationCreationViewModel.openConversationToGuestAppUsers(it) }
                 )
-            },
+            }
+        )
+    }
+
+    if (showPasswordDialog) {
+        ShowPasswordDialog(
+            onDismiss = { showPasswordDialog = false },
+            conversationCreationViewModel = conversationCreationViewModel
+        )
+    }
+    if (showPasswordChangeDialog) {
+        ShowChangePassword(
+            onDismiss = { showPasswordChangeDialog = false },
             conversationCreationViewModel = conversationCreationViewModel
         )
     }
@@ -682,23 +694,13 @@ fun ConversationOption(
     icon: Int? = null,
     text: Int,
     switch: @Composable (() -> Unit)? = null,
-    conversationCreationViewModel: ConversationCreationViewModel
+    onClick: (() -> Unit)? = null
 ) {
-    var showPasswordDialog by rememberSaveable { mutableStateOf(false) }
-    var showPasswordChangeDialog by rememberSaveable { mutableStateOf(false) }
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
-            .then(
-                when {
-                    switch != null -> Modifier
-                    conversationCreationViewModel.password.collectAsState().value.isEmpty() ->
-                        Modifier.clickable { showPasswordDialog = true }
-
-                    else -> Modifier.clickable { showPasswordChangeDialog = true }
-                }
-            ),
+            .then(onClick?.let { Modifier.clickable(onClick = it) } ?: Modifier),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -718,20 +720,6 @@ fun ConversationOption(
         )
         if (switch != null) {
             switch()
-        }
-        if (showPasswordDialog) {
-            ShowPasswordDialog(
-                onDismiss = { showPasswordDialog = false },
-                conversationCreationViewModel = conversationCreationViewModel
-            )
-        }
-        if (showPasswordChangeDialog) {
-            ShowChangePassword(
-                onDismiss = {
-                    showPasswordChangeDialog = false
-                },
-                conversationCreationViewModel = conversationCreationViewModel
-            )
         }
     }
 }
