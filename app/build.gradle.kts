@@ -229,7 +229,7 @@ dependencies {
     implementation("com.github.bitfireAT:dav4jvm:2.1.3") {
         exclude(group = "org.ogce", module = "xpp3") // Android comes with its own XmlPullParser
     }
-    implementation("org.conscrypt:conscrypt-android:2.6.3")
+    implementation("org.conscrypt:conscrypt-android:2.7.0")
     implementation("com.github.nextcloud-deps:qrcodescanner:0.1.2.4") // "com.github.blikoon:QRCodeScanner:0.1.2"
 
     implementation("androidx.exifinterface:exifinterface:1.4.2")
