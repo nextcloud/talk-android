@@ -389,6 +389,7 @@ dependencies {
     testImplementation("com.google.crypto.tink:tink:1.23.0")
     testImplementation("androidx.room:room-testing:$roomVersion")
     testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
+    testImplementation("com.squareup.okhttp3:okhttp-tls:$okhttpVersion")
     testImplementation("com.google.dagger:hilt-android-testing:2.60.1")
     testImplementation("org.robolectric:robolectric:4.16.1")
     // conscrypt-android provides Android JNI libs only; the openjdk-uber variant bundles

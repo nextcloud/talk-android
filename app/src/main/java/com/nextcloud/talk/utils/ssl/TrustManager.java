@@ -164,19 +164,24 @@ public class TrustManager implements X509TrustManager {
 
         @Override
         public boolean verify(String s, SSLSession sslSession) {
-
-            if (defaultHostNameVerifier.verify(s, sslSession)) {
-                try {
-                    X509Certificate[] certificates = (X509Certificate[]) sslSession.getPeerCertificates();
-                    if (certificates.length > 0 && isCertInTrustStore(certificates, s)) {
-                        return true;
-                    }
-                } catch (SSLPeerUnverifiedException e) {
-                    Log.d(TAG, "Couldn't get certificate for host name verification");
+            try {
+                X509Certificate[] certificates = (X509Certificate[]) sslSession.getPeerCertificates();
+                if (certificates.length == 0) {
+                    return false;
                 }
-            }
 
-            return false;
+                if (defaultHostNameVerifier.verify(s, sslSession)) {
+                    return true;
+                }
+
+                // Certificate has no (matching) Subject Alternative Name, e.g. legacy self-signed
+                // certificates that only set the Common Name. Accept it anyway if the user already
+                // explicitly trusted this exact certificate via the certificate dialog.
+                return isCertInTrustStore(certificates[0]);
+            } catch (SSLPeerUnverifiedException e) {
+                Log.d(TAG, "Couldn't get certificate for host name verification");
+                return false;
+            }
         }
     }
 
