@@ -43,6 +43,12 @@ object ConversationPresetId {
     const val CLASSIFIED = "classified"
     const val CHANNEL = "channel"
     const val ANNOUNCEMENT = "announcement"
+
+    /**
+     * Types whose conversations are locked down: their visibility can not be changed and only local
+     * users, groups and teams can be invited.
+     */
+    val lockedDown = setOf(CLASSIFIED)
 }
 
 /**
@@ -68,7 +74,35 @@ fun List<ConversationPresetModel>.parametersFor(
     chosenByUser: Map<String, Int> = emptyMap()
 ): CreateConversationParams =
     CreateConversationParams()
-        .withParameters(parametersOf(ConversationPresetId.DEFAULT))
-        .withParameters(parametersOf(identifier))
+        .withParameters(appliedParametersOf(identifier))
         .withParameters(chosenByUser)
         .withParameters(parametersOf(ConversationPresetId.FORCED))
+
+private fun List<ConversationPresetModel>.appliedParametersOf(identifier: String): Map<String, Int> =
+    parametersOf(ConversationPresetId.DEFAULT) + parametersOf(identifier)
+
+/**
+ * The parameters of the given type that are worth showing to the user, leaving out those an
+ * administrator pinned for every conversation.
+ */
+fun List<ConversationPresetModel>.parametersToPreviewFor(identifier: String): Map<String, Int> {
+    val forced = parametersOf(ConversationPresetId.FORCED).keys
+    return appliedParametersOf(identifier).filterKeys { it !in forced }
+}
+
+/**
+ * Sources an autocomplete result can come from, as the participants API names them.
+ */
+object ParticipantSource {
+    const val USERS = "users"
+    const val GROUPS = "groups"
+    const val EMAILS = "emails"
+    const val CIRCLES = "circles"
+    const val FEDERATED = "federated"
+    const val PHONES = "phones"
+
+    /**
+     * Sources that stay on this instance. Locked down conversations accept only these.
+     */
+    val local = setOf(USERS, GROUPS, CIRCLES)
+}
