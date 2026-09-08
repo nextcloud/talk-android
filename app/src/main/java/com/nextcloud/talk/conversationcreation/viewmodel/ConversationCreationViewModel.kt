@@ -26,7 +26,7 @@ import com.nextcloud.talk.conversationcreation.parametersOf
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.passwordResult.PasswordResult
+import com.nextcloud.talk.passwordpolicy.PasswordPolicyValidator
 import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
@@ -50,8 +50,7 @@ class ConversationCreationViewModel @Inject constructor(
     private val roomViewState = MutableStateFlow<RoomUIState>(RoomUIState.None)
     val creationState: StateFlow<RoomUIState> = roomViewState
 
-    private val _validPasswordViewState = MutableStateFlow<ValidPasswordUiState>(ValidPasswordUiState.None)
-    val validPasswordViewState: StateFlow<ValidPasswordUiState> = _validPasswordViewState
+    val passwordValidation = PasswordPolicyValidator(passwordPolicyRepository, viewModelScope) { _currentUser }
 
     private val _selectedImageUri = MutableStateFlow<Uri?>(null)
     val selectedImageUri: StateFlow<Uri?> = _selectedImageUri
@@ -159,29 +158,6 @@ class ConversationCreationViewModel @Inject constructor(
 
     fun updateConversationDescription(conversationDescription: String) {
         _conversationDescription.value = conversationDescription
-    }
-
-    fun resetPasswordViewState() {
-        _validPasswordViewState.value = ValidPasswordUiState.None
-    }
-
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    fun validatePassword(password: String) {
-        val url = CapabilitiesUtil.getPasswordValidationUrl(_currentUser) ?: return
-        val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token) ?: ""
-        viewModelScope.launch {
-            try {
-                val passwordResult = passwordPolicyRepository.validatePassword(
-                    credentials,
-                    url,
-                    password
-                )
-
-                _validPasswordViewState.value = ValidPasswordUiState.Success(passwordResult.ocs?.data!!)
-            } catch (exception: Exception) {
-                _validPasswordViewState.value = ValidPasswordUiState.Error(exception.message ?: "")
-            }
-        }
     }
 
     fun updateConversationPreset(preset: String) {
@@ -309,10 +285,4 @@ sealed class AddParticipantsUiState {
     data object None : AddParticipantsUiState()
     data class Success(val participants: List<Conversation>?) : AddParticipantsUiState()
     data class Error(val message: String) : AddParticipantsUiState()
-}
-
-sealed class ValidPasswordUiState {
-    data object None : ValidPasswordUiState()
-    data class Success(val result: PasswordResult) : ValidPasswordUiState()
-    data class Error(val message: String) : ValidPasswordUiState()
 }

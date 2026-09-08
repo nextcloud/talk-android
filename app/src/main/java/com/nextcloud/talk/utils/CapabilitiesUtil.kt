@@ -113,8 +113,7 @@ object CapabilitiesUtil {
      * The endpoint that validates a password against the server's policy, or null when the server
      * does not advertise the password_policy capability.
      */
-    fun getPasswordValidationUrl(user: User?): String? =
-        user?.capabilities?.passwordPolicy?.api?.validatePasswordApi
+    fun getPasswordValidationUrl(user: User?): String? = user?.capabilities?.passwordPolicy?.api?.validatePasswordApi
 
     // endregion
 

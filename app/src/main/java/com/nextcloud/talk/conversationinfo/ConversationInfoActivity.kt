@@ -17,12 +17,10 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog as ComposeAlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -34,7 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentTransaction
@@ -83,6 +80,9 @@ import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.passwordpolicy.PasswordPolicyField
+import com.nextcloud.talk.passwordpolicy.PasswordValidationState
+import com.nextcloud.talk.passwordpolicy.isPasswordAccepted
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.CIRCLES
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEvent
@@ -134,8 +134,8 @@ class ConversationInfoActivity : BaseActivity() {
 
     private var startGroupChat: Boolean = false
 
-    private var securePasswordViewState: ConversationInfoViewModel.SecurePasswordViewState
-        by mutableStateOf(ConversationInfoViewModel.SecurePasswordViewState.None)
+    private var passwordValidationState: PasswordValidationState
+        by mutableStateOf(PasswordValidationState.None)
     private var showPasswordDialog by mutableStateOf(false)
 
     private val workerData: Data?
@@ -214,7 +214,9 @@ class ConversationInfoActivity : BaseActivity() {
                 }
         }
 
-        viewModel.securePasswordViewState.observe(this) { securePasswordViewState = it }
+        lifecycleScope.launch {
+            viewModel.passwordValidation.state.collect { passwordValidationState = it }
+        }
 
         setupCompose()
     }
@@ -276,7 +278,7 @@ class ConversationInfoActivity : BaseActivity() {
     private fun GuestAccessPasswordDialogHost() {
         if (!showPasswordDialog) return
         GuestAccessPasswordDialog(
-            validationState = securePasswordViewState,
+            validationState = passwordValidationState,
             onPasswordChanged = ::onGuestPasswordChanged,
             onDismiss = ::dismissGuestPasswordDialog,
             onSave = ::onGuestPasswordSave
@@ -284,7 +286,7 @@ class ConversationInfoActivity : BaseActivity() {
     }
 
     private fun onGuestPasswordChanged(password: String) {
-        viewModel.securePassword(password)
+        viewModel.passwordValidation.validate(password)
     }
 
     private fun onGuestPasswordSave(password: String, copyAfterSave: Boolean) {
@@ -303,7 +305,7 @@ class ConversationInfoActivity : BaseActivity() {
 
     private fun dismissGuestPasswordDialog() {
         showPasswordDialog = false
-        viewModel.resetSecurePasswordViewState()
+        viewModel.passwordValidation.reset()
     }
 
     private fun copyPasswordToClipboard(password: String) {
@@ -887,48 +889,29 @@ class ConversationInfoActivity : BaseActivity() {
 }
 
 @Composable
-@Suppress("LongMethod")
 private fun GuestAccessPasswordDialog(
-    validationState: ConversationInfoViewModel.SecurePasswordViewState,
+    validationState: PasswordValidationState,
     onPasswordChanged: (String) -> Unit,
     onDismiss: () -> Unit,
     onSave: (password: String, copyAfterSave: Boolean) -> Unit
 ) {
     var password by rememberSaveable { mutableStateOf("") }
-    val secureText = stringResource(R.string.nc_password_secure)
-    val warningMessage = passwordWarningMessage(validationState, secureText)
-    val isPasswordValid = password.isNotBlank() && warningMessage == secureText
+    val isPasswordValid = password.isNotBlank() && validationState.isPasswordAccepted
 
     ComposeAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(text = stringResource(id = R.string.nc_guest_access_password_dialog_title)) },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = {
-                        password = it
-                        onPasswordChanged(it)
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    label = {
-                        Text(text = stringResource(id = R.string.nc_guest_access_password_dialog_hint))
-                    },
-                    supportingText = {
-                        warningMessage?.let {
-                            Text(
-                                text = it,
-                                color = if (!isPasswordValid) {
-                                    colorResource(R.color.nc_darkRed)
-                                } else {
-                                    colorResource(R.color.nc_darkGreen)
-                                }
-                            )
-                        }
-                    }
-                )
-            }
+            PasswordPolicyField(
+                password = password,
+                onPasswordChange = {
+                    password = it
+                    onPasswordChanged(it)
+                },
+                validationState = validationState,
+                label = stringResource(id = R.string.nc_guest_access_password_dialog_hint),
+                modifier = Modifier.fillMaxWidth()
+            )
         },
         confirmButton = {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -953,22 +936,3 @@ private fun GuestAccessPasswordDialog(
         }
     )
 }
-
-@Composable
-private fun passwordWarningMessage(
-    validationState: ConversationInfoViewModel.SecurePasswordViewState,
-    secureText: String
-): String? =
-    when (validationState) {
-        is ConversationInfoViewModel.SecurePasswordViewState.Success -> {
-            validationState.result.passed?.let { passed ->
-                if (passed) secureText else validationState.result.reason
-            }
-        }
-
-        is ConversationInfoViewModel.SecurePasswordViewState.Error -> {
-            stringResource(R.string.nc_common_error_sorry)
-        }
-
-        ConversationInfoViewModel.SecurePasswordViewState.None -> ""
-    }
