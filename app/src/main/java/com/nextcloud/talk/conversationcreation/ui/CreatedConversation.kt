@@ -72,14 +72,17 @@ fun CreationResultEffect(
 @Suppress("LongParameterList")
 @Composable
 fun ShareCreatedConversation(
-    roomToken: String,
+    roomToken: String?,
     password: String?,
-    currentUser: User,
+    currentUser: User?,
     context: Context,
-    onDismiss: () -> Unit
+    onDismiss: (roomToken: String) -> Unit
 ) {
+    if (roomToken == null || currentUser == null) {
+        return
+    }
     AlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = { onDismiss(roomToken) },
         title = { Text(text = stringResource(R.string.nc_conversation_created_title)) },
         text = {
             Column {
@@ -108,7 +111,7 @@ fun ShareCreatedConversation(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(onClick = { onDismiss(roomToken) }) {
                 Text(text = stringResource(R.string.nc_open_conversation))
             }
         }
