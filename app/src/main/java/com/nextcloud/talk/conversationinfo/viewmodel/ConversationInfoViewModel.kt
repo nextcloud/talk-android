@@ -16,7 +16,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
-import com.nextcloud.talk.conversationcreation.data.ConversationCreationRepository
 import com.nextcloud.talk.conversationinfo.ConversationInfoUiEvent
 import com.nextcloud.talk.conversationinfo.ConversationInfoUiState
 import com.nextcloud.talk.conversationinfo.CreateRoomRequest
@@ -40,6 +39,7 @@ import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.passwordResult.PasswordResult
 import com.nextcloud.talk.models.json.profile.Profile
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
+import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository.ResendInvitationsResult
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ApiUtils.getUrlForRooms
@@ -77,7 +77,7 @@ class ConversationInfoViewModel @Inject constructor(
     private val chatNetworkDataSource: ChatNetworkDataSource,
     private val conversationsRepository: ConversationsRepository,
     private val ncApi: NcApi,
-    private val conversationCreationRepository: ConversationCreationRepository
+    private val passwordPolicyRepository: PasswordPolicyRepository
 ) : ViewModel() {
     object LifeCycleObserver : DefaultLifecycleObserver {
         enum class LifeCycleFlag {
@@ -240,7 +240,7 @@ class ConversationInfoViewModel @Inject constructor(
     fun securePassword(credentials: String, url: String, password: String) {
         viewModelScope.launch {
             try {
-                val passwordResult = conversationCreationRepository.validatePassword(
+                val passwordResult = passwordPolicyRepository.validatePassword(
                     credentials,
                     url,
                     password

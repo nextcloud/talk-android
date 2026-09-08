@@ -15,7 +15,6 @@ import com.nextcloud.talk.models.json.conversations.ConversationPreset
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
-import com.nextcloud.talk.models.json.passwordResult.PasswordResultOverall
 import java.io.File
 
 interface ConversationCreationRepository {
@@ -47,5 +46,4 @@ interface ConversationCreationRepository {
         color: String?
     ): RoomOverall
     suspend fun allowGuests(credentials: String?, url: String, token: String, allow: Boolean): GenericOverall
-    suspend fun validatePassword(credentials: String, url: String, password: String): PasswordResultOverall
 }
