@@ -36,11 +36,11 @@ import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
-import com.nextcloud.talk.models.json.passwordResult.PasswordResult
 import com.nextcloud.talk.models.json.profile.Profile
+import com.nextcloud.talk.passwordpolicy.PasswordPolicyValidator
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
-import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository.ResendInvitationsResult
+import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ApiUtils.getUrlForRooms
 import com.nextcloud.talk.utils.CapabilitiesUtil
@@ -111,6 +111,7 @@ class ConversationInfoViewModel @Inject constructor(
     private var currentUser: User? = null
     private var currentToken: String = ""
     private var databaseStorageModule: DatabaseStorageModule? = null
+    val passwordValidation = PasswordPolicyValidator(passwordPolicyRepository, viewModelScope) { currentUser }
     private val _uiState = MutableStateFlow(ConversationInfoUiState())
     val uiState: StateFlow<ConversationInfoUiState> = _uiState.asStateFlow()
     private val _uiEvent = MutableSharedFlow<ConversationInfoUiEvent>(extraBufferCapacity = 1)
@@ -172,9 +173,6 @@ class ConversationInfoViewModel @Inject constructor(
         return uiItems
     }
 
-    private val _securePasswordViewState = MutableLiveData<SecurePasswordViewState>(SecurePasswordViewState.None)
-    val securePasswordViewState: LiveData<SecurePasswordViewState> = _securePasswordViewState
-
     fun getRoom(user: User, token: String) {
         currentUser = user
         currentToken = token
@@ -186,10 +184,6 @@ class ConversationInfoViewModel @Inject constructor(
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(GetRoomObserver())
-    }
-
-    fun resetSecurePasswordViewState() {
-        _securePasswordViewState.value = SecurePasswordViewState.None
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -232,26 +226,6 @@ class ConversationInfoViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to create room", e)
                 _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(R.string.nc_common_error_sorry))
-            }
-        }
-    }
-
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    fun securePassword(password: String) {
-        val user = currentUser ?: return
-        val url = CapabilitiesUtil.getPasswordValidationUrl(user) ?: return
-        val credentials = ApiUtils.getCredentials(user.username, user.token) ?: ""
-        viewModelScope.launch {
-            try {
-                val passwordResult = passwordPolicyRepository.validatePassword(
-                    credentials,
-                    url,
-                    password
-                )
-
-                _securePasswordViewState.value = SecurePasswordViewState.Success(passwordResult.ocs?.data!!)
-            } catch (exception: Exception) {
-                _securePasswordViewState.value = SecurePasswordViewState.Error(exception.message ?: "")
             }
         }
     }
@@ -973,11 +947,5 @@ class ConversationInfoViewModel @Inject constructor(
                 addedParticipants.mapNotNull { it }.sortedJoined()
             return DisplayUtils.ellipsize(conversationName, MAX_ROOM_NAME_LENGTH)
         }
-    }
-
-    sealed class SecurePasswordViewState {
-        data object None : SecurePasswordViewState()
-        data class Success(val result: PasswordResult) : SecurePasswordViewState()
-        data class Error(val message: String) : SecurePasswordViewState()
     }
 }
