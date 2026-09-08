@@ -173,6 +173,11 @@ class ConversationCreationViewModel @Inject constructor(
         recomputeParams()
     }
 
+    val isPasswordEnforced = CapabilitiesUtil.isPasswordEnforced(spreedCapabilities)
+
+    val isPasswordMissing: Boolean
+        get() = isPasswordEnforced && isGuestsAllowed && _password.value.isEmpty()
+
     val isLockedDown: Boolean
         get() = conversationPreset.value in ConversationPresetId.lockedDown
 
