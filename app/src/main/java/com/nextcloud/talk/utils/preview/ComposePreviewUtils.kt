@@ -250,7 +250,7 @@ class ComposePreviewUtils private constructor(context: Context) {
                 repository,
                 ConversationCreator(repository),
                 PasswordPolicyRepositoryImpl(ncApiCoroutines),
-                userProvider
+                currentUserProvider
             )
         }
 }

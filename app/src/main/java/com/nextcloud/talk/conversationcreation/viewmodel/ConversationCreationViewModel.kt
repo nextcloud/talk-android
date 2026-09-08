@@ -31,11 +31,15 @@ import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.SpreedFeatures
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -43,14 +47,14 @@ class ConversationCreationViewModel @Inject constructor(
     private val repository: ConversationCreationRepository,
     private val conversationCreator: ConversationCreator,
     private val passwordPolicyRepository: PasswordPolicyRepository,
-    private val currentUserProvider: CurrentUserProviderOld
+    currentUserProvider: CurrentUserProvider
 ) : ViewModel() {
     private val _selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
     val selectedParticipants: StateFlow<List<AutocompleteUser>> = _selectedParticipants
     private val roomViewState = MutableStateFlow<RoomUIState>(RoomUIState.None)
     val creationState: StateFlow<RoomUIState> = roomViewState
 
-    val passwordValidation = PasswordPolicyValidator(passwordPolicyRepository, viewModelScope) { _currentUser }
+    val passwordValidation = PasswordPolicyValidator(passwordPolicyRepository, viewModelScope) { currentUser.value }
 
     private val _selectedImageUri = MutableStateFlow<Uri?>(null)
     val selectedImageUri: StateFlow<Uri?> = _selectedImageUri
@@ -64,15 +68,20 @@ class ConversationCreationViewModel @Inject constructor(
     private val _isCreatingRoom = MutableStateFlow(false)
     val isCreatingRoom: StateFlow<Boolean> = _isCreatingRoom
 
-    private val _currentUser = currentUserProvider.currentUser.blockingGet()
-    val currentUser: User = _currentUser
+    val currentUser: StateFlow<User?> = currentUserProvider.currentUserFlow
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private val spreedCapabilities = _currentUser.capabilities?.spreedCapability
+    private val spreedCapabilities
+        get() = currentUser.value?.capabilities?.spreedCapability
 
-    val showPresetSelection = CapabilitiesUtil.hasSpreedFeatureCapability(
-        spreedCapabilities,
-        SpreedFeatures.CONVERSATION_PRESETS
-    )
+    val showPresetSelection: Boolean
+        get() = CapabilitiesUtil.hasSpreedFeatureCapability(
+            spreedCapabilities,
+            SpreedFeatures.CONVERSATION_PRESETS
+        )
+
+    val conversationDescriptionLength: Int
+        get() = CapabilitiesUtil.conversationDescriptionLength(spreedCapabilities)
 
     fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
         _selectedParticipants.value = participants
@@ -112,7 +121,7 @@ class ConversationCreationViewModel @Inject constructor(
     private var presetsJob: Job? = null
 
     val isLoadingPresets: Boolean
-        get() = showPresetSelection && _presets.value is PresetsUiState.Loading
+        get() = currentUser.value == null || (showPresetSelection && _presets.value is PresetsUiState.Loading)
 
     val pinnedParameters: Set<String>
         get() = (_presets.value as? PresetsUiState.Success)
@@ -122,8 +131,11 @@ class ConversationCreationViewModel @Inject constructor(
             .orEmpty()
 
     init {
-        if (showPresetSelection) {
-            loadPresets()
+        viewModelScope.launch {
+            currentUser.filterNotNull().first()
+            if (showPresetSelection) {
+                loadPresets()
+            }
         }
     }
 
@@ -133,9 +145,10 @@ class ConversationCreationViewModel @Inject constructor(
         _presets.value = PresetsUiState.Loading
         presetsJob = viewModelScope.launch {
             try {
+                val user = currentUser.filterNotNull().first()
                 val presets = repository.getConversationPresets(
-                    ApiUtils.getCredentials(_currentUser.username, _currentUser.token),
-                    ApiUtils.getUrlForConversationPresets(_currentUser.baseUrl)
+                    ApiUtils.getCredentials(user.username, user.token),
+                    ApiUtils.getUrlForConversationPresets(user.baseUrl)
                 ).mapNotNull { ConversationPresetModel.mapToConversationPresetModel(it) }
                 _presets.value = PresetsUiState.Success(presets)
                 recomputeParams()
@@ -173,7 +186,8 @@ class ConversationCreationViewModel @Inject constructor(
         recomputeParams()
     }
 
-    val isPasswordEnforced = CapabilitiesUtil.isPasswordEnforced(spreedCapabilities)
+    val isPasswordEnforced: Boolean
+        get() = CapabilitiesUtil.isPasswordEnforced(spreedCapabilities)
 
     val isLockedDown: Boolean
         get() = conversationPreset.value in ConversationPresetId.lockedDown
@@ -225,7 +239,8 @@ class ConversationCreationViewModel @Inject constructor(
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun createRoomAndAddParticipants() {
-        if (_isCreatingRoom.value) {
+        val user = currentUser.value
+        if (_isCreatingRoom.value || user == null) {
             return
         }
         _isCreatingRoom.value = true
@@ -234,7 +249,7 @@ class ConversationCreationViewModel @Inject constructor(
             roomViewState.value = RoomUIState.None
             try {
                 val conversation = conversationCreator.create(
-                    _currentUser,
+                    user,
                     NewConversation(
                         name = _roomName.value,
                         description = _conversationDescription.value,
