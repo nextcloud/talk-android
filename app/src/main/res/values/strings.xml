@@ -944,6 +944,7 @@ How to translate with transifex:
     <string name="nc_password_copied">Password copied</string>
     <string name="nc_open_conversation">Open conversation</string>
     <string name="nc_conversation_created_invalid_participants">Some participants could not be added</string>
+    <string name="nc_conversation_created_invalid_participants_named">These participants could not be added: %1$s</string>
     <string name="nc_password_required">This server requires a password for conversations guests can join</string>
     <string name="nc_retry">Retry</string>
 

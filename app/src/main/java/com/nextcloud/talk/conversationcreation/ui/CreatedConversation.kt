@@ -53,13 +53,7 @@ fun CreationResultEffect(
                 if (roomToken == null) {
                     onHandled()
                 } else {
-                    if (conversation.invalidParticipants?.isNotEmpty() == true) {
-                        Toast.makeText(
-                            context,
-                            R.string.nc_conversation_created_invalid_participants,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
+                    reportInvalidParticipants(context, conversation.invalidParticipants)
                     if (conversation.type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL) {
                         onPublicConversation(roomToken, conversation.hasPassword)
                         onHandled()
@@ -128,4 +122,32 @@ fun openConversation(context: Context, roomToken: String) {
     chatIntent.putExtras(bundle)
     chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
     context.startActivity(chatIntent)
+}
+
+private fun copyPassword(context: Context, roomToken: String, password: String) {
+    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip = ClipData.newPlainText(roomToken, password)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        clip.description.extras = PersistableBundle().apply {
+            putBoolean(ClipDescription.EXTRA_IS_SENSITIVE, true)
+        }
+    }
+    clipboard.setPrimaryClip(clip)
+    Toast.makeText(context, context.getString(R.string.nc_password_copied), Toast.LENGTH_SHORT).show()
+}
+
+private fun reportInvalidParticipants(context: Context, invalidParticipants: Map<String, List<String>>?) {
+    if (invalidParticipants.isNullOrEmpty()) {
+        return
+    }
+    val names = invalidParticipants.values.flatten().filter { it.isNotEmpty() }
+    val message = if (names.isEmpty()) {
+        context.getString(R.string.nc_conversation_created_invalid_participants)
+    } else {
+        context.getString(
+            R.string.nc_conversation_created_invalid_participants_named,
+            names.joinToString(", ")
+        )
+    }
+    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
