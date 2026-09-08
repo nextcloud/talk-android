@@ -703,7 +703,6 @@ fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: Con
                             conversationCreationViewModel.resetPasswordViewState()
                             onDismiss()
                         },
-
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                     ) {
                         Text(text = stringResource(id = R.string.nc_cancel))
