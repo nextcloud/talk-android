@@ -166,7 +166,8 @@ class ConversationCreationViewModel @Inject constructor(
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun validatePassword(url: String, password: String) {
+    fun validatePassword(password: String) {
+        val url = CapabilitiesUtil.getPasswordValidationUrl(_currentUser) ?: return
         val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token) ?: ""
         viewModelScope.launch {
             try {
