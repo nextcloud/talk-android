@@ -7,8 +7,6 @@
 package com.nextcloud.talk.conversationinfo
 
 import android.annotation.SuppressLint
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -79,12 +77,12 @@ import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.passwordpolicy.PasswordPolicyField
-import com.nextcloud.talk.passwordpolicy.PasswordValidationState
-import com.nextcloud.talk.passwordpolicy.isPasswordAccepted
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.CIRCLES
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEvent
+import com.nextcloud.talk.passwordpolicy.PasswordPolicyField
+import com.nextcloud.talk.passwordpolicy.PasswordValidationState
+import com.nextcloud.talk.passwordpolicy.isPasswordAccepted
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.ui.dialog.DialogBanListFragment
@@ -97,6 +95,7 @@ import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.copyPasswordToClipboard
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -291,7 +290,7 @@ class ConversationInfoActivity : BaseActivity() {
     private fun onGuestPasswordSave(password: String, copyAfterSave: Boolean) {
         val user = conversationUser ?: return
         if (copyAfterSave) {
-            copyPasswordToClipboard(password)
+            copyPassword(password)
         }
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
         viewModel.setPassword(
@@ -307,10 +306,12 @@ class ConversationInfoActivity : BaseActivity() {
         viewModel.passwordValidation.reset()
     }
 
-    private fun copyPasswordToClipboard(password: String) {
-        val clipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-        val label = resources.getString(R.string.nc_app_product_name)
-        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, password))
+    private fun copyPassword(password: String) {
+        copyPasswordToClipboard(
+            context = this,
+            label = resources.getString(R.string.nc_app_product_name),
+            password = password
+        )
     }
 
     @Suppress("LongMethod", "CyclomaticComplexMethod")

@@ -8,14 +8,9 @@
 package com.nextcloud.talk.conversationcreation.ui
 
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipDescription
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog
@@ -32,6 +27,7 @@ import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.copyPasswordToClipboard
 
 /**
  * Reacts to the outcome of creating a conversation: reports what could not be done, hands public
@@ -95,7 +91,7 @@ fun ShareCreatedConversation(
             Column {
                 Text(text = stringResource(R.string.nc_conversation_created_public))
                 if (!password.isNullOrEmpty()) {
-                    TextButton(onClick = { copyPassword(context, roomToken, password) }) {
+                    TextButton(onClick = { copyPasswordToClipboard(context, roomToken, password) }) {
                         Text(text = stringResource(R.string.nc_copy_password))
                     }
                 }
@@ -132,16 +128,4 @@ fun openConversation(context: Context, roomToken: String) {
     chatIntent.putExtras(bundle)
     chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
     context.startActivity(chatIntent)
-}
-
-private fun copyPassword(context: Context, roomToken: String, password: String) {
-    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    val clip = ClipData.newPlainText(roomToken, password)
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        clip.description.extras = PersistableBundle().apply {
-            putBoolean(ClipDescription.EXTRA_IS_SENSITIVE, true)
-        }
-    }
-    clipboard.setPrimaryClip(clip)
-    Toast.makeText(context, context.getString(R.string.nc_password_copied), Toast.LENGTH_SHORT).show()
 }

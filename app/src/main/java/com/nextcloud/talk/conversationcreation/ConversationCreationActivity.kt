@@ -11,8 +11,6 @@ package com.nextcloud.talk.conversationcreation
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -109,6 +107,7 @@ import com.nextcloud.talk.passwordpolicy.PasswordPolicyField
 import com.nextcloud.talk.passwordpolicy.isPasswordAccepted
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.copyPasswordToClipboard
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -536,12 +535,11 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
             icon = R.drawable.ic_content_copy,
             text = R.string.nc_copy_password,
             onClick = {
-                val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText(
-                    context.resources.getString(R.string.nc_app_product_name),
-                    conversationCreationViewModel.password.value
+                copyPasswordToClipboard(
+                    context = context,
+                    label = context.resources.getString(R.string.nc_app_product_name),
+                    password = conversationCreationViewModel.password.value
                 )
-                clipboardManager.setPrimaryClip(clip)
             }
         )
     }
