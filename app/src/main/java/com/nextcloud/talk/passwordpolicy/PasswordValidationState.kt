@@ -14,6 +14,9 @@ import com.nextcloud.talk.models.json.passwordResult.PasswordResult
  */
 sealed interface PasswordValidationState {
     data object None : PasswordValidationState
+
+    /** The server advertises no password policy, so there is nothing to check against. */
+    data object NoPolicy : PasswordValidationState
     data class Success(val result: PasswordResult) : PasswordValidationState
     data class Error(val message: String) : PasswordValidationState
 }
@@ -22,4 +25,8 @@ sealed interface PasswordValidationState {
  * Whether the server accepted the password that was last validated.
  */
 val PasswordValidationState.isPasswordAccepted: Boolean
-    get() = this is PasswordValidationState.Success && result.passed == true
+    get() = when (this) {
+        is PasswordValidationState.Success -> result.passed == true
+        PasswordValidationState.NoPolicy -> true
+        PasswordValidationState.None, is PasswordValidationState.Error -> false
+    }

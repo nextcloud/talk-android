@@ -57,6 +57,6 @@ private fun PasswordPolicyFeedback(validationState: PasswordValidationState) {
             style = MaterialTheme.typography.bodySmall
         )
 
-        PasswordValidationState.None -> Unit
+        PasswordValidationState.None, PasswordValidationState.NoPolicy -> Unit
     }
 }
