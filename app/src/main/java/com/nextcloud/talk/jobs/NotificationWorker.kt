@@ -890,14 +890,21 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             )
         }
 
+        if (imageUri != null) {
+            val imageMessage = NotificationCompat.MessagingStyle.Message(
+                "",
+                pushMessage.timestamp,
+                sender
+            )
+            imageMessage.setData(imageMimeType ?: "image/*", imageUri)
+            newStyle.addMessage(imageMessage)
+        }
+
         val message = NotificationCompat.MessagingStyle.Message(
             pushMessage.text,
             pushMessage.timestamp,
             sender
         )
-        if (imageUri != null) {
-            message.setData(imageMimeType ?: "image/*", imageUri)
-        }
         newStyle.addMessage(message)
         notificationBuilder.setStyle(newStyle)
     }
