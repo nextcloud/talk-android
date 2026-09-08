@@ -216,6 +216,7 @@
     <string name="nc_conversations_empty_details">Поприветствуйте своих друзей и коллег.</string>
     <string name="nc_copy_message">Копировать</string>
     <string name="nc_copy_message_link">Скопировать ссылку на сообщение</string>
+    <string name="nc_copy_password">Копировать пароль</string>
     <string name="nc_create_new_conversation">Создать новое обсуждение</string>
     <string name="nc_create_poll">Создать опрос</string>
     <string name="nc_custom_color">Свой цвет</string>
@@ -379,6 +380,7 @@
     <string name="nc_offline">Нет подключения к сети, пожалуйста, проверьте ваше соединение</string>
     <string name="nc_ok">ОК</string>
     <string name="nc_ongoing_meeting">Идущая беседа</string>
+    <string name="nc_open_conversation">Открытое обсуждение</string>
     <string name="nc_open_conversation_to_registered_users">Открыть обсуждение для зарегистрированных пользователей</string>
     <string name="nc_open_to_guest_app_users">Открыть для гостей</string>
     <string name="nc_owner">Владелец</string>
@@ -396,6 +398,7 @@
     <string name="nc_pip_microphone_mute">Выключить микрофон</string>
     <string name="nc_pip_microphone_unmute">Включить микрофон</string>
     <string name="nc_plain_old_messages">Сообщения</string>
+    <string name="nc_presentation">Презентация</string>
     <string name="nc_profile_personal_info_title">Личная информация</string>
     <string name="nc_promote">Назначить модератором</string>
     <string name="nc_promote_to_owner">Сделать владельцем</string>
@@ -419,6 +422,7 @@
     <string name="nc_reply_to_thread">Ответ в теме: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Перенос с уведомлением</string>
     <string name="nc_reschedule_message_without_notification">Перенос без уведомления</string>
+    <string name="nc_retry">Попробовать снова</string>
     <string name="nc_room_retention">Комната сохранена успешно</string>
     <string name="nc_save_message">Сохранить</string>
     <string name="nc_save_success">Сохранено успешно</string>

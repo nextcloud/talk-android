@@ -202,6 +202,7 @@
     <string name="nc_conversations_empty_details">¡Saluda a tus amigos y colegas!</string>
     <string name="nc_copy_message">Copiar</string>
     <string name="nc_copy_message_link">Copiar link del mensaje</string>
+    <string name="nc_copy_password">Copiar contraseña</string>
     <string name="nc_create_new_conversation">Crear una conversación nueva</string>
     <string name="nc_create_poll">Crear votación</string>
     <string name="nc_custom_color">Colores personalizados</string>
@@ -357,6 +358,7 @@
     <string name="nc_offline">Actualmente fuera de línea, por favor, compruebe los detalles de su conexión</string>
     <string name="nc_ok">OK</string>
     <string name="nc_ongoing_meeting">Reunión en curso</string>
+    <string name="nc_open_conversation">Abrir conversación</string>
     <string name="nc_open_conversation_to_registered_users">Abrir conversación a usuarios registrados</string>
     <string name="nc_open_to_guest_app_users">Abrir también para usuarios invitados de la aplicación</string>
     <string name="nc_owner">Propietario</string>
@@ -373,6 +375,7 @@
     <string name="nc_pip_microphone_mute">Silenciar micrófono</string>
     <string name="nc_pip_microphone_unmute">Activar micrófono</string>
     <string name="nc_plain_old_messages">Mensajes</string>
+    <string name="nc_presentation">Presentación</string>
     <string name="nc_profile_personal_info_title">Información Personal</string>
     <string name="nc_promote">Elevar a moderador</string>
     <string name="nc_public_call_status">Conversación pública</string>
@@ -393,6 +396,7 @@
     <string name="nc_reply_privately">Responder en privado</string>
     <string name="nc_reschedule_message_with_notification">Reprogramar con notificación</string>
     <string name="nc_reschedule_message_without_notification">Reschedule sin notification</string>
+    <string name="nc_retry">Reintentar</string>
     <string name="nc_room_retention">Se retuvo la sala de manera exitosa</string>
     <string name="nc_save_message">Guardar</string>
     <string name="nc_save_success">Guardado correctamente</string>

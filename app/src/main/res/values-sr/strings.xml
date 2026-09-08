@@ -199,6 +199,7 @@
     <string name="nc_conversations_empty_details">Поздравите Ваше пријатеље и колеге!</string>
     <string name="nc_copy_message">Копија</string>
     <string name="nc_copy_message_link">Копирај линк поруке</string>
+    <string name="nc_copy_password">Копирај лозинку</string>
     <string name="nc_create_new_conversation">Креирај нови разговор</string>
     <string name="nc_create_poll">Направи гласање</string>
     <string name="nc_custom_color">Прилагођена боја</string>
@@ -349,6 +350,7 @@
     <string name="nc_offline">Тренутно ван мреже, проверите да ли имате интернет</string>
     <string name="nc_ok">У реду</string>
     <string name="nc_ongoing_meeting">Састанак је у току</string>
+    <string name="nc_open_conversation">Отвори разговор</string>
     <string name="nc_open_conversation_to_registered_users">Отвори разговор свим регистрованим корисницима</string>
     <string name="nc_open_to_guest_app_users">Такође отвори и за кориснике апликације гост</string>
     <string name="nc_owner">Власник</string>
@@ -365,6 +367,7 @@
     <string name="nc_pip_microphone_mute">Утули микрофон</string>
     <string name="nc_pip_microphone_unmute">Укључи микрофон</string>
     <string name="nc_plain_old_messages">Поруке</string>
+    <string name="nc_presentation">Презентација</string>
     <string name="nc_profile_personal_info_title">Лични подаци</string>
     <string name="nc_promote">Унапреди у модератора</string>
     <string name="nc_public_call_status">Јавни разговор</string>
@@ -383,6 +386,7 @@
     <string name="nc_rename_confirm">Преименуј</string>
     <string name="nc_reply">Одговори</string>
     <string name="nc_reply_privately">Одговори приватно</string>
+    <string name="nc_retry">Покушај поново</string>
     <string name="nc_room_retention">Соба је успешно задржана</string>
     <string name="nc_save_message">Сачувај</string>
     <string name="nc_save_success">Успешно сачувано</string>

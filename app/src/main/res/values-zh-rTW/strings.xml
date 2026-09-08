@@ -233,6 +233,7 @@
     <string name="nc_conversations_empty_details">跟大家打個招呼！</string>
     <string name="nc_copy_message">複製</string>
     <string name="nc_copy_message_link">複製訊息連結</string>
+    <string name="nc_copy_password">複製密碼</string>
     <string name="nc_create_new_conversation">建立新對話</string>
     <string name="nc_create_poll">建立調查活動</string>
     <string name="nc_custom_color">自訂顏色</string>
@@ -420,6 +421,7 @@
     <string name="nc_offline">目前離線，請檢查您的連線</string>
     <string name="nc_ok">確定</string>
     <string name="nc_ongoing_meeting">正在進行的會議</string>
+    <string name="nc_open_conversation">開啟對話</string>
     <string name="nc_open_conversation_to_registered_users">向已註冊使用者開放對話</string>
     <string name="nc_open_to_guest_app_users">也向訪客應用程式的使用者開放</string>
     <string name="nc_owner">擁有者</string>
@@ -427,6 +429,7 @@
     <string name="nc_participants">參與者</string>
     <string name="nc_participants_add">新增成員</string>
     <string name="nc_password">密碼</string>
+    <string name="nc_password_copied">密碼已複製</string>
     <string name="nc_permissions_ask">設定權限</string>
     <string name="nc_permissions_denied">部份權限被拒絕。</string>
     <string name="nc_permissions_rationale_dialog_title">請允許權限</string>
@@ -437,6 +440,7 @@
     <string name="nc_pip_microphone_mute">將麥克風靜音</string>
     <string name="nc_pip_microphone_unmute">啟用麥克風</string>
     <string name="nc_plain_old_messages">訊息</string>
+    <string name="nc_presentation">簡報</string>
     <string name="nc_profile_personal_info_title">個人資訊</string>
     <string name="nc_promote">授予主持人資格</string>
     <string name="nc_promote_to_owner">升級為擁有者</string>
@@ -461,6 +465,7 @@
     <string name="nc_reply_to_thread">回覆至討論串：%1$s</string>
     <string name="nc_reschedule_message_with_notification">重新安排並通知</string>
     <string name="nc_reschedule_message_without_notification">重新安排而不另行通知</string>
+    <string name="nc_retry">重試</string>
     <string name="nc_room_retention">聊天室已成功保留</string>
     <string name="nc_save_message">儲存</string>
     <string name="nc_save_success">已成功儲存</string>

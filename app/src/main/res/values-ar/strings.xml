@@ -186,6 +186,7 @@
     <string name="nc_conversations_empty_details">رحّب بالأصدقاء و الزملاء!</string>
     <string name="nc_copy_message">أنسخ</string>
     <string name="nc_copy_message_link">نسخ رابط الرسالة </string>
+    <string name="nc_copy_password">إنسَخ كلمة المرور</string>
     <string name="nc_create_new_conversation">إنشاء محادثة جديدة</string>
     <string name="nc_create_poll">صَوّت، رجاءً</string>
     <string name="nc_custom_color">لون مخصص</string>
@@ -326,6 +327,7 @@
     <string name="nc_notify_me_never">لا تخبرني مطلقًا</string>
     <string name="nc_offline">غير متصل حاليًا، من فضلك التأكد من الاتصال بالانترنت</string>
     <string name="nc_ok">موافق</string>
+    <string name="nc_open_conversation">فتح المحادثة</string>
     <string name="nc_open_conversation_to_registered_users">فتح المحادثة للمستخدمين المسجلين </string>
     <string name="nc_open_to_guest_app_users">مفتوح أيضًا لضيوف التطبيق </string>
     <string name="nc_owner">المالك</string>
@@ -342,6 +344,7 @@
     <string name="nc_pip_microphone_mute">كتم لاقط الصوت microphone</string>
     <string name="nc_pip_microphone_unmute">فعّل الميكروفون</string>
     <string name="nc_plain_old_messages">الرسائل</string>
+    <string name="nc_presentation">عرض تقديمي</string>
     <string name="nc_profile_personal_info_title">المعلومات الشخصية</string>
     <string name="nc_promote">ترقية لمشرف</string>
     <string name="nc_public_call_status">محادثة عمومية</string>
@@ -358,6 +361,7 @@
     <string name="nc_rename_confirm">تغيير تسمية</string>
     <string name="nc_reply">رد</string>
     <string name="nc_reply_privately">ردّ على الخاص</string>
+    <string name="nc_retry">أعِدِ المحاولة</string>
     <string name="nc_save_message">حفظ</string>
     <string name="nc_save_success">تمّ الحفط بنجاح</string>
     <string name="nc_screen_lock_timeout_30">30 ثانية</string>

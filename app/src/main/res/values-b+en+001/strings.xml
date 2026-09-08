@@ -233,6 +233,7 @@
     <string name="nc_conversations_empty_details">Say hi to your friends and colleagues!</string>
     <string name="nc_copy_message">Copy</string>
     <string name="nc_copy_message_link">Copy message link</string>
+    <string name="nc_copy_password">Copy password</string>
     <string name="nc_create_new_conversation">Create a new conversation</string>
     <string name="nc_create_poll">Create poll</string>
     <string name="nc_custom_color">Custom colour</string>
@@ -420,6 +421,7 @@
     <string name="nc_offline">Currently offline, please check your connectivity</string>
     <string name="nc_ok">OK</string>
     <string name="nc_ongoing_meeting">Ongoing meeting</string>
+    <string name="nc_open_conversation">Open conversation</string>
     <string name="nc_open_conversation_to_registered_users">Open conversation to registered users</string>
     <string name="nc_open_to_guest_app_users">Also open to guest app users</string>
     <string name="nc_owner">Owner</string>
@@ -427,6 +429,7 @@
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Add participants</string>
     <string name="nc_password">Password</string>
+    <string name="nc_password_copied">Password copied</string>
     <string name="nc_permissions_ask">Set permissions</string>
     <string name="nc_permissions_denied">Some permissions were denied.</string>
     <string name="nc_permissions_rationale_dialog_title">Please allow permissions</string>
@@ -437,6 +440,7 @@
     <string name="nc_pip_microphone_mute">Mute microphone</string>
     <string name="nc_pip_microphone_unmute">Enable microphone</string>
     <string name="nc_plain_old_messages">Messages</string>
+    <string name="nc_presentation">Presentation</string>
     <string name="nc_profile_personal_info_title">Personal Info</string>
     <string name="nc_promote">Promote to moderator</string>
     <string name="nc_promote_to_owner">Promote to owner</string>
@@ -461,6 +465,7 @@
     <string name="nc_reply_to_thread">Reply to thread: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Reschedule with notification</string>
     <string name="nc_reschedule_message_without_notification">Reschedule without notification</string>
+    <string name="nc_retry">Retry</string>
     <string name="nc_room_retention">Room is retained successfully</string>
     <string name="nc_save_message">Save</string>
     <string name="nc_save_success">Saved successfully</string>

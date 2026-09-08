@@ -232,6 +232,7 @@
     <string name="nc_conversations_empty_details">Pasisveikinkite su savo draugais ir kolegomis!</string>
     <string name="nc_copy_message">Kopijuoti</string>
     <string name="nc_copy_message_link">Kopijuoti žinutės nuorodą</string>
+    <string name="nc_copy_password">Kopijuoti slaptažodį</string>
     <string name="nc_create_new_conversation">Sukurti naują pokalbį</string>
     <string name="nc_create_poll">Sukurti apklausą</string>
     <string name="nc_custom_color">Tinkinta spalva</string>
@@ -418,6 +419,7 @@
     <string name="nc_offline">Šiuo metu atsijungta nuo interneto, patikrinkite savo ryšį</string>
     <string name="nc_ok">Gerai</string>
     <string name="nc_ongoing_meeting">Vykstantis susitikimas</string>
+    <string name="nc_open_conversation">Atverti pokalbį</string>
     <string name="nc_open_conversation_to_registered_users">Atviras pokalbis registruotiems vartotojams</string>
     <string name="nc_open_to_guest_app_users">Taip pat prieinama svečių programėlės vartotojams</string>
     <string name="nc_owner">Savininkas</string>
@@ -425,6 +427,7 @@
     <string name="nc_participants">Dalyviai</string>
     <string name="nc_participants_add">Pridėti dalyvius</string>
     <string name="nc_password">Slaptažodis</string>
+    <string name="nc_password_copied">Slaptažodis nukopijuotas</string>
     <string name="nc_permissions_ask">Nustatyti leidimus</string>
     <string name="nc_permissions_denied">Kai kurie leidimai buvo atmesti.</string>
     <string name="nc_permissions_rationale_dialog_title">Prašome suteikti leidimus</string>
@@ -435,6 +438,7 @@
     <string name="nc_pip_microphone_mute">Išjungti mikrofoną</string>
     <string name="nc_pip_microphone_unmute">Įjungti mikrofoną</string>
     <string name="nc_plain_old_messages">Žinutės</string>
+    <string name="nc_presentation">Pateiktis</string>
     <string name="nc_profile_personal_info_title">Asmeninė informacija</string>
     <string name="nc_promote">Paaukštinti į moderatorius</string>
     <string name="nc_promote_to_owner">Priskirti būti savininku</string>
@@ -459,6 +463,7 @@
     <string name="nc_reply_to_thread">Atsakyti temoje: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Perkelti į kitą datą su pranešimu</string>
     <string name="nc_reschedule_message_without_notification">Perkelti į kitą datą be pranešimo</string>
+    <string name="nc_retry">Bandyti dar kartą</string>
     <string name="nc_room_retention">Kambarys sėkmingai užsakytas</string>
     <string name="nc_save_message">Išsaugoti</string>
     <string name="nc_save_success">Sėkmingai išsaugota</string>

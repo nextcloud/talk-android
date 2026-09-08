@@ -201,6 +201,7 @@
     <string name="nc_conversations_empty_details">Saúde aos seus amigos e compañeiros!</string>
     <string name="nc_copy_message">Copiar</string>
     <string name="nc_copy_message_link">Copiar a ligazón da mensaxe</string>
+    <string name="nc_copy_password">Copiar o contrasinal</string>
     <string name="nc_create_new_conversation">Crear unha nova conversa</string>
     <string name="nc_create_poll">Crear enquisa</string>
     <string name="nc_custom_color">Cor personalizada</string>
@@ -364,6 +365,7 @@
     <string name="nc_participants">Participantes</string>
     <string name="nc_participants_add">Engadir participantes</string>
     <string name="nc_password">Contrasinal</string>
+    <string name="nc_password_copied">Contrasinal copiado</string>
     <string name="nc_permissions_ask">Estabelecer os permisos</string>
     <string name="nc_permissions_denied">Algúns permisos foron denegados.</string>
     <string name="nc_permissions_rationale_dialog_title">Autorice os permisos</string>
@@ -374,6 +376,7 @@
     <string name="nc_pip_microphone_mute">Silenciar o micrófono</string>
     <string name="nc_pip_microphone_unmute">Activar o micrófono</string>
     <string name="nc_plain_old_messages">Mensaxes</string>
+    <string name="nc_presentation">Presentación</string>
     <string name="nc_profile_personal_info_title">Información persoal</string>
     <string name="nc_promote">Promover a moderador</string>
     <string name="nc_public_call_status">Conversa pública</string>
@@ -394,6 +397,7 @@
     <string name="nc_reply_privately">Responder en privado</string>
     <string name="nc_reschedule_message_with_notification">Reprogramar con notificación</string>
     <string name="nc_reschedule_message_without_notification">Reprogramar sen notificación</string>
+    <string name="nc_retry">Volver tentar</string>
     <string name="nc_room_retention">A sala foi reservada satisfactoriamente</string>
     <string name="nc_save_message">Gardar</string>
     <string name="nc_save_success">Gardadao satisfactoriamente</string>

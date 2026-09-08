@@ -216,6 +216,7 @@
     <string name="nc_conversations_empty_details">به رفقا و هم‌قطاران‌تان سلام کنید!</string>
     <string name="nc_copy_message">کپی کردن</string>
     <string name="nc_copy_message_link">کپی لینک پیام</string>
+    <string name="nc_copy_password">کپی رمز عبور</string>
     <string name="nc_create_new_conversation">ایجاد یک گفتگوی جدید</string>
     <string name="nc_create_poll">ایجاد نظرسنجی</string>
     <string name="nc_custom_color">رنگ سفارشی</string>
@@ -390,12 +391,14 @@
     <string name="nc_offline">در حال حاضر آفلاین است، لطفاً اتصال خود را بررسی کنید</string>
     <string name="nc_ok">تأیید</string>
     <string name="nc_ongoing_meeting">جلسه در حال انجام</string>
+    <string name="nc_open_conversation">باز کردن گفتگو</string>
     <string name="nc_open_conversation_to_registered_users">مکالمه برای کاربران ثبت‌نام‌شده باز است</string>
     <string name="nc_open_to_guest_app_users">همچنین برای کاربران مهمان برنامه باز است</string>
     <string name="nc_owner">مالک</string>
     <string name="nc_participants">شرکت‌کنندگان</string>
     <string name="nc_participants_add">افزودن شرکت‌کننده</string>
     <string name="nc_password">گذرواژه</string>
+    <string name="nc_password_copied">رمز عبور کپی شد</string>
     <string name="nc_permissions_ask">تنظیم دسترسی‌ها</string>
     <string name="nc_permissions_denied">برخی از دسترسی‌ها رد شدند.</string>
     <string name="nc_permissions_rationale_dialog_title">لطفاً دسترسی‌ها را مجاز کنید</string>
@@ -406,6 +409,7 @@
     <string name="nc_pip_microphone_mute">بی‌صدا کردن میکروفن</string>
     <string name="nc_pip_microphone_unmute">فعال کردن میکروفن</string>
     <string name="nc_plain_old_messages">پیام‌ها</string>
+    <string name="nc_presentation">ارائه</string>
     <string name="nc_profile_personal_info_title">مشخصات شخصی</string>
     <string name="nc_promote">ترفیع به مدیر</string>
     <string name="nc_public_call_status">گفتگوی عمومی</string>
@@ -428,6 +432,7 @@
     <string name="nc_reply_to_thread">پاسخ به موضوع: %1$s</string>
     <string name="nc_reschedule_message_with_notification">برنامه‌ریزی مجدد با اعلان</string>
     <string name="nc_reschedule_message_without_notification">برنامه‌ریزی مجدد بدون اعلان</string>
+    <string name="nc_retry">تلاش مجدد</string>
     <string name="nc_room_retention">اتاق با موفقیت نگه داشته شد</string>
     <string name="nc_save_message">ذخیره</string>
     <string name="nc_save_success">با موفقیت ذخیره شد</string>

@@ -233,6 +233,7 @@
     <string name="nc_conversations_empty_details">Tanıdık ve çalışma arkadaşlarınıza selam verin!</string>
     <string name="nc_copy_message">Kopyala</string>
     <string name="nc_copy_message_link">İleti bağlantısını kopyala</string>
+    <string name="nc_copy_password">Parolayı kopyala</string>
     <string name="nc_create_new_conversation">Yeni bir görüşme oluştur</string>
     <string name="nc_create_poll">Anket oluştur</string>
     <string name="nc_custom_color">Özel renk</string>
@@ -420,6 +421,7 @@
     <string name="nc_offline">Şu anda çevrim dışı, lütfen bağlantınızı denetleyin</string>
     <string name="nc_ok">Tamam</string>
     <string name="nc_ongoing_meeting">Toplantı sürüyor</string>
+    <string name="nc_open_conversation">Açık görüşme</string>
     <string name="nc_open_conversation_to_registered_users">Görüşmeyi kayıtlı kullanıcılara aç</string>
     <string name="nc_open_to_guest_app_users">Ayrıca konuk uygulama kullanıcılarına da açılsın</string>
     <string name="nc_owner">Sahip</string>
@@ -427,6 +429,7 @@
     <string name="nc_participants">Katılımcılar</string>
     <string name="nc_participants_add">Katılımcı ekle</string>
     <string name="nc_password">Parola</string>
+    <string name="nc_password_copied">Parola kopyalandı</string>
     <string name="nc_permissions_ask">İzinleri ayarla</string>
     <string name="nc_permissions_denied">Bazı izinler verilmemiş.</string>
     <string name="nc_permissions_rationale_dialog_title">Lütfen izinleri verin</string>
@@ -437,6 +440,7 @@
     <string name="nc_pip_microphone_mute">Mikrofonu kapat</string>
     <string name="nc_pip_microphone_unmute">Mikrofonu aç</string>
     <string name="nc_plain_old_messages">İletiler</string>
+    <string name="nc_presentation">Sunum</string>
     <string name="nc_profile_personal_info_title">Kişisel bilgiler</string>
     <string name="nc_promote">Sorumluluğa yükselt</string>
     <string name="nc_promote_to_owner">Sahipliğe yükselt</string>
@@ -461,6 +465,7 @@
     <string name="nc_reply_to_thread">Şu yazışmaya yanıt: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Bildirim ile yeniden zamanla</string>
     <string name="nc_reschedule_message_without_notification">Bildirim olmadan yeniden zamanla</string>
+    <string name="nc_retry">Yeniden dene</string>
     <string name="nc_room_retention">Oda tutuldu</string>
     <string name="nc_save_message">Kaydet</string>
     <string name="nc_save_success">Kaydedildi</string>

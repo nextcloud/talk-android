@@ -233,6 +233,7 @@
     <string name="nc_conversations_empty_details">Begrüßen Sie Ihre Freunde und Kollegen!</string>
     <string name="nc_copy_message">Kopieren</string>
     <string name="nc_copy_message_link">Nachrichtenlink kopieren</string>
+    <string name="nc_copy_password">Passwort kopieren</string>
     <string name="nc_create_new_conversation">Neue Unterhaltung erstellen</string>
     <string name="nc_create_poll">Umfrage erstellen</string>
     <string name="nc_custom_color">Benutzerdefinierte Farbe</string>
@@ -420,6 +421,7 @@
     <string name="nc_offline">Aktuell offline, bitte die Verbindung prüfen</string>
     <string name="nc_ok">OK</string>
     <string name="nc_ongoing_meeting">Laufendes Meeting</string>
+    <string name="nc_open_conversation">Unterhaltung öffnen</string>
     <string name="nc_open_conversation_to_registered_users">Unterhaltung für registrierte Benutzer öffnen</string>
     <string name="nc_open_to_guest_app_users">Auch für Gast-App-Benutzer öffnen</string>
     <string name="nc_owner">Besitzer</string>
@@ -427,6 +429,7 @@
     <string name="nc_participants">Teilnehmer</string>
     <string name="nc_participants_add">Teilnehmer hinzufügen</string>
     <string name="nc_password">Passwort</string>
+    <string name="nc_password_copied">Passwort wurde kopiert</string>
     <string name="nc_permissions_ask">Berechtigungen festlegen</string>
     <string name="nc_permissions_denied">Einige Berechtigungen wurden abgelehnt.</string>
     <string name="nc_permissions_rationale_dialog_title">Bitte alle Berechtigungen erteilen.</string>
@@ -437,6 +440,7 @@
     <string name="nc_pip_microphone_mute">Mikrofon stummschalten</string>
     <string name="nc_pip_microphone_unmute">Mikrofon aktivieren</string>
     <string name="nc_plain_old_messages">Nachrichten</string>
+    <string name="nc_presentation">Präsentation</string>
     <string name="nc_profile_personal_info_title">Persönliche Informationen</string>
     <string name="nc_promote">Zum Moderator ernennen</string>
     <string name="nc_promote_to_owner">Zum Besitzer ernennen</string>
@@ -461,6 +465,7 @@
     <string name="nc_reply_to_thread">Antwort zum Thema:  %1$s</string>
     <string name="nc_reschedule_message_with_notification">Umplanen mit Benachrichtigung</string>
     <string name="nc_reschedule_message_without_notification">Umplanen ohne Benachrichtigung</string>
+    <string name="nc_retry">Wiederholen</string>
     <string name="nc_room_retention">Raum wird beibehalten</string>
     <string name="nc_save_message">Speichern</string>
     <string name="nc_save_success">Gespeichert</string>

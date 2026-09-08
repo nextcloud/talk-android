@@ -144,6 +144,7 @@
     <string name="nc_conversations_empty_details">Πείτε γειά σε φίλους και συνεργάτες!</string>
     <string name="nc_copy_message">Αντιγραφή</string>
     <string name="nc_copy_message_link">Αντιγραφή συνδέσμου μηνύματος</string>
+    <string name="nc_copy_password">Αντιγραφή συνθηματικού</string>
     <string name="nc_create_new_conversation">Δημιουργία νέας συνομιλίας</string>
     <string name="nc_create_poll">Δημιουργία ψηφοφορίας</string>
     <string name="nc_custom_color">Προσαρμοσμένο χρώμα</string>
@@ -253,16 +254,19 @@
     <string name="nc_notify_me_never">Χωρίς ειδοποίηση</string>
     <string name="nc_offline">Σε αποσύνδεση, παρακαλώ ελέγξτε την σύνδεσή σας</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation">Άνοιγμα συνομιλίας</string>
     <string name="nc_open_conversation_to_registered_users">Άνοιγμα συνομιλίας στους εγγεγραμμένους χρήστες</string>
     <string name="nc_open_to_guest_app_users">Ανοιχτό επίσης για επισκέπτες της εφαρμογής</string>
     <string name="nc_owner">Ιδιοκτήτης</string>
     <string name="nc_participants">Συμμετέχοντες</string>
     <string name="nc_participants_add">Προσθήκη συμμετεχόντων</string>
     <string name="nc_password">Συνθηματικό</string>
+    <string name="nc_password_copied">Το συνθηματικό αντιγράφηκε</string>
     <string name="nc_permissions_settings">Άνοιγμα ρυθμίσεων</string>
     <string name="nc_phone_book_integration_account_not_found">Δεν βρέθηκε λογαριασμός</string>
     <string name="nc_phone_book_integration_chat_via">Συνομιλία μέσω %s</string>
     <string name="nc_plain_old_messages">Μηνύματα</string>
+    <string name="nc_presentation">Παρουσίαση</string>
     <string name="nc_profile_personal_info_title">Προσωπικές πληροφορίες</string>
     <string name="nc_promote">Προαγωγή από συντονιστή</string>
     <string name="nc_public_call_status">Δημόσια συνομιλία</string>
@@ -278,6 +282,7 @@
     <string name="nc_rename_confirm">Μετονομασία</string>
     <string name="nc_reply">Απάντηση</string>
     <string name="nc_reply_privately">Απάντηση ιδιωτικά</string>
+    <string name="nc_retry">Δοκιμάστε ξανά</string>
     <string name="nc_save_message">Αποθήκευση</string>
     <string name="nc_save_success">Επιτυχής αποθήκευση</string>
     <string name="nc_scheduled_time">Προγραμματισμένη ώρα</string>

@@ -198,6 +198,7 @@
     <string name="nc_conversations_empty_details">Say hi to your friends and colleagues!</string>
     <string name="nc_copy_message">ສຳເນົາ</string>
     <string name="nc_copy_message_link">Copy message link</string>
+    <string name="nc_copy_password">Copy password</string>
     <string name="nc_create_new_conversation">Create a new conversation</string>
     <string name="nc_create_poll">Create poll</string>
     <string name="nc_custom_color">Custom color</string>
@@ -348,6 +349,7 @@
     <string name="nc_offline">Currently offline, please check your connectivity</string>
     <string name="nc_ok">ຕົກລົງ</string>
     <string name="nc_ongoing_meeting">Ongoing meeting</string>
+    <string name="nc_open_conversation">Open conversation</string>
     <string name="nc_open_conversation_to_registered_users">Open conversation to registered users</string>
     <string name="nc_open_to_guest_app_users">Also open to guest app users</string>
     <string name="nc_owner">ເຈົ້າຂອງ</string>
@@ -364,6 +366,7 @@
     <string name="nc_pip_microphone_mute">Mute microphone</string>
     <string name="nc_pip_microphone_unmute">Enable microphone</string>
     <string name="nc_plain_old_messages">Messages</string>
+    <string name="nc_presentation">ການນຳສະເໜີ</string>
     <string name="nc_profile_personal_info_title">Personal Info</string>
     <string name="nc_promote">Promote to moderator</string>
     <string name="nc_public_call_status">Public conversation</string>
@@ -382,6 +385,7 @@
     <string name="nc_rename_confirm">Rename</string>
     <string name="nc_reply">Reply</string>
     <string name="nc_reply_privately">Reply privately</string>
+    <string name="nc_retry">ລອງໃໝ່</string>
     <string name="nc_room_retention">Room is retained successfully</string>
     <string name="nc_save_message">ບັນທຶກ</string>
     <string name="nc_save_success">Saved successfully</string>

@@ -319,6 +319,7 @@
     <string name="nc_notify_me_never">Aldri varsle</string>
     <string name="nc_offline">Offline, vennligst sjekk din nett forbindelse</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation">Åpen samtale</string>
     <string name="nc_open_to_guest_app_users">Også åpen for brukere av guest-appen</string>
     <string name="nc_owner">Eier</string>
     <string name="nc_participants">Deltakere</string>
@@ -334,6 +335,7 @@
     <string name="nc_pip_microphone_mute">Demp mikrofon</string>
     <string name="nc_pip_microphone_unmute">Aktiver mikrofon</string>
     <string name="nc_plain_old_messages">Meldinger</string>
+    <string name="nc_presentation">Presentasjon</string>
     <string name="nc_profile_personal_info_title">Personlig informasjon</string>
     <string name="nc_promote">Gi moderatorstatus</string>
     <string name="nc_public_call_status">Offentlig samtale</string>
@@ -349,6 +351,7 @@
     <string name="nc_rename_confirm">Endre navn</string>
     <string name="nc_reply">Svar</string>
     <string name="nc_reply_privately">Svar privat</string>
+    <string name="nc_retry">Prøv igjen</string>
     <string name="nc_save_message">Lagre</string>
     <string name="nc_save_success">Lagret</string>
     <string name="nc_screen_lock_timeout_30">30 sekunder</string>

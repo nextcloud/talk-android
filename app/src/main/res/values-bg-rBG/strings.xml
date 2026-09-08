@@ -275,6 +275,7 @@
     <string name="nc_pip_microphone_mute">Изключване на микрофона</string>
     <string name="nc_pip_microphone_unmute">Активиране на микрофона</string>
     <string name="nc_plain_old_messages">Съобщения</string>
+    <string name="nc_presentation">Презентация</string>
     <string name="nc_profile_personal_info_title">Лични данни</string>
     <string name="nc_promote">Повишаване до модератор</string>
     <string name="nc_push_disabled">Push/насочените/ известия са деактивирани</string>
@@ -288,6 +289,7 @@
     <string name="nc_rename_confirm">Преименуване</string>
     <string name="nc_reply">Отговори</string>
     <string name="nc_reply_privately">Отговаряне на лично </string>
+    <string name="nc_retry">Опитай отново</string>
     <string name="nc_save_message">Запиши</string>
     <string name="nc_save_success">Успешно запазено</string>
     <string name="nc_screen_lock_timeout_30">30 секунди</string>

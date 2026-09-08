@@ -233,6 +233,7 @@
     <string name="nc_conversations_empty_details">Diga olá para seus amigos e colegas!</string>
     <string name="nc_copy_message">Copiar</string>
     <string name="nc_copy_message_link">Copiar link da mensagem</string>
+    <string name="nc_copy_password">Copiar a senha</string>
     <string name="nc_create_new_conversation">Criar uma nova conversa</string>
     <string name="nc_create_poll">Criar enquete</string>
     <string name="nc_custom_color">Cor personalizada</string>
@@ -420,6 +421,7 @@
     <string name="nc_offline">Off-line no momento, cheque sua conectividade</string>
     <string name="nc_ok">OK</string>
     <string name="nc_ongoing_meeting">Reunião em andamento</string>
+    <string name="nc_open_conversation">Abrir conversa</string>
     <string name="nc_open_conversation_to_registered_users">Abrir conversa a usuários registrados</string>
     <string name="nc_open_to_guest_app_users">Também abrir a usuários do aplicativo Visitantes</string>
     <string name="nc_owner">Proprietário</string>
@@ -427,6 +429,7 @@
     <string name="nc_participants">Participantes</string>
     <string name="nc_participants_add">Adicionar participantes</string>
     <string name="nc_password">Senha</string>
+    <string name="nc_password_copied">Senha copiada</string>
     <string name="nc_permissions_ask">Definir permissões</string>
     <string name="nc_permissions_denied">Algumas permissões foram negadas.</string>
     <string name="nc_permissions_rationale_dialog_title">Por favor, permita permissões</string>
@@ -437,6 +440,7 @@
     <string name="nc_pip_microphone_mute">Silenciar microfone</string>
     <string name="nc_pip_microphone_unmute">Ativar microfone</string>
     <string name="nc_plain_old_messages">Mensagens</string>
+    <string name="nc_presentation">Apresentação</string>
     <string name="nc_profile_personal_info_title">Informações Pessoais</string>
     <string name="nc_promote">Promover a moderador</string>
     <string name="nc_promote_to_owner">Promover a proprietário</string>
@@ -461,6 +465,7 @@
     <string name="nc_reply_to_thread">Responder ao fio: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Reagendar com notificação</string>
     <string name="nc_reschedule_message_without_notification">Reagendar sem notificação</string>
+    <string name="nc_retry">Tentar novamente</string>
     <string name="nc_room_retention">A sala é mantida com sucesso</string>
     <string name="nc_save_message">Salvar</string>
     <string name="nc_save_success">Salvo com sucesso</string>
