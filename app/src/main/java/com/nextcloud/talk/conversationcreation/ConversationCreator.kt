@@ -71,6 +71,8 @@ class ConversationCreator @Inject constructor(private val repository: Conversati
         conversation?.token?.let { token ->
             try {
                 saveAvatar(context, newConversation, token)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to set the avatar of the created conversation", e)
             }
@@ -133,7 +135,11 @@ class ConversationCreator @Inject constructor(private val repository: Conversati
         } else {
             applyAfterCreation(context, newConversation, token)
         }
-        addParticipants(context, newConversation.participants, token)
+
+        val failed = addParticipants(context, newConversation.participants, token)
+        if (failed.isNotEmpty()) {
+            conversation.invalidParticipants = HashMap(failed)
+        }
 
         return conversation
     }
@@ -187,9 +193,15 @@ class ConversationCreator @Inject constructor(private val repository: Conversati
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    private suspend fun addParticipants(context: RequestContext, participants: List<AutocompleteUser>, token: String) {
+    private suspend fun addParticipants(
+        context: RequestContext,
+        participants: List<AutocompleteUser>,
+        token: String
+    ): Map<String, List<String>> {
+        val failed = mutableMapOf<String, MutableList<String>>()
         participants.forEach { participant ->
             val participantId = participant.id ?: return@forEach
+            val source = participant.source ?: ParticipantSource.USERS
             try {
                 repository.addParticipants(
                     context.credentials,
@@ -197,7 +209,7 @@ class ConversationCreator @Inject constructor(private val repository: Conversati
                         context.apiVersion,
                         context.user.baseUrl,
                         token,
-                        participant.source ?: SOURCE_USERS,
+                        source,
                         participantId
                     )
                 )
@@ -205,8 +217,10 @@ class ConversationCreator @Inject constructor(private val repository: Conversati
                 throw e
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to add a participant to the created conversation", e)
+                failed.getOrPut(source) { mutableListOf() }.add(participantId)
             }
         }
+        return failed
     }
 
     private fun participantsOf(autocompleteUsers: List<AutocompleteUser>): Participants {
@@ -214,11 +228,11 @@ class ConversationCreator @Inject constructor(private val repository: Conversati
         autocompleteUsers.forEach { autocompleteUser ->
             val id = autocompleteUser.id ?: return@forEach
             when (autocompleteUser.source) {
-                SOURCE_GROUPS -> participants.groups.add(id)
-                SOURCE_EMAILS -> participants.emails.add(id)
-                SOURCE_CIRCLES -> participants.teams.add(id)
-                SOURCE_FEDERATED -> participants.federatedUsers.add(id)
-                SOURCE_PHONES -> participants.phones.add(id)
+                ParticipantSource.GROUPS -> participants.groups.add(id)
+                ParticipantSource.EMAILS -> participants.emails.add(id)
+                ParticipantSource.CIRCLES -> participants.teams.add(id)
+                ParticipantSource.FEDERATED -> participants.federatedUsers.add(id)
+                ParticipantSource.PHONES -> participants.phones.add(id)
                 else -> participants.users.add(id)
             }
         }
@@ -253,11 +267,5 @@ class ConversationCreator @Inject constructor(private val repository: Conversati
     companion object {
         private val TAG = ConversationCreator::class.simpleName
         private const val COLOR_HEX_MASK = 0xFFFFFF
-        private const val SOURCE_USERS = "users"
-        private const val SOURCE_GROUPS = "groups"
-        private const val SOURCE_EMAILS = "emails"
-        private const val SOURCE_CIRCLES = "circles"
-        private const val SOURCE_FEDERATED = "federated"
-        private const val SOURCE_PHONES = "phones"
     }
 }
