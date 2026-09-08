@@ -59,6 +59,8 @@ import com.nextcloud.talk.repositories.callrecording.CallRecordingRepository
 import com.nextcloud.talk.repositories.callrecording.CallRecordingRepositoryImpl
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl
+import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
+import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepositoryImpl
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.repositories.reactions.ReactionsRepositoryImpl
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
@@ -221,6 +223,10 @@ class RepositoryModule {
     @Provides
     fun provideConversationCreationRepository(ncApiCoroutines: NcApiCoroutines): ConversationCreationRepository =
         ConversationCreationRepositoryImpl(ncApiCoroutines)
+
+    @Provides
+    fun providePasswordPolicyRepository(ncApiCoroutines: NcApiCoroutines): PasswordPolicyRepository =
+        PasswordPolicyRepositoryImpl(ncApiCoroutines)
 
     @Provides
     fun provideThreadsRepository(ncApiCoroutines: NcApiCoroutines): ThreadsRepository =
