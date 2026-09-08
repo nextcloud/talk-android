@@ -834,6 +834,10 @@ class ConversationInfoViewModel @Inject constructor(
         _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(resId))
     }
 
+    suspend fun emitSnackbar(text: String) {
+        _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbarText(text))
+    }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun toggleImportantConversation(credentials: String, baseUrl: String, roomToken: String) {
         val previousValue = _uiState.value.importantConversation

@@ -561,12 +561,33 @@ class ConversationInfoActivity : BaseActivity() {
                 .setExpeditedIfSupported()
                 .build()
         WorkManager.getInstance().enqueue(addParticipantsWorker)
+        val names = autocompleteUsers.associate { it.id.orEmpty() to it.label.orEmpty() }
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(addParticipantsWorker.id)
-            .observeForever { workInfo: WorkInfo? ->
-                if (workInfo?.state == WorkInfo.State.SUCCEEDED) {
-                    viewModel.loadParticipants(user, conversationToken)
+            .observe(this) { workInfo: WorkInfo? ->
+                when (workInfo?.state) {
+                    WorkInfo.State.SUCCEEDED -> {
+                        viewModel.loadParticipants(user, conversationToken)
+                        reportParticipantsNotAdded(workInfo.outputData, names)
+                    }
+                    WorkInfo.State.FAILED -> reportParticipantsNotAdded(workInfo.outputData, names)
+                    else -> { /* unused */ }
                 }
             }
+    }
+
+    private fun reportParticipantsNotAdded(outputData: Data, names: Map<String, String>) {
+        val failed = outputData
+            .getStringArray(AddParticipantsToConversationWorker.KEY_FAILED_PARTICIPANTS)
+            ?.map { names[it]?.takeIf(String::isNotEmpty) ?: it }
+            .orEmpty()
+        if (failed.isEmpty()) {
+            return
+        }
+        val message = getString(
+            R.string.nc_conversation_created_invalid_participants_named,
+            failed.joinToString(", ")
+        )
+        lifecycleScope.launch { viewModel.emitSnackbar(message) }
     }
 
     private fun leaveConversation() {
