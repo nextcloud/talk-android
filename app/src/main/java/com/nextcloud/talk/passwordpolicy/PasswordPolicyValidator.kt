@@ -35,7 +35,11 @@ class PasswordPolicyValidator(
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun validate(password: String) {
         val user = userProvider() ?: return
-        val url = CapabilitiesUtil.getPasswordValidationUrl(user) ?: return
+        val url = CapabilitiesUtil.getPasswordValidationUrl(user)
+        if (url == null) {
+            _state.value = PasswordValidationState.NoPolicy
+            return
+        }
         val credentials = ApiUtils.getCredentials(user.username, user.token) ?: ""
         scope.launch {
             try {
