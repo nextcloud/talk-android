@@ -197,6 +197,7 @@
     <string name="nc_conversations_empty_details">Sema hi kwa marafiki zako na wenzako!</string>
     <string name="nc_copy_message">Nakili</string>
     <string name="nc_copy_message_link">Nakili kiungo cha ujumbe</string>
+    <string name="nc_copy_password">Nakili nenosiri</string>
     <string name="nc_create_new_conversation">Tengeneza mazungumzo mapya</string>
     <string name="nc_create_poll">Tengeneza poll</string>
     <string name="nc_custom_color">Rangi maalum</string>
@@ -350,6 +351,7 @@
     <string name="nc_offline">Kwa sasa nje ya mtandao, tafadhali angalia mtandao wako</string>
     <string name="nc_ok">SAWA</string>
     <string name="nc_ongoing_meeting">Mkutano unaendelea</string>
+    <string name="nc_open_conversation">Mazungumzo ya wazi</string>
     <string name="nc_open_conversation_to_registered_users">Fungua mazungumzo kwa watumiaji waliojiandikisha</string>
     <string name="nc_open_to_guest_app_users">Pia wazi kwa watumiaji wa programu wageni</string>
     <string name="nc_owner">Mmiliki</string>
@@ -366,6 +368,7 @@
     <string name="nc_pip_microphone_mute">Weka kimya mikrofoni</string>
     <string name="nc_pip_microphone_unmute">Wezesha mikrofoni</string>
     <string name="nc_plain_old_messages">Jumbe</string>
+    <string name="nc_presentation">Wasilisho</string>
     <string name="nc_profile_personal_info_title">Taarifa binafsi</string>
     <string name="nc_promote">Pandisha cheo hadi msimamizi</string>
     <string name="nc_public_call_status">Mazungumzo ya umma</string>
@@ -384,6 +387,7 @@
     <string name="nc_rename_confirm">Badili jina</string>
     <string name="nc_reply">Jibu</string>
     <string name="nc_reply_privately">Jibu kwa faragha</string>
+    <string name="nc_retry">Jaribu tena</string>
     <string name="nc_room_retention">Chumba kimehifadhiwa kikamilifu</string>
     <string name="nc_save_message">Hifadhi</string>
     <string name="nc_save_success">Imehifadhiwa kikamilifu</string>

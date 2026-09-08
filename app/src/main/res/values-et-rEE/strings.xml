@@ -233,6 +233,7 @@
     <string name="nc_conversations_empty_details">Ütle tere oma sõpradele ja kolleegidele!</string>
     <string name="nc_copy_message">Kopeeri</string>
     <string name="nc_copy_message_link">Kopeeri sõnumi link</string>
+    <string name="nc_copy_password">Kopeeri salasõna</string>
     <string name="nc_create_new_conversation">Loo uus vestlus</string>
     <string name="nc_create_poll">Loo küsitlus</string>
     <string name="nc_custom_color">Sinu valitud värv</string>
@@ -427,6 +428,7 @@
     <string name="nc_participants">Osalejad</string>
     <string name="nc_participants_add">Lisa osalejaid</string>
     <string name="nc_password">Salasõna</string>
+    <string name="nc_password_copied">Salasõna on kopeeritud</string>
     <string name="nc_permissions_ask">Lisa õigusi</string>
     <string name="nc_permissions_denied">Mõned õigused puuduvad.</string>
     <string name="nc_permissions_rationale_dialog_title">Palun anna vajalikud õigused</string>
@@ -461,6 +463,7 @@
     <string name="nc_reply_to_thread">Vastus jutulõnga: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Muuda ajastamist koos teavitusega</string>
     <string name="nc_reschedule_message_without_notification">Muuda ajastamist ilma teavituseta</string>
+    <string name="nc_retry">Proovi uuesti</string>
     <string name="nc_room_retention">Jututoa allesjätmine õnnestus</string>
     <string name="nc_save_message">Salvesta</string>
     <string name="nc_save_success">Salvestamine õnnestus</string>

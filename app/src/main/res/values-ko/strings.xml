@@ -262,6 +262,7 @@
     <string name="nc_notify_me_never">알림 끄기</string>
     <string name="nc_offline">현재 오프라인 상태입니다. 연결 상태를 확인하십시오.</string>
     <string name="nc_ok">완료</string>
+    <string name="nc_open_conversation">대화 공개</string>
     <string name="nc_open_conversation_to_registered_users">등록된 사용자에게 대화 열기</string>
     <string name="nc_open_to_guest_app_users">손님인 앱 사용자에게도 개방</string>
     <string name="nc_owner">Owner</string>
@@ -274,6 +275,7 @@
     <string name="nc_pip_microphone_mute">음소거 마이크</string>
     <string name="nc_pip_microphone_unmute">마이크 활성화</string>
     <string name="nc_plain_old_messages">메시지</string>
+    <string name="nc_presentation">프레젠테이션</string>
     <string name="nc_profile_personal_info_title">개인 정보</string>
     <string name="nc_promote">중재자 권한 부여</string>
     <string name="nc_push_disabled">푸시 알림이 비활성화됨</string>
@@ -286,6 +288,7 @@
     <string name="nc_rename_confirm">이름 바꾸기</string>
     <string name="nc_reply">답장</string>
     <string name="nc_reply_privately">비공개로 답장</string>
+    <string name="nc_retry">다시 시도</string>
     <string name="nc_save_message">저장</string>
     <string name="nc_screen_lock_timeout_30">30 초</string>
     <string name="nc_screen_lock_timeout_300">5분</string>

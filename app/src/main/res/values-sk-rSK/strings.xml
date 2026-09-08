@@ -234,6 +234,7 @@
     <string name="nc_conversations_empty_details">Pozdravte svojich priateľov a kolegov!</string>
     <string name="nc_copy_message">Kopírovať</string>
     <string name="nc_copy_message_link">Kopírovať odkaz správy</string>
+    <string name="nc_copy_password">Kopírovať heslo</string>
     <string name="nc_create_new_conversation">Vytvoriť novú konverzáciu</string>
     <string name="nc_create_poll">Vytvoriť anketu</string>
     <string name="nc_custom_color">Vlastná farba</string>
@@ -421,6 +422,7 @@
     <string name="nc_offline">Práve ste odpojený. Prosím, skontrolujte vaše pripojenie.</string>
     <string name="nc_ok">OK</string>
     <string name="nc_ongoing_meeting">Prebiehajúce stretnutie</string>
+    <string name="nc_open_conversation">Otvoriť konverzáciu</string>
     <string name="nc_open_conversation_to_registered_users">Otvoriť konverzáciu pre registrovaných používateľov</string>
     <string name="nc_open_to_guest_app_users">Povoliť i pre používateľov aplikácií pre hostí</string>
     <string name="nc_owner">Vlastník</string>
@@ -428,6 +430,7 @@
     <string name="nc_participants">Účastníci</string>
     <string name="nc_participants_add">Pridať účastníkov</string>
     <string name="nc_password">Heslo</string>
+    <string name="nc_password_copied">Heslo bolo skopírované</string>
     <string name="nc_permissions_ask">Nastaviť oprávnenia</string>
     <string name="nc_permissions_denied">Niektoré oprávnenia neboli udelené.</string>
     <string name="nc_permissions_rationale_dialog_title">Prosím, udeľte oprávnenia</string>
@@ -438,6 +441,7 @@
     <string name="nc_pip_microphone_mute">Stíšiť mikrofón</string>
     <string name="nc_pip_microphone_unmute">Povoliť mikrofón</string>
     <string name="nc_plain_old_messages">Správy</string>
+    <string name="nc_presentation">Prezentácia</string>
     <string name="nc_profile_personal_info_title">Osobné informácie</string>
     <string name="nc_promote">Povýšiť na moderátora</string>
     <string name="nc_promote_to_owner">Povýšiť na vlastníka</string>
@@ -462,6 +466,7 @@
     <string name="nc_reply_to_thread">Odpovedať vo vlákne: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Zmeniť plánovanie s upozornením</string>
     <string name="nc_reschedule_message_without_notification">Zmeniť plánovanie bez upozornenia</string>
+    <string name="nc_retry">Zopakovať</string>
     <string name="nc_room_retention">Miestnosť bola úspešne uchovaná</string>
     <string name="nc_save_message">Uložiť</string>
     <string name="nc_save_success">Úspešne uložené</string>

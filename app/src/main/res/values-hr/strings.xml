@@ -143,6 +143,7 @@
     <string name="nc_conversations_empty_details">Pozdravi svoje prijatelje i kolege!</string>
     <string name="nc_copy_message">Kopiraj</string>
     <string name="nc_copy_message_link">Kopiraj poveznicu poruke</string>
+    <string name="nc_copy_password">Kopiraj lozinku</string>
     <string name="nc_create_new_conversation">Stvori novi razgovor</string>
     <string name="nc_create_poll">Stvori anketu</string>
     <string name="nc_custom_color">Prilagođena boja</string>
@@ -257,6 +258,7 @@
     <string name="nc_phone_book_integration_chat_via">Razmjenjujte poruke putem %s</string>
     <string name="nc_pip_microphone_unmute">Omogućite mikrofon</string>
     <string name="nc_plain_old_messages">Poruke</string>
+    <string name="nc_presentation">Prezentacija</string>
     <string name="nc_profile_personal_info_title">Osobne informacije</string>
     <string name="nc_promote">Unaprijedi u moderatora</string>
     <string name="nc_public_call_status">Javni razgovor</string>
@@ -271,6 +273,7 @@
     <string name="nc_rename_confirm">Preimenuj</string>
     <string name="nc_reply">Odgovori</string>
     <string name="nc_reply_privately">Odgovori privatno</string>
+    <string name="nc_retry">Pokušaj ponovno</string>
     <string name="nc_save_message">Spremi</string>
     <string name="nc_save_success">Uspješno spremljeno</string>
     <string name="nc_schedule_message">Zakaži poruku</string>

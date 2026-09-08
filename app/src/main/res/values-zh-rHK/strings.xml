@@ -233,6 +233,7 @@
     <string name="nc_conversations_empty_details">跟大家打招呼</string>
     <string name="nc_copy_message">複製</string>
     <string name="nc_copy_message_link">複製訊息連結</string>
+    <string name="nc_copy_password">複製密碼</string>
     <string name="nc_create_new_conversation">創建新對話</string>
     <string name="nc_create_poll">創建民意調查</string>
     <string name="nc_custom_color">自訂顏色</string>
@@ -420,6 +421,7 @@
     <string name="nc_offline">目前離線，請檢查您的連接</string>
     <string name="nc_ok">確定</string>
     <string name="nc_ongoing_meeting">正在進行的會議</string>
+    <string name="nc_open_conversation">開放對話</string>
     <string name="nc_open_conversation_to_registered_users">開放對話與註冊用戶</string>
     <string name="nc_open_to_guest_app_users">也向使用應用程式的來賓用戶開放</string>
     <string name="nc_owner">擁有者</string>
@@ -427,6 +429,7 @@
     <string name="nc_participants">參與者</string>
     <string name="nc_participants_add">添加參與者</string>
     <string name="nc_password">密碼</string>
+    <string name="nc_password_copied">密碼已複製</string>
     <string name="nc_permissions_ask">設置權限</string>
     <string name="nc_permissions_denied">部份權限被拒絕。</string>
     <string name="nc_permissions_rationale_dialog_title">請允許權限</string>
@@ -437,6 +440,7 @@
     <string name="nc_pip_microphone_mute">靜音米高風</string>
     <string name="nc_pip_microphone_unmute">啟用米高風</string>
     <string name="nc_plain_old_messages">訊息</string>
+    <string name="nc_presentation">簡報</string>
     <string name="nc_profile_personal_info_title">個人資訊</string>
     <string name="nc_promote">晉升為主持人</string>
     <string name="nc_promote_to_owner">提升為擁有者</string>
@@ -461,6 +465,7 @@
     <string name="nc_reply_to_thread">回覆至討論串：%1$s</string>
     <string name="nc_reschedule_message_with_notification">重新安排時間並通知</string>
     <string name="nc_reschedule_message_without_notification">重新安排並不發送通知</string>
+    <string name="nc_retry">重試</string>
     <string name="nc_room_retention">聊天室已成功保留</string>
     <string name="nc_save_message">保存</string>
     <string name="nc_save_success">保存成功</string>

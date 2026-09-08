@@ -237,11 +237,13 @@
     <string name="nc_participants">Osallistujat</string>
     <string name="nc_participants_add">Lisää osallistujat</string>
     <string name="nc_password">Salasana</string>
+    <string name="nc_password_copied">Salasana kopioitu</string>
     <string name="nc_permissions_settings">Avaa asetukset</string>
     <string name="nc_phone_book_integration_account_not_found">Tiliä ei löydy</string>
     <string name="nc_pip_microphone_mute">Mykistä mikrofoni</string>
     <string name="nc_pip_microphone_unmute">Käytä mikrofonia</string>
     <string name="nc_plain_old_messages">Viestit</string>
+    <string name="nc_presentation">Esitys</string>
     <string name="nc_profile_personal_info_title">Henkilökohtaiset tiedot</string>
     <string name="nc_promote">Ylennä moderaattoriksi</string>
     <string name="nc_public_call_status">Julkinen keskustelu</string>
@@ -257,6 +259,7 @@
     <string name="nc_rename_confirm">Nimeä uudelleen</string>
     <string name="nc_reply">Vastaa</string>
     <string name="nc_reply_privately">Vastaa yksityisesti</string>
+    <string name="nc_retry">Yritä uudelleen</string>
     <string name="nc_save_message">Tallenna</string>
     <string name="nc_save_success">Tallennettu onnistuneesti</string>
     <string name="nc_screen_lock_timeout_30">30 sekuntia</string>

@@ -216,6 +216,7 @@
     <string name="nc_conversations_empty_details">Üdvözölje a barátait és munkatársait!</string>
     <string name="nc_copy_message">Másolás</string>
     <string name="nc_copy_message_link">Üzenethivatkozás másolása</string>
+    <string name="nc_copy_password">Jelszó másolása</string>
     <string name="nc_create_new_conversation">Új beszélgetés létrehozása</string>
     <string name="nc_create_poll">Szavazás létrehozása</string>
     <string name="nc_custom_color">Egyéni szín</string>
@@ -378,6 +379,7 @@
     <string name="nc_offline">Jelenleg offline, ellenőrizze a kapcsolatát</string>
     <string name="nc_ok">OK</string>
     <string name="nc_ongoing_meeting">Jelenleg tartó találkozó</string>
+    <string name="nc_open_conversation">Beszélgetés megnyitása</string>
     <string name="nc_open_conversation_to_registered_users">Beszélgetés megnyitása a regisztrált felhasználók számára</string>
     <string name="nc_open_to_guest_app_users">Megnyitás a vendégfelhasználók számára is</string>
     <string name="nc_owner">Tulajdonos</string>
@@ -395,6 +397,7 @@
     <string name="nc_pip_microphone_mute">Mikrofon némítása</string>
     <string name="nc_pip_microphone_unmute">Mikrofon engedélyezése</string>
     <string name="nc_plain_old_messages">Üzenetek</string>
+    <string name="nc_presentation">Bemutató</string>
     <string name="nc_profile_personal_info_title">Személyes információk</string>
     <string name="nc_promote">Kinevezés moderátorrá</string>
     <string name="nc_promote_to_owner">Kinevezés tulajdonossá</string>
@@ -418,6 +421,7 @@
     <string name="nc_reply_to_thread">Válasz a szálra: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Újraütemezés értesítéssel</string>
     <string name="nc_reschedule_message_without_notification">Újraütemezés értesítés nélkül</string>
+    <string name="nc_retry">Újra</string>
     <string name="nc_room_retention">A szoba sikeresen megtartva</string>
     <string name="nc_save_message">Mentés</string>
     <string name="nc_save_success">Sikeres mentés</string>

@@ -525,6 +525,7 @@
     <string name="nc_test_results">Вынікі тэста</string>
     <string name="nc_today_meeting">Сёння ў %1$s</string>
     <string name="nc_tomorrow_meeting">Заўтра ў %1$s</string>
+    <string name="nc_undo">Адрабіць</string>
     <string name="nc_upload_choose_local_files">Выберыце файлы</string>
     <string name="nc_upload_confirm_send_multiple">Адправіць гэтыя файлы карыстальніку %1$s?</string>
     <string name="nc_upload_confirm_send_single">Адправіць гэты файл карыстальніку %1$s?</string>

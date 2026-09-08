@@ -158,6 +158,7 @@
     <string name="nc_conversations_empty_details">Pozdravite prijatelje in znance.</string>
     <string name="nc_copy_message">Kopiraj</string>
     <string name="nc_copy_message_link">Kopiraj povezavo sporočila</string>
+    <string name="nc_copy_password">Kopiraj geslo</string>
     <string name="nc_create_new_conversation">Ustvari nov pogovor</string>
     <string name="nc_create_poll">Ustvari vprašalnik</string>
     <string name="nc_custom_color">Barva po meri</string>
@@ -277,6 +278,7 @@
     <string name="nc_notify_me_never">Nikoli ne obvesti</string>
     <string name="nc_offline">Ni omrežne povezave; preverite povezave!</string>
     <string name="nc_ok">V redu</string>
+    <string name="nc_open_conversation">Odpri pogovor</string>
     <string name="nc_open_conversation_to_registered_users">Odpri pogovor vpisanim uporabnikom</string>
     <string name="nc_open_to_guest_app_users">Odpri tudi za gostujoče uporabnike</string>
     <string name="nc_owner">Lastnik</string>
@@ -289,6 +291,7 @@
     <string name="nc_pip_microphone_mute">Utišaj mikrofon</string>
     <string name="nc_pip_microphone_unmute">Omogoči mikrofon</string>
     <string name="nc_plain_old_messages">Sporočila</string>
+    <string name="nc_presentation">Predstavitev</string>
     <string name="nc_profile_personal_info_title">Osebni podatki</string>
     <string name="nc_promote">Povišaj v vlogo moderatorja</string>
     <string name="nc_public_call_status">Javni pogovor</string>
@@ -304,6 +307,7 @@
     <string name="nc_rename_confirm">Preimenuj</string>
     <string name="nc_reply">Odgovori</string>
     <string name="nc_reply_privately">Odgovori zasebno</string>
+    <string name="nc_retry">Poskusi znova     </string>
     <string name="nc_save_message">Shrani</string>
     <string name="nc_save_success">Uspešno shranjeno</string>
     <string name="nc_scheduled_time">Načrtovan time</string>

@@ -198,6 +198,7 @@
     <string name="nc_conversations_empty_details">دوستلىرىڭىز ۋە خىزمەتداشلىرىڭىزغا سالام!</string>
     <string name="nc_copy_message">كۆچۈرۈڭ</string>
     <string name="nc_copy_message_link">ئۇچۇر ئۇلانمىسىنى كۆچۈرۈڭ</string>
+    <string name="nc_copy_password">پارول كۆچۈر</string>
     <string name="nc_create_new_conversation">يېڭى سۆھبەت قۇر</string>
     <string name="nc_create_poll">راي سىناش</string>
     <string name="nc_custom_color">ئىختىيارى رەڭ</string>
@@ -348,6 +349,7 @@
     <string name="nc_offline">ھازىر تورسىز ، ئۇلىنىشىڭىزنى تەكشۈرۈپ بېقىڭ</string>
     <string name="nc_ok">ماقۇل</string>
     <string name="nc_ongoing_meeting">نۆۋەتتىكى يىغىن</string>
+    <string name="nc_open_conversation">ئوچۇق سۆھبەت</string>
     <string name="nc_open_conversation_to_registered_users">تىزىملاتقان ئابونتلارغا ئوچۇق سۆھبەت</string>
     <string name="nc_open_to_guest_app_users">مېھمان ئەپ ئىشلەتكۈچىلەرگىمۇ ئېچىڭ</string>
     <string name="nc_owner">ئىگىسى</string>
@@ -364,6 +366,7 @@
     <string name="nc_pip_microphone_mute">ئۈنسىز مىكروفون</string>
     <string name="nc_pip_microphone_unmute">مىكروفوننى قوزغىتىڭ</string>
     <string name="nc_plain_old_messages">ئۇچۇرلار</string>
+    <string name="nc_presentation">لېكسىيە</string>
     <string name="nc_profile_personal_info_title">شەخسىي ئۇچۇر</string>
     <string name="nc_promote">رىياسەتچىگە تەشۋىق قىلىڭ</string>
     <string name="nc_public_call_status">ئاممىۋى سۆھبەت</string>
@@ -382,6 +385,7 @@
     <string name="nc_rename_confirm">ئىسىم ئۆزگەرتىش</string>
     <string name="nc_reply">جاۋاب</string>
     <string name="nc_reply_privately">شەخسىي جاۋاب قايتۇرۇڭ</string>
+    <string name="nc_retry">قايتا سىناڭ</string>
     <string name="nc_room_retention">ئۆيگە قايتا ئېرىشىلدى</string>
     <string name="nc_save_message">ساقلاش</string>
     <string name="nc_save_success">مۇۋەپپەقىيەتلىك ساقلاندى</string>

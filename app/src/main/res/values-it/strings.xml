@@ -200,6 +200,7 @@
     <string name="nc_conversations_empty_details">Saluta i tuoi amici e i tuoi colleghi!</string>
     <string name="nc_copy_message">Copia</string>
     <string name="nc_copy_message_link">Copia collegamento del messaggio</string>
+    <string name="nc_copy_password">Copia password</string>
     <string name="nc_create_new_conversation">Crea una nuova conversazione</string>
     <string name="nc_create_poll">Crea sondaggio</string>
     <string name="nc_custom_color">Colore personalizzato</string>
@@ -353,12 +354,14 @@
     <string name="nc_offline">Attualmente non in linea, controlla la tua connettività</string>
     <string name="nc_ok">OK</string>
     <string name="nc_ongoing_meeting">Meeting in corso</string>
+    <string name="nc_open_conversation">Apri conversazione</string>
     <string name="nc_open_conversation_to_registered_users">Apri la conversazione agli utenti registrati</string>
     <string name="nc_open_to_guest_app_users">Apri anche agli utenti dell\'applicazione ospite</string>
     <string name="nc_owner">Proprietario</string>
     <string name="nc_participants">Partecipanti</string>
     <string name="nc_participants_add">Aggiungi partecipanti</string>
     <string name="nc_password">Password</string>
+    <string name="nc_password_copied">Password copiata</string>
     <string name="nc_permissions_ask">Imposta permessi</string>
     <string name="nc_permissions_denied">Alcuni permessi sono stati negati.</string>
     <string name="nc_permissions_rationale_dialog_title">Per favore, concedi i permessi</string>
@@ -369,6 +372,7 @@
     <string name="nc_pip_microphone_mute">Spegni microfono</string>
     <string name="nc_pip_microphone_unmute">Accendi microfono</string>
     <string name="nc_plain_old_messages">Messaggi</string>
+    <string name="nc_presentation">Presentazione</string>
     <string name="nc_profile_personal_info_title">Informazioni personali</string>
     <string name="nc_promote">Promuovi a moderatore</string>
     <string name="nc_public_call_status">Conversazione pubblica</string>
@@ -388,6 +392,7 @@
     <string name="nc_reply_privately">Rispondi in privato</string>
     <string name="nc_reschedule_message_with_notification">Riprogrammare con notifica</string>
     <string name="nc_reschedule_message_without_notification">Riprogrammare senza notifica</string>
+    <string name="nc_retry">Riprova</string>
     <string name="nc_room_retention">La camera è stata prenotata con successo.</string>
     <string name="nc_save_message">Salva</string>
     <string name="nc_save_success">Salvato correttamente</string>

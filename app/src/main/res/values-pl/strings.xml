@@ -214,6 +214,7 @@
     <string name="nc_conversations_empty_details">Przywitaj się z przyjaciółmi i współpracownikami!</string>
     <string name="nc_copy_message">Kopiuj</string>
     <string name="nc_copy_message_link">Kopiuj link wiadomości</string>
+    <string name="nc_copy_password">Kopiuj hasło</string>
     <string name="nc_create_new_conversation">Utwórz nową rozmowę</string>
     <string name="nc_create_poll">Utwórz sondę</string>
     <string name="nc_custom_color">Kolor niestandardowy</string>
@@ -374,6 +375,7 @@
     <string name="nc_offline">Obecnie jesteś w offline, sprawdź swoją łączność</string>
     <string name="nc_ok">OK</string>
     <string name="nc_ongoing_meeting">Trwające spotkanie</string>
+    <string name="nc_open_conversation">Otwarta rozmowa</string>
     <string name="nc_open_conversation_to_registered_users">Otwórz rozmowę dla zarejestrowanych użytkowników</string>
     <string name="nc_open_to_guest_app_users">Otwarte również dla gości aplikacji</string>
     <string name="nc_owner">Właściciel</string>
@@ -390,6 +392,7 @@
     <string name="nc_pip_microphone_mute">Wycisz mikrofon</string>
     <string name="nc_pip_microphone_unmute">Włącz mikrofon</string>
     <string name="nc_plain_old_messages">Wiadomości</string>
+    <string name="nc_presentation">Prezentacja</string>
     <string name="nc_profile_personal_info_title">Informacje osobiste</string>
     <string name="nc_promote">Promuj na moderatora</string>
     <string name="nc_public_call_status">Rozmowa publiczna</string>
@@ -411,6 +414,7 @@
     <string name="nc_reply_to_thread">Odpowiedz w wątku: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Zmień harmonogram z powiadomieniem</string>
     <string name="nc_reschedule_message_without_notification">Zmień harmonogram bez powiadomienia</string>
+    <string name="nc_retry">Powtórz</string>
     <string name="nc_room_retention">Pokój został pomyślnie zachowany</string>
     <string name="nc_save_message">Zapisz</string>
     <string name="nc_save_success">Zapisano pomyślnie</string>
