@@ -9,17 +9,20 @@ package com.nextcloud.talk.conversationcreation
 
 import android.net.Uri
 import android.util.Log
+import org.json.JSONObject
 import androidx.core.net.toFile
 import com.nextcloud.talk.conversationcreation.data.ConversationCreationRepository
 import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.conversationinfo.Participants
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.SpreedFeatures
 import kotlinx.coroutines.CancellationException
+import retrofit2.HttpException
 import javax.inject.Inject
 
 /**
@@ -41,6 +44,11 @@ data class NewConversation(
 }
 
 /**
+ * What the server answered when it refused to create a conversation.
+ */
+class ConversationRefusedException(override val message: String, cause: Throwable) : Exception(message, cause)
+
+/**
  * Creates conversations on the server, in a single request where the server supports all creation
  * parameters and with follow up requests otherwise.
  */
@@ -53,20 +61,7 @@ class ConversationCreator @Inject constructor(private val repository: Conversati
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
         val context = RequestContext(user, credentials, apiVersion)
 
-        val conversation = if (
-            CapabilitiesUtil.hasSpreedFeatureCapability(capabilities, SpreedFeatures.CONVERSATION_CREATION_ALL)
-        ) {
-            createWithAllParameters(
-                context,
-                newConversation,
-                CapabilitiesUtil.hasSpreedFeatureCapability(
-                    capabilities,
-                    SpreedFeatures.CONVERSATION_CREATION_PASSWORD
-                )
-            )
-        } else {
-            createWithFollowUpRequests(context, newConversation)
-        }
+        val conversation = createConversation(context, newConversation, capabilities)
 
         conversation?.token?.let { token ->
             try {
@@ -79,6 +74,47 @@ class ConversationCreator @Inject constructor(private val repository: Conversati
         }
         return conversation
     }
+
+    private suspend fun createConversation(
+        context: RequestContext,
+        newConversation: NewConversation,
+        capabilities: SpreedCapability?
+    ): Conversation? =
+        try {
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(capabilities, SpreedFeatures.CONVERSATION_CREATION_ALL)) {
+                createWithAllParameters(
+                    context,
+                    newConversation,
+                    CapabilitiesUtil.hasSpreedFeatureCapability(
+                        capabilities,
+                        SpreedFeatures.CONVERSATION_CREATION_PASSWORD
+                    )
+                )
+            } else {
+                createWithFollowUpRequests(context, newConversation)
+            }
+        } catch (e: HttpException) {
+            refusalMessage(e)?.let { throw ConversationRefusedException(it, e) }
+            throw e
+        }
+
+    /**
+     * The room endpoint reports why it refused in the OCS data as
+     * `{"ocs":{"data":{"error":"<reason>","message":"<hint>"}}}`.
+     */
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private fun refusalMessage(e: HttpException): String? =
+        try {
+            e.response()?.errorBody()?.string()
+                ?.let { JSONObject(it) }
+                ?.optJSONObject("ocs")
+                ?.optJSONObject("data")
+                ?.optString("message")
+                ?.takeIf { it.isNotEmpty() }
+        } catch (exception: Exception) {
+            Log.w(TAG, "Could not read why the server refused to create the conversation", exception)
+            null
+        }
 
     private suspend fun createWithAllParameters(
         context: RequestContext,
