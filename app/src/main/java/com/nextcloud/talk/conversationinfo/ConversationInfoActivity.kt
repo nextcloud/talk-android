@@ -132,10 +132,6 @@ class ConversationInfoActivity : BaseActivity() {
 
     private var startGroupChat: Boolean = false
 
-    private var passwordValidationState: PasswordValidationState
-        by mutableStateOf(PasswordValidationState.None)
-    private var showPasswordDialog by mutableStateOf(false)
-
     private val workerData: Data?
         get() {
             val user = conversationUser ?: return null
@@ -212,10 +208,6 @@ class ConversationInfoActivity : BaseActivity() {
                 }
         }
 
-        lifecycleScope.launch {
-            viewModel.passwordValidation.state.collect { passwordValidationState = it }
-        }
-
         setupCompose()
     }
 
@@ -261,30 +253,32 @@ class ConversationInfoActivity : BaseActivity() {
                 }
             }
 
+            var showPasswordDialog by remember { mutableStateOf(false) }
+
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
                 ConversationInfoScreen(
                     state = uiState,
                     callbacks = buildCallbacks(onShowPasswordDialog = { showPasswordDialog = true })
                 )
-                GuestAccessPasswordDialogHost()
+                if (showPasswordDialog) {
+                    val validationState by viewModel.passwordValidation.state.collectAsStateWithLifecycle()
+                    GuestAccessPasswordDialog(
+                        validationState = validationState,
+                        onPasswordChanged = viewModel.passwordValidation::validate,
+                        onDismiss = {
+                            showPasswordDialog = false
+                            viewModel.passwordValidation.reset()
+                        },
+                        onSave = { password, copyAfterSave ->
+                            onGuestPasswordSave(password, copyAfterSave)
+                            showPasswordDialog = false
+                            viewModel.passwordValidation.reset()
+                        }
+                    )
+                }
             }
         }
-    }
-
-    @Composable
-    private fun GuestAccessPasswordDialogHost() {
-        if (!showPasswordDialog) return
-        GuestAccessPasswordDialog(
-            validationState = passwordValidationState,
-            onPasswordChanged = ::onGuestPasswordChanged,
-            onDismiss = ::dismissGuestPasswordDialog,
-            onSave = ::onGuestPasswordSave
-        )
-    }
-
-    private fun onGuestPasswordChanged(password: String) {
-        viewModel.passwordValidation.validate(password)
     }
 
     private fun onGuestPasswordSave(password: String, copyAfterSave: Boolean) {
@@ -298,12 +292,6 @@ class ConversationInfoActivity : BaseActivity() {
             url = ApiUtils.getUrlForRoomPassword(apiVersion, user.baseUrl!!, conversationToken),
             password = password
         )
-        dismissGuestPasswordDialog()
-    }
-
-    private fun dismissGuestPasswordDialog() {
-        showPasswordDialog = false
-        viewModel.passwordValidation.reset()
     }
 
     private fun copyPassword(password: String) {
