@@ -285,7 +285,7 @@ class ConversationInfoActivity : BaseActivity() {
 
     private fun onGuestPasswordChanged(password: String) {
         val user = conversationUser ?: return
-        val validatePasswordUrl = user.capabilities?.passwordCapability?.api?.validatePasswordApi ?: ""
+        val validatePasswordUrl = user.capabilities?.passwordPolicy?.api?.validatePasswordApi ?: ""
         viewModel.securePassword(credentials, validatePasswordUrl, password)
     }
 

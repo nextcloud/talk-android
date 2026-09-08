@@ -644,7 +644,7 @@ fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: Con
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 val validatePasswordUrl = conversationCreationViewModel
-                    .currentUser.capabilities?.passwordCapability?.api?.validatePasswordApi
+                    .currentUser.capabilities?.passwordPolicy?.api?.validatePasswordApi
                 Text(text = stringResource(id = R.string.nc_set_new_password), fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
@@ -719,7 +719,7 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
     var password by rememberSaveable { mutableStateOf("") }
     val passwordValidationState by conversationCreationViewModel.validPasswordViewState.collectAsStateWithLifecycle()
     val validatePasswordUrl = conversationCreationViewModel
-        .currentUser.capabilities?.passwordCapability?.api?.validatePasswordApi
+        .currentUser.capabilities?.passwordPolicy?.api?.validatePasswordApi
     AlertDialog(
         containerColor = colorResource(id = R.color.dialog_background),
         onDismissRequest = onDismiss,

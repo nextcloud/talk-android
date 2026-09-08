@@ -31,7 +31,7 @@ data class Capabilities(
     @JsonField(name = ["user_status"])
     var userStatusCapability: UserStatusCapability?,
     @JsonField(name = ["password_policy"])
-    var passwordCapability: PasswordPolicy?
+    var passwordPolicy: PasswordPolicy?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null, null, null, null, null, null, null)
