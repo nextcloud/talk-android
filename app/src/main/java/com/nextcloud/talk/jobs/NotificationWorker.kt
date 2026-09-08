@@ -729,6 +729,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         ) {
             notificationBuilder.setOnlyAlertOnce(false)
             val senderAvatar = loadSenderAvatar(pushMessage.notificationUser)
+            val conversationAvatar = if ("one2one" == conversationType) {
+                senderAvatar
+            } else {
+                pushMessage.id?.let { loadConversationAvatar(it) } ?: senderAvatar
+            }
             val imageUri = imagePreviewUrl?.let { loadImageBitmapSync(it) }?.let {
                 NotificationUtils.saveBitmapToCache(
                     context!!,
@@ -741,11 +746,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 notificationBuilder,
                 activeStatusBarNotification,
                 senderAvatar,
+                conversationAvatar,
                 imageUri
             )
             addReplyAction(notificationBuilder, systemNotificationId)
             addMarkAsReadAction(notificationBuilder, systemNotificationId)
-            pushConversationShortcut(notificationBuilder, senderAvatar)
+            pushConversationShortcut(notificationBuilder, conversationAvatar)
         }
 
         if (TYPE_RECORDING == pushMessage.type && ncNotification != null) {
@@ -850,6 +856,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         notificationBuilder: NotificationCompat.Builder,
         activeStatusBarNotification: StatusBarNotification?,
         senderAvatar: Bitmap?,
+        conversationAvatar: Bitmap?,
         imageUri: Uri?
     ) {
         val notificationUser = pushMessage.notificationUser ?: return
@@ -868,7 +875,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         if (senderAvatar != null) {
             personBuilder.setIcon(IconCompat.createWithBitmap(senderAvatar))
-            notificationBuilder.setLargeIcon(senderAvatar)
+        }
+        if (conversationAvatar != null) {
+            notificationBuilder.setLargeIcon(conversationAvatar)
         }
 
         val deviceUser = Person.Builder()
@@ -890,14 +899,21 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             )
         }
 
+        if (imageUri != null) {
+            val imageMessage = NotificationCompat.MessagingStyle.Message(
+                "",
+                pushMessage.timestamp,
+                sender
+            )
+            imageMessage.setData(imageMimeType ?: "image/*", imageUri)
+            newStyle.addMessage(imageMessage)
+        }
+
         val message = NotificationCompat.MessagingStyle.Message(
             pushMessage.text,
             pushMessage.timestamp,
             sender
         )
-        if (imageUri != null) {
-            message.setData(imageMimeType ?: "image/*", imageUri)
-        }
         newStyle.addMessage(message)
         notificationBuilder.setStyle(newStyle)
     }
@@ -924,6 +940,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             (avatar as? ActorAvatar.Character)?.let { NotificationUtils.characterAvatarBitmap(context!!, it) }
         }
     }
+
+    private fun loadConversationAvatar(roomToken: String): Bitmap? =
+        NotificationUtils.loadConversationAvatarBitmapSync(user.baseUrl, roomToken, credentials, context!!)
 
     private fun loadImageBitmapSync(imageUrl: String): Bitmap? {
         var bitmap: Bitmap? = null

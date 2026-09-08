@@ -323,15 +323,15 @@ object NotificationUtils {
             NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
         )
 
-    fun loadAvatarSync(avatarUrl: String, context: Context): IconCompat? {
-        val bitmap = loadAvatarBitmapSync(avatarUrl, context)
+    fun loadAvatarSync(avatarUrl: String, context: Context, credentials: String? = null): IconCompat? {
+        val bitmap = loadAvatarBitmapSync(avatarUrl, context, credentials)
         return bitmap?.let { IconCompat.createWithBitmap(it) }
     }
 
-    fun loadAvatarBitmapSync(avatarUrl: String, context: Context): Bitmap? {
+    fun loadAvatarBitmapSync(avatarUrl: String, context: Context, credentials: String? = null): Bitmap? {
         var avatarBitmap: Bitmap? = null
 
-        val request = ImageRequest.Builder(context)
+        val requestBuilder = ImageRequest.Builder(context)
             .data(avatarUrl)
             .transformations(CircleCropTransformation())
             .placeholder(R.drawable.account_circle_96dp)
@@ -346,11 +346,24 @@ object NotificationUtils {
                     Log.w(TAG, "Can't load avatar for URL: $avatarUrl")
                 }
             )
-            .build()
 
-        context.imageLoader.executeBlocking(request)
+        if (credentials != null) {
+            requestBuilder.addHeader("Authorization", credentials)
+        }
+
+        context.imageLoader.executeBlocking(requestBuilder.build())
 
         return avatarBitmap
+    }
+
+    fun loadConversationAvatarBitmapSync(
+        baseUrl: String?,
+        roomToken: String,
+        credentials: String?,
+        context: Context
+    ): Bitmap? {
+        val avatarUrl = ApiUtils.getUrlForConversationAvatar(ApiUtils.API_V1, baseUrl, roomToken)
+        return loadAvatarBitmapSync(avatarUrl, context, credentials)
     }
 
     fun saveBitmapToCache(context: Context, bitmap: Bitmap, fileName: String): Uri? {
