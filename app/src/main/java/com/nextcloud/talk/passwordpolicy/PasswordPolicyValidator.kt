@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.passwordpolicy
 
+import android.util.Log
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
 import com.nextcloud.talk.utils.ApiUtils
@@ -58,11 +59,12 @@ class PasswordPolicyValidator(
             delay(DEBOUNCE_MILLIS)
             try {
                 _state.value = PasswordValidationState.Success(
-                    repository.validatePassword(credentials, url, password).ocs?.data!!
+                    repository.validatePassword(credentials, url, password)
                 )
             } catch (e: CancellationException) {
                 throw e
             } catch (exception: Exception) {
+                Log.e(TAG, "Failed to validate the password against the server policy", exception)
                 _state.value = PasswordValidationState.Error(exception.message ?: "")
             }
         }
@@ -74,6 +76,7 @@ class PasswordPolicyValidator(
     }
 
     companion object {
+        private val TAG = PasswordPolicyValidator::class.java.simpleName
         private const val DEBOUNCE_MILLIS = 500L
     }
 }
