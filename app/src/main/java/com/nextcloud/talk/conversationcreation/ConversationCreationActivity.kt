@@ -643,17 +643,13 @@ fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: Con
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val validatePasswordUrl = conversationCreationViewModel
-                    .currentUser.capabilities?.passwordPolicy?.api?.validatePasswordApi
                 Text(text = stringResource(id = R.string.nc_set_new_password), fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
                     value = changedPassword,
                     onValueChange = {
                         changedPassword = it
-                        if (validatePasswordUrl != null) {
-                            conversationCreationViewModel.validatePassword(validatePasswordUrl, it)
-                        }
+                        conversationCreationViewModel.validatePassword(it)
                     },
                     label = { Text(text = stringResource(id = R.string.nc_password)) },
                     singleLine = true
@@ -717,8 +713,6 @@ fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: Con
 fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: ConversationCreationViewModel) {
     var password by rememberSaveable { mutableStateOf("") }
     val passwordValidationState by conversationCreationViewModel.validPasswordViewState.collectAsStateWithLifecycle()
-    val validatePasswordUrl = conversationCreationViewModel
-        .currentUser.capabilities?.passwordPolicy?.api?.validatePasswordApi
     AlertDialog(
         containerColor = colorResource(id = R.color.dialog_background),
         onDismissRequest = onDismiss,
@@ -729,9 +723,7 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
                     value = password,
                     onValueChange = {
                         password = it
-                        if (validatePasswordUrl != null) {
-                            conversationCreationViewModel.validatePassword(validatePasswordUrl, it)
-                        }
+                        conversationCreationViewModel.validatePassword(it)
                     },
                     label = { Text(text = stringResource(id = R.string.nc_guest_access_password_dialog_hint)) }
                 )
