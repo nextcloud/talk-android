@@ -43,7 +43,12 @@ fun CreationResultEffect(
     LaunchedEffect(creationState) {
         when (val state = creationState) {
             is RoomUIState.Error -> {
-                Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                val reason = state.serverMessage?.takeIf { it.isNotBlank() }
+                if (reason == null) {
+                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(context, reason, Toast.LENGTH_LONG).show()
+                }
                 onHandled()
             }
 

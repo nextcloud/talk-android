@@ -16,6 +16,7 @@ import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.conversationcreation.ConversationCreator
 import com.nextcloud.talk.conversationcreation.ConversationParameter
 import com.nextcloud.talk.conversationcreation.ConversationPresetId
+import com.nextcloud.talk.conversationcreation.ConversationRefusedException
 import com.nextcloud.talk.conversationcreation.ConversationPresetModel
 import com.nextcloud.talk.conversationcreation.CreateConversationParams
 import com.nextcloud.talk.conversationcreation.NewConversation
@@ -266,10 +267,14 @@ class ConversationCreationViewModel @Inject constructor(
                 if (!token.isNullOrEmpty()) {
                     roomViewState.value = RoomUIState.Success(conversation)
                 } else {
-                    roomViewState.value = RoomUIState.Error("Conversation is null")
+                    roomViewState.value = RoomUIState.Error()
+                    Log.e(TAG, "The created conversation came back without a token")
                 }
+            } catch (e: ConversationRefusedException) {
+                roomViewState.value = RoomUIState.Error(e.message)
+                Log.e(TAG, "The server refused to create the conversation", e)
             } catch (e: Exception) {
-                roomViewState.value = RoomUIState.Error(e.message ?: "Unknown error")
+                roomViewState.value = RoomUIState.Error()
                 Log.e(TAG, "Error - ${e.message}")
             } finally {
                 _isCreatingRoom.value = false
@@ -295,7 +300,7 @@ sealed interface PresetsUiState {
 sealed class RoomUIState {
     data object None : RoomUIState()
     data class Success(val conversation: Conversation?) : RoomUIState()
-    data class Error(val message: String) : RoomUIState()
+    data class Error(val serverMessage: String? = null) : RoomUIState()
 }
 
 sealed class AddParticipantsUiState {
