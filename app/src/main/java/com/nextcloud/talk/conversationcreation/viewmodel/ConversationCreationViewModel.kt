@@ -163,7 +163,7 @@ class ConversationCreationViewModel @Inject constructor(
         _validPasswordViewState.value = ValidPasswordUiState.None
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught", "LongMethod")
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun validatePassword(url: String, password: String) {
         val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token) ?: ""
         viewModelScope.launch {
@@ -181,7 +181,6 @@ class ConversationCreationViewModel @Inject constructor(
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     fun updateConversationPreset(preset: String) {
         conversationPreset.value = preset
         val loaded = (_presets.value as? PresetsUiState.Success)?.presets.orEmpty()
