@@ -37,7 +37,6 @@ import android.widget.RelativeLayout
 import android.widget.SeekBar
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.compose.material3.MaterialTheme
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
