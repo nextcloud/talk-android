@@ -520,6 +520,14 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
             text = R.string.nc_set_password,
             onClick = { showPasswordDialog = true }
         )
+        if (conversationCreationViewModel.isPasswordEnforced) {
+            Text(
+                text = stringResource(id = R.string.nc_password_required),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+            )
+        }
     }
 
     if (isGuestsAllowed && isPasswordSet) {
@@ -673,19 +681,21 @@ fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: Con
                     ) {
                         Text(text = stringResource(id = R.string.nc_change_password))
                     }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    TextButton(
-                        onClick = {
-                            conversationCreationViewModel.updatePassword("")
-                            conversationCreationViewModel.passwordValidation.reset()
-                            onDismiss()
-                        },
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.nc_remove_password),
-                            color = colorResource(id = R.color.nc_darkRed)
-                        )
+                    if (!conversationCreationViewModel.isPasswordEnforced) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        TextButton(
+                            onClick = {
+                                conversationCreationViewModel.updatePassword("")
+                                conversationCreationViewModel.passwordValidation.reset()
+                                onDismiss()
+                            },
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.nc_remove_password),
+                                color = colorResource(id = R.color.nc_darkRed)
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     TextButton(
@@ -750,8 +760,12 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
 fun CreateConversation(conversationCreationViewModel: ConversationCreationViewModel, context: Context) {
     val isCreatingRoom by conversationCreationViewModel.isCreatingRoom.collectAsState()
     val creationState by conversationCreationViewModel.creationState.collectAsState()
+    val password by conversationCreationViewModel.password.collectAsState()
     var createdPublicConversation by rememberSaveable { mutableStateOf<String?>(null) }
     var createdWithPassword by rememberSaveable { mutableStateOf(false) }
+    val isPasswordMissing = conversationCreationViewModel.isPasswordEnforced &&
+        conversationCreationViewModel.isGuestsAllowed &&
+        password.isEmpty()
 
     CreationResultEffect(
         creationState = creationState,
@@ -784,7 +798,9 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
         contentAlignment = Alignment.Center
     ) {
         Button(
-            enabled = !isCreatingRoom && !conversationCreationViewModel.isLoadingPresets,
+            enabled = !isCreatingRoom &&
+                !conversationCreationViewModel.isLoadingPresets &&
+                !isPasswordMissing,
             onClick = {
                 conversationCreationViewModel.createRoomAndAddParticipants()
             }

@@ -23,10 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Campaign
 import androidx.compose.material.icons.automirrored.outlined.Chat
-import androidx.compose.material.icons.outlined.CoPresent
-import androidx.compose.material.icons.outlined.DesktopWindows
 import androidx.compose.material.icons.outlined.Podcasts
-import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material.icons.automirrored.outlined.VolumeUp
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -42,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -125,7 +123,7 @@ private fun PresetCards(presets: List<ConversationPresetModel>, selected: String
                         content = SelectableCardContent(
                             title = label?.let { stringResource(it.title) } ?: preset.name,
                             subtitle = label?.let { stringResource(it.description) } ?: preset.description,
-                            icon = presetIcons[preset.identifier] ?: Icons.AutoMirrored.Outlined.Chat
+                            icon = presetIcon(preset.identifier)
                         ),
                         isSelected = preset.identifier == selected,
                         onClick = { onSelect(preset.identifier) },
@@ -294,12 +292,18 @@ private val presetLabels = mapOf(
     )
 )
 
+@Composable
+private fun presetIcon(identifier: String): ImageVector =
+    when (identifier) {
+        ConversationPresetId.WEBINAR -> ImageVector.vectorResource(R.drawable.tv_signin_24px)
+        ConversationPresetId.CLASSIFIED -> ImageVector.vectorResource(R.drawable.shield_lock_24px)
+        ConversationPresetId.PRESENTATION -> ImageVector.vectorResource(R.drawable.presentation_24px)
+        else -> presetIcons[identifier] ?: Icons.AutoMirrored.Outlined.Chat
+    }
+
 private val presetIcons = mapOf(
     ConversationPresetId.DEFAULT to Icons.AutoMirrored.Outlined.Chat,
     ConversationPresetId.VOICE_ROOM to Icons.AutoMirrored.Outlined.VolumeUp,
     ConversationPresetId.CHANNEL to Icons.Outlined.Podcasts,
-    ConversationPresetId.ANNOUNCEMENT to Icons.Outlined.Campaign,
-    ConversationPresetId.WEBINAR to Icons.Outlined.DesktopWindows,
-    ConversationPresetId.PRESENTATION to Icons.Outlined.CoPresent,
-    ConversationPresetId.CLASSIFIED to Icons.Outlined.Shield
+    ConversationPresetId.ANNOUNCEMENT to Icons.Outlined.Campaign
 )
