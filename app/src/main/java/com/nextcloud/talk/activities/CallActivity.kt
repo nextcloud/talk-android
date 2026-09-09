@@ -455,6 +455,10 @@ class CallActivity : CallBaseActivity() {
         processExtras(intent.extras!!)
         conversationUser = currentUserProviderOld.currentUser.blockingGet()
 
+        if (warnAndFinishIfCallEndToEndEncryptionUnsupported()) {
+            return
+        }
+
         credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
         if (TextUtils.isEmpty(baseUrl)) {
             baseUrl = conversationUser!!.baseUrl
@@ -475,6 +479,15 @@ class CallActivity : CallBaseActivity() {
         reactionAnimator = ReactionAnimator(context, binding!!.reactionAnimationWrapper, viewThemeUtils)
 
         checkInitialDevicePermissions()
+    }
+
+    private fun warnAndFinishIfCallEndToEndEncryptionUnsupported(): Boolean {
+        if (!CapabilitiesUtil.isCallEndToEndEncryptionEnabled(conversationUser?.capabilities?.spreedCapability)) {
+            return false
+        }
+        Toast.makeText(context, R.string.nc_call_e2ee_not_supported, Toast.LENGTH_LONG).show()
+        finish()
+        return true
     }
 
     private fun initCallRecordingViewModel(recordingState: Int) {

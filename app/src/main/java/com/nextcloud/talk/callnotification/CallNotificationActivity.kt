@@ -15,6 +15,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
@@ -29,6 +30,7 @@ import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.SpreedFeatures
@@ -190,6 +192,11 @@ class CallNotificationActivity : CallBaseActivity() {
     }
 
     private fun proceedToCall() {
+        if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(userBeingCalled?.capabilities?.spreedCapability)) {
+            Toast.makeText(context, R.string.nc_call_e2ee_not_supported, Toast.LENGTH_LONG).show()
+            hangup()
+            return
+        }
         val callIntent = Intent(this, CallActivity::class.java)
         intent.putExtra(KEY_ROOM_ONE_TO_ONE, isOneToOneCall)
         callIntent.putExtras(intent.extras!!)
