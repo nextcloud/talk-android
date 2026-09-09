@@ -321,6 +321,17 @@ object CapabilitiesUtil {
     fun isBanningAvailable(spreedCapabilities: SpreedCapability): Boolean =
         hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.BAN_V1)
 
+    fun isCallEndToEndEncryptionEnabled(spreedCapabilities: SpreedCapability?): Boolean {
+        if (
+            spreedCapabilities?.config?.containsKey("call") == true &&
+            spreedCapabilities.config!!["call"] != null &&
+            spreedCapabilities.config!!["call"]!!.containsKey("end-to-end-encryption")
+        ) {
+            return spreedCapabilities.config!!["call"]!!["end-to-end-encryption"].toString().toBoolean()
+        }
+        return false
+    }
+
     // endregion
 
     //region SpreedCapabilities that can't be used with federation as the settings for them are global
