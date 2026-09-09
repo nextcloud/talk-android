@@ -7,6 +7,7 @@
 package com.nextcloud.talk.jobs;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -18,9 +19,13 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
@@ -29,6 +34,13 @@ import io.reactivex.schedulers.Schedulers;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class AddParticipantsToConversationWorker extends Worker {
+    /**
+     * The ids the server refused, in the output data of both a partial success and a failure.
+     */
+    public static final String KEY_FAILED_PARTICIPANTS = "KEY_FAILED_PARTICIPANTS";
+
+    private static final String TAG = AddParticipantsToConversationWorker.class.getSimpleName();
+
     @Inject
     NcApi ncApi;
 
@@ -61,67 +73,66 @@ public class AddParticipantsToConversationWorker extends Worker {
         String conversationToken = data.getString(BundleKeys.KEY_TOKEN);
         String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());
 
-        RetrofitBucket retrofitBucket;
-        if (selectedUserIds != null) {
-            for (String userId : selectedUserIds) {
-                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(apiVersion, user.getBaseUrl(),
-                                                                             conversationToken,
-                                                                             userId);
+        List<String> failedParticipants = new ArrayList<>();
+        failedParticipants.addAll(
+            addParticipants(apiVersion, user, credentials, conversationToken, null, selectedUserIds));
+        failedParticipants.addAll(
+            addParticipants(apiVersion, user, credentials, conversationToken, "groups", selectedGroupIds));
+        failedParticipants.addAll(
+            addParticipants(apiVersion, user, credentials, conversationToken, "circles", selectedCircleIds));
+        failedParticipants.addAll(
+            addParticipants(apiVersion, user, credentials, conversationToken, "emails", selectedEmails));
 
-                ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                        .subscribeOn(Schedulers.io())
-                        .blockingSubscribe();
-            }
+        if (failedParticipants.isEmpty()) {
+            return Result.success();
         }
 
-        if (selectedGroupIds != null) {
-            for (String groupId : selectedGroupIds) {
-                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipantWithSource(
-                        apiVersion,
-                        user.getBaseUrl(),
-                        conversationToken,
-                        "groups",
-                        groupId
-                                                                                      );
+        Data output = new Data.Builder()
+            .putStringArray(KEY_FAILED_PARTICIPANTS, failedParticipants.toArray(new String[0]))
+            .build();
+        int requested = count(selectedUserIds, selectedGroupIds, selectedCircleIds, selectedEmails);
+        return failedParticipants.size() == requested ? Result.failure(output) : Result.success(output);
+    }
 
-                ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                        .subscribeOn(Schedulers.io())
-                        .blockingSubscribe();
-            }
+    /**
+     * Invites every given id, one request each, and returns those the server refused.
+     */
+    private List<String> addParticipants(int apiVersion,
+                                         User user,
+                                         String credentials,
+                                         String conversationToken,
+                                         @Nullable String source,
+                                         @Nullable String[] ids) {
+        List<String> failed = new ArrayList<>();
+        if (ids == null) {
+            return failed;
         }
 
-        if (selectedCircleIds != null) {
-            for (String circleId : selectedCircleIds) {
-                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipantWithSource(
-                        apiVersion,
-                        user.getBaseUrl(),
-                        conversationToken,
-                        "circles",
-                        circleId
-                                                                                      );
-
+        for (String id : ids) {
+            RetrofitBucket retrofitBucket = source == null
+                ? ApiUtils.getRetrofitBucketForAddParticipant(apiVersion, user.getBaseUrl(), conversationToken, id)
+                : ApiUtils.getRetrofitBucketForAddParticipantWithSource(apiVersion,
+                                                                        user.getBaseUrl(),
+                                                                        conversationToken,
+                                                                        source,
+                                                                        id);
+            try {
                 ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                        .subscribeOn(Schedulers.io())
-                        .blockingSubscribe();
+                    .subscribeOn(Schedulers.io())
+                    .blockingSubscribe();
+            } catch (RuntimeException e) {
+                Log.w(TAG, "Adding a participant of source " + (source == null ? "users" : source) + " failed", e);
+                failed.add(id);
             }
         }
+        return failed;
+    }
 
-        if (selectedEmails != null) {
-            for (String email : selectedEmails) {
-                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipantWithSource(
-                        apiVersion,
-                        user.getBaseUrl(),
-                        conversationToken,
-                        "emails",
-                        email
-                                                                                      );
-
-                ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                        .subscribeOn(Schedulers.io())
-                        .blockingSubscribe();
-            }
+    private static int count(String[]... groups) {
+        int total = 0;
+        for (String[] group : groups) {
+            total += group == null ? 0 : group.length;
         }
-
-        return Result.success();
+        return total;
     }
 }
