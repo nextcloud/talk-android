@@ -17,4 +17,12 @@ interface PasswordPolicyRepository {
      * @throws IllegalStateException if the server answers without a result
      */
     suspend fun validatePassword(credentials: String, url: String, password: String): PasswordResult
+
+    /**
+     * Asks the server for a password that satisfies the policy it advertises.
+     *
+     * @param url the generation endpoint taken from the password_policy capability
+     * @throws IllegalStateException if the server answers without a password
+     */
+    suspend fun generatePassword(credentials: String, url: String): String
 }

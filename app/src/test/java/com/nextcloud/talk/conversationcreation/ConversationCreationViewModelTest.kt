@@ -11,8 +11,9 @@ import com.nextcloud.talk.conversationcreation.viewmodel.PresetsUiState
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.passwordResult.PasswordResult
-import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
+import com.nextcloud.talk.models.json.capabilities.PasswordApi
+import com.nextcloud.talk.models.json.capabilities.PasswordPolicy
+import com.nextcloud.talk.passwordpolicy.FakePasswordPolicyRepository
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import kotlinx.coroutines.Dispatchers
@@ -46,10 +47,7 @@ class ConversationCreationViewModelTest {
             Result.failure(UnsupportedOperationException())
     }
 
-    private val passwordPolicyRepository = object : PasswordPolicyRepository {
-        override suspend fun validatePassword(credentials: String, url: String, password: String): PasswordResult =
-            PasswordResult(passed = true, reason = null)
-    }
+    private val passwordPolicyRepository = FakePasswordPolicyRepository()
 
     private fun viewModel() =
         ConversationCreationViewModel(
@@ -59,7 +57,7 @@ class ConversationCreationViewModelTest {
             userProvider
         )
 
-    private fun user(vararg spreedFeatures: SpreedFeatures) =
+    private fun user(vararg spreedFeatures: SpreedFeatures, passwordEnforced: Boolean = false) =
         User(
             username = "alice",
             token = "token",
@@ -67,7 +65,14 @@ class ConversationCreationViewModelTest {
             capabilities = Capabilities().apply {
                 spreedCapability = SpreedCapability().apply {
                     features = spreedFeatures.map { it.value }
+                    config = hashMapOf("conversations" to hashMapOf("force-passwords" to passwordEnforced))
                 }
+                passwordPolicy = PasswordPolicy(
+                    PasswordApi(
+                        validatePasswordApi = "https://cloud.example.com/validate",
+                        generatePasswordApi = "https://cloud.example.com/generate"
+                    )
+                )
             }
         )
 
@@ -112,6 +117,44 @@ class ConversationCreationViewModelTest {
             assertEquals(1, repository.presetCalls)
             assertTrue(model.presets.value is PresetsUiState.Success)
             assertFalse(model.isLoadingPresets)
+        }
+
+    @Test
+    fun `opening a conversation to guests generates the password the server enforces`() =
+        runTest {
+            passwordPolicyRepository.generatedPassword = "generated"
+            val model = viewModel()
+            users.emit(user(passwordEnforced = true))
+
+            model.allowGuests(true)
+
+            assertEquals("generated", model.password.value)
+        }
+
+    @Test
+    fun `a password the user typed is left alone`() =
+        runTest {
+            passwordPolicyRepository.generatedPassword = "generated"
+            val model = viewModel()
+            users.emit(user(passwordEnforced = true))
+            model.updatePassword("hunter2")
+
+            model.allowGuests(true)
+
+            assertEquals("hunter2", model.password.value)
+        }
+
+    @Test
+    fun `no password is generated where the server does not enforce one`() =
+        runTest {
+            passwordPolicyRepository.generatedPassword = "generated"
+            val model = viewModel()
+            users.emit(user())
+
+            model.allowGuests(true)
+
+            assertEquals("", model.password.value)
+            assertNull(passwordPolicyRepository.generationUrl)
         }
 
     @Test

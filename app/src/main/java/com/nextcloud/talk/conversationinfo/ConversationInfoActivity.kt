@@ -13,6 +13,7 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -253,26 +254,26 @@ class ConversationInfoActivity : BaseActivity() {
                 }
             }
 
-            var showPasswordDialog by remember { mutableStateOf(false) }
+            var passwordRequest by remember { mutableStateOf<PasswordRequest?>(null) }
 
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
                 ConversationInfoScreen(
                     state = uiState,
-                    callbacks = buildCallbacks(onShowPasswordDialog = { showPasswordDialog = true })
+                    callbacks = buildCallbacks(onPasswordRequest = { passwordRequest = it })
                 )
-                if (showPasswordDialog) {
+                passwordRequest?.let { request ->
                     val validationState by viewModel.passwordValidation.state.collectAsStateWithLifecycle()
                     GuestAccessPasswordDialog(
                         validationState = validationState,
                         onPasswordChanged = viewModel.passwordValidation::validate,
                         onDismiss = {
-                            showPasswordDialog = false
+                            passwordRequest = null
                             viewModel.passwordValidation.reset()
                         },
                         onSave = { password, copyAfterSave ->
-                            onGuestPasswordSave(password, copyAfterSave)
-                            showPasswordDialog = false
+                            onGuestPasswordSave(request, password, copyAfterSave)
+                            passwordRequest = null
                             viewModel.passwordValidation.reset()
                         }
                     )
@@ -281,17 +282,29 @@ class ConversationInfoActivity : BaseActivity() {
         }
     }
 
-    private fun onGuestPasswordSave(password: String, copyAfterSave: Boolean) {
+    private fun onGuestPasswordSave(request: PasswordRequest, password: String, copyAfterSave: Boolean) {
         val user = conversationUser ?: return
         if (copyAfterSave) {
             copyPassword(password)
         }
-        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-        viewModel.setPassword(
-            user = user,
-            url = ApiUtils.getUrlForRoomPassword(apiVersion, user.baseUrl!!, conversationToken),
-            password = password
-        )
+        when (request) {
+            PasswordRequest.SET -> {
+                val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+                viewModel.setPassword(
+                    user = user,
+                    url = ApiUtils.getUrlForRoomPassword(apiVersion, user.baseUrl!!, conversationToken),
+                    password = password
+                )
+            }
+            PasswordRequest.ALLOW_GUESTS -> viewModel.allowGuests(user, conversationToken, true, password)
+        }
+    }
+
+    private fun isPasswordEnforced(): Boolean =
+        CapabilitiesUtil.isPasswordEnforced(viewModel.uiState.value.spreedCapabilities)
+
+    private fun showSnackbar(@StringRes messageRes: Int) {
+        lifecycleScope.launch { viewModel.emitSnackbar(messageRes) }
     }
 
     private fun copyPassword(password: String) {
@@ -303,7 +316,7 @@ class ConversationInfoActivity : BaseActivity() {
     }
 
     @Suppress("LongMethod", "CyclomaticComplexMethod")
-    private fun buildCallbacks(onShowPasswordDialog: () -> Unit) =
+    private fun buildCallbacks(onPasswordRequest: (PasswordRequest) -> Unit) =
         ConversationInfoScreenCallbacks(
             onNavigateBack = { onBackPressedDispatcher.onBackPressed() },
             onEditConversation = {
@@ -327,11 +340,19 @@ class ConversationInfoActivity : BaseActivity() {
             onLobbyTimerClick = { showLobbyTimerDialog() },
             onAllowGuestsClick = {
                 val user = conversationUser ?: return@ConversationInfoScreenCallbacks
-                viewModel.allowGuests(user, conversationToken, !viewModel.uiState.value.guestsAllowed)
+                val state = viewModel.uiState.value
+                val allow = !state.guestsAllowed
+                if (allow && isPasswordEnforced() && !state.hasPassword) {
+                    onPasswordRequest(PasswordRequest.ALLOW_GUESTS)
+                } else {
+                    viewModel.allowGuests(user, conversationToken, allow)
+                }
             },
             onPasswordProtectionClick = {
                 val user = conversationUser ?: return@ConversationInfoScreenCallbacks
-                if (viewModel.uiState.value.hasPassword) {
+                if (!viewModel.uiState.value.hasPassword) {
+                    onPasswordRequest(PasswordRequest.SET)
+                } else {
                     val apiVersion =
                         ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
                     viewModel.setPassword(
@@ -339,8 +360,6 @@ class ConversationInfoActivity : BaseActivity() {
                         url = ApiUtils.getUrlForRoomPassword(apiVersion, user.baseUrl!!, conversationToken),
                         password = ""
                     )
-                } else {
-                    onShowPasswordDialog()
                 }
             },
             onResendInvitationsClick = {
@@ -819,7 +838,7 @@ class ConversationInfoActivity : BaseActivity() {
         } else {
             R.string.nc_participant_type_change_failed
         }
-        lifecycleScope.launch { viewModel.emitSnackbar(messageRes) }
+        showSnackbar(messageRes)
     }
 
     /**
@@ -896,6 +915,14 @@ class ConversationInfoActivity : BaseActivity() {
         private const val PARTICIPANT_TYPE_MODERATOR: Int = 2
         private const val PARTICIPANT_TYPE_USER: Int = 3
     }
+}
+
+/**
+ * What a password the user is asked for is meant to do, since the same dialog serves both.
+ */
+private enum class PasswordRequest {
+    SET,
+    ALLOW_GUESTS
 }
 
 @Composable

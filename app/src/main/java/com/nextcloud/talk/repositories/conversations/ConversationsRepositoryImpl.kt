@@ -17,19 +17,36 @@ import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.profile.Profile
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository.ResendInvitationsResult
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.SpreedFeatures
 import io.reactivex.Observable
 
 class ConversationsRepositoryImpl(private val api: NcApi, private val coroutineApi: NcApiCoroutines) :
     ConversationsRepository {
-    override suspend fun allowGuests(user: User, url: String, token: String, allow: Boolean): GenericOverall {
+    override suspend fun allowGuests(
+        user: User,
+        url: String,
+        token: String,
+        allow: Boolean,
+        password: String
+    ): GenericOverall {
         val credentials = ApiUtils.getCredentials(user.username, user.token)!!
-        val result: GenericOverall = if (allow) {
-            coroutineApi.makeRoomPublic(
+        val sendsPassword = password.isNotEmpty() &&
+            CapabilitiesUtil.hasSpreedFeatureCapability(
+                user.capabilities?.spreedCapability,
+                SpreedFeatures.CONVERSATION_CREATION_PASSWORD
+            )
+        val result: GenericOverall = when {
+            allow && sendsPassword -> coroutineApi.makeRoomPublicWithPassword(
+                credentials,
+                url,
+                password
+            )
+            allow -> coroutineApi.makeRoomPublic(
                 credentials,
                 url
             )
-        } else {
-            coroutineApi.makeRoomPrivate(
+            else -> coroutineApi.makeRoomPrivate(
                 credentials,
                 url
             )

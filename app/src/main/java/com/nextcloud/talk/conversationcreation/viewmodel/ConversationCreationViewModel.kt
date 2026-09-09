@@ -16,6 +16,7 @@ import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.conversationcreation.ConversationCreator
 import com.nextcloud.talk.conversationcreation.ConversationParameter
 import com.nextcloud.talk.conversationcreation.ConversationPresetId
+import com.nextcloud.talk.conversationcreation.ConversationRefusedException
 import com.nextcloud.talk.conversationcreation.ConversationPresetModel
 import com.nextcloud.talk.conversationcreation.CreateConversationParams
 import com.nextcloud.talk.conversationcreation.NewConversation
@@ -26,6 +27,7 @@ import com.nextcloud.talk.conversationcreation.parametersOf
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.passwordpolicy.PasswordGenerator
 import com.nextcloud.talk.passwordpolicy.PasswordPolicyValidator
 import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
 import com.nextcloud.talk.utils.ApiUtils
@@ -55,6 +57,8 @@ class ConversationCreationViewModel @Inject constructor(
     val creationState: StateFlow<RoomUIState> = roomViewState
 
     val passwordValidation = PasswordPolicyValidator(passwordPolicyRepository, viewModelScope) { currentUser.value }
+
+    private val passwordGenerator = PasswordGenerator(passwordPolicyRepository)
 
     private val _selectedImageUri = MutableStateFlow<Uri?>(null)
     val selectedImageUri: StateFlow<Uri?> = _selectedImageUri
@@ -201,6 +205,10 @@ class ConversationCreationViewModel @Inject constructor(
     val isOpenForGuestAppUsers: Boolean
         get() = conversationParams.value.listable == CreateConversationParams.LISTABLE_ALL
 
+    /**
+     * Where the server enforces a password, one is generated as guests are let in, instead of
+     * leaving the user with a requirement to satisfy themselves.
+     */
     fun allowGuests(allow: Boolean) {
         val roomType = if (allow) {
             CreateConversationParams.ROOM_TYPE_PUBLIC
@@ -209,6 +217,11 @@ class ConversationCreationViewModel @Inject constructor(
         }
         parametersChosenByUser.value += ConversationParameter.ROOM_TYPE to roomType
         recomputeParams()
+
+        val user = currentUser.value
+        if (allow && user != null && isPasswordEnforced && _password.value.isEmpty()) {
+            viewModelScope.launch { _password.value = passwordGenerator.generate(user) }
+        }
     }
 
     fun openConversationToRegisteredUsers(open: Boolean) {
@@ -266,10 +279,14 @@ class ConversationCreationViewModel @Inject constructor(
                 if (!token.isNullOrEmpty()) {
                     roomViewState.value = RoomUIState.Success(conversation)
                 } else {
-                    roomViewState.value = RoomUIState.Error("Conversation is null")
+                    roomViewState.value = RoomUIState.Error()
+                    Log.e(TAG, "The created conversation came back without a token")
                 }
+            } catch (e: ConversationRefusedException) {
+                roomViewState.value = RoomUIState.Error(e.message)
+                Log.e(TAG, "The server refused to create the conversation", e)
             } catch (e: Exception) {
-                roomViewState.value = RoomUIState.Error(e.message ?: "Unknown error")
+                roomViewState.value = RoomUIState.Error()
                 Log.e(TAG, "Error - ${e.message}")
             } finally {
                 _isCreatingRoom.value = false
@@ -295,7 +312,7 @@ sealed interface PresetsUiState {
 sealed class RoomUIState {
     data object None : RoomUIState()
     data class Success(val conversation: Conversation?) : RoomUIState()
-    data class Error(val message: String) : RoomUIState()
+    data class Error(val serverMessage: String? = null) : RoomUIState()
 }
 
 sealed class AddParticipantsUiState {

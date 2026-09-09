@@ -147,6 +147,14 @@ interface NcApiCoroutines {
     @POST
     suspend fun makeRoomPublic(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 
+    @FormUrlEncoded
+    @POST
+    suspend fun makeRoomPublicWithPassword(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("password") password: String
+    ): GenericOverall
+
     @DELETE
     suspend fun makeRoomPrivate(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 
@@ -592,5 +600,11 @@ interface NcApiCoroutines {
         @Header("Authorization") authorization: String,
         @Url url: String,
         @Field("password") password: String
+    ): PasswordResultOverall
+
+    @GET
+    suspend fun generatePassword(
+        @Header("Authorization") authorization: String,
+        @Url url: String
     ): PasswordResultOverall
 }
