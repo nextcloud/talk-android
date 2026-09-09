@@ -17,7 +17,13 @@ import io.reactivex.Observable
 
 interface ConversationsRepository {
 
-    suspend fun allowGuests(user: User, url: String, token: String, allow: Boolean): GenericOverall
+    suspend fun allowGuests(
+        user: User,
+        url: String,
+        token: String,
+        allow: Boolean,
+        password: String = ""
+    ): GenericOverall
 
     data class ResendInvitationsResult(val successful: Boolean)
     fun resendInvitations(user: User, url: String): Observable<ResendInvitationsResult>

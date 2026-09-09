@@ -564,16 +564,23 @@ class ConversationInfoViewModel @Inject constructor(
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun allowGuests(user: User, token: String, allow: Boolean) {
+    fun allowGuests(user: User, token: String, allow: Boolean, password: String = "") {
         val previous = _uiState.value.guestsAllowed
-        _uiState.update { it.copy(guestsAllowed = allow) }
+        val previousHasPassword = _uiState.value.hasPassword
+        _uiState.update { it.copy(guestsAllowed = allow, hasPassword = it.hasPassword || password.isNotEmpty()) }
         viewModelScope.launch {
             try {
                 val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
                 val url = ApiUtils.getUrlForRoomPublic(apiVersion, user.baseUrl!!, token)
-                conversationsRepository.allowGuests(user = user, url = url, token = token, allow = allow)
+                conversationsRepository.allowGuests(
+                    user = user,
+                    url = url,
+                    token = token,
+                    allow = allow,
+                    password = password
+                )
             } catch (exception: Exception) {
-                _uiState.update { it.copy(guestsAllowed = previous) }
+                _uiState.update { it.copy(guestsAllowed = previous, hasPassword = previousHasPassword) }
                 _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(R.string.nc_guest_access_allow_failed))
                 Log.e(TAG, "Error allowing guests", exception)
             }
