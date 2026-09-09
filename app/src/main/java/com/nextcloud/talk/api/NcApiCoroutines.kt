@@ -593,4 +593,10 @@ interface NcApiCoroutines {
         @Url url: String,
         @Field("password") password: String
     ): PasswordResultOverall
+
+    @GET
+    suspend fun generatePassword(
+        @Header("Authorization") authorization: String,
+        @Url url: String
+    ): PasswordResultOverall
 }

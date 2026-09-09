@@ -16,8 +16,10 @@ import kotlinx.parcelize.Parcelize
 @JsonObject
 data class PasswordApi(
     @JsonField(name = ["validate"])
-    var validatePasswordApi: String?
+    var validatePasswordApi: String?,
+    @JsonField(name = ["generate"])
+    var generatePasswordApi: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null)
+    constructor() : this(null, null)
 }

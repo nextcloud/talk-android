@@ -17,4 +17,8 @@ class PasswordPolicyRepositoryImpl @Inject constructor(private val ncApiCoroutin
     override suspend fun validatePassword(credentials: String, url: String, password: String): PasswordResult =
         ncApiCoroutines.validatePassword(credentials, url, password).ocs?.data
             ?: throw IllegalStateException("The password validation response carried no result")
+
+    override suspend fun generatePassword(credentials: String, url: String): String =
+        ncApiCoroutines.generatePassword(credentials, url).ocs?.data?.password
+            ?: throw IllegalStateException("The password generation response carried no password")
 }
