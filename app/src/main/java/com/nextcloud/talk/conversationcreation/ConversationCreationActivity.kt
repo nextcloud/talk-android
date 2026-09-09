@@ -760,8 +760,12 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
 fun CreateConversation(conversationCreationViewModel: ConversationCreationViewModel, context: Context) {
     val isCreatingRoom by conversationCreationViewModel.isCreatingRoom.collectAsState()
     val creationState by conversationCreationViewModel.creationState.collectAsState()
+    val password by conversationCreationViewModel.password.collectAsState()
     var createdPublicConversation by rememberSaveable { mutableStateOf<String?>(null) }
     var createdWithPassword by rememberSaveable { mutableStateOf(false) }
+    val isPasswordMissing = conversationCreationViewModel.isPasswordEnforced &&
+        conversationCreationViewModel.isGuestsAllowed &&
+        password.isEmpty()
 
     CreationResultEffect(
         creationState = creationState,
@@ -796,7 +800,7 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
         Button(
             enabled = !isCreatingRoom &&
                 !conversationCreationViewModel.isLoadingPresets &&
-                !conversationCreationViewModel.isPasswordMissing,
+                !isPasswordMissing,
             onClick = {
                 conversationCreationViewModel.createRoomAndAddParticipants()
             }
