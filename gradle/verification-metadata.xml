@@ -180,6 +180,7 @@
             <trusting group="org.jetbrains.intellij.deps.kotlinx" name="kotlinx-coroutines-core-jvm" version="1.8.0-intellij-14"/>
          </trusted-key>
          <trusted-key id="34441E504A937F43EB0DAEF96A65176A0FB1CD0B">
+            <trusting group="org.apache.groovy"/>
             <trusting group="org.apache.groovy" name="groovy-bom" version="4.0.22"/>
             <trusting group="org.apache.groovy" name="groovy-bom" version="4.0.27"/>
             <trusting group="org.codehaus.groovy"/>
