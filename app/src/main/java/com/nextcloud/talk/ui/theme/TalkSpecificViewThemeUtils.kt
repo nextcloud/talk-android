@@ -35,7 +35,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
-import androidx.emoji2.emojipicker.EmojiPickerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
@@ -47,6 +46,7 @@ import com.nextcloud.android.common.ui.util.buildColorStateList
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
+import com.nextcloud.talk.emojipicker.EmojiPickerPanel
 import com.nextcloud.talk.ui.MicInputCloud
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.WaveformSeekBar
@@ -493,15 +493,15 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
-    fun themeEmojiPicker(emojiPickerView: EmojiPickerView) {
-        withScheme(emojiPickerView.context) { scheme ->
-            emojiPickerView.setBackgroundColor(dynamicColor.surfaceContainerLow().getArgb(scheme))
-            themeEmojiPickerCategoryTabs(
-                emojiPickerView,
-                dynamicColor.primary().getArgb(scheme),
-                dynamicColor.onSurfaceVariant().getArgb(scheme)
+    fun themeEmojiPicker(emojiPickerPanel: EmojiPickerPanel) {
+        withScheme(emojiPickerPanel.context) { scheme ->
+            emojiPickerPanel.applyTheme(
+                backgroundColor = dynamicColor.surfaceContainerLow().getArgb(scheme),
+                selectedTabColor = dynamicColor.primary().getArgb(scheme),
+                unselectedTabColor = dynamicColor.onSurfaceVariant().getArgb(scheme),
+                hintTextColor = dynamicColor.onSurfaceVariant().getArgb(scheme),
+                textColor = dynamicColor.onSurface().getArgb(scheme)
             )
-            protectEmojiPickerScrollGesture(emojiPickerView)
         }
     }
 

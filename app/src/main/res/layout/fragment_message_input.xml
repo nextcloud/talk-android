@@ -82,11 +82,12 @@
                 android:visibility="gone"
                 tools:visibility="visible" />
 
-            <androidx.emoji2.emojipicker.EmojiPickerView
-                android:id="@+id/emoji_picker"
+            <com.nextcloud.talk.emojipicker.EmojiPickerPanel
+                android:id="@+id/emojiPickerPanel"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:visibility="gone" />
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

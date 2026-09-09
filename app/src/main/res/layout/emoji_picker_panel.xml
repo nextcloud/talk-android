@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/emojiSearchRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/emojiSearchFieldGroup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/emojiSearchIcon"
+                android:layout_width="@dimen/min_size_clickable_area"
+                android:layout_height="@dimen/min_size_clickable_area"
+                android:contentDescription="@null"
+                android:padding="12dp"
+                android:src="@drawable/ic_search_24px" />
+
+            <EditText
+                android:id="@+id/emojiSearchInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="@string/nc_search_emoji_hint"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textAlignment="viewStart" />
+
+            <ImageButton
+                android:id="@+id/emojiSearchClear"
+                android:layout_width="@dimen/min_size_clickable_area"
+                android:layout_height="@dimen/min_size_clickable_area"
+                android:background="@color/transparent"
+                android:contentDescription="@string/nc_clear_emoji_search"
+                android:padding="12dp"
+                android:src="@drawable/ic_clear_24"
+                android:visibility="gone"
+                tools:visibility="visible" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/emojiBackspaceButton"
+            android:layout_width="@dimen/min_size_clickable_area"
+            android:layout_height="@dimen/min_size_clickable_area"
+            android:background="@color/transparent"
+            android:contentDescription="@string/nc_delete_last_emoji"
+            android:padding="12dp"
+            android:src="@drawable/ic_baseline_backspace_24"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/emojiSearchResultsScroll"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/emojiSearchResultsFlexbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/standard_half_margin"
+            app:flexWrap="wrap" />
+    </ScrollView>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/emojiSearchNoResults"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:gravity="center"
+        android:text="@string/nc_no_emoji_found"
+        android:textColor="@color/medium_emphasis_text"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <androidx.emoji2.emojipicker.EmojiPickerView
+        android:id="@+id/emojiPicker"
+        android:layout_width="match_parent"
+        android:layout_height="250dp" />
+
+</merge>
