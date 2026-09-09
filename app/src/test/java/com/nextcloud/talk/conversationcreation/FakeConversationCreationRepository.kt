@@ -26,6 +26,7 @@ class FakeConversationCreationRepository(private val token: String = "abc123") :
 
     var bodyRequest: CreateRoomRequest? = null
     var formRequest: RetrofitBucket? = null
+    var presetCalls = 0
     var passwordCalls = 0
     var descriptionCalls = 0
     var listableCalls = 0
@@ -34,8 +35,10 @@ class FakeConversationCreationRepository(private val token: String = "abc123") :
     var failPassword = false
     var failingParticipants = emptySet<String>()
 
-    override suspend fun getConversationPresets(credentials: String?, url: String): List<ConversationPreset> =
-        emptyList()
+    override suspend fun getConversationPresets(credentials: String?, url: String): List<ConversationPreset> {
+        presetCalls++
+        return emptyList()
+    }
 
     override suspend fun createRoomWithBody(credentials: String?, url: String, body: CreateRoomRequest): RoomOverall {
         bodyRequest = body
