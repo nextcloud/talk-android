@@ -4207,15 +4207,11 @@ class ChatActivity :
     }
 
     fun cancelReply() {
-        messageInputViewModel.reply(null)
-        chatViewModel.messageDraft.quotedMessageText = null
-        chatViewModel.messageDraft.quotedDisplayName = null
-        chatViewModel.messageDraft.quotedImageUrl = null
-        chatViewModel.messageDraft.quotedJsonId = null
+        messageInputViewModel.cancelReply()
     }
 
     fun cancelCreateThread() {
-        chatViewModel.clearThreadTitle()
+        messageInputViewModel.cancelCreateThread()
     }
 
     companion object {
