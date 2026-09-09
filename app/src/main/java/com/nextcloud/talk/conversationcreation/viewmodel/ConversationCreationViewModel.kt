@@ -26,6 +26,8 @@ import com.nextcloud.talk.conversationcreation.parametersOf
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.passwordpolicy.PasswordPolicyValidator
+import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.SpreedFeatures
@@ -40,12 +42,15 @@ import javax.inject.Inject
 class ConversationCreationViewModel @Inject constructor(
     private val repository: ConversationCreationRepository,
     private val conversationCreator: ConversationCreator,
+    private val passwordPolicyRepository: PasswordPolicyRepository,
     private val currentUserProvider: CurrentUserProviderOld
 ) : ViewModel() {
     private val _selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
     val selectedParticipants: StateFlow<List<AutocompleteUser>> = _selectedParticipants
     private val roomViewState = MutableStateFlow<RoomUIState>(RoomUIState.None)
     val creationState: StateFlow<RoomUIState> = roomViewState
+
+    val passwordValidation = PasswordPolicyValidator(passwordPolicyRepository, viewModelScope) { _currentUser }
 
     private val _selectedImageUri = MutableStateFlow<Uri?>(null)
     val selectedImageUri: StateFlow<Uri?> = _selectedImageUri
