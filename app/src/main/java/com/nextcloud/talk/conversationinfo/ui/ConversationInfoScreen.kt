@@ -91,6 +91,7 @@ import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.ParticipantRole
 import com.nextcloud.talk.utils.ParticipantRoleUtils
@@ -558,10 +559,17 @@ private fun GuestAccessSection(state: ConversationInfoUiState, callbacks: Conver
         onClick = callbacks.onAllowGuestsClick
     )
     if (state.showPasswordProtection) {
+        val isPasswordEnforced = CapabilitiesUtil.isPasswordEnforced(state.spreedCapabilities)
+        val isLocked = state.hasPassword && isPasswordEnforced
         SettingsRow(
             title = stringResource(R.string.nc_guest_access_password_title),
-            subtitle = stringResource(R.string.nc_guest_access_password_summary),
+            subtitle = if (isLocked) {
+                stringResource(R.string.nc_password_required)
+            } else {
+                stringResource(R.string.nc_guest_access_password_summary)
+            },
             checked = state.hasPassword,
+            enabled = !isLocked,
             onClick = callbacks.onPasswordProtectionClick
         )
     }

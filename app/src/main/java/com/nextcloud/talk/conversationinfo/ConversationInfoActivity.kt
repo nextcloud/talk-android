@@ -350,18 +350,16 @@ class ConversationInfoActivity : BaseActivity() {
             },
             onPasswordProtectionClick = {
                 val user = conversationUser ?: return@ConversationInfoScreenCallbacks
-                when {
-                    !viewModel.uiState.value.hasPassword -> onPasswordRequest(PasswordRequest.SET)
-                    isPasswordEnforced() -> showSnackbar(R.string.nc_password_required)
-                    else -> {
-                        val apiVersion =
-                            ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-                        viewModel.setPassword(
-                            user = user,
-                            url = ApiUtils.getUrlForRoomPassword(apiVersion, user.baseUrl!!, conversationToken),
-                            password = ""
-                        )
-                    }
+                if (!viewModel.uiState.value.hasPassword) {
+                    onPasswordRequest(PasswordRequest.SET)
+                } else {
+                    val apiVersion =
+                        ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+                    viewModel.setPassword(
+                        user = user,
+                        url = ApiUtils.getUrlForRoomPassword(apiVersion, user.baseUrl!!, conversationToken),
+                        password = ""
+                    )
                 }
             },
             onResendInvitationsClick = {
