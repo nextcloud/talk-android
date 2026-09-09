@@ -106,7 +106,6 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.passwordpolicy.PasswordPolicyField
 import com.nextcloud.talk.passwordpolicy.isPasswordAccepted
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.copyPasswordToClipboard
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.PickImage
@@ -118,7 +117,7 @@ import javax.inject.Inject
 class ConversationCreationActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var pickImage: PickImage
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -127,18 +126,29 @@ class ConversationCreationActivity : BaseActivity() {
             this,
             viewModelFactory
         )[ConversationCreationViewModel::class.java]
-        val conversationUser = conversationCreationViewModel.currentUser
-        pickImage = PickImage(this, conversationUser)
-
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val context = LocalContext.current
+            val currentUser by conversationCreationViewModel.currentUser.collectAsState()
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
-                ConversationCreationScreen(conversationCreationViewModel, context, pickImage)
+                val user = currentUser
+                if (user == null) {
+                    LoadingScreen()
+                } else {
+                    val pickImage = remember(user) { PickImage(this@ConversationCreationActivity, user) }
+                    ConversationCreationScreen(conversationCreationViewModel, context, pickImage)
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun LoadingScreen() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator()
     }
 }
 
@@ -357,18 +367,9 @@ fun ConversationNameAndDescription(conversationCreationViewModel: ConversationCr
     OutlinedTextField(
         value = conversationDescription.value,
         onValueChange = {
-            if (it.length > CapabilitiesUtil.conversationDescriptionLength(
-                    conversationCreationViewModel.currentUser
-                        .capabilities?.spreedCapability
-                )
-            ) {
+            if (it.length > conversationCreationViewModel.conversationDescriptionLength) {
                 conversationCreationViewModel.updateConversationDescription(
-                    it.take(
-                        CapabilitiesUtil.conversationDescriptionLength(
-                            conversationCreationViewModel.currentUser
-                                .capabilities?.spreedCapability
-                        )
-                    )
+                    it.take(conversationCreationViewModel.conversationDescriptionLength)
                 )
             } else {
                 conversationCreationViewModel.updateConversationDescription(it)
@@ -430,8 +431,11 @@ fun AddParticipants(
         }
         participants.toSet().forEach { participant ->
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                val imageUri = participant.id?.let {
-                    avatarUri(conversationCreationViewModel.currentUser, it, DisplayUtils.isDarkModeOn(context))
+                val avatarUser = conversationCreationViewModel.currentUser.value
+                val imageUri = if (avatarUser == null) {
+                    null
+                } else {
+                    participant.id?.let { avatarUri(avatarUser, it, DisplayUtils.isDarkModeOn(context)) }
                 }
                 val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
                 val loadedImage = loadImage(imageUri, context, errorPlaceholderImage)
@@ -777,11 +781,14 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
         onHandled = { conversationCreationViewModel.clearCreationState() }
     )
 
-    createdPublicConversation?.let { roomToken ->
+    val currentUser by conversationCreationViewModel.currentUser.collectAsState()
+    val roomToken = createdPublicConversation
+    val user = currentUser
+    if (roomToken != null && user != null) {
         ShareCreatedConversation(
             roomToken = roomToken,
             password = conversationCreationViewModel.password.value.takeIf { createdWithPassword },
-            currentUser = conversationCreationViewModel.currentUser,
+            currentUser = user,
             context = context,
             onDismiss = {
                 createdPublicConversation = null
