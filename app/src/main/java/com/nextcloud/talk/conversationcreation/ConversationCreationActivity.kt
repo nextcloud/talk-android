@@ -686,7 +686,8 @@ fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: Con
                         TextButton(
                             onClick = {
                                 conversationCreationViewModel.updatePassword("")
-                                conversationCreationViewModel.passwordValidation.reset()onDismiss()
+                                conversationCreationViewModel.passwordValidation.reset()
+                                onDismiss()
                             },
                             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                         ) {

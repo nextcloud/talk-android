@@ -124,18 +124,6 @@ fun openConversation(context: Context, roomToken: String) {
     context.startActivity(chatIntent)
 }
 
-private fun copyPassword(context: Context, roomToken: String, password: String) {
-    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    val clip = ClipData.newPlainText(roomToken, password)
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        clip.description.extras = PersistableBundle().apply {
-            putBoolean(ClipDescription.EXTRA_IS_SENSITIVE, true)
-        }
-    }
-    clipboard.setPrimaryClip(clip)
-    Toast.makeText(context, context.getString(R.string.nc_password_copied), Toast.LENGTH_SHORT).show()
-}
-
 private fun reportInvalidParticipants(context: Context, invalidParticipants: Map<String, List<String>>?) {
     if (invalidParticipants.isNullOrEmpty()) {
         return
