@@ -44,6 +44,7 @@ import com.nextcloud.talk.data.network.NetworkMonitorImpl
 import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.UsersRepositoryImpl
+import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepositoryImpl
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.repositories.reactions.ReactionsRepositoryImpl
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
@@ -245,6 +246,11 @@ class ComposePreviewUtils private constructor(context: Context) {
 
     val conversationCreationViewModel: ConversationCreationViewModel
         get() = ConversationCreationRepositoryImpl(ncApiCoroutines).let { repository ->
-            ConversationCreationViewModel(repository, ConversationCreator(repository), userProvider)
+            ConversationCreationViewModel(
+                repository,
+                ConversationCreator(repository),
+                PasswordPolicyRepositoryImpl(ncApiCoroutines),
+                userProvider
+            )
         }
 }

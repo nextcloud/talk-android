@@ -10,16 +10,27 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.AlertDialog as ComposeAlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -54,7 +65,6 @@ import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogBanParticipantBinding
-import com.nextcloud.talk.databinding.DialogPasswordBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.extensions.getParcelableExtraProvider
@@ -70,6 +80,9 @@ import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.CIRCLES
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEvent
+import com.nextcloud.talk.passwordpolicy.PasswordPolicyField
+import com.nextcloud.talk.passwordpolicy.PasswordValidationState
+import com.nextcloud.talk.passwordpolicy.isPasswordAccepted
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.ui.dialog.DialogBanListFragment
@@ -82,6 +95,7 @@ import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.copyPasswordToClipboard
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -239,18 +253,57 @@ class ConversationInfoActivity : BaseActivity() {
                 }
             }
 
+            var showPasswordDialog by remember { mutableStateOf(false) }
+
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
                 ConversationInfoScreen(
                     state = uiState,
-                    callbacks = buildCallbacks()
+                    callbacks = buildCallbacks(onShowPasswordDialog = { showPasswordDialog = true })
                 )
+                if (showPasswordDialog) {
+                    val validationState by viewModel.passwordValidation.state.collectAsStateWithLifecycle()
+                    GuestAccessPasswordDialog(
+                        validationState = validationState,
+                        onPasswordChanged = viewModel.passwordValidation::validate,
+                        onDismiss = {
+                            showPasswordDialog = false
+                            viewModel.passwordValidation.reset()
+                        },
+                        onSave = { password, copyAfterSave ->
+                            onGuestPasswordSave(password, copyAfterSave)
+                            showPasswordDialog = false
+                            viewModel.passwordValidation.reset()
+                        }
+                    )
+                }
             }
         }
     }
 
+    private fun onGuestPasswordSave(password: String, copyAfterSave: Boolean) {
+        val user = conversationUser ?: return
+        if (copyAfterSave) {
+            copyPassword(password)
+        }
+        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+        viewModel.setPassword(
+            user = user,
+            url = ApiUtils.getUrlForRoomPassword(apiVersion, user.baseUrl!!, conversationToken),
+            password = password
+        )
+    }
+
+    private fun copyPassword(password: String) {
+        copyPasswordToClipboard(
+            context = this,
+            label = resources.getString(R.string.nc_app_product_name),
+            password = password
+        )
+    }
+
     @Suppress("LongMethod", "CyclomaticComplexMethod")
-    private fun buildCallbacks() =
+    private fun buildCallbacks(onShowPasswordDialog: () -> Unit) =
         ConversationInfoScreenCallbacks(
             onNavigateBack = { onBackPressedDispatcher.onBackPressed() },
             onEditConversation = {
@@ -287,7 +340,7 @@ class ConversationInfoActivity : BaseActivity() {
                         password = ""
                     )
                 } else {
-                    showPasswordDialog(conversationToken)
+                    onShowPasswordDialog()
                 }
             },
             onResendInvitationsClick = {
@@ -613,31 +666,6 @@ class ConversationInfoActivity : BaseActivity() {
         }
     }
 
-    private fun showPasswordDialog(token: String) {
-        val user = conversationUser ?: return
-        val dialogPassword = DialogPasswordBinding.inflate(LayoutInflater.from(this))
-        viewThemeUtils.platform.colorEditText(dialogPassword.password)
-        val builder = MaterialAlertDialogBuilder(this)
-            .setView(dialogPassword.root)
-            .setTitle(R.string.nc_guest_access_password_dialog_title)
-            .setPositiveButton(R.string.nc_ok) { _, _ ->
-                val apiVersion =
-                    ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-                viewModel.setPassword(
-                    user = user,
-                    url = ApiUtils.getUrlForRoomPassword(apiVersion, user.baseUrl!!, token),
-                    password = dialogPassword.password.text.toString()
-                )
-            }
-            .setNegativeButton(R.string.nc_cancel, null)
-        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, builder)
-        val dialog = builder.show()
-        viewThemeUtils.platform.colorTextButtons(
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-        )
-    }
-
     private fun toggleModeratorStatus(apiVersion: Int, participant: Participant) {
         val user = conversationUser ?: return
         val subscriber = participantActionObserver()
@@ -846,4 +874,53 @@ class ConversationInfoActivity : BaseActivity() {
         private const val PARTICIPANT_TYPE_MODERATOR: Int = 2
         private const val PARTICIPANT_TYPE_USER: Int = 3
     }
+}
+
+@Composable
+private fun GuestAccessPasswordDialog(
+    validationState: PasswordValidationState,
+    onPasswordChanged: (String) -> Unit,
+    onDismiss: () -> Unit,
+    onSave: (password: String, copyAfterSave: Boolean) -> Unit
+) {
+    var password by remember { mutableStateOf("") }
+    val isPasswordValid = password.isNotBlank() && validationState.isPasswordAccepted
+
+    ComposeAlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = stringResource(id = R.string.nc_guest_access_password_dialog_title)) },
+        text = {
+            PasswordPolicyField(
+                password = password,
+                onPasswordChange = {
+                    password = it
+                    onPasswordChanged(it)
+                },
+                validationState = validationState,
+                label = stringResource(id = R.string.nc_guest_access_password_dialog_hint),
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        confirmButton = {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                TextButton(
+                    onClick = { onSave(password, true) },
+                    enabled = isPasswordValid
+                ) {
+                    Text(text = stringResource(R.string.nc_copy_password))
+                }
+                TextButton(
+                    onClick = { onSave(password, false) },
+                    enabled = isPasswordValid
+                ) {
+                    Text(text = stringResource(R.string.save))
+                }
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(id = R.string.nc_cancel))
+            }
+        }
+    )
 }
