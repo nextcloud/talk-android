@@ -567,7 +567,8 @@ class ConversationInfoViewModel @Inject constructor(
     fun allowGuests(user: User, token: String, allow: Boolean, password: String = "") {
         val previous = _uiState.value.guestsAllowed
         val previousHasPassword = _uiState.value.hasPassword
-        _uiState.update { it.copy(guestsAllowed = allow, hasPassword = it.hasPassword || password.isNotEmpty()) }
+        val hasPassword = allow && (_uiState.value.hasPassword || password.isNotEmpty())
+        _uiState.update { it.copy(guestsAllowed = allow, hasPassword = hasPassword) }
         viewModelScope.launch {
             try {
                 val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
