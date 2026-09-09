@@ -181,6 +181,7 @@
     <string name="nc_channel_only_moderators_can_post">Nur die Moderation kann auf diesem Kanal posten</string>
     <string name="nc_chat_no_messages">Noch keine Nachrichten. Seien Sie der Erste, der Hallo sagt!</string>
     <string name="nc_classified_conversation">Geheime Unterhaltung</string>
+    <string name="nc_classified_conversation_description">Geschützte Unterhaltung für vertrauliche Themen, bei der der öffentliche Zugriff, Gäste, SIP und Aufzeichnungen deaktiviert sind.</string>
     <string name="nc_clear_edit_button">Bearbeitung abbrechen</string>
     <string name="nc_clear_history">Alle Nachrichten löschen</string>
     <string name="nc_clear_history_success">Alle Nachrichten wurden gelöscht</string>
@@ -207,6 +208,9 @@
     <string name="nc_confirm">Bestätigen</string>
     <string name="nc_connecting_call">Verbinde …</string>
     <string name="nc_contacts_done">Fertig</string>
+    <string name="nc_conversation_created_invalid_participants">Einige Teilnehmer konnten nicht hinzugefügt werden</string>
+    <string name="nc_conversation_created_public">Gäste können über den Link an dieser Unterhaltung teilnehmen. Dies jetzt oder später aus den Unterhaltungseinstellungen heraus teilen.</string>
+    <string name="nc_conversation_created_title">Unterhaltung angelegt</string>
     <string name="nc_conversation_description">Beschreibung der Unterhaltung</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Zur Datei wechseln</string>
     <string name="nc_conversation_menu_conversation_info">Unterhaltungs-Information</string>
@@ -229,6 +233,15 @@
     <string name="nc_conversation_tags_new">Neues Schlagwort</string>
     <string name="nc_conversation_tags_rename">Schlagwort umbenennen</string>
     <string name="nc_conversation_tags_save">Speichern</string>
+    <string name="nc_conversation_type_defaults">Standard-Einstellungen für diesen Unterhaltungstypen:</string>
+    <string name="nc_conversation_type_defaults_hint">Diese Einstellungen können geändert werden, sobald die Unterhaltung erstellt wurde</string>
+    <string name="nc_conversation_type_lobby">Lobby aktiviert, wodurch die Unterhaltung auf die Moderation beschränkt wird</string>
+    <string name="nc_conversation_type_mentions_moderators">Nur die Moderation darf alle erwähnen</string>
+    <string name="nc_conversation_type_message_expiration">Nachricht läuft nach %1$s ab</string>
+    <string name="nc_conversation_type_message_expiration_custom">Nachrichtenablauf ist aktiviert</string>
+    <string name="nc_conversation_type_sip">Telefon- und SIP-Einwahl aktiviert</string>
+    <string name="nc_conversation_type_sip_no_pin">Einwahl ohne PIN erlaubt</string>
+    <string name="nc_conversation_types_error">Unterhaltungstypen konnten nicht geladen werden</string>
     <string name="nc_conversations_empty">Treten Sie einer Unterhaltung bei oder starten Sie eine neue</string>
     <string name="nc_conversations_empty_details">Begrüßen Sie Ihre Freunde und Kollegen!</string>
     <string name="nc_copy_message">Kopieren</string>
@@ -441,6 +454,7 @@
     <string name="nc_pip_microphone_unmute">Mikrofon aktivieren</string>
     <string name="nc_plain_old_messages">Nachrichten</string>
     <string name="nc_presentation">Präsentation</string>
+    <string name="nc_presentation_description">Eingeschränkte Unterhaltung für interne Präsentationen</string>
     <string name="nc_profile_personal_info_title">Persönliche Informationen</string>
     <string name="nc_promote">Zum Moderator ernennen</string>
     <string name="nc_promote_to_owner">Zum Besitzer ernennen</string>
@@ -636,6 +650,7 @@
     <string name="nc_voice_message_missing_audio_permission">Erlaubnis für Audioaufnahmen ist erforderlich</string>
     <string name="nc_voice_message_slide_to_cancel">« Schieben zum Abbrechen</string>
     <string name="nc_webinar">Online-Seminar</string>
+    <string name="nc_webinar_description">Eingeschränkte Unterhaltung mit aktivierter Lobby, ideal für öffentliche Webinare</string>
     <string name="nc_yes">Ja</string>
     <string name="nc_zoom_in">Hineinzoomen</string>
     <string name="nc_zoom_out">Herauszoomen</string>

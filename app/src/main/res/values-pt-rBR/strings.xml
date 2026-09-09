@@ -181,6 +181,7 @@
     <string name="nc_channel_only_moderators_can_post">Somente moderadores podem postar neste canal</string>
     <string name="nc_chat_no_messages">Ainda não há mensagens. Seja o primeiro a dizer olá!</string>
     <string name="nc_classified_conversation">Conversa confidencial</string>
+    <string name="nc_classified_conversation_description">Conversa restrita para assuntos confidenciais, com acesso público, visitantes, SIP e gravações desativados</string>
     <string name="nc_clear_edit_button">Cancelar edição</string>
     <string name="nc_clear_history">Excluir todas as mensagens </string>
     <string name="nc_clear_history_success">Todas as mensagens foram excluídas </string>
@@ -207,6 +208,9 @@
     <string name="nc_confirm">Confirmar</string>
     <string name="nc_connecting_call">Conectando …</string>
     <string name="nc_contacts_done">Concluído</string>
+    <string name="nc_conversation_created_invalid_participants">Não foi possível adicionar alguns participantes</string>
+    <string name="nc_conversation_created_public">Os visitantes podem entrar nessa conversa por meio deste link. Compartilhe-o agora ou mais tarde nas configurações da conversa.</string>
+    <string name="nc_conversation_created_title">Conversa criada</string>
     <string name="nc_conversation_description">Descrição da conversa</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Ir para o arquivo</string>
     <string name="nc_conversation_menu_conversation_info">Informação da conversa</string>
@@ -229,11 +233,20 @@
     <string name="nc_conversation_tags_new">Nova etiqueta</string>
     <string name="nc_conversation_tags_rename">Renomear etiqueta</string>
     <string name="nc_conversation_tags_save">Salvar</string>
+    <string name="nc_conversation_type_defaults">Configurações padrão deste tipo de conversa:</string>
+    <string name="nc_conversation_type_defaults_hint">Essas configurações podem ser alteradas depois que a conversa for criada</string>
+    <string name="nc_conversation_type_lobby">Sala de espera ativada, restringindo a conversa aos moderadores</string>
+    <string name="nc_conversation_type_mentions_moderators">Somente os moderadores têm permissão para mencionar todos</string>
+    <string name="nc_conversation_type_message_expiration">As mensagens expiram após %1$s</string>
+    <string name="nc_conversation_type_message_expiration_custom">A expiração de mensagens está ativada</string>
+    <string name="nc_conversation_type_sip">Ligações por telefone e SIP ativadas</string>
+    <string name="nc_conversation_type_sip_no_pin">Ligações por telefone sem um PIN permitidas</string>
+    <string name="nc_conversation_types_error">Não foi possível carregar os tipos de conversa</string>
     <string name="nc_conversations_empty">Entre em uma conversa ou inicie uma nova</string>
     <string name="nc_conversations_empty_details">Diga olá para seus amigos e colegas!</string>
     <string name="nc_copy_message">Copiar</string>
     <string name="nc_copy_message_link">Copiar link da mensagem</string>
-    <string name="nc_copy_password">Copiar a senha</string>
+    <string name="nc_copy_password">Copiar senha</string>
     <string name="nc_create_new_conversation">Criar uma nova conversa</string>
     <string name="nc_create_poll">Criar enquete</string>
     <string name="nc_custom_color">Cor personalizada</string>
@@ -441,6 +454,7 @@
     <string name="nc_pip_microphone_unmute">Ativar microfone</string>
     <string name="nc_plain_old_messages">Mensagens</string>
     <string name="nc_presentation">Apresentação</string>
+    <string name="nc_presentation_description">Conversa restrita para apresentações internas</string>
     <string name="nc_profile_personal_info_title">Informações Pessoais</string>
     <string name="nc_promote">Promover a moderador</string>
     <string name="nc_promote_to_owner">Promover a proprietário</string>
@@ -636,6 +650,7 @@
     <string name="nc_voice_message_missing_audio_permission">A permissão para gravação de áudio é necessária</string>
     <string name="nc_voice_message_slide_to_cancel">« Deslize para cancelar</string>
     <string name="nc_webinar">Webinário</string>
+    <string name="nc_webinar_description">Conversa restrita com a sala de espera ativada, ideal para webinários públicos</string>
     <string name="nc_yes">Sim</string>
     <string name="nc_zoom_in">Aumentar zoom</string>
     <string name="nc_zoom_out">Diminuir zoom</string>
