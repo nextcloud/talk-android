@@ -139,6 +139,16 @@ object CapabilitiesUtil {
         return false
     }
 
+    fun isPasswordEnforced(spreedCapabilities: SpreedCapability?): Boolean {
+        if (spreedCapabilities?.config?.containsKey("conversations") == true) {
+            val map = spreedCapabilities.config!!["conversations"]
+            if (map?.containsKey("force-passwords") == true) {
+                return map["force-passwords"].toString().toBoolean()
+            }
+        }
+        return false
+    }
+
     fun isSharedItemsAvailable(spreedCapabilities: SpreedCapability): Boolean =
         hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA)
 

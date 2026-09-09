@@ -53,13 +53,7 @@ fun CreationResultEffect(
                 if (roomToken == null) {
                     onHandled()
                 } else {
-                    if (conversation.invalidParticipants?.isNotEmpty() == true) {
-                        Toast.makeText(
-                            context,
-                            R.string.nc_conversation_created_invalid_participants,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
+                    reportInvalidParticipants(context, conversation.invalidParticipants)
                     if (conversation.type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL) {
                         onPublicConversation(roomToken, conversation.hasPassword)
                         onHandled()
@@ -128,4 +122,20 @@ fun openConversation(context: Context, roomToken: String) {
     chatIntent.putExtras(bundle)
     chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
     context.startActivity(chatIntent)
+}
+
+private fun reportInvalidParticipants(context: Context, invalidParticipants: Map<String, List<String>>?) {
+    if (invalidParticipants.isNullOrEmpty()) {
+        return
+    }
+    val names = invalidParticipants.values.flatten().filter { it.isNotEmpty() }
+    val message = if (names.isEmpty()) {
+        context.getString(R.string.nc_conversation_created_invalid_participants)
+    } else {
+        context.getString(
+            R.string.nc_conversation_created_invalid_participants_named,
+            names.joinToString(", ")
+        )
+    }
+    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }

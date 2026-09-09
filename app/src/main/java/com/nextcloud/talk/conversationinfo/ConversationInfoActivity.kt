@@ -525,6 +525,7 @@ class ConversationInfoActivity : BaseActivity() {
                 putParcelableArrayListExtra("selectedParticipants", existingParticipants)
                 putExtra(KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS, true)
                 putExtra(BundleKeys.KEY_TOKEN, conversationToken)
+                putExtra(BundleKeys.KEY_ONLY_LOCAL_PARTICIPANTS, viewModel.uiState.value.isClassified)
             }
         )
     }
