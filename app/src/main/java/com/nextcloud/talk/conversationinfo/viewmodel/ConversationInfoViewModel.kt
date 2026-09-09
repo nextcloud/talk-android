@@ -567,8 +567,9 @@ class ConversationInfoViewModel @Inject constructor(
     fun allowGuests(user: User, token: String, allow: Boolean, password: String = "") {
         val previous = _uiState.value.guestsAllowed
         val previousHasPassword = _uiState.value.hasPassword
+        val previousShowPasswordProtection = _uiState.value.showPasswordProtection
         val hasPassword = allow && (_uiState.value.hasPassword || password.isNotEmpty())
-        _uiState.update { it.copy(guestsAllowed = allow, hasPassword = hasPassword) }
+        _uiState.update { it.copy(guestsAllowed = allow, hasPassword = hasPassword, showPasswordProtection = allow) }
         viewModelScope.launch {
             try {
                 val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
@@ -581,7 +582,13 @@ class ConversationInfoViewModel @Inject constructor(
                     password = password
                 )
             } catch (exception: Exception) {
-                _uiState.update { it.copy(guestsAllowed = previous, hasPassword = previousHasPassword) }
+                _uiState.update {
+                    it.copy(
+                        guestsAllowed = previous,
+                        hasPassword = previousHasPassword,
+                        showPasswordProtection = previousShowPasswordProtection
+                    )
+                }
                 _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(R.string.nc_guest_access_allow_failed))
                 Log.e(TAG, "Error allowing guests", exception)
             }
