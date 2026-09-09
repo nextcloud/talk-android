@@ -18,8 +18,10 @@ data class PasswordResult(
     @JsonField(name = ["passed"])
     var passed: Boolean?,
     @JsonField(name = ["reason"])
-    var reason: String?
+    var reason: String?,
+    @JsonField(name = ["password"])
+    var password: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null)
+    constructor() : this(null, null, null)
 }

@@ -43,7 +43,12 @@ fun CreationResultEffect(
     LaunchedEffect(creationState) {
         when (val state = creationState) {
             is RoomUIState.Error -> {
-                Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                val reason = state.serverMessage?.takeIf { it.isNotBlank() }
+                if (reason == null) {
+                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(context, reason, Toast.LENGTH_LONG).show()
+                }
                 onHandled()
             }
 
@@ -72,14 +77,17 @@ fun CreationResultEffect(
 @Suppress("LongParameterList")
 @Composable
 fun ShareCreatedConversation(
-    roomToken: String,
+    roomToken: String?,
     password: String?,
-    currentUser: User,
+    currentUser: User?,
     context: Context,
-    onDismiss: () -> Unit
+    onDismiss: (roomToken: String) -> Unit
 ) {
+    if (roomToken == null || currentUser == null) {
+        return
+    }
     AlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = { onDismiss(roomToken) },
         title = { Text(text = stringResource(R.string.nc_conversation_created_title)) },
         text = {
             Column {
@@ -108,7 +116,7 @@ fun ShareCreatedConversation(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(onClick = { onDismiss(roomToken) }) {
                 Text(text = stringResource(R.string.nc_open_conversation))
             }
         }
