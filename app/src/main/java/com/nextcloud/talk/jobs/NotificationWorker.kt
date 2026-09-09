@@ -1317,7 +1317,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val intent = createMainActivityIntent()
 
         val notification: Notification = notificationBuilder
-            .setContentTitle(context!!.resources.getString(R.string.nc_call_e2ee_not_supported_title))
+            .setContentTitle(
+                String.format(
+                    context!!.resources.getString(R.string.nc_call_e2ee_not_supported_title),
+                    conversation.displayName
+                )
+            )
             .setContentText(context!!.resources.getString(R.string.nc_call_e2ee_not_supported))
             .setSmallIcon(R.drawable.ic_call_black_24dp)
             .setOngoing(false)
