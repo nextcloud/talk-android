@@ -115,6 +115,12 @@ object CapabilitiesUtil {
      */
     fun getPasswordValidationUrl(user: User?): String? = user?.capabilities?.passwordPolicy?.api?.validatePasswordApi
 
+    /**
+     * The endpoint that generates a password satisfying the server's policy, or null when the
+     * server does not advertise the password_policy capability.
+     */
+    fun getPasswordGenerationUrl(user: User?): String? = user?.capabilities?.passwordPolicy?.api?.generatePasswordApi
+
     // endregion
 
     //region SpreedCapabilities

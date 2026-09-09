@@ -60,6 +60,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -595,6 +596,19 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
     }
 }
 
+/**
+ * Puts a password the screen already holds through validation, so a dialog that opens on one is as
+ * ready to be saved as a typed password would be.
+ */
+@Composable
+private fun ValidateOnOpen(password: String, conversationCreationViewModel: ConversationCreationViewModel) {
+    LaunchedEffect(Unit) {
+        if (password.isNotEmpty()) {
+            conversationCreationViewModel.passwordValidation.validate(password)
+        }
+    }
+}
+
 @Composable
 fun ConversationOption(
     icon: Int? = null,
@@ -633,7 +647,8 @@ fun ConversationOption(
 @Suppress("LongMethod")
 @Composable
 fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: ConversationCreationViewModel) {
-    var changedPassword by remember { mutableStateOf("") }
+    var changedPassword by remember { mutableStateOf(conversationCreationViewModel.password.value) }
+    ValidateOnOpen(changedPassword, conversationCreationViewModel)
     val passwordValidationState by conversationCreationViewModel.passwordValidation.state
         .collectAsStateWithLifecycle()
     Dialog(onDismissRequest = {
@@ -719,7 +734,8 @@ fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: Con
 
 @Composable
 fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: ConversationCreationViewModel) {
-    var password by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf(conversationCreationViewModel.password.value) }
+    ValidateOnOpen(password, conversationCreationViewModel)
     val passwordValidationState by conversationCreationViewModel.passwordValidation.state
         .collectAsStateWithLifecycle()
     AlertDialog(
