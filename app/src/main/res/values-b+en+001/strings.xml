@@ -181,6 +181,7 @@
     <string name="nc_channel_only_moderators_can_post">Only moderators can post in this channel</string>
     <string name="nc_chat_no_messages">No messages yet. Be the first to say hello!</string>
     <string name="nc_classified_conversation">Classified conversation</string>
+    <string name="nc_classified_conversation_description">Locked down conversation for confidential topics, with public access, guests, SIP and recordings disabled</string>
     <string name="nc_clear_edit_button">Cancel editing</string>
     <string name="nc_clear_history">Delete all messages</string>
     <string name="nc_clear_history_success">All messages were deleted</string>
@@ -207,6 +208,9 @@
     <string name="nc_confirm">Confirm</string>
     <string name="nc_connecting_call">Connecting …</string>
     <string name="nc_contacts_done">Done</string>
+    <string name="nc_conversation_created_invalid_participants">Some participants could not be added</string>
+    <string name="nc_conversation_created_public">Guests can join this conversation with its link. Share it now or later from the conversation settings.</string>
+    <string name="nc_conversation_created_title">Conversation created</string>
     <string name="nc_conversation_description">Conversation description</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Go to file</string>
     <string name="nc_conversation_menu_conversation_info">Conversation info</string>
@@ -229,10 +233,20 @@
     <string name="nc_conversation_tags_new">New tag</string>
     <string name="nc_conversation_tags_rename">Rename tag</string>
     <string name="nc_conversation_tags_save">Save</string>
+    <string name="nc_conversation_type_defaults">Default settings of this conversation type:</string>
+    <string name="nc_conversation_type_defaults_hint">These settings can be changed once the conversation is created</string>
+    <string name="nc_conversation_type_lobby">Lobby enabled, restricting the conversation to moderators</string>
+    <string name="nc_conversation_type_mentions_moderators">Only moderators are allowed to mention everyone</string>
+    <string name="nc_conversation_type_message_expiration">Messages expire after %1$s</string>
+    <string name="nc_conversation_type_message_expiration_custom">Message expiration is enabled</string>
+    <string name="nc_conversation_type_sip">Phone and SIP dial-in enabled</string>
+    <string name="nc_conversation_type_sip_no_pin">Dial-in without a PIN allowed</string>
+    <string name="nc_conversation_types_error">Conversation types could not be loaded</string>
     <string name="nc_conversations_empty">Join a conversation or start a new one</string>
     <string name="nc_conversations_empty_details">Say hi to your friends and colleagues!</string>
     <string name="nc_copy_message">Copy</string>
     <string name="nc_copy_message_link">Copy message link</string>
+    <string name="nc_copy_password">Copy password</string>
     <string name="nc_create_new_conversation">Create a new conversation</string>
     <string name="nc_create_poll">Create poll</string>
     <string name="nc_custom_color">Custom colour</string>
@@ -420,6 +434,7 @@
     <string name="nc_offline">Currently offline, please check your connectivity</string>
     <string name="nc_ok">OK</string>
     <string name="nc_ongoing_meeting">Ongoing meeting</string>
+    <string name="nc_open_conversation">Open conversation</string>
     <string name="nc_open_conversation_to_registered_users">Open conversation to registered users</string>
     <string name="nc_open_to_guest_app_users">Also open to guest app users</string>
     <string name="nc_owner">Owner</string>
@@ -427,6 +442,7 @@
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Add participants</string>
     <string name="nc_password">Password</string>
+    <string name="nc_password_copied">Password copied</string>
     <string name="nc_permissions_ask">Set permissions</string>
     <string name="nc_permissions_denied">Some permissions were denied.</string>
     <string name="nc_permissions_rationale_dialog_title">Please allow permissions</string>
@@ -437,6 +453,8 @@
     <string name="nc_pip_microphone_mute">Mute microphone</string>
     <string name="nc_pip_microphone_unmute">Enable microphone</string>
     <string name="nc_plain_old_messages">Messages</string>
+    <string name="nc_presentation">Presentation</string>
+    <string name="nc_presentation_description">Restricted conversation for internal presentations</string>
     <string name="nc_profile_personal_info_title">Personal Info</string>
     <string name="nc_promote">Promote to moderator</string>
     <string name="nc_promote_to_owner">Promote to owner</string>
@@ -461,6 +479,7 @@
     <string name="nc_reply_to_thread">Reply to thread: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Reschedule with notification</string>
     <string name="nc_reschedule_message_without_notification">Reschedule without notification</string>
+    <string name="nc_retry">Retry</string>
     <string name="nc_room_retention">Room is retained successfully</string>
     <string name="nc_save_message">Save</string>
     <string name="nc_save_success">Saved successfully</string>
@@ -631,6 +650,7 @@
     <string name="nc_voice_message_missing_audio_permission">Permission for audio recording is required</string>
     <string name="nc_voice_message_slide_to_cancel">« Slide to cancel</string>
     <string name="nc_webinar">Webinar</string>
+    <string name="nc_webinar_description">Restricted conversation with lobby enabled, ideal for public webinars</string>
     <string name="nc_yes">Yes</string>
     <string name="nc_zoom_in">Zoom in</string>
     <string name="nc_zoom_out">Zoom out</string>

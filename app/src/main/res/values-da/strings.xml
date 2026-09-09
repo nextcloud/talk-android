@@ -232,6 +232,7 @@
     <string name="nc_conversations_empty_details">Sig hej til dine venner og kollegaer.</string>
     <string name="nc_copy_message">Kopiér</string>
     <string name="nc_copy_message_link">Kopier besked link</string>
+    <string name="nc_copy_password">Kopiér adgangskode</string>
     <string name="nc_create_new_conversation">Opret ny samtale</string>
     <string name="nc_create_poll">Opret afstemning</string>
     <string name="nc_custom_color">Brug brugerdefineret farve</string>
@@ -417,6 +418,7 @@
     <string name="nc_offline">For nuværende offline, venligst kontroller din forbindelse</string>
     <string name="nc_ok">OK</string>
     <string name="nc_ongoing_meeting">Igangværende møde</string>
+    <string name="nc_open_conversation">Åben samtale</string>
     <string name="nc_open_conversation_to_registered_users">Begynd en samtale til registrerede brugere</string>
     <string name="nc_open_to_guest_app_users">Også åben for gæste app brugere</string>
     <string name="nc_owner">Ejer</string>
@@ -424,6 +426,7 @@
     <string name="nc_participants">Deltagere</string>
     <string name="nc_participants_add">Tilføj deltagere</string>
     <string name="nc_password">Adgangskode</string>
+    <string name="nc_password_copied">Kodeord kopieret</string>
     <string name="nc_permissions_ask">Angiv rettigheder</string>
     <string name="nc_permissions_denied">Nogle rettigheder blev nægtet.</string>
     <string name="nc_permissions_rationale_dialog_title">Tillad venligst rettigheder</string>
@@ -434,6 +437,7 @@
     <string name="nc_pip_microphone_mute">Mute mikrofon</string>
     <string name="nc_pip_microphone_unmute">Aktiver mikrofon</string>
     <string name="nc_plain_old_messages">Beskeder</string>
+    <string name="nc_presentation">Præsentation</string>
     <string name="nc_profile_personal_info_title">Personlige oplysninger</string>
     <string name="nc_promote">Forfrem til moderator</string>
     <string name="nc_promote_to_owner">Fremme til ejer</string>
@@ -458,6 +462,7 @@
     <string name="nc_reply_to_thread">Svar på tråd: %1$s</string>
     <string name="nc_reschedule_message_with_notification">Udskiftning med anmeldelse</string>
     <string name="nc_reschedule_message_without_notification">Udskiftning uden anmeldelse</string>
+    <string name="nc_retry">Prøv igen</string>
     <string name="nc_room_retention">Rummet er bevaret</string>
     <string name="nc_save_message">Gem</string>
     <string name="nc_save_success">Gemt</string>

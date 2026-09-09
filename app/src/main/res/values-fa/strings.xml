@@ -391,6 +391,7 @@
     <string name="nc_offline">در حال حاضر آفلاین است، لطفاً اتصال خود را بررسی کنید</string>
     <string name="nc_ok">تأیید</string>
     <string name="nc_ongoing_meeting">جلسه در حال انجام</string>
+    <string name="nc_open_conversation">باز کردن گفتگو</string>
     <string name="nc_open_conversation_to_registered_users">مکالمه برای کاربران ثبت‌نام‌شده باز است</string>
     <string name="nc_open_to_guest_app_users">همچنین برای کاربران مهمان برنامه باز است</string>
     <string name="nc_owner">مالک</string>
@@ -408,6 +409,7 @@
     <string name="nc_pip_microphone_mute">بی‌صدا کردن میکروفن</string>
     <string name="nc_pip_microphone_unmute">فعال کردن میکروفن</string>
     <string name="nc_plain_old_messages">پیام‌ها</string>
+    <string name="nc_presentation">ارائه</string>
     <string name="nc_profile_personal_info_title">مشخصات شخصی</string>
     <string name="nc_promote">ترفیع به مدیر</string>
     <string name="nc_public_call_status">گفتگوی عمومی</string>

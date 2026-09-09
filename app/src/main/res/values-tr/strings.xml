@@ -181,6 +181,7 @@
     <string name="nc_channel_only_moderators_can_post">Bu kanala yalnızca sorumlular ileti gönderebilir</string>
     <string name="nc_chat_no_messages">Henüz bir ileti yok. Selam veren ilk kişi olun!</string>
     <string name="nc_classified_conversation">Gizli görüşme</string>
+    <string name="nc_classified_conversation_description">Gizli konular için kilitli görüşme, herkese açık erişim, konuklar ve SIP olmadan</string>
     <string name="nc_clear_edit_button">Düzenlemeyi iptal et</string>
     <string name="nc_clear_history">Tüm iletileri sil</string>
     <string name="nc_clear_history_success">Tüm iletiler silindi</string>
@@ -207,6 +208,9 @@
     <string name="nc_confirm">Onayla</string>
     <string name="nc_connecting_call">Bağlantı kuruluyor …</string>
     <string name="nc_contacts_done">Tamam</string>
+    <string name="nc_conversation_created_invalid_participants">Bazı katılımcılar eklenemedi</string>
+    <string name="nc_conversation_created_public">Konuklar bu görüşmeye bağlantısı ile katılabilir. Şimdi ya da daha sonra konuşma ayarlarından paylaşın.</string>
+    <string name="nc_conversation_created_title">Görüşme oluşturuldu</string>
     <string name="nc_conversation_description">Görüşme açıklaması</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Dosyaya git</string>
     <string name="nc_conversation_menu_conversation_info">Görüşme bilgileri</string>
@@ -229,6 +233,15 @@
     <string name="nc_conversation_tags_new">Yeni etiket</string>
     <string name="nc_conversation_tags_rename">Etiketi yeniden adlandır</string>
     <string name="nc_conversation_tags_save">Kaydet</string>
+    <string name="nc_conversation_type_defaults">Bu görüşme türünün varsayılan ayarları:</string>
+    <string name="nc_conversation_type_defaults_hint">Görüşme oluşturulduktan sonra bu ayarlar değiştirilebilir</string>
+    <string name="nc_conversation_type_lobby">Girişi kullanıma alındı, görüşmeye katılım sorumlular ile kısıtlandı</string>
+    <string name="nc_conversation_type_mentions_moderators">Yalnızca sorumlular herkesi anabilir</string>
+    <string name="nc_conversation_type_message_expiration">İletiler %1$s geçersiz oluyor</string>
+    <string name="nc_conversation_type_message_expiration_custom">İleti geçerlilik süresi açık</string>
+    <string name="nc_conversation_type_sip">Telefon ve SIP çevirmeli bağlantı açık</string>
+    <string name="nc_conversation_type_sip_no_pin">PIN kodu olmadan aramaya izin veriliyor</string>
+    <string name="nc_conversation_types_error">Görüşme türleri yüklenemedi</string>
     <string name="nc_conversations_empty">Bir görüşmeye katılın ya da yeni bir görüşme başlatın</string>
     <string name="nc_conversations_empty_details">Tanıdık ve çalışma arkadaşlarınıza selam verin!</string>
     <string name="nc_copy_message">Kopyala</string>
@@ -441,6 +454,7 @@
     <string name="nc_pip_microphone_unmute">Mikrofonu aç</string>
     <string name="nc_plain_old_messages">İletiler</string>
     <string name="nc_presentation">Sunum</string>
+    <string name="nc_presentation_description">İç sunumlar için kısıtlanmış görüşme</string>
     <string name="nc_profile_personal_info_title">Kişisel bilgiler</string>
     <string name="nc_promote">Sorumluluğa yükselt</string>
     <string name="nc_promote_to_owner">Sahipliğe yükselt</string>
@@ -636,6 +650,7 @@
     <string name="nc_voice_message_missing_audio_permission">Ses kaydetme izninin verilmesi gereklidir</string>
     <string name="nc_voice_message_slide_to_cancel">« İptal etmek için kaydırın</string>
     <string name="nc_webinar">İnternet sunumu</string>
+    <string name="nc_webinar_description">Giriş ile kısıtlanmış görüşme, herkese açık internet toplantıları için ideal</string>
     <string name="nc_yes">Evet</string>
     <string name="nc_zoom_in">Yakınlaştır</string>
     <string name="nc_zoom_out">Uzaklaştır</string>

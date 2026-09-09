@@ -181,6 +181,7 @@
     <string name="nc_channel_only_moderators_can_post">僅主持人可以在此頻道張貼</string>
     <string name="nc_chat_no_messages">目前尚無訊息。快來當第一個打招呼的人吧！</string>
     <string name="nc_classified_conversation">機密對話</string>
+    <string name="nc_classified_conversation_description">針對機密話題設定為「鎖定」對話，同時停用公開存取、訪客、SIP 及錄音功能</string>
     <string name="nc_clear_edit_button">取消編輯</string>
     <string name="nc_clear_history">刪除所有訊息</string>
     <string name="nc_clear_history_success">已刪除所有訊息</string>
@@ -207,6 +208,9 @@
     <string name="nc_confirm">確認</string>
     <string name="nc_connecting_call">連線中 …</string>
     <string name="nc_contacts_done">完成</string>
+    <string name="nc_conversation_created_invalid_participants">無法新增部份參與者</string>
+    <string name="nc_conversation_created_public">來賓可透過此連結加入這則對話。您可立即分享，或稍後從對話設定中分享。</string>
+    <string name="nc_conversation_created_title">已建立對話</string>
     <string name="nc_conversation_description">對話描述</string>
     <string name="nc_conversation_menu_conversation_go_to_file">前往檔案</string>
     <string name="nc_conversation_menu_conversation_info">對話資訊</string>
@@ -229,6 +233,15 @@
     <string name="nc_conversation_tags_new">新標籤</string>
     <string name="nc_conversation_tags_rename">重新命名標籤</string>
     <string name="nc_conversation_tags_save">儲存</string>
+    <string name="nc_conversation_type_defaults">此對話類型的預設設定：</string>
+    <string name="nc_conversation_type_defaults_hint">建立對話後即可變更這些設定</string>
+    <string name="nc_conversation_type_lobby">已啟用大廳，僅有主持人可進入對話</string>
+    <string name="nc_conversation_type_mentions_moderators">僅有主持人可以提及所有人</string>
+    <string name="nc_conversation_type_message_expiration">訊息將於 %1$s 後過期</string>
+    <string name="nc_conversation_type_message_expiration_custom">已啟用訊息過期功能</string>
+    <string name="nc_conversation_type_sip">已啟用電話與 SIP 撥入</string>
+    <string name="nc_conversation_type_sip_no_pin">允許不輸入 PIN 碼直接撥入</string>
+    <string name="nc_conversation_types_error">無法載入對話類型</string>
     <string name="nc_conversations_empty">加入一個對話或者開一個新的</string>
     <string name="nc_conversations_empty_details">跟大家打個招呼！</string>
     <string name="nc_copy_message">複製</string>
@@ -441,6 +454,7 @@
     <string name="nc_pip_microphone_unmute">啟用麥克風</string>
     <string name="nc_plain_old_messages">訊息</string>
     <string name="nc_presentation">簡報</string>
+    <string name="nc_presentation_description">此為內部簡報的受限對話</string>
     <string name="nc_profile_personal_info_title">個人資訊</string>
     <string name="nc_promote">授予主持人資格</string>
     <string name="nc_promote_to_owner">升級為擁有者</string>
@@ -636,6 +650,7 @@
     <string name="nc_voice_message_missing_audio_permission">需要錄音權限</string>
     <string name="nc_voice_message_slide_to_cancel">« 滑動取消</string>
     <string name="nc_webinar">網路研討會</string>
+    <string name="nc_webinar_description">啟用大廳功能的受限對話，非常適合公開網路研討會</string>
     <string name="nc_yes">是</string>
     <string name="nc_zoom_in">放大</string>
     <string name="nc_zoom_out">縮小</string>

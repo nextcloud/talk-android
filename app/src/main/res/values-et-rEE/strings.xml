@@ -181,6 +181,7 @@
     <string name="nc_channel_only_moderators_can_post">Vaid moderaatorid võivad siia kanalisse postitada</string>
     <string name="nc_chat_no_messages">Sõnumeid veel pole. Ole esimene, kes ütleb tere!</string>
     <string name="nc_classified_conversation">Salastatud vestlus</string>
+    <string name="nc_classified_conversation_description">Lukustatud vestlus delikaatsel või salajasel teemal, mille puhul avalik ligipääs, külaliskasutajad, SIP-kontod ja salvestamine on keelatud</string>
     <string name="nc_clear_edit_button">Katkesta muutmine</string>
     <string name="nc_clear_history">Kustuta kõik sõnumid</string>
     <string name="nc_clear_history_success">Kõik sõnumid on kustutatud</string>
@@ -207,6 +208,9 @@
     <string name="nc_confirm">Kinnita</string>
     <string name="nc_connecting_call">Ühendan…</string>
     <string name="nc_contacts_done">Valmis</string>
+    <string name="nc_conversation_created_invalid_participants">Mõnede osalejate lisamine ei õnnestunud</string>
+    <string name="nc_conversation_created_public">Külalised saavad vestlusega liituda tema lingi alusel. Võid linki jagada kohe või teha seda hiljem vestluse seadistusest.</string>
+    <string name="nc_conversation_created_title">Vestlus on loodud</string>
     <string name="nc_conversation_description">Vestluse kirjeldus</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Mine faili juurde</string>
     <string name="nc_conversation_menu_conversation_info">Vestluse teave</string>
@@ -229,6 +233,15 @@
     <string name="nc_conversation_tags_new">Uus silt</string>
     <string name="nc_conversation_tags_rename">Muuda sildi nime</string>
     <string name="nc_conversation_tags_save">Salvesta</string>
+    <string name="nc_conversation_type_defaults">Vaikimisi seadistused selle vestluse tüübi jaoks:</string>
+    <string name="nc_conversation_type_defaults_hint">Neid seadistusi saab muuta peale vestluse loomist</string>
+    <string name="nc_conversation_type_lobby">Ooteruum on kasutusel ja osalemine on piiratud moderaatoritega</string>
+    <string name="nc_conversation_type_mentions_moderators">Vaid moderaatoritel on võimalus mainida kõiki</string>
+    <string name="nc_conversation_type_message_expiration">Sõnumid aeguvad peale %1$s</string>
+    <string name="nc_conversation_type_message_expiration_custom">Sõnumi aegumine on kasutusel</string>
+    <string name="nc_conversation_type_sip">Sissehelistamine tavatelefoni ja SIP-liidestusega on kasutusel</string>
+    <string name="nc_conversation_type_sip_no_pin">Sissehelistamine ilma PIN-koodita on kasutusel</string>
+    <string name="nc_conversation_types_error">Vestluste tüüpide laadimine ei õnnestunud</string>
     <string name="nc_conversations_empty">Liitu vestlusega või alusta uut</string>
     <string name="nc_conversations_empty_details">Ütle tere oma sõpradele ja kolleegidele!</string>
     <string name="nc_copy_message">Kopeeri</string>
@@ -421,6 +434,7 @@
     <string name="nc_offline">Nutiseade pole võrgus, palun kontrolli internetiühendust</string>
     <string name="nc_ok">Sobib</string>
     <string name="nc_ongoing_meeting">Pooleliolev kohtumine</string>
+    <string name="nc_open_conversation">Avatud vestlus</string>
     <string name="nc_open_conversation_to_registered_users">Ava vestlus registreeritud kasutajatele</string>
     <string name="nc_open_to_guest_app_users">Lisaks ava ka rakenduse külaliskasutajatele</string>
     <string name="nc_owner">Omanik</string>
@@ -439,6 +453,8 @@
     <string name="nc_pip_microphone_mute">Summuta mikrofon</string>
     <string name="nc_pip_microphone_unmute">Lülita mikrofon sisse</string>
     <string name="nc_plain_old_messages">Sõnumid</string>
+    <string name="nc_presentation">Esitlus</string>
+    <string name="nc_presentation_description">Piiratud vestlus sisemiste esitluste jaoks</string>
     <string name="nc_profile_personal_info_title">Isiklik teave</string>
     <string name="nc_promote">Määra moderaatoriks</string>
     <string name="nc_promote_to_owner">Muuda omanikuks</string>
@@ -634,6 +650,7 @@
     <string name="nc_voice_message_missing_audio_permission">Vajalikud on õigused heli salvestamiseks</string>
     <string name="nc_voice_message_slide_to_cancel">« Katkestamiseks viipa</string>
     <string name="nc_webinar">Veebiseminar</string>
+    <string name="nc_webinar_description">Piiratud vestlus, mis kasutab ooteruumi. Sobib hästi avalike veebiseminaride jaoks</string>
     <string name="nc_yes">Jah</string>
     <string name="nc_zoom_in">Suumi sisse</string>
     <string name="nc_zoom_out">Suumi välja</string>

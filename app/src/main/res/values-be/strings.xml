@@ -205,6 +205,7 @@
     <string name="nc_conversations_empty_details">Павітайцеся з сябрамі і калегамі!</string>
     <string name="nc_copy_message">Капіяваць</string>
     <string name="nc_copy_message_link">Скапіяваць спасылку на паведамленне</string>
+    <string name="nc_copy_password">Скапіяваць пароль</string>
     <string name="nc_create_new_conversation">Стварыць новую размову</string>
     <string name="nc_create_poll">Стварыць апытанне</string>
     <string name="nc_date_header_today">Сёння</string>
@@ -358,6 +359,7 @@
     <string name="nc_offline">Вы па-за сеткай, праверце падключэнне</string>
     <string name="nc_ok">OK</string>
     <string name="nc_ongoing_meeting">Бягучая сустрэча</string>
+    <string name="nc_open_conversation">Адкрыць размову</string>
     <string name="nc_open_conversation_to_registered_users">Адкрыць размову для зарэгістраваных карыстальнікаў</string>
     <string name="nc_open_to_guest_app_users">Таксама адкрыта для гасцей</string>
     <string name="nc_owner">Уладальнік</string>
@@ -391,6 +393,7 @@
     <string name="nc_rename_confirm">Перайменаваць</string>
     <string name="nc_reply">Адказаць</string>
     <string name="nc_reply_privately">Адказаць прыватна</string>
+    <string name="nc_retry">Паўтарыць спробу</string>
     <string name="nc_room_retention">Пакой паспяхова захаваны</string>
     <string name="nc_save_message">Захаваць</string>
     <string name="nc_save_success">Паспяхова захавана</string>
