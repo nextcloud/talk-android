@@ -167,7 +167,18 @@ interface ChatMessageRepository : LifecycleAwareManager {
      */
     suspend fun deleteTempMessageByReferenceId(referenceId: String): Boolean
 
-    suspend fun editChatMessage(credentials: String, url: String, text: String): Flow<Result<ChatOverallSingleMessage>>
+    /**
+     * Writes the new text into the local database before the server is asked, so the chat renders the
+     * edit right away, and restores the previous text if the request fails or the server rejects the
+     * edit (a message that is too old, for instance). The successful response is persisted as the
+     * authoritative version.
+     */
+    suspend fun editChatMessage(
+        credentials: String,
+        url: String,
+        messageId: Long,
+        text: String
+    ): Result<ChatOverallSingleMessage>
 
     /**
      * Marks the message as deleted locally before the server is asked, so the chat renders the deletion

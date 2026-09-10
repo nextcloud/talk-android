@@ -23,8 +23,10 @@ import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOCS
+import com.nextcloud.talk.models.json.chat.ChatOCSSingleMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
+import com.nextcloud.talk.models.json.generic.GenericMeta
 import com.nextcloud.talk.models.json.conversations.Conversation
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.awaitCancellation
@@ -285,6 +287,97 @@ class OfflineFirstChatRepositoryTest {
             assertEquals("comment_deleted", entity.messageType)
         }
 
+    @Test
+    fun `editChatMessage writes the new text before the server answers`() =
+        runTest {
+            val entity = messageEntity(MESSAGE_ID)
+            givenCachedMessage(entity)
+            val textWhenAsked = mutableListOf<String>()
+            wheneverBlocking { network.editChatMessage(any(), any(), any()) } doSuspendableAnswer {
+                textWhenAsked.add(entity.message)
+                editedResponse(EDITED_TEXT)
+            }
+
+            val result = repository.editChatMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID, EDITED_TEXT)
+
+            assertEquals(listOf(EDITED_TEXT), textWhenAsked)
+            assertTrue(result.isSuccess)
+            assertEquals(EDITED_TEXT, entity.message)
+            assertEquals("me", entity.lastEditActorId)
+        }
+
+    @Test
+    fun `editChatMessage restores the previous text when the request fails`() =
+        runTest {
+            val entity = messageEntity(MESSAGE_ID)
+            givenCachedMessage(entity)
+            wheneverBlocking { network.editChatMessage(any(), any(), any()) } doSuspendableAnswer {
+                throw httpException(HTTP_METHOD_NOT_ALLOWED)
+            }
+
+            val result = repository.editChatMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID, EDITED_TEXT)
+
+            assertTrue(result.isFailure)
+            assertEquals("message $MESSAGE_ID", entity.message)
+            assertNull(entity.lastEditActorId)
+        }
+
+    @Test
+    fun `editChatMessage restores the previous text when the server refuses the edit`() =
+        runTest {
+            val entity = messageEntity(MESSAGE_ID)
+            givenCachedMessage(entity)
+            wheneverBlocking { network.editChatMessage(any(), any(), any()) } doSuspendableAnswer {
+                // e.g. a message that is too old to be edited
+                editedResponse(EDITED_TEXT, statusCode = HTTP_BAD_REQUEST)
+            }
+
+            val result = repository.editChatMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID, EDITED_TEXT)
+
+            assertTrue(result.isSuccess)
+            assertEquals("message $MESSAGE_ID", entity.message)
+        }
+
+    @Test
+    fun `editChatMessage persists the version the server confirmed`() =
+        runTest {
+            val entity = messageEntity(MESSAGE_ID)
+            givenCachedMessage(entity)
+            wheneverBlocking { network.editChatMessage(any(), any(), any()) } doSuspendableAnswer {
+                editedResponse(SERVER_TEXT, lastEditTimestamp = 1234L)
+            }
+
+            repository.editChatMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID, EDITED_TEXT)
+
+            assertEquals(SERVER_TEXT, entity.message)
+            assertEquals(1234L, entity.lastEditTimestamp)
+        }
+
+    @Test
+    fun `editChatMessage never stores the system message that reports the edit`() =
+        runTest {
+            // the response's own message is "You edited a message" - storing that as the message
+            // would replace the text the user just wrote
+            val entity = messageEntity(MESSAGE_ID)
+            givenCachedMessage(entity)
+            wheneverBlocking { network.editChatMessage(any(), any(), any()) } doSuspendableAnswer {
+                ChatOverallSingleMessage(
+                    ocs = ChatOCSSingleMessage(
+                        meta = GenericMeta(status = "ok", statusCode = HTTP_OK, message = null),
+                        data = message(SYSTEM_MESSAGE_ID).apply {
+                            message = "You edited a message"
+                            messageType = "system"
+                            systemMessageType = ChatMessage.SystemMessageType.MESSAGE_EDITED
+                        }
+                    )
+                )
+            }
+
+            repository.editChatMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID, EDITED_TEXT)
+
+            assertEquals(EDITED_TEXT, entity.message)
+        }
+
     private fun user(): User =
         User(
             id = ACCOUNT_ID,
@@ -387,6 +480,41 @@ class OfflineFirstChatRepositoryTest {
             assertEquals("message $MESSAGE_ID", entity.message)
         }
 
+    @Test
+    fun `an edit cancelled before it was answered restores the previous text`() =
+        runTest {
+            val entity = messageEntity(MESSAGE_ID)
+            givenCachedMessage(entity)
+            val requestStarted = CompletableDeferred<Unit>()
+            wheneverBlocking { network.editChatMessage(any(), any(), any()) } doSuspendableAnswer {
+                requestStarted.complete(Unit)
+                awaitCancellation()
+            }
+
+            val edit = launch { repository.editChatMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID, EDITED_TEXT) }
+            requestStarted.await()
+            edit.cancelAndJoin()
+
+            assertEquals("message $MESSAGE_ID", entity.message)
+        }
+
+    @Test
+    fun `a refused edit is not sent a second time`() =
+        runTest {
+            val entity = messageEntity(MESSAGE_ID)
+            givenCachedMessage(entity)
+            var attempts = 0
+            wheneverBlocking { network.editChatMessage(any(), any(), any()) } doSuspendableAnswer {
+                attempts++
+                throw httpException(HTTP_BAD_REQUEST)
+            }
+
+            repository.editChatMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID, EDITED_TEXT)
+
+            assertEquals(1, attempts)
+            assertEquals("message $MESSAGE_ID", entity.message)
+        }
+
     private fun messageEntity(id: Long): ChatMessageEntity =
         ChatMessageEntity(
             internalId = "$INTERNAL_CONVERSATION_ID@$id",
@@ -409,6 +537,31 @@ class OfflineFirstChatRepositoryTest {
 
     private fun deletedResponse(): ChatOverallSingleMessage = ChatOverallSingleMessage(ocs = null)
 
+    private fun editedResponse(
+        text: String,
+        statusCode: Int = HTTP_OK,
+        lastEditTimestamp: Long? = null
+    ): ChatOverallSingleMessage =
+        ChatOverallSingleMessage(
+            ocs = ChatOCSSingleMessage(
+                meta = GenericMeta(status = "ok", statusCode = statusCode, message = null),
+                // the endpoint answers with the system message about the edit, the edited message
+                // itself is its parent
+                data = message(SYSTEM_MESSAGE_ID).apply {
+                    message = "You edited a message"
+                    messageType = "system"
+                    systemMessageType = ChatMessage.SystemMessageType.MESSAGE_EDITED
+                    parentMessage = message(MESSAGE_ID).apply {
+                        message = text
+                        this.lastEditTimestamp = lastEditTimestamp
+                        lastEditActorId = "me"
+                        lastEditActorType = "users"
+                        lastEditActorDisplayName = "Me"
+                    }
+                }
+            )
+        )
+
     private fun httpException(code: Int) =
         HttpException(Response.error<Any>(code, "".toResponseBody("text/plain".toMediaType())))
 
@@ -422,9 +575,14 @@ class OfflineFirstChatRepositoryTest {
         private const val CREDENTIALS = "credentials"
         private const val CHAT_URL = "https://server.example.com/ocs/v2.php/apps/spreed/api/v1/chat/$ROOM_TOKEN"
         private const val MESSAGE_ID = 42L
+        private const val SYSTEM_MESSAGE_ID = 43L
         private const val MESSAGE_URL = "$CHAT_URL/42"
         private const val DELETED_PLACEHOLDER = "Message deleted by you"
+        private const val HTTP_OK = 200
+        private const val HTTP_BAD_REQUEST = 400
         private const val HTTP_NOT_FOUND = 404
         private const val HTTP_METHOD_NOT_ALLOWED = 405
+        private const val EDITED_TEXT = "edited text"
+        private const val SERVER_TEXT = "text as stored by the server"
     }
 }

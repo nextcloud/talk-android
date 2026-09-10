@@ -792,24 +792,88 @@ class OfflineFirstChatRepository @Inject constructor(
     override suspend fun deleteTempMessageByReferenceId(referenceId: String): Boolean =
         chatDao.deleteTempChatMessageIfPending(internalConversationId, referenceId) > 0
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun editChatMessage(
         credentials: String,
         url: String,
+        messageId: Long,
         text: String
-    ): Flow<Result<ChatOverallSingleMessage>> =
-        flow {
-            try {
-                val response = network.editChatMessage(
-                    credentials,
-                    url,
-                    text
-                )
-                emit(Result.success(response))
-            } catch (e: Exception) {
-                emit(Result.failure(e))
+    ): Result<ChatOverallSingleMessage> {
+        val restore = applyLocalEdit(messageId, text)
+
+        return try {
+            val response = revertOnCancellation({ restore?.invoke() }) {
+                withRetry(retries = 1, initialDelayMillis = RETRY_DELAY_MS, retryOn = ::isRetryable) {
+                    network.editChatMessage(credentials, url, text)
+                }
+            }
+            val statusCode = response.ocs?.meta?.statusCode
+            if (statusCode != null && statusCode != HTTP_OK) {
+                // the server refused the edit, e.g. because the message is too old
+                restore?.invoke()
+            } else {
+                persistEditedMessage(messageId, response)
+            }
+            Result.success(response)
+        } catch (e: HttpException) {
+            restore?.invoke()
+            Result.failure(e)
+        } catch (e: IOException) {
+            restore?.invoke()
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * Writes [text] into the cached message together with the edit metadata the bubble shows, and
+     * returns the action that restores the previous version. The revert only applies while the message
+     * still carries the local edit, so a server payload that arrived meanwhile stays authoritative.
+     */
+    private suspend fun applyLocalEdit(messageId: Long, text: String): (suspend () -> Unit)? {
+        val message = chatDao.getChatMessageEntity(internalConversationId, messageId)
+        if (message == null || message.message == text) return null
+
+        val previousMessage = message.message
+        val previousTimestamp = message.lastEditTimestamp
+        val previousActorId = message.lastEditActorId
+        val previousActorType = message.lastEditActorType
+        val previousActorDisplayName = message.lastEditActorDisplayName
+
+        message.message = text
+        message.lastEditTimestamp = System.currentTimeMillis() / MILLIES
+        message.lastEditActorId = currentUser.userId
+        message.lastEditActorType = Participant.ActorType.USERS.name.lowercase()
+        message.lastEditActorDisplayName = currentUser.displayName
+        withContext(Dispatchers.IO) { chatDao.updateChatMessage(message) }
+
+        return {
+            val current = chatDao.getChatMessageEntity(internalConversationId, messageId)
+            if (current != null && current.message == text) {
+                current.message = previousMessage
+                current.lastEditTimestamp = previousTimestamp
+                current.lastEditActorId = previousActorId
+                current.lastEditActorType = previousActorType
+                current.lastEditActorDisplayName = previousActorDisplayName
+                withContext(Dispatchers.IO) { chatDao.updateChatMessage(current) }
             }
         }
+    }
+
+    /**
+     * The edit endpoint answers with the system message about the edit; the edited message itself is
+     * that system message's parent, the same shape [ChatMessageSyncer] handles for MESSAGE_EDITED.
+     * Without a usable parent the local edit stands as it is and the next sync confirms it.
+     */
+    private suspend fun persistEditedMessage(messageId: Long, response: ChatOverallSingleMessage) {
+        val edited = response.ocs?.data?.parentMessage?.takeIf { it.id == messageId } ?: return
+        val message = chatDao.getChatMessageEntity(internalConversationId, messageId) ?: return
+
+        message.message = edited.message ?: message.message
+        message.lastEditTimestamp = edited.lastEditTimestamp ?: message.lastEditTimestamp
+        message.lastEditActorId = edited.lastEditActorId ?: message.lastEditActorId
+        message.lastEditActorType = edited.lastEditActorType ?: message.lastEditActorType
+        message.lastEditActorDisplayName = edited.lastEditActorDisplayName ?: message.lastEditActorDisplayName
+        withContext(Dispatchers.IO) { chatDao.updateChatMessage(message) }
+    }
 
     override suspend fun deleteChatMessage(
         credentials: String,
@@ -1169,6 +1233,7 @@ class OfflineFirstChatRepository @Inject constructor(
         private const val MINUS_ONE = -1L
 
         private const val MESSAGE_TYPE_DELETED = "comment_deleted"
+        private const val HTTP_OK = 200
         private const val HTTP_NOT_FOUND = 404
         private const val HTTP_TOO_MANY_REQUESTS = 429
         private const val HTTP_INTERNAL_SERVER_ERROR = 500
