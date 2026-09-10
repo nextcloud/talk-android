@@ -53,8 +53,6 @@ import com.nextcloud.talk.mediaviewer.model.MediaViewerItem
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ReactionAddedModel
-import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
@@ -80,6 +78,7 @@ import com.nextcloud.talk.utils.MimetypeUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
+import com.nextcloud.talk.utils.throttleLatest
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import com.nextcloud.talk.utils.message.SendMessageUtils
@@ -126,11 +125,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
-import retrofit2.HttpException
 import java.io.File
-import java.io.IOException
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -624,19 +623,12 @@ class ChatViewModel @AssistedInject constructor(
     val createRoomViewState: LiveData<ViewState>
         get() = _createRoomViewState
 
-    object ReactionAddedStartState : ViewState
-    class ReactionAddedSuccessState(val reactionAddedModel: ReactionAddedModel) : ViewState
+    enum class ReactionOperation { ADD, DELETE }
 
-    private val _reactionAddedViewState: MutableLiveData<ViewState> = MutableLiveData(ReactionAddedStartState)
-    val reactionAddedViewState: LiveData<ViewState>
-        get() = _reactionAddedViewState
+    private val _reactionFailures = MutableSharedFlow<ReactionOperation>(extraBufferCapacity = 1)
+    val reactionFailures: SharedFlow<ReactionOperation> = _reactionFailures
 
-    object ReactionDeletedStartState : ViewState
-    class ReactionDeletedSuccessState(val reactionDeletedModel: ReactionDeletedModel) : ViewState
-
-    private val _reactionDeletedViewState: MutableLiveData<ViewState> = MutableLiveData(ReactionDeletedStartState)
-    val reactionDeletedViewState: LiveData<ViewState>
-        get() = _reactionDeletedViewState
+    private val reactionLocks = mutableMapOf<Int, Mutex>()
 
     @Volatile private var firstUnreadMessageId: Int? = null
 
@@ -1273,7 +1265,7 @@ class ChatViewModel @AssistedInject constructor(
                 capabilities
             )
         }
-            .debounce(MESSAGES_REBUILD_DEBOUNCE_MS)
+            .throttleLatest(MESSAGES_REBUILD_WINDOW_MS)
             .map { input ->
                 val (
                     rawMessages,
@@ -2143,35 +2135,24 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun deleteReaction(roomToken: String, chatMessage: ChatMessage, emoji: String) {
-        val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
-        val url = ApiUtils.getUrlForMessageReaction(
-            baseUrl = currentUser.baseUrl!!,
-            roomToken = roomToken,
-            messageId = chatMessage.jsonMessageId.toString()
-        )
-
-        viewModelScope.launch {
-            try {
-                val model = reactionsRepository.deleteReaction(
-                    credentials,
-                    currentUser.id!!,
-                    url,
-                    roomToken,
-                    chatMessage,
-                    emoji
-                )
-                if (model.success) {
-                    _reactionDeletedViewState.value = ReactionDeletedSuccessState(model)
-                }
-            } catch (e: IOException) {
-                Log.d(TAG, "deleteReaction I/O error: $e")
-            } catch (e: HttpException) {
-                Log.d(TAG, "deleteReaction HTTP error: $e")
-            }
-        }
+        toggleReaction(roomToken, chatMessage, emoji, ReactionOperation.DELETE)
     }
 
     fun addReaction(roomToken: String, chatMessage: ChatMessage, emoji: String) {
+        toggleReaction(roomToken, chatMessage, emoji, ReactionOperation.ADD)
+    }
+
+    /**
+     * The repository renders the reaction locally before it calls the server, so operations on the same
+     * message and emoji are serialized: a second tap waits for the first one instead of racing it, which
+     * keeps the local state and the order of the requests in sync with what the user tapped.
+     */
+    private fun toggleReaction(
+        roomToken: String,
+        chatMessage: ChatMessage,
+        emoji: String,
+        operation: ReactionOperation
+    ) {
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
         val url = ApiUtils.getUrlForMessageReaction(
             baseUrl = currentUser.baseUrl!!,
@@ -2180,25 +2161,40 @@ class ChatViewModel @AssistedInject constructor(
         )
 
         viewModelScope.launch {
-            try {
-                val model = reactionsRepository.addReaction(
-                    credentials,
-                    currentUser.id!!,
-                    url,
-                    roomToken,
-                    chatMessage,
-                    emoji
-                )
-                if (model.success) {
-                    _reactionAddedViewState.value = ReactionAddedSuccessState(model)
+            reactionLockFor(chatMessage.jsonMessageId).withLock {
+                val succeeded = when (operation) {
+                    ReactionOperation.ADD -> reactionsRepository.addReaction(
+                        credentials,
+                        currentUser.id!!,
+                        url,
+                        roomToken,
+                        chatMessage,
+                        emoji
+                    ).success
+
+                    ReactionOperation.DELETE -> reactionsRepository.deleteReaction(
+                        credentials,
+                        currentUser.id!!,
+                        url,
+                        roomToken,
+                        chatMessage,
+                        emoji
+                    ).success
                 }
-            } catch (e: IOException) {
-                Log.d(TAG, "addReaction I/O error: $e")
-            } catch (e: HttpException) {
-                Log.d(TAG, "addReaction HTTP error: $e")
+
+                if (!succeeded) {
+                    Log.w(TAG, "Reaction $operation failed and was reverted")
+                    _reactionFailures.tryEmit(operation)
+                }
             }
         }
     }
+
+    /**
+     * Applying a reaction rewrites the whole cached message, so reactions of one message are serialized
+     * as a whole - locking per emoji would let two emojis of the same message overwrite each other.
+     */
+    private fun reactionLockFor(messageId: Int): Mutex = reactionLocks.getOrPut(messageId) { Mutex() }
 
     fun startAudioRecording(context: Context, currentConversation: ConversationModel) {
         audioFocusRequestManager.audioFocusRequest(true) {
@@ -2653,7 +2649,7 @@ class ChatViewModel @AssistedInject constructor(
         private const val WEBSOCKET_CONNECT_TIMEOUT_MS = 3000L
         private const val WEBSOCKET_POLL_INTERVAL_MS = 50L
         private const val ROOM_REFRESH_DEBOUNCE_MS = 500L
-        private const val MESSAGES_REBUILD_DEBOUNCE_MS = 200L
+        private const val MESSAGES_REBUILD_WINDOW_MS = 200L
         private const val LOBBY_POLLING_INTERVAL_MS = 5_000L
         private const val GROUPING_TIME_WINDOW_SECONDS = 300L
         private const val TIMESTAMP_TO_MILLIS = 1000L

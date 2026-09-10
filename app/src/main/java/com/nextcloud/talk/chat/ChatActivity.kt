@@ -1505,6 +1505,16 @@ class ChatActivity :
         }
 
         lifecycleScope.launch {
+            chatViewModel.reactionFailures.collect { operation ->
+                val message = when (operation) {
+                    ChatViewModel.ReactionOperation.ADD -> R.string.reaction_add_failed
+                    ChatViewModel.ReactionOperation.DELETE -> R.string.reaction_delete_failed
+                }
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+            }
+        }
+
+        lifecycleScope.launch {
             chatViewModel.noMoreSearchResults.collect {
                 val inSearchMode = chatViewModel.chatMode.value == ChatViewModel.ChatMode.SEARCH_MODE
                 val now = System.currentTimeMillis()
