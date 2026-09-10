@@ -16,9 +16,6 @@ import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.model.UserEntity
 import com.nextcloud.talk.models.json.push.PushConfigurationState
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -159,7 +156,7 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
     override fun getNumberOfThreadReplies(internalConversationId: String, threadId: Long): Int = 0
 }
 
-class DummyUserDaoImpl : UsersDao() {
+class DummyUserDaoImpl : UsersDao {
     private val dummyUsers = mutableListOf(
         UserEntity(1L, "user1_id", "user1", "server1", "1"),
         UserEntity(2L, "user2_id", "user2", "server1", "2"),
@@ -167,28 +164,24 @@ class DummyUserDaoImpl : UsersDao() {
     )
     private var activeUserId: Long? = 1L
 
-    override fun getActiveUser(): Maybe<UserEntity> =
-        Maybe.fromCallable {
-            dummyUsers.find { it.id == activeUserId && !it.scheduledForDeletion }
-        }
+    override suspend fun getActiveUser(): UserEntity? =
+        dummyUsers.find { it.id == activeUserId && !it.scheduledForDeletion }
 
-    override fun getActiveUserObservable(): Observable<UserEntity> =
-        Observable.fromCallable {
-            dummyUsers.find { it.id == activeUserId && !it.scheduledForDeletion }
-        }
+    override fun getActiveUserFlow(): Flow<UserEntity?> =
+        flowOf(dummyUsers.find { it.id == activeUserId && !it.scheduledForDeletion })
 
     override fun getActiveUserSynchronously(): UserEntity? =
         dummyUsers.find {
             it.id == activeUserId && !it.scheduledForDeletion
         }
 
-    override fun deleteUser(user: UserEntity): Int {
+    override suspend fun deleteUser(user: UserEntity): Int {
         val initialSize = dummyUsers.size
         dummyUsers.removeIf { it.id == user.id }
         return initialSize - dummyUsers.size
     }
 
-    override fun updateUser(user: UserEntity): Int {
+    override suspend fun updateUser(user: UserEntity): Int {
         val index = dummyUsers.indexOfFirst { it.id == user.id }
         return if (index != -1) {
             dummyUsers[index] = user
@@ -198,59 +191,48 @@ class DummyUserDaoImpl : UsersDao() {
         }
     }
 
-    override fun saveUser(user: UserEntity): Long {
+    override suspend fun saveUser(user: UserEntity): Long {
         val newUser = user.copy(id = dummyUsers.size + 1L)
         dummyUsers.add(newUser)
         return newUser.id
     }
 
-    override fun saveUsers(vararg users: UserEntity): List<Long> = users.map { saveUser(it) }
+    override suspend fun saveUsers(vararg users: UserEntity): List<Long> = users.map { saveUser(it) }
 
-    override fun getUsers(): Single<List<UserEntity>> = Single.just(dummyUsers.filter { !it.scheduledForDeletion })
+    override suspend fun getUsers(): List<UserEntity> = dummyUsers.filter { !it.scheduledForDeletion }
 
-    override fun getUserWithId(id: Long): Maybe<UserEntity> = Maybe.fromCallable { dummyUsers.find { it.id == id } }
+    override suspend fun getUserWithId(id: Long): UserEntity? = dummyUsers.find { it.id == id }
 
-    override fun getUserWithIdNotScheduledForDeletion(id: Long): Maybe<UserEntity> =
-        Maybe.fromCallable {
-            dummyUsers.find { it.id == id && !it.scheduledForDeletion }
+    override suspend fun getUserWithIdNotScheduledForDeletion(id: Long): UserEntity? =
+        dummyUsers.find { it.id == id && !it.scheduledForDeletion }
+
+    override suspend fun getUserWithUserId(userId: String): UserEntity? = dummyUsers.find { it.userId == userId }
+
+    override suspend fun getUsersScheduledForDeletion(): List<UserEntity> =
+        dummyUsers.filter {
+            it.scheduledForDeletion
         }
 
-    override fun getUserWithUserId(userId: String): Maybe<UserEntity> =
-        Maybe.fromCallable {
-            dummyUsers.find { it.userId == userId }
+    override suspend fun getUsersNotScheduledForDeletion(): List<UserEntity> =
+        dummyUsers.filter {
+            !it.scheduledForDeletion
         }
 
-    override fun getUsersScheduledForDeletion(): Single<List<UserEntity>> =
-        Single.just(
-            dummyUsers.filter {
-                it.scheduledForDeletion
-            }
-        )
+    override suspend fun getUserWithUsernameAndServer(username: String, server: String): UserEntity? =
+        dummyUsers.find { it.username == username }
 
-    override fun getUsersNotScheduledForDeletion(): Single<List<UserEntity>> =
-        Single.just(
-            dummyUsers.filter {
-                !it.scheduledForDeletion
-            }
-        )
-
-    override fun getUserWithUsernameAndServer(username: String, server: String): Maybe<UserEntity> =
-        Maybe.fromCallable {
-            dummyUsers.find { it.username == username }
-        }
-
-    override fun setUserAsActiveWithId(id: Long): Int {
+    override suspend fun setUserAsActiveWithId(id: Long): Int {
         activeUserId = id
         return 1
     }
 
-    override fun updatePushState(id: Long, state: PushConfigurationState): Single<Int> {
+    override suspend fun updatePushState(id: Long, state: PushConfigurationState): Int {
         val index = dummyUsers.indexOfFirst { it.id == id }
         return if (index != -1) {
             dummyUsers[index] = dummyUsers[index]
-            Single.just(1)
+            1
         } else {
-            Single.just(0)
+            0
         }
     }
 }
