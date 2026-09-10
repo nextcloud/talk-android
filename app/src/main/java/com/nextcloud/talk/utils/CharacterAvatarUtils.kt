@@ -64,6 +64,12 @@ object CharacterAvatarUtils {
     private val BOT_ACTOR_TYPES = setOf("bots", "bot")
 
     /**
+     * Former logged-in users whose account was deleted. The server hardcodes their actor id to
+     * "deleted_users" and never returns an avatar for them.
+     */
+    private val DELETED_USER_ACTOR_TYPES = setOf("deleted_users")
+
+    /**
      * Bots that ship their own avatar with the app and therefore never draw a character.
      */
     private val CHANGELOG_BOT_IDS = setOf("changelog", "sample")
@@ -81,6 +87,7 @@ object CharacterAvatarUtils {
         when (actorType) {
             in GUEST_ACTOR_TYPES -> guestAvatar(displayName, guestLabel)
             in BOT_ACTOR_TYPES -> botAvatar(actorId)
+            in DELETED_USER_ACTOR_TYPES -> ActorAvatar.PersonIcon
             else -> null
         }
 
