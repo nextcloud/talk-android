@@ -35,6 +35,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -67,6 +68,8 @@ public class PeerConnectionWrapper {
 
     // It is assumed that there will be at most one remote stream at each time.
     private MediaStream stream;
+    private volatile boolean remoteAudioPlayoutEnabled = false;
+    private final Map<String, AudioTrack> remoteAudioTracks = new HashMap<>();
 
     /**
      * Listener for data channel messages.
@@ -255,6 +258,51 @@ public class PeerConnectionWrapper {
         return stream;
     }
 
+    public synchronized void setRemoteAudioPlayoutEnabled(boolean enabled) {
+        remoteAudioPlayoutEnabled = enabled;
+        double volume = enabled ? 1.0 : 0.0;
+        Iterator<Map.Entry<String, AudioTrack>> iterator = remoteAudioTracks.entrySet().iterator();
+        while (iterator.hasNext()) {
+            try {
+                iterator.next().getValue().setVolume(volume);
+            } catch (IllegalStateException exception) {
+                iterator.remove();
+                Log.w(TAG, "Remote audio track was already disposed", exception);
+            }
+        }
+    }
+
+    private void applyRemoteAudioVolume(@Nullable MediaStream mediaStream) {
+        if (mediaStream == null) {
+            return;
+        }
+        double volume = remoteAudioPlayoutEnabled ? 1.0 : 0.0;
+        for (AudioTrack audioTrack : mediaStream.audioTracks) {
+            applyRemoteAudioVolume(audioTrack, volume);
+        }
+    }
+
+    private void applyRemoteAudioVolume(AudioTrack audioTrack, double volume) {
+        try {
+            String trackId = audioTrack.id();
+            audioTrack.setVolume(volume);
+            remoteAudioTracks.put(trackId, audioTrack);
+        } catch (IllegalStateException exception) {
+            Log.w(TAG, "Remote audio track was already disposed", exception);
+        }
+    }
+
+    private void removeRemoteAudioTrack(MediaStreamTrack mediaStreamTrack) {
+        try {
+            String trackId = mediaStreamTrack.id();
+            if (remoteAudioTracks.get(trackId) == mediaStreamTrack) {
+                remoteAudioTracks.remove(trackId);
+            }
+        } catch (IllegalStateException exception) {
+            Log.w(TAG, "Remote audio track was already disposed", exception);
+        }
+    }
+
     public void removePeerConnection() {
         signalingMessageReceiver.removeListener(webRtcMessageListener);
 
@@ -276,6 +324,8 @@ public class PeerConnectionWrapper {
         }
 
         synchronized (this) {
+            stream = null;
+            remoteAudioTracks.clear();
             for (DataChannel dataChannel : dataChannels.values()) {
                 String label;
                 try {
@@ -582,14 +632,22 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onAddStream(MediaStream mediaStream) {
-            stream = mediaStream;
+            synchronized (PeerConnectionWrapper.this) {
+                stream = mediaStream;
+                applyRemoteAudioVolume(mediaStream);
+            }
 
             peerConnectionNotifier.notifyStreamAdded(mediaStream);
         }
 
         @Override
         public void onRemoveStream(MediaStream mediaStream) {
-            stream = null;
+            synchronized (PeerConnectionWrapper.this) {
+                stream = null;
+                for (AudioTrack audioTrack : mediaStream.audioTracks) {
+                    removeRemoteAudioTrack(audioTrack);
+                }
+            }
 
             peerConnectionNotifier.notifyStreamRemoved(mediaStream);
         }
@@ -648,6 +706,27 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onAddTrack(RtpReceiver rtpReceiver, MediaStream[] mediaStreams) {
+            MediaStreamTrack track = rtpReceiver.track();
+            synchronized (PeerConnectionWrapper.this) {
+                if (track instanceof AudioTrack) {
+                    AudioTrack audioTrack = (AudioTrack) track;
+                    applyRemoteAudioVolume(audioTrack, remoteAudioPlayoutEnabled ? 1.0 : 0.0);
+                }
+                for (MediaStream mediaStream : mediaStreams) {
+                    stream = mediaStream;
+                    applyRemoteAudioVolume(mediaStream);
+                }
+            }
+        }
+
+        @Override
+        public void onRemoveTrack(RtpReceiver rtpReceiver) {
+            MediaStreamTrack track = rtpReceiver.track();
+            if (track instanceof AudioTrack) {
+                synchronized (PeerConnectionWrapper.this) {
+                    removeRemoteAudioTrack(track);
+                }
+            }
         }
     }
 

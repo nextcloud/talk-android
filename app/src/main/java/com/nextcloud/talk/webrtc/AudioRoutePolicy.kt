@@ -60,6 +60,18 @@ internal object AudioRoutePolicy {
     ): Boolean = bluetoothStopNeeded && (!targetMustBeSelectedFirst || targetSelectionSucceeded)
 
     @JvmStatic
+    fun isAudioRouteReady(
+        currentDevice: AudioDevice,
+        bluetoothSelectionPending: Boolean,
+        bluetoothConnected: Boolean,
+        selectedCommunicationRouteConfirmed: Boolean
+    ): Boolean =
+        currentDevice != AudioDevice.NONE &&
+            !bluetoothSelectionPending &&
+            (currentDevice != AudioDevice.BLUETOOTH || bluetoothConnected) &&
+            selectedCommunicationRouteConfirmed
+
+    @JvmStatic
     fun isWiredCommunicationOutput(type: Int, isSink: Boolean): Boolean =
         when (type) {
             AudioDeviceInfo.TYPE_WIRED_HEADSET,
