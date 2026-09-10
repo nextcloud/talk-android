@@ -3695,8 +3695,13 @@ class ChatActivity :
             setContent {
                 GetPinnedOptionsDialog(shouldDismiss, context, viewThemeUtils) { zonedDateTime ->
                     zonedDateTime?.let {
-                        chatViewModel.pinMessage(credentials!!, url, pinUntil = zonedDateTime.toEpochSecond().toInt())
-                    } ?: chatViewModel.pinMessage(credentials!!, url)
+                        chatViewModel.pinMessage(
+                            credentials!!,
+                            url,
+                            message.jsonMessageId.toLong(),
+                            pinUntil = zonedDateTime.toEpochSecond().toInt()
+                        )
+                    } ?: chatViewModel.pinMessage(credentials!!, url, message.jsonMessageId.toLong())
 
                     shouldDismiss.value = true
                 }
@@ -3711,7 +3716,7 @@ class ChatActivity :
             token = roomToken,
             messageId = message.jsonMessageId.toString()
         )
-        chatViewModel.unPinMessage(credentials!!, url)
+        chatViewModel.unPinMessage(credentials!!, url, message.jsonMessageId.toLong())
     }
 
     private fun markAsRead(messageId: Int) {

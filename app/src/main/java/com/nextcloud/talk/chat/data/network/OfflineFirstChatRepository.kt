@@ -987,24 +987,19 @@ class OfflineFirstChatRepository @Inject constructor(
         chatDao.deleteTempChatMessages(internalConversationId, listOf(chatMessage.referenceId.orEmpty()))
     }
 
-    override suspend fun pinMessage(credentials: String, url: String, pinUntil: Int): Flow<ChatMessage?> =
-        flow {
-            runCatching {
-                val overall = network.pinMessage(credentials, url, pinUntil)
-                emit(overall.ocs?.data?.toDomainModel())
-            }.getOrElse { throwable ->
-                Log.e(TAG, "Error in pinMessage: $throwable")
-            }
+    override suspend fun pinMessage(
+        credentials: String,
+        url: String,
+        pinUntil: Int,
+        messageId: Long
+    ): Result<ChatMessage?> =
+        withLocalPinnedMessage(messageId, pinned = true) {
+            network.pinMessage(credentials, url, pinUntil)
         }
 
-    override suspend fun unPinMessage(credentials: String, url: String): Flow<ChatMessage?> =
-        flow {
-            runCatching {
-                val overall = network.unPinMessage(credentials, url)
-                emit(overall.ocs?.data?.toDomainModel())
-            }.getOrElse { throwable ->
-                Log.e(TAG, "Error in unPinMessage: $throwable")
-            }
+    override suspend fun unPinMessage(credentials: String, url: String, messageId: Long): Result<ChatMessage?> =
+        withLocalPinnedMessage(messageId, pinned = false) {
+            network.unPinMessage(credentials, url)
         }
 
     private fun isRetryable(error: Exception): Boolean =
@@ -1012,6 +1007,41 @@ class OfflineFirstChatRepository @Inject constructor(
             is HttpException -> error.code() == HTTP_TOO_MANY_REQUESTS || error.code() >= HTTP_INTERNAL_SERVER_ERROR
             else -> error is IOException
         }
+
+    private suspend fun withLocalPinnedMessage(
+        messageId: Long,
+        pinned: Boolean,
+        request: suspend () -> ChatOverallSingleMessage
+    ): Result<ChatMessage?> {
+        // the shared items screen pins and unpins without ever opening the chat, so there is no local
+        // conversation to update from here
+        val restore = if (isChatDataInitialized()) {
+            conversationListUpdater.updateLocalPinnedMessage(syncTarget, messageId, pinned)
+        } else {
+            null
+        }
+
+        return try {
+            val overall = revertOnCancellation({ restore?.invoke() }) {
+                withRetry(retries = 1, initialDelayMillis = RETRY_DELAY_MS, retryOn = ::isRetryable) { request() }
+            }
+            // the room refresh that follows is computed after this change reached the server, so the
+            // guard has done its job and must not outlive the request
+            conversationListUpdater.clearPendingPinnedMessage(internalConversationId)
+            Result.success(overall.ocs?.data?.toDomainModel())
+        } catch (e: HttpException) {
+            Log.e(TAG, "Error while pinning or unpinning a message: $e")
+            restore?.invoke()
+            Result.failure(e)
+        } catch (e: IOException) {
+            Log.e(TAG, "Error while pinning or unpinning a message: $e")
+            restore?.invoke()
+            Result.failure(e)
+        }
+    }
+
+    private fun isChatDataInitialized(): Boolean =
+        this::currentUser.isInitialized && this::roomToken.isInitialized && this::credentials.isInitialized
 
     override suspend fun hidePinnedMessage(credentials: String, url: String): Flow<Boolean> =
         flow {

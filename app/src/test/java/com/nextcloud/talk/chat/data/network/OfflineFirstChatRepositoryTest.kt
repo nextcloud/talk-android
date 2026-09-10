@@ -13,8 +13,10 @@ import com.nextcloud.talk.conversationlist.data.network.ConversationListUpdater
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
+import com.nextcloud.talk.data.database.mappers.asEntity
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
+import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
@@ -378,6 +380,68 @@ class OfflineFirstChatRepositoryTest {
             assertEquals(EDITED_TEXT, entity.message)
         }
 
+    @Test
+    fun `pinMessage pins the message locally before the server answers`() =
+        runTest {
+            givenCachedConversation()
+            val pinnedWhenAsked = mutableListOf<Long?>()
+            wheneverBlocking { network.pinMessage(any(), any(), any()) } doSuspendableAnswer {
+                pinnedWhenAsked.add(storedConversation.lastPinnedId)
+                pinnedResponse()
+            }
+
+            val result = repository.pinMessage(CREDENTIALS, MESSAGE_URL, 0, MESSAGE_ID)
+
+            assertEquals(listOf(MESSAGE_ID), pinnedWhenAsked)
+            assertTrue(result.isSuccess)
+            assertEquals(MESSAGE_ID, storedConversation.lastPinnedId)
+        }
+
+    @Test
+    fun `pinMessage unpins the message again when the request fails`() =
+        runTest {
+            givenCachedConversation()
+            wheneverBlocking { network.pinMessage(any(), any(), any()) } doSuspendableAnswer {
+                throw httpException(HTTP_METHOD_NOT_ALLOWED)
+            }
+
+            val result = repository.pinMessage(CREDENTIALS, MESSAGE_URL, 0, MESSAGE_ID)
+
+            assertTrue(result.isFailure)
+            assertNull(storedConversation.lastPinnedId)
+        }
+
+    @Test
+    fun `unPinMessage clears the pinned message locally before the server answers`() =
+        runTest {
+            givenCachedConversation(pinnedId = MESSAGE_ID)
+            val pinnedWhenAsked = mutableListOf<Long?>()
+            wheneverBlocking { network.unPinMessage(any(), any()) } doSuspendableAnswer {
+                pinnedWhenAsked.add(storedConversation.lastPinnedId)
+                pinnedResponse()
+            }
+
+            val result = repository.unPinMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID)
+
+            assertEquals(listOf<Long?>(null), pinnedWhenAsked)
+            assertTrue(result.isSuccess)
+            assertNull(storedConversation.lastPinnedId)
+        }
+
+    @Test
+    fun `unPinMessage restores the pinned message when the request fails`() =
+        runTest {
+            givenCachedConversation(pinnedId = MESSAGE_ID)
+            wheneverBlocking { network.unPinMessage(any(), any()) } doSuspendableAnswer {
+                throw httpException(HTTP_METHOD_NOT_ALLOWED)
+            }
+
+            val result = repository.unPinMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID)
+
+            assertTrue(result.isFailure)
+            assertEquals(MESSAGE_ID, storedConversation.lastPinnedId)
+        }
+
     private fun user(): User =
         User(
             id = ACCOUNT_ID,
@@ -514,6 +578,22 @@ class OfflineFirstChatRepositoryTest {
             assertEquals(1, attempts)
             assertEquals("message $MESSAGE_ID", entity.message)
         }
+    private lateinit var storedConversation: ConversationEntity
+
+    private fun givenCachedConversation(pinnedId: Long? = null) {
+        storedConversation = Conversation(token = ROOM_TOKEN)
+            .asEntity(ACCOUNT_ID)
+            .copy(lastPinnedId = pinnedId)
+        whenever(conversationsDao.getConversationForUser(eq(ACCOUNT_ID), eq(ROOM_TOKEN)))
+            .thenAnswer { flowOf(storedConversation) }
+        whenever(conversationsDao.updateConversation(any())).thenAnswer {
+            storedConversation = it.getArgument(0)
+            Unit
+        }
+    }
+
+    private fun pinnedResponse(): ChatOverallSingleMessage =
+        ChatOverallSingleMessage(ocs = ChatOCSSingleMessage(meta = null, data = message(MESSAGE_ID)))
 
     private fun messageEntity(id: Long): ChatMessageEntity =
         ChatMessageEntity(

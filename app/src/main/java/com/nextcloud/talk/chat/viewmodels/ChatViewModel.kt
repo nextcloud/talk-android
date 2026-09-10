@@ -2579,22 +2579,19 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
-    fun pinMessage(credentials: String, url: String, pinUntil: Int = 0) {
+    fun pinMessage(credentials: String, url: String, messageId: Long, pinUntil: Int = 0) {
         viewModelScope.launch {
-            chatRepository.pinMessage(credentials, url, pinUntil).collect {
-                // UI is updated from room change observer
-                getRoom(chatRoomToken)
-            }
+            chatRepository.pinMessage(credentials, url, pinUntil, messageId)
+            // the banner already shows the local state, the refresh re-asserts the server's
+            getRoom(chatRoomToken)
         }
     }
 
-    fun unPinMessage(credentials: String, url: String) {
+    fun unPinMessage(credentials: String, url: String, messageId: Long) {
         viewModelScope.launch {
-            chatRepository.unPinMessage(credentials, url).collect {
-                // This updates the room if there are other pinned messages we need to show
-
-                getRoom(chatRoomToken)
-            }
+            chatRepository.unPinMessage(credentials, url, messageId)
+            // this updates the room if there are other pinned messages we need to show
+            getRoom(chatRoomToken)
         }
     }
 

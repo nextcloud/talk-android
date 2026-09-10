@@ -201,9 +201,17 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     suspend fun deleteTempMessage(chatMessage: ChatMessage)
 
-    suspend fun pinMessage(credentials: String, url: String, pinUntil: Int): Flow<ChatMessage?>
+    /**
+     * Pins [messageId] in the local conversation entry before the server is asked, so the pinned banner
+     * appears right away, and unpins it again if the request finally fails.
+     */
+    suspend fun pinMessage(credentials: String, url: String, pinUntil: Int, messageId: Long): Result<ChatMessage?>
 
-    suspend fun unPinMessage(credentials: String, url: String): Flow<ChatMessage?>
+    /**
+     * Clears the pinned message in the local conversation entry before the server is asked. The room
+     * refresh that follows reveals another pinned message if there is one.
+     */
+    suspend fun unPinMessage(credentials: String, url: String, messageId: Long): Result<ChatMessage?>
 
     suspend fun hidePinnedMessage(credentials: String, url: String): Flow<Boolean>
 
