@@ -209,11 +209,14 @@ data class ChatMessage(
             ""
         }
 
-    fun getNullsafeActorDisplayName() =
-        if (!TextUtils.isEmpty(actorDisplayName)) {
-            actorDisplayName
-        } else {
-            sharedApplication!!.getString(R.string.nc_guest)
+    val isDeletedUser: Boolean
+        get() = actorType == ACTOR_TYPE_DELETED_USERS
+
+    fun getNullsafeActorDisplayName(): String =
+        when {
+            isDeletedUser -> sharedApplication!!.getString(R.string.nc_deleted_user_display_name)
+            !TextUtils.isEmpty(actorDisplayName) -> actorDisplayName!!
+            else -> sharedApplication!!.getString(R.string.nc_guest)
         }
 
     val createdAt: Date = Date(timestamp * MILLIES)
@@ -339,6 +342,7 @@ data class ChatMessage(
     companion object {
         private const val TAG = "ChatMessage"
         private const val MILLIES: Long = 1000L
+        private const val ACTOR_TYPE_DELETED_USERS = "deleted_users"
         private val regexOptions = setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE)
         private val MARKDOWN_LINK_REGEX = """\[[^\]]+\]\((https?://[^\s)]+)\)""".toRegex(regexOptions)
 
