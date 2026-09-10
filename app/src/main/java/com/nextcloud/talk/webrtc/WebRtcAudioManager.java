@@ -66,6 +66,7 @@ public class WebRtcAudioManager {
     private AudioDevice currentAudioDevice = AudioDevice.NONE;
     private AudioDevice defaultAudioDevice = AudioDevice.NONE;
     private AudioDevice lastReportedAudioDeviceForUi = AudioDevice.NONE;
+    private boolean lastReportedAudioRouteReady = false;
 
     private ProximitySensor proximitySensor = null;
 
@@ -207,6 +208,7 @@ public class WebRtcAudioManager {
         bluetoothPreferredForCall = false;
         audioFocusState.reset();
         lastReportedAudioDeviceForUi = AudioDevice.NONE;
+        lastReportedAudioRouteReady = false;
         audioDevices.clear();
         internalAudioDevices.clear();
         wiredRouteRefreshPending = false;
@@ -480,6 +482,24 @@ public class WebRtcAudioManager {
             return AudioDevice.BLUETOOTH;
         }
         return currentAudioDevice;
+    }
+
+    /**
+     * Returns whether call audio can be played without leaking to a temporary route while Android
+     * is still switching communication devices.
+     */
+    public boolean isAudioRouteReady() {
+        ThreadUtils.checkIsOnMainThread();
+        boolean bluetoothConnected = bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED;
+        boolean selectedCommunicationRouteConfirmed = currentAudioDevice == AudioDevice.BLUETOOTH
+            || Build.VERSION.SDK_INT < Build.VERSION_CODES.S
+            || isCommunicationDeviceSelected(currentAudioDevice);
+        return AudioRoutePolicy.isAudioRouteReady(
+            currentAudioDevice,
+            isBluetoothSelectionPending(),
+            bluetoothConnected,
+            selectedCommunicationRouteConfirmed
+        );
     }
 
     /**
@@ -860,8 +880,12 @@ public class WebRtcAudioManager {
     private void notifyAudioRouteStateIfChanged(boolean audioDeviceChanged) {
         AudioDevice audioDeviceForUi = getAudioDeviceForUi();
         boolean audioDeviceForUiChanged = audioDeviceForUi != lastReportedAudioDeviceForUi;
+        boolean audioRouteReady = isAudioRouteReady();
+        boolean audioRouteReadinessChanged = audioRouteReady != lastReportedAudioRouteReady;
         lastReportedAudioDeviceForUi = audioDeviceForUi;
-        if ((audioDeviceChanged || audioDeviceForUiChanged) && audioManagerListener != null) {
+        lastReportedAudioRouteReady = audioRouteReady;
+        if ((audioDeviceChanged || audioDeviceForUiChanged || audioRouteReadinessChanged)
+                && audioManagerListener != null) {
             audioManagerListener.onAudioDeviceChanged(currentAudioDevice, audioDevices);
         }
     }

@@ -174,6 +174,50 @@ class AudioRoutePolicyTest {
         assertFalse(AudioRoutePolicy.isWiredCommunicationOutput(AudioDeviceInfo.TYPE_BLUETOOTH_SCO, isSink = true))
     }
 
+    @Test
+    fun `audio playout waits for the selected communication route`() {
+        assertFalse(
+            AudioRoutePolicy.isAudioRouteReady(
+                currentDevice = AudioDevice.NONE,
+                bluetoothSelectionPending = false,
+                bluetoothConnected = false,
+                selectedCommunicationRouteConfirmed = false
+            )
+        )
+        assertFalse(
+            AudioRoutePolicy.isAudioRouteReady(
+                currentDevice = AudioDevice.EARPIECE,
+                bluetoothSelectionPending = true,
+                bluetoothConnected = false,
+                selectedCommunicationRouteConfirmed = true
+            )
+        )
+        assertFalse(
+            AudioRoutePolicy.isAudioRouteReady(
+                currentDevice = AudioDevice.BLUETOOTH,
+                bluetoothSelectionPending = false,
+                bluetoothConnected = false,
+                selectedCommunicationRouteConfirmed = true
+            )
+        )
+        assertFalse(
+            AudioRoutePolicy.isAudioRouteReady(
+                currentDevice = AudioDevice.EARPIECE,
+                bluetoothSelectionPending = false,
+                bluetoothConnected = false,
+                selectedCommunicationRouteConfirmed = false
+            )
+        )
+        assertTrue(
+            AudioRoutePolicy.isAudioRouteReady(
+                currentDevice = AudioDevice.BLUETOOTH,
+                bluetoothSelectionPending = false,
+                bluetoothConnected = true,
+                selectedCommunicationRouteConfirmed = true
+            )
+        )
+    }
+
     private fun devices(vararg devices: AudioDevice): Set<AudioDevice> = setOf(*devices)
 
     private fun assertWiredOutput(type: Int) {
