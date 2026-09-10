@@ -89,4 +89,5 @@ freeline_project_description.json
 
 /gradle/verification-keyring.gpg
 /.claude/settings.local.json
+/.claude/worktrees/
 /.artifacts/
