@@ -641,6 +641,8 @@ How to translate with transifex:
     <string name="nc_keep">Keep</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Message deleted successfully, but it might have been leaked to other services</string>
     <string name="startCallForbidden">You are not allowed to start a call</string>
+    <string name="nc_call_e2ee_not_supported_title">Call from %s unavailable</string>
+    <string name="nc_call_e2ee_not_supported">Calling is currently not supported because end-to-end encryption is enabled on the server</string>
     <string name="nc_last_moderator_leaving_room_warning">You need to promote a new moderator before you can leave the conversation</string>
     <string name="nc_room_retention">Room is retained successfully</string>
 
