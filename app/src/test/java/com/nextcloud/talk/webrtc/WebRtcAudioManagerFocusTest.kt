@@ -43,7 +43,9 @@ class WebRtcAudioManagerFocusTest {
         val state = WebRtcAudioManager.AudioFocusState()
 
         assertFalse(state.handle(AudioManager.AUDIOFOCUS_LOSS_TRANSIENT))
+        assertTrue(state.hasTransientLoss())
         assertTrue(state.handle(AudioManager.AUDIOFOCUS_GAIN))
+        assertFalse(state.hasTransientLoss())
     }
 
     @Test
@@ -60,7 +62,9 @@ class WebRtcAudioManagerFocusTest {
         val state = WebRtcAudioManager.AudioFocusState()
 
         assertFalse(state.handle(AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK))
+        assertTrue(state.hasTransientLoss())
         assertTrue(state.handle(AudioManager.AUDIOFOCUS_GAIN))
+        assertFalse(state.hasTransientLoss())
     }
 
     @Test
@@ -76,6 +80,17 @@ class WebRtcAudioManagerFocusTest {
 
         state.handle(AudioManager.AUDIOFOCUS_LOSS_TRANSIENT)
         state.handle(AudioManager.AUDIOFOCUS_LOSS)
+        assertFalse(state.handle(AudioManager.AUDIOFOCUS_GAIN))
+    }
+
+    @Test
+    fun `new call clears a transient loss left by the previous call`() {
+        val state = WebRtcAudioManager.AudioFocusState()
+
+        state.handle(AudioManager.AUDIOFOCUS_LOSS_TRANSIENT)
+        state.reset()
+
+        assertFalse(state.hasTransientLoss())
         assertFalse(state.handle(AudioManager.AUDIOFOCUS_GAIN))
     }
 }
