@@ -341,7 +341,7 @@ class SettingsActivity :
 
     private fun setupPhoneBookIntegration(isOnline: Boolean) {
         if (CapabilitiesUtil.hasSpreedFeatureCapability(
-                currentUser?.capabilities?.spreedCapability!!,
+                currentUser?.capabilities?.spreedCapability,
                 SpreedFeatures.PHONEBOOK_SEARCH
             ) &&
             isOnline
