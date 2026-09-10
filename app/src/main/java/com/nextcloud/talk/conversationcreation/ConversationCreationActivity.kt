@@ -798,21 +798,17 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
     )
 
     val currentUser by conversationCreationViewModel.currentUser.collectAsState()
-    val roomToken = createdPublicConversation
-    val user = currentUser
-    if (roomToken != null && user != null) {
-        ShareCreatedConversation(
-            roomToken = roomToken,
-            password = conversationCreationViewModel.password.value.takeIf { createdWithPassword },
-            currentUser = user,
-            context = context,
-            onDismiss = {
-                createdPublicConversation = null
-                conversationCreationViewModel.clearCreationState()
-                openConversation(context, roomToken)
-            }
-        )
-    }
+    ShareCreatedConversation(
+        roomToken = createdPublicConversation,
+        password = password.takeIf { createdWithPassword },
+        currentUser = currentUser,
+        context = context,
+        onDismiss = { roomToken ->
+            createdPublicConversation = null
+            conversationCreationViewModel.clearCreationState()
+            openConversation(context, roomToken)
+        }
+    )
 
     Box(
         modifier = Modifier
