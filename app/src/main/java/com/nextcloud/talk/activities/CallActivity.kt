@@ -2848,6 +2848,7 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun playCallingSound() {
         stopCallingSound()
         val ringtoneUri: Uri? = if (isIncomingCallFromNotification) {
@@ -2859,17 +2860,21 @@ class CallActivity : CallBaseActivity() {
             mediaPlayer = MediaPlayer()
             try {
                 mediaPlayer!!.setDataSource(this, ringtoneUri)
-                mediaPlayer!!.isLooping = true
                 val audioAttributes = AudioAttributes.Builder().setContentType(
                     AudioAttributes.CONTENT_TYPE_SONIFICATION
                 )
                     .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
                     .build()
                 mediaPlayer!!.setAudioAttributes(audioAttributes)
-                mediaPlayer!!.setOnPreparedListener { mp: MediaPlayer? -> mediaPlayer!!.start() }
+                mediaPlayer!!.setOnPreparedListener { mp: MediaPlayer? ->
+                    mp?.isLooping = true
+                    mp?.start()
+                }
                 mediaPlayer!!.prepareAsync()
-            } catch (e: IOException) {
-                Log.e(TAG, "Failed to play sound")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to play calling sound", e)
+                mediaPlayer?.release()
+                mediaPlayer = null
             }
         }
     }

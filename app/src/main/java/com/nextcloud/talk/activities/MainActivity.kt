@@ -262,6 +262,8 @@ class MainActivity :
                 }
 
                 override fun onSuccess(users: List<User>) {
+                    if (isFinishing || isDestroyed) return
+
                     if (users.isNotEmpty()) {
                         if (appPreferences.useUnifiedPush) {
                             UnifiedPushUtils.setPeriodicPushRegistrationWorker(this@MainActivity)
@@ -269,10 +271,12 @@ class MainActivity :
                             ClosedInterfaceImpl().setUpPushTokenRegistration()
                         }
                         runOnUiThread {
+                            if (isFinishing || isDestroyed) return@runOnUiThread
                             openConversationList()
                         }
                     } else {
                         runOnUiThread {
+                            if (isFinishing || isDestroyed) return@runOnUiThread
                             launchServerSelection()
                         }
                     }
