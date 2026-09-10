@@ -1758,19 +1758,24 @@ class ChatViewModel @AssistedInject constructor(
     fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {
         Log.d(TAG, "Remote server ${conversationModel.remoteServer}")
         if (conversationModel.remoteServer.isNullOrEmpty()) {
+            val spreedCapability = user.capabilities?.spreedCapability
+            if (spreedCapability == null) {
+                Log.w(TAG, "No local spreed capabilities available yet for user ${user.id}, skipping update")
+                return
+            }
             participantPermissions = ParticipantPermissions(
-                user.capabilities!!.spreedCapability!!,
+                spreedCapability,
                 conversationModel
             )
             if (_getCapabilitiesViewState.value == GetCapabilitiesStartState) {
                 _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(
-                    user.capabilities!!.spreedCapability!!,
+                    spreedCapability,
                     conversationModel
                 )
             } else {
-                _getCapabilitiesViewState.value = GetCapabilitiesUpdateState(user.capabilities!!.spreedCapability!!)
+                _getCapabilitiesViewState.value = GetCapabilitiesUpdateState(spreedCapability)
             }
-            _spreedCapabilities.value = user.capabilities!!.spreedCapability!!
+            _spreedCapabilities.value = spreedCapability
         } else {
             chatNetworkDataSource.getCapabilities(user, token)
                 .subscribeOn(Schedulers.io())
