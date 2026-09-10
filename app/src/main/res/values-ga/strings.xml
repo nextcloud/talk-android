@@ -421,6 +421,7 @@
     <string name="nc_offline">Faoi láthair, seiceáil do nascacht le do thoil</string>
     <string name="nc_ok">Ceart go leor</string>
     <string name="nc_ongoing_meeting">Cruinniú leanúnach</string>
+    <string name="nc_open_conversation">Oscail comhrá</string>
     <string name="nc_open_conversation_to_registered_users">Oscail an comhrá d\'úsáideoirí cláraithe</string>
     <string name="nc_open_to_guest_app_users">Chomh maith leis sin oscailte d\'úsáideoirí aip aoi</string>
     <string name="nc_owner">Úinéir</string>

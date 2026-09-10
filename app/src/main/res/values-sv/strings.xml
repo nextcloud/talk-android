@@ -181,6 +181,7 @@
     <string name="nc_channel_only_moderators_can_post">Endast moderatorer kan skriva i den här kanalen</string>
     <string name="nc_chat_no_messages">Inga meddelanden än</string>
     <string name="nc_classified_conversation">Klassificerad konversation</string>
+    <string name="nc_classified_conversation_description">Låst konversation för konfidentiella ämnen; offentlig åtkomst, gäster, SIP och inspelningar är inaktiverade</string>
     <string name="nc_clear_edit_button">Avbryt redigering</string>
     <string name="nc_clear_history">Radera alla meddelanden</string>
     <string name="nc_clear_history_success">Alla meddelanden raderades</string>
@@ -207,6 +208,9 @@
     <string name="nc_confirm">Bekräfta</string>
     <string name="nc_connecting_call">Ansluter…</string>
     <string name="nc_contacts_done">Färdig</string>
+    <string name="nc_conversation_created_invalid_participants">Vissa deltagare kunde inte läggas till</string>
+    <string name="nc_conversation_created_public">Gäster kan ansluta till den här konversationen via dess länk. Dela den nu eller senare från konversationsinställningarna.</string>
+    <string name="nc_conversation_created_title">Konversation skapad</string>
     <string name="nc_conversation_description">Konversationsbeskrivning</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Gå till fil</string>
     <string name="nc_conversation_menu_conversation_info">Konversationsinfo</string>
@@ -229,6 +233,15 @@
     <string name="nc_conversation_tags_new">Ny tagg</string>
     <string name="nc_conversation_tags_rename">Byt namn på tagg</string>
     <string name="nc_conversation_tags_save">Spara</string>
+    <string name="nc_conversation_type_defaults">Standardinställningar för den här konversationstypen:</string>
+    <string name="nc_conversation_type_defaults_hint">Dessa inställningar kan ändras när konversationen har skapats</string>
+    <string name="nc_conversation_type_lobby">Lobby aktiverad; konversationen begränsas till moderatorer</string>
+    <string name="nc_conversation_type_mentions_moderators">Endast moderatorer får nämna alla</string>
+    <string name="nc_conversation_type_message_expiration">Meddelanden förfaller efter %1$s</string>
+    <string name="nc_conversation_type_message_expiration_custom">Anpassad meddelandeutgång är aktiverad</string>
+    <string name="nc_conversation_type_sip">Telefon- och SIP-inringning är aktiverad</string>
+    <string name="nc_conversation_type_sip_no_pin">Inringning utan PIN-kod tillåts</string>
+    <string name="nc_conversation_types_error">Kunde inte läsa in konversationstyper</string>
     <string name="nc_conversations_empty">Anslut till en konversation eller starta en ny</string>
     <string name="nc_conversations_empty_details">Säg hej till dina vänner och kollegor!</string>
     <string name="nc_copy_message">Kopia</string>
@@ -441,6 +454,7 @@
     <string name="nc_pip_microphone_unmute">Aktivera mikrofon</string>
     <string name="nc_plain_old_messages">Meddelanden</string>
     <string name="nc_presentation">Presentation</string>
+    <string name="nc_presentation_description">Begränsad konversation för interna presentationer</string>
     <string name="nc_profile_personal_info_title">Personlig information</string>
     <string name="nc_promote">Befordra till moderator</string>
     <string name="nc_promote_to_owner">Befordra till ägare</string>
@@ -636,6 +650,7 @@
     <string name="nc_voice_message_missing_audio_permission">Tillstånd för ljudinspelning krävs</string>
     <string name="nc_voice_message_slide_to_cancel">« Dra för att avbryta</string>
     <string name="nc_webinar">Webbinarium</string>
+    <string name="nc_webinar_description">Begränsad konversation med lobby aktiverad, idealisk för offentliga webbseminarier</string>
     <string name="nc_yes">Ja</string>
     <string name="nc_zoom_in">Zooma in</string>
     <string name="nc_zoom_out">Zooma ut</string>
