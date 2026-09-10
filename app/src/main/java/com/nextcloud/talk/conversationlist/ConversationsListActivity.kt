@@ -118,6 +118,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.await
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
@@ -423,7 +424,9 @@ class ConversationsListActivity : BaseActivity() {
                 appPreferences.setConversationListPositionAndOffset(0, 0)
             }
 
-            hasMultipleAccountsState.value = userManager.users.blockingGet().size > 1
+            lifecycleScope.launch {
+                hasMultipleAccountsState.value = userManager.users.await().size > 1
+            }
             conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
             fetchRooms()
             fetchPendingInvitations()
