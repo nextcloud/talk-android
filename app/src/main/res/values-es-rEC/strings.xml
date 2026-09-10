@@ -275,6 +275,7 @@
     <string name="nc_pip_microphone_mute">Silenciar micrófono</string>
     <string name="nc_pip_microphone_unmute">Habilitar micrófono</string>
     <string name="nc_plain_old_messages">Mensajes</string>
+    <string name="nc_presentation">Presentación</string>
     <string name="nc_profile_personal_info_title">Información personal</string>
     <string name="nc_promote">Promover a moderador</string>
     <string name="nc_push_disabled">Notificaciones push deshabilitadas</string>

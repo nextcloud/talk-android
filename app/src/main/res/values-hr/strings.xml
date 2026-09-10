@@ -247,6 +247,7 @@
     <string name="nc_notify_me_never">Nikad ne šalji obavijesti</string>
     <string name="nc_offline">Trenutno izvan mreže, provjerite vezu</string>
     <string name="nc_ok">U redu</string>
+    <string name="nc_open_conversation">Otvori razgovor</string>
     <string name="nc_open_conversation_to_registered_users">Otvori razgovor registriranim korisnicima</string>
     <string name="nc_open_to_guest_app_users">Otvori i gostujućim korisnicima aplikacije</string>
     <string name="nc_owner">Vlasnik</string>
