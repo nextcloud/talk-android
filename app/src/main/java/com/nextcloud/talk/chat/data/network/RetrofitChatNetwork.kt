@@ -164,10 +164,8 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         fieldMap: HashMap<String, Int>
     ): Response<ChatOverall> = ncApiCoroutines.pullChatMessages(credentials, url, fieldMap)
 
-    override fun deleteChatMessage(credentials: String, url: String): Observable<ChatOverallSingleMessage> =
-        ncApi.deleteChatMessage(credentials, url).map {
-            it
-        }
+    override suspend fun deleteChatMessage(credentials: String, url: String): ChatOverallSingleMessage =
+        ncApiCoroutines.deleteChatMessage(credentials, url)
 
     override fun createRoom(credentials: String, url: String, map: Map<String, String>): Observable<RoomOverall> =
         ncApi.createRoom(credentials, url, map).map {

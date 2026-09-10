@@ -169,6 +169,21 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     suspend fun editChatMessage(credentials: String, url: String, text: String): Flow<Result<ChatOverallSingleMessage>>
 
+    /**
+     * Marks the message as deleted locally before the server is asked, so the chat renders the deletion
+     * right away, and reverts it if the request finally fails. [deletedPlaceholder] is the text the
+     * bubble shows until the server's own wording arrives with the next sync.
+     *
+     * A successful result without a message means the server no longer knew the message, so the local
+     * deletion stands with nothing left to report.
+     */
+    suspend fun deleteChatMessage(
+        credentials: String,
+        url: String,
+        messageId: Long,
+        deletedPlaceholder: String
+    ): Result<ChatOverallSingleMessage?>
+
     suspend fun editTempChatMessage(message: ChatMessage, editedMessageText: String): Flow<Boolean>
 
     suspend fun sendUnsentChatMessages(credentials: String, url: String)

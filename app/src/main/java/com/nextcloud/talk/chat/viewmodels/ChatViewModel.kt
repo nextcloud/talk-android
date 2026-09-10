@@ -19,6 +19,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.data.ChatMessageRepository
@@ -1990,32 +1991,26 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun deleteChatMessages(credentials: String, url: String, messageId: Int) {
-        chatNetworkDataSource.deleteChatMessage(credentials, url)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<ChatOverallSingleMessage> {
-                override fun onSubscribe(d: Disposable) {
-                    disposableSet.add(d)
-                }
+        val deletedPlaceholder = NextcloudTalkApplication.sharedApplication!!
+            .getString(R.string.message_deleted_by_you)
 
-                override fun onError(e: Throwable) {
-                    Log.e(
-                        TAG,
-                        "Something went wrong when trying to delete message with id " +
-                            messageId,
-                        e
-                    )
+        viewModelScope.launch {
+            val result = chatRepository.deleteChatMessage(
+                credentials,
+                url,
+                messageId.toLong(),
+                deletedPlaceholder
+            )
+
+            result
+                .onSuccess { message ->
+                    message?.let { _deleteChatMessageViewState.value = DeleteChatMessageSuccessState(it) }
+                }
+                .onFailure { throwable ->
+                    Log.e(TAG, "Something went wrong when trying to delete message with id $messageId", throwable)
                     _deleteChatMessageViewState.value = DeleteChatMessageErrorState
                 }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-
-                override fun onNext(t: ChatOverallSingleMessage) {
-                    _deleteChatMessageViewState.value = DeleteChatMessageSuccessState(t)
-                }
-            })
+        }
     }
 
     fun advanceLocalLastReadMessageIfNeeded(messageId: Int) {

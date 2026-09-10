@@ -32,6 +32,9 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.message.SendMessageUtils
+import com.nextcloud.talk.utils.revertOnCancellation
+import com.nextcloud.talk.utils.withRetry
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -47,6 +50,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
@@ -806,6 +811,69 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
+    override suspend fun deleteChatMessage(
+        credentials: String,
+        url: String,
+        messageId: Long,
+        deletedPlaceholder: String
+    ): Result<ChatOverallSingleMessage?> {
+        val restore = applyLocalDeletion(messageId, deletedPlaceholder)
+
+        return try {
+            val response = revertOnCancellation({ restore?.invoke() }) {
+                withRetry(retries = 1, initialDelayMillis = RETRY_DELAY_MS, retryOn = ::isRetryable) {
+                    network.deleteChatMessage(credentials, url)
+                }
+            }
+            Result.success(response)
+        } catch (e: HttpException) {
+            if (e.code() == HTTP_NOT_FOUND) {
+                // the server does not know the message any more, so it is gone either way
+                Result.success(null)
+            } else {
+                restore?.invoke()
+                Result.failure(e)
+            }
+        } catch (e: IOException) {
+            restore?.invoke()
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * Renders the message as deleted in the local database and returns the action that puts it back,
+     * or null when there was nothing to change. The revert only applies while the message still carries
+     * the local deletion, so a server payload that arrived meanwhile stays authoritative.
+     */
+    private suspend fun applyLocalDeletion(messageId: Long, deletedPlaceholder: String): (suspend () -> Unit)? {
+        val message = chatDao.getChatMessageEntity(internalConversationId, messageId)
+        if (message == null || message.messageType == MESSAGE_TYPE_DELETED) return null
+
+        val previousMessageType = message.messageType
+        val previousMessage = message.message
+        val previousDeleted = message.deleted
+        // the deleted message the server sends back carries no file, poll or location any more, so the
+        // parameters have to go as well - otherwise the bubble keeps rendering the attachment
+        val previousMessageParameters = message.messageParameters
+
+        message.messageType = MESSAGE_TYPE_DELETED
+        message.message = deletedPlaceholder
+        message.deleted = true
+        message.messageParameters = null
+        withContext(Dispatchers.IO) { chatDao.updateChatMessage(message) }
+
+        return {
+            val current = chatDao.getChatMessageEntity(internalConversationId, messageId)
+            if (current != null && current.messageType == MESSAGE_TYPE_DELETED) {
+                current.messageType = previousMessageType
+                current.message = previousMessage
+                current.deleted = previousDeleted
+                current.messageParameters = previousMessageParameters
+                withContext(Dispatchers.IO) { chatDao.updateChatMessage(current) }
+            }
+        }
+    }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun editTempChatMessage(message: ChatMessage, editedMessageText: String): Flow<Boolean> =
         flow {
@@ -873,6 +941,12 @@ class OfflineFirstChatRepository @Inject constructor(
             }.getOrElse { throwable ->
                 Log.e(TAG, "Error in unPinMessage: $throwable")
             }
+        }
+
+    private fun isRetryable(error: Exception): Boolean =
+        when (error) {
+            is HttpException -> error.code() == HTTP_TOO_MANY_REQUESTS || error.code() >= HTTP_INTERNAL_SERVER_ERROR
+            else -> error is IOException
         }
 
     override suspend fun hidePinnedMessage(credentials: String, url: String): Flow<Boolean> =
@@ -1093,5 +1167,11 @@ class OfflineFirstChatRepository @Inject constructor(
         private const val INSURANCE_REQUEST_DELAY = 2 * 60 * MILLIES
 
         private const val MINUS_ONE = -1L
+
+        private const val MESSAGE_TYPE_DELETED = "comment_deleted"
+        private const val HTTP_NOT_FOUND = 404
+        private const val HTTP_TOO_MANY_REQUESTS = 429
+        private const val HTTP_INTERNAL_SERVER_ERROR = 500
+        private const val RETRY_DELAY_MS = 500L
     }
 }
