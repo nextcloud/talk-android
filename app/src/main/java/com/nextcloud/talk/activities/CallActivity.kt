@@ -438,12 +438,7 @@ class CallActivity : CallBaseActivity() {
         binding = CallActivityBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
 
-        // the call screen background is always dark, regardless of the system light/dark theme,
-        // so status/navigation bar icons must always be light rather than following the system theme
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
-            navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
-        )
+        applyDarkSystemBarStyle()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             ViewCompat.setOnApplyWindowInsetsListener(binding!!.callLayout) { view, insets ->
@@ -3381,10 +3376,25 @@ class CallActivity : CallBaseActivity() {
         binding!!.callControls.visibility = View.VISIBLE
         initViews()
         binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
+
+        // returning from PIP resets the system bar appearance, so it must be re-applied
+        applyDarkSystemBarStyle()
     }
 
     override fun suppressFitsSystemWindows() {
         binding!!.callLayout.fitsSystemWindows = false
+    }
+
+    /**
+     * The call screen background is always dark, regardless of the system light/dark theme, so
+     * status/navigation bar icons must always be light rather than following the system theme.
+     * Must be re-applied after returning from PIP, since exiting PIP resets it to the system default.
+     */
+    private fun applyDarkSystemBarStyle() {
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
+        )
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
