@@ -142,12 +142,14 @@ interface ChatMessageRepository : LifecycleAwareManager {
         referenceId: String
     ): Flow<Result<ChatMessage?>>
 
+    @Suppress("LongParameterList")
     suspend fun addTemporaryMessage(
         message: CharSequence,
         displayName: String,
         replyTo: Int,
         sendWithoutNotification: Boolean,
-        referenceId: String
+        referenceId: String,
+        threadTitle: String?
     ): Flow<Result<ChatMessage?>>
 
     @Suppress("LongParameterList")
