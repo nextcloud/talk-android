@@ -102,7 +102,7 @@ class CallForegroundService : Service() {
     }
 
     private fun buildNotification(conversationName: String?, callExtras: Bundle?): Notification {
-        val channelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
+        val channelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_ONGOING_V1.name
         ensureNotificationChannel()
 
         val contentTitle = conversationName?.takeIf { it.isNotBlank() }
@@ -135,11 +135,12 @@ class CallForegroundService : Service() {
             .setSmallIcon(R.drawable.ic_call_white_24dp)
             .setOngoing(true)
             .setCategory(NotificationCompat.CATEGORY_CALL)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
             .setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(pendingIntent)
             .setShowWhen(false)
+            .setOnlyAlertOnce(true)
             .addAction(returnToCallAction)
             .addAction(endCallAction)
             .setAutoCancel(false)
@@ -162,7 +163,7 @@ class CallForegroundService : Service() {
             createHangupPendingIntent()
         )
 
-        val channelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
+        val channelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_ONGOING_V1.name
 
         val callStartTime = ApplicationWideCurrentRoomHolder.getInstance().callStartTime
 
@@ -174,6 +175,7 @@ class CallForegroundService : Service() {
             .setCategory(Notification.CATEGORY_CALL)
             .setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
             .setShowWhen(false)
+            .setOnlyAlertOnce(true)
             .also { builder ->
                 if (callStartTime != null && callStartTime > 0) {
                     builder.setWhen(callStartTime)
