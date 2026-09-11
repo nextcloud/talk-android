@@ -247,6 +247,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">D\'éirigh leis an teachtaireacht a scriosadh, ach seans gur sceitheadh ​​chuig seirbhísí eile í</string>
     <string name="nc_delete_now">Scrios anois</string>
     <string name="nc_deleted_user">Baineadh úsáideoir %1$s</string>
+    <string name="nc_deleted_user_display_name">Úsáideoir scriosta</string>
     <string name="nc_demote">Léim as an modhnóir</string>
     <string name="nc_demote_owner_to_moderator">Ísligh ó úinéir go modhnóirÍsligh ó úinéir go modhnóir</string>
     <string name="nc_demote_owner_to_participant">Ísligh ó úinéir go rannpháirtí</string>

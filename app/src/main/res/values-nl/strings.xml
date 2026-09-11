@@ -214,6 +214,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Het bericht is verwijderd, maar het is mogelijk gelekt naar andere services</string>
     <string name="nc_delete_now">Verwijder nu</string>
     <string name="nc_deleted_user">Gebruiker %1$s is verwijderd</string>
+    <string name="nc_deleted_user_display_name">Verwijderde gebruiker</string>
     <string name="nc_demote">Degradeer van moderator</string>
     <string name="nc_description_record_voice">Opnemen gesproken bericht</string>
     <string name="nc_description_send_message_button">Verstuur bericht</string>

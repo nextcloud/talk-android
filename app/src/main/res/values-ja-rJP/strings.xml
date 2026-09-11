@@ -187,6 +187,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">メッセージは削除されましたが、他サービスへは転送されている可能性があります。</string>
     <string name="nc_delete_now">今すぐ削除</string>
     <string name="nc_deleted_user">ユーザー%1$sは削除されました</string>
+    <string name="nc_deleted_user_display_name">ユーザーを削除</string>
     <string name="nc_demote">モデレータから降格</string>
     <string name="nc_description_record_voice">ボイスメッセージを録音</string>
     <string name="nc_description_send_message_button">メッセージを送信</string>

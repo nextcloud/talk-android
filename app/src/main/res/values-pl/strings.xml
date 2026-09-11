@@ -228,6 +228,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Wiadomość została pomyślnie usunięta, ale mogła przedostać się do innych usług</string>
     <string name="nc_delete_now">Usuń teraz</string>
     <string name="nc_deleted_user">Użytkownik %1$s został usunięty</string>
+    <string name="nc_deleted_user_display_name">Usunięty użytkownik</string>
     <string name="nc_demote">Zdegraduj z moderatora</string>
     <string name="nc_description_record_voice">Nagraj wiadomość głosową</string>
     <string name="nc_description_send_message_button">Wyślij wiadomość</string>

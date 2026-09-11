@@ -188,6 +188,7 @@
     <string name="nc_delete_message">Mezua ezabatzen</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mezua ondo ezabatu da, baina baliteke beste zerbitzu batzuetara filtratu izana</string>
     <string name="nc_deleted_user"> %1$s erabiltzailea kendu da</string>
+    <string name="nc_deleted_user_display_name">Ezabatutako erabiltzaileak</string>
     <string name="nc_demote">Moderatzailetik degradatua</string>
     <string name="nc_description_record_voice">Grabatu ahots mezua</string>
     <string name="nc_description_send_message_button">Bidali mezua</string>

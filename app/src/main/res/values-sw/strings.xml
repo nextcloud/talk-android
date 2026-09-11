@@ -211,6 +211,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Ujumbe umefutwa kikamilifu, lakini huenda umevuja kwa huduma zingine</string>
     <string name="nc_delete_now">Futa sasa</string>
     <string name="nc_deleted_user">Mtumiaji %1$s aliondolewa</string>
+    <string name="nc_deleted_user_display_name">Mtumiaji aliyefutwa</string>
     <string name="nc_demote">Mshushe kutoka msimamizi</string>
     <string name="nc_description_record_voice">Rekodi ujumbe wa sauti</string>
     <string name="nc_description_send_message_button">Tuma ujumbe</string>

@@ -246,6 +246,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Pranešimas sėkmingai ištrintas, tačiau jis galėjo būti perduotas kitoms paslaugoms</string>
     <string name="nc_delete_now">Ištrinti dabar</string>
     <string name="nc_deleted_user">%1$s vartotojas buvo pašalintas</string>
+    <string name="nc_deleted_user_display_name">Ištrintas vartotojas</string>
     <string name="nc_demote">Pašalinti iš moderatorių</string>
     <string name="nc_demote_owner_to_moderator">Pakeisti statusą iš savininko į moderatorių</string>
     <string name="nc_demote_owner_to_participant">Pakeisti statusą iš savininko į dalyvį</string>

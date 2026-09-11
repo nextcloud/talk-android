@@ -230,6 +230,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">پیام با موفقیت حذف شد، اما ممکن است به سرویس‌های دیگر نشت کرده باشد</string>
     <string name="nc_delete_now">حذف کن</string>
     <string name="nc_deleted_user">کاربر %1$s حذف شد</string>
+    <string name="nc_deleted_user_display_name">کاربر حذف‌شده</string>
     <string name="nc_demote">تنزل مقام از مدیر</string>
     <string name="nc_description_record_voice">ضبط پیام صوتی</string>
     <string name="nc_description_send_message_button">ارسال پیام</string>

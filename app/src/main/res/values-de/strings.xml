@@ -151,6 +151,8 @@
     <string name="nc_call_button_content_description_microphone">Mikrofon umschalten</string>
     <string name="nc_call_button_content_description_pip">Bild-in-Bild-Modus öffnen</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Wechseln Sie zum Eigenen Video</string>
+    <string name="nc_call_e2ee_not_supported">Anrufe werden aktuell nicht unterstützt, da die Ende-zu-Ende-Verschlüsselung auf dem Server aktiviert ist</string>
+    <string name="nc_call_e2ee_not_supported_title">Anruf von %s nicht verfügbar</string>
     <string name="nc_call_incoming">EINGEHEND</string>
     <string name="nc_call_join_failed">Konnte dem Anruf nicht beitreten. Bitte erneut versuchen.</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
@@ -209,6 +211,7 @@
     <string name="nc_connecting_call">Verbinde …</string>
     <string name="nc_contacts_done">Fertig</string>
     <string name="nc_conversation_created_invalid_participants">Einige Teilnehmer konnten nicht hinzugefügt werden</string>
+    <string name="nc_conversation_created_invalid_participants_named">Diese Teilnehmer konnten nicht hinzugefügt werden: %1$s</string>
     <string name="nc_conversation_created_public">Gäste können über den Link an dieser Unterhaltung teilnehmen. Dies jetzt oder später aus den Unterhaltungseinstellungen heraus teilen.</string>
     <string name="nc_conversation_created_title">Unterhaltung angelegt</string>
     <string name="nc_conversation_description">Beschreibung der Unterhaltung</string>
@@ -260,6 +263,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Nachricht gelöscht, sie wurde aber möglicherweise an andere Dienste weitergegeben.</string>
     <string name="nc_delete_now">Jetzt löschen</string>
     <string name="nc_deleted_user">Benutzer %1$s wurde entfernt</string>
+    <string name="nc_deleted_user_display_name">Gelöschter Benutzer</string>
     <string name="nc_demote">Moderator absetzen</string>
     <string name="nc_demote_owner_to_moderator">Vom Besitzer zum Moderator ändern</string>
     <string name="nc_demote_owner_to_participant">Von Besitzer zu Teilnehmer ändern</string>
@@ -443,6 +447,8 @@
     <string name="nc_participants_add">Teilnehmer hinzufügen</string>
     <string name="nc_password">Passwort</string>
     <string name="nc_password_copied">Passwort wurde kopiert</string>
+    <string name="nc_password_required">Dieser Server erfordert ein Passwort, damit Gäste an den Unterhaltungen teilnehmen können.</string>
+    <string name="nc_password_secure">Passwort ist sicher</string>
     <string name="nc_permissions_ask">Berechtigungen festlegen</string>
     <string name="nc_permissions_denied">Einige Berechtigungen wurden abgelehnt.</string>
     <string name="nc_permissions_rationale_dialog_title">Bitte alle Berechtigungen erteilen.</string>

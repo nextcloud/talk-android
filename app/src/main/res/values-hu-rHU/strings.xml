@@ -230,6 +230,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Az üzenet törlése sikeresen megtörtént, de lehet, hogy az már megjelent más szolgáltatásokon</string>
     <string name="nc_delete_now">Törlés most</string>
     <string name="nc_deleted_user">%1$s felhasználó el lett távolítva</string>
+    <string name="nc_deleted_user_display_name">Törölt felhasználó</string>
     <string name="nc_demote">Lefokozás moderátorról</string>
     <string name="nc_demote_owner_to_moderator">Lefokozás tulajdonosról moderátorrá</string>
     <string name="nc_demote_owner_to_participant">Lefokozás tulajdonosról résztvevővé</string>
