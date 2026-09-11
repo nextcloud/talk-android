@@ -214,6 +214,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Messaggio eliminato correttamente, ma potrebbe essere stato distribuito ad altri servizi </string>
     <string name="nc_delete_now">Elimina ora</string>
     <string name="nc_deleted_user">L\'utente %1$s è stato rimosso</string>
+    <string name="nc_deleted_user_display_name">Utente eliminato</string>
     <string name="nc_demote">Declassa da moderatore</string>
     <string name="nc_description_record_voice">Registra messaggio vocale</string>
     <string name="nc_description_send_message_button">Invia messaggio</string>

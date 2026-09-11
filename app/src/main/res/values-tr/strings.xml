@@ -151,6 +151,8 @@
     <string name="nc_call_button_content_description_microphone">Mikrofonu aç/kapat</string>
     <string name="nc_call_button_content_description_pip">Resim içinde resim kipini aç</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Benim görüntüme geç</string>
+    <string name="nc_call_e2ee_not_supported">Sunucuda uçtan uca şifreleme açık olduğundan arama şu anda desteklenmiyor</string>
+    <string name="nc_call_e2ee_not_supported_title">%s çağrısı kullanılamıyor</string>
     <string name="nc_call_incoming">GELEN</string>
     <string name="nc_call_join_failed">Çağrıya katılınamadı. Lütfen yeniden deneyin.</string>
     <string name="nc_call_name">Görüşme adı</string>
@@ -209,6 +211,7 @@
     <string name="nc_connecting_call">Bağlantı kuruluyor …</string>
     <string name="nc_contacts_done">Tamam</string>
     <string name="nc_conversation_created_invalid_participants">Bazı katılımcılar eklenemedi</string>
+    <string name="nc_conversation_created_invalid_participants_named">Şu katılımcılar eklenemedi: %1$s</string>
     <string name="nc_conversation_created_public">Konuklar bu görüşmeye bağlantısı ile katılabilir. Şimdi ya da daha sonra konuşma ayarlarından paylaşın.</string>
     <string name="nc_conversation_created_title">Görüşme oluşturuldu</string>
     <string name="nc_conversation_description">Görüşme açıklaması</string>
@@ -260,6 +263,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">İleti silindi ancak başka hizmetlere aktarılmış olabilir</string>
     <string name="nc_delete_now">Şimdi sil</string>
     <string name="nc_deleted_user">%1$s kullanıcısı kaldırıldı</string>
+    <string name="nc_deleted_user_display_name">Silinmiş kullanıcı</string>
     <string name="nc_demote">Sorumluluktan çıkar</string>
     <string name="nc_demote_owner_to_moderator">Sahiplikten sorumluluğa düşür</string>
     <string name="nc_demote_owner_to_participant">Sahiplikten katılımcılığa düşür</string>
@@ -443,6 +447,8 @@
     <string name="nc_participants_add">Katılımcı ekle</string>
     <string name="nc_password">Parola</string>
     <string name="nc_password_copied">Parola kopyalandı</string>
+    <string name="nc_password_required">Bu sunucuda, konukların katılabileceği görüşmeler için parola isteniyor</string>
+    <string name="nc_password_secure">Parola güvenli</string>
     <string name="nc_permissions_ask">İzinleri ayarla</string>
     <string name="nc_permissions_denied">Bazı izinler verilmemiş.</string>
     <string name="nc_permissions_rationale_dialog_title">Lütfen izinleri verin</string>

@@ -151,6 +151,8 @@
     <string name="nc_call_button_content_description_microphone">Lülita mikrofon sisse/välja</string>
     <string name="nc_call_button_content_description_pip">Ava pilt-pildis vaade</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Näita oma videovaadet</string>
+    <string name="nc_call_e2ee_not_supported">Kuna serveris on kasutusel läbiv krüptimine, siis helistamine pole hetkel toetatud</string>
+    <string name="nc_call_e2ee_not_supported_title">Helistamine pole saadaval: %s</string>
     <string name="nc_call_incoming">SAABUV</string>
     <string name="nc_call_join_failed">Kõnega liitumine ei õnnestunud. Palun proovi uuesti.</string>
     <string name="nc_call_name">Vestluse nimi</string>
@@ -209,6 +211,7 @@
     <string name="nc_connecting_call">Ühendan…</string>
     <string name="nc_contacts_done">Valmis</string>
     <string name="nc_conversation_created_invalid_participants">Mõnede osalejate lisamine ei õnnestunud</string>
+    <string name="nc_conversation_created_invalid_participants_named">Nende osalejate lisamine ei õnnestunud: %1$s</string>
     <string name="nc_conversation_created_public">Külalised saavad vestlusega liituda tema lingi alusel. Võid linki jagada kohe või teha seda hiljem vestluse seadistusest.</string>
     <string name="nc_conversation_created_title">Vestlus on loodud</string>
     <string name="nc_conversation_description">Vestluse kirjeldus</string>
@@ -260,6 +263,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Sõnumi kustutamine õnnestus, kuid võis juhtuda, et ta oli juba teistesse sõnumiteenustesse edastatud</string>
     <string name="nc_delete_now">Kustuta kohe</string>
     <string name="nc_deleted_user">Kasutaja „%1$s“ on eemaldatud</string>
+    <string name="nc_deleted_user_display_name">Kustutatud kasutaja</string>
     <string name="nc_demote">Võta ära moderaatori õigused</string>
     <string name="nc_demote_owner_to_moderator">Muuda omanikust moderaatoriks</string>
     <string name="nc_demote_owner_to_participant">Muuda omanikust tavaosalejaks</string>
@@ -443,6 +447,8 @@
     <string name="nc_participants_add">Lisa osalejaid</string>
     <string name="nc_password">Salasõna</string>
     <string name="nc_password_copied">Salasõna on kopeeritud</string>
+    <string name="nc_password_required">Server eeldab külaliste liitumisel salasõna kasutamisst</string>
+    <string name="nc_password_secure">Salasõna on turvaline</string>
     <string name="nc_permissions_ask">Lisa õigusi</string>
     <string name="nc_permissions_denied">Mõned õigused puuduvad.</string>
     <string name="nc_permissions_rationale_dialog_title">Palun anna vajalikud õigused</string>

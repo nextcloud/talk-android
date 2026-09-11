@@ -171,6 +171,7 @@
     <string name="nc_delete_message">Izbriši sporočilo</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Sporočilo je uspešno izbrisano, a je lahko že poslano na druge storitve.</string>
     <string name="nc_delete_now">Izbriši</string>
+    <string name="nc_deleted_user_display_name">Izbrisan uporabnik</string>
     <string name="nc_demote">Ponižaj iz moderatorja</string>
     <string name="nc_description_record_voice">Posnemi glasovno sporočilo</string>
     <string name="nc_description_send_message_button">Pošlji sporočilo</string>

@@ -260,6 +260,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">訊息已成功刪除，但可能已分發到其他服務</string>
     <string name="nc_delete_now">立刻刪除</string>
     <string name="nc_deleted_user">使用 %1$s 已移除</string>
+    <string name="nc_deleted_user_display_name">已刪除的使用者</string>
     <string name="nc_demote">取消主持人資格</string>
     <string name="nc_demote_owner_to_moderator">從擁有者降級為主持人</string>
     <string name="nc_demote_owner_to_participant">從擁有者降級為參與者</string>

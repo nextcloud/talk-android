@@ -156,6 +156,7 @@
     <string name="nc_delete_message">Izbriši poruku</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Poruka je uspješno izbrisana, ali je možda prenesena u druge usluge</string>
     <string name="nc_delete_now">Izbriši odmah</string>
+    <string name="nc_deleted_user_display_name">Izbrisan korisnik</string>
     <string name="nc_demote">Ukloni moderatora</string>
     <string name="nc_description_record_voice">Snimi glasovnu poruku</string>
     <string name="nc_description_send_message_button">Pošalji poruku</string>
@@ -402,6 +403,7 @@
     <string name="nc_zoom_out">Umanji</string>
     <string name="next_week">Sljedeći tjedan</string>
     <string name="no_phone_book_integration_due_to_permissions">Integracija broja telefona nije moguća jer nedostaje dopuštenje</string>
+    <string name="notification_mention_only">Samo @spominjanja</string>
     <string name="notification_off">Isključeno</string>
     <string name="notifications_default">Zadani</string>
     <string name="notifications_default_description">Slijedi postavke razgovora</string>

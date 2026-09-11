@@ -246,6 +246,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Besked slettet, men kan kan være lækket til andre services</string>
     <string name="nc_delete_now">Slet nu</string>
     <string name="nc_deleted_user">Brugeren %1$s blev fjernet</string>
+    <string name="nc_deleted_user_display_name">Slettet bruger</string>
     <string name="nc_demote">Degrader fra moderator</string>
     <string name="nc_demote_owner_to_moderator">Demote fra ejer til moderator</string>
     <string name="nc_demote_owner_to_participant">Bevis fra ejer til deltager</string>

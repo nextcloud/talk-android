@@ -248,6 +248,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Správa úspešne odstránená, ale mohla uniknúť na iné serveri.</string>
     <string name="nc_delete_now">Odstrániť teraz</string>
     <string name="nc_deleted_user">Používateľ %1$s bol vymazaný</string>
+    <string name="nc_deleted_user_display_name">Zmazaný užívateľ</string>
     <string name="nc_demote">Odobrať moderovanie</string>
     <string name="nc_demote_owner_to_moderator">Zmeniť vlastníka na moderátora</string>
     <string name="nc_demote_owner_to_participant">Zmeniť vlastníka na účastníka</string>

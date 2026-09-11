@@ -151,6 +151,8 @@
     <string name="nc_call_button_content_description_microphone">切換米高風</string>
     <string name="nc_call_button_content_description_pip">打開畫中畫模式</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">切換到自己的視頻</string>
+    <string name="nc_call_e2ee_not_supported">由於伺服器上啟用了端對端加密，目前不支援呼叫。</string>
+    <string name="nc_call_e2ee_not_supported_title">無法從 %s 通話</string>
     <string name="nc_call_incoming">來電</string>
     <string name="nc_call_join_failed">無法加入通話。請重試。</string>
     <string name="nc_call_name">對話名稱</string>
@@ -209,6 +211,7 @@
     <string name="nc_connecting_call">連線中 …</string>
     <string name="nc_contacts_done">完成</string>
     <string name="nc_conversation_created_invalid_participants">部分參與者無法加入</string>
+    <string name="nc_conversation_created_invalid_participants_named">這些參與者無法加入：%1$s</string>
     <string name="nc_conversation_created_public">訪客可透過此對話的連結加入。你可立即分享，或稍後從對話設定中分享。</string>
     <string name="nc_conversation_created_title">對話已建立</string>
     <string name="nc_conversation_description">對話描述</string>
@@ -260,6 +263,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">消息已成功刪除，但可能已分發到其他服務</string>
     <string name="nc_delete_now">立刻刪除</string>
     <string name="nc_deleted_user">用户 %1$s 已被移除</string>
+    <string name="nc_deleted_user_display_name">已刪除的用戶</string>
     <string name="nc_demote">從主持人降級</string>
     <string name="nc_demote_owner_to_moderator">從擁有者降級為主持人</string>
     <string name="nc_demote_owner_to_participant">從擁有者降級為參與者</string>
@@ -443,6 +447,8 @@
     <string name="nc_participants_add">添加參與者</string>
     <string name="nc_password">密碼</string>
     <string name="nc_password_copied">密碼已複製</string>
+    <string name="nc_password_required">此伺服器要求訪客可加入的對話必須設定密碼。</string>
+    <string name="nc_password_secure">密碼安全</string>
     <string name="nc_permissions_ask">設置權限</string>
     <string name="nc_permissions_denied">部份權限被拒絕。</string>
     <string name="nc_permissions_rationale_dialog_title">請允許權限</string>

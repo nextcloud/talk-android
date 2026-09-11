@@ -230,6 +230,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Сообщение удалено, но его содержимое могло быть прочитано другими службами</string>
     <string name="nc_delete_now">Удалить сейчас</string>
     <string name="nc_deleted_user">Пользователь %1$s был удален</string>
+    <string name="nc_deleted_user_display_name">Удалённый пользователь</string>
     <string name="nc_demote">Исключить из модераторов</string>
     <string name="nc_demote_owner_to_moderator">Понизить с владельца до модератора</string>
     <string name="nc_demote_owner_to_participant">Понизить с владельца до участника</string>

@@ -211,6 +211,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Повідомлення вилучено, але воно могло потрапити до інших сервісів</string>
     <string name="nc_delete_now">Видалити зараз</string>
     <string name="nc_deleted_user">Користувача %1$s було видалено</string>
+    <string name="nc_deleted_user_display_name">Вилучений користувач</string>
     <string name="nc_demote">Розжалування з модератора</string>
     <string name="nc_description_record_voice">Записати голосове повідомлення</string>
     <string name="nc_description_send_message_button">Надіслати повідомлення</string>

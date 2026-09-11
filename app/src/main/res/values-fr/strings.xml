@@ -151,6 +151,8 @@
     <string name="nc_call_button_content_description_microphone">Activer/Désactiver le micro</string>
     <string name="nc_call_button_content_description_pip">Lancer le mode Image dans l\'Image</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Basculer mode selfie</string>
+    <string name="nc_call_e2ee_not_supported">Les appels ne sont actuellement pas pris en charge, car le chiffrement de bout en bout est activé sur le serveur</string>
+    <string name="nc_call_e2ee_not_supported_title">Appel indisponible depuis %s</string>
     <string name="nc_call_incoming">ENTRANT</string>
     <string name="nc_call_join_failed">Impossible de rejoindre l\'appel. Veuillez réessayer.</string>
     <string name="nc_call_name">Nom de la conversation</string>
@@ -209,6 +211,7 @@
     <string name="nc_connecting_call">Connexion…</string>
     <string name="nc_contacts_done">Terminé</string>
     <string name="nc_conversation_created_invalid_participants">Certains participants n\'ont pas pu être ajoutés</string>
+    <string name="nc_conversation_created_invalid_participants_named">Ces participants n\'ont pas pu être ajoutés : %1$s</string>
     <string name="nc_conversation_created_public">Les invités peuvent rejoindre cette conversation grâce à son lien. Partagez-le maintenant ou plus tard depuis les paramètres de la conversation.</string>
     <string name="nc_conversation_created_title">Conversation créée</string>
     <string name="nc_conversation_description">Description de conversation</string>
@@ -260,6 +263,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Message supprimé avec succès, mais il pourrait avoir été divulgué à d’autres services</string>
     <string name="nc_delete_now">Supprimer maintenant</string>
     <string name="nc_deleted_user">L\'utilisateur %1$s a été supprimé</string>
+    <string name="nc_deleted_user_display_name">Utilisateur supprimé</string>
     <string name="nc_demote">Retirer le statut de modérateur</string>
     <string name="nc_demote_owner_to_moderator">Rétrograder de propriétaire à modérateur</string>
     <string name="nc_demote_owner_to_participant">Rétrograder de propriétaire à participant</string>
@@ -443,6 +447,8 @@
     <string name="nc_participants_add">Ajouter des participants</string>
     <string name="nc_password">Mot de passe</string>
     <string name="nc_password_copied">Mot de passe copié</string>
+    <string name="nc_password_required">Ce serveur nécessite un mot de passe pour que les invités puissent le rejoindre</string>
+    <string name="nc_password_secure">Le mot de passe est sécurisé</string>
     <string name="nc_permissions_ask">Définir les autorisations</string>
     <string name="nc_permissions_denied">Certaines autorisations n\'ont pas été accordées.</string>
     <string name="nc_permissions_rationale_dialog_title">Merci de donner les autorisations</string>

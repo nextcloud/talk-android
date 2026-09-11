@@ -151,6 +151,8 @@
     <string name="nc_call_button_content_description_microphone">Toggle microphone</string>
     <string name="nc_call_button_content_description_pip">Open picture-in-picture mode</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Switch to self video</string>
+    <string name="nc_call_e2ee_not_supported">Calling is currently not supported because end-to-end encryption is enabled on the server</string>
+    <string name="nc_call_e2ee_not_supported_title">Call from %s unavailable</string>
     <string name="nc_call_incoming">INCOMING</string>
     <string name="nc_call_join_failed">Could not join the call. Please try again.</string>
     <string name="nc_call_name">Conversation name</string>
@@ -209,6 +211,7 @@
     <string name="nc_connecting_call">Connecting …</string>
     <string name="nc_contacts_done">Done</string>
     <string name="nc_conversation_created_invalid_participants">Some participants could not be added</string>
+    <string name="nc_conversation_created_invalid_participants_named">These participants could not be added: %1$s</string>
     <string name="nc_conversation_created_public">Guests can join this conversation with its link. Share it now or later from the conversation settings.</string>
     <string name="nc_conversation_created_title">Conversation created</string>
     <string name="nc_conversation_description">Conversation description</string>
@@ -260,6 +263,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Message deleted successfully, but it might have been leaked to other services</string>
     <string name="nc_delete_now">Delete now</string>
     <string name="nc_deleted_user">User %1$s was removed</string>
+    <string name="nc_deleted_user_display_name">Deleted user</string>
     <string name="nc_demote">Demote from moderator</string>
     <string name="nc_demote_owner_to_moderator">Demote from owner to moderator</string>
     <string name="nc_demote_owner_to_participant">Demote from owner to participant</string>
@@ -443,6 +447,8 @@
     <string name="nc_participants_add">Add participants</string>
     <string name="nc_password">Password</string>
     <string name="nc_password_copied">Password copied</string>
+    <string name="nc_password_required">This server requires a password for conversations guests can join</string>
+    <string name="nc_password_secure">Password is secure</string>
     <string name="nc_permissions_ask">Set permissions</string>
     <string name="nc_permissions_denied">Some permissions were denied.</string>
     <string name="nc_permissions_rationale_dialog_title">Please allow permissions</string>

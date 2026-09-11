@@ -220,6 +220,7 @@
     <string name="nc_delete_message">Excluir mensagem</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mensagem excluída com sucesso, mas pode ter sido vazada para outros serviços </string>
     <string name="nc_deleted_user">Usuário %1$s foi removido</string>
+    <string name="nc_deleted_user_display_name">Usuário excluído</string>
     <string name="nc_demote">Relegar de moderador</string>
     <string name="nc_description_record_voice">Gravar mensagem de voz</string>
     <string name="nc_description_send_message_button">Enviar mensagem</string>

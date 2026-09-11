@@ -260,6 +260,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Mensagem excluída com sucesso, mas pode ter sido vazada para outros serviços </string>
     <string name="nc_delete_now">Excluir agora</string>
     <string name="nc_deleted_user">Usuário %1$s foi removido</string>
+    <string name="nc_deleted_user_display_name">Usuário excluído</string>
     <string name="nc_demote">Rebaixar de moderador</string>
     <string name="nc_demote_owner_to_moderator">Rebaixar de proprietário para moderador</string>
     <string name="nc_demote_owner_to_participant">Rebaixar de proprietário para participante</string>
