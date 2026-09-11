@@ -42,6 +42,8 @@ import android.view.OrientationEventListener
 import android.view.View
 import android.view.View.OnTouchListener
 import android.widget.Toast
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
@@ -54,6 +56,8 @@ import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
@@ -104,6 +108,7 @@ import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOveral
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel.LoweredHandState
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel.RaisedHandState
+import com.nextcloud.talk.receivers.EndCallReceiver.Companion.END_CALL_FROM_NOTIFICATION
 import com.nextcloud.talk.services.CallForegroundService
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageReceiver.CallParticipantMessageListener
@@ -260,6 +265,10 @@ class CallActivity : CallBaseActivity() {
 
     private val callTimeHandler = Handler(Looper.getMainLooper())
 
+    // Set when a call for another room is requested while this instance is still alive. The current call
+    // is hung up and a fresh CallActivity is started with this intent once this instance is destroyed.
+    private var pendingCallIntent: Intent? = null
+
     // push to talk
     private var isPushToTalkActive = false
     private var pulseAnimation: PulseAnimation? = null
@@ -329,12 +338,15 @@ class CallActivity : CallBaseActivity() {
     private var requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissionMap: Map<String, Boolean> ->
+        Log.d(TAG, "Permission request completed with results: $permissionMap")
+
         val rationaleList: MutableList<String> = ArrayList()
         val audioPermission = permissionMap[Manifest.permission.RECORD_AUDIO]
         if (audioPermission != null) {
             if (java.lang.Boolean.TRUE == audioPermission) {
                 Log.d(TAG, "Microphone permission was granted")
             } else {
+                Log.d(TAG, "Microphone permission is not yet granted. Request will be made for permission.")
                 rationaleList.add(resources.getString(R.string.nc_microphone_permission_hint))
             }
         }
@@ -343,6 +355,7 @@ class CallActivity : CallBaseActivity() {
             if (java.lang.Boolean.TRUE == cameraPermission) {
                 Log.d(TAG, "Camera permission was granted")
             } else {
+                Log.d(TAG, "Camera permission is not yet granted. Request will be made for permission.")
                 rationaleList.add(resources.getString(R.string.nc_camera_permission_hint))
             }
         }
@@ -352,11 +365,23 @@ class CallActivity : CallBaseActivity() {
                 if (java.lang.Boolean.TRUE == bluetoothPermission) {
                     enableBluetoothManager()
                 } else {
+                    Log.d(TAG, "Bluetooth permission is not yet granted. Request will be made for permission.")
                     // Only ask for bluetooth when already asking to grant microphone or camera access. Asking
                     // for bluetooth solely is not important enough here and would most likely annoy the user.
                     if (rationaleList.isNotEmpty()) {
                         rationaleList.add(resources.getString(R.string.nc_bluetooth_permission_hint))
                     }
+                }
+            }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val notificationPermission = permissionMap[Manifest.permission.POST_NOTIFICATIONS]
+            if (notificationPermission != null) {
+                if (java.lang.Boolean.TRUE == notificationPermission) {
+                    Log.d(TAG, "Notification permission was granted")
+                } else {
+                    Log.d(TAG, "Notification permission is not yet granted. Request will be made for permission.")
+                    rationaleList.add(resources.getString(R.string.nc_notification_permission_hint))
                 }
             }
         }
@@ -395,11 +420,41 @@ class CallActivity : CallBaseActivity() {
         super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
 
+        // Register broadcast receiver for ending call from notification
+        val endCallFilter = IntentFilter(END_CALL_FROM_NOTIFICATION)
+
+        // internal receiver for notification actions, so not exported
+        registerPermissionHandlerBroadcastReceiver(
+            endCallFromNotificationReceiver,
+            endCallFilter,
+            permissionUtil!!.privateBroadcastPermission,
+            null,
+            ReceiverFlag.NotExported
+        )
+
         callViewModel = ViewModelProvider(this, viewModelFactory)[CallViewModel::class.java]
 
         rootEglBase = EglBase.create()
         binding = CallActivityBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
+
+        applyDarkSystemBarStyle()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            ViewCompat.setOnApplyWindowInsetsListener(binding!!.callLayout) { view, insets ->
+                val systemBarInsets = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+                )
+                view.setPadding(
+                    systemBarInsets.left,
+                    systemBarInsets.top,
+                    systemBarInsets.right,
+                    systemBarInsets.bottom
+                )
+                WindowInsetsCompat.CONSUMED
+            }
+        }
 
         binding!!.screenShareFullscreenView.setContent {
             MaterialTheme {
@@ -675,6 +730,32 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (currentCallStatus === CallStatus.LEAVING) {
+            Log.d(TAG, "onNewIntent: call is already being left, ignoring intent")
+            return
+        }
+        val newRoomToken = intent.getStringExtra(KEY_ROOM_TOKEN)
+        Log.d(TAG, "onNewIntent: newRoomToken=$newRoomToken roomToken=$roomToken")
+
+        when {
+            // notification tap without extras: just bring the current call back to the front
+            newRoomToken.isNullOrEmpty() -> Unit
+
+            // re-entry for the call this instance is already handling (singleTask reuse)
+            newRoomToken == roomToken -> setIntent(intent)
+
+            // a call for another room was requested while this instance lingered in the background:
+            // end the current call and restart cleanly in onDestroy, so no stale state is reused
+            else -> {
+                Log.d(TAG, "onNewIntent: call requested for another room, ending current call first")
+                pendingCallIntent = Intent(intent)
+                hangup(shutDownView = true, endCallForAll = false)
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         if (hasSpreedFeatureCapability(
@@ -710,6 +791,11 @@ class CallActivity : CallBaseActivity() {
 
     override fun onStop() {
         super.onStop()
+        Log.d(
+            TAG,
+            "CallActivity.onStop: isInPipMode=$isInPipMode currentCallStatus=$currentCallStatus" +
+                " isFinishing=$isFinishing isChangingConfigurations=$isChangingConfigurations"
+        )
         active = false
 
         if (isMicInputAudioThreadRunning) {
@@ -1055,6 +1141,18 @@ class CallActivity : CallBaseActivity() {
             }
         }
 
+        // Check notification permission for Android 13+ (API 33+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (permissionUtil!!.isPostNotificationsPermissionGranted()) {
+                Log.d(TAG, "Notification permission already granted")
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
+                rationaleList.add(resources.getString(R.string.nc_notification_permission_hint))
+            } else {
+                permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
         if (permissionsToRequest.isNotEmpty()) {
             if (rationaleList.isNotEmpty()) {
                 showRationaleDialog(permissionsToRequest, rationaleList)
@@ -1070,14 +1168,33 @@ class CallActivity : CallBaseActivity() {
         stopCallingSound()
         basicInitialization()
         initViews()
-        // updateSelfVideoViewPosition(true)
         checkRecordingConsentAndInitiateCall()
 
         if (permissionUtil!!.isMicrophonePermissionGranted()) {
-            CallForegroundService.start(applicationContext, conversationName, intent.extras)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                !permissionUtil!!.isPostNotificationsPermissionGranted()
+            ) {
+                // the call works without the persistent notification, but returning to it is harder
+                Log.w(TAG, "Notification permission not granted - no persistent notification will be shown")
+                Snackbar.make(
+                    binding!!.root,
+                    resources.getString(R.string.nc_notification_permission_hint),
+                    SEC_10
+                ).show()
+            } else {
+                CallForegroundService.start(
+                    applicationContext,
+                    conversationName,
+                    intent.extras,
+                    CallForegroundService.AvatarInfo(roomToken, baseUrl, credentials)
+                )
+            }
+
             if (!microphoneOn && !appPreferences.callMicrophoneMuted) {
                 onMicrophoneClick()
             }
+        } else {
+            Log.w(TAG, "DEBUG: Microphone permission not granted - skipping foreground service start")
         }
 
         if (isVoiceOnlyCall) {
@@ -1107,13 +1224,19 @@ class CallActivity : CallBaseActivity() {
         for (rationale in rationaleList) {
             rationalesWithLineBreaks.append(rationale).append("\n\n")
         }
+
         val dialogBuilder = MaterialAlertDialogBuilder(this)
             .setTitle(R.string.nc_permissions_rationale_dialog_title)
             .setMessage(rationalesWithLineBreaks)
             .setPositiveButton(R.string.nc_permissions_ask) { _, _ ->
                 requestPermissionLauncher.launch(permissionsToRequest.toTypedArray())
             }
-            .setNegativeButton(R.string.nc_common_dismiss, null)
+            .setNegativeButton(R.string.nc_common_dismiss) { _, _ ->
+                // Proceed with the call even when permissions (e.g. notifications) are dismissed
+                if (!isConnectionEstablished) {
+                    prepareCall()
+                }
+            }
         viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
         dialogBuilder.show()
     }
@@ -1395,6 +1518,11 @@ class CallActivity : CallBaseActivity() {
     }
 
     public override fun onDestroy() {
+        Log.d(TAG, "onDestroy: currentCallStatus=$currentCallStatus")
+
+        // The call cannot survive the activity being destroyed (WebRTC connections, local stream and
+        // signaling listeners all live here), so always clean up and hang up. Background survival is
+        // achieved via moveTaskToBack/PiP, which do not destroy the activity.
         if (signalingMessageReceiver != null) {
             signalingMessageReceiver!!.removeListener(localParticipantMessageListener)
             signalingMessageReceiver!!.removeListener(offerMessageListener)
@@ -1410,7 +1538,20 @@ class CallActivity : CallBaseActivity() {
             hangup(true, false)
         }
         CallForegroundService.stop(applicationContext)
+
         powerManagerUtils!!.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
+
+        try {
+            unregisterReceiver(endCallFromNotificationReceiver)
+        } catch (e: IllegalArgumentException) {
+            Log.w(TAG, "Failed to unregister endCallFromNotificationReceiver", e)
+        }
+
+        pendingCallIntent?.let {
+            Log.d(TAG, "onDestroy: starting CallActivity for pending call intent")
+            startActivity(it)
+        }
+
         super.onDestroy()
     }
 
@@ -1938,15 +2079,27 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 "roomJoined" -> {
-                    Log.d(TAG, "onMessageEvent 'roomJoined' joinRoomInitiated=$joinRoomInitiated")
+                    Log.d(
+                        TAG,
+                        "onMessageEvent 'roomJoined' joinRoomInitiated=$joinRoomInitiated" +
+                            " currentCallStatus=$currentCallStatus"
+                    )
                     if (!joinRoomInitiated) {
                         Log.d(TAG, "Ignoring stale roomJoined event (joinRoomAndCall not yet called)")
                         return
                     }
                     startSendingNick()
                     if (webSocketCommunicationEvent.getHashMap()!!["roomToken"] == roomToken) {
-                        roomJoinRefreshes = 0
-                        performCall()
+                        if (currentCallStatus === CallStatus.IN_CONVERSATION) {
+                            Log.d(
+                                TAG,
+                                "Already in conversation, skipping performCall()" +
+                                    " (ChatActivity resume triggered spurious roomJoined)"
+                            )
+                        } else {
+                            roomJoinRefreshes = 0
+                            performCall()
+                        }
                     }
                 }
 
@@ -2013,7 +2166,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun hangup(shutDownView: Boolean, endCallForAll: Boolean) {
-        Log.d(TAG, "hangup! shutDownView=$shutDownView")
+        Log.d(TAG, "hangup! shutDownView=$shutDownView, endCallForAll=$endCallForAll")
         joinRoomInitiated = false
         if (shutDownView) {
             setCallState(CallStatus.LEAVING)
@@ -2047,6 +2200,13 @@ class CallActivity : CallBaseActivity() {
         }
         ApplicationWideCurrentRoomHolder.getInstance().isInCall = false
         ApplicationWideCurrentRoomHolder.getInstance().isDialing = false
+        ApplicationWideCurrentRoomHolder.getInstance().callStartTime = null
+
+        if (shutDownView) {
+            Log.d(TAG, "Stopping foreground service from hangup()")
+            CallForegroundService.stop(applicationContext)
+        }
+
         hangupNetworkCalls(shutDownView, endCallForAll)
     }
 
@@ -2105,51 +2265,40 @@ class CallActivity : CallBaseActivity() {
         }
         val endCall: Boolean? = if (endCallForAll) true else null
 
+        // Fire DELETE best-effort; do not block the UI waiting for the server response.
+        // The subscription runs entirely on the IO thread — no observeOn(mainThread) needed.
         ncApi!!.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken!!), endCall)
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
+            .subscribe(
+                { /* successfully left call */ },
+                { e -> Log.w(TAG, "Something went wrong when leaving the call", e) }
+            )
 
-                override fun onNext(genericOverall: GenericOverall) {
-                    val conversationModel = currentConversation?.let {
-                        ConversationModel.mapToConversationModel(it, conversationUser)
-                    }
+        val conversationModel = currentConversation?.let {
+            ConversationModel.mapToConversationModel(it, conversationUser)
+        }
 
-                    if (conversationModel?.checkIfVoiceRoom() == true) {
-                        openConversationListInPrimaryTask()
-                        finishAndRemoveTask()
-                    } else if (switchToRoomToken.isNotEmpty()) {
-                        val intent = Intent(context, ChatActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        val bundle = Bundle()
-                        bundle.putBoolean(KEY_SWITCH_TO_ROOM, true)
-                        bundle.putBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, true)
-                        bundle.putString(KEY_ROOM_TOKEN, switchToRoomToken)
-                        bundle.putBoolean(KEY_CALL_VOICE_ONLY, isVoiceOnlyCall)
-                        intent.putExtras(bundle)
-                        startActivity(intent)
-                        finish()
-                    } else if (shutDownView) {
-                        finish()
-                    } else if (currentCallStatus === CallStatus.RECONNECTING ||
-                        currentCallStatus === CallStatus.PUBLISHER_FAILED
-                    ) {
-                        initiateCall()
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.w(TAG, "Something went wrong when leaving the call", e)
-                    finish()
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+        if (conversationModel?.checkIfVoiceRoom() == true) {
+            openConversationListInPrimaryTask()
+            finishAndRemoveTask()
+        } else if (switchToRoomToken.isNotEmpty()) {
+            val intent = Intent(context, ChatActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            val bundle = Bundle()
+            bundle.putBoolean(KEY_SWITCH_TO_ROOM, true)
+            bundle.putBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, true)
+            bundle.putString(KEY_ROOM_TOKEN, switchToRoomToken)
+            bundle.putBoolean(KEY_CALL_VOICE_ONLY, isVoiceOnlyCall)
+            intent.putExtras(bundle)
+            startActivity(intent)
+            finish()
+        } else if (shutDownView) {
+            finish()
+        } else if (currentCallStatus === CallStatus.RECONNECTING ||
+            currentCallStatus === CallStatus.PUBLISHER_FAILED
+        ) {
+            initiateCall()
+        }
     }
 
     private fun openConversationListInPrimaryTask() {
@@ -2991,6 +3140,13 @@ class CallActivity : CallBaseActivity() {
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState) {
             runOnUiThread {
                 if (iceConnectionState == IceConnectionState.FAILED) {
+                    // Don't hang up if the activity is just backgrounded (e.g., task switching).
+                    // The ICE failure is likely transient due to the activity being stopped.
+                    // The connection will recover when the activity resumes.
+                    if (!active && currentCallStatus === CallStatus.IN_CONVERSATION) {
+                        Log.d(TAG, "ICE FAILED while backgrounded, skipping hangup (will recover on resume)")
+                        return@runOnUiThread
+                    }
                     setCallState(CallStatus.PUBLISHER_FAILED)
                     webSocketClient!!.clearResumeId()
                     hangup(false, false)
@@ -3117,8 +3273,11 @@ class CallActivity : CallBaseActivity() {
 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        Log.d(TAG, "onPictureInPictureModeChanged")
-        Log.d(TAG, "isInPictureInPictureMode= $isInPictureInPictureMode")
+        Log.d(
+            TAG,
+            "onPictureInPictureModeChanged: isInPictureInPictureMode=$isInPictureInPictureMode" +
+                " currentCallStatus=$currentCallStatus"
+        )
         isInPipMode = isInPictureInPictureMode
         if (isInPictureInPictureMode) {
             mReceiver = object : BroadcastReceiver() {
@@ -3167,8 +3326,15 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    private var pipUiInitialized = false
+
     override fun updateUiForPipMode() {
-        Log.d(TAG, "updateUiForPipMode")
+        Log.d(TAG, "updateUiForPipMode: pipUiInitialized=$pipUiInitialized")
+        if (pipUiInitialized) {
+            return
+        }
+        pipUiInitialized = true
+
         binding!!.callControls.visibility = View.GONE
         binding!!.selfVideoViewWrapper.visibility = View.GONE
         binding!!.callStates.callStateRelativeLayout.visibility = View.GONE
@@ -3186,7 +3352,7 @@ class CallActivity : CallBaseActivity() {
                 try {
                     binding!!.pipSelfVideoRenderer.init(rootEglBase!!.eglBaseContext, null)
                 } catch (e: IllegalStateException) {
-                    Log.d(TAG, "pipGroupVideoRenderer already initialized", e)
+                    Log.d(TAG, "pipSelfVideoRenderer already initialized", e)
                 }
                 binding!!.pipSelfVideoRenderer.setZOrderMediaOverlay(true)
                 // disabled because it causes some devices to crash
@@ -3203,16 +3369,32 @@ class CallActivity : CallBaseActivity() {
 
     override fun updateUiForNormalMode() {
         Log.d(TAG, "updateUiForNormalMode")
+        pipUiInitialized = false
         binding!!.pipOverlay.visibility = View.GONE
         binding!!.composeParticipantGrid.visibility = View.VISIBLE
 
         binding!!.callControls.visibility = View.VISIBLE
         initViews()
         binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
+
+        // returning from PIP resets the system bar appearance, so it must be re-applied
+        applyDarkSystemBarStyle()
     }
 
     override fun suppressFitsSystemWindows() {
         binding!!.callLayout.fitsSystemWindows = false
+    }
+
+    /**
+     * The call screen background is always dark, regardless of the system light/dark theme, so
+     * status/navigation bar icons must always be light rather than following the system theme.
+     * Must be re-applied after returning from PIP, since exiting PIP resets it to the system default.
+     */
+    private fun applyDarkSystemBarStyle() {
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
+        )
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -3236,6 +3418,16 @@ class CallActivity : CallBaseActivity() {
             SpreedFeatures.RAISE_HAND
         ) ||
             isBreakoutRoom
+
+    // Broadcast receiver to handle end call from notification
+    private val endCallFromNotificationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == END_CALL_FROM_NOTIFICATION) {
+                powerManagerUtils?.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
+                hangup(shutDownView = true, endCallForAll = false)
+            }
+        }
+    }
 
     companion object {
         var active = false
@@ -3286,6 +3478,7 @@ class CallActivity : CallBaseActivity() {
 
         private const val CALLING_TIMEOUT: Long = 45000
         private const val PULSE_ANIMATION_DURATION: Int = 310
+        private const val SEC_10 = 10000
 
         internal fun isPushToTalkRelease(action: Int): Boolean =
             action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL

@@ -46,6 +46,7 @@ object NotificationUtils {
     enum class NotificationChannels {
         NOTIFICATION_CHANNEL_MESSAGES_V4,
         NOTIFICATION_CHANNEL_CALLS_V4,
+        NOTIFICATION_CHANNEL_CALLS_ONGOING_V1,
         NOTIFICATION_CHANNEL_UPLOADS
     }
 
@@ -117,6 +118,25 @@ object NotificationUtils {
         )
     }
 
+    /**
+     * Separate from [NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4] (the incoming-ring channel,
+     * which must stay IMPORTANCE_HIGH) so the persistent "call in progress" foreground-service
+     * notification never heads-ups/peeks - it should only be visible by pulling down the status bar.
+     */
+    private fun createOngoingCallNotificationChannel(context: Context) {
+        createNotificationChannel(
+            context,
+            Channel(
+                NotificationChannels.NOTIFICATION_CHANNEL_CALLS_ONGOING_V1.name,
+                context.resources.getString(R.string.nc_notification_channel_calls_ongoing),
+                context.resources.getString(R.string.nc_notification_channel_calls_ongoing_description),
+                false
+            ),
+            null,
+            null
+        )
+    }
+
     private fun createMessagesNotificationChannel(context: Context, appPreferences: AppPreferences) {
         val audioAttributes =
             AudioAttributes.Builder()
@@ -154,6 +174,7 @@ object NotificationUtils {
 
     fun registerNotificationChannels(context: Context, appPreferences: AppPreferences) {
         createCallsNotificationChannel(context, appPreferences)
+        createOngoingCallNotificationChannel(context)
         createMessagesNotificationChannel(context, appPreferences)
         createUploadsNotificationChannel(context)
     }
@@ -335,6 +356,11 @@ object NotificationUtils {
             .data(avatarUrl)
             .transformations(CircleCropTransformation())
             .placeholder(R.drawable.account_circle_96dp)
+            .listener(
+                onError = { _, result ->
+                    Log.w(TAG, "Can't load avatar for URL: $avatarUrl", result.throwable)
+                }
+            )
             .target(
                 onSuccess = { result ->
                     avatarBitmap = (result as BitmapDrawable).bitmap
@@ -343,7 +369,6 @@ object NotificationUtils {
                     error?.let {
                         avatarBitmap = (error as BitmapDrawable).bitmap
                     }
-                    Log.w(TAG, "Can't load avatar for URL: $avatarUrl")
                 }
             )
 
