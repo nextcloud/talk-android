@@ -15,6 +15,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.graphics.Bitmap
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Bundle
@@ -34,11 +35,32 @@ import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CallForegroundService : Service() {
 
+    /**
+     * Data needed to resolve the conversation avatar for the notification. Passed explicitly rather
+     * than forwarded via the call intent extras or read from [ApplicationWideCurrentRoomHolder]: the
+     * extras on CallActivity's own launch intent don't reflect fallbacks CallActivity applies
+     * afterwards (e.g. baseUrl falling back to the current user's baseUrl), and the room holder is
+     * only populated once the call-join network request completes - both too late/unreliable for this.
+     */
+    data class AvatarInfo(val roomToken: String?, val baseUrl: String?, val credentials: String?)
+
     private val handler = Handler(Looper.getMainLooper())
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var currentCallExtras: Bundle? = null
+    private var currentConversationName: String? = null
+    private var currentRoomToken: String? = null
+    private var currentBaseUrl: String? = null
+    private var currentCredentials: String? = null
+    private var conversationAvatarBitmap: Bitmap? = null
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -50,6 +72,11 @@ class CallForegroundService : Service() {
         val conversationName = intent?.getStringExtra(EXTRA_CONVERSATION_NAME)
         val callExtras = intent?.getBundleExtra(EXTRA_CALL_INTENT_EXTRAS)
         currentCallExtras = callExtras
+        currentConversationName = conversationName
+        currentRoomToken = intent?.getStringExtra(EXTRA_ROOM_TOKEN)
+        currentBaseUrl = intent?.getStringExtra(EXTRA_BASE_URL)
+        currentCredentials = intent?.getStringExtra(EXTRA_CREDENTIALS)
+        conversationAvatarBitmap = null
         val notification = buildNotification(conversationName, callExtras)
 
         val foregroundServiceType = resolveForegroundServiceType(callExtras)
@@ -60,6 +87,7 @@ class CallForegroundService : Service() {
             startForeground(NOTIFICATION_ID, notification)
         }
 
+        loadConversationAvatarAsync()
         startTimeBasedNotificationUpdates()
 
         return START_STICKY
@@ -68,6 +96,7 @@ class CallForegroundService : Service() {
     override fun onDestroy() {
         Log.d(TAG, "onDestroy called")
         handler.removeCallbacksAndMessages(null)
+        serviceScope.cancel()
         stopForeground(STOP_FOREGROUND_REMOVE)
         super.onDestroy()
     }
@@ -119,9 +148,12 @@ class CallForegroundService : Service() {
 
     @SuppressLint("NewApi")
     private fun buildCallStyleNotification(contentTitle: String, pendingIntent: PendingIntent): Notification {
+        val callerIcon = conversationAvatarBitmap?.let { Icon.createWithBitmap(it) }
+            ?: Icon.createWithResource(this, R.drawable.ic_call_white_24dp)
+
         val caller = Person.Builder()
             .setName(contentTitle)
-            .setIcon(Icon.createWithResource(this, R.drawable.ic_call_white_24dp))
+            .setIcon(callerIcon)
             .setImportant(true)
             .build()
 
@@ -149,6 +181,46 @@ class CallForegroundService : Service() {
                 }
             }
             .build()
+    }
+
+    /**
+     * The CallStyle notification's Person icon defaults to a generic phone icon; this fetches the
+     * conversation avatar in the background and re-posts the notification once it is available.
+     */
+    private fun loadConversationAvatarAsync() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return
+
+        val roomToken = currentRoomToken
+        if (roomToken.isNullOrBlank()) {
+            Log.w(TAG, "loadConversationAvatarAsync: roomToken is blank, skipping avatar load")
+            return
+        }
+        if (currentBaseUrl.isNullOrBlank()) {
+            Log.w(TAG, "loadConversationAvatarAsync: baseUrl is blank, avatar load will likely fail")
+        }
+
+        serviceScope.launch {
+            val bitmap = NotificationUtils.loadConversationAvatarBitmapSync(
+                currentBaseUrl,
+                roomToken,
+                currentCredentials,
+                applicationContext
+            )
+            Log.d(TAG, "loadConversationAvatarAsync: avatar bitmap loaded=${bitmap != null}")
+            if (bitmap != null) {
+                conversationAvatarBitmap = bitmap
+                withContext(Dispatchers.Main) { refreshCallStyleNotification() }
+            }
+        }
+    }
+
+    @SuppressLint("NewApi")
+    private fun refreshCallStyleNotification() {
+        val contentTitle = currentConversationName?.takeIf { it.isNotBlank() }
+            ?: getString(R.string.nc_call_ongoing_notification_default_title)
+        val pendingIntent = createContentIntent(currentCallExtras)
+        val notification = buildCallStyleNotification(contentTitle, pendingIntent)
+        startForeground(NOTIFICATION_ID, notification)
     }
 
     @SuppressLint("NewApi", "ForegroundServiceType")
@@ -236,11 +308,17 @@ class CallForegroundService : Service() {
         private const val FOREGROUND_SERVICE_TYPE_ZERO = 0
         private const val EXTRA_CONVERSATION_NAME = "extra_conversation_name"
         private const val EXTRA_CALL_INTENT_EXTRAS = "extra_call_intent_extras"
+        private const val EXTRA_ROOM_TOKEN = "extra_room_token"
+        private const val EXTRA_BASE_URL = "extra_base_url"
+        private const val EXTRA_CREDENTIALS = "extra_credentials"
         private const val CALL_DURATION_UPDATE_INTERVAL = 1000L
 
-        fun start(context: Context, conversationName: String?, callIntentExtras: Bundle?) {
+        fun start(context: Context, conversationName: String?, callIntentExtras: Bundle?, avatarInfo: AvatarInfo) {
             val serviceIntent = Intent(context, CallForegroundService::class.java).apply {
                 putExtra(EXTRA_CONVERSATION_NAME, conversationName)
+                putExtra(EXTRA_ROOM_TOKEN, avatarInfo.roomToken)
+                putExtra(EXTRA_BASE_URL, avatarInfo.baseUrl)
+                putExtra(EXTRA_CREDENTIALS, avatarInfo.credentials)
                 callIntentExtras?.let { putExtra(EXTRA_CALL_INTENT_EXTRAS, Bundle(it)) }
             }
             ContextCompat.startForegroundService(context, serviceIntent)

@@ -1187,7 +1187,12 @@ class CallActivity : CallBaseActivity() {
                     SEC_10
                 ).show()
             } else {
-                CallForegroundService.start(applicationContext, conversationName, intent.extras)
+                CallForegroundService.start(
+                    applicationContext,
+                    conversationName,
+                    intent.extras,
+                    CallForegroundService.AvatarInfo(roomToken, baseUrl, credentials)
+                )
             }
 
             if (!microphoneOn && !appPreferences.callMicrophoneMuted) {

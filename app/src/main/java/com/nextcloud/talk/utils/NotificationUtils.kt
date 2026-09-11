@@ -335,6 +335,11 @@ object NotificationUtils {
             .data(avatarUrl)
             .transformations(CircleCropTransformation())
             .placeholder(R.drawable.account_circle_96dp)
+            .listener(
+                onError = { _, result ->
+                    Log.w(TAG, "Can't load avatar for URL: $avatarUrl", result.throwable)
+                }
+            )
             .target(
                 onSuccess = { result ->
                     avatarBitmap = (result as BitmapDrawable).bitmap
@@ -343,7 +348,6 @@ object NotificationUtils {
                     error?.let {
                         avatarBitmap = (error as BitmapDrawable).bitmap
                     }
-                    Log.w(TAG, "Can't load avatar for URL: $avatarUrl")
                 }
             )
 
