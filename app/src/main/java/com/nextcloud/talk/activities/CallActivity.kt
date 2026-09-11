@@ -1139,10 +1139,6 @@ class CallActivity : CallBaseActivity() {
             }
         } else if (!isConnectionEstablished) {
             prepareCall()
-        } else {
-            // DEBUG: All permissions granted but connection not established
-            Log.d(TAG, "DEBUG: All permissions granted but connection not established, proceeding with prepareCall()")
-            prepareCall()
         }
     }
 
@@ -3453,19 +3449,5 @@ class CallActivity : CallBaseActivity() {
         private const val DELAY_ON_ERROR_STOP_THRESHOLD: Int = 16
 
         private const val SESSION_ID_PREFFIX_END: Int = 4
-    }
-
-    // Broadcast receiver to handle end call from notification
-    private val endCallFromNotificationReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == "com.nextcloud.talk.END_CALL_FROM_NOTIFICATION") {
-                Log.d(TAG, "Received end call from notification broadcast")
-                Log.d(TAG, "endCallFromNotificationReceiver: Setting isIntentionallyLeavingCall=true")
-                isIntentionallyLeavingCall = true
-                Log.d(TAG, "endCallFromNotificationReceiver: Releasing proximity sensor before hangup")
-                powerManagerUtils?.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
-                hangup(shutDownView = true, endCallForAll = false)
-            }
-        }
     }
 }
