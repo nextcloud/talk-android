@@ -124,6 +124,7 @@ import com.nextcloud.talk.chat.ui.ShowReactionsModalBottomSheet
 import com.nextcloud.talk.chat.ui.TempMessageActionsBottomSheet
 import com.nextcloud.talk.chat.ui.TypingIndicatorBanner
 import com.nextcloud.talk.chat.ui.buildMessageActionsState
+import com.nextcloud.talk.chat.ui.isMessageEditable
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
@@ -949,7 +950,10 @@ class ChatActivity :
                                     chatViewModel.toggleSystemMessageCollapse(messageId)
                                 },
                                 onAvatarClick = { messageId -> chatViewModel.showProfileSheet(messageId.toLong()) },
-                                onCancelUpload = { referenceId -> chatViewModel.cancelUpload(referenceId) }
+                                onCancelUpload = { referenceId -> chatViewModel.cancelUpload(referenceId) },
+                                onMarkdownTaskToggle = { messageId, updatedMessage ->
+                                    updateMarkdownTaskMessage(messageId, updatedMessage)
+                                }
                             )
                         ),
                         listState = listState
@@ -1203,6 +1207,97 @@ class ChatActivity :
                 }
             }
         }
+    }
+
+    private fun updateMarkdownTaskMessage(messageId: Int, updatedMessage: String) {
+        if (credentials.isNullOrBlank() || conversationUser?.baseUrl.isNullOrBlank()) {
+            return
+        }
+
+        lifecycleScope.launch {
+            val message = chatViewModel.getMessageById(messageId.toLong()).first()
+            if (!canEditMarkdownTaskMessage(message)) {
+                return@launch
+            }
+
+            val originalMessageText = message.message.orEmpty()
+
+            // Apply the toggle to the local copy right away so the checkbox reflects the new
+            // state immediately, instead of waiting for the server round-trip to complete.
+            messageInputViewModel.editTempChatMessage(message, updatedMessage)
+
+            if (message.isTemporary) {
+                return@launch
+            }
+
+            pendingMarkdownTaskEdit = PendingMarkdownTaskEdit(messageId, originalMessageText)
+            val apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
+            messageInputViewModel.editChatMessage(
+                credentials!!,
+                ApiUtils.getUrlForChatMessage(
+                    version = apiVersion,
+                    baseUrl = conversationUser!!.baseUrl!!,
+                    token = roomToken,
+                    messageId = message.jsonMessageId.toString()
+                ),
+                getMarkdownTaskEditText(message, updatedMessage)
+            )
+        }
+    }
+
+    private fun canEditMarkdownTaskMessage(message: ChatMessage): Boolean {
+        if (message.isTemporary) {
+            return true
+        }
+        if (message.getCalculateMessageType() != ChatMessage.MessageType.REGULAR_TEXT_MESSAGE) {
+            return false
+        }
+
+        val isUserAllowedByPrivileges = message.actorId == conversationUser?.userId ||
+            currentConversation?.let { ConversationUtils.canModerate(it, spreedCapabilities) } == true
+        val hasChatPermission = participantPermissionsFlow.value?.hasChatPermission() == true
+
+        return isMessageEditable(
+            message = message,
+            conversation = currentConversation,
+            hasChatPermission = hasChatPermission,
+            isUserAllowedByPrivileges = isUserAllowedByPrivileges,
+            spreedCapabilities = spreedCapabilities
+        )
+    }
+
+    // Tracks a checkbox toggle sent to the server so it can be rolled back locally if the
+    // edit is rejected (e.g. message became too old, or read-only conversation).
+    private data class PendingMarkdownTaskEdit(val messageId: Int, val originalMessage: String)
+    private var pendingMarkdownTaskEdit: PendingMarkdownTaskEdit? = null
+
+    private fun revertPendingMarkdownTaskEdit() {
+        val pending = pendingMarkdownTaskEdit ?: return
+        pendingMarkdownTaskEdit = null
+        lifecycleScope.launch {
+            val message = chatViewModel.getMessageById(pending.messageId.toLong()).first()
+            messageInputViewModel.editTempChatMessage(message, pending.originalMessage)
+        }
+    }
+
+    private fun getMarkdownTaskEditText(message: ChatMessage, updatedMessage: String): String {
+        val messageParameters = message.messageParameters ?: return updatedMessage
+        var result = updatedMessage
+        for ((key, params) in messageParameters) {
+            val token = "{$key}"
+            if (!result.contains(token)) {
+                continue
+            }
+
+            val replacement = when (params?.get("type")) {
+                "user", "guest", "email" -> "@${params["mention-id"]}"
+                "user-group", "circle" -> "@\"${params["mention-id"]}\""
+                "call" -> "@all"
+                else -> params?.get("name").orEmpty()
+            }
+            result = result.replace(token, replacement)
+        }
+        return result
     }
 
     @Composable
@@ -1789,6 +1884,7 @@ class ChatActivity :
                 is MessageInputViewModel.EditMessageSuccessState -> {
                     when (state.messageEdited.ocs?.meta?.statusCode) {
                         HTTP_BAD_REQUEST -> {
+                            revertPendingMarkdownTaskEdit()
                             Snackbar.make(
                                 binding.root,
                                 getString(R.string.edit_error_24_hours_old_message),
@@ -1797,6 +1893,7 @@ class ChatActivity :
                         }
 
                         HTTP_FORBIDDEN -> {
+                            revertPendingMarkdownTaskEdit()
                             Snackbar.make(
                                 binding.root,
                                 getString(R.string.conversation_is_read_only),
@@ -1805,16 +1902,22 @@ class ChatActivity :
                         }
 
                         HTTP_NOT_FOUND -> {
+                            revertPendingMarkdownTaskEdit()
                             Snackbar.make(
                                 binding.root,
                                 "Conversation not found",
                                 Snackbar.LENGTH_LONG
                             ).show()
                         }
+
+                        else -> {
+                            pendingMarkdownTaskEdit = null
+                        }
                     }
                 }
 
                 is MessageInputViewModel.EditMessageErrorState -> {
+                    revertPendingMarkdownTaskEdit()
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
 

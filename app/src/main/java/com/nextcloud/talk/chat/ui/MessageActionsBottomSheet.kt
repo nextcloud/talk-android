@@ -140,6 +140,42 @@ data class MessageActionsState(
     val showDelete: Boolean
 )
 
+/**
+ * Single source of truth for whether a message may be edited, shared by the "Edit" action in
+ * [buildMessageActionsState] and the markdown task-list checkbox toggle in ChatActivity, so both
+ * agree on time limits, note-to-self/bot exceptions and permissions.
+ */
+@Suppress("LongParameterList")
+internal fun isMessageEditable(
+    message: ChatMessage,
+    conversation: ConversationModel?,
+    hasChatPermission: Boolean,
+    isUserAllowedByPrivileges: Boolean,
+    spreedCapabilities: SpreedCapability
+): Boolean {
+    val messageType = message.getCalculateMessageType()
+    val messageHasFileAttachment = ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == messageType
+    val messageHasRegularText = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == messageType && !message.isDeleted
+    val messageHasCaptions = messageHasFileAttachment && message.message != "{file}" && !message.isDeleted
+
+    val isOlderThanTwentyFourHours = message.createdAt
+        .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_EDIT_MESSAGE))
+
+    val isNoTimeLimitOnNoteToSelf =
+        hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.EDIT_MESSAGES_NOTE_TO_SELF) &&
+            conversation?.type == ConversationEnums.ConversationType.NOTE_TO_SELF
+    val isMessageBotOneToOne = message.actorType == ACTOR_BOTS &&
+        (message.isOneToOneConversation || message.isFormerOneToOneConversation) &&
+        !isOlderThanTwentyFourHours
+    val messageIsEditable = hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.EDIT_MESSAGES) &&
+        (messageHasRegularText || messageHasCaptions) &&
+        !isOlderThanTwentyFourHours &&
+        isUserAllowedByPrivileges &&
+        hasChatPermission
+
+    return isNoTimeLimitOnNoteToSelf || messageIsEditable || isMessageBotOneToOne
+}
+
 @Suppress("LongParameterList", "CyclomaticComplexMethod", "LongMethod")
 internal fun buildMessageActionsState(
     message: ChatMessage,
@@ -157,8 +193,6 @@ internal fun buildMessageActionsState(
     val messageHasRegularText = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == messageType && !message.isDeleted
     val messageHasCaptions = messageHasFileAttachment && message.message != "{file}" && !message.isDeleted
 
-    val isOlderThanTwentyFourHours = message.createdAt
-        .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_EDIT_MESSAGE))
     val isOlderThanSixHours = message.createdAt
         .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_DELETE_MESSAGE))
 
@@ -172,18 +206,13 @@ internal fun buildMessageActionsState(
         false
     }
 
-    val isNoTimeLimitOnNoteToSelf =
-        hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.EDIT_MESSAGES_NOTE_TO_SELF) &&
-            conversation?.type == ConversationEnums.ConversationType.NOTE_TO_SELF
-    val isMessageBotOneToOne = message.actorType == ACTOR_BOTS &&
-        (message.isOneToOneConversation || message.isFormerOneToOneConversation) &&
-        !isOlderThanTwentyFourHours
-    val messageIsEditable = hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.EDIT_MESSAGES) &&
-        (messageHasRegularText || messageHasCaptions) &&
-        !isOlderThanTwentyFourHours &&
-        isUserAllowedByPrivileges &&
-        hasChatPermission
-    val isMessageEditable = isNoTimeLimitOnNoteToSelf || messageIsEditable || isMessageBotOneToOne
+    val isMessageEditable = isMessageEditable(
+        message = message,
+        conversation = conversation,
+        hasChatPermission = hasChatPermission,
+        isUserAllowedByPrivileges = isUserAllowedByPrivileges,
+        spreedCapabilities = spreedCapabilities
+    )
 
     val hasDeleteMessagesUnlimitedCapability =
         hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.DELETE_MESSAGES_UNLIMITED)
