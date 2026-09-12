@@ -151,12 +151,15 @@
     <string name="nc_call_button_content_description_microphone">Växla mikrofon</string>
     <string name="nc_call_button_content_description_pip">Öppna bild i bild-läge</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Växla till egen video</string>
+    <string name="nc_call_e2ee_not_supported">Samtal stöds för närvarande inte eftersom end-to-end-kryptering är aktiverad på servern.</string>
+    <string name="nc_call_e2ee_not_supported_title">Samtal från %s är inte tillgängligt</string>
     <string name="nc_call_incoming">INKOMMANDE</string>
     <string name="nc_call_join_failed">Det gick inte att ansluta till samtalet. Försök igen.</string>
     <string name="nc_call_name">Samtalsnamn</string>
     <string name="nc_call_notifications">Samtalsaviseringar</string>
     <string name="nc_call_ongoing_notification_content">Tryck för att återvända till ditt samtal.</string>
     <string name="nc_call_ongoing_notification_default_title">Samtal pågår</string>
+    <string name="nc_call_ongoing_notification_end_action">Avsluta samtal</string>
     <string name="nc_call_raised_hand">%1$s räckte upp handen</string>
     <string name="nc_call_reconnecting">Återansluter …</string>
     <string name="nc_call_ringing">RINGER</string>
@@ -209,6 +212,7 @@
     <string name="nc_connecting_call">Ansluter…</string>
     <string name="nc_contacts_done">Färdig</string>
     <string name="nc_conversation_created_invalid_participants">Vissa deltagare kunde inte läggas till</string>
+    <string name="nc_conversation_created_invalid_participants_named">Det gick inte att lägga till följande deltagare: %1$s</string>
     <string name="nc_conversation_created_public">Gäster kan ansluta till den här konversationen via dess länk. Dela den nu eller senare från konversationsinställningarna.</string>
     <string name="nc_conversation_created_title">Konversation skapad</string>
     <string name="nc_conversation_description">Konversationsbeskrivning</string>
@@ -444,6 +448,8 @@
     <string name="nc_participants_add">Lägg till deltagare</string>
     <string name="nc_password">Lösenord</string>
     <string name="nc_password_copied">Lösenordet kopierat</string>
+    <string name="nc_password_required">Den här servern kräver ett lösenord för konversationer som gäster kan delta i</string>
+    <string name="nc_password_secure">Lösenordet är säkert.</string>
     <string name="nc_permissions_ask">Ange behörigheter</string>
     <string name="nc_permissions_denied">Vissa behörigheter nekades.</string>
     <string name="nc_permissions_rationale_dialog_title">Tillåt behörigheter</string>

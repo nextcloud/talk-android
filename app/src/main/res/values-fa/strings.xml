@@ -151,6 +151,7 @@
     <string name="nc_call_notifications">اعلان‌های تماس</string>
     <string name="nc_call_ongoing_notification_content">برای بازگشت به تماس ضربه بزنید.</string>
     <string name="nc_call_ongoing_notification_default_title">تماس در حال انجام</string>
+    <string name="nc_call_ongoing_notification_end_action">پایان تماس</string>
     <string name="nc_call_raised_hand">%1$s دست بلند کرد</string>
     <string name="nc_call_reconnecting">در حال اتصال مجدد …</string>
     <string name="nc_call_ringing">زنگ می‌خورد</string>

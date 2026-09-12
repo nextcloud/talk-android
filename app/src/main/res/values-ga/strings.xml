@@ -157,6 +157,7 @@
     <string name="nc_call_notifications">Fógraí glaonna</string>
     <string name="nc_call_ongoing_notification_content">Tapáil chun filleadh ar do ghlao.</string>
     <string name="nc_call_ongoing_notification_default_title">Glao ar siúl</string>
+    <string name="nc_call_ongoing_notification_end_action">Cuir deireadh leis an nglao</string>
     <string name="nc_call_raised_hand">%1$s d\'ardaigh an lámh</string>
     <string name="nc_call_reconnecting">Ag athcheangal…</string>
     <string name="nc_call_ringing">AG FUAIMNIÚ</string>

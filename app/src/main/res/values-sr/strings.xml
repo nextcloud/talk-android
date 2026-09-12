@@ -136,6 +136,7 @@
     <string name="nc_call_notifications">Обавештења позива</string>
     <string name="nc_call_ongoing_notification_content">Тапните да се вратите у позив.</string>
     <string name="nc_call_ongoing_notification_default_title">Позив је у току</string>
+    <string name="nc_call_ongoing_notification_end_action">Заврши позив</string>
     <string name="nc_call_raised_hand">%1$s је подигао руку</string>
     <string name="nc_call_reconnecting">Поновно повезивање ...</string>
     <string name="nc_call_ringing">ЗВОНИ</string>

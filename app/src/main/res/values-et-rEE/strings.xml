@@ -159,6 +159,7 @@
     <string name="nc_call_notifications">Kõne teavitus</string>
     <string name="nc_call_ongoing_notification_content">Klõpsa oma kõne juurde tagasi pöördumiseks.</string>
     <string name="nc_call_ongoing_notification_default_title">Kõne on pooleli</string>
+    <string name="nc_call_ongoing_notification_end_action">Lõpeta kõne</string>
     <string name="nc_call_raised_hand">%1$s andis käega märku</string>
     <string name="nc_call_reconnecting">Loon uuesti ühendust…</string>
     <string name="nc_call_ringing">HELISEB</string>

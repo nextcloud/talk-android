@@ -126,6 +126,7 @@
     <string name="nc_call_name">Nom de la conversa</string>
     <string name="nc_call_notifications">Notificacions de trucada</string>
     <string name="nc_call_ongoing_notification_default_title">S\'està fent una trucada</string>
+    <string name="nc_call_ongoing_notification_end_action">Finalitzar la trucada</string>
     <string name="nc_call_raised_hand">%1$sha aixecat la mà</string>
     <string name="nc_call_reconnecting">S\'està reconnectant…</string>
     <string name="nc_call_ringing">TRUCANT</string>
@@ -202,6 +203,7 @@
     <string name="nc_delete_message">Suprimeix el missatge</string>
     <string name="nc_delete_message_leaked_to_matterbridge">El missatge s\'ha suprimit correctament, però podria haver-se filtrat a altres serveis</string>
     <string name="nc_deleted_user">S\'ha suprimit l\'usuari %1$s</string>
+    <string name="nc_deleted_user_display_name">Usuari suprimit</string>
     <string name="nc_demote">Deposat des del moderador</string>
     <string name="nc_description_record_voice">Grava un missatge de veu</string>
     <string name="nc_description_send_message_button">Envia un missatge</string>

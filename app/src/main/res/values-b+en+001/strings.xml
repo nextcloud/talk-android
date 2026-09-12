@@ -159,6 +159,7 @@
     <string name="nc_call_notifications">Call notifications</string>
     <string name="nc_call_ongoing_notification_content">Tap to return to your call.</string>
     <string name="nc_call_ongoing_notification_default_title">Call in progress</string>
+    <string name="nc_call_ongoing_notification_end_action">End call</string>
     <string name="nc_call_raised_hand">%1$s raised the hand</string>
     <string name="nc_call_reconnecting">Reconnecting …</string>
     <string name="nc_call_ringing">RINGING</string>

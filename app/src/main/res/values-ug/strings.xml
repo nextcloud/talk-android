@@ -136,6 +136,7 @@
     <string name="nc_call_notifications">تېلېفون ئۇقتۇرۇشى</string>
     <string name="nc_call_ongoing_notification_content">چاقىرىشقا قايتىش ئۈچۈن چىكىڭ</string>
     <string name="nc_call_ongoing_notification_default_title">چاقىرىش داۋاملىشىۋاتىدۇ</string>
+    <string name="nc_call_ongoing_notification_end_action">ئاخىرلىشىش تېلېفونى</string>
     <string name="nc_call_raised_hand">%1$s قولىنى كۆتۈردى</string>
     <string name="nc_call_reconnecting">قايتا ئۇلىنىش…</string>
     <string name="nc_call_ringing">جىرىڭلاۋاتىدۇ</string>

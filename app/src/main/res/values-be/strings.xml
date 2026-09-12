@@ -142,6 +142,7 @@
     <string name="nc_call_notifications">Апавяшчэнні аб выкліках</string>
     <string name="nc_call_ongoing_notification_content">Націсніце, каб вярнуцца да выкліку.</string>
     <string name="nc_call_ongoing_notification_default_title">Выконваецца выклік</string>
+    <string name="nc_call_ongoing_notification_end_action">Завяршыць выклік</string>
     <string name="nc_call_raised_hand">%1$s падняў(-ла) руку</string>
     <string name="nc_call_reconnecting">Перазлучэнне ...</string>
     <string name="nc_call_ringing">ВЫКЛІК</string>
@@ -218,6 +219,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Паведамленне паспяхова выдалена, але яно магло трапіць у іншыя сэрвісы</string>
     <string name="nc_delete_now">Выдаліць зараз</string>
     <string name="nc_deleted_user">Карыстальнік %1$s быў выдалены</string>
+    <string name="nc_deleted_user_display_name">Выдалены карыстальнік</string>
     <string name="nc_demote">Пазбавіць правоў мадэратара</string>
     <string name="nc_description_record_voice">Запісаць галасавое паведамленне</string>
     <string name="nc_description_send_message_button">Адправіць паведамленне</string>

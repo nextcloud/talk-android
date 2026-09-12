@@ -157,6 +157,7 @@
     <string name="nc_call_notifications">Notificações de chamadas </string>
     <string name="nc_call_ongoing_notification_content">Toque para voltar à sua chamada.</string>
     <string name="nc_call_ongoing_notification_default_title">Chamada em andamento</string>
+    <string name="nc_call_ongoing_notification_end_action">Encerrar chamada</string>
     <string name="nc_call_raised_hand">%1$s levantou a mão</string>
     <string name="nc_call_reconnecting">Reconectando …</string>
     <string name="nc_call_ringing">TOCANDO</string>

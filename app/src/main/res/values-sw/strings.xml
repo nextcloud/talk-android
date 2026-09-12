@@ -136,6 +136,7 @@
     <string name="nc_call_notifications">Arifu za simu</string>
     <string name="nc_call_ongoing_notification_content">Gusa ili urudi kwenye simu yako.</string>
     <string name="nc_call_ongoing_notification_default_title">Simu inaendelea</string>
+    <string name="nc_call_ongoing_notification_end_action">Kata simu</string>
     <string name="nc_call_raised_hand">%1$s ameinua mkono</string>
     <string name="nc_call_reconnecting">Inaunganisha upya</string>
     <string name="nc_call_ringing">INAITA</string>

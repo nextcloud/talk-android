@@ -105,6 +105,7 @@
     <string name="nc_call_name">对话名称</string>
     <string name="nc_call_notifications">呼叫通知</string>
     <string name="nc_call_ongoing_notification_default_title">通话中...</string>
+    <string name="nc_call_ongoing_notification_end_action">结束通话</string>
     <string name="nc_call_raised_hand">%1$s 举手了</string>
     <string name="nc_call_reconnecting">正在重新连接 ...</string>
     <string name="nc_call_ringing">响铃</string>

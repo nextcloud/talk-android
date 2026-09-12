@@ -156,6 +156,7 @@
     <string name="nc_call_notifications">Skambučių pranešimai</string>
     <string name="nc_call_ongoing_notification_content">Palieskite, kad grįžtumėte į skambutį.</string>
     <string name="nc_call_ongoing_notification_default_title">Skambutis vyksta</string>
+    <string name="nc_call_ongoing_notification_end_action">Baigti pokalbį</string>
     <string name="nc_call_raised_hand">%1$s pakėlė ranką</string>
     <string name="nc_call_reconnecting">Jungiamasi iš naujo…</string>
     <string name="nc_call_ringing">SMABINAMA</string>
