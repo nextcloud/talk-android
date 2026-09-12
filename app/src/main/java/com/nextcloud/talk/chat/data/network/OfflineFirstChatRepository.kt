@@ -32,6 +32,9 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.message.SendMessageUtils
+import com.nextcloud.talk.utils.revertOnCancellation
+import com.nextcloud.talk.utils.withRetry
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -47,6 +50,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
@@ -787,24 +792,151 @@ class OfflineFirstChatRepository @Inject constructor(
     override suspend fun deleteTempMessageByReferenceId(referenceId: String): Boolean =
         chatDao.deleteTempChatMessageIfPending(internalConversationId, referenceId) > 0
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun editChatMessage(
         credentials: String,
         url: String,
+        messageId: Long,
         text: String
-    ): Flow<Result<ChatOverallSingleMessage>> =
-        flow {
-            try {
-                val response = network.editChatMessage(
-                    credentials,
-                    url,
-                    text
-                )
-                emit(Result.success(response))
-            } catch (e: Exception) {
-                emit(Result.failure(e))
+    ): Result<ChatOverallSingleMessage> {
+        val restore = applyLocalEdit(messageId, text)
+
+        return try {
+            val response = revertOnCancellation({ restore?.invoke() }) {
+                withRetry(retries = 1, initialDelayMillis = RETRY_DELAY_MS, retryOn = ::isRetryable) {
+                    network.editChatMessage(credentials, url, text)
+                }
+            }
+            val statusCode = response.ocs?.meta?.statusCode
+            if (statusCode != null && statusCode != HTTP_OK) {
+                // the server refused the edit, e.g. because the message is too old
+                restore?.invoke()
+            } else {
+                persistEditedMessage(messageId, response)
+            }
+            Result.success(response)
+        } catch (e: HttpException) {
+            restore?.invoke()
+            Result.failure(e)
+        } catch (e: IOException) {
+            restore?.invoke()
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * Writes [text] into the cached message together with the edit metadata the bubble shows, and
+     * returns the action that restores the previous version. The revert only applies while the message
+     * still carries the local edit, so a server payload that arrived meanwhile stays authoritative.
+     */
+    private suspend fun applyLocalEdit(messageId: Long, text: String): (suspend () -> Unit)? {
+        val message = chatDao.getChatMessageEntity(internalConversationId, messageId)
+        if (message == null || message.message == text) return null
+
+        val previousMessage = message.message
+        val previousTimestamp = message.lastEditTimestamp
+        val previousActorId = message.lastEditActorId
+        val previousActorType = message.lastEditActorType
+        val previousActorDisplayName = message.lastEditActorDisplayName
+
+        message.message = text
+        message.lastEditTimestamp = System.currentTimeMillis() / MILLIES
+        message.lastEditActorId = currentUser.userId
+        message.lastEditActorType = Participant.ActorType.USERS.name.lowercase()
+        message.lastEditActorDisplayName = currentUser.displayName
+        withContext(Dispatchers.IO) { chatDao.updateChatMessage(message) }
+
+        return {
+            val current = chatDao.getChatMessageEntity(internalConversationId, messageId)
+            if (current != null && current.message == text) {
+                current.message = previousMessage
+                current.lastEditTimestamp = previousTimestamp
+                current.lastEditActorId = previousActorId
+                current.lastEditActorType = previousActorType
+                current.lastEditActorDisplayName = previousActorDisplayName
+                withContext(Dispatchers.IO) { chatDao.updateChatMessage(current) }
             }
         }
+    }
+
+    /**
+     * The edit endpoint answers with the system message about the edit; the edited message itself is
+     * that system message's parent, the same shape [ChatMessageSyncer] handles for MESSAGE_EDITED.
+     * Without a usable parent the local edit stands as it is and the next sync confirms it.
+     */
+    private suspend fun persistEditedMessage(messageId: Long, response: ChatOverallSingleMessage) {
+        val edited = response.ocs?.data?.parentMessage?.takeIf { it.id == messageId } ?: return
+        val message = chatDao.getChatMessageEntity(internalConversationId, messageId) ?: return
+
+        message.message = edited.message ?: message.message
+        message.lastEditTimestamp = edited.lastEditTimestamp ?: message.lastEditTimestamp
+        message.lastEditActorId = edited.lastEditActorId ?: message.lastEditActorId
+        message.lastEditActorType = edited.lastEditActorType ?: message.lastEditActorType
+        message.lastEditActorDisplayName = edited.lastEditActorDisplayName ?: message.lastEditActorDisplayName
+        withContext(Dispatchers.IO) { chatDao.updateChatMessage(message) }
+    }
+
+    override suspend fun deleteChatMessage(
+        credentials: String,
+        url: String,
+        messageId: Long,
+        deletedPlaceholder: String
+    ): Result<ChatOverallSingleMessage?> {
+        val restore = applyLocalDeletion(messageId, deletedPlaceholder)
+
+        return try {
+            val response = revertOnCancellation({ restore?.invoke() }) {
+                withRetry(retries = 1, initialDelayMillis = RETRY_DELAY_MS, retryOn = ::isRetryable) {
+                    network.deleteChatMessage(credentials, url)
+                }
+            }
+            Result.success(response)
+        } catch (e: HttpException) {
+            if (e.code() == HTTP_NOT_FOUND) {
+                // the server does not know the message any more, so it is gone either way
+                Result.success(null)
+            } else {
+                restore?.invoke()
+                Result.failure(e)
+            }
+        } catch (e: IOException) {
+            restore?.invoke()
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * Renders the message as deleted in the local database and returns the action that puts it back,
+     * or null when there was nothing to change. The revert only applies while the message still carries
+     * the local deletion, so a server payload that arrived meanwhile stays authoritative.
+     */
+    private suspend fun applyLocalDeletion(messageId: Long, deletedPlaceholder: String): (suspend () -> Unit)? {
+        val message = chatDao.getChatMessageEntity(internalConversationId, messageId)
+        if (message == null || message.messageType == MESSAGE_TYPE_DELETED) return null
+
+        val previousMessageType = message.messageType
+        val previousMessage = message.message
+        val previousDeleted = message.deleted
+        // the deleted message the server sends back carries no file, poll or location any more, so the
+        // parameters have to go as well - otherwise the bubble keeps rendering the attachment
+        val previousMessageParameters = message.messageParameters
+
+        message.messageType = MESSAGE_TYPE_DELETED
+        message.message = deletedPlaceholder
+        message.deleted = true
+        message.messageParameters = null
+        withContext(Dispatchers.IO) { chatDao.updateChatMessage(message) }
+
+        return {
+            val current = chatDao.getChatMessageEntity(internalConversationId, messageId)
+            if (current != null && current.messageType == MESSAGE_TYPE_DELETED) {
+                current.messageType = previousMessageType
+                current.message = previousMessage
+                current.deleted = previousDeleted
+                current.messageParameters = previousMessageParameters
+                withContext(Dispatchers.IO) { chatDao.updateChatMessage(current) }
+            }
+        }
+    }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun editTempChatMessage(message: ChatMessage, editedMessageText: String): Flow<Boolean> =
@@ -855,25 +987,61 @@ class OfflineFirstChatRepository @Inject constructor(
         chatDao.deleteTempChatMessages(internalConversationId, listOf(chatMessage.referenceId.orEmpty()))
     }
 
-    override suspend fun pinMessage(credentials: String, url: String, pinUntil: Int): Flow<ChatMessage?> =
-        flow {
-            runCatching {
-                val overall = network.pinMessage(credentials, url, pinUntil)
-                emit(overall.ocs?.data?.toDomainModel())
-            }.getOrElse { throwable ->
-                Log.e(TAG, "Error in pinMessage: $throwable")
-            }
+    override suspend fun pinMessage(
+        credentials: String,
+        url: String,
+        pinUntil: Int,
+        messageId: Long
+    ): Result<ChatMessage?> =
+        withLocalPinnedMessage(messageId, pinned = true) {
+            network.pinMessage(credentials, url, pinUntil)
         }
 
-    override suspend fun unPinMessage(credentials: String, url: String): Flow<ChatMessage?> =
-        flow {
-            runCatching {
-                val overall = network.unPinMessage(credentials, url)
-                emit(overall.ocs?.data?.toDomainModel())
-            }.getOrElse { throwable ->
-                Log.e(TAG, "Error in unPinMessage: $throwable")
-            }
+    override suspend fun unPinMessage(credentials: String, url: String, messageId: Long): Result<ChatMessage?> =
+        withLocalPinnedMessage(messageId, pinned = false) {
+            network.unPinMessage(credentials, url)
         }
+
+    private fun isRetryable(error: Exception): Boolean =
+        when (error) {
+            is HttpException -> error.code() == HTTP_TOO_MANY_REQUESTS || error.code() >= HTTP_INTERNAL_SERVER_ERROR
+            else -> error is IOException
+        }
+
+    private suspend fun withLocalPinnedMessage(
+        messageId: Long,
+        pinned: Boolean,
+        request: suspend () -> ChatOverallSingleMessage
+    ): Result<ChatMessage?> {
+        // the shared items screen pins and unpins without ever opening the chat, so there is no local
+        // conversation to update from here
+        val restore = if (isChatDataInitialized()) {
+            conversationListUpdater.updateLocalPinnedMessage(syncTarget, messageId, pinned)
+        } else {
+            null
+        }
+
+        return try {
+            val overall = revertOnCancellation({ restore?.invoke() }) {
+                withRetry(retries = 1, initialDelayMillis = RETRY_DELAY_MS, retryOn = ::isRetryable) { request() }
+            }
+            // the room refresh that follows is computed after this change reached the server, so the
+            // guard has done its job and must not outlive the request
+            conversationListUpdater.clearPendingPinnedMessage(internalConversationId)
+            Result.success(overall.ocs?.data?.toDomainModel())
+        } catch (e: HttpException) {
+            Log.e(TAG, "Error while pinning or unpinning a message: $e")
+            restore?.invoke()
+            Result.failure(e)
+        } catch (e: IOException) {
+            Log.e(TAG, "Error while pinning or unpinning a message: $e")
+            restore?.invoke()
+            Result.failure(e)
+        }
+    }
+
+    private fun isChatDataInitialized(): Boolean =
+        this::currentUser.isInitialized && this::roomToken.isInitialized && this::credentials.isInitialized
 
     override suspend fun hidePinnedMessage(credentials: String, url: String): Flow<Boolean> =
         flow {
@@ -1093,5 +1261,12 @@ class OfflineFirstChatRepository @Inject constructor(
         private const val INSURANCE_REQUEST_DELAY = 2 * 60 * MILLIES
 
         private const val MINUS_ONE = -1L
+
+        private const val MESSAGE_TYPE_DELETED = "comment_deleted"
+        private const val HTTP_OK = 200
+        private const val HTTP_NOT_FOUND = 404
+        private const val HTTP_TOO_MANY_REQUESTS = 429
+        private const val HTTP_INTERNAL_SERVER_ERROR = 500
+        private const val RETRY_DELAY_MS = 500L
     }
 }

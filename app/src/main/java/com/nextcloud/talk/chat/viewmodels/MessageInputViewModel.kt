@@ -224,19 +224,18 @@ class MessageInputViewModel :
         }
     }
 
-    fun editChatMessage(credentials: String, url: String, text: String) {
+    fun editChatMessage(credentials: String, url: String, messageId: Long, text: String) {
         viewModelScope.launch {
-            chatRepository.editChatMessage(
+            val result = chatRepository.editChatMessage(
                 credentials,
                 url,
+                messageId,
                 text
-            ).collect { result ->
-                if (result.isSuccess) {
-                    _editMessageViewState.value = EditMessageSuccessState(result.getOrNull()!!)
-                } else {
-                    _editMessageViewState.value = EditMessageErrorState
-                }
-            }
+            )
+
+            _editMessageViewState.value = result.getOrNull()
+                ?.let { EditMessageSuccessState(it) }
+                ?: EditMessageErrorState
         }
     }
 

@@ -8,6 +8,19 @@
 package com.nextcloud.talk.ui.chat
 
 import android.content.Context
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.animateBounds
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
@@ -36,8 +49,13 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,8 +64,10 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.LookaheadScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.colorResource
@@ -61,6 +81,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.lerp
 import androidx.core.graphics.ColorUtils
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
@@ -94,6 +115,10 @@ private val quoteIconContainerRadius = 8.dp
 private val quoteIconSize = 24.dp
 
 private val reactionRadius = 50.dp
+private const val REACTION_COLOR_ANIMATION_MILLIS = 150
+private const val REACTION_APPEARANCE_ANIMATION_MILLIS = 90
+private const val REACTION_APPEARANCE_INITIAL_SCALE = 0.85f
+private const val REACTION_APPEARANCE_INITIAL_ALPHA = 0.7f
 private val reactionChipHeight = 28.dp
 private val reactionOverlap = reactionChipHeight / 2
 
@@ -534,62 +559,101 @@ private fun PinnedReactionsRow(uiMessage: ChatMessageUi, conversationThreadId: L
     val onReactionLongClick = LocalReactionLongClickHandler.current
     val onOpenThread = LocalOpenThreadHandler.current
 
-    Row(
-        modifier = modifier
-            .horizontalScroll(rememberScrollState())
-            .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (showThreadButton) {
-            ThreadButtonComposable(
-                replyAmount = uiMessage.threadReplies,
-                incoming = uiMessage.incoming,
-                onButtonClick = { onOpenThread(uiMessage.id) }
-            )
-        }
-        uiMessage.reactions.forEach { reaction ->
-            MessageReactionChip(
-                messageId = uiMessage.id,
-                incoming = uiMessage.incoming,
-                reaction = reaction,
-                onReactionClick = onReactionClick,
-                onReactionLongClick = onReactionLongClick
-            )
+    // reactions that are already shown when the message enters the composition must not animate in
+    // again while scrolling, only the ones added afterwards
+    val initiallyShownEmojis = remember { uiMessage.reactions.map { it.emoji }.toSet() }
+
+    LookaheadScope {
+        Row(
+            modifier = modifier
+                .horizontalScroll(rememberScrollState())
+                .padding(vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (showThreadButton) {
+                ThreadButtonComposable(
+                    replyAmount = uiMessage.threadReplies,
+                    incoming = uiMessage.incoming,
+                    onButtonClick = { onOpenThread(uiMessage.id) }
+                )
+            }
+            uiMessage.reactions.forEach { reaction ->
+                key(reaction.emoji) {
+                    MessageReactionChip(
+                        messageId = uiMessage.id,
+                        incoming = uiMessage.incoming,
+                        reaction = reaction,
+                        animateAppearance = reaction.emoji !in initiallyShownEmojis,
+                        onReactionClick = onReactionClick,
+                        onReactionLongClick = onReactionLongClick,
+                        modifier = Modifier.animateBounds(this@LookaheadScope)
+                    )
+                }
+            }
         }
     }
 }
 
+/**
+ * A reaction is rendered as soon as it is tapped, before the server confirmed it, so every change of
+ * the chip is animated: the count counts up or down, the colors fade between the self reaction style
+ * and the plain style, and a chip that becomes a self reaction slides to its new place in the row.
+ * A request that finally fails reverts the reaction and plays the same animations backwards.
+ */
+@Suppress("LongParameterList")
 @Composable
 private fun MessageReactionChip(
     messageId: Int,
     incoming: Boolean,
     reaction: MessageReactionUi,
+    animateAppearance: Boolean,
     onReactionClick: (Int, String) -> Unit,
-    onReactionLongClick: (Int) -> Unit
+    onReactionLongClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val themedColors = LocalViewThemeUtils.current.getColorScheme(LocalContext.current)
 
-    val backgroundColor = if (reaction.isSelfReaction) {
+    val targetBackgroundColor = if (reaction.isSelfReaction) {
         themedColors.primaryContainer
     } else if (incoming) {
         colorResource(R.color.bg_message_list_incoming_bubble)
     } else {
         themedColors.surfaceVariant
     }
-    val borderColor = if (reaction.isSelfReaction) {
+    val targetBorderColor = if (reaction.isSelfReaction) {
         themedColors.primary
     } else {
         themedColors.surface
     }
-    val textColor = if (incoming || reaction.isSelfReaction) {
+    val targetTextColor = if (incoming || reaction.isSelfReaction) {
         colorResource(R.color.high_emphasis_text)
     } else {
         themedColors.onSurfaceVariant
     }
 
+    val colorSpec = tween<Color>(REACTION_COLOR_ANIMATION_MILLIS)
+    val backgroundColor by animateColorAsState(targetBackgroundColor, colorSpec, label = "reactionBackground")
+    val borderColor by animateColorAsState(targetBorderColor, colorSpec, label = "reactionBorder")
+    val textColor by animateColorAsState(targetTextColor, colorSpec, label = "reactionText")
+
+    // a chip that is added must be readable in the frame it appears in, so it is drawn right away and
+    // only grows into its full size and opacity, instead of being faded in from nothing
+    var appeared by remember { mutableStateOf(!animateAppearance) }
+    LaunchedEffect(Unit) { appeared = true }
+    val appearance by animateFloatAsState(
+        targetValue = if (appeared) 1f else 0f,
+        animationSpec = tween(REACTION_APPEARANCE_ANIMATION_MILLIS),
+        label = "reactionAppearance"
+    )
+
     Row(
-        modifier = Modifier
+        modifier = modifier
+            .graphicsLayer {
+                alpha = lerp(REACTION_APPEARANCE_INITIAL_ALPHA, 1f, appearance)
+                scaleX = lerp(REACTION_APPEARANCE_INITIAL_SCALE, 1f, appearance)
+                scaleY = scaleX
+            }
             .border(1.5.dp, borderColor, RoundedCornerShape(reactionRadius))
             .background(backgroundColor, RoundedCornerShape(reactionRadius))
             .combinedClickable(
@@ -605,12 +669,25 @@ private fun MessageReactionChip(
             fontSize = 13.sp
         )
         Spacer(modifier = Modifier.width(4.dp))
-        Text(
-            text = reaction.amount.toString(),
-            color = textColor,
-            style = MaterialTheme.typography.bodyMedium
-        )
+        AnimatedContent(
+            targetState = reaction.amount,
+            transitionSpec = { reactionAmountTransition(targetState > initialState) },
+            label = "reactionAmount"
+        ) { amount ->
+            Text(
+                text = amount.toString(),
+                color = textColor,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
     }
+}
+
+private fun AnimatedContentTransitionScope<Int>.reactionAmountTransition(countingUp: Boolean): ContentTransform {
+    val direction = if (countingUp) 1 else -1
+    return (slideInVertically { height -> direction * height } + fadeIn())
+        .togetherWith(slideOutVertically { height -> -direction * height } + fadeOut())
+        .using(SizeTransform(clip = false))
 }
 
 @Composable
