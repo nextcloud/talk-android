@@ -150,6 +150,7 @@
     <string name="nc_call_notifications">Powiadomienia połączenia</string>
     <string name="nc_call_ongoing_notification_content">Naciśnij, aby powrócić do rozmowy.</string>
     <string name="nc_call_ongoing_notification_default_title">Trwa połączenie</string>
+    <string name="nc_call_ongoing_notification_end_action">Zakończ połączenie</string>
     <string name="nc_call_raised_hand">%1$s podniósł rękę</string>
     <string name="nc_call_reconnecting">Ponowne łączenie…</string>
     <string name="nc_call_ringing">DZWONIENIE</string>

@@ -156,6 +156,7 @@
     <string name="nc_call_notifications">Opkaldsnotifikationer</string>
     <string name="nc_call_ongoing_notification_content">Tryk på for at vende tilbage til dit opkald.</string>
     <string name="nc_call_ongoing_notification_default_title">Opkald i gang</string>
+    <string name="nc_call_ongoing_notification_end_action">Afslut opkald</string>
     <string name="nc_call_raised_hand">%1$s løftede hånden</string>
     <string name="nc_call_reconnecting">Genforbinder ...</string>
     <string name="nc_call_ringing">RINGER</string>

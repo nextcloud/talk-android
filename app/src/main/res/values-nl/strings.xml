@@ -137,6 +137,7 @@
     <string name="nc_call_notifications">Oproepmeldingen</string>
     <string name="nc_call_ongoing_notification_content">Tik om terug te keren naar het gesprek.</string>
     <string name="nc_call_ongoing_notification_default_title">Oproep is bezig</string>
+    <string name="nc_call_ongoing_notification_end_action">Beëindig gesprek</string>
     <string name="nc_call_raised_hand">%1$s stak een hand op</string>
     <string name="nc_call_reconnecting">Opnieuw verbinden …</string>
     <string name="nc_call_ringing">BELLEN</string>
