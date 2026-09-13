@@ -160,6 +160,7 @@
     <string name="nc_call_ongoing_notification_content">Klõpsa oma kõne juurde tagasi pöördumiseks.</string>
     <string name="nc_call_ongoing_notification_default_title">Kõne on pooleli</string>
     <string name="nc_call_ongoing_notification_end_action">Lõpeta kõne</string>
+    <string name="nc_call_ongoing_notification_return_action">Tagasi kõne juurde</string>
     <string name="nc_call_raised_hand">%1$s andis käega märku</string>
     <string name="nc_call_reconnecting">Loon uuesti ühendust…</string>
     <string name="nc_call_ringing">HELISEB</string>
@@ -425,10 +426,13 @@
     <string name="nc_notification_channel">%1$s teavituskanalis „%2$s“</string>
     <string name="nc_notification_channel_calls">Kõned</string>
     <string name="nc_notification_channel_calls_description">Teavita saabuvatest kõnedest</string>
+    <string name="nc_notification_channel_calls_ongoing">Pooleliolev kõne</string>
+    <string name="nc_notification_channel_calls_ongoing_description">Poolelioleva kõne püsiv olekuteade</string>
     <string name="nc_notification_channel_messages">Sõnumid</string>
     <string name="nc_notification_channel_messages_description">Teavita saabuvatest sõnumitest</string>
     <string name="nc_notification_channel_uploads">Üleslaadimised</string>
     <string name="nc_notification_channel_uploads_description">Teavita üleslaadimise edenemisest</string>
+    <string name="nc_notification_permission_hint">Nägemaks kõneteavitusi ja hoidmaks kõnesid taustal töös, palun luba rakendusel kasutada õigust „Teavitused“.</string>
     <string name="nc_notification_settings">Teavituse seadistused</string>
     <string name="nc_notification_warning">Teavitused pole korrektselt seadistatud</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Teavituste ja akukasutuse seadistused on teavituste toimimiseks korrektselt seadistatud. Kui ikkagi on nendega probleeme, siis vaata, kas kõnede ja sõnumite teavituskanalid on sisse lülitatud. Lisateavet leiad saidist DontKillMyApp.com või veaotsingu kontrollnimekirjast. Kui ka sellest pole ikkagi abi, siis ava veaotsingu ja diagnostikavaade ja koosta veateade.</string>

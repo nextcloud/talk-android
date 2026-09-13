@@ -160,6 +160,7 @@
     <string name="nc_call_ongoing_notification_content">Tap to return to your call.</string>
     <string name="nc_call_ongoing_notification_default_title">Call in progress</string>
     <string name="nc_call_ongoing_notification_end_action">End call</string>
+    <string name="nc_call_ongoing_notification_return_action">Return to call</string>
     <string name="nc_call_raised_hand">%1$s raised the hand</string>
     <string name="nc_call_reconnecting">Reconnecting …</string>
     <string name="nc_call_ringing">RINGING</string>
@@ -425,10 +426,13 @@
     <string name="nc_notification_channel">%1$s on %2$s notification channel</string>
     <string name="nc_notification_channel_calls">Calls</string>
     <string name="nc_notification_channel_calls_description">Notify about incoming calls</string>
+    <string name="nc_notification_channel_calls_ongoing">Ongoing call</string>
+    <string name="nc_notification_channel_calls_ongoing_description">Persistent status for a call in progress</string>
     <string name="nc_notification_channel_messages">Messages</string>
     <string name="nc_notification_channel_messages_description">Notify about incoming messages</string>
     <string name="nc_notification_channel_uploads">Uploads</string>
     <string name="nc_notification_channel_uploads_description">Notify about upload progress</string>
+    <string name="nc_notification_permission_hint">To show call notifications and keep calls active in the background, please grant \"Notifications\" permission.</string>
     <string name="nc_notification_settings">Notification settings</string>
     <string name="nc_notification_warning">Notifications are not set up correctly</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Notification permission and battery settings are correctly set up to receive notifications. If you have problems to receive notifications anyway, please check if the notification channels for calls and messages are enabled. Further help can be found at DontKillMyApp.com or at the troubleshooting checklist. If this does not help, please go to diagnosis screen and send a bug report.</string>

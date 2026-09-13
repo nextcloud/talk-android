@@ -160,6 +160,7 @@
     <string name="nc_call_ongoing_notification_content">Çağrıya dönmek için Geri dön üzerine dokunun.</string>
     <string name="nc_call_ongoing_notification_default_title">Çağrı sürüyor</string>
     <string name="nc_call_ongoing_notification_end_action">Çağrıyı sonlandır</string>
+    <string name="nc_call_ongoing_notification_return_action">Çağrıya dön</string>
     <string name="nc_call_raised_hand">%1$s elini kaldırdı</string>
     <string name="nc_call_reconnecting">Bağlantı yeniden kuruluyor…</string>
     <string name="nc_call_ringing">ÇALIYOR</string>
@@ -425,10 +426,13 @@
     <string name="nc_notification_channel">%1$s %2$s bildiri kanalında</string>
     <string name="nc_notification_channel_calls">Çağrılar</string>
     <string name="nc_notification_channel_calls_description">Gelen çağrılar bildirilsin</string>
+    <string name="nc_notification_channel_calls_ongoing">Çağrı sürüyor</string>
+    <string name="nc_notification_channel_calls_ongoing_description">Süren bir aramanın kalıcı durumu</string>
     <string name="nc_notification_channel_messages">İletiler</string>
     <string name="nc_notification_channel_messages_description">Gelen iletiler bildirilsin</string>
     <string name="nc_notification_channel_uploads">Yüklemeler</string>
     <string name="nc_notification_channel_uploads_description">Yükleme ilerlemesi bildirilsin</string>
+    <string name="nc_notification_permission_hint">Arama bildirimlerinin görüntülenmesi ve aramaların arka planda etkin kalabilmesi için \"Bildirimler\" iznini verin.</string>
     <string name="nc_notification_settings">Bildirim ayarları</string>
     <string name="nc_notification_warning">Bildirimler doğru olarak ayarlanmamış</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Bildirim izni ve pil ayarları, bildirimleri almak için doğru şekilde ayarlanmış. Yine de bildirim almakta sorun yaşıyorsanız lütfen çağrı ve iletiler için bildirim kanallarının kullanıma alınmış olup olmadığını denetleyin. Daha fazla yardım almak için DontKillMyApp.com adresine ya da sorun giderme kontrol listesine bakabilirsiniz. Bunlar işe yaramazsa lütfen tanılama ekranına gidin ve bir hata bildirimi gönderin.</string>

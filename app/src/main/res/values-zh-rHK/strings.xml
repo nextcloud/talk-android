@@ -160,6 +160,7 @@
     <string name="nc_call_ongoing_notification_content">輕點以返回到您的通話。</string>
     <string name="nc_call_ongoing_notification_default_title">正在通話中…</string>
     <string name="nc_call_ongoing_notification_end_action">結束通話</string>
+    <string name="nc_call_ongoing_notification_return_action">返回通話</string>
     <string name="nc_call_raised_hand">%1$s 舉手</string>
     <string name="nc_call_reconnecting">正在重新連線 …</string>
     <string name="nc_call_ringing">鈴聲響</string>
@@ -425,10 +426,13 @@
     <string name="nc_notification_channel">%1$s在%2$s的通知頻道</string>
     <string name="nc_notification_channel_calls">通話</string>
     <string name="nc_notification_channel_calls_description">來電通知</string>
+    <string name="nc_notification_channel_calls_ongoing">進行中的通話</string>
+    <string name="nc_notification_channel_calls_ongoing_description">進行中通話的持續狀態</string>
     <string name="nc_notification_channel_messages">訊息</string>
     <string name="nc_notification_channel_messages_description">來訊通知</string>
     <string name="nc_notification_channel_uploads">上傳</string>
     <string name="nc_notification_channel_uploads_description">通知上傳進度</string>
+    <string name="nc_notification_permission_hint">如要顯示通話通知並讓通話在背景保持進行，請授予「通知」權限。</string>
     <string name="nc_notification_settings">通知設定</string>
     <string name="nc_notification_warning">通知設定不正確</string>
     <string name="nc_notifications_troubleshooting_dialog_text">通知權限和電池設定已正確設置以接收通知。如果您仍然無法接收通知，請檢查是否已啟用通話和訊息的通知通道。您可以在 DontKillMyApp.com 或故障排除檢查清單中找到進一步的幫助。如果這些方法無法解決問題，請轉到診斷畫面並發送錯誤報告。</string>

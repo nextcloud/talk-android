@@ -151,6 +151,8 @@
     <string name="nc_call_button_content_description_microphone">Scoránaigh micreafón</string>
     <string name="nc_call_button_content_description_pip">Oscail mód pictiúr-i-pictiúr</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Athraigh go físeán féin</string>
+    <string name="nc_call_e2ee_not_supported">Ní thacaítear le glaonna faoi láthair toisc go bhfuil criptiú ceann go ceann cumasaithe ar an bhfreastalaí.</string>
+    <string name="nc_call_e2ee_not_supported_title">Níl glao ó %s ar fáil</string>
     <string name="nc_call_incoming">ISTEACH</string>
     <string name="nc_call_join_failed">Níorbh fhéidir páirt a ghlacadh sa ghlao. Déan iarracht arís.</string>
     <string name="nc_call_name">Ainm an chomhrá</string>
@@ -158,6 +160,7 @@
     <string name="nc_call_ongoing_notification_content">Tapáil chun filleadh ar do ghlao.</string>
     <string name="nc_call_ongoing_notification_default_title">Glao ar siúl</string>
     <string name="nc_call_ongoing_notification_end_action">Cuir deireadh leis an nglao</string>
+    <string name="nc_call_ongoing_notification_return_action">Fill ar an nglao</string>
     <string name="nc_call_raised_hand">%1$s d\'ardaigh an lámh</string>
     <string name="nc_call_reconnecting">Ag athcheangal…</string>
     <string name="nc_call_ringing">AG FUAIMNIÚ</string>
@@ -182,6 +185,7 @@
     <string name="nc_channel_only_moderators_can_post">Ní féidir ach le modhnóirí postáil sa chainéal seo</string>
     <string name="nc_chat_no_messages">Gan aon teachtaireachtaí fós. Bí ar an gcéad duine chun fáilte a chur romhat!</string>
     <string name="nc_classified_conversation">Comhrá rúnda</string>
+    <string name="nc_classified_conversation_description">Comhrá srianta do théamaí rúnda, agus rochtain phoiblí, aíonna, SIP agus taifeadadh díchumasaithe.</string>
     <string name="nc_clear_edit_button">Cealaigh eagarthóireacht</string>
     <string name="nc_clear_history">Scrios gach teachtaireacht</string>
     <string name="nc_clear_history_success">Scriosadh gach teachtaireacht</string>
@@ -208,6 +212,10 @@
     <string name="nc_confirm">Deimhnigh</string>
     <string name="nc_connecting_call">Ag nascadh…</string>
     <string name="nc_contacts_done">Déanta</string>
+    <string name="nc_conversation_created_invalid_participants">Níorbh fhéidir roinnt rannpháirtithe a chur leis.</string>
+    <string name="nc_conversation_created_invalid_participants_named">Níorbh fhéidir na rannpháirtithe seo a chur leis: %1$s</string>
+    <string name="nc_conversation_created_public">Is féidir le haíonna páirt a ghlacadh sa chomhrá seo tríd an nasc a úsáid. Roinn é anois nó níos déanaí trí shocruithe an chomhrá.</string>
+    <string name="nc_conversation_created_title">Cruthaíodh comhrá</string>
     <string name="nc_conversation_description">Cur síos ar an gcomhrá</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Téigh go dtí an comhad</string>
     <string name="nc_conversation_menu_conversation_info">Eolas faoin gcomhrá</string>
@@ -230,6 +238,15 @@
     <string name="nc_conversation_tags_new">Clib nua</string>
     <string name="nc_conversation_tags_rename">Athainmnigh an clib</string>
     <string name="nc_conversation_tags_save">Sábháil</string>
+    <string name="nc_conversation_type_defaults">Socruithe réamhshocraithe den chineál comhrá seo:</string>
+    <string name="nc_conversation_type_defaults_hint">Is féidir na socruithe seo a athrú nuair a bheidh an comhrá cruthaithe.</string>
+    <string name="nc_conversation_type_lobby">Seomra feithimh curtha i ngníomh; an comhrá teoranta do mhodhnóirí.</string>
+    <string name="nc_conversation_type_mentions_moderators">Ní cheadaítear ach do mhodhnóirí gach duine a lua.</string>
+    <string name="nc_conversation_type_message_expiration">Éagann teachtaireachtaí tar éis %1$s</string>
+    <string name="nc_conversation_type_message_expiration_custom">Tá dul in éag teachtaireachta cumasaithe</string>
+    <string name="nc_conversation_type_sip">Cumasaíodh glaoch isteach trí ghuthán agus SIP</string>
+    <string name="nc_conversation_type_sip_no_pin">Ceadaítear glaoch isteach gan uimhir PIN</string>
+    <string name="nc_conversation_types_error">Níorbh fhéidir cineálacha comhrá a luchtú.</string>
     <string name="nc_conversations_empty">Glac páirt i gcomhrá nó cuir tús le ceann nua</string>
     <string name="nc_conversations_empty_details">Abair Dia duit a chairde agus a chomhghleacaithe!</string>
     <string name="nc_copy_message">Cóipeáil</string>
@@ -409,10 +426,13 @@
     <string name="nc_notification_channel">%1$s ar chainéal fógra %2$s</string>
     <string name="nc_notification_channel_calls">Glaonna</string>
     <string name="nc_notification_channel_calls_description">Fógra a thabhairt faoi ghlaonna isteach</string>
+    <string name="nc_notification_channel_calls_ongoing">Glao ar siúl</string>
+    <string name="nc_notification_channel_calls_ongoing_description">Stádas leanúnach do ghlao atá ar siúl</string>
     <string name="nc_notification_channel_messages">Teachtaireachtaí</string>
     <string name="nc_notification_channel_messages_description">Fógra faoi theachtaireachtaí ag teacht isteach</string>
     <string name="nc_notification_channel_uploads">uaslódálacha</string>
     <string name="nc_notification_channel_uploads_description">Fógra faoi dhul chun cinn an uaslódála</string>
+    <string name="nc_notification_permission_hint">Chun fógraí glaonna a thaispeáint agus glaonna a choinneáil gníomhach sa chúlra, tabhair cead do \"Fógraí\", le do thoil.</string>
     <string name="nc_notification_settings">Socruithe fógra</string>
     <string name="nc_notification_warning">Níl fógraí socraithe i gceart</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Tá cead fógartha agus socruithe ceallraí socraithe i gceart chun fógraí a fháil. Má tá fadhbanna agat fógraí a fháil ar aon nós, seiceáil le do thoil an bhfuil na bealaí fógra le haghaidh glaonna agus teachtaireachtaí cumasaithe. Is féidir tuilleadh cabhrach a fháil ag DontKillMyApp.com nó ag an seicliosta fabhtcheartaithe. Mura gcabhraíonn sé seo, téigh chuig an scáileán diagnóise agus seol tuairisc ar fhabht le do thoil.</string>
@@ -432,6 +452,8 @@
     <string name="nc_participants_add">Cuir rannpháirtithe leis</string>
     <string name="nc_password">Pasfhocal</string>
     <string name="nc_password_copied">Pasfhocal cóipeáilte</string>
+    <string name="nc_password_required">Teastaíonn pasfhocal ón bhfreastalaí seo le haghaidh comhráite ar féidir le haíonna páirt a ghlacadh iontu.</string>
+    <string name="nc_password_secure">Tá an focal faire slán.</string>
     <string name="nc_permissions_ask">Socraigh ceadanna</string>
     <string name="nc_permissions_denied">Diúltaíodh roinnt ceadanna.</string>
     <string name="nc_permissions_rationale_dialog_title">Ceadaigh ceadanna le do thoil</string>
@@ -443,6 +465,7 @@
     <string name="nc_pip_microphone_unmute">Cumasaigh micreafón</string>
     <string name="nc_plain_old_messages">Teachtaireachtaí</string>
     <string name="nc_presentation">Cur i láthair</string>
+    <string name="nc_presentation_description">Comhrá srianta le haghaidh cur i láthair inmheánach</string>
     <string name="nc_profile_personal_info_title">Eolas Pearsanta</string>
     <string name="nc_promote">Cur chun cinn chuig modhnóir</string>
     <string name="nc_promote_to_owner">Ardú céime chuig úinéir</string>
@@ -638,6 +661,7 @@
     <string name="nc_voice_message_missing_audio_permission">Tá cead taifeadta fuaime ag teastáil</string>
     <string name="nc_voice_message_slide_to_cancel">« Sleamhnán le cur ar ceal</string>
     <string name="nc_webinar">webinar</string>
+    <string name="nc_webinar_description">Comhrá srianta le seomra feithimh curtha i ngníomh; oiriúnach do sheimineáir ghréasáin phoiblí.</string>
     <string name="nc_yes">Tá</string>
     <string name="nc_zoom_in">Zúmáil isteach</string>
     <string name="nc_zoom_out">Súmáil amach</string>
