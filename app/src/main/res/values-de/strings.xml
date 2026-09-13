@@ -160,6 +160,7 @@
     <string name="nc_call_ongoing_notification_content">Tippen um zum Anruf zurückzukehren</string>
     <string name="nc_call_ongoing_notification_default_title">Anruf ist aktiv</string>
     <string name="nc_call_ongoing_notification_end_action">Anruf beenden</string>
+    <string name="nc_call_ongoing_notification_return_action">Zurück zum Anruf</string>
     <string name="nc_call_raised_hand">%1$s hat die Hand gehoben</string>
     <string name="nc_call_reconnecting">Verbinde erneut …</string>
     <string name="nc_call_ringing">KLINGELT</string>
@@ -425,10 +426,13 @@
     <string name="nc_notification_channel">%1$s auf %2$s Benachrichtigungskanal</string>
     <string name="nc_notification_channel_calls">Anrufe</string>
     <string name="nc_notification_channel_calls_description">Bei eingehenden Anrufen benachrichtigen</string>
+    <string name="nc_notification_channel_calls_ongoing">Laufender Anruf</string>
+    <string name="nc_notification_channel_calls_ongoing_description">Permanenter Status für einen laufenden Anruf</string>
     <string name="nc_notification_channel_messages">Nachrichten</string>
     <string name="nc_notification_channel_messages_description">Bei eingehenden Nachrichten benachrichtigen </string>
     <string name="nc_notification_channel_uploads">Uploads</string>
     <string name="nc_notification_channel_uploads_description">Über den Hochlade-Fortschritt benachrichtigen</string>
+    <string name="nc_notification_permission_hint">Um Anrufbenachrichtigungen anzuzeigen und Anrufe im Hintergrund aktiv zu halten, bitte die Berechtigung \"Benachrichtigungen\" erteilen.</string>
     <string name="nc_notification_settings">Benachrichtigungseinstellungen</string>
     <string name="nc_notification_warning">Benachrichtigungen sind nicht korrekt eingerichtet</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Benachrichtigungsberechtigung und Akkueinstellungen sind korrekt eingerichtet, um Benachrichtigungen zu erhalten. Sollten Sie trotzdem Probleme mit den Benachrichtigungen haben, prüfen Sie bitte, ob die Benachrichtigungskanäle für Anrufe und Nachrichten aktiviert sind. Weitere Hilfe finden Sie unter DontKillMyApp.com oder in der Checkliste zur Fehlerbehebung. Wenn dies nicht hilft, gehen Sie bitte zur Diagnoseseite und senden Sie einen Fehlerbericht.</string>

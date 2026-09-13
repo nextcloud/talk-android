@@ -160,6 +160,7 @@
     <string name="nc_call_ongoing_notification_content">Appuyez pour revenir à votre appel.</string>
     <string name="nc_call_ongoing_notification_default_title">Appel en cours</string>
     <string name="nc_call_ongoing_notification_end_action">Terminer l\'appel</string>
+    <string name="nc_call_ongoing_notification_return_action">Revenir à l\'appel</string>
     <string name="nc_call_raised_hand">%1$s a levé la main</string>
     <string name="nc_call_reconnecting">Reconnexion…</string>
     <string name="nc_call_ringing">APPEL EN COURS</string>
@@ -425,10 +426,13 @@
     <string name="nc_notification_channel">Canal de notification %1$s sur %2$s</string>
     <string name="nc_notification_channel_calls">Appels</string>
     <string name="nc_notification_channel_calls_description">Notifier les appels entrants</string>
+    <string name="nc_notification_channel_calls_ongoing">Appel en cours</string>
+    <string name="nc_notification_channel_calls_ongoing_description">Statut persistant pour un appel en cours</string>
     <string name="nc_notification_channel_messages">Messages</string>
     <string name="nc_notification_channel_messages_description">Notifier les messages entrants</string>
     <string name="nc_notification_channel_uploads">Envois</string>
     <string name="nc_notification_channel_uploads_description">Notifier la progression du téléversement</string>
+    <string name="nc_notification_permission_hint">Pour afficher les notifications d\'appel et conserver les appels actifs en arrière-plan, veuillez accorder la permission « Notifications ».</string>
     <string name="nc_notification_settings">Paramètres de notification</string>
     <string name="nc_notification_warning">Les notifications ne sont pas configurées correctement</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Les permissions de notification et les paramètres de la batterie sont correctement configurés pour recevoir les notifications. Si vous avez néanmoins  des problèmes pour recevoir les notifications, merci de vérifier que les canaux de notification pour appels et messages sont activés. De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la liste des vérifications des erreurs communes. Si cela ne fonctionne toujours pas, merci d\'aller sur l\'écran de diagnostic et envoyer un rapport de bug.</string>
