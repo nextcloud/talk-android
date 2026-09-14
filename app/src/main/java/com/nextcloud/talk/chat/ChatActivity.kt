@@ -2724,9 +2724,17 @@ class ChatActivity :
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "upload starting after permissions were granted")
+                Log.d(TAG, "showing upload preview after permissions were granted")
                 if (filesToUpload.isNotEmpty()) {
-                    uploadFiles(filesToUpload)
+                    val newFragment = FileAttachmentPreviewFragment.newInstance(
+                        filesToUpload,
+                        currentConversation?.displayName ?: "",
+                        CapabilitiesUtil.hasConversationSubfoldersForAttachments(spreedCapabilities)
+                    )
+                    newFragment.setListener { files, caption, compressImages, allowUpdate ->
+                        uploadFiles(files, caption, compressImages, allowUpdate)
+                    }
+                    newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
                 }
             } else {
                 Snackbar
