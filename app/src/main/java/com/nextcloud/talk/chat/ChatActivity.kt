@@ -2576,15 +2576,7 @@ class ChatActivity :
         try {
             require(filesToUpload.isNotEmpty())
 
-            val newFragment = FileAttachmentPreviewFragment.newInstance(
-                filesToUpload.map { it.toString() }.toMutableList(),
-                currentConversation?.displayName ?: "",
-                CapabilitiesUtil.hasConversationSubfoldersForAttachments(spreedCapabilities)
-            )
-            newFragment.setListener { files, caption, compressImages, allowUpdate ->
-                uploadFiles(files, caption, compressImages, allowUpdate)
-            }
-            newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
+            showFileAttachmentPreview(filesToUpload.map { it.toString() }.toMutableList())
         } catch (e: IllegalStateException) {
             context.resources?.getString(R.string.nc_upload_failed)?.let {
                 Snackbar.make(
@@ -2604,6 +2596,18 @@ class ChatActivity :
             }
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
         }
+    }
+
+    private fun showFileAttachmentPreview(files: MutableList<String>) {
+        val newFragment = FileAttachmentPreviewFragment.newInstance(
+            files,
+            currentConversation?.displayName ?: "",
+            CapabilitiesUtil.hasConversationSubfoldersForAttachments(spreedCapabilities)
+        )
+        newFragment.setListener { selectedFiles, caption, compressImages, allowUpdate ->
+            uploadFiles(selectedFiles, caption, compressImages, allowUpdate)
+        }
+        newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
     }
 
     private fun onSelectContactResult(intent: Intent?) {
@@ -2662,15 +2666,7 @@ class ChatActivity :
             }
 
             if (permissionUtil.isFilesPermissionGranted()) {
-                val newFragment = FileAttachmentPreviewFragment.newInstance(
-                    filesToUpload,
-                    currentConversation?.displayName ?: "",
-                    CapabilitiesUtil.hasConversationSubfoldersForAttachments(spreedCapabilities)
-                )
-                newFragment.setListener { files, caption, compressImages, allowUpdate ->
-                    uploadFiles(files, caption, compressImages, allowUpdate)
-                }
-                newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
+                showFileAttachmentPreview(filesToUpload)
             } else {
                 UploadAndShareFilesWorker.requestStoragePermission(this)
             }
@@ -2726,15 +2722,7 @@ class ChatActivity :
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "showing upload preview after permissions were granted")
                 if (filesToUpload.isNotEmpty()) {
-                    val newFragment = FileAttachmentPreviewFragment.newInstance(
-                        filesToUpload,
-                        currentConversation?.displayName ?: "",
-                        CapabilitiesUtil.hasConversationSubfoldersForAttachments(spreedCapabilities)
-                    )
-                    newFragment.setListener { files, caption, compressImages, allowUpdate ->
-                        uploadFiles(files, caption, compressImages, allowUpdate)
-                    }
-                    newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
+                    showFileAttachmentPreview(filesToUpload)
                 }
             } else {
                 Snackbar
