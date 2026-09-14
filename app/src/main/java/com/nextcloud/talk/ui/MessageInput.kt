@@ -26,6 +26,7 @@ class MessageInput : FrameLayout {
     lateinit var slideToCancelDescription: TextView
     lateinit var microphoneEnabledInfo: ImageView
     lateinit var microphoneEnabledInfoBackground: ImageView
+    lateinit var smileyButton: ImageButton
     lateinit var deleteVoiceRecording: ImageView
     lateinit var sendVoiceRecording: ImageView
     lateinit var micInputCloud: MicInputCloud
@@ -70,6 +71,7 @@ class MessageInput : FrameLayout {
         slideToCancelDescription = findViewById(R.id.slideToCancelDescription)
         microphoneEnabledInfo = findViewById(R.id.microphoneEnabledInfo)
         microphoneEnabledInfoBackground = findViewById(R.id.microphoneEnabledInfoBackground)
+        smileyButton = findViewById(R.id.smileyButton)
         deleteVoiceRecording = findViewById(R.id.deleteVoiceRecording)
         sendVoiceRecording = findViewById(R.id.sendVoiceRecording)
         micInputCloud = findViewById(R.id.micInputCloud)
