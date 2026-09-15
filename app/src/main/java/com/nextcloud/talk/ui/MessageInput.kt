@@ -13,6 +13,8 @@ import android.widget.Chronometer
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.emoji2.widget.EmojiEditText
@@ -38,10 +40,14 @@ class MessageInput : FrameLayout {
     lateinit var inputEditText: EmojiEditText
     lateinit var attachmentButton: ImageButton
     lateinit var messageSendButton: ImageButton
+    private lateinit var attachmentEmojiContainer: LinearLayout
     val messageInput: EmojiEditText
         get() = inputEditText
     val button: ImageButton
         get() = messageSendButton
+
+    var isEmojiButtonStacked = false
+        private set
 
     constructor(context: Context) : super(context) {
         init()
@@ -64,6 +70,7 @@ class MessageInput : FrameLayout {
         inputEditText.maxHeight = screenHeight / 3
 
         attachmentButton = findViewById(R.id.attachmentButton)
+        attachmentEmojiContainer = findViewById(R.id.attachmentEmojiContainer)
         messageSendButton = findViewById(R.id.messageSendButton)
         audioRecordDuration = findViewById(R.id.audioRecordDuration)
         recordAudioButton = findViewById(R.id.recordAudioButton)
@@ -85,5 +92,24 @@ class MessageInput : FrameLayout {
         attachmentButton.setOnClickListener {
             listener?.invoke()
         }
+    }
+
+    fun setEmojiButtonStacked(stacked: Boolean) {
+        if (isEmojiButtonStacked == stacked) {
+            return
+        }
+        isEmojiButtonStacked = stacked
+
+        attachmentEmojiContainer.orientation = if (stacked) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
+
+        val containerParams = attachmentEmojiContainer.layoutParams as RelativeLayout.LayoutParams
+        if (stacked) {
+            containerParams.removeRule(RelativeLayout.ALIGN_BOTTOM)
+            containerParams.addRule(RelativeLayout.CENTER_VERTICAL)
+        } else {
+            containerParams.removeRule(RelativeLayout.CENTER_VERTICAL)
+            containerParams.addRule(RelativeLayout.ALIGN_BOTTOM, inputEditText.id)
+        }
+        attachmentEmojiContainer.layoutParams = containerParams
     }
 }

@@ -15,6 +15,7 @@ import android.os.CountDownTimer
 import android.os.SystemClock
 import android.text.Editable
 import android.text.InputFilter
+import android.text.StaticLayout
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
@@ -41,6 +42,7 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.compose.material3.MaterialTheme
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.emojipicker.RecentEmojiProvider
@@ -477,8 +479,11 @@ class MessageInputFragment : Fragment() {
                 chatActivity.chatViewModel.messageDraft.messageCursor = cursor
                 chatActivity.chatViewModel.messageDraft.messageText = text
                 handleButtonsVisibility()
+                updateEmojiButtonPlacement()
             }
         })
+
+        binding.fragmentMessageInputView.inputEditText.doOnLayout { updateEmojiButtonPlacement() }
 
         // Image keyboard support
         // See: https://developer.android.com/guide/topics/text/image-keyboard
@@ -728,6 +733,30 @@ class MessageInputFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun updateEmojiButtonPlacement() {
+        if (!this::binding.isInitialized) {
+            return
+        }
+
+        val editText = binding.fragmentMessageInputView.inputEditText
+        val smileyButton = binding.fragmentMessageInputView.smileyButton
+        val text = editText.text
+        val currentWidth = editText.width
+        val isCurrentlyStacked = binding.fragmentMessageInputView.isEmojiButtonStacked
+        val widestPossibleWidth = if (isCurrentlyStacked) currentWidth else currentWidth + smileyButton.width
+
+        if (text == null || currentWidth <= 0 || widestPossibleWidth <= 0) {
+            return
+        }
+
+        val lineCountAtWidestWidth = StaticLayout.Builder
+            .obtain(text, 0, text.length, editText.paint, widestPossibleWidth)
+            .build()
+            .lineCount
+
+        binding.fragmentMessageInputView.setEmojiButtonStacked(lineCountAtWidestWidth >= LONG_MESSAGE_LINE_THRESHOLD)
     }
 
     fun updateScheduledMessagesAvailability(hasMessages: Boolean) {
@@ -1286,5 +1315,6 @@ class MessageInputFragment : Fragment() {
         private const val FULLY_OPAQUE: Float = 1.0f
         private const val FULLY_TRANSPARENT: Float = 0.0f
         private const val OPACITY_DISABLED = 0.7f
+        private const val LONG_MESSAGE_LINE_THRESHOLD = 2
     }
 }
