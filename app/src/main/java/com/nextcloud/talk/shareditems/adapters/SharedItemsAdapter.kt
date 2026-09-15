@@ -99,7 +99,11 @@ class SharedItemsAdapter(
         val canPin = isOne2One || isUserConversationOwnerOrModerator
         if (canPin) {
             credentials?.let {
-                (context as SharedItemsActivity).chatViewModel.unPinMessage(credentials, url)
+                (context as SharedItemsActivity).chatViewModel.unPinMessage(
+                    credentials,
+                    url,
+                    item.id.toLongOrNull() ?: 0L
+                )
                 val index = items.indexOf(item)
                 items.remove(item)
                 this.notifyItemRemoved(index)
