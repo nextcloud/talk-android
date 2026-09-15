@@ -125,6 +125,8 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
         excludedActorId: String
     ): Int = 0
 
+    override suspend fun countMessagesNewerThanIncludingOwn(internalConversationId: String, messageId: Long): Int = 0
+
     override fun getCountBetweenMessageIds(
         internalConversationId: String,
         oldestMessageId: Long,
