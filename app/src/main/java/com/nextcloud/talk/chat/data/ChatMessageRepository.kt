@@ -80,6 +80,13 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun updateLocalReadState(lastReadMessage: Int)
 
     /**
+     * Writes the local read state for a message the user marked as unread: the read marker moves back
+     * to [lastReadMessage] and the conversation keeps at least one unread message until the server
+     * reports its own unread state.
+     */
+    suspend fun updateLocalUnreadState(lastReadMessage: Int)
+
+    /**
      * Registers [lastReadMessage] as a pending read marker synchronously, without going through
      * [updateLocalReadState]'s suspending database reads first. Call this before launching the
      * actual local write: leaving the chat can race a room list sync triggered by the conversation
@@ -167,7 +174,33 @@ interface ChatMessageRepository : LifecycleAwareManager {
      */
     suspend fun deleteTempMessageByReferenceId(referenceId: String): Boolean
 
-    suspend fun editChatMessage(credentials: String, url: String, text: String): Flow<Result<ChatOverallSingleMessage>>
+    /**
+     * Writes the new text into the local database before the server is asked, so the chat renders the
+     * edit right away, and restores the previous text if the request fails or the server rejects the
+     * edit (a message that is too old, for instance). The successful response is persisted as the
+     * authoritative version.
+     */
+    suspend fun editChatMessage(
+        credentials: String,
+        url: String,
+        messageId: Long,
+        text: String
+    ): Result<ChatOverallSingleMessage>
+
+    /**
+     * Marks the message as deleted locally before the server is asked, so the chat renders the deletion
+     * right away, and reverts it if the request finally fails. [deletedPlaceholder] is the text the
+     * bubble shows until the server's own wording arrives with the next sync.
+     *
+     * A successful result without a message means the server no longer knew the message, so the local
+     * deletion stands with nothing left to report.
+     */
+    suspend fun deleteChatMessage(
+        credentials: String,
+        url: String,
+        messageId: Long,
+        deletedPlaceholder: String
+    ): Result<ChatOverallSingleMessage?>
 
     suspend fun editTempChatMessage(message: ChatMessage, editedMessageText: String): Flow<Boolean>
 
@@ -175,9 +208,17 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     suspend fun deleteTempMessage(chatMessage: ChatMessage)
 
-    suspend fun pinMessage(credentials: String, url: String, pinUntil: Int): Flow<ChatMessage?>
+    /**
+     * Pins [messageId] in the local conversation entry before the server is asked, so the pinned banner
+     * appears right away, and unpins it again if the request finally fails.
+     */
+    suspend fun pinMessage(credentials: String, url: String, pinUntil: Int, messageId: Long): Result<ChatMessage?>
 
-    suspend fun unPinMessage(credentials: String, url: String): Flow<ChatMessage?>
+    /**
+     * Clears the pinned message in the local conversation entry before the server is asked. The room
+     * refresh that follows reveals another pinned message if there is one.
+     */
+    suspend fun unPinMessage(credentials: String, url: String, messageId: Long): Result<ChatMessage?>
 
     suspend fun hidePinnedMessage(credentials: String, url: String): Flow<Boolean>
 

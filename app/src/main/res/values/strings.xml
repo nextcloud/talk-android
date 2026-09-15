@@ -658,6 +658,8 @@ How to translate with transifex:
     <string name="open_in_files_app">Open in Files app</string>
     <string name="send_to_forbidden">You are not allowed to share content to this chat</string>
     <string name="reaction_forbidden">You are not allowed to add or remove reactions in this conversation</string>
+    <string name="reaction_add_failed">Could not add the reaction</string>
+    <string name="reaction_delete_failed">Could not remove the reaction</string>
 
     <string name="typing_is_typing">is typing …</string>
     <string name="typing_are_typing">are typing …</string>

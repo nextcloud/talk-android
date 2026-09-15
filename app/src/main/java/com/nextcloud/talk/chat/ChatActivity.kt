@@ -936,6 +936,7 @@ class ChatActivity :
                             chatMode = chatMode,
                             highlightedMessageId = uiState.highlightedMessageId,
                             highlightedSearchTerm = uiState.highlightedSearchTerm,
+                            markedAsUnreadByUser = uiState.markedAsUnreadByUser,
                             hasChatPermission = participantPermissions?.hasChatPermission() == true,
                             downloadingFileState = downloadingFileState.value,
                             stickyHeaderTopOffset = overflowHeightDp
@@ -1501,6 +1502,16 @@ class ChatActivity :
         lifecycleScope.launch {
             chatViewModel.isLoadingFlow.collectLatest { isLoading ->
                 updateSearchLoadingIndicator(isLoading)
+            }
+        }
+
+        lifecycleScope.launch {
+            chatViewModel.reactionFailures.collect { operation ->
+                val message = when (operation) {
+                    ChatViewModel.ReactionOperation.ADD -> R.string.reaction_add_failed
+                    ChatViewModel.ReactionOperation.DELETE -> R.string.reaction_delete_failed
+                }
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
             }
         }
 
@@ -3681,8 +3692,13 @@ class ChatActivity :
             setContent {
                 GetPinnedOptionsDialog(shouldDismiss, context, viewThemeUtils) { zonedDateTime ->
                     zonedDateTime?.let {
-                        chatViewModel.pinMessage(credentials!!, url, pinUntil = zonedDateTime.toEpochSecond().toInt())
-                    } ?: chatViewModel.pinMessage(credentials!!, url)
+                        chatViewModel.pinMessage(
+                            credentials!!,
+                            url,
+                            message.jsonMessageId.toLong(),
+                            pinUntil = zonedDateTime.toEpochSecond().toInt()
+                        )
+                    } ?: chatViewModel.pinMessage(credentials!!, url, message.jsonMessageId.toLong())
 
                     shouldDismiss.value = true
                 }
@@ -3697,26 +3713,24 @@ class ChatActivity :
             token = roomToken,
             messageId = message.jsonMessageId.toString()
         )
-        chatViewModel.unPinMessage(credentials!!, url)
+        chatViewModel.unPinMessage(credentials!!, url, message.jsonMessageId.toLong())
     }
 
     private fun markAsRead(messageId: Int) {
         chatViewModel.setChatReadMessage(messageId)
     }
 
+    /**
+     * The selected message and everything newer become unread, so the read marker moves to the message
+     * right before it.
+     */
     fun markAsUnread(chatMessage: ChatMessage) {
-        val items = chatViewModel.uiState.value.items
-        val selectedIndex = items.indexOfFirst {
-            (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id == chatMessage.jsonMessageId
-        }
-        val lastReadMessage = if (selectedIndex in 0 until items.size - 1) {
-            (selectedIndex + 1 until items.size)
-                .firstNotNullOfOrNull { (items[it] as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id }
-                ?: 0
-        } else {
-            0
-        }
-        chatViewModel.setChatReadMessage(lastReadMessage)
+        val lastReadMessage = ChatViewModel.readMarkerForMarkingUnread(
+            chatViewModel.uiState.value.items,
+            chatMessage.jsonMessageId
+        ) ?: return
+
+        chatViewModel.markChatAsUnread(lastReadMessage)
     }
 
     fun copyMessage(message: ChatMessage?) {
