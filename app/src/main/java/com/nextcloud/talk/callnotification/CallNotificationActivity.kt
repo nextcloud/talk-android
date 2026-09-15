@@ -80,6 +80,7 @@ class CallNotificationActivity : CallBaseActivity() {
         userBeingCalled = userManager.getUserWithId(internalUserId).blockingGet()
 
         setupCallTypeDescription()
+        setupCallAnswerButtons()
         binding!!.conversationNameTextView.text = displayName
         setupAvatar(isOneToOneCall, conversationName)
         initClickListeners()
@@ -110,7 +111,7 @@ class CallNotificationActivity : CallBaseActivity() {
         }
     }
 
-    private fun setupCallTypeDescription() {
+    private fun hasCallFlagsCapability(): Boolean {
         val apiVersion = ApiUtils.getConversationApiVersion(
             userBeingCalled!!,
             intArrayOf(
@@ -120,23 +121,25 @@ class CallNotificationActivity : CallBaseActivity() {
             )
         )
 
-        if (apiVersion >= ApiUtils.API_V3) {
-            val hasCallFlags = hasSpreedFeatureCapability(
-                userBeingCalled?.capabilities?.spreedCapability!!,
+        return apiVersion >= ApiUtils.API_V3 &&
+            hasSpreedFeatureCapability(
+                userBeingCalled?.capabilities?.spreedCapability,
                 SpreedFeatures.CONVERSATION_CALL_FLAGS
             )
-            if (hasCallFlags) {
-                if (isInCallWithVideo(callFlag)) {
-                    binding!!.incomingCallVoiceOrVideoTextView.text = String.format(
-                        resources.getString(R.string.nc_call_video),
-                        resources.getString(R.string.nc_app_product_name)
-                    )
-                } else {
-                    binding!!.incomingCallVoiceOrVideoTextView.text = String.format(
-                        resources.getString(R.string.nc_call_voice),
-                        resources.getString(R.string.nc_app_product_name)
-                    )
-                }
+    }
+
+    private fun setupCallTypeDescription() {
+        if (hasCallFlagsCapability()) {
+            if (isInCallWithVideo(callFlag)) {
+                binding!!.incomingCallVoiceOrVideoTextView.text = String.format(
+                    resources.getString(R.string.nc_call_video),
+                    resources.getString(R.string.nc_app_product_name)
+                )
+            } else {
+                binding!!.incomingCallVoiceOrVideoTextView.text = String.format(
+                    resources.getString(R.string.nc_call_voice),
+                    resources.getString(R.string.nc_app_product_name)
+                )
             }
         } else {
             val callDescriptionWithoutTypeInfo = String.format(
@@ -144,6 +147,16 @@ class CallNotificationActivity : CallBaseActivity() {
                 resources.getString(R.string.nc_app_product_name)
             )
             binding!!.incomingCallVoiceOrVideoTextView.text = callDescriptionWithoutTypeInfo
+        }
+    }
+
+    private fun setupCallAnswerButtons() {
+        if (hasCallFlagsCapability()) {
+            if (isInCallWithVideo(callFlag)) {
+                binding!!.callAnswerVoiceOnlyView.visibility = View.GONE
+            } else {
+                binding!!.callAnswerCameraView.visibility = View.GONE
+            }
         }
     }
 
