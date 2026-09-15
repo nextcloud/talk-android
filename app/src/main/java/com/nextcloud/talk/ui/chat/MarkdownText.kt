@@ -89,7 +89,8 @@ fun MarkdownText(
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
     textSizeSp: Float = TEXT_SIZE_SP,
-    highlightSearchTerm: String? = null
+    highlightSearchTerm: String? = null,
+    onClick: (() -> Unit)? = null
 ) {
     val context = LocalContext.current
     val textColorArgb = textColor.toArgb()
@@ -222,6 +223,7 @@ fun MarkdownText(
                         textView.movementMethod = null
                         textView.setOnTouchListener(null)
                     }
+                    textView.setOnClickListener(onClick?.let { handler -> View.OnClickListener { handler() } })
                 }
             )
         }
