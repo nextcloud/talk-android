@@ -14,6 +14,7 @@ import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
+import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
@@ -23,23 +24,35 @@ import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOCS
 import com.nextcloud.talk.models.json.chat.ChatOverall
+import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
+import retrofit2.HttpException
 import retrofit2.Response
+import java.io.IOException
 
 /**
  * Covers the unread-boundary decisions of [OfflineFirstChatRepository.loadInitialMessages]: the
@@ -201,6 +214,77 @@ class OfflineFirstChatRepositoryTest {
         return fieldMapCaptor.firstValue
     }
 
+    @Test
+    fun `deleteChatMessage marks the message as deleted before the server answers`() =
+        runTest {
+            val entity = messageEntity(MESSAGE_ID)
+            givenCachedMessage(entity)
+            val stateWhenAsked = mutableListOf<Pair<String, String>>()
+            wheneverBlocking { network.deleteChatMessage(any(), any()) } doSuspendableAnswer {
+                stateWhenAsked.add(entity.messageType to entity.message)
+                deletedResponse()
+            }
+
+            val result = repository.deleteChatMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID, DELETED_PLACEHOLDER)
+
+            assertEquals(listOf("comment_deleted" to DELETED_PLACEHOLDER), stateWhenAsked)
+            assertTrue(result.isSuccess)
+            assertEquals("comment_deleted", entity.messageType)
+            assertTrue(entity.deleted)
+        }
+
+    @Test
+    fun `deleteChatMessage restores the message when the server rejects the deletion`() =
+        runTest {
+            val entity = messageEntity(MESSAGE_ID)
+            givenCachedMessage(entity)
+            wheneverBlocking { network.deleteChatMessage(any(), any()) } doSuspendableAnswer {
+                throw httpException(HTTP_METHOD_NOT_ALLOWED)
+            }
+
+            val result = repository.deleteChatMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID, DELETED_PLACEHOLDER)
+
+            assertTrue(result.isFailure)
+            assertEquals("comment", entity.messageType)
+            assertEquals("message $MESSAGE_ID", entity.message)
+            assertFalse(entity.deleted)
+        }
+
+    @Test
+    fun `deleteChatMessage keeps the deletion when the server no longer knows the message`() =
+        runTest {
+            val entity = messageEntity(MESSAGE_ID)
+            givenCachedMessage(entity)
+            wheneverBlocking { network.deleteChatMessage(any(), any()) } doSuspendableAnswer {
+                throw httpException(HTTP_NOT_FOUND)
+            }
+
+            val result = repository.deleteChatMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID, DELETED_PLACEHOLDER)
+
+            assertTrue(result.isSuccess)
+            assertNull(result.getOrThrow())
+            assertEquals("comment_deleted", entity.messageType)
+        }
+
+    @Test
+    fun `deleteChatMessage retries a transient failure once before giving up`() =
+        runTest {
+            val entity = messageEntity(MESSAGE_ID)
+            givenCachedMessage(entity)
+            var attempts = 0
+            wheneverBlocking { network.deleteChatMessage(any(), any()) } doSuspendableAnswer {
+                attempts++
+                if (attempts == 1) throw IOException("connection reset")
+                deletedResponse()
+            }
+
+            val result = repository.deleteChatMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID, DELETED_PLACEHOLDER)
+
+            assertEquals(2, attempts)
+            assertTrue(result.isSuccess)
+            assertEquals("comment_deleted", entity.messageType)
+        }
+
     private fun user(): User =
         User(
             id = ACCOUNT_ID,
@@ -246,6 +330,88 @@ class OfflineFirstChatRepositoryTest {
             systemMessageType = ChatMessage.SystemMessageType.DUMMY
         )
 
+    @Test
+    fun `deleting a shared file drops the attachment from the cached message`() =
+        runTest {
+            // a deleted message carries no file any more, so the bubble must stop rendering one
+            val entity = messageEntity(MESSAGE_ID).apply {
+                messageParameters = hashMapOf<String?, HashMap<String?, String?>>(
+                    "file" to hashMapOf<String?, String?>("id" to "1")
+                )
+            }
+            givenCachedMessage(entity)
+            wheneverBlocking { network.deleteChatMessage(any(), any()) } doSuspendableAnswer { deletedResponse() }
+
+            repository.deleteChatMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID, DELETED_PLACEHOLDER)
+
+            assertNull(entity.messageParameters)
+        }
+
+    @Test
+    fun `a rejected deletion puts the attachment back`() =
+        runTest {
+            val parameters = hashMapOf<String?, HashMap<String?, String?>>(
+                "file" to hashMapOf<String?, String?>("id" to "1")
+            )
+            val entity = messageEntity(MESSAGE_ID).apply { messageParameters = parameters }
+            givenCachedMessage(entity)
+            wheneverBlocking { network.deleteChatMessage(any(), any()) } doSuspendableAnswer {
+                throw httpException(HTTP_METHOD_NOT_ALLOWED)
+            }
+
+            repository.deleteChatMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID, DELETED_PLACEHOLDER)
+
+            assertEquals(parameters, entity.messageParameters)
+        }
+
+    @Test
+    fun `a deletion cancelled before it was answered puts the message back`() =
+        runTest {
+            // leaving the chat cancels the view model scope, which would otherwise skip every catch
+            // and leave the message deleted locally although the server may never have heard of it
+            val entity = messageEntity(MESSAGE_ID)
+            givenCachedMessage(entity)
+            val requestStarted = CompletableDeferred<Unit>()
+            wheneverBlocking { network.deleteChatMessage(any(), any()) } doSuspendableAnswer {
+                requestStarted.complete(Unit)
+                awaitCancellation()
+            }
+
+            val deletion = launch {
+                repository.deleteChatMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID, DELETED_PLACEHOLDER)
+            }
+            requestStarted.await()
+            deletion.cancelAndJoin()
+
+            assertEquals("comment", entity.messageType)
+            assertEquals("message $MESSAGE_ID", entity.message)
+        }
+
+    private fun messageEntity(id: Long): ChatMessageEntity =
+        ChatMessageEntity(
+            internalId = "$INTERNAL_CONVERSATION_ID@$id",
+            internalConversationId = INTERNAL_CONVERSATION_ID,
+            id = id,
+            accountId = ACCOUNT_ID,
+            token = ROOM_TOKEN,
+            actorDisplayName = "Me",
+            actorId = "me",
+            actorType = "users",
+            message = "message $id",
+            messageType = "comment",
+            systemMessageType = ChatMessage.SystemMessageType.DUMMY
+        )
+
+    private fun givenCachedMessage(entity: ChatMessageEntity) {
+        wheneverBlocking { chatDao.getChatMessageEntity(eq(INTERNAL_CONVERSATION_ID), eq(entity.id)) }
+            .thenReturn(entity)
+    }
+
+    private fun deletedResponse(): ChatOverallSingleMessage = ChatOverallSingleMessage(ocs = null)
+
+    private fun httpException(code: Int) =
+        HttpException(Response.error<Any>(code, "".toResponseBody("text/plain".toMediaType())))
+
     private fun overall(vararg messages: ChatMessageJson): ChatOverall =
         ChatOverall(ocs = ChatOCS(meta = null, data = messages.toList()))
 
@@ -255,5 +421,10 @@ class OfflineFirstChatRepositoryTest {
         private const val INTERNAL_CONVERSATION_ID = "$ACCOUNT_ID@$ROOM_TOKEN"
         private const val CREDENTIALS = "credentials"
         private const val CHAT_URL = "https://server.example.com/ocs/v2.php/apps/spreed/api/v1/chat/$ROOM_TOKEN"
+        private const val MESSAGE_ID = 42L
+        private const val MESSAGE_URL = "$CHAT_URL/42"
+        private const val DELETED_PLACEHOLDER = "Message deleted by you"
+        private const val HTTP_NOT_FOUND = 404
+        private const val HTTP_METHOD_NOT_ALLOWED = 405
     }
 }
