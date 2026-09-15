@@ -384,6 +384,10 @@ class OfflineFirstChatRepository @Inject constructor(
         conversationListUpdater.updateLocalReadState(syncTarget, lastReadMessage)
     }
 
+    override suspend fun updateLocalUnreadState(lastReadMessage: Int) {
+        conversationListUpdater.updateLocalUnreadState(syncTarget, lastReadMessage)
+    }
+
     override fun markPendingReadMarker(lastReadMessage: Int) {
         conversationListUpdater.markPendingReadMarker(syncTarget.internalConversationId, lastReadMessage)
     }

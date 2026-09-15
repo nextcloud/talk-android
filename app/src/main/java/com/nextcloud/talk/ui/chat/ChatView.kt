@@ -105,6 +105,7 @@ data class ChatViewState(
     val chatMode: ChatViewModel.ChatMode = ChatViewModel.ChatMode.DEFAULT_MODE,
     val highlightedMessageId: Int? = null,
     val highlightedSearchTerm: String? = null,
+    val markedAsUnreadByUser: Boolean = false,
     val downloadingFileState: List<String> = listOf(),
     val stickyHeaderTopOffset: Dp = 0.dp
 )
@@ -207,6 +208,12 @@ fun ChatView(
         }
 
         if (didScrollToUnreadMarker) return@LaunchedEffect
+
+        if (state.markedAsUnreadByUser) {
+            // the user placed this marker themselves and is looking at it already
+            didScrollToUnreadMarker = true
+            return@LaunchedEffect
+        }
 
         // While marker exists, keep popup hidden and reset unread popup count once.
         showUnreadPopup.value = false
