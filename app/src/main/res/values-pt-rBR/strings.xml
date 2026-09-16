@@ -151,6 +151,8 @@
     <string name="nc_call_button_content_description_microphone">Alternar o microfone</string>
     <string name="nc_call_button_content_description_pip">Abrir modo imagem-em-imagem</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Mudar para próprio vídeo</string>
+    <string name="nc_call_e2ee_not_supported">No momento, as chamadas não são suportadas porque a criptografia de ponta-a-ponta está ativada no servidor</string>
+    <string name="nc_call_e2ee_not_supported_title">A chamado de %s não está disponível</string>
     <string name="nc_call_incoming">ENTRADA </string>
     <string name="nc_call_join_failed">Não foi possível entrar na chamada. Por favor, tente novamente.</string>
     <string name="nc_call_name">Nome de conversação</string>
@@ -158,6 +160,7 @@
     <string name="nc_call_ongoing_notification_content">Toque para voltar à sua chamada.</string>
     <string name="nc_call_ongoing_notification_default_title">Chamada em andamento</string>
     <string name="nc_call_ongoing_notification_end_action">Encerrar chamada</string>
+    <string name="nc_call_ongoing_notification_return_action">Voltar à chamada</string>
     <string name="nc_call_raised_hand">%1$s levantou a mão</string>
     <string name="nc_call_reconnecting">Reconectando …</string>
     <string name="nc_call_ringing">TOCANDO</string>
@@ -210,6 +213,7 @@
     <string name="nc_connecting_call">Conectando …</string>
     <string name="nc_contacts_done">Concluído</string>
     <string name="nc_conversation_created_invalid_participants">Não foi possível adicionar alguns participantes</string>
+    <string name="nc_conversation_created_invalid_participants_named">Não foi possível adicionar estes participantes: %1$s</string>
     <string name="nc_conversation_created_public">Os visitantes podem entrar nessa conversa por meio deste link. Compartilhe-o agora ou mais tarde nas configurações da conversa.</string>
     <string name="nc_conversation_created_title">Conversa criada</string>
     <string name="nc_conversation_description">Descrição da conversa</string>
@@ -422,10 +426,13 @@
     <string name="nc_notification_channel">%1$s no canal de notificação %2$s</string>
     <string name="nc_notification_channel_calls">Chamadas</string>
     <string name="nc_notification_channel_calls_description">Notificar sobre chamadas recebidas</string>
+    <string name="nc_notification_channel_calls_ongoing">Chamada em andamento</string>
+    <string name="nc_notification_channel_calls_ongoing_description">Status persistente para uma chamada em andamento</string>
     <string name="nc_notification_channel_messages">Mensagens</string>
     <string name="nc_notification_channel_messages_description">Notificar sobre mensagens recebidas</string>
     <string name="nc_notification_channel_uploads">Uploads</string>
     <string name="nc_notification_channel_uploads_description">Notificar sobre o progresso do upload</string>
+    <string name="nc_notification_permission_hint">Para exibir notificações de chamadas e manter as chamadas ativas em segundo plano, conceda a permissão “Notificações”.</string>
     <string name="nc_notification_settings">Configurações de notificação</string>
     <string name="nc_notification_warning">As notificações não estão configuradas corretamente</string>
     <string name="nc_notifications_troubleshooting_dialog_text">A permissão de notificação e as configurações da bateria estão configuradas corretamente para receber notificações. Se você tiver problemas para receber notificações mesmo assim, verifique se os canais de notificação para chamadas e mensagens estão habilitados. Mais ajuda pode ser encontrada em DontKillMyApp.com ou na lista de verificação de solução de problemas. Se isso não ajudar, vá para a tela de diagnóstico e envie um relatório de bug.</string>
@@ -445,6 +452,8 @@
     <string name="nc_participants_add">Adicionar participantes</string>
     <string name="nc_password">Senha</string>
     <string name="nc_password_copied">Senha copiada</string>
+    <string name="nc_password_required">Este servidor exige uma senha para as conversas das quais os convidados podem participar</string>
+    <string name="nc_password_secure">A senha é segura</string>
     <string name="nc_permissions_ask">Definir permissões</string>
     <string name="nc_permissions_denied">Algumas permissões foram negadas.</string>
     <string name="nc_permissions_rationale_dialog_title">Por favor, permita permissões</string>
