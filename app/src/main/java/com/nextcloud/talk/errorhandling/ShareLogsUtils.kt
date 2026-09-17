@@ -6,11 +6,12 @@
  */
 package com.nextcloud.talk.errorhandling
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.dagger.modules.UtilsModule
@@ -45,7 +46,7 @@ fun shareLogsAndDiagnosis(context: Context, subject: String, diagnosisText: Stri
     }
 
     val intent = Intent(Intent.ACTION_SEND_MULTIPLE).apply {
-        selector = Intent(Intent.ACTION_SENDTO, "mailto:".toUri())
+        type = "*/*"
         putExtra(Intent.EXTRA_EMAIL, arrayOf(context.getString(R.string.nc_report_email)))
         putExtra(Intent.EXTRA_SUBJECT, subject)
         putExtra(Intent.EXTRA_TEXT, body)
@@ -54,7 +55,11 @@ fun shareLogsAndDiagnosis(context: Context, subject: String, diagnosisText: Stri
         }
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
-    context.startActivity(intent)
+    try {
+        context.startActivity(Intent.createChooser(intent, subject))
+    } catch (_: ActivityNotFoundException) {
+        Toast.makeText(context, R.string.nc_logs_share_no_app_found, Toast.LENGTH_LONG).show()
+    }
 }
 
 fun saveLogsAsZip(context: Context, outputStream: OutputStream, diagnosisText: String) {
