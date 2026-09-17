@@ -29,6 +29,7 @@ import com.nextcloud.talk.models.json.chat.ChatOCSSingleMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.generic.GenericMeta
+import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.awaitCancellation
@@ -578,6 +579,38 @@ class OfflineFirstChatRepositoryTest {
             assertEquals(1, attempts)
             assertEquals("message $MESSAGE_ID", entity.message)
         }
+
+    @Test
+    fun `hidePinnedMessage dismisses the banner before the server answers`() =
+        runTest {
+            givenCachedConversation(pinnedId = MESSAGE_ID)
+            val hiddenWhenAsked = mutableListOf<Long?>()
+            wheneverBlocking { network.hidePinnedMessage(any(), any()) } doSuspendableAnswer {
+                hiddenWhenAsked.add(storedConversation.hiddenPinnedId)
+                GenericOverall()
+            }
+
+            val result = repository.hidePinnedMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID)
+
+            assertEquals(listOf(MESSAGE_ID), hiddenWhenAsked)
+            assertTrue(result.isSuccess)
+            assertEquals(MESSAGE_ID, storedConversation.hiddenPinnedId)
+        }
+
+    @Test
+    fun `hidePinnedMessage brings the banner back when the request fails`() =
+        runTest {
+            givenCachedConversation(pinnedId = MESSAGE_ID)
+            wheneverBlocking { network.hidePinnedMessage(any(), any()) } doSuspendableAnswer {
+                throw httpException(HTTP_METHOD_NOT_ALLOWED)
+            }
+
+            val result = repository.hidePinnedMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID)
+
+            assertTrue(result.isFailure)
+            assertNull(storedConversation.hiddenPinnedId)
+        }
+
     private lateinit var storedConversation: ConversationEntity
 
     private fun givenCachedConversation(pinnedId: Long? = null) {

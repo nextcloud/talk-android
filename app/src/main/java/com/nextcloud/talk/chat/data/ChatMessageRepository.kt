@@ -220,7 +220,11 @@ interface ChatMessageRepository : LifecycleAwareManager {
      */
     suspend fun unPinMessage(credentials: String, url: String, messageId: Long): Result<ChatMessage?>
 
-    suspend fun hidePinnedMessage(credentials: String, url: String): Flow<Boolean>
+    /**
+     * Dismisses the pinned message in the local conversation entry before the server is asked, so the
+     * banner disappears right away, and brings it back if the request finally fails.
+     */
+    suspend fun hidePinnedMessage(credentials: String, url: String, messageId: Long): Result<Boolean>
 
     @Suppress("LongParameterList")
     suspend fun sendScheduledChatMessage(

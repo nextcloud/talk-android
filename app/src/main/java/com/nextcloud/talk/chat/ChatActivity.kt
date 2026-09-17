@@ -3661,7 +3661,7 @@ class ChatActivity :
             token = roomToken,
             messageId = message.jsonMessageId.toString()
         )
-        chatViewModel.hidePinnedMessage(credentials!!, url)
+        chatViewModel.hidePinnedMessage(credentials!!, url, message.jsonMessageId.toLong())
     }
 
     fun pinMessage(message: ChatMessage) {

@@ -1047,15 +1047,32 @@ class OfflineFirstChatRepository @Inject constructor(
     private fun isChatDataInitialized(): Boolean =
         this::currentUser.isInitialized && this::roomToken.isInitialized && this::credentials.isInitialized
 
-    override suspend fun hidePinnedMessage(credentials: String, url: String): Flow<Boolean> =
-        flow {
-            runCatching {
-                network.hidePinnedMessage(credentials, url)
-                emit(true)
-            }.getOrElse { throwable ->
-                Log.e(TAG, "Error in hidePinnedMessage: $throwable")
-            }
+    override suspend fun hidePinnedMessage(credentials: String, url: String, messageId: Long): Result<Boolean> {
+        // the shared items screen has no chat data, the same way pinning handles it
+        val restore = if (isChatDataInitialized()) {
+            conversationListUpdater.updateLocalHiddenPinnedMessage(syncTarget, messageId)
+        } else {
+            null
         }
+
+        return try {
+            revertOnCancellation({ restore?.invoke() }) {
+                withRetry(retries = 1, initialDelayMillis = RETRY_DELAY_MS, retryOn = ::isRetryable) {
+                    network.hidePinnedMessage(credentials, url)
+                }
+            }
+            conversationListUpdater.clearPendingHiddenPinnedMessage(internalConversationId)
+            Result.success(true)
+        } catch (e: HttpException) {
+            Log.e(TAG, "Error while hiding the pinned message: $e")
+            restore?.invoke()
+            Result.failure(e)
+        } catch (e: IOException) {
+            Log.e(TAG, "Error while hiding the pinned message: $e")
+            restore?.invoke()
+            Result.failure(e)
+        }
+    }
 
     override suspend fun onSignalingChatMessageReceived(chatMessages: List<ChatMessageJson>) {
         // check if we need to get user specific data from the backend

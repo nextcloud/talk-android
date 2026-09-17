@@ -65,6 +65,12 @@ class ConversationListUpdater @Inject constructor(
     private val pendingPins = ConcurrentHashMap<String, PendingPin>()
 
     /**
+     * Pinned messages dismissed locally but not yet confirmed by a server response; guarded in the
+     * merge like the pending pins themselves.
+     */
+    private val pendingHiddenPins = ConcurrentHashMap<String, Long>()
+
+    /**
      * Rooms marked as unread from the conversation list whose server state doesn't reflect it yet.
      */
     private val pendingUnreadFlags = ConcurrentHashMap<String, Boolean>()
@@ -224,6 +230,46 @@ class ConversationListUpdater @Inject constructor(
     }
 
     /**
+     * Dismisses the pinned message in the conversation entry, so the banner disappears on the tap
+     * instead of after the request and the room refresh that follows it. Returns the action that
+     * brings it back, or null when the conversation isn't cached.
+     */
+    suspend fun updateLocalHiddenPinnedMessage(
+        target: ChatMessageSyncer.SyncTarget,
+        messageId: Long
+    ): (suspend () -> Unit)? {
+        val conversation = withContext(Dispatchers.IO) {
+            conversationsDao.getConversationForUser(target.accountId, target.roomToken).first()
+        } ?: return null
+
+        val previousHiddenPinnedId = conversation.hiddenPinnedId
+
+        pendingHiddenPins[target.internalConversationId] = messageId
+        withContext(Dispatchers.IO) {
+            conversationsDao.updateConversation(conversation.copy(hiddenPinnedId = messageId))
+        }
+
+        return {
+            pendingHiddenPins.remove(target.internalConversationId, messageId)
+            withContext(Dispatchers.IO) {
+                conversationsDao.getConversationForUser(target.accountId, target.roomToken).first()
+                    ?.takeIf { it.hiddenPinnedId == messageId }
+                    ?.let { current ->
+                        conversationsDao.updateConversation(current.copy(hiddenPinnedId = previousHiddenPinnedId))
+                    }
+            }
+        }
+    }
+
+    /**
+     * Releases the guard for a dismissed pinned message whose request has completed, for the same
+     * reason [clearPendingPinnedMessage] does.
+     */
+    fun clearPendingHiddenPinnedMessage(internalConversationId: String) {
+        pendingHiddenPins.remove(internalConversationId)
+    }
+
+    /**
      * Releases the guard for a pin or unpin whose request has completed. Waiting for the server to
      * report the very message that was pinned would never happen if somebody else pinned another one
      * in the meantime, and the conversation's pinned message would stop following the server at all.
@@ -253,6 +299,7 @@ class ConversationListUpdater @Inject constructor(
             guarded = guardPendingUnread(guarded, previous)
             guarded = guardPendingFavorite(guarded, previous)
             guarded = guardPendingPinnedId(guarded, previous)
+            guarded = guardPendingHiddenPinnedId(guarded, previous)
             guarded = guardPendingArchived(guarded, previous)
             guarded = guardPendingTags(guarded, previous)
             guarded
@@ -322,6 +369,20 @@ class ConversationListUpdater @Inject constructor(
             serverItem
         } else {
             serverItem.copy(lastPinnedId = previous.lastPinnedId, hiddenPinnedId = previous.hiddenPinnedId)
+        }
+    }
+
+    private fun guardPendingHiddenPinnedId(
+        serverItem: ConversationEntity,
+        previous: ConversationEntity
+    ): ConversationEntity {
+        val desired = pendingHiddenPins[serverItem.internalId] ?: return serverItem
+
+        return if (serverItem.hiddenPinnedId == desired) {
+            pendingHiddenPins.remove(serverItem.internalId, desired)
+            serverItem
+        } else {
+            serverItem.copy(hiddenPinnedId = previous.hiddenPinnedId)
         }
     }
 
