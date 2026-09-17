@@ -239,6 +239,7 @@ How to translate with transifex:
     <string name="nc_logs_overflow_warning">Warning: some log entries were lost due to queue overflow.</string>
     <string name="nc_logs_share_latest_crash">Latest crash</string>
     <string name="nc_logs_share_diagnosis">Diagnosis report</string>
+    <string name="nc_logs_share_no_app_found">No app found to send the report.</string>
     <string name="nc_logs_download_zip">Download as ZIP</string>
     <string name="nc_logs_logging_enabled">Logging enabled</string>
     <string name="nc_logs_logging_disabled_note">Logging is disabled. No logs are written to disk.</string>
