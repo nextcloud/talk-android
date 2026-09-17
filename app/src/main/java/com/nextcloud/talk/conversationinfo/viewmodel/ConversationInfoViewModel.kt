@@ -822,10 +822,17 @@ class ConversationInfoViewModel @Inject constructor(
     }
 
     fun toggleCallNotifications() {
-        val newEnabled = !_uiState.value.callNotificationsEnabled
-        _uiState.update { it.copy(callNotificationsEnabled = newEnabled) }
+        val previousEnabled = _uiState.value.callNotificationsEnabled
+        val newEnabled = !previousEnabled
+
         viewModelScope.launch {
-            databaseStorageModule?.saveBoolean("call_notifications_switch", newEnabled)
+            optimisticAction(
+                apply = {
+                    _uiState.update { it.copy(callNotificationsEnabled = newEnabled) }
+                    suspend { _uiState.update { it.copy(callNotificationsEnabled = previousEnabled) } }
+                },
+                request = { databaseStorageModule?.saveBoolean("call_notifications_switch", newEnabled) }
+            ).onFailure { throwable -> reportSettingFailure("call notifications", throwable) }
         }
     }
 
@@ -833,11 +840,22 @@ class ConversationInfoViewModel @Inject constructor(
         val res = NextcloudTalkApplication.sharedApplication!!.resources
         val values = res.getStringArray(R.array.message_notification_levels_entry_values)
         val descriptions = res.getStringArray(R.array.message_notification_levels)
-        if (position in values.indices && position in descriptions.indices) {
-            _uiState.update { it.copy(notificationLevel = descriptions[position]) }
-            viewModelScope.launch {
-                databaseStorageModule?.saveString("conversation_info_message_notifications_dropdown", values[position])
-            }
+        if (position !in values.indices || position !in descriptions.indices) return
+
+        val previousLevel = _uiState.value.notificationLevel
+        viewModelScope.launch {
+            optimisticAction(
+                apply = {
+                    _uiState.update { it.copy(notificationLevel = descriptions[position]) }
+                    suspend { _uiState.update { it.copy(notificationLevel = previousLevel) } }
+                },
+                request = {
+                    databaseStorageModule?.saveString(
+                        "conversation_info_message_notifications_dropdown",
+                        values[position]
+                    )
+                }
+            ).onFailure { throwable -> reportSettingFailure("the notification level", throwable) }
         }
     }
 
@@ -845,12 +863,23 @@ class ConversationInfoViewModel @Inject constructor(
         val res = NextcloudTalkApplication.sharedApplication!!.resources
         val values = res.getStringArray(R.array.message_expiring_values)
         val descriptions = res.getStringArray(R.array.message_expiring_descriptions)
-        if (position in values.indices && position in descriptions.indices) {
-            _uiState.update { it.copy(messageExpirationLabel = descriptions[position]) }
-            viewModelScope.launch {
-                databaseStorageModule?.saveString("conversation_settings_dropdown", values[position])
-            }
+        if (position !in values.indices || position !in descriptions.indices) return
+
+        val previousLabel = _uiState.value.messageExpirationLabel
+        viewModelScope.launch {
+            optimisticAction(
+                apply = {
+                    _uiState.update { it.copy(messageExpirationLabel = descriptions[position]) }
+                    suspend { _uiState.update { it.copy(messageExpirationLabel = previousLabel) } }
+                },
+                request = { databaseStorageModule?.saveString("conversation_settings_dropdown", values[position]) }
+            ).onFailure { throwable -> reportSettingFailure("the message expiration", throwable) }
         }
+    }
+
+    private suspend fun reportSettingFailure(setting: String, throwable: Throwable) {
+        _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(R.string.nc_common_error_sorry))
+        logger.e(TAG, "failed to save $setting", throwable)
     }
 
     fun setUpcomingEvent(summary: String?, time: String?) {
