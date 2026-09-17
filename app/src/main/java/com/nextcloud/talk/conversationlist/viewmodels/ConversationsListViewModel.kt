@@ -243,10 +243,10 @@ class ConversationsListViewModel @Inject constructor(
 
     private val hideRoomToken = MutableStateFlow<String?>(null)
 
-    /** Tokens of rooms being left; hidden optimistically while the leave-undo snackbar is showing. */
-    private val pendingLeaveTokens = MutableStateFlow<Set<String>>(emptySet())
+    /** Tokens of rooms being left or deleted; hidden optimistically until the request finished. */
+    private val pendingRemovalTokens = MutableStateFlow<Set<String>>(emptySet())
 
-    private val excludedRoomTokens = combine(hideRoomToken, pendingLeaveTokens) { hideToken, pendingTokens ->
+    private val excludedRoomTokens = combine(hideRoomToken, pendingRemovalTokens) { hideToken, pendingTokens ->
         if (hideToken != null) pendingTokens + hideToken else pendingTokens
     }
 
@@ -388,14 +388,14 @@ class ConversationsListViewModel @Inject constructor(
         hideRoomToken.value = token
     }
 
-    /** Optimistically hide a room while its leave-undo snackbar is showing. */
-    fun markConversationPendingLeave(token: String) {
-        pendingLeaveTokens.value = pendingLeaveTokens.value + token
+    /** Optimistically hide a room that is being left or deleted. */
+    fun markConversationPendingRemoval(token: String) {
+        pendingRemovalTokens.value = pendingRemovalTokens.value + token
     }
 
-    /** Un-hide a room, either because the leave was undone or because it finished/failed. */
-    fun clearConversationPendingLeave(token: String) {
-        pendingLeaveTokens.value = pendingLeaveTokens.value - token
+    /** Un-hide a room, either because the removal was undone or because it finished or failed. */
+    fun clearConversationPendingRemoval(token: String) {
+        pendingRemovalTokens.value = pendingRemovalTokens.value - token
     }
 
     fun getFederationInvitations() {
