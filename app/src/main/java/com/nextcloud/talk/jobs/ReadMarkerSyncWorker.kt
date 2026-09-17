@@ -87,6 +87,8 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
                 roomToken
             )
             chatNetworkDataSource.setChatReadMarker(credentials, url, lastReadMessage).blockingSingle()
+        }.onFailure { throwable ->
+            Log.w(TAG, "Read marker $lastReadMessage for room $roomToken could not be sent: $throwable")
         }.isSuccess
 
         return if (sent) {
@@ -106,7 +108,11 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
         }
 
     private fun fail(userId: Long, roomToken: String, lastReadMessage: Int): Result {
-        conversationListUpdater.clearPendingReadMarker("$userId@$roomToken", lastReadMessage)
+        val internalConversationId = "$userId@$roomToken"
+        conversationListUpdater.clearPendingReadMarker(internalConversationId, lastReadMessage)
+        // a marker that never reached the server must not keep a locally marked-as-unread conversation
+        // unread either; the next room list sync brings back whatever the server knows
+        conversationListUpdater.clearPendingUnread(internalConversationId)
         return Result.failure()
     }
 

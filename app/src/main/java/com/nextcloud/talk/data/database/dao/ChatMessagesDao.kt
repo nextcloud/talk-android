@@ -300,6 +300,24 @@ interface ChatMessagesDao {
     )
     suspend fun countMessagesNewerThan(internalConversationId: String, messageId: Long, excludedActorId: String): Int
 
+    /**
+     * Counts the cached messages above [messageId] like [countMessagesNewerThan], but including the
+     * user's own messages. Excluding them only compensates a read marker that lags behind the server's;
+     * a marker the user moved back on purpose really does sit below their own messages, and the server
+     * counts those as unread as well.
+     */
+    @Query(
+        """
+        SELECT COUNT(*)
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND isTemporary = 0
+        AND id > :messageId
+        AND messageType NOT IN ('system', 'comment_deleted', 'command', 'reaction')
+        """
+    )
+    suspend fun countMessagesNewerThanIncludingOwn(internalConversationId: String, messageId: Long): Int
+
     @Query(
         """
         SELECT COUNT(*)

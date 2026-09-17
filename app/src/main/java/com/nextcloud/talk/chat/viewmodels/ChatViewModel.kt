@@ -333,6 +333,12 @@ class ChatViewModel @AssistedInject constructor(
 
     private var localLastReadMessage: Int = 0
 
+    /**
+     * Set once the user marked a message as unread, so the automatic read marker handling keeps its
+     * hands off the conversation for the rest of this visit.
+     */
+    private var keepMarkedAsUnread: Boolean = false
+
     private var showUnreadMessagesMarker: Boolean = true
     private var isLoadMoreInProgress = false
 
@@ -664,7 +670,12 @@ class ChatViewModel @AssistedInject constructor(
         val highlightedMessageId: Int? = null,
         val highlightedSearchTerm: String? = null,
         val highlightTriggerNonce: Long? = null,
-        val isInLobby: Boolean = false
+        val isInLobby: Boolean = false,
+        /**
+         * Set while the unread marker comes from the user marking a message as unread, so the chat does
+         * not scroll to a place they are already looking at.
+         */
+        val markedAsUnreadByUser: Boolean = false
     )
 
     private val _uiState = MutableStateFlow(ChatUiState())
@@ -2030,6 +2041,11 @@ class ChatViewModel @AssistedInject constructor(
         Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, messageId: $messageId")
         Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, localLastReadMessage: $localLastReadMessage")
 
+        if (keepMarkedAsUnread) {
+            Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, skipped: the chat was marked as unread")
+            return
+        }
+
         if (localLastReadMessage < messageId && -1 < messageId) {
             Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, setting localLastReadMessage to $messageId")
             localLastReadMessage = messageId
@@ -2041,6 +2057,10 @@ class ChatViewModel @AssistedInject constructor(
      */
     fun updateRemoteLastReadMessageIfNeeded() {
         Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, localLastReadMessage: $localLastReadMessage")
+        if (keepMarkedAsUnread) {
+            Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, skipped: the chat was marked as unread")
+            return
+        }
         val conversationLastReadMessage = _uiState.value.conversation?.lastReadMessage ?: return
         Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, conversation.lastReadMessage: $conversationLastReadMessage")
 
@@ -2067,10 +2087,41 @@ class ChatViewModel @AssistedInject constructor(
      * launched coroutine, previously left a real gap (observed at ~250ms, more under main-thread
      * contention) during which such a sync could see no pending marker yet and apply unguarded.
      */
+    /**
+     * Marks the chat as unread from [firstUnreadMessage] on: the read marker moves back to the message
+     * before it, the conversation entry is left unread until the server reports its own state, and the
+     * chat stops advancing the marker on its own for the rest of this visit - otherwise scrolling, or
+     * simply leaving the chat, would immediately mark everything read again.
+     */
+    fun markChatAsUnread(lastReadMessage: Int) {
+        if (!this::currentUser.isInitialized) {
+            return
+        }
+
+        keepMarkedAsUnread = true
+        localLastReadMessage = lastReadMessage
+        resetUnreadMarkerCache()
+        _uiState.update { it.copy(markedAsUnreadByUser = true) }
+
+        viewModelScope.launch {
+            chatRepository.updateLocalUnreadState(lastReadMessage)
+        }
+        ReadMarkerSyncWorker.enqueue(
+            context = NextcloudTalkApplication.sharedApplication!!.applicationContext,
+            userId = currentUser.id!!,
+            roomToken = chatRoomToken,
+            lastReadMessage = lastReadMessage
+        )
+    }
+
     fun setChatReadMessage(lastReadMessage: Int) {
         if (!this::currentUser.isInitialized) {
             return
         }
+        // marking as read is the explicit counterpart of marking as unread and hands the read marker
+        // back to the automatic handling
+        keepMarkedAsUnread = false
+        _uiState.update { it.copy(markedAsUnreadByUser = false) }
         chatRepository.markPendingReadMarker(lastReadMessage)
         viewModelScope.launch {
             chatRepository.updateLocalReadState(lastReadMessage)
@@ -2628,6 +2679,30 @@ class ChatViewModel @AssistedInject constructor(
 
     companion object {
         private val TAG = ChatViewModel::class.java.simpleName
+
+        /**
+         * Returns the read marker that makes [messageId] the first unread message: the id of the
+         * message right before it, or 0 when it is the oldest message there is, which marks the whole
+         * conversation as unread. Returns null when the message is not part of [items] at all.
+         *
+         * [items] run newest first, the way the chat list renders them bottom-up, so the message before
+         * the selected one is the next id in that order. Date headers and markers carry no message and
+         * are skipped; a media group carries several, its own messages ordered oldest last.
+         */
+        internal fun readMarkerForMarkingUnread(items: List<ChatItem>, messageId: Int): Int? {
+            val newestFirstIds = items.flatMap { item ->
+                when (item) {
+                    is ChatItem.MessageItem -> listOf(item.uiMessage.id)
+                    is ChatItem.MediaGroupItem -> item.messages.map { it.id }.asReversed()
+                    else -> emptyList()
+                }
+            }
+
+            val selectedIndex = newestFirstIds.indexOf(messageId)
+            if (selectedIndex < 0) return null
+
+            return newestFirstIds.getOrNull(selectedIndex + 1) ?: 0
+        }
 
         /**
          * Returns the id of the first unread message, or null when it cannot be determined (yet).
