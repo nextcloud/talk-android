@@ -80,6 +80,13 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun updateLocalReadState(lastReadMessage: Int)
 
     /**
+     * Writes the local read state for a message the user marked as unread: the read marker moves back
+     * to [lastReadMessage] and the conversation keeps at least one unread message until the server
+     * reports its own unread state.
+     */
+    suspend fun updateLocalUnreadState(lastReadMessage: Int)
+
+    /**
      * Registers [lastReadMessage] as a pending read marker synchronously, without going through
      * [updateLocalReadState]'s suspending database reads first. Call this before launching the
      * actual local write: leaving the chat can race a room list sync triggered by the conversation

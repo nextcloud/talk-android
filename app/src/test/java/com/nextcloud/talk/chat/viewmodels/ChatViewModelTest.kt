@@ -225,6 +225,77 @@ class ChatViewModelTest {
         assertTrue(result.all { it is CombinedUnit.Single })
     }
 
+    // Marking a message as unread. The chat items run newest first, the way the chat renders them
+    // bottom-up, so the message that must stay read follows the selected one in that order - taking
+    // the other neighbour would leave the selected message read and lose one unread message per step.
+
+    @Test
+    fun `marking a message as unread reads up to the message before it`() {
+        val items = listOf(messageItem(42), messageItem(41), messageItem(40), messageItem(39))
+
+        assertEquals(40, ChatViewModel.readMarkerForMarkingUnread(items, messageId = 41))
+    }
+
+    @Test
+    fun `marking the sixth last message as unread leaves six messages unread`() {
+        val items = (42 downTo 30).map { messageItem(it) }
+
+        val marker = ChatViewModel.readMarkerForMarkingUnread(items, messageId = 37)
+
+        assertEquals(36, marker)
+        assertEquals(6, items.count { (it as ChatViewModel.ChatItem.MessageItem).uiMessage.id > marker!! })
+    }
+
+    @Test
+    fun `marking the oldest message as unread leaves nothing read`() {
+        val items = listOf(messageItem(41), messageItem(40), messageItem(39))
+
+        assertEquals(0, ChatViewModel.readMarkerForMarkingUnread(items, messageId = 39))
+    }
+
+    @Test
+    fun `marking the newest message as unread only affects that message`() {
+        val items = listOf(messageItem(41), messageItem(40), messageItem(39))
+
+        assertEquals(40, ChatViewModel.readMarkerForMarkingUnread(items, messageId = 41))
+    }
+
+    @Test
+    fun `date headers and markers between the messages are skipped`() {
+        val items = listOf(
+            messageItem(40),
+            ChatViewModel.ChatItem.UnreadMessagesMarkerItem(LocalDate.of(2026, 1, 2)),
+            ChatViewModel.ChatItem.DateHeaderItem(LocalDate.of(2026, 1, 2)),
+            messageItem(39)
+        )
+
+        assertEquals(39, ChatViewModel.readMarkerForMarkingUnread(items, messageId = 40))
+    }
+
+    @Test
+    fun `a media group is a stack of messages, not a single one`() {
+        // the group carries its messages oldest first, the list around it runs the other way
+        val items = listOf(
+            messageItem(45),
+            ChatViewModel.ChatItem.MediaGroupItem(listOf(uiMessage(42), uiMessage(43), uiMessage(44))),
+            messageItem(41)
+        )
+
+        assertEquals(43, ChatViewModel.readMarkerForMarkingUnread(items, messageId = 44))
+        assertEquals(41, ChatViewModel.readMarkerForMarkingUnread(items, messageId = 42))
+        assertEquals(44, ChatViewModel.readMarkerForMarkingUnread(items, messageId = 45))
+    }
+
+    @Test
+    fun `a message that is not on screen yields no marker at all`() {
+        val items = listOf(messageItem(40), messageItem(39))
+
+        assertNull(ChatViewModel.readMarkerForMarkingUnread(items, messageId = 77))
+    }
+
+    private fun messageItem(id: Int): ChatViewModel.ChatItem.MessageItem =
+        ChatViewModel.ChatItem.MessageItem(uiMessage(id))
+
     private fun uiMessage(id: Int): ChatMessageUi =
         ChatMessageUi(
             id = id,

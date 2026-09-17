@@ -142,6 +142,33 @@ class ConversationListUpdater @Inject constructor(
     }
 
     /**
+     * Writes the read state for a message the user marked as unread: the read marker moves back to
+     * [lastReadMessage] and the conversation is left with at least one unread message, so the entry
+     * shows as unread right away.
+     *
+     * The guard for this is [pendingUnreadFlags], not [pendingReadMarkers]: a read marker that moves
+     * backwards can only be recognised as "not yet reflected by the server" through the unread count,
+     * since the server keeps reporting the higher marker until it has processed the new one.
+     *
+     * The unread count is derived from the cached messages, own messages included - the marker now sits
+     * below them, so they are unread as well - and never falls below one, for the case where the cache
+     * holds nothing above the marker.
+     */
+    suspend fun updateLocalUnreadState(target: ChatMessageSyncer.SyncTarget, lastReadMessage: Int) {
+        val conversation =
+            conversationsDao.getConversationForUser(target.accountId, target.roomToken).first() ?: return
+        val countedMessages = chatDao.countMessagesNewerThanIncludingOwn(
+            internalConversationId = target.internalConversationId,
+            messageId = lastReadMessage.toLong()
+        )
+        val unreadMessages = maxOf(countedMessages, 1)
+
+        markPendingUnread(target.internalConversationId)
+        conversationsDao.updateReadState(conversation.internalId, lastReadMessage, unreadMessages)
+        Log.d(TAG, "Local unread state for room ${target.roomToken}: lastRead=$lastReadMessage, unread=$unreadMessages")
+    }
+
+    /**
      * Keeps provably stale local-action state out of the merge of server responses (the room
      * list sync and the single-room refresh): a response computed before a concurrently sent
      * change — read marker, mark as unread, favorite flag, tag assignment — reached the server
