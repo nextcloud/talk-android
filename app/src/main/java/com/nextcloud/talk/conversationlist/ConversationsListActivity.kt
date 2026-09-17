@@ -1308,7 +1308,7 @@ class ConversationsListActivity : BaseActivity() {
     @SuppressLint("StringFormatInvalid")
     private fun showLeaveConversationSnackbar(conversation: ConversationModel) {
         val token = conversation.token ?: return
-        conversationsListViewModel.markConversationPendingLeave(token)
+        conversationsListViewModel.markConversationPendingRemoval(token)
         lifecycleScope.launch {
             val result = snackbarHostState.showSnackbar(
                 message = String.format(resources.getString(R.string.left_conversation), conversation.displayName),
@@ -1316,7 +1316,7 @@ class ConversationsListActivity : BaseActivity() {
                 duration = SnackbarDuration.Long
             )
             when (result) {
-                SnackbarResult.ActionPerformed -> conversationsListViewModel.clearConversationPendingLeave(token)
+                SnackbarResult.ActionPerformed -> conversationsListViewModel.clearConversationPendingRemoval(token)
                 SnackbarResult.Dismissed -> leaveConversation(conversation)
             }
         }
@@ -1344,11 +1344,11 @@ class ConversationsListActivity : BaseActivity() {
                             resources.getString(R.string.nc_shortcut_conversation_deleted)
                         )
                     }
-                    conversationsListViewModel.onConversationLeft(currentUser, token)
+                    conversationsListViewModel.onConversationRemoved(currentUser, token)
                 }
                 WorkInfo.State.FAILED -> {
                     logger.e(TAG, "LeaveConversationWorker failed for token $token")
-                    conversationsListViewModel.clearConversationPendingLeave(token)
+                    conversationsListViewModel.clearConversationPendingRemoval(token)
                     showSnackbar(resources.getString(R.string.nc_common_error_sorry))
                 }
                 else -> {}
@@ -1365,6 +1365,7 @@ class ConversationsListActivity : BaseActivity() {
             .setTitle(R.string.nc_delete_call)
             .setMessage(R.string.nc_delete_conversation_more)
             .setPositiveButton(R.string.nc_delete) { _, _ ->
+                conversation.token?.let { conversationsListViewModel.markConversationPendingRemoval(it) }
                 deleteConversation(conversation)
             }
             .setNegativeButton(R.string.nc_cancel) { _, _ ->
@@ -1586,33 +1587,39 @@ class ConversationsListActivity : BaseActivity() {
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(deleteConversationWorker.id)
             .observeForever { workInfo: WorkInfo? ->
-                if (workInfo != null) {
-                    when (workInfo.state) {
-                        WorkInfo.State.SUCCEEDED -> {
-                            currentUser.id?.let { userId ->
-                                ShortcutManagerHelper.disableConversationShortcut(
-                                    context,
-                                    conversation.token,
-                                    userId,
-                                    context.resources.getString(R.string.nc_shortcut_conversation_deleted)
-                                )
-                            }
-                            showSnackbar(
-                                String.format(
-                                    context.resources.getString(R.string.deleted_conversation),
-                                    conversation.displayName
-                                )
+                when (workInfo?.state) {
+                    WorkInfo.State.SUCCEEDED -> {
+                        currentUser.id?.let { userId ->
+                            ShortcutManagerHelper.disableConversationShortcut(
+                                context,
+                                conversation.token,
+                                userId,
+                                context.resources.getString(R.string.nc_shortcut_conversation_deleted)
                             )
-                            fetchRooms(forceFullSync = true)
                         }
+                        // the worker only deletes the room on the server, so the entry has to stay
+                        // hidden until the full sync that drops it locally has landed
+                        conversation.token?.let { conversationsListViewModel.onConversationRemoved(currentUser, it) }
+                        showSnackbar(
+                            String.format(
+                                context.resources.getString(R.string.deleted_conversation),
+                                conversation.displayName
+                            )
+                        )
+                    }
 
-                        WorkInfo.State.FAILED -> {
-                            logger.e(TAG, "DeleteConversationWorker failed for token ${conversation.token}")
-                            showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
-                        }
+                    WorkInfo.State.FAILED -> {
+                        logger.e(TAG, "DeleteConversationWorker failed for token ${conversation.token}")
+                        conversation.token?.let { conversationsListViewModel.clearConversationPendingRemoval(it) }
+                        showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
+                    }
 
-                        else -> {
-                        }
+                    WorkInfo.State.CANCELLED -> {
+                        // nothing was deleted, so the entry must not stay hidden
+                        conversation.token?.let { conversationsListViewModel.clearConversationPendingRemoval(it) }
+                    }
+
+                    else -> {
                     }
                 }
             }
