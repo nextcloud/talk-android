@@ -20,6 +20,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -112,6 +113,8 @@ class MessageInputFragment : Fragment() {
 
     @Inject
     lateinit var dateUtils: DateUtils
+
+    private enum class KeyboardSendTarget { NONE, EDIT, THREAD, SEND }
 
     private val messageInputViewModel: MessageInputViewModel by activityViewModels()
     lateinit var binding: FragmentMessageInputBinding
@@ -509,6 +512,33 @@ class MessageInputFragment : Fragment() {
 
         binding.fragmentMessageInputView.button?.setOnClickListener {
             submitMessage(false)
+        }
+
+        binding.fragmentMessageInputView.inputEditText.setOnKeyListener { _, keyCode, event ->
+            val target = resolveKeyboardSendTarget(
+                keyCode = keyCode,
+                action = event.action,
+                isCtrlPressed = event.isCtrlPressed,
+                isEditButtonVisible = binding.fragmentEditView.editMessageView.isVisible,
+                isThreadButtonVisible = binding.fragmentMessageInputView.submitThreadButton.isVisible,
+                isThreadButtonEnabled = binding.fragmentMessageInputView.submitThreadButton.isEnabled,
+                isSendButtonVisible = binding.fragmentMessageInputView.messageSendButton.isVisible
+            )
+            when (target) {
+                KeyboardSendTarget.EDIT -> {
+                    binding.fragmentMessageInputView.editMessageButton.performClick()
+                    true
+                }
+                KeyboardSendTarget.THREAD -> {
+                    binding.fragmentMessageInputView.submitThreadButton.performClick()
+                    true
+                }
+                KeyboardSendTarget.SEND -> {
+                    binding.fragmentMessageInputView.button.performClick()
+                    true
+                }
+                KeyboardSendTarget.NONE -> false
+            }
         }
 
         binding.fragmentMessageInputView.editMessageButton.setOnClickListener {
@@ -1265,6 +1295,31 @@ class MessageInputFragment : Fragment() {
         val permissions = chatActivity.participantPermissionsFlow.value
         val isChannel = ConversationUtils.isChannel(conversation, spreedCapabilities)
         return isChannel && permissions?.hasChatPermission() == false && permissions.hasReactPermission() == true
+    }
+
+    private fun resolveKeyboardSendTarget(
+        keyCode: Int,
+        action: Int,
+        isCtrlPressed: Boolean,
+        isEditButtonVisible: Boolean,
+        isThreadButtonVisible: Boolean,
+        isThreadButtonEnabled: Boolean,
+        isSendButtonVisible: Boolean
+    ): KeyboardSendTarget {
+        val isSendChord = action == KeyEvent.ACTION_DOWN &&
+            isCtrlPressed &&
+            (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)
+
+        if (!isSendChord) {
+            return KeyboardSendTarget.NONE
+        }
+
+        return when {
+            isEditButtonVisible -> KeyboardSendTarget.EDIT
+            isThreadButtonVisible && isThreadButtonEnabled -> KeyboardSendTarget.THREAD
+            isSendButtonVisible -> KeyboardSendTarget.SEND
+            else -> KeyboardSendTarget.NONE
+        }
     }
 
     companion object {
