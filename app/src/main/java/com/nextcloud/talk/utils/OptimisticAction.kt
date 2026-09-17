@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.utils
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -34,11 +35,13 @@ fun isTransientFailure(error: Exception): Boolean =
  * [apply] writes the local state and returns the action that undoes it again, or null when there was
  * nothing to change - in which case nothing is undone later either. [request] is retried once for a
  * transient failure. [isConfirmed] decides whether an answer that did not throw still counts as a
- * refusal, for endpoints that report one in the payload rather than in the status code.
+ * refusal, for endpoints that report one in the payload rather than in the status code. A request
+ * that fails for any other reason is not retried, but the change is still taken back.
  *
  * Cancellation is part of the contract: closing the screen while the request is in flight undoes the
  * change as well, instead of leaving it applied although the server may never have heard of it.
  */
+@Suppress("TooGenericExceptionCaught")
 suspend fun <T> optimisticAction(
     apply: suspend () -> (suspend () -> Unit)?,
     isConfirmed: (T) -> Boolean = { true },
@@ -59,10 +62,9 @@ suspend fun <T> optimisticAction(
             revertUninterruptibly()
         }
         Result.success(answer)
-    } catch (e: HttpException) {
-        revertUninterruptibly()
-        Result.failure(e)
-    } catch (e: IOException) {
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
         revertUninterruptibly()
         Result.failure(e)
     }

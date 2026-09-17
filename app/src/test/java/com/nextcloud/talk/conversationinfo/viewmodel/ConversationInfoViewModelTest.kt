@@ -111,6 +111,34 @@ class ConversationInfoViewModelTest {
         }
 
     @Test
+    fun `an important toggle that the server never accepts goes back to what it was`() =
+        runTest(dispatcher) {
+            val repository = FakeConversationsRepository().apply { failingImportantRequests = Int.MAX_VALUE }
+            val model = viewModel(repository)
+
+            model.toggleImportantConversation("credentials", user.baseUrl!!, "token")
+            dispatcher.scheduler.runCurrent()
+            assertEquals(true, model.uiState.value.importantConversation)
+
+            dispatcher.scheduler.advanceUntilIdle()
+
+            assertFalse(model.uiState.value.importantConversation)
+        }
+
+    @Test
+    fun `an important toggle survives a single connection problem`() =
+        runTest(dispatcher) {
+            val repository = FakeConversationsRepository().apply { failingImportantRequests = 1 }
+            val model = viewModel(repository)
+
+            model.toggleImportantConversation("credentials", user.baseUrl!!, "token")
+            dispatcher.scheduler.advanceUntilIdle()
+
+            assertEquals(2, repository.importantRequests)
+            assertEquals(true, model.uiState.value.importantConversation)
+        }
+
+    @Test
     fun `createConversationNameByParticipants should combine names correctly`() {
         val original = listOf("Dave", null, "Charlie")
         val all = listOf("Bob", "Charlie", "Dave", "Alice", null, "Simon")
