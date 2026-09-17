@@ -97,6 +97,13 @@ class ChatMessageSyncer @Inject constructor(
      * [newestPersistedMessage] is the newest persisted message that qualifies as a conversation's
      * last message (system messages that never change a conversation's preview are skipped). It
      * feeds the conversation list update after a background catch-up.
+     *
+     * [visibleMessageIds] are the ids of all persisted messages of this round that qualify as a
+     * conversation's last message, i.e. the same filter as [newestPersistedMessage] but without
+     * collapsing to a single id. [pullUntilVisibleMessage] needs the full set: a round can contain
+     * a visible message that is not the highest id (e.g. an older real message hiding behind a
+     * newer reaction-only one), and it must also be able to tell such a message apart from the
+     * already-known anchor message a round re-fetches via includeLastKnown.
      */
     data class SyncOutcome(
         val persistedNewMessages: Boolean,
@@ -104,7 +111,8 @@ class ChatMessageSyncer @Inject constructor(
         val oldestPersistedMessageId: Long? = null,
         val persistedMessageCount: Int = 0,
         val syncFailed: Boolean = false,
-        val newestPersistedMessage: ChatMessageJson? = null
+        val newestPersistedMessage: ChatMessageJson? = null,
+        val visibleMessageIds: List<Long> = emptyList()
     )
 
     /**
@@ -407,7 +415,7 @@ class ChatMessageSyncer @Inject constructor(
                 events = events
             )
         } else {
-            pullAndPersistMessages(
+            pullUntilVisibleMessage(
                 target,
                 buildFieldMap(
                     lookIntoFuture = false,
@@ -574,6 +582,92 @@ class ChatMessageSyncer @Inject constructor(
         )
     }
 
+    /**
+     * Repeats [pullAndPersistMessages], advancing [fieldMap]'s anchor deeper into history each
+     * round, until a round persists at least one message that will actually be shown in the chat,
+     * no more history is available, or [MAX_VISIBLE_MESSAGE_ROUNDS] rounds were spent.
+     *
+     * A single page can be made up entirely of messages that are never rendered as their own chat
+     * bubble — most notably a burst of REACTION/REACTION_REVOKED/REACTION_DELETED system messages
+     * from repeatedly adding and removing a reaction — even though real, visible messages exist
+     * just beyond that page. Accepting such an all-hidden page as "there is nothing (more) to
+     * show" leaves the chat looking empty or stuck (see
+     * https://github.com/nextcloud/talk-android/issues/5775). This mirrors the iOS client, which
+     * keeps paging until a page actually contains a visible message instead of stopping at a fixed
+     * message count.
+     *
+     * The first round re-fetches the anchor message itself (includeLastKnown), so a page is only
+     * accepted once it contains a visible message OTHER than that already-known anchor — otherwise
+     * a heavily-reacted anchor message would immediately satisfy "found a visible message" and the
+     * wall of reaction messages right below it would never be paged through.
+     */
+    suspend fun pullUntilVisibleMessage(
+        target: SyncTarget,
+        fieldMap: HashMap<String, Int>,
+        events: Events = NO_EVENTS
+    ): SyncOutcome {
+        val lookIntoFuture = fieldMap["lookIntoFuture"] == 1
+        val knownAnchorId = fieldMap["lastKnownMessageId"]?.toLong()
+        var totalCount = 0
+        var oldestPersisted: Long? = null
+        var newestPersisted: Long? = null
+        var newestPersistedMessage: ChatMessageJson? = null
+
+        repeat(MAX_VISIBLE_MESSAGE_ROUNDS) {
+            val roundOutcome = pullAndPersistMessages(target, fieldMap, events)
+
+            if (roundOutcome.persistedNewMessages) {
+                totalCount += roundOutcome.persistedMessageCount
+                if (lookIntoFuture) {
+                    oldestPersisted = oldestPersisted ?: roundOutcome.oldestPersistedMessageId
+                    newestPersisted = roundOutcome.newestPersistedMessageId ?: newestPersisted
+                } else {
+                    newestPersisted = newestPersisted ?: roundOutcome.newestPersistedMessageId
+                    oldestPersisted = roundOutcome.oldestPersistedMessageId ?: oldestPersisted
+                }
+            }
+            val foundNewVisibleMessage = roundOutcome.visibleMessageIds.any { it != knownAnchorId }
+            if (foundNewVisibleMessage) {
+                newestPersistedMessage = roundOutcome.newestPersistedMessage
+            }
+
+            val nextAnchor = if (lookIntoFuture) {
+                roundOutcome.newestPersistedMessageId
+            } else {
+                roundOutcome.oldestPersistedMessageId
+            }
+            val reachedEndOfHistory = !roundOutcome.persistedNewMessages || nextAnchor == null
+
+            if (foundNewVisibleMessage || reachedEndOfHistory || roundOutcome.syncFailed) {
+                return SyncOutcome(
+                    persistedNewMessages = totalCount > 0,
+                    newestPersistedMessageId = newestPersisted,
+                    oldestPersistedMessageId = oldestPersisted,
+                    persistedMessageCount = totalCount,
+                    syncFailed = roundOutcome.syncFailed,
+                    newestPersistedMessage = newestPersistedMessage
+                )
+            }
+
+            fieldMap["lastKnownMessageId"] = nextAnchor!!.toInt()
+            fieldMap["includeLastKnown"] = 0
+        }
+
+        Log.w(
+            TAG,
+            "No visible message found for ${target.internalConversationId} after " +
+                "$MAX_VISIBLE_MESSAGE_ROUNDS rounds (persisted $totalCount message(s), ids " +
+                "$oldestPersisted..$newestPersisted)"
+        )
+        return SyncOutcome(
+            persistedNewMessages = totalCount > 0,
+            newestPersistedMessageId = newestPersisted,
+            oldestPersistedMessageId = oldestPersisted,
+            persistedMessageCount = totalCount,
+            newestPersistedMessage = newestPersistedMessage
+        )
+    }
+
     fun pullMessagesFlow(target: SyncTarget, fieldMap: HashMap<String, Int>): Flow<ChatPullResult> =
         flow {
             var attempts = 1
@@ -695,19 +789,20 @@ class ChatMessageSyncer @Inject constructor(
                 events
             )
             persistedMessages.maxOfOrNull { it.id }?.let { recordHttpSyncedMessageId(target, it) }
-            val newestPersistedMessage = if (persistedMessages.isNotEmpty()) {
-                result.messages
-                    .filter { it.systemMessageType !in ConversationListUpdater.LAST_MESSAGE_HIDDEN_SYSTEM_TYPES }
-                    .maxByOrNull { it.id }
+            val visibleMessages = if (persistedMessages.isNotEmpty()) {
+                result.messages.filter {
+                    it.systemMessageType !in ConversationListUpdater.LAST_MESSAGE_HIDDEN_SYSTEM_TYPES
+                }
             } else {
-                null
+                emptyList()
             }
             SyncOutcome(
                 persistedNewMessages = persistedMessages.isNotEmpty(),
                 newestPersistedMessageId = persistedMessages.maxOfOrNull { it.id },
                 oldestPersistedMessageId = persistedMessages.minOfOrNull { it.id },
                 persistedMessageCount = persistedMessages.size,
-                newestPersistedMessage = newestPersistedMessage
+                newestPersistedMessage = visibleMessages.maxByOrNull { it.id },
+                visibleMessageIds = visibleMessages.map { it.id }
             )
         } else {
             Log.d(TAG, "No new messages to update")
@@ -1000,6 +1095,7 @@ class ChatMessageSyncer @Inject constructor(
         private const val CATCH_UP_COOLDOWN_MILLIS = 5_000L
         private const val MAX_CATCH_UP_RUNS_PER_BURST = 3
         private const val MAX_BACKLOG_ROUNDS = 5
+        private const val MAX_VISIBLE_MESSAGE_ROUNDS = 5
         private const val HTTP_CODE_OK: Int = 200
         private const val HTTP_CODE_NOT_MODIFIED = 304
         private const val HTTP_CODE_PRECONDITION_FAILED = 412

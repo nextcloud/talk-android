@@ -410,10 +410,9 @@ class OfflineFirstChatRepository @Inject constructor(
             lastKnown = anchorMessageId.toInt(),
             limit = withMessageLimit
         )
-        withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
 
         Log.d(TAG, "Starting online request for loadMoreMessages")
-        getAndPersistMessages(withNetworkParams)
+        syncer.pullUntilVisibleMessage(syncTarget, fieldMap, syncEvents)
 
         return syncer.getBlockOfMessage(syncTarget, anchorMessageId.toInt())?.let {
             ChatMessageRepository.MessagesRange(
