@@ -28,6 +28,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -62,7 +63,7 @@ class MarkAsReadReceiver : BroadcastReceiver() {
         messageId = intent.getIntExtra(KEY_MESSAGE_ID, 0)
 
         val id = intent.getLongExtra(KEY_INTERNAL_USER_ID, currentUserProvider.currentUser.blockingGet().id!!)
-        currentUser = userManager.getUserWithId(id).blockingGet()
+        currentUser = runBlocking { userManager.getUserWithIdSuspend(id) }!!
 
         markAsRead()
     }

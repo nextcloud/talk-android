@@ -25,6 +25,7 @@ import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import kotlinx.coroutines.runBlocking
 import org.unifiedpush.android.connector.UnifiedPush
 
 sealed class DiagnosisElement {
@@ -65,7 +66,7 @@ fun buildDiagnosisElements(
     val isGooglePlayServicesAvailable = ClosedInterfaceImpl().isGooglePlayServicesAvailable
     val nUnifiedPushServices = UnifiedPushUtils.getExternalDistributors(context).size
     val offerUnifiedPush = try {
-        nUnifiedPushServices > 0 && userManager.users.blockingGet().all { it.hasWebPushCapability }
+        nUnifiedPushServices > 0 && runBlocking { userManager.getUsers() }.all { it.hasWebPushCapability }
     } catch (_: Exception) {
         false
     }
@@ -184,7 +185,7 @@ fun buildDiagnosisElements(
     try {
         addEntry(
             context.getString(R.string.nc_diagnosis_app_users_amount),
-            userManager.users.blockingGet().size.toString()
+            runBlocking { userManager.getUsers() }.size.toString()
         )
     } catch (_: Exception) { }
 
