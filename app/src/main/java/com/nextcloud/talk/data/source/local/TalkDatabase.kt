@@ -9,6 +9,9 @@
 package com.nextcloud.talk.data.source.local
 
 import android.content.Context
+import android.database.sqlite.SQLiteException
+import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
@@ -109,13 +112,10 @@ abstract class TalkDatabase : RoomDatabase() {
             Migrations.MIGRATION_17_19
         )
 
-        @Suppress("SpreadOperator")
-        private fun build(context: Context): TalkDatabase {
-            val passCharArray = context.getString(R.string.nc_talk_database_encryption_key).toCharArray()
-            val passphrase: ByteArray = getBytesFromChars(passCharArray)
-            val factory = SupportOpenHelperFactory(passphrase)
-
-            val dbName = context
+        @VisibleForTesting
+        @JvmStatic
+        fun databaseName(context: Context): String =
+            context
                 .resources
                 .getString(R.string.nc_app_product_name)
                 .lowercase(Locale.getDefault())
@@ -123,9 +123,32 @@ abstract class TalkDatabase : RoomDatabase() {
                 .trim() +
                 ".sqlite"
 
+        @VisibleForTesting
+        @JvmStatic
+        fun build(context: Context, dbName: String = databaseName(context)): TalkDatabase {
             System.loadLibrary(SQL_CIPHER_LIBRARY)
 
-            return Room
+            return try {
+                buildDatabase(context, dbName)
+            } catch (e: SQLiteException) {
+                // the database file is corrupted or cannot be decrypted (e.g. a broken backup
+                // restore or leftover file from an incompatible format). Recreate it from
+                // scratch rather than crashing the app on every launch.
+                Log.e(TAG, "Failed to open database '$dbName', recreating it", e)
+                context.applicationContext.deleteDatabase(dbName)
+                buildDatabase(context, dbName)
+            }
+        }
+
+        @VisibleForTesting
+        @JvmStatic
+        @Suppress("SpreadOperator")
+        fun buildDatabase(context: Context, dbName: String): TalkDatabase {
+            val passCharArray = context.getString(R.string.nc_talk_database_encryption_key).toCharArray()
+            val passphrase: ByteArray = getBytesFromChars(passCharArray)
+            val factory = SupportOpenHelperFactory(passphrase)
+
+            val database = Room
                 .databaseBuilder(context.applicationContext, TalkDatabase::class.java, dbName)
                 // comment out openHelperFactory to view the database entries in Android Studio for debugging
                 .openHelperFactory(factory)
@@ -141,6 +164,13 @@ abstract class TalkDatabase : RoomDatabase() {
                     }
                 )
                 .build()
+
+            // Room opens the database lazily on first use. Force it open here so a corrupted
+            // or undecryptable file is detected immediately and can be recovered from, instead
+            // of crashing later on first query.
+            database.openHelper.writableDatabase
+
+            return database
         }
 
         private fun getBytesFromChars(chars: CharArray): ByteArray = String(chars).toByteArray(Charsets.UTF_8)
