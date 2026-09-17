@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.conversationinfo.viewmodel
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -51,6 +52,7 @@ import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.ParticipantRoleUtils
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.optimisticAction
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -868,22 +870,40 @@ class ConversationInfoViewModel @Inject constructor(
         _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbarText(text))
     }
 
+    /**
+     * Takes an optimistic change back, but only while the value it wrote is still the one on screen.
+     * Two changes to the same setting can be in flight at once, and the older one failing must not
+     * put its value back over the newer one the server has already accepted.
+     */
+    @VisibleForTesting
+    internal fun undoIfUnchanged(
+        stillApplied: (ConversationInfoUiState) -> Boolean,
+        undo: (ConversationInfoUiState) -> ConversationInfoUiState
+    ): suspend () -> Unit = { _uiState.update { if (stillApplied(it)) undo(it) else it } }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun toggleImportantConversation(credentials: String, baseUrl: String, roomToken: String) {
         val previousValue = _uiState.value.importantConversation
         val newValue = !previousValue
-        _uiState.update { it.copy(importantConversation = newValue) }
+
         viewModelScope.launch {
-            try {
-                if (newValue) {
-                    conversationsRepository.markConversationAsImportant(credentials, baseUrl, roomToken)
-                } else {
-                    conversationsRepository.markConversationAsUnImportant(credentials, baseUrl, roomToken)
+            optimisticAction(
+                apply = {
+                    _uiState.update { it.copy(importantConversation = newValue) }
+                    undoIfUnchanged({ it.importantConversation == newValue }) {
+                        it.copy(importantConversation = previousValue)
+                    }
+                },
+                request = {
+                    if (newValue) {
+                        conversationsRepository.markConversationAsImportant(credentials, baseUrl, roomToken)
+                    } else {
+                        conversationsRepository.markConversationAsUnImportant(credentials, baseUrl, roomToken)
+                    }
                 }
-            } catch (exception: Exception) {
-                _uiState.update { it.copy(importantConversation = previousValue) }
-                logger.e(TAG, "failed to toggle important conversation state", exception)
+            ).onFailure { throwable ->
                 _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(R.string.nc_common_error_sorry))
+                logger.e(TAG, "failed to toggle important conversation state", throwable)
             }
         }
     }
@@ -892,18 +912,25 @@ class ConversationInfoViewModel @Inject constructor(
     fun toggleSensitiveConversation(credentials: String, baseUrl: String, roomToken: String) {
         val previousValue = _uiState.value.sensitiveConversation
         val newValue = !previousValue
-        _uiState.update { it.copy(sensitiveConversation = newValue) }
+
         viewModelScope.launch {
-            try {
-                if (newValue) {
-                    conversationsRepository.markConversationAsSensitive(credentials, baseUrl, roomToken)
-                } else {
-                    conversationsRepository.markConversationAsInsensitive(credentials, baseUrl, roomToken)
+            optimisticAction(
+                apply = {
+                    _uiState.update { it.copy(sensitiveConversation = newValue) }
+                    undoIfUnchanged({ it.sensitiveConversation == newValue }) {
+                        it.copy(sensitiveConversation = previousValue)
+                    }
+                },
+                request = {
+                    if (newValue) {
+                        conversationsRepository.markConversationAsSensitive(credentials, baseUrl, roomToken)
+                    } else {
+                        conversationsRepository.markConversationAsInsensitive(credentials, baseUrl, roomToken)
+                    }
                 }
-            } catch (exception: Exception) {
-                _uiState.update { it.copy(sensitiveConversation = previousValue) }
-                logger.e(TAG, "failed to toggle sensitive conversation state", exception)
+            ).onFailure { throwable ->
                 _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(R.string.nc_common_error_sorry))
+                logger.e(TAG, "failed to toggle sensitive conversation state", throwable)
             }
         }
     }
