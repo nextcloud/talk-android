@@ -152,6 +152,8 @@
     <string name="nc_call_button_content_description_microphone">Prepnúť mikrofón</string>
     <string name="nc_call_button_content_description_pip">Otvoriť režim obraz-v-obraze</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Prepnúť na vlastné video</string>
+    <string name="nc_call_e2ee_not_supported">Volanie momentálne nie je podporované, pretože je na serveri zapnuté end-to-end šifrovanie</string>
+    <string name="nc_call_e2ee_not_supported_title">Hovor od %s nie je dostupný</string>
     <string name="nc_call_incoming">PRICHÁDZAJÚCI</string>
     <string name="nc_call_join_failed">Nepodarilo sa pripojiť k hovoru. Skúste to znova.</string>
     <string name="nc_call_name">Názov konverzácie</string>
@@ -159,6 +161,7 @@
     <string name="nc_call_ongoing_notification_content">Klepnutím sa vrátite k hovoru.</string>
     <string name="nc_call_ongoing_notification_default_title">Prebieha hovor</string>
     <string name="nc_call_ongoing_notification_end_action">Ukončiť hovor</string>
+    <string name="nc_call_ongoing_notification_return_action">Návrat k hovoru</string>
     <string name="nc_call_raised_hand">%1$s sa prihlásil(a)</string>
     <string name="nc_call_reconnecting">Znovu pripájam …</string>
     <string name="nc_call_ringing">ZVONÍ</string>
@@ -183,6 +186,7 @@
     <string name="nc_channel_only_moderators_can_post">V tomto kanáli môžu prispievať iba moderátori</string>
     <string name="nc_chat_no_messages">Zatiaľ žiadne správy. Pozdravte ako prví!</string>
     <string name="nc_classified_conversation">Dôverná konverzácia</string>
+    <string name="nc_classified_conversation_description">Uzamknutá konverzácia na dôverné témy, s verejným prístupom, hosťami, SIP a nahrávaním zakázanými</string>
     <string name="nc_clear_edit_button">Zrušiť úpravy</string>
     <string name="nc_clear_history">Vymazať všetky správy</string>
     <string name="nc_clear_history_success">Všetky správy boli vymazané</string>
@@ -209,6 +213,10 @@
     <string name="nc_confirm">Potvrdiť</string>
     <string name="nc_connecting_call">Pripájam sa …</string>
     <string name="nc_contacts_done">Hotovo</string>
+    <string name="nc_conversation_created_invalid_participants">Niektorých účastníkov sa nepodarilo pridať</string>
+    <string name="nc_conversation_created_invalid_participants_named">Títo účastníci nemohli byť pridaní: %1$s</string>
+    <string name="nc_conversation_created_public">Hosťovia sa môžu pripojiť k tejto konverzácii pomocou jej odkazu. Zdieľajte ho teraz alebo neskôr v nastaveniach konverzácie.</string>
+    <string name="nc_conversation_created_title">Konverzácia vytvorená</string>
     <string name="nc_conversation_description">Popis konverzácie</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Prejsť na súbor</string>
     <string name="nc_conversation_menu_conversation_info">Informácia o konverzácii</string>
@@ -231,6 +239,15 @@
     <string name="nc_conversation_tags_new">Nový štítok</string>
     <string name="nc_conversation_tags_rename">Premenovať štítok</string>
     <string name="nc_conversation_tags_save">Save</string>
+    <string name="nc_conversation_type_defaults">Predvolené nastavenia tohto typu konverzácie:</string>
+    <string name="nc_conversation_type_defaults_hint">Tieto nastavenia je možné zmeniť po vytvorení konverzácie</string>
+    <string name="nc_conversation_type_lobby">Lobby povolené, konverzácia obmedzená na moderátorov</string>
+    <string name="nc_conversation_type_mentions_moderators">Iba moderátori môžu spomenúť všetkých</string>
+    <string name="nc_conversation_type_message_expiration">Správy vypršia po %1$s</string>
+    <string name="nc_conversation_type_message_expiration_custom">Vypršanie správ je povolené</string>
+    <string name="nc_conversation_type_sip">Povolené telefonické a SIP pripojenie</string>
+    <string name="nc_conversation_type_sip_no_pin">Pripojenie bez PIN kódu povolené</string>
+    <string name="nc_conversation_types_error">Typy konverzácií sa nepodarilo načítať</string>
     <string name="nc_conversations_empty">Pripojte sa ku konverzácii alebo začnite novú</string>
     <string name="nc_conversations_empty_details">Pozdravte svojich priateľov a kolegov!</string>
     <string name="nc_copy_message">Kopírovať</string>
@@ -410,10 +427,13 @@
     <string name="nc_notification_channel">%1$s na %2$s notifikačný kanál</string>
     <string name="nc_notification_channel_calls">Hovory</string>
     <string name="nc_notification_channel_calls_description">Upozorniť na príchodzie hovory</string>
+    <string name="nc_notification_channel_calls_ongoing">Prebiehajúci hovor</string>
+    <string name="nc_notification_channel_calls_ongoing_description">Trvalý stav prebiehajúceho hovoru</string>
     <string name="nc_notification_channel_messages">Správy</string>
     <string name="nc_notification_channel_messages_description">Upozorniť na príchodzie správy</string>
     <string name="nc_notification_channel_uploads">Nahrané</string>
     <string name="nc_notification_channel_uploads_description">Upozorniť na priebeh nahrávania</string>
+    <string name="nc_notification_permission_hint">Na zobrazenie notifikácií hovoru a udržanie aktivity hovorov na pozadí udeľte prosím povolenie „Notifikácie“.</string>
     <string name="nc_notification_settings">Nastavenie notifikácií</string>
     <string name="nc_notification_warning">Upozornenia nie sú korektne nastavené</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Povolenie upozornení a nastavenia batérie sú správne nastavené na prijímanie upozornení. Ak aj tak máte problémy s prijímaním upozornení, skontrolujte, či sú povolené kanály upozornení pre hovory a správy. Ďalšiu pomoc možno nájsť na DontKillMyApp.com alebo v kontrolnom zozname na riešenie problémov. Ak to nepomôže, prejdite na obrazovku diagnostiky a pošlite správu o chybe.</string>
@@ -433,6 +453,8 @@
     <string name="nc_participants_add">Pridať účastníkov</string>
     <string name="nc_password">Heslo</string>
     <string name="nc_password_copied">Heslo bolo skopírované</string>
+    <string name="nc_password_required">Tento server vyžaduje heslo pre konverzácie, ku ktorým sa môžu pripojiť hostia</string>
+    <string name="nc_password_secure">Heslo je bezpečné</string>
     <string name="nc_permissions_ask">Nastaviť oprávnenia</string>
     <string name="nc_permissions_denied">Niektoré oprávnenia neboli udelené.</string>
     <string name="nc_permissions_rationale_dialog_title">Prosím, udeľte oprávnenia</string>
@@ -444,6 +466,7 @@
     <string name="nc_pip_microphone_unmute">Povoliť mikrofón</string>
     <string name="nc_plain_old_messages">Správy</string>
     <string name="nc_presentation">Prezentácia</string>
+    <string name="nc_presentation_description">Obmedzená konverzácia pre interné prezentácie</string>
     <string name="nc_profile_personal_info_title">Osobné informácie</string>
     <string name="nc_promote">Povýšiť na moderátora</string>
     <string name="nc_promote_to_owner">Povýšiť na vlastníka</string>
@@ -639,6 +662,7 @@
     <string name="nc_voice_message_missing_audio_permission">Je potrebné oprávnenie pre nahrávanie zvuku.</string>
     <string name="nc_voice_message_slide_to_cancel">« Potiahnite pre zrušenie</string>
     <string name="nc_webinar">Webinár</string>
+    <string name="nc_webinar_description">Obmedzená konverzácia s povoleným lobby, ideálna pre verejné webináre</string>
     <string name="nc_yes">Áno</string>
     <string name="nc_zoom_in">Priblížiť</string>
     <string name="nc_zoom_out">Oddialiť</string>

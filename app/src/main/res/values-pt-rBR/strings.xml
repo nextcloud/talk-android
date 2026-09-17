@@ -152,7 +152,7 @@
     <string name="nc_call_button_content_description_pip">Abrir modo imagem-em-imagem</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Mudar para próprio vídeo</string>
     <string name="nc_call_e2ee_not_supported">No momento, as chamadas não são suportadas porque a criptografia de ponta-a-ponta está ativada no servidor</string>
-    <string name="nc_call_e2ee_not_supported_title">A chamado de %s não está disponível</string>
+    <string name="nc_call_e2ee_not_supported_title">A chamada de %s não está disponível</string>
     <string name="nc_call_incoming">ENTRADA </string>
     <string name="nc_call_join_failed">Não foi possível entrar na chamada. Por favor, tente novamente.</string>
     <string name="nc_call_name">Nome de conversação</string>
@@ -452,7 +452,7 @@
     <string name="nc_participants_add">Adicionar participantes</string>
     <string name="nc_password">Senha</string>
     <string name="nc_password_copied">Senha copiada</string>
-    <string name="nc_password_required">Este servidor exige uma senha para as conversas das quais os convidados podem participar</string>
+    <string name="nc_password_required">Este servidor exige uma senha para as conversas nas quais os visitantes podem entrar</string>
     <string name="nc_password_secure">A senha é segura</string>
     <string name="nc_permissions_ask">Definir permissões</string>
     <string name="nc_permissions_denied">Algumas permissões foram negadas.</string>
