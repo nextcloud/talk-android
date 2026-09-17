@@ -2646,11 +2646,11 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
-    fun hidePinnedMessage(credentials: String, url: String) {
+    fun hidePinnedMessage(credentials: String, url: String, messageId: Long) {
         viewModelScope.launch {
-            chatRepository.hidePinnedMessage(credentials, url).collect {
-                getRoom(chatRoomToken)
-            }
+            chatRepository.hidePinnedMessage(credentials, url, messageId)
+            // the banner already follows the local state, the refresh re-asserts the server's
+            getRoom(chatRoomToken)
         }
     }
 

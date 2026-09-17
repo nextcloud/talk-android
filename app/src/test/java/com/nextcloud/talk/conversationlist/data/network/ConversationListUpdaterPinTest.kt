@@ -86,6 +86,35 @@ class ConversationListUpdaterPinTest {
             assertEquals(OTHER_PINNED_ID, preserve(serverPinnedId = OTHER_PINNED_ID).lastPinnedId)
         }
 
+    @Test
+    fun `a dismissed pinned message stays dismissed until the server reports it`() =
+        runTest {
+            givenCachedConversation(pinnedId = PINNED_ID)
+            updater.updateLocalHiddenPinnedMessage(target(), PINNED_ID)
+
+            assertEquals(PINNED_ID, preserveHidden(serverHiddenId = null).hiddenPinnedId)
+            assertEquals(PINNED_ID, preserveHidden(serverHiddenId = PINNED_ID).hiddenPinnedId)
+            // released, so the server can bring the banner back for a message pinned again
+            assertNull(preserveHidden(serverHiddenId = null).hiddenPinnedId)
+        }
+
+    @Test
+    fun `a completed dismissal stops guarding`() =
+        runTest {
+            givenCachedConversation(pinnedId = PINNED_ID)
+            updater.updateLocalHiddenPinnedMessage(target(), PINNED_ID)
+
+            updater.clearPendingHiddenPinnedMessage(stored.internalId)
+
+            assertNull(preserveHidden(serverHiddenId = null).hiddenPinnedId)
+        }
+
+    private fun preserveHidden(serverHiddenId: Long?): ConversationEntity =
+        updater.preservePendingLocalState(
+            previousConversations = mapOf(stored.internalId to stored),
+            conversationsFromServer = listOf(stored.copy(hiddenPinnedId = serverHiddenId))
+        ).single()
+
     private fun preserve(serverPinnedId: Long?): ConversationEntity =
         updater.preservePendingLocalState(
             previousConversations = mapOf(stored.internalId to stored),
