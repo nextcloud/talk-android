@@ -42,7 +42,7 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
-import com.nextcloud.talk.utils.withRetry
+import com.nextcloud.talk.utils.optimisticAction
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -782,22 +782,21 @@ class ConversationsListViewModel @Inject constructor(
         )
         val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
-            messageId?.let { conversationListUpdater.markPendingReadMarker(conversation.internalId, it) }
-            withContext(Dispatchers.IO) {
-                repository.updateConversation(optimistic)
-            }
-            try {
-                withContext(Dispatchers.IO) {
-                    withRetry(1) { conversationsRepository.markConversationAsRead(credentials, url, messageId) }
-                }
-                _readUnreadState.value = ConversationReadUnreadUiState.Success
-            } catch (e: Exception) {
-                messageId?.let { conversationListUpdater.clearPendingReadMarker(conversation.internalId, it) }
-                withContext(Dispatchers.IO) {
-                    repository.updateConversation(original)
-                }
-                _readUnreadState.value = ConversationReadUnreadUiState.Error
-            }
+            val result = optimisticAction(
+                apply = {
+                    messageId?.let { conversationListUpdater.markPendingReadMarker(conversation.internalId, it) }
+                    applyLocally(optimistic)
+                    revertTo(original) {
+                        messageId?.let { conversationListUpdater.clearPendingReadMarker(conversation.internalId, it) }
+                    }
+                },
+                request = { conversationsRepository.markConversationAsRead(credentials, url, messageId) }
+            )
+
+            _readUnreadState.value = result.fold(
+                onSuccess = { ConversationReadUnreadUiState.Success },
+                onFailure = { ConversationReadUnreadUiState.Error }
+            )
         }
     }
 
@@ -811,24 +810,35 @@ class ConversationsListViewModel @Inject constructor(
         )
         val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
-            conversationListUpdater.markPendingUnread(conversation.internalId)
-            withContext(Dispatchers.IO) {
-                repository.updateConversation(optimistic)
-            }
-            try {
-                withContext(Dispatchers.IO) {
-                    withRetry(1) { conversationsRepository.markConversationAsUnread(credentials, url) }
-                }
-                _readUnreadState.value = ConversationReadUnreadUiState.Success
-            } catch (e: Exception) {
-                conversationListUpdater.clearPendingUnread(conversation.internalId)
-                withContext(Dispatchers.IO) {
-                    repository.updateConversation(original)
-                }
-                _readUnreadState.value = ConversationReadUnreadUiState.Error
-            }
+            val result = optimisticAction(
+                apply = {
+                    conversationListUpdater.markPendingUnread(conversation.internalId)
+                    applyLocally(optimistic)
+                    revertTo(original) { conversationListUpdater.clearPendingUnread(conversation.internalId) }
+                },
+                request = { conversationsRepository.markConversationAsUnread(credentials, url) }
+            )
+
+            _readUnreadState.value = result.fold(
+                onSuccess = { ConversationReadUnreadUiState.Success },
+                onFailure = { ConversationReadUnreadUiState.Error }
+            )
         }
     }
+
+    private suspend fun applyLocally(conversation: ConversationModel) {
+        withContext(Dispatchers.IO) { repository.updateConversation(conversation) }
+    }
+
+    /**
+     * The action that puts [original] back and releases whatever guard the caller registered, for
+     * [optimisticAction] to run when the request finally fails or the screen is left mid-request.
+     */
+    private fun revertTo(original: ConversationModel, releaseGuard: () -> Unit): suspend () -> Unit =
+        {
+            releaseGuard()
+            applyLocally(original)
+        }
 
     fun resetFavoriteState() {
         _favoriteState.value = FavoriteUiState.None
@@ -846,28 +856,27 @@ class ConversationsListViewModel @Inject constructor(
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
         val url = ApiUtils.getUrlForArchive(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
-            conversationListUpdater.markPendingArchived(conversation.internalId, desiredArchived)
-            withContext(Dispatchers.IO) {
-                repository.updateConversation(optimistic)
-            }
-            try {
-                withContext(Dispatchers.IO) {
-                    withRetry(1) {
-                        if (desiredArchived) {
-                            conversationsRepository.archiveConversation(credentials, url)
-                        } else {
-                            conversationsRepository.unarchiveConversation(credentials, url)
-                        }
+            val result = optimisticAction(
+                apply = {
+                    conversationListUpdater.markPendingArchived(conversation.internalId, desiredArchived)
+                    applyLocally(optimistic)
+                    revertTo(original) {
+                        conversationListUpdater.clearPendingArchived(conversation.internalId, desiredArchived)
+                    }
+                },
+                request = {
+                    if (desiredArchived) {
+                        conversationsRepository.archiveConversation(credentials, url)
+                    } else {
+                        conversationsRepository.unarchiveConversation(credentials, url)
                     }
                 }
-                _archiveState.value = ArchiveUiState.Success(desiredArchived, conversation.displayName)
-            } catch (e: Exception) {
-                conversationListUpdater.clearPendingArchived(conversation.internalId, desiredArchived)
-                withContext(Dispatchers.IO) {
-                    repository.updateConversation(original)
-                }
-                _archiveState.value = ArchiveUiState.Error
-            }
+            )
+
+            _archiveState.value = result.fold(
+                onSuccess = { ArchiveUiState.Success(desiredArchived, conversation.displayName) },
+                onFailure = { ArchiveUiState.Error }
+            )
         }
     }
 
@@ -878,22 +887,21 @@ class ConversationsListViewModel @Inject constructor(
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
         val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
-            conversationListUpdater.markPendingFavorite(conversation.internalId, favorite = true)
-            withContext(Dispatchers.IO) {
-                repository.updateConversation(optimistic)
-            }
-            try {
-                withContext(Dispatchers.IO) {
-                    withRetry(1) { conversationsRepository.addConversationToFavorites(credentials, url) }
-                }
-                _favoriteState.value = FavoriteUiState.Success
-            } catch (e: Exception) {
-                conversationListUpdater.clearPendingFavorite(conversation.internalId, favorite = true)
-                withContext(Dispatchers.IO) {
-                    repository.updateConversation(original)
-                }
-                _favoriteState.value = FavoriteUiState.Error
-            }
+            val result = optimisticAction(
+                apply = {
+                    conversationListUpdater.markPendingFavorite(conversation.internalId, favorite = true)
+                    applyLocally(optimistic)
+                    revertTo(original) {
+                        conversationListUpdater.clearPendingFavorite(conversation.internalId, favorite = true)
+                    }
+                },
+                request = { conversationsRepository.addConversationToFavorites(credentials, url) }
+            )
+
+            _favoriteState.value = result.fold(
+                onSuccess = { FavoriteUiState.Success },
+                onFailure = { FavoriteUiState.Error }
+            )
         }
     }
 
@@ -904,22 +912,21 @@ class ConversationsListViewModel @Inject constructor(
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
         val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
-            conversationListUpdater.markPendingFavorite(conversation.internalId, favorite = false)
-            withContext(Dispatchers.IO) {
-                repository.updateConversation(optimistic)
-            }
-            try {
-                withContext(Dispatchers.IO) {
-                    withRetry(1) { conversationsRepository.removeConversationFromFavorites(credentials, url) }
-                }
-                _favoriteState.value = FavoriteUiState.Success
-            } catch (e: Exception) {
-                conversationListUpdater.clearPendingFavorite(conversation.internalId, favorite = false)
-                withContext(Dispatchers.IO) {
-                    repository.updateConversation(original)
-                }
-                _favoriteState.value = FavoriteUiState.Error
-            }
+            val result = optimisticAction(
+                apply = {
+                    conversationListUpdater.markPendingFavorite(conversation.internalId, favorite = false)
+                    applyLocally(optimistic)
+                    revertTo(original) {
+                        conversationListUpdater.clearPendingFavorite(conversation.internalId, favorite = false)
+                    }
+                },
+                request = { conversationsRepository.removeConversationFromFavorites(credentials, url) }
+            )
+
+            _favoriteState.value = result.fold(
+                onSuccess = { FavoriteUiState.Success },
+                onFailure = { FavoriteUiState.Error }
+            )
         }
     }
 
