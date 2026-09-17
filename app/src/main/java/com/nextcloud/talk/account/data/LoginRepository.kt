@@ -175,7 +175,7 @@ class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLogin
     /**
      * Returns bundle if user is not scheduled for deletion or doesn't already exist, null otherwise
      */
-    fun parseAndLogin(loginData: LoginCompletion): Bundle? {
+    suspend fun parseAndLogin(loginData: LoginCompletion): Bundle? {
         if (local.checkIfUserIsScheduledForDeletion(loginData)) {
             // however the user is not yet deleted, just start AccountRemovalWorker again to make sure to delete it.
             local.startAccountRemovalWorker()

@@ -402,11 +402,13 @@ class ConversationsListViewModel @Inject constructor(
         _federationInvitationHintVisible.value = false
         _showAvatarBadge.value = false
 
-        userManager.users.blockingGet()?.forEach {
-            invitationsRepository.fetchInvitations(it)
-                .subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(FederatedInvitationsObserver())
+        viewModelScope.launch {
+            userManager.getUsers().forEach {
+                invitationsRepository.fetchInvitations(it)
+                    .subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe(FederatedInvitationsObserver())
+            }
         }
     }
 

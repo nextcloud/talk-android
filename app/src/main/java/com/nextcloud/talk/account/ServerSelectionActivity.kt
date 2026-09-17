@@ -50,6 +50,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.runBlocking
 import java.security.cert.CertificateException
 import javax.inject.Inject
 
@@ -114,7 +115,7 @@ class ServerSelectionActivity : BaseActivity() {
             binding.certTextView.visibility = View.GONE
         }
 
-        val loggedInUsers = userManager.users.blockingGet()
+        val loggedInUsers = runBlocking { userManager.getUsers() }
         val availableAccounts = AccountUtils.findAvailableAccountsOnDevice(loggedInUsers)
 
         if (isImportAccountNameSet() && availableAccounts.isNotEmpty()) {

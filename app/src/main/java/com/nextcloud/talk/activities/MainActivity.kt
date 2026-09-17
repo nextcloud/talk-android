@@ -19,6 +19,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.BuildConfig
@@ -41,11 +42,10 @@ import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import javax.inject.Inject
 
@@ -229,6 +229,7 @@ class MainActivity :
         handleIntent(intent)
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun handleIntent(intent: Intent) {
         // Handle deep links first (nextcloudtalk:// scheme)
         if (handleDeepLink(intent)) {
@@ -239,30 +240,28 @@ class MainActivity :
 
         val internalUserId = intent.extras?.getLong(BundleKeys.KEY_INTERNAL_USER_ID)
 
-        var user: User? = null
-        if (internalUserId != null && internalUserId != 0L) {
-            user = userManager.getUserWithId(internalUserId).blockingGet()
-        }
+        lifecycleScope.launch {
+            val user: User? = if (internalUserId != null && internalUserId != 0L) {
+                userManager.getUserWithIdSuspend(internalUserId)
+            } else {
+                null
+            }
 
-        if (user != null && userManager.setUserAsActive(user).blockingGet()) {
-            if (intent.hasExtra(BundleKeys.KEY_REMOTE_TALK_SHARE)) {
-                if (intent.getBooleanExtra(BundleKeys.KEY_REMOTE_TALK_SHARE, false)) {
-                    val invitationsIntent = Intent(this, InvitationsActivity::class.java)
-                    startActivity(invitationsIntent)
+            if (user != null && userManager.setUserAsActiveSuspend(user)) {
+                if (intent.hasExtra(BundleKeys.KEY_REMOTE_TALK_SHARE)) {
+                    if (intent.getBooleanExtra(BundleKeys.KEY_REMOTE_TALK_SHARE, false)) {
+                        val invitationsIntent = Intent(this@MainActivity, InvitationsActivity::class.java)
+                        startActivity(invitationsIntent)
+                    }
+                } else {
+                    val chatIntent = Intent(context, ChatActivity::class.java)
+                    chatIntent.putExtras(intent.extras!!)
+                    startActivity(chatIntent)
                 }
             } else {
-                val chatIntent = Intent(context, ChatActivity::class.java)
-                chatIntent.putExtras(intent.extras!!)
-                startActivity(chatIntent)
-            }
-        } else {
-            userManager.users.subscribe(object : SingleObserver<List<User>> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
-
-                override fun onSuccess(users: List<User>) {
-                    if (isFinishing || isDestroyed) return
+                try {
+                    val users = userManager.getUsers()
+                    if (isFinishing || isDestroyed) return@launch
 
                     if (users.isNotEmpty()) {
                         if (appPreferences.useUnifiedPush) {
@@ -270,27 +269,21 @@ class MainActivity :
                         } else {
                             ClosedInterfaceImpl().setUpPushTokenRegistration()
                         }
-                        runOnUiThread {
-                            if (isFinishing || isDestroyed) return@runOnUiThread
-                            openConversationList()
-                        }
+                        if (isFinishing || isDestroyed) return@launch
+                        openConversationList()
                     } else {
-                        runOnUiThread {
-                            if (isFinishing || isDestroyed) return@runOnUiThread
-                            launchServerSelection()
-                        }
+                        if (isFinishing || isDestroyed) return@launch
+                        launchServerSelection()
                     }
-                }
-
-                override fun onError(e: Throwable) {
-                    logger.e(TAG, "Error loading existing users", e)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error loading existing users", e)
                     Toast.makeText(
                         context,
                         context.resources.getString(R.string.nc_common_error_sorry),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            })
+            }
         }
     }
 
@@ -303,76 +296,72 @@ class MainActivity :
      * @param intent The intent to process
      * @return true if the intent was handled as a deep link, false otherwise
      */
-    @Suppress("LongMethod")
+    @Suppress("TooGenericExceptionCaught", "LongMethod")
     private fun handleDeepLink(intent: Intent): Boolean {
         val deepLinkResult = intent.data?.let { DeepLinkHandler.parseDeepLink(it) } ?: return false
 
-        val disposable = userManager.users
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { users ->
-                    if (isFinishing || isDestroyed) return@subscribe
+        lifecycleScope.launch {
+            try {
+                val users = userManager.getUsers()
+                if (isFinishing || isDestroyed) return@launch
 
-                    if (users.isEmpty()) {
-                        launchServerSelection()
-                        return@subscribe
-                    }
+                if (users.isEmpty()) {
+                    launchServerSelection()
+                    return@launch
+                }
 
-                    val targetUser = resolveTargetUser(users, deepLinkResult)
+                val targetUser = resolveTargetUser(users, deepLinkResult)
 
-                    if (targetUser == null) {
-                        Toast.makeText(
+                if (targetUser == null) {
+                    Toast.makeText(
+                        context,
+                        context.resources.getString(R.string.nc_no_account_for_server),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    openConversationList()
+                    return@launch
+                }
+
+                if (userManager.setUserAsActiveSuspend(targetUser)) {
+                    // Report shortcut usage for ranking
+                    targetUser.id?.let { userId ->
+                        ShortcutManagerHelper.reportShortcutUsed(
                             context,
-                            context.resources.getString(R.string.nc_no_account_for_server),
-                            Toast.LENGTH_LONG
-                        ).show()
-                        openConversationList()
-                        return@subscribe
+                            deepLinkResult.roomToken,
+                            userId
+                        )
                     }
 
-                    if (userManager.setUserAsActive(targetUser).blockingGet()) {
-                        // Report shortcut usage for ranking
-                        targetUser.id?.let { userId ->
-                            ShortcutManagerHelper.reportShortcutUsed(
-                                context,
-                                deepLinkResult.roomToken,
-                                userId
-                            )
-                        }
+                    if (isFinishing || isDestroyed) return@launch
 
-                        if (isFinishing || isDestroyed) return@subscribe
+                    // Open conversation list first so back press shows correct user's conversations
+                    val listIntent = Intent(context, ConversationsListActivity::class.java)
+                    listIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    listIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, targetUser.id)
 
-                        // Open conversation list first so back press shows correct user's conversations
-                        val listIntent = Intent(context, ConversationsListActivity::class.java)
-                        listIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        listIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, targetUser.id)
+                    val chatIntent = Intent(context, ChatActivity::class.java)
+                    chatIntent.putExtra(KEY_ROOM_TOKEN, deepLinkResult.roomToken)
+                    chatIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, targetUser.id)
 
-                        val chatIntent = Intent(context, ChatActivity::class.java)
-                        chatIntent.putExtra(KEY_ROOM_TOKEN, deepLinkResult.roomToken)
-                        chatIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, targetUser.id)
-
-                        startActivities(arrayOf(listIntent, chatIntent))
-                    } else {
-                        logger.e(TAG, "Failed to set deep link target user as active")
-                        Toast.makeText(
-                            context,
-                            context.resources.getString(R.string.nc_common_error_sorry),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                },
-                { e ->
-                    logger.e(TAG, "Error loading users for deep link", e)
-                    if (isFinishing || isDestroyed) return@subscribe
+                    startActivities(arrayOf(listIntent, chatIntent))
+                } else {
+                    logger.e(TAG, "Failed to set deep link target user as active")
                     Toast.makeText(
                         context,
                         context.resources.getString(R.string.nc_common_error_sorry),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            )
-        disposables.add(disposable)
+            } catch (e: Exception) {
+                logger.e(TAG, "Error loading users for deep link", e)
+                if (isFinishing || isDestroyed) return@launch
+                Toast.makeText(
+                    context,
+                    context.resources.getString(R.string.nc_common_error_sorry),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
 
         return true
     }

@@ -14,7 +14,7 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
-import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -25,7 +25,7 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
     ViewModel() {
 
     @Inject
-    lateinit var userManager: UserManager
+    lateinit var currentUserProvider: CurrentUserProvider
 
     var threadId: String? = null
 
@@ -43,7 +43,7 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
         title: String
     ) {
         viewModelScope.launch {
-            val user = userManager.currentUser.blockingGet()
+            val user = currentUserProvider.getCurrentUser().getOrThrow()
 
             if (!user.hasSpreedFeatureCapability("chat-get-context") ||
                 !user.hasSpreedFeatureCapability("federation-v1")

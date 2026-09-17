@@ -29,6 +29,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
@@ -119,7 +120,7 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
      */
     @SuppressLint("CheckResult")
     private fun webPushActivationWork(id: Long, activationToken: String) {
-        val user = userManager.getUserWithId(id).blockingGet()
+        val user = runBlocking { userManager.getUserWithIdSuspend(id) }!!
         activateWebPushForAccount(user, activationToken)
             .flatMap { res ->
                 if (res) {
@@ -144,7 +145,7 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
     @SuppressLint("CheckResult")
     private fun webPushWork(id: Long, pushEndpoint: PushEndpoint) {
         preferences.unifiedPushLatestEndpoint = System.currentTimeMillis()
-        val user = userManager.getUserWithId(id).blockingGet()
+        val user = runBlocking { userManager.getUserWithIdSuspend(id) }!!
         registerWebPushForAccount(user, pushEndpoint)
             .map { (user, res) ->
                 if (res) {
@@ -168,18 +169,17 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
      */
     @SuppressLint("CheckResult")
     private fun webPushUnregistrationWork(id: Long) {
-        userManager.getUserWithId(id).map { user ->
-            unregisterWebPushForAccount(user)
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .subscribe { _, e ->
-                    e?.let {
-                        Log.e(TAG, "An error occurred while unregistering for web push", e)
-                    } ?: {
-                        Log.d(TAG, "${user.userId} unregistered from web push")
-                    }
+        val user = runBlocking { userManager.getUserWithIdSuspend(id) } ?: return
+        unregisterWebPushForAccount(user)
+            .toList()
+            .subscribeOn(Schedulers.io())
+            .subscribe { _, e ->
+                e?.let {
+                    Log.e(TAG, "An error occurred while unregistering for web push", e)
+                } ?: {
+                    Log.d(TAG, "${user.userId} unregistered from web push")
                 }
-        }
+            }
     }
 
     /**
@@ -187,7 +187,7 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
      */
     @SuppressLint("CheckResult")
     private fun unifiedPushWork() {
-        val obs = userManager.users.blockingGet().map { user ->
+        val obs = runBlocking { userManager.getUsers() }.map { user ->
             registerUnifiedPushForAccount(user)
         }
         Observable.merge(obs)
@@ -206,7 +206,7 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
      */
     @SuppressLint("CheckResult")
     private fun proxyPushWork() {
-        val obs = userManager.users.blockingGet().mapNotNull { user ->
+        val obs = runBlocking { userManager.getUsers() }.mapNotNull { user ->
             if (user.userId == null || user.baseUrl == null) {
                 Log.w(TAG, "Null userId or baseUrl (userId=${user.userId}, baseUrl=${user.baseUrl}")
                 return@mapNotNull null
@@ -273,7 +273,7 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
      */
     @SuppressLint("CheckResult")
     private fun enqueueNotifUnifiedPushDisabled() {
-        val user = userManager.users.blockingGet().first()
+        val user = runBlocking { userManager.getUsers() }.first()
         Log.d(TAG, "Sending warning notification with ${user.userId}")
         val notif = hashMapOf(
             "subject" to "UnifiedPush disabled",

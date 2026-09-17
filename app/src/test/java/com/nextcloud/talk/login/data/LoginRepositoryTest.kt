@@ -389,164 +389,173 @@ class LoginRepositoryTest {
     // ========== parseAndLogin() Tests ==========
 
     @Test
-    fun `parseAndLogin returns null when user is scheduled for deletion`() {
-        // Arrange
-        val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
-        whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
-            .thenReturn(true)
-        whenever(localLoginDataSource.startAccountRemovalWorker())
-            .thenReturn(liveData)
+    fun `parseAndLogin returns null when user is scheduled for deletion`() =
+        runTest {
+            // Arrange
+            val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+            whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
+                .thenReturn(true)
+            whenever(localLoginDataSource.startAccountRemovalWorker())
+                .thenReturn(liveData)
 
-        // Act
-        val result = repo.parseAndLogin(loginData)
+            // Act
+            val result = repo.parseAndLogin(loginData)
 
-        // Assert
-        assertNull(result)
-        verify(localLoginDataSource).startAccountRemovalWorker()
-    }
-
-    @Test
-    fun `parseAndLogin returns null when user exists and reAuth is false`() {
-        // Arrange
-        val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
-        whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
-            .thenReturn(false)
-        whenever(localLoginDataSource.checkIfUserExists(loginData))
-            .thenReturn(true)
-
-        // Act
-        val result = repo.parseAndLogin(loginData)
-
-        // Assert
-        assertNull(result)
-        verify(localLoginDataSource, never()).updateUser(any())
-    }
+            // Assert
+            assertNull(result)
+            verify(localLoginDataSource).startAccountRemovalWorker()
+        }
 
     @Test
-    fun `parseAndLogin updates user when user exists and reAuth is true`() {
-        // Arrange - First set reAuth to true via QR flow
-        val qrData = "nc://login/server:https%3A//example.com"
-        repo.startLoginFlowFromQR(qrData, reAuth = true)
+    fun `parseAndLogin returns null when user exists and reAuth is false`() =
+        runTest {
+            // Arrange
+            val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+            whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
+                .thenReturn(false)
+            whenever(localLoginDataSource.checkIfUserExists(loginData))
+                .thenReturn(true)
 
-        val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
-        whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
-            .thenReturn(false)
-        whenever(localLoginDataSource.checkIfUserExists(loginData))
-            .thenReturn(true)
+            // Act
+            val result = repo.parseAndLogin(loginData)
 
-        // Act
-        val result = repo.parseAndLogin(loginData)
-
-        // Assert
-        assertNull(result)
-        verify(localLoginDataSource).updateUser(loginData)
-    }
+            // Assert
+            assertNull(result)
+            verify(localLoginDataSource, never()).updateUser(any())
+        }
 
     @Test
-    fun `parseAndLogin returns Bundle for new user with https protocol`() {
-        // Arrange
-        val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
-        whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
-            .thenReturn(false)
-        whenever(localLoginDataSource.checkIfUserExists(loginData))
-            .thenReturn(false)
+    fun `parseAndLogin updates user when user exists and reAuth is true`() =
+        runTest {
+            // Arrange - First set reAuth to true via QR flow
+            val qrData = "nc://login/server:https%3A//example.com"
+            repo.startLoginFlowFromQR(qrData, reAuth = true)
 
-        // Act
-        val result = repo.parseAndLogin(loginData)
+            val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+            whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
+                .thenReturn(false)
+            whenever(localLoginDataSource.checkIfUserExists(loginData))
+                .thenReturn(true)
 
-        // Assert
-        assertNotNull(result)
-        assertTrue(result is Bundle)
-    }
+            // Act
+            val result = repo.parseAndLogin(loginData)
 
-    @Test
-    fun `parseAndLogin returns Bundle for new user with http protocol`() {
-        // Arrange
-        val loginData = LoginCompletion(200, "http://server.com", "testuser", "apppass123")
-        whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
-            .thenReturn(false)
-        whenever(localLoginDataSource.checkIfUserExists(loginData))
-            .thenReturn(false)
-
-        // Act
-        val result = repo.parseAndLogin(loginData)
-
-        // Assert
-        assertNotNull(result)
-        assertTrue(result is Bundle)
-    }
+            // Assert
+            assertNull(result)
+            verify(localLoginDataSource).updateUser(loginData)
+        }
 
     @Test
-    fun `parseAndLogin returns Bundle for new user without protocol prefix`() {
-        // Arrange
-        val loginData = LoginCompletion(200, "server.com", "testuser", "apppass123")
-        whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
-            .thenReturn(false)
-        whenever(localLoginDataSource.checkIfUserExists(loginData))
-            .thenReturn(false)
+    fun `parseAndLogin returns Bundle for new user with https protocol`() =
+        runTest {
+            // Arrange
+            val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+            whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
+                .thenReturn(false)
+            whenever(localLoginDataSource.checkIfUserExists(loginData))
+                .thenReturn(false)
 
-        // Act
-        val result = repo.parseAndLogin(loginData)
+            // Act
+            val result = repo.parseAndLogin(loginData)
 
-        // Assert
-        assertNotNull(result)
-        assertTrue(result is Bundle)
-    }
+            // Assert
+            assertNotNull(result)
+            assertTrue(result is Bundle)
+        }
+
+    @Test
+    fun `parseAndLogin returns Bundle for new user with http protocol`() =
+        runTest {
+            // Arrange
+            val loginData = LoginCompletion(200, "http://server.com", "testuser", "apppass123")
+            whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
+                .thenReturn(false)
+            whenever(localLoginDataSource.checkIfUserExists(loginData))
+                .thenReturn(false)
+
+            // Act
+            val result = repo.parseAndLogin(loginData)
+
+            // Assert
+            assertNotNull(result)
+            assertTrue(result is Bundle)
+        }
+
+    @Test
+    fun `parseAndLogin returns Bundle for new user without protocol prefix`() =
+        runTest {
+            // Arrange
+            val loginData = LoginCompletion(200, "server.com", "testuser", "apppass123")
+            whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
+                .thenReturn(false)
+            whenever(localLoginDataSource.checkIfUserExists(loginData))
+                .thenReturn(false)
+
+            // Act
+            val result = repo.parseAndLogin(loginData)
+
+            // Assert
+            assertNotNull(result)
+            assertTrue(result is Bundle)
+        }
 
     // ========== LocalLoginDataSource Integration Tests ==========
 
     @Test
-    fun `parseAndLogin properly integrates with LocalLoginDataSource checkIfUserIsScheduledForDeletion`() {
-        // Arrange
-        val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
-        whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
-            .thenReturn(true)
-        whenever(localLoginDataSource.startAccountRemovalWorker())
-            .thenReturn(liveData)
+    fun `parseAndLogin properly integrates with LocalLoginDataSource checkIfUserIsScheduledForDeletion`() =
+        runTest {
+            // Arrange
+            val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+            whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
+                .thenReturn(true)
+            whenever(localLoginDataSource.startAccountRemovalWorker())
+                .thenReturn(liveData)
 
-        // Act
-        repo.parseAndLogin(loginData)
+            // Act
+            repo.parseAndLogin(loginData)
 
-        // Assert
-        verify(localLoginDataSource).checkIfUserIsScheduledForDeletion(loginData)
-        verify(localLoginDataSource).startAccountRemovalWorker()
-    }
-
-    @Test
-    fun `parseAndLogin properly integrates with LocalLoginDataSource checkIfUserExists`() {
-        // Arrange
-        val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
-        whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
-            .thenReturn(false)
-        whenever(localLoginDataSource.checkIfUserExists(loginData))
-            .thenReturn(true)
-
-        // Act
-        repo.parseAndLogin(loginData)
-
-        // Assert
-        verify(localLoginDataSource).checkIfUserExists(loginData)
-        verify(localLoginDataSource, never()).updateUser(any())
-    }
+            // Assert
+            verify(localLoginDataSource).checkIfUserIsScheduledForDeletion(loginData)
+            verify(localLoginDataSource).startAccountRemovalWorker()
+        }
 
     @Test
-    fun `parseAndLogin calls updateUser with correct LoginCompletion data`() {
-        // Arrange - Set reAuth flag first
-        val qrData = "nc://login/server:https%3A//example.com"
-        repo.startLoginFlowFromQR(qrData, reAuth = true)
+    fun `parseAndLogin properly integrates with LocalLoginDataSource checkIfUserExists`() =
+        runTest {
+            // Arrange
+            val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+            whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
+                .thenReturn(false)
+            whenever(localLoginDataSource.checkIfUserExists(loginData))
+                .thenReturn(true)
 
-        val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
-        whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
-            .thenReturn(false)
-        whenever(localLoginDataSource.checkIfUserExists(loginData))
-            .thenReturn(true)
+            // Act
+            repo.parseAndLogin(loginData)
 
-        // Act
-        repo.parseAndLogin(loginData)
+            // Assert
+            verify(localLoginDataSource).checkIfUserExists(loginData)
+            verify(localLoginDataSource, never()).updateUser(any())
+        }
 
-        // Assert
-        verify(localLoginDataSource).updateUser(loginData)
-    }
+    @Test
+    fun `parseAndLogin calls updateUser with correct LoginCompletion data`() =
+        runTest {
+            // Arrange - Set reAuth flag first
+            val qrData = "nc://login/server:https%3A//example.com"
+            repo.startLoginFlowFromQR(qrData, reAuth = true)
+
+            val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+            whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
+                .thenReturn(false)
+            whenever(localLoginDataSource.checkIfUserExists(loginData))
+                .thenReturn(true)
+
+            // Act
+            repo.parseAndLogin(loginData)
+
+            // Assert
+            verify(localLoginDataSource).updateUser(loginData)
+        }
 
     // ========== Edge Cases and Error Handling ==========
 

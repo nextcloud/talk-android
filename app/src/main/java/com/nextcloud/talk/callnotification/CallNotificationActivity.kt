@@ -38,6 +38,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import kotlinx.coroutines.runBlocking
 import okhttp3.Cache
 import java.io.IOException
 import javax.inject.Inject
@@ -77,7 +78,7 @@ class CallNotificationActivity : CallBaseActivity() {
         hideNavigationIfNoPipAvailable()
 
         handleExtras()
-        userBeingCalled = userManager.getUserWithId(internalUserId).blockingGet()
+        userBeingCalled = runBlocking { userManager.getUserWithIdSuspend(internalUserId) }
 
         setupCallTypeDescription()
         binding!!.conversationNameTextView.text = displayName
