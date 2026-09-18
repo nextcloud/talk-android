@@ -124,9 +124,6 @@ class SharedItemsAdapter(
         context.startActivity(MediaViewerActivity.newIntent(context, roomToken, seedItems, item.messageId))
     }
 
-    // Audio/voice/recording items have no player of their own in this gallery - tapping one
-    // jumps to and highlights the message in the chat instead, reusing the same
-    // navigate-to-message pipeline search results and quote taps already use.
     private fun openInChat(item: SharedFileItem, context: Context) {
         val intent = Intent(context, ChatActivity::class.java).apply {
             putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)

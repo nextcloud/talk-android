@@ -1186,10 +1186,6 @@ class ChatActivity :
                 }
             )
 
-            // Only voice messages get a waveform (and its own reset of isDownloadingVoiceMessage
-            // once decoded, see setUpWaveform) - audio files need it reset here instead, since
-            // downloadFileToCache already set it true and nothing else would ever clear it,
-            // leaving the spinner stuck (and the play/pause button unreachable) forever.
             fun finishPreparing() {
                 setupAndPlay(controller, message, filePath)
                 if (message.isVoiceMessage) {
@@ -1200,12 +1196,6 @@ class ChatActivity :
                 }
             }
 
-            // The controller's currentMediaItem can outlive the local cache file it points to -
-            // e.g. clearing the app's cache doesn't reset the (long-lived, service-hosted)
-            // MediaController's in-memory state, only the files on disk. Re-prepare (and so
-            // re-download) whenever the file is missing, even if this message's mediaId is
-            // already "loaded" - otherwise this falls through to a bare controller.play() on a
-            // stale reference that can never succeed, and pause/resume becomes unreachable.
             val alreadyLoaded = controller.currentMediaItem?.mediaId == currentMessageId
             if (!alreadyLoaded || !file.exists()) {
                 if (!file.exists()) {

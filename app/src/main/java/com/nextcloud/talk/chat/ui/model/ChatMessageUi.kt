@@ -109,9 +109,6 @@ sealed interface MessageTypeContent {
         val playbackSpeed: PlaybackSpeed = PlaybackSpeed.NORMAL
     ) : MessageTypeContent
 
-    // Deliberately lighter than Voice: no waveform (decoding one for a long audio file,
-    // e.g. a podcast, would be slow, unlike short voice recordings) and no playback speed
-    // control - both differences also make the bubble read as "a file", not "a voice note".
     data class AudioFile(
         val fileName: String,
         val isPlaying: Boolean,
@@ -408,9 +405,6 @@ fun getVoiceContent(message: ChatMessage): MessageTypeContent.Voice =
         waveform = message.voiceMessageFloatArray?.toList().orEmpty()
     )
 
-// Generic (non-voice) audio file attachments are played back through the same
-// MediaController/VoiceMessageMediaService session as voice messages, so they reuse the
-// same ChatMessage playback-state fields.
 fun getAudioFileContent(message: ChatMessage): MessageTypeContent.AudioFile =
     MessageTypeContent.AudioFile(
         fileName = message.fileParameters.name,

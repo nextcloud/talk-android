@@ -1090,9 +1090,6 @@ class ChatViewModel @AssistedInject constructor(
 
     var currentVoiceMessage: ChatMessage? = null
 
-    // Drives both voice messages and generic audio files - they share the same MediaController
-    // playback session and the same ChatMessage playback-state fields (see onVoiceClick in
-    // ChatActivity), so this must keep both UI content types in sync.
     fun syncVoiceMessageUiState(message: ChatMessage) {
         currentVoiceMessage = message
         _uiState.update { current ->

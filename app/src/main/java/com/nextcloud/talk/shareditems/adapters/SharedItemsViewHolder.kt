@@ -66,8 +66,6 @@ abstract class SharedItemsViewHolder(
         }
 
         if (item.mimeType.startsWith(Mimetype.AUDIO_PREFIX)) {
-            // Audio/voice/recording items play back inline in the chat message bubble - see
-            // SharedItemsAdapter.openInChat().
             clickTarget.setOnClickListener { openInChat(item, image.context) }
             return
         }
