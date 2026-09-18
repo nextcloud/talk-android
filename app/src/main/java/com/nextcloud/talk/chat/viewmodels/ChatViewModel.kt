@@ -56,11 +56,10 @@ import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
-import com.nextcloud.talk.models.json.chat.ChatMessageDto
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.opengraph.OpenGraphObjectDto
 import com.nextcloud.talk.models.json.reminder.ReminderDto
 import com.nextcloud.talk.models.json.threads.ThreadInfoDto
@@ -479,7 +478,7 @@ class ChatViewModel @AssistedInject constructor(
         mediaPlayerManager.handleOnStop()
     }
 
-    fun onSignalingChatMessageReceived(chatMessages: List<ChatMessageDto>) {
+    fun onSignalingChatMessageReceived(chatMessages: List<ChatMessageJson>) {
         viewModelScope.launch {
             chatRepository.onSignalingChatMessageReceived(chatMessages)
         }
@@ -1842,45 +1841,44 @@ class ChatViewModel @AssistedInject constructor(
             ?.subscribe(JoinRoomObserver())
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun setReminder(user: User, roomToken: String, messageId: String, timestamp: Int, chatApiVersion: Int) {
-        chatNetworkDataSource.setReminder(user, roomToken, messageId, timestamp, chatApiVersion)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(SetReminderObserver())
+        viewModelScope.launch {
+            try {
+                chatNetworkDataSource.setReminder(user, roomToken, messageId, timestamp, chatApiVersion)
+                Log.d(TAG, "reminder set successfully")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error when sending reminder", e)
+            }
+        }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun getReminder(user: User, roomToken: String, messageId: String, chatApiVersion: Int) {
-        chatNetworkDataSource.getReminder(user, roomToken, messageId, chatApiVersion)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(GetReminderObserver())
+        viewModelScope.launch {
+            _getReminderExistState.value = try {
+                GetReminderExistState(chatNetworkDataSource.getReminder(user, roomToken, messageId, chatApiVersion))
+            } catch (e: Exception) {
+                logger.d(TAG, "Error when getting reminder", e)
+                GetReminderStartState
+            }
+        }
     }
 
     fun overrideReminderState() {
         _getReminderExistState.value = GetReminderStateSet
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun deleteReminder(user: User, roomToken: String, messageId: String, chatApiVersion: Int) {
-        chatNetworkDataSource.deleteReminder(user, roomToken, messageId, chatApiVersion)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposableSet.add(d)
-                }
-
-                override fun onNext(genericOverall: GenericOverall) {
-                    _getReminderExistState.value = GetReminderStartState
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.d(TAG, "Error when deleting reminder", e)
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+        viewModelScope.launch {
+            try {
+                chatNetworkDataSource.deleteReminder(user, roomToken, messageId, chatApiVersion)
+                _getReminderExistState.value = GetReminderStartState
+            } catch (e: Exception) {
+                Log.d(TAG, "Error when deleting reminder", e)
+            }
+        }
     }
 
     fun leaveRoom(credentials: String, url: String, functionToCallAfterLeave: (() -> Unit)?) {
@@ -2139,27 +2137,15 @@ class ChatViewModel @AssistedInject constructor(
         )
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun shareToNotes(credentials: String, url: String, message: String, displayName: String) {
-        chatNetworkDataSource.shareToNotes(credentials, url, message, displayName)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<ChatOverallSingleMessage> {
-                override fun onSubscribe(d: Disposable) {
-                    disposableSet.add(d)
-                }
-
-                override fun onNext(genericOverall: ChatOverallSingleMessage) {
-                    // unused atm
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.d(TAG, "Error when sharing to notes $e")
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+        viewModelScope.launch {
+            try {
+                chatNetworkDataSource.shareToNotes(credentials, url, message, displayName)
+            } catch (e: Exception) {
+                Log.d(TAG, "Error when sharing to notes", e)
+            }
+        }
     }
 
     suspend fun checkForNoteToSelf(credentials: String, baseUrl: String): ConversationModel? =
@@ -2181,27 +2167,15 @@ class ChatViewModel @AssistedInject constructor(
             null
         }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun shareLocationToNotes(credentials: String, url: String, objectType: String, objectId: String, metadata: String) {
-        chatNetworkDataSource.shareLocationToNotes(credentials, url, objectType, objectId, metadata)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposableSet.add(d)
-                }
-
-                override fun onNext(genericOverall: GenericOverall) {
-                    // unused atm
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "Error when sharing location to notes $e")
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+        viewModelScope.launch {
+            try {
+                chatNetworkDataSource.shareLocationToNotes(credentials, url, objectType, objectId, metadata)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error when sharing location to notes", e)
+            }
+        }
     }
 
     fun deleteReaction(roomToken: String, chatMessage: ChatMessage, emoji: String) {
@@ -2482,43 +2456,6 @@ class ChatViewModel @AssistedInject constructor(
         override fun onError(e: Throwable) {
             Log.e(TAG, "Error when joining room")
             _joinRoomViewState.value = JoinRoomErrorState
-        }
-
-        override fun onComplete() {
-            // unused atm
-        }
-    }
-
-    inner class SetReminderObserver : Observer<ReminderDto> {
-        override fun onSubscribe(d: Disposable) {
-            disposableSet.add(d)
-        }
-
-        override fun onNext(reminder: ReminderDto) {
-            Log.d(TAG, "reminder set successfully")
-        }
-
-        override fun onError(e: Throwable) {
-            Log.e(TAG, "Error when sending reminder, $e")
-        }
-
-        override fun onComplete() {
-            // unused atm
-        }
-    }
-
-    inner class GetReminderObserver : Observer<ReminderDto> {
-        override fun onSubscribe(d: Disposable) {
-            disposableSet.add(d)
-        }
-
-        override fun onNext(reminder: ReminderDto) {
-            _getReminderExistState.value = GetReminderExistState(reminder)
-        }
-
-        override fun onError(e: Throwable) {
-            Log.d(TAG, "Error when getting reminder $e")
-            _getReminderExistState.value = GetReminderStartState
         }
 
         override fun onComplete() {

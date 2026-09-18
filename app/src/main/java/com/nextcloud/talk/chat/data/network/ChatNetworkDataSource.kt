@@ -9,7 +9,7 @@ package com.nextcloud.talk.chat.data.network
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
-import com.nextcloud.talk.models.json.chat.ChatMessageDto
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -26,32 +26,32 @@ interface ChatNetworkDataSource {
     suspend fun getRoom(user: User, roomToken: String): ConversationModel
     fun getCapabilities(user: User, roomToken: String): Observable<SpreedCapabilityDto>
     fun joinRoom(user: User, roomToken: String, roomPassword: String): Observable<ConversationModel>
-    fun setReminder(
+    suspend fun setReminder(
         user: User,
         roomToken: String,
         messageId: String,
         timeStamp: Int,
         chatApiVersion: Int
-    ): Observable<ReminderDto>
+    ): ReminderDto
 
-    fun getReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): Observable<ReminderDto>
-    fun deleteReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): Observable<GenericOverall>
-    fun shareToNotes(
+    suspend fun getReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): ReminderDto
+    suspend fun deleteReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): GenericOverall
+    suspend fun shareToNotes(
         credentials: String,
         url: String,
         message: String,
         displayName: String
-    ): Observable<ChatOverallSingleMessage>
+    ): ChatOverallSingleMessage
 
     suspend fun checkForNoteToSelf(credentials: String, url: String): RoomOverall
 
-    fun shareLocationToNotes(
+    suspend fun shareLocationToNotes(
         credentials: String,
         url: String,
         objectType: String,
         objectId: String,
         metadata: String
-    ): Observable<GenericOverall>
+    ): GenericOverall
 
     suspend fun leaveRoom(credentials: String, url: String): GenericOverall
     suspend fun sendChatMessage(
@@ -84,7 +84,7 @@ interface ChatNetworkDataSource {
         messageId: String,
         limit: Int,
         threadId: Int?
-    ): List<ChatMessageDto>
+    ): List<ChatMessageJson>
     suspend fun getOpenGraph(credentials: String, baseUrl: String, extractedLinkToPreview: String): ReferenceDto?
     suspend fun unbindRoom(credentials: String, baseUrl: String, roomToken: String): GenericOverall
 
