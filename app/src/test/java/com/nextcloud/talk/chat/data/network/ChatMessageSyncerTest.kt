@@ -701,14 +701,16 @@ class ChatMessageSyncerTest {
         runTest {
             whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
                 .thenReturn(flowOf(emptyList()))
-            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
-                .thenReturn(
-                    Response.success(overall(reactionMessage(49), reactionMessage(48))),
-                    Response.success(overall(reactionMessage(47), reactionMessage(46))),
-                    Response.success(overall(reactionMessage(45), reactionMessage(44))),
-                    Response.success(overall(reactionMessage(43), reactionMessage(42))),
-                    Response.success(overall(reactionMessage(41), reactionMessage(40)))
-                )
+            // An endless wall of reaction spam: every round returns another page of it, so the
+            // only thing that can stop the loop is the round budget itself. Must be kept in sync
+            // with MAX_VISIBLE_MESSAGE_ROUNDS (private, so not referenced directly here).
+            val expectedRounds = 25
+            var pullCount = 0
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                pullCount++
+                val newest = 50L - 2 * (pullCount - 1)
+                Response.success(overall(reactionMessage(newest - 1), reactionMessage(newest - 2)))
+            }
 
             val fieldMap = syncer.buildFieldMap(
                 lookIntoFuture = false,
@@ -721,8 +723,8 @@ class ChatMessageSyncerTest {
 
             assertTrue(outcome.persistedNewMessages)
             assertNull(outcome.newestPersistedMessage)
-            assertEquals(10, outcome.persistedMessageCount)
-            verifyBlocking(network, times(5)) { pullChatMessages(any(), any(), any()) }
+            assertEquals(expectedRounds * 2, outcome.persistedMessageCount)
+            verifyBlocking(network, times(expectedRounds)) { pullChatMessages(any(), any(), any()) }
         }
 
     @Test

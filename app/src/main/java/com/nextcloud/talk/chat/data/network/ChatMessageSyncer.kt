@@ -1119,33 +1119,6 @@ class ChatMessageSyncer @Inject constructor(
         private val SYNC_FAILED =
             SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null, syncFailed = true)
 
-        /**
-         * System message types that [pullUntilVisibleMessage] must not mistake for a message a
-         * user would actually see rendered as its own bubble in an open chat — mirrors
-         * ChatViewModel.shouldRemoveMessage()'s per-type checks, which decide the same thing for
-         * the chat UI's filtering.
-         *
-         * This is deliberately a *different, broader* set than
-         * [ConversationListUpdater.LAST_MESSAGE_HIDDEN_SYSTEM_TYPES]: that one answers "can this be
-         * a conversation's last-message preview text", which is not the same question — e.g. a
-         * THREAD_CREATED message is a valid preview text but never gets its own bubble in the main
-         * channel view. Reusing the preview set here previously let a page made up entirely of
-         * THREAD_CREATED or MESSAGE_UNPINNED messages (as opposed to reactions) fool the "found a
-         * visible message" check the same way reaction spam did.
-         *
-         * MESSAGE_DELETED and MESSAGE_EDITED are only actually hidden by ChatViewModel when they
-         * have a parent message, but they are listed here unconditionally: this set only needs to
-         * be a safe superset of what is truly hidden (worst case, a few extra fetch rounds), never
-         * a subset (which would reproduce the "nothing visible found" bug).
-         *
-         * Thread-child messages (real, non-system messages that belong to a thread other than the
-         * one being synced) are a separate case ChatViewModel also hides from the main channel view
-         * — that needs isThread/threadId, not systemMessageType, so it cannot live in this set; see
-         * [isChatVisibleMessage] instead.
-         *
-         * Still not covered: ChatViewModel hides all system messages in "channel" rooms, which needs
-         * room-type context this syncer does not have.
-         */
         val CHAT_HIDDEN_SYSTEM_MESSAGE_TYPES = setOf(
             ChatMessage.SystemMessageType.REACTION,
             ChatMessage.SystemMessageType.REACTION_REVOKED,
@@ -1164,7 +1137,14 @@ class ChatMessageSyncer @Inject constructor(
         private const val CATCH_UP_COOLDOWN_MILLIS = 5_000L
         private const val MAX_CATCH_UP_RUNS_PER_BURST = 3
         private const val MAX_BACKLOG_ROUNDS = 5
-        private const val MAX_VISIBLE_MESSAGE_ROUNDS = 5
+
+        /**
+         * Generous on purpose: [pullUntilVisibleMessage] exits after round 1 for virtually every
+         * page (anything with real content near the top), so a higher cap costs nothing in the
+         * common case — the extra budget only gets spent in the exact pathological case it exists
+         * to cover, where the alternative used to be getting stuck forever (#5775).
+         */
+        private const val MAX_VISIBLE_MESSAGE_ROUNDS = 25
         private const val HTTP_CODE_OK: Int = 200
         private const val HTTP_CODE_NOT_MODIFIED = 304
         private const val HTTP_CODE_PRECONDITION_FAILED = 412
