@@ -38,17 +38,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/fragment_connection_lost"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/hwSecurityRed"
-                android:gravity="center"
-                android:text="@string/connection_lost_sent_messages_are_queued"
-                android:textColor="@color/white"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
             <include
                 android:id="@+id/fragment_editView"
                 layout="@layout/edit_message_view"

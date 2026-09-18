@@ -24,11 +24,22 @@ import android.view.inputmethod.EditorInfo
 import android.webkit.SslErrorHandler
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
@@ -38,9 +49,15 @@ import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.account.SwitchAccountActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.components.StatusBannerRow
+import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.events.RemoteWipeEvent
+import com.nextcloud.talk.events.ServerStatus
+import com.nextcloud.talk.events.ServerStatusEvent
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.lock.LockedActivity
+import com.nextcloud.talk.utils.HttpStatusInterceptor
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -54,6 +71,9 @@ import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.utils.ssl.TrustManager
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -96,6 +116,48 @@ open class BaseActivity : AppCompatActivity() {
     @Inject
     lateinit var logger: Logger
 
+    @Inject
+    lateinit var networkMonitor: NetworkMonitor
+
+    @Inject
+    lateinit var httpStatusInterceptor: HttpStatusInterceptor
+
+    private val maintenanceModeState = MutableStateFlow(false)
+    val maintenanceModeFlow: StateFlow<Boolean> = maintenanceModeState.asStateFlow()
+
+    /**
+     * [setContent] with the offline/maintenance-mode [StatusBannerRow] pushed above [content],
+     * for screens that are fully written in Compose. Chat is XML-rooted with Compose islands and
+     * keeps its own banner instead of using this.
+     */
+    protected fun setContentWithStatusBanner(content: @Composable () -> Unit) {
+        setContent {
+            val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
+            val isMaintenanceMode by maintenanceModeFlow.collectAsStateWithLifecycle()
+            val showBanner = !isOnline || isMaintenanceMode
+            Column(modifier = Modifier.fillMaxSize()) {
+                StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
+                // content() itself emits bare sibling composables (e.g. ColoredStatusBar() next to
+                // the screen), which rely on being at the composition root to overlay rather than
+                // stack. Confining them to a single weighted Box here preserves that overlay
+                // behavior while still reserving exactly the space below the banner for them.
+                //
+                // Several screens also apply their own statusBarsPadding()/Scaffold insets that
+                // assume they sit at the true top of the window. Once the banner is visible it has
+                // already claimed that inset (StatusBannerRow pads itself for it), so mark it
+                // consumed here — any statusBarsPadding() further down then adds nothing extra,
+                // avoiding a doubled gap under the banner.
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .let { if (showBanner) it.consumeWindowInsets(WindowInsets.statusBars) else it }
+                ) {
+                    content()
+                }
+            }
+        }
+    }
+
     open val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.TOOLBAR
 
@@ -134,6 +196,33 @@ open class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         cleanTempCertPreference()
+    }
+
+    /**
+     * The account whose [ServerStatusEvent]s should drive [maintenanceModeFlow] for this screen.
+     * Defaults to the globally active account; override when a screen shows a different,
+     * specific account (e.g. a non-active account selected via an intent extra).
+     */
+    protected open fun accountIdForStatusBanner(): Long? = currentUserProviderOld.currentUser.blockingGet()?.id
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        maintenanceModeState.value = accountIdForStatusBanner()?.let {
+            httpStatusInterceptor.currentStatus(it) == ServerStatus.MAINTENANCE_MODE
+        } ?: false
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    open fun onServerStatusEvent(event: ServerStatusEvent) {
+        if (event.accountId != accountIdForStatusBanner()) return
+
+        when (event.status) {
+            ServerStatus.MAINTENANCE_MODE -> maintenanceModeState.value = true
+            ServerStatus.OK -> maintenanceModeState.value = false
+            else -> {
+                // UNAUTHORIZED / CLIENT_UPDATE_REQUIRED are handled by ConversationsListActivity's dialogs
+            }
+        }
     }
 
     public override fun onStart() {

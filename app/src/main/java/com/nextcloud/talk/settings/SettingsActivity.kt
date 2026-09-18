@@ -61,7 +61,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.setAppTheme
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity.Companion.NOTIFICATION_WARNING_DATE_NOT_SET
-import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySettingsBinding
 import com.nextcloud.talk.diagnosis.DiagnosisActivity
@@ -126,9 +125,6 @@ class SettingsActivity :
 
     @Inject
     lateinit var ncApi: NcApi
-
-    @Inject
-    lateinit var networkMonitor: NetworkMonitor
 
     @Inject
     lateinit var ncApiCoroutines: NcApiCoroutines

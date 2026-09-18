@@ -10,7 +10,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
@@ -229,7 +228,7 @@ class ConversationInfoActivity : BaseActivity() {
 
     private fun setupCompose() {
         val colorScheme = viewThemeUtils.getColorScheme(this)
-        setContent {
+        setContentWithStatusBanner {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             val snackbarHostState = remember { SnackbarHostState() }
 

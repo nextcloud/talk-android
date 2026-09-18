@@ -8,7 +8,6 @@ package com.nextcloud.talk.location
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
@@ -57,8 +56,9 @@ class GeocodingActivity : BaseActivity() {
         val email = context.getString(R.string.osm_geocoder_contact)
         TalkJsonNominatimClient(baseUrl, okHttpClient, email)
 
-        setContent {
+        setContentWithStatusBanner {
             val colorScheme = viewThemeUtils.getColorScheme(this)
+
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
                 GeocodingScreen(

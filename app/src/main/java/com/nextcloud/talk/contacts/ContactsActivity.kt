@@ -10,7 +10,6 @@ package com.nextcloud.talk.contacts
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModelProvider
@@ -37,7 +36,7 @@ class ContactsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         contactsViewModel = ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class.java]
-        setContent {
+        setContentWithStatusBanner {
             val isAddParticipants = intent.getBooleanExtra(BundleKeys.KEY_ADD_PARTICIPANTS, false)
             val hideAlreadyAddedParticipants = intent.getBooleanExtra(KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS, false)
             contactsViewModel.getContactsFromSearchParams()

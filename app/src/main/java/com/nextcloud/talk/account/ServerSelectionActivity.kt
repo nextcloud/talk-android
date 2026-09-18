@@ -34,7 +34,6 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.ActivityServerSelectionBinding
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.generic.Status
@@ -65,9 +64,6 @@ class ServerSelectionActivity : BaseActivity() {
 
     @Inject
     lateinit var userManager: UserManager
-
-    @Inject
-    lateinit var networkMonitor: NetworkMonitor
 
     private var statusQueryDisposable: Disposable? = null
 

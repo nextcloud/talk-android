@@ -9,7 +9,6 @@ package com.nextcloud.talk.location
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.MaterialTheme
 import androidx.lifecycle.ViewModelProvider
@@ -98,7 +97,7 @@ class LocationPickerActivity : BaseActivity() {
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
-        setContent {
+        setContentWithStatusBanner {
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
                 LocationPickerScreen(

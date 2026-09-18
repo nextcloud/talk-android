@@ -17,6 +17,7 @@ import com.nextcloud.talk.api.NcApiCoroutines;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.HttpStatusInterceptor;
 import com.nextcloud.talk.utils.RemoteWipeInterceptor;
 import com.nextcloud.talk.utils.LoggingUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -182,12 +183,19 @@ public class RestModule {
 
     @Singleton
     @Provides
+    HttpStatusInterceptor provideHttpStatusInterceptor(UserManager userManager) {
+        return new HttpStatusInterceptor(userManager);
+    }
+
+    @Singleton
+    @Provides
     OkHttpClient provideHttpClient(Proxy proxy, AppPreferences appPreferences,
                                    TrustManager trustManager,
                                    SSLSocketFactoryCompat sslSocketFactoryCompat, Cache cache,
                                    CookieManager cookieManager,
                                    Dispatcher dispatcher,
                                    UserManager userManager,
+                                   HttpStatusInterceptor httpStatusInterceptor,
                                    LoggingHttpInterceptor loggingHttpInterceptor) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
@@ -222,6 +230,7 @@ public class RestModule {
 
         httpClient.addInterceptor(new HeadersInterceptor());
         httpClient.addInterceptor(new RemoteWipeInterceptor(userManager, context, sslSocketFactoryCompat, trustManager));
+        httpClient.addInterceptor(httpStatusInterceptor);
         httpClient.addInterceptor(loggingHttpInterceptor);
 
         return httpClient.build();
