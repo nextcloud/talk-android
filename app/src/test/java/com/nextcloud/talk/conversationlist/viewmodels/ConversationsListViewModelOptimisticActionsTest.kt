@@ -17,12 +17,13 @@ import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel.FavoriteUiState
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.data.InvitationsRepository
+import com.nextcloud.talk.jobs.ConversationActionScheduler
+import com.nextcloud.talk.jobs.ConversationActionWorker.ConversationAction
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
@@ -40,6 +41,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -52,7 +54,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
-import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.inOrder
@@ -62,6 +63,7 @@ import org.mockito.kotlin.stub
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.whenever
+import org.mockito.kotlin.wheneverBlocking
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import retrofit2.HttpException
@@ -73,6 +75,7 @@ import retrofit2.Response
  * or deleted stays out of the list until its removal has gone through or failed.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
+@Suppress("TooManyFunctions")
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class, sdk = [33])
 class ConversationsListViewModelOptimisticActionsTest {
@@ -80,6 +83,7 @@ class ConversationsListViewModelOptimisticActionsTest {
     private val repository: OfflineConversationsRepository = mock()
     private val conversationsRepository: ConversationsRepository = mock()
     private val conversationListUpdater: ConversationListUpdater = mock()
+    private val conversationActionScheduler: ConversationActionScheduler = mock()
     private val rooms = MutableStateFlow(listOf(CONVERSATION))
 
     private lateinit var viewModel: ConversationsListViewModel
@@ -101,6 +105,7 @@ class ConversationsListViewModelOptimisticActionsTest {
             mock<UserManager>(),
             conversationsRepository,
             conversationListUpdater,
+            conversationActionScheduler,
             mock<Logger>(),
             USER
         )
@@ -113,9 +118,7 @@ class ConversationsListViewModelOptimisticActionsTest {
 
     @Test
     fun `a favorite the server accepts stays applied`() {
-        conversationsRepository.stub {
-            onBlocking { addConversationToFavorites(any(), any()) } doReturn GenericOverall()
-        }
+        givenTheWorker(gotThrough = true)
 
         viewModel.addConversationToFavorites(CONVERSATION)
 
@@ -123,33 +126,34 @@ class ConversationsListViewModelOptimisticActionsTest {
         verifyBlocking(repository) { updateConversation(CONVERSATION.copy(favorite = true)) }
         verifyBlocking(repository, never()) { updateConversation(CONVERSATION) }
         verify(conversationListUpdater, never()).clearPendingFavorite(any(), any())
+        verifyBlocking(conversationActionScheduler) {
+            send(USER.id!!, CONVERSATION.token, ConversationAction.FAVORITE, true)
+        }
     }
 
     @Test
     fun `a favorite the server refuses is taken back`() {
-        conversationsRepository.stub {
-            onBlocking { addConversationToFavorites(any(), any()) } doSuspendableAnswer { throw forbidden() }
-        }
+        givenTheWorker(gotThrough = false)
 
         viewModel.addConversationToFavorites(CONVERSATION)
 
-        assertEquals(FavoriteUiState.Error, awaitOutcome(viewModel.favoriteState, FavoriteUiState.None))
+        awaitFinal(viewModel.favoriteState, FavoriteUiState.Error)
         assertTakenBack(CONVERSATION.copy(favorite = true))
-        verify(conversationListUpdater).clearPendingFavorite(CONVERSATION.internalId, favorite = true)
     }
 
     @Test
     fun `an unfavorite the server refuses is taken back`() {
         val favorite = CONVERSATION.copy(favorite = true)
-        conversationsRepository.stub {
-            onBlocking { removeConversationFromFavorites(any(), any()) } doSuspendableAnswer { throw forbidden() }
-        }
+        givenTheWorker(gotThrough = false)
+        wheneverBlocking { repository.getLocallyStoredConversation(any(), any()) }.thenReturn(null)
 
         viewModel.removeConversationFromFavorites(favorite)
 
-        assertEquals(FavoriteUiState.Error, awaitOutcome(viewModel.favoriteState, FavoriteUiState.None))
+        awaitFinal(viewModel.favoriteState, FavoriteUiState.Error)
         assertTakenBack(CONVERSATION, original = favorite)
-        verify(conversationListUpdater).clearPendingFavorite(CONVERSATION.internalId, favorite = false)
+        verifyBlocking(conversationActionScheduler) {
+            send(USER.id!!, CONVERSATION.token, ConversationAction.FAVORITE, false)
+        }
     }
 
     @Test
@@ -170,31 +174,28 @@ class ConversationsListViewModelOptimisticActionsTest {
 
     @Test
     fun `marking unread that the server refuses is taken back`() {
-        conversationsRepository.stub {
-            onBlocking { markConversationAsUnread(any(), any()) } doSuspendableAnswer { throw forbidden() }
-        }
+        givenTheWorker(gotThrough = false)
 
         viewModel.markConversationAsUnread(CONVERSATION)
 
-        assertEquals(
-            ConversationReadUnreadUiState.Error,
-            awaitOutcome(viewModel.readUnreadState, ConversationReadUnreadUiState.None)
-        )
+        awaitFinal(viewModel.readUnreadState, ConversationReadUnreadUiState.Error)
         assertTakenBack(CONVERSATION.copy(unreadMessages = 1))
-        verify(conversationListUpdater).clearPendingUnread(CONVERSATION.internalId)
+        verifyBlocking(conversationActionScheduler) {
+            send(USER.id!!, CONVERSATION.token, ConversationAction.MARK_UNREAD, true)
+        }
     }
 
     @Test
     fun `an archive the server refuses is taken back`() {
-        conversationsRepository.stub {
-            onBlocking { archiveConversation(any(), any()) } doSuspendableAnswer { throw forbidden() }
-        }
+        givenTheWorker(gotThrough = false)
 
         viewModel.toggleConversationArchive(CONVERSATION)
 
-        assertEquals(ArchiveUiState.Error, awaitOutcome(viewModel.archiveState, ArchiveUiState.None))
+        awaitFinal(viewModel.archiveState, ArchiveUiState.Error)
         assertTakenBack(CONVERSATION.copy(hasArchived = true))
-        verify(conversationListUpdater).clearPendingArchived(CONVERSATION.internalId, true)
+        verifyBlocking(conversationActionScheduler) {
+            send(USER.id!!, CONVERSATION.token, ConversationAction.ARCHIVE, true)
+        }
     }
 
     @Test
@@ -217,6 +218,56 @@ class ConversationsListViewModelOptimisticActionsTest {
 
         sync.complete()
         assertTrue(isListed())
+    }
+
+    @Test
+    fun `a failed favorite does not undo an archive that succeeded meanwhile`() {
+        val archivedSinceTheSnapshot = CONVERSATION.copy(favorite = true, hasArchived = true)
+        wheneverBlocking { repository.getLocallyStoredConversation(eq(USER), eq(CONVERSATION.token)) }
+            .thenReturn(archivedSinceTheSnapshot)
+
+        runBlocking { viewModel.restore(CONVERSATION, ConversationAction.FAVORITE) }
+
+        verifyBlocking(repository) { updateConversation(CONVERSATION.copy(hasArchived = true)) }
+    }
+
+    @Test
+    fun `a failed archive puts back only the archive flag`() {
+        val unreadSinceTheSnapshot = CONVERSATION.copy(hasArchived = true, unreadMessages = UNREAD_MESSAGES)
+        wheneverBlocking { repository.getLocallyStoredConversation(eq(USER), eq(CONVERSATION.token)) }
+            .thenReturn(unreadSinceTheSnapshot)
+
+        runBlocking { viewModel.restore(CONVERSATION, ConversationAction.ARCHIVE) }
+
+        verifyBlocking(repository) { updateConversation(CONVERSATION.copy(unreadMessages = UNREAD_MESSAGES)) }
+    }
+
+    @Test
+    fun `a conversation that is no longer stored is put back as it was captured`() {
+        wheneverBlocking { repository.getLocallyStoredConversation(eq(USER), eq(CONVERSATION.token)) }
+            .thenReturn(null)
+
+        runBlocking { viewModel.restore(CONVERSATION, ConversationAction.MARK_UNREAD) }
+
+        verifyBlocking(repository) { updateConversation(CONVERSATION) }
+    }
+
+    /**
+     * The worker either got the change through or finally gave up on it; there is nothing in between.
+     * It answers off the caller's thread, because the real one waits for WorkManager and never comes
+     * back before the action has reported the change as applied.
+     */
+    private fun givenTheWorker(gotThrough: Boolean) {
+        conversationActionScheduler.stub {
+            onBlocking { send(any(), any(), any(), any()) } doSuspendableAnswer {
+                withContext(Dispatchers.IO) { gotThrough }
+            }
+        }
+    }
+
+    /** Waits for the state the worker's answer finally produces, and times out when it never does. */
+    private fun <S> awaitFinal(state: StateFlow<S>, wanted: S) {
+        runBlocking { withTimeout(TIMEOUT_MS) { state.first { it == wanted } } }
     }
 
     private fun isListed(): Boolean = viewModel.visibleRoomsFlow.value.any { it.token == CONVERSATION.token }
