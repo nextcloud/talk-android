@@ -11,7 +11,7 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
-import com.nextcloud.talk.models.json.chat.ChatMessageDto
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -59,81 +59,68 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!, user) }
     }
 
-    override fun setReminder(
+    override suspend fun setReminder(
         user: User,
         roomToken: String,
         messageId: String,
         timeStamp: Int,
         chatApiVersion: Int
-    ): Observable<ReminderDto> {
-        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
-        return ncApi.setReminder(
-            credentials,
+    ): ReminderDto =
+        ncApiCoroutines.setReminder(
+            ApiUtils.getCredentials(user.username, user.token)!!,
             ApiUtils.getUrlForReminder(user, roomToken, messageId, chatApiVersion),
             timeStamp
-        ).map {
-            it.ocs!!.data
-        }
-    }
+        ).ocs!!.data!!
 
-    override fun getReminder(
+    override suspend fun getReminder(
         user: User,
         roomToken: String,
         messageId: String,
         chatApiVersion: Int
-    ): Observable<ReminderDto> {
-        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
-        return ncApi.getReminder(
-            credentials,
+    ): ReminderDto =
+        ncApiCoroutines.getReminder(
+            ApiUtils.getCredentials(user.username, user.token)!!,
             ApiUtils.getUrlForReminder(user, roomToken, messageId, chatApiVersion)
-        ).map {
-            it.ocs!!.data
-        }
-    }
+        ).ocs!!.data!!
 
-    override fun deleteReminder(
+    override suspend fun deleteReminder(
         user: User,
         roomToken: String,
         messageId: String,
         chatApiVersion: Int
-    ): Observable<GenericOverall> {
-        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
-        return ncApi.deleteReminder(
-            credentials,
+    ): GenericOverall =
+        ncApiCoroutines.deleteReminder(
+            ApiUtils.getCredentials(user.username, user.token)!!,
             ApiUtils.getUrlForReminder(user, roomToken, messageId, chatApiVersion)
-        ).map {
-            it
-        }
-    }
+        )
 
-    override fun shareToNotes(
+    override suspend fun shareToNotes(
         credentials: String,
         url: String,
         message: String,
         displayName: String
-    ): Observable<ChatOverallSingleMessage> =
-        ncApi.sendChatMessage(
+    ): ChatOverallSingleMessage =
+        ncApiCoroutines.sendChatMessage(
             credentials,
             url,
             message,
             displayName,
-            null,
+            0,
             false,
-            SendMessageUtils().generateReferenceId()
-        ).map {
-            it
-        }
+            SendMessageUtils().generateReferenceId(),
+            null
+        )
 
     override suspend fun checkForNoteToSelf(credentials: String, url: String): RoomOverall =
         ncApiCoroutines.getNoteToSelfRoom(credentials, url)
 
-    override fun shareLocationToNotes(
+    override suspend fun shareLocationToNotes(
         credentials: String,
         url: String,
         objectType: String,
         objectId: String,
         metadata: String
-    ): Observable<GenericOverall> = ncApi.sendLocation(credentials, url, objectType, objectId, metadata).map { it }
+    ): GenericOverall = ncApiCoroutines.sendLocation(credentials, url, objectType, objectId, metadata)
 
     override suspend fun leaveRoom(credentials: String, url: String): GenericOverall =
         ncApiCoroutines.leaveRoom(credentials, url)
@@ -209,7 +196,7 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         messageId: String,
         limit: Int,
         threadId: Int?
-    ): List<ChatMessageDto> {
+    ): List<ChatMessageJson> {
         val url = ApiUtils.getUrlForChatMessageContext(baseUrl, token, messageId)
         return ncApiCoroutines.getContextOfChatMessage(credentials, url, limit, threadId).ocs?.data ?: listOf()
     }
