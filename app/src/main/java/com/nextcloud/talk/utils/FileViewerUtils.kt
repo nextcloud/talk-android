@@ -49,7 +49,6 @@ import com.nextcloud.talk.utils.Mimetype.VIDEO_OGG
 import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX
 import com.nextcloud.talk.utils.Mimetype.VIDEO_QUICKTIME
 import com.nextcloud.talk.utils.Mimetype.VIDEO_WEBM
-import com.nextcloud.talk.utils.MimetypeUtils.isAudioOnly
 import com.nextcloud.talk.utils.MimetypeUtils.isMarkdown
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
@@ -192,15 +191,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             when (mimetype) {
                 AUDIO_MPEG,
                 AUDIO_WAV,
-                AUDIO_OGG -> openAudioView(filename, mimetype)
-
-                // Reachable only if a future caller ends up here without the message/room context
-                // openFile(ChatMessage, ...) needs to route video to the media viewer instead - see
-                // openVideoInMediaViewer(). Kept as a safety net so video is never left unopenable.
-                VIDEO_MP4,
-                VIDEO_QUICKTIME,
-                VIDEO_OGG,
-                VIDEO_WEBM -> openVideoView(filename, mimetype)
+                AUDIO_OGG -> openAudioView(filename)
 
                 TEXT_MARKDOWN,
                 TEXT_PLAIN -> openTextView(filename, mimetype, link, fileId)
@@ -268,17 +259,9 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         }
     }
 
-    private fun openAudioView(filename: String, mimetype: String) {
+    private fun openAudioView(filename: String) {
         val fullScreenMediaIntent = Intent(context, FullScreenMediaActivity::class.java)
         fullScreenMediaIntent.putExtra("FILE_NAME", filename)
-        fullScreenMediaIntent.putExtra("AUDIO_ONLY", isAudioOnly(mimetype))
-        context.startActivity(fullScreenMediaIntent)
-    }
-
-    private fun openVideoView(filename: String, mimetype: String) {
-        val fullScreenMediaIntent = Intent(context, FullScreenMediaActivity::class.java)
-        fullScreenMediaIntent.putExtra("FILE_NAME", filename)
-        fullScreenMediaIntent.putExtra("AUDIO_ONLY", isAudioOnly(mimetype))
         context.startActivity(fullScreenMediaIntent)
     }
 

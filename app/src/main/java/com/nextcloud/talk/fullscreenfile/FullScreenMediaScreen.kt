@@ -18,11 +18,12 @@ import android.widget.FrameLayout
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.systemBarsIgnoringVisibility
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +32,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,7 +60,7 @@ private const val TOOLBAR_ALPHA = 0.5f
 
 @OptIn(UnstableApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun FullScreenMediaScreen(title: String, player: ExoPlayer?, isAudioOnly: Boolean, actions: FullScreenMediaActions) {
+fun FullScreenMediaScreen(title: String, player: ExoPlayer?, actions: FullScreenMediaActions) {
     val toolbarColors = TopAppBarDefaults.topAppBarColors(
         containerColor = Color.Transparent,
         titleContentColor = Color.White,
@@ -71,7 +73,6 @@ fun FullScreenMediaScreen(title: String, player: ExoPlayer?, isAudioOnly: Boolea
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
         MediaPlayerView(
             player = player,
-            isAudioOnly = isAudioOnly,
             onControllerVisible = {
                 showToolbar = true
                 actions.onExitImmersive()
@@ -91,13 +92,9 @@ fun FullScreenMediaScreen(title: String, player: ExoPlayer?, isAudioOnly: Boolea
 }
 
 @OptIn(UnstableApi::class)
+@kotlin.OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun MediaPlayerView(
-    player: ExoPlayer?,
-    isAudioOnly: Boolean,
-    onControllerVisible: () -> Unit,
-    onControllerHidden: () -> Unit
-) {
+private fun MediaPlayerView(player: ExoPlayer?, onControllerVisible: () -> Unit, onControllerHidden: () -> Unit) {
     if (LocalInspectionMode.current) {
         Box(modifier = Modifier.fillMaxSize())
         return
@@ -105,27 +102,38 @@ private fun MediaPlayerView(
 
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
-    val bottomPx = WindowInsets.systemBars.getBottom(density)
-    val leftPx = WindowInsets.systemBars.getLeft(density, layoutDirection)
-    val rightPx = WindowInsets.systemBars.getRight(density, layoutDirection)
+    // Deliberately "IgnoringVisibility": the plain systemBars value animates across many frames
+    // while we hide/show the bars (see onEnterImmersive/onExitImmersive), and reapplying these
+    // margins on every one of those frames fights the ExoPlayer controller's own hide animation,
+    // flipping it back to visible mid-fade and looping forever.
+    val bottomPx = WindowInsets.systemBarsIgnoringVisibility.getBottom(density)
+    val leftPx = WindowInsets.systemBarsIgnoringVisibility.getLeft(density, layoutDirection)
+    val rightPx = WindowInsets.systemBarsIgnoringVisibility.getRight(density, layoutDirection)
     val originalProgressMarginBottom = remember { intArrayOf(-1) }
+    val playerViewRef = remember { mutableStateOf<PlayerView?>(null) }
+
+    LaunchedEffect(player) {
+        playerViewRef.value?.apply {
+            this.player = player
+        }
+    }
 
     AndroidView(
         factory = { ctx ->
             PlayerView(ctx).apply {
+                // Audio only (this screen is no longer used for video - see FileViewerUtils):
+                // keep the controls up indefinitely rather than auto-hiding them.
+                controllerShowTimeoutMs = 0
                 showController()
-                if (isAudioOnly) {
-                    controllerShowTimeoutMs = 0
-                }
                 setControllerVisibilityListener(
                     PlayerView.ControllerVisibilityListener { visibility ->
                         if (visibility == View.VISIBLE) onControllerVisible() else onControllerHidden()
                     }
                 )
+                playerViewRef.value = this
             }
         },
         update = { playerView ->
-            playerView.player = player
             val exoControls = playerView.findViewById<FrameLayout>(R.id.exo_bottom_bar)
             val exoProgress = playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
             exoControls?.apply {
@@ -194,9 +202,8 @@ data class FullScreenMediaActions(
 private fun PreviewFullScreenMediaLight() {
     MaterialTheme(colorScheme = lightColorScheme()) {
         FullScreenMediaScreen(
-            title = "video.mp4",
+            title = "audio.mp3",
             player = null,
-            isAudioOnly = false,
             actions = FullScreenMediaActions(onShare = {}, onSave = {}, onEnterImmersive = {}, onExitImmersive = {})
         )
     }
@@ -207,9 +214,8 @@ private fun PreviewFullScreenMediaLight() {
 private fun PreviewFullScreenMediaDarkRtlArabic() {
     MaterialTheme(colorScheme = darkColorScheme()) {
         FullScreenMediaScreen(
-            title = "فيديو.mp4",
+            title = "صوت.mp3",
             player = null,
-            isAudioOnly = false,
             actions = FullScreenMediaActions(onShare = {}, onSave = {}, onEnterImmersive = {}, onExitImmersive = {})
         )
     }

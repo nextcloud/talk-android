@@ -66,7 +66,6 @@ class FullScreenMediaActivity : AppCompatActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         fileName = intent.getStringExtra("FILE_NAME").orEmpty()
-        val isAudioOnly = intent.getBooleanExtra("AUDIO_ONLY", false)
         mediaFile = FileUtils.resolveSharedAttachmentFile(applicationContext.cacheDir, fileName) ?: run {
             Log.e(TAG, "Invalid media filename: $fileName")
             finish()
@@ -95,7 +94,6 @@ class FullScreenMediaActivity : AppCompatActivity() {
                     FullScreenMediaScreen(
                         title = fileName,
                         player = player,
-                        isAudioOnly = isAudioOnly,
                         actions = FullScreenMediaActions(
                             onShare = { shareFile() },
                             onSave = { showSaveDialog() },
