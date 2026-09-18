@@ -36,6 +36,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.toList
@@ -233,6 +234,26 @@ class OfflineFirstChatRepositoryTest {
             verifyBlocking(chatDao) { upsertChatMessage(entityCaptor.capture()) }
             assertEquals(INTERNAL_CONVERSATION_ID, entityCaptor.firstValue.internalConversationId)
             assertEquals("ref-1", entityCaptor.firstValue.referenceId)
+        }
+
+    @Test
+    fun `addTemporaryMessage tolerates a collector that stops after the first value`() =
+        runTest {
+            // first()/take(1) cancel the flow right after receiving one value, which used to
+            // surface as "Flow exception transparency is violated" because that cancellation was
+            // caught by addTemporaryMessage's own catch(Exception) block and turned into a second,
+            // illegal emit() call.
+            repository.updateConversation(conversation(lastReadMessage = 0, unreadMessages = 0))
+
+            val result = repository.addTemporaryMessage(
+                message = "hello",
+                displayName = "Me",
+                replyTo = 0,
+                sendWithoutNotification = false,
+                referenceId = "ref-1b"
+            ).first()
+
+            assertTrue(result.isSuccess)
         }
 
     @Test
