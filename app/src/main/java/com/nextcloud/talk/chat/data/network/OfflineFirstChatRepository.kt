@@ -656,16 +656,7 @@ class OfflineFirstChatRepository @Inject constructor(
             }
     }
 
-    @Suppress("LongParameterList")
-    override suspend fun resendChatMessage(
-        credentials: String,
-        url: String,
-        message: String,
-        displayName: String,
-        replyTo: Int,
-        sendWithoutNotification: Boolean,
-        referenceId: String
-    ): Flow<Result<ChatMessage?>> {
+    override suspend fun markMessageForResend(referenceId: String): Flow<Result<ChatMessage?>> {
         val messageToResend = chatDao.getTempMessageForConversation(
             internalConversationId,
             referenceId,
@@ -678,16 +669,9 @@ class OfflineFirstChatRepository @Inject constructor(
             val messageToResendModel = messageToResend.toDomainModel()
             _updateMessageFlow.emit(messageToResendModel)
 
-            sendChatMessage(
-                credentials = credentials,
-                url = url,
-                message = message,
-                displayName = displayName,
-                replyTo = replyTo,
-                sendWithoutNotification = sendWithoutNotification,
-                referenceId = referenceId,
-                threadTitle = null
-            )
+            flow {
+                emit(Result.success(messageToResendModel))
+            }
         } else {
             flow {
                 emit(Result.failure(IllegalStateException("No temporary message found to resend")))

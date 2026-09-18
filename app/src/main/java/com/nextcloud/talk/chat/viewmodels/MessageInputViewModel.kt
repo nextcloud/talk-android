@@ -23,6 +23,7 @@ import com.nextcloud.talk.chat.data.io.AudioRecorderManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.jobs.SendMessageWorker
 import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.chat.ChatUtils
@@ -164,8 +165,8 @@ class MessageInputViewModel :
 
     @Suppress("LongParameterList")
     fun sendChatMessage(
-        credentials: String,
-        url: String,
+        userId: Long,
+        roomToken: String,
         message: String,
         displayName: String,
         replyTo: Int,
@@ -193,26 +194,17 @@ class MessageInputViewModel :
             }
         }
 
-        viewModelScope.launch {
-            chatRepository.sendChatMessage(
-                credentials,
-                url,
-                message,
-                displayName,
-                replyTo,
-                sendWithoutNotification,
-                referenceId,
-                threadTitle
-            ).collect { result ->
-                if (result.isSuccess) {
-                    Log.d(TAG, "received ref id: " + (result.getOrNull()?.referenceId ?: "none"))
-
-                    _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
-                } else {
-                    _sendChatMessageViewState.value = SendChatMessageErrorState(message)
-                }
-            }
-        }
+        SendMessageWorker.enqueue(
+            userId = userId,
+            roomToken = roomToken,
+            internalConversationId = "$userId@$roomToken",
+            referenceId = referenceId,
+            message = message,
+            displayName = displayName,
+            replyTo = replyTo,
+            sendWithoutNotification = sendWithoutNotification,
+            threadTitle = threadTitle
+        )
     }
 
     fun sendUnsentMessages(credentials: String, url: String) {
