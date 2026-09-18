@@ -9,7 +9,7 @@ package com.nextcloud.talk.chat.data.network
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -36,21 +36,26 @@ interface ChatNetworkDataSource {
 
     suspend fun getReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): ReminderDto
     suspend fun deleteReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): GenericOverall
+
+    @Suppress("LongParameterList")
     suspend fun shareToNotes(
         credentials: String,
         url: String,
         message: String,
-        displayName: String
+        displayName: String,
+        referenceId: String
     ): ChatOverallSingleMessage
 
     suspend fun checkForNoteToSelf(credentials: String, url: String): RoomOverall
 
+    @Suppress("LongParameterList")
     suspend fun shareLocationToNotes(
         credentials: String,
         url: String,
         objectType: String,
         objectId: String,
-        metadata: String
+        metadata: String,
+        referenceId: String
     ): GenericOverall
 
     suspend fun leaveRoom(credentials: String, url: String): GenericOverall
@@ -84,7 +89,7 @@ interface ChatNetworkDataSource {
         messageId: String,
         limit: Int,
         threadId: Int?
-    ): List<ChatMessageJson>
+    ): List<ChatMessageDto>
     suspend fun getOpenGraph(credentials: String, baseUrl: String, extractedLinkToPreview: String): ReferenceDto?
     suspend fun unbindRoom(credentials: String, baseUrl: String, roomToken: String): GenericOverall
 
