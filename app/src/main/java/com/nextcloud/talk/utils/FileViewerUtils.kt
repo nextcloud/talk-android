@@ -28,15 +28,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.fullscreenfile.FullScreenMediaActivity
 import com.nextcloud.talk.fullscreenfile.FullScreenTextViewerActivity
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.mediaviewer.activities.MediaViewerActivity
 import com.nextcloud.talk.mediaviewer.model.MediaViewerItem
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
-import com.nextcloud.talk.utils.Mimetype.AUDIO_MPEG
-import com.nextcloud.talk.utils.Mimetype.AUDIO_OGG
-import com.nextcloud.talk.utils.Mimetype.AUDIO_WAV
 import com.nextcloud.talk.utils.Mimetype.IMAGE_GIF
 import com.nextcloud.talk.utils.Mimetype.IMAGE_HEIC
 import com.nextcloud.talk.utils.Mimetype.IMAGE_JPEG
@@ -189,10 +185,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
     private fun openFileByMimetype(filename: String, mimetype: String?, link: String? = null, fileId: String = "") {
         if (mimetype != null) {
             when (mimetype) {
-                AUDIO_MPEG,
-                AUDIO_WAV,
-                AUDIO_OGG -> openAudioView(filename)
-
                 TEXT_MARKDOWN,
                 TEXT_PLAIN -> openTextView(filename, mimetype, link, fileId)
 
@@ -259,12 +251,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         }
     }
 
-    private fun openAudioView(filename: String) {
-        val fullScreenMediaIntent = Intent(context, FullScreenMediaActivity::class.java)
-        fullScreenMediaIntent.putExtra("FILE_NAME", filename)
-        context.startActivity(fullScreenMediaIntent)
-    }
-
     private fun openTextView(filename: String, mimetype: String, link: String?, fileId: String) {
         val fullScreenTextViewerIntent = Intent(context, FullScreenTextViewerActivity::class.java)
         fullScreenTextViewerIntent.putExtra("FILE_NAME", filename)
@@ -282,9 +268,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             IMAGE_JPEG,
             IMAGE_HEIC,
             IMAGE_GIF,
-            AUDIO_MPEG,
-            AUDIO_WAV,
-            AUDIO_OGG,
             VIDEO_MP4,
             VIDEO_QUICKTIME,
             VIDEO_OGG,

@@ -1126,9 +1126,14 @@ class ChatActivity :
         fun setupAndPlay(controller: MediaController, message: ChatMessage, file: String) {
             val avatarUrl = chatViewModel.getAvatarUrl(message)
 
+            val artist = if (message.isVoiceMessage) {
+                "Voice Message"
+            } else {
+                message.fileParameters.name
+            }
             val metadata = MediaMetadata.Builder()
                 .setTitle(message.actorDisplayName)
-                .setArtist("Voice Message")
+                .setArtist(artist)
                 .setArtworkUri(avatarUrl.toUri())
                 .build()
 
@@ -1190,11 +1195,11 @@ class ChatActivity :
                             }
                         )
                         setupAndPlay(controller, message, filePath)
-                        setUpWaveform(message, file)
+                        if (message.isVoiceMessage) setUpWaveform(message, file)
                     }
                 } else {
                     setupAndPlay(controller, message, filePath)
-                    setUpWaveform(message, file)
+                    if (message.isVoiceMessage) setUpWaveform(message, file)
                 }
 
                 return true

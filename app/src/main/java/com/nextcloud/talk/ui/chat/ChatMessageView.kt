@@ -188,6 +188,17 @@ fun ChatMessageView(
                             )
                         }
 
+                        is MessageTypeContent.AudioFile -> {
+                            AudioFileMessage(
+                                typeContent = content,
+                                message = message,
+                                isOneToOneConversation = context.isOneToOneConversation,
+                                conversationThreadId = context.conversationThreadId,
+                                onPlayPauseClick = callbacks.onVoicePlayPauseClick,
+                                onSeek = callbacks.onVoiceSeek
+                            )
+                        }
+
                         is MessageTypeContent.Poll -> {
                             PollMessage(
                                 typeContent = content,

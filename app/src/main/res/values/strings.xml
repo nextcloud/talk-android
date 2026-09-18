@@ -740,6 +740,7 @@ How to translate with transifex:
     <string name="nc_description_record_voice">Record voice message</string>
     <string name="nc_voice_message_slide_to_cancel">« Slide to cancel</string>
     <string name="play_pause_voice_message">Play/pause voice message</string>
+    <string name="play_pause_audio_file">Play/pause audio file</string>
     <string name="nc_voice_message_missing_audio_permission">Permission for audio recording is required</string>
     <string name="playback_speed_control">Playback speed control</string>
     <string name="delete_voice_recording">Delete voice recording</string>

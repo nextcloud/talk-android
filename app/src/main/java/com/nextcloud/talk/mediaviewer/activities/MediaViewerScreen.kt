@@ -165,14 +165,13 @@ fun MediaViewerScreen(
     }
 
     // Tapping the currently shown item toggles this off, hiding the top bar and thumbnail strip so
-    // only the media itself is visible - mirrors FullScreenMediaScreen's own tap-to-toggle-fullscreen
-    // behavior (still used for audio). For video, ExoPlayer's own controller visibility is the
+    // only the media itself is visible. For video, ExoPlayer's own controller visibility is the
     // source of truth (see VideoPlayerView) rather than an independently toggled flag, since the
     // controller already auto-hides itself after a timeout.
     var showControls by remember { mutableStateOf(true) }
 
     // The status/nav bars toggle together with the top bar and thumbnail strip - one tap hides all
-    // of it, matching FullScreenMediaScreen's own tap-to-toggle-fullscreen.
+    // of it.
     LaunchedEffect(showControls) {
         onControlsVisibilityChanged(showControls)
     }
@@ -387,10 +386,8 @@ private fun ImagePage(localPath: String, onToggleControls: () -> Unit) {
 
 // Pushes ExoPlayer's own controller (progress bar, play/pause row) up by extraBottomInsetPx (the
 // thumbnail strip's height, when one is showing for the current group) on top of the system nav
-// bar inset, same technique FullScreenMediaScreen's MediaPlayerView already uses to keep the
-// controller clear of the nav bar - so the controller never renders underneath the strip instead
-// of shrinking the video content itself, which would visibly resize the video on every
-// show/hide-controls tap.
+// bar inset, so the controller never renders underneath the strip instead of shrinking the video
+// content itself, which would visibly resize the video on every show/hide-controls tap.
 @OptIn(UnstableApi::class)
 @kotlin.OptIn(ExperimentalLayoutApi::class)
 @Composable

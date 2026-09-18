@@ -18,6 +18,7 @@ import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DrawableUtils
+import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.MimetypeUtils
 import java.time.Instant
 import java.time.LocalDate
@@ -106,6 +107,18 @@ sealed interface MessageTypeContent {
         val seekbarProgress: Int,
         val waveform: List<Float>,
         val playbackSpeed: PlaybackSpeed = PlaybackSpeed.NORMAL
+    ) : MessageTypeContent
+
+    // Deliberately lighter than Voice: no waveform (decoding one for a long audio file,
+    // e.g. a podcast, would be slow, unlike short voice recordings) and no playback speed
+    // control - both differences also make the bubble read as "a file", not "a voice note".
+    data class AudioFile(
+        val fileName: String,
+        val isPlaying: Boolean,
+        val isDownloading: Boolean,
+        val durationSeconds: Int,
+        val playedSeconds: Int,
+        val seekbarProgress: Int
     ) : MessageTypeContent
 }
 
@@ -269,6 +282,8 @@ fun getMessageTypeContent(user: User, message: ChatMessage, isClassified: Boolea
         getVoiceContent(message)
     } else if (message.hasFileAttachment && message.isTemporary) {
         getUploadingMediaContent(message)
+    } else if (message.hasFileAttachment && message.fileParameters.mimetype.startsWith(Mimetype.AUDIO_PREFIX)) {
+        getAudioFileContent(message)
     } else if (message.hasFileAttachment) {
         getMediaContent(user, message, isClassified)
     } else if (message.hasGeoLocation) {
@@ -391,4 +406,17 @@ fun getVoiceContent(message: ChatMessage): MessageTypeContent.Voice =
         playedSeconds = message.voiceMessagePlayedSeconds,
         seekbarProgress = message.voiceMessageSeekbarProgress,
         waveform = message.voiceMessageFloatArray?.toList().orEmpty()
+    )
+
+// Generic (non-voice) audio file attachments are played back through the same
+// MediaController/VoiceMessageMediaService session as voice messages, so they reuse the
+// same ChatMessage playback-state fields.
+fun getAudioFileContent(message: ChatMessage): MessageTypeContent.AudioFile =
+    MessageTypeContent.AudioFile(
+        fileName = message.fileParameters.name,
+        isPlaying = message.isPlayingVoiceMessage,
+        isDownloading = message.isDownloadingVoiceMessage,
+        durationSeconds = message.voiceMessageDuration,
+        playedSeconds = message.voiceMessagePlayedSeconds,
+        seekbarProgress = message.voiceMessageSeekbarProgress
     )
