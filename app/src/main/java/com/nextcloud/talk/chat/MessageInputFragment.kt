@@ -1049,12 +1049,8 @@ class MessageInputFragment : Fragment() {
         chatActivity.chatViewModel.onMessageSent()
 
         messageInputViewModel.sendChatMessage(
-            credentials = chatActivity.conversationUser!!.getCredentials(),
-            url = ApiUtils.getUrlForChat(
-                chatActivity.chatApiVersion,
-                chatActivity.conversationUser!!.baseUrl!!,
-                chatActivity.roomToken
-            ),
+            userId = chatActivity.conversationUser!!.id!!,
+            roomToken = chatActivity.roomToken,
             message = message,
             displayName = chatActivity.conversationUser!!.displayName ?: "",
             replyTo = chatActivity.getReplyToMessageId(),

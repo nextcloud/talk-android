@@ -32,6 +32,7 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.message.SendMessageUtils
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -656,16 +657,7 @@ class OfflineFirstChatRepository @Inject constructor(
             }
     }
 
-    @Suppress("LongParameterList")
-    override suspend fun resendChatMessage(
-        credentials: String,
-        url: String,
-        message: String,
-        displayName: String,
-        replyTo: Int,
-        sendWithoutNotification: Boolean,
-        referenceId: String
-    ): Flow<Result<ChatMessage?>> {
+    override suspend fun markMessageForResend(referenceId: String): Flow<Result<ChatMessage?>> {
         val messageToResend = chatDao.getTempMessageForConversation(
             internalConversationId,
             referenceId,
@@ -678,16 +670,9 @@ class OfflineFirstChatRepository @Inject constructor(
             val messageToResendModel = messageToResend.toDomainModel()
             _updateMessageFlow.emit(messageToResendModel)
 
-            sendChatMessage(
-                credentials = credentials,
-                url = url,
-                message = message,
-                displayName = displayName,
-                replyTo = replyTo,
-                sendWithoutNotification = sendWithoutNotification,
-                referenceId = referenceId,
-                threadTitle = null
-            )
+            flow {
+                emit(Result.success(messageToResendModel))
+            }
         } else {
             flow {
                 emit(Result.failure(IllegalStateException("No temporary message found to resend")))
@@ -713,6 +698,12 @@ class OfflineFirstChatRepository @Inject constructor(
                     referenceId
                 )
                 chatDao.upsertChatMessage(tempChatMessageEntity)
+                emit(Result.success(tempChatMessageEntity.toDomainModel()))
+            } catch (e: CancellationException) {
+                // a collector (e.g. first()/take(1)) is done with the flow, not a real failure -
+                // rethrow instead of turning it into a Result.failure emission, which would violate
+                // flow exception transparency since the collector already stopped listening
+                throw e
             } catch (e: Exception) {
                 Log.e(TAG, "Something went wrong when adding temporary message", e)
                 emit(Result.failure(e))

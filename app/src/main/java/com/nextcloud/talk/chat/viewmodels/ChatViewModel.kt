@@ -41,8 +41,8 @@ import com.nextcloud.talk.dagger.modules.ApplicationScope
 import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.ReadMarkerSyncWorker
+import com.nextcloud.talk.jobs.SendMessageWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import androidx.lifecycle.asFlow
 import androidx.work.WorkManager
@@ -2559,19 +2559,17 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
-    fun resendMessage(credentials: String, urlForChat: String, message: ChatMessage) {
+    fun resendMessage(message: ChatMessage) {
+        val referenceId = message.referenceId.orEmpty()
         viewModelScope.launch {
-            chatRepository.resendChatMessage(
-                credentials,
-                urlForChat,
-                message.message.orEmpty(),
-                message.actorDisplayName.orEmpty(),
-                message.parentMessageId?.toIntOrZero() ?: 0,
-                false,
-                message.referenceId.orEmpty()
-            ).collect { result ->
+            chatRepository.markMessageForResend(referenceId).collect { result ->
                 if (result.isSuccess) {
-                    Log.d(TAG, "resend successful")
+                    Log.d(TAG, "message marked pending for resend")
+                    SendMessageWorker.enqueue(
+                        internalConversationId = "${currentUser.id}@$chatRoomToken",
+                        referenceId = referenceId,
+                        threadTitle = null
+                    )
                 } else {
                     Log.e(TAG, "resend failed")
                 }
