@@ -30,6 +30,7 @@ import com.nextcloud.talk.models.json.participants.TalkBanOverall
 import com.nextcloud.talk.models.json.passwordResult.PasswordResultOverall
 import com.nextcloud.talk.models.json.profile.ProfileOverall
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
+import com.nextcloud.talk.models.json.reminder.ReminderOverall
 import com.nextcloud.talk.models.json.status.StatusOverall
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
 import com.nextcloud.talk.models.json.tags.AssignConversationTagsRequestDto
@@ -625,4 +626,28 @@ interface NcApiCoroutines {
 
     @GET
     suspend fun getUserProfile(@Header("Authorization") authorization: String, @Url url: String): UserProfileOverall
+
+    @GET
+    suspend fun getReminder(@Header("Authorization") authorization: String, @Url url: String): ReminderOverall
+
+    @DELETE
+    suspend fun deleteReminder(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
+
+    @FormUrlEncoded
+    @POST
+    suspend fun setReminder(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("timestamp") timestamp: Int
+    ): ReminderOverall
+
+    @FormUrlEncoded
+    @POST
+    suspend fun sendLocation(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("objectType") objectType: String,
+        @Field("objectId") objectId: String,
+        @Field("metaData") metaData: String
+    ): GenericOverall
 }
