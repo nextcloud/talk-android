@@ -578,6 +578,68 @@ class ChatMessageSyncerTest {
         }
 
     @Test
+    fun `pullUntilVisibleMessage keeps paging through a page of thread replies in the main channel`() =
+        runTest {
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
+                .thenReturn(flowOf(emptyList()))
+            var pullCount = 0
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                pullCount++
+                if (pullCount == 1) {
+                    // real, non-system messages, but they are replies in some other thread - a
+                    // very active thread can crowd out the main channel view the same way a burst
+                    // of reactions or THREAD_CREATED messages does
+                    Response.success(
+                        overall(threadReplyMessage(49, threadId = 10), threadReplyMessage(48, threadId = 10))
+                    )
+                } else {
+                    Response.success(overall(message(47)))
+                }
+            }
+
+            val fieldMap = syncer.buildFieldMap(
+                lookIntoFuture = false,
+                timeout = 0,
+                includeLastKnown = true,
+                lastKnown = 50,
+                limit = 2
+            )
+            // threadId = null: syncing the main channel, not a specific thread
+            val outcome = syncer.pullUntilVisibleMessage(target(threadId = null), fieldMap)
+
+            assertTrue(outcome.persistedNewMessages)
+            assertEquals(47L, outcome.newestPersistedMessage?.id)
+            verifyBlocking(network, times(2)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
+    fun `pullUntilVisibleMessage accepts thread replies right away when syncing that thread`() =
+        runTest {
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(10L), any()))
+                .thenReturn(flowOf(emptyList()))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(
+                    Response.success(
+                        overall(threadReplyMessage(49, threadId = 10), threadReplyMessage(48, threadId = 10))
+                    )
+                )
+
+            val fieldMap = syncer.buildFieldMap(
+                lookIntoFuture = false,
+                timeout = 0,
+                includeLastKnown = true,
+                lastKnown = 50,
+                limit = 2
+            )
+            // threadId = 10: syncing that specific thread, so its replies are the visible content
+            val outcome = syncer.pullUntilVisibleMessage(target(threadId = 10L), fieldMap)
+
+            assertTrue(outcome.persistedNewMessages)
+            assertEquals(49L, outcome.newestPersistedMessage?.id)
+            verifyBlocking(network, times(1)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
     fun `pullUntilVisibleMessage does not mistake the re-fetched anchor for a newly visible message`() =
         runTest {
             whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
@@ -717,11 +779,11 @@ class ChatMessageSyncerTest {
         )
     }
 
-    private fun target(user: User = user()): ChatMessageSyncer.SyncTarget =
+    private fun target(user: User = user(), threadId: Long? = null): ChatMessageSyncer.SyncTarget =
         ChatMessageSyncer.SyncTarget(
             user = user,
             roomToken = ROOM_TOKEN,
-            threadId = null,
+            threadId = threadId,
             credentials = CREDENTIALS,
             urlForChatting = CHAT_URL
         )
@@ -755,6 +817,12 @@ class ChatMessageSyncerTest {
 
     private fun threadCreatedMessage(id: Long): ChatMessageJson =
         message(id).apply { systemMessageType = ChatMessage.SystemMessageType.THREAD_CREATED }
+
+    private fun threadReplyMessage(id: Long, threadId: Long): ChatMessageJson =
+        message(id).apply {
+            hasThread = true
+            this.threadId = threadId
+        }
 
     private fun overall(vararg messages: ChatMessageJson): ChatOverall =
         ChatOverall(ocs = ChatOCS(meta = null, data = messages.toList()))

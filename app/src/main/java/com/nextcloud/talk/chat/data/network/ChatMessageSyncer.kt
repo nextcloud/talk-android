@@ -670,6 +670,26 @@ class ChatMessageSyncer @Inject constructor(
         )
     }
 
+    /**
+     * Whether [message] renders as its own bubble in an open chat — mirrors ChatViewModel's two
+     * combined chat-rendering filters: a hidden system message type (see
+     * [CHAT_HIDDEN_SYSTEM_MESSAGE_TYPES]), and, only when [syncedThreadId] is null (i.e. this sync
+     * is for the main channel, not a specific thread), a reply belonging to some other thread —
+     * ChatViewModel.handleThreadMessages() hides those from the main channel view the same way it
+     * hides the system message types above, so a page made up entirely of thread replies could
+     * fool [pullUntilVisibleMessage] the same way reaction spam did. A message that starts a thread
+     * (threadId == its own id) is not itself a reply and stays visible.
+     */
+    private fun isChatVisibleMessage(message: ChatMessageJson, syncedThreadId: Long?): Boolean {
+        if (message.systemMessageType in CHAT_HIDDEN_SYSTEM_MESSAGE_TYPES) {
+            return false
+        }
+        if (syncedThreadId == null && message.hasThread && message.threadId != message.id) {
+            return false
+        }
+        return true
+    }
+
     fun pullMessagesFlow(target: SyncTarget, fieldMap: HashMap<String, Int>): Flow<ChatPullResult> =
         flow {
             var attempts = 1
@@ -803,7 +823,7 @@ class ChatMessageSyncer @Inject constructor(
                 emptyList()
             }
             val chatVisibleMessages = if (persistedMessages.isNotEmpty()) {
-                result.messages.filter { it.systemMessageType !in CHAT_HIDDEN_SYSTEM_MESSAGE_TYPES }
+                result.messages.filter { isChatVisibleMessage(it, target.threadId) }
             } else {
                 emptyList()
             }
@@ -1118,11 +1138,13 @@ class ChatMessageSyncer @Inject constructor(
          * be a safe superset of what is truly hidden (worst case, a few extra fetch rounds), never
          * a subset (which would reproduce the "nothing visible found" bug).
          *
-         * Not covered, since it cannot be expressed as a static per-type set: ChatViewModel also
-         * hides thread-child messages while viewing the main channel (needs isThread/threadId, not
-         * just systemMessageType) and hides all system messages in "channel" rooms. A page made up
-         * entirely of thread replies in a very active threaded room could in theory hit the same
-         * "nothing visible found" pattern; this fix does not cover that case.
+         * Thread-child messages (real, non-system messages that belong to a thread other than the
+         * one being synced) are a separate case ChatViewModel also hides from the main channel view
+         * — that needs isThread/threadId, not systemMessageType, so it cannot live in this set; see
+         * [isChatVisibleMessage] instead.
+         *
+         * Still not covered: ChatViewModel hides all system messages in "channel" rooms, which needs
+         * room-type context this syncer does not have.
          */
         val CHAT_HIDDEN_SYSTEM_MESSAGE_TYPES = setOf(
             ChatMessage.SystemMessageType.REACTION,
