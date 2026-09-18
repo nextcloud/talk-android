@@ -546,6 +546,38 @@ class ChatMessageSyncerTest {
         }
 
     @Test
+    fun `pullUntilVisibleMessage keeps paging through a page hidden by non-reaction system messages`() =
+        runTest {
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
+                .thenReturn(flowOf(emptyList()))
+            var pullCount = 0
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                pullCount++
+                if (pullCount == 1) {
+                    // THREAD_CREATED is a valid conversation-preview text (unlike reactions), but it
+                    // still never gets its own bubble in the main channel view — a page made up
+                    // entirely of these must not be mistaken for "found a visible message" either
+                    Response.success(overall(threadCreatedMessage(49), threadCreatedMessage(48)))
+                } else {
+                    Response.success(overall(message(47)))
+                }
+            }
+
+            val fieldMap = syncer.buildFieldMap(
+                lookIntoFuture = false,
+                timeout = 0,
+                includeLastKnown = true,
+                lastKnown = 50,
+                limit = 2
+            )
+            val outcome = syncer.pullUntilVisibleMessage(target(), fieldMap)
+
+            assertTrue(outcome.persistedNewMessages)
+            assertEquals(47L, outcome.newestPersistedMessage?.id)
+            verifyBlocking(network, times(2)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
     fun `pullUntilVisibleMessage does not mistake the re-fetched anchor for a newly visible message`() =
         runTest {
             whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
@@ -720,6 +752,9 @@ class ChatMessageSyncerTest {
 
     private fun reactionMessage(id: Long): ChatMessageJson =
         message(id).apply { systemMessageType = ChatMessage.SystemMessageType.REACTION }
+
+    private fun threadCreatedMessage(id: Long): ChatMessageJson =
+        message(id).apply { systemMessageType = ChatMessage.SystemMessageType.THREAD_CREATED }
 
     private fun overall(vararg messages: ChatMessageJson): ChatOverall =
         ChatOverall(ocs = ChatOCS(meta = null, data = messages.toList()))

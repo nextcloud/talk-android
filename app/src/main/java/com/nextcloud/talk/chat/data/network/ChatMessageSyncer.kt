@@ -98,12 +98,14 @@ class ChatMessageSyncer @Inject constructor(
      * last message (system messages that never change a conversation's preview are skipped). It
      * feeds the conversation list update after a background catch-up.
      *
-     * [visibleMessageIds] are the ids of all persisted messages of this round that qualify as a
-     * conversation's last message, i.e. the same filter as [newestPersistedMessage] but without
-     * collapsing to a single id. [pullUntilVisibleMessage] needs the full set: a round can contain
-     * a visible message that is not the highest id (e.g. an older real message hiding behind a
-     * newer reaction-only one), and it must also be able to tell such a message apart from the
-     * already-known anchor message a round re-fetches via includeLastKnown.
+     * [visibleMessageIds] are the ids of all persisted messages of this round that render as their
+     * own bubble in an open chat (see [CHAT_HIDDEN_SYSTEM_MESSAGE_TYPES] — a different, broader
+     * filter than [newestPersistedMessage]'s, since "valid conversation preview" and "gets its own
+     * chat bubble" are not the same question). [pullUntilVisibleMessage] needs the full set, not
+     * just the single newest id: a round can contain a visible message that is not the highest id
+     * (e.g. an older real message hiding behind a newer reaction-only one), and it must also be
+     * able to tell such a message apart from the already-known anchor message a round re-fetches
+     * via includeLastKnown.
      */
     data class SyncOutcome(
         val persistedNewMessages: Boolean,
@@ -789,10 +791,19 @@ class ChatMessageSyncer @Inject constructor(
                 events
             )
             persistedMessages.maxOfOrNull { it.id }?.let { recordHttpSyncedMessageId(target, it) }
-            val visibleMessages = if (persistedMessages.isNotEmpty()) {
+            // Two different notions of "visible", each feeding a different consumer: a
+            // conversation's last-message preview (narrower — some system messages just never
+            // qualify as a preview, whether or not they get their own bubble) vs. a message that
+            // actually renders as its own bubble in an open chat (see CHAT_HIDDEN_SYSTEM_MESSAGE_TYPES).
+            val previewEligibleMessages = if (persistedMessages.isNotEmpty()) {
                 result.messages.filter {
                     it.systemMessageType !in ConversationListUpdater.LAST_MESSAGE_HIDDEN_SYSTEM_TYPES
                 }
+            } else {
+                emptyList()
+            }
+            val chatVisibleMessages = if (persistedMessages.isNotEmpty()) {
+                result.messages.filter { it.systemMessageType !in CHAT_HIDDEN_SYSTEM_MESSAGE_TYPES }
             } else {
                 emptyList()
             }
@@ -801,8 +812,8 @@ class ChatMessageSyncer @Inject constructor(
                 newestPersistedMessageId = persistedMessages.maxOfOrNull { it.id },
                 oldestPersistedMessageId = persistedMessages.minOfOrNull { it.id },
                 persistedMessageCount = persistedMessages.size,
-                newestPersistedMessage = visibleMessages.maxByOrNull { it.id },
-                visibleMessageIds = visibleMessages.map { it.id }
+                newestPersistedMessage = previewEligibleMessages.maxByOrNull { it.id },
+                visibleMessageIds = chatVisibleMessages.map { it.id }
             )
         } else {
             Log.d(TAG, "No new messages to update")
@@ -1087,6 +1098,42 @@ class ChatMessageSyncer @Inject constructor(
         private val NOTHING_SYNCED = SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null)
         private val SYNC_FAILED =
             SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null, syncFailed = true)
+
+        /**
+         * System message types that [pullUntilVisibleMessage] must not mistake for a message a
+         * user would actually see rendered as its own bubble in an open chat — mirrors
+         * ChatViewModel.shouldRemoveMessage()'s per-type checks, which decide the same thing for
+         * the chat UI's filtering.
+         *
+         * This is deliberately a *different, broader* set than
+         * [ConversationListUpdater.LAST_MESSAGE_HIDDEN_SYSTEM_TYPES]: that one answers "can this be
+         * a conversation's last-message preview text", which is not the same question — e.g. a
+         * THREAD_CREATED message is a valid preview text but never gets its own bubble in the main
+         * channel view. Reusing the preview set here previously let a page made up entirely of
+         * THREAD_CREATED or MESSAGE_UNPINNED messages (as opposed to reactions) fool the "found a
+         * visible message" check the same way reaction spam did.
+         *
+         * MESSAGE_DELETED and MESSAGE_EDITED are only actually hidden by ChatViewModel when they
+         * have a parent message, but they are listed here unconditionally: this set only needs to
+         * be a safe superset of what is truly hidden (worst case, a few extra fetch rounds), never
+         * a subset (which would reproduce the "nothing visible found" bug).
+         *
+         * Not covered, since it cannot be expressed as a static per-type set: ChatViewModel also
+         * hides thread-child messages while viewing the main channel (needs isThread/threadId, not
+         * just systemMessageType) and hides all system messages in "channel" rooms. A page made up
+         * entirely of thread replies in a very active threaded room could in theory hit the same
+         * "nothing visible found" pattern; this fix does not cover that case.
+         */
+        val CHAT_HIDDEN_SYSTEM_MESSAGE_TYPES = setOf(
+            ChatMessage.SystemMessageType.REACTION,
+            ChatMessage.SystemMessageType.REACTION_REVOKED,
+            ChatMessage.SystemMessageType.REACTION_DELETED,
+            ChatMessage.SystemMessageType.MESSAGE_DELETED,
+            ChatMessage.SystemMessageType.MESSAGE_EDITED,
+            ChatMessage.SystemMessageType.POLL_VOTED,
+            ChatMessage.SystemMessageType.THREAD_CREATED,
+            ChatMessage.SystemMessageType.MESSAGE_UNPINNED
+        )
 
         private const val DEFAULT_MESSAGES_LIMIT = 100
 
