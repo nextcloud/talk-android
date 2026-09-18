@@ -1031,11 +1031,7 @@ class ChatActivity :
                             showEdit = sendingFailed || !isOnline,
                             showDelete = sendingFailed || !isOnline,
                             onResend = {
-                                chatViewModel.resendMessage(
-                                    conversationUser!!.getCredentials(),
-                                    ApiUtils.getUrlForChat(chatApiVersion, conversationUser!!.baseUrl!!, roomToken),
-                                    msg
-                                )
+                                chatViewModel.resendMessage(msg)
                             },
                             onEdit = { messageInputViewModel.edit(msg) },
                             onDelete = { chatViewModel.deleteTempMessage(msg) },
