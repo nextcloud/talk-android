@@ -32,6 +32,7 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.message.SendMessageUtils
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -698,6 +699,11 @@ class OfflineFirstChatRepository @Inject constructor(
                 )
                 chatDao.upsertChatMessage(tempChatMessageEntity)
                 emit(Result.success(tempChatMessageEntity.toDomainModel()))
+            } catch (e: CancellationException) {
+                // a collector (e.g. first()/take(1)) is done with the flow, not a real failure -
+                // rethrow instead of turning it into a Result.failure emission, which would violate
+                // flow exception transparency since the collector already stopped listening
+                throw e
             } catch (e: Exception) {
                 Log.e(TAG, "Something went wrong when adding temporary message", e)
                 emit(Result.failure(e))
