@@ -34,6 +34,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 @Suppress("Detekt.TooManyFunctions")
@@ -77,6 +79,13 @@ class MessageInputViewModel :
     lateinit var chatNetworkDataSource: ChatNetworkDataSource
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
+
+    // Serializes addTemporaryMessage()+SendMessageWorker.enqueue() across sendChatMessage() calls.
+    // Without it, several messages sent in quick succession each await their own independent local
+    // DB write before enqueueing, and those writes aren't guaranteed to finish in the order they
+    // were started - so the worker chain (and therefore the order messages actually reach the
+    // server) could end up scrambled relative to the order the user sent them.
+    private val sendMessageMutex = Mutex()
 
     fun setData(chatMessageRepository: ChatMessageRepository) {
         chatRepository = chatMessageRepository
@@ -177,22 +186,28 @@ class MessageInputViewModel :
         Log.d(TAG, "Random SHA-256 Hash: $referenceId")
 
         viewModelScope.launch {
-            chatRepository.addTemporaryMessage(
-                message,
-                displayName,
-                replyTo,
-                sendWithoutNotification,
-                referenceId
-            ).collect { result ->
-                if (result.isSuccess) {
-                    _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
-                    SendMessageWorker.enqueue(
-                        internalConversationId = "$userId@$roomToken",
-                        referenceId = referenceId,
-                        threadTitle = threadTitle
-                    )
-                } else {
-                    _sendChatMessageViewState.value = SendChatMessageErrorState(message)
+            // Holding the lock across the DB write and the enqueue call, rather than just around
+            // the enqueue call, is what actually guarantees ordering: it forces this whole
+            // insert-then-enqueue step for one message to finish before the next queued send is
+            // even allowed to start its own DB write.
+            sendMessageMutex.withLock {
+                chatRepository.addTemporaryMessage(
+                    message,
+                    displayName,
+                    replyTo,
+                    sendWithoutNotification,
+                    referenceId
+                ).collect { result ->
+                    if (result.isSuccess) {
+                        _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
+                        SendMessageWorker.enqueue(
+                            internalConversationId = "$userId@$roomToken",
+                            referenceId = referenceId,
+                            threadTitle = threadTitle
+                        )
+                    } else {
+                        _sendChatMessageViewState.value = SendChatMessageErrorState(message)
+                    }
                 }
             }
         }
