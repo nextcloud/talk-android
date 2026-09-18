@@ -26,32 +26,32 @@ interface ChatNetworkDataSource {
     fun getRoom(user: User, roomToken: String): Observable<ConversationModel>
     fun getCapabilities(user: User, roomToken: String): Observable<SpreedCapability>
     fun joinRoom(user: User, roomToken: String, roomPassword: String): Observable<ConversationModel>
-    fun setReminder(
+    suspend fun setReminder(
         user: User,
         roomToken: String,
         messageId: String,
         timeStamp: Int,
         chatApiVersion: Int
-    ): Observable<Reminder>
+    ): Reminder
 
-    fun getReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): Observable<Reminder>
-    fun deleteReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): Observable<GenericOverall>
-    fun shareToNotes(
+    suspend fun getReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): Reminder
+    suspend fun deleteReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): GenericOverall
+    suspend fun shareToNotes(
         credentials: String,
         url: String,
         message: String,
         displayName: String
-    ): Observable<ChatOverallSingleMessage>
+    ): ChatOverallSingleMessage
 
     suspend fun checkForNoteToSelf(credentials: String, url: String): RoomOverall
 
-    fun shareLocationToNotes(
+    suspend fun shareLocationToNotes(
         credentials: String,
         url: String,
         objectType: String,
         objectId: String,
         metadata: String
-    ): Observable<GenericOverall>
+    ): GenericOverall
 
     suspend fun leaveRoom(credentials: String, url: String): GenericOverall
     suspend fun sendChatMessage(
