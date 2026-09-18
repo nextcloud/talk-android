@@ -185,26 +185,17 @@ class MessageInputViewModel :
                 referenceId
             ).collect { result ->
                 if (result.isSuccess) {
-                    Log.d(TAG, "temp message ref id: " + (result.getOrNull()?.referenceId ?: "none"))
-
                     _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
+                    SendMessageWorker.enqueue(
+                        internalConversationId = "$userId@$roomToken",
+                        referenceId = referenceId,
+                        threadTitle = threadTitle
+                    )
                 } else {
                     _sendChatMessageViewState.value = SendChatMessageErrorState(message)
                 }
             }
         }
-
-        SendMessageWorker.enqueue(
-            userId = userId,
-            roomToken = roomToken,
-            internalConversationId = "$userId@$roomToken",
-            referenceId = referenceId,
-            message = message,
-            displayName = displayName,
-            replyTo = replyTo,
-            sendWithoutNotification = sendWithoutNotification,
-            threadTitle = threadTitle
-        )
     }
 
     fun sendUnsentMessages(credentials: String, url: String) {

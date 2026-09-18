@@ -42,7 +42,6 @@ import com.nextcloud.talk.dagger.modules.ApplicationScope
 import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.ReadMarkerSyncWorker
 import com.nextcloud.talk.jobs.SendMessageWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
@@ -2585,14 +2584,8 @@ class ChatViewModel @AssistedInject constructor(
                 if (result.isSuccess) {
                     Log.d(TAG, "message marked pending for resend")
                     SendMessageWorker.enqueue(
-                        userId = currentUser.id!!,
-                        roomToken = chatRoomToken,
                         internalConversationId = "${currentUser.id}@$chatRoomToken",
                         referenceId = referenceId,
-                        message = message.message.orEmpty(),
-                        displayName = message.actorDisplayName.orEmpty(),
-                        replyTo = message.parentMessageId?.toIntOrZero() ?: 0,
-                        sendWithoutNotification = false,
                         threadTitle = null
                     )
                 } else {

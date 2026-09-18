@@ -701,6 +701,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     referenceId
                 )
                 chatDao.upsertChatMessage(tempChatMessageEntity)
+                emit(Result.success(tempChatMessageEntity.toDomainModel()))
             } catch (e: Exception) {
                 Log.e(TAG, "Something went wrong when adding temporary message", e)
                 emit(Result.failure(e))

@@ -58,55 +58,28 @@ class SendMessageWorker(context: Context, workerParams: WorkerParameters) : Coro
     override suspend fun doWork(): Result {
         sharedApplication!!.componentApplication.inject(this)
 
-        val userId = inputData.getLong(KEY_INTERNAL_USER_ID, -1)
-        val roomToken = inputData.getString(KEY_ROOM_TOKEN)
         val internalConversationId = inputData.getString(KEY_INTERNAL_CONVERSATION_ID)
         val referenceId = inputData.getString(KEY_REFERENCE_ID)
-        val message = inputData.getString(KEY_MESSAGE)
-        val displayName = inputData.getString(KEY_DISPLAY_NAME).orEmpty()
-        val replyTo = inputData.getInt(KEY_REPLY_TO, 0)
-        val sendWithoutNotification = inputData.getBoolean(KEY_SEND_WITHOUT_NOTIFICATION, false)
         val threadTitle = inputData.getString(KEY_THREAD_TITLE)
 
-        if (userId < 0 ||
-            roomToken.isNullOrEmpty() ||
-            internalConversationId.isNullOrEmpty() ||
-            referenceId.isNullOrEmpty() ||
-            message == null
-        ) {
+        if (internalConversationId.isNullOrEmpty() || referenceId.isNullOrEmpty()) {
             Log.e(TAG, "Missing required input data, dropping message send")
             return Result.failure()
         }
 
-        return sendMessage(
-            userId,
-            roomToken,
-            internalConversationId,
-            referenceId,
-            message,
-            displayName,
-            replyTo,
-            sendWithoutNotification,
-            threadTitle
-        )
+        return sendMessage(internalConversationId, referenceId, threadTitle)
     }
 
-    @Suppress("LongParameterList", "Detekt.TooGenericExceptionCaught")
-    private suspend fun sendMessage(
-        userId: Long,
-        roomToken: String,
-        internalConversationId: String,
-        referenceId: String,
-        message: String,
-        displayName: String,
-        replyTo: Int,
-        sendWithoutNotification: Boolean,
-        threadTitle: String?
-    ): Result {
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private suspend fun sendMessage(internalConversationId: String, referenceId: String, threadTitle: String?): Result {
         // Re-checked on every attempt (including retries): the user may have deleted this
         // temporary message - e.g. from the message actions sheet while offline - after it was
         // enqueued but before a connection was available to actually send it. Without this check
         // the message would still be posted to the server even though it no longer exists locally.
+        // The message text and its other send parameters are also read fresh from this row rather
+        // than passed in via WorkManager's input data, so an edit made to a still-queued message
+        // while offline (editTempChatMessage only updates this row) is picked up instead of sending
+        // stale data.
         val tempMessage = chatDao.getTempMessageForConversation(internalConversationId, referenceId, null)
             .firstOrNull()
         if (tempMessage == null) {
@@ -114,29 +87,29 @@ class SendMessageWorker(context: Context, workerParams: WorkerParameters) : Coro
             return Result.success()
         }
 
-        val user = userManager.getUserWithId(userId).blockingGet()
+        val user = userManager.getUserWithId(tempMessage.accountId).blockingGet()
         val credentials = user?.let { ApiUtils.getCredentials(it.username, it.token) }
         if (user == null || credentials == null) {
-            Log.e(TAG, "No user or credentials found for user id $userId, failing message send")
+            Log.e(TAG, "No user or credentials found for account id ${tempMessage.accountId}, failing message send")
             return failMessage(tempMessage)
         }
 
         val apiVersion = ApiUtils.getChatApiVersion(user.capabilities!!.spreedCapability!!, intArrayOf(ApiUtils.API_V1))
-        val url = ApiUtils.getUrlForChat(apiVersion, user.baseUrl!!, roomToken)
+        val url = ApiUtils.getUrlForChat(apiVersion, user.baseUrl!!, tempMessage.token)
 
         return try {
             chatNetworkDataSource.sendChatMessage(
                 credentials,
                 url,
-                message,
-                displayName,
-                replyTo,
-                sendWithoutNotification,
+                tempMessage.message,
+                tempMessage.actorDisplayName,
+                tempMessage.parentMessageId?.toInt() ?: 0,
+                tempMessage.silent,
                 referenceId,
                 threadTitle
             )
             updateStatus(tempMessage, SendStatus.SENT_PENDING_ACK)
-            Log.d(TAG, "sending chat message succeeded: $message")
+            Log.d(TAG, "sending chat message succeeded: ${tempMessage.message}")
             Result.success()
         } catch (e: IOException) {
             Log.w(TAG, "Network error while sending message (attempt ${runAttemptCount + 1}/$MAX_SEND_ATTEMPTS)", e)
@@ -166,41 +139,23 @@ class SendMessageWorker(context: Context, workerParams: WorkerParameters) : Coro
 
     companion object {
         private val TAG = SendMessageWorker::class.simpleName
-        private const val KEY_INTERNAL_USER_ID = "INTERNAL_USER_ID"
-        private const val KEY_ROOM_TOKEN = "ROOM_TOKEN"
         private const val KEY_INTERNAL_CONVERSATION_ID = "INTERNAL_CONVERSATION_ID"
         private const val KEY_REFERENCE_ID = "REFERENCE_ID"
-        private const val KEY_MESSAGE = "MESSAGE"
-        private const val KEY_DISPLAY_NAME = "DISPLAY_NAME"
-        private const val KEY_REPLY_TO = "REPLY_TO"
-        private const val KEY_SEND_WITHOUT_NOTIFICATION = "SEND_WITHOUT_NOTIFICATION"
         private const val KEY_THREAD_TITLE = "THREAD_TITLE"
 
         // Total attempts allowed for a single message (1 initial run + retries) before giving up on
         // a transient network failure and marking it FAILED so the user can resend manually.
         private const val MAX_SEND_ATTEMPTS = 4
 
-        @Suppress("LongParameterList")
-        fun enqueue(
-            userId: Long,
-            roomToken: String,
-            internalConversationId: String,
-            referenceId: String,
-            message: String,
-            displayName: String,
-            replyTo: Int,
-            sendWithoutNotification: Boolean,
-            threadTitle: String?
-        ) {
+        // userId, roomToken, message text, displayName, replyTo and sendWithoutNotification are
+        // deliberately not passed in here: they're all already persisted on the temporary message
+        // row (accountId, token, actorDisplayName, parentMessageId, silent), which doWork() reads
+        // fresh instead, so a later edit or deletion of that row is always reflected. threadTitle
+        // isn't persisted on that row, so it still has to travel through the work request.
+        fun enqueue(internalConversationId: String, referenceId: String, threadTitle: String?) {
             val data = Data.Builder()
-                .putLong(KEY_INTERNAL_USER_ID, userId)
-                .putString(KEY_ROOM_TOKEN, roomToken)
                 .putString(KEY_INTERNAL_CONVERSATION_ID, internalConversationId)
                 .putString(KEY_REFERENCE_ID, referenceId)
-                .putString(KEY_MESSAGE, message)
-                .putString(KEY_DISPLAY_NAME, displayName)
-                .putInt(KEY_REPLY_TO, replyTo)
-                .putBoolean(KEY_SEND_WITHOUT_NOTIFICATION, sendWithoutNotification)
                 .putString(KEY_THREAD_TITLE, threadTitle)
                 .build()
 
