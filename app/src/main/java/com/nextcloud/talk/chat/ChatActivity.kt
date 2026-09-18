@@ -127,6 +127,7 @@ import com.nextcloud.talk.chat.ui.buildMessageActionsState
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
+import com.nextcloud.talk.components.StatusBannerRow
 import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
@@ -593,6 +594,7 @@ class ChatActivity :
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupStatusBannerView()
         setupChatToolbarView()
         setupChatEmptyStateView()
         setupTypingIndicatorView()
@@ -2073,6 +2075,16 @@ class ChatActivity :
         binding.let { viewThemeUtils.material.themeFAB(it.voiceRecordingLock) }
 
         updateToolbarState()
+    }
+
+    private fun setupStatusBannerView() {
+        binding.statusBannerComposeView.setContent {
+            val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
+            val isMaintenanceMode by chatViewModel.maintenanceModeFlow.collectAsStateWithLifecycle()
+            MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
+                StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
+            }
+        }
     }
 
     private fun setupChatToolbarView() {

@@ -18,6 +18,11 @@
     tools:ignore="Overdraw">
 
     <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/statusBannerComposeView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.compose.ui.platform.ComposeView
         android:id="@+id/chatToolbarComposeView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
