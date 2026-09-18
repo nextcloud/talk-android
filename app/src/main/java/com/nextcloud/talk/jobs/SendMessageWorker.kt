@@ -23,6 +23,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
+import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
@@ -102,11 +103,22 @@ class SendMessageWorker(context: Context, workerParams: WorkerParameters) : Coro
         sendWithoutNotification: Boolean,
         threadTitle: String?
     ): Result {
+        // Re-checked on every attempt (including retries): the user may have deleted this
+        // temporary message - e.g. from the message actions sheet while offline - after it was
+        // enqueued but before a connection was available to actually send it. Without this check
+        // the message would still be posted to the server even though it no longer exists locally.
+        val tempMessage = chatDao.getTempMessageForConversation(internalConversationId, referenceId, null)
+            .firstOrNull()
+        if (tempMessage == null) {
+            Log.d(TAG, "Temporary message $referenceId no longer exists, skipping send")
+            return Result.success()
+        }
+
         val user = userManager.getUserWithId(userId).blockingGet()
         val credentials = user?.let { ApiUtils.getCredentials(it.username, it.token) }
         if (user == null || credentials == null) {
             Log.e(TAG, "No user or credentials found for user id $userId, failing message send")
-            return failMessage(internalConversationId, referenceId)
+            return failMessage(tempMessage)
         }
 
         val apiVersion = ApiUtils.getChatApiVersion(user.capabilities!!.spreedCapability!!, intArrayOf(ApiUtils.API_V1))
@@ -123,36 +135,33 @@ class SendMessageWorker(context: Context, workerParams: WorkerParameters) : Coro
                 referenceId,
                 threadTitle
             )
-            updateStatus(internalConversationId, referenceId, SendStatus.SENT_PENDING_ACK)
+            updateStatus(tempMessage, SendStatus.SENT_PENDING_ACK)
             Log.d(TAG, "sending chat message succeeded: $message")
             Result.success()
         } catch (e: IOException) {
             Log.w(TAG, "Network error while sending message (attempt ${runAttemptCount + 1}/$MAX_SEND_ATTEMPTS)", e)
-            retryOrFail(internalConversationId, referenceId)
+            retryOrFail(tempMessage)
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong when sending message", e)
-            failMessage(internalConversationId, referenceId)
+            failMessage(tempMessage)
         }
     }
 
-    private suspend fun retryOrFail(internalConversationId: String, referenceId: String): Result =
+    private fun retryOrFail(tempMessage: ChatMessageEntity): Result =
         if (runAttemptCount < MAX_SEND_ATTEMPTS - 1) {
             Result.retry()
         } else {
-            failMessage(internalConversationId, referenceId)
+            failMessage(tempMessage)
         }
 
-    private suspend fun failMessage(internalConversationId: String, referenceId: String): Result {
-        updateStatus(internalConversationId, referenceId, SendStatus.FAILED)
+    private fun failMessage(tempMessage: ChatMessageEntity): Result {
+        updateStatus(tempMessage, SendStatus.FAILED)
         return Result.failure()
     }
 
-    private suspend fun updateStatus(internalConversationId: String, referenceId: String, status: SendStatus) {
-        val entity = chatDao.getTempMessageForConversation(internalConversationId, referenceId, null).firstOrNull()
-        entity?.let {
-            it.sendStatus = status
-            chatDao.updateChatMessage(it)
-        }
+    private fun updateStatus(tempMessage: ChatMessageEntity, status: SendStatus) {
+        tempMessage.sendStatus = status
+        chatDao.updateChatMessage(tempMessage)
     }
 
     companion object {
