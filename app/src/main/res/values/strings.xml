@@ -557,6 +557,7 @@ How to translate with transifex:
     <string name="nc_scheduled_thread">Scheduled thread</string>
     <string name="nc_reply_to_thread">Reply to thread: %1$s</string>
     <string name="nc_message_added_to_notes">Message added to notes</string>
+    <string name="nc_message_not_added_to_notes">Could not add the message to notes</string>
     <string name="nc_message_failed">Failed to send message</string>
     <string name="nc_message_failed_to_send">Failed to send message:</string>
     <string name="nc_add_attachment">Add attachment</string>

@@ -629,6 +629,7 @@ interface NcApiCoroutines {
         @Field("timestamp") timestamp: Int
     ): ReminderOverall
 
+    @Suppress("LongParameterList")
     @FormUrlEncoded
     @POST
     suspend fun sendLocation(
@@ -636,6 +637,7 @@ interface NcApiCoroutines {
         @Url url: String,
         @Field("objectType") objectType: String,
         @Field("objectId") objectId: String,
-        @Field("metaData") metaData: String
+        @Field("metaData") metaData: String,
+        @Field("referenceId") referenceId: String
     ): GenericOverall
 }

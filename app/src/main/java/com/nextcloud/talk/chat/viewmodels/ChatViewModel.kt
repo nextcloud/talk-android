@@ -12,6 +12,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.util.Log
+import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -81,6 +83,7 @@ import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.throttleLatest
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
+import com.nextcloud.talk.utils.isTransientFailure
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.nextcloud.talk.utils.message.groupHashOf
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -633,6 +636,10 @@ class ChatViewModel @AssistedInject constructor(
 
     private val _reactionFailures = MutableSharedFlow<ReactionOperation>(extraBufferCapacity = 1)
     val reactionFailures: SharedFlow<ReactionOperation> = _reactionFailures
+
+    /** A reminder or a share to notes that the server refused, for the chat to report. */
+    private val _actionFailures = MutableSharedFlow<Int>(extraBufferCapacity = 1)
+    val actionFailures: SharedFlow<Int> = _actionFailures
 
     private val reactionLocks = mutableMapOf<Int, Mutex>()
 
@@ -1825,15 +1832,9 @@ class ChatViewModel @AssistedInject constructor(
             ?.subscribe(JoinRoomObserver())
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     fun setReminder(user: User, roomToken: String, messageId: String, timestamp: Int, chatApiVersion: Int) {
-        viewModelScope.launch {
-            try {
-                chatNetworkDataSource.setReminder(user, roomToken, messageId, timestamp, chatApiVersion)
-                Log.d(TAG, "reminder set successfully")
-            } catch (e: Exception) {
-                Log.e(TAG, "Error when sending reminder", e)
-            }
+        requestWithFeedback("set the reminder", R.string.nc_common_error_sorry) {
+            chatNetworkDataSource.setReminder(user, roomToken, messageId, timestamp, chatApiVersion)
         }
     }
 
@@ -1853,15 +1854,10 @@ class ChatViewModel @AssistedInject constructor(
         _getReminderExistState.value = GetReminderStateSet
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     fun deleteReminder(user: User, roomToken: String, messageId: String, chatApiVersion: Int) {
-        viewModelScope.launch {
-            try {
-                chatNetworkDataSource.deleteReminder(user, roomToken, messageId, chatApiVersion)
-                _getReminderExistState.value = GetReminderStartState
-            } catch (e: Exception) {
-                Log.d(TAG, "Error when deleting reminder", e)
-            }
+        requestWithFeedback("delete the reminder", R.string.nc_common_error_sorry) {
+            chatNetworkDataSource.deleteReminder(user, roomToken, messageId, chatApiVersion)
+            _getReminderExistState.value = GetReminderStartState
         }
     }
 
@@ -2119,14 +2115,9 @@ class ChatViewModel @AssistedInject constructor(
         )
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     fun shareToNotes(credentials: String, url: String, message: String, displayName: String) {
-        viewModelScope.launch {
-            try {
-                chatNetworkDataSource.shareToNotes(credentials, url, message, displayName)
-            } catch (e: Exception) {
-                Log.d(TAG, "Error when sharing to notes", e)
-            }
+        shareToNotes("share the message to notes", credentials, url) { referenceId ->
+            chatNetworkDataSource.shareToNotes(credentials, url, message, displayName, referenceId)
         }
     }
 
@@ -2143,13 +2134,97 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     fun shareLocationToNotes(credentials: String, url: String, objectType: String, objectId: String, metadata: String) {
+        shareToNotes("share the location to notes", credentials, url) { referenceId ->
+            chatNetworkDataSource.shareLocationToNotes(credentials, url, objectType, objectId, metadata, referenceId)
+        }
+    }
+
+    /**
+     * Shares to the note to self and, when the share failed for a transient reason, asks the note to
+     * self whether the message arrived anyway before sending it a second time. The server stores the
+     * reference id of a message without ever looking at it again, so it deduplicates nothing: a blind
+     * second attempt after a timeout the server did accept posts the note twice.
+     */
+    private fun shareToNotes(
+        description: String,
+        credentials: String,
+        notesUrl: String,
+        share: suspend (String) -> Unit
+    ) {
+        val referenceId = SendMessageUtils().generateReferenceId()
+
+        viewModelScope.launch {
+            val failure = attemptShare(share, referenceId) ?: return@launch
+
+            if (!isTransientFailure(failure)) {
+                reportShareFailure(description, failure)
+                return@launch
+            }
+
+            if (!alreadyShared(credentials, notesUrl, referenceId)) {
+                attemptShare(share, referenceId)?.let { reportShareFailure(description, it) }
+            }
+        }
+    }
+
+    /** Runs the share once and reports what went wrong, or null when it worked. */
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private suspend fun attemptShare(share: suspend (String) -> Unit, referenceId: String): Exception? =
+        try {
+            share(referenceId)
+            null
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            e
+        }
+
+    /**
+     * Whether the note to self already holds the message of this share. A lookup that cannot be
+     * answered counts as "it might", because posting a second copy is worse than not retrying.
+     */
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private suspend fun alreadyShared(credentials: String, notesUrl: String, referenceId: String): Boolean =
+        try {
+            val fieldMap = hashMapOf(
+                "lookIntoFuture" to 0,
+                "includeLastKnown" to 1,
+                "setReadMarker" to 0,
+                "markNotificationsAsRead" to 0,
+                "timeout" to 0,
+                "limit" to SHARE_LOOKUP_LIMIT
+            )
+            val recent = chatNetworkDataSource.pullChatMessages(credentials, notesUrl, fieldMap)
+            holdsShare(recent.body()?.ocs?.data, referenceId)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.w(TAG, "Could not check whether the share arrived, so it is not sent again", e)
+            true
+        }
+
+    private fun reportShareFailure(description: String, throwable: Throwable) {
+        Log.e(TAG, "Failed to $description", throwable)
+        _actionFailures.tryEmit(R.string.nc_message_not_added_to_notes)
+    }
+
+    /**
+     * Runs an action whose only visible outcome is whether it worked. The reminder dialog is already
+     * dismissed and the chat has already said the message was sent by the time the answer arrives, so
+     * a failure that is not reported here is never reported at all.
+     *
+     * Deliberately without a retry: sharing to notes posts a message with a reference id generated per
+     * call, so a second attempt after a timeout the server did accept would post it twice.
+     */
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private fun requestWithFeedback(description: String, @StringRes failureMessage: Int, request: suspend () -> Unit) {
         viewModelScope.launch {
             try {
-                chatNetworkDataSource.shareLocationToNotes(credentials, url, objectType, objectId, metadata)
+                request()
             } catch (e: Exception) {
-                Log.e(TAG, "Error when sharing location to notes", e)
+                Log.e(TAG, "Failed to $description", e)
+                _actionFailures.tryEmit(failureMessage)
             }
         }
     }
@@ -2604,6 +2679,18 @@ class ChatViewModel @AssistedInject constructor(
 
     companion object {
         private val TAG = ChatViewModel::class.java.simpleName
+
+        /** Enough of the note to self to cover what a share of ours could have landed behind. */
+        private const val SHARE_LOOKUP_LIMIT = 20
+
+        /**
+         * Whether [messages] already hold the share that was sent with [referenceId]. Messages the
+         * server did not return - because the lookup failed or answered "not modified" - are read as
+         * "it may well be there", since sending a second copy is worse than not sending one at all.
+         */
+        @VisibleForTesting
+        fun holdsShare(messages: List<ChatMessageJson>?, referenceId: String): Boolean =
+            messages?.any { it.referenceId == referenceId } ?: true
 
         /**
          * Returns the read marker that makes [messageId] the first unread message: the id of the

@@ -21,7 +21,6 @@ import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEventsOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.message.SendMessageUtils
 import io.reactivex.Observable
 import retrofit2.Response
 
@@ -92,18 +91,10 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         credentials: String,
         url: String,
         message: String,
-        displayName: String
+        displayName: String,
+        referenceId: String
     ): ChatOverallSingleMessage =
-        ncApiCoroutines.sendChatMessage(
-            credentials,
-            url,
-            message,
-            displayName,
-            0,
-            false,
-            SendMessageUtils().generateReferenceId(),
-            null
-        )
+        ncApiCoroutines.sendChatMessage(credentials, url, message, displayName, 0, false, referenceId, null)
 
     override suspend fun checkForNoteToSelf(credentials: String, url: String): RoomOverall =
         ncApiCoroutines.getNoteToSelfRoom(credentials, url)
@@ -113,8 +104,9 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         url: String,
         objectType: String,
         objectId: String,
-        metadata: String
-    ): GenericOverall = ncApiCoroutines.sendLocation(credentials, url, objectType, objectId, metadata)
+        metadata: String,
+        referenceId: String
+    ): GenericOverall = ncApiCoroutines.sendLocation(credentials, url, objectType, objectId, metadata, referenceId)
 
     override suspend fun leaveRoom(credentials: String, url: String): GenericOverall =
         ncApiCoroutines.leaveRoom(credentials, url)

@@ -36,21 +36,26 @@ interface ChatNetworkDataSource {
 
     suspend fun getReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): Reminder
     suspend fun deleteReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): GenericOverall
+
+    @Suppress("LongParameterList")
     suspend fun shareToNotes(
         credentials: String,
         url: String,
         message: String,
-        displayName: String
+        displayName: String,
+        referenceId: String
     ): ChatOverallSingleMessage
 
     suspend fun checkForNoteToSelf(credentials: String, url: String): RoomOverall
 
+    @Suppress("LongParameterList")
     suspend fun shareLocationToNotes(
         credentials: String,
         url: String,
         objectType: String,
         objectId: String,
-        metadata: String
+        metadata: String,
+        referenceId: String
     ): GenericOverall
 
     suspend fun leaveRoom(credentials: String, url: String): GenericOverall
