@@ -12,7 +12,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
@@ -21,6 +24,8 @@ import com.nextcloud.talk.conversationlist.ui.ConversationListEntry
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.data.InvitationsModel
 import com.nextcloud.talk.invitation.data.InvitationsRepository
+import com.nextcloud.talk.jobs.ConversationActionWorker
+import com.nextcloud.talk.jobs.ConversationActionWorker.ConversationAction
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -56,6 +61,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
@@ -800,29 +807,15 @@ class ConversationsListViewModel @Inject constructor(
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     fun markConversationAsUnread(conversation: ConversationModel) {
-        val original = conversation.copy()
-        val optimistic = conversation.copy(unreadMessages = 1)
-        val apiVersion = ApiUtils.getChatApiVersion(
-            currentUser.capabilities?.spreedCapability!!,
-            intArrayOf(ApiUtils.API_V1)
-        )
-        val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
-            val result = optimisticAction(
-                apply = {
-                    conversationListUpdater.markPendingUnread(conversation.internalId)
-                    applyLocally(optimistic)
-                    revertTo(original) { conversationListUpdater.clearPendingUnread(conversation.internalId) }
-                },
-                request = { conversationsRepository.markConversationAsUnread(credentials, url) }
-            )
+            conversationListUpdater.markPendingUnread(conversation.internalId)
+            applyLocally(conversation.copy(unreadMessages = 1))
 
-            _readUnreadState.value = result.fold(
-                onSuccess = { ConversationReadUnreadUiState.Success },
-                onFailure = { ConversationReadUnreadUiState.Error }
-            )
+            handOver(conversation, ConversationAction.MARK_UNREAD) {
+                _readUnreadState.value = ConversationReadUnreadUiState.Error
+            }
+            _readUnreadState.value = ConversationReadUnreadUiState.Success
         }
     }
 
@@ -848,85 +841,70 @@ class ConversationsListViewModel @Inject constructor(
         _archiveState.value = ArchiveUiState.None
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     fun toggleConversationArchive(conversation: ConversationModel) {
-        val original = conversation.copy()
         val desiredArchived = !conversation.hasArchived
-        val optimistic = conversation.copy(hasArchived = desiredArchived)
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-        val url = ApiUtils.getUrlForArchive(apiVersion, currentUser.baseUrl, conversation.token)
-        viewModelScope.launch {
-            val result = optimisticAction(
-                apply = {
-                    conversationListUpdater.markPendingArchived(conversation.internalId, desiredArchived)
-                    applyLocally(optimistic)
-                    revertTo(original) {
-                        conversationListUpdater.clearPendingArchived(conversation.internalId, desiredArchived)
-                    }
-                },
-                request = {
-                    if (desiredArchived) {
-                        conversationsRepository.archiveConversation(credentials, url)
-                    } else {
-                        conversationsRepository.unarchiveConversation(credentials, url)
-                    }
-                }
-            )
 
-            _archiveState.value = result.fold(
-                onSuccess = { ArchiveUiState.Success(desiredArchived, conversation.displayName) },
-                onFailure = { ArchiveUiState.Error }
-            )
+        viewModelScope.launch {
+            conversationListUpdater.markPendingArchived(conversation.internalId, desiredArchived)
+            applyLocally(conversation.copy(hasArchived = desiredArchived))
+
+            handOver(conversation, ConversationAction.ARCHIVE, desiredArchived) {
+                _archiveState.value = ArchiveUiState.Error
+            }
+            _archiveState.value = ArchiveUiState.Success(desiredArchived, conversation.displayName)
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     fun addConversationToFavorites(conversation: ConversationModel) {
-        val original = conversation.copy()
-        val optimistic = conversation.copy(favorite = true)
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-        val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser.baseUrl, conversation.token)
-        viewModelScope.launch {
-            val result = optimisticAction(
-                apply = {
-                    conversationListUpdater.markPendingFavorite(conversation.internalId, favorite = true)
-                    applyLocally(optimistic)
-                    revertTo(original) {
-                        conversationListUpdater.clearPendingFavorite(conversation.internalId, favorite = true)
-                    }
-                },
-                request = { conversationsRepository.addConversationToFavorites(credentials, url) }
-            )
+        setFavorite(conversation, favorite = true)
+    }
 
-            _favoriteState.value = result.fold(
-                onSuccess = { FavoriteUiState.Success },
-                onFailure = { FavoriteUiState.Error }
-            )
+    fun removeConversationFromFavorites(conversation: ConversationModel) {
+        setFavorite(conversation, favorite = false)
+    }
+
+    private fun setFavorite(conversation: ConversationModel, favorite: Boolean) {
+        viewModelScope.launch {
+            conversationListUpdater.markPendingFavorite(conversation.internalId, favorite)
+            applyLocally(conversation.copy(favorite = favorite))
+
+            handOver(conversation, ConversationAction.FAVORITE, favorite) {
+                _favoriteState.value = FavoriteUiState.Error
+            }
+            _favoriteState.value = FavoriteUiState.Success
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    fun removeConversationFromFavorites(conversation: ConversationModel) {
-        val original = conversation.copy()
-        val optimistic = conversation.copy(favorite = false)
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-        val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser.baseUrl, conversation.token)
-        viewModelScope.launch {
-            val result = optimisticAction(
-                apply = {
-                    conversationListUpdater.markPendingFavorite(conversation.internalId, favorite = false)
-                    applyLocally(optimistic)
-                    revertTo(original) {
-                        conversationListUpdater.clearPendingFavorite(conversation.internalId, favorite = false)
-                    }
-                },
-                request = { conversationsRepository.removeConversationFromFavorites(credentials, url) }
-            )
+    /**
+     * Hands the change to [ConversationActionWorker], which sends it even if this screen or the whole
+     * process is gone by then. While this screen is still around, a change the worker finally gave up
+     * on puts [conversation] back and reports itself through [onFailed]; when it is not, the worker
+     * has released the guard and the next room list sync brings the server state back instead.
+     */
+    private fun handOver(
+        conversation: ConversationModel,
+        action: ConversationAction,
+        enabled: Boolean = true,
+        onFailed: () -> Unit
+    ) {
+        val context = NextcloudTalkApplication.sharedApplication!!.applicationContext
+        val workId = ConversationActionWorker.enqueue(
+            context = context,
+            userId = currentUser.id!!,
+            roomToken = conversation.token,
+            action = action,
+            enabled = enabled
+        )
 
-            _favoriteState.value = result.fold(
-                onSuccess = { FavoriteUiState.Success },
-                onFailure = { FavoriteUiState.Error }
-            )
+        viewModelScope.launch {
+            val outcome = WorkManager.getInstance(context).getWorkInfoByIdFlow(workId)
+                .filterNotNull()
+                .first { it.state.isFinished }
+
+            if (outcome.state == WorkInfo.State.FAILED) {
+                applyLocally(conversation)
+                onFailed()
+            }
         }
     }
 
