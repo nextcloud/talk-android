@@ -17,6 +17,7 @@ import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel.FavoriteUiState
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.data.InvitationsRepository
+import com.nextcloud.talk.jobs.ConversationActionWorker.ConversationAction
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
@@ -62,6 +63,7 @@ import org.mockito.kotlin.stub
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.whenever
+import org.mockito.kotlin.wheneverBlocking
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import retrofit2.HttpException
@@ -217,6 +219,38 @@ class ConversationsListViewModelOptimisticActionsTest {
 
         sync.complete()
         assertTrue(isListed())
+    }
+
+    @Test
+    fun `a failed favorite does not undo an archive that succeeded meanwhile`() {
+        val archivedSinceTheSnapshot = CONVERSATION.copy(favorite = true, hasArchived = true)
+        wheneverBlocking { repository.getLocallyStoredConversation(eq(USER), eq(CONVERSATION.token)) }
+            .thenReturn(archivedSinceTheSnapshot)
+
+        runBlocking { viewModel.restore(CONVERSATION, ConversationAction.FAVORITE) }
+
+        verifyBlocking(repository) { updateConversation(CONVERSATION.copy(hasArchived = true)) }
+    }
+
+    @Test
+    fun `a failed archive puts back only the archive flag`() {
+        val unreadSinceTheSnapshot = CONVERSATION.copy(hasArchived = true, unreadMessages = UNREAD_MESSAGES)
+        wheneverBlocking { repository.getLocallyStoredConversation(eq(USER), eq(CONVERSATION.token)) }
+            .thenReturn(unreadSinceTheSnapshot)
+
+        runBlocking { viewModel.restore(CONVERSATION, ConversationAction.ARCHIVE) }
+
+        verifyBlocking(repository) { updateConversation(CONVERSATION.copy(unreadMessages = UNREAD_MESSAGES)) }
+    }
+
+    @Test
+    fun `a conversation that is no longer stored is put back as it was captured`() {
+        wheneverBlocking { repository.getLocallyStoredConversation(eq(USER), eq(CONVERSATION.token)) }
+            .thenReturn(null)
+
+        runBlocking { viewModel.restore(CONVERSATION, ConversationAction.MARK_UNREAD) }
+
+        verifyBlocking(repository) { updateConversation(CONVERSATION) }
     }
 
     private fun isListed(): Boolean = viewModel.visibleRoomsFlow.value.any { it.token == CONVERSATION.token }
