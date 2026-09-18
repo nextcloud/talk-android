@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,6 +39,7 @@ import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 
 private const val SEEKBAR_MAX = 100
+private const val INACTIVE_TRACK_ALPHA = 0.4f
 
 // Deliberately plainer than VoiceMessage: a stock Material3 Slider (no waveform track) and
 // a generic file icon + filename instead of the mic-associated waveform look, so a generic
@@ -110,6 +112,17 @@ fun AudioFileMessage(
                             val progressI = (it * SEEKBAR_MAX).toInt()
                             onSeek(message.id, progressI)
                         },
+                        // Material3's own defaults (primary/surfaceVariant) read as near-invisible
+                        // against the message bubble, but ComposeWaveformSeekBar's full-strength
+                        // palette (inversePrimary/onPrimaryContainer) was too heavy for a plain
+                        // track - primary keeps the thumb/played portion recognizable as the
+                        // app's normal accent, and a muted onPrimaryContainer keeps the unplayed
+                        // rail visible without it reading as bold text-strength contrast.
+                        colors = SliderDefaults.colors(
+                            thumbColor = colorScheme.primary,
+                            activeTrackColor = colorScheme.primary,
+                            inactiveTrackColor = colorScheme.onPrimaryContainer.copy(alpha = INACTIVE_TRACK_ALPHA)
+                        ),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
