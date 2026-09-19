@@ -25,6 +25,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
@@ -62,7 +63,7 @@ public class CapabilitiesWorker extends Worker {
         super(context, workerParams);
     }
 
-    private void updateUser(CapabilitiesOverall capabilitiesOverall, User user) {
+    private boolean updateUser(CapabilitiesOverall capabilitiesOverall, User user) {
         if (capabilitiesOverall.getOcs() != null && capabilitiesOverall.getOcs().getData() != null &&
             capabilitiesOverall.getOcs().getData().getCapabilities() != null) {
 
@@ -75,18 +76,27 @@ public class CapabilitiesWorker extends Worker {
                     eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
                                                   EventStatus.EventType.CAPABILITIES_FETCH,
                                                   true));
+                    return true;
                 } else {
                     Log.w(TAG, "Error updating user");
                     eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
                                                   EventStatus.EventType.CAPABILITIES_FETCH,
                                                   false));
+                    return false;
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error updating user", e);
                 eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
                                               EventStatus.EventType.CAPABILITIES_FETCH,
                                               false));
+                return false;
             }
+        } else {
+            Log.w(TAG, "Capabilities response for " + user.getUsername() + " contained no capabilities data");
+            eventBus.post(new EventStatus(UserIdUtils.INSTANCE.getIdForUser(user),
+                                          EventStatus.EventType.CAPABILITIES_FETCH,
+                                          false));
+            return false;
         }
     }
 
@@ -101,12 +111,15 @@ public class CapabilitiesWorker extends Worker {
 
         List<User> userEntityObjectList = new ArrayList<>();
         boolean userNotFound = userManager.getUserWithInternalId(internalUserId).isEmpty().blockingGet();
+        boolean isTargetedSingleUserFetch = internalUserId != NO_ID && !userNotFound;
 
         if (internalUserId == -1 || userNotFound) {
             userEntityObjectList = userManager.getUsers().blockingGet();
         } else {
             userEntityObjectList.add(userManager.getUserWithInternalId(internalUserId).blockingGet());
         }
+
+        boolean allFetchesSucceeded = true;
 
         for (User user : userEntityObjectList) {
 
@@ -125,6 +138,8 @@ public class CapabilitiesWorker extends Worker {
                 url = ApiUtils.getUrlForCapabilities(baseurl);
             }
 
+            AtomicBoolean userFetchSucceeded = new AtomicBoolean(false);
+
             ncApi.getCapabilities(ApiUtils.getCredentials(user.getUsername(), user.getToken()), url)
                 .retry(3)
                 .blockingSubscribe(new Observer<CapabilitiesOverall>() {
@@ -135,7 +150,7 @@ public class CapabilitiesWorker extends Worker {
 
                     @Override
                     public void onNext(CapabilitiesOverall capabilitiesOverall) {
-                        updateUser(capabilitiesOverall, user);
+                        userFetchSucceeded.set(updateUser(capabilitiesOverall, user));
                     }
 
                     @Override
@@ -150,6 +165,18 @@ public class CapabilitiesWorker extends Worker {
                         // unused atm
                     }
                 });
+
+            if (!userFetchSucceeded.get()) {
+                allFetchesSucceeded = false;
+            }
+        }
+
+        // For a targeted single-user fetch (e.g. right after login, or a manual refresh) a failure
+        // must not silently linger until the next periodic run, which can be up to HALF_DAY hours away.
+        // Ask WorkManager to retry this request with backoff instead. Bulk, all-users runs (the periodic
+        // schedule and the app-start chain) keep returning success so they don't block dependent work.
+        if (isTargetedSingleUserFetch && !allFetchesSucceeded) {
+            return Result.retry();
         }
 
         return Result.success();

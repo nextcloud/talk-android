@@ -16,11 +16,16 @@ import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
 import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.google.android.material.snackbar.Snackbar
@@ -62,6 +67,7 @@ import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.net.CookieManager
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
@@ -496,8 +502,14 @@ class AccountVerificationActivity : BaseActivity() {
             OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java)
                 .setInputData(userData)
                 .setExpeditedIfSupported()
+                .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, WorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.MILLISECONDS)
                 .build()
-        WorkManager.getInstance().enqueue(capabilitiesWork)
+        WorkManager.getInstance().enqueueUniqueWork(
+            CAPABILITIES_WORK_NAME_PREFIX + internalAccountId,
+            ExistingWorkPolicy.REPLACE,
+            capabilitiesWork
+        )
     }
 
     private fun fetchAndStoreExternalSignalingSettings() {
@@ -613,5 +625,6 @@ class AccountVerificationActivity : BaseActivity() {
     companion object {
         private val TAG = AccountVerificationActivity::class.java.simpleName
         const val DELAY_IN_MILLIS: Long = 7500
+        const val CAPABILITIES_WORK_NAME_PREFIX = "CapabilitiesFetch_"
     }
 }
