@@ -383,6 +383,7 @@
     <string name="nc_logs_share">Enviar como e-mail</string>
     <string name="nc_logs_share_diagnosis">Relatório de diagnóstico</string>
     <string name="nc_logs_share_latest_crash">Última falha</string>
+    <string name="nc_logs_share_no_app_found">Não foi encontrado nenhum aplicativo para enviar o relatório.</string>
     <string name="nc_logs_share_subject">%1$s registros</string>
     <string name="nc_logs_title">Registros</string>
     <string name="nc_logs_total_size">Tamanho total do registro: %d KB</string>

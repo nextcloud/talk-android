@@ -383,6 +383,7 @@
     <string name="nc_logs_share">Envoyer par e-mail</string>
     <string name="nc_logs_share_diagnosis">Rapport de diagnostic</string>
     <string name="nc_logs_share_latest_crash">Dernier plantage</string>
+    <string name="nc_logs_share_no_app_found">Aucune application trouvée pour envoyer le rapport.</string>
     <string name="nc_logs_share_subject">Journaux de %1$s</string>
     <string name="nc_logs_title">Logs</string>
     <string name="nc_logs_total_size">Taille totale des journaux : %d Ko</string>
