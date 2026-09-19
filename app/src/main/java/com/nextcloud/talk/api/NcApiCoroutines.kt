@@ -214,6 +214,12 @@ interface NcApiCoroutines {
         @Field("message") message: String
     ): ChatOverallSingleMessage
 
+    @DELETE
+    suspend fun deleteChatMessage(
+        @Header("Authorization") authorization: String,
+        @Url url: String
+    ): ChatOverallSingleMessage
+
     @FormUrlEncoded
     @POST
     suspend fun banActor(

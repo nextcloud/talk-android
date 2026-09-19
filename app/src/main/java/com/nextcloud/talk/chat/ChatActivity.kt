@@ -1519,6 +1519,16 @@ class ChatActivity :
         }
 
         lifecycleScope.launch {
+            chatViewModel.reactionFailures.collect { operation ->
+                val message = when (operation) {
+                    ChatViewModel.ReactionOperation.ADD -> R.string.reaction_add_failed
+                    ChatViewModel.ReactionOperation.DELETE -> R.string.reaction_delete_failed
+                }
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+            }
+        }
+
+        lifecycleScope.launch {
             chatViewModel.noMoreSearchResults.collect {
                 val inSearchMode = chatViewModel.chatMode.value == ChatViewModel.ChatMode.SEARCH_MODE
                 val now = System.currentTimeMillis()
@@ -3680,7 +3690,7 @@ class ChatActivity :
             token = roomToken,
             messageId = message.jsonMessageId.toString()
         )
-        chatViewModel.hidePinnedMessage(credentials!!, url)
+        chatViewModel.hidePinnedMessage(credentials!!, url, message.jsonMessageId.toLong())
     }
 
     fun pinMessage(message: ChatMessage) {
@@ -3695,8 +3705,13 @@ class ChatActivity :
             setContent {
                 GetPinnedOptionsDialog(shouldDismiss, context, viewThemeUtils) { zonedDateTime ->
                     zonedDateTime?.let {
-                        chatViewModel.pinMessage(credentials!!, url, pinUntil = zonedDateTime.toEpochSecond().toInt())
-                    } ?: chatViewModel.pinMessage(credentials!!, url)
+                        chatViewModel.pinMessage(
+                            credentials!!,
+                            url,
+                            message.jsonMessageId.toLong(),
+                            pinUntil = zonedDateTime.toEpochSecond().toInt()
+                        )
+                    } ?: chatViewModel.pinMessage(credentials!!, url, message.jsonMessageId.toLong())
 
                     shouldDismiss.value = true
                 }
@@ -3711,7 +3726,7 @@ class ChatActivity :
             token = roomToken,
             messageId = message.jsonMessageId.toString()
         )
-        chatViewModel.unPinMessage(credentials!!, url)
+        chatViewModel.unPinMessage(credentials!!, url, message.jsonMessageId.toLong())
     }
 
     private fun markAsRead(messageId: Int) {
