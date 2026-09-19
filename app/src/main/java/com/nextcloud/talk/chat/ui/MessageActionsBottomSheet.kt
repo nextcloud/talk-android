@@ -264,6 +264,7 @@ internal fun buildMessageActionsState(
             CapabilitiesUtil.isTranslationsSupported(spreedCapabilities) &&
             isOnline,
         showShareToNote = !message.isDeleted &&
+            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.NOTE_TO_SELF) &&
             !ConversationUtils.isNoteToSelfConversation(conversation) &&
             isOnline &&
             !isClassifiedRoom,
