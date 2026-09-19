@@ -217,6 +217,11 @@ class ChatMessageSyncer @Inject constructor(
      * dismiss the user's push notifications for the fetched messages, so the catch-up is skipped
      * entirely (same guard as on iOS).
      *
+     * Reachability is deliberately not pre-checked. Callers are gated by a WorkManager
+     * `NetworkType.CONNECTED` constraint, and a request that fails because the device is offline
+     * is reported as a failed sync and retried, which is strictly better than skipping a fetch
+     * that would have succeeded on a connected-but-unvalidated network.
+     *
      * Bursts of catch-up requests for the same room (e.g. one push notification per message of an
      * active group chat) are coalesced: while a catch-up runs, further requests only mark a rerun
      * and return, and consecutive fetches are paced by [CATCH_UP_COOLDOWN_MILLIS].
@@ -226,24 +231,18 @@ class ChatMessageSyncer @Inject constructor(
         limit: Int = DEFAULT_MESSAGES_LIMIT,
         lastReadMessage: Int? = null,
         unreadMessages: Int = 0
-    ): SyncOutcome =
-        when {
-            !networkMonitor.isOnline.value -> {
-                Log.d(TAG, "Device is offline, skipping catch-up for ${target.internalConversationId}")
-                SYNC_FAILED
-            }
-
-            !target.user.hasSpreedFeatureCapability(SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value) -> {
-                Log.d(
-                    TAG,
-                    "Server lacks ${SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value}, " +
-                        "skipping catch-up for ${target.internalConversationId}"
-                )
-                NOTHING_SYNCED
-            }
-
-            else -> coalescedRoomCatchUp(target, limit, lastReadMessage, unreadMessages)
+    ): SyncOutcome {
+        if (!target.user.hasSpreedFeatureCapability(SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value)) {
+            Log.d(
+                TAG,
+                "Server lacks ${SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value}, " +
+                    "skipping catch-up for ${target.internalConversationId}"
+            )
+            return NOTHING_SYNCED
         }
+
+        return coalescedRoomCatchUp(target, limit, lastReadMessage, unreadMessages)
+    }
 
     /**
      * Runs at most one catch-up per room at a time. A request arriving while one is running only
