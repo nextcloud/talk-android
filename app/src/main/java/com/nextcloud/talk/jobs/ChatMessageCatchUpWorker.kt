@@ -41,8 +41,9 @@ import javax.inject.Inject
  *
  * Push bursts for the same room enqueue one worker each, but the per-room coalescing of the
  * [ChatMessageSyncer] singleton collapses overlapping catch-ups into few actual fetches. Skipped
- * in battery saver mode; the chat-keep-notifications capability gate and the offline check are
- * handled inside [ChatMessageSyncer.catchUpRoom].
+ * in battery saver mode; the chat-keep-notifications capability gate is handled inside
+ * [ChatMessageSyncer.catchUpRoom]. Reachability is covered by the request's
+ * [NetworkType.CONNECTED] constraint rather than by a pre-check.
  */
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatMessageCatchUpWorker(context: Context, workerParams: WorkerParameters) :
