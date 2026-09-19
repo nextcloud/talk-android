@@ -1400,11 +1400,16 @@ class ChatActivity :
         this.lifecycle.addObserver(chatViewModel)
 
         val sessionToken = SessionToken(this, ComponentName(this, VoiceMessageMediaService::class.java))
-        mediaControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
+        val future = MediaController.Builder(this, sessionToken).buildAsync()
+        mediaControllerFuture = future
 
-        mediaControllerFuture?.addListener({
+        future.addListener({
+            if (future !== mediaControllerFuture) {
+                return@addListener
+            }
+
             mediaController = try {
-                mediaControllerFuture?.get()
+                future.get()
             } catch (_: CancellationException) {
                 null
             }
