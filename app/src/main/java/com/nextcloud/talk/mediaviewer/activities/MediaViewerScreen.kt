@@ -24,6 +24,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,7 +32,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.systemBarsIgnoringVisibility
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -97,6 +98,7 @@ import pl.droidsonroids.gif.GifImageView
 private const val TOOLBAR_ALPHA = 0.6f
 private const val MAX_SCALE = 6.0f
 private const val MEDIUM_SCALE = 2.45f
+private const val CONTROLLER_SHOW_TIMEOUT_MS = 2000
 
 private val thumbnailSize = 48.dp
 private val thumbnailSpacing = 4.dp
@@ -163,14 +165,13 @@ fun MediaViewerScreen(
     }
 
     // Tapping the currently shown item toggles this off, hiding the top bar and thumbnail strip so
-    // only the media itself is visible - mirrors FullScreenMediaScreen's own tap-to-toggle-fullscreen
-    // behavior (still used for audio). For video, ExoPlayer's own controller visibility is the
+    // only the media itself is visible. For video, ExoPlayer's own controller visibility is the
     // source of truth (see VideoPlayerView) rather than an independently toggled flag, since the
     // controller already auto-hides itself after a timeout.
     var showControls by remember { mutableStateOf(true) }
 
     // The status/nav bars toggle together with the top bar and thumbnail strip - one tap hides all
-    // of it, matching FullScreenMediaScreen's own tap-to-toggle-fullscreen.
+    // of it.
     LaunchedEffect(showControls) {
         onControlsVisibilityChanged(showControls)
     }
@@ -385,11 +386,10 @@ private fun ImagePage(localPath: String, onToggleControls: () -> Unit) {
 
 // Pushes ExoPlayer's own controller (progress bar, play/pause row) up by extraBottomInsetPx (the
 // thumbnail strip's height, when one is showing for the current group) on top of the system nav
-// bar inset, same technique FullScreenMediaScreen's MediaPlayerView already uses to keep the
-// controller clear of the nav bar - so the controller never renders underneath the strip instead
-// of shrinking the video content itself, which would visibly resize the video on every
-// show/hide-controls tap.
+// bar inset, so the controller never renders underneath the strip instead of shrinking the video
+// content itself, which would visibly resize the video on every show/hide-controls tap.
 @OptIn(UnstableApi::class)
+@kotlin.OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun VideoPlayerView(
     exoPlayer: ExoPlayer,
@@ -398,9 +398,13 @@ private fun VideoPlayerView(
 ) {
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
-    val systemBarsBottomPx = WindowInsets.systemBars.getBottom(density)
-    val leftPx = WindowInsets.systemBars.getLeft(density, layoutDirection)
-    val rightPx = WindowInsets.systemBars.getRight(density, layoutDirection)
+    // Deliberately "IgnoringVisibility": the plain systemBars value animates across many frames
+    // while we hide/show the bars (see enterImmersiveMode/exitImmersiveMode), and reapplying
+    // these margins on every one of those frames was fighting the ExoPlayer controller's own
+    // hide animation, flipping it back to visible mid-fade and looping forever.
+    val systemBarsBottomPx = WindowInsets.systemBarsIgnoringVisibility.getBottom(density)
+    val leftPx = WindowInsets.systemBarsIgnoringVisibility.getLeft(density, layoutDirection)
+    val rightPx = WindowInsets.systemBarsIgnoringVisibility.getRight(density, layoutDirection)
     val bottomPx = systemBarsBottomPx + extraBottomInsetPx
     val originalProgressMarginBottom = remember { intArrayOf(-1) }
 
@@ -409,6 +413,7 @@ private fun VideoPlayerView(
             PlayerView(ctx).apply {
                 player = exoPlayer
                 useController = true
+                controllerShowTimeoutMs = CONTROLLER_SHOW_TIMEOUT_MS
                 showController()
                 setControllerVisibilityListener(
                     PlayerView.ControllerVisibilityListener { visibility ->
