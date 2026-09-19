@@ -46,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -95,6 +96,7 @@ import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import kotlinx.coroutines.launch
 import java.net.CookieManager
 import javax.inject.Inject
 
@@ -149,7 +151,7 @@ class ChooseAccountDialogCompose {
         ecosystemManager = EcosystemManager(activity)
 
         LaunchedEffect(currentUser) {
-            val users = userManager.users.blockingGet()
+            val users = userManager.getUsers()
             users.forEach { user ->
                 if (!user.current) {
                     invitationsViewModel.getInvitations(user)
@@ -235,8 +237,8 @@ class ChooseAccountDialogCompose {
         }
     }
 
-    private fun setupAccounts(invitationsUiState: InvitationsViewModel.ViewState) {
-        userManager.users.blockingGet().forEach { user ->
+    private suspend fun setupAccounts(invitationsUiState: InvitationsViewModel.ViewState) {
+        userManager.getUsers().forEach { user ->
             if (!user.current) {
                 val pendingCount = getPendingInvitations(invitationsUiState)
                 addAccountToList(user, pendingCount)
@@ -286,17 +288,20 @@ class ChooseAccountDialogCompose {
 
     @Composable
     private fun AccountRow(userItem: AccountItem, activity: Activity, onSelected: () -> Unit) {
+        val scope = rememberCoroutineScope()
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    if (userManager.setUserAsActive(userItem.user).blockingGet()) {
-                        cookieManager.cookieStore.removeAll()
-                        val intent = Intent(activity, ConversationsListActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        activity.startActivity(intent)
-                        onSelected()
+                    scope.launch {
+                        if (userManager.setUserAsActiveSuspend(userItem.user)) {
+                            cookieManager.cookieStore.removeAll()
+                            val intent = Intent(activity, ConversationsListActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            activity.startActivity(intent)
+                            onSelected()
+                        }
                     }
                 }
                 .padding(8.dp)

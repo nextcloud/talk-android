@@ -251,7 +251,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     @Suppress("LongMethod")
     private fun handleCallPushMessage() {
-        val userBeingCalled = userManager.getUserWithId(user.id!!).blockingGet()
+        val userBeingCalled = runBlocking { userManager.getUserWithIdSuspend(user.id!!) }!!
 
         fun createBundle(conversation: ConversationModel): Bundle {
             val bundle = Bundle()
@@ -404,7 +404,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 }
 
                 override fun onNext(conversation: ConversationModel) {
-                    if (userManager.setUserAsActive(userBeingCalled!!).blockingGet()) {
+                    if (runBlocking { userManager.setUserAsActiveSuspend(userBeingCalled!!) }) {
                         if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(
                                 userBeingCalled?.capabilities?.spreedCapability
                             )
@@ -455,7 +455,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private fun initFromCleartextSubject(inputData: Data): Boolean {
         val subject = inputData.getString(BundleKeys.KEY_NOTIFICATION_CLEARTEXT_SUBJECT)
         val id = inputData.getLong(BundleKeys.KEY_NOTIFICATION_USER_ID, -1)
-        user = userManager.getUserWithId(id).blockingGet()
+        user = runBlocking { userManager.getUserWithIdSuspend(id) }!!
         pushMessage = LoganSquare.parse(subject, DecryptedPushMessage::class.java)
         return true
     }

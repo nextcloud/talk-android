@@ -16,6 +16,7 @@ import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import com.nextcloud.talk.utils.setExpeditedIfSupported
@@ -30,7 +31,6 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityAccountVerificationBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.AccountRemovalWorker
@@ -54,11 +54,12 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PASSWORD
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USERNAME
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
-import io.reactivex.MaybeObserver
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.net.CookieManager
@@ -234,46 +235,38 @@ class AccountVerificationActivity : BaseActivity() {
             })
     }
 
+    @SuppressLint("SetTextI18n")
+    @Suppress("TooGenericExceptionCaught")
     private fun storeProfile(displayName: String?, userId: String, capabilitiesOverall: CapabilitiesOverall) {
-        userManager.storeProfile(
-            username,
-            UserManager.UserAttributes(
-                id = null,
-                serverUrl = baseUrl,
-                currentUser = false,
-                userId = userId,
-                token = token,
-                displayName = displayName,
-                pushConfigurationState = null,
-                capabilities = LoganSquare.serialize(capabilitiesOverall.ocs!!.data!!.capabilities),
-                serverVersion = LoganSquare.serialize(capabilitiesOverall.ocs!!.data!!.serverVersion),
-                certificateAlias = appPreferences.temporaryClientCertAlias,
-                externalSignalingServer = null
-            )
-        )
-            .subscribeOn(Schedulers.io())
-            .subscribe(object : MaybeObserver<User> {
-                override fun onSubscribe(d: Disposable) {
-                    disposables.add(d)
-                }
-
-                @SuppressLint("SetTextI18n")
-                override fun onSuccess(user: User) {
-                    internalAccountId = user.id!!
-                    eventBus.post(EventStatus(user.id!!, EventStatus.EventType.PROFILE_STORED, true))
-                }
-
-                @SuppressLint("SetTextI18n")
-                override fun onError(e: Throwable) {
-                    binding.progressText.text = """ ${binding.progressText.text}""".trimIndent() +
-                        resources!!.getString(R.string.nc_display_name_not_stored)
-                    abortVerification()
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+        try {
+            val user = runBlocking {
+                userManager.storeProfileSuspend(
+                    username,
+                    UserManager.UserAttributes(
+                        id = null,
+                        serverUrl = baseUrl,
+                        currentUser = false,
+                        userId = userId,
+                        token = token,
+                        displayName = displayName,
+                        pushConfigurationState = null,
+                        capabilities = LoganSquare.serialize(capabilitiesOverall.ocs!!.data!!.capabilities),
+                        serverVersion = LoganSquare.serialize(capabilitiesOverall.ocs!!.data!!.serverVersion),
+                        certificateAlias = appPreferences.temporaryClientCertAlias,
+                        externalSignalingServer = null
+                    )
+                )
+            }
+            if (user != null) {
+                internalAccountId = user.id!!
+                eventBus.post(EventStatus(user.id!!, EventStatus.EventType.PROFILE_STORED, true))
+            }
+            // user == null: unused atm
+        } catch (e: Exception) {
+            binding.progressText.text = """ ${binding.progressText.text}""".trimIndent() +
+                resources!!.getString(R.string.nc_display_name_not_stored)
+            abortVerification()
+        }
     }
 
     private fun fetchProfile(credentials: String, capabilitiesOverall: CapabilitiesOverall) {
@@ -392,7 +385,7 @@ class AccountVerificationActivity : BaseActivity() {
     private fun setupPushNotifications() {
         // This isn't a first account, and UnifiedPush is enabled.
         if (appPreferences.useUnifiedPush) {
-            if (userManager.getUserWithId(internalAccountId).blockingGet().hasWebPushCapability) {
+            if (runBlocking { userManager.getUserWithIdSuspend(internalAccountId) }!!.hasWebPushCapability) {
                 UnifiedPushUtils.registerWithCurrentDistributor(context)
                 eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
                 return
@@ -411,13 +404,13 @@ class AccountVerificationActivity : BaseActivity() {
         if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
             ClosedInterfaceImpl().setUpPushTokenRegistration()
             eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
-        } else if (userManager.users.blockingGet().size == 1 &&
+        } else if (runBlocking { userManager.getUsers() }.size == 1 &&
             UnifiedPushUtils.getExternalDistributors(context).isNotEmpty() &&
-            userManager.getUserWithId(internalAccountId).blockingGet().hasWebPushCapability
+            runBlocking { userManager.getUserWithIdSuspend(internalAccountId) }!!.hasWebPushCapability
         ) {
             useUnifiedPushIntroduced()
         } else if (UnifiedPushUtils.hasEmbeddedDistributor(context) &&
-            userManager.users.blockingGet().any { it.hasWebPushCapability }
+            runBlocking { userManager.getUsers() }.any { it.hasWebPushCapability }
         ) {
             useEmbeddedUnifiedPush()
         } else {
@@ -519,12 +512,12 @@ class AccountVerificationActivity : BaseActivity() {
     private fun proceedWithLogin() {
         cookieManager.cookieStore.removeAll()
 
-        val userToSetAsActive = userManager.getUserWithId(internalAccountId).blockingGet()
+        val userToSetAsActive = runBlocking { userManager.getUserWithIdSuspend(internalAccountId) }!!
         Log.d(TAG, "userToSetAsActive: " + userToSetAsActive.username)
 
-        if (userManager.setUserAsActive(userToSetAsActive).blockingGet()) {
+        if (runBlocking { userManager.setUserAsActiveSuspend(userToSetAsActive) }) {
             runOnUiThread {
-                if (userManager.users.blockingGet().size > 1 && isAccountImport) {
+                if (runBlocking { userManager.getUsers() }.size > 1 && isAccountImport) {
                     ApplicationWideMessageHolder.getInstance().messageType =
                         ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
                 }
@@ -577,37 +570,39 @@ class AccountVerificationActivity : BaseActivity() {
         }
     }
 
-    @SuppressLint("CheckResult")
     private fun deleteUserAndStartServerSelection(userId: Long) {
-        userManager.scheduleUserForDeletionWithId(userId).blockingGet()
-        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
-            .setExpeditedIfSupported()
-            .build()
-        WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
+        lifecycleScope.launch {
+            userManager.scheduleUserForDeletionWithIdSuspend(userId)
 
-        WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)
-            .observeForever { workInfo: WorkInfo? ->
+            val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
+                .setExpeditedIfSupported()
+                .build()
+            WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
 
-                when (workInfo?.state) {
-                    WorkInfo.State.SUCCEEDED -> {
-                        val intent = Intent(this, ServerSelectionActivity::class.java)
-                        startActivity(intent)
+            WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)
+                .observeForever { workInfo: WorkInfo? ->
+
+                    when (workInfo?.state) {
+                        WorkInfo.State.SUCCEEDED -> {
+                            val intent = Intent(this@AccountVerificationActivity, ServerSelectionActivity::class.java)
+                            startActivity(intent)
+                        }
+
+                        WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                            Toast.makeText(
+                                context,
+                                context.resources.getString(R.string.nc_common_error_sorry),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            Log.e(TAG, "something went wrong when deleting user with id $userId")
+                            val intent = Intent(this@AccountVerificationActivity, ServerSelectionActivity::class.java)
+                            startActivity(intent)
+                        }
+
+                        else -> {}
                     }
-
-                    WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
-                        Toast.makeText(
-                            context,
-                            context.resources.getString(R.string.nc_common_error_sorry),
-                            Toast.LENGTH_LONG
-                        ).show()
-                        Log.e(TAG, "something went wrong when deleting user with id $userId")
-                        val intent = Intent(this, ServerSelectionActivity::class.java)
-                        startActivity(intent)
-                    }
-
-                    else -> {}
                 }
-            }
+        }
     }
 
     companion object {

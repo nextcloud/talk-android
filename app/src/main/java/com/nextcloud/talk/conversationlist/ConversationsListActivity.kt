@@ -118,7 +118,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx2.await
+import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
@@ -200,7 +200,7 @@ class ConversationsListActivity : BaseActivity() {
 
         val targetUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, 0L)
         currentUser = if (targetUserId != 0L) {
-            userManager.getUserWithId(targetUserId).blockingGet()
+            runBlocking { userManager.getUserWithIdSuspend(targetUserId) }!!
         } else {
             currentUserProviderOld.currentUser.blockingGet()
         }
@@ -343,20 +343,22 @@ class ConversationsListActivity : BaseActivity() {
             object : AccountReceiverCallback {
                 @SuppressLint("UseKtx")
                 override fun onAccountReceived(accountName: String) {
-                    val users = userManager.users.blockingGet()
                     val baseUrl = accountName.substringAfterLast("@")
-                    val accountName = accountName.substringBeforeLast("@")
-                    val user = users.firstOrNull { user ->
-                        user.username == accountName && baseUrl == user.baseUrl?.toUri()?.host
+                    val trimmedAccountName = accountName.substringBeforeLast("@")
+                    lifecycleScope.launch {
+                        val users = userManager.getUsers()
+                        val user = users.firstOrNull { user ->
+                            user.username == trimmedAccountName && baseUrl == user.baseUrl?.toUri()?.host
+                        }
+                        if (user != null) {
+                            userManager.setUserAsActiveSuspend(user)
+                            val intent = Intent(context, ConversationsListActivity::class.java)
+                            startActivity(intent)
+                        } else {
+                            showSnackbar(getString(R.string.nc_no_account_found))
+                        }
                     }
-                    if (user != null) {
-                        userManager.setUserAsActive(user)
-                        val intent = Intent(context, ConversationsListActivity::class.java)
-                        startActivity(intent)
-                    } else {
-                        showSnackbar(getString(R.string.nc_no_account_found))
-                    }
-                    Log.d(TAG, accountName)
+                    Log.d(TAG, trimmedAccountName)
                 }
 
                 override fun onAccountError(reason: String) {
@@ -425,7 +427,7 @@ class ConversationsListActivity : BaseActivity() {
             }
 
             lifecycleScope.launch {
-                hasMultipleAccountsState.value = userManager.users.await().size > 1
+                hasMultipleAccountsState.value = userManager.getUsers().size > 1
             }
             conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
             fetchRooms()
@@ -705,7 +707,7 @@ class ConversationsListActivity : BaseActivity() {
             .setCancelable(false)
             .setNegativeButton(R.string.close, null)
 
-        if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
+        if (resources!!.getBoolean(R.bool.multiaccount_support) && runBlocking { userManager.getUsers() }.size > 1) {
             dialogBuilder.setPositiveButton(R.string.nc_switch_account) { _, _ ->
                 showChooseAccountDialog()
             }
@@ -1365,44 +1367,45 @@ class ConversationsListActivity : BaseActivity() {
         )
     }
 
-    @SuppressLint("CheckResult")
     private fun deleteUserAndRestartApp() {
-        userManager.scheduleUserForDeletionWithId(currentUser!!.id!!).blockingGet()
-        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
-            .setExpeditedIfSupported()
-            .build()
-        WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
+        lifecycleScope.launch {
+            userManager.scheduleUserForDeletionWithIdSuspend(currentUser!!.id!!)
+            val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
+                .setExpeditedIfSupported()
+                .build()
+            WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
 
-        WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)
-            .observeForever { workInfo: WorkInfo? ->
+            WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)
+                .observeForever { workInfo: WorkInfo? ->
 
-                when (workInfo?.state) {
-                    WorkInfo.State.SUCCEEDED -> {
-                        val text = String.format(
-                            context.resources.getString(R.string.nc_deleted_user),
-                            currentUser!!.displayName
-                        )
-                        Toast.makeText(
-                            context,
-                            text,
-                            Toast.LENGTH_LONG
-                        ).show()
-                        restartApp()
+                    when (workInfo?.state) {
+                        WorkInfo.State.SUCCEEDED -> {
+                            val text = String.format(
+                                context.resources.getString(R.string.nc_deleted_user),
+                                currentUser!!.displayName
+                            )
+                            Toast.makeText(
+                                context,
+                                text,
+                                Toast.LENGTH_LONG
+                            ).show()
+                            restartApp()
+                        }
+
+                        WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                            Toast.makeText(
+                                context,
+                                context.resources.getString(R.string.nc_common_error_sorry),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            Log.e(TAG, "something went wrong when deleting user with id " + currentUser!!.userId)
+                            restartApp()
+                        }
+
+                        else -> {}
                     }
-
-                    WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
-                        Toast.makeText(
-                            context,
-                            context.resources.getString(R.string.nc_common_error_sorry),
-                            Toast.LENGTH_LONG
-                        ).show()
-                        Log.e(TAG, "something went wrong when deleting user with id " + currentUser!!.userId)
-                        restartApp()
-                    }
-
-                    else -> {}
                 }
-            }
+        }
     }
 
     private fun restartApp() {
@@ -1434,7 +1437,7 @@ class ConversationsListActivity : BaseActivity() {
                 }
             }
 
-        if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
+        if (resources!!.getBoolean(R.bool.multiaccount_support) && runBlocking { userManager.getUsers() }.size > 1) {
             dialogBuilder.setNegativeButton(R.string.nc_switch_account) { _, _ ->
                 showChooseAccountDialog()
             }
@@ -1475,7 +1478,7 @@ class ConversationsListActivity : BaseActivity() {
                 deleteUserAndRestartApp()
             }
 
-        if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
+        if (resources!!.getBoolean(R.bool.multiaccount_support) && runBlocking { userManager.getUsers() }.size > 1) {
             dialogBuilder.setNegativeButton(R.string.nc_switch_account) { _, _ ->
                 showChooseAccountDialog()
             }
