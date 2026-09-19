@@ -27,36 +27,37 @@ import retrofit2.Response
 
 class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines: NcApiCoroutines) :
     ChatNetworkDataSource {
-    override fun getRoom(user: User, roomToken: String): Observable<ConversationModel> {
+    override fun getRoom(user: User, roomToken: String): Observable<ConversationModel> = Observable.defer {
         val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
 
-        return ncApi.getRoom(
+        ncApi.getRoom(
             credentials,
             ApiUtils.getUrlForRoom(apiVersion, user.baseUrl!!, roomToken)
         ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!, user) }
     }
 
-    override fun getCapabilities(user: User, roomToken: String): Observable<SpreedCapability> {
+    override fun getCapabilities(user: User, roomToken: String): Observable<SpreedCapability> = Observable.defer {
         val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
 
-        return ncApi.getRoomCapabilities(
+        ncApi.getRoomCapabilities(
             credentials,
             ApiUtils.getUrlForRoomCapabilities(apiVersion, user.baseUrl!!, roomToken)
         ).map { it.ocs?.data }
     }
 
-    override fun joinRoom(user: User, roomToken: String, roomPassword: String): Observable<ConversationModel> {
-        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
-        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, 1))
+    override fun joinRoom(user: User, roomToken: String, roomPassword: String): Observable<ConversationModel> =
+        Observable.defer {
+            val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
+            val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, 1))
 
-        return ncApi.joinRoom(
-            credentials,
-            ApiUtils.getUrlForParticipantsActive(apiVersion, user.baseUrl!!, roomToken),
-            roomPassword
-        ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!, user) }
-    }
+            ncApi.joinRoom(
+                credentials,
+                ApiUtils.getUrlForParticipantsActive(apiVersion, user.baseUrl!!, roomToken),
+                roomPassword
+            ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!, user) }
+        }
 
     override fun setReminder(
         user: User,
