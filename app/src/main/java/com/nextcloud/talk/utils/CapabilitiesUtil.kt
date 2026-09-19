@@ -71,7 +71,8 @@ enum class SpreedFeatures(val value: String) {
     CLASSIFIED_CONVERSATIONS("classified-conversations"),
     ANNOUNCEMENT_PRESET("announcement-preset"),
     CONVERSATION_TAGS("conversation-tags"),
-    PROMOTE_DEMOTE_OWNER("promote-demote-owner")
+    PROMOTE_DEMOTE_OWNER("promote-demote-owner"),
+    NOTE_TO_SELF("note-to-self")
 }
 
 @Suppress("TooManyFunctions")
