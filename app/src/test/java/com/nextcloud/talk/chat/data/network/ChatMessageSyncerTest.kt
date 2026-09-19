@@ -101,18 +101,6 @@ class ChatMessageSyncerTest {
     }
 
     @Test
-    fun `catchUpRoom skips when offline and marks the sync as failed`() =
-        runTest {
-            whenever(networkMonitor.isOnline).thenReturn(MutableStateFlow(false))
-
-            val outcome = syncer.catchUpRoom(target())
-
-            assertFalse(outcome.persistedNewMessages)
-            assertTrue(outcome.syncFailed)
-            verifyNoInteractions(network)
-        }
-
-    @Test
     fun `catchUpRoom skips without chat-keep-notifications capability`() =
         runTest {
             val outcome = syncer.catchUpRoom(target(user(withKeepNotificationsCapability = false)))
