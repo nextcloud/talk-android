@@ -599,10 +599,8 @@ class ChatMessageSyncer @Inject constructor(
                     onFailure = { e ->
                         Log.e(TAG, "Attempt $attempts failed", e)
                         attempts++
-                        fieldMap["limit"] = when (attempts) {
-                            2 -> RETRY_LIMIT_SECOND_ATTEMPT
-                            3 -> RETRY_LIMIT_THIRD_ATTEMPT
-                            else -> RETRY_LIMIT_FALLBACK_ATTEMPT
+                        if (attempts < MAX_PULL_ATTEMPTS) {
+                            delay(PULL_RETRY_DELAY_MILLIS * (attempts - 1))
                         }
                     }
                 )
@@ -1008,8 +1006,6 @@ class ChatMessageSyncer @Inject constructor(
         private const val HTTP_CODE_NOT_MODIFIED = 304
         private const val HTTP_CODE_PRECONDITION_FAILED = 412
         private const val MAX_PULL_ATTEMPTS = 5
-        private const val RETRY_LIMIT_SECOND_ATTEMPT = 50
-        private const val RETRY_LIMIT_THIRD_ATTEMPT = 10
-        private const val RETRY_LIMIT_FALLBACK_ATTEMPT = 5
+        private const val PULL_RETRY_DELAY_MILLIS = 1_000L
     }
 }
