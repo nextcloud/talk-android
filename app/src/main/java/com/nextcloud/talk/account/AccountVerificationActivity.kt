@@ -215,16 +215,19 @@ class AccountVerificationActivity : BaseActivity() {
                 }
 
                 override fun onError(e: Throwable) {
+                    // a failed request says nothing about Talk being installed: a server without
+                    // it still answers the capabilities endpoint, just without a spreed entry,
+                    // which is handled in onNext. Reaching here means the server could not be
+                    // asked at all, which is temporary - it must not cost the user their account.
+                    Log.e(TAG, "Failed to fetch the server capabilities", e)
                     if (resources != null) {
                         runOnUiThread {
-                            binding.progressText.text = String.format(
-                                resources!!.getString(R.string.nc_nextcloud_talk_app_not_installed),
-                                resources!!.getString(R.string.nc_app_product_name)
-                            )
+                            binding.progressText.text =
+                                resources!!.getString(R.string.nc_server_temporarily_unavailable)
                         }
                     }
                     ApplicationWideMessageHolder.getInstance().messageType =
-                        ApplicationWideMessageHolder.MessageType.SERVER_WITHOUT_TALK
+                        ApplicationWideMessageHolder.MessageType.SERVER_TEMPORARILY_UNAVAILABLE
                     abortVerification()
                 }
 
@@ -348,6 +351,8 @@ class AccountVerificationActivity : BaseActivity() {
                 fetchAndStoreCapabilities()
             }
             EventStatus.EventType.CAPABILITIES_FETCH -> {
+                // the capabilities of this account were already stored along with the profile, so
+                // a failed refresh is reported but does not invalidate the account
                 if (!eventStatus.isAllGood) {
                     runOnUiThread {
                         binding.progressText.text =
@@ -356,10 +361,8 @@ class AccountVerificationActivity : BaseActivity() {
                             ${resources!!.getString(R.string.nc_capabilities_failed)}
                             """.trimIndent()
                     }
-                    abortVerification()
-                } else {
-                    setupPushNotifications()
                 }
+                setupPushNotifications()
             }
             EventStatus.EventType.PUSH_REGISTRATION -> {
                 if (!eventStatus.isAllGood) {
