@@ -383,6 +383,7 @@
     <string name="nc_logs_share">Saada e-kirjana</string>
     <string name="nc_logs_share_diagnosis">Diagnostika aruanne</string>
     <string name="nc_logs_share_latest_crash">Viimane kokkujooksmine</string>
+    <string name="nc_logs_share_no_app_found">Aruande saatmiseks ei leidu rakendust.</string>
     <string name="nc_logs_share_subject">%1$s logi</string>
     <string name="nc_logs_title">Logid</string>
     <string name="nc_logs_total_size">Logimaht kokku: %d KB</string>
