@@ -26,6 +26,15 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Tracks connectivity for the whole process.
+ *
+ * The upstream callback is shared eagerly rather than while subscribed, because [isOnline] is read
+ * synchronously via its value from contexts that never collect it — background workers handling a
+ * push notification, for instance, run without any UI collector. A while-subscribed flow would
+ * keep returning the value captured when this singleton was constructed, which stays wrong for as
+ * long as the process lives.
+ */
 @Singleton
 class NetworkMonitorImpl @Inject constructor(private val context: Context) : NetworkMonitor {
 
@@ -73,7 +82,7 @@ class NetworkMonitorImpl @Inject constructor(private val context: Context) : Net
         }
     }.stateIn(
         CoroutineScope(Dispatchers.IO),
-        SharingStarted.WhileSubscribed(COROUTINE_TIMEOUT),
+        SharingStarted.Eagerly,
         isCurrentlyConnected()
     )
 
@@ -85,6 +94,5 @@ class NetworkMonitorImpl @Inject constructor(private val context: Context) : Net
 
     companion object {
         private val TAG = NetworkMonitorImpl::class.java.simpleName
-        private const val COROUTINE_TIMEOUT = 5000L
     }
 }
