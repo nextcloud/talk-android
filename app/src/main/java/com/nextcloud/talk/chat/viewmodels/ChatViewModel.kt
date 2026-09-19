@@ -2157,18 +2157,24 @@ class ChatViewModel @AssistedInject constructor(
             })
     }
 
-    suspend fun checkForNoteToSelf(credentials: String, baseUrl: String): ConversationModel? {
-        val response = chatNetworkDataSource.checkForNoteToSelf(credentials, baseUrl)
-        if (response.ocs?.meta?.statusCode == HTTP_CODE_OK) {
-            val noteToSelfConversation = ConversationModel.mapToConversationModel(
-                response.ocs?.data!!,
-                currentUser
-            )
-            return noteToSelfConversation
-        } else {
-            return null
+    suspend fun checkForNoteToSelf(credentials: String, baseUrl: String): ConversationModel? =
+        try {
+            val response = chatNetworkDataSource.checkForNoteToSelf(credentials, baseUrl)
+            if (response.ocs?.meta?.statusCode == HTTP_CODE_OK) {
+                ConversationModel.mapToConversationModel(
+                    response.ocs?.data!!,
+                    currentUser
+                )
+            } else {
+                null
+            }
+        } catch (e: IOException) {
+            Log.e(TAG, "checkForNoteToSelf I/O error: $e")
+            null
+        } catch (e: HttpException) {
+            Log.e(TAG, "checkForNoteToSelf HTTP error: $e")
+            null
         }
-    }
 
     fun shareLocationToNotes(credentials: String, url: String, objectType: String, objectId: String, metadata: String) {
         chatNetworkDataSource.shareLocationToNotes(credentials, url, objectType, objectId, metadata)
