@@ -186,12 +186,10 @@ class ConversationListFreshnessIntegrationTest {
             conversationListUpdater,
             ApplicationProvider.getApplicationContext()
         )
-        whenever(chatNetwork.getRoom(any(), any())).thenReturn(
-            Observable.just(
-                ConversationModel.mapToConversationModel(
-                    staleServerRoom(lastReadMessage = 10, unreadMessages = 2),
-                    user
-                )
+        wheneverBlocking { chatNetwork.getRoom(any(), any()) }.thenReturn(
+            ConversationModel.mapToConversationModel(
+                staleServerRoom(lastReadMessage = 10, unreadMessages = 2),
+                user
             )
         )
 

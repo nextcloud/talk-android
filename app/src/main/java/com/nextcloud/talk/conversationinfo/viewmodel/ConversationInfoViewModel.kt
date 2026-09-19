@@ -173,6 +173,7 @@ class ConversationInfoViewModel @Inject constructor(
         return uiItems
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun getRoom(user: User, token: String) {
         currentUser = user
         currentToken = token
@@ -180,10 +181,17 @@ class ConversationInfoViewModel @Inject constructor(
             databaseStorageModule = DatabaseStorageModule(user, token)
         }
         _uiState.update { it.copy(isLoading = true) }
-        chatNetworkDataSource.getRoom(user, token)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(GetRoomObserver())
+        viewModelScope.launch {
+            try {
+                val conversationModel = chatNetworkDataSource.getRoom(user, token)
+                _uiState.update { it.copy(conversation = conversationModel) }
+                getCapabilities(user, token, conversationModel)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error when fetching room", e)
+                _uiState.update { it.copy(isLoading = false) }
+                _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(R.string.nc_common_error_sorry))
+            }
+        }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -906,25 +914,6 @@ class ConversationInfoViewModel @Inject constructor(
         }
     }
 
-    inner class GetRoomObserver : Observer<ConversationModel> {
-        override fun onSubscribe(d: Disposable) {
-            // unused atm
-        }
-        override fun onNext(conversationModel: ConversationModel) {
-            _uiState.update { it.copy(conversation = conversationModel) }
-            currentUser?.let { getCapabilities(it, currentToken, conversationModel) }
-        }
-        override fun onError(e: Throwable) {
-            Log.e(TAG, "Error when fetching room")
-            _uiState.update { it.copy(isLoading = false) }
-            viewModelScope.launch {
-                _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(R.string.nc_common_error_sorry))
-            }
-        }
-        override fun onComplete() {
-            // unused atm
-        }
-    }
     companion object {
         private val TAG = ConversationInfoViewModel::class.simpleName
         private const val NEW_CONVERSATION_PARTICIPANTS_SEPARATOR = ", "
