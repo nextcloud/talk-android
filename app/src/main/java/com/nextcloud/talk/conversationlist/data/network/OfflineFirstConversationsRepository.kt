@@ -117,52 +117,63 @@ class OfflineFirstConversationsRepository @Inject constructor(
             }
         }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     override fun getRoom(user: User, roomToken: String): Job =
         scope.launch {
-            chatNetworkDataSource.getRoom(user, roomToken)
-                .subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(object : Observer<ConversationModel> {
-                    override fun onSubscribe(p0: Disposable) {
-                        // unused atm
-                    }
+            try {
+                chatNetworkDataSource.getRoom(user, roomToken)
+                    .subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe(object : Observer<ConversationModel> {
+                        override fun onSubscribe(p0: Disposable) {
+                            // unused atm
+                        }
 
-                    override fun onError(e: Throwable) {
-                        runBlocking {
-                            // In case network is offline or call fails
-                            val id = user.id!!
-                            val model = getConversation(id, roomToken)
-                            if (model != null) {
+                        override fun onError(e: Throwable) {
+                            runBlocking {
+                                fallBackToLocalConversation(user, roomToken, e)
+                            }
+                        }
+
+                        override fun onComplete() {
+                            // unused atm
+                        }
+
+                        override fun onNext(model: ConversationModel) {
+                            runBlocking {
+                                val existingEntity = dao.getConversationForUser(user.id!!, model.token).first()
+                                model.hiddenUpcomingEvent = existingEntity?.hiddenUpcomingEvent
                                 _conversationFlow.emit(model)
-                            } else {
-                                Log.e(TAG, "Conversation model not found on device database")
+                                val previous = existingEntity?.let { mapOf(it.internalId to it) }.orEmpty()
+                                val entityList = conversationListUpdater.preservePendingLocalState(
+                                    previous,
+                                    listOf(model.asEntity())
+                                )
+                                try {
+                                    dao.upsertConversations(user.id!!, entityList)
+                                } catch (e: SQLiteConstraintException) {
+                                    Log.w(TAG, "Skipping conversation upsert for removed account ${user.id}", e)
+                                }
                             }
                         }
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
-                    }
-
-                    override fun onNext(model: ConversationModel) {
-                        runBlocking {
-                            val existingEntity = dao.getConversationForUser(user.id!!, model.token).first()
-                            model.hiddenUpcomingEvent = existingEntity?.hiddenUpcomingEvent
-                            _conversationFlow.emit(model)
-                            val previous = existingEntity?.let { mapOf(it.internalId to it) }.orEmpty()
-                            val entityList = conversationListUpdater.preservePendingLocalState(
-                                previous,
-                                listOf(model.asEntity())
-                            )
-                            try {
-                                dao.upsertConversations(user.id!!, entityList)
-                            } catch (e: SQLiteConstraintException) {
-                                Log.w(TAG, "Skipping conversation upsert for removed account ${user.id}", e)
-                            }
-                        }
-                    }
-                })
+                    })
+            } catch (e: Exception) {
+                // getRoom builds the request eagerly (e.g. resolving the conversation API version),
+                // so it can throw before the Observable is even subscribed to, bypassing onError above.
+                fallBackToLocalConversation(user, roomToken, e)
+            }
         }
+
+    private suspend fun fallBackToLocalConversation(user: User, roomToken: String, e: Throwable) {
+        Log.e(TAG, "Failed to fetch room $roomToken from server", e)
+        val id = user.id!!
+        val model = getConversation(id, roomToken)
+        if (model != null) {
+            _conversationFlow.emit(model)
+        } else {
+            Log.e(TAG, "Conversation model not found on device database")
+        }
+    }
 
     override suspend fun updateConversation(conversationModel: ConversationModel) {
         val entity = conversationModel.asEntity()
