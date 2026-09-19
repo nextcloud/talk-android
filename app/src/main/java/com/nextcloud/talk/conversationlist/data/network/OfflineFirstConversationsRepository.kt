@@ -27,9 +27,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.withRetry
-import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +43,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import javax.inject.Inject
@@ -121,45 +118,23 @@ class OfflineFirstConversationsRepository @Inject constructor(
     override fun getRoom(user: User, roomToken: String): Job =
         scope.launch {
             try {
-                chatNetworkDataSource.getRoom(user, roomToken)
-                    .subscribeOn(Schedulers.io())
-                    ?.observeOn(AndroidSchedulers.mainThread())
-                    ?.subscribe(object : Observer<ConversationModel> {
-                        override fun onSubscribe(p0: Disposable) {
-                            // unused atm
-                        }
-
-                        override fun onError(e: Throwable) {
-                            runBlocking {
-                                fallBackToLocalConversation(user, roomToken, e)
-                            }
-                        }
-
-                        override fun onComplete() {
-                            // unused atm
-                        }
-
-                        override fun onNext(model: ConversationModel) {
-                            runBlocking {
-                                val existingEntity = dao.getConversationForUser(user.id!!, model.token).first()
-                                model.hiddenUpcomingEvent = existingEntity?.hiddenUpcomingEvent
-                                _conversationFlow.emit(model)
-                                val previous = existingEntity?.let { mapOf(it.internalId to it) }.orEmpty()
-                                val entityList = conversationListUpdater.preservePendingLocalState(
-                                    previous,
-                                    listOf(model.asEntity())
-                                )
-                                try {
-                                    dao.upsertConversations(user.id!!, entityList)
-                                } catch (e: SQLiteConstraintException) {
-                                    Log.w(TAG, "Skipping conversation upsert for removed account ${user.id}", e)
-                                }
-                            }
-                        }
-                    })
+                val model = chatNetworkDataSource.getRoom(user, roomToken)
+                val existingEntity = dao.getConversationForUser(user.id!!, model.token).first()
+                model.hiddenUpcomingEvent = existingEntity?.hiddenUpcomingEvent
+                _conversationFlow.emit(model)
+                val previous = existingEntity?.let { mapOf(it.internalId to it) }.orEmpty()
+                val entityList = conversationListUpdater.preservePendingLocalState(
+                    previous,
+                    listOf(model.asEntity())
+                )
+                try {
+                    dao.upsertConversations(user.id!!, entityList)
+                } catch (e: SQLiteConstraintException) {
+                    Log.w(TAG, "Skipping conversation upsert for removed account ${user.id}", e)
+                }
             } catch (e: Exception) {
-                // getRoom builds the request eagerly (e.g. resolving the conversation API version),
-                // so it can throw before the Observable is even subscribed to, bypassing onError above.
+                // In case network is offline, the call fails, or getRoom can't resolve a supported
+                // conversation API version (e.g. capabilities not loaded yet)
                 fallBackToLocalConversation(user, roomToken, e)
             }
         }
