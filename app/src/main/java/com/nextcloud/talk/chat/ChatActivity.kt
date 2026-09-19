@@ -1419,11 +1419,24 @@ class ChatActivity :
         this.lifecycle.addObserver(chatViewModel)
 
         val sessionToken = SessionToken(this, ComponentName(this, VoiceMessageMediaService::class.java))
-        mediaControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
+        val future = MediaController.Builder(this, sessionToken)
+            .setListener(object : MediaController.Listener {
+                override fun onDisconnected(controller: MediaController) {
+                    mediaController?.removeListener(playerListener)
+                    stopProgressPolling()
+                    mediaController = null
+                }
+            })
+            .buildAsync()
+        mediaControllerFuture = future
 
-        mediaControllerFuture?.addListener({
+        future.addListener({
+            if (future !== mediaControllerFuture) {
+                return@addListener
+            }
+
             mediaController = try {
-                mediaControllerFuture?.get()
+                future.get()
             } catch (_: CancellationException) {
                 null
             }
