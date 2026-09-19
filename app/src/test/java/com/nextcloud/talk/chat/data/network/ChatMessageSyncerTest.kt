@@ -48,6 +48,7 @@ import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
 import retrofit2.Response
+import java.io.IOException
 
 @Suppress("TooManyFunctions")
 class ChatMessageSyncerTest {
@@ -120,6 +121,31 @@ class ChatMessageSyncerTest {
             // a missing capability is not retryable, so the skip must not count as failure
             assertFalse(outcome.syncFailed)
             verifyNoInteractions(network)
+        }
+
+    @Test
+    fun `catchUpRoom keeps the requested limit when a pull attempt fails`() =
+        runTest {
+            whenever(chatBlocksDao.getNewestMessageIdFromChatBlocks(INTERNAL_CONVERSATION_ID, null))
+                .thenReturn(0L)
+            var pullCount = 0
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                pullCount++
+                if (pullCount == 1) throw IOException("connection reset")
+                Response.success(overall(message(1), message(2)))
+            }
+
+            val outcome = syncer.catchUpRoom(target(), limit = REQUESTED_LIMIT)
+
+            assertTrue(outcome.persistedNewMessages)
+            assertEquals(2, pullCount)
+
+            val fieldMapCaptor = argumentCaptor<HashMap<String, Int>>()
+            verifyBlocking(network, times(2)) {
+                pullChatMessages(eq(CREDENTIALS), eq(CHAT_URL), fieldMapCaptor.capture())
+            }
+            // a retry must not shrink the page, otherwise a flaky connection leaves a stub block
+            assertEquals(REQUESTED_LIMIT, fieldMapCaptor.lastValue["limit"])
         }
 
     @Test
@@ -837,5 +863,6 @@ class ChatMessageSyncerTest {
         private const val CHAT_URL = "https://server.example.com/ocs/v2.php/apps/spreed/api/v1/chat/$ROOM_TOKEN"
         private const val HTTP_NOT_MODIFIED = 304
         private const val HTTP_INTERNAL_SERVER_ERROR = 500
+        private const val REQUESTED_LIMIT = 100
     }
 }
