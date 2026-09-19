@@ -33,6 +33,14 @@ import java.io.IOException
 import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 
+/**
+ * Wipes an account locally when the server asks for it via the remote wipe API.
+ *
+ * A 401 alone is not a wipe request: an expired session, a rate limiting or misbehaving server and
+ * a proxy in front of Nextcloud all produce one without the account being gone. The account is
+ * therefore only removed when /core/wipe/check confirms the wipe; every other 401 is passed
+ * through for the caller to handle, for example by asking the user to re-authenticate.
+ */
 class RemoteWipeInterceptor(
     private val userManager: UserManager,
     private val context: Context,
@@ -62,12 +70,16 @@ class RemoteWipeInterceptor(
 
         val candidate = resolveWipeCandidate(chain.request().url.toString()) ?: return response
         if (!handledUserIds.add(candidate.userId)) {
-            Log.d(TAG, "User ${candidate.userId} was already handled, ignoring")
+            Log.d(TAG, "User ${candidate.userId} is already being handled, ignoring")
             return response
         }
 
-        val wipeRequestedByServer = isWipeRequestedByServer(candidate)
-        performWipe(candidate, wipeRequestedByServer)
+        if (isWipeRequestedByServer(candidate)) {
+            performWipe(candidate)
+        } else {
+            Log.d(TAG, "Server did not request a wipe for user ${candidate.userId}, keeping the account")
+            handledUserIds.remove(candidate.userId)
+        }
 
         return response
     }
@@ -125,28 +137,24 @@ class RemoteWipeInterceptor(
     }
 
     @SuppressLint("CheckResult")
-    private fun performWipe(candidate: WipeCandidate, wipeRequestedByServer: Boolean) {
+    private fun performWipe(candidate: WipeCandidate) {
         Log.d(TAG, "Scheduling user ${candidate.userId} for deletion")
         userManager.scheduleUserForDeletionWithId(candidate.userId).blockingGet()
 
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
-        var workContinuation = WorkManager.getInstance(context).beginWith(accountRemovalWork)
+        val remoteWipeSuccessWork = OneTimeWorkRequest.Builder(RemoteWipeSuccessWorker::class.java)
+            .setInputData(
+                Data.Builder()
+                    .putString(RemoteWipeSuccessWorker.KEY_BASE_URL, candidate.user.baseUrl)
+                    .putString(RemoteWipeSuccessWorker.KEY_TOKEN, candidate.token)
+                    .build()
+            )
+            .build()
 
-        if (wipeRequestedByServer) {
-            Log.d(TAG, "Server had requested this wipe, will report success after account removal")
-            val remoteWipeSuccessWork = OneTimeWorkRequest.Builder(RemoteWipeSuccessWorker::class.java)
-                .setInputData(
-                    Data.Builder()
-                        .putString(RemoteWipeSuccessWorker.KEY_BASE_URL, candidate.user.baseUrl)
-                        .putString(RemoteWipeSuccessWorker.KEY_TOKEN, candidate.token)
-                        .build()
-                )
-                .build()
-            workContinuation = workContinuation.then(remoteWipeSuccessWork)
-        } else {
-            Log.d(TAG, "Server did not request this wipe, account is still removed but no success report is sent")
-        }
-        workContinuation.enqueue()
+        WorkManager.getInstance(context)
+            .beginWith(accountRemovalWork)
+            .then(remoteWipeSuccessWork)
+            .enqueue()
 
         EventBus.getDefault().post(RemoteWipeEvent())
     }
