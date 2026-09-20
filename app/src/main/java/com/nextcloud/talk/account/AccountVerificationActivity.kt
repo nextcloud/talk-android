@@ -18,16 +18,11 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.lifecycle.lifecycleScope
-import androidx.work.BackoffPolicy
-import androidx.work.Constraints
 import androidx.work.Data
-import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import androidx.work.WorkRequest
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.google.android.material.snackbar.Snackbar
@@ -41,7 +36,6 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityAccountVerificationBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.AccountRemovalWorker
-import com.nextcloud.talk.jobs.CapabilitiesFetchWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
 import com.nextcloud.talk.jobs.WebsocketConnectionsWorker
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
@@ -67,16 +61,17 @@ import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.net.CookieManager
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
  * Verifies a new (or re-imported) account against its server and finishes account setup.
  *
  * The flow: [determineBaseUrlProtocol] (only if needed) -> [findServerTalkApp] -> [fetchProfile] ->
- * [storeProfile] -> [CapabilitiesFetchWorker] -> [setupPushNotifications] -> [SignalingSettingsWorker]
- * + [WebsocketConnectionsWorker] -> [proceedWithLogin]. The two Worker steps report back through
- * the event bus (see [onMessageEvent]); every other step calls the next one directly.
+ * [storeProfile] -> [setupPushNotifications] -> [SignalingSettingsWorker] + [WebsocketConnectionsWorker]
+ * -> [proceedWithLogin]. Capabilities are already stored by [storeProfile] itself (from the same
+ * response [findServerTalkApp] used to confirm Talk is installed), so there is no separate
+ * capabilities-fetch step here. The signaling settings step is backed by a Worker and reports back
+ * through the event bus (see [onMessageEvent]); every other step calls the next one directly.
  */
 @Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -253,7 +248,7 @@ class AccountVerificationActivity : BaseActivity() {
                 ).awaitSingle()
             }
             internalAccountId = user.id!!
-            fetchAndStoreCapabilities()
+            setupPushNotifications()
         } catch (e: Exception) {
             appendProgressMessage(R.string.nc_display_name_not_stored)
             abortVerification()
@@ -295,21 +290,11 @@ class AccountVerificationActivity : BaseActivity() {
             Log.d(TAG, "Event isn't for us. Aborting.")
             return
         }
-        // Verification runs: storeProfile -> CAPABILITIES_FETCH -> push registration -> SIGNALING_SETTINGS
-        // -> proceedWithLogin. Only the two steps below are backed by a Worker, so only those report
-        // back through the event bus; storeProfile() and push registration call the next step directly.
+        // Verification runs: storeProfile -> setupPushNotifications -> SIGNALING_SETTINGS -> proceedWithLogin.
+        // Only the signaling settings step below is backed by a Worker, so only it reports back through
+        // the event bus; storeProfile() and push registration call the next step directly.
         lifecycleScope.launch {
             when (eventStatus.eventType) {
-                EventStatus.EventType.CAPABILITIES_FETCH -> {
-                    // Capabilities were already stored together with the profile in storeProfile(), so
-                    // a failed refresh here is reported but must not delete the account that was just
-                    // created - it does not mean the account is broken, only that this redundant
-                    // refresh could not complete.
-                    if (!eventStatus.isAllGood) {
-                        appendProgressMessage(R.string.nc_capabilities_failed)
-                    }
-                    setupPushNotifications()
-                }
                 EventStatus.EventType.SIGNALING_SETTINGS -> {
                     if (!eventStatus.isAllGood) {
                         appendProgressMessage(R.string.nc_external_server_failed)
@@ -434,25 +419,6 @@ class AccountVerificationActivity : BaseActivity() {
         }
     }
 
-    private fun fetchAndStoreCapabilities() {
-        val userData =
-            Data.Builder()
-                .putLong(KEY_INTERNAL_USER_ID, internalAccountId)
-                .build()
-        val capabilitiesWork =
-            OneTimeWorkRequest.Builder(CapabilitiesFetchWorker::class.java)
-                .setInputData(userData)
-                .setExpeditedIfSupported()
-                .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
-                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, WorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.MILLISECONDS)
-                .build()
-        WorkManager.getInstance().enqueueUniqueWork(
-            CAPABILITIES_WORK_NAME_PREFIX + internalAccountId,
-            ExistingWorkPolicy.REPLACE,
-            capabilitiesWork
-        )
-    }
-
     private fun fetchAndStoreExternalSignalingSettings() {
         val userData =
             Data.Builder()
@@ -539,6 +505,5 @@ class AccountVerificationActivity : BaseActivity() {
     companion object {
         private val TAG = AccountVerificationActivity::class.java.simpleName
         const val DELAY_IN_MILLIS: Long = 7500
-        const val CAPABILITIES_WORK_NAME_PREFIX = "CapabilitiesFetch_"
     }
 }

@@ -25,9 +25,8 @@ import java.net.CookieManager
 /**
  * Fetches one user's capabilities from the server and persists them.
  *
- * Shared by [CapabilitiesSyncWorker] (best-effort, all users) and [CapabilitiesFetchWorker]
- * (single user, retried with backoff until it succeeds) so both stay thin wrappers around the
- * same fetch/persist logic while keeping their own, different, retry contracts.
+ * Used by [CapabilitiesSyncWorker], kept as a plain class separate from the [androidx.work.Worker]
+ * so the fetch/persist logic can be tested directly with mocks, without WorkManager scaffolding.
  */
 class CapabilitiesFetcher(
     private val userManager: UserManager,

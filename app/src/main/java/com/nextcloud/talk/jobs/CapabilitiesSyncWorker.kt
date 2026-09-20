@@ -25,8 +25,7 @@ import javax.inject.Inject
  * well as a manual refresh from settings.
  *
  * A failure for one account must not fail the whole job or block dependent work in the app-start
- * chain, so this always returns success - the next periodic run (or a targeted
- * [CapabilitiesFetchWorker] fetch) picks failures back up.
+ * chain, so this always returns success - the next periodic run picks failures back up.
  */
 @AutoInjector(NextcloudTalkApplication::class)
 class CapabilitiesSyncWorker(context: Context, workerParams: WorkerParameters) :
