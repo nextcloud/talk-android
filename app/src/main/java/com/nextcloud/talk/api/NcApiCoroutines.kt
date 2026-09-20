@@ -38,12 +38,14 @@ import com.nextcloud.talk.models.json.tags.ConversationTagsOverall
 import com.nextcloud.talk.models.json.tags.CreateConversationTagRequest
 import com.nextcloud.talk.models.json.tags.ReorderConversationTagsRequest
 import com.nextcloud.talk.models.json.tags.UpdateConversationTagRequest
+import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.models.json.testNotification.TestNotificationOverall
 import com.nextcloud.talk.models.json.threads.ThreadOverall
 import com.nextcloud.talk.models.json.threads.ThreadsOverall
 import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchOverall
 import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEventsOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
+import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -617,4 +619,10 @@ interface NcApiCoroutines {
 
     @GET
     suspend fun getCapabilities(@Header("Authorization") authorization: String?, @Url url: String): CapabilitiesOverall
+
+    @GET
+    suspend fun getServerStatus(@Url url: String): Status
+
+    @GET
+    suspend fun getUserProfile(@Header("Authorization") authorization: String, @Url url: String): UserProfileOverall
 }
