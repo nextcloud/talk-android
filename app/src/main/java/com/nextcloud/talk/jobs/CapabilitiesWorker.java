@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
@@ -63,7 +64,8 @@ public class CapabilitiesWorker extends Worker {
         super(context, workerParams);
     }
 
-    private boolean updateUser(CapabilitiesOverall capabilitiesOverall, User user) {
+    @VisibleForTesting
+    boolean updateUser(CapabilitiesOverall capabilitiesOverall, User user) {
         if (capabilitiesOverall.getOcs() != null && capabilitiesOverall.getOcs().getData() != null &&
             capabilitiesOverall.getOcs().getData().getCapabilities() != null) {
 
