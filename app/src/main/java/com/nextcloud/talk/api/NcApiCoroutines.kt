@@ -10,6 +10,7 @@ package com.nextcloud.talk.api
 
 import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.wipe.WipeCheckResponse
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
@@ -613,4 +614,7 @@ interface NcApiCoroutines {
         @Header("Authorization") authorization: String,
         @Url url: String
     ): PasswordResultOverall
+
+    @GET
+    suspend fun getCapabilities(@Header("Authorization") authorization: String?, @Url url: String): CapabilitiesOverall
 }

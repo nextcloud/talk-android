@@ -39,7 +39,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityAccountVerificationBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.AccountRemovalWorker
-import com.nextcloud.talk.jobs.CapabilitiesWorker
+import com.nextcloud.talk.jobs.CapabilitiesFetchWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
 import com.nextcloud.talk.jobs.WebsocketConnectionsWorker
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
@@ -499,7 +499,7 @@ class AccountVerificationActivity : BaseActivity() {
                 .putLong(KEY_INTERNAL_USER_ID, internalAccountId)
                 .build()
         val capabilitiesWork =
-            OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java)
+            OneTimeWorkRequest.Builder(CapabilitiesFetchWorker::class.java)
                 .setInputData(userData)
                 .setExpeditedIfSupported()
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())

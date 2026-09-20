@@ -72,7 +72,7 @@ import com.nextcloud.talk.logger.Level
 import com.nextcloud.talk.logger.LogsRepository
 import com.nextcloud.talk.logger.ui.LogsActivity
 import com.nextcloud.talk.jobs.AccountRemovalWorker
-import com.nextcloud.talk.jobs.CapabilitiesWorker
+import com.nextcloud.talk.jobs.CapabilitiesSyncWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.checkPermission
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.deleteAll
@@ -308,7 +308,7 @@ class SettingsActivity :
     }
 
     private fun loadCapabilitiesAndUpdateSettings(isOnline: Boolean) {
-        val capabilitiesWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java)
+        val capabilitiesWork = OneTimeWorkRequest.Builder(CapabilitiesSyncWorker::class.java)
             .setExpeditedIfSupported()
             .build()
         WorkManager.getInstance(context).enqueue(capabilitiesWork)

@@ -366,7 +366,6 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:5.22.0")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
-    testImplementation("androidx.work:work-testing:$workVersion")
 
     androidTestImplementation("androidx.test:core:1.7.0")
 
