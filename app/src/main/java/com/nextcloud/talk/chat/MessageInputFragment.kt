@@ -1145,6 +1145,7 @@ class MessageInputFragment : Fragment() {
                     token = chatActivity.roomToken,
                     messageId = message.jsonMessageId.toString()
                 ),
+                message.jsonMessageId.toLong(),
                 editedMessageText
             )
         }
@@ -1159,23 +1160,18 @@ class MessageInputFragment : Fragment() {
         }
         val end = binding.fragmentMessageInputView.inputEditText.text.length
         binding.fragmentMessageInputView.inputEditText.setSelection(end)
-        binding.fragmentMessageInputView.messageSendButton.visibility = View.GONE
-        binding.fragmentMessageInputView.recordAudioButton.visibility = View.GONE
-        binding.fragmentMessageInputView.submitThreadButton.visibility = View.GONE
-        binding.fragmentMessageInputView.editMessageButton.visibility = View.VISIBLE
         binding.fragmentEditView.editMessageView.visibility = View.VISIBLE
-        binding.fragmentMessageInputView.attachmentButton.visibility = View.GONE
-        binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.GONE
+        binding.fragmentMessageInputView.editMessageButton.visibility = View.VISIBLE
+        handleButtonsVisibility()
     }
 
     private fun clearEditUI() {
         binding.fragmentEditView.editMessageView.visibility = View.GONE
-        binding.fragmentMessageInputView.messageSendButton.visibility = View.VISIBLE
-        binding.fragmentMessageInputView.recordAudioButton.visibility = View.VISIBLE
-        binding.fragmentMessageInputView.submitThreadButton.visibility = View.VISIBLE
         binding.fragmentMessageInputView.editMessageButton.visibility = View.GONE
-        binding.fragmentMessageInputView.attachmentButton.visibility = View.VISIBLE
-        binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.VISIBLE
+        // the input was filled with the message to edit, so it must not keep that text afterwards -
+        // clearing it before the buttons are updated lets them settle on the empty-input state
+        binding.fragmentMessageInputView.inputEditText?.setText("")
+        handleButtonsVisibility()
         messageInputViewModel.cancelEdit()
         lastEditMessageId = null
     }
