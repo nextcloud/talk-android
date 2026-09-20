@@ -383,6 +383,7 @@
     <string name="nc_logs_share">以電郵傳送</string>
     <string name="nc_logs_share_diagnosis">診斷報告</string>
     <string name="nc_logs_share_latest_crash">最近一次當機</string>
+    <string name="nc_logs_share_no_app_found">找不到可用於傳送報告的應用程式。</string>
     <string name="nc_logs_share_subject">%1$s 個記錄</string>
     <string name="nc_logs_title">紀錄檔</string>
     <string name="nc_logs_total_size">記錄總大小：%d KB</string>

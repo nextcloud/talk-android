@@ -383,6 +383,7 @@
     <string name="nc_logs_share">Send as mail</string>
     <string name="nc_logs_share_diagnosis">Diagnosis report</string>
     <string name="nc_logs_share_latest_crash">Latest crash</string>
+    <string name="nc_logs_share_no_app_found">No app found to send the report.</string>
     <string name="nc_logs_share_subject">%1$s logs</string>
     <string name="nc_logs_title">Logs</string>
     <string name="nc_logs_total_size">Total log size: %d KB</string>

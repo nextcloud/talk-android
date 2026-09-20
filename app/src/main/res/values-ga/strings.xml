@@ -383,6 +383,7 @@
     <string name="nc_logs_share">Seol mar ríomhphost</string>
     <string name="nc_logs_share_diagnosis">Tuarascáil diagnóis</string>
     <string name="nc_logs_share_latest_crash">An tuairteáil is déanaí</string>
+    <string name="nc_logs_share_no_app_found">Níor aimsíodh aon aip chun an tuairisc a sheoladh.</string>
     <string name="nc_logs_share_subject">Logaí %1$s</string>
     <string name="nc_logs_title">Logaí</string>
     <string name="nc_logs_total_size">Méid iomlán an loga: %d KB</string>
