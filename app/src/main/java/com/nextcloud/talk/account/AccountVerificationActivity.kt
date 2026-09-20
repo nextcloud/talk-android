@@ -354,6 +354,10 @@ class AccountVerificationActivity : BaseActivity() {
                 fetchAndStoreCapabilities()
             }
             EventStatus.EventType.CAPABILITIES_FETCH -> {
+                // Capabilities were already stored together with the profile in storeProfile(), so
+                // a failed refresh here is reported but must not delete the account that was just
+                // created - it does not mean the account is broken, only that this redundant
+                // refresh could not complete.
                 if (!eventStatus.isAllGood) {
                     runOnUiThread {
                         binding.progressText.text =
@@ -362,10 +366,8 @@ class AccountVerificationActivity : BaseActivity() {
                             ${resources!!.getString(R.string.nc_capabilities_failed)}
                             """.trimIndent()
                     }
-                    abortVerification()
-                } else {
-                    setupPushNotifications()
                 }
+                setupPushNotifications()
             }
             EventStatus.EventType.PUSH_REGISTRATION -> {
                 if (!eventStatus.isAllGood) {
