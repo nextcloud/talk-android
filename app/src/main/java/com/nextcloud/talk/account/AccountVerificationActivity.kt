@@ -266,7 +266,7 @@ class AccountVerificationActivity : BaseActivity() {
                 @SuppressLint("SetTextI18n")
                 override fun onSuccess(user: User) {
                     internalAccountId = user.id!!
-                    eventBus.post(EventStatus(user.id!!, EventStatus.EventType.PROFILE_STORED, true))
+                    fetchAndStoreCapabilities()
                 }
 
                 @SuppressLint("SetTextI18n")
@@ -345,14 +345,10 @@ class AccountVerificationActivity : BaseActivity() {
             Log.d(TAG, "Event isn't for us. Aborting.")
             return
         }
-        // We do: PROFILE_STORED
-        // -> CAPABILITIES_FETCH
-        // -> PUSH_REGISTRATION
-        // -> SIGNALING_SETTINGS
+        // Verification runs: storeProfile -> CAPABILITIES_FETCH -> push registration -> SIGNALING_SETTINGS
+        // -> proceedWithLogin. Only the two steps below are backed by a Worker, so only those report
+        // back through the event bus; storeProfile() and push registration call the next step directly.
         when (eventStatus.eventType) {
-            EventStatus.EventType.PROFILE_STORED -> {
-                fetchAndStoreCapabilities()
-            }
             EventStatus.EventType.CAPABILITIES_FETCH -> {
                 // Capabilities were already stored together with the profile in storeProfile(), so
                 // a failed refresh here is reported but must not delete the account that was just
@@ -368,18 +364,6 @@ class AccountVerificationActivity : BaseActivity() {
                     }
                 }
                 setupPushNotifications()
-            }
-            EventStatus.EventType.PUSH_REGISTRATION -> {
-                if (!eventStatus.isAllGood) {
-                    runOnUiThread {
-                        binding.progressText.text =
-                            """
-                            ${binding.progressText.text}
-                            ${resources!!.getString(R.string.nc_push_disabled)}
-                            """.trimIndent()
-                    }
-                }
-                fetchAndStoreExternalSignalingSettings()
             }
             EventStatus.EventType.SIGNALING_SETTINGS -> {
                 if (!eventStatus.isAllGood) {
@@ -402,7 +386,7 @@ class AccountVerificationActivity : BaseActivity() {
         if (appPreferences.useUnifiedPush) {
             if (userManager.getUserWithId(internalAccountId).blockingGet().hasWebPushCapability) {
                 UnifiedPushUtils.registerWithCurrentDistributor(context)
-                eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
+                onPushRegistrationFinished(success = true)
                 return
             } else {
                 Log.w(TAG, "Warning: disabling UnifiedPush, user server doesn't support web push.")
@@ -418,7 +402,7 @@ class AccountVerificationActivity : BaseActivity() {
         // - Else we skip push registrations
         if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
             ClosedInterfaceImpl().setUpPushTokenRegistration()
-            eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
+            onPushRegistrationFinished(success = true)
         } else if (userManager.users.blockingGet().size == 1 &&
             UnifiedPushUtils.getExternalDistributors(context).isNotEmpty() &&
             userManager.getUserWithId(internalAccountId).blockingGet().hasWebPushCapability
@@ -430,8 +414,26 @@ class AccountVerificationActivity : BaseActivity() {
             useEmbeddedUnifiedPush()
         } else {
             Log.w(TAG, "Skipping push registration.")
-            eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, false))
+            onPushRegistrationFinished(success = false)
         }
+    }
+
+    /**
+     * The next step after push registration, whether it succeeded or not - called directly since
+     * nothing here runs as a Worker, so there is no need to round-trip through the event bus.
+     */
+    @SuppressLint("SetTextI18n")
+    private fun onPushRegistrationFinished(success: Boolean) {
+        if (!success) {
+            runOnUiThread {
+                binding.progressText.text =
+                    """
+                    ${binding.progressText.text}
+                    ${resources!!.getString(R.string.nc_push_disabled)}
+                    """.trimIndent()
+            }
+        }
+        fetchAndStoreExternalSignalingSettings()
     }
 
     /**
@@ -456,20 +458,20 @@ class AccountVerificationActivity : BaseActivity() {
 
     /**
      * Check if there is an embedded distributor, and use it if present,
-     * else, send EventStatus PUSH_REGISTRATION with success=false
+     * else, finish push registration with success=false
      */
     private fun fallbackToEmbeddedUnifiedPush() {
         if (UnifiedPushUtils.hasEmbeddedDistributor(context)) {
             useEmbeddedUnifiedPush()
         } else {
-            eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, false))
+            onPushRegistrationFinished(success = false)
         }
     }
 
     private fun useEmbeddedUnifiedPush() {
         UnifiedPushUtils.useEmbeddedDistributor(context)
         UnifiedPushUtils.registerWithCurrentDistributor(context)
-        eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
+        onPushRegistrationFinished(success = true)
     }
 
     private fun useUnifiedPush() {
@@ -477,7 +479,7 @@ class AccountVerificationActivity : BaseActivity() {
             distrib?.let {
                 Log.d(TAG, "UnifiedPush registered with $distrib")
                 appPreferences.useUnifiedPush = true
-                eventBus.post(EventStatus(internalAccountId, EventStatus.EventType.PUSH_REGISTRATION, true))
+                onPushRegistrationFinished(success = true)
             } ?: run {
                 Log.d(TAG, "No UnifiedPush distrib selected")
                 fallbackToEmbeddedUnifiedPush()
