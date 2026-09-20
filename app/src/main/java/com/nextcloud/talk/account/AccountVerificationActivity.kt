@@ -16,6 +16,7 @@ import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.lifecycle.lifecycleScope
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
@@ -36,6 +37,7 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityAccountVerificationBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.AccountRemovalWorker
@@ -68,6 +70,14 @@ import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+/**
+ * Verifies a new (or re-imported) account against its server and finishes account setup.
+ *
+ * The flow: [determineBaseUrlProtocol] (only if needed) -> [findServerTalkApp] -> [fetchProfile] ->
+ * [storeProfile] -> [CapabilitiesFetchWorker] -> [setupPushNotifications] -> [SignalingSettingsWorker]
+ * + [WebsocketConnectionsWorker] -> [proceedWithLogin]. The two Worker steps report back through
+ * the event bus (see [onMessageEvent]); every other step calls the next one directly.
+ */
 @Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
 class AccountVerificationActivity : BaseActivity() {
@@ -135,23 +145,49 @@ class AccountVerificationActivity : BaseActivity() {
         return !TextUtils.isEmpty(originalProtocol) && !baseUrl.startsWith(originalProtocol)
     }
 
+    private suspend fun getUser(id: Long): User =
+        withContext(Dispatchers.IO) {
+            userManager.getUserWithId(id).awaitSingle()
+        }
+
+    private suspend fun getAllUsers(): List<User> =
+        withContext(Dispatchers.IO) {
+            userManager.users.await()
+        }
+
+    /** Appends [resId] as a new line to the progress text already shown to the user. */
+    @SuppressLint("SetTextI18n")
+    private fun appendProgressMessage(@StringRes resId: Int) {
+        binding.progressText.text = "${binding.progressText.text}\n${resources!!.getString(resId)}"
+    }
+
+    private fun reportServerWithoutTalk() {
+        if (resources != null) {
+            binding.progressText.text = String.format(
+                resources!!.getString(R.string.nc_nextcloud_talk_app_not_installed),
+                resources!!.getString(R.string.nc_app_product_name)
+            )
+        }
+        ApplicationWideMessageHolder.getInstance().messageType =
+            ApplicationWideMessageHolder.MessageType.SERVER_WITHOUT_TALK
+    }
+
+    private fun navigateToServerSelectionAfterDelay() {
+        Handler().postDelayed({
+            startActivity(Intent(this, ServerSelectionActivity::class.java))
+        }, DELAY_IN_MILLIS)
+    }
+
     @Suppress("TooGenericExceptionCaught")
     private suspend fun determineBaseUrlProtocol(checkForcedHttps: Boolean) {
         cookieManager.cookieStore.removeAll()
         baseUrl = baseUrl!!.replace("http://", "").replace("https://", "")
-        val queryUrl: String = if (checkForcedHttps) {
-            "https://" + baseUrl + ApiUtils.getUrlPostfixForStatus()
-        } else {
-            "http://" + baseUrl + ApiUtils.getUrlPostfixForStatus()
-        }
+        val scheme = if (checkForcedHttps) "https" else "http"
+        val queryUrl = "$scheme://$baseUrl${ApiUtils.getUrlPostfixForStatus()}"
 
         try {
             ncApiCoroutines.getServerStatus(queryUrl)
-            baseUrl = if (checkForcedHttps) {
-                "https://$baseUrl"
-            } else {
-                "http://$baseUrl"
-            }
+            baseUrl = "$scheme://$baseUrl"
             if (isAccountImport) {
                 val bundle = Bundle()
                 bundle.putString(KEY_BASE_URL, baseUrl)
@@ -181,33 +217,15 @@ class AccountVerificationActivity : BaseActivity() {
         try {
             val capabilitiesOverall =
                 ncApiCoroutines.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl!!))
-            val hasTalk =
-                capabilitiesOverall.ocs!!.data!!.capabilities != null &&
-                    capabilitiesOverall.ocs!!.data!!.capabilities!!.spreedCapability != null &&
-                    capabilitiesOverall.ocs!!.data!!.capabilities!!.spreedCapability!!.features != null &&
-                    !capabilitiesOverall.ocs!!.data!!.capabilities!!.spreedCapability!!.features!!.isEmpty()
+            val hasTalk = capabilitiesOverall.ocs?.data?.capabilities?.spreedCapability?.features?.isNotEmpty() == true
             if (hasTalk) {
                 fetchProfile(credentials!!, capabilitiesOverall)
             } else {
-                if (resources != null) {
-                    binding.progressText.text = String.format(
-                        resources!!.getString(R.string.nc_nextcloud_talk_app_not_installed),
-                        resources!!.getString(R.string.nc_app_product_name)
-                    )
-                }
-                ApplicationWideMessageHolder.getInstance().messageType =
-                    ApplicationWideMessageHolder.MessageType.SERVER_WITHOUT_TALK
+                reportServerWithoutTalk()
                 abortVerification()
             }
         } catch (e: Exception) {
-            if (resources != null) {
-                binding.progressText.text = String.format(
-                    resources!!.getString(R.string.nc_nextcloud_talk_app_not_installed),
-                    resources!!.getString(R.string.nc_app_product_name)
-                )
-            }
-            ApplicationWideMessageHolder.getInstance().messageType =
-                ApplicationWideMessageHolder.MessageType.SERVER_WITHOUT_TALK
+            reportServerWithoutTalk()
             abortVerification()
         }
     }
@@ -237,8 +255,7 @@ class AccountVerificationActivity : BaseActivity() {
             internalAccountId = user.id!!
             fetchAndStoreCapabilities()
         } catch (e: Exception) {
-            binding.progressText.text = """ ${binding.progressText.text}""".trimIndent() +
-                resources!!.getString(R.string.nc_display_name_not_stored)
+            appendProgressMessage(R.string.nc_display_name_not_stored)
             abortVerification()
         }
     }
@@ -262,24 +279,15 @@ class AccountVerificationActivity : BaseActivity() {
                     capabilitiesOverall
                 )
             } else {
-                binding.progressText.text =
-                    """
-                        ${binding.progressText.text}
-                        ${resources!!.getString(R.string.nc_display_name_not_fetched)}
-                    """.trimIndent()
+                appendProgressMessage(R.string.nc_display_name_not_fetched)
                 abortVerification()
             }
         } catch (e: Exception) {
-            binding.progressText.text =
-                """
-                    ${binding.progressText.text}
-                    ${resources!!.getString(R.string.nc_display_name_not_fetched)}
-                """.trimIndent()
+            appendProgressMessage(R.string.nc_display_name_not_fetched)
             abortVerification()
         }
     }
 
-    @SuppressLint("SetTextI18n")
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onMessageEvent(eventStatus: EventStatus) {
         Log.d(TAG, "caught EventStatus of type " + eventStatus.eventType.toString())
@@ -298,21 +306,13 @@ class AccountVerificationActivity : BaseActivity() {
                     // created - it does not mean the account is broken, only that this redundant
                     // refresh could not complete.
                     if (!eventStatus.isAllGood) {
-                        binding.progressText.text =
-                            """
-                            ${binding.progressText.text}
-                            ${resources!!.getString(R.string.nc_capabilities_failed)}
-                            """.trimIndent()
+                        appendProgressMessage(R.string.nc_capabilities_failed)
                     }
                     setupPushNotifications()
                 }
                 EventStatus.EventType.SIGNALING_SETTINGS -> {
                     if (!eventStatus.isAllGood) {
-                        binding.progressText.text =
-                            """
-                            ${binding.progressText.text}
-                            ${resources!!.getString(R.string.nc_external_server_failed)}
-                            """.trimIndent()
+                        appendProgressMessage(R.string.nc_external_server_failed)
                     }
                     proceedWithLogin()
                 }
@@ -324,10 +324,7 @@ class AccountVerificationActivity : BaseActivity() {
     private suspend fun setupPushNotifications() {
         // This isn't a first account, and UnifiedPush is enabled.
         if (appPreferences.useUnifiedPush) {
-            val hasWebPushCapability = withContext(Dispatchers.IO) {
-                userManager.getUserWithId(internalAccountId).awaitSingle()
-            }.hasWebPushCapability
-            if (hasWebPushCapability) {
+            if (getUser(internalAccountId).hasWebPushCapability) {
                 UnifiedPushUtils.registerWithCurrentDistributor(context)
                 onPushRegistrationFinished(success = true)
                 return
@@ -346,15 +343,13 @@ class AccountVerificationActivity : BaseActivity() {
         if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
             ClosedInterfaceImpl().setUpPushTokenRegistration()
             onPushRegistrationFinished(success = true)
-        } else if (withContext(Dispatchers.IO) { userManager.users.await() }.size == 1 &&
+        } else if (getAllUsers().size == 1 &&
             UnifiedPushUtils.getExternalDistributors(context).isNotEmpty() &&
-            withContext(Dispatchers.IO) {
-                userManager.getUserWithId(internalAccountId).awaitSingle()
-            }.hasWebPushCapability
+            getUser(internalAccountId).hasWebPushCapability
         ) {
             useUnifiedPushIntroduced()
         } else if (UnifiedPushUtils.hasEmbeddedDistributor(context) &&
-            withContext(Dispatchers.IO) { userManager.users.await() }.any { it.hasWebPushCapability }
+            getAllUsers().any { it.hasWebPushCapability }
         ) {
             useEmbeddedUnifiedPush()
         } else {
@@ -367,14 +362,9 @@ class AccountVerificationActivity : BaseActivity() {
      * The next step after push registration, whether it succeeded or not - called directly since
      * nothing here runs as a Worker, so there is no need to round-trip through the event bus.
      */
-    @SuppressLint("SetTextI18n")
     private suspend fun onPushRegistrationFinished(success: Boolean) {
         if (!success) {
-            binding.progressText.text =
-                """
-                ${binding.progressText.text}
-                ${resources!!.getString(R.string.nc_push_disabled)}
-                """.trimIndent()
+            appendProgressMessage(R.string.nc_push_disabled)
         }
         fetchAndStoreExternalSignalingSettings()
     }
@@ -482,13 +472,11 @@ class AccountVerificationActivity : BaseActivity() {
     private suspend fun proceedWithLogin() {
         cookieManager.cookieStore.removeAll()
 
-        val userToSetAsActive = withContext(Dispatchers.IO) {
-            userManager.getUserWithId(internalAccountId).awaitSingle()
-        }
+        val userToSetAsActive = getUser(internalAccountId)
         Log.d(TAG, "userToSetAsActive: " + userToSetAsActive.username)
 
         if (withContext(Dispatchers.IO) { userManager.setUserAsActive(userToSetAsActive).await() }) {
-            if (withContext(Dispatchers.IO) { userManager.users.await() }.size > 1 && isAccountImport) {
+            if (getAllUsers().size > 1 && isAccountImport) {
                 ApplicationWideMessageHolder.getInstance().messageType =
                     ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
             }
@@ -505,18 +493,12 @@ class AccountVerificationActivity : BaseActivity() {
         if (isAccountImport) {
             ApplicationWideMessageHolder.getInstance().messageType = ApplicationWideMessageHolder.MessageType
                 .FAILED_TO_IMPORT_ACCOUNT
-            Handler().postDelayed({
-                val intent = Intent(this, ServerSelectionActivity::class.java)
-                startActivity(intent)
-            }, DELAY_IN_MILLIS)
+            navigateToServerSelectionAfterDelay()
         } else {
             if (internalAccountId != -1L) {
                 deleteUserAndStartServerSelection(internalAccountId)
             } else {
-                Handler().postDelayed({
-                    val intent = Intent(this, ServerSelectionActivity::class.java)
-                    startActivity(intent)
-                }, DELAY_IN_MILLIS)
+                navigateToServerSelectionAfterDelay()
             }
         }
     }
