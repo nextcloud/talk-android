@@ -77,17 +77,19 @@ public class WebSocketConnectionHelper {
 
         long userId = isGuest ? -1 : user.getId();
 
-        WebSocketInstance webSocketInstance = getWebSocketInstanceForUser(user);
-
-        if (userId != -1 && webSocketInstance != null && webSocketInstance.isConnected()) {
-            return webSocketInstance;
-        }
-
         if (userId == -1) {
             deleteExternalSignalingInstanceForUserEntity(userId);
+        } else {
+            WebSocketInstance webSocketInstance = getWebSocketInstanceForUser(user);
+            if (webSocketInstance != null) {
+                Log.d(TAG, "Reusing webSocketInstance " + webSocketInstance.hashCode() + " for userId " + userId);
+                return webSocketInstance;
+            }
         }
 
-        webSocketInstance = new WebSocketInstance(user, generatedURL, webSocketTicket);
+        Log.d(TAG, "Creating new webSocketInstance for userId " + userId);
+
+        WebSocketInstance webSocketInstance = new WebSocketInstance(user, generatedURL, webSocketTicket);
         webSocketInstanceMap.put(user.getId(), webSocketInstance);
         return webSocketInstance;
     }
