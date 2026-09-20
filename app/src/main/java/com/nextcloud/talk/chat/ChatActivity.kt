@@ -3850,6 +3850,10 @@ class ChatActivity :
     }
 
     fun shareToNotes(message: ChatMessage) {
+        if (!hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.NOTE_TO_SELF)) {
+            return
+        }
+
         val apiVersion = ApiUtils.getConversationApiVersion(
             conversationUser!!,
             intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
