@@ -150,6 +150,10 @@ class ServerSelectionActivity : BaseActivity() {
                 == ApplicationWideMessageHolder.MessageType.FAILED_TO_IMPORT_ACCOUNT
             ) {
                 setErrorText(resources!!.getString(R.string.nc_server_failed_to_import_account))
+            } else if (ApplicationWideMessageHolder.getInstance().messageType
+                == ApplicationWideMessageHolder.MessageType.SERVER_TEMPORARILY_UNAVAILABLE
+            ) {
+                setErrorText(resources!!.getString(R.string.nc_server_temporarily_unavailable))
             }
             ApplicationWideMessageHolder.getInstance().messageType = null
         }

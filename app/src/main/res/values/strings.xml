@@ -55,6 +55,7 @@ How to translate with transifex:
     <string name="nc_server_helper_text">The link to your %1$s web interface when you open it in the browser.</string>
     <string name="nc_server_testing_connection">Testing connection</string>
     <string name="nc_server_unsupported">Server does not have supported Talk app installed</string>
+    <string name="nc_server_temporarily_unavailable">Could not reach the server. It might be temporarily unavailable or blocking requests. Please try again later.</string>
 
     <string name="nc_server_url">Server address https://…</string>
     <string name="nc_server_not_installed">Please finish your %1$s installation</string>
