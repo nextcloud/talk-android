@@ -105,6 +105,9 @@ class OfflineFirstConversationsRepository @Inject constructor(
             }
         }
 
+    override suspend fun syncRooms(user: User, forceFullSync: Boolean): Boolean =
+        getRoomsFromServer(user, forceFullSync = forceFullSync, awaitCatchUp = true) != null
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun getRoom(user: User, roomToken: String): Job =
         scope.launch {
@@ -152,7 +155,11 @@ class OfflineFirstConversationsRepository @Inject constructor(
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    private suspend fun getRoomsFromServer(user: User, forceFullSync: Boolean = false): List<ConversationEntity>? {
+    private suspend fun getRoomsFromServer(
+        user: User,
+        forceFullSync: Boolean = false,
+        awaitCatchUp: Boolean = false
+    ): List<ConversationEntity>? {
         var conversationsFromSync: List<ConversationEntity>? = null
 
         if (!networkMonitor.isOnline.value) {
@@ -206,12 +213,17 @@ class OfflineFirstConversationsRepository @Inject constructor(
             rememberSyncedState(accountId, roomList)
 
             val roomsWithNewMessages = getRoomsWithNewMessages(conversationsFromSync, previousConversations)
-            scope.launch { catchUpRoomsWithNewMessages(user, roomsWithNewMessages) }
+            if (awaitCatchUp) {
+                catchUpRoomsWithNewMessages(user, roomsWithNewMessages)
+            } else {
+                scope.launch { catchUpRoomsWithNewMessages(user, roomsWithNewMessages) }
+            }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong when fetching conversations", e)
             storeTimestamp(accountId, KEY_MODIFIED_SINCE, null)
+            conversationsFromSync = null
             val hasCachedConversations = dao.getConversationsForUser(accountId).first().isNotEmpty()
             if (!hasCachedConversations) {
                 _syncErrorFlow.emit(e)
@@ -223,6 +235,8 @@ class OfflineFirstConversationsRepository @Inject constructor(
     override fun requireFullSync(accountId: Long) {
         storeTimestamp(accountId, KEY_LAST_FULL_SYNC_AT, null)
     }
+
+    override fun lastFullSyncAt(accountId: Long): Long? = readTimestamp(accountId, KEY_LAST_FULL_SYNC_AT)
 
     /**
      * The value to send as `modifiedSince`, or null when this sync has to be a full one.

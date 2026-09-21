@@ -146,6 +146,17 @@ class OfflineFirstConversationsRepositoryTest {
         }
 
     @Test
+    fun `syncRooms reports a sync whose database write failed as failed`() =
+        runBlocking {
+            val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0)
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
+            wheneverBlocking { dao.syncConversationsForUser(any(), any(), any()) }
+                .thenThrow(IllegalStateException("database is gone"))
+
+            assertEquals(false, repository.syncRooms(user()))
+        }
+
+    @Test
     fun `getRooms skips deleting local conversations when the server returns an empty list`() =
         runBlocking {
             val previous = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
