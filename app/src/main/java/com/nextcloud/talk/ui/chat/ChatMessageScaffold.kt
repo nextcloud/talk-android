@@ -830,6 +830,11 @@ fun CommonMessageQuote(message: ChatMessageUi, contentMinWidth: Dp = 0.dp) {
                 iconRes = R.drawable.ic_baseline_mic_24,
                 label = stringResource(R.string.nc_voice_message)
             )
+            is MessageTypeContent.AudioFile -> QuoteIconRow(
+                actorDisplayName = message.actorDisplayName,
+                iconRes = R.drawable.ic_mimetype_audio,
+                label = c.fileName
+            )
             is MessageTypeContent.Poll -> QuoteIconRow(
                 actorDisplayName = message.actorDisplayName,
                 iconRes = R.drawable.ic_baseline_bar_chart_24,

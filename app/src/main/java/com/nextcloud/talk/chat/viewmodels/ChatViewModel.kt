@@ -1090,22 +1090,34 @@ class ChatViewModel @AssistedInject constructor(
         _uiState.update { current ->
             val updatedItems = current.items.map { item ->
                 if (item is ChatItem.MessageItem && item.uiMessage.id == message.jsonMessageId) {
-                    val voiceContent = item.uiMessage.content as? MessageTypeContent.Voice
-                    if (voiceContent != null) {
-                        val updatedVoiceContent = voiceContent.copy(
-                            actorId = message.actorId,
-                            isPlaying = message.isPlayingVoiceMessage,
-                            wasPlayed = message.wasPlayedVoiceMessage,
-                            isDownloading = message.isDownloadingVoiceMessage,
-                            durationSeconds = message.voiceMessageDuration,
-                            playedSeconds = message.voiceMessagePlayedSeconds,
-                            seekbarProgress = message.voiceMessageSeekbarProgress,
-                            waveform = message.voiceMessageFloatArray?.toList() ?: voiceContent.waveform
-                            // playbackSpeed is preserved from existing voiceContent
-                        )
-                        item.copy(uiMessage = item.uiMessage.copy(content = updatedVoiceContent))
-                    } else {
-                        item
+                    when (val content = item.uiMessage.content) {
+                        is MessageTypeContent.Voice -> {
+                            val updatedVoiceContent = content.copy(
+                                actorId = message.actorId,
+                                isPlaying = message.isPlayingVoiceMessage,
+                                wasPlayed = message.wasPlayedVoiceMessage,
+                                isDownloading = message.isDownloadingVoiceMessage,
+                                durationSeconds = message.voiceMessageDuration,
+                                playedSeconds = message.voiceMessagePlayedSeconds,
+                                seekbarProgress = message.voiceMessageSeekbarProgress,
+                                waveform = message.voiceMessageFloatArray?.toList() ?: content.waveform
+                                // playbackSpeed is preserved from existing content
+                            )
+                            item.copy(uiMessage = item.uiMessage.copy(content = updatedVoiceContent))
+                        }
+
+                        is MessageTypeContent.AudioFile -> {
+                            val updatedAudioFileContent = content.copy(
+                                isPlaying = message.isPlayingVoiceMessage,
+                                isDownloading = message.isDownloadingVoiceMessage,
+                                durationSeconds = message.voiceMessageDuration,
+                                playedSeconds = message.voiceMessagePlayedSeconds,
+                                seekbarProgress = message.voiceMessageSeekbarProgress
+                            )
+                            item.copy(uiMessage = item.uiMessage.copy(content = updatedAudioFileContent))
+                        }
+
+                        else -> item
                     }
                 } else {
                     item

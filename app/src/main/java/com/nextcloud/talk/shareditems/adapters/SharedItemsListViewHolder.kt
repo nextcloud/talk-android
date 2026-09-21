@@ -40,8 +40,12 @@ class SharedItemsListViewHolder(
     override val progressBar: ProgressBar
         get() = binding.progressBar
 
-    override fun onBind(item: SharedFileItem, openMediaViewer: (SharedFileItem, Context) -> Unit) {
-        super.onBind(item, openMediaViewer)
+    override fun onBind(
+        item: SharedFileItem,
+        openMediaViewer: (SharedFileItem, Context) -> Unit,
+        openInChat: (SharedFileItem, Context) -> Unit
+    ) {
+        super.onBind(item, openMediaViewer, openInChat)
 
         binding.fileName.text = item.name
         binding.fileSize.text = item.fileSize.let {

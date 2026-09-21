@@ -28,15 +28,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.fullscreenfile.FullScreenMediaActivity
 import com.nextcloud.talk.fullscreenfile.FullScreenTextViewerActivity
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.mediaviewer.activities.MediaViewerActivity
 import com.nextcloud.talk.mediaviewer.model.MediaViewerItem
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
-import com.nextcloud.talk.utils.Mimetype.AUDIO_MPEG
-import com.nextcloud.talk.utils.Mimetype.AUDIO_OGG
-import com.nextcloud.talk.utils.Mimetype.AUDIO_WAV
 import com.nextcloud.talk.utils.Mimetype.IMAGE_GIF
 import com.nextcloud.talk.utils.Mimetype.IMAGE_HEIC
 import com.nextcloud.talk.utils.Mimetype.IMAGE_JPEG
@@ -49,7 +45,6 @@ import com.nextcloud.talk.utils.Mimetype.VIDEO_OGG
 import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX
 import com.nextcloud.talk.utils.Mimetype.VIDEO_QUICKTIME
 import com.nextcloud.talk.utils.Mimetype.VIDEO_WEBM
-import com.nextcloud.talk.utils.MimetypeUtils.isAudioOnly
 import com.nextcloud.talk.utils.MimetypeUtils.isMarkdown
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
@@ -190,18 +185,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
     private fun openFileByMimetype(filename: String, mimetype: String?, link: String? = null, fileId: String = "") {
         if (mimetype != null) {
             when (mimetype) {
-                AUDIO_MPEG,
-                AUDIO_WAV,
-                AUDIO_OGG -> openAudioView(filename, mimetype)
-
-                // Reachable only if a future caller ends up here without the message/room context
-                // openFile(ChatMessage, ...) needs to route video to the media viewer instead - see
-                // openVideoInMediaViewer(). Kept as a safety net so video is never left unopenable.
-                VIDEO_MP4,
-                VIDEO_QUICKTIME,
-                VIDEO_OGG,
-                VIDEO_WEBM -> openVideoView(filename, mimetype)
-
                 TEXT_MARKDOWN,
                 TEXT_PLAIN -> openTextView(filename, mimetype, link, fileId)
 
@@ -268,20 +251,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         }
     }
 
-    private fun openAudioView(filename: String, mimetype: String) {
-        val fullScreenMediaIntent = Intent(context, FullScreenMediaActivity::class.java)
-        fullScreenMediaIntent.putExtra("FILE_NAME", filename)
-        fullScreenMediaIntent.putExtra("AUDIO_ONLY", isAudioOnly(mimetype))
-        context.startActivity(fullScreenMediaIntent)
-    }
-
-    private fun openVideoView(filename: String, mimetype: String) {
-        val fullScreenMediaIntent = Intent(context, FullScreenMediaActivity::class.java)
-        fullScreenMediaIntent.putExtra("FILE_NAME", filename)
-        fullScreenMediaIntent.putExtra("AUDIO_ONLY", isAudioOnly(mimetype))
-        context.startActivity(fullScreenMediaIntent)
-    }
-
     private fun openTextView(filename: String, mimetype: String, link: String?, fileId: String) {
         val fullScreenTextViewerIntent = Intent(context, FullScreenTextViewerActivity::class.java)
         fullScreenTextViewerIntent.putExtra("FILE_NAME", filename)
@@ -299,9 +268,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             IMAGE_JPEG,
             IMAGE_HEIC,
             IMAGE_GIF,
-            AUDIO_MPEG,
-            AUDIO_WAV,
-            AUDIO_OGG,
             VIDEO_MP4,
             VIDEO_QUICKTIME,
             VIDEO_OGG,

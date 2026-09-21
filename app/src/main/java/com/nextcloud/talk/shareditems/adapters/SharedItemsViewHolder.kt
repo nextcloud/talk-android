@@ -26,6 +26,7 @@ import com.nextcloud.talk.shareditems.model.SharedPinnedItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.FileViewerUtils
+import com.nextcloud.talk.utils.Mimetype
 
 abstract class SharedItemsViewHolder(
     open val binding: ViewBinding,
@@ -41,7 +42,11 @@ abstract class SharedItemsViewHolder(
     abstract val clickTarget: View
     abstract val progressBar: ProgressBar
 
-    open fun onBind(item: SharedFileItem, openMediaViewer: (SharedFileItem, Context) -> Unit) {
+    open fun onBind(
+        item: SharedFileItem,
+        openMediaViewer: (SharedFileItem, Context) -> Unit,
+        openInChat: (SharedFileItem, Context) -> Unit
+    ) {
         val placeholder = viewThemeUtils.talk.getPlaceholderImage(image.context, item.mimeType)
         if (item.previewAvailable) {
             image.loadImage(
@@ -57,6 +62,11 @@ abstract class SharedItemsViewHolder(
             // Images/videos open the swipeable media viewer, seeded with the sibling media
             // already loaded in this gallery - see SharedItemsAdapter.openMediaViewer().
             clickTarget.setOnClickListener { openMediaViewer(item, image.context) }
+            return
+        }
+
+        if (item.mimeType.startsWith(Mimetype.AUDIO_PREFIX)) {
+            clickTarget.setOnClickListener { openInChat(item, image.context) }
             return
         }
 

@@ -1126,9 +1126,14 @@ class ChatActivity :
         fun setupAndPlay(controller: MediaController, message: ChatMessage, file: String) {
             val avatarUrl = chatViewModel.getAvatarUrl(message)
 
+            val artist = if (message.isVoiceMessage) {
+                "Voice Message"
+            } else {
+                message.fileParameters.name
+            }
             val metadata = MediaMetadata.Builder()
                 .setTitle(message.actorDisplayName)
-                .setArtist("Voice Message")
+                .setArtist(artist)
                 .setArtworkUri(avatarUrl.toUri())
                 .build()
 
@@ -1181,7 +1186,18 @@ class ChatActivity :
                 }
             )
 
-            if (controller.currentMediaItem?.mediaId != currentMessageId) {
+            fun finishPreparing() {
+                setupAndPlay(controller, message, filePath)
+                if (message.isVoiceMessage) {
+                    setUpWaveform(message, file)
+                } else {
+                    message.isDownloadingVoiceMessage = false
+                    chatViewModel.syncVoiceMessageUiState(message)
+                }
+            }
+
+            val alreadyLoaded = controller.currentMediaItem?.mediaId == currentMessageId
+            if (!alreadyLoaded || !file.exists()) {
                 if (!file.exists()) {
                     downloadFileToCache(message, true) {
                         chatViewModel.syncVoiceMessageUiState(
@@ -1189,12 +1205,10 @@ class ChatActivity :
                                 voiceMessageDuration = getAudioDuration(file.absolutePath).toInt()
                             }
                         )
-                        setupAndPlay(controller, message, filePath)
-                        setUpWaveform(message, file)
+                        finishPreparing()
                     }
                 } else {
-                    setupAndPlay(controller, message, filePath)
-                    setUpWaveform(message, file)
+                    finishPreparing()
                 }
 
                 return true
