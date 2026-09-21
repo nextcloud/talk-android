@@ -31,6 +31,8 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -114,9 +116,11 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.Subscribe
@@ -207,6 +211,7 @@ class ConversationsListActivity : BaseActivity() {
 
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
         conversationTagsViewModel = ViewModelProvider(this, viewModelFactory)[ConversationTagsViewModel::class.java]
+        startForegroundRefreshLoop()
 
         setSupportActionBar(null)
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
@@ -668,6 +673,22 @@ class ConversationsListActivity : BaseActivity() {
 
     fun showSnackbar(text: String) {
         lifecycleScope.launch { snackbarHostState.showSnackbar(text) }
+    }
+
+    /**
+     * Starts a loop that refreshes the conversation list every
+     * [FOREGROUND_REFRESH_INTERVAL_MILLIS] milliseconds while this screen is resumed, waiting one
+     * interval before the first refresh.
+     */
+    private fun startForegroundRefreshLoop() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                while (isActive) {
+                    delay(FOREGROUND_REFRESH_INTERVAL_MILLIS)
+                    currentUser?.let { conversationsListViewModel.refreshRoomsIfIdle(it) }
+                }
+            }
+        }
     }
 
     fun fetchRooms(forceFullSync: Boolean = false) {
@@ -1574,6 +1595,8 @@ class ConversationsListActivity : BaseActivity() {
 
     companion object {
         private val TAG = ConversationsListActivity::class.java.simpleName
+
+        private const val FOREGROUND_REFRESH_INTERVAL_MILLIS = 30_000L
         const val BOTTOM_SHEET_DELAY: Long = 2500
         const val SEARCH_DEBOUNCE_INTERVAL_MS = 300
         const val HTTP_UNAUTHORIZED = 401
