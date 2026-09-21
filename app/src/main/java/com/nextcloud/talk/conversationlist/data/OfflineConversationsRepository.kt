@@ -51,6 +51,18 @@ interface OfflineConversationsRepository {
     fun getRooms(user: User, forceFullSync: Boolean = false): Job
 
     /**
+     * Synchronizes [user]'s conversations with the server and returns once that sync and the
+     * message catch-up it triggers are done, reporting whether it worked.
+     *
+     * [getRooms] launches into the repository's own scope and returns immediately, which is what
+     * the conversation list wants and what a background worker cannot use: WorkManager tears the
+     * process down once the worker returns, mid-request. This does not select the observed account
+     * either - that is what the conversation list screen shows, and a worker walking several
+     * accounts must not move it.
+     */
+    suspend fun syncRooms(user: User, forceFullSync: Boolean = false): Boolean
+
+    /**
      * Called once onStart to emit a conversation to [conversationFlow]
      * to be handled asynchronously.
      */
