@@ -227,6 +227,11 @@ class ChatMessageSyncer @Inject constructor(
      * dismiss the user's push notifications for the fetched messages, so the catch-up is skipped
      * entirely (same guard as on iOS).
      *
+     * Reachability is deliberately not pre-checked. Callers are gated by a WorkManager
+     * `NetworkType.CONNECTED` constraint, and a request that fails because the device is offline
+     * is reported as a failed sync and retried, which is strictly better than skipping a fetch
+     * that would have succeeded on a connected-but-unvalidated network.
+     *
      * Bursts of catch-up requests for the same room (e.g. one push notification per message of an
      * active group chat) are coalesced: while a catch-up runs, further requests only mark a rerun
      * and return, and consecutive fetches are paced by [CATCH_UP_COOLDOWN_MILLIS].
@@ -236,24 +241,18 @@ class ChatMessageSyncer @Inject constructor(
         limit: Int = DEFAULT_MESSAGES_LIMIT,
         lastReadMessage: Int? = null,
         unreadMessages: Int = 0
-    ): SyncOutcome =
-        when {
-            !networkMonitor.isOnline.value -> {
-                Log.d(TAG, "Device is offline, skipping catch-up for ${target.internalConversationId}")
-                SYNC_FAILED
-            }
-
-            !target.user.hasSpreedFeatureCapability(SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value) -> {
-                Log.d(
-                    TAG,
-                    "Server lacks ${SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value}, " +
-                        "skipping catch-up for ${target.internalConversationId}"
-                )
-                NOTHING_SYNCED
-            }
-
-            else -> coalescedRoomCatchUp(target, limit, lastReadMessage, unreadMessages)
+    ): SyncOutcome {
+        if (!target.user.hasSpreedFeatureCapability(SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value)) {
+            Log.d(
+                TAG,
+                "Server lacks ${SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value}, " +
+                    "skipping catch-up for ${target.internalConversationId}"
+            )
+            return NOTHING_SYNCED
         }
+
+        return coalescedRoomCatchUp(target, limit, lastReadMessage, unreadMessages)
+    }
 
     /**
      * Runs at most one catch-up per room at a time. A request arriving while one is running only
@@ -681,15 +680,18 @@ class ChatMessageSyncer @Inject constructor(
      * (threadId == its own id) is not itself a reply and stays visible.
      */
     private fun isChatVisibleMessage(message: ChatMessageJson, syncedThreadId: Long?): Boolean {
-        if (message.systemMessageType in CHAT_HIDDEN_SYSTEM_MESSAGE_TYPES) {
-            return false
-        }
-        if (syncedThreadId == null && message.hasThread && message.threadId != message.id) {
-            return false
-        }
-        return true
+        val hiddenSystemMessage = message.systemMessageType in CHAT_HIDDEN_SYSTEM_MESSAGE_TYPES
+        val replyToAnotherThread = syncedThreadId == null && message.hasThread && message.threadId != message.id
+        return !hiddenSystemMessage && !replyToAnotherThread
     }
 
+    /**
+     * Pulls messages as described by [fieldMap], retrying a failed request up to
+     * [MAX_PULL_ATTEMPTS] times with a linearly growing delay in between. The requested limit is
+     * kept across retries: a background catch-up that succeeds on a later attempt must still
+     * create a full chat block, and backing off in time rather than in payload size also keeps a
+     * struggling or rate-limiting server from being hammered.
+     */
     fun pullMessagesFlow(target: SyncTarget, fieldMap: HashMap<String, Int>): Flow<ChatPullResult> =
         flow {
             var attempts = 1
@@ -715,10 +717,8 @@ class ChatMessageSyncer @Inject constructor(
                     onFailure = { e ->
                         Log.e(TAG, "Attempt $attempts failed", e)
                         attempts++
-                        fieldMap["limit"] = when (attempts) {
-                            2 -> RETRY_LIMIT_SECOND_ATTEMPT
-                            3 -> RETRY_LIMIT_THIRD_ATTEMPT
-                            else -> RETRY_LIMIT_FALLBACK_ATTEMPT
+                        if (attempts < MAX_PULL_ATTEMPTS) {
+                            delay(PULL_RETRY_DELAY_MILLIS * (attempts - 1))
                         }
                     }
                 )
@@ -1153,8 +1153,6 @@ class ChatMessageSyncer @Inject constructor(
         private const val HTTP_CODE_NOT_MODIFIED = 304
         private const val HTTP_CODE_PRECONDITION_FAILED = 412
         private const val MAX_PULL_ATTEMPTS = 5
-        private const val RETRY_LIMIT_SECOND_ATTEMPT = 50
-        private const val RETRY_LIMIT_THIRD_ATTEMPT = 10
-        private const val RETRY_LIMIT_FALLBACK_ATTEMPT = 5
+        private const val PULL_RETRY_DELAY_MILLIS = 1_000L
     }
 }
