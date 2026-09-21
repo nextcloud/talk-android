@@ -342,6 +342,10 @@ class CallActivity : CallBaseActivity() {
     @Volatile
     private var audioRouteReady = false
 
+    // Guards remoteAudioPlayoutEnabled together with adding wrappers to peerConnectionWrapperList: wrappers are
+    // created on the signaling thread while the route state is updated on the main thread.
+    private val remoteAudioPlayoutLock = Any()
+
     @Volatile
     private var remoteAudioPlayoutEnabled = false
 
@@ -2252,8 +2256,10 @@ class CallActivity : CallBaseActivity() {
         }
         runOnUiThread {
             audioRouteReady = false
-            remoteAudioPlayoutEnabled = false
-            peerConnectionWrapperList.forEach { it.setRemoteAudioPlayoutEnabled(false) }
+            synchronized(remoteAudioPlayoutLock) {
+                remoteAudioPlayoutEnabled = false
+                peerConnectionWrapperList.forEach { it.setRemoteAudioPlayoutEnabled(false) }
+            }
             if (audioManager != null) {
                 audioManager!!.stop()
                 audioManager = null
@@ -2623,8 +2629,10 @@ class CallActivity : CallBaseActivity() {
                 return null
             }
             peerConnectionWrapper = createPeerConnectionWrapperForSessionIdAndType(publisher, sessionId, type)
-            peerConnectionWrapperList.add(peerConnectionWrapper)
-            peerConnectionWrapper.setRemoteAudioPlayoutEnabled(remoteAudioPlayoutEnabled)
+            synchronized(remoteAudioPlayoutLock) {
+                peerConnectionWrapperList.add(peerConnectionWrapper)
+                peerConnectionWrapper.setRemoteAudioPlayoutEnabled(remoteAudioPlayoutEnabled)
+            }
             if (!publisher) {
                 if (!callViewModel.doesParticipantExist(sessionId)) {
                     addCallParticipant(sessionId)
@@ -3040,9 +3048,11 @@ class CallActivity : CallBaseActivity() {
             audioRouteReady
 
     private fun updateRemoteAudioPlayout() {
-        val enabled = isRemoteAudioPlayoutAllowed()
-        remoteAudioPlayoutEnabled = enabled
-        peerConnectionWrapperList.forEach { it.setRemoteAudioPlayoutEnabled(enabled) }
+        synchronized(remoteAudioPlayoutLock) {
+            val enabled = isRemoteAudioPlayoutAllowed()
+            remoteAudioPlayoutEnabled = enabled
+            peerConnectionWrapperList.forEach { it.setRemoteAudioPlayoutEnabled(enabled) }
+        }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")

@@ -533,6 +533,10 @@ public class WebRtcAudioManager {
                 && bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED) {
             return true;
         }
+        if (audioDevice == AudioDevice.BLUETOOTH && !bluetoothManager.hasBluetoothConnectPermission()) {
+            Log.w(TAG, "setCommunicationDevice: BLUETOOTH_CONNECT is not granted, not selecting a Bluetooth route");
+            return false;
+        }
         try {
             AudioDeviceInfo currentDevice = getCommunicationDevice();
             boolean currentRouteMatches = currentDevice != null && matchesAudioDevice(currentDevice, audioDevice);
@@ -678,6 +682,9 @@ public class WebRtcAudioManager {
 
     private boolean hasBluetoothCommunicationOutput() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!bluetoothManager.hasBluetoothConnectPermission()) {
+                return false;
+            }
             try {
                 for (AudioDeviceInfo device : audioManager.getAvailableCommunicationDevices()) {
                     if (WebRtcBluetoothManager.isBluetoothCommunicationDeviceType(device.getType())) {

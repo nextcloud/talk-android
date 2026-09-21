@@ -736,39 +736,39 @@ public class WebRtcBluetoothManager {
     }
 
     private boolean hasNoBluetoothPermission() {
-        String permission;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            permission = Manifest.permission.BLUETOOTH_CONNECT;
-        } else {
-            permission = Manifest.permission.BLUETOOTH;
-        }
-
-        boolean hasPermission =
-            ActivityCompat.checkSelfPermission(apprtcContext, permission) == PackageManager.PERMISSION_GRANTED;
-        if(!hasPermission) {
-            Log.w(TAG, "Process (pid=" + Process.myPid() + ") lacks \"" + permission + "\" permission");
+        boolean hasPermission = hasBluetoothConnectPermission();
+        if (!hasPermission) {
+            Log.w(TAG, "Process (pid=" + Process.myPid() + ") lacks \"" + bluetoothPermission() + "\" permission");
         }
         return !hasPermission;
+    }
+
+    private static String bluetoothPermission() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+            ? Manifest.permission.BLUETOOTH_CONNECT
+            : Manifest.permission.BLUETOOTH;
+    }
+
+    /**
+     * Returns whether the app may talk to Bluetooth devices: BLUETOOTH_CONNECT on Android 12+, BLUETOOTH before.
+     * Bluetooth communication devices are only enumerated or selected while this holds.
+     */
+    boolean hasBluetoothConnectPermission() {
+        return ActivityCompat.checkSelfPermission(apprtcContext, bluetoothPermission())
+            == PackageManager.PERMISSION_GRANTED;
     }
 
     /**
      * Logs the state of the local Bluetooth adapter.
      */
-    @SuppressLint({"HardwareIds", "MissingPermission"})
+    @SuppressLint("MissingPermission")
     private void logBluetoothAdapterInfo(BluetoothAdapter localAdapter) {
         Log.d(TAG, "BluetoothAdapter: "
             + "enabled=" + localAdapter.isEnabled() + ", "
-            + "state=" + stateToString(localAdapter.getState()) + ", "
-            + "name=" + localAdapter.getName());
-        // Log the set of BluetoothDevice objects that are bonded (paired) to the local adapter.
+            + "state=" + stateToString(localAdapter.getState()));
+        // Device names and hardware addresses are not logged: logs can end up in crash reports.
         Set<BluetoothDevice> pairedDevices = localAdapter.getBondedDevices();
-        if (!pairedDevices.isEmpty()) {
-            Log.d(TAG, "paired devices:");
-            for (BluetoothDevice device : pairedDevices) {
-                Log.d(TAG, " name=" + device.getName() + ", address=" + device.getAddress());
-            }
-        }
+        Log.d(TAG, "paired devices: " + pairedDevices.size());
     }
 
     /**
@@ -879,10 +879,10 @@ public class WebRtcBluetoothManager {
         if (devices.size() > 0) {
             bluetoothDevice = devices.get(0);
             if (bluetoothHeadset.isAudioConnected(bluetoothDevice)) {
-                Log.d(TAG, "SCO connected with " + bluetoothDevice.getName());
+                Log.d(TAG, "SCO connected");
                 scoConnected = true;
             } else {
-                Log.d(TAG, "SCO is not connected with " + bluetoothDevice.getName());
+                Log.d(TAG, "SCO is not connected");
             }
         }
         if (scoConnected) {
@@ -1156,6 +1156,9 @@ public class WebRtcBluetoothManager {
         }
 
         private AudioDeviceInfo findBluetoothDevice(int exactDeviceId) {
+            if (!hasBluetoothConnectPermission()) {
+                return null;
+            }
             try {
                 AudioDeviceInfo selectedDevice = null;
                 int selectedPriority = -1;
@@ -1181,6 +1184,9 @@ public class WebRtcBluetoothManager {
         }
 
         private boolean isBluetoothDeviceAvailable(int deviceId) {
+            if (!hasBluetoothConnectPermission()) {
+                return false;
+            }
             try {
                 for (AudioDeviceInfo device : audioManager.getAvailableCommunicationDevices()) {
                     if (device.getId() == deviceId
@@ -1195,6 +1201,9 @@ public class WebRtcBluetoothManager {
         }
 
         private void rememberCurrentBluetoothDevices() {
+            if (!hasBluetoothConnectPermission()) {
+                return;
+            }
             try {
                 for (AudioDeviceInfo device : audioManager.getAvailableCommunicationDevices()) {
                     if (isBluetoothCommunicationDeviceType(device.getType())) {
