@@ -130,7 +130,9 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import retrofit2.HttpException
 import java.io.File
+import java.io.IOException
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
