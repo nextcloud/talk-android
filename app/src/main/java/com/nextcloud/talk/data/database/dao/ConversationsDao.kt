@@ -25,6 +25,10 @@ interface ConversationsDao {
     @Query("SELECT * FROM Conversations where accountId = :accountId AND token = :token")
     fun getConversationForUser(accountId: Long, token: String): Flow<ConversationEntity?>
 
+    /** The internal ids of [accountId]'s conversations, without loading the conversations themselves. */
+    @Query("SELECT internalId FROM Conversations where accountId = :accountId")
+    suspend fun getConversationIdsForUser(accountId: Long): List<String>
+
     /**
      * Applies a full room list sync atomically: left conversations are deleted and the server
      * items are upserted in one transaction, so observers of the conversations table see a single

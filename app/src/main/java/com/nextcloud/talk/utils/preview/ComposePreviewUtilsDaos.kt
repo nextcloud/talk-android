@@ -240,6 +240,8 @@ class DummyUserDaoImpl : UsersDao {
 }
 
 class DummyConversationDaoImpl : ConversationsDao {
+    override suspend fun getConversationIdsForUser(accountId: Long): List<String> = emptyList()
+
     override fun getConversationsForUser(accountId: Long): Flow<List<ConversationEntity>> = flowOf()
 
     override fun getConversationForUser(accountId: Long, token: String): Flow<ConversationEntity?> = flowOf()
