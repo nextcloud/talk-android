@@ -174,7 +174,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
         val includeStatus = isUserStatusAvailable(user)
 
         try {
-            val conversationsList = withRetry(
+            val roomList = withRetry(
                 retries = NETWORK_FETCH_RETRIES,
                 initialDelayMillis = NETWORK_FETCH_RETRY_INITIAL_DELAY_MS,
                 maxDelayMillis = NETWORK_FETCH_RETRY_MAX_DELAY_MS
@@ -185,7 +185,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
                     .blockingSingle()
             }
 
-            conversationsFromSync = conversationsList.map {
+            conversationsFromSync = roomList.conversations.map {
                 it.asEntity(user.id!!)
             }
 
