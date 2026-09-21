@@ -483,6 +483,251 @@ class ChatMessageSyncerTest {
         }
 
     @Test
+    fun `pullUntilVisibleMessage returns after the first round when it already has a visible message`() =
+        runTest {
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
+                .thenReturn(flowOf(emptyList()))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(reactionMessage(49), message(48))))
+
+            val fieldMap = syncer.buildFieldMap(
+                lookIntoFuture = false,
+                timeout = 0,
+                includeLastKnown = true,
+                lastKnown = 50,
+                limit = 2
+            )
+            val outcome = syncer.pullUntilVisibleMessage(target(), fieldMap)
+
+            assertTrue(outcome.persistedNewMessages)
+            assertEquals(48L, outcome.newestPersistedMessage?.id)
+            verifyBlocking(network, times(1)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
+    fun `pullUntilVisibleMessage keeps paging older until a page has a visible message`() =
+        runTest {
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
+                .thenReturn(flowOf(emptyList()))
+            // fieldMap is mutated and reused between rounds, so snapshot it per call instead of
+            // relying on argumentCaptor, which would otherwise see every round's final mutation
+            val requestedFieldMaps = mutableListOf<Map<String, Int>>()
+            var pullCount = 0
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                requestedFieldMaps.add(HashMap(it.getArgument<HashMap<String, Int>>(2)))
+                pullCount++
+                if (pullCount == 1) {
+                    // a burst of add/remove-reaction system messages, no real message in the page
+                    Response.success(overall(reactionMessage(49), reactionMessage(48)))
+                } else {
+                    Response.success(overall(message(47)))
+                }
+            }
+
+            val fieldMap = syncer.buildFieldMap(
+                lookIntoFuture = false,
+                timeout = 0,
+                includeLastKnown = true,
+                lastKnown = 50,
+                limit = 2
+            )
+            val outcome = syncer.pullUntilVisibleMessage(target(), fieldMap)
+
+            assertTrue(outcome.persistedNewMessages)
+            assertEquals(3, outcome.persistedMessageCount)
+            assertEquals(49L, outcome.newestPersistedMessageId)
+            assertEquals(47L, outcome.oldestPersistedMessageId)
+            assertEquals(47L, outcome.newestPersistedMessage?.id)
+
+            assertEquals(2, requestedFieldMaps.size)
+            assertEquals(50, requestedFieldMaps[0]["lastKnownMessageId"])
+            assertEquals(48, requestedFieldMaps[1]["lastKnownMessageId"])
+            assertEquals(0, requestedFieldMaps[1]["includeLastKnown"])
+        }
+
+    @Test
+    fun `pullUntilVisibleMessage keeps paging through a page hidden by non-reaction system messages`() =
+        runTest {
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
+                .thenReturn(flowOf(emptyList()))
+            var pullCount = 0
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                pullCount++
+                if (pullCount == 1) {
+                    // THREAD_CREATED is a valid conversation-preview text (unlike reactions), but it
+                    // still never gets its own bubble in the main channel view — a page made up
+                    // entirely of these must not be mistaken for "found a visible message" either
+                    Response.success(overall(threadCreatedMessage(49), threadCreatedMessage(48)))
+                } else {
+                    Response.success(overall(message(47)))
+                }
+            }
+
+            val fieldMap = syncer.buildFieldMap(
+                lookIntoFuture = false,
+                timeout = 0,
+                includeLastKnown = true,
+                lastKnown = 50,
+                limit = 2
+            )
+            val outcome = syncer.pullUntilVisibleMessage(target(), fieldMap)
+
+            assertTrue(outcome.persistedNewMessages)
+            assertEquals(47L, outcome.newestPersistedMessage?.id)
+            verifyBlocking(network, times(2)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
+    fun `pullUntilVisibleMessage keeps paging through a page of thread replies in the main channel`() =
+        runTest {
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
+                .thenReturn(flowOf(emptyList()))
+            var pullCount = 0
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                pullCount++
+                if (pullCount == 1) {
+                    // real, non-system messages, but they are replies in some other thread - a
+                    // very active thread can crowd out the main channel view the same way a burst
+                    // of reactions or THREAD_CREATED messages does
+                    Response.success(
+                        overall(threadReplyMessage(49, threadId = 10), threadReplyMessage(48, threadId = 10))
+                    )
+                } else {
+                    Response.success(overall(message(47)))
+                }
+            }
+
+            val fieldMap = syncer.buildFieldMap(
+                lookIntoFuture = false,
+                timeout = 0,
+                includeLastKnown = true,
+                lastKnown = 50,
+                limit = 2
+            )
+            // threadId = null: syncing the main channel, not a specific thread
+            val outcome = syncer.pullUntilVisibleMessage(target(threadId = null), fieldMap)
+
+            assertTrue(outcome.persistedNewMessages)
+            assertEquals(47L, outcome.newestPersistedMessage?.id)
+            verifyBlocking(network, times(2)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
+    fun `pullUntilVisibleMessage accepts thread replies right away when syncing that thread`() =
+        runTest {
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(10L), any()))
+                .thenReturn(flowOf(emptyList()))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(
+                    Response.success(
+                        overall(threadReplyMessage(49, threadId = 10), threadReplyMessage(48, threadId = 10))
+                    )
+                )
+
+            val fieldMap = syncer.buildFieldMap(
+                lookIntoFuture = false,
+                timeout = 0,
+                includeLastKnown = true,
+                lastKnown = 50,
+                limit = 2
+            )
+            // threadId = 10: syncing that specific thread, so its replies are the visible content
+            val outcome = syncer.pullUntilVisibleMessage(target(threadId = 10L), fieldMap)
+
+            assertTrue(outcome.persistedNewMessages)
+            assertEquals(49L, outcome.newestPersistedMessage?.id)
+            verifyBlocking(network, times(1)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
+    fun `pullUntilVisibleMessage does not mistake the re-fetched anchor for a newly visible message`() =
+        runTest {
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
+                .thenReturn(flowOf(emptyList()))
+            // round 1 re-fetches the anchor (50, itself a real, heavily-reacted message) together
+            // with a wall of reaction-only messages below it and no other real message
+            var pullCount = 0
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                pullCount++
+                if (pullCount == 1) {
+                    Response.success(overall(message(50), reactionMessage(49), reactionMessage(48)))
+                } else {
+                    Response.success(overall(message(47)))
+                }
+            }
+
+            val fieldMap = syncer.buildFieldMap(
+                lookIntoFuture = false,
+                timeout = 0,
+                includeLastKnown = true,
+                lastKnown = 50,
+                limit = 3
+            )
+            val outcome = syncer.pullUntilVisibleMessage(target(), fieldMap)
+
+            assertTrue(outcome.persistedNewMessages)
+            assertEquals(47L, outcome.newestPersistedMessage?.id)
+            verifyBlocking(network, times(2)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
+    fun `pullUntilVisibleMessage stops once history is exhausted even without a visible message`() =
+        runTest {
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
+                .thenReturn(flowOf(emptyList()))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(
+                    Response.success(overall(reactionMessage(49), reactionMessage(48))),
+                    Response.success(overall())
+                )
+
+            val fieldMap = syncer.buildFieldMap(
+                lookIntoFuture = false,
+                timeout = 0,
+                includeLastKnown = true,
+                lastKnown = 50,
+                limit = 2
+            )
+            val outcome = syncer.pullUntilVisibleMessage(target(), fieldMap)
+
+            assertTrue(outcome.persistedNewMessages)
+            assertEquals(2, outcome.persistedMessageCount)
+            assertNull(outcome.newestPersistedMessage)
+            verifyBlocking(network, times(2)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
+    fun `pullUntilVisibleMessage gives up after MAX_VISIBLE_MESSAGE_ROUNDS rounds`() =
+        runTest {
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
+                .thenReturn(flowOf(emptyList()))
+            // An endless wall of reaction spam: every round returns another page of it, so the
+            // only thing that can stop the loop is the round budget itself. Must be kept in sync
+            // with MAX_VISIBLE_MESSAGE_ROUNDS (private, so not referenced directly here).
+            val expectedRounds = 25
+            var pullCount = 0
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                pullCount++
+                val newest = 50L - 2 * (pullCount - 1)
+                Response.success(overall(reactionMessage(newest - 1), reactionMessage(newest - 2)))
+            }
+
+            val fieldMap = syncer.buildFieldMap(
+                lookIntoFuture = false,
+                timeout = 0,
+                includeLastKnown = true,
+                lastKnown = 50,
+                limit = 2
+            )
+            val outcome = syncer.pullUntilVisibleMessage(target(), fieldMap)
+
+            assertTrue(outcome.persistedNewMessages)
+            assertNull(outcome.newestPersistedMessage)
+            assertEquals(expectedRounds * 2, outcome.persistedMessageCount)
+            verifyBlocking(network, times(expectedRounds)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
     fun `cleanupExpiredMessages trims block boundaries and deletes empty blocks`() =
         runTest {
             val partiallyExpiredBlock = block(oldest = 1, newest = 10)
@@ -536,11 +781,11 @@ class ChatMessageSyncerTest {
         )
     }
 
-    private fun target(user: User = user()): ChatMessageSyncer.SyncTarget =
+    private fun target(user: User = user(), threadId: Long? = null): ChatMessageSyncer.SyncTarget =
         ChatMessageSyncer.SyncTarget(
             user = user,
             roomToken = ROOM_TOKEN,
-            threadId = null,
+            threadId = threadId,
             credentials = CREDENTIALS,
             urlForChatting = CHAT_URL
         )
@@ -568,6 +813,18 @@ class ChatMessageSyncerTest {
             messageType = "comment",
             systemMessageType = ChatMessage.SystemMessageType.DUMMY
         )
+
+    private fun reactionMessage(id: Long): ChatMessageJson =
+        message(id).apply { systemMessageType = ChatMessage.SystemMessageType.REACTION }
+
+    private fun threadCreatedMessage(id: Long): ChatMessageJson =
+        message(id).apply { systemMessageType = ChatMessage.SystemMessageType.THREAD_CREATED }
+
+    private fun threadReplyMessage(id: Long, threadId: Long): ChatMessageJson =
+        message(id).apply {
+            hasThread = true
+            this.threadId = threadId
+        }
 
     private fun overall(vararg messages: ChatMessageJson): ChatOverall =
         ChatOverall(ocs = ChatOCS(meta = null, data = messages.toList()))
