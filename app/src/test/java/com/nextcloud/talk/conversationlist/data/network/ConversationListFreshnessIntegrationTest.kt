@@ -12,6 +12,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.bluelinelabs.logansquare.LoganSquare
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
@@ -19,6 +20,7 @@ import com.nextcloud.talk.data.database.mappers.asEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.source.local.TalkDatabase
+import com.nextcloud.talk.data.storage.ArbitraryStoragesRepositoryImpl
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.data.user.model.UserEntity
 import com.nextcloud.talk.logger.Logger
@@ -188,6 +190,7 @@ class ConversationListFreshnessIntegrationTest {
             networkMonitor,
             syncer,
             conversationListUpdater,
+            ArbitraryStorageManager(ArbitraryStoragesRepositoryImpl(db.arbitraryStoragesDao())),
             ApplicationProvider.getApplicationContext(),
             mock<Logger>()
         )
@@ -257,6 +260,7 @@ class ConversationListFreshnessIntegrationTest {
             networkMonitor,
             syncer,
             conversationListUpdater,
+            ArbitraryStorageManager(ArbitraryStoragesRepositoryImpl(db.arbitraryStoragesDao())),
             ApplicationProvider.getApplicationContext(),
             mock<Logger>()
         )
@@ -370,6 +374,7 @@ class ConversationListFreshnessIntegrationTest {
             networkMonitor,
             syncer,
             conversationListUpdater,
+            ArbitraryStorageManager(ArbitraryStoragesRepositoryImpl(db.arbitraryStoragesDao())),
             ApplicationProvider.getApplicationContext(),
             mock<Logger>()
         )
@@ -401,6 +406,7 @@ class ConversationListFreshnessIntegrationTest {
             networkMonitor,
             syncer,
             conversationListUpdater,
+            ArbitraryStorageManager(ArbitraryStoragesRepositoryImpl(db.arbitraryStoragesDao())),
             ApplicationProvider.getApplicationContext(),
             mock<Logger>()
         )

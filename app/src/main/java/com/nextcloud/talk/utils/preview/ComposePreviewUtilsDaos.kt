@@ -13,9 +13,13 @@ import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
+import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository
+import com.nextcloud.talk.data.storage.model.ArbitraryStorage
+import com.nextcloud.talk.data.storage.model.ArbitraryStorageEntity
 import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.model.UserEntity
 import com.nextcloud.talk.models.json.push.PushConfigurationState
+import io.reactivex.Maybe
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -308,4 +312,18 @@ class DummyChatBlocksDaoImpl : ChatBlocksDao {
 
     override suspend fun getChatBlocksForConversation(internalConversationId: String): List<ChatBlockEntity> =
         emptyList()
+}
+
+class DummyArbitraryStoragesRepositoryImpl : ArbitraryStoragesRepository {
+    override fun getStorageSetting(
+        accountIdentifier: Long,
+        key: String,
+        objectString: String
+    ): Maybe<ArbitraryStorage> = Maybe.empty()
+
+    override fun deleteArbitraryStorage(accountIdentifier: Long): Int = 0
+
+    override fun saveArbitraryStorage(arbitraryStorage: ArbitraryStorage): Long = 0
+
+    override fun getAll(): Maybe<List<ArbitraryStorageEntity>> = Maybe.empty()
 }
