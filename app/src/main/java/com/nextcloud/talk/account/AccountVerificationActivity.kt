@@ -53,11 +53,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PASSWORD
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USERNAME
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx2.await
-import kotlinx.coroutines.rx2.awaitSingle
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.net.CookieManager
@@ -140,15 +136,9 @@ class AccountVerificationActivity : BaseActivity() {
         return !TextUtils.isEmpty(originalProtocol) && !baseUrl.startsWith(originalProtocol)
     }
 
-    private suspend fun getUser(id: Long): User =
-        withContext(Dispatchers.IO) {
-            userManager.getUserWithId(id).awaitSingle()
-        }
+    private suspend fun getUser(id: Long): User = userManager.getUserWithIdSuspend(id)!!
 
-    private suspend fun getAllUsers(): List<User> =
-        withContext(Dispatchers.IO) {
-            userManager.users.await()
-        }
+    private suspend fun getAllUsers(): List<User> = userManager.getUsers()
 
     /** Appends [resId] as a new line to the progress text already shown to the user. */
     @SuppressLint("SetTextI18n")
@@ -232,24 +222,22 @@ class AccountVerificationActivity : BaseActivity() {
     @Suppress("TooGenericExceptionCaught")
     private suspend fun storeProfile(displayName: String?, userId: String, capabilitiesOverall: CapabilitiesOverall) {
         try {
-            val user = withContext(Dispatchers.IO) {
-                userManager.storeProfile(
-                    username,
-                    UserManager.UserAttributes(
-                        id = null,
-                        serverUrl = baseUrl,
-                        currentUser = false,
-                        userId = userId,
-                        token = token,
-                        displayName = displayName,
-                        pushConfigurationState = null,
-                        capabilities = LoganSquare.serialize(capabilitiesOverall.ocs!!.data!!.capabilities),
-                        serverVersion = LoganSquare.serialize(capabilitiesOverall.ocs!!.data!!.serverVersion),
-                        certificateAlias = appPreferences.temporaryClientCertAlias,
-                        externalSignalingServer = null
-                    )
-                ).awaitSingle()
-            }
+            val user = userManager.storeProfileSuspend(
+                username,
+                UserManager.UserAttributes(
+                    id = null,
+                    serverUrl = baseUrl,
+                    currentUser = false,
+                    userId = userId,
+                    token = token,
+                    displayName = displayName,
+                    pushConfigurationState = null,
+                    capabilities = LoganSquare.serialize(capabilitiesOverall.ocs!!.data!!.capabilities),
+                    serverVersion = LoganSquare.serialize(capabilitiesOverall.ocs!!.data!!.serverVersion),
+                    certificateAlias = appPreferences.temporaryClientCertAlias,
+                    externalSignalingServer = null
+                )
+            )!!
             internalAccountId = user.id!!
             setupPushNotifications()
         } catch (e: Exception) {
@@ -446,7 +434,7 @@ class AccountVerificationActivity : BaseActivity() {
         val userToSetAsActive = getUser(internalAccountId)
         Log.d(TAG, "userToSetAsActive: " + userToSetAsActive.username)
 
-        if (withContext(Dispatchers.IO) { userManager.setUserAsActive(userToSetAsActive).await() }) {
+        if (userManager.setUserAsActiveSuspend(userToSetAsActive)) {
             if (getAllUsers().size > 1 && isAccountImport) {
                 ApplicationWideMessageHolder.getInstance().messageType =
                     ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
@@ -476,7 +464,7 @@ class AccountVerificationActivity : BaseActivity() {
 
     @SuppressLint("CheckResult")
     private suspend fun deleteUserAndStartServerSelection(userId: Long) {
-        withContext(Dispatchers.IO) { userManager.scheduleUserForDeletionWithId(userId).await() }
+        userManager.scheduleUserForDeletionWithIdSuspend(userId)
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
             .setExpeditedIfSupported()
             .build()
