@@ -144,7 +144,7 @@ class ChooseAccountDialogCompose {
         val showStatusMessageSheet = rememberSaveable { mutableStateOf(false) }
         val context = LocalContext.current
         val statusViewState by statusViewModel.statusViewState.collectAsStateWithLifecycle()
-        val invitationsState by invitationsViewModel.getInvitationsViewState.collectAsStateWithLifecycle()
+        val invitationsStateByUser by invitationsViewModel.invitationsStateByUser.collectAsStateWithLifecycle()
         val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
         val currentUser = currentUserProvider.currentUser.blockingGet()!!
         val isStatusAvailable = CapabilitiesUtil.isUserStatusAvailable(currentUser)
@@ -152,8 +152,10 @@ class ChooseAccountDialogCompose {
 
         LaunchedEffect(currentUser) {
             val users = userManager.getUsers()
+            userItems.clear()
             users.forEach { user ->
                 if (!user.current) {
+                    addAccountToList(user, pendingInvitations = 0)
                     invitationsViewModel.getInvitations(user)
                 }
             }
@@ -161,9 +163,8 @@ class ChooseAccountDialogCompose {
                 statusViewModel.getStatus()
             }
         }
-        LaunchedEffect(invitationsState) {
-            userItems.clear()
-            setupAccounts(invitationsState)
+        LaunchedEffect(invitationsStateByUser) {
+            updatePendingInvitationCounts(invitationsStateByUser)
         }
         handleStatusState(statusViewState, status)
         MaterialTheme(colorScheme = colorScheme) {
@@ -237,11 +238,12 @@ class ChooseAccountDialogCompose {
         }
     }
 
-    private suspend fun setupAccounts(invitationsUiState: InvitationsViewModel.ViewState) {
-        userManager.getUsers().forEach { user ->
-            if (!user.current) {
-                val pendingCount = getPendingInvitations(invitationsUiState)
-                addAccountToList(user, pendingCount)
+    private fun updatePendingInvitationCounts(statesByUserId: Map<Long, InvitationsViewModel.ViewState>) {
+        statesByUserId.forEach { (userId, state) ->
+            val pendingCount = getPendingInvitations(state)
+            val index = userItems.indexOfFirst { it.user.id == userId }
+            if (index >= 0 && userItems[index].pendingInvitation != pendingCount) {
+                userItems[index] = userItems[index].copy(pendingInvitation = pendingCount)
             }
         }
     }
