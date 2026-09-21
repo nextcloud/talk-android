@@ -50,7 +50,7 @@ import org.mockito.kotlin.wheneverBlocking
 import retrofit2.Response
 import java.io.IOException
 
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LargeClass")
 class ChatMessageSyncerTest {
 
     private val chatDao: ChatMessagesDao = mock()

@@ -680,13 +680,9 @@ class ChatMessageSyncer @Inject constructor(
      * (threadId == its own id) is not itself a reply and stays visible.
      */
     private fun isChatVisibleMessage(message: ChatMessageJson, syncedThreadId: Long?): Boolean {
-        if (message.systemMessageType in CHAT_HIDDEN_SYSTEM_MESSAGE_TYPES) {
-            return false
-        }
-        if (syncedThreadId == null && message.hasThread && message.threadId != message.id) {
-            return false
-        }
-        return true
+        val hiddenSystemMessage = message.systemMessageType in CHAT_HIDDEN_SYSTEM_MESSAGE_TYPES
+        val replyToAnotherThread = syncedThreadId == null && message.hasThread && message.threadId != message.id
+        return !hiddenSystemMessage && !replyToAnotherThread
     }
 
     /**
