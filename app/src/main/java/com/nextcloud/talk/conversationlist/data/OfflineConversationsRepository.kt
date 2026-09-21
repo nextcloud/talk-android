@@ -41,9 +41,14 @@ interface OfflineConversationsRepository {
      * Selects the account observed by [roomListFlow] and synchronizes its conversations with
      * the server (when online). The synced changes surface through [roomListFlow], which
      * observes the database.
+     *
+     * The sync asks the server only for what changed since the last one where it can. Set
+     * [forceFullSync] for the cases where that is not good enough and the whole list is wanted
+     * back - a pull to refresh, where a conversation the user left elsewhere should be gone by the
+     * time the indicator stops spinning, rather than within the next five minutes.
      */
     @Deprecated("use observeConversation")
-    fun getRooms(user: User): Job
+    fun getRooms(user: User, forceFullSync: Boolean = false): Job
 
     /**
      * Called once onStart to emit a conversation to [conversationFlow]
