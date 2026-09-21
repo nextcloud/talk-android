@@ -562,11 +562,11 @@ class ConversationsListViewModel @AssistedInject constructor(
         }
     }
 
-    fun getRooms(user: User) {
+    fun getRooms(user: User, forceFullSync: Boolean = false) {
         val startNanoTime = System.nanoTime()
         Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
         _isLoadingRooms.value = true
-        val job = repository.getRooms(user)
+        val job = repository.getRooms(user, forceFullSync)
         viewModelScope.launch {
             job.join()
             _isLoadingRooms.value = false
