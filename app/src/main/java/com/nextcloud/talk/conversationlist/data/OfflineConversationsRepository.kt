@@ -41,9 +41,14 @@ interface OfflineConversationsRepository {
     /**
      * Synchronizes the conversations of [user] with the server (when online). The synced changes
      * surface through [roomListFlow], which observes the database.
+     *
+     * The sync asks the server only for what changed since the last one where it can. Set
+     * [forceFullSync] for the cases where that is not good enough and the whole list is wanted
+     * back - a pull to refresh, where a conversation the user left elsewhere should be gone by the
+     * time the indicator stops spinning, rather than within the next five minutes.
      */
     @Deprecated("use observeConversation")
-    fun getRooms(user: User): Job
+    fun getRooms(user: User, forceFullSync: Boolean = false): Job
 
     /**
      * Called once onStart to emit a conversation to [conversationFlow]
@@ -60,6 +65,16 @@ interface OfflineConversationsRepository {
 
     @Deprecated("use observeConversation")
     suspend fun getLocallyStoredConversation(user: User, roomToken: String): ConversationModel?
+
+    /**
+     * Makes the next conversation list sync of the account with the internal id [accountId] fetch
+     * the whole list.
+     *
+     * A conversation this device left or deleted is absent from the server's answer rather than
+     * marked as gone, which only a full response can be read as a removal. Without this the row
+     * survives locally until the next full sync falls due.
+     */
+    fun requireFullSync(accountId: Long)
 
     fun observeConversation(accountId: Long, roomToken: String): Flow<ConversationResult>
 }
