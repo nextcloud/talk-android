@@ -43,10 +43,8 @@ interface OfflineConversationsRepository {
      * Synchronizes the conversations of [user] with the server (when online). The synced changes
      * surface through [roomListFlow], which observes the database.
      *
-     * The sync asks the server only for what changed since the last one where it can. Set
-     * [forceFullSync] for the cases where that is not good enough and the whole list is wanted
-     * back - a pull to refresh, where a conversation the user left elsewhere should be gone by the
-     * time the indicator stops spinning, rather than within the next five minutes.
+     * The sync asks the server only for the conversations changed since the last one where it
+     * can. [forceFullSync] makes it fetch the whole list instead.
      */
     @Deprecated("use observeConversation")
     fun getRooms(user: User, forceFullSync: Boolean = false): Job
@@ -85,6 +83,15 @@ interface OfflineConversationsRepository {
      * returns once that is done. Failures for single rooms are logged, not thrown.
      */
     suspend fun catchUpRooms(user: User, rooms: List<ConversationEntity>)
+
+    /**
+     * Whether a sync for [user] right now would either ask only for the conversations that changed,
+     * or be the full refresh that falls due every five minutes.
+     *
+     * False means the next sync would fetch the whole conversation list without the cadence calling
+     * for it.
+     */
+    suspend fun isPeriodicSyncDue(user: User): Boolean
 
     /**
      * Called once onStart to emit a conversation to [conversationFlow]
