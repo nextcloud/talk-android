@@ -50,7 +50,7 @@ import com.nextcloud.talk.dagger.modules.UtilsModule
 import com.nextcloud.talk.dagger.modules.ViewModelModule
 import com.nextcloud.talk.filebrowser.webdav.DavUtils
 import com.nextcloud.talk.jobs.AccountRemovalWorker
-import com.nextcloud.talk.jobs.CapabilitiesWorker
+import com.nextcloud.talk.jobs.CapabilitiesSyncWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
 import com.nextcloud.talk.jobs.WebsocketConnectionsWorker
 import com.nextcloud.talk.ui.theme.ThemeModule
@@ -241,7 +241,7 @@ class NextcloudTalkApplication :
 
     private fun initWorkers() {
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
-        val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java).build()
+        val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesSyncWorker::class.java).build()
         val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java).build()
         val websocketConnectionsWorker = OneTimeWorkRequest.Builder(WebsocketConnectionsWorker::class.java).build()
 
@@ -253,7 +253,7 @@ class NextcloudTalkApplication :
             .enqueue()
 
         val periodicCapabilitiesUpdateWork = PeriodicWorkRequest.Builder(
-            CapabilitiesWorker::class.java,
+            CapabilitiesSyncWorker::class.java,
             HALF_DAY,
             TimeUnit.HOURS
         ).build()
