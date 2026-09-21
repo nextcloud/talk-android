@@ -118,18 +118,24 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     }
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
-        Log.d(TAG, "Open webSocket")
+        val previousWebSocket = internalWebSocket
+        Log.d(
+            TAG,
+            "Open webSocket ${webSocket.hashCode()} (previous was ${previousWebSocket?.hashCode()})"
+        )
         internalWebSocket = webSocket
         sendHello()
     }
 
     private fun closeWebSocket(webSocket: WebSocket) {
+        Log.d(TAG, "closeWebSocket ${webSocket.hashCode()}")
         webSocket.close(NORMAL_CLOSURE, null)
         webSocket.cancel()
-        if (webSocket === internalWebSocket) {
-            isConnected = false
-            messagesQueue = ArrayList()
+        if (webSocket !== internalWebSocket) {
+            return
         }
+        isConnected = false
+        messagesQueue = ArrayList()
         sleep(ONE_SECOND)
         restartWebSocket()
     }
@@ -139,10 +145,14 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     }
 
     fun restartWebSocket() {
-        reconnecting = true
         Log.d(TAG, "restartWebSocket: $connectionUrl")
+        val previousWebSocket = internalWebSocket
+        isConnected = false
+        reconnecting = true
         val request = Request.Builder().url(connectionUrl).build()
-        signalingHttpClient.newWebSocket(request, this)
+        internalWebSocket = signalingHttpClient.newWebSocket(request, this)
+        previousWebSocket?.close(NORMAL_CLOSURE, null)
+        previousWebSocket?.cancel()
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
@@ -381,16 +391,17 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     }
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-        Log.d(TAG, "onClosing : $code / $reason")
+        Log.d(TAG, "onClosing : WebSocket ${webSocket.hashCode()} $code / $reason")
     }
 
     override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-        Log.d(TAG, "onClosed : $code / $reason")
+        Log.d(TAG, "onClosed : WebSocket ${webSocket.hashCode()} $code / $reason")
         isConnected = false
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-        Log.e(TAG, "Error : WebSocket " + webSocket.hashCode(), t)
+        val isCurrent = webSocket === internalWebSocket
+        Log.e(TAG, "Error : WebSocket ${webSocket.hashCode()} (isCurrentInternalWebSocket=$isCurrent)", t)
         closeWebSocket(webSocket)
     }
 
