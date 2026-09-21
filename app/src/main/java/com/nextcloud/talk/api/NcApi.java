@@ -95,9 +95,10 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room
      */
     @GET
-    Observable<RoomsOverall> getRooms(@Header("Authorization") String authorization,
-                                      @Url String url,
-                                      @Nullable @Query("includeStatus") Boolean includeStatus);
+    Observable<Response<RoomsOverall>> getRooms(@Header("Authorization") String authorization,
+                                                @Url String url,
+                                                @Nullable @Query("includeStatus") Boolean includeStatus,
+                                                @Nullable @Query("modifiedSince") Long modifiedSince);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken
