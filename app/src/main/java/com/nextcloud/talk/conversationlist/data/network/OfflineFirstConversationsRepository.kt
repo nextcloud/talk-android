@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteConstraintException
 import android.net.ConnectivityManager
 import android.os.PowerManager
 import android.util.Log
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
@@ -45,6 +46,7 @@ import kotlinx.coroutines.sync.withPermit
 import javax.inject.Inject
 import kotlin.collections.map
 
+@Suppress("LongParameterList")
 class OfflineFirstConversationsRepository @Inject constructor(
     private val dao: ConversationsDao,
     private val network: ConversationsNetworkDataSource,
@@ -52,6 +54,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val networkMonitor: NetworkMonitor,
     private val chatMessageSyncer: ChatMessageSyncer,
     private val conversationListUpdater: ConversationListUpdater,
+    private val arbitraryStorageManager: ArbitraryStorageManager,
     private val context: Context,
     private val logger: Logger
 ) : OfflineConversationsRepository {
@@ -156,7 +159,10 @@ class OfflineFirstConversationsRepository @Inject constructor(
             return null
         }
 
-        val includeStatus = isUserStatusAvailable(user)
+        val accountId = user.id!!
+        val modifiedSince = readTimestamp(accountId, KEY_MODIFIED_SINCE)
+
+        val includeStatus = modifiedSince == null && isUserStatusAvailable(user)
 
         try {
             val roomList = withRetry(
@@ -164,38 +170,72 @@ class OfflineFirstConversationsRepository @Inject constructor(
                 initialDelayMillis = NETWORK_FETCH_RETRY_INITIAL_DELAY_MS,
                 maxDelayMillis = NETWORK_FETCH_RETRY_MAX_DELAY_MS
             ) {
-                network.getRooms(user, user.baseUrl!!, includeStatus)
+                network.getRooms(user, user.baseUrl!!, includeStatus, modifiedSince)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .blockingSingle()
             }
 
             conversationsFromSync = roomList.conversations.map {
-                it.asEntity(user.id!!)
+                it.asEntity(accountId)
             }
 
-            val previousConversations = dao.getConversationsForUser(user.id!!).first()
+            val previousConversations = dao.getConversationsForUser(accountId).first()
                 .associateBy { it.internalId }
 
+            val serverItems = if (includeStatus) {
+                conversationsFromSync
+            } else {
+                keepCachedStatus(conversationsFromSync, previousConversations)
+            }
+
             dao.syncConversationsForUser(
-                accountId = user.id!!,
+                accountId = accountId,
                 serverItems = conversationListUpdater.preservePendingLocalState(
                     previousConversations,
-                    conversationsFromSync
+                    serverItems
                 ),
-                conversationIdsToDelete = determineLeftConversationIds(previousConversations, conversationsFromSync)
+                conversationIdsToDelete = if (roomList.wasDelta) {
+                    emptyList()
+                } else {
+                    determineLeftConversationIds(previousConversations, conversationsFromSync)
+                }
             )
+
+            rememberSyncedState(accountId, roomList)
 
             val roomsWithNewMessages = getRoomsWithNewMessages(conversationsFromSync, previousConversations)
             scope.launch { catchUpRoomsWithNewMessages(user, roomsWithNewMessages) }
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong when fetching conversations", e)
-            val hasCachedConversations = dao.getConversationsForUser(user.id!!).first().isNotEmpty()
+            storeTimestamp(accountId, KEY_MODIFIED_SINCE, null)
+            val hasCachedConversations = dao.getConversationsForUser(accountId).first().isNotEmpty()
             if (!hasCachedConversations) {
                 _syncErrorFlow.emit(e)
             }
         }
         return conversationsFromSync
+    }
+
+    /**
+     * Stores what the next sync needs, and only once the response is safely in the database: a
+     * timestamp kept ahead of a write that then failed would permanently skip the conversations
+     * that write was carrying.
+     */
+    private fun rememberSyncedState(accountId: Long, roomList: RoomListResult) {
+        storeTimestamp(accountId, KEY_MODIFIED_SINCE, roomList.modifiedBefore)
+    }
+
+    /** Null for anything that is not a plausible timestamp, so a bad value asks for a full sync. */
+    private fun readTimestamp(accountId: Long, key: String): Long? =
+        arbitraryStorageManager.getStorageSetting(accountId, key, "")
+            .blockingGet()
+            ?.value
+            ?.toLongOrNull()
+            ?.takeIf { it > 0 }
+
+    private fun storeTimestamp(accountId: Long, key: String, value: Long?) {
+        arbitraryStorageManager.storeStorageSetting(accountId, key, value?.toString(), "")
     }
 
     /**
@@ -296,6 +336,25 @@ class OfflineFirstConversationsRepository @Inject constructor(
             connectivityManager.restrictBackgroundStatus == ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED
     }
 
+    /**
+     * Returns [conversations] with the stored user status of each, for a response that did not
+     * carry one. The upsert replaces the row it writes, so a response fetched without
+     * `includeStatus` would otherwise clear the status of every conversation it covers.
+     */
+    private fun keepCachedStatus(
+        conversations: List<ConversationEntity>,
+        previousConversations: Map<String, ConversationEntity>
+    ): List<ConversationEntity> =
+        conversations.map { item ->
+            val previous = previousConversations[item.internalId] ?: return@map item
+            item.copy(
+                status = previous.status,
+                statusClearAt = previous.statusClearAt,
+                statusIcon = previous.statusIcon,
+                statusMessage = previous.statusMessage
+            )
+        }
+
     private fun determineLeftConversationIds(
         previousConversations: Map<String, ConversationEntity>,
         conversationsFromSync: List<ConversationEntity>
@@ -331,5 +390,6 @@ class OfflineFirstConversationsRepository @Inject constructor(
         private const val NETWORK_FETCH_RETRIES = 3
         private const val NETWORK_FETCH_RETRY_INITIAL_DELAY_MS = 1000L
         private const val NETWORK_FETCH_RETRY_MAX_DELAY_MS = 8000L
+        private const val KEY_MODIFIED_SINCE = "conversation_list_modified_since"
     }
 }

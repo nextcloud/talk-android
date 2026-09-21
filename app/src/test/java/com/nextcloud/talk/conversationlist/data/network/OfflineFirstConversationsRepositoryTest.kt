@@ -10,6 +10,7 @@ package com.nextcloud.talk.conversationlist.data.network
 import android.content.Context
 import android.net.ConnectivityManager
 import android.os.PowerManager
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.data.database.dao.ConversationsDao
@@ -23,6 +24,7 @@ import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.utils.SpreedFeatures
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.schedulers.Schedulers
@@ -78,6 +80,8 @@ class OfflineFirstConversationsRepositoryTest {
     private val powerManager: PowerManager = mock()
     private val connectivityManager: ConnectivityManager = mock()
 
+    private val arbitraryStorageManager: ArbitraryStorageManager = mock()
+
     private lateinit var repository: OfflineFirstConversationsRepository
 
     @Before
@@ -94,6 +98,8 @@ class OfflineFirstConversationsRepositoryTest {
             .thenReturn(ConnectivityManager.RESTRICT_BACKGROUND_STATUS_DISABLED)
 
         whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(emptyList()))
+        whenever(arbitraryStorageManager.getStorageSetting(any(), any(), any()))
+            .thenReturn(Maybe.empty())
         whenever(conversationListUpdater.preservePendingLocalState(any(), any()))
             .thenAnswer { invocation -> invocation.getArgument<List<ConversationEntity>>(1) }
 
@@ -104,6 +110,7 @@ class OfflineFirstConversationsRepositoryTest {
             networkMonitor,
             chatMessageSyncer,
             conversationListUpdater,
+            arbitraryStorageManager,
             context,
             mock<Logger>()
         )
