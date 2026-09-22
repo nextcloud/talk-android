@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.utils.ssl
 
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import java.net.InetAddress
 import java.net.Socket
 import java.security.GeneralSecurityException
@@ -20,6 +21,7 @@ class SSLSocketFactoryCompat(keyManager: KeyManager?, trustManager: X509TrustMan
     private var delegate: SSLSocketFactory
 
     companion object {
+        private val TAG = SSLSocketFactoryCompat::class.java.simpleName
         // Android 5.0+ (API level 21) provides reasonable default settings
         // but it still allows SSLv3
         // https://developer.android.com/reference/javax/net/ssl/SSLSocket.html
@@ -46,6 +48,7 @@ class SSLSocketFactoryCompat(keyManager: KeyManager?, trustManager: X509TrustMan
             )
             delegate = sslContext.socketFactory
         } catch (e: GeneralSecurityException) {
+            NextcloudTalkApplication.sharedApplication?.logger?.e(TAG, "System has no TLS support", e)
             throw IllegalStateException() // system has no TLS
         }
     }

@@ -10,6 +10,7 @@ package com.nextcloud.talk.data.source.local.converters
 import android.util.Log
 import androidx.room.TypeConverter
 import com.fasterxml.jackson.core.JsonFactory
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import java.io.IOException
 
 class LinkedHashMapConverter {
@@ -52,7 +53,11 @@ class LinkedHashMapConverter {
             }
             stringWriter.toString()
         } catch (e: IOException) {
-            // e.printStackTrace()
+            NextcloudTalkApplication.sharedApplication?.logger?.w(
+                "LinkedHashMapConverter",
+                "Error serializing linkedHashMap to string",
+                e
+            )
             ""
         }
 }

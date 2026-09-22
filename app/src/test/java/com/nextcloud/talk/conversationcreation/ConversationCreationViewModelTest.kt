@@ -9,6 +9,7 @@ package com.nextcloud.talk.conversationcreation
 import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationViewModel
 import com.nextcloud.talk.conversationcreation.viewmodel.PresetsUiState
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.capabilities.PasswordApi
@@ -31,6 +32,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
 
 /**
  * What the creation screen's ViewModel does before and after the current user is known.
@@ -52,7 +54,7 @@ class ConversationCreationViewModelTest {
     private fun viewModel() =
         ConversationCreationViewModel(
             repository,
-            ConversationCreator(repository),
+            ConversationCreator(repository, mock<Logger>()),
             passwordPolicyRepository,
             userProvider
         )

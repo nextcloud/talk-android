@@ -13,6 +13,7 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.logger.LogsRepository
 import com.nextcloud.talk.users.UserManager
@@ -52,6 +53,8 @@ fun List<DiagnosisElement>.toMarkdown(): String =
 
 private const val PUSH_TOKEN_PREFIX_END: Int = 5
 
+private val TAG = DiagnosisActivity::class.java.simpleName
+
 @Suppress("LongMethod", "TooGenericExceptionCaught", "CyclomaticComplexMethod")
 fun buildDiagnosisElements(
     context: Context,
@@ -66,7 +69,12 @@ fun buildDiagnosisElements(
     val nUnifiedPushServices = UnifiedPushUtils.getExternalDistributors(context).size
     val offerUnifiedPush = try {
         nUnifiedPushServices > 0 && userManager.users.blockingGet().all { it.hasWebPushCapability }
-    } catch (_: Exception) {
+    } catch (e: Exception) {
+        NextcloudTalkApplication.sharedApplication?.logger?.w(
+            TAG,
+            "Failed to determine whether UnifiedPush can be offered, assuming no",
+            e
+        )
         false
     }
     val useUnifiedPush = appPreferences.useUnifiedPush
@@ -186,7 +194,9 @@ fun buildDiagnosisElements(
             context.getString(R.string.nc_diagnosis_app_users_amount),
             userManager.users.blockingGet().size.toString()
         )
-    } catch (_: Exception) { }
+    } catch (e: Exception) {
+        NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "Failed to add users amount diagnosis entry", e)
+    }
 
     // Account
     try {
@@ -239,7 +249,9 @@ fun buildDiagnosisElements(
                 context.getString(R.string.nc_diagnosis_signaling_mode_intern)
             }
         )
-    } catch (_: Exception) { }
+    } catch (e: Exception) {
+        NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "Failed to add account diagnosis entries", e)
+    }
 
     return data
 }

@@ -1435,6 +1435,7 @@ class ConversationsListActivity : BaseActivity() {
                         Intent(Intent.ACTION_VIEW, (CLIENT_UPGRADE_MARKET_LINK + packageName).toUri())
                     )
                 } catch (e: ActivityNotFoundException) {
+                    logger.w(TAG, "Play Store app not found, falling back to browser link", e)
                     startActivity(
                         Intent(Intent.ACTION_VIEW, (CLIENT_UPGRADE_GPLAY_LINK + packageName).toUri())
                     )

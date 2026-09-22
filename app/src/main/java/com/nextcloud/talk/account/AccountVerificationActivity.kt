@@ -197,8 +197,10 @@ class AccountVerificationActivity : BaseActivity() {
             }
         } catch (e: Exception) {
             if (checkForcedHttps) {
+                logger.w(TAG, "Server status check failed for https scheme, retrying with http", e)
                 determineBaseUrlProtocol(false)
             } else {
+                logger.e(TAG, "Failed to determine base url protocol", e)
                 abortVerification()
             }
         }
@@ -220,6 +222,7 @@ class AccountVerificationActivity : BaseActivity() {
                 abortVerification()
             }
         } catch (e: Exception) {
+            logger.e(TAG, "Failed to check whether the server has Talk installed", e)
             reportServerWithoutTalk()
             abortVerification()
         }
@@ -250,6 +253,7 @@ class AccountVerificationActivity : BaseActivity() {
             internalAccountId = user.id!!
             setupPushNotifications()
         } catch (e: Exception) {
+            logger.e(TAG, "Failed to store profile", e)
             appendProgressMessage(R.string.nc_display_name_not_stored)
             abortVerification()
         }
@@ -278,6 +282,7 @@ class AccountVerificationActivity : BaseActivity() {
                 abortVerification()
             }
         } catch (e: Exception) {
+            logger.e(TAG, "Failed to fetch user profile", e)
             appendProgressMessage(R.string.nc_display_name_not_fetched)
             abortVerification()
         }

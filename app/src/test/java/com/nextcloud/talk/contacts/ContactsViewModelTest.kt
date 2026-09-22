@@ -14,6 +14,7 @@ import com.nextcloud.talk.contacts.repository.FakeRepositorySuccess
 import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.UsersRepositoryImpl
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderImpl
@@ -29,6 +30,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ContactsViewModelTest {
@@ -59,7 +61,7 @@ class ContactsViewModelTest {
         // (real blocking wait, since this isn't inside runTest) ensures the value is
         // already cached by the time the ViewModel's viewModelScope collects it.
         runBlocking { provider.getCurrentUser() }
-        return ContactsViewModel(repo, provider).also {
+        return ContactsViewModel(repo, provider, mock<Logger>()).also {
             viewModelStore.put("contactsViewModel${viewModelCount++}", it)
         }
     }

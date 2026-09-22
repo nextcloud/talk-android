@@ -7,12 +7,12 @@
  */
 package com.nextcloud.talk.messagesearch
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
@@ -37,7 +37,8 @@ import javax.inject.Inject
  */
 class MessageSearchViewModel @Inject constructor(
     private val unifiedSearchRepository: UnifiedSearchRepository,
-    private val currentUserProvider: CurrentUserProviderOld
+    private val currentUserProvider: CurrentUserProviderOld,
+    private val logger: Logger
 ) : ViewModel() {
 
     sealed class ViewState
@@ -103,7 +104,7 @@ class MessageSearchViewModel @Inject constructor(
     }
 
     private fun onError(throwable: Throwable) {
-        Log.e(TAG, "onError:", throwable)
+        logger.e(TAG, "onError:", throwable)
         _state.value = ErrorState
     }
 
@@ -116,7 +117,7 @@ class MessageSearchViewModel @Inject constructor(
     }
 
     companion object {
-        private val TAG = MessageSearchViewModel::class.simpleName
+        private val TAG = MessageSearchViewModel::class.java.simpleName
         private const val MIN_CHARS_FOR_SEARCH = 2
     }
 }

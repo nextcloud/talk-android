@@ -17,6 +17,7 @@ import com.nextcloud.talk.invitation.data.Invitation
 import com.nextcloud.talk.invitation.data.InvitationActionModel
 import com.nextcloud.talk.invitation.data.InvitationsModel
 import com.nextcloud.talk.invitation.data.InvitationsRepository
+import com.nextcloud.talk.logger.Logger
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -26,7 +27,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class InvitationsViewModel @Inject constructor(private val repository: InvitationsRepository) : ViewModel() {
+class InvitationsViewModel @Inject constructor(
+    private val repository: InvitationsRepository,
+    private val logger: Logger
+) : ViewModel() {
 
     sealed interface ViewState
 
@@ -76,6 +80,7 @@ class InvitationsViewModel @Inject constructor(private val repository: Invitatio
                     _getInvitationsViewState.value = GetInvitationsSuccessState(invitationsModel.invitations)
                 }
             } catch (e: Exception) {
+                logger.e(TAG, "Failed to get invitations", e)
                 _getInvitationsViewState.value = GetInvitationsErrorState(e)
             }
         }
@@ -142,7 +147,7 @@ class InvitationsViewModel @Inject constructor(private val repository: Invitatio
     }
 
     companion object {
-        private val TAG = InvitationsViewModel::class.simpleName
+        private val TAG = InvitationsViewModel::class.java.simpleName
         private const val OPEN_PENDING_INVITATION = "0"
         private const val HTTP_OK = 200
     }

@@ -1117,7 +1117,7 @@ class ChatActivity :
 
                 durationLong / ONE_SECOND_IN_MILLIS
             } catch (e: IllegalArgumentException) {
-                e.printStackTrace()
+                logger.e(TAG, "Failed to read audio duration for $audioFilePath", e)
                 0L
             } finally {
                 retriever.release()
