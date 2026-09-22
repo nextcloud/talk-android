@@ -21,6 +21,7 @@ import com.nextcloud.talk.conversationlist.ui.ConversationListEntry
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.data.InvitationsModel
 import com.nextcloud.talk.invitation.data.InvitationsRepository
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -80,7 +81,8 @@ class ConversationsListViewModel @Inject constructor(
     private val arbitraryStorageManager: ArbitraryStorageManager,
     var userManager: UserManager,
     private val conversationsRepository: ConversationsRepository,
-    private val conversationListUpdater: ConversationListUpdater
+    private val conversationListUpdater: ConversationListUpdater,
+    private val logger: Logger
 ) : ViewModel() {
 
     private val _currentUser = currentUserProvider.currentUser.blockingGet()
@@ -603,6 +605,7 @@ class ConversationsListViewModel @Inject constructor(
                         ""
                     )
                 } catch (exception: Exception) {
+                    logger.e(TAG, "Failed to check whether followed threads exist", exception)
                     _threadsExistState.value = ThreadsExistUiState.Error(exception)
                 }
             }
@@ -792,6 +795,7 @@ class ConversationsListViewModel @Inject constructor(
                 }
                 _readUnreadState.value = ConversationReadUnreadUiState.Success
             } catch (e: Exception) {
+                logger.e(TAG, "Failed to mark conversation as read", e)
                 messageId?.let { conversationListUpdater.clearPendingReadMarker(conversation.internalId, it) }
                 withContext(Dispatchers.IO) {
                     repository.updateConversation(original)
@@ -821,6 +825,7 @@ class ConversationsListViewModel @Inject constructor(
                 }
                 _readUnreadState.value = ConversationReadUnreadUiState.Success
             } catch (e: Exception) {
+                logger.e(TAG, "Failed to mark conversation as unread", e)
                 conversationListUpdater.clearPendingUnread(conversation.internalId)
                 withContext(Dispatchers.IO) {
                     repository.updateConversation(original)
@@ -862,6 +867,7 @@ class ConversationsListViewModel @Inject constructor(
                 }
                 _archiveState.value = ArchiveUiState.Success(desiredArchived, conversation.displayName)
             } catch (e: Exception) {
+                logger.e(TAG, "Failed to toggle conversation archive state", e)
                 conversationListUpdater.clearPendingArchived(conversation.internalId, desiredArchived)
                 withContext(Dispatchers.IO) {
                     repository.updateConversation(original)
@@ -888,6 +894,7 @@ class ConversationsListViewModel @Inject constructor(
                 }
                 _favoriteState.value = FavoriteUiState.Success
             } catch (e: Exception) {
+                logger.e(TAG, "Failed to add conversation to favorites", e)
                 conversationListUpdater.clearPendingFavorite(conversation.internalId, favorite = true)
                 withContext(Dispatchers.IO) {
                     repository.updateConversation(original)
@@ -914,6 +921,7 @@ class ConversationsListViewModel @Inject constructor(
                 }
                 _favoriteState.value = FavoriteUiState.Success
             } catch (e: Exception) {
+                logger.e(TAG, "Failed to remove conversation from favorites", e)
                 conversationListUpdater.clearPendingFavorite(conversation.internalId, favorite = false)
                 withContext(Dispatchers.IO) {
                     repository.updateConversation(original)
@@ -952,7 +960,7 @@ class ConversationsListViewModel @Inject constructor(
     }
 
     companion object {
-        private val TAG = ConversationsListViewModel::class.simpleName
+        private val TAG = ConversationsListViewModel::class.java.simpleName
         const val FOLLOWED_THREADS_EXIST_LAST_CHECK = "FOLLOWED_THREADS_EXIST_LAST_CHECK"
         const val FOLLOWED_THREADS_EXIST = "FOLLOWED_THREADS_EXIST"
         private const val SIXTEEN_HOURS_IN_SECONDS: Long = 57600

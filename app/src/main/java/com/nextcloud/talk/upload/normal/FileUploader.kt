@@ -14,6 +14,7 @@ import at.bitfire.dav4jvm.DavResource
 import at.bitfire.dav4jvm.exception.HttpException
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.dagger.modules.RestModule
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.utils.ApiUtils
@@ -164,6 +165,7 @@ class FileUploader(
                 }
             }
         } catch (e: IOException) {
+            NextcloudTalkApplication.sharedApplication?.logger?.e(TAG, "Failed to create folder for upload", e)
             throw IOException("failed to create folder", e)
         } catch (e: HttpException) {
             if (e.code == METHOD_NOT_ALLOWED_CODE) {
@@ -175,7 +177,7 @@ class FileUploader(
     }
 
     companion object {
-        private val TAG = FileUploader::class.simpleName
+        private val TAG = FileUploader::class.java.simpleName
         private const val METHOD_NOT_ALLOWED_CODE: Int = 405
         private const val HTTP_CODE_NOT_FOUND: Int = 404
         private const val HTTP_CODE_CONFLICT: Int = 409

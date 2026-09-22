@@ -29,6 +29,8 @@ import kotlin.math.sin
 class BackgroundBlurGPUProcessor(val context: Context) {
 
     companion object {
+        private val TAG = BackgroundBlurGPUProcessor::class.java.simpleName
+
         // Quad Coordinates (Full Screen)
         private val QUAD_COORDS = floatArrayOf(
             -1.0f,
@@ -109,7 +111,12 @@ class BackgroundBlurGPUProcessor(val context: Context) {
         eglBase = EglBase.create()
         try {
             eglBase?.createDummyPbufferSurface()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            NextcloudTalkApplication.sharedApplication?.logger?.w(
+                TAG,
+                "Failed to create dummy pbuffer surface, falling back to a 1x1 pbuffer surface",
+                e
+            )
             eglBase?.createPbufferSurface(1, 1)
         }
         eglBase?.makeCurrent()

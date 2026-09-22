@@ -10,6 +10,7 @@ package com.nextcloud.talk.services
 import android.util.Log
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkManager
 import com.nextcloud.talk.jobs.NotificationWorker
@@ -50,6 +51,10 @@ class UnifiedPushService : PushService() {
         } catch (_: JSONException) {
             // Messages are encrypted following RFC8291, and UnifiedPush lib handle the decryption itself:
             // message.content is the cleartext
+            NextcloudTalkApplication.sharedApplication?.logger?.w(
+                TAG,
+                "Push message for $instance was not the activation-token JSON, treating content as cleartext"
+            )
             val messageData = Data.Builder()
                 .putLong(BundleKeys.KEY_NOTIFICATION_USER_ID, instance.toLong())
                 .putString(BundleKeys.KEY_NOTIFICATION_CLEARTEXT_SUBJECT, message.content.toString(Charsets.UTF_8))
@@ -93,6 +98,6 @@ class UnifiedPushService : PushService() {
     }
 
     companion object {
-        const val TAG = "UnifiedPushService"
+        val TAG = UnifiedPushService::class.java.simpleName
     }
 }

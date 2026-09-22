@@ -29,6 +29,7 @@ import coil.transform.CircleCropTransformation
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RingtoneSettings
 import com.nextcloud.talk.ui.toDrawable
@@ -41,7 +42,7 @@ import java.io.IOException
 @Suppress("TooManyFunctions")
 object NotificationUtils {
 
-    const val TAG = "NotificationUtils"
+    val TAG = NotificationUtils::class.java.simpleName
 
     enum class NotificationChannels {
         NOTIFICATION_CHANNEL_MESSAGES_V4,
@@ -302,6 +303,11 @@ object NotificationUtils {
                     LoganSquare.parse(ringtonePreferencesString, RingtoneSettings::class.java)
                 ringtoneSettings.ringtoneUri
             } catch (exception: IOException) {
+                NextcloudTalkApplication.sharedApplication?.logger?.w(
+                    TAG,
+                    "Failed to parse stored ringtone settings, falling back to default ringtone",
+                    exception
+                )
                 defaultRingtoneUri.toUri()
             }
         }

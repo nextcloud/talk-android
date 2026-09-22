@@ -7,6 +7,7 @@
 package com.nextcloud.talk.signaling
 
 import com.bluelinelabs.logansquare.LoganSquare
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
@@ -20,6 +21,8 @@ import kotlin.Long
 import kotlin.RuntimeException
 import kotlin.String
 import kotlin.toString
+
+private val TAG = SignalingMessageReceiver::class.java.simpleName
 
 /**
  * Hub to register listeners for signaling messages of different kinds.
@@ -322,6 +325,11 @@ abstract class SignalingMessageReceiver {
         try {
             switchToMap = eventMap?.get("switchto") as Map<String, Any>?
         } catch (e: RuntimeException) {
+            NextcloudTalkApplication.sharedApplication?.logger?.e(
+                TAG,
+                "Failed to parse switchto event: invalid 'switchto' field",
+                e
+            )
             // Broken message, this should not happen.
             return
         }
@@ -335,6 +343,11 @@ abstract class SignalingMessageReceiver {
         try {
             token = switchToMap["roomid"].toString()
         } catch (e: RuntimeException) {
+            NextcloudTalkApplication.sharedApplication?.logger?.e(
+                TAG,
+                "Failed to parse switchto event: invalid 'roomid' field",
+                e
+            )
             // Broken message, this should not happen.
             return
         }
@@ -359,6 +372,11 @@ abstract class SignalingMessageReceiver {
                         try {
                             messages.add(LoganSquare.parse(commentObj.toString(), ChatMessageJson::class.java))
                         } catch (e: Exception) {
+                            NextcloudTalkApplication.sharedApplication?.logger?.w(
+                                TAG,
+                                "Failed to parse chat message comment entry, skipping it",
+                                e
+                            )
                             // Skip unparseable entries
                         }
                     }
@@ -368,6 +386,11 @@ abstract class SignalingMessageReceiver {
                     listOf(LoganSquare.parse(commentObj.toString(), ChatMessageJson::class.java))
                 }
             } catch (e: Exception) {
+                NextcloudTalkApplication.sharedApplication?.logger?.w(
+                    TAG,
+                    "Failed to parse chat message websocket message, skipping it",
+                    e
+                )
                 emptyList()
             }
         }
@@ -383,6 +406,11 @@ abstract class SignalingMessageReceiver {
         try {
             updateMap = eventMap?.get("update") as Map<String, Any>?
         } catch (e: RuntimeException) {
+            NextcloudTalkApplication.sharedApplication?.logger?.e(
+                TAG,
+                "Failed to parse participants update event: invalid 'update' field",
+                e
+            )
             // Broken message, this should not happen.
             return
         }
@@ -427,6 +455,11 @@ abstract class SignalingMessageReceiver {
         try {
             inCall = updateMap["incall"].toString().toLong()
         } catch (e: RuntimeException) {
+            NextcloudTalkApplication.sharedApplication?.logger?.e(
+                TAG,
+                "Failed to parse all-participants update: invalid 'incall' field",
+                e
+            )
             // Broken message, this should not happen.
             return
         }
@@ -469,6 +502,11 @@ abstract class SignalingMessageReceiver {
         try {
             users = updateMap["users"] as List<Map<String, Any>>?
         } catch (e: RuntimeException) {
+            NextcloudTalkApplication.sharedApplication?.logger?.e(
+                TAG,
+                "Failed to parse participants update: invalid 'users' field",
+                e
+            )
             // Broken message, this should not happen.
             return
         }
@@ -484,6 +522,11 @@ abstract class SignalingMessageReceiver {
             try {
                 participants.add(getParticipantFromMessageMap(user))
             } catch (e: RuntimeException) {
+                NextcloudTalkApplication.sharedApplication?.logger?.e(
+                    TAG,
+                    "Failed to parse participant entry in participants update",
+                    e
+                )
                 // Broken message, this should not happen.
                 return
             }
@@ -518,6 +561,11 @@ abstract class SignalingMessageReceiver {
             try {
                 participants.add(getParticipantFromMessageMap(nullSafeUserMap))
             } catch (e: RuntimeException) {
+                NextcloudTalkApplication.sharedApplication?.logger?.e(
+                    TAG,
+                    "Failed to parse participant entry in usersInRoom message",
+                    e
+                )
                 // Broken message, this should not happen.
                 return
             }

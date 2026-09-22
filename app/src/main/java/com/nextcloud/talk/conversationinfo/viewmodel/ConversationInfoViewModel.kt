@@ -809,6 +809,7 @@ class ConversationInfoViewModel @Inject constructor(
                 val url = ApiUtils.getUrlForConversationReadOnly(apiVersion, user.baseUrl!!, token)
                 conversationsRepository.setConversationReadOnly(user = user, url = url, state = if (newLocked) 1 else 0)
             } catch (exception: Exception) {
+                logger.e(TAG, "Failed to toggle read-only lock state", exception)
                 _uiState.update { it.copy(isConversationLocked = previousLocked) }
                 databaseStorageModule?.saveBoolean("lock_switch", previousLocked)
                 _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(R.string.conversation_read_only_failed))

@@ -15,6 +15,7 @@ import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.ConversationListUpdater
 import com.nextcloud.talk.conversationtags.data.ConversationTagsRepository
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.tags.ConversationTag
 import com.nextcloud.talk.models.json.tags.ConversationTagErrorOverall
@@ -36,7 +37,8 @@ class ConversationTagsViewModel @Inject constructor(
     private val conversationTagsRepository: ConversationTagsRepository,
     private val repository: OfflineConversationsRepository,
     private val currentUserProvider: CurrentUserProviderOld,
-    private val conversationListUpdater: ConversationListUpdater
+    private val conversationListUpdater: ConversationListUpdater,
+    private val logger: Logger
 ) : ViewModel() {
 
     private val currentUser: User = currentUserProvider.currentUser.blockingGet()
@@ -102,6 +104,7 @@ class ConversationTagsViewModel @Inject constructor(
                 }
                 _tagActionState.value = TagActionUiState.Success
             } catch (e: Exception) {
+                logger.e(TAG, "Failed to create conversation tag", e)
                 _tagActionState.value = TagActionUiState.Error(extractTagErrorType(e))
             }
         }
@@ -121,6 +124,7 @@ class ConversationTagsViewModel @Inject constructor(
                 }
                 _tagActionState.value = TagActionUiState.Success
             } catch (e: Exception) {
+                logger.e(TAG, "Failed to rename conversation tag", e)
                 _tagActionState.value = TagActionUiState.Error(extractTagErrorType(e))
             }
         }
@@ -137,6 +141,7 @@ class ConversationTagsViewModel @Inject constructor(
                 _conversationTagsFlow.value = _conversationTagsFlow.value.filter { it.id != tagId }
                 _tagActionState.value = TagActionUiState.Success
             } catch (e: Exception) {
+                logger.e(TAG, "Failed to delete conversation tag", e)
                 _tagActionState.value = TagActionUiState.Error(extractTagErrorType(e))
             }
         }
@@ -155,6 +160,7 @@ class ConversationTagsViewModel @Inject constructor(
                 }
                 _tagActionState.value = TagActionUiState.Success
             } catch (e: Exception) {
+                logger.e(TAG, "Failed to reorder conversation tags", e)
                 _tagActionState.value = TagActionUiState.Error(extractTagErrorType(e))
             }
         }
@@ -213,6 +219,6 @@ class ConversationTagsViewModel @Inject constructor(
         this?.filter { it.type != ConversationTag.TYPE_OTHER }?.sortedBy { it.sortOrder } ?: emptyList()
 
     companion object {
-        private val TAG = ConversationTagsViewModel::class.simpleName
+        private val TAG = ConversationTagsViewModel::class.java.simpleName
     }
 }

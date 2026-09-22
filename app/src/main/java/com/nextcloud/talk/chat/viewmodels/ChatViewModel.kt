@@ -862,6 +862,7 @@ class ChatViewModel @AssistedInject constructor(
             } catch (_: CancellationException) {
                 // Ignore cancellation; request was superseded by a newer one.
             } catch (@Suppress("Detekt.TooGenericExceptionCaught") throwable: Throwable) {
+                logger.e(TAG, "Message search failed for query \"$query\"", throwable)
                 _searchUiState.update { state -> state.copy(isLoading = false, error = true) }
             }
         }
@@ -935,6 +936,7 @@ class ChatViewModel @AssistedInject constructor(
             } catch (_: CancellationException) {
                 // Ignore cancellation; request was superseded.
             } catch (@Suppress("Detekt.TooGenericExceptionCaught") throwable: Throwable) {
+                logger.e(TAG, "Failed to load more search results", throwable)
                 _searchUiState.update { state -> state.copy(isLoading = false, error = true) }
             }
         }
@@ -1920,6 +1922,7 @@ class ChatViewModel @AssistedInject constructor(
                 val thread = threadsRepository.getThread(credentials, url)
                 _threadRetrieveState.value = ThreadRetrieveUiState.Success(thread.ocs?.data)
             } catch (exception: Exception) {
+                logger.e(TAG, "Failed to retrieve thread for $url", exception)
                 _threadRetrieveState.value = ThreadRetrieveUiState.Error(exception)
             }
         }
@@ -1947,6 +1950,7 @@ class ChatViewModel @AssistedInject constructor(
                 updateFollowedThreadsIndicator(thread.ocs?.data?.attendee?.notificationLevel)
                 _threadRetrieveState.value = ThreadRetrieveUiState.Success(thread.ocs?.data)
             } catch (exception: Exception) {
+                logger.e(TAG, "Failed to set thread notification level for $url", exception)
                 _threadRetrieveState.value = ThreadRetrieveUiState.Error(exception)
             }
         }
@@ -2517,6 +2521,7 @@ class ChatViewModel @AssistedInject constructor(
                 val response = chatNetworkDataSource.getOutOfOfficeStatusForUser(credentials, baseUrl, userId)
                 _outOfOfficeViewState.value = OutOfOfficeUIState.Success(response.ocs?.data!!)
             } catch (exception: Exception) {
+                logger.e(TAG, "Failed to fetch out-of-office status for user $userId", exception)
                 _outOfOfficeViewState.value = OutOfOfficeUIState.Error(exception)
             }
         }
@@ -2535,6 +2540,7 @@ class ChatViewModel @AssistedInject constructor(
                     _upcomingEventViewState.value = UpcomingEventUIState.None
                 }
             } catch (exception: Exception) {
+                logger.e(TAG, "Failed to fetch upcoming event for room $roomToken", exception)
                 _upcomingEventViewState.value = UpcomingEventUIState.Error(exception)
             }
         }
@@ -2553,6 +2559,7 @@ class ChatViewModel @AssistedInject constructor(
                 val response = chatNetworkDataSource.unbindRoom(credentials, baseUrl, roomToken)
                 _unbindRoomResult.value = UnbindRoomUiState.Success(response.ocs?.meta?.statusCode!!)
             } catch (exception: Exception) {
+                logger.e(TAG, "Failed to unbind room $roomToken", exception)
                 _unbindRoomResult.value = UnbindRoomUiState.Error(exception.message.toString())
             }
         }

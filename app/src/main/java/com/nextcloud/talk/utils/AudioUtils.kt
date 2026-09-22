@@ -16,6 +16,7 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import java.io.File
 import java.io.IOException
 import java.nio.ByteOrder
@@ -109,7 +110,11 @@ object AudioUtils : DefaultLifecycleObserver {
                         extractor!!.setDataSource(path)
                         extractor!!.selectTrack(0)
                     } catch (e: IOException) {
-                        e.printStackTrace()
+                        NextcloudTalkApplication.sharedApplication?.logger?.e(
+                            TAG,
+                            "Failed to set up MediaExtractor for audio file",
+                            e
+                        )
                     }
                 }
 
