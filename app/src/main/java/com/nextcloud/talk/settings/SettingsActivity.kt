@@ -893,12 +893,12 @@ class SettingsActivity :
                     }
 
                     WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                        logger.e(TAG, "something went wrong when deleting user with id " + currentUser!!.userId)
                         Toast.makeText(
                             context,
                             context.resources.getString(R.string.nc_common_error_sorry),
                             Toast.LENGTH_LONG
                         ).show()
-                        Log.e(TAG, "something went wrong when deleting user with id " + currentUser!!.userId)
                         restartApp()
                     }
 

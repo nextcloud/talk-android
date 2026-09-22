@@ -16,7 +16,6 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.security.KeyChain
 import android.text.TextUtils
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -367,7 +366,7 @@ class ServerSelectionActivity : BaseActivity() {
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "Error while checking capabilities", e)
+                    logger.e(TAG, "Error while checking capabilities", e)
                     if (resources != null) {
                         runOnUiThread {
                             setErrorText(resources!!.getString(R.string.nc_common_error_sorry))

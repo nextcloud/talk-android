@@ -10,6 +10,7 @@ package com.nextcloud.talk.conversationinfo.viewmodel
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
@@ -57,7 +58,8 @@ class ConversationInfoViewModelTest {
             chatNetworkDataSource = mock<ChatNetworkDataSource>(),
             conversationsRepository = repository,
             ncApi = mock<NcApi>(),
-            passwordPolicyRepository = mock<PasswordPolicyRepository>()
+            passwordPolicyRepository = mock<PasswordPolicyRepository>(),
+            logger = mock<Logger>()
         )
 
     @Test

@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
 import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.conversationcreation.viewmodel.RoomUIState
 import com.nextcloud.talk.data.user.model.User
@@ -28,6 +29,8 @@ import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.copyPasswordToClipboard
+
+private const val TAG = "CreatedConversation"
 
 /**
  * Reacts to the outcome of creating a conversation: reports what could not be done, hands public
@@ -45,6 +48,7 @@ fun CreationResultEffect(
             is RoomUIState.Error -> {
                 val reason = state.serverMessage?.takeIf { it.isNotBlank() }
                 if (reason == null) {
+                    NextcloudTalkApplication.sharedApplication?.logger?.e(TAG, "Failed to create conversation")
                     Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
                 } else {
                     Toast.makeText(context, reason, Toast.LENGTH_LONG).show()

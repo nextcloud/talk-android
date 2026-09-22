@@ -663,7 +663,7 @@ class CallActivity : CallBaseActivity() {
                         }
 
                         override fun onError(e: Throwable) {
-                            Log.e(TAG, "Failed to get room", e)
+                            logger.e(TAG, "Failed to get room", e)
                             Snackbar.make(binding!!.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                         }
 
@@ -1546,7 +1546,7 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "Failed to fetch capabilities", e)
+                    logger.e(TAG, "Failed to fetch capabilities", e)
                     Snackbar.make(binding!!.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     // unused atm
                 }
@@ -1734,7 +1734,7 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "Failed to join call", e)
+                    logger.e(TAG, "Failed to join call", e)
                     Snackbar.make(binding!!.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     hangup(true, false)
                 }
@@ -2438,7 +2438,7 @@ class CallActivity : CallBaseActivity() {
             peerConnectionWrapper
         } else {
             if (peerConnectionFactory == null) {
-                Log.e(TAG, "peerConnectionFactory was null in getOrCreatePeerConnectionWrapperForSessionIdAndType")
+                logger.e(TAG, "peerConnectionFactory was null in getOrCreatePeerConnectionWrapperForSessionIdAndType")
                 Snackbar.make(
                     binding!!.root,
                     context.resources.getString(R.string.nc_common_error_sorry),
