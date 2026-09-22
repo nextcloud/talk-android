@@ -719,6 +719,8 @@
     <string name="previously_set">Précédemment défini</string>
     <string name="qr_code_error">Le code QR ne peut être lu</string>
     <string name="raise_hand">Lever la main</string>
+    <string name="reaction_add_failed">Impossible d\'ajouter la réaction</string>
+    <string name="reaction_delete_failed">Impossible de supprimer la réaction</string>
     <string name="reaction_forbidden">Vous n\'êtes pas autorisé à ajouter ou à supprimer des réactions dans cette conversation</string>
     <string name="reactions_tab_all">Tout</string>
     <string name="read_storage_no_permission">le partage de fichier n\'est pas possible sans les permissions</string>

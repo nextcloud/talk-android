@@ -719,6 +719,8 @@
     <string name="previously_set">Määratud varasemalt</string>
     <string name="qr_code_error">QR-koodi lugemine pole võimalik</string>
     <string name="raise_hand">Anna käega märku</string>
+    <string name="reaction_add_failed">Reaktsiooni lisamine ei õnnestunud</string>
+    <string name="reaction_delete_failed">Reaktsiooni eemaldamine ei õnnestunud</string>
     <string name="reaction_forbidden">Pole õigust selles vestluses reageerida või reageerimisi eemaldada</string>
     <string name="reactions_tab_all">Kõik</string>
     <string name="read_storage_no_permission">Andmeruumist failide jagamine pole võimalik ilma vastavate õigusteta</string>
