@@ -79,12 +79,12 @@ import coil.compose.AsyncImage
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
-import com.github.chrisbanes.photoview.PhotoView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.mediaviewer.model.MediaViewerGroup
 import com.nextcloud.talk.mediaviewer.model.MediaViewerItem
 import com.nextcloud.talk.mediaviewer.viewmodels.MediaViewerViewModel
+import com.nextcloud.talk.ui.ZoomableImageView
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DrawableUtils
@@ -372,14 +372,14 @@ private fun ImagePage(localPath: String, onToggleControls: () -> Unit) {
 
     AndroidView(
         factory = { ctx ->
-            PhotoView(ctx).apply {
+            ZoomableImageView(ctx).apply {
                 maximumScale = MAX_SCALE
                 mediumScale = MEDIUM_SCALE
                 setOnPhotoTapListener { _, _, _ -> onToggleControls() }
                 setOnOutsidePhotoTapListener { onToggleControls() }
             }
         },
-        update = { photoView -> drawable?.let { photoView.setImageDrawable(it) } },
+        update = { zoomableImageView -> drawable?.let { zoomableImageView.setImageDrawable(it) } },
         modifier = Modifier.fillMaxSize()
     )
 }
