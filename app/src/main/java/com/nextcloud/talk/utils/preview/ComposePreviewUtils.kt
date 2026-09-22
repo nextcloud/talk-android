@@ -193,7 +193,8 @@ class ComposePreviewUtils private constructor(context: Context) {
             networkMonitor,
             chatMessageSyncer,
             conversationListUpdater,
-            mContext
+            mContext,
+            logger
         )
 
     val reactionsRepository: ReactionsRepository
@@ -243,7 +244,7 @@ class ComposePreviewUtils private constructor(context: Context) {
         get() = ContactsRepositoryImpl(ncApiCoroutines)
 
     val contactsViewModel: ContactsViewModel
-        get() = ContactsViewModel(contactsRepository, currentUserProvider)
+        get() = ContactsViewModel(contactsRepository, currentUserProvider, TestLogger)
 
     val conversationCreationViewModel: ConversationCreationViewModel
         get() = ConversationCreationRepositoryImpl(ncApiCoroutines).let { repository ->
