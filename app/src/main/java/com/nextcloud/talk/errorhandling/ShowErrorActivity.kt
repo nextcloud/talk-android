@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.errorhandling
 
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
+import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.components.StandardAppBar
 import kotlinx.coroutines.Dispatchers
@@ -56,7 +58,9 @@ class ShowErrorActivity : AppCompatActivity() {
         crashReport = intent.getStringExtra(EXTRA_CRASH_REPORT) ?: ""
         val crashTitle = intent.getStringExtra(EXTRA_CRASH_TITLE)
         val appName = getString(R.string.nc_app_product_name)
-        mailSubject = getString(R.string.error_crash_title, appName) + " - " + crashTitle
+        mailSubject = getString(R.string.error_crash_mail_subject, appName) +
+            " (v" + BuildConfig.VERSION_NAME + ") - " +
+            crashTitle
 
         setContent {
             MaterialTheme {
