@@ -434,6 +434,7 @@ tasks.withType<SpotBugsTask>().configureEach {
 }
 
 tasks.named<Detekt>("detekt").configure {
+    jvmTarget = "17"
     reports {
         html.required.set(true)
         txt.required.set(true)
