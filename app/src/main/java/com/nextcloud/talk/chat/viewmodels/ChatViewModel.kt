@@ -1754,8 +1754,12 @@ class ChatViewModel @AssistedInject constructor(
 
     @Deprecated("use observeConversation")
     fun getRoom(token: String) {
-        // _getRoomViewState.value = GetRoomStartState
-        conversationRepository.getRoom(currentUser, token)
+        val user = currentUserFlow.value
+        if (user == null) {
+            logger.w(TAG, "getRoom: user not initialized")
+            return
+        }
+        conversationRepository.getRoom(user, token)
     }
 
     fun loadScheduledMessages(credentials: String, url: String) {
