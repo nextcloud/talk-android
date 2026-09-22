@@ -91,7 +91,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import kotlinx.coroutines.flow.distinctUntilChanged
 
-private const val TAG = "OpenConversationsScreen"
+private val TAG = ListOpenConversationsActivity::class.java.simpleName
 
 @Composable
 fun OpenConversationsScreen(

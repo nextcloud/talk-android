@@ -19,8 +19,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.conversationcreation.ConversationCreationActivity
 
-private const val TAG = "PasswordPolicyField"
+private val TAG = ConversationCreationActivity::class.java.simpleName
 
 /**
  * A password input that reports what the server made of the password as it is typed.

@@ -51,7 +51,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 
-private const val TAG = "DiagnosisContentComposable"
+private val TAG = DiagnosisActivity::class.java.simpleName
 
 @Suppress("LongParameterList")
 @Composable
