@@ -10,6 +10,7 @@ package com.nextcloud.talk.camera
 import android.content.Context
 import android.opengl.GLES20
 import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import org.webrtc.EglBase
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
