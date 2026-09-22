@@ -80,12 +80,6 @@ public class AccountRemovalWorker extends Worker {
     public Result doWork() {
         Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getComponentApplication().inject(this);
 
-        int duplicateAccountsScheduled = userManager.scheduleDuplicateAccountsForDeletion().blockingGet();
-        if (duplicateAccountsScheduled > 0) {
-            logger.w(TAG, "Found and scheduled " + duplicateAccountsScheduled +
-                " duplicate account(s) for deletion");
-        }
-
         List<User> users = userManager.getUsersScheduledForDeletion().blockingGet();
         for (User user : users) {
             if (user.getPushConfigurationState() != null) {
