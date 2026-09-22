@@ -224,6 +224,7 @@ How to translate with transifex:
 
     <!-- Error / crash screen -->
     <string name="error_crash_title">%1$s crashed</string>
+    <string name="error_crash_mail_subject" translatable="false">%1$s crashed</string>
     <string name="error_crash_description">The app crashed unexpectedly. Please help us fix it by sending the crash report via the menu.</string>
     <string name="nc_logs_advanced_logging_privacy_warning">If you had advanced logging activated, please do not share the report in public.</string>
     <string name="nc_logs_advanced_logging_enabled_warning">Advanced logging is enabled. This may slow down performance.</string>

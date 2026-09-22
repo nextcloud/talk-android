@@ -6,12 +6,14 @@
  */
 package com.nextcloud.talk.errorhandling
 
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +24,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -29,6 +33,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
+import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.components.StandardAppBar
 import kotlinx.coroutines.Dispatchers
@@ -52,14 +57,19 @@ class ShowErrorActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
+        val isNightMode = resources.configuration.uiMode and
+            Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = !isNightMode
         crashReport = intent.getStringExtra(EXTRA_CRASH_REPORT) ?: ""
         val crashTitle = intent.getStringExtra(EXTRA_CRASH_TITLE)
         val appName = getString(R.string.nc_app_product_name)
-        mailSubject = getString(R.string.error_crash_title, appName) + " - " + crashTitle
+        mailSubject = getString(R.string.error_crash_mail_subject, appName) +
+            " (v" + BuildConfig.VERSION_NAME + ") - " +
+            crashTitle
 
         setContent {
-            MaterialTheme {
+            val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+            MaterialTheme(colorScheme = colorScheme) {
                 val menuItems = listOf(
                     stringResource(R.string.nc_logs_share) to { sendMail() },
                     stringResource(R.string.nc_logs_download_zip) to { saveZipLauncher.launch("nc_talk_logs.zip") }
