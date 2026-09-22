@@ -18,6 +18,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
+
+private const val TAG = "PasswordPolicyField"
 
 /**
  * A password input that reports what the server made of the password as it is typed.
@@ -56,11 +59,17 @@ private fun PasswordPolicyFeedback(validationState: PasswordValidationState) {
             style = MaterialTheme.typography.bodySmall
         )
 
-        is PasswordValidationState.Error -> Text(
-            text = stringResource(R.string.nc_common_error_sorry),
-            color = colorResource(id = R.color.nc_darkRed),
-            style = MaterialTheme.typography.bodySmall
-        )
+        is PasswordValidationState.Error -> {
+            NextcloudTalkApplication.sharedApplication?.logger?.e(
+                TAG,
+                "Password policy validation failed: ${validationState.message}"
+            )
+            Text(
+                text = stringResource(R.string.nc_common_error_sorry),
+                color = colorResource(id = R.color.nc_darkRed),
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
 
         PasswordValidationState.None, PasswordValidationState.NoPolicy -> Unit
     }

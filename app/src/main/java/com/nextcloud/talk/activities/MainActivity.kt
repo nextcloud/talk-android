@@ -283,7 +283,7 @@ class MainActivity :
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "Error loading existing users", e)
+                    logger.e(TAG, "Error loading existing users", e)
                     Toast.makeText(
                         context,
                         context.resources.getString(R.string.nc_common_error_sorry),
@@ -353,6 +353,7 @@ class MainActivity :
 
                         startActivities(arrayOf(listIntent, chatIntent))
                     } else {
+                        logger.e(TAG, "Failed to set deep link target user as active")
                         Toast.makeText(
                             context,
                             context.resources.getString(R.string.nc_common_error_sorry),
@@ -361,7 +362,7 @@ class MainActivity :
                     }
                 },
                 { e ->
-                    Log.e(TAG, "Error loading users for deep link", e)
+                    logger.e(TAG, "Error loading users for deep link", e)
                     if (isFinishing || isDestroyed) return@subscribe
                     Toast.makeText(
                         context,

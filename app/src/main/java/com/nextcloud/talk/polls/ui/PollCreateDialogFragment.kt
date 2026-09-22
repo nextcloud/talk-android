@@ -11,7 +11,6 @@ import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +24,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollCreateBinding
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.polls.adapters.PollCreateOptionItem
 import com.nextcloud.talk.polls.adapters.PollCreateOptionsAdapter
 import com.nextcloud.talk.polls.adapters.PollCreateOptionsItemListener
@@ -42,6 +42,9 @@ class PollCreateDialogFragment :
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var logger: Logger
 
     private lateinit var binding: DialogPollCreateBinding
     private lateinit var viewModel: PollCreateViewModel
@@ -158,7 +161,7 @@ class PollCreateDialogFragment :
 
     private fun showError() {
         dismiss()
-        Log.e(TAG, "Failed to create poll")
+        logger.e(TAG, "Failed to create poll")
         Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
     }
 

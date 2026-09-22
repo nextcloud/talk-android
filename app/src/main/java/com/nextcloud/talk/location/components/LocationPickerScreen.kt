@@ -89,6 +89,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
 import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
@@ -741,7 +742,7 @@ private fun requestLocationUpdates(
         Log.e(TAG, "Error when requesting location updates. Permissions may be missing.", e)
         onError(R.string.nc_location_unknown)
     } catch (e: Exception) {
-        Log.e(TAG, "Error when requesting location updates.", e)
+        NextcloudTalkApplication.sharedApplication?.logger?.e(TAG, "Error when requesting location updates.", e)
         onError(R.string.nc_common_error_sorry)
     }
 }

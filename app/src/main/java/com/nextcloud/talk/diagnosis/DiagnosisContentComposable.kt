@@ -49,6 +49,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
+
+private const val TAG = "DiagnosisContentComposable"
 
 @Suppress("LongParameterList")
 @Composable
@@ -238,8 +241,10 @@ fun getMessage(context: Context, viewState: NotificationUiState): String =
         is NotificationUiState.Error ->
             context.getString(R.string.nc_push_notification_error, viewState.message)
 
-        else ->
+        else -> {
+            NextcloudTalkApplication.sharedApplication?.logger?.e(TAG, "Unexpected notification ui state: $viewState")
             context.getString(R.string.nc_common_error_sorry)
+        }
     }
 
 @Preview(showBackground = true)
