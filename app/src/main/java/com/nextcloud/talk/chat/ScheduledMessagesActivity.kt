@@ -122,8 +122,6 @@ private const val SCHEDULED_THREAD_ID = -1L
 
 private const val STICKY_HEADER_SCROLL_DELAY = 1200L
 
-private const val TAG = "ScheduledMessagesActivity"
-
 @AutoInjector(NextcloudTalkApplication::class)
 @Suppress("LongMethod", "LargeClass", "TooManyFunctions", "COMPOSE_APPLIER_CALL_MISMATCH")
 class ScheduledMessagesActivity : BaseActivity() {
@@ -1110,6 +1108,7 @@ class ScheduledMessagesActivity : BaseActivity() {
     }
 
     companion object {
+        private val TAG = ScheduledMessagesActivity::class.java.simpleName
         const val ROOM_TOKEN = "room_token"
         const val CONVERSATION_NAME = "conversation_name"
         const val THREAD_ID = "thread_id"

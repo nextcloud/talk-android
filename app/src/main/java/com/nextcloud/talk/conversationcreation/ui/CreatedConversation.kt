@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.conversationcreation.ConversationCreationActivity
 import com.nextcloud.talk.conversationcreation.viewmodel.RoomUIState
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -30,7 +31,7 @@ import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.copyPasswordToClipboard
 
-private const val TAG = "CreatedConversation"
+private val TAG = ConversationCreationActivity::class.java.simpleName
 
 /**
  * Reacts to the outcome of creating a conversation: reports what could not be done, hands public
