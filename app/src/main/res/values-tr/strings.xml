@@ -719,6 +719,8 @@
     <string name="previously_set">Önceden ayarlanmış</string>
     <string name="qr_code_error">Kare kod okunamadı</string>
     <string name="raise_hand">El kaldır</string>
+    <string name="reaction_add_failed">Tepki eklenemedi</string>
+    <string name="reaction_delete_failed">Tepki kaldırılamadı</string>
     <string name="reaction_forbidden">Bu görüşmede tepki ekleme veya kaldırma izniniz yok</string>
     <string name="reactions_tab_all">Tümü</string>
     <string name="read_storage_no_permission">İzin verilmeden depolamadaki dosyalar paylaşılamaz</string>
