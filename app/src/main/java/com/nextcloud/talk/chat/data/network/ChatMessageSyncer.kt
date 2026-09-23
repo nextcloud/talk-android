@@ -21,7 +21,11 @@ import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatMessageDto
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.SpreedFeatures
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -30,9 +34,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.sync.Mutex
 import retrofit2.HttpException
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicBoolean
-import javax.inject.Inject
 
 /**
  * The chat message fetch-and-persist core, shared between the chat screen
@@ -230,7 +231,8 @@ class ChatMessageSyncer @Inject constructor(
      *
      * Requires the chat-keep-notifications capability: without it, a background fetch would
      * dismiss the user's push notifications for the fetched messages, so the catch-up is skipped
-     * entirely (same guard as on iOS).
+     * entirely (same guard as on iOS). It is also skipped when the server turns preloading off
+     * for mobile clients.
      *
      * Reachability is deliberately not pre-checked. Callers are gated by a WorkManager
      * `NetworkType.CONNECTED` constraint, and a request that fails because the device is offline
@@ -246,18 +248,24 @@ class ChatMessageSyncer @Inject constructor(
         limit: Int = DEFAULT_MESSAGES_LIMIT,
         lastReadMessage: Int? = null,
         unreadMessages: Int = 0
-    ): SyncOutcome {
-        if (!target.user.hasSpreedFeatureCapability(SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value)) {
-            Log.d(
-                TAG,
-                "Server lacks ${SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value}, " +
-                    "skipping catch-up for ${target.internalConversationId}"
-            )
-            return NOTHING_SYNCED
-        }
+    ): SyncOutcome =
+        when {
+            !target.user.hasSpreedFeatureCapability(SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value) -> {
+                Log.d(
+                    TAG,
+                    "Server lacks ${SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value}, " +
+                        "skipping catch-up for ${target.internalConversationId}"
+                )
+                NOTHING_SYNCED
+            }
 
-        return coalescedRoomCatchUp(target, limit, lastReadMessage, unreadMessages)
-    }
+            !CapabilitiesUtil.isChatPreloadAllowed(target.user.capabilities?.spreedCapability) -> {
+                Log.d(TAG, "Server turned off preloading, skipping catch-up for ${target.internalConversationId}")
+                NOTHING_SYNCED
+            }
+
+            else -> coalescedRoomCatchUp(target, limit, lastReadMessage, unreadMessages)
+        }
 
     /**
      * Runs at most one catch-up per room at a time. A request arriving while one is running only
