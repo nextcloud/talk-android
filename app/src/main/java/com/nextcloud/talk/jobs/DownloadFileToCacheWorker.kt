@@ -9,8 +9,8 @@ package com.nextcloud.talk.jobs
 
 import android.content.Context
 import android.util.Log
+import androidx.work.CoroutineWorker
 import androidx.work.Data
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
@@ -21,6 +21,8 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import java.io.BufferedInputStream
 import java.io.File
@@ -31,7 +33,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerParameters) :
-    Worker(context, workerParameters) {
+    CoroutineWorker(context, workerParameters) {
 
     private var totalFileSize: Long = -1
 
@@ -47,9 +49,12 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
     @Inject
     lateinit var appPreferences: AppPreferences
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        return withContext(Dispatchers.IO) { downloadFileToCache() }
+    }
 
+    private fun downloadFileToCache(): Result {
         if (totalFileSize > -1) {
             setProgressAsync(Data.Builder().putInt(PROGRESS, 0).build())
         }
