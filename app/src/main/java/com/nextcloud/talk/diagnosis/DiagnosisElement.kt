@@ -70,7 +70,7 @@ fun buildDiagnosisElements(
     val nUnifiedPushServices = UnifiedPushUtils.getExternalDistributors(context).size
     val offerUnifiedPush = try {
         nUnifiedPushServices > 0 && runBlocking { userManager.getUsers() }.all { it.hasWebPushCapability }
-    } catch (_: Exception) {
+    } catch (e: Exception) {
         NextcloudTalkApplication.sharedApplication?.logger?.w(
             TAG,
             "Failed to determine whether UnifiedPush can be offered, assuming no",
