@@ -384,6 +384,7 @@
     <string name="nc_logs_share">Odoslať e-mailom</string>
     <string name="nc_logs_share_diagnosis">Diagnostická správa</string>
     <string name="nc_logs_share_latest_crash">Posledný pád aplikácie</string>
+    <string name="nc_logs_share_no_app_found">Nenašla sa žiadna aplikácia na odoslanie hlásenia.</string>
     <string name="nc_logs_share_subject">Záznamy aplikácie %1$s</string>
     <string name="nc_logs_title">Záznamy</string>
     <string name="nc_logs_total_size">Celková veľkosť záznamov: %d KB</string>
@@ -697,6 +698,7 @@
     <string name="pinned_indefinitely">Pripnuté natrvalo</string>
     <string name="pinned_message_options">Možnosti správy</string>
     <string name="pinned_until">Pripnuté do</string>
+    <string name="play_pause_audio_file">Prehrať/pozastaviť zvukový súbor</string>
     <string name="play_pause_voice_message">Prehrať/pozastaviť hlasovú správu</string>
     <string name="playback_speed_control">Ovládanie rýchlosti prehrávania</string>
     <string name="please_continue_the_login_process_in_the_browser">Pokračujte v prihlásení v prehliadači</string>
@@ -719,6 +721,8 @@
     <string name="previously_set">Predtým nastavené</string>
     <string name="qr_code_error">QR kód sa nepodarilo prečítať</string>
     <string name="raise_hand">Zdvihnúť ruku</string>
+    <string name="reaction_add_failed">Nepodarilo sa pridať reakciu</string>
+    <string name="reaction_delete_failed">Nepodarilo sa odstrániť reakciu</string>
     <string name="reaction_forbidden">V tejto konverzácii nemáte povolenie pridávať ani odstraňovať reakcie</string>
     <string name="reactions_tab_all">Všetko</string>
     <string name="read_storage_no_permission">Zdieľanie súborov z úložiska nie je možné bez oprávnenia</string>
