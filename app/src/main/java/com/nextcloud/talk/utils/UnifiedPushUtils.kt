@@ -161,6 +161,7 @@ object UnifiedPushUtils {
      */
     fun instanceFor(user: User): String = "${user.id}"
 
+    @Suppress("TooGenericExceptionCaught")
     fun PushEndpoint.toByteArray(): ByteArray? {
         val parcel = Parcel.obtain()
         return try {
@@ -174,6 +175,7 @@ object UnifiedPushUtils {
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     fun ByteArray.toPushEndpoint(): PushEndpoint? {
         val parcel = Parcel.obtain()
         return try {
@@ -181,7 +183,11 @@ object UnifiedPushUtils {
             parcel.setDataPosition(0) // Reset Parcel position to read from the start
             PushEndpoint.createFromParcel(parcel)
         } catch (e: Exception) {
-            NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "Failed to unmarshal ByteArray to PushEndpoint", e)
+            NextcloudTalkApplication.sharedApplication?.logger?.w(
+                TAG,
+                "Failed to unmarshal ByteArray to PushEndpoint",
+                e
+            )
             null
         } finally {
             parcel.recycle()

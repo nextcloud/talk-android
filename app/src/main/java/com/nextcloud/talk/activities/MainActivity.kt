@@ -303,6 +303,7 @@ class MainActivity :
      * @param intent The intent to process
      * @return true if the intent was handled as a deep link, false otherwise
      */
+    @Suppress("LongMethod")
     private fun handleDeepLink(intent: Intent): Boolean {
         val deepLinkResult = intent.data?.let { DeepLinkHandler.parseDeepLink(it) } ?: return false
 
