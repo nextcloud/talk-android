@@ -21,6 +21,8 @@ import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.chat.ChatOCS
 import com.nextcloud.talk.models.json.chat.ChatOverall
+import com.nextcloud.talk.utils.CapabilitiesUtil
+import java.io.IOException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
@@ -48,7 +50,6 @@ import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
 import retrofit2.Response
-import java.io.IOException
 
 @Suppress("TooManyFunctions", "LargeClass")
 class ChatMessageSyncerTest {
@@ -144,6 +145,59 @@ class ChatMessageSyncerTest {
             val fieldMapCaptor = argumentCaptor<HashMap<String, Int>>()
             verifyBlocking(network) { pullChatMessages(eq(CREDENTIALS), eq(CHAT_URL), fieldMapCaptor.capture()) }
             assertFalse(fieldMapCaptor.firstValue.containsKey("prefetch"))
+        }
+
+    @Test
+    fun `catchUpRoom skips when the server turned preloading off`() =
+        runTest {
+            val outcome = syncer.catchUpRoom(target(user(preloadChat = false)))
+
+            assertFalse(outcome.persistedNewMessages)
+            verifyNoInteractions(network)
+        }
+
+    @Test
+    fun `catchUpRoom preloads when the server does not report the setting`() =
+        runTest {
+            whenever(chatBlocksDao.getNewestMessageIdFromChatBlocks(INTERNAL_CONVERSATION_ID, null))
+                .thenReturn(42L)
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(INTERNAL_CONVERSATION_ID, null, 42L))
+                .thenReturn(flowOf(listOf(block(oldest = 10, newest = 42))))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(message(43))))
+
+            val outcome = syncer.catchUpRoom(target(user(preloadChat = null)))
+
+            assertTrue(outcome.persistedNewMessages)
+        }
+
+    @Test
+    fun `catchUpRoom preloads for a user whose capabilities are not known yet`() =
+        runTest {
+            val userWithoutCapabilities = user().copy(capabilities = null)
+            whenever(chatBlocksDao.getNewestMessageIdFromChatBlocks(INTERNAL_CONVERSATION_ID, null))
+                .thenReturn(42L)
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(INTERNAL_CONVERSATION_ID, null, 42L))
+                .thenReturn(flowOf(listOf(block(oldest = 10, newest = 42))))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(message(43))))
+
+            assertTrue(CapabilitiesUtil.isChatPreloadAllowed(userWithoutCapabilities.capabilities?.spreedCapability))
+        }
+
+    @Test
+    fun `catchUpRoom preloads when the server allows it explicitly`() =
+        runTest {
+            whenever(chatBlocksDao.getNewestMessageIdFromChatBlocks(INTERNAL_CONVERSATION_ID, null))
+                .thenReturn(42L)
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(INTERNAL_CONVERSATION_ID, null, 42L))
+                .thenReturn(flowOf(listOf(block(oldest = 10, newest = 42))))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(message(43))))
+
+            val outcome = syncer.catchUpRoom(target(user(preloadChat = true)))
+
+            assertTrue(outcome.persistedNewMessages)
         }
 
     @Test
@@ -824,19 +878,23 @@ class ChatMessageSyncerTest {
             verifyNoInteractions(chatBlocksDao)
         }
 
-    private fun user(withKeepNotificationsCapability: Boolean = true): User {
+    private fun user(withKeepNotificationsCapability: Boolean = true, preloadChat: Boolean? = null): User {
         val features = if (withKeepNotificationsCapability) {
             listOf("chat-keep-notifications")
         } else {
             emptyList()
         }
+        val chatConfig = preloadChat?.let { hashMapOf<String, Any>("mobile-preload-chat" to it) }
         return User(
             id = ACCOUNT_ID,
             userId = "me",
             username = "me",
             baseUrl = "https://server.example.com",
             capabilities = CapabilitiesDto().apply {
-                spreedCapability = SpreedCapabilityDto().apply { this.features = features }
+                spreedCapability = SpreedCapabilityDto().apply {
+                    this.features = features
+                    this.config = chatConfig?.let { hashMapOf("chat" to it) }
+                }
             }
         )
     }
