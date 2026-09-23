@@ -143,7 +143,9 @@ fun PinnedMessageView(
 
     val canPin = remember {
         message.isOneToOneConversation ||
-            ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
+            currentConversation?.let {
+                ConversationUtils.isParticipantOwnerOrModerator(it)
+            } ?: false
     }
 
     Card(
