@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.utils
 
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel
@@ -17,6 +18,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.min
 import kotlin.math.pow
+
+private object CoroutineUtils
+private val TAG = CoroutineUtils::class.java.simpleName
 
 /**
  * Executes [block] and, if it throws, retries up to [retries] additional times, waiting
@@ -42,6 +46,7 @@ suspend fun <T> withRetry(
         try {
             return block()
         } catch (e: Exception) {
+            NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "Attempt $attempt of withRetry failed", e)
             if (attempt >= retries || !retryOn(e)) throw e
             if (initialDelayMillis > 0) {
                 val delayMillis = min(
@@ -87,6 +92,7 @@ suspend fun <T> revertOnCancellation(revert: suspend () -> Unit, block: suspend 
     try {
         block()
     } catch (e: CancellationException) {
+        NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "Reverting optimistic change after cancellation", e)
         withContext(NonCancellable) { revert() }
         throw e
     }

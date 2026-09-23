@@ -14,9 +14,12 @@ import android.view.inputmethod.InputConnection
 import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.inputmethod.InputConnectionCompat
 import androidx.emoji2.widget.EmojiEditText
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.utils.Mimetype.IMAGE_GIF
 import com.nextcloud.talk.utils.Mimetype.IMAGE_JPEG
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PNG
+
+private val TAG = ImageEmojiEditText::class.java.simpleName
 
 /*
 Subclass of EmojiEditText with support for image keyboards - primarily for GIF handling. ;-)
@@ -45,6 +48,11 @@ class ImageEmojiEditText : EmojiEditText {
                     try {
                         inputContentInfo.requestPermission()
                     } catch (e: Exception) {
+                        NextcloudTalkApplication.sharedApplication?.logger?.e(
+                            TAG,
+                            "Failed to get permission to read committed content",
+                            e
+                        )
                         return@OnCommitContentListener false
                     }
                 }

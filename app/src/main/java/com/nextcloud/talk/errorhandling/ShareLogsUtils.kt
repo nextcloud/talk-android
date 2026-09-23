@@ -14,12 +14,15 @@ import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.dagger.modules.UtilsModule
 import com.nextcloud.talk.logger.LogEntry
 import java.io.File
 import java.io.OutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
+
+private val TAG = ShowErrorActivity::class.java.simpleName
 
 private const val MILLIS_PER_SECOND = 1000L
 private const val NANOS_PER_MILLI = 1_000_000L
@@ -58,6 +61,7 @@ fun shareLogsAndDiagnosis(context: Context, subject: String, diagnosisText: Stri
     try {
         context.startActivity(Intent.createChooser(intent, subject))
     } catch (_: ActivityNotFoundException) {
+        NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "No app found to handle sharing logs")
         Toast.makeText(context, R.string.nc_logs_share_no_app_found, Toast.LENGTH_LONG).show()
     }
 }

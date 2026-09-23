@@ -79,14 +79,22 @@ class SaveFileToStorageWorker(val context: Context, workerParameters: WorkerPara
 
             return Result.success()
         } catch (e: IOException) {
-            Log.e(TAG, "Something went wrong when trying to save file to internal storage", e)
+            NextcloudTalkApplication.sharedApplication?.logger?.e(
+                TAG,
+                "Something went wrong when trying to save file to internal storage",
+                e
+            )
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_SHORT).show()
             }
 
             return Result.failure()
         } catch (e: NullPointerException) {
-            Log.e(TAG, "Something went wrong when trying to save file to internal storage", e)
+            NextcloudTalkApplication.sharedApplication?.logger?.e(
+                TAG,
+                "Something went wrong when trying to save file to internal storage",
+                e
+            )
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_SHORT).show()
             }

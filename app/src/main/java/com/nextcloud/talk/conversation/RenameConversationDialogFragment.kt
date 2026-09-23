@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +30,7 @@ import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditVie
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.databinding.DialogRenameConversationBinding
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -47,6 +47,9 @@ class RenameConversationDialogFragment : DialogFragment() {
 
     @Inject
     lateinit var eventBus: EventBus
+
+    @Inject
+    lateinit var logger: Logger
 
     private lateinit var binding: DialogRenameConversationBinding
     private lateinit var viewModel: ConversationInfoEditViewModel
@@ -173,7 +176,7 @@ class RenameConversationDialogFragment : DialogFragment() {
 
     private fun showError() {
         dismiss()
-        Log.e(TAG, "Failed to rename conversation")
+        logger.e(TAG, "Failed to rename conversation")
         Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
     }
 

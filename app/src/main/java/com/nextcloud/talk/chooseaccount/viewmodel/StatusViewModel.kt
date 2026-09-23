@@ -7,10 +7,10 @@
 
 package com.nextcloud.talk.chooseaccount.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chooseaccount.data.StatusRepository
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.json.status.StatusOverall
 import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.utils.ApiUtils
@@ -22,7 +22,8 @@ import javax.inject.Inject
 
 class StatusViewModel @Inject constructor(
     private val repository: StatusRepository,
-    private val currentUserProvider: CurrentUserProviderOld
+    private val currentUserProvider: CurrentUserProviderOld,
+    private val logger: Logger
 ) : ViewModel() {
 
     private val currentUser = currentUserProvider.currentUser.blockingGet()
@@ -42,6 +43,7 @@ class StatusViewModel @Inject constructor(
                 )
                 _statusViewState.value = StatusUiState.Success(status)
             } catch (exception: Exception) {
+                logger.e(TAG, "Failed to set status", exception)
                 _statusViewState.value = StatusUiState.Error(exception.message ?: "")
             }
         }
@@ -55,13 +57,13 @@ class StatusViewModel @Inject constructor(
                 repository.setStatusType(credentials!!, url, statusType.string)
                 getStatus()
             } catch (exception: Exception) {
-                Log.e(TAG, "Failed to set statusType", exception)
+                logger.e(TAG, "Failed to set statusType", exception)
             }
         }
     }
 
     companion object {
-        private val TAG = StatusViewModel::class.simpleName
+        private val TAG = StatusViewModel::class.java.simpleName
     }
 }
 

@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.R
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.utils.ApiUtils
@@ -26,7 +27,8 @@ import javax.inject.Inject
 
 class ConversationInfoEditViewModel @Inject constructor(
     private val conversationInfoEditRepository: ConversationInfoEditRepository,
-    private val currentUserProvider: CurrentUserProvider
+    private val currentUserProvider: CurrentUserProvider,
+    private val logger: Logger
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ConversationInfoEditUiState())
@@ -91,7 +93,7 @@ class ConversationInfoEditViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error when fetching room", e)
+                logger.e(TAG, "Error when fetching room", e)
                 _uiState.update { it.copy(isLoading = false, userMessage = R.string.nc_common_error_sorry) }
             }
         }
@@ -115,7 +117,7 @@ class ConversationInfoEditViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error when uploading avatar", e)
+                logger.e(TAG, "Error when uploading avatar", e)
                 _uiState.update { it.copy(userMessage = R.string.nc_common_error_sorry) }
             }
         }
@@ -139,7 +141,7 @@ class ConversationInfoEditViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error when deleting avatar", e)
+                logger.e(TAG, "Error when deleting avatar", e)
                 _uiState.update { it.copy(userMessage = R.string.nc_common_error_sorry) }
             }
         }
@@ -169,7 +171,7 @@ class ConversationInfoEditViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error when setting emoji avatar", e)
+                logger.e(TAG, "Error when setting emoji avatar", e)
                 _uiState.update { it.copy(userMessage = R.string.nc_common_error_sorry) }
             }
         }
@@ -213,7 +215,7 @@ class ConversationInfoEditViewModel @Inject constructor(
     }
 
     companion object {
-        private val TAG = ConversationInfoEditViewModel::class.simpleName
+        private val TAG = ConversationInfoEditViewModel::class.java.simpleName
         private const val COLOR_HEX_MASK = 0xFFFFFF
     }
 

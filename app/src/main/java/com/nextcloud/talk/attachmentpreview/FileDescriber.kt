@@ -12,6 +12,7 @@ import android.media.MediaMetadataRetriever
 import android.text.format.Formatter
 import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.ImageCompressor
 import com.nextcloud.talk.utils.VideoCompressor
@@ -22,6 +23,8 @@ import kotlin.math.roundToInt
 private const val VIDEO_ROTATION_DEGREES_90 = 90
 private const val VIDEO_ROTATION_DEGREES_270 = 270
 private const val VIDEO_FRAME_MAX_DIMENSION_PX = 720
+
+private val TAG = FileAttachmentPreviewViewModel::class.java.simpleName
 
 internal fun isCompressible(mimeType: String?): Boolean =
     ImageCompressor.isCompressible(mimeType) || VideoCompressor.isCompressible(mimeType)
@@ -92,6 +95,7 @@ private fun isSidewaysExifOrientation(file: File): Boolean =
         )
         orientation == ExifInterface.ORIENTATION_ROTATE_90 || orientation == ExifInterface.ORIENTATION_ROTATE_270
     } catch (e: IOException) {
+        NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "Failed to read EXIF orientation", e)
         false
     }
 
@@ -121,6 +125,7 @@ private fun isSidewaysVideoRotation(file: File): Boolean {
         val rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)?.toIntOrNull() ?: 0
         rotation == VIDEO_ROTATION_DEGREES_90 || rotation == VIDEO_ROTATION_DEGREES_270
     } catch (e: Exception) {
+        NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "Failed to read video rotation metadata", e)
         false
     } finally {
         retriever.release()
@@ -134,6 +139,7 @@ private fun extractVideoFrame(file: File): Bitmap? {
         retriever.setDataSource(file.absolutePath)
         retriever.getFrameAtTime(0, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)?.let(::downscaleIfNeeded)
     } catch (e: Exception) {
+        NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "Failed to extract video thumbnail frame", e)
         null
     } finally {
         retriever.release()

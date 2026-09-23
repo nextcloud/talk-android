@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.logger
 
+import android.util.Log
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -15,6 +16,7 @@ class FileLogHandler(private val logDir: File, private val logFilename: String, 
     data class RawLogs(val lines: List<String>, val logSize: Long)
 
     companion object {
+        private val TAG = FileLogHandler::class.java.simpleName
         const val ROTATED_LOGS_COUNT = 3
     }
 
@@ -37,6 +39,7 @@ class FileLogHandler(private val logDir: File, private val logFilename: String, 
             writer = FileOutputStream(logFile, true)
             size = logFile.length()
         } catch (_: FileNotFoundException) {
+            Log.w(TAG, "Log file parent directory missing, creating it and retrying")
             logFile.parentFile?.mkdirs()
             writer = FileOutputStream(logFile, true)
             size = logFile.length()
@@ -88,7 +91,7 @@ class FileLogHandler(private val logDir: File, private val logFilename: String, 
                 allLines.addAll(file.readLines(Charsets.UTF_8))
                 totalSize += file.length()
             } catch (_: IOException) {
-                // skip unreadable files
+                Log.w(TAG, "Skipping unreadable log file: ${file.name}")
             }
         }
         return RawLogs(lines = allLines, logSize = totalSize)

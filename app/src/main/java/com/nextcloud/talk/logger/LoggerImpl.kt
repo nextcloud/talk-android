@@ -23,6 +23,7 @@ class LoggerImpl(private val handler: FileLogHandler, queueCapacity: Int = DEFAU
     LogsRepository {
 
     companion object {
+        private val TAG = LoggerImpl::class.java.simpleName
         private const val DEFAULT_QUEUE_CAPACITY = 1000
         const val PREFS_NAME = "logger_prefs"
         const val PREF_LOG_LEVEL = "log_level"
@@ -45,6 +46,7 @@ class LoggerImpl(private val handler: FileLogHandler, queueCapacity: Int = DEFAU
             try {
                 eventLoop()
             } catch (_: InterruptedException) {
+                Log.w(TAG, "Logger thread interrupted, shutting down")
                 Thread.currentThread().interrupt()
             }
         }
@@ -89,6 +91,11 @@ class LoggerImpl(private val handler: FileLogHandler, queueCapacity: Int = DEFAU
         enqueue(Level.WARNING, tag, message)
     }
 
+    override fun w(tag: String, message: String, t: Throwable) {
+        Log.w(tag, message, t)
+        enqueue(Level.WARNING, tag, "$message\n${Log.getStackTraceString(t)}")
+    }
+
     override fun e(tag: String, message: String) {
         Log.e(tag, message)
         enqueue(Level.ERROR, tag, message)
@@ -124,6 +131,7 @@ class LoggerImpl(private val handler: FileLogHandler, queueCapacity: Int = DEFAU
                 missedLogsCount.incrementAndGet()
             }
         } catch (_: InterruptedException) {
+            Log.w(TAG, "Interrupted while enqueueing log entry for tag $tag")
             Thread.currentThread().interrupt()
         }
     }

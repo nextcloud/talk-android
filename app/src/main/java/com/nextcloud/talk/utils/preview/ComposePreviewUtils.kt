@@ -193,7 +193,8 @@ class ComposePreviewUtils private constructor(context: Context) {
             networkMonitor,
             chatMessageSyncer,
             conversationListUpdater,
-            mContext
+            mContext,
+            logger
         )
 
     val reactionsRepository: ReactionsRepository
@@ -216,6 +217,7 @@ class ComposePreviewUtils private constructor(context: Context) {
         override fun d(tag: String, message: String, t: Throwable) = Unit
         override fun i(tag: String, message: String) = Unit
         override fun w(tag: String, message: String) = Unit
+        override fun w(tag: String, message: String, t: Throwable) = Unit
         override fun e(tag: String, message: String) = Unit
         override fun e(tag: String, message: String, t: Throwable) = Unit
     }
@@ -242,13 +244,13 @@ class ComposePreviewUtils private constructor(context: Context) {
         get() = ContactsRepositoryImpl(ncApiCoroutines)
 
     val contactsViewModel: ContactsViewModel
-        get() = ContactsViewModel(contactsRepository, currentUserProvider)
+        get() = ContactsViewModel(contactsRepository, currentUserProvider, TestLogger)
 
     val conversationCreationViewModel: ConversationCreationViewModel
         get() = ConversationCreationRepositoryImpl(ncApiCoroutines).let { repository ->
             ConversationCreationViewModel(
                 repository,
-                ConversationCreator(repository),
+                ConversationCreator(repository, TestLogger),
                 PasswordPolicyRepositoryImpl(ncApiCoroutines),
                 currentUserProvider
             )

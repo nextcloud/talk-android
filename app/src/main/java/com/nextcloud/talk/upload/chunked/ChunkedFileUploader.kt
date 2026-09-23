@@ -111,6 +111,7 @@ class ChunkedFileUploader(
                 }
             }
         } catch (e: IOException) {
+            NextcloudTalkApplication.sharedApplication?.logger?.e(TAG, "Failed to create folder for chunked upload", e)
             throw IOException("failed to create folder", e)
         } catch (e: HttpException) {
             if (e.code == METHOD_NOT_ALLOWED_CODE) {
@@ -418,7 +419,7 @@ class ChunkedFileUploader(
     }
 
     companion object {
-        private val TAG = ChunkedFileUploader::class.simpleName
+        private val TAG = ChunkedFileUploader::class.java.simpleName
         private const val READ_PERMISSION = "R"
         private const val CHUNK_SIZE: Long = 1024000
         private const val METHOD_NOT_ALLOWED_CODE: Int = 405

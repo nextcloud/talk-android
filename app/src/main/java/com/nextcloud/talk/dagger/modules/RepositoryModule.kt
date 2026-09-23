@@ -204,7 +204,8 @@ class RepositoryModule {
         networkMonitor: NetworkMonitor,
         chatMessageSyncer: ChatMessageSyncer,
         conversationListUpdater: ConversationListUpdater,
-        context: Context
+        context: Context,
+        logger: Logger
     ): OfflineConversationsRepository =
         OfflineFirstConversationsRepository(
             dao,
@@ -213,7 +214,8 @@ class RepositoryModule {
             networkMonitor,
             chatMessageSyncer,
             conversationListUpdater,
-            context
+            context,
+            logger
         )
 
     @Provides

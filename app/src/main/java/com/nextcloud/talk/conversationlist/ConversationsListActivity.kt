@@ -431,7 +431,7 @@ class ConversationsListActivity : BaseActivity() {
             fetchRooms()
             fetchPendingInvitations()
         } else {
-            Log.e(TAG, "currentUser was null")
+            logger.e(TAG, "currentUser was null")
             showSnackbar(getString(R.string.nc_common_error_sorry))
         }
 
@@ -547,6 +547,7 @@ class ConversationsListActivity : BaseActivity() {
                         conversationsListViewModel.resetReadUnreadState()
                     }
                     is ConversationsListViewModel.ConversationReadUnreadUiState.Error -> {
+                        logger.e(TAG, "Failed to mark conversation as read/unread")
                         showSnackbar(resources.getString(R.string.nc_common_error_sorry))
                         conversationsListViewModel.resetReadUnreadState()
                     }
@@ -562,6 +563,7 @@ class ConversationsListActivity : BaseActivity() {
                         conversationsListViewModel.resetFavoriteState()
                     }
                     is ConversationsListViewModel.FavoriteUiState.Error -> {
+                        logger.e(TAG, "Failed to toggle conversation favorite state")
                         showSnackbar(resources.getString(R.string.nc_common_error_sorry))
                         conversationsListViewModel.resetFavoriteState()
                     }
@@ -583,6 +585,7 @@ class ConversationsListActivity : BaseActivity() {
                         conversationsListViewModel.resetArchiveState()
                     }
                     is ConversationsListViewModel.ArchiveUiState.Error -> {
+                        logger.e(TAG, "Failed to toggle conversation archive state")
                         showSnackbar(resources.getString(R.string.nc_common_error_sorry))
                         conversationsListViewModel.resetArchiveState()
                     }
@@ -636,6 +639,7 @@ class ConversationsListActivity : BaseActivity() {
     private fun showContextChatForMessage(result: SearchMessageEntry) {
         val messageId = result.messageId?.toLongOrNull()?.takeIf { it > 0L }
         if (messageId == null) {
+            logger.e(TAG, "message id could not be parsed from search result")
             showSnackbar(getString(R.string.nc_common_error_sorry))
             return
         }
@@ -835,6 +839,7 @@ class ConversationsListActivity : BaseActivity() {
         } else if (filesToShare != null && filesToShare!!.isNotEmpty()) {
             showSendFilesConfirmDialog()
         } else {
+            logger.e(TAG, "no text or files to share")
             showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
         }
     }
@@ -910,12 +915,12 @@ class ConversationsListActivity : BaseActivity() {
                 extractFilesFromClipData()
             }
             if (filesToShare!!.isEmpty() && textToPaste!!.isEmpty()) {
+                logger.e(TAG, "failed to get data from intent")
                 showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
-                Log.e(TAG, "failed to get data from intent")
             }
         } catch (e: Exception) {
+            logger.e(TAG, "Something went wrong when extracting data from intent", e)
             showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
-            Log.e(TAG, "Something went wrong when extracting data from intent")
         }
     }
 
@@ -1200,6 +1205,7 @@ class ConversationsListActivity : BaseActivity() {
         if (success) {
             showSnackbar(resources.getString(R.string.nc_shortcut_created))
         } else {
+            logger.e(TAG, "failed to pin conversation shortcut to home screen")
             showSnackbar(resources.getString(R.string.nc_common_error_sorry))
         }
     }
@@ -1281,6 +1287,7 @@ class ConversationsListActivity : BaseActivity() {
                     fetchRooms()
                 }
                 WorkInfo.State.FAILED -> {
+                    logger.e(TAG, "LeaveConversationWorker failed for token $token")
                     conversationsListViewModel.clearConversationPendingLeave(token)
                     showSnackbar(resources.getString(R.string.nc_common_error_sorry))
                 }
@@ -1391,12 +1398,12 @@ class ConversationsListActivity : BaseActivity() {
                     }
 
                     WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                        logger.e(TAG, "something went wrong when deleting user with id " + currentUser!!.userId)
                         Toast.makeText(
                             context,
                             context.resources.getString(R.string.nc_common_error_sorry),
                             Toast.LENGTH_LONG
                         ).show()
-                        Log.e(TAG, "something went wrong when deleting user with id " + currentUser!!.userId)
                         restartApp()
                     }
 
@@ -1428,6 +1435,7 @@ class ConversationsListActivity : BaseActivity() {
                         Intent(Intent.ACTION_VIEW, (CLIENT_UPGRADE_MARKET_LINK + packageName).toUri())
                     )
                 } catch (e: ActivityNotFoundException) {
+                    logger.w(TAG, "Play Store app not found, falling back to browser link", e)
                     startActivity(
                         Intent(Intent.ACTION_VIEW, (CLIENT_UPGRADE_GPLAY_LINK + packageName).toUri())
                     )
@@ -1535,6 +1543,7 @@ class ConversationsListActivity : BaseActivity() {
                         }
 
                         WorkInfo.State.FAILED -> {
+                            logger.e(TAG, "DeleteConversationWorker failed for token ${conversation.token}")
                             showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
                         }
 

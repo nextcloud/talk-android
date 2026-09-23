@@ -75,6 +75,7 @@ class BrowserLoginActivity : BaseActivity() {
                 viewModel.initialLoginRequestState.collect { state ->
                     when (state) {
                         BrowserLoginActivityViewModel.InitialLoginViewState.InitialLoginRequestError -> {
+                            logger.e(TAG, "Initial browser login request failed")
                             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
                         }
                         is BrowserLoginActivityViewModel.InitialLoginViewState.InitialLoginRequestSuccess -> {
@@ -104,6 +105,7 @@ class BrowserLoginActivity : BaseActivity() {
                             }
                         }
                         BrowserLoginActivityViewModel.PostLoginViewState.PostLoginError -> {
+                            logger.e(TAG, "Post login step failed")
                             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
                         }
                         BrowserLoginActivityViewModel.PostLoginViewState.PostLoginRestartApp -> {

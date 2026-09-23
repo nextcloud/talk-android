@@ -7,6 +7,7 @@
  */
 package com.nextcloud.talk.upload.chunked
 
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okio.BufferedSink
@@ -40,6 +41,11 @@ class ChunkFromFileRequestBody(
         try {
             mChunkSize.coerceAtMost(mChannel.size() - mOffset)
         } catch (e: IOException) {
+            NextcloudTalkApplication.sharedApplication?.logger?.w(
+                TAG,
+                "Failed to determine remaining channel size, falling back to full chunk size",
+                e
+            )
             mChunkSize
         }
 
@@ -73,6 +79,11 @@ class ChunkFromFileRequestBody(
             }
         } catch (io: IOException) {
             // any read problem will be handled as if the file is not there
+            NextcloudTalkApplication.sharedApplication?.logger?.w(
+                TAG,
+                "Failed to read chunk source file, treating it as not found",
+                io
+            )
             val fnf = java.io.FileNotFoundException("Exception reading source file")
             fnf.initCause(io)
             throw fnf

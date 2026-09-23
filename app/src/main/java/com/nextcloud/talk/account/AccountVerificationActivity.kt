@@ -197,8 +197,10 @@ class AccountVerificationActivity : BaseActivity() {
             }
         } catch (e: Exception) {
             if (checkForcedHttps) {
+                logger.w(TAG, "Server status check failed for https scheme, retrying with http", e)
                 determineBaseUrlProtocol(false)
             } else {
+                logger.e(TAG, "Failed to determine base url protocol", e)
                 abortVerification()
             }
         }
@@ -220,6 +222,7 @@ class AccountVerificationActivity : BaseActivity() {
                 abortVerification()
             }
         } catch (e: Exception) {
+            logger.e(TAG, "Failed to check whether the server has Talk installed", e)
             reportServerWithoutTalk()
             abortVerification()
         }
@@ -250,6 +253,7 @@ class AccountVerificationActivity : BaseActivity() {
             internalAccountId = user.id!!
             setupPushNotifications()
         } catch (e: Exception) {
+            logger.e(TAG, "Failed to store profile", e)
             appendProgressMessage(R.string.nc_display_name_not_stored)
             abortVerification()
         }
@@ -278,6 +282,7 @@ class AccountVerificationActivity : BaseActivity() {
                 abortVerification()
             }
         } catch (e: Exception) {
+            logger.e(TAG, "Failed to fetch user profile", e)
             appendProgressMessage(R.string.nc_display_name_not_fetched)
             abortVerification()
         }
@@ -450,7 +455,7 @@ class AccountVerificationActivity : BaseActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
         } else {
-            Log.e(TAG, "failed to set active user")
+            logger.e(TAG, "failed to set active user")
             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
         }
     }
@@ -487,12 +492,12 @@ class AccountVerificationActivity : BaseActivity() {
                     }
 
                     WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                        logger.e(TAG, "something went wrong when deleting user with id $userId")
                         Toast.makeText(
                             context,
                             context.resources.getString(R.string.nc_common_error_sorry),
                             Toast.LENGTH_LONG
                         ).show()
-                        Log.e(TAG, "something went wrong when deleting user with id $userId")
                         val intent = Intent(this, ServerSelectionActivity::class.java)
                         startActivity(intent)
                     }

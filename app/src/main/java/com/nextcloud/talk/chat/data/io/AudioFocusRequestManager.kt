@@ -15,6 +15,7 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.nextcloud.talk.application.NextcloudTalkApplication
 
 /**
  * Abstraction over the [AudioFocusManager](https://developer.android.com/reference/kotlin/android/media/AudioFocusRequest)
@@ -22,7 +23,7 @@ import androidx.lifecycle.MutableLiveData
  */
 class AudioFocusRequestManager(private val context: Context) {
     companion object {
-        val TAG: String? = AudioFocusRequestManager::class.java.simpleName
+        val TAG: String = AudioFocusRequestManager::class.java.simpleName
     }
 
     enum class ManagerState {
@@ -96,7 +97,11 @@ class AudioFocusRequestManager(private val context: Context) {
                 context.unregisterReceiver(noisyAudioStreamReceiver)
             }
         } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
+            NextcloudTalkApplication.sharedApplication?.logger?.w(
+                TAG,
+                "Failed to (un)register noisy audio broadcast receiver",
+                e
+            )
         }
     }
 }

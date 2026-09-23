@@ -83,12 +83,15 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import kotlinx.coroutines.flow.distinctUntilChanged
+
+private val TAG = ListOpenConversationsActivity::class.java.simpleName
 
 @Composable
 fun OpenConversationsScreen(
@@ -102,6 +105,7 @@ fun OpenConversationsScreen(
 
     LaunchedEffect(viewState) {
         if (viewState is OpenConversationsViewModel.FetchConversationsErrorState) {
+            NextcloudTalkApplication.sharedApplication?.logger?.e(TAG, "Failed to fetch open conversations")
             snackbarHostState.showSnackbar(errorMessage)
         }
     }

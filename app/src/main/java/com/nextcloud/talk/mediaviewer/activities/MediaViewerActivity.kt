@@ -120,6 +120,7 @@ class MediaViewerActivity : BaseActivity() {
     private fun showSaveDialog(item: MediaViewerItem, localPath: String) {
         val safeFile = FileUtils.resolveSharedAttachmentFile(cacheDir, File(localPath).name)
         if (safeFile == null) {
+            logger.e(TAG, "Refused to save file with unsafe name: ${File(localPath).name}")
             Snackbar.make(window.decorView, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
             return
         }
