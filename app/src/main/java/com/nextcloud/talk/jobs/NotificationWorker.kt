@@ -251,7 +251,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     @Suppress("LongMethod", "TooGenericExceptionCaught")
     private fun handleCallPushMessage() {
-        val userBeingCalled = runBlocking { userManager.getUserWithIdSuspend(user.id!!) }
+        val userBeingCalled = runBlocking { userManager.getUserWithId(user.id!!) }
 
         fun createBundle(conversation: ConversationModel): Bundle {
             val bundle = Bundle()
@@ -402,7 +402,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             null
         }
 
-        if (conversation != null && runBlocking { userManager.setUserAsActiveSuspend(userBeingCalled!!) }) {
+        if (conversation != null && runBlocking { userManager.setUserAsActive(userBeingCalled!!) }) {
             if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(userBeingCalled?.capabilities?.spreedCapability)) {
                 showEndToEndEncryptionUnsupportedNotification(conversation)
             } else {
@@ -440,7 +440,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private fun initFromCleartextSubject(inputData: Data): Boolean {
         val subject = inputData.getString(BundleKeys.KEY_NOTIFICATION_CLEARTEXT_SUBJECT)
         val id = inputData.getLong(BundleKeys.KEY_NOTIFICATION_USER_ID, -1)
-        user = runBlocking { userManager.getUserWithIdSuspend(id) }!!
+        user = runBlocking { userManager.getUserWithId(id) }!!
         pushMessage = LoganSquare.parse(subject, DecryptedPushMessage::class.java)
         return true
     }

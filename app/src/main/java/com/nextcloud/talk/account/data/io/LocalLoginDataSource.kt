@@ -24,11 +24,11 @@ import kotlinx.coroutines.runBlocking
 class LocalLoginDataSource(val userManager: UserManager, val appPreferences: AppPreferences, val context: Context) {
 
     fun updateUser(loginData: LoginCompletion) {
-        val currentUser = userManager.currentUser.blockingGet()
+        val currentUser = runBlocking { userManager.getCurrentUser() }
         if (currentUser != null) {
             currentUser.clientCertificate = appPreferences.temporaryClientCertAlias
             currentUser.token = loginData.appPassword
-            runBlocking { userManager.updateOrCreateUserSuspend(currentUser) }
+            runBlocking { userManager.updateOrCreateUser(currentUser) }
         }
     }
 
@@ -42,8 +42,8 @@ class LocalLoginDataSource(val userManager: UserManager, val appPreferences: App
     }
 
     suspend fun checkIfUserIsScheduledForDeletion(data: LoginCompletion): Boolean =
-        userManager.checkIfUserIsScheduledForDeletionSuspend(data.loginName, data.server)
+        userManager.checkIfUserIsScheduledForDeletion(data.loginName, data.server)
 
     suspend fun checkIfUserExists(data: LoginCompletion): Boolean =
-        userManager.checkIfUserExistsSuspend(data.loginName, data.server)
+        userManager.checkIfUserExists(data.loginName, data.server)
 }

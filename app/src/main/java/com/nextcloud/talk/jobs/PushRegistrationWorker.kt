@@ -120,7 +120,7 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
      */
     @SuppressLint("CheckResult")
     private fun webPushActivationWork(id: Long, activationToken: String) {
-        val user = runBlocking { userManager.getUserWithIdSuspend(id) }!!
+        val user = runBlocking { userManager.getUserWithId(id) }!!
         activateWebPushForAccount(user, activationToken)
             .flatMap { res ->
                 if (res) {
@@ -145,7 +145,7 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
     @SuppressLint("CheckResult")
     private fun webPushWork(id: Long, pushEndpoint: PushEndpoint) {
         preferences.unifiedPushLatestEndpoint = System.currentTimeMillis()
-        val user = runBlocking { userManager.getUserWithIdSuspend(id) }!!
+        val user = runBlocking { userManager.getUserWithId(id) }!!
         registerWebPushForAccount(user, pushEndpoint)
             .map { (user, res) ->
                 if (res) {
@@ -169,7 +169,7 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
      */
     @SuppressLint("CheckResult")
     private fun webPushUnregistrationWork(id: Long) {
-        val user = runBlocking { userManager.getUserWithIdSuspend(id) } ?: return
+        val user = runBlocking { userManager.getUserWithId(id) } ?: return
         unregisterWebPushForAccount(user)
             .toList()
             .subscribeOn(Schedulers.io())

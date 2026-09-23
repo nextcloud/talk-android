@@ -59,7 +59,7 @@ class DismissRecordingAvailableReceiver : BroadcastReceiver() {
         link = intent.getStringExtra(BundleKeys.KEY_DISMISS_RECORDING_URL)
 
         val id = intent.getLongExtra(KEY_INTERNAL_USER_ID, currentUserProvider.currentUser.blockingGet().id!!)
-        currentUser = runBlocking { userManager.getUserWithIdSuspend(id) }!!
+        currentUser = runBlocking { userManager.getUserWithId(id) }!!
 
         dismissNcRecordingAvailableNotification()
     }

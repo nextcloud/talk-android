@@ -10,6 +10,7 @@ package com.nextcloud.talk.activities
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.nextcloud.talk.users.UserManager
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertNotNull
 import org.junit.Rule
 import org.junit.Test
@@ -26,22 +27,24 @@ class MainActivityTest {
     fun login() {
         val sut = activityRule.launchActivity(null)
 
-        val user = sut.userManager.storeProfile(
-            "test",
-            UserManager.UserAttributes(
-                null,
-                serverUrl = "http://server/nc",
-                currentUser = true,
-                userId = "test",
-                token = "test",
-                displayName = "Test Name",
-                pushConfigurationState = null,
-                capabilities = null,
-                serverVersion = null,
-                certificateAlias = null,
-                externalSignalingServer = null
+        val user = runBlocking {
+            sut.userManager.storeProfile(
+                "test",
+                UserManager.UserAttributes(
+                    null,
+                    serverUrl = "http://server/nc",
+                    currentUser = true,
+                    userId = "test",
+                    token = "test",
+                    displayName = "Test Name",
+                    pushConfigurationState = null,
+                    capabilities = null,
+                    serverVersion = null,
+                    certificateAlias = null,
+                    externalSignalingServer = null
+                )
             )
-        ).blockingGet()
+        }
 
         assertNotNull("Error creating user", user)
     }

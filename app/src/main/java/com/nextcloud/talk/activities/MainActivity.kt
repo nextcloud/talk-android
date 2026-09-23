@@ -242,12 +242,12 @@ class MainActivity :
 
         lifecycleScope.launch {
             val user: User? = if (internalUserId != null && internalUserId != 0L) {
-                userManager.getUserWithIdSuspend(internalUserId)
+                userManager.getUserWithId(internalUserId)
             } else {
                 null
             }
 
-            if (user != null && userManager.setUserAsActiveSuspend(user)) {
+            if (user != null && userManager.setUserAsActive(user)) {
                 if (intent.hasExtra(BundleKeys.KEY_REMOTE_TALK_SHARE)) {
                     if (intent.getBooleanExtra(BundleKeys.KEY_REMOTE_TALK_SHARE, false)) {
                         val invitationsIntent = Intent(this@MainActivity, InvitationsActivity::class.java)
@@ -322,7 +322,7 @@ class MainActivity :
                     return@launch
                 }
 
-                if (userManager.setUserAsActiveSuspend(targetUser)) {
+                if (userManager.setUserAsActive(targetUser)) {
                     // Report shortcut usage for ranking
                     targetUser.id?.let { userId ->
                         ShortcutManagerHelper.reportShortcutUsed(

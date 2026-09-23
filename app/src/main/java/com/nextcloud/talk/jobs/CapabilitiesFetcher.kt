@@ -72,7 +72,7 @@ class CapabilitiesFetcher(
 
     @VisibleForTesting
     @Suppress("TooGenericExceptionCaught")
-    fun updateUser(capabilitiesOverall: CapabilitiesOverall, user: User): Boolean {
+    suspend fun updateUser(capabilitiesOverall: CapabilitiesOverall, user: User): Boolean {
         val capabilities = capabilitiesOverall.ocs?.data?.capabilities
         if (capabilities == null) {
             Log.w(TAG, "Capabilities response for ${user.username} contained no capabilities data")
@@ -84,7 +84,7 @@ class CapabilitiesFetcher(
         user.serverVersion = capabilitiesOverall.ocs?.data?.serverVersion
 
         return try {
-            val success = userManager.updateOrCreateUser(user).blockingGet() > 0
+            val success = userManager.updateOrCreateUser(user) > 0
             if (!success) {
                 Log.w(TAG, "Error updating user")
             }

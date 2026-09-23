@@ -777,7 +777,7 @@ class SettingsActivity :
                     Log.d(TAG, "host: $host and port: $port")
                     currentUser!!.clientCertificate = finalAlias
                     lifecycleScope.launch {
-                        userManager.updateOrCreateUserSuspend(currentUser!!)
+                        userManager.updateOrCreateUser(currentUser!!)
                     }
                 },
                 arrayOf("RSA", "EC"),
@@ -873,7 +873,7 @@ class SettingsActivity :
     @SuppressLint("StringFormatInvalid")
     private fun removeCurrentAccount() {
         lifecycleScope.launch {
-            userManager.scheduleUserForDeletionWithIdSuspend(currentUser!!.id!!)
+            userManager.scheduleUserForDeletionWithId(currentUser!!.id!!)
             val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
                 .setExpeditedIfSupported()
                 .build()
@@ -1095,7 +1095,7 @@ class SettingsActivity :
                     if ((!TextUtils.isEmpty(displayName) && !(displayName == currentUser!!.displayName))) {
                         currentUser!!.displayName = displayName
                         lifecycleScope.launch {
-                            userManager.updateOrCreateUserSuspend(currentUser!!)
+                            userManager.updateOrCreateUser(currentUser!!)
                         }
                         binding.nameText.text = currentUser!!.displayName
                     }

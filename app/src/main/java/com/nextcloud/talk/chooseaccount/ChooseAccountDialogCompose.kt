@@ -297,7 +297,7 @@ class ChooseAccountDialogCompose {
                 .fillMaxWidth()
                 .clickable {
                     scope.launch {
-                        if (userManager.setUserAsActiveSuspend(userItem.user)) {
+                        if (userManager.setUserAsActive(userItem.user)) {
                             cookieManager.cookieStore.removeAll()
                             val intent = Intent(activity, ConversationsListActivity::class.java)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

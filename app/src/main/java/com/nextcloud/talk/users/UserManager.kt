@@ -16,51 +16,29 @@ import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.capabilities.ServerVersion
 import com.nextcloud.talk.models.json.push.PushConfigurationState
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.Subject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxMaybe
-import kotlinx.coroutines.rx2.rxSingle
 
 @Suppress("TooManyFunctions")
 class UserManager internal constructor(private val userRepository: UsersRepository) {
 
     private val managerScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    @Deprecated("Use suspend fun getUsers() instead")
-    val users: Single<List<User>>
-        get() = rxSingle { getUsers() }
-
     suspend fun getUsers(): List<User> = userRepository.getUsers()
-
-    @Deprecated("Use suspend fun getUsersScheduledForDeletion() instead")
-    val usersScheduledForDeletion: Single<List<User>>
-        get() = rxSingle { getUsersScheduledForDeletion() }
 
     suspend fun getUsersScheduledForDeletion(): List<User> = userRepository.getUsersScheduledForDeletion()
 
     /**
-     * @deprecated coroutine-native code should use [com.nextcloud.talk.utils.database.user.CurrentUserProvider]
-     * instead.
+     * The active user, or - if none is active - any user not scheduled for deletion, which is then set as active.
      */
-    @Deprecated("Use CurrentUserProvider.getCurrentUser() instead")
-    val currentUser: Maybe<User>
-        get() = rxMaybe { getCurrentUserOrAny() }
-
-    private suspend fun getCurrentUserOrAny(): User? = userRepository.getActiveUser() ?: getAnyUserAndSetAsActive()
+    suspend fun getCurrentUser(): User? = userRepository.getActiveUser() ?: getAnyUserAndSetAsActive()
 
     /**
-     * Backed by [activeUserSubject] rather than [UsersRepository.getActiveUserFlow] directly, so that
+     * Backed by [activeUserStateFlow] rather than [UsersRepository.getActiveUserFlow] directly, so that
      * [setUserAsActive] can push the newly-active user out synchronously the moment it succeeds, instead of
      * consumers having to wait for Room's invalidation-tracker round trip to notice the DB write and re-query.
      * That round trip is asynchronous and was racing against code (e.g. AccountVerificationActivity.
@@ -68,28 +46,9 @@ class UserManager internal constructor(private val userRepository: UsersReposito
      * knows about it - e.g. launching a screen for the new user before its avatar/data had actually updated.
      * Room's own [UsersRepository.getActiveUserFlow] is still relied on underneath to seed this and to catch
      * any change to the `current` flag that doesn't go through [setUserAsActive].
-     *
-     * RxJava-based for CurrentUserProviderOld, the still-used but deprecated consumer. Coroutine-based code
-     * should prefer [currentUserFlow] instead, which is updated at the exact same point and needs no RxJava
-     * bridging on the consuming side.
-     */
-    val currentUserObservable: Observable<User>
-        get() = activeUserSubject
-
-    /**
-     * Coroutine-native counterpart to [currentUserObservable] - see its doc for why this exists. Both are
-     * updated synchronously, at the same point in [setUserAsActive], from Room's same underlying query.
      */
     val currentUserFlow: StateFlow<User?>
         get() = activeUserStateFlow
-
-    private val activeUserSubject: Subject<User> by lazy {
-        val subject = BehaviorSubject.create<User>().toSerialized()
-        managerScope.launch {
-            userRepository.getActiveUserFlow().filterNotNull().collect(subject::onNext)
-        }
-        subject
-    }
 
     private val activeUserStateFlow: MutableStateFlow<User?> by lazy {
         val flow = MutableStateFlow<User?>(null)
@@ -99,36 +58,19 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         flow
     }
 
-    @Deprecated("Use suspend fun deleteUser(internalId: Long) instead")
-    fun deleteUser(internalId: Long): Int = runBlocking { deleteUserSuspend(internalId) }
-
-    suspend fun deleteUserSuspend(internalId: Long): Int {
+    suspend fun deleteUser(internalId: Long): Int {
         val user = userRepository.getUserWithId(internalId) ?: return 0
         return userRepository.deleteUser(user)
     }
 
-    @Deprecated("Use suspend fun getUserWithId(id: Long) instead")
-    fun getUserWithId(id: Long): Maybe<User> = rxMaybe { getUserWithIdSuspend(id) }
+    suspend fun getUserWithId(id: Long): User? = userRepository.getUserWithId(id)
 
-    suspend fun getUserWithIdSuspend(id: Long): User? = userRepository.getUserWithId(id)
-
-    @Deprecated("Use suspend fun checkIfUserIsScheduledForDeletion(username, server) instead")
-    fun checkIfUserIsScheduledForDeletion(username: String, server: String): Single<Boolean> =
-        rxSingle { checkIfUserIsScheduledForDeletionSuspend(username, server) }
-
-    suspend fun checkIfUserIsScheduledForDeletionSuspend(username: String, server: String): Boolean =
+    suspend fun checkIfUserIsScheduledForDeletion(username: String, server: String): Boolean =
         userRepository.getUserWithUsernameAndServer(username, server)?.scheduledForDeletion ?: false
 
-    @Deprecated("Use suspend fun getUserWithInternalId(id: Long) instead")
-    fun getUserWithInternalId(id: Long): Maybe<User> = rxMaybe { getUserWithInternalIdSuspend(id) }
+    suspend fun getUserWithInternalId(id: Long): User? = userRepository.getUserWithIdNotScheduledForDeletion(id)
 
-    suspend fun getUserWithInternalIdSuspend(id: Long): User? = userRepository.getUserWithIdNotScheduledForDeletion(id)
-
-    @Deprecated("Use suspend fun checkIfUserExists(username, server) instead")
-    fun checkIfUserExists(username: String, server: String): Single<Boolean> =
-        rxSingle { checkIfUserExistsSuspend(username, server) }
-
-    suspend fun checkIfUserExistsSuspend(username: String, server: String): Boolean =
+    suspend fun checkIfUserExists(username: String, server: String): Boolean =
         userRepository.getUserWithUsernameAndServer(username, server) != null
 
     /**
@@ -136,10 +78,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
      *
      * @return `true` if the user was updated **AND** there is another user to set as active, `false` otherwise
      */
-    @Deprecated("Use suspend fun scheduleUserForDeletionWithId(id: Long) instead")
-    fun scheduleUserForDeletionWithId(id: Long): Single<Boolean> = rxSingle { scheduleUserForDeletionWithIdSuspend(id) }
-
-    suspend fun scheduleUserForDeletionWithIdSuspend(id: Long): Boolean {
+    suspend fun scheduleUserForDeletionWithId(id: Long): Boolean {
         val user = userRepository.getUserWithId(id) ?: return false
         user.scheduledForDeletion = true
         user.current = false
@@ -153,55 +92,37 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             return null
         }
         val user = results.first()
-        return if (setUserAsActiveSuspend(user)) {
+        return if (setUserAsActive(user)) {
             userRepository.getActiveUser()
         } else {
             null
         }
     }
 
-    @Deprecated("Use suspend fun updateExternalSignalingServer(id, externalSignalingServer) instead")
-    fun updateExternalSignalingServer(id: Long, externalSignalingServer: ExternalSignalingServer): Single<Int> =
-        rxSingle { updateExternalSignalingServerSuspend(id, externalSignalingServer) }
-
-    suspend fun updateExternalSignalingServerSuspend(id: Long, externalSignalingServer: ExternalSignalingServer): Int {
+    suspend fun updateExternalSignalingServer(id: Long, externalSignalingServer: ExternalSignalingServer): Int {
         val user = userRepository.getUserWithId(id) ?: throw NoSuchElementException()
         user.externalSignalingServer = externalSignalingServer
         return userRepository.updateUser(user)
     }
 
-    @Deprecated("Use suspend fun updateOrCreateUser(user) instead")
-    fun updateOrCreateUser(user: User): Single<Int> = rxSingle { updateOrCreateUserSuspend(user) }
-
-    suspend fun updateOrCreateUserSuspend(user: User): Int =
+    suspend fun updateOrCreateUser(user: User): Int =
         when (user.id) {
             null -> userRepository.insertUser(user).toInt()
             else -> userRepository.updateUser(user)
         }
 
-    @Deprecated("Use suspend fun saveUser(user) instead")
-    fun saveUser(user: User): Single<Int> = rxSingle { saveUserSuspend(user) }
+    suspend fun saveUser(user: User): Int = userRepository.updateUser(user)
 
-    suspend fun saveUserSuspend(user: User): Int = userRepository.updateUser(user)
-
-    @Deprecated("Use suspend fun setUserAsActive(user) instead")
-    fun setUserAsActive(user: User): Single<Boolean> = rxSingle { setUserAsActiveSuspend(user) }
-
-    suspend fun setUserAsActiveSuspend(user: User): Boolean {
+    suspend fun setUserAsActive(user: User): Boolean {
         Log.d(TAG, "setUserAsActive:" + user.id!!)
         val success = userRepository.setUserAsActiveWithId(user.id!!)
         if (success) {
-            activeUserSubject.onNext(user)
             activeUserStateFlow.value = user
         }
         return success
     }
 
-    @Deprecated("Use suspend fun storeProfile(username, userAttributes) instead")
-    fun storeProfile(username: String?, userAttributes: UserAttributes): Maybe<User> =
-        rxMaybe { storeProfileSuspend(username, userAttributes) }
-
-    suspend fun storeProfileSuspend(username: String?, userAttributes: UserAttributes): User? {
+    suspend fun storeProfile(username: String?, userAttributes: UserAttributes): User? {
         val existingUser = findUser(userAttributes)
         val user = if (existingUser != null) {
             existingUser.apply {
@@ -284,11 +205,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         return user
     }
 
-    @Deprecated("Use suspend fun updatePushState(id, state) instead")
-    fun updatePushState(id: Long, state: PushConfigurationState): Single<Int> =
-        rxSingle { updatePushStateSuspend(id, state) }
-
-    suspend fun updatePushStateSuspend(id: Long, state: PushConfigurationState): Int =
+    suspend fun updatePushState(id: Long, state: PushConfigurationState): Int =
         userRepository.updatePushState(id, state)
 
     companion object {

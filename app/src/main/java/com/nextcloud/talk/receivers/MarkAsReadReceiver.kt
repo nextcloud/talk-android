@@ -63,7 +63,7 @@ class MarkAsReadReceiver : BroadcastReceiver() {
         messageId = intent.getIntExtra(KEY_MESSAGE_ID, 0)
 
         val id = intent.getLongExtra(KEY_INTERNAL_USER_ID, currentUserProvider.currentUser.blockingGet().id!!)
-        currentUser = runBlocking { userManager.getUserWithIdSuspend(id) }!!
+        currentUser = runBlocking { userManager.getUserWithId(id) }!!
 
         markAsRead()
     }

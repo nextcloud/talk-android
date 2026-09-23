@@ -136,7 +136,7 @@ class AccountVerificationActivity : BaseActivity() {
         return !TextUtils.isEmpty(originalProtocol) && !baseUrl.startsWith(originalProtocol)
     }
 
-    private suspend fun getUser(id: Long): User = userManager.getUserWithIdSuspend(id)!!
+    private suspend fun getUser(id: Long): User = userManager.getUserWithId(id)!!
 
     private suspend fun getAllUsers(): List<User> = userManager.getUsers()
 
@@ -222,7 +222,7 @@ class AccountVerificationActivity : BaseActivity() {
     @Suppress("TooGenericExceptionCaught")
     private suspend fun storeProfile(displayName: String?, userId: String, capabilitiesOverall: CapabilitiesOverall) {
         try {
-            val user = userManager.storeProfileSuspend(
+            val user = userManager.storeProfile(
                 username,
                 UserManager.UserAttributes(
                     id = null,
@@ -434,7 +434,7 @@ class AccountVerificationActivity : BaseActivity() {
         val userToSetAsActive = getUser(internalAccountId)
         Log.d(TAG, "userToSetAsActive: " + userToSetAsActive.username)
 
-        if (userManager.setUserAsActiveSuspend(userToSetAsActive)) {
+        if (userManager.setUserAsActive(userToSetAsActive)) {
             if (getAllUsers().size > 1 && isAccountImport) {
                 ApplicationWideMessageHolder.getInstance().messageType =
                     ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
@@ -464,7 +464,7 @@ class AccountVerificationActivity : BaseActivity() {
 
     @SuppressLint("CheckResult")
     private suspend fun deleteUserAndStartServerSelection(userId: Long) {
-        userManager.scheduleUserForDeletionWithIdSuspend(userId)
+        userManager.scheduleUserForDeletionWithId(userId)
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
             .setExpeditedIfSupported()
             .build()

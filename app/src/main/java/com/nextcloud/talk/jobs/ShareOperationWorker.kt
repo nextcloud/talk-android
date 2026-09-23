@@ -95,7 +95,7 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
         metaData = data.getString(KEY_META_DATA)
         data.getStringArray(KEY_FILE_PATHS)?.let { filesArray.addAll(it.toList()) }
 
-        val operationsUser = runBlocking { userManager.getUserWithIdSuspend(userId) }!!
+        val operationsUser = runBlocking { userManager.getUserWithId(userId) }!!
         baseUrl = operationsUser.baseUrl
         credentials = ApiUtils.getCredentials(operationsUser.username, operationsUser.token)!!
     }

@@ -78,7 +78,7 @@ class CallNotificationActivity : CallBaseActivity() {
         hideNavigationIfNoPipAvailable()
 
         handleExtras()
-        userBeingCalled = runBlocking { userManager.getUserWithIdSuspend(internalUserId) }
+        userBeingCalled = runBlocking { userManager.getUserWithId(internalUserId) }
 
         setupCallTypeDescription()
         binding!!.conversationNameTextView.text = displayName

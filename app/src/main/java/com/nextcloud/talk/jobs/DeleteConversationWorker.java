@@ -34,6 +34,8 @@ import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import kotlin.coroutines.EmptyCoroutineContext;
+import kotlinx.coroutines.BuildersKt;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -65,7 +67,15 @@ public class DeleteConversationWorker extends Worker {
         Data data = getInputData();
         long operationUserId = data.getLong(BundleKeys.KEY_INTERNAL_USER_ID, -1);
         String conversationToken = data.getString(BundleKeys.KEY_ROOM_TOKEN);
-        User operationUser = userManager.getUserWithId(operationUserId).blockingGet();
+        User operationUser;
+        try {
+            operationUser = BuildersKt.runBlocking(
+                EmptyCoroutineContext.INSTANCE,
+                (scope, continuation) -> userManager.getUserWithId(operationUserId, continuation));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return Result.failure();
+        }
 
         if (operationUser != null) {
             int apiVersion = ApiUtils.getConversationApiVersion(operationUser, new int[]{ApiUtils.API_V4, 1});

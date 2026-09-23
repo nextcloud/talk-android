@@ -25,6 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
+import kotlin.coroutines.EmptyCoroutineContext;
+import kotlinx.coroutines.BuildersKt;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class WebsocketConnectionsWorker extends Worker {
@@ -46,7 +48,15 @@ public class WebsocketConnectionsWorker extends Worker {
 
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
-        List<User> users = userManager.getUsers().blockingGet();
+        List<User> users;
+        try {
+            users = BuildersKt.runBlocking(
+                EmptyCoroutineContext.INSTANCE,
+                (scope, continuation) -> userManager.getUsers(continuation));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return Result.failure();
+        }
         for (User user : users) {
             if (user.getExternalSignalingServer() != null &&
                 user.getExternalSignalingServer().getExternalSignalingServer() != null &&

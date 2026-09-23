@@ -47,7 +47,7 @@ class CapabilitiesSyncWorker(context: Context, workerParams: WorkerParameters) :
         sharedApplication!!.componentApplication.inject(this)
 
         val fetcher = CapabilitiesFetcher(userManager, retrofit, eventBus, okHttpClient)
-        userManager.users.blockingGet().forEach { user ->
+        userManager.getUsers().forEach { user ->
             fetcher.fetchAndStoreCapabilities(user)
         }
 

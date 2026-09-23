@@ -96,7 +96,7 @@ class SwitchAccountActivity : BaseActivity() {
                     reauthorizeFromImport(item.account)
                 } else {
                     lifecycleScope.launch {
-                        if (userManager.setUserAsActiveSuspend(item.user!!)) {
+                        if (userManager.setUserAsActive(item.user!!)) {
                             DirectShareHelper.removeAllShareTargetShortcuts(this@SwitchAccountActivity)
                             cookieManager.cookieStore.removeAll()
                             finish()

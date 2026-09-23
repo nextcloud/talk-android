@@ -126,7 +126,7 @@ class RemoteWipeInterceptor(
 
     private fun performWipe(candidate: WipeCandidate, wipeRequestedByServer: Boolean) {
         Log.d(TAG, "Scheduling user ${candidate.userId} for deletion")
-        runBlocking { userManager.scheduleUserForDeletionWithIdSuspend(candidate.userId) }
+        runBlocking { userManager.scheduleUserForDeletionWithId(candidate.userId) }
 
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
         var workContinuation = WorkManager.getInstance(context).beginWith(accountRemovalWork)

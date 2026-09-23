@@ -200,7 +200,7 @@ class ConversationsListActivity : BaseActivity() {
 
         val targetUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, 0L)
         currentUser = if (targetUserId != 0L) {
-            runBlocking { userManager.getUserWithIdSuspend(targetUserId) }!!
+            runBlocking { userManager.getUserWithId(targetUserId) }!!
         } else {
             currentUserProviderOld.currentUser.blockingGet()
         }
@@ -351,7 +351,7 @@ class ConversationsListActivity : BaseActivity() {
                             user.username == trimmedAccountName && baseUrl == user.baseUrl?.toUri()?.host
                         }
                         if (user != null) {
-                            userManager.setUserAsActiveSuspend(user)
+                            userManager.setUserAsActive(user)
                             val intent = Intent(context, ConversationsListActivity::class.java)
                             startActivity(intent)
                         } else {
@@ -1376,7 +1376,7 @@ class ConversationsListActivity : BaseActivity() {
 
     private fun deleteUserAndRestartApp() {
         lifecycleScope.launch {
-            userManager.scheduleUserForDeletionWithIdSuspend(currentUser!!.id!!)
+            userManager.scheduleUserForDeletionWithId(currentUser!!.id!!)
             val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
                 .setExpeditedIfSupported()
                 .build()

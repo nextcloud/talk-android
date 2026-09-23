@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.net.ssl.X509KeyManager;
+import kotlin.coroutines.EmptyCoroutineContext;
+import kotlinx.coroutines.BuildersKt;
 
 import androidx.annotation.Nullable;
 
@@ -50,7 +52,15 @@ public class KeyManager implements X509KeyManager {
     @Override
     public String chooseClientAlias(String[] strings, Principal[] principals, Socket socket) {
         String alias;
-        User currentUser = userManager.getCurrentUser().blockingGet();
+        User currentUser = null;
+        try {
+            currentUser = BuildersKt.runBlocking(
+                EmptyCoroutineContext.INSTANCE,
+                (scope, continuation) -> userManager.getCurrentUser(continuation));
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Interrupted while getting the current user: " + e.getLocalizedMessage());
+            Thread.currentThread().interrupt();
+        }
         if ((currentUser != null &&
             !TextUtils.isEmpty(alias = currentUser.getClientCertificate())) ||
             !TextUtils.isEmpty(alias = appPreferences.getTemporaryClientCertAlias())
@@ -115,7 +125,15 @@ public class KeyManager implements X509KeyManager {
             aliases.add(alias);
         }
 
-        List<User> userEntities = userManager.getUsers().blockingGet();
+        List<User> userEntities = new ArrayList<>();
+        try {
+            userEntities = BuildersKt.runBlocking(
+                EmptyCoroutineContext.INSTANCE,
+                (scope, continuation) -> userManager.getUsers(continuation));
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Interrupted while getting users: " + e.getLocalizedMessage());
+            Thread.currentThread().interrupt();
+        }
         for (int i = 0; i < userEntities.size(); i++) {
             if (!TextUtils.isEmpty(alias = userEntities.get(i).getClientCertificate())) {
                 aliases.add(alias);

@@ -73,7 +73,7 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
     }
 
     private suspend fun sendReadMarker(userId: Long, roomToken: String, lastReadMessage: Int): Result {
-        val user = userManager.getUserWithIdSuspend(userId)
+        val user = userManager.getUserWithId(userId)
         val credentials = user?.let { ApiUtils.getCredentials(it.username, it.token) }
         if (user == null || credentials == null) {
             Log.e(TAG, "No user or credentials found for user id $userId, dropping read marker sync")

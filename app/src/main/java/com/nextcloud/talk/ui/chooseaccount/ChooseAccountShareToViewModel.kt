@@ -56,7 +56,7 @@ class ChooseAccountShareToViewModel @Inject constructor(
     fun switchToUser(user: User) {
         viewModelScope.launch {
             try {
-                val success = userManager.setUserAsActiveSuspend(user)
+                val success = userManager.setUserAsActive(user)
                 _chooseAccountShareToViewState.value =
                     if (success) {
                         SwitchUserSuccessStateChooseAccountShareTo
