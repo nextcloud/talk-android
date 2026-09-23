@@ -132,9 +132,14 @@ class ChatMessageSyncer @Inject constructor(
         limit: Int = DEFAULT_MESSAGES_LIMIT,
         threadId: Long? = null,
         lastCommonRead: Int? = null,
-        markNotificationsAsRead: Boolean = true
+        markNotificationsAsRead: Boolean = true,
+        prefetch: Boolean = false
     ): HashMap<String, Int> {
         val fieldMap = HashMap<String, Int>()
+
+        if (prefetch) {
+            fieldMap["prefetch"] = 1
+        }
 
         fieldMap["includeLastKnown"] = if (includeLastKnown) 1 else 0
 
@@ -350,7 +355,8 @@ class ChatMessageSyncer @Inject constructor(
                 target = target,
                 fromMessageId = newestMessageIdFromDb,
                 limit = limit,
-                markNotificationsAsRead = false
+                markNotificationsAsRead = false,
+                prefetch = true
             )
         } else {
             initialCatchUp(
@@ -358,7 +364,8 @@ class ChatMessageSyncer @Inject constructor(
                 limit = limit,
                 lastReadMessage = lastReadMessage,
                 unreadMessages = unreadMessages,
-                markNotificationsAsRead = false
+                markNotificationsAsRead = false,
+                prefetch = true
             )
         }
 
@@ -399,6 +406,7 @@ class ChatMessageSyncer @Inject constructor(
         unreadMessages: Int = 0,
         lastCommonRead: Int? = null,
         markNotificationsAsRead: Boolean = true,
+        prefetch: Boolean = false,
         events: Events = NO_EVENTS
     ): SyncOutcome {
         val closableBacklogAnchor = lastReadMessage?.takeIf {
@@ -413,6 +421,7 @@ class ChatMessageSyncer @Inject constructor(
                 unreadMessages = unreadMessages,
                 lastCommonRead = lastCommonRead,
                 markNotificationsAsRead = markNotificationsAsRead,
+                prefetch = prefetch,
                 events = events
             )
         } else {
@@ -426,7 +435,8 @@ class ChatMessageSyncer @Inject constructor(
                     limit = limit,
                     threadId = target.threadId,
                     lastCommonRead = lastCommonRead,
-                    markNotificationsAsRead = markNotificationsAsRead
+                    markNotificationsAsRead = markNotificationsAsRead,
+                    prefetch = prefetch
                 ),
                 events
             )
@@ -445,6 +455,7 @@ class ChatMessageSyncer @Inject constructor(
         unreadMessages: Int,
         lastCommonRead: Int?,
         markNotificationsAsRead: Boolean,
+        prefetch: Boolean,
         events: Events
     ): SyncOutcome {
         Log.d(
@@ -462,7 +473,8 @@ class ChatMessageSyncer @Inject constructor(
                 limit = limit,
                 threadId = target.threadId,
                 lastCommonRead = lastCommonRead,
-                markNotificationsAsRead = markNotificationsAsRead
+                markNotificationsAsRead = markNotificationsAsRead,
+                prefetch = prefetch
             ),
             events
         )
@@ -478,6 +490,7 @@ class ChatMessageSyncer @Inject constructor(
             limit = limit,
             lastCommonRead = lastCommonRead,
             markNotificationsAsRead = markNotificationsAsRead,
+            prefetch = prefetch,
             events = events
         )
         return SyncOutcome(
@@ -510,6 +523,7 @@ class ChatMessageSyncer @Inject constructor(
         limit: Int = DEFAULT_MESSAGES_LIMIT,
         lastCommonRead: Int? = null,
         markNotificationsAsRead: Boolean = true,
+        prefetch: Boolean = false,
         events: Events = NO_EVENTS
     ): SyncOutcome {
         var anchor = fromMessageId
@@ -527,7 +541,8 @@ class ChatMessageSyncer @Inject constructor(
                 limit = limit,
                 threadId = target.threadId,
                 lastCommonRead = lastCommonRead,
-                markNotificationsAsRead = markNotificationsAsRead
+                markNotificationsAsRead = markNotificationsAsRead,
+                prefetch = prefetch
             )
             val roundOutcome = pullAndPersistMessages(target, fieldMap, events)
 
@@ -569,7 +584,8 @@ class ChatMessageSyncer @Inject constructor(
                 limit = limit,
                 threadId = target.threadId,
                 lastCommonRead = lastCommonRead,
-                markNotificationsAsRead = markNotificationsAsRead
+                markNotificationsAsRead = markNotificationsAsRead,
+                prefetch = prefetch
             ),
             events
         )
