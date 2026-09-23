@@ -9,7 +9,6 @@ package com.nextcloud.talk.polls.ui
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +24,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollVoteBinding
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.polls.viewmodels.PollVoteViewModel
@@ -39,6 +39,9 @@ class PollVoteFragment : Fragment() {
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var logger: Logger
 
     private lateinit var parentViewModel: PollMainViewModel
     lateinit var viewModel: PollVoteViewModel
@@ -73,7 +76,7 @@ class PollVoteFragment : Fragment() {
             when (state) {
                 PollVoteViewModel.InitialState -> {}
                 is PollVoteViewModel.PollVoteFailedState -> {
-                    Log.e(TAG, "Failed to vote on poll.")
+                    logger.e(TAG, "Failed to vote on poll.")
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
                 is PollVoteViewModel.PollVoteHiddenSuccessState -> {

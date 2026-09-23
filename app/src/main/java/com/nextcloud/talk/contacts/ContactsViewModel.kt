@@ -10,6 +10,7 @@ package com.nextcloud.talk.contacts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
@@ -26,7 +27,8 @@ import javax.inject.Inject
 
 class ContactsViewModel @Inject constructor(
     private val repository: ContactsRepository,
-    private val currentUserProvider: CurrentUserProvider
+    private val currentUserProvider: CurrentUserProvider,
+    private val logger: Logger
 ) : ViewModel() {
 
     private val _contactsViewState = MutableStateFlow<ContactsUiState>(ContactsUiState.None)
@@ -61,6 +63,10 @@ class ContactsViewModel @Inject constructor(
 
     private val currentUser: User?
         get() = currentUserFlow.value
+
+    companion object {
+        private val TAG = ContactsViewModel::class.java.simpleName
+    }
 
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
@@ -131,6 +137,7 @@ class ContactsViewModel @Inject constructor(
                 }
                 _contactsViewState.value = ContactsUiState.Success(contactsList)
             } catch (exception: Exception) {
+                logger.e(TAG, "Failed to fetch contacts for search", exception)
                 _contactsViewState.value = ContactsUiState.Error(exception.message ?: "")
                 if (exception is CancellationException) {
                     throw exception
@@ -165,6 +172,7 @@ class ContactsViewModel @Inject constructor(
                 }
                 _contactsViewState.value = ContactsUiState.Success(contactsList)
             } catch (exception: Exception) {
+                logger.e(TAG, "Failed to fetch contacts for search", exception)
                 _contactsViewState.value = ContactsUiState.Error(exception.message ?: "")
                 if (exception is CancellationException) {
                     throw exception
@@ -192,6 +200,7 @@ class ContactsViewModel @Inject constructor(
                 val conversation: Conversation? = room.ocs?.data
                 _roomViewState.value = RoomUiState.Success(conversation)
             } catch (exception: Exception) {
+                logger.e(TAG, "Failed to create room", exception)
                 _roomViewState.value = RoomUiState.Error(exception.message ?: "")
             }
         }

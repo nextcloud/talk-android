@@ -355,6 +355,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                 }
 
                 is ScheduledMessagesViewModel.SendNowMessageErrorState -> {
+                    logger.e(TAG, "Failed to send scheduled message now")
                     snackBarHostState.showSnackbar(genericErrorText)
                 }
 
@@ -364,9 +365,10 @@ class ScheduledMessagesActivity : BaseActivity() {
         LaunchedEffect(rescheduleState) {
             when (rescheduleState) {
                 is ScheduledMessagesViewModel.ScheduledMessageActionSuccessState -> onLoadScheduledMessages()
-                is ScheduledMessagesViewModel.ScheduledMessageErrorState -> snackBarHostState.showSnackbar(
-                    genericErrorText
-                )
+                is ScheduledMessagesViewModel.ScheduledMessageErrorState -> {
+                    logger.e(TAG, "Failed to reschedule scheduled message")
+                    snackBarHostState.showSnackbar(genericErrorText)
+                }
 
                 else -> Unit
             }
@@ -381,9 +383,10 @@ class ScheduledMessagesActivity : BaseActivity() {
                     onLoadScheduledMessages()
                 }
 
-                is ScheduledMessagesViewModel.ScheduledMessageErrorState -> snackBarHostState.showSnackbar(
-                    genericErrorText
-                )
+                is ScheduledMessagesViewModel.ScheduledMessageErrorState -> {
+                    logger.e(TAG, "Failed to edit scheduled message")
+                    snackBarHostState.showSnackbar(genericErrorText)
+                }
 
                 else -> Unit
             }
@@ -392,9 +395,10 @@ class ScheduledMessagesActivity : BaseActivity() {
         LaunchedEffect(deleteState) {
             when (deleteState) {
                 is ScheduledMessagesViewModel.ScheduledMessageActionSuccessState -> onLoadScheduledMessages()
-                is ScheduledMessagesViewModel.ScheduledMessageErrorState -> snackBarHostState.showSnackbar(
-                    genericErrorText
-                )
+                is ScheduledMessagesViewModel.ScheduledMessageErrorState -> {
+                    logger.e(TAG, "Failed to delete scheduled message")
+                    snackBarHostState.showSnackbar(genericErrorText)
+                }
 
                 else -> Unit
             }
@@ -785,6 +789,7 @@ class ScheduledMessagesActivity : BaseActivity() {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
+                logger.e(TAG, "Showing generic error for scheduled messages list")
                 Text(
                     text = stringResource(R.string.nc_common_error_sorry),
                     modifier = Modifier
@@ -1103,6 +1108,7 @@ class ScheduledMessagesActivity : BaseActivity() {
     }
 
     companion object {
+        private val TAG = ScheduledMessagesActivity::class.java.simpleName
         const val ROOM_TOKEN = "room_token"
         const val CONVERSATION_NAME = "conversation_name"
         const val THREAD_ID = "thread_id"

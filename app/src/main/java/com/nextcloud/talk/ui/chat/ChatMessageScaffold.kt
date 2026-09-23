@@ -85,6 +85,8 @@ import androidx.compose.ui.util.lerp
 import androidx.core.graphics.ColorUtils
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageReactionUi
 import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
@@ -107,6 +109,8 @@ private const val HALF_OPACITY = 127
 private const val MESSAGE_LENGTH_THRESHOLD = 25
 private const val ANIMATED_BLINK = 500
 private const val MESSAGE_BUBBLE_MAX_WIDTH_FRACTION = 0.8f
+
+private val TAG = ChatActivity::class.java.simpleName
 
 private val bubbleRadiusBig = 10.dp
 private val bubbleRadiusSmall = 2.dp
@@ -978,6 +982,10 @@ fun TimeDisplay(message: ChatMessageUi, color: Color = colorScheme.onSurfaceVari
         try {
             DateUtils(context).getLocalTimeStringFromTimestamp(message.timestamp)
         } catch (e: Exception) {
+            NextcloudTalkApplication.sharedApplication?.logger?.w(
+                TAG,
+                "Failed to format message timestamp, falling back to placeholder: ${e.message}"
+            )
             "--:--"
         }
     }

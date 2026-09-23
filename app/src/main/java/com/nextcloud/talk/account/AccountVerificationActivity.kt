@@ -533,7 +533,7 @@ class AccountVerificationActivity : BaseActivity() {
                 startActivity(intent)
             }
         } else {
-            Log.e(TAG, "failed to set active user")
+            logger.e(TAG, "failed to set active user")
             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
         }
     }
@@ -595,12 +595,12 @@ class AccountVerificationActivity : BaseActivity() {
                     }
 
                     WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                        logger.e(TAG, "something went wrong when deleting user with id $userId")
                         Toast.makeText(
                             context,
                             context.resources.getString(R.string.nc_common_error_sorry),
                             Toast.LENGTH_LONG
                         ).show()
-                        Log.e(TAG, "something went wrong when deleting user with id $userId")
                         val intent = Intent(this, ServerSelectionActivity::class.java)
                         startActivity(intent)
                     }

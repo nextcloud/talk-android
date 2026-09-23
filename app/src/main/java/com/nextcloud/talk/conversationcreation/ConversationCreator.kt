@@ -15,6 +15,7 @@ import com.nextcloud.talk.conversationcreation.data.ConversationCreationReposito
 import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.conversationinfo.Participants
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.Conversation
@@ -52,7 +53,10 @@ class ConversationRefusedException(override val message: String, cause: Throwabl
  * Creates conversations on the server, in a single request where the server supports all creation
  * parameters and with follow up requests otherwise.
  */
-class ConversationCreator @Inject constructor(private val repository: ConversationCreationRepository) {
+class ConversationCreator @Inject constructor(
+    private val repository: ConversationCreationRepository,
+    private val logger: Logger
+) {
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     suspend fun create(user: User, newConversation: NewConversation): Conversation? {
@@ -94,6 +98,7 @@ class ConversationCreator @Inject constructor(private val repository: Conversati
                 createWithFollowUpRequests(context, newConversation)
             }
         } catch (e: HttpException) {
+            logger.w(TAG, "Server refused to create the conversation", e)
             refusalMessage(e)?.let { throw ConversationRefusedException(it, e) }
             throw e
         }
@@ -301,7 +306,7 @@ class ConversationCreator @Inject constructor(private val repository: Conversati
     private data class RequestContext(val user: User, val credentials: String?, val apiVersion: Int)
 
     companion object {
-        private val TAG = ConversationCreator::class.simpleName
+        private val TAG = ConversationCreator::class.java.simpleName
         private const val COLOR_HEX_MASK = 0xFFFFFF
     }
 }

@@ -22,6 +22,7 @@ import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
@@ -55,7 +56,8 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val networkMonitor: NetworkMonitor,
     private val chatMessageSyncer: ChatMessageSyncer,
     private val conversationListUpdater: ConversationListUpdater,
-    private val context: Context
+    private val context: Context,
+    private val logger: Logger
 ) : OfflineConversationsRepository {
     private val observedAccountId = MutableStateFlow<Long?>(null)
 
@@ -140,7 +142,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
         }
 
     private suspend fun fallBackToLocalConversation(user: User, roomToken: String, e: Throwable) {
-        Log.e(TAG, "Failed to fetch room $roomToken from server", e)
+        logger.e(TAG, "Failed to fetch room $roomToken from server", e)
         val id = user.id!!
         val model = getConversation(id, roomToken)
         if (model != null) {
@@ -337,7 +339,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
     }
 
     companion object {
-        val TAG = OfflineFirstConversationsRepository::class.simpleName
+        val TAG = OfflineFirstConversationsRepository::class.java.simpleName
         private const val CHAT_API_VERSION = 1
         private const val MAX_ROOMS_TO_CATCH_UP = 20
         private const val MAX_CONCURRENT_CATCH_UPS = 3

@@ -121,6 +121,7 @@ class InvitationsActivity : BaseActivity() {
                 }
 
                 is InvitationsViewModel.FetchInvitationsErrorState -> {
+                    logger.e(TAG, "Failed to fetch invitations")
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
 
@@ -153,6 +154,7 @@ class InvitationsActivity : BaseActivity() {
                 }
 
                 is InvitationsViewModel.InvitationActionErrorState -> {
+                    logger.e(TAG, "Failed to perform invitation action")
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
 
@@ -170,5 +172,9 @@ class InvitationsActivity : BaseActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setIcon(resources!!.getColor(R.color.transparent, null).toDrawable())
         viewThemeUtils.material.themeToolbar(binding.invitationsToolbar)
+    }
+
+    companion object {
+        private val TAG = InvitationsActivity::class.java.simpleName
     }
 }

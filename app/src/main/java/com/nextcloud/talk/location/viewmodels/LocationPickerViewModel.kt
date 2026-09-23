@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.location.GeocodingResult
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
@@ -35,7 +36,8 @@ import javax.inject.Inject
 class LocationPickerViewModel @Inject constructor(
     private val ncApi: NcApi,
     private val currentUserProviderOld: CurrentUserProviderOld,
-    private val okHttpClient: OkHttpClient
+    private val okHttpClient: OkHttpClient,
+    private val logger: Logger
 ) : ViewModel() {
 
     sealed class ViewState {
@@ -266,7 +268,7 @@ class LocationPickerViewModel @Inject constructor(
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "error when trying to share location", e)
+                    logger.e(TAG, "error when trying to share location", e)
                     _uiState.update { it.copy(viewState = ViewState.Error(R.string.nc_common_error_sorry)) }
                 }
 

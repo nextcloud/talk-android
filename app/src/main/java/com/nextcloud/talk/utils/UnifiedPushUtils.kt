@@ -16,6 +16,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import org.unifiedpush.android.connector.UnifiedPush
@@ -165,7 +166,8 @@ object UnifiedPushUtils {
         return try {
             writeToParcel(parcel, 0)
             parcel.marshall()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "Failed to marshal PushEndpoint to ByteArray", e)
             null
         } finally {
             parcel.recycle()
@@ -178,7 +180,8 @@ object UnifiedPushUtils {
             parcel.unmarshall(this, 0, size)
             parcel.setDataPosition(0) // Reset Parcel position to read from the start
             PushEndpoint.createFromParcel(parcel)
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "Failed to unmarshal ByteArray to PushEndpoint", e)
             null
         } finally {
             parcel.recycle()

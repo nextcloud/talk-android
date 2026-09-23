@@ -11,9 +11,13 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImagePainter
 import coil.imageLoader
 import coil.memory.MemoryCache
+import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.profile.ProfileActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
+private val TAG = ProfileActivity::class.java.simpleName
 
 /**
  * Copies a freshly loaded avatar into the opposite theme's cache slots (memory + disk),
@@ -56,7 +60,11 @@ internal fun copyAvatarToOtherThemeCache(
                     java.io.File(snapshot.metadata.toString())
                         .copyTo(java.io.File(editor.metadata.toString()), overwrite = true)
                     editor.commitAndOpenSnapshot()?.close()
-                } catch (_: Exception) {
+                } catch (e: Exception) {
+                    NextcloudTalkApplication.sharedApplication?.logger?.w(
+                        TAG,
+                        "Failed to copy avatar into other-theme disk cache, aborting cache write: ${e.message}"
+                    )
                     editor.abort()
                 }
             }

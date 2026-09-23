@@ -7,6 +7,7 @@
 package com.nextcloud.talk.conversationcreation
 
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
@@ -17,12 +18,15 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.mockito.kotlin.mock
 
 /**
  * Which requests [ConversationCreator] makes for a new conversation, and what it reports back when
  * one of them fails.
  */
 class ConversationCreatorTest {
+
+    private val logger: Logger = mock()
 
     private fun user(vararg spreedFeatures: SpreedFeatures) =
         User(
@@ -54,7 +58,7 @@ class ConversationCreatorTest {
     fun `a server that takes every parameter is asked once`() =
         runTest {
             val repository = FakeConversationCreationRepository()
-            val creator = ConversationCreator(repository)
+            val creator = ConversationCreator(repository, logger)
 
             creator.create(user(SpreedFeatures.CONVERSATION_CREATION_ALL), newConversation(description = "Ours"))
 
@@ -69,7 +73,7 @@ class ConversationCreatorTest {
     fun `a server without that capability is served by follow up requests`() =
         runTest {
             val repository = FakeConversationCreationRepository()
-            val creator = ConversationCreator(repository)
+            val creator = ConversationCreator(repository, logger)
 
             creator.create(user(), newConversation(description = "Ours"))
 
@@ -82,7 +86,7 @@ class ConversationCreatorTest {
     fun `the password travels in the creation request only where the server takes it`() =
         runTest {
             val repository = FakeConversationCreationRepository()
-            val creator = ConversationCreator(repository)
+            val creator = ConversationCreator(repository, logger)
 
             creator.create(
                 user(SpreedFeatures.CONVERSATION_CREATION_ALL, SpreedFeatures.CONVERSATION_CREATION_PASSWORD),
@@ -97,7 +101,7 @@ class ConversationCreatorTest {
     fun `without that capability the password follows the creation request`() =
         runTest {
             val repository = FakeConversationCreationRepository()
-            val creator = ConversationCreator(repository)
+            val creator = ConversationCreator(repository, logger)
 
             val conversation = creator.create(
                 user(SpreedFeatures.CONVERSATION_CREATION_ALL),
@@ -113,7 +117,7 @@ class ConversationCreatorTest {
     fun `a conversation without a password never asks for one`() =
         runTest {
             val repository = FakeConversationCreationRepository()
-            val creator = ConversationCreator(repository)
+            val creator = ConversationCreator(repository, logger)
 
             creator.create(user(SpreedFeatures.CONVERSATION_CREATION_ALL), newConversation())
 
@@ -124,7 +128,7 @@ class ConversationCreatorTest {
     fun `a rejected password leaves the conversation without one instead of losing it`() =
         runTest {
             val repository = FakeConversationCreationRepository().apply { failPassword = true }
-            val creator = ConversationCreator(repository)
+            val creator = ConversationCreator(repository, logger)
 
             val conversation = creator.create(
                 user(SpreedFeatures.CONVERSATION_CREATION_ALL),
@@ -139,7 +143,7 @@ class ConversationCreatorTest {
     fun `participants the server refuses are reported on the conversation`() =
         runTest {
             val repository = FakeConversationCreationRepository().apply { failingParticipants = setOf("bob") }
-            val creator = ConversationCreator(repository)
+            val creator = ConversationCreator(repository, logger)
 
             val conversation = creator.create(
                 user(),

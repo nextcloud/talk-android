@@ -17,6 +17,7 @@ import com.nextcloud.talk.data.database.mappers.asEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
@@ -103,7 +104,8 @@ class OfflineFirstConversationsRepositoryTest {
             networkMonitor,
             chatMessageSyncer,
             conversationListUpdater,
-            context
+            context,
+            mock<Logger>()
         )
     }
 

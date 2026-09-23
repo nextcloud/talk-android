@@ -10,6 +10,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.dagger.modules.UtilsModule
 import java.io.File
 
@@ -22,7 +23,7 @@ class ExceptionHandler(
 ) : Thread.UncaughtExceptionHandler {
 
     companion object {
-        private const val TAG = "ExceptionHandler"
+        private val TAG = ExceptionHandler::class.java.simpleName
         private const val CRASH_ACTIVITY_START_DELAY_MS = 500L
     }
 
@@ -34,8 +35,9 @@ class ExceptionHandler(
             val diagnosis = try {
                 diagnosisSupplier?.invoke()?.takeIf { it.isNotEmpty() }
             } catch (
-                _: Exception
+                e: Exception
             ) {
+                NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "Failed to build diagnosis report for crash", e)
                 null
             }
             val summary = exception.javaClass.simpleName +
@@ -56,7 +58,13 @@ class ExceptionHandler(
             // Wait for ShowErrorActivity to become visible before we remove the old task.
             try {
                 Thread.sleep(CRASH_ACTIVITY_START_DELAY_MS)
-            } catch (_: InterruptedException) {
+            } catch (e: InterruptedException) {
+                NextcloudTalkApplication.sharedApplication?.logger?.w(
+                    TAG,
+                    "Interrupted while waiting for ShowErrorActivity to become visible",
+                    e
+                )
+                Thread.currentThread().interrupt()
             }
 
             // Now that the crash screen is in the foreground, remove all other app tasks
@@ -115,7 +123,8 @@ class ExceptionHandler(
             val lines = logFile.readLines(Charsets.UTF_8)
             val recent = if (lines.size > maxLines) lines.takeLast(maxLines) else lines
             recent.joinToString("\n")
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "Failed to read recent logs for crash report", e)
             ""
         }
     }

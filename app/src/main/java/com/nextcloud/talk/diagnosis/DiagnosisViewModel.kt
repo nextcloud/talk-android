@@ -13,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +23,8 @@ import javax.inject.Inject
 @Suppress("TooGenericExceptionCaught")
 class DiagnosisViewModel @Inject constructor(
     private val ncApiCoroutines: NcApiCoroutines,
-    private val currentUserProvider: CurrentUserProviderOld
+    private val currentUserProvider: CurrentUserProviderOld,
+    private val logger: Logger
 ) : ViewModel() {
     private val _currentUser = currentUserProvider.currentUser.blockingGet()
     val currentUser: User = _currentUser
@@ -49,6 +51,7 @@ class DiagnosisViewModel @Inject constructor(
                 val notificationMessage = response.ocs?.data?.message
                 _notificationViewState.value = NotificationUiState.Success(notificationMessage)
             } catch (e: Exception) {
+                logger.e(TAG, "Failed to fetch test push notification result", e)
                 _notificationViewState.value = NotificationUiState.Error(e.message ?: "")
             } finally {
                 _isLoading.value = false
@@ -59,6 +62,10 @@ class DiagnosisViewModel @Inject constructor(
 
     fun dismissDialog() {
         _showDialog.value = false
+    }
+
+    companion object {
+        private val TAG = DiagnosisViewModel::class.java.simpleName
     }
 }
 

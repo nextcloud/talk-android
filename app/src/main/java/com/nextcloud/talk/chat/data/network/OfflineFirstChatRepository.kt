@@ -819,9 +819,11 @@ class OfflineFirstChatRepository @Inject constructor(
             }
             Result.success(response)
         } catch (e: HttpException) {
+            logger.e(TAG, "Failed to edit chat message $messageId", e)
             restore?.invoke()
             Result.failure(e)
         } catch (e: IOException) {
+            logger.e(TAG, "Failed to edit chat message $messageId", e)
             restore?.invoke()
             Result.failure(e)
         }
@@ -897,12 +899,15 @@ class OfflineFirstChatRepository @Inject constructor(
         } catch (e: HttpException) {
             if (e.code() == HTTP_NOT_FOUND) {
                 // the server does not know the message any more, so it is gone either way
+                logger.w(TAG, "Message $messageId was already gone on the server when deleting it", e)
                 Result.success(null)
             } else {
+                logger.e(TAG, "Failed to delete chat message $messageId", e)
                 restore?.invoke()
                 Result.failure(e)
             }
         } catch (e: IOException) {
+            logger.e(TAG, "Failed to delete chat message $messageId", e)
             restore?.invoke()
             Result.failure(e)
         }
@@ -957,6 +962,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 _updateMessageFlow.emit(editedMessageModel)
                 emit(true)
             } catch (e: Exception) {
+                logger.e(TAG, "Failed to edit temp chat message ${message.jsonMessageId}", e)
                 emit(false)
             }
         }

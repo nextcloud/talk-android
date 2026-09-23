@@ -649,6 +649,7 @@ class ConversationInfoActivity : BaseActivity() {
                                         ) {
                                             R.string.nc_last_moderator_leaving_room_warning
                                         } else {
+                                            logger.e(TAG, "Failed to leave conversation, error_type: $errorType")
                                             R.string.nc_common_error_sorry
                                         }
                                     )

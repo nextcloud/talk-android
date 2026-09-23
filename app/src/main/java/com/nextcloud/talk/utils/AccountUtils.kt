@@ -24,7 +24,7 @@ import java.util.Arrays
 
 object AccountUtils {
 
-    private const val TAG = "AccountUtils"
+    private val TAG = AccountUtils::class.java.simpleName
     private const val MIN_SUPPORTED_FILES_APP_VERSION = 30060151
 
     fun findAvailableAccountsOnDevice(users: List<User>): List<Account> {
@@ -117,7 +117,11 @@ object AccountUtils {
                 }
             }
         } catch (appNotFoundException: PackageManager.NameNotFoundException) {
-            // ignore
+            NextcloudTalkApplication.sharedApplication?.logger?.w(
+                TAG,
+                "Files app not found while checking its signature",
+                appNotFoundException
+            )
         }
 
         return false

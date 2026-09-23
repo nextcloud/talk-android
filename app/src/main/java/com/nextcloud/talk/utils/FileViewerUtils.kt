@@ -26,6 +26,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.fullscreenfile.FullScreenMediaActivity
@@ -131,7 +132,10 @@ class FileViewerUtils(private val context: Context, private val user: User) {
     ) {
         val safeFile = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileInfo.fileName)
         if (safeFile == null) {
-            Log.e(TAG, "Refused to open file with unsafe name: ${fileInfo.fileName}")
+            NextcloudTalkApplication.sharedApplication?.logger?.e(
+                TAG,
+                "Refused to open file with unsafe name: ${fileInfo.fileName}"
+            )
             Snackbar.make(View(context), R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
             return
         }
@@ -148,7 +152,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         } else if (!safeFileInfo.link.isNullOrEmpty()) {
             openFileInFilesApp(safeFileInfo.link, safeFileInfo.fileId)
         } else {
-            Log.e(
+            NextcloudTalkApplication.sharedApplication?.logger?.e(
                 TAG,
                 "File with id " + safeFileInfo.fileId + " can't be opened because internal viewer doesn't " +
                     "support it, it can't be handled by an external app and there is no link " +
@@ -172,7 +176,10 @@ class FileViewerUtils(private val context: Context, private val user: User) {
     ) {
         val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileInfo.fileName)
         if (file == null) {
-            Log.e(TAG, "Refused to open file with unsafe name: ${fileInfo.fileName}")
+            NextcloudTalkApplication.sharedApplication?.logger?.e(
+                TAG,
+                "Refused to open file with unsafe name: ${fileInfo.fileName}"
+            )
             Snackbar.make(View(context), R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
             return
         }
@@ -208,7 +215,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
                 else -> openFileByExternalApp(filename, mimetype)
             }
         } else {
-            Log.e(TAG, "can't open file with unknown mimetype")
+            NextcloudTalkApplication.sharedApplication?.logger?.e(TAG, "can't open file with unknown mimetype")
             Snackbar.make(View(context), R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
         }
     }
@@ -217,7 +224,10 @@ class FileViewerUtils(private val context: Context, private val user: User) {
     private fun openFileByExternalApp(fileName: String, mimetype: String) {
         val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileName)
         if (file == null) {
-            Log.e(TAG, "Refused to share file with unsafe name: $fileName")
+            NextcloudTalkApplication.sharedApplication?.logger?.e(
+                TAG,
+                "Refused to share file with unsafe name: $fileName"
+            )
             Snackbar.make(View(context), R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
             return
         }
@@ -475,6 +485,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
     )
 
     companion object {
-        private val TAG = FileViewerUtils::class.simpleName
+        private val TAG = FileViewerUtils::class.java.simpleName
     }
 }
