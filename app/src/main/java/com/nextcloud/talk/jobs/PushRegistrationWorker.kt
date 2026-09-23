@@ -9,11 +9,11 @@ package com.nextcloud.talk.jobs
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkManager
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
@@ -29,7 +29,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
@@ -52,7 +51,8 @@ import javax.inject.Inject
  */
 @AutoInjector(NextcloudTalkApplication::class)
 @Suppress("TooManyFunctions")
-class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
+class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
+    CoroutineWorker(context, workerParams) {
     @Inject
     lateinit var retrofit: Retrofit
 
@@ -82,7 +82,7 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
     }
 
     @SuppressLint("CheckResult")
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         inject()
         val origin = inputData.getString(ORIGIN)
         val userId = inputData.getLong(USER_ID, -1)
@@ -119,8 +119,8 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
      * Activate web push for user (on server) and unregister for proxy push (on server)
      */
     @SuppressLint("CheckResult")
-    private fun webPushActivationWork(id: Long, activationToken: String) {
-        val user = runBlocking { userManager.getUserWithId(id) }!!
+    private suspend fun webPushActivationWork(id: Long, activationToken: String) {
+        val user = userManager.getUserWithId(id)!!
         activateWebPushForAccount(user, activationToken)
             .flatMap { res ->
                 if (res) {
@@ -143,9 +143,9 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
      * Register for web push (on server)
      */
     @SuppressLint("CheckResult")
-    private fun webPushWork(id: Long, pushEndpoint: PushEndpoint) {
+    private suspend fun webPushWork(id: Long, pushEndpoint: PushEndpoint) {
         preferences.unifiedPushLatestEndpoint = System.currentTimeMillis()
-        val user = runBlocking { userManager.getUserWithId(id) }!!
+        val user = userManager.getUserWithId(id)!!
         registerWebPushForAccount(user, pushEndpoint)
             .map { (user, res) ->
                 if (res) {
@@ -168,8 +168,8 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
      * Disable UnifiedPush if we don't have a distributor anymore
      */
     @SuppressLint("CheckResult")
-    private fun webPushUnregistrationWork(id: Long) {
-        val user = runBlocking { userManager.getUserWithId(id) } ?: return
+    private suspend fun webPushUnregistrationWork(id: Long) {
+        val user = userManager.getUserWithId(id) ?: return
         unregisterWebPushForAccount(user)
             .toList()
             .subscribeOn(Schedulers.io())
@@ -186,8 +186,8 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
      * Get VAPID key (on server) and register UnifiedPush to the distributor (on device)
      */
     @SuppressLint("CheckResult")
-    private fun unifiedPushWork() {
-        val obs = runBlocking { userManager.getUsers() }.map { user ->
+    private suspend fun unifiedPushWork() {
+        val obs = userManager.getUsers().map { user ->
             registerUnifiedPushForAccount(user)
         }
         Observable.merge(obs)
@@ -205,8 +205,8 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
      * register for proxy push (on server)
      */
     @SuppressLint("CheckResult")
-    private fun proxyPushWork() {
-        val obs = runBlocking { userManager.getUsers() }.mapNotNull { user ->
+    private suspend fun proxyPushWork() {
+        val obs = userManager.getUsers().mapNotNull { user ->
             if (user.userId == null || user.baseUrl == null) {
                 Log.w(TAG, "Null userId or baseUrl (userId=${user.userId}, baseUrl=${user.baseUrl}")
                 return@mapNotNull null
@@ -230,7 +230,7 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
             }
     }
 
-    private fun defaultUseUnifiedPush(): Boolean =
+    private suspend fun defaultUseUnifiedPush(): Boolean =
         preferences.useUnifiedPush &&
             // If this is the first registration, we have never called [UnifiedPush.register]
             // because it happens after this function
@@ -272,8 +272,8 @@ class PushRegistrationWorker(context: Context, workerParams: WorkerParameters) :
      * Show a notification to the user to inform UnifiedPush has been disabled
      */
     @SuppressLint("CheckResult")
-    private fun enqueueNotifUnifiedPushDisabled() {
-        val user = runBlocking { userManager.getUsers() }.first()
+    private suspend fun enqueueNotifUnifiedPushDisabled() {
+        val user = userManager.getUsers().first()
         Log.d(TAG, "Sending warning notification with ${user.userId}")
         val notif = hashMapOf(
             "subject" to "UnifiedPush disabled",

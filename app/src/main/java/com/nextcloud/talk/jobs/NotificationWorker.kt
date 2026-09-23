@@ -39,8 +39,8 @@ import androidx.core.graphics.drawable.IconCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import androidx.emoji2.text.EmojiCompat
+import androidx.work.CoroutineWorker
 import androidx.work.Data
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import coil.executeBlocking
@@ -108,7 +108,9 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -125,7 +127,8 @@ import javax.inject.Inject
 
 @Suppress("TooManyFunctions", "LargeClass", "CyclomaticComplexMethod")
 @AutoInjector(NextcloudTalkApplication::class)
-class NotificationWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
+class NotificationWorker(context: Context, workerParams: WorkerParameters) :
+    CoroutineWorker(context, workerParams) {
 
     @Inject lateinit var logger: Logger
 
@@ -159,7 +162,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private var imagePreviewUrl: String? = null
     private var imageMimeType: String? = null
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result = withContext(Dispatchers.IO) { handlePushMessage() }
+
+    private suspend fun handlePushMessage(): Result {
         sharedApplication!!.componentApplication.inject(this)
         context = applicationContext
 
@@ -212,13 +217,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return Result.success()
     }
 
-    private fun handleInternalPushMessage() {
+    private suspend fun handleInternalPushMessage() {
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = getIntentFlags()
         showNotification(intent, null)
     }
 
-    private fun handleNonCallPushMessage() {
+    private suspend fun handleNonCallPushMessage() {
         val mainActivityIntent = createMainActivityIntent()
         getNcDataAndShowNotification(mainActivityIntent)
     }
@@ -239,7 +244,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         ChatMessageCatchUpWorker.enqueue(applicationContext, user.id!!, roomToken, threadId)
     }
 
-    private fun handleRemoteTalkSharePushMessage() {
+    private suspend fun handleRemoteTalkSharePushMessage() {
         val mainActivityIntent = Intent(context, MainActivity::class.java)
         mainActivityIntent.flags = getIntentFlags()
         val bundle = Bundle()
@@ -250,8 +255,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     @Suppress("LongMethod", "TooGenericExceptionCaught")
-    private fun handleCallPushMessage() {
-        val userBeingCalled = runBlocking { userManager.getUserWithId(user.id!!) }
+    private suspend fun handleCallPushMessage() {
+        val userBeingCalled = userManager.getUserWithId(user.id!!)
 
         fun createBundle(conversation: ConversationModel): Bundle {
             val bundle = Bundle()
@@ -386,13 +391,15 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
 
         val conversation = try {
-            runBlocking { chatNetworkDataSource?.getRoom(userBeingCalled!!, roomToken = pushMessage.id!!) }
+            chatNetworkDataSource?.getRoom(userBeingCalled!!, roomToken = pushMessage.id!!)
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "Failed to get room", e)
             null
         }
 
-        if (conversation != null && runBlocking { userManager.setUserAsActive(userBeingCalled!!) }) {
+        if (conversation != null && userManager.setUserAsActive(userBeingCalled!!)) {
             if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(userBeingCalled?.capabilities?.spreedCapability)) {
                 showEndToEndEncryptionUnsupportedNotification(conversation)
             } else {
@@ -415,7 +422,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun initDecryptedData(inputData: Data): Boolean =
+    private suspend fun initDecryptedData(inputData: Data): Boolean =
         try {
             if (inputData.hasKeyWithValueOfType(BundleKeys.KEY_NOTIFICATION_CLEARTEXT_SUBJECT, String::class.java)) {
                 initFromCleartextSubject(inputData)
@@ -427,10 +434,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             false
         }
 
-    private fun initFromCleartextSubject(inputData: Data): Boolean {
+    private suspend fun initFromCleartextSubject(inputData: Data): Boolean {
         val subject = inputData.getString(BundleKeys.KEY_NOTIFICATION_CLEARTEXT_SUBJECT)
         val id = inputData.getLong(BundleKeys.KEY_NOTIFICATION_USER_ID, -1)
-        user = runBlocking { userManager.getUserWithId(id) }!!
+        user = userManager.getUserWithId(id)!!
         pushMessage = LoganSquare.parse(subject, DecryptedPushMessageDto::class.java)
         return true
     }
@@ -490,60 +497,55 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun isAdminTalkNotification() = ADMIN_NOTIFICATION_TALK == pushMessage.app
 
-    private fun getNcDataAndShowNotification(intent: Intent) {
+    @Suppress("TooGenericExceptionCaught")
+    private suspend fun getNcDataAndShowNotification(intent: Intent) {
         // see https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md
-        ncApi.getNcNotification(
-            credentials,
-            ApiUtils.getUrlForNcNotificationWithId(
-                user.baseUrl!!,
-                pushMessage.notificationId.toString()
-            )
-        )
-            .blockingSubscribe(object : Observer<NotificationOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
+        val notificationOverall = try {
+            ncApi.getNcNotification(
+                credentials,
+                ApiUtils.getUrlForNcNotificationWithId(
+                    user.baseUrl!!,
+                    pushMessage.notificationId.toString()
+                )
+            ).blockingFirst()
+        } catch (e: Exception) {
+            showNotificationFromPushMessage(intent, e)
+            return
+        }
 
-                override fun onNext(notificationOverall: NotificationOverall) {
-                    val ncNotification = notificationOverall.ocs!!.notification
-                    if (ncNotification != null) {
-                        enrichPushMessageByNcNotificationData(ncNotification)
+        val ncNotification = notificationOverall.ocs!!.notification
+        if (ncNotification != null) {
+            enrichPushMessageByNcNotificationData(ncNotification)
 
-                        val threadId = parseThreadId(ncNotification.objectId)
-                        threadId?.let { intent.putExtra(KEY_THREAD_ID, it) }
+            val threadId = parseThreadId(ncNotification.objectId)
+            threadId?.let { intent.putExtra(KEY_THREAD_ID, it) }
 
-                        showNotification(intent, ncNotification)
-                        catchUpPushedRoom(threadId)
-                    }
-                }
+            showNotification(intent, ncNotification)
+            catchUpPushedRoom(threadId)
+        }
+    }
 
-                override fun onError(e: Throwable) {
-                    fun setContentsFromPushNotificationSubject() {
-                        if (pushMessage.subject.contains(LINEBREAK)) {
-                            pushMessage.text = pushMessage.subject.substringAfter(LINEBREAK)
-                            pushMessage.subject = pushMessage.subject.substringBefore(LINEBREAK)
-                        }
-                    }
+    private suspend fun showNotificationFromPushMessage(intent: Intent, e: Throwable) {
+        fun setContentsFromPushNotificationSubject() {
+            if (pushMessage.subject.contains(LINEBREAK)) {
+                pushMessage.text = pushMessage.subject.substringAfter(LINEBREAK)
+                pushMessage.subject = pushMessage.subject.substringBefore(LINEBREAK)
+            }
+        }
 
-                    setContentsFromPushNotificationSubject()
-                    showNotification(intent, null)
+        setContentsFromPushNotificationSubject()
+        showNotification(intent, null)
 
-                    // without the server notification the thread id is unknown — still catch up
-                    // the room itself so the pushed message is cached for the main chat
-                    catchUpPushedRoom(threadId = null)
+        // without the server notification the thread id is unknown — still catch up
+        // the room itself so the pushed message is cached for the main chat
+        catchUpPushedRoom(threadId = null)
 
-                    Log.e(TAG, "Failed to get NC notification. Using decrypted data from push notification itself", e)
-                    if (BuildConfig.DEBUG) {
-                        Handler(Looper.getMainLooper()).post {
-                            Toast.makeText(context, "Failed to get NC notification", Toast.LENGTH_LONG).show()
-                        }
-                    }
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+        Log.e(TAG, "Failed to get NC notification. Using decrypted data from push notification itself", e)
+        if (BuildConfig.DEBUG) {
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(context, "Failed to get NC notification", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun enrichPushMessageByNcNotificationData(
@@ -633,7 +635,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     @Suppress("MagicNumber", "LongMethod")
-    private fun showNotification(
+    private suspend fun showNotification(
         intent: Intent,
         ncNotification: com.nextcloud.talk.models.json.notifications.NotificationDto?
     ) {
@@ -652,15 +654,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             val token = pushMessage.id
             val displayName = pushMessage.subject
             if (token != null && displayName.isNotEmpty()) {
-                runBlocking {
-                    DirectShareHelper.reportIncomingMessage(
-                        context!!,
-                        user,
-                        token,
-                        displayName,
-                        isOneToOne = "one2one" == conversationType
-                    )
-                }
+                DirectShareHelper.reportIncomingMessage(
+                    context!!,
+                    user,
+                    token,
+                    displayName,
+                    isOneToOne = "one2one" == conversationType
+                )
             }
         }
 
