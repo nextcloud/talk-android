@@ -87,7 +87,7 @@ class SendMessageWorker(context: Context, workerParams: WorkerParameters) : Coro
             return Result.success()
         }
 
-        val user = userManager.getUserWithId(tempMessage.accountId).blockingGet()
+        val user = userManager.getUserWithId(tempMessage.accountId)
         val credentials = user?.let { ApiUtils.getCredentials(it.username, it.token) }
         if (user == null || credentials == null) {
             Log.e(TAG, "No user or credentials found for account id ${tempMessage.accountId}, failing message send")
