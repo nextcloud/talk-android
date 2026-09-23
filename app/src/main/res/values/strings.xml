@@ -233,9 +233,9 @@ How to translate with transifex:
     <!-- Logs screen -->
     <string name="nc_logs_title">Logs</string>
     <string name="nc_logs_share">Send as mail</string>
-    <string name="nc_logs_share_subject">%1$s logs</string>
     <string name="nc_logs_delete_all">Delete all logs</string>
     <string name="nc_logs_empty">No log entries found.</string>
+    <string name="nc_logs_mail_subject" translatable="false">%1$s logs</string>
     <string name="nc_logs_total_size">Total log size: %d KB</string>
     <string name="nc_logs_overflow_warning">Warning: some log entries were lost due to queue overflow.</string>
     <string name="nc_logs_share_latest_crash">Latest crash</string>

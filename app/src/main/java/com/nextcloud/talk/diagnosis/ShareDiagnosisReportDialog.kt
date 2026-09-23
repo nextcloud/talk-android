@@ -22,6 +22,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.net.toUri
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.errorhandling.shareLogsAndDiagnosis
 import com.nextcloud.talk.logger.LogsRepository
@@ -62,9 +63,9 @@ private fun buildShareReportOptions(
             shareLogsAndDiagnosis(
                 context = activity,
                 subject = activity.getString(
-                    R.string.nc_logs_share_subject,
+                    R.string.nc_logs_mail_subject,
                     activity.getString(R.string.nc_app_product_name)
-                ),
+                ) + " (v" + BuildConfig.VERSION_NAME + ")",
                 diagnosisText = diagnosisText
             )
         },
