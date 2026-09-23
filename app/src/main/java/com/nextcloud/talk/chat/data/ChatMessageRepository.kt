@@ -138,16 +138,11 @@ interface ChatMessageRepository : LifecycleAwareManager {
         threadTitle: String?
     ): Flow<Result<ChatMessage?>>
 
-    @Suppress("LongParameterList")
-    suspend fun resendChatMessage(
-        credentials: String,
-        url: String,
-        message: String,
-        displayName: String,
-        replyTo: Int,
-        sendWithoutNotification: Boolean,
-        referenceId: String
-    ): Flow<Result<ChatMessage?>>
+    /**
+     * Resets a previously failed temporary message back to PENDING so it can be handed to
+     * SendMessageWorker for another send attempt. Does not itself send anything.
+     */
+    suspend fun markMessageForResend(referenceId: String): Flow<Result<ChatMessage?>>
 
     suspend fun addTemporaryMessage(
         message: CharSequence,
