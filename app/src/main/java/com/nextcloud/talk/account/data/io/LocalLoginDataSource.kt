@@ -17,17 +17,18 @@ import com.nextcloud.talk.account.data.model.LoginCompletion
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import kotlinx.coroutines.runBlocking
 
 // local datasource for communicating with room through account manager
 // crucial for making sure the login process interacts with the db as expected.
 class LocalLoginDataSource(val userManager: UserManager, val appPreferences: AppPreferences, val context: Context) {
 
     fun updateUser(loginData: LoginCompletion) {
-        val currentUser = userManager.currentUser.blockingGet()
+        val currentUser = runBlocking { userManager.getCurrentUser() }
         if (currentUser != null) {
             currentUser.clientCertificate = appPreferences.temporaryClientCertAlias
             currentUser.token = loginData.appPassword
-            userManager.updateOrCreateUser(currentUser)
+            runBlocking { userManager.updateOrCreateUser(currentUser) }
         }
     }
 
@@ -40,9 +41,9 @@ class LocalLoginDataSource(val userManager: UserManager, val appPreferences: App
         return WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)
     }
 
-    fun checkIfUserIsScheduledForDeletion(data: LoginCompletion): Boolean =
-        userManager.checkIfUserIsScheduledForDeletion(data.loginName, data.server).blockingGet()
+    suspend fun checkIfUserIsScheduledForDeletion(data: LoginCompletion): Boolean =
+        userManager.checkIfUserIsScheduledForDeletion(data.loginName, data.server)
 
-    fun checkIfUserExists(data: LoginCompletion): Boolean =
-        userManager.checkIfUserExists(data.loginName, data.server).blockingGet()
+    suspend fun checkIfUserExists(data: LoginCompletion): Boolean =
+        userManager.checkIfUserExists(data.loginName, data.server)
 }

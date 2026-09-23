@@ -1594,12 +1594,11 @@ class CallActivity : CallBaseActivity() {
                                 "Update externalSignalingServer for: " + conversationUser!!.id +
                                     " / " + conversationUser!!.userId
                             )
-                            userManager!!.updateExternalSignalingServer(
-                                conversationUser!!.id!!,
-                                externalSignalingServer!!
-                            )
-                                .subscribeOn(Schedulers.io())
-                                .subscribe()
+                            val userId = conversationUser!!.id!!
+                            val server = externalSignalingServer!!
+                            CoroutineScope(Dispatchers.IO).launch {
+                                userManager!!.updateExternalSignalingServer(userId, server)
+                            }
                         } else {
                             conversationUser!!.externalSignalingServer = externalSignalingServer
                         }

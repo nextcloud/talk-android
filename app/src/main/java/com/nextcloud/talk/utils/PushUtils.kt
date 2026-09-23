@@ -26,9 +26,12 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.UserIdUtils.getIdForUser
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observer
-import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.io.FileInputStream
@@ -83,7 +86,7 @@ class PushUtils {
     fun verifySignature(signatureBytes: ByteArray?, subjectBytes: ByteArray?): SignatureVerification {
         val signatureVerification = SignatureVerification()
         signatureVerification.signatureValid = false
-        val users = userManager!!.users.blockingGet()
+        val users = runBlocking { userManager!!.getUsers() }
         try {
             val signature = Signature.getInstance("SHA512withRSA")
             if (users != null && users.size > 0) {
@@ -198,7 +201,7 @@ class PushUtils {
                 devicePublicKeyBase64 = devicePublicKeyBase64.replace("(.{64})".toRegex(), "$1\n")
                 devicePublicKeyBase64 = "-----BEGIN PUBLIC KEY-----\n$devicePublicKeyBase64\n-----END PUBLIC KEY-----"
 
-                val users = userManager!!.users.blockingGet()
+                val users = runBlocking { userManager!!.getUsers() }
                 for (user in users) {
                     if (!user.scheduledForDeletion) {
                         val nextcloudRegisterPushMap: MutableMap<String, String> = HashMap()
@@ -297,6 +300,7 @@ class PushUtils {
     }
 
     @Throws(IOException::class)
+    @Suppress("TooGenericExceptionCaught")
     private fun updatePushStateForUser(proxyMap: Map<String, String?>, user: User) {
         val pushConfigurationState = PushConfigurationState()
         pushConfigurationState.pushToken = proxyMap["pushToken"]
@@ -305,32 +309,23 @@ class PushUtils {
         pushConfigurationState.userPublicKey = proxyMap["userPublicKey"]
         pushConfigurationState.usesRegularPass = java.lang.Boolean.FALSE
         if (user.id != null) {
-            userManager!!.updatePushState(user.id!!, pushConfigurationState).subscribe(object : SingleObserver<Int?> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
-
-                override fun onSuccess(integer: Int) {
-                    eventBus!!.post(
-                        EventStatus(
-                            getIdForUser(user),
-                            EventStatus.EventType.PUSH_REGISTRATION,
-                            true
-                        )
-                    )
-                }
-
-                override fun onError(e: Throwable) {
+            val userId = user.id!!
+            CoroutineScope(Dispatchers.IO).launch {
+                val success = try {
+                    userManager!!.updatePushState(userId, pushConfigurationState)
+                    true
+                } catch (e: Exception) {
                     Log.e(TAG, "update push state for user failed", e)
-                    eventBus!!.post(
-                        EventStatus(
-                            getIdForUser(user),
-                            EventStatus.EventType.PUSH_REGISTRATION,
-                            false
-                        )
-                    )
+                    false
                 }
-            })
+                eventBus!!.post(
+                    EventStatus(
+                        getIdForUser(user),
+                        EventStatus.EventType.PUSH_REGISTRATION,
+                        success
+                    )
+                )
+            }
         } else {
             Log.e(TAG, "failed to update updatePushStateForUser. user.getId() was null")
         }

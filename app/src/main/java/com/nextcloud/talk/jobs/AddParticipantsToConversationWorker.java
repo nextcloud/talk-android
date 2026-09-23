@@ -31,6 +31,8 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
 import io.reactivex.schedulers.Schedulers;
+import kotlin.coroutines.EmptyCoroutineContext;
+import kotlinx.coroutines.BuildersKt;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class AddParticipantsToConversationWorker extends Worker {
@@ -63,10 +65,16 @@ public class AddParticipantsToConversationWorker extends Worker {
         String[] selectedGroupIds = data.getStringArray(BundleKeys.KEY_SELECTED_GROUPS);
         String[] selectedCircleIds = data.getStringArray(BundleKeys.KEY_SELECTED_CIRCLES);
         String[] selectedEmails = data.getStringArray(BundleKeys.KEY_SELECTED_EMAILS);
-        User user =
-            userManager.getUserWithInternalId(
-                data.getLong(BundleKeys.KEY_INTERNAL_USER_ID, -1))
-                .blockingGet();
+        long internalUserId = data.getLong(BundleKeys.KEY_INTERNAL_USER_ID, -1);
+        User user;
+        try {
+            user = BuildersKt.runBlocking(
+                EmptyCoroutineContext.INSTANCE,
+                (scope, continuation) -> userManager.getUserWithInternalId(internalUserId, continuation));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return Result.failure();
+        }
 
         int apiVersion = ApiUtils.getConversationApiVersion(user, new int[] {ApiUtils.API_V4, 1});
 

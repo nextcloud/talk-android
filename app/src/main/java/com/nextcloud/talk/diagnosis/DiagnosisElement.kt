@@ -26,6 +26,7 @@ import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import kotlinx.coroutines.runBlocking
 import org.unifiedpush.android.connector.UnifiedPush
 
 sealed class DiagnosisElement {
@@ -68,7 +69,7 @@ fun buildDiagnosisElements(
     val isGooglePlayServicesAvailable = ClosedInterfaceImpl().isGooglePlayServicesAvailable
     val nUnifiedPushServices = UnifiedPushUtils.getExternalDistributors(context).size
     val offerUnifiedPush = try {
-        nUnifiedPushServices > 0 && userManager.users.blockingGet().all { it.hasWebPushCapability }
+        nUnifiedPushServices > 0 && runBlocking { userManager.getUsers() }.all { it.hasWebPushCapability }
     } catch (e: Exception) {
         NextcloudTalkApplication.sharedApplication?.logger?.w(
             TAG,
@@ -192,7 +193,7 @@ fun buildDiagnosisElements(
     try {
         addEntry(
             context.getString(R.string.nc_diagnosis_app_users_amount),
-            userManager.users.blockingGet().size.toString()
+            runBlocking { userManager.getUsers() }.size.toString()
         )
     } catch (e: Exception) {
         NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "Failed to add users amount diagnosis entry", e)
@@ -200,7 +201,7 @@ fun buildDiagnosisElements(
 
     // Account
     try {
-        val user = userManager.currentUser.blockingGet() ?: return data
+        val user = runBlocking { userManager.getCurrentUser() } ?: return data
         addHeadline(context.getString(R.string.nc_diagnosis_account_category_title))
         addEntry(context.getString(R.string.nc_diagnosis_account_server), user.baseUrl ?: "")
         addEntry(context.getString(R.string.nc_diagnosis_account_user_name), user.displayName ?: "")

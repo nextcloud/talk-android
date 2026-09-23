@@ -43,6 +43,8 @@ import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import kotlin.coroutines.EmptyCoroutineContext;
+import kotlinx.coroutines.BuildersKt;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -80,7 +82,15 @@ public class AccountRemovalWorker extends Worker {
     public Result doWork() {
         Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getComponentApplication().inject(this);
 
-        List<User> users = userManager.getUsersScheduledForDeletion().blockingGet();
+        List<User> users;
+        try {
+            users = BuildersKt.runBlocking(
+                EmptyCoroutineContext.INSTANCE,
+                (scope, continuation) -> userManager.getUsersScheduledForDeletion(continuation));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return Result.failure();
+        }
         for (User user : users) {
             if (user.getPushConfigurationState() != null) {
                 PushConfigurationState finalPushConfigurationState = user.getPushConfigurationState();
@@ -199,7 +209,10 @@ public class AccountRemovalWorker extends Worker {
         if (user.getId() != null) {
             String username = user.getUsername();
             try {
-                userManager.deleteUser(user.getId());
+                long id = user.getId();
+                BuildersKt.runBlocking(
+                    EmptyCoroutineContext.INSTANCE,
+                    (scope, continuation) -> userManager.deleteUser(id, continuation));
                 if (username != null) {
                     Log.d(TAG, "deleted user: " + username);
                 }

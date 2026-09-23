@@ -10,7 +10,13 @@ package com.nextcloud.talk.utils.database.user
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.users.UserManager
 import io.reactivex.Maybe
-import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,24 +27,27 @@ import javax.inject.Singleton
 @Singleton
 class CurrentUserProviderOldImpl @Inject constructor(private val userManager: UserManager) : CurrentUserProviderOld {
 
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     private var _currentUser: User? = null
 
     // synchronized to avoid multiple observers initialized from different threads
     @get:Synchronized
     @set:Synchronized
-    private var currentUserObserver: Disposable? = null
+    private var currentUserObserver: Job? = null
 
     @Deprecated("Use currentUserProvider instead")
     override val currentUser: Maybe<User>
         get() {
             if (_currentUser == null) {
                 // immediately get a result synchronously
-                _currentUser = userManager.currentUser.blockingGet()
+                _currentUser = runBlocking { userManager.getCurrentUser() }
                 if (currentUserObserver == null) {
-                    currentUserObserver = userManager.currentUserObservable
-                        .subscribe {
+                    currentUserObserver = scope.launch {
+                        userManager.currentUserFlow.filterNotNull().collect {
                             _currentUser = it
                         }
+                    }
                 }
             }
             return _currentUser?.let { Maybe.just(it) } ?: Maybe.empty()

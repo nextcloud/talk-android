@@ -7,7 +7,6 @@
 
 package com.nextcloud.talk.utils
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.work.Data
@@ -22,6 +21,7 @@ import com.nextcloud.talk.models.json.wipe.WipeCheckResponse
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat
 import com.nextcloud.talk.utils.ssl.TrustManager
+import kotlinx.coroutines.runBlocking
 import okhttp3.FormBody
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -73,7 +73,7 @@ class RemoteWipeInterceptor(
     }
 
     private fun resolveWipeCandidate(requestUrl: String): WipeCandidate? {
-        val user = userManager.users.blockingGet()
+        val user = runBlocking { userManager.getUsers() }
             .firstOrNull { it.baseUrl != null && requestUrl.startsWith(it.baseUrl!!) }
         if (user == null) {
             Log.d(TAG, "No known user matches base URL of $requestUrl, ignoring")
@@ -124,10 +124,9 @@ class RemoteWipeInterceptor(
         return wipeRequestedByServer
     }
 
-    @SuppressLint("CheckResult")
     private fun performWipe(candidate: WipeCandidate, wipeRequestedByServer: Boolean) {
         Log.d(TAG, "Scheduling user ${candidate.userId} for deletion")
-        userManager.scheduleUserForDeletionWithId(candidate.userId).blockingGet()
+        runBlocking { userManager.scheduleUserForDeletionWithId(candidate.userId) }
 
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
         var workContinuation = WorkManager.getInstance(context).beginWith(accountRemovalWork)

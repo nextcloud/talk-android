@@ -107,6 +107,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -362,7 +363,7 @@ class SettingsActivity :
 
     private fun showUnifiedPushToggle(): Boolean =
         UnifiedPushUtils.getExternalDistributors(this).isNotEmpty() &&
-            userManager.users.blockingGet().all { it.hasWebPushCapability }
+            runBlocking { userManager.getUsers() }.all { it.hasWebPushCapability }
 
     private fun setupUnifiedPushSettings() {
         // If any user doesn't support web push, or there is no UnifiedPush
@@ -775,7 +776,9 @@ class SettingsActivity :
                     }
                     Log.d(TAG, "host: $host and port: $port")
                     currentUser!!.clientCertificate = finalAlias
-                    userManager.updateOrCreateUser(currentUser!!)
+                    lifecycleScope.launch {
+                        userManager.updateOrCreateUser(currentUser!!)
+                    }
                 },
                 arrayOf("RSA", "EC"),
                 null,
@@ -867,44 +870,46 @@ class SettingsActivity :
         }
     }
 
-    @SuppressLint("CheckResult", "StringFormatInvalid")
+    @SuppressLint("StringFormatInvalid")
     private fun removeCurrentAccount() {
-        userManager.scheduleUserForDeletionWithId(currentUser!!.id!!).blockingGet()
-        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
-            .setExpeditedIfSupported()
-            .build()
-        WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
+        lifecycleScope.launch {
+            userManager.scheduleUserForDeletionWithId(currentUser!!.id!!)
+            val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
+                .setExpeditedIfSupported()
+                .build()
+            WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
 
-        WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)
-            .observeForever { workInfo: WorkInfo? ->
+            WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)
+                .observeForever { workInfo: WorkInfo? ->
 
-                when (workInfo?.state) {
-                    WorkInfo.State.SUCCEEDED -> {
-                        val text = String.format(
-                            context.resources.getString(R.string.nc_deleted_user),
-                            currentUser!!.displayName
-                        )
-                        Toast.makeText(
-                            context,
-                            text,
-                            Toast.LENGTH_LONG
-                        ).show()
-                        restartApp()
+                    when (workInfo?.state) {
+                        WorkInfo.State.SUCCEEDED -> {
+                            val text = String.format(
+                                context.resources.getString(R.string.nc_deleted_user),
+                                currentUser!!.displayName
+                            )
+                            Toast.makeText(
+                                context,
+                                text,
+                                Toast.LENGTH_LONG
+                            ).show()
+                            restartApp()
+                        }
+
+                        WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                            Toast.makeText(
+                                context,
+                                context.resources.getString(R.string.nc_common_error_sorry),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            logger.e(TAG, "something went wrong when deleting user with id " + currentUser!!.userId)
+                            restartApp()
+                        }
+
+                        else -> {}
                     }
-
-                    WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
-                        logger.e(TAG, "something went wrong when deleting user with id " + currentUser!!.userId)
-                        Toast.makeText(
-                            context,
-                            context.resources.getString(R.string.nc_common_error_sorry),
-                            Toast.LENGTH_LONG
-                        ).show()
-                        restartApp()
-                    }
-
-                    else -> {}
                 }
-            }
+        }
     }
 
     private fun restartApp() {
@@ -1089,7 +1094,9 @@ class SettingsActivity :
                     }
                     if ((!TextUtils.isEmpty(displayName) && !(displayName == currentUser!!.displayName))) {
                         currentUser!!.displayName = displayName
-                        userManager.updateOrCreateUser(currentUser!!)
+                        lifecycleScope.launch {
+                            userManager.updateOrCreateUser(currentUser!!)
+                        }
                         binding.nameText.text = currentUser!!.displayName
                     }
                 },

@@ -16,186 +16,137 @@ import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.capabilities.ServerVersion
 import com.nextcloud.talk.models.json.push.PushConfigurationState
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.Subject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 @Suppress("TooManyFunctions")
 class UserManager internal constructor(private val userRepository: UsersRepository) {
-    val users: Single<List<User>>
-        get() = userRepository.getUsers()
 
-    val usersScheduledForDeletion: Single<List<User>>
-        get() = userRepository.getUsersScheduledForDeletion()
+    private val managerScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    val currentUser: Maybe<User>
-        get() {
-            return userRepository.getActiveUser()
-                .switchIfEmpty(Maybe.defer { getAnyUserAndSetAsActive() })
-        }
+    suspend fun getUsers(): List<User> = userRepository.getUsers()
+
+    suspend fun getUsersScheduledForDeletion(): List<User> = userRepository.getUsersScheduledForDeletion()
 
     /**
-     * Backed by [activeUserSubject] rather than [UsersRepository.getActiveUserObservable] directly, so that
+     * The active user, or - if none is active - any user not scheduled for deletion, which is then set as active.
+     */
+    suspend fun getCurrentUser(): User? = userRepository.getActiveUser() ?: getAnyUserAndSetAsActive()
+
+    /**
+     * Backed by [activeUserStateFlow] rather than [UsersRepository.getActiveUserFlow] directly, so that
      * [setUserAsActive] can push the newly-active user out synchronously the moment it succeeds, instead of
      * consumers having to wait for Room's invalidation-tracker round trip to notice the DB write and re-query.
      * That round trip is asynchronous and was racing against code (e.g. AccountVerificationActivity.
      * proceedWithLogin()) that both changes the active user and immediately acts as if every observer already
      * knows about it - e.g. launching a screen for the new user before its avatar/data had actually updated.
-     * Room's own observable is still relied on underneath to seed this and to catch any change to the `current`
-     * flag that doesn't go through [setUserAsActive].
-     *
-     * RxJava-based for CurrentUserProviderOld, the still-used but deprecated consumer. Coroutine-based code
-     * should prefer [currentUserFlow] instead, which is updated at the exact same point and needs no RxJava
-     * bridging on the consuming side.
-     */
-    val currentUserObservable: Observable<User>
-        get() = activeUserSubject
-
-    /**
-     * Coroutine-native counterpart to [currentUserObservable] - see its doc for why this exists. Both are
-     * updated synchronously, at the same point in [setUserAsActive], from Room's same underlying query.
+     * Room's own [UsersRepository.getActiveUserFlow] is still relied on underneath to seed this and to catch
+     * any change to the `current` flag that doesn't go through [setUserAsActive].
      */
     val currentUserFlow: StateFlow<User?>
         get() = activeUserStateFlow
 
-    private val activeUserSubject: Subject<User> by lazy {
-        val subject = BehaviorSubject.create<User>().toSerialized()
-        userRepository.getActiveUserObservable().subscribe(subject::onNext) { }
-        subject
-    }
-
     private val activeUserStateFlow: MutableStateFlow<User?> by lazy {
         val flow = MutableStateFlow<User?>(null)
-        userRepository.getActiveUserObservable().subscribe({ flow.value = it }) { }
+        managerScope.launch {
+            userRepository.getActiveUserFlow().collect { flow.value = it }
+        }
         flow
     }
 
-    fun deleteUser(internalId: Long): Int =
-        userRepository.deleteUser(userRepository.getUserWithId(internalId).blockingGet())
+    suspend fun deleteUser(internalId: Long): Int {
+        val user = userRepository.getUserWithId(internalId) ?: return 0
+        return userRepository.deleteUser(user)
+    }
 
-    fun getUserWithId(id: Long): Maybe<User> = userRepository.getUserWithId(id)
+    suspend fun getUserWithId(id: Long): User? = userRepository.getUserWithId(id)
 
-    fun checkIfUserIsScheduledForDeletion(username: String, server: String): Single<Boolean> =
-        userRepository
-            .getUserWithUsernameAndServer(username, server)
-            .map { it.scheduledForDeletion }
-            .switchIfEmpty(Single.just(false))
+    suspend fun checkIfUserIsScheduledForDeletion(username: String, server: String): Boolean =
+        userRepository.getUserWithUsernameAndServer(username, server)?.scheduledForDeletion ?: false
 
-    fun getUserWithInternalId(id: Long): Maybe<User> = userRepository.getUserWithIdNotScheduledForDeletion(id)
+    suspend fun getUserWithInternalId(id: Long): User? = userRepository.getUserWithIdNotScheduledForDeletion(id)
 
-    fun checkIfUserExists(username: String, server: String): Single<Boolean> =
-        userRepository
-            .getUserWithUsernameAndServer(username, server)
-            .map { true }
-            .switchIfEmpty(Single.just(false))
+    suspend fun checkIfUserExists(username: String, server: String): Boolean =
+        userRepository.getUserWithUsernameAndServer(username, server) != null
 
     /**
      * Don't ask
      *
      * @return `true` if the user was updated **AND** there is another user to set as active, `false` otherwise
      */
-    fun scheduleUserForDeletionWithId(id: Long): Single<Boolean> =
-        userRepository.getUserWithId(id)
-            .map { user ->
-                user.scheduledForDeletion = true
-                user.current = false
-                userRepository.updateUser(user)
-            }
-            .flatMap { getAnyUserAndSetAsActive() }
-            .map { true }
-            .switchIfEmpty(Single.just(false))
+    suspend fun scheduleUserForDeletionWithId(id: Long): Boolean {
+        val user = userRepository.getUserWithId(id) ?: return false
+        user.scheduledForDeletion = true
+        user.current = false
+        userRepository.updateUser(user)
+        return getAnyUserAndSetAsActive() != null
+    }
 
-    private fun getAnyUserAndSetAsActive(): Maybe<User> {
+    private suspend fun getAnyUserAndSetAsActive(): User? {
         val results = userRepository.getUsersNotScheduledForDeletion()
-
-        return results
-            .flatMapMaybe {
-                if (it.isNotEmpty()) {
-                    val user = it.first()
-                    if (setUserAsActive(user).blockingGet()) {
-                        userRepository.getActiveUser()
-                    } else {
-                        Maybe.empty()
-                    }
-                } else {
-                    Maybe.empty()
-                }
-            }
+        if (results.isEmpty()) {
+            return null
+        }
+        val user = results.first()
+        return if (setUserAsActive(user)) {
+            userRepository.getActiveUser()
+        } else {
+            null
+        }
     }
 
-    fun updateExternalSignalingServer(id: Long, externalSignalingServer: ExternalSignalingServer): Single<Int> =
-        userRepository.getUserWithId(id).map { user ->
-            user.externalSignalingServer = externalSignalingServer
-            userRepository.updateUser(user)
-        }.toSingle()
+    suspend fun updateExternalSignalingServer(id: Long, externalSignalingServer: ExternalSignalingServer): Int {
+        val user = userRepository.getUserWithId(id) ?: throw NoSuchElementException()
+        user.externalSignalingServer = externalSignalingServer
+        return userRepository.updateUser(user)
+    }
 
-    fun updateOrCreateUser(user: User): Single<Int> =
-        Single.fromCallable {
-            when (user.id) {
-                null -> userRepository.insertUser(user).toInt()
-                else -> userRepository.updateUser(user)
-            }
+    suspend fun updateOrCreateUser(user: User): Int =
+        when (user.id) {
+            null -> userRepository.insertUser(user).toInt()
+            else -> userRepository.updateUser(user)
         }
 
-    fun saveUser(user: User): Single<Int> =
-        Single.fromCallable {
-            userRepository.updateUser(user)
-        }
+    suspend fun saveUser(user: User): Int = userRepository.updateUser(user)
 
-    fun setUserAsActive(user: User): Single<Boolean> {
+    suspend fun setUserAsActive(user: User): Boolean {
         Log.d(TAG, "setUserAsActive:" + user.id!!)
-        return userRepository.setUserAsActiveWithId(user.id!!)
-            .doOnSuccess { success ->
-                if (success) {
-                    activeUserSubject.onNext(user)
-                    activeUserStateFlow.value = user
-                }
-            }
+        val success = userRepository.setUserAsActiveWithId(user.id!!)
+        if (success) {
+            activeUserStateFlow.value = user
+        }
+        return success
     }
 
-    fun storeProfile(username: String?, userAttributes: UserAttributes): Maybe<User> =
-        findUser(userAttributes)
-            .map { user: User? ->
-                when (user) {
-                    null -> createUser(
-                        username,
-                        userAttributes
-                    )
-                    else -> {
-                        user.token = userAttributes.token
-                        user.baseUrl = userAttributes.serverUrl
-                        user.current = userAttributes.currentUser
-                        user.userId = userAttributes.userId
-                        user.token = userAttributes.token
-                        user.displayName = userAttributes.displayName
-                        user.clientCertificate = userAttributes.certificateAlias
-
-                        updateUserData(
-                            user,
-                            userAttributes
-                        )
-
-                        user
-                    }
-                }
+    suspend fun storeProfile(username: String?, userAttributes: UserAttributes): User? {
+        val existingUser = findUser(userAttributes)
+        val user = if (existingUser != null) {
+            existingUser.apply {
+                token = userAttributes.token
+                baseUrl = userAttributes.serverUrl
+                current = userAttributes.currentUser
+                userId = userAttributes.userId
+                token = userAttributes.token
+                displayName = userAttributes.displayName
+                clientCertificate = userAttributes.certificateAlias
+                updateUserData(this, userAttributes)
             }
-            .switchIfEmpty(Maybe.just(createUser(username, userAttributes)))
-            .map { user ->
-                userRepository.insertUser(user)
-            }
-            .flatMap { id ->
-                userRepository.getUserWithId(id)
-            }
+        } else {
+            createUser(username, userAttributes)
+        }
+        val id = userRepository.insertUser(user)
+        return userRepository.getUserWithId(id)
+    }
 
-    private fun findUser(userAttributes: UserAttributes): Maybe<User> =
+    private suspend fun findUser(userAttributes: UserAttributes): User? =
         if (userAttributes.id != null) {
             userRepository.getUserWithId(userAttributes.id)
         } else {
-            Maybe.empty()
+            null
         }
 
     private fun updateUserData(user: User, userAttributes: UserAttributes) {
@@ -254,7 +205,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         return user
     }
 
-    fun updatePushState(id: Long, state: PushConfigurationState): Single<Int> =
+    suspend fun updatePushState(id: Long, state: PushConfigurationState): Int =
         userRepository.updatePushState(id, state)
 
     companion object {

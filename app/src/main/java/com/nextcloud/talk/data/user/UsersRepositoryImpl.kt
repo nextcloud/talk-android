@@ -10,73 +10,55 @@ package com.nextcloud.talk.data.user
 import android.util.Log
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.push.PushConfigurationState
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 @Suppress("TooManyFunctions")
 class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
 
-    override fun getActiveUser(): Maybe<User> {
-        val user = usersDao.getActiveUser()
-            .map {
-                setUserAsActiveWithId(it.id)
-                UserMapper.toModel(it)!!
-            }
-        return user
+    override suspend fun getActiveUser(): User? {
+        val entity = usersDao.getActiveUser() ?: return null
+        setUserAsActiveWithId(entity.id)
+        return UserMapper.toModel(entity)
     }
 
-    override fun getActiveUserObservable(): Observable<User> =
-        usersDao.getActiveUserObservable().map {
+    override fun getActiveUserFlow(): Flow<User?> =
+        usersDao.getActiveUserFlow().map {
             UserMapper.toModel(it)
         }
 
-    override fun getUsers(): Single<List<User>> = usersDao.getUsers().map { UserMapper.toModel(it) }
+    override suspend fun getUsers(): List<User> = UserMapper.toModel(usersDao.getUsers())
 
-    override fun getUserWithId(id: Long): Maybe<User> = usersDao.getUserWithId(id).map { UserMapper.toModel(it) }
+    override suspend fun getUserWithId(id: Long): User? = UserMapper.toModel(usersDao.getUserWithId(id))
 
-    override fun getUserWithIdNotScheduledForDeletion(id: Long): Maybe<User> =
-        usersDao.getUserWithIdNotScheduledForDeletion(id).map {
-            UserMapper.toModel(it)
-        }
+    override suspend fun getUserWithIdNotScheduledForDeletion(id: Long): User? =
+        UserMapper.toModel(usersDao.getUserWithIdNotScheduledForDeletion(id))
 
-    override fun getUserWithUserId(userId: String): Maybe<User> =
-        usersDao.getUserWithUserId(userId).map {
-            UserMapper.toModel(it)
-        }
+    override suspend fun getUserWithUserId(userId: String): User? =
+        UserMapper.toModel(usersDao.getUserWithUserId(userId))
 
-    override fun getUsersScheduledForDeletion(): Single<List<User>> =
-        usersDao.getUsersScheduledForDeletion().map {
-            UserMapper.toModel(it)
-        }
+    override suspend fun getUsersScheduledForDeletion(): List<User> =
+        UserMapper.toModel(usersDao.getUsersScheduledForDeletion())
 
-    override fun getUsersNotScheduledForDeletion(): Single<List<User>> =
-        usersDao.getUsersNotScheduledForDeletion().map {
-            UserMapper.toModel(it)
-        }
+    override suspend fun getUsersNotScheduledForDeletion(): List<User> =
+        UserMapper.toModel(usersDao.getUsersNotScheduledForDeletion())
 
-    override fun getUserWithUsernameAndServer(username: String, server: String): Maybe<User> =
-        usersDao.getUserWithUsernameAndServer(username, server).map {
-            UserMapper.toModel(it)
-        }
+    override suspend fun getUserWithUsernameAndServer(username: String, server: String): User? =
+        UserMapper.toModel(usersDao.getUserWithUsernameAndServer(username, server))
 
-    override fun updateUser(user: User): Int = usersDao.updateUser(UserMapper.toEntity(user))
+    override suspend fun updateUser(user: User): Int = usersDao.updateUser(UserMapper.toEntity(user))
 
-    override fun insertUser(user: User): Long = usersDao.saveUser(UserMapper.toEntity(user))
+    override suspend fun insertUser(user: User): Long = usersDao.saveUser(UserMapper.toEntity(user))
 
-    override fun setUserAsActiveWithId(id: Long): Single<Boolean> {
+    override suspend fun setUserAsActiveWithId(id: Long): Boolean {
         val amountUpdated = usersDao.setUserAsActiveWithId(id)
         Log.d(TAG, "setUserAsActiveWithId. amountUpdated: $amountUpdated")
-        return if (amountUpdated > 0) {
-            Single.just(true)
-        } else {
-            Single.just(false)
-        }
+        return amountUpdated > 0
     }
 
-    override fun deleteUser(user: User): Int = usersDao.deleteUser(UserMapper.toEntity(user))
+    override suspend fun deleteUser(user: User): Int = usersDao.deleteUser(UserMapper.toEntity(user))
 
-    override fun updatePushState(id: Long, state: PushConfigurationState): Single<Int> =
+    override suspend fun updatePushState(id: Long, state: PushConfigurationState): Int =
         usersDao.updatePushState(id, state)
 
     companion object {

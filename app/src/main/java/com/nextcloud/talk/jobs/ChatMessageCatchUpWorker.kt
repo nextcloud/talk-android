@@ -81,7 +81,7 @@ class ChatMessageCatchUpWorker(context: Context, workerParams: WorkerParameters)
     }
 
     private suspend fun catchUpRoom(userId: Long, roomToken: String, threadId: Long?): Result {
-        val user = userManager.getUserWithId(userId).blockingGet()
+        val user = userManager.getUserWithId(userId)
         val credentials = user?.let { ApiUtils.getCredentials(it.username, it.token) }
         if (user == null || credentials == null) {
             Log.e(TAG, "No user or credentials found for user id $userId, dropping message catch-up")
