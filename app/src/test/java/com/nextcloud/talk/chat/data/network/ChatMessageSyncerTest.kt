@@ -95,10 +95,56 @@ class ChatMessageSyncerTest {
         )
 
         assertFalse(fieldMap.containsKey("markNotificationsAsRead"))
+        assertFalse(fieldMap.containsKey("prefetch"))
         assertFalse(fieldMap.containsKey("lastKnownMessageId"))
         assertEquals(0, fieldMap["setReadMarker"])
         assertEquals(1, fieldMap["includeLastKnown"])
     }
+
+    @Test
+    fun `buildFieldMap marks the request as a prefetch when asked`() {
+        val fieldMap = syncer.buildFieldMap(
+            lookIntoFuture = true,
+            timeout = 0,
+            includeLastKnown = false,
+            lastKnown = 42,
+            prefetch = true
+        )
+
+        assertEquals(1, fieldMap["prefetch"])
+    }
+
+    @Test
+    fun `catchUpRoom marks its request as a prefetch`() =
+        runTest {
+            whenever(chatBlocksDao.getNewestMessageIdFromChatBlocks(INTERNAL_CONVERSATION_ID, null))
+                .thenReturn(42L)
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(INTERNAL_CONVERSATION_ID, null, 42L))
+                .thenReturn(flowOf(listOf(block(oldest = 10, newest = 42))))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(message(43))))
+
+            syncer.catchUpRoom(target())
+
+            val fieldMapCaptor = argumentCaptor<HashMap<String, Int>>()
+            verifyBlocking(network) { pullChatMessages(eq(CREDENTIALS), eq(CHAT_URL), fieldMapCaptor.capture()) }
+            assertEquals(1, fieldMapCaptor.firstValue["prefetch"])
+        }
+
+    @Test
+    fun `a fetch for a chat the user is reading is not marked as a prefetch`() =
+        runTest {
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(INTERNAL_CONVERSATION_ID, null, 42L))
+                .thenReturn(flowOf(listOf(block(oldest = 10, newest = 42))))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(message(43))))
+
+            syncer.tryCloseBacklog(target(), fromMessageId = 42L)
+
+            val fieldMapCaptor = argumentCaptor<HashMap<String, Int>>()
+            verifyBlocking(network) { pullChatMessages(eq(CREDENTIALS), eq(CHAT_URL), fieldMapCaptor.capture()) }
+            assertFalse(fieldMapCaptor.firstValue.containsKey("prefetch"))
+        }
 
     @Test
     fun `catchUpRoom skips without chat-keep-notifications capability`() =
