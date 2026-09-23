@@ -276,7 +276,7 @@ class MainActivity :
                         launchServerSelection()
                     }
                 } catch (e: Exception) {
-                    Log.e(TAG, "Error loading existing users", e)
+                    logger.e(TAG, "Error loading existing users", e)
                     Toast.makeText(
                         context,
                         context.resources.getString(R.string.nc_common_error_sorry),
