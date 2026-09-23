@@ -22,6 +22,7 @@ class SSLSocketFactoryCompat(keyManager: KeyManager?, trustManager: X509TrustMan
 
     companion object {
         private val TAG = SSLSocketFactoryCompat::class.java.simpleName
+
         // Android 5.0+ (API level 21) provides reasonable default settings
         // but it still allows SSLv3
         // https://developer.android.com/reference/javax/net/ssl/SSLSocket.html

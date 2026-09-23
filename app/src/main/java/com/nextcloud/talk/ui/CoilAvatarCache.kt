@@ -34,6 +34,7 @@ private val TAG = ProfileActivity::class.java.simpleName
  * So we only do this cache copy when uploading an avatar, which is always server-generated.
  */
 @OptIn(ExperimentalCoilApi::class)
+@Suppress("TooGenericExceptionCaught")
 internal fun copyAvatarToOtherThemeCache(
     successState: AsyncImagePainter.State.Success,
     context: Context,

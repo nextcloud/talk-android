@@ -37,7 +37,11 @@ class ExceptionHandler(
             } catch (
                 e: Exception
             ) {
-                NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "Failed to build diagnosis report for crash", e)
+                NextcloudTalkApplication.sharedApplication?.logger?.w(
+                    TAG,
+                    "Failed to build diagnosis report for crash",
+                    e
+                )
                 null
             }
             val summary = exception.javaClass.simpleName +
@@ -117,6 +121,7 @@ class ExceptionHandler(
             }
         }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun readRecentLogs(maxLines: Int = 200): String {
         val logFile = File(context.filesDir, "${UtilsModule.LOG_DIR_NAME}/${UtilsModule.LOG_FILE_NAME}")
         return try {
