@@ -388,31 +388,21 @@ private fun ConversationAvatar(
                 )
             }
 
-            ChatToolbarAvatarType.SYSTEM -> {
+            ChatToolbarAvatarType.SYSTEM, ChatToolbarAvatarType.NOTE_TO_SELF -> {
+                val isSystem = avatarType == ChatToolbarAvatarType.SYSTEM
                 if (LocalInspectionMode.current) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
+                        painter = painterResource(
+                            if (isSystem) R.drawable.ic_launcher_foreground else R.drawable.ic_note_to_self
+                        ),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize()
                     )
                 } else {
                     AndroidView(
-                        factory = { ctx -> ImageView(ctx).apply { loadSystemAvatar() } },
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-            }
-
-            ChatToolbarAvatarType.NOTE_TO_SELF -> {
-                if (LocalInspectionMode.current) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_note_to_self),
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                } else {
-                    AndroidView(
-                        factory = { ctx -> ImageView(ctx).apply { loadNoteToSelfAvatar() } },
+                        factory = { ctx ->
+                            ImageView(ctx).apply { if (isSystem) loadSystemAvatar() else loadNoteToSelfAvatar() }
+                        },
                         modifier = Modifier.fillMaxSize()
                     )
                 }
