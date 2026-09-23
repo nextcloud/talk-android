@@ -697,6 +697,7 @@
     <string name="pinned_indefinitely">已無限期地釘選</string>
     <string name="pinned_message_options">訊息選項</string>
     <string name="pinned_until">已釘選至</string>
+    <string name="play_pause_audio_file">播放／暫停音頻檔案</string>
     <string name="play_pause_voice_message">播放﹨暫停話音短訊</string>
     <string name="playback_speed_control">播放速度控制</string>
     <string name="please_continue_the_login_process_in_the_browser">請在瀏覽器中繼續登入</string>
@@ -719,6 +720,8 @@
     <string name="previously_set">先前設定</string>
     <string name="qr_code_error">無法讀取 QR 碼</string>
     <string name="raise_hand">舉手</string>
+    <string name="reaction_add_failed">無法添加反應</string>
+    <string name="reaction_delete_failed">無法移除反應</string>
     <string name="reaction_forbidden">您無權在此對話中新增或刪除表情符號。</string>
     <string name="reactions_tab_all">全部</string>
     <string name="read_storage_no_permission">沒有權限就無法從存儲分享檔案</string>

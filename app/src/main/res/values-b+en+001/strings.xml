@@ -697,6 +697,7 @@
     <string name="pinned_indefinitely">Pinned indefinitely</string>
     <string name="pinned_message_options">Message options</string>
     <string name="pinned_until">Pinned until</string>
+    <string name="play_pause_audio_file">Play/pause audio file</string>
     <string name="play_pause_voice_message">Play/pause voice message</string>
     <string name="playback_speed_control">Playback speed control</string>
     <string name="please_continue_the_login_process_in_the_browser">Please continue login in browser</string>
@@ -719,6 +720,8 @@
     <string name="previously_set">Previously set</string>
     <string name="qr_code_error">QR code could not be read</string>
     <string name="raise_hand">Raise hand</string>
+    <string name="reaction_add_failed">Could not add the reaction</string>
+    <string name="reaction_delete_failed">Could not remove the reaction</string>
     <string name="reaction_forbidden">You are not allowed to add or remove reactions in this conversation</string>
     <string name="reactions_tab_all">All</string>
     <string name="read_storage_no_permission">Sharing files from storage is not possible without permissions</string>

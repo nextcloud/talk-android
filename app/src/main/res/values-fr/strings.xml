@@ -697,6 +697,7 @@
     <string name="pinned_indefinitely">Épinglé indéfiniment</string>
     <string name="pinned_message_options">Options du message</string>
     <string name="pinned_until">Épinglé jusqu\'au</string>
+    <string name="play_pause_audio_file">Jouer / mettre en pause le fichier audio</string>
     <string name="play_pause_voice_message">Jouer / mettre en pause le message vocal</string>
     <string name="playback_speed_control">Contrôle de la vitesse de lecture</string>
     <string name="please_continue_the_login_process_in_the_browser">Veuillez continuer la connexion dans votre navigateur</string>
