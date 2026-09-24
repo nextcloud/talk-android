@@ -224,6 +224,27 @@ class AudioRoutePolicyTest {
         assertTrue(AudioRoutePolicy.isWiredCommunicationOutput(type, isSink = true))
     }
 
+    @Test
+    fun `selected speaker moves to the earpiece while the phone is held to the ear`() {
+        val devices = setOf(AudioDevice.SPEAKER_PHONE, AudioDevice.EARPIECE)
+        assertEquals(AudioDevice.EARPIECE, AudioRoutePolicy.applyProximity(AudioDevice.SPEAKER_PHONE, true, devices))
+        assertEquals(
+            AudioDevice.SPEAKER_PHONE,
+            AudioRoutePolicy.applyProximity(AudioDevice.SPEAKER_PHONE, false, devices)
+        )
+    }
+
+    @Test
+    fun `proximity only overrides a selected speaker with an earpiece available`() {
+        val devices = setOf(AudioDevice.SPEAKER_PHONE, AudioDevice.EARPIECE)
+        assertEquals(AudioDevice.NONE, AudioRoutePolicy.applyProximity(AudioDevice.NONE, true, devices))
+        assertEquals(AudioDevice.BLUETOOTH, AudioRoutePolicy.applyProximity(AudioDevice.BLUETOOTH, true, devices))
+        assertEquals(
+            AudioDevice.SPEAKER_PHONE,
+            AudioRoutePolicy.applyProximity(AudioDevice.SPEAKER_PHONE, true, setOf(AudioDevice.SPEAKER_PHONE))
+        )
+    }
+
     @Suppress("LongParameterList")
     private fun assertSelected(
         expected: AudioDevice,

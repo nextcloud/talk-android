@@ -30,6 +30,25 @@ internal object AudioRoutePolicy {
             else -> AudioDevice.NONE
         }
 
+    /**
+     * Returns the device to route to for the user's selection: a selected speaker is replaced by the earpiece while
+     * the phone is held to the ear.
+     */
+    @JvmStatic
+    fun applyProximity(
+        userSelectedDevice: AudioDevice,
+        proximityNear: Boolean,
+        availableDevices: Set<AudioDevice>
+    ): AudioDevice =
+        if (proximityNear &&
+            userSelectedDevice == AudioDevice.SPEAKER_PHONE &&
+            availableDevices.contains(AudioDevice.EARPIECE)
+        ) {
+            AudioDevice.EARPIECE
+        } else {
+            userSelectedDevice
+        }
+
     @JvmStatic
     fun shouldPreferBluetooth(
         userSelectedDevice: AudioDevice,

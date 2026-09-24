@@ -147,14 +147,15 @@ public class WebRtcAudioManager {
             && audioDevices.contains(AudioDevice.EARPIECE)
             && audioDevices.contains(AudioDevice.SPEAKER_PHONE)) {
 
+            // The route is chosen in updateAudioDeviceState() so that later route updates, e.g. the communication
+            // device callback for this very switch, keep the earpiece while the phone is held to the ear.
+            updateAudioDeviceState();
             if (proximitySensor.sensorReportsNearState()) {
-                setAudioDeviceInternal(AudioDevice.EARPIECE);
                 Log.d(TAG, "switched to EARPIECE because userSelectedAudioDevice was SPEAKER_PHONE and proximity=near");
 
                 EventBus.getDefault().post(new ProximitySensorEvent(ProximitySensorEvent.ProximitySensorEventType.SENSOR_NEAR));
 
             } else {
-                setAudioDeviceInternal(WebRtcAudioManager.AudioDevice.SPEAKER_PHONE);
                 Log.d(TAG, "switched to SPEAKER_PHONE because userSelectedAudioDevice was SPEAKER_PHONE and proximity=far");
 
                 EventBus.getDefault().post(new ProximitySensorEvent(ProximitySensorEvent.ProximitySensorEventType.SENSOR_FAR));
@@ -705,6 +706,10 @@ public class WebRtcAudioManager {
         return false;
     }
 
+    private boolean isProximityNear() {
+        return useProximitySensor && proximitySensor != null && proximitySensor.sensorReportsNearState();
+    }
+
     private boolean isBluetoothSelectionPending() {
         WebRtcBluetoothManager.State state = bluetoothManager.getState();
         return bluetoothPreferredForCall
@@ -823,7 +828,7 @@ public class WebRtcAudioManager {
             && defaultAudioDevice == AudioDevice.BLUETOOTH ? AudioDevice.NONE : defaultAudioDevice;
         AudioDevice newCurrentAudioDevice = AudioRoutePolicy.selectAudioDevice(
             audioDevices,
-            userSelectedAudioDevice,
+            AudioRoutePolicy.applyProximity(userSelectedAudioDevice, isProximityNear(), audioDevices),
             selectableDefaultAudioDevice,
             hasWiredHeadset,
             bluetoothConnected
