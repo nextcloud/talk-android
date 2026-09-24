@@ -9,6 +9,7 @@ package com.nextcloud.talk.services
 
 import android.annotation.SuppressLint
 import android.app.Notification
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Person
 import android.app.Service
@@ -222,10 +223,10 @@ class CallForegroundService : Service() {
             ?: getString(R.string.nc_call_ongoing_notification_default_title)
         val pendingIntent = createContentIntent(currentCallExtras)
         val notification = buildCallStyleNotification(contentTitle, pendingIntent)
-        startForeground(NOTIFICATION_ID, notification)
+        getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, notification)
     }
 
-    @SuppressLint("NewApi", "ForegroundServiceType")
+    @SuppressLint("NewApi")
     private fun startTimeBasedNotificationUpdates() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return
 
@@ -239,7 +240,7 @@ class CallForegroundService : Service() {
                     val pendingIntent = createContentIntent(currentCallExtras)
                     val notification = buildCallStyleNotification(conversationName, pendingIntent)
 
-                    startForeground(NOTIFICATION_ID, notification)
+                    getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, notification)
                 }
                 handler.postDelayed(this, CALL_DURATION_UPDATE_INTERVAL)
             }
