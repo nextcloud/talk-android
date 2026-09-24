@@ -313,23 +313,16 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 PendingIntent.FLAG_UPDATE_CURRENT
             }
 
-            val answerVoiceBundle = Bundle(bundle).apply { putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true) }
-            val answerVoicePendingIntent = PendingIntent.getActivity(
-                applicationContext,
-                requestCode + ANSWER_VOICE_REQUEST_OFFSET,
-                Intent(applicationContext, CallActivity::class.java).apply {
-                    putExtras(answerVoiceBundle)
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                },
-                pendingIntentFlags
-            )
+            val isVideoCall = (conversation.callFlag and Participant.InCallFlags.WITH_VIDEO) > 0
 
-            val answerVideoBundle = Bundle(bundle).apply { putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false) }
-            val answerVideoPendingIntent = PendingIntent.getActivity(
+            val answerBundle = Bundle(bundle).apply { putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, !isVideoCall) }
+            val answerPendingIntentOffset =
+                if (isVideoCall) ANSWER_VIDEO_REQUEST_OFFSET else ANSWER_VOICE_REQUEST_OFFSET
+            val primaryAnswerIntent = PendingIntent.getActivity(
                 applicationContext,
-                requestCode + ANSWER_VIDEO_REQUEST_OFFSET,
+                requestCode + answerPendingIntentOffset,
                 Intent(applicationContext, CallActivity::class.java).apply {
-                    putExtras(answerVideoBundle)
+                    putExtras(answerBundle)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 },
                 pendingIntentFlags
@@ -362,9 +355,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 loadAvatarSync(avatarUrl, applicationContext)?.let { callerPersonBuilder.setIcon(it) }
             }
             val callerPerson = callerPersonBuilder.build()
-
-            val isVideoCall = (conversation.callFlag and Participant.InCallFlags.WITH_VIDEO) > 0
-            val primaryAnswerIntent = if (isVideoCall) answerVideoPendingIntent else answerVoicePendingIntent
 
             val notification =
                 NotificationCompat.Builder(applicationContext, notificationChannelId)
