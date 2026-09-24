@@ -772,71 +772,18 @@ private fun LastMessageContent(
 
         ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE,
         ChatMessage.MessageType.SINGLE_LINK_TENOR_MESSAGE,
-        ChatMessage.MessageType.SINGLE_LINK_GIF_MESSAGE -> {
-            val gifSelf = stringResource(R.string.nc_sent_a_gif_you)
-            val gifOther = stringResource(R.string.nc_sent_a_gif, chatMessage.actorDisplayName ?: "")
-            Text(
-                text = buildLastMessageText(
-                    if (chatMessage.actorId == currentUser.userId) gifSelf else gifOther,
-                    chatMessage.isThread
-                ),
-                modifier = modifier,
-                inlineContent = threadIconInlineContent,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = fontWeight,
-                color = colorResource(R.color.textColorMaxContrast)
-            )
-            return
-        }
-
-        ChatMessage.MessageType.SINGLE_LINK_IMAGE_MESSAGE -> {
-            val imgSelf = stringResource(R.string.nc_sent_an_image_you)
-            val imgOther = stringResource(R.string.nc_sent_an_image, chatMessage.actorDisplayName ?: "")
-            Text(
-                text = buildLastMessageText(
-                    if (chatMessage.actorId == currentUser.userId) imgSelf else imgOther,
-                    chatMessage.isThread
-                ),
-                modifier = modifier,
-                inlineContent = threadIconInlineContent,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = fontWeight,
-                color = colorResource(R.color.textColorMaxContrast)
-            )
-            return
-        }
-
-        ChatMessage.MessageType.SINGLE_LINK_VIDEO_MESSAGE -> {
-            val vidSelf = stringResource(R.string.nc_sent_a_video_you)
-            val vidOther = stringResource(R.string.nc_sent_a_video, chatMessage.actorDisplayName ?: "")
-            Text(
-                text = buildLastMessageText(
-                    if (chatMessage.actorId == currentUser.userId) vidSelf else vidOther,
-                    chatMessage.isThread
-                ),
-                modifier = modifier,
-                inlineContent = threadIconInlineContent,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = fontWeight,
-                color = colorResource(R.color.textColorMaxContrast)
-            )
-            return
-        }
-
+        ChatMessage.MessageType.SINGLE_LINK_GIF_MESSAGE,
+        ChatMessage.MessageType.SINGLE_LINK_IMAGE_MESSAGE,
+        ChatMessage.MessageType.SINGLE_LINK_VIDEO_MESSAGE,
         ChatMessage.MessageType.SINGLE_LINK_AUDIO_MESSAGE -> {
-            val audSelf = stringResource(R.string.nc_sent_an_audio_you)
-            val audOther = stringResource(R.string.nc_sent_an_audio, chatMessage.actorDisplayName ?: "")
+            val (selfRes, otherRes) = mediaMessageLabels(msgType)
+            val label = if (chatMessage.actorId == currentUser.userId) {
+                stringResource(selfRes)
+            } else {
+                stringResource(otherRes, chatMessage.actorDisplayName ?: "")
+            }
             Text(
-                text = buildLastMessageText(
-                    if (chatMessage.actorId == currentUser.userId) audSelf else audOther,
-                    chatMessage.isThread
-                ),
+                text = buildLastMessageText(label, chatMessage.isThread),
                 modifier = modifier,
                 inlineContent = threadIconInlineContent,
                 maxLines = 1,
@@ -971,6 +918,17 @@ private fun buildLastMessageText(
 
 private fun buildLastMessageText(text: String, isThread: Boolean): AnnotatedString =
     buildLastMessageText(text, text, isThread, searchQuery = "", highlightColor = Color.Unspecified)
+
+private fun mediaMessageLabels(msgType: ChatMessage.MessageType): Pair<Int, Int> =
+    when (msgType) {
+        ChatMessage.MessageType.SINGLE_LINK_IMAGE_MESSAGE ->
+            R.string.nc_sent_an_image_you to R.string.nc_sent_an_image
+        ChatMessage.MessageType.SINGLE_LINK_VIDEO_MESSAGE ->
+            R.string.nc_sent_a_video_you to R.string.nc_sent_a_video
+        ChatMessage.MessageType.SINGLE_LINK_AUDIO_MESSAGE ->
+            R.string.nc_sent_an_audio_you to R.string.nc_sent_an_audio
+        else -> R.string.nc_sent_a_gif_you to R.string.nc_sent_a_gif
+    }
 
 private fun authorPrefix(chatMessage: ChatMessage, currentUser: User): String =
     if (chatMessage.actorId == currentUser.userId) {
