@@ -7,13 +7,16 @@
  */
 package com.nextcloud.talk.services
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Notification
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Person
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.graphics.Bitmap
 import android.graphics.drawable.Icon
@@ -222,10 +225,10 @@ class CallForegroundService : Service() {
             ?: getString(R.string.nc_call_ongoing_notification_default_title)
         val pendingIntent = createContentIntent(currentCallExtras)
         val notification = buildCallStyleNotification(contentTitle, pendingIntent)
-        startForeground(NOTIFICATION_ID, notification)
+        getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, notification)
     }
 
-    @SuppressLint("NewApi", "ForegroundServiceType")
+    @SuppressLint("NewApi")
     private fun startTimeBasedNotificationUpdates() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return
 
@@ -239,7 +242,7 @@ class CallForegroundService : Service() {
                     val pendingIntent = createContentIntent(currentCallExtras)
                     val notification = buildCallStyleNotification(conversationName, pendingIntent)
 
-                    startForeground(NOTIFICATION_ID, notification)
+                    getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, notification)
                 }
                 handler.postDelayed(this, CALL_DURATION_UPDATE_INTERVAL)
             }
@@ -297,7 +300,12 @@ class CallForegroundService : Service() {
                 false
             ) ?: false
 
-            if (!isVoiceOnlyCall && canPublishVideo) {
+            val isCameraPermissionGranted = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+
+            if (!isVoiceOnlyCall && canPublishVideo && isCameraPermissionGranted) {
                 serviceType = serviceType or ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA
             }
         }
