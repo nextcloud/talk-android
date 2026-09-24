@@ -60,7 +60,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -430,13 +429,19 @@ class ConversationsListViewModel @Inject constructor(
 
         searchJob = viewModelScope.launch {
             combine(
-                getRoomsStateFlow.map { list ->
-                    list.filter { it.displayName?.contains(filter, ignoreCase = true) == true }
-                },
+                getRoomsStateFlow,
                 openConversationsRepository.fetchOpenConversationsFlow(currentUser, filter),
                 contactsRepository.getContactsFlow(currentUser, filter),
                 getMessagesFlow(filter)
-            ) { localConvs, openConvs, contacts, (messages, hasMore) ->
+            ) { rooms, fetchedOpenConvs, contacts, (messages, hasMore) ->
+                val localConvs = rooms
+                    .filter { it.displayName?.contains(filter, ignoreCase = true) == true }
+                    .distinctBy { it.token }
+                // Open conversations were fetched once, so a room joined afterwards would otherwise be listed twice
+                val joinedTokens = rooms.mapTo(HashSet()) { it.token }
+                val openConvs = fetchedOpenConvs
+                    .filter { it.token !in joinedTokens }
+                    .distinctBy { it.token }
                 val entries = mutableListOf<ConversationListEntry>()
                 val wordPattern = """\b${Regex.escape(filter)}\b""".toRegex(RegexOption.IGNORE_CASE)
 
@@ -699,7 +704,7 @@ class ConversationsListViewModel @Inject constructor(
             compareByDescending<ConversationModel> { it.favorite }
                 .thenByDescending { it.lastActivity }
         )
-        return sorted.map { ConversationListEntry.ConversationEntry(it) }
+        return sorted.distinctBy { it.token }.map { ConversationListEntry.ConversationEntry(it) }
     }
 
     /**
