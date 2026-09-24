@@ -342,6 +342,14 @@ class CallActivity : CallBaseActivity() {
     @Volatile
     private var audioRouteReady = false
 
+    // Set when Android did not confirm the audio route in time. Remote audio is then played on the unconfirmed route
+    // instead of keeping the call silent. Separate from handler, which is cleared on every call state change.
+    @Volatile
+    private var audioRouteReadyTimedOut = false
+    private var audioRouteReadyTimeoutScheduled = false
+    private val audioRouteHandler = Handler(Looper.getMainLooper())
+    private val audioRouteReadyTimeoutRunnable = Runnable { onAudioRouteReadyTimeout() }
+
     // Guards remoteAudioPlayoutEnabled together with adding wrappers to peerConnectionWrapperList: wrappers are
     // created on the signaling thread while the route state is updated on the main thread.
     private val remoteAudioPlayoutLock = Any()
@@ -1290,6 +1298,7 @@ class CallActivity : CallBaseActivity() {
     private fun onAudioManagerDevicesChanged(currentDevice: AudioDevice, availableDevices: Set<AudioDevice>) {
         Log.d(TAG, "onAudioManagerDevicesChanged: $availableDevices, currentDevice: $currentDevice")
         audioRouteReady = audioManager?.isAudioRouteReady == true
+        updateAudioRouteReadyTimeout()
         updateRemoteAudioPlayout()
         if (audioRouteReady) {
             maybeStartCallingSound()
@@ -2256,6 +2265,7 @@ class CallActivity : CallBaseActivity() {
         }
         runOnUiThread {
             audioRouteReady = false
+            cancelAudioRouteReadyTimeout()
             synchronized(remoteAudioPlayoutLock) {
                 remoteAudioPlayoutEnabled = false
                 peerConnectionWrapperList.forEach { it.setRemoteAudioPlayoutEnabled(false) }
@@ -3045,7 +3055,32 @@ class CallActivity : CallBaseActivity() {
 
     private fun isRemoteAudioPlayoutAllowed(): Boolean =
         (currentCallStatus === CallStatus.JOINED || currentCallStatus === CallStatus.IN_CONVERSATION) &&
-            audioRouteReady
+            (audioRouteReady || audioRouteReadyTimedOut)
+
+    private fun updateAudioRouteReadyTimeout() {
+        if (audioRouteReady) {
+            cancelAudioRouteReadyTimeout()
+        } else if (!audioRouteReadyTimedOut && !audioRouteReadyTimeoutScheduled) {
+            audioRouteReadyTimeoutScheduled = true
+            audioRouteHandler.postDelayed(audioRouteReadyTimeoutRunnable, AUDIO_ROUTE_READY_TIMEOUT)
+        }
+    }
+
+    private fun cancelAudioRouteReadyTimeout() {
+        audioRouteHandler.removeCallbacks(audioRouteReadyTimeoutRunnable)
+        audioRouteReadyTimeoutScheduled = false
+        audioRouteReadyTimedOut = false
+    }
+
+    private fun onAudioRouteReadyTimeout() {
+        audioRouteReadyTimeoutScheduled = false
+        if (audioManager == null || audioRouteReady) {
+            return
+        }
+        Log.w(TAG, "Audio route was not confirmed in time, playing remote audio on the current route")
+        audioRouteReadyTimedOut = true
+        updateRemoteAudioPlayout()
+    }
 
     private fun updateRemoteAudioPlayout() {
         synchronized(remoteAudioPlayoutLock) {
@@ -3561,6 +3596,10 @@ class CallActivity : CallBaseActivity() {
         private const val ANGLE_LANDSCAPE_LEFT_THRESHOLD_MAX = 280
 
         private const val CALLING_TIMEOUT: Long = 45000
+
+        // Longer than a Bluetooth connect plus disconnect timeout (2 x 4 s), after which the audio manager falls back
+        // to another route by itself.
+        private const val AUDIO_ROUTE_READY_TIMEOUT: Long = 10000
         private const val PULSE_ANIMATION_DURATION: Int = 310
         private const val SEC_10 = 10000
 

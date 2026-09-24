@@ -420,8 +420,8 @@ public class WebRtcBluetoothManager {
             Log.d(TAG, "Modern Bluetooth communication route started: " + bluetoothState);
             return;
         }
-        // BluetoothHeadset requires the runtime Bluetooth permission. The Android 12+
-        // communication-device API above only requires MODIFY_AUDIO_SETTINGS.
+        // BluetoothHeadset requires the runtime Bluetooth permission. The Android 12+ route above starts without
+        // it, but only lists or selects Bluetooth communication devices once BLUETOOTH_CONNECT is granted.
         if (hasNoBluetoothPermission()) {
             return;
         }
@@ -659,7 +659,6 @@ public class WebRtcBluetoothManager {
             bluetoothState = State.HEADSET_AVAILABLE;
             headsetProfileExpected = true;
             Log.d(TAG, "Connected bluetooth headset: "
-                    + "name=" + bluetoothDevice.getName() + ", "
                     + "state=" + stateToString(bluetoothHeadset.getConnectionState(bluetoothDevice))
                     + ", SCO audio=" + bluetoothHeadset.isAudioConnected(bluetoothDevice));
         }
