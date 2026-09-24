@@ -14,7 +14,7 @@ import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.opengraph.Reference
+import com.nextcloud.talk.models.json.opengraph.ReferenceDto
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import com.nextcloud.talk.utils.message.SendMessageUtils
@@ -88,8 +88,8 @@ class ScheduledMessagesViewModel @Inject constructor(
     val parentMessages: StateFlow<Map<Long, ChatMessage>> =
         _parentMessages.asStateFlow()
 
-    private val _linkPreviews = MutableStateFlow<Map<String, Reference>>(emptyMap())
-    val linkPreviews: StateFlow<Map<String, Reference>> = _linkPreviews.asStateFlow()
+    private val _linkPreviews = MutableStateFlow<Map<String, ReferenceDto>>(emptyMap())
+    val linkPreviews: StateFlow<Map<String, ReferenceDto>> = _linkPreviews.asStateFlow()
 
     fun loadScheduledMessages(credentials: String, url: String) {
         _getScheduledMessagesState.value = GetScheduledMessagesLoadingState

@@ -7,7 +7,7 @@
 
 package com.nextcloud.talk.conversationcreation
 
-import com.nextcloud.talk.models.json.conversations.ConversationPreset
+import com.nextcloud.talk.models.json.conversations.ConversationPresetDto
 
 /**
  * A conversation type offered by the server, with the parameters it applies on creation.
@@ -19,7 +19,7 @@ data class ConversationPresetModel(
     val parameters: Map<String, Int>
 ) {
     companion object {
-        fun mapToConversationPresetModel(preset: ConversationPreset): ConversationPresetModel? {
+        fun mapToConversationPresetModel(preset: ConversationPresetDto): ConversationPresetModel? {
             val identifier = preset.identifier ?: return null
             return ConversationPresetModel(
                 identifier = identifier,

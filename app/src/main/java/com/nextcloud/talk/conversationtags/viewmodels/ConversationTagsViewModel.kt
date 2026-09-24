@@ -17,7 +17,7 @@ import com.nextcloud.talk.conversationtags.data.ConversationTagsRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.tags.ConversationTag
+import com.nextcloud.talk.models.json.tags.ConversationTagDto
 import com.nextcloud.talk.models.json.tags.ConversationTagErrorOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
@@ -44,8 +44,8 @@ class ConversationTagsViewModel @Inject constructor(
     private val currentUser: User = currentUserProvider.currentUser.blockingGet()
     private val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token) ?: ""
 
-    private val _conversationTagsFlow = MutableStateFlow<List<ConversationTag>>(emptyList())
-    val conversationTagsFlow: StateFlow<List<ConversationTag>> = _conversationTagsFlow.asStateFlow()
+    private val _conversationTagsFlow = MutableStateFlow<List<ConversationTagDto>>(emptyList())
+    val conversationTagsFlow: StateFlow<List<ConversationTagDto>> = _conversationTagsFlow.asStateFlow()
 
     sealed class TagActionUiState {
         data object None : TagActionUiState()
@@ -212,11 +212,11 @@ class ConversationTagsViewModel @Inject constructor(
     }
 
     private fun isCustomTag(tagId: String): Boolean =
-        _conversationTagsFlow.value.firstOrNull { it.id == tagId }?.type == ConversationTag.TYPE_CUSTOM
+        _conversationTagsFlow.value.firstOrNull { it.id == tagId }?.type == ConversationTagDto.TYPE_CUSTOM
 
     /** Drops the built-in "Other" tag (not surfaced in this UI) and sorts the rest by sortOrder. */
-    private fun List<ConversationTag>?.toDisplayTags(): List<ConversationTag> =
-        this?.filter { it.type != ConversationTag.TYPE_OTHER }?.sortedBy { it.sortOrder } ?: emptyList()
+    private fun List<ConversationTagDto>?.toDisplayTags(): List<ConversationTagDto> =
+        this?.filter { it.type != ConversationTagDto.TYPE_OTHER }?.sortedBy { it.sortOrder } ?: emptyList()
 
     companion object {
         private val TAG = ConversationTagsViewModel::class.java.simpleName

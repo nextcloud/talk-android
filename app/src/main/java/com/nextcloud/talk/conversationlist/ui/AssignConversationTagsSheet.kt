@@ -41,13 +41,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.models.json.tags.ConversationTag
+import com.nextcloud.talk.models.json.participants.ParticipantDto
+import com.nextcloud.talk.models.json.tags.ConversationTagDto
 
 @Composable
 fun AssignConversationTagsSheetContent(
     conversation: ConversationModel,
-    tags: List<ConversationTag>,
+    tags: List<ConversationTagDto>,
     onToggleTag: (String) -> Unit,
     onManageTagsClick: () -> Unit
 ) {
@@ -95,7 +95,7 @@ fun AssignConversationTagsSheetContent(
 }
 
 @Composable
-private fun AssignableTagRow(tag: ConversationTag, isAssigned: Boolean, onToggleTag: (String) -> Unit) {
+private fun AssignableTagRow(tag: ConversationTagDto, isAssigned: Boolean, onToggleTag: (String) -> Unit) {
     TextButton(
         onClick = { onToggleTag(tag.id) },
         modifier = Modifier
@@ -156,7 +156,7 @@ private fun previewConversation() =
         displayName = "Alice",
         description = "",
         type = ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL,
-        participantType = Participant.ParticipantType.USER,
+        participantType = ParticipantDto.ParticipantType.USER,
         sessionId = "",
         actorId = "user1",
         actorType = "users",
@@ -177,8 +177,8 @@ private fun previewConversation() =
 
 private fun previewTags() =
     listOf(
-        ConversationTag(id = "1", name = "Work", sortOrder = 0),
-        ConversationTag(id = "2", name = "Family", sortOrder = 1)
+        ConversationTagDto(id = "1", name = "Work", sortOrder = 0),
+        ConversationTagDto(id = "2", name = "Family", sortOrder = 1)
     )
 
 @Preview(showBackground = true, name = "Light")

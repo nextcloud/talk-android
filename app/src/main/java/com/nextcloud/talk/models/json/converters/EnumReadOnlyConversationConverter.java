@@ -7,7 +7,7 @@
 package com.nextcloud.talk.models.json.converters;
 
 import com.bluelinelabs.logansquare.typeconverters.IntBasedTypeConverter;
-import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.ConversationDto;
 import com.nextcloud.talk.models.json.conversations.ConversationEnums;
 
 public class EnumReadOnlyConversationConverter extends IntBasedTypeConverter<ConversationEnums.ConversationReadOnlyState> {

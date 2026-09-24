@@ -46,7 +46,7 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.data.database.mappers.toDomainModel
-import com.nextcloud.talk.models.json.threads.ThreadInfo
+import com.nextcloud.talk.models.json.threads.ThreadInfoDto
 import com.nextcloud.talk.threadsoverview.components.ThreadRow
 import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
 import com.nextcloud.talk.users.UserManager
@@ -174,7 +174,7 @@ fun ThreadsOverviewScreen(
 }
 
 @Composable
-fun ThreadsList(threads: List<ThreadInfo>, onThreadClick: (roomToken: String, threadId: Int) -> Unit) {
+fun ThreadsList(threads: List<ThreadInfoDto>, onThreadClick: (roomToken: String, threadId: Int) -> Unit) {
     val space = ' '
     if (threads.isEmpty()) {
         Box(
@@ -222,7 +222,7 @@ fun ThreadsList(threads: List<ThreadInfo>, onThreadClick: (roomToken: String, th
 }
 
 @Suppress("MagicNumber")
-private fun getLastActivityDate(threadInfo: ThreadInfo): String {
+private fun getLastActivityDate(threadInfo: ThreadInfoDto): String {
     val oneSecond = 1000L
 
     val lastActivityTimestamp = threadInfo.thread?.lastActivity ?: 0

@@ -9,7 +9,7 @@ package com.nextcloud.talk.repositories.callrecording
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.models.domain.StartCallRecordingModel
 import com.nextcloud.talk.models.domain.StopCallRecordingModel
-import com.nextcloud.talk.models.json.generic.GenericMeta
+import com.nextcloud.talk.models.json.generic.GenericMetaDto
 import io.reactivex.Observable
 
 class CallRecordingRepositoryImpl(private val ncApi: NcApi) : CallRecordingRepository {
@@ -35,14 +35,14 @@ class CallRecordingRepositoryImpl(private val ncApi: NcApi) : CallRecordingRepos
             url
         ).map { mapToStopCallRecordingModel(it.ocs?.meta!!) }
 
-    private fun mapToStartCallRecordingModel(response: GenericMeta): StartCallRecordingModel {
+    private fun mapToStartCallRecordingModel(response: GenericMetaDto): StartCallRecordingModel {
         val success = response.statusCode == HTTP_OK
         return StartCallRecordingModel(
             success
         )
     }
 
-    private fun mapToStopCallRecordingModel(response: GenericMeta): StopCallRecordingModel {
+    private fun mapToStopCallRecordingModel(response: GenericMetaDto): StopCallRecordingModel {
         val success = response.statusCode == HTTP_OK
         return StopCallRecordingModel(
             success

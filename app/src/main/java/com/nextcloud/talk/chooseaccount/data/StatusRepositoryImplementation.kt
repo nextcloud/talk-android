@@ -10,7 +10,7 @@ package com.nextcloud.talk.chooseaccount.data
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.status.StatusOverall
-import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
+import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusDto
 import javax.inject.Inject
 
 class StatusRepositoryImplementation @Inject constructor(private val ncApiCoroutines: NcApiCoroutines) :
@@ -22,7 +22,7 @@ class StatusRepositoryImplementation @Inject constructor(private val ncApiCorout
     override suspend fun setStatusType(credentials: String, url: String, statusType: String): GenericOverall =
         ncApiCoroutines.setStatusType(credentials, url, statusType)
 
-    override suspend fun getPredefinedStatuses(credentials: String, url: String): List<PredefinedStatus> =
+    override suspend fun getPredefinedStatuses(credentials: String, url: String): List<PredefinedStatusDto> =
         ncApiCoroutines.getPredefinedStatuses(credentials, url).ocs?.data.orEmpty()
 
     override suspend fun getBackupStatus(credentials: String, url: String): StatusOverall =

@@ -146,12 +146,12 @@ import com.nextcloud.talk.mediaviewer.activities.MediaViewerActivity
 import com.nextcloud.talk.mediaviewer.model.capSeedAroundMessage
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
-import com.nextcloud.talk.models.json.threads.ThreadInfo
+import com.nextcloud.talk.models.json.threads.ThreadInfoDto
 import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.polls.ui.PollMainDialogFragment
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
@@ -371,9 +371,9 @@ class ChatActivity :
     }
 
     var openedViaNotification: Boolean = false
-    var conversationThreadInfo: ThreadInfo? = null
+    var conversationThreadInfo: ThreadInfoDto? = null
     lateinit var conversationUser: User
-    lateinit var spreedCapabilities: SpreedCapability
+    lateinit var spreedCapabilities: SpreedCapabilityDto
     var chatApiVersion: Int = 1
     private var roomPassword: String = ""
     var credentials: String? = null
@@ -582,7 +582,7 @@ class ChatActivity :
             }
         }
 
-        override fun onChatMessagesReceived(chatMessages: List<ChatMessageJson>) {
+        override fun onChatMessagesReceived(chatMessages: List<ChatMessageDto>) {
             chatViewModel.onSignalingChatMessageReceived(chatMessages)
             Log.d(TAG, "received signaling message in ChatActivity")
         }
@@ -3353,8 +3353,8 @@ class ChatActivity :
         val unarchiveConversation = popupView.findViewById<TextView>(R.id.unarchive_conversation)
         if (meetingStatus == context.resources.getString(R.string.nc_meeting_ended) &&
             (
-                Participant.ParticipantType.MODERATOR == currentConversation?.participantType ||
-                    Participant.ParticipantType.OWNER == currentConversation?.participantType
+                ParticipantDto.ParticipantType.MODERATOR == currentConversation?.participantType ||
+                    ParticipantDto.ParticipantType.OWNER == currentConversation?.participantType
                 )
         ) {
             if (currentConversation?.hasArchived == false) {

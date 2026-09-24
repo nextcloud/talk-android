@@ -8,7 +8,7 @@ package com.nextcloud.talk.chat.ui
 
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.utils.DateUtils
 import org.junit.Assert
 import org.junit.Test
@@ -25,7 +25,7 @@ class MessageActionsStateTest {
             conversation = null,
             hasChatPermission = true,
             hasReactPermission = true,
-            spreedCapabilities = SpreedCapability(),
+            spreedCapabilities = SpreedCapabilityDto(),
             isOnline = true,
             dateUtils = dateUtils,
             conversationThreadId = null

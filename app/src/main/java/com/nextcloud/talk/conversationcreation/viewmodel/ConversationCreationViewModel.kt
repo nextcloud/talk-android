@@ -25,8 +25,8 @@ import com.nextcloud.talk.conversationcreation.data.ConversationCreationReposito
 import com.nextcloud.talk.conversationcreation.parametersFor
 import com.nextcloud.talk.conversationcreation.parametersOf
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.passwordpolicy.PasswordGenerator
 import com.nextcloud.talk.passwordpolicy.PasswordPolicyValidator
 import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
@@ -51,8 +51,8 @@ class ConversationCreationViewModel @Inject constructor(
     private val passwordPolicyRepository: PasswordPolicyRepository,
     currentUserProvider: CurrentUserProvider
 ) : ViewModel() {
-    private val _selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
-    val selectedParticipants: StateFlow<List<AutocompleteUser>> = _selectedParticipants
+    private val _selectedParticipants = MutableStateFlow<List<AutocompleteUserDto>>(emptyList())
+    val selectedParticipants: StateFlow<List<AutocompleteUserDto>> = _selectedParticipants
     private val roomViewState = MutableStateFlow<RoomUIState>(RoomUIState.None)
     val creationState: StateFlow<RoomUIState> = roomViewState
 
@@ -87,7 +87,7 @@ class ConversationCreationViewModel @Inject constructor(
     val conversationDescriptionLength: Int
         get() = CapabilitiesUtil.conversationDescriptionLength(spreedCapabilities)
 
-    fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
+    fun updateSelectedParticipants(participants: List<AutocompleteUserDto>) {
         _selectedParticipants.value = participants
     }
 
@@ -311,12 +311,12 @@ sealed interface PresetsUiState {
 
 sealed class RoomUIState {
     data object None : RoomUIState()
-    data class Success(val conversation: Conversation?) : RoomUIState()
+    data class Success(val conversation: ConversationDto?) : RoomUIState()
     data class Error(val serverMessage: String? = null) : RoomUIState()
 }
 
 sealed class AddParticipantsUiState {
     data object None : AddParticipantsUiState()
-    data class Success(val participants: List<Conversation>?) : AddParticipantsUiState()
+    data class Success(val participants: List<ConversationDto>?) : AddParticipantsUiState()
     data class Error(val message: String) : AddParticipantsUiState()
 }

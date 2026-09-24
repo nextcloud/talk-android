@@ -11,8 +11,8 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
-import com.nextcloud.talk.models.json.capabilities.Capabilities
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -46,8 +46,8 @@ class ConversationInfoViewModelTest {
         username = "alice",
         token = "token",
         baseUrl = "https://cloud.example.com",
-        capabilities = Capabilities().apply {
-            spreedCapability = SpreedCapability().apply {
+        capabilities = CapabilitiesDto().apply {
+            spreedCapability = SpreedCapabilityDto().apply {
                 features = listOf("conversation-v4")
             }
         }

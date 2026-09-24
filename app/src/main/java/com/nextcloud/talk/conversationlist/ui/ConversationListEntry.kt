@@ -9,7 +9,7 @@ package com.nextcloud.talk.conversationlist.ui
 
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 
 /**
  * Sealed class that represents every possible entry in the conversation list LazyColumn.
@@ -25,7 +25,7 @@ sealed class ConversationListEntry {
     data class MessageResultEntry(val result: SearchMessageEntry) : ConversationListEntry()
 
     /** A contact / user search result */
-    data class ContactEntry(val participant: Participant) : ConversationListEntry()
+    data class ContactEntry(val participant: ParticipantDto) : ConversationListEntry()
 
     /** "Load more" button at the end of message search results */
     data object LoadMore : ConversationListEntry()

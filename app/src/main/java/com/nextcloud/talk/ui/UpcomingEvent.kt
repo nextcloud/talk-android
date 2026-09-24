@@ -34,7 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
-import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEvent
+import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEventDto
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.preview.ComposePreviewUtils
@@ -43,7 +43,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Composable
-fun UpcomingEventView(event: UpcomingEvent, viewThemeUtils: ViewThemeUtils, onDismiss: () -> Unit) {
+fun UpcomingEventView(event: UpcomingEventDto, viewThemeUtils: ViewThemeUtils, onDismiss: () -> Unit) {
     val context = LocalContext.current
     val colorScheme = remember { viewThemeUtils.getColorScheme(context) }
 
@@ -119,7 +119,7 @@ fun UpcomingEventPreview(summary: String = "Mgmt Coordination Call") {
     val viewThemeUtils = previewUtils.viewThemeUtils
     val colorScheme = viewThemeUtils.getColorScheme(context)
 
-    val event = UpcomingEvent(
+    val event = UpcomingEventDto(
         uri = "uri",
         recurrenceId = null,
         calendarUri = "calendarUri",

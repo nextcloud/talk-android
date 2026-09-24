@@ -25,11 +25,11 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.nextcloud.talk.utils.revertOnCancellation
@@ -573,7 +573,7 @@ class OfflineFirstChatRepository @Inject constructor(
         return outcome.persistedNewMessages
     }
 
-    private fun isUntranslatedSystemMessage(messagesJson: List<ChatMessageJson>): Boolean =
+    private fun isUntranslatedSystemMessage(messagesJson: List<ChatMessageDto>): Boolean =
         syncer.isUntranslatedSystemMessage(messagesJson)
 
     override fun handleOnPause() {
@@ -761,7 +761,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     deleted = false,
                     token = conversationModel.token,
                     actorId = currentUser.userId!!,
-                    actorType = EnumActorTypeConverter().convertToString(Participant.ActorType.USERS),
+                    actorType = EnumActorTypeConverter().convertToString(ParticipantDto.ActorType.USERS),
                     accountId = currentUser.id!!,
                     messageParameters = messageParameters,
                     messageType = "comment",
@@ -837,7 +837,7 @@ class OfflineFirstChatRepository @Inject constructor(
         message.message = text
         message.lastEditTimestamp = System.currentTimeMillis() / MILLIES
         message.lastEditActorId = currentUser.userId
-        message.lastEditActorType = Participant.ActorType.USERS.name.lowercase()
+        message.lastEditActorType = ParticipantDto.ActorType.USERS.name.lowercase()
         message.lastEditActorDisplayName = currentUser.displayName
         withContext(Dispatchers.IO) { chatDao.updateChatMessage(message) }
 
@@ -1070,7 +1070,7 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
-    override suspend fun onSignalingChatMessageReceived(chatMessages: List<ChatMessageJson>) {
+    override suspend fun onSignalingChatMessageReceived(chatMessages: List<ChatMessageDto>) {
         // check if we need to get user specific data from the backend
         if (!isUntranslatedSystemMessage(chatMessages) ||
             chatMessages.any { it.messageParameters?.containsKey("file") == true }
@@ -1093,7 +1093,7 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     suspend fun persistChatMessagesAndHandleSystemMessages(
-        chatMessages: List<ChatMessageJson>,
+        chatMessages: List<ChatMessageDto>,
         emitOnIncoming: Boolean = false
     ): List<ChatMessageEntity> =
         syncer.persistChatMessagesAndHandleSystemMessages(syncTarget, chatMessages, emitOnIncoming, syncEvents)
@@ -1252,7 +1252,7 @@ class OfflineFirstChatRepository @Inject constructor(
             deleted = false,
             token = conversationModel.token,
             actorId = currentUser.userId!!,
-            actorType = EnumActorTypeConverter().convertToString(Participant.ActorType.USERS),
+            actorType = EnumActorTypeConverter().convertToString(ParticipantDto.ActorType.USERS),
             accountId = currentUser.id!!,
             messageParameters = null,
             messageType = "comment",

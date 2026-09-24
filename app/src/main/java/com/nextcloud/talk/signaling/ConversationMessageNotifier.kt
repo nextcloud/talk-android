@@ -6,7 +6,7 @@
  */
 package com.nextcloud.talk.signaling
 
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.signaling.SignalingMessageReceiver.ConversationMessageListener
 
 internal class ConversationMessageNotifier {
@@ -31,7 +31,7 @@ internal class ConversationMessageNotifier {
     }
 
     @Synchronized
-    fun notifyMessagesReceived(chatMessages: List<ChatMessageJson>) {
+    fun notifyMessagesReceived(chatMessages: List<ChatMessageDto>) {
         for (listener in ArrayList(conversationMessageListeners)) {
             listener.onChatMessagesReceived(chatMessages)
         }

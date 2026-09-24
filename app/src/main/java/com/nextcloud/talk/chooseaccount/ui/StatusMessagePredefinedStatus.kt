@@ -31,14 +31,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
-import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
+import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusDto
 
 @Composable
 internal fun PredefinedStatusList(
-    statuses: List<PredefinedStatus>,
+    statuses: List<PredefinedStatusDto>,
     isBackupStatusAvailable: Boolean,
     onRevertStatus: () -> Unit,
-    onSelectStatus: (PredefinedStatus) -> Unit,
+    onSelectStatus: (PredefinedStatusDto) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (statuses.isEmpty()) return
@@ -69,7 +69,7 @@ internal fun PredefinedStatusList(
 
 @Composable
 private fun PredefinedStatusRow(
-    status: PredefinedStatus,
+    status: PredefinedStatusDto,
     isBackupEntry: Boolean,
     onRevertStatus: () -> Unit,
     onClick: () -> Unit
@@ -145,7 +145,7 @@ private fun RowScope.StandardStatusContent(message: String, clearAtLabel: String
     }
 }
 
-private fun resolveClearAtLabel(status: PredefinedStatus, context: android.content.Context): String {
+private fun resolveClearAtLabel(status: PredefinedStatusDto, context: android.content.Context): String {
     val clearAt = status.clearAt ?: return context.getString(R.string.dontClear)
     return when (clearAt.type) {
         "period" -> when (clearAt.time) {

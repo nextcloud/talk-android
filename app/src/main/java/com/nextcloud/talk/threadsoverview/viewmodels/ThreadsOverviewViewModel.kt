@@ -14,7 +14,7 @@ import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel.Companion.FOLLOWED_THREADS_EXIST_LAST_CHECK
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
-import com.nextcloud.talk.models.json.threads.ThreadInfo
+import com.nextcloud.talk.models.json.threads.ThreadInfoDto
 import com.nextcloud.talk.models.json.threads.ThreadsOverall
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.utils.ApiUtils
@@ -77,7 +77,7 @@ class ThreadsOverviewViewModel @Inject constructor(
 
     sealed class ThreadsListUiState {
         data object None : ThreadsListUiState()
-        data class Success(val threadsList: List<ThreadInfo>?) : ThreadsListUiState()
+        data class Success(val threadsList: List<ThreadInfoDto>?) : ThreadsListUiState()
         data class Error(val exception: Exception) : ThreadsListUiState()
     }
 

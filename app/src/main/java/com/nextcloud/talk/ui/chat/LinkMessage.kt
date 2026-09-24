@@ -32,7 +32,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.contacts.load
-import com.nextcloud.talk.models.json.opengraph.OpenGraphObject
+import com.nextcloud.talk.models.json.opengraph.OpenGraphObjectDto
 import com.nextcloud.talk.ui.theme.LocalOpenGraphFetcher
 import androidx.core.net.toUri
 
@@ -48,7 +48,7 @@ fun LinkMessage(
 ) {
     val fetchOpenGraph = LocalOpenGraphFetcher.current
     val highlightSearchTerm = LocalHighlightSearchTerm.current
-    val openGraphObject by produceState<OpenGraphObject?>(initialValue = null, key1 = typeContent.url) {
+    val openGraphObject by produceState<OpenGraphObjectDto?>(initialValue = null, key1 = typeContent.url) {
         if (typeContent.url.isNotEmpty()) {
             value = fetchOpenGraph(typeContent.url)
         }
@@ -79,7 +79,7 @@ fun LinkMessage(
 }
 
 @Composable
-private fun LinkPreviewCard(og: OpenGraphObject, url: String, highlightSearchTerm: String?) {
+private fun LinkPreviewCard(og: OpenGraphObjectDto, url: String, highlightSearchTerm: String?) {
     val context = LocalContext.current
     Surface(
         shape = MaterialTheme.shapes.small,
@@ -103,7 +103,7 @@ private fun LinkPreviewCard(og: OpenGraphObject, url: String, highlightSearchTer
 }
 
 @Composable
-private fun LinkPreviewTexts(og: OpenGraphObject, highlightSearchTerm: String?) {
+private fun LinkPreviewTexts(og: OpenGraphObjectDto, highlightSearchTerm: String?) {
     val highlightedName = rememberSearchHighlightedText(og.name, highlightSearchTerm)
     val highlightedDescription = rememberSearchHighlightedText(og.description.orEmpty(), highlightSearchTerm)
     val highlightedLink = rememberSearchHighlightedText(

@@ -8,11 +8,11 @@ package com.nextcloud.talk.jobs
 
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.EventStatus
-import com.nextcloud.talk.models.json.capabilities.Capabilities
-import com.nextcloud.talk.models.json.capabilities.CapabilitiesList
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesListDto
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOCS
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
-import com.nextcloud.talk.models.json.capabilities.ServerVersion
+import com.nextcloud.talk.models.json.capabilities.ServerVersionDto
 import com.nextcloud.talk.users.UserManager
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
@@ -42,15 +42,15 @@ class CapabilitiesFetcherTest {
 
     private fun user(id: Long = USER_ID) = User(id = id, username = "alice", baseUrl = "https://example.com")
 
-    private fun overall(capabilities: Capabilities?, serverVersion: ServerVersion? = ServerVersion()) =
-        CapabilitiesOverall(CapabilitiesOCS(meta = null, data = CapabilitiesList(serverVersion, capabilities)))
+    private fun overall(capabilities: CapabilitiesDto?, serverVersion: ServerVersionDto? = ServerVersionDto()) =
+        CapabilitiesOverall(CapabilitiesOCS(meta = null, data = CapabilitiesListDto(serverVersion, capabilities)))
 
     @Test
     fun `stores capabilities and posts success when the response is well-formed`() =
         runTest {
             val testUser = user()
-            val capabilities = Capabilities()
-            val serverVersion = ServerVersion(major = 30)
+            val capabilities = CapabilitiesDto()
+            val serverVersion = ServerVersionDto(major = 30)
             wheneverBlocking { userManager.updateOrCreateUser(testUser) }.thenReturn(1)
 
             val result = fetcher.updateUser(overall(capabilities, serverVersion), testUser)
@@ -67,7 +67,7 @@ class CapabilitiesFetcherTest {
             val testUser = user()
             wheneverBlocking { userManager.updateOrCreateUser(testUser) }.thenReturn(0)
 
-            val result = fetcher.updateUser(overall(Capabilities()), testUser)
+            val result = fetcher.updateUser(overall(CapabilitiesDto()), testUser)
 
             assertFalse(result)
             verify(eventBus).post(EventStatus(USER_ID, EventStatus.EventType.CAPABILITIES_FETCH, false))
@@ -79,7 +79,7 @@ class CapabilitiesFetcherTest {
             val testUser = user()
             wheneverBlocking { userManager.updateOrCreateUser(testUser) }.thenThrow(RuntimeException("db error"))
 
-            val result = fetcher.updateUser(overall(Capabilities()), testUser)
+            val result = fetcher.updateUser(overall(CapabilitiesDto()), testUser)
 
             assertFalse(result)
             verify(eventBus).post(EventStatus(USER_ID, EventStatus.EventType.CAPABILITIES_FETCH, false))

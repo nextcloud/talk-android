@@ -7,12 +7,12 @@
  */
 package com.nextcloud.talk.repositories.conversations
 
-import com.nextcloud.talk.conversationinfo.CreateRoomRequest
+import com.nextcloud.talk.conversationinfo.CreateRoomRequestDto
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.models.json.participants.TalkBan
-import com.nextcloud.talk.models.json.profile.Profile
+import com.nextcloud.talk.models.json.participants.TalkBanDto
+import com.nextcloud.talk.models.json.profile.ProfileDto
 import io.reactivex.Observable
 
 interface ConversationsRepository {
@@ -38,9 +38,9 @@ interface ConversationsRepository {
         actorType: String,
         actorId: String,
         internalNote: String
-    ): TalkBan
+    ): TalkBanDto
 
-    suspend fun listBans(credentials: String, url: String): List<TalkBan>
+    suspend fun listBans(credentials: String, url: String): List<TalkBanDto>
     suspend fun unbanActor(credentials: String, url: String): GenericOverall
 
     suspend fun setPassword(user: User, url: String, password: String): GenericOverall
@@ -49,9 +49,9 @@ interface ConversationsRepository {
 
     suspend fun clearChatHistory(user: User, url: String): GenericOverall
 
-    suspend fun createRoom(credentials: String, url: String, body: CreateRoomRequest): RoomOverall
+    suspend fun createRoom(credentials: String, url: String, body: CreateRoomRequestDto): RoomOverall
 
-    suspend fun getProfile(credentials: String, url: String): Profile?
+    suspend fun getProfile(credentials: String, url: String): ProfileDto?
 
     suspend fun markConversationAsSensitive(credentials: String, baseUrl: String, roomToken: String): GenericOverall
 

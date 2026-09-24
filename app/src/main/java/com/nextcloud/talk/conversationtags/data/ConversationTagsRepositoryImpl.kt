@@ -9,12 +9,12 @@ package com.nextcloud.talk.conversationtags.data
 
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.models.json.tags.AssignConversationTagsRequest
+import com.nextcloud.talk.models.json.tags.AssignConversationTagsRequestDto
 import com.nextcloud.talk.models.json.tags.ConversationTagOverall
 import com.nextcloud.talk.models.json.tags.ConversationTagsOverall
-import com.nextcloud.talk.models.json.tags.CreateConversationTagRequest
-import com.nextcloud.talk.models.json.tags.ReorderConversationTagsRequest
-import com.nextcloud.talk.models.json.tags.UpdateConversationTagRequest
+import com.nextcloud.talk.models.json.tags.CreateConversationTagRequestDto
+import com.nextcloud.talk.models.json.tags.ReorderConversationTagsRequestDto
+import com.nextcloud.talk.models.json.tags.UpdateConversationTagRequestDto
 import com.nextcloud.talk.utils.ApiUtils
 import javax.inject.Inject
 
@@ -25,7 +25,7 @@ class ConversationTagsRepositoryImpl @Inject constructor(private val ncApiCorout
         ncApiCoroutines.getConversationTags(credentials, ApiUtils.getUrlForConversationTags(baseUrl))
 
     override suspend fun createTag(credentials: String, baseUrl: String, name: String): ConversationTagOverall {
-        val request = CreateConversationTagRequest().apply { this.name = name }
+        val request = CreateConversationTagRequestDto().apply { this.name = name }
         return ncApiCoroutines.createConversationTag(credentials, ApiUtils.getUrlForConversationTags(baseUrl), request)
     }
 
@@ -35,7 +35,7 @@ class ConversationTagsRepositoryImpl @Inject constructor(private val ncApiCorout
         tagId: String,
         name: String
     ): ConversationTagOverall {
-        val request = UpdateConversationTagRequest().apply { this.name = name }
+        val request = UpdateConversationTagRequestDto().apply { this.name = name }
         return ncApiCoroutines.updateConversationTag(
             credentials,
             ApiUtils.getUrlForConversationTag(baseUrl, tagId),
@@ -52,7 +52,7 @@ class ConversationTagsRepositoryImpl @Inject constructor(private val ncApiCorout
         baseUrl: String,
         orderedIds: List<String>
     ): ConversationTagsOverall {
-        val request = ReorderConversationTagsRequest().apply { this.orderedIds = orderedIds }
+        val request = ReorderConversationTagsRequestDto().apply { this.orderedIds = orderedIds }
         return ncApiCoroutines.reorderConversationTags(
             credentials,
             ApiUtils.getUrlForConversationTagsReorder(baseUrl),
@@ -66,7 +66,7 @@ class ConversationTagsRepositoryImpl @Inject constructor(private val ncApiCorout
         roomToken: String,
         tagIds: List<String>
     ): RoomOverall {
-        val request = AssignConversationTagsRequest().apply { this.tagIds = tagIds }
+        val request = AssignConversationTagsRequestDto().apply { this.tagIds = tagIds }
         return ncApiCoroutines.assignConversationTags(
             credentials,
             ApiUtils.getUrlForRoomTags(baseUrl, roomToken),

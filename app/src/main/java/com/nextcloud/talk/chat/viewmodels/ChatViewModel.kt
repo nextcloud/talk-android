@@ -55,17 +55,17 @@ import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.models.json.opengraph.OpenGraphObject
-import com.nextcloud.talk.models.json.reminder.Reminder
-import com.nextcloud.talk.models.json.threads.ThreadInfo
-import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEvent
-import com.nextcloud.talk.models.json.userAbsence.UserAbsenceData
+import com.nextcloud.talk.models.json.opengraph.OpenGraphObjectDto
+import com.nextcloud.talk.models.json.reminder.ReminderDto
+import com.nextcloud.talk.models.json.threads.ThreadInfoDto
+import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEventDto
+import com.nextcloud.talk.models.json.userAbsence.UserAbsenceDataDto
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
@@ -351,8 +351,8 @@ class ChatViewModel @AssistedInject constructor(
     var messageDraft: MessageDraft = MessageDraft()
     var hiddenUpcomingEvent: String? = null
     lateinit var participantPermissions: ParticipantPermissions
-    private val _spreedCapabilities = MutableStateFlow<SpreedCapability?>(null)
-    val spreedCapabilities: StateFlow<SpreedCapability?> = _spreedCapabilities
+    private val _spreedCapabilities = MutableStateFlow<SpreedCapabilityDto?>(null)
+    val spreedCapabilities: StateFlow<SpreedCapabilityDto?> = _spreedCapabilities
 
     private var lobbyPollingJob: Job? = null
 
@@ -479,7 +479,7 @@ class ChatViewModel @AssistedInject constructor(
         mediaPlayerManager.handleOnStop()
     }
 
-    fun onSignalingChatMessageReceived(chatMessages: List<ChatMessageJson>) {
+    fun onSignalingChatMessageReceived(chatMessages: List<ChatMessageDto>) {
         viewModelScope.launch {
             chatRepository.onSignalingChatMessageReceived(chatMessages)
         }
@@ -569,7 +569,7 @@ class ChatViewModel @AssistedInject constructor(
     sealed interface ViewState
 
     object GetReminderStartState : ViewState
-    open class GetReminderExistState(val reminder: Reminder) : ViewState
+    open class GetReminderExistState(val reminder: ReminderDto) : ViewState
     object GetReminderStateSet : ViewState
 
     private val _getReminderExistState: MutableLiveData<ViewState> = MutableLiveData(GetReminderStartState)
@@ -580,10 +580,10 @@ class ChatViewModel @AssistedInject constructor(
     object GetCapabilitiesStartState : ViewState
     object GetCapabilitiesErrorState : ViewState
     open class GetCapabilitiesInitialLoadState(
-        val spreedCapabilities: SpreedCapability,
+        val spreedCapabilities: SpreedCapabilityDto,
         val conversationModel: ConversationModel
     ) : ViewState
-    open class GetCapabilitiesUpdateState(val spreedCapabilities: SpreedCapability) : ViewState
+    open class GetCapabilitiesUpdateState(val spreedCapabilities: SpreedCapabilityDto) : ViewState
 
     private val _getCapabilitiesViewState: MutableLiveData<ViewState> = MutableLiveData(GetCapabilitiesStartState)
     val getCapabilitiesViewState: LiveData<ViewState>
@@ -1256,7 +1256,7 @@ class ChatViewModel @AssistedInject constructor(
         val conversationLastRead: Int,
         val expandedParents: Set<Int> = emptySet(),
         val conversation: ConversationModel? = null,
-        val capabilities: SpreedCapability? = null
+        val capabilities: SpreedCapabilityDto? = null
     )
 
     // The conversation's own hasCall is the server's authoritative answer to "is a call currently
@@ -1800,12 +1800,12 @@ class ChatViewModel @AssistedInject constructor(
             chatNetworkDataSource.getCapabilities(user, token)
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(object : Observer<SpreedCapability> {
+                ?.subscribe(object : Observer<SpreedCapabilityDto> {
                     override fun onSubscribe(d: Disposable) {
                         disposableSet.add(d)
                     }
 
-                    override fun onNext(spreedCapabilities: SpreedCapability) {
+                    override fun onNext(spreedCapabilities: SpreedCapabilityDto) {
                         participantPermissions = ParticipantPermissions(
                             spreedCapabilities,
                             conversationModel
@@ -2489,12 +2489,12 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
-    inner class SetReminderObserver : Observer<Reminder> {
+    inner class SetReminderObserver : Observer<ReminderDto> {
         override fun onSubscribe(d: Disposable) {
             disposableSet.add(d)
         }
 
-        override fun onNext(reminder: Reminder) {
+        override fun onNext(reminder: ReminderDto) {
             Log.d(TAG, "reminder set successfully")
         }
 
@@ -2507,12 +2507,12 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
-    inner class GetReminderObserver : Observer<Reminder> {
+    inner class GetReminderObserver : Observer<ReminderDto> {
         override fun onSubscribe(d: Disposable) {
             disposableSet.add(d)
         }
 
-        override fun onNext(reminder: Reminder) {
+        override fun onNext(reminder: ReminderDto) {
             _getReminderExistState.value = GetReminderExistState(reminder)
         }
 
@@ -2595,7 +2595,7 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
-    suspend fun fetchOpenGraph(url: String): OpenGraphObject? {
+    suspend fun fetchOpenGraph(url: String): OpenGraphObjectDto? {
         if (!this::currentUser.isInitialized) return null
         return withContext(Dispatchers.IO) {
             runCatching {
@@ -2758,7 +2758,7 @@ class ChatViewModel @AssistedInject constructor(
 
     sealed class OutOfOfficeUIState {
         data object None : OutOfOfficeUIState()
-        data class Success(val userAbsence: UserAbsenceData) : OutOfOfficeUIState()
+        data class Success(val userAbsence: UserAbsenceDataDto) : OutOfOfficeUIState()
         data class Error(val exception: Exception) : OutOfOfficeUIState()
     }
 
@@ -2770,13 +2770,13 @@ class ChatViewModel @AssistedInject constructor(
 
     sealed class ThreadRetrieveUiState {
         data object None : ThreadRetrieveUiState()
-        data class Success(val thread: ThreadInfo?) : ThreadRetrieveUiState()
+        data class Success(val thread: ThreadInfoDto?) : ThreadRetrieveUiState()
         data class Error(val exception: Exception) : ThreadRetrieveUiState()
     }
 
     sealed class UpcomingEventUIState {
         data object None : UpcomingEventUIState()
-        data class Success(val event: UpcomingEvent) : UpcomingEventUIState()
+        data class Success(val event: UpcomingEventDto) : UpcomingEventUIState()
         data class Error(val exception: Exception) : UpcomingEventUIState()
     }
 

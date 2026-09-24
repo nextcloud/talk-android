@@ -10,7 +10,7 @@ package com.nextcloud.talk.utils
 
 import android.util.Log
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 
 enum class SpreedFeatures(val value: String) {
     RECORDING_V1("recording-v1"),
@@ -127,7 +127,7 @@ object CapabilitiesUtil {
     //region SpreedCapabilities
 
     @JvmStatic
-    fun hasSpreedFeatureCapability(spreedCapabilities: SpreedCapability?, spreedFeatures: SpreedFeatures): Boolean {
+    fun hasSpreedFeatureCapability(spreedCapabilities: SpreedCapabilityDto?, spreedFeatures: SpreedFeatures): Boolean {
         if (spreedCapabilities == null) {
             Log.e(TAG, "spreedCapabilities were null when checking capability ${spreedFeatures.value}")
             return false
@@ -136,7 +136,7 @@ object CapabilitiesUtil {
         return spreedCapabilities.features?.contains(spreedFeatures.value) == true
     }
 
-    fun hasConversationSubfoldersForAttachments(spreedCapabilities: SpreedCapability): Boolean {
+    fun hasConversationSubfoldersForAttachments(spreedCapabilities: SpreedCapabilityDto): Boolean {
         if (spreedCapabilities.config?.containsKey("attachments") == true) {
             val map = spreedCapabilities.config!!["attachments"]
             if (map?.containsKey("conversation-subfolders") == true) {
@@ -146,7 +146,7 @@ object CapabilitiesUtil {
         return false
     }
 
-    fun isPasswordEnforced(spreedCapabilities: SpreedCapability?): Boolean {
+    fun isPasswordEnforced(spreedCapabilities: SpreedCapabilityDto?): Boolean {
         if (spreedCapabilities?.config?.containsKey("conversations") == true) {
             val map = spreedCapabilities.config!!["conversations"]
             if (map?.containsKey("force-passwords") == true) {
@@ -156,10 +156,10 @@ object CapabilitiesUtil {
         return false
     }
 
-    fun isSharedItemsAvailable(spreedCapabilities: SpreedCapability): Boolean =
+    fun isSharedItemsAvailable(spreedCapabilities: SpreedCapabilityDto): Boolean =
         hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA)
 
-    fun getMessageMaxLength(spreedCapabilities: SpreedCapability): Int {
+    fun getMessageMaxLength(spreedCapabilities: SpreedCapabilityDto): Int {
         if (spreedCapabilities.config?.containsKey("chat") == true) {
             val chatConfigHashMap = spreedCapabilities.config!!["chat"]
             if (chatConfigHashMap?.containsKey("max-length") == true) {
@@ -175,7 +175,7 @@ object CapabilitiesUtil {
         return DEFAULT_CHAT_SIZE
     }
 
-    fun getMaxGifSize(spreedCapabilities: SpreedCapability): Long {
+    fun getMaxGifSize(spreedCapabilities: SpreedCapabilityDto): Long {
         if (spreedCapabilities.config?.containsKey("previews") == true) {
             val previewsConfigHashMap = spreedCapabilities.config!!["previews"]
             if (previewsConfigHashMap?.containsKey("max-gif-size") == true) {
@@ -190,7 +190,7 @@ object CapabilitiesUtil {
         return DEFAULT_MAX_GIF_SIZE
     }
 
-    fun conversationDescriptionLength(spreedCapabilities: SpreedCapability?): Int {
+    fun conversationDescriptionLength(spreedCapabilities: SpreedCapabilityDto?): Int {
         if (spreedCapabilities?.config?.containsKey("conversations") == true) {
             val map: Map<String, Any>? = spreedCapabilities.config!!["conversations"]
             if (map != null && map.containsKey("description-length")) {
@@ -200,7 +200,7 @@ object CapabilitiesUtil {
         return CONVERSATION_DESCRIPTION_LENGTH_FOR_OLD_SERVER
     }
 
-    fun isReadStatusAvailable(spreedCapabilities: SpreedCapability?): Boolean {
+    fun isReadStatusAvailable(spreedCapabilities: SpreedCapabilityDto?): Boolean {
         val chatConfig = spreedCapabilities?.config?.get("chat") as? Map<*, *>
         return if (chatConfig?.containsKey("read-privacy") == true) {
             true
@@ -212,7 +212,7 @@ object CapabilitiesUtil {
         }
     }
 
-    fun retentionOfEventRooms(spreedCapabilities: SpreedCapability): Int {
+    fun retentionOfEventRooms(spreedCapabilities: SpreedCapabilityDto): Int {
         if (spreedCapabilities.config?.containsKey("conversations") == true) {
             val map = spreedCapabilities.config!!["conversations"]
             if (map?.containsKey("retention-event") == true) {
@@ -222,7 +222,7 @@ object CapabilitiesUtil {
         return 0
     }
 
-    fun retentionOfSIPRoom(spreedCapabilities: SpreedCapability): Int {
+    fun retentionOfSIPRoom(spreedCapabilities: SpreedCapabilityDto): Int {
         if (spreedCapabilities.config?.containsKey("conversations") == true) {
             val map = spreedCapabilities.config!!["conversations"]
             if (map?.containsKey("retention-phone") == true) {
@@ -232,7 +232,7 @@ object CapabilitiesUtil {
         return 0
     }
 
-    fun retentionOfInstantMeetingRoom(spreedCapabilities: SpreedCapability): Int {
+    fun retentionOfInstantMeetingRoom(spreedCapabilities: SpreedCapabilityDto): Int {
         if (spreedCapabilities.config?.containsKey("conversations") == true) {
             val map = spreedCapabilities.config!!["conversations"]
             if (map?.containsKey("retention-instant-meetings") == true) {
@@ -242,7 +242,7 @@ object CapabilitiesUtil {
         return 0
     }
 
-    fun retentionOfClassifiedRoom(spreedCapabilities: SpreedCapability): Int {
+    fun retentionOfClassifiedRoom(spreedCapabilities: SpreedCapabilityDto): Int {
         if (spreedCapabilities.config?.containsKey("conversations") == true) {
             val map = spreedCapabilities.config!!["conversations"]
             if (map?.containsKey("retention-classified") == true) {
@@ -253,7 +253,7 @@ object CapabilitiesUtil {
     }
 
     @JvmStatic
-    fun isCallRecordingAvailable(spreedCapabilities: SpreedCapability): Boolean {
+    fun isCallRecordingAvailable(spreedCapabilities: SpreedCapabilityDto): Boolean {
         if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RECORDING_V1) &&
             spreedCapabilities.config?.containsKey("call") == true
         ) {
@@ -266,7 +266,7 @@ object CapabilitiesUtil {
     }
 
     @JvmStatic
-    fun getAttachmentFolder(spreedCapabilities: SpreedCapability): String {
+    fun getAttachmentFolder(spreedCapabilities: SpreedCapabilityDto): String {
         if (spreedCapabilities.config?.containsKey("attachments") == true) {
             val map = spreedCapabilities.config!!["attachments"]
             if (map?.containsKey("folder") == true) {
@@ -276,10 +276,10 @@ object CapabilitiesUtil {
         return "/Talk"
     }
 
-    fun isConversationDescriptionEndpointAvailable(spreedCapabilities: SpreedCapability): Boolean =
+    fun isConversationDescriptionEndpointAvailable(spreedCapabilities: SpreedCapabilityDto): Boolean =
         hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ROOM_DESCRIPTION)
 
-    fun isAbleToCall(spreedCapabilities: SpreedCapability): Boolean =
+    fun isAbleToCall(spreedCapabilities: SpreedCapabilityDto): Boolean =
         if (
             spreedCapabilities.config?.containsKey("call") == true &&
             spreedCapabilities.config!!["call"] != null &&
@@ -301,13 +301,13 @@ object CapabilitiesUtil {
         return false
     }
 
-    fun isTranslationsSupported(spreedCapabilities: SpreedCapability): Boolean =
+    fun isTranslationsSupported(spreedCapabilities: SpreedCapabilityDto): Boolean =
         spreedCapabilities.config?.containsKey("chat") == true &&
             spreedCapabilities.config!!["chat"] != null &&
             spreedCapabilities.config!!["chat"]!!.containsKey("has-translation-providers") &&
             spreedCapabilities.config!!["chat"]!!["has-translation-providers"] == true
 
-    fun getRecordingConsentType(spreedCapabilities: SpreedCapability): Int {
+    fun getRecordingConsentType(spreedCapabilities: SpreedCapabilityDto): Int {
         if (
             spreedCapabilities.config?.containsKey("call") == true &&
             spreedCapabilities.config!!["call"] != null &&
@@ -325,10 +325,10 @@ object CapabilitiesUtil {
         return RECORDING_CONSENT_NOT_REQUIRED
     }
 
-    fun isBanningAvailable(spreedCapabilities: SpreedCapability): Boolean =
+    fun isBanningAvailable(spreedCapabilities: SpreedCapabilityDto): Boolean =
         hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.BAN_V1)
 
-    fun isCallEndToEndEncryptionEnabled(spreedCapabilities: SpreedCapability?): Boolean {
+    fun isCallEndToEndEncryptionEnabled(spreedCapabilities: SpreedCapabilityDto?): Boolean {
         if (
             spreedCapabilities?.config?.containsKey("call") == true &&
             spreedCapabilities.config!!["call"] != null &&

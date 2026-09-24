@@ -7,7 +7,7 @@
 package com.nextcloud.talk.raisehand
 
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.models.json.generic.GenericMeta
+import com.nextcloud.talk.models.json.generic.GenericMetaDto
 import io.reactivex.Observable
 
 class RequestAssistanceRepositoryImpl(private val ncApi: NcApi) : RequestAssistanceRepository {
@@ -32,14 +32,14 @@ class RequestAssistanceRepositoryImpl(private val ncApi: NcApi) : RequestAssista
             url
         ).map { mapToWithdrawRequestAssistanceModel(it.ocs?.meta!!) }
 
-    private fun mapToRequestAssistanceModel(response: GenericMeta): RequestAssistanceModel {
+    private fun mapToRequestAssistanceModel(response: GenericMetaDto): RequestAssistanceModel {
         val success = response.statusCode == HTTP_OK
         return RequestAssistanceModel(
             success
         )
     }
 
-    private fun mapToWithdrawRequestAssistanceModel(response: GenericMeta): WithdrawRequestAssistanceModel {
+    private fun mapToWithdrawRequestAssistanceModel(response: GenericMetaDto): WithdrawRequestAssistanceModel {
         val success = response.statusCode == HTTP_OK
         return WithdrawRequestAssistanceModel(
             success

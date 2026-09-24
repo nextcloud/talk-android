@@ -54,7 +54,7 @@ class InvitationsRepositoryImpl(private val ncApi: NcApi, private val ncApiCorou
 
     private fun mapToInvitationsModel(
         user: User,
-        invitations: List<com.nextcloud.talk.models.json.invitation.Invitation>
+        invitations: List<com.nextcloud.talk.models.json.invitation.InvitationDto>
     ): InvitationsModel {
         val filteredInvitations = invitations.filter { it.state == OPEN_PENDING_INVITATION }
 

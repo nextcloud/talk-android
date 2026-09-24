@@ -6,7 +6,7 @@
  */
 package com.nextcloud.talk.call
 
-import com.nextcloud.talk.models.json.signaling.DataChannelMessage
+import com.nextcloud.talk.models.json.signaling.DataChannelMessageDto
 import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper
 import org.junit.Before
@@ -57,7 +57,7 @@ class MessageSenderNoMcuTest {
 
     @Test
     fun testSendDataChannelMessage() {
-        val message = DataChannelMessage()
+        val message = DataChannelMessageDto()
         messageSender!!.send(message, "theSessionId2")
 
         Mockito.verify(peerConnectionWrapper2!!).send(message)
@@ -68,7 +68,7 @@ class MessageSenderNoMcuTest {
 
     @Test
     fun testSendDataChannelMessageIfScreenPeerConnection() {
-        val message = DataChannelMessage()
+        val message = DataChannelMessageDto()
         messageSender!!.send(message, "theSessionId4")
 
         Mockito.verify(peerConnectionWrapper1!!, never()).send(message)
@@ -79,7 +79,7 @@ class MessageSenderNoMcuTest {
 
     @Test
     fun testSendDataChannelMessageIfNoPeerConnection() {
-        val message = DataChannelMessage()
+        val message = DataChannelMessageDto()
         messageSender!!.send(message, "theSessionId3")
 
         Mockito.verify(peerConnectionWrapper1!!, never()).send(message)
@@ -90,7 +90,7 @@ class MessageSenderNoMcuTest {
 
     @Test
     fun testSendDataChannelMessageToAll() {
-        val message = DataChannelMessage()
+        val message = DataChannelMessageDto()
         messageSender!!.sendToAll(message)
 
         Mockito.verify(peerConnectionWrapper1!!).send(message)

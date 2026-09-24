@@ -7,10 +7,10 @@
 
 package com.nextcloud.talk.chat.domain
 
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 
 sealed class ChatPullResult {
-    data class Success(val messages: List<ChatMessageJson>, val lastCommonRead: Int?) : ChatPullResult()
+    data class Success(val messages: List<ChatMessageDto>, val lastCommonRead: Int?) : ChatPullResult()
 
     object NotModified : ChatPullResult()
     object PreconditionFailed : ChatPullResult()

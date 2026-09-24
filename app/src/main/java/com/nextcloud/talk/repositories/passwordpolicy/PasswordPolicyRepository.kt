@@ -7,7 +7,7 @@
 
 package com.nextcloud.talk.repositories.passwordpolicy
 
-import com.nextcloud.talk.models.json.passwordResult.PasswordResult
+import com.nextcloud.talk.models.json.passwordResult.PasswordResultDto
 
 interface PasswordPolicyRepository {
     /**
@@ -16,7 +16,7 @@ interface PasswordPolicyRepository {
      * @param url the validation endpoint taken from the password_policy capability
      * @throws IllegalStateException if the server answers without a result
      */
-    suspend fun validatePassword(credentials: String, url: String, password: String): PasswordResult
+    suspend fun validatePassword(credentials: String, url: String, password: String): PasswordResultDto
 
     /**
      * Asks the server for a password that satisfies the policy it advertises.

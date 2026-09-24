@@ -19,9 +19,9 @@ import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.capabilities.Capabilities
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.utils.SpreedFeatures
 import io.reactivex.Observable
 import io.reactivex.android.plugins.RxAndroidPlugins
@@ -425,8 +425,8 @@ class OfflineFirstConversationsRepositoryTest {
             username = "me",
             baseUrl = BASE_URL,
             token = "app-password",
-            capabilities = Capabilities().apply {
-                spreedCapability = SpreedCapability().apply { this.features = features }
+            capabilities = CapabilitiesDto().apply {
+                spreedCapability = SpreedCapabilityDto().apply { this.features = features }
             }
         )
     }
@@ -436,8 +436,8 @@ class OfflineFirstConversationsRepositoryTest {
         lastActivity: Long,
         unreadMessages: Int,
         lastReadMessage: Int = 0
-    ): Conversation =
-        Conversation(
+    ): ConversationDto =
+        ConversationDto(
             token = token,
             lastActivity = lastActivity,
             unreadMessages = unreadMessages,

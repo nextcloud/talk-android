@@ -8,11 +8,11 @@
 package com.nextcloud.talk.conversationcreation.data
 
 import com.nextcloud.talk.api.NcApiCoroutines
-import com.nextcloud.talk.conversationinfo.CreateRoomRequest
+import com.nextcloud.talk.conversationinfo.CreateRoomRequestDto
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.conversations.ConversationPreset
+import com.nextcloud.talk.models.json.conversations.ConversationPresetDto
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
@@ -26,7 +26,7 @@ import javax.inject.Inject
 class ConversationCreationRepositoryImpl @Inject constructor(private val ncApiCoroutines: NcApiCoroutines) :
     ConversationCreationRepository {
 
-    override suspend fun getConversationPresets(credentials: String?, url: String): List<ConversationPreset> =
+    override suspend fun getConversationPresets(credentials: String?, url: String): List<ConversationPresetDto> =
         ncApiCoroutines.getConversationPresets(credentials, url).ocs?.data.orEmpty()
 
     override suspend fun setConversationDescription(
@@ -71,7 +71,11 @@ class ConversationCreationRepositoryImpl @Inject constructor(private val ncApiCo
         return response
     }
 
-    override suspend fun createRoomWithBody(credentials: String?, url: String, body: CreateRoomRequest): RoomOverall {
+    override suspend fun createRoomWithBody(
+        credentials: String?,
+        url: String,
+        body: CreateRoomRequestDto
+    ): RoomOverall {
         val response = ncApiCoroutines.createRoomWithBody(credentials, url, body)
         return response
     }

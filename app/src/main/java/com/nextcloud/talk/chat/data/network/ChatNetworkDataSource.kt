@@ -8,14 +8,14 @@ package com.nextcloud.talk.chat.data.network
 
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.models.json.opengraph.Reference
-import com.nextcloud.talk.models.json.reminder.Reminder
+import com.nextcloud.talk.models.json.opengraph.ReferenceDto
+import com.nextcloud.talk.models.json.reminder.ReminderDto
 import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEventsOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import io.reactivex.Observable
@@ -24,7 +24,7 @@ import retrofit2.Response
 @Suppress("LongParameterList", "TooManyFunctions")
 interface ChatNetworkDataSource {
     suspend fun getRoom(user: User, roomToken: String): ConversationModel
-    fun getCapabilities(user: User, roomToken: String): Observable<SpreedCapability>
+    fun getCapabilities(user: User, roomToken: String): Observable<SpreedCapabilityDto>
     fun joinRoom(user: User, roomToken: String, roomPassword: String): Observable<ConversationModel>
     fun setReminder(
         user: User,
@@ -32,9 +32,9 @@ interface ChatNetworkDataSource {
         messageId: String,
         timeStamp: Int,
         chatApiVersion: Int
-    ): Observable<Reminder>
+    ): Observable<ReminderDto>
 
-    fun getReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): Observable<Reminder>
+    fun getReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): Observable<ReminderDto>
     fun deleteReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): Observable<GenericOverall>
     fun shareToNotes(
         credentials: String,
@@ -84,8 +84,8 @@ interface ChatNetworkDataSource {
         messageId: String,
         limit: Int,
         threadId: Int?
-    ): List<ChatMessageJson>
-    suspend fun getOpenGraph(credentials: String, baseUrl: String, extractedLinkToPreview: String): Reference?
+    ): List<ChatMessageDto>
+    suspend fun getOpenGraph(credentials: String, baseUrl: String, extractedLinkToPreview: String): ReferenceDto?
     suspend fun unbindRoom(credentials: String, baseUrl: String, roomToken: String): GenericOverall
 
     suspend fun sendScheduledChatMessage(

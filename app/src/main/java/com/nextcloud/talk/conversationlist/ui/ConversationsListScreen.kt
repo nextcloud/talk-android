@@ -56,10 +56,10 @@ import com.nextcloud.talk.conversationtags.viewmodels.ConversationTagsViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.models.json.tags.ConversationTag
+import com.nextcloud.talk.models.json.participants.ParticipantDto
+import com.nextcloud.talk.models.json.tags.ConversationTagDto
 import com.nextcloud.talk.chooseaccount.ChooseAccountDialogCompose
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.DEFAULT
@@ -105,7 +105,7 @@ data class ConversationsListScreenCallbacks(
     val onConversationClick: (ConversationModel) -> Unit,
     val onConversationLongClick: (ConversationModel) -> Unit,
     val onMessageResultClick: (SearchMessageEntry) -> Unit,
-    val onContactClick: (Participant) -> Unit,
+    val onContactClick: (ParticipantDto) -> Unit,
     val onLoadMoreClick: () -> Unit,
     val onRefresh: () -> Unit,
     val onFabClick: () -> Unit,
@@ -188,7 +188,7 @@ fun ConversationsListScreen(
     } == true
     val nonEmptyConversationTags = remember(conversationTags, visibleRooms) {
         conversationTags.filter { tag ->
-            if (tag.type == ConversationTag.TYPE_FAVORITES) {
+            if (tag.type == ConversationTagDto.TYPE_FAVORITES) {
                 visibleRooms.any { it.favorite }
             } else {
                 visibleRooms.any { it.tagIds.contains(tag.id) }
@@ -338,7 +338,7 @@ fun ConversationsListScreen(
                                                 selectedTagId = selectedTagFilter,
                                                 onTagSelected = { tagId ->
                                                     val isFavorites = conversationTags.any {
-                                                        it.id == tagId && it.type == ConversationTag.TYPE_FAVORITES
+                                                        it.id == tagId && it.type == ConversationTagDto.TYPE_FAVORITES
                                                     }
                                                     viewModel.selectTagFilter(tagId, isFavorites)
                                                 },
@@ -439,7 +439,7 @@ fun ConversationsListScreen(
                 ) {
                     AssignConversationTagsSheetContent(
                         conversation = conversationForTags,
-                        tags = conversationTags.filter { it.type == ConversationTag.TYPE_CUSTOM },
+                        tags = conversationTags.filter { it.type == ConversationTagDto.TYPE_CUSTOM },
                         onToggleTag = { tagId ->
                             val newTagIds = if (conversationForTags.tagIds.contains(tagId)) {
                                 conversationForTags.tagIds - tagId
@@ -503,7 +503,7 @@ private fun previewConvModel(
     status: String? = null,
     statusIcon: String? = null,
     remoteServer: String? = null,
-    lastMessage: ChatMessageJson? = null
+    lastMessage: ChatMessageDto? = null
 ) = ConversationModel(
     internalId = "1@$token",
     accountId = 1L,
@@ -512,7 +512,7 @@ private fun previewConvModel(
     displayName = displayName,
     description = "",
     type = type,
-    participantType = Participant.ParticipantType.USER,
+    participantType = ParticipantDto.ParticipantType.USER,
     sessionId = "",
     actorId = "user1",
     actorType = "users",
@@ -544,7 +544,7 @@ private fun previewMsg(
     message: String = "Hello there",
     messageType: String = "comment",
     messageParameters: HashMap<String?, HashMap<String?, String?>>? = null
-) = ChatMessageJson(
+) = ChatMessageDto(
     id = 1L,
     actorId = actorId,
     actorDisplayName = actorDisplayName,

@@ -10,14 +10,14 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.models.json.opengraph.Reference
-import com.nextcloud.talk.models.json.reminder.Reminder
+import com.nextcloud.talk.models.json.opengraph.ReferenceDto
+import com.nextcloud.talk.models.json.reminder.ReminderDto
 import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEventsOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import com.nextcloud.talk.utils.ApiUtils
@@ -38,7 +38,7 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         return ConversationModel.mapToConversationModel(roomOverall.ocs?.data!!, user)
     }
 
-    override fun getCapabilities(user: User, roomToken: String): Observable<SpreedCapability> {
+    override fun getCapabilities(user: User, roomToken: String): Observable<SpreedCapabilityDto> {
         val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
 
@@ -65,7 +65,7 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         messageId: String,
         timeStamp: Int,
         chatApiVersion: Int
-    ): Observable<Reminder> {
+    ): Observable<ReminderDto> {
         val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
         return ncApi.setReminder(
             credentials,
@@ -81,7 +81,7 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         roomToken: String,
         messageId: String,
         chatApiVersion: Int
-    ): Observable<Reminder> {
+    ): Observable<ReminderDto> {
         val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
         return ncApi.getReminder(
             credentials,
@@ -209,7 +209,7 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         messageId: String,
         limit: Int,
         threadId: Int?
-    ): List<ChatMessageJson> {
+    ): List<ChatMessageDto> {
         val url = ApiUtils.getUrlForChatMessageContext(baseUrl, token, messageId)
         return ncApiCoroutines.getContextOfChatMessage(credentials, url, limit, threadId).ocs?.data ?: listOf()
     }
@@ -218,7 +218,7 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         credentials: String,
         baseUrl: String,
         extractedLinkToPreview: String
-    ): Reference? {
+    ): ReferenceDto? {
         val openGraphLink = ApiUtils.getUrlForOpenGraph(baseUrl)
         return ncApi.getOpenGraph(
             credentials,

@@ -11,9 +11,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chooseaccount.data.StatusRepository
-import com.nextcloud.talk.models.json.status.ClearAt
-import com.nextcloud.talk.models.json.status.Status
-import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
+import com.nextcloud.talk.models.json.status.ClearAtDto
+import com.nextcloud.talk.models.json.status.StatusDto
+import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusDto
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
@@ -51,11 +51,11 @@ class StatusMessageViewModel @Inject constructor(
     private val _clearAtPosition = MutableStateFlow(0)
     val clearAtPosition: StateFlow<Int> = _clearAtPosition
 
-    private val _predefinedStatuses = MutableStateFlow<List<PredefinedStatus>>(emptyList())
-    val predefinedStatuses: StateFlow<List<PredefinedStatus>> = _predefinedStatuses
+    private val _predefinedStatuses = MutableStateFlow<List<PredefinedStatusDto>>(emptyList())
+    val predefinedStatuses: StateFlow<List<PredefinedStatusDto>> = _predefinedStatuses
 
-    private val _selectedPredefinedStatus = MutableStateFlow<PredefinedStatus?>(null)
-    val selectedPredefinedStatus: StateFlow<PredefinedStatus?> = _selectedPredefinedStatus
+    private val _selectedPredefinedStatus = MutableStateFlow<PredefinedStatusDto?>(null)
+    val selectedPredefinedStatus: StateFlow<PredefinedStatusDto?> = _selectedPredefinedStatus
 
     private val _isBackupStatusAvailable = MutableStateFlow(false)
     val isBackupStatusAvailable: StateFlow<Boolean> = _isBackupStatusAvailable
@@ -66,7 +66,7 @@ class StatusMessageViewModel @Inject constructor(
     private var clearAt: Long? = null
     private var currentStatusMessageId: String? = null
 
-    fun init(currentStatus: Status) {
+    fun init(currentStatus: StatusDto) {
         _emoji.value = currentStatus.icon ?: ""
         _message.value = currentStatus.message?.trim() ?: ""
         currentStatusMessageId = currentStatus.messageId
@@ -112,11 +112,11 @@ class StatusMessageViewModel @Inject constructor(
                 if (statusOverall.ocs?.meta?.statusCode == HTTP_STATUS_CODE_OK) {
                     val backupStatus = statusOverall.ocs?.data ?: return@launch
                     if (backupStatus.message != null) {
-                        val backupPredefined = PredefinedStatus(
+                        val backupPredefined = PredefinedStatusDto(
                             id = backupStatus.userId!!,
                             icon = backupStatus.icon,
                             message = backupStatus.message!!,
-                            clearAt = ClearAt(type = "period", time = backupStatus.clearAt.toString())
+                            clearAt = ClearAtDto(type = "period", time = backupStatus.clearAt.toString())
                         )
                         val updated = listOf(backupPredefined) + _predefinedStatuses.value
                         _predefinedStatuses.value = updated
@@ -198,7 +198,7 @@ class StatusMessageViewModel @Inject constructor(
         }
     }
 
-    fun selectPredefinedStatus(status: PredefinedStatus) {
+    fun selectPredefinedStatus(status: PredefinedStatusDto) {
         _selectedPredefinedStatus.value = status
         _emoji.value = status.icon ?: ""
         _message.value = status.message
@@ -267,7 +267,7 @@ internal fun statusMessageEndOfWeek(): Long {
     return date.timeInMillis / ONE_SECOND_IN_MILLIS
 }
 
-internal fun clearAtToUnixTime(clearAt: ClearAt?): Long? {
+internal fun clearAtToUnixTime(clearAt: ClearAtDto?): Long? {
     clearAt ?: return null
     return when (clearAt.type) {
         "period" -> System.currentTimeMillis() / ONE_SECOND_IN_MILLIS + clearAt.time.toLong()
@@ -276,7 +276,7 @@ internal fun clearAtToUnixTime(clearAt: ClearAt?): Long? {
     }
 }
 
-internal fun clearAtToClearAtPosition(clearAt: ClearAt?): Int {
+internal fun clearAtToClearAtPosition(clearAt: ClearAtDto?): Int {
     clearAt ?: return StatusMessageViewModel.CLEAR_AT_POS_DONT_CLEAR
     return when {
         clearAt.type == "period" -> when (clearAt.time) {

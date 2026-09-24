@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.ParticipantUiState
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.ui.ActorAvatarImage
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CharacterAvatarUtils
@@ -38,8 +38,8 @@ fun AvatarWithFallback(participant: ParticipantUiState, displayName: String, mod
         contentAlignment = Alignment.Center
     ) {
         // Guests and email participants have no avatar on the server, so theirs is drawn here
-        val isGuest = Participant.ActorType.GUESTS == participant.actorType ||
-            Participant.ActorType.EMAILS == participant.actorType
+        val isGuest = ParticipantDto.ActorType.GUESTS == participant.actorType ||
+            ParticipantDto.ActorType.EMAILS == participant.actorType
         val guestAvatar = if (isGuest) {
             CharacterAvatarUtils.guestAvatar(displayName, stringResource(R.string.nc_guest))
         } else {
@@ -89,7 +89,7 @@ private fun FallbackAvatar(participant: ParticipantUiState) {
 
 @Composable
 fun getUrlForAvatar(participant: ParticipantUiState): String =
-    if (participant.actorType == Participant.ActorType.FEDERATED) {
+    if (participant.actorType == ParticipantDto.ActorType.FEDERATED) {
         ApiUtils.getUrlForFederatedAvatar(
             participant.baseUrl,
             participant.roomToken,

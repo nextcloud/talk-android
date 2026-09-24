@@ -10,7 +10,7 @@ package com.nextcloud.talk.contacts.repository
 import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.contacts.apiService.FakeItem
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -29,7 +29,7 @@ class FakeRepositorySuccess : ContactsRepository {
     override fun getImageUri(user: User, avatarId: String, requestBigSize: Boolean, isDarkMode: Boolean) =
         "https://mydomain.com/index.php/avatar/$avatarId/512"
 
-    override fun getContactsFlow(user: User, searchQuery: String?): Flow<List<AutocompleteUser>> =
+    override fun getContactsFlow(user: User, searchQuery: String?): Flow<List<AutocompleteUserDto>> =
         flow {
             // unused atm
         }

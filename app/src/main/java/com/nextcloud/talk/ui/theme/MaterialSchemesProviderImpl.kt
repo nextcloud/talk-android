@@ -10,7 +10,7 @@ package com.nextcloud.talk.ui.theme
 import com.nextcloud.android.common.ui.color.ColorUtil
 import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.capabilities.Capabilities
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
@@ -39,7 +39,7 @@ internal class MaterialSchemesProviderImpl @Inject constructor(
     override fun getMaterialSchemesForCurrentUser(): MaterialSchemes =
         getMaterialSchemesForUser(userProvider.currentUser.blockingGet())
 
-    override fun getMaterialSchemesForCapabilities(capabilities: Capabilities?): MaterialSchemes {
+    override fun getMaterialSchemesForCapabilities(capabilities: CapabilitiesDto?): MaterialSchemes {
         val serverTheme = ServerThemeImpl(capabilities?.themingCapability, colorUtil)
         return MaterialSchemes.fromServerTheme(serverTheme)
     }

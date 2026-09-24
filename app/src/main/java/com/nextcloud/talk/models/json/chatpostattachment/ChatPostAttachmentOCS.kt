@@ -16,7 +16,7 @@ import kotlinx.parcelize.Parcelize
 @JsonObject
 data class ChatPostAttachmentOCS(
     @JsonField(name = ["data"])
-    var data: ChatPostAttachmentData? = null
+    var data: ChatPostAttachmentDataDto? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null)

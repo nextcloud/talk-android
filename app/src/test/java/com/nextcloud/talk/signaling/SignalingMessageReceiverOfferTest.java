@@ -6,8 +6,8 @@
  */
 package com.nextcloud.talk.signaling;
 
-import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
-import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
+import com.nextcloud.talk.models.json.signaling.NCMessagePayloadDto;
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -47,11 +47,11 @@ public class SignalingMessageReceiverOfferTest {
 
         signalingMessageReceiver.addListener(mockedOfferMessageListener);
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("offer");
         signalingMessage.setRoomType("theRoomType");
-        NCMessagePayload messagePayload = new NCMessagePayload();
+        NCMessagePayloadDto messagePayload = new NCMessagePayloadDto();
         messagePayload.setType("offer");
         messagePayload.setSdp("theSdp");
         signalingMessage.setPayload(messagePayload);
@@ -67,11 +67,11 @@ public class SignalingMessageReceiverOfferTest {
 
         signalingMessageReceiver.addListener(mockedOfferMessageListener);
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("offer");
         signalingMessage.setRoomType("theRoomType");
-        NCMessagePayload messagePayload = new NCMessagePayload();
+        NCMessagePayloadDto messagePayload = new NCMessagePayloadDto();
         messagePayload.setType("offer");
         messagePayload.setSdp("theSdp");
         messagePayload.setNick("theNick");
@@ -89,11 +89,11 @@ public class SignalingMessageReceiverOfferTest {
         signalingMessageReceiver.addListener(mockedOfferMessageListener);
         signalingMessageReceiver.removeListener(mockedOfferMessageListener);
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("offer");
         signalingMessage.setRoomType("theRoomType");
-        NCMessagePayload messagePayload = new NCMessagePayload();
+        NCMessagePayloadDto messagePayload = new NCMessagePayloadDto();
         messagePayload.setType("offer");
         messagePayload.setSdp("theSdp");
         messagePayload.setNick("theNick");
@@ -117,11 +117,11 @@ public class SignalingMessageReceiverOfferTest {
         signalingMessageReceiver.addListener(mockedOfferMessageListener3);
         signalingMessageReceiver.removeListener(mockedOfferMessageListener2);
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("offer");
         signalingMessage.setRoomType("theRoomType");
-        NCMessagePayload messagePayload = new NCMessagePayload();
+        NCMessagePayloadDto messagePayload = new NCMessagePayloadDto();
         messagePayload.setType("offer");
         messagePayload.setSdp("theSdp");
         messagePayload.setNick("theNick");
@@ -141,11 +141,11 @@ public class SignalingMessageReceiverOfferTest {
         signalingMessageReceiver.addListener(mockedOfferMessageListener);
         signalingMessageReceiver.addListener(mockedOfferMessageListener);
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("offer");
         signalingMessage.setRoomType("theRoomType");
-        NCMessagePayload messagePayload = new NCMessagePayload();
+        NCMessagePayloadDto messagePayload = new NCMessagePayloadDto();
         messagePayload.setType("offer");
         messagePayload.setSdp("theSdp");
         messagePayload.setNick("theNick");
@@ -169,11 +169,11 @@ public class SignalingMessageReceiverOfferTest {
 
         signalingMessageReceiver.addListener(mockedOfferMessageListener1);
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("offer");
         signalingMessage.setRoomType("theRoomType");
-        NCMessagePayload messagePayload = new NCMessagePayload();
+        NCMessagePayloadDto messagePayload = new NCMessagePayloadDto();
         messagePayload.setType("offer");
         messagePayload.setSdp("theSdp");
         messagePayload.setNick("theNick");
@@ -199,11 +199,11 @@ public class SignalingMessageReceiverOfferTest {
         signalingMessageReceiver.addListener(mockedOfferMessageListener1);
         signalingMessageReceiver.addListener(mockedOfferMessageListener2);
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("offer");
         signalingMessage.setRoomType("theRoomType");
-        NCMessagePayload messagePayload = new NCMessagePayload();
+        NCMessagePayloadDto messagePayload = new NCMessagePayloadDto();
         messagePayload.setType("offer");
         messagePayload.setSdp("theSdp");
         messagePayload.setNick("theNick");

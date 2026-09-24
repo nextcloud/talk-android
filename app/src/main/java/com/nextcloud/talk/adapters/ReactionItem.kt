@@ -6,6 +6,6 @@
  */
 package com.nextcloud.talk.adapters
 
-import com.nextcloud.talk.models.json.reactions.ReactionVoter
+import com.nextcloud.talk.models.json.reactions.ReactionVoterDto
 
-data class ReactionItem(val reactionVoter: ReactionVoter, val reaction: String?)
+data class ReactionItem(val reactionVoter: ReactionVoterDto, val reaction: String?)

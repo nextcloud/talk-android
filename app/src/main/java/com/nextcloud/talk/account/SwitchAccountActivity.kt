@@ -23,7 +23,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySwitchAccountBinding
 import com.nextcloud.talk.models.ImportAccount
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.conversationlist.DirectShareHelper
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.AccountUtils.findAvailableAccountsOnDevice
@@ -106,7 +106,7 @@ class SwitchAccountActivity : BaseActivity() {
             }
 
             lifecycleScope.launch {
-                var participant: Participant
+                var participant: ParticipantDto
 
                 if (!isAccountImport) {
                     for (user in userManager.getUsers()) {
@@ -116,8 +116,8 @@ class SwitchAccountActivity : BaseActivity() {
                             } else {
                                 user.username
                             }
-                            participant = Participant()
-                            participant.actorType = Participant.ActorType.USERS
+                            participant = ParticipantDto()
+                            participant.actorType = ParticipantDto.ActorType.USERS
                             participant.actorId = userId
                             participant.displayName = user.displayName
                             userItems.add(AdvancedUserItem(participant, user, null, 0))
@@ -130,8 +130,8 @@ class SwitchAccountActivity : BaseActivity() {
                     for (accountObject in findAvailableAccountsOnDevice(userManager.getUsers())) {
                         account = accountObject
                         importAccount = getInformationFromAccount(account)
-                        participant = Participant()
-                        participant.actorType = Participant.ActorType.USERS
+                        participant = ParticipantDto()
+                        participant.actorType = ParticipantDto.ActorType.USERS
                         participant.actorId = importAccount.getUsername()
                         participant.displayName = importAccount.getUsername()
                         user = User()

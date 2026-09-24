@@ -45,8 +45,8 @@ import androidx.core.util.Consumer
 import androidx.emoji2.emojipicker.EmojiPickerView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chooseaccount.viewmodel.StatusMessageViewModel
-import com.nextcloud.talk.models.json.status.Status
-import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
+import com.nextcloud.talk.models.json.status.StatusDto
+import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusDto
 import com.nextcloud.talk.ui.theme.protectEmojiPickerScrollGesture
 import com.nextcloud.talk.ui.theme.themeEmojiPickerCategoryTabs
 
@@ -54,7 +54,7 @@ private val emojiPickerHeight = 360.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatusMessageModalBottomSheet(currentStatus: Status, viewModel: StatusMessageViewModel, onDismiss: () -> Unit) {
+fun StatusMessageModalBottomSheet(currentStatus: StatusDto, viewModel: StatusMessageViewModel, onDismiss: () -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isDismissed by viewModel.isDismissed.collectAsState()
     var showEmojiPicker by rememberSaveable { mutableStateOf(false) }
@@ -158,13 +158,13 @@ internal fun StatusMessageSheetContentStateless(
     emoji: String,
     message: String,
     clearAtPosition: Int,
-    predefinedStatuses: List<PredefinedStatus>,
+    predefinedStatuses: List<PredefinedStatusDto>,
     isBackupStatusAvailable: Boolean,
     onEmojiButtonClick: () -> Unit,
     onMessageChanged: (String) -> Unit,
     onClearAtPositionSelected: (Int) -> Unit,
     onRevertStatus: () -> Unit,
-    onSelectStatus: (PredefinedStatus) -> Unit,
+    onSelectStatus: (PredefinedStatusDto) -> Unit,
     onClear: () -> Unit,
     onSet: () -> Unit
 ) {
@@ -211,13 +211,13 @@ private fun LandscapeSheetContent(
     emoji: String,
     message: String,
     clearAtPosition: Int,
-    predefinedStatuses: List<PredefinedStatus>,
+    predefinedStatuses: List<PredefinedStatusDto>,
     isBackupStatusAvailable: Boolean,
     onEmojiButtonClick: () -> Unit,
     onMessageChanged: (String) -> Unit,
     onClearAtPositionSelected: (Int) -> Unit,
     onRevertStatus: () -> Unit,
-    onSelectStatus: (PredefinedStatus) -> Unit,
+    onSelectStatus: (PredefinedStatusDto) -> Unit,
     onClear: () -> Unit,
     onSet: () -> Unit
 ) {
@@ -257,13 +257,13 @@ private fun PortraitSheetContent(
     emoji: String,
     message: String,
     clearAtPosition: Int,
-    predefinedStatuses: List<PredefinedStatus>,
+    predefinedStatuses: List<PredefinedStatusDto>,
     isBackupStatusAvailable: Boolean,
     onEmojiButtonClick: () -> Unit,
     onMessageChanged: (String) -> Unit,
     onClearAtPositionSelected: (Int) -> Unit,
     onRevertStatus: () -> Unit,
-    onSelectStatus: (PredefinedStatus) -> Unit,
+    onSelectStatus: (PredefinedStatusDto) -> Unit,
     onClear: () -> Unit,
     onSet: () -> Unit
 ) {

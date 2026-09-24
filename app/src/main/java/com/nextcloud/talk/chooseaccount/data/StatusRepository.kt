@@ -9,12 +9,12 @@ package com.nextcloud.talk.chooseaccount.data
 
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.status.StatusOverall
-import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
+import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusDto
 
 interface StatusRepository {
     suspend fun setStatus(credentials: String, url: String): StatusOverall
     suspend fun setStatusType(credentials: String, url: String, statusType: String): GenericOverall
-    suspend fun getPredefinedStatuses(credentials: String, url: String): List<PredefinedStatus>
+    suspend fun getPredefinedStatuses(credentials: String, url: String): List<PredefinedStatusDto>
     suspend fun getBackupStatus(credentials: String, url: String): StatusOverall
     suspend fun clearStatusMessage(credentials: String, url: String): GenericOverall
     suspend fun setPredefinedStatusMessage(

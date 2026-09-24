@@ -7,10 +7,10 @@
 package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 
 object ConversationUtils {
     private val TAG = ConversationUtils::class.java.simpleName
@@ -19,20 +19,20 @@ object ConversationUtils {
         ConversationEnums.ConversationType.ROOM_PUBLIC_CALL == conversation.type
 
     fun isGuest(conversation: ConversationModel): Boolean =
-        Participant.ParticipantType.GUEST == conversation.participantType ||
-            Participant.ParticipantType.GUEST_MODERATOR == conversation.participantType ||
-            Participant.ParticipantType.USER_FOLLOWING_LINK == conversation.participantType
+        ParticipantDto.ParticipantType.GUEST == conversation.participantType ||
+            ParticipantDto.ParticipantType.GUEST_MODERATOR == conversation.participantType ||
+            ParticipantDto.ParticipantType.USER_FOLLOWING_LINK == conversation.participantType
 
     fun isParticipantOwnerOrModerator(conversation: ConversationModel): Boolean =
-        Participant.ParticipantType.OWNER == conversation.participantType ||
-            Participant.ParticipantType.GUEST_MODERATOR == conversation.participantType ||
-            Participant.ParticipantType.MODERATOR == conversation.participantType
+        ParticipantDto.ParticipantType.OWNER == conversation.participantType ||
+            ParticipantDto.ParticipantType.GUEST_MODERATOR == conversation.participantType ||
+            ParticipantDto.ParticipantType.MODERATOR == conversation.participantType
 
-    fun isLockedOneToOne(conversation: ConversationModel, spreedCapabilities: SpreedCapability?): Boolean =
+    fun isLockedOneToOne(conversation: ConversationModel, spreedCapabilities: SpreedCapabilityDto?): Boolean =
         conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
             CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.LOCKED_ONE_TO_ONE)
 
-    fun canModerate(conversation: ConversationModel, spreedCapabilities: SpreedCapability?): Boolean =
+    fun canModerate(conversation: ConversationModel, spreedCapabilities: SpreedCapabilityDto?): Boolean =
         isParticipantOwnerOrModerator(conversation) &&
             !isLockedOneToOne(conversation, spreedCapabilities) &&
             conversation.type != ConversationEnums.ConversationType.FORMER_ONE_TO_ONE &&
@@ -40,19 +40,19 @@ object ConversationUtils {
 
     fun isConversationReadOnlyAvailable(
         conversation: ConversationModel,
-        spreedCapabilities: SpreedCapability
+        spreedCapabilities: SpreedCapabilityDto
     ): Boolean =
         CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.READ_ONLY_ROOMS) &&
             canModerate(conversation, spreedCapabilities)
 
-    fun isLobbyViewApplicable(conversation: ConversationModel, spreedCapabilities: SpreedCapability): Boolean =
+    fun isLobbyViewApplicable(conversation: ConversationModel, spreedCapabilities: SpreedCapabilityDto): Boolean =
         !canModerate(conversation, spreedCapabilities) &&
             (
                 conversation.type == ConversationEnums.ConversationType.ROOM_GROUP_CALL ||
                     conversation.type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
                 )
 
-    fun isNameEditable(conversation: ConversationModel, spreedCapabilities: SpreedCapability): Boolean =
+    fun isNameEditable(conversation: ConversationModel, spreedCapabilities: SpreedCapabilityDto): Boolean =
         canModerate(conversation, spreedCapabilities) &&
             ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL != conversation.type
 
@@ -69,16 +69,16 @@ object ConversationUtils {
     fun ConversationModel?.isAnnouncementAttribute(): Boolean =
         hasAttribute(ConversationEnums.ATTRIBUTE_IS_ANNOUNCEMENT)
 
-    fun isChannel(conversation: ConversationModel?, spreedCapabilities: SpreedCapability?): Boolean =
+    fun isChannel(conversation: ConversationModel?, spreedCapabilities: SpreedCapabilityDto?): Boolean =
         conversation.isChannelAttribute() &&
             CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ANNOUNCEMENT_PRESET)
 
-    fun isClassified(conversation: ConversationModel, spreedCapabilities: SpreedCapability?): Boolean =
+    fun isClassified(conversation: ConversationModel, spreedCapabilities: SpreedCapabilityDto?): Boolean =
         CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CLASSIFIED_CONVERSATIONS) &&
             conversation.isClassifiedAttribute()
 
-    @Deprecated("Use isClassified(conversation: ConversationModel, spreedCapabilities: SpreedCapability?)")
-    fun isClassified(conversation: Conversation, spreedCapabilities: SpreedCapability?): Boolean =
+    @Deprecated("Use isClassified(conversation: ConversationModel, spreedCapabilities: SpreedCapabilityDto?)")
+    fun isClassified(conversation: ConversationDto, spreedCapabilities: SpreedCapabilityDto?): Boolean =
         CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CLASSIFIED_CONVERSATIONS) &&
             ((conversation.attributes ?: 0) and ConversationEnums.ATTRIBUTE_IS_CLASSIFIED) != 0
 }

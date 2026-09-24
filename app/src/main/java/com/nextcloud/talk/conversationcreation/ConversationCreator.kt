@@ -12,13 +12,13 @@ import android.util.Log
 import org.json.JSONObject
 import androidx.core.net.toFile
 import com.nextcloud.talk.conversationcreation.data.ConversationCreationRepository
-import com.nextcloud.talk.conversationinfo.CreateRoomRequest
-import com.nextcloud.talk.conversationinfo.Participants
+import com.nextcloud.talk.conversationinfo.CreateRoomRequestDto
+import com.nextcloud.talk.conversationinfo.ParticipantsDto
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
-import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.SpreedFeatures
@@ -35,7 +35,7 @@ data class NewConversation(
     val preset: String,
     val params: CreateConversationParams,
     val password: String,
-    val participants: List<AutocompleteUser>,
+    val participants: List<AutocompleteUserDto>,
     val emoji: String? = null,
     val emojiColor: Int? = null,
     val imageUri: Uri? = null
@@ -59,7 +59,7 @@ class ConversationCreator @Inject constructor(
 ) {
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    suspend fun create(user: User, newConversation: NewConversation): Conversation? {
+    suspend fun create(user: User, newConversation: NewConversation): ConversationDto? {
         val capabilities = user.capabilities?.spreedCapability
         val credentials = ApiUtils.getCredentials(user.username, user.token)
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
@@ -82,8 +82,8 @@ class ConversationCreator @Inject constructor(
     private suspend fun createConversation(
         context: RequestContext,
         newConversation: NewConversation,
-        capabilities: SpreedCapability?
-    ): Conversation? =
+        capabilities: SpreedCapabilityDto?
+    ): ConversationDto? =
         try {
             if (CapabilitiesUtil.hasSpreedFeatureCapability(capabilities, SpreedFeatures.CONVERSATION_CREATION_ALL)) {
                 createWithAllParameters(
@@ -125,10 +125,10 @@ class ConversationCreator @Inject constructor(
         context: RequestContext,
         newConversation: NewConversation,
         supportsPasswordOnCreation: Boolean
-    ): Conversation? {
+    ): ConversationDto? {
         val params = newConversation.params
         val sendsPassword = supportsPasswordOnCreation && newConversation.isPasswordProtected
-        val body = CreateRoomRequest().apply {
+        val body = CreateRoomRequestDto().apply {
             roomType = params.roomType.toString()
             roomName = newConversation.name
             preset = newConversation.preset.takeIf { it != ConversationPresetId.DEFAULT }
@@ -159,7 +159,7 @@ class ConversationCreator @Inject constructor(
     private suspend fun createWithFollowUpRequests(
         context: RequestContext,
         newConversation: NewConversation
-    ): Conversation? {
+    ): ConversationDto? {
         val params = newConversation.params
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
             version = context.apiVersion,
@@ -236,7 +236,7 @@ class ConversationCreator @Inject constructor(
     @Suppress("Detekt.TooGenericExceptionCaught")
     private suspend fun addParticipants(
         context: RequestContext,
-        participants: List<AutocompleteUser>,
+        participants: List<AutocompleteUserDto>,
         token: String
     ): Map<String, List<String>> {
         val failed = mutableMapOf<String, MutableList<String>>()
@@ -264,8 +264,8 @@ class ConversationCreator @Inject constructor(
         return failed
     }
 
-    private fun participantsOf(autocompleteUsers: List<AutocompleteUser>): Participants {
-        val participants = Participants()
+    private fun participantsOf(autocompleteUsers: List<AutocompleteUserDto>): ParticipantsDto {
+        val participants = ParticipantsDto()
         autocompleteUsers.forEach { autocompleteUser ->
             val id = autocompleteUser.id ?: return@forEach
             when (autocompleteUser.source) {

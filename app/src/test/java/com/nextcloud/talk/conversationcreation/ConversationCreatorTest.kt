@@ -8,9 +8,9 @@ package com.nextcloud.talk.conversationcreation
 
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
-import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
-import com.nextcloud.talk.models.json.capabilities.Capabilities
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.utils.SpreedFeatures
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -33,8 +33,8 @@ class ConversationCreatorTest {
             username = "alice",
             token = "token",
             baseUrl = "https://cloud.example.com",
-            capabilities = Capabilities().apply {
-                spreedCapability = SpreedCapability().apply {
+            capabilities = CapabilitiesDto().apply {
+                spreedCapability = SpreedCapabilityDto().apply {
                     features = spreedFeatures.map { it.value } + CONVERSATION_V4
                 }
             }
@@ -44,7 +44,7 @@ class ConversationCreatorTest {
         password: String = "",
         roomType: Int = CreateConversationParams.ROOM_TYPE_GROUP,
         description: String = "",
-        participants: List<AutocompleteUser> = emptyList()
+        participants: List<AutocompleteUserDto> = emptyList()
     ) = NewConversation(
         name = "Team",
         description = description,
@@ -149,8 +149,8 @@ class ConversationCreatorTest {
                 user(),
                 newConversation(
                     participants = listOf(
-                        AutocompleteUser("alice", "Alice", ParticipantSource.USERS),
-                        AutocompleteUser("bob", "Bob", ParticipantSource.USERS)
+                        AutocompleteUserDto("alice", "Alice", ParticipantSource.USERS),
+                        AutocompleteUserDto("bob", "Bob", ParticipantSource.USERS)
                     )
                 )
             )

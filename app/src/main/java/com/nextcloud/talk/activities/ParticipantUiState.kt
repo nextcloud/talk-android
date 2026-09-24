@@ -7,7 +7,7 @@
 
 package com.nextcloud.talk.activities
 
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import org.webrtc.MediaStream
 
 data class ParticipantUiState(
@@ -22,7 +22,7 @@ data class ParticipantUiState(
     val isScreenStreamEnabled: Boolean,
     val screenMediaStream: MediaStream? = null,
     val raisedHand: Boolean,
-    val actorType: Participant.ActorType? = null,
+    val actorType: ParticipantDto.ActorType? = null,
     val actorId: String? = null,
     val isInternal: Boolean
 )

@@ -17,8 +17,8 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.nextcloud.talk.models.json.status.ClearAt
-import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
+import com.nextcloud.talk.models.json.status.ClearAtDto
+import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusDto
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(name = "Light", showBackground = true)
@@ -137,33 +137,33 @@ private fun PreviewStatusMessageSheetWithBackup() {
 
 private fun previewPredefinedStatuses() =
     listOf(
-        PredefinedStatus(
+        PredefinedStatusDto(
             id = "meeting",
             icon = "📆",
             message = "In a meeting",
-            clearAt = ClearAt(type = "period", time = "3600")
+            clearAt = ClearAtDto(type = "period", time = "3600")
         ),
-        PredefinedStatus(
+        PredefinedStatusDto(
             id = "commuting",
             icon = "🚌",
             message = "Commuting",
-            clearAt = ClearAt(type = "period", time = "1800")
+            clearAt = ClearAtDto(type = "period", time = "1800")
         ),
-        PredefinedStatus(
+        PredefinedStatusDto(
             id = "remote",
             icon = "🏡",
             message = "Working remotely",
-            clearAt = ClearAt(type = "end-of", time = "day")
+            clearAt = ClearAtDto(type = "end-of", time = "day")
         ),
-        PredefinedStatus(
+        PredefinedStatusDto(
             id = "sick",
             icon = "🤒",
             message = "Out sick",
-            clearAt = ClearAt(type = "end-of", time = "day")
+            clearAt = ClearAtDto(type = "end-of", time = "day")
         ),
-        PredefinedStatus(id = "vacation", icon = "🏖️", message = "On vacation", clearAt = null)
+        PredefinedStatusDto(id = "vacation", icon = "🏖️", message = "On vacation", clearAt = null)
     )
 
 private fun previewPredefinedStatusesWithBackup() =
-    listOf(PredefinedStatus(id = "backup", icon = "⌛", message = "Be right back", clearAt = null)) +
+    listOf(PredefinedStatusDto(id = "backup", icon = "⌛", message = "Be right back", clearAt = null)) +
         previewPredefinedStatuses()

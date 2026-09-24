@@ -76,9 +76,9 @@ import com.nextcloud.talk.extensions.loadNoteToSelfAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AvatarImageLoader
@@ -937,7 +937,7 @@ private fun previewModel(
     status: String? = null,
     statusIcon: String? = null,
     remoteServer: String? = null,
-    lastMessage: ChatMessageJson? = null,
+    lastMessage: ChatMessageDto? = null,
     messageDraft: MessageDraft? = null,
     lobbyState: ConversationEnums.LobbyState = ConversationEnums.LobbyState.LOBBY_STATE_ALL_PARTICIPANTS,
     readOnlyState: ConversationEnums.ConversationReadOnlyState =
@@ -950,7 +950,7 @@ private fun previewModel(
     displayName = displayName,
     description = "",
     type = type,
-    participantType = Participant.ParticipantType.USER,
+    participantType = ParticipantDto.ParticipantType.USER,
     sessionId = "s",
     actorId = "a",
     actorType = "users",
@@ -988,7 +988,7 @@ private fun previewMsg(
     messageType: String = "comment",
     systemMessageType: ChatMessage.SystemMessageType? = null,
     messageParameters: HashMap<String?, HashMap<String?, String?>>? = null
-) = ChatMessageJson(
+) = ChatMessageDto(
     id = 1L,
     actorId = actorId,
     actorDisplayName = actorDisplayName,

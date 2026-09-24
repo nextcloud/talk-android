@@ -6,7 +6,7 @@
  */
 package com.nextcloud.talk.passwordpolicy
 
-import com.nextcloud.talk.models.json.passwordResult.PasswordResult
+import com.nextcloud.talk.models.json.passwordResult.PasswordResultDto
 import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
 
 /**
@@ -14,12 +14,12 @@ import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
  */
 class FakePasswordPolicyRepository : PasswordPolicyRepository {
 
-    var validationResult = PasswordResult(passed = true, reason = null)
+    var validationResult = PasswordResultDto(passed = true, reason = null)
     var generatedPassword: String? = null
     var generationUrl: String? = null
     var failGeneration = false
 
-    override suspend fun validatePassword(credentials: String, url: String, password: String): PasswordResult =
+    override suspend fun validatePassword(credentials: String, url: String, password: String): PasswordResultDto =
         validationResult
 
     override suspend fun generatePassword(credentials: String, url: String): String {

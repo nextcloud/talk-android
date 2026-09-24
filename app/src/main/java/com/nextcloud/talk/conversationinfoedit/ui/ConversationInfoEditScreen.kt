@@ -76,7 +76,7 @@ import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditUiS
 import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 
 private const val AVATAR_SIZE_DP = 96
 private const val CONVERSATION_NAME_MAX_LENGTH = 255
@@ -456,7 +456,7 @@ private val previewConversation = ConversationModel(
     displayName = "My Conversation",
     description = "A great conversation about everything",
     type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
-    participantType = Participant.ParticipantType.OWNER,
+    participantType = ParticipantDto.ParticipantType.OWNER,
     sessionId = "",
     actorId = "",
     actorType = "",

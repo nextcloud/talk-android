@@ -10,10 +10,10 @@ package com.nextcloud.talk.webrtc;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
-import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
-import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
-import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
+import com.nextcloud.talk.models.json.signaling.DataChannelMessageDto;
+import com.nextcloud.talk.models.json.signaling.NCIceCandidateDto;
+import com.nextcloud.talk.models.json.signaling.NCMessagePayloadDto;
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto;
 import com.nextcloud.talk.signaling.SignalingMessageReceiver;
 import com.nextcloud.talk.signaling.SignalingMessageSender;
 
@@ -59,7 +59,7 @@ public class PeerConnectionWrapper {
     private String sessionId;
     private final MediaConstraints mediaConstraints;
     private final Map<String, DataChannel> dataChannels = new HashMap<>();
-    private final List<DataChannelMessage> pendingDataChannelMessages = new ArrayList<>();
+    private final List<DataChannelMessageDto> pendingDataChannelMessages = new ArrayList<>();
     private final SdpObserver sdpObserver;
 
     private final boolean isMCUPublisher;
@@ -154,7 +154,7 @@ public class PeerConnectionWrapper {
                     // offer; offers should be requested only for videos.
                     // "to" property is not actually needed in the "requestoffer" signaling message, but it is used to
                     // set the recipient session ID in the assembled call message.
-                    NCSignalingMessage ncSignalingMessage = createBaseSignalingMessage("requestoffer");
+                    NCSignalingMessageDto ncSignalingMessage = createBaseSignalingMessage("requestoffer");
                     signalingMessageSender.send(ncSignalingMessage);
                 } else if (!hasMCU && hasInitiated && "video".equals(this.videoStreamType)) {
                     // If the connection type is "screen" the client sharing the screen will send an
@@ -190,11 +190,11 @@ public class PeerConnectionWrapper {
     }
 
     public void raiseHand(Boolean raise) {
-        NCMessagePayload ncMessagePayload = new NCMessagePayload();
+        NCMessagePayloadDto ncMessagePayload = new NCMessagePayloadDto();
         ncMessagePayload.setState(raise);
         ncMessagePayload.setTimestamp(System.currentTimeMillis());
 
-        NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto ncSignalingMessage = new NCSignalingMessageDto();
         ncSignalingMessage.setTo(sessionId);
         ncSignalingMessage.setType("raiseHand");
         ncSignalingMessage.setPayload(ncMessagePayload);
@@ -204,11 +204,11 @@ public class PeerConnectionWrapper {
     }
 
     public void sendReaction(String emoji) {
-        NCMessagePayload ncMessagePayload = new NCMessagePayload();
+        NCMessagePayloadDto ncMessagePayload = new NCMessagePayloadDto();
         ncMessagePayload.setReaction(emoji);
         ncMessagePayload.setTimestamp(System.currentTimeMillis());
 
-        NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto ncSignalingMessage = new NCSignalingMessageDto();
         ncSignalingMessage.setTo(sessionId);
         ncSignalingMessage.setType("reaction");
         ncSignalingMessage.setPayload(ncMessagePayload);
@@ -330,7 +330,7 @@ public class PeerConnectionWrapper {
      *
      * @param dataChannelMessage the message to send
      */
-    public synchronized void send(DataChannelMessage dataChannelMessage) {
+    public synchronized void send(DataChannelMessageDto dataChannelMessage) {
         if (dataChannelMessage == null) {
             return;
         }
@@ -348,7 +348,7 @@ public class PeerConnectionWrapper {
         sendWithoutQueuing(statusDataChannel, dataChannelMessage);
     }
 
-    private void sendWithoutQueuing(DataChannel statusDataChannel, DataChannelMessage dataChannelMessage) {
+    private void sendWithoutQueuing(DataChannel statusDataChannel, DataChannelMessageDto dataChannelMessage) {
         try {
             Log.d(TAG, "Sending data channel message (" + dataChannelMessage + ") " + sessionId);
 
@@ -380,8 +380,8 @@ public class PeerConnectionWrapper {
         return false;
     }
 
-    private NCSignalingMessage createBaseSignalingMessage(String type) {
-        NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
+    private NCSignalingMessageDto createBaseSignalingMessage(String type) {
+        NCSignalingMessageDto ncSignalingMessage = new NCSignalingMessageDto();
         ncSignalingMessage.setTo(sessionId);
         ncSignalingMessage.setRoomType(videoStreamType);
         ncSignalingMessage.setType(type);
@@ -449,7 +449,7 @@ public class PeerConnectionWrapper {
                 }
 
                 if (dataChannel.state() == DataChannel.State.OPEN && "status".equals(dataChannelLabel)) {
-                    for (DataChannelMessage dataChannelMessage : pendingDataChannelMessages) {
+                    for (DataChannelMessageDto dataChannelMessage : pendingDataChannelMessages) {
                         sendWithoutQueuing(dataChannel, dataChannelMessage);
                     }
                     pendingDataChannelMessages.clear();
@@ -480,9 +480,9 @@ public class PeerConnectionWrapper {
             String strData = new String(bytes);
             Log.d(TAG, "Received data channel message (" + strData + ") over " + dataChannelLabel + " " + sessionId);
 
-            DataChannelMessage dataChannelMessage;
+            DataChannelMessageDto dataChannelMessage;
             try {
-                dataChannelMessage = LoganSquare.parse(strData, DataChannelMessage.class);
+                dataChannelMessage = LoganSquare.parse(strData, DataChannelMessageDto.class);
             } catch (IOException e) {
                 Log.d(TAG, "Failed to parse data channel message");
 
@@ -560,11 +560,11 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onIceCandidate(IceCandidate iceCandidate) {
-            NCSignalingMessage ncSignalingMessage = createBaseSignalingMessage("candidate");
-            NCMessagePayload ncMessagePayload = new NCMessagePayload();
+            NCSignalingMessageDto ncSignalingMessage = createBaseSignalingMessage("candidate");
+            NCMessagePayloadDto ncMessagePayload = new NCMessagePayloadDto();
             ncMessagePayload.setType("candidate");
 
-            NCIceCandidate ncIceCandidate = new NCIceCandidate();
+            NCIceCandidateDto ncIceCandidate = new NCIceCandidateDto();
             ncIceCandidate.setSdpMid(iceCandidate.sdpMid);
             ncIceCandidate.setSdpMLineIndex(iceCandidate.sdpMLineIndex);
             ncIceCandidate.setCandidate(iceCandidate.sdp);
@@ -669,8 +669,8 @@ public class PeerConnectionWrapper {
         public void onCreateSuccess(SessionDescription sessionDescription) {
             String type = sessionDescription.type.canonicalForm();
 
-            NCSignalingMessage ncSignalingMessage = createBaseSignalingMessage(type);
-            NCMessagePayload ncMessagePayload = new NCMessagePayload();
+            NCSignalingMessageDto ncSignalingMessage = createBaseSignalingMessage(type);
+            NCMessagePayloadDto ncMessagePayload = new NCMessagePayloadDto();
             ncMessagePayload.setType(type);
 
             SessionDescription sessionDescriptionWithPreferredCodec;

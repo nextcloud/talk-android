@@ -10,7 +10,7 @@ package com.nextcloud.talk.models
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.models.json.signaling.settings.FederationSettings
+import com.nextcloud.talk.models.json.signaling.settings.FederationSettingsDto
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -21,7 +21,7 @@ data class ExternalSignalingServer(
     @JsonField(name = ["externalSignalingTicket"])
     var externalSignalingTicket: String? = null,
     @JsonField(name = ["federation"])
-    var federation: FederationSettings? = null
+    var federation: FederationSettingsDto? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null, null)

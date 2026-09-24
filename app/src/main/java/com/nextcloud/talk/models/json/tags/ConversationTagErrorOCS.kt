@@ -8,14 +8,14 @@ package com.nextcloud.talk.models.json.tags
 
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.models.json.generic.GenericMeta
+import com.nextcloud.talk.models.json.generic.GenericMetaDto
 
 @JsonObject
 data class ConversationTagErrorOCS(
     @JsonField(name = ["meta"])
-    var meta: GenericMeta?,
+    var meta: GenericMetaDto?,
     @JsonField(name = ["data"])
-    var data: ConversationTagErrorResponse? = null
+    var data: ConversationTagErrorResponseDto? = null
 ) {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null)

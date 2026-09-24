@@ -18,7 +18,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemContactBinding
 import com.nextcloud.talk.extensions.loadUserAvatar
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -33,7 +33,7 @@ class ContactItem(
     /**
      * @return the model object
      */
-    val model: Participant,
+    val model: ParticipantDto,
     private val user: User,
     private var header: GenericTextHeaderItem?,
     private val viewThemeUtils: ViewThemeUtils
@@ -118,8 +118,8 @@ class ContactItem(
 
         if (TextUtils.isEmpty(model.displayName) &&
             (
-                model.type == Participant.ParticipantType.GUEST ||
-                    model.type == Participant.ParticipantType.USER_FOLLOWING_LINK
+                model.type == ParticipantDto.ParticipantType.GUEST ||
+                    model.type == ParticipantDto.ParticipantType.USER_FOLLOWING_LINK
                 )
         ) {
             holder?.binding?.nameText?.text = sharedApplication!!.getString(R.string.nc_guest)
@@ -129,15 +129,15 @@ class ContactItem(
     }
 
     private fun setAvatar(holder: ContactItemViewHolder?) {
-        if (model.calculatedActorType == Participant.ActorType.GROUPS ||
-            model.calculatedActorType == Participant.ActorType.CIRCLES
+        if (model.calculatedActorType == ParticipantDto.ActorType.GROUPS ||
+            model.calculatedActorType == ParticipantDto.ActorType.CIRCLES
         ) {
             setGenericAvatar(holder!!, R.drawable.ic_avatar_group)
-        } else if (model.calculatedActorType == Participant.ActorType.EMAILS) {
+        } else if (model.calculatedActorType == ParticipantDto.ActorType.EMAILS) {
             setGenericAvatar(holder!!, R.drawable.ic_avatar_mail)
-        } else if (model.calculatedActorType == Participant.ActorType.GUESTS ||
-            model.type == Participant.ParticipantType.GUEST ||
-            model.type == Participant.ParticipantType.GUEST_MODERATOR
+        } else if (model.calculatedActorType == ParticipantDto.ActorType.GUESTS ||
+            model.type == ParticipantDto.ParticipantType.GUEST ||
+            model.type == ParticipantDto.ParticipantType.GUEST_MODERATOR
         ) {
             var displayName: String?
 
@@ -153,7 +153,7 @@ class ContactItem(
             }
 
             holder?.binding?.avatarView?.loadUserAvatar(user, displayName, true, false)
-        } else if (model.calculatedActorType == Participant.ActorType.USERS) {
+        } else if (model.calculatedActorType == ParticipantDto.ActorType.USERS) {
             holder?.binding?.avatarView
                 ?.loadUserAvatar(
                     user,

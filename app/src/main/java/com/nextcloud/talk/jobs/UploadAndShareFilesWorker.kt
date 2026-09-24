@@ -36,9 +36,9 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.chatpostattachment.PostConversationAttachmentRequest
-import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachmentData
-import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ProbeConversationAttachmentRequest
+import com.nextcloud.talk.models.json.chatpostattachment.PostConversationAttachmentRequestDto
+import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachmentDataDto
+import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ProbeConversationAttachmentRequestDto
 import com.nextcloud.talk.upload.chunked.ChunkedFileUploader
 import com.nextcloud.talk.upload.chunked.OnDataTransferProgressListener
 import com.nextcloud.talk.upload.normal.FileUploader
@@ -326,7 +326,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 currentUser.token
             ) ?: return@runBlocking false
             val uploadId = UUID.randomUUID().toString()
-            val fileNames = ProbeConversationAttachmentRequest().apply {
+            val fileNames = ProbeConversationAttachmentRequestDto().apply {
                 fileNames = listOf(fileName)
                 this.allowUpdate = allowUpdate
             }
@@ -363,7 +363,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 return@runBlocking false
             }
 
-            val params = PostConversationAttachmentRequest().apply {
+            val params = PostConversationAttachmentRequestDto().apply {
                 filePath = tempRemotePath
                 referenceId = this@UploadAndShareFilesWorker.referenceId.orEmpty()
                 talkMetaData = metaData
@@ -400,7 +400,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             false
         }
 
-    private fun resolveFinalFileName(originalName: String, probeData: ChatProbeAttachmentData): String =
+    private fun resolveFinalFileName(originalName: String, probeData: ChatProbeAttachmentDataDto): String =
         probeData.renames?.get(originalName) ?: originalName
 
     private fun getRemotePath(currentUser: User): String {

@@ -36,7 +36,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.ActivityServerSelectionBinding
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
-import com.nextcloud.talk.models.json.generic.Status
+import com.nextcloud.talk.models.json.generic.StatusDto
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.AccountUtils
 import com.nextcloud.talk.utils.ApiUtils
@@ -254,7 +254,7 @@ class ServerSelectionActivity : BaseActivity() {
         statusQueryDisposable = ncApi.getServerStatus(queryStatusUrl)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ status: Status ->
+            .subscribe({ status: StatusDto ->
                 val versionString: String = status.version!!.substring(0, status.version!!.indexOf("."))
                 val version: Int = versionString.toInt()
 
@@ -291,7 +291,7 @@ class ServerSelectionActivity : BaseActivity() {
             }
     }
 
-    private fun showErrorTextForStatus(status: Status) {
+    private fun showErrorTextForStatus(status: StatusDto) {
         if (!status.installed) {
             setErrorText(
                 String.format(
@@ -381,7 +381,7 @@ class ServerSelectionActivity : BaseActivity() {
             })
     }
 
-    private fun isServerStatusQueryable(status: Status): Boolean =
+    private fun isServerStatusQueryable(status: StatusDto): Boolean =
         status.installed && !status.maintenance && !status.needsUpgrade
 
     private fun setErrorText(text: String?) {

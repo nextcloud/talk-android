@@ -9,12 +9,12 @@ package com.nextcloud.talk.conversationinfo
 
 import com.nextcloud.talk.conversationinfo.model.ParticipantModel
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 
 data class ConversationInfoUiState(
     val isLoading: Boolean = true,
-    val spreedCapabilities: SpreedCapability? = null,
+    val spreedCapabilities: SpreedCapabilityDto? = null,
     val capabilitiesVersion: Int = 0,
     val profileDataAvailable: Boolean = false,
 

@@ -20,7 +20,7 @@ import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.utils.SpreedFeatures
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -113,7 +113,7 @@ class ChatMessageSyncer @Inject constructor(
         val oldestPersistedMessageId: Long? = null,
         val persistedMessageCount: Int = 0,
         val syncFailed: Boolean = false,
-        val newestPersistedMessage: ChatMessageJson? = null,
+        val newestPersistedMessage: ChatMessageDto? = null,
         val visibleMessageIds: List<Long> = emptyList()
     )
 
@@ -516,7 +516,7 @@ class ChatMessageSyncer @Inject constructor(
         var totalCount = 0
         var oldestPersisted: Long? = null
         var newestPersisted: Long? = null
-        var newestPersistedMessage: ChatMessageJson? = null
+        var newestPersistedMessage: ChatMessageDto? = null
 
         repeat(MAX_BACKLOG_ROUNDS) {
             val fieldMap = buildFieldMap(
@@ -612,7 +612,7 @@ class ChatMessageSyncer @Inject constructor(
         var totalCount = 0
         var oldestPersisted: Long? = null
         var newestPersisted: Long? = null
-        var newestPersistedMessage: ChatMessageJson? = null
+        var newestPersistedMessage: ChatMessageDto? = null
 
         repeat(MAX_VISIBLE_MESSAGE_ROUNDS) {
             val roundOutcome = pullAndPersistMessages(target, fieldMap, events)
@@ -679,7 +679,7 @@ class ChatMessageSyncer @Inject constructor(
      * fool [pullUntilVisibleMessage] the same way reaction spam did. A message that starts a thread
      * (threadId == its own id) is not itself a reply and stays visible.
      */
-    private fun isChatVisibleMessage(message: ChatMessageJson, syncedThreadId: Long?): Boolean {
+    private fun isChatVisibleMessage(message: ChatMessageDto, syncedThreadId: Long?): Boolean {
         val hiddenSystemMessage = message.systemMessageType in CHAT_HIDDEN_SYSTEM_MESSAGE_TYPES
         val replyToAnotherThread = syncedThreadId == null && message.hasThread && message.threadId != message.id
         return !hiddenSystemMessage && !replyToAnotherThread
@@ -849,7 +849,7 @@ class ChatMessageSyncer @Inject constructor(
     @Suppress("LongParameterList")
     private suspend fun updateMessagesData(
         target: SyncTarget,
-        chatMessagesJson: List<ChatMessageJson>,
+        chatMessagesJson: List<ChatMessageDto>,
         blockContainingQueriedMessage: ChatBlockEntity?,
         lookIntoFuture: Boolean,
         hasHistory: Boolean,
@@ -914,7 +914,7 @@ class ChatMessageSyncer @Inject constructor(
 
     suspend fun persistChatMessagesAndHandleSystemMessages(
         target: SyncTarget,
-        chatMessages: List<ChatMessageJson>,
+        chatMessages: List<ChatMessageDto>,
         emitOnIncoming: Boolean = false,
         events: Events = NO_EVENTS
     ): List<ChatMessageEntity> {
@@ -953,7 +953,7 @@ class ChatMessageSyncer @Inject constructor(
      * Returns true if all system messages do not require translation.
      * Ignores other message types.
      */
-    fun isUntranslatedSystemMessage(messagesJson: List<ChatMessageJson>): Boolean =
+    fun isUntranslatedSystemMessage(messagesJson: List<ChatMessageDto>): Boolean =
         messagesJson.all {
             it.systemMessageType == ChatMessage.SystemMessageType.DUMMY ||
                 it.systemMessageType in ChatMessage.SYSTEM_MESSAGE_TYPE_UNTRANSLATED
@@ -961,7 +961,7 @@ class ChatMessageSyncer @Inject constructor(
 
     private suspend fun handleSystemMessagesThatAffectDatabase(
         target: SyncTarget,
-        messagesJson: List<ChatMessageJson>,
+        messagesJson: List<ChatMessageDto>,
         events: Events
     ) {
         var needsRoomRefresh = false
@@ -1016,7 +1016,7 @@ class ChatMessageSyncer @Inject constructor(
     // that's why we can just take the parent, update it in DB and update the UI
     private suspend fun upsertParentMessage(
         target: SyncTarget,
-        messageJson: ChatMessageJson,
+        messageJson: ChatMessageDto,
         deriveReactions: Boolean = false
     ) {
         val parentMessageJson = messageJson.parentMessage ?: return
@@ -1054,7 +1054,7 @@ class ChatMessageSyncer @Inject constructor(
     @Suppress("NestedBlockDepth")
     private fun deriveReactionsSelf(
         target: SyncTarget,
-        systemMessageJson: ChatMessageJson,
+        systemMessageJson: ChatMessageDto,
         existingEntity: ChatMessageEntity?
     ): ArrayList<String> {
         val reactionsSelf = ArrayList<String>(existingEntity?.reactionsSelf ?: emptyList())

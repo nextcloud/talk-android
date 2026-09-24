@@ -13,7 +13,7 @@ import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -102,7 +102,7 @@ class ConversationConversionTest(private val jsonFileName: String) {
         assertEquals(ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL, conversationEntity.type)
         assertEquals("marcel", conversationEntity.name)
         assertEquals("Marcel", conversationEntity.displayName)
-        assertEquals(Participant.ParticipantType.OWNER, conversationEntity.participantType)
+        assertEquals(ParticipantDto.ParticipantType.OWNER, conversationEntity.participantType)
         assertEquals(
             ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_WRITE,
             conversationEntity.conversationReadOnlyState

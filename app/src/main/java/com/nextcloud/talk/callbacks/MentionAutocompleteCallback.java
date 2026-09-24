@@ -17,7 +17,7 @@ import androidx.emoji2.text.EmojiSpan;
 
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.data.user.model.User;
-import com.nextcloud.talk.models.json.mention.Mention;
+import com.nextcloud.talk.models.json.mention.MentionDto;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.CharPolicy;
@@ -32,7 +32,7 @@ import java.util.Objects;
 import kotlin.OptIn;
 import third.parties.fresco.BetterImageSpan;
 
-public class MentionAutocompleteCallback implements AutocompleteCallback<Mention> {
+public class MentionAutocompleteCallback implements AutocompleteCallback<MentionDto> {
     private final ViewThemeUtils viewThemeUtils;
     private Context context;
     private User conversationUser;
@@ -50,7 +50,7 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
 
     @OptIn(markerClass = kotlin.ExperimentalStdlibApi.class)
     @Override
-    public boolean onPopupItemClicked(Editable editable, Mention item) {
+    public boolean onPopupItemClicked(Editable editable, MentionDto item) {
         CharPolicy.TextSpan range = CharPolicy.getQueryRange(editable);
         if (range == null) {
             return false;

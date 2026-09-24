@@ -6,7 +6,7 @@
  */
 package com.nextcloud.talk.call;
 
-import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
+import com.nextcloud.talk.models.json.signaling.DataChannelMessageDto;
 import com.nextcloud.talk.signaling.SignalingMessageSender;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 
@@ -32,7 +32,7 @@ public class MessageSenderMcu extends MessageSender {
         this.ownSessionId = ownSessionId;
     }
 
-    public void sendToAll(DataChannelMessage dataChannelMessage) {
+    public void sendToAll(DataChannelMessageDto dataChannelMessage) {
         PeerConnectionWrapper ownPeerConnectionWrapper = getPeerConnectionWrapper(ownSessionId);
         if (ownPeerConnectionWrapper != null) {
             ownPeerConnectionWrapper.send(dataChannelMessage);

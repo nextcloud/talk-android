@@ -17,7 +17,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.RemoteWipeEvent
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.RemoteWipeSuccessWorker
-import com.nextcloud.talk.models.json.wipe.WipeCheckResponse
+import com.nextcloud.talk.models.json.wipe.WipeCheckResponseDto
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat
 import com.nextcloud.talk.utils.ssl.TrustManager
@@ -110,7 +110,7 @@ class RemoteWipeInterceptor(
                 val body = wipeResponse.body?.string()
                 wipeResponse.isSuccessful &&
                     body != null &&
-                    LoganSquare.parse(body, WipeCheckResponse::class.java)?.wipe == true
+                    LoganSquare.parse(body, WipeCheckResponseDto::class.java)?.wipe == true
             }
         } catch (e: IOException) {
             Log.e(TAG, "Failed to check remote wipe status", e)

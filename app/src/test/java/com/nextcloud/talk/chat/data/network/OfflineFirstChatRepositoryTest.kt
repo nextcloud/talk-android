@@ -22,16 +22,16 @@ import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.capabilities.Capabilities
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.chat.ChatOCS
 import com.nextcloud.talk.models.json.chat.ChatOCSSingleMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
-import com.nextcloud.talk.models.json.generic.GenericMeta
+import com.nextcloud.talk.models.json.generic.GenericMetaDto
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.cancelAndJoin
@@ -460,7 +460,7 @@ class OfflineFirstChatRepositoryTest {
             wheneverBlocking { network.editChatMessage(any(), any(), any()) } doSuspendableAnswer {
                 ChatOverallSingleMessage(
                     ocs = ChatOCSSingleMessage(
-                        meta = GenericMeta(status = "ok", statusCode = HTTP_OK, message = null),
+                        meta = GenericMetaDto(status = "ok", statusCode = HTTP_OK, message = null),
                         data = message(SYSTEM_MESSAGE_ID).apply {
                             message = "You edited a message"
                             messageType = "system"
@@ -544,14 +544,14 @@ class OfflineFirstChatRepositoryTest {
             username = "me",
             displayName = "Me",
             baseUrl = "https://server.example.com",
-            capabilities = Capabilities().apply {
-                spreedCapability = SpreedCapability().apply { features = listOf("chat-keep-notifications") }
+            capabilities = CapabilitiesDto().apply {
+                spreedCapability = SpreedCapabilityDto().apply { features = listOf("chat-keep-notifications") }
             }
         )
 
     private fun conversation(lastReadMessage: Int, unreadMessages: Int): ConversationModel =
         ConversationModel.mapToConversationModel(
-            Conversation(
+            ConversationDto(
                 token = ROOM_TOKEN,
                 lastReadMessage = lastReadMessage,
                 unreadMessages = unreadMessages
@@ -570,8 +570,8 @@ class OfflineFirstChatRepositoryTest {
             hasHistory = hasHistory
         )
 
-    private fun message(id: Long): ChatMessageJson =
-        ChatMessageJson(
+    private fun message(id: Long): ChatMessageDto =
+        ChatMessageDto(
             id = id,
             token = ROOM_TOKEN,
             actorType = "users",
@@ -709,7 +709,7 @@ class OfflineFirstChatRepositoryTest {
     private lateinit var storedConversation: ConversationEntity
 
     private fun givenCachedConversation(pinnedId: Long? = null) {
-        storedConversation = Conversation(token = ROOM_TOKEN)
+        storedConversation = ConversationDto(token = ROOM_TOKEN)
             .asEntity(ACCOUNT_ID)
             .copy(lastPinnedId = pinnedId)
         whenever(conversationsDao.getConversationForUser(eq(ACCOUNT_ID), eq(ROOM_TOKEN)))
@@ -752,7 +752,7 @@ class OfflineFirstChatRepositoryTest {
     ): ChatOverallSingleMessage =
         ChatOverallSingleMessage(
             ocs = ChatOCSSingleMessage(
-                meta = GenericMeta(status = "ok", statusCode = statusCode, message = null),
+                meta = GenericMetaDto(status = "ok", statusCode = statusCode, message = null),
                 // the endpoint answers with the system message about the edit, the edited message
                 // itself is its parent
                 data = message(SYSTEM_MESSAGE_ID).apply {
@@ -773,7 +773,7 @@ class OfflineFirstChatRepositoryTest {
     private fun httpException(code: Int) =
         HttpException(Response.error<Any>(code, "".toResponseBody("text/plain".toMediaType())))
 
-    private fun overall(vararg messages: ChatMessageJson): ChatOverall =
+    private fun overall(vararg messages: ChatMessageDto): ChatOverall =
         ChatOverall(ocs = ChatOCS(meta = null, data = messages.toList()))
 
     companion object {

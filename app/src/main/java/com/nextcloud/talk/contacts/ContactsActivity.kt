@@ -21,7 +21,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.contacts.CompanionClass.Companion.KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
-import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
 
@@ -56,7 +56,7 @@ class ContactsActivity : BaseActivity() {
             val uiState = contactsViewModel.contactsViewState.collectAsStateWithLifecycle()
 
             val selectedParticipants = remember {
-                intent?.getParcelableArrayListExtraProvider<AutocompleteUser>("selectedParticipants")
+                intent?.getParcelableArrayListExtraProvider<AutocompleteUserDto>("selectedParticipants")
                     ?: emptyList()
             }.toSet().toMutableList()
             contactsViewModel.updateSelectedParticipants(selectedParticipants)

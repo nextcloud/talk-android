@@ -64,10 +64,10 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.notifications.NotificationOverall
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
-import com.nextcloud.talk.models.json.push.DecryptedPushMessage
-import com.nextcloud.talk.models.json.push.NotificationUser
+import com.nextcloud.talk.models.json.push.DecryptedPushMessageDto
+import com.nextcloud.talk.models.json.push.NotificationUserDto
 import com.nextcloud.talk.receivers.DeclineCallReceiver
 import com.nextcloud.talk.receivers.DirectReplyReceiver
 import com.nextcloud.talk.receivers.DismissRecordingAvailableReceiver
@@ -151,7 +151,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     var okHttpClient: OkHttpClient? = null
     private lateinit var credentials: String
     private lateinit var ncApi: NcApi
-    private lateinit var pushMessage: DecryptedPushMessage
+    private lateinit var pushMessage: DecryptedPushMessageDto
     private lateinit var user: User
     private var context: Context? = null
     private var conversationType: String? = "one2one"
@@ -313,7 +313,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 PendingIntent.FLAG_UPDATE_CURRENT
             }
 
-            val isVideoCall = (conversation.callFlag and Participant.InCallFlags.WITH_VIDEO) > 0
+            val isVideoCall = (conversation.callFlag and ParticipantDto.InCallFlags.WITH_VIDEO) > 0
 
             val answerBundle = Bundle(bundle).apply { putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, !isVideoCall) }
             val answerPendingIntentOffset =
@@ -431,7 +431,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val subject = inputData.getString(BundleKeys.KEY_NOTIFICATION_CLEARTEXT_SUBJECT)
         val id = inputData.getLong(BundleKeys.KEY_NOTIFICATION_USER_ID, -1)
         user = runBlocking { userManager.getUserWithId(id) }!!
-        pushMessage = LoganSquare.parse(subject, DecryptedPushMessage::class.java)
+        pushMessage = LoganSquare.parse(subject, DecryptedPushMessageDto::class.java)
         return true
     }
 
@@ -453,7 +453,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
                 pushMessage = LoganSquare.parse(
                     String(decryptedSubject),
-                    DecryptedPushMessage::class.java
+                    DecryptedPushMessageDto::class.java
                 )
                 user = signatureVerification.user!!
                 true
@@ -547,7 +547,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     private fun enrichPushMessageByNcNotificationData(
-        ncNotification: com.nextcloud.talk.models.json.notifications.Notification
+        ncNotification: com.nextcloud.talk.models.json.notifications.NotificationDto
     ) {
         pushMessage.objectId = ncNotification.objectId
         pushMessage.timestamp = ncNotification.datetime!!.millis
@@ -585,7 +585,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     conversationType = callHashMap["call-type"]
                 }
             }
-            val notificationUser = NotificationUser()
+            val notificationUser = NotificationUserDto()
             if (userHashMap != null && userHashMap.isNotEmpty()) {
                 notificationUser.id = userHashMap["id"]
                 notificationUser.type = userHashMap["type"]
@@ -605,7 +605,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     private fun checkAndExtractImagePreviewData(
-        notification: com.nextcloud.talk.models.json.notifications.Notification
+        notification: com.nextcloud.talk.models.json.notifications.NotificationDto
     ) {
         imagePreviewUrl = null
         imageMimeType = null
@@ -635,7 +635,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     @Suppress("MagicNumber", "LongMethod")
     private fun showNotification(
         intent: Intent,
-        ncNotification: com.nextcloud.talk.models.json.notifications.Notification?
+        ncNotification: com.nextcloud.talk.models.json.notifications.NotificationDto?
     ) {
         var category = ""
         when (pushMessage.type) {
@@ -901,7 +901,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         notificationBuilder.setStyle(newStyle)
     }
 
-    private fun loadSenderAvatar(notificationUser: NotificationUser?): Bitmap? {
+    private fun loadSenderAvatar(notificationUser: NotificationUserDto?): Bitmap? {
         val userType = notificationUser?.type ?: return null
 
         return if ("user" == userType) {
@@ -1048,7 +1048,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private fun addDismissRecordingAvailableAction(
         notificationBuilder: NotificationCompat.Builder,
         systemNotificationId: Int,
-        ncNotification: com.nextcloud.talk.models.json.notifications.Notification
+        ncNotification: com.nextcloud.talk.models.json.notifications.NotificationDto
     ) {
         var dismissLabel = ""
         var dismissRecordingUrl = ""
@@ -1081,7 +1081,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private fun addShareRecordingToChatAction(
         notificationBuilder: NotificationCompat.Builder,
         systemNotificationId: Int,
-        ncNotification: com.nextcloud.talk.models.json.notifications.Notification
+        ncNotification: com.nextcloud.talk.models.json.notifications.NotificationDto
     ) {
         var shareToChatLabel = ""
         var shareToChatUrl = ""
@@ -1187,12 +1187,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 override fun onSubscribe(d: Disposable) = Unit
 
                 override fun onNext(participantsOverall: ParticipantsOverall) {
-                    val participantList: List<Participant> = participantsOverall.ocs!!.data!!
+                    val participantList: List<ParticipantDto> = participantsOverall.ocs!!.data!!
                     hasParticipantsInCall = participantList.isNotEmpty()
                     if (hasParticipantsInCall) {
                         for (participant in participantList) {
                             if (participant.actorId == user.userId &&
-                                participant.actorType == Participant.ActorType.USERS
+                                participant.actorType == ParticipantDto.ActorType.USERS
                             ) {
                                 inCallOnDifferentDevice = true
                                 break

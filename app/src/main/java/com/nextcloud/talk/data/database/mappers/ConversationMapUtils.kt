@@ -10,8 +10,8 @@ package com.nextcloud.talk.data.database.mappers
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 
 fun ConversationModel.asEntity() =
     ConversationEntity(
@@ -92,7 +92,7 @@ fun ConversationEntity.toDomainModel() =
         unreadMessages = unreadMessages,
         unreadMention = unreadMention,
         lastMessage = lastMessage?.let
-            { LoganSquare.parse(lastMessage, ChatMessageJson::class.java) },
+            { LoganSquare.parse(lastMessage, ChatMessageDto::class.java) },
         objectType = objectType,
         objectId = objectId,
         notificationLevel = notificationLevel,
@@ -132,7 +132,7 @@ fun ConversationEntity.toDomainModel() =
         hiddenUpcomingEvent = hiddenUpcomingEvent
     )
 
-fun Conversation.asEntity(accountId: Long) =
+fun ConversationDto.asEntity(accountId: Long) =
     ConversationEntity(
         internalId = "$accountId@$token",
         accountId = accountId,

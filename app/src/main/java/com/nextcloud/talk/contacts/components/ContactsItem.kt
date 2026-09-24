@@ -25,12 +25,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.contacts.CompanionClass
 import com.nextcloud.talk.contacts.ContactsViewModel
-import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ContactsItem(contacts: List<AutocompleteUser>, contactsViewModel: ContactsViewModel, context: Context) {
-    val groupedContacts: Map<String, List<AutocompleteUser>> = contacts.groupBy { contact ->
+fun ContactsItem(contacts: List<AutocompleteUserDto>, contactsViewModel: ContactsViewModel, context: Context) {
+    val groupedContacts: Map<String, List<AutocompleteUserDto>> = contacts.groupBy { contact ->
         (
             if (contact.source == "users") {
                 contact.label?.first()?.uppercase()

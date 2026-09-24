@@ -10,17 +10,17 @@ package com.nextcloud.talk.models.json.conversations.password
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.models.json.generic.GenericMeta
+import com.nextcloud.talk.models.json.generic.GenericMetaDto
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @JsonObject
 data class PasswordOCS(
     @JsonField(name = ["meta"])
-    var meta: GenericMeta? = null,
+    var meta: GenericMetaDto? = null,
 
     @JsonField(name = ["data"])
-    var data: PasswordData? = null
+    var data: PasswordDataDto? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null)

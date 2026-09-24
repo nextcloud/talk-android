@@ -8,7 +8,7 @@
 package com.nextcloud.talk.ui.theme
 
 import androidx.compose.runtime.staticCompositionLocalOf
-import com.nextcloud.talk.models.json.opengraph.OpenGraphObject
+import com.nextcloud.talk.models.json.opengraph.OpenGraphObjectDto
 import com.nextcloud.talk.utils.message.MessageUtils
 
 val LocalViewThemeUtils = staticCompositionLocalOf<ViewThemeUtils> {
@@ -20,6 +20,6 @@ val LocalMessageUtils = staticCompositionLocalOf<MessageUtils> {
 }
 
 /** Fetches open graph data for a URL. Returns null when not available or in previews. */
-val LocalOpenGraphFetcher = staticCompositionLocalOf<suspend (url: String) -> OpenGraphObject?> {
+val LocalOpenGraphFetcher = staticCompositionLocalOf<suspend (url: String) -> OpenGraphObjectDto?> {
     { null }
 }

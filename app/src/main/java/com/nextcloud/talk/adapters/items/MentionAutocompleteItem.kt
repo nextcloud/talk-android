@@ -8,10 +8,10 @@ package com.nextcloud.talk.adapters.items
 
 import android.content.Context
 import com.nextcloud.talk.R
-import com.nextcloud.talk.models.json.mention.Mention
+import com.nextcloud.talk.models.json.mention.MentionDto
 import java.util.Objects
 
-class MentionAutocompleteItem(mention: Mention, context: Context, @JvmField val roomToken: String) {
+class MentionAutocompleteItem(mention: MentionDto, context: Context, @JvmField val roomToken: String) {
     @JvmField
     var source: String?
 

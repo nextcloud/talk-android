@@ -7,7 +7,7 @@
 package com.nextcloud.talk.webrtc
 
 import com.bluelinelabs.logansquare.LoganSquare
-import com.nextcloud.talk.models.json.signaling.DataChannelMessage
+import com.nextcloud.talk.models.json.signaling.DataChannelMessageDto
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper.DataChannelMessageListener
@@ -63,7 +63,7 @@ class PeerConnectionWrapperTest {
     /**
      * Helper matcher for DataChannelMessages.
      */
-    private inner class MatchesDataChannelMessage(private val expectedDataChannelMessage: DataChannelMessage) :
+    private inner class MatchesDataChannelMessage(private val expectedDataChannelMessage: DataChannelMessageDto) :
         ArgumentMatcher<DataChannel.Buffer> {
         override fun matches(buffer: DataChannel.Buffer): Boolean {
             // DataChannel.Buffer does not implement "equals", so the comparison needs to be done on the ByteBuffer
@@ -72,7 +72,7 @@ class PeerConnectionWrapperTest {
         }
     }
 
-    private fun dataChannelMessageToBuffer(dataChannelMessage: DataChannelMessage) =
+    private fun dataChannelMessageToBuffer(dataChannelMessage: DataChannelMessageDto) =
         DataChannel.Buffer(
             ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).toByteArray()),
             false
@@ -115,10 +115,10 @@ class PeerConnectionWrapperTest {
             mockedSignalingMessageSender
         )
 
-        peerConnectionWrapper!!.send(DataChannelMessage("the-message-type"))
+        peerConnectionWrapper!!.send(DataChannelMessageDto("the-message-type"))
 
         Mockito.verify(mockedStatusDataChannel).send(
-            argThat(MatchesDataChannelMessage(DataChannelMessage("the-message-type")))
+            argThat(MatchesDataChannelMessage(DataChannelMessageDto("the-message-type")))
         )
     }
 
@@ -159,10 +159,10 @@ class PeerConnectionWrapperTest {
         Mockito.`when`(mockedRandomIdDataChannel.state()).thenReturn(DataChannel.State.OPEN)
         peerConnectionObserverArgumentCaptor.value.onDataChannel(mockedRandomIdDataChannel)
 
-        peerConnectionWrapper!!.send(DataChannelMessage("the-message-type"))
+        peerConnectionWrapper!!.send(DataChannelMessageDto("the-message-type"))
 
         Mockito.verify(mockedStatusDataChannel).send(
-            argThat(MatchesDataChannelMessage(DataChannelMessage("the-message-type")))
+            argThat(MatchesDataChannelMessage(DataChannelMessageDto("the-message-type")))
         )
         Mockito.verify(mockedRandomIdDataChannel, never()).send(any())
     }
@@ -201,8 +201,8 @@ class PeerConnectionWrapperTest {
             mockedSignalingMessageSender
         )
 
-        peerConnectionWrapper!!.send(DataChannelMessage("the-message-type"))
-        peerConnectionWrapper!!.send(DataChannelMessage("another-message-type"))
+        peerConnectionWrapper!!.send(DataChannelMessageDto("the-message-type"))
+        peerConnectionWrapper!!.send(DataChannelMessageDto("another-message-type"))
 
         Mockito.verify(mockedStatusDataChannel, never()).send(any())
 
@@ -210,10 +210,10 @@ class PeerConnectionWrapperTest {
         statusDataChannelObserverArgumentCaptor.value.onStateChange()
 
         Mockito.verify(mockedStatusDataChannel).send(
-            argThat(MatchesDataChannelMessage(DataChannelMessage("the-message-type")))
+            argThat(MatchesDataChannelMessage(DataChannelMessageDto("the-message-type")))
         )
         Mockito.verify(mockedStatusDataChannel).send(
-            argThat(MatchesDataChannelMessage(DataChannelMessage("another-message-type")))
+            argThat(MatchesDataChannelMessage(DataChannelMessageDto("another-message-type")))
         )
     }
 
@@ -261,7 +261,7 @@ class PeerConnectionWrapperTest {
 
             val sendThread = thread {
                 for (j in 1..dataChannelMessageCount) {
-                    peerConnectionWrapper!!.send(DataChannelMessage("the-message-type-$j"))
+                    peerConnectionWrapper!!.send(DataChannelMessageDto("the-message-type-$j"))
                 }
             }
 
@@ -290,7 +290,7 @@ class PeerConnectionWrapperTest {
 
             for (j in 1..dataChannelMessageCount) {
                 inOrder.verify(mockedStatusDataChannel).send(
-                    argThat(MatchesDataChannelMessage(DataChannelMessage("the-message-type-$j")))
+                    argThat(MatchesDataChannelMessage(DataChannelMessageDto("the-message-type-$j")))
                 )
             }
         }
@@ -339,35 +339,35 @@ class PeerConnectionWrapperTest {
         payloadMap["name"] = "the-nick-in-map"
 
         statusDataChannelObserverArgumentCaptor.value.onMessage(
-            dataChannelMessageToBuffer(DataChannelMessage("nickChanged", null, payloadMap))
+            dataChannelMessageToBuffer(DataChannelMessageDto("nickChanged", null, payloadMap))
         )
 
         Mockito.verify(mockedDataChannelMessageListener).onNickChanged("the-nick-in-map")
         Mockito.verifyNoMoreInteractions(mockedDataChannelMessageListener)
 
         statusDataChannelObserverArgumentCaptor.value.onMessage(
-            dataChannelMessageToBuffer(DataChannelMessage("audioOn"))
+            dataChannelMessageToBuffer(DataChannelMessageDto("audioOn"))
         )
 
         Mockito.verify(mockedDataChannelMessageListener).onAudioOn()
         Mockito.verifyNoMoreInteractions(mockedDataChannelMessageListener)
 
         statusDataChannelObserverArgumentCaptor.value.onMessage(
-            dataChannelMessageToBuffer(DataChannelMessage("audioOff"))
+            dataChannelMessageToBuffer(DataChannelMessageDto("audioOff"))
         )
 
         Mockito.verify(mockedDataChannelMessageListener).onAudioOff()
         Mockito.verifyNoMoreInteractions(mockedDataChannelMessageListener)
 
         statusDataChannelObserverArgumentCaptor.value.onMessage(
-            dataChannelMessageToBuffer(DataChannelMessage("videoOn"))
+            dataChannelMessageToBuffer(DataChannelMessageDto("videoOn"))
         )
 
         Mockito.verify(mockedDataChannelMessageListener).onVideoOn()
         Mockito.verifyNoMoreInteractions(mockedDataChannelMessageListener)
 
         statusDataChannelObserverArgumentCaptor.value.onMessage(
-            dataChannelMessageToBuffer(DataChannelMessage("videoOff"))
+            dataChannelMessageToBuffer(DataChannelMessageDto("videoOff"))
         )
 
         Mockito.verify(mockedDataChannelMessageListener).onVideoOff()
@@ -426,14 +426,14 @@ class PeerConnectionWrapperTest {
         peerConnectionWrapper!!.addListener(mockedDataChannelMessageListener)
 
         statusDataChannelObserverArgumentCaptor.value.onMessage(
-            dataChannelMessageToBuffer(DataChannelMessage("audioOn"))
+            dataChannelMessageToBuffer(DataChannelMessageDto("audioOn"))
         )
 
         Mockito.verify(mockedDataChannelMessageListener).onAudioOn()
         Mockito.verifyNoMoreInteractions(mockedDataChannelMessageListener)
 
         randomIdDataChannelObserverArgumentCaptor.value.onMessage(
-            dataChannelMessageToBuffer(DataChannelMessage("audioOff"))
+            dataChannelMessageToBuffer(DataChannelMessageDto("audioOff"))
         )
 
         Mockito.verify(mockedDataChannelMessageListener).onAudioOff()
@@ -641,7 +641,7 @@ class PeerConnectionWrapperTest {
             val sendThread = thread {
                 try {
                     for (j in 0..<dataChannelMessageCount) {
-                        peerConnectionWrapper!!.send(DataChannelMessage("the-message-type-$j"))
+                        peerConnectionWrapper!!.send(DataChannelMessageDto("the-message-type-$j"))
                     }
                 } catch (e: Exception) {
                     exceptionSend = e
@@ -726,11 +726,11 @@ class PeerConnectionWrapperTest {
                     // It is assumed that, even if its data channel was disposed, its buffers can be used while there
                     // is a reference to them, so no special mock behaviour is added to throw an exception in that case.
                     statusDataChannelObserverArgumentCaptor.value.onMessage(
-                        dataChannelMessageToBuffer(DataChannelMessage("audioOn"))
+                        dataChannelMessageToBuffer(DataChannelMessageDto("audioOn"))
                     )
 
                     statusDataChannelObserverArgumentCaptor.value.onMessage(
-                        dataChannelMessageToBuffer(DataChannelMessage("audioOff"))
+                        dataChannelMessageToBuffer(DataChannelMessageDto("audioOff"))
                     )
                 } catch (e: Exception) {
                     exceptionOnMessage = e

@@ -14,7 +14,7 @@ import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.mappers.asEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -122,7 +122,7 @@ class ConversationListUpdaterPinTest {
         ).single()
 
     private fun givenCachedConversation(pinnedId: Long?) {
-        stored = Conversation(token = ROOM_TOKEN).asEntity(ACCOUNT_ID).copy(lastPinnedId = pinnedId)
+        stored = ConversationDto(token = ROOM_TOKEN).asEntity(ACCOUNT_ID).copy(lastPinnedId = pinnedId)
         whenever(conversationsDao.getConversationForUser(eq(ACCOUNT_ID), eq(ROOM_TOKEN)))
             .thenAnswer { flowOf(stored) }
         whenever(conversationsDao.updateConversation(any())).thenAnswer {

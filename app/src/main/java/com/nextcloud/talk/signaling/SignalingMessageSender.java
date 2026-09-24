@@ -6,7 +6,7 @@
  */
 package com.nextcloud.talk.signaling;
 
-import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto;
 
 /**
  * Interface to send signaling messages.
@@ -18,6 +18,6 @@ public interface SignalingMessageSender {
      *
      * @param ncSignalingMessage the message to send
      */
-    void send(NCSignalingMessage ncSignalingMessage);
+    void send(NCSignalingMessageDto ncSignalingMessage);
 
 }

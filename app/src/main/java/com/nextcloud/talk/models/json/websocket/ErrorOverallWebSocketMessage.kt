@@ -18,7 +18,7 @@ data class ErrorOverallWebSocketMessage(
     @JsonField(name = ["type"])
     var type: String? = null,
     @JsonField(name = ["error"])
-    var errorWebSocketMessage: ErrorWebSocketMessage? = null
+    var errorWebSocketMessage: ErrorWebSocketMessageDto? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null)

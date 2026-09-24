@@ -7,8 +7,8 @@
 package com.nextcloud.talk.call
 
 import com.nextcloud.talk.activities.CallViewModel
-import com.nextcloud.talk.models.json.signaling.DataChannelMessage
-import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
+import com.nextcloud.talk.models.json.signaling.DataChannelMessageDto
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper
@@ -41,7 +41,7 @@ class MessageSenderTest {
         peerConnectionWrappers
     ) {
 
-        override fun sendToAll(dataChannelMessage: DataChannelMessage?) {
+        override fun sendToAll(dataChannelMessage: DataChannelMessageDto?) {
             // Not used in base class tests
         }
     }
@@ -106,7 +106,7 @@ class MessageSenderTest {
 
     @Test
     fun testSendSignalingMessage() {
-        val message: NCSignalingMessage = Mockito.mock(NCSignalingMessage::class.java)
+        val message: NCSignalingMessageDto = Mockito.mock(NCSignalingMessageDto::class.java)
         messageSender!!.send(message, "theSessionId2")
 
         Mockito.verify(message).to = "theSessionId2"
@@ -115,7 +115,7 @@ class MessageSenderTest {
 
     @Test
     fun testSendSignalingMessageIfUnknownSessionId() {
-        val message: NCSignalingMessage = Mockito.mock(NCSignalingMessage::class.java)
+        val message: NCSignalingMessageDto = Mockito.mock(NCSignalingMessageDto::class.java)
         messageSender!!.send(message, "unknownSessionId")
 
         Mockito.verify(message).to = "unknownSessionId"
@@ -128,13 +128,13 @@ class MessageSenderTest {
             val sentTo: MutableList<String?> = ArrayList()
             doAnswer { invocation: InvocationOnMock ->
                 val arguments = invocation.arguments
-                val message = (arguments[0] as NCSignalingMessage)
+                val message = (arguments[0] as NCSignalingMessageDto)
 
                 sentTo.add(message.to)
                 null
             }.`when`(signalingMessageSender!!).send(any())
 
-            val message = NCSignalingMessage()
+            val message = NCSignalingMessageDto()
             messageSender!!.sendToAll(message)
 
             assertTrue(sentTo.contains("theSessionId1"))
@@ -170,13 +170,13 @@ class MessageSenderTest {
             val sentTo: MutableList<String?> = ArrayList()
             doAnswer { invocation: InvocationOnMock ->
                 val arguments = invocation.arguments
-                val message = (arguments[0] as NCSignalingMessage)
+                val message = (arguments[0] as NCSignalingMessageDto)
 
                 sentTo.add(message.to)
                 null
             }.`when`(signalingMessageSender!!).send(any())
 
-            val message = NCSignalingMessage()
+            val message = NCSignalingMessageDto()
             messageSender!!.sendToAll(message)
 
             assertTrue(sentTo.contains("theSessionId1"))

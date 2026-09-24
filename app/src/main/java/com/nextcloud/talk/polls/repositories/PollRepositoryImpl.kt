@@ -10,8 +10,8 @@ package com.nextcloud.talk.polls.repositories
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.model.PollDetails
-import com.nextcloud.talk.polls.repositories.model.PollDetailsResponse
-import com.nextcloud.talk.polls.repositories.model.PollResponse
+import com.nextcloud.talk.polls.repositories.model.PollDetailsResponseDto
+import com.nextcloud.talk.polls.repositories.model.PollResponseDto
 import io.reactivex.Observable
 import kotlin.collections.forEach as kForEach
 
@@ -62,7 +62,7 @@ class PollRepositoryImpl(private val ncApi: NcApi) : PollRepository {
 
     companion object {
 
-        private fun mapToPoll(pollResponse: PollResponse): Poll {
+        private fun mapToPoll(pollResponse: PollResponseDto): Poll {
             val pollDetails = pollResponse.details?.map { it -> mapToPollDetails(it) }
 
             return Poll(
@@ -90,7 +90,7 @@ class PollRepositoryImpl(private val ncApi: NcApi) : PollRepository {
             return resultMap
         }
 
-        private fun mapToPollDetails(pollDetailsResponse: PollDetailsResponse): PollDetails =
+        private fun mapToPollDetails(pollDetailsResponse: PollDetailsResponseDto): PollDetails =
             PollDetails(
                 pollDetailsResponse.actorType,
                 pollDetailsResponse.actorId,

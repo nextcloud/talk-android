@@ -24,7 +24,7 @@ import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.BanItemListBinding
 import com.nextcloud.talk.databinding.FragmentDialogBanListBinding
-import com.nextcloud.talk.models.json.participants.TalkBan
+import com.nextcloud.talk.models.json.participants.TalkBanDto
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import javax.inject.Inject
@@ -47,9 +47,9 @@ class DialogBanListFragment(val roomToken: String) : DialogFragment() {
     private lateinit var conversationUser: User
 
     private val adapter = object : BaseAdapter() {
-        private var bans: List<TalkBan> = mutableListOf()
+        private var bans: List<TalkBanDto> = mutableListOf()
 
-        fun setItems(items: List<TalkBan>) {
+        fun setItems(items: List<TalkBanDto>) {
             bans = items
         }
 

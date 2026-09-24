@@ -73,14 +73,14 @@ import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.jobs.AddParticipantsToConversationWorker
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
-import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.models.json.participants.Participant.ActorType.CIRCLES
-import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
-import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEvent
+import com.nextcloud.talk.models.json.participants.ParticipantDto
+import com.nextcloud.talk.models.json.participants.ParticipantDto.ActorType.CIRCLES
+import com.nextcloud.talk.models.json.participants.ParticipantDto.ActorType.GROUPS
+import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEventDto
 import com.nextcloud.talk.passwordpolicy.PasswordPolicyField
 import com.nextcloud.talk.passwordpolicy.PasswordValidationState
 import com.nextcloud.talk.passwordpolicy.isPasswordAccepted
@@ -151,7 +151,7 @@ class ConversationInfoActivity : BaseActivity() {
     ) { result ->
         executeIfResultOk(result) { intent ->
             val selectedAutocompleteUsers =
-                intent?.getParcelableArrayListExtraProvider<AutocompleteUser>("selectedParticipants")
+                intent?.getParcelableArrayListExtraProvider<AutocompleteUserDto>("selectedParticipants")
                     ?: emptyList()
             val user = conversationUser ?: return@executeIfResultOk
             if (startGroupChat) {
@@ -183,7 +183,7 @@ class ConversationInfoActivity : BaseActivity() {
             intent.getStringExtra(KEY_ROOM_TOKEN)
         ) { "Missing room token" }
 
-        val upcomingEvent = intent.getParcelableExtraProvider<UpcomingEvent>(BundleKeys.KEY_UPCOMING_EVENT)
+        val upcomingEvent = intent.getParcelableExtraProvider<UpcomingEventDto>(BundleKeys.KEY_UPCOMING_EVENT)
         val upcomingEventSummary = upcomingEvent?.summary
         val upcomingEventTime = upcomingEvent?.start?.let { start ->
             val startDateTime = Instant.ofEpochSecond(start).atZone(ZoneId.systemDefault())
@@ -528,10 +528,10 @@ class ConversationInfoActivity : BaseActivity() {
     }
 
     private fun selectParticipantsToAdd() {
-        val existingParticipants = ArrayList<AutocompleteUser>()
+        val existingParticipants = ArrayList<AutocompleteUserDto>()
         for (model in viewModel.uiState.value.participants) {
             existingParticipants.add(
-                AutocompleteUser(
+                AutocompleteUserDto(
                     model.participant.calculatedActorId!!,
                     model.participant.displayName,
                     model.participant.calculatedActorType.name.lowercase()
@@ -549,7 +549,7 @@ class ConversationInfoActivity : BaseActivity() {
         )
     }
 
-    private fun addParticipantsToConversation(autocompleteUsers: List<AutocompleteUser>) {
+    private fun addParticipantsToConversation(autocompleteUsers: List<AutocompleteUserDto>) {
         val user = conversationUser ?: return
         val groupIds = mutableSetOf<String>()
         val emailIds = mutableSetOf<String>()
@@ -559,7 +559,7 @@ class ConversationInfoActivity : BaseActivity() {
         autocompleteUsers.forEach { participant ->
             when (participant.source) {
                 GROUPS.name.lowercase() -> groupIds.add(participant.id!!)
-                Participant.ActorType.EMAILS.name.lowercase() -> emailIds.add(participant.id!!)
+                ParticipantDto.ActorType.EMAILS.name.lowercase() -> emailIds.add(participant.id!!)
                 CIRCLES.name.lowercase() -> circleIds.add(participant.id!!)
                 else -> userIds.add(participant.id!!)
             }
@@ -708,11 +708,11 @@ class ConversationInfoActivity : BaseActivity() {
         }
     }
 
-    private fun toggleModeratorStatus(apiVersion: Int, participant: Participant) {
+    private fun toggleModeratorStatus(apiVersion: Int, participant: ParticipantDto) {
         val user = conversationUser ?: return
         val subscriber = participantActionObserver()
-        if (participant.type == Participant.ParticipantType.MODERATOR ||
-            participant.type == Participant.ParticipantType.GUEST_MODERATOR
+        if (participant.type == ParticipantDto.ParticipantType.MODERATOR ||
+            participant.type == ParticipantDto.ParticipantType.GUEST_MODERATOR
         ) {
             ncApi.demoteAttendeeFromModerator(
                 credentials,
@@ -720,8 +720,8 @@ class ConversationInfoActivity : BaseActivity() {
                 participant.attendeeId,
                 null
             )?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe(subscriber)
-        } else if (participant.type == Participant.ParticipantType.USER ||
-            participant.type == Participant.ParticipantType.GUEST
+        } else if (participant.type == ParticipantDto.ParticipantType.USER ||
+            participant.type == ParticipantDto.ParticipantType.GUEST
         ) {
             ncApi.promoteAttendeeToModerator(
                 credentials,
@@ -732,16 +732,16 @@ class ConversationInfoActivity : BaseActivity() {
         }
     }
 
-    private fun toggleModeratorStatusLegacy(apiVersion: Int, participant: Participant) {
+    private fun toggleModeratorStatusLegacy(apiVersion: Int, participant: ParticipantDto) {
         val user = conversationUser ?: return
         val subscriber = participantActionObserver()
-        if (participant.type == Participant.ParticipantType.MODERATOR) {
+        if (participant.type == ParticipantDto.ParticipantType.MODERATOR) {
             ncApi.demoteModeratorToUser(
                 credentials,
                 ApiUtils.getUrlForRoomModerators(apiVersion, user.baseUrl!!, conversationToken),
                 participant.userId
             )?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe(subscriber)
-        } else if (participant.type == Participant.ParticipantType.USER) {
+        } else if (participant.type == ParticipantDto.ParticipantType.USER) {
             ncApi.promoteUserToModerator(
                 credentials,
                 ApiUtils.getUrlForRoomModerators(apiVersion, user.baseUrl!!, conversationToken),
@@ -765,7 +765,7 @@ class ConversationInfoActivity : BaseActivity() {
             override fun onComplete() { /* unused */ }
         }
 
-    private fun removeAttendeeFromConversation(apiVersion: Int, participant: Participant) {
+    private fun removeAttendeeFromConversation(apiVersion: Int, participant: ParticipantDto) {
         val user = conversationUser ?: return
         val observer = participantActionObserver()
         if (apiVersion >= ApiUtils.API_V4) {
@@ -775,8 +775,8 @@ class ConversationInfoActivity : BaseActivity() {
                 participant.attendeeId
             )?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe(observer)
         } else {
-            if (participant.type == Participant.ParticipantType.GUEST ||
-                participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK
+            if (participant.type == ParticipantDto.ParticipantType.GUEST ||
+                participant.type == ParticipantDto.ParticipantType.USER_FOLLOWING_LINK
             ) {
                 ncApi.removeParticipantFromConversation(
                     credentials,
@@ -862,7 +862,7 @@ class ConversationInfoActivity : BaseActivity() {
 
     private fun changeParticipantType(
         apiVersion: Int,
-        participant: Participant,
+        participant: ParticipantDto,
         promote: Boolean,
         participantType: Int
     ) {
@@ -878,7 +878,7 @@ class ConversationInfoActivity : BaseActivity() {
             ?.subscribe(participantActionObserver())
     }
 
-    private fun handleBan(participant: Participant) {
+    private fun handleBan(participant: ParticipantDto) {
         val user = conversationUser ?: return
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, 1))
         val dialogBinding = DialogBanParticipantBinding.inflate(layoutInflater)

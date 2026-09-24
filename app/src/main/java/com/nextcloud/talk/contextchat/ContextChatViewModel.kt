@@ -13,7 +13,7 @@ import androidx.lifecycle.viewModelScope
 import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -85,7 +85,7 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
         }
     }
 
-    fun isThreadChildMessage(currentMessage: ChatMessageJson): Boolean =
+    fun isThreadChildMessage(currentMessage: ChatMessageDto): Boolean =
         currentMessage.hasThread &&
             currentMessage.threadId != currentMessage.id
 
@@ -94,7 +94,7 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
         data class Success(
             val messageId: String,
             val threadId: String?,
-            val messages: List<ChatMessageJson>,
+            val messages: List<ChatMessageDto>,
             val title: String?,
             val subTitle: String?
         ) : ContextChatRetrieveUiState()

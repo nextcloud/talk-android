@@ -7,13 +7,13 @@
 package com.nextcloud.talk.events
 
 import android.os.Bundle
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 
 class OpenConversationEvent {
-    var conversation: Conversation? = null
+    var conversation: ConversationDto? = null
     var bundle: Bundle? = null
 
-    constructor(conversation: Conversation?, bundle: Bundle?) {
+    constructor(conversation: ConversationDto?, bundle: Bundle?) {
         this.conversation = conversation
         this.bundle = bundle
     }

@@ -6,7 +6,7 @@
  */
 package com.nextcloud.talk.call;
 
-import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
+import com.nextcloud.talk.models.json.signaling.DataChannelMessageDto;
 import com.nextcloud.talk.signaling.SignalingMessageSender;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 
@@ -30,14 +30,14 @@ public class MessageSenderNoMcu extends MessageSender {
      * @param dataChannelMessage the message to send
      * @param sessionId the signaling session ID of the participant to send the message to
      */
-    public void send(DataChannelMessage dataChannelMessage, String sessionId) {
+    public void send(DataChannelMessageDto dataChannelMessage, String sessionId) {
         PeerConnectionWrapper peerConnectionWrapper = getPeerConnectionWrapper(sessionId);
         if (peerConnectionWrapper != null) {
             peerConnectionWrapper.send(dataChannelMessage);
         }
     }
 
-    public void sendToAll(DataChannelMessage dataChannelMessage) {
+    public void sendToAll(DataChannelMessageDto dataChannelMessage) {
         for (PeerConnectionWrapper peerConnectionWrapper: peerConnectionWrappers) {
             if ("video".equals(peerConnectionWrapper.getVideoStreamType())){
                 peerConnectionWrapper.send(dataChannelMessage);

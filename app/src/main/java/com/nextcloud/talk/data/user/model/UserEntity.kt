@@ -12,8 +12,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.nextcloud.talk.models.ExternalSignalingServer
-import com.nextcloud.talk.models.json.capabilities.Capabilities
-import com.nextcloud.talk.models.json.capabilities.ServerVersion
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.ServerVersionDto
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import kotlinx.parcelize.Parcelize
 import java.lang.Boolean.FALSE
@@ -44,10 +44,10 @@ data class UserEntity(
     var pushConfigurationState: PushConfigurationState? = null,
 
     @ColumnInfo(name = "capabilities")
-    var capabilities: Capabilities? = null,
+    var capabilities: CapabilitiesDto? = null,
 
     @ColumnInfo(name = "serverVersion", defaultValue = "")
-    var serverVersion: ServerVersion? = null,
+    var serverVersion: ServerVersionDto? = null,
 
     @ColumnInfo(name = "clientCertificate")
     var clientCertificate: String? = null,

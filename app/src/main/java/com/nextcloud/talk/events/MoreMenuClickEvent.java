@@ -7,16 +7,16 @@
  */
 package com.nextcloud.talk.events;
 
-import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.ConversationDto;
 
 public class MoreMenuClickEvent {
-    private final Conversation conversation;
+    private final ConversationDto conversation;
 
-    public MoreMenuClickEvent(Conversation conversation) {
+    public MoreMenuClickEvent(ConversationDto conversation) {
         this.conversation = conversation;
     }
 
-    public Conversation getConversation() {
+    public ConversationDto getConversation() {
         return this.conversation;
     }
 

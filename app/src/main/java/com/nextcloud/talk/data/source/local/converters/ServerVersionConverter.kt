@@ -9,11 +9,11 @@ package com.nextcloud.talk.data.source.local.converters
 
 import androidx.room.TypeConverter
 import com.bluelinelabs.logansquare.LoganSquare
-import com.nextcloud.talk.models.json.capabilities.ServerVersion
+import com.nextcloud.talk.models.json.capabilities.ServerVersionDto
 
 class ServerVersionConverter {
     @TypeConverter
-    fun fromServerVersionToString(serverVersion: ServerVersion?): String =
+    fun fromServerVersionToString(serverVersion: ServerVersionDto?): String =
         if (serverVersion == null) {
             ""
         } else {
@@ -21,11 +21,11 @@ class ServerVersionConverter {
         }
 
     @TypeConverter
-    fun fromStringToServerVersion(value: String): ServerVersion? {
+    fun fromStringToServerVersion(value: String): ServerVersionDto? {
         return if (value.isBlank()) {
             null
         } else {
-            return LoganSquare.parse(value, ServerVersion::class.java)
+            return LoganSquare.parse(value, ServerVersionDto::class.java)
         }
     }
 }

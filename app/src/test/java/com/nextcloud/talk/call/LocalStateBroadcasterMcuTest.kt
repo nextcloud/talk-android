@@ -7,9 +7,9 @@
 package com.nextcloud.talk.call
 
 import com.nextcloud.talk.activities.ParticipantUiState
-import com.nextcloud.talk.models.json.signaling.DataChannelMessage
-import com.nextcloud.talk.models.json.signaling.NCMessagePayload
-import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
+import com.nextcloud.talk.models.json.signaling.DataChannelMessageDto
+import com.nextcloud.talk.models.json.signaling.NCMessagePayloadDto
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.TestScheduler
 import org.junit.Before
@@ -36,48 +36,48 @@ class LocalStateBroadcasterMcuTest {
         mockedMessageSender = Mockito.mock(MessageSender::class.java)
     }
 
-    private fun getExpectedUnmuteAudio(): NCSignalingMessage {
-        val expectedUnmuteAudio = NCSignalingMessage()
+    private fun getExpectedUnmuteAudio(): NCSignalingMessageDto {
+        val expectedUnmuteAudio = NCSignalingMessageDto()
         expectedUnmuteAudio.roomType = "video"
         expectedUnmuteAudio.type = "unmute"
 
-        val payload = NCMessagePayload()
+        val payload = NCMessagePayloadDto()
         payload.name = "audio"
         expectedUnmuteAudio.payload = payload
 
         return expectedUnmuteAudio
     }
 
-    private fun getExpectedMuteAudio(): NCSignalingMessage {
-        val expectedMuteAudio = NCSignalingMessage()
+    private fun getExpectedMuteAudio(): NCSignalingMessageDto {
+        val expectedMuteAudio = NCSignalingMessageDto()
         expectedMuteAudio.roomType = "video"
         expectedMuteAudio.type = "mute"
 
-        val payload = NCMessagePayload()
+        val payload = NCMessagePayloadDto()
         payload.name = "audio"
         expectedMuteAudio.payload = payload
 
         return expectedMuteAudio
     }
 
-    private fun getExpectedUnmuteVideo(): NCSignalingMessage {
-        val expectedUnmuteVideo = NCSignalingMessage()
+    private fun getExpectedUnmuteVideo(): NCSignalingMessageDto {
+        val expectedUnmuteVideo = NCSignalingMessageDto()
         expectedUnmuteVideo.roomType = "video"
         expectedUnmuteVideo.type = "unmute"
 
-        val payload = NCMessagePayload()
+        val payload = NCMessagePayloadDto()
         payload.name = "video"
         expectedUnmuteVideo.payload = payload
 
         return expectedUnmuteVideo
     }
 
-    private fun getExpectedMuteVideo(): NCSignalingMessage {
-        val expectedMuteVideo = NCSignalingMessage()
+    private fun getExpectedMuteVideo(): NCSignalingMessageDto {
+        val expectedMuteVideo = NCSignalingMessageDto()
         expectedMuteVideo.roomType = "video"
         expectedMuteVideo.type = "mute"
 
-        val payload = NCMessagePayload()
+        val payload = NCMessagePayloadDto()
         payload.name = "video"
         expectedMuteVideo.payload = payload
 
@@ -102,9 +102,9 @@ class LocalStateBroadcasterMcuTest {
         // other thread could run.
         Mockito.verifyNoInteractions(mockedMessageSender)
 
-        val expectedAudioOn = DataChannelMessage("audioOn")
-        val expectedSpeaking = DataChannelMessage("speaking")
-        val expectedVideoOn = DataChannelMessage("videoOn")
+        val expectedAudioOn = DataChannelMessageDto("audioOn")
+        val expectedSpeaking = DataChannelMessageDto("speaking")
+        val expectedVideoOn = DataChannelMessageDto("videoOn")
 
         val expectedUnmuteAudio = getExpectedUnmuteAudio()
         val expectedUnmuteVideo = getExpectedUnmuteVideo()
@@ -195,9 +195,9 @@ class LocalStateBroadcasterMcuTest {
         // other thread could run.
         Mockito.verifyNoInteractions(mockedMessageSender)
 
-        val expectedAudioOn = DataChannelMessage("audioOn")
-        val expectedSpeaking = DataChannelMessage("speaking")
-        val expectedVideoOn = DataChannelMessage("videoOn")
+        val expectedAudioOn = DataChannelMessageDto("audioOn")
+        val expectedSpeaking = DataChannelMessageDto("speaking")
+        val expectedVideoOn = DataChannelMessageDto("videoOn")
 
         val expectedUnmuteAudio = getExpectedUnmuteAudio()
         val expectedUnmuteVideo = getExpectedUnmuteVideo()
@@ -213,7 +213,7 @@ class LocalStateBroadcasterMcuTest {
 
         localCallParticipantModel!!.isSpeaking = false
 
-        val expectedStoppedSpeaking = DataChannelMessage("stoppedSpeaking")
+        val expectedStoppedSpeaking = DataChannelMessageDto("stoppedSpeaking")
 
         // Changing the state causes the normal state update to be sent, independently of the initial state
         Mockito.verify(mockedMessageSender!!, times(1)).sendToAll(expectedStoppedSpeaking)
@@ -229,7 +229,7 @@ class LocalStateBroadcasterMcuTest {
 
         localCallParticipantModel!!.isAudioEnabled = false
 
-        val expectedAudioOff = DataChannelMessage("audioOff")
+        val expectedAudioOff = DataChannelMessageDto("audioOff")
         val expectedMuteAudio = getExpectedMuteAudio()
 
         // Changing the state causes the normal state update to be sent, independently of the initial state
@@ -248,7 +248,7 @@ class LocalStateBroadcasterMcuTest {
 
         localCallParticipantModel!!.isVideoEnabled = false
 
-        val expectedVideoOff = DataChannelMessage("videoOff")
+        val expectedVideoOff = DataChannelMessageDto("videoOff")
         val expectedMuteVideo = getExpectedMuteVideo()
 
         // Changing the state causes the normal state update to be sent, independently of the initial state
@@ -290,7 +290,7 @@ class LocalStateBroadcasterMcuTest {
     //
     // org.mockito.exceptions.verification.TooManyActualInvocations:
     // messageSender.send(
-    //     NCSignalingMessage(from=null, to=null, type=unmute, payload=NCMessagePayload(type=null, sdp=null, nick=null,
+    //     NCSignalingMessageDto(from=null, to=null, type=unmute, payload=NCMessagePayloadDto(type=null, sdp=null, nick=null,
     //     iceCandidate=null, name=audio, state=null, timestamp=null, reaction=null),
     //     roomType=video, sid=null, prefix=null),
     //     "theSessionId"
@@ -330,9 +330,9 @@ class LocalStateBroadcasterMcuTest {
         // other thread could run.
         Mockito.verifyNoInteractions(mockedMessageSender)
 
-        val expectedAudioOn = DataChannelMessage("audioOn")
-        val expectedSpeaking = DataChannelMessage("speaking")
-        val expectedVideoOn = DataChannelMessage("videoOn")
+        val expectedAudioOn = DataChannelMessageDto("audioOn")
+        val expectedSpeaking = DataChannelMessageDto("speaking")
+        val expectedVideoOn = DataChannelMessageDto("videoOn")
 
         val expectedUnmuteAudio = getExpectedUnmuteAudio()
         val expectedUnmuteVideo = getExpectedUnmuteVideo()
@@ -517,9 +517,9 @@ class LocalStateBroadcasterMcuTest {
         // other thread could run.
         Mockito.verifyNoInteractions(mockedMessageSender)
 
-        val expectedAudioOn = DataChannelMessage("audioOn")
-        val expectedSpeaking = DataChannelMessage("speaking")
-        val expectedVideoOn = DataChannelMessage("videoOn")
+        val expectedAudioOn = DataChannelMessageDto("audioOn")
+        val expectedSpeaking = DataChannelMessageDto("speaking")
+        val expectedVideoOn = DataChannelMessageDto("videoOn")
 
         val expectedUnmuteAudio = getExpectedUnmuteAudio()
         val expectedUnmuteVideo = getExpectedUnmuteVideo()
@@ -616,9 +616,9 @@ class LocalStateBroadcasterMcuTest {
         // other thread could run.
         Mockito.verifyNoInteractions(mockedMessageSender)
 
-        val expectedAudioOn = DataChannelMessage("audioOn")
-        val expectedSpeaking = DataChannelMessage("speaking")
-        val expectedVideoOn = DataChannelMessage("videoOn")
+        val expectedAudioOn = DataChannelMessageDto("audioOn")
+        val expectedSpeaking = DataChannelMessageDto("speaking")
+        val expectedVideoOn = DataChannelMessageDto("videoOn")
 
         val expectedUnmuteAudio = getExpectedUnmuteAudio()
         val expectedUnmuteVideo = getExpectedUnmuteVideo()
